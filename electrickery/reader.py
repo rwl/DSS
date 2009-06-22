@@ -4,6 +4,7 @@
 """ Looks like we got ourselves a reader.
 """
 
+import re
 import sys
 import gzip
 import bz2
@@ -24,7 +25,7 @@ for pkg in cim_packages:
     exec "import %s" % pkg # Import all of the CIM packages.
 
 logging.basicConfig(stream=sys.stdout, level=logging.ERROR,
-    format="%(levelname)s: %(message)s)")
+    format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 def splitURI(uri):
@@ -44,11 +45,65 @@ def splitURI(uri):
 
     head, sep, tail = uri.rpartition("#")
     if head and sep:
-#        logger.debug("Partitioned URI: '%s', '%s'." % (head + sep, tail))
+        logger.debug("Partitioned URI: '%s', '%s'." % (head + sep, tail))
         return (head + sep, tail)
     else:
-#        logger.debug("URI [%s] has no end fragment." % uri)
+        logger.debug("URI [%s] has no end fragment." % uri)
         return (tail, "")
+
+
+
+#class _CamelToLowercaseUnderscore(object):
+#    """ Simple functor class to convert names from CamelCase to
+#        lowercase underscore separated names.
+#
+#        For example::
+#          >>> camel_to_lcu = _CamelToLowercaseUnderscore()
+#          >>> camel_to_lcu('XMLActor2DToSGML')
+#          'xml_actor2d_to_sgml'
+#    """
+#
+#    def __init__(self):
+#        self.patn = re.compile(r'([A-Z0-9]+)([a-z0-9]*)')
+#        self.nd_patn = re.compile(r'(\D[123])_D')
+#
+#    def __call__(self, name):
+#        ret = self.patn.sub(self._repl, name)
+#        ret = self.nd_patn.sub(r'\1d', ret)
+#        if ret[0] == '_':
+#            ret = ret[1:]
+#        return ret.lower()
+#
+#    def _repl(self, m):
+#        g1 = m.group(1)
+#        g2 = m.group(2)
+#        if len(g1) > 1:
+#            if g2:
+#                return '_' + g1[:-1] + '_' + g1[-1] + g2
+#            else:
+#                return '_' + g1
+#        else:
+#            return '_' + g1 + g2
+
+
+class _CamelToLowercaseUnderscore(object):
+    """ Simple functor class to convert names from CamelCase to
+        lowercase underscore separated names.
+    """
+    def __call__(self, name):
+        s = ""
+        for i, c in enumerate(name):
+            if i > 0:
+                next = "a"
+                if i < len(name) - 1:
+                    next = name[i + 1]
+                prev = name[i - 1]
+
+                if c.isupper() and (prev != "_") and (not prev.isupper()):
+                    s += "_"
+            s += c.lower()
+
+        return s
 
 
 class CIMAttributeSink(object):
@@ -62,6 +117,9 @@ class CIMAttributeSink(object):
         self.uri_object_map = {}
         self.ns_cim = rdfxml.Namespace(ns_cim)
 
+        # Convertor from camel case to lowercase underscore separated.
+        self.camel_to_lcu = _CamelToLowercaseUnderscore()
+
 
     def triple(self, sub, pred, obj):
         """ Handles triples from the RDF parser.
@@ -74,7 +132,7 @@ class CIMAttributeSink(object):
 
         # Instantiate an object if the predicate is an RDF type and the object
         # is in the CIM namespace.
-        if (ns_pred == RDFXML.rdf) and (frag_pred == "type") and \
+        if (ns_pred == rdfxml.rdf) and (frag_pred == "type") and \
             (ns_obj == self.ns_cim):
 
             cls_name = frag_obj
@@ -98,11 +156,12 @@ class CIMAttributeSink(object):
         elif ns_pred == self.ns_cim:
             # The URI of the object with the attribute being set.
             uri   = frag_sub
-            # Strip the double quotes that RDFXML.py adds to literals.
+            # Strip the double quotes that rdfxml.py adds to literals.
             value = ns_obj.strip('"')
 
             # Split the class name and the attribute name.
-            class_name, attr_name = frag_pred.rsplit(".", 1)
+            class_name, camel_attr_name = frag_pred.rsplit(".", 1)
+            attr_name = self.camel_to_lcu(camel_attr_name)
 #            logger.debug("Attempting to set '%s' for '%s' to '%s'." %
 #                (attr_name, class_name, value))
 
@@ -114,40 +173,43 @@ class CIMAttributeSink(object):
                 return
 
             # Get the trait definition and check that it is defined.
-            trait = element.trait( attr_name )
-            if trait is None:
+#            trait = element.trait( attr_name )
+#            print "::", dir(element)
+#            print hasattr(element, attr_name)
+
+            if not hasattr(element, attr_name):
                 logger.error("Object [%s] has no attribute: %s" %
                     (element.__class__.__name__, attr_name))
                 return
 
             # Coerce the value type.
-            if trait.is_trait_type( Instance ):
-                # See 'CIMReferenceSink' for reference setting.
-                return
-
-            elif trait.is_trait_type( List ):
-                if trait.inner_traits[0].is_trait_type( Instance ):
-                    # Multiplicity many references set on second pass.
-                    return
-                else:
-                    value = list( frag_obj )
-
-            if trait.is_trait_type( Int ):
-                value = int( value )
-
-            elif trait.is_trait_type( Float ):
-                value = float( value )
-
-            elif trait.is_trait_type( Bool ):
-                value = bool( value )
-
-            elif trait.is_trait_type( Enum ):
-                # The 'object' in an Enum triple is the URL for the data type
-                # and the value must be split of the end of the fragment.
-                value = frag_obj.rsplit(".", 1)[1]
-
-            else:
-                value = value
+#            if trait.is_trait_type( Instance ):
+#                # See 'CIMReferenceSink' for reference setting.
+#                return
+#
+#            elif trait.is_trait_type( List ):
+#                if trait.inner_traits[0].is_trait_type( Instance ):
+#                    # Multiplicity many references set on second pass.
+#                    return
+#                else:
+#                    value = list( frag_obj )
+#
+#            if trait.is_trait_type( Int ):
+#                value = int( value )
+#
+#            elif trait.is_trait_type( Float ):
+#                value = float( value )
+#
+#            elif trait.is_trait_type( Bool ):
+#                value = bool( value )
+#
+#            elif trait.is_trait_type( Enum ):
+#                # The 'object' in an Enum triple is the URL for the data type
+#                # and the value must be split of the end of the fragment.
+#                value = frag_obj.rsplit(".", 1)[1]
+#
+#            else:
+#                value = value
 
             logger.debug("Setting '%s' attribute '%s' to: %s" %
                 (element.__class__.__name__, attr_name, value))
@@ -167,6 +229,9 @@ class CIMReferenceSink(object):
 
         self.attr_sink = attr_sink
         self.ns_cim    = self.attr_sink.ns_cim
+
+        # Convertor from camel case to lowercase underscore separated.
+        self.camel_to_lcu = _CamelToLowercaseUnderscore()
 
 
     def triple(self, sub, pred, obj):
@@ -191,7 +256,8 @@ class CIMReferenceSink(object):
                 return
 
             # Split the predicate fragment into class name and attribute name.
-            class_name, ref_name = frag_pred.rsplit(".", 1)
+            class_name, camel_ref_name = frag_pred.rsplit(".", 1)
+            ref_name = self.camel_to_lcu(camel_ref_name)
             # Assert that the object from the dictionary has the same type as
             # that specified in the predicate.
 #            assert sub_obj.__class__.__name__ == class_name
@@ -200,32 +266,33 @@ class CIMReferenceSink(object):
 #                (ref_name, class_name, ref_name))
 
             # Get the attribute object so the type can be determined.
-            trait = sub_obj.trait( ref_name )
-            if trait is None:
+#            trait = sub_obj.trait( ref_name )
+            if not hasattr(object, ref_name):
                 logger.error("Object [%s] has no reference: %s" %
                     (sub_obj.__class__.__name__, ref_name))
                 return
 
             # Set reference traits.
-            if trait.is_trait_type( Instance ):
-                # Try to get the object being referenced.
-                if uri_map.has_key(obj_uri):
-                    ref_obj = self.attr_sink.uri_object_map[obj_uri]
-                else:
-                    logger.error("Referenced object [%s] not found." % obj_uri)
-                    return
+#            if trait.is_trait_type( Instance ):
+
+            # Try to get the object being referenced.
+            if uri_map.has_key(obj_uri):
+                ref_obj = self.attr_sink.uri_object_map[obj_uri]
+            else:
+                logger.error("Referenced object [%s] not found." % obj_uri)
+                return
 
 
-                logger.debug("Setting the '%s' reference of '%s' to: %s" %
-                    (ref_name, sub_obj, ref_obj))
+            logger.debug("Setting the '%s' reference of '%s' to: %s" %
+                (ref_name, sub_obj, ref_obj))
 
-                setattr(sub_obj, ref_name, ref_obj)
+            setattr(sub_obj, ref_name, ref_obj)
 
             # One to many and many to many references (List(Instance)).
-            elif trait.is_trait_type( List ) and \
-                trait.inner_traits[0].is_trait_type( Instance ):
-
-                logger.warning("Skipping multiplicity-many reference.")
+#            elif trait.is_trait_type( List ) and \
+#                trait.inner_traits[0].is_trait_type( Instance ):
+#
+#                logger.warning("Skipping multiplicity-many reference.")
 
 
 class CIMReader(object):
@@ -308,20 +375,18 @@ class CIMReader(object):
         # Instantiate CIM objects and set their attributes.
         attr_sink = CIMAttributeSink(self.ns_cim)
         logger.debug("Parsing objects and attributes in: %s" % filename)
-#        RDFXML.parseURI(filename, sink=attr_sink)
-        RDFXML.parseRDF(s, base=filename, sink=attr_sink)
+        rdfxml.parseRDF(s, base=filename, sink=attr_sink)
 
         # Second pass to set references.
         ref_sink = CIMReferenceSink(attr_sink)
         logger.debug("Starting second pass to set references.")
-#        RDFXML.parseURI(filename, sink=ref_sink)
-        RDFXML.parseRDF(s, base=filename, sink=ref_sink)
+#        rdfxml.parseRDF(s, base=filename, sink=ref_sink)
 
         # Return a map of unique resource identifiers to CIM objects.
         return attr_sink.uri_object_map
 
 
-def read_cim(filename):
+def read_cim(filename, ns_cim="http://iec.ch/TC57/2009/CIM-schema-cim14#"):
     """ Function for import of CIM RDF/XML data files given the file path.
     """
-    return CIMReader(filename).parse_file()
+    return CIMReader(filename, ns_cim).parse_file()
