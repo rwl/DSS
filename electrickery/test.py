@@ -10,12 +10,14 @@ from cim14.iec61970.core import BaseVoltage, Terminal
 from conversion import VSource, ISource, Generator, Load
 from circuit import Circuit
 from reader import read_cim
+from cim2dot import cim2dot
 
-INSTANCE_FILE = "./data/EDF_AIGUE_v1.xml"
+#INSTANCE_FILE = "./data/EDF_AIGUE_v1.xml"
 #INSTANCE_FILE = "./data/EDF_RURAL_4PS_V1.xml"
-#INSTANCE_FILE = "./data/10_Bus.xml"
+INSTANCE_FILE = "./data/10_Bus.xml"
 
-NS_CIM = "http://iec.ch/TC57/2009/CIM-schema-cim14#"
+#NS_CIM = "http://iec.ch/TC57/2009/CIM-schema-cim14#"
+from cim14 import ns_uri as NS_CIM
 PICKLE_FILE = "./data/cdpsm.pkl"
 
 class CircuitTestCase(unittest.TestCase):
@@ -32,11 +34,13 @@ class CircuitTestCase(unittest.TestCase):
         pickle.dump(circuit, fd)
         fd.close()
 
-        try:
-            fd = open(PICKLE_FILE, "rb")
-            self.circuit = pickle.load(fd)
-        finally:
-            fd.close()
+#        try:
+#            fd = open(PICKLE_FILE, "rb")
+#            self.circuit = pickle.load(fd)
+#        finally:
+#            fd.close()
+
+        self.circuit = circuit
 
 
     def test_topological_analysis(self):
@@ -44,6 +48,13 @@ class CircuitTestCase(unittest.TestCase):
         """
         circuit = self.circuit
         circuit.perform_topological_analysis()
+
+
+    def test_dot(self):
+        """ Test Dot language representation.
+        """
+        dot = cim2dot(self.circuit)
+        print dot
 
 
 #class SourceTestCase(unittest.TestCase):

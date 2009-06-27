@@ -166,6 +166,9 @@ class CIMAttributeSink(object):
                 exec "import %s" % module_name
                 element = eval("%s.%s(uri=uri)" % (module_name, cls_name))
 
+                if hasattr(element, "m_rid"):
+                    element.m_rid = uri
+
                 # Determine the package and import the class if necessary.
 #                if cls_name not in self.imported:
 #                    module_name = klass_module_map[cls_name]
