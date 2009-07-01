@@ -30,11 +30,37 @@ class TelephoneNumber(IdentifiedObject):
     # Area or region code. 
     area_code = ''
 
-    # Organisation owning this telephone number.
-    organisation = None
+    def get_organisation(self):
+        """ Organisation owning this telephone number.
+        """
+        return self._organisation
 
-    # Location owning this telephone number.
-    location = None
+    def set_organisation(self, value):
+        if self._organisation is not None:
+            filtered = [x for x in self.organisation.telephone_numbers if x != self]
+            self._organisation._telephone_numbers = filtered
+            
+        self._organisation = value
+        if self._organisation is not None:
+            self._organisation._telephone_numbers.append(self)
+
+    organisation = property(get_organisation, set_organisation)
+
+    def get_location(self):
+        """ Location owning this telephone number.
+        """
+        return self._location
+
+    def set_location(self, value):
+        if self._location is not None:
+            filtered = [x for x in self.location.telephone_numbers if x != self]
+            self._location._telephone_numbers = filtered
+            
+        self._location = value
+        if self._location is not None:
+            self._location._telephone_numbers.append(self)
+
+    location = property(get_location, set_location)
 
     # <<< telephone_number
     # @generated
@@ -46,7 +72,9 @@ class TelephoneNumber(IdentifiedObject):
         self.local_number = local_number
         self.extension = extension
         self.area_code = area_code
+        self._organisation = None
         self.organisation = organisation
+        self._location = None
         self.location = location
 
         super(TelephoneNumber, self).__init__(**kw_args)
@@ -81,49 +109,360 @@ class Location(IdentifiedObject):
     main_address = None
 
     gml_selectors = []
+    
+    def add_gml_selectors(self, *gml_selectors):
+        for obj in gml_selectors:
+	        self._gml_selectors.append(obj)
+        
+    def remove_gml_selectors(self, *gml_selectors):
+        for obj in gml_selectors:
+	        self._gml_selectors.remove(obj)
 
-    to_location_roles = []
+    def get_to_location_roles(self):
+        """ 
+        """
+        return self._to_location_roles
 
-    erp_person_roles = []
+    def set_to_location_roles(self, value):
+        for x in self._to_location_roles:
+            x._from_location = None
+        for y in value:
+            y._from_location = self
+        self._to_location_roles = value
+            
+    to_location_roles = property(get_to_location_roles, set_to_location_roles)
+    
+    def add_to_location_roles(self, *to_location_roles):
+        for obj in to_location_roles:
+            obj._from_location = self
+            self._to_location_roles.append(obj)
+        
+    def remove_to_location_roles(self, *to_location_roles):
+        for obj in to_location_roles:
+            obj._from_location = None
+            self._to_location_roles.remove(obj)
 
-    change_items = []
+    def get_erp_person_roles(self):
+        """ 
+        """
+        return self._erp_person_roles
 
-    power_system_resource_roles = []
+    def set_erp_person_roles(self, value):
+        for x in self._erp_person_roles:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._erp_person_roles = value
+            
+    erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
+    
+    def add_erp_person_roles(self, *erp_person_roles):
+        for obj in erp_person_roles:
+            obj._location = self
+            self._erp_person_roles.append(obj)
+        
+    def remove_erp_person_roles(self, *erp_person_roles):
+        for obj in erp_person_roles:
+            obj._location = None
+            self._erp_person_roles.remove(obj)
+
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._location = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._location = None
+            self._change_items.remove(obj)
+
+    def get_power_system_resource_roles(self):
+        """ 
+        """
+        return self._power_system_resource_roles
+
+    def set_power_system_resource_roles(self, value):
+        for x in self._power_system_resource_roles:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._power_system_resource_roles = value
+            
+    power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
+    
+    def add_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._location = self
+            self._power_system_resource_roles.append(obj)
+        
+    def remove_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._location = None
+            self._power_system_resource_roles.remove(obj)
 
     land_properties = []
+    
+    def add_land_properties(self, *land_properties):
+        for obj in land_properties:
+	        self._land_properties.append(obj)
+        
+    def remove_land_properties(self, *land_properties):
+        for obj in land_properties:
+	        self._land_properties.remove(obj)
 
     red_lines = []
+    
+    def add_red_lines(self, *red_lines):
+        for obj in red_lines:
+	        self._red_lines.append(obj)
+        
+    def remove_red_lines(self, *red_lines):
+        for obj in red_lines:
+	        self._red_lines.remove(obj)
 
-    erp_organisation_roles = []
+    def get_erp_organisation_roles(self):
+        """ 
+        """
+        return self._erp_organisation_roles
+
+    def set_erp_organisation_roles(self, value):
+        for x in self._erp_organisation_roles:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._erp_organisation_roles = value
+            
+    erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
+    
+    def add_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._location = self
+            self._erp_organisation_roles.append(obj)
+        
+    def remove_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._location = None
+            self._erp_organisation_roles.remove(obj)
 
     hazards = []
+    
+    def add_hazards(self, *hazards):
+        for obj in hazards:
+	        self._hazards.append(obj)
+        
+    def remove_hazards(self, *hazards):
+        for obj in hazards:
+	        self._hazards.remove(obj)
 
-    from_location_roles = []
+    def get_from_location_roles(self):
+        """ 
+        """
+        return self._from_location_roles
+
+    def set_from_location_roles(self, value):
+        for x in self._from_location_roles:
+            x._to_location = None
+        for y in value:
+            y._to_location = self
+        self._from_location_roles = value
+            
+    from_location_roles = property(get_from_location_roles, set_from_location_roles)
+    
+    def add_from_location_roles(self, *from_location_roles):
+        for obj in from_location_roles:
+            obj._to_location = self
+            self._from_location_roles.append(obj)
+        
+    def remove_from_location_roles(self, *from_location_roles):
+        for obj in from_location_roles:
+            obj._to_location = None
+            self._from_location_roles.remove(obj)
 
     measurements = []
+    
+    def add_measurements(self, *measurements):
+        for obj in measurements:
+	        self._measurements.append(obj)
+        
+    def remove_measurements(self, *measurements):
+        for obj in measurements:
+	        self._measurements.remove(obj)
 
-    asset_roles = []
+    def get_asset_roles(self):
+        """ 
+        """
+        return self._asset_roles
 
-    document_roles = []
+    def set_asset_roles(self, value):
+        for x in self._asset_roles:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._asset_roles = value
+            
+    asset_roles = property(get_asset_roles, set_asset_roles)
+    
+    def add_asset_roles(self, *asset_roles):
+        for obj in asset_roles:
+            obj._location = self
+            self._asset_roles.append(obj)
+        
+    def remove_asset_roles(self, *asset_roles):
+        for obj in asset_roles:
+            obj._location = None
+            self._asset_roles.remove(obj)
 
-    # Sequence of position points describing this location.
-    position_points = []
+    def get_document_roles(self):
+        """ 
+        """
+        return self._document_roles
 
-    # All electronic addresses of this location.
+    def set_document_roles(self, value):
+        for x in self._document_roles:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._document_roles = value
+            
+    document_roles = property(get_document_roles, set_document_roles)
+    
+    def add_document_roles(self, *document_roles):
+        for obj in document_roles:
+            obj._location = self
+            self._document_roles.append(obj)
+        
+    def remove_document_roles(self, *document_roles):
+        for obj in document_roles:
+            obj._location = None
+            self._document_roles.remove(obj)
+
+    def get_position_points(self):
+        """ Sequence of position points describing this location.
+        """
+        return self._position_points
+
+    def set_position_points(self, value):
+        for x in self._position_points:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._position_points = value
+            
+    position_points = property(get_position_points, set_position_points)
+    
+    def add_position_points(self, *position_points):
+        for obj in position_points:
+            obj._location = self
+            self._position_points.append(obj)
+        
+    def remove_position_points(self, *position_points):
+        for obj in position_points:
+            obj._location = None
+            self._position_points.remove(obj)
+
     electronic_addresses = []
+    
+    def add_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+	        self._electronic_addresses.append(obj)
+        
+    def remove_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+	        self._electronic_addresses.remove(obj)
 
-    # All telephone numbers of this location.
-    telephone_numbers = []
+    def get_telephone_numbers(self):
+        """ All telephone numbers of this location.
+        """
+        return self._telephone_numbers
 
-    dimensions_info = None
+    def set_telephone_numbers(self, value):
+        for x in self._telephone_numbers:
+            x._location = None
+        for y in value:
+            y._location = self
+        self._telephone_numbers = value
+            
+    telephone_numbers = property(get_telephone_numbers, set_telephone_numbers)
+    
+    def add_telephone_numbers(self, *telephone_numbers):
+        for obj in telephone_numbers:
+            obj._location = self
+            self._telephone_numbers.append(obj)
+        
+    def remove_telephone_numbers(self, *telephone_numbers):
+        for obj in telephone_numbers:
+            obj._location = None
+            self._telephone_numbers.remove(obj)
+
+    def get_dimensions_info(self):
+        """ 
+        """
+        return self._dimensions_info
+
+    def set_dimensions_info(self, value):
+        if self._dimensions_info is not None:
+            filtered = [x for x in self.dimensions_info.locations if x != self]
+            self._dimensions_info._locations = filtered
+            
+        self._dimensions_info = value
+        if self._dimensions_info is not None:
+            self._dimensions_info._locations.append(self)
+
+    dimensions_info = property(get_dimensions_info, set_dimensions_info)
 
     routes = []
+    
+    def add_routes(self, *routes):
+        for obj in routes:
+	        self._routes.append(obj)
+        
+    def remove_routes(self, *routes):
+        for obj in routes:
+	        self._routes.remove(obj)
 
     gml_observatins = []
+    
+    def add_gml_observatins(self, *gml_observatins):
+        for obj in gml_observatins:
+	        self._gml_observatins.append(obj)
+        
+    def remove_gml_observatins(self, *gml_observatins):
+        for obj in gml_observatins:
+	        self._gml_observatins.remove(obj)
 
     activity_records = []
+    
+    def add_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.append(obj)
+        
+    def remove_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.remove(obj)
 
     crews = []
+    
+    def add_crews(self, *crews):
+        for obj in crews:
+	        self._crews.append(obj)
+        
+    def remove_crews(self, *crews):
+        for obj in crews:
+	        self._crews.remove(obj)
 
     # <<< location
     # @generated
@@ -138,26 +477,47 @@ class Location(IdentifiedObject):
         self.secondary_address = secondary_address
         self.status = status
         self.main_address = main_address
+        self._gml_selectors = []
         self.gml_selectors = gml_selectors
+        self._to_location_roles = []
         self.to_location_roles = to_location_roles
+        self._erp_person_roles = []
         self.erp_person_roles = erp_person_roles
+        self._change_items = []
         self.change_items = change_items
+        self._power_system_resource_roles = []
         self.power_system_resource_roles = power_system_resource_roles
+        self._land_properties = []
         self.land_properties = land_properties
+        self._red_lines = []
         self.red_lines = red_lines
+        self._erp_organisation_roles = []
         self.erp_organisation_roles = erp_organisation_roles
+        self._hazards = []
         self.hazards = hazards
+        self._from_location_roles = []
         self.from_location_roles = from_location_roles
+        self._measurements = []
         self.measurements = measurements
+        self._asset_roles = []
         self.asset_roles = asset_roles
+        self._document_roles = []
         self.document_roles = document_roles
+        self._position_points = []
         self.position_points = position_points
+        self._electronic_addresses = []
         self.electronic_addresses = electronic_addresses
+        self._telephone_numbers = []
         self.telephone_numbers = telephone_numbers
+        self._dimensions_info = None
         self.dimensions_info = dimensions_info
+        self._routes = []
         self.routes = routes
+        self._gml_observatins = []
         self.gml_observatins = gml_observatins
+        self._activity_records = []
         self.activity_records = activity_records
+        self._crews = []
         self.crews = crews
 
         super(Location, self).__init__(**kw_args)
@@ -183,22 +543,89 @@ class ActivityRecord(IdentifiedObject):
     status = None
 
     organisations = []
+    
+    def add_organisations(self, *organisations):
+        for obj in organisations:
+	        self._organisations.append(obj)
+        
+    def remove_organisations(self, *organisations):
+        for obj in organisations:
+	        self._organisations.remove(obj)
 
     market_factors = []
+    
+    def add_market_factors(self, *market_factors):
+        for obj in market_factors:
+	        self._market_factors.append(obj)
+        
+    def remove_market_factors(self, *market_factors):
+        for obj in market_factors:
+	        self._market_factors.remove(obj)
 
     locations = []
+    
+    def add_locations(self, *locations):
+        for obj in locations:
+	        self._locations.append(obj)
+        
+    def remove_locations(self, *locations):
+        for obj in locations:
+	        self._locations.remove(obj)
 
-    # All assets for which this activity record has been created.
     assets = []
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+	        self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+	        self._assets.remove(obj)
 
     power_system_resources = []
+    
+    def add_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.append(obj)
+        
+    def remove_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.remove(obj)
 
-    # All documents for which this activity record has been created.
     documents = []
+    
+    def add_documents(self, *documents):
+        for obj in documents:
+	        self._documents.append(obj)
+        
+    def remove_documents(self, *documents):
+        for obj in documents:
+	        self._documents.remove(obj)
 
-    scheduled_event = None
+    def get_scheduled_event(self):
+        """ 
+        """
+        return self._scheduled_event
+
+    def set_scheduled_event(self, value):
+        if self._scheduled_event is not None:
+            self._scheduled_event._activity_record = None
+            
+        self._scheduled_event = value
+        if self._scheduled_event is not None:
+            self._scheduled_event._activity_record = self
+            
+    scheduled_event = property(get_scheduled_event, set_scheduled_event)
 
     erp_persons = []
+    
+    def add_erp_persons(self, *erp_persons):
+        for obj in erp_persons:
+	        self._erp_persons.append(obj)
+        
+    def remove_erp_persons(self, *erp_persons):
+        for obj in erp_persons:
+	        self._erp_persons.remove(obj)
 
     # <<< activity_record
     # @generated
@@ -210,13 +637,21 @@ class ActivityRecord(IdentifiedObject):
         self.category = category
         self.created_date_time = created_date_time
         self.status = status
+        self._organisations = []
         self.organisations = organisations
+        self._market_factors = []
         self.market_factors = market_factors
+        self._locations = []
         self.locations = locations
+        self._assets = []
         self.assets = assets
+        self._power_system_resources = []
         self.power_system_resources = power_system_resources
+        self._documents = []
         self.documents = documents
+        self._scheduled_event = None
         self.scheduled_event = scheduled_event
+        self._erp_persons = []
         self.erp_persons = erp_persons
 
         super(ActivityRecord, self).__init__(**kw_args)
@@ -238,8 +673,21 @@ class PositionPoint(Element):
     # (if applicable) Z axis position. 
     z_position = ''
 
-    # Location that this position point describes.
-    location = None
+    def get_location(self):
+        """ Location that this position point describes.
+        """
+        return self._location
+
+    def set_location(self, value):
+        if self._location is not None:
+            filtered = [x for x in self.location.position_points if x != self]
+            self._location._position_points = filtered
+            
+        self._location = value
+        if self._location is not None:
+            self._location._position_points.append(self)
+
+    location = property(get_location, set_location)
 
     # <<< position_point
     # @generated
@@ -250,6 +698,7 @@ class PositionPoint(Element):
         self.y_position = y_position
         self.sequence_number = sequence_number
         self.z_position = z_position
+        self._location = None
         self.location = location
 
         super(PositionPoint, self).__init__(**kw_args)
@@ -326,30 +775,149 @@ class UserAttribute(Element):
     # Name of an attribute. 
     name = ''
 
-    property_specification = None
+    def get_property_specification(self):
+        """ 
+        """
+        return self._property_specification
+
+    def set_property_specification(self, value):
+        if self._property_specification is not None:
+            filtered = [x for x in self.property_specification.asset_properites if x != self]
+            self._property_specification._asset_properites = filtered
+            
+        self._property_specification = value
+        if self._property_specification is not None:
+            self._property_specification._asset_properites.append(self)
+
+    property_specification = property(get_property_specification, set_property_specification)
 
     procedure_data_sets = []
+    
+    def add_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+	        self._procedure_data_sets.append(obj)
+        
+    def remove_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+	        self._procedure_data_sets.remove(obj)
 
     property_assets = []
+    
+    def add_property_assets(self, *property_assets):
+        for obj in property_assets:
+	        self._property_assets.append(obj)
+        
+    def remove_property_assets(self, *property_assets):
+        for obj in property_assets:
+	        self._property_assets.remove(obj)
 
     erp_ledger_entries = []
+    
+    def add_erp_ledger_entries(self, *erp_ledger_entries):
+        for obj in erp_ledger_entries:
+	        self._erp_ledger_entries.append(obj)
+        
+    def remove_erp_ledger_entries(self, *erp_ledger_entries):
+        for obj in erp_ledger_entries:
+	        self._erp_ledger_entries.remove(obj)
 
     erp_statement_line_items = []
+    
+    def add_erp_statement_line_items(self, *erp_statement_line_items):
+        for obj in erp_statement_line_items:
+	        self._erp_statement_line_items.append(obj)
+        
+    def remove_erp_statement_line_items(self, *erp_statement_line_items):
+        for obj in erp_statement_line_items:
+	        self._erp_statement_line_items.remove(obj)
 
     bill_determinants = []
+    
+    def add_bill_determinants(self, *bill_determinants):
+        for obj in bill_determinants:
+	        self._bill_determinants.append(obj)
+        
+    def remove_bill_determinants(self, *bill_determinants):
+        for obj in bill_determinants:
+	        self._bill_determinants.remove(obj)
 
     pass_through_bills = []
+    
+    def add_pass_through_bills(self, *pass_through_bills):
+        for obj in pass_through_bills:
+	        self._pass_through_bills.append(obj)
+        
+    def remove_pass_through_bills(self, *pass_through_bills):
+        for obj in pass_through_bills:
+	        self._pass_through_bills.remove(obj)
 
-    rating_specification = None
+    def get_rating_specification(self):
+        """ 
+        """
+        return self._rating_specification
 
-    # Transaction for which this snapshot has been recorded.
-    transaction = None
+    def set_rating_specification(self, value):
+        if self._rating_specification is not None:
+            filtered = [x for x in self.rating_specification.ratings if x != self]
+            self._rating_specification._ratings = filtered
+            
+        self._rating_specification = value
+        if self._rating_specification is not None:
+            self._rating_specification._ratings.append(self)
+
+    rating_specification = property(get_rating_specification, set_rating_specification)
+
+    def get_transaction(self):
+        """ Transaction for which this snapshot has been recorded.
+        """
+        return self._transaction
+
+    def set_transaction(self, value):
+        if self._transaction is not None:
+            filtered = [x for x in self.transaction.user_attributes if x != self]
+            self._transaction._user_attributes = filtered
+            
+        self._transaction = value
+        if self._transaction is not None:
+            self._transaction._user_attributes.append(self)
+
+    transaction = property(get_transaction, set_transaction)
 
     erp_invoice_line_items = []
+    
+    def add_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.append(obj)
+        
+    def remove_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.remove(obj)
 
     rating_assets = []
+    
+    def add_rating_assets(self, *rating_assets):
+        for obj in rating_assets:
+	        self._rating_assets.append(obj)
+        
+    def remove_rating_assets(self, *rating_assets):
+        for obj in rating_assets:
+	        self._rating_assets.remove(obj)
 
-    procedure = None
+    def get_procedure(self):
+        """ 
+        """
+        return self._procedure
+
+    def set_procedure(self, value):
+        if self._procedure is not None:
+            filtered = [x for x in self.procedure.procedure_values if x != self]
+            self._procedure._procedure_values = filtered
+            
+        self._procedure = value
+        if self._procedure is not None:
+            self._procedure._procedure_values.append(self)
+
+    procedure = property(get_procedure, set_procedure)
 
     # <<< user_attribute
     # @generated
@@ -359,17 +927,29 @@ class UserAttribute(Element):
         self.value = value
         self.sequence_number = sequence_number
         self.name = name
+        self._property_specification = None
         self.property_specification = property_specification
+        self._procedure_data_sets = []
         self.procedure_data_sets = procedure_data_sets
+        self._property_assets = []
         self.property_assets = property_assets
+        self._erp_ledger_entries = []
         self.erp_ledger_entries = erp_ledger_entries
+        self._erp_statement_line_items = []
         self.erp_statement_line_items = erp_statement_line_items
+        self._bill_determinants = []
         self.bill_determinants = bill_determinants
+        self._pass_through_bills = []
         self.pass_through_bills = pass_through_bills
+        self._rating_specification = None
         self.rating_specification = rating_specification
+        self._transaction = None
         self.transaction = transaction
+        self._erp_invoice_line_items = []
         self.erp_invoice_line_items = erp_invoice_line_items
+        self._rating_assets = []
         self.rating_assets = rating_assets
+        self._procedure = None
         self.procedure = procedure
 
         super(UserAttribute, self).__init__(**kw_args)
@@ -403,37 +983,286 @@ class Document(IdentifiedObject):
     # Status of subject metter (e.g., Agreement, Work) this document represents. For status of the document itself, use 'docStatus' attribute.
     status = None
 
-    from_document_roles = []
+    def get_from_document_roles(self):
+        """ 
+        """
+        return self._from_document_roles
+
+    def set_from_document_roles(self, value):
+        for x in self._from_document_roles:
+            x._to_document = None
+        for y in value:
+            y._to_document = self
+        self._from_document_roles = value
+            
+    from_document_roles = property(get_from_document_roles, set_from_document_roles)
+    
+    def add_from_document_roles(self, *from_document_roles):
+        for obj in from_document_roles:
+            obj._to_document = self
+            self._from_document_roles.append(obj)
+        
+    def remove_from_document_roles(self, *from_document_roles):
+        for obj in from_document_roles:
+            obj._to_document = None
+            self._from_document_roles.remove(obj)
 
     schedule_parameter_infos = []
+    
+    def add_schedule_parameter_infos(self, *schedule_parameter_infos):
+        for obj in schedule_parameter_infos:
+	        self._schedule_parameter_infos.append(obj)
+        
+    def remove_schedule_parameter_infos(self, *schedule_parameter_infos):
+        for obj in schedule_parameter_infos:
+	        self._schedule_parameter_infos.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._document = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._document = None
+            self._change_items.remove(obj)
 
     network_data_sets = []
+    
+    def add_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.append(obj)
+        
+    def remove_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.remove(obj)
 
-    # All activity records created for this document.
     activity_records = []
+    
+    def add_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.append(obj)
+        
+    def remove_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.remove(obj)
 
-    power_system_resource_roles = []
+    def get_power_system_resource_roles(self):
+        """ 
+        """
+        return self._power_system_resource_roles
 
-    location_roles = []
+    def set_power_system_resource_roles(self, value):
+        for x in self._power_system_resource_roles:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._power_system_resource_roles = value
+            
+    power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
+    
+    def add_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._document = self
+            self._power_system_resource_roles.append(obj)
+        
+    def remove_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._document = None
+            self._power_system_resource_roles.remove(obj)
+
+    def get_location_roles(self):
+        """ 
+        """
+        return self._location_roles
+
+    def set_location_roles(self, value):
+        for x in self._location_roles:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._location_roles = value
+            
+    location_roles = property(get_location_roles, set_location_roles)
+    
+    def add_location_roles(self, *location_roles):
+        for obj in location_roles:
+            obj._document = self
+            self._location_roles.append(obj)
+        
+    def remove_location_roles(self, *location_roles):
+        for obj in location_roles:
+            obj._document = None
+            self._location_roles.remove(obj)
 
     change_sets = []
+    
+    def add_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.append(obj)
+        
+    def remove_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.remove(obj)
 
-    erp_person_roles = []
+    def get_erp_person_roles(self):
+        """ 
+        """
+        return self._erp_person_roles
 
-    asset_roles = []
+    def set_erp_person_roles(self, value):
+        for x in self._erp_person_roles:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._erp_person_roles = value
+            
+    erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
+    
+    def add_erp_person_roles(self, *erp_person_roles):
+        for obj in erp_person_roles:
+            obj._document = self
+            self._erp_person_roles.append(obj)
+        
+    def remove_erp_person_roles(self, *erp_person_roles):
+        for obj in erp_person_roles:
+            obj._document = None
+            self._erp_person_roles.remove(obj)
 
-    scheduled_events = []
+    def get_asset_roles(self):
+        """ 
+        """
+        return self._asset_roles
 
-    electronic_address = None
+    def set_asset_roles(self, value):
+        for x in self._asset_roles:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._asset_roles = value
+            
+    asset_roles = property(get_asset_roles, set_asset_roles)
+    
+    def add_asset_roles(self, *asset_roles):
+        for obj in asset_roles:
+            obj._document = self
+            self._asset_roles.append(obj)
+        
+    def remove_asset_roles(self, *asset_roles):
+        for obj in asset_roles:
+            obj._document = None
+            self._asset_roles.remove(obj)
 
-    # Measurements are specified in types of documents, such as procedures.
+    def get_scheduled_events(self):
+        """ 
+        """
+        return self._scheduled_events
+
+    def set_scheduled_events(self, value):
+        for x in self._scheduled_events:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._scheduled_events = value
+            
+    scheduled_events = property(get_scheduled_events, set_scheduled_events)
+    
+    def add_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+            obj._document = self
+            self._scheduled_events.append(obj)
+        
+    def remove_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+            obj._document = None
+            self._scheduled_events.remove(obj)
+
+    def get_electronic_address(self):
+        """ 
+        """
+        return self._electronic_address
+
+    def set_electronic_address(self, value):
+        if self._electronic_address is not None:
+            self._electronic_address._document = None
+            
+        self._electronic_address = value
+        if self._electronic_address is not None:
+            self._electronic_address._document = self
+            
+    electronic_address = property(get_electronic_address, set_electronic_address)
+
     measurements = []
+    
+    def add_measurements(self, *measurements):
+        for obj in measurements:
+	        self._measurements.append(obj)
+        
+    def remove_measurements(self, *measurements):
+        for obj in measurements:
+	        self._measurements.remove(obj)
 
-    to_document_roles = []
+    def get_to_document_roles(self):
+        """ 
+        """
+        return self._to_document_roles
 
-    erp_organisation_roles = []
+    def set_to_document_roles(self, value):
+        for x in self._to_document_roles:
+            x._from_document = None
+        for y in value:
+            y._from_document = self
+        self._to_document_roles = value
+            
+    to_document_roles = property(get_to_document_roles, set_to_document_roles)
+    
+    def add_to_document_roles(self, *to_document_roles):
+        for obj in to_document_roles:
+            obj._from_document = self
+            self._to_document_roles.append(obj)
+        
+    def remove_to_document_roles(self, *to_document_roles):
+        for obj in to_document_roles:
+            obj._from_document = None
+            self._to_document_roles.remove(obj)
+
+    def get_erp_organisation_roles(self):
+        """ 
+        """
+        return self._erp_organisation_roles
+
+    def set_erp_organisation_roles(self, value):
+        for x in self._erp_organisation_roles:
+            x._document = None
+        for y in value:
+            y._document = self
+        self._erp_organisation_roles = value
+            
+    erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
+    
+    def add_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._document = self
+            self._erp_organisation_roles.append(obj)
+        
+    def remove_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._document = None
+            self._erp_organisation_roles.remove(obj)
 
     # <<< document
     # @generated
@@ -448,20 +1277,35 @@ class Document(IdentifiedObject):
         self.category = category
         self.doc_status = doc_status
         self.status = status
+        self._from_document_roles = []
         self.from_document_roles = from_document_roles
+        self._schedule_parameter_infos = []
         self.schedule_parameter_infos = schedule_parameter_infos
+        self._change_items = []
         self.change_items = change_items
+        self._network_data_sets = []
         self.network_data_sets = network_data_sets
+        self._activity_records = []
         self.activity_records = activity_records
+        self._power_system_resource_roles = []
         self.power_system_resource_roles = power_system_resource_roles
+        self._location_roles = []
         self.location_roles = location_roles
+        self._change_sets = []
         self.change_sets = change_sets
+        self._erp_person_roles = []
         self.erp_person_roles = erp_person_roles
+        self._asset_roles = []
         self.asset_roles = asset_roles
+        self._scheduled_events = []
         self.scheduled_events = scheduled_events
+        self._electronic_address = None
         self.electronic_address = electronic_address
+        self._measurements = []
         self.measurements = measurements
+        self._to_document_roles = []
         self.to_document_roles = to_document_roles
+        self._erp_organisation_roles = []
         self.erp_organisation_roles = erp_organisation_roles
 
         super(Document, self).__init__(**kw_args)
@@ -492,22 +1336,118 @@ class ElectronicAddress(IdentifiedObject):
     # Status of this electronic address.
     status = None
 
-    # Organisation owning this electronic address.
-    organisation = None
+    def get_organisation(self):
+        """ Organisation owning this electronic address.
+        """
+        return self._organisation
 
-    # All locations having this electronic address.
+    def set_organisation(self, value):
+        if self._organisation is not None:
+            filtered = [x for x in self.organisation.electronic_addresses if x != self]
+            self._organisation._electronic_addresses = filtered
+            
+        self._organisation = value
+        if self._organisation is not None:
+            self._organisation._electronic_addresses.append(self)
+
+    organisation = property(get_organisation, set_organisation)
+
     locations = []
+    
+    def add_locations(self, *locations):
+        for obj in locations:
+	        self._locations.append(obj)
+        
+    def remove_locations(self, *locations):
+        for obj in locations:
+	        self._locations.remove(obj)
 
-    document = None
+    def get_document(self):
+        """ 
+        """
+        return self._document
 
-    cashier = None
+    def set_document(self, value):
+        if self._document is not None:
+            self._document._electronic_address = None
+            
+        self._document = value
+        if self._document is not None:
+            self._document._electronic_address = self
+            
+    document = property(get_document, set_document)
 
-    # Asset owning this electronic address.
-    asset = None
+    def get_cashier(self):
+        """ 
+        """
+        return self._cashier
 
-    erp_telephone_numbers = []
+    def set_cashier(self, value):
+        if self._cashier is not None:
+            filtered = [x for x in self.cashier.electronic_addresses if x != self]
+            self._cashier._electronic_addresses = filtered
+            
+        self._cashier = value
+        if self._cashier is not None:
+            self._cashier._electronic_addresses.append(self)
 
-    erp_person = None
+    cashier = property(get_cashier, set_cashier)
+
+    def get_asset(self):
+        """ Asset owning this electronic address.
+        """
+        return self._asset
+
+    def set_asset(self, value):
+        if self._asset is not None:
+            filtered = [x for x in self.asset.electronic_addresses if x != self]
+            self._asset._electronic_addresses = filtered
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._electronic_addresses.append(self)
+
+    asset = property(get_asset, set_asset)
+
+    def get_erp_telephone_numbers(self):
+        """ 
+        """
+        return self._erp_telephone_numbers
+
+    def set_erp_telephone_numbers(self, value):
+        for x in self._erp_telephone_numbers:
+            x._electronic_address = None
+        for y in value:
+            y._electronic_address = self
+        self._erp_telephone_numbers = value
+            
+    erp_telephone_numbers = property(get_erp_telephone_numbers, set_erp_telephone_numbers)
+    
+    def add_erp_telephone_numbers(self, *erp_telephone_numbers):
+        for obj in erp_telephone_numbers:
+            obj._electronic_address = self
+            self._erp_telephone_numbers.append(obj)
+        
+    def remove_erp_telephone_numbers(self, *erp_telephone_numbers):
+        for obj in erp_telephone_numbers:
+            obj._electronic_address = None
+            self._erp_telephone_numbers.remove(obj)
+
+    def get_erp_person(self):
+        """ 
+        """
+        return self._erp_person
+
+    def set_erp_person(self, value):
+        if self._erp_person is not None:
+            filtered = [x for x in self.erp_person.electronic_addresses if x != self]
+            self._erp_person._electronic_addresses = filtered
+            
+        self._erp_person = value
+        if self._erp_person is not None:
+            self._erp_person._electronic_addresses.append(self)
+
+    erp_person = property(get_erp_person, set_erp_person)
 
     # <<< electronic_address
     # @generated
@@ -521,12 +1461,19 @@ class ElectronicAddress(IdentifiedObject):
         self.user_id = user_id
         self.lan = lan
         self.status = status
+        self._organisation = None
         self.organisation = organisation
+        self._locations = []
         self.locations = locations
+        self._document = None
         self.document = document
+        self._cashier = None
         self.cashier = cashier
+        self._asset = None
         self.asset = asset
+        self._erp_telephone_numbers = []
         self.erp_telephone_numbers = erp_telephone_numbers
+        self._erp_person = None
         self.erp_person = erp_person
 
         super(ElectronicAddress, self).__init__(**kw_args)
@@ -622,14 +1569,72 @@ class Organisation(IdentifiedObject):
     postal_address = None
 
     business_roles = []
+    
+    def add_business_roles(self, *business_roles):
+        for obj in business_roles:
+	        self._business_roles.append(obj)
+        
+    def remove_business_roles(self, *business_roles):
+        for obj in business_roles:
+	        self._business_roles.remove(obj)
 
-    # All telephone numbers of this organisation.
-    telephone_numbers = []
+    def get_telephone_numbers(self):
+        """ All telephone numbers of this organisation.
+        """
+        return self._telephone_numbers
+
+    def set_telephone_numbers(self, value):
+        for x in self._telephone_numbers:
+            x._organisation = None
+        for y in value:
+            y._organisation = self
+        self._telephone_numbers = value
+            
+    telephone_numbers = property(get_telephone_numbers, set_telephone_numbers)
+    
+    def add_telephone_numbers(self, *telephone_numbers):
+        for obj in telephone_numbers:
+            obj._organisation = self
+            self._telephone_numbers.append(obj)
+        
+    def remove_telephone_numbers(self, *telephone_numbers):
+        for obj in telephone_numbers:
+            obj._organisation = None
+            self._telephone_numbers.remove(obj)
 
     market_roles = []
+    
+    def add_market_roles(self, *market_roles):
+        for obj in market_roles:
+	        self._market_roles.append(obj)
+        
+    def remove_market_roles(self, *market_roles):
+        for obj in market_roles:
+	        self._market_roles.remove(obj)
 
-    # All electronic addresses of this organisation.
-    electronic_addresses = []
+    def get_electronic_addresses(self):
+        """ All electronic addresses of this organisation.
+        """
+        return self._electronic_addresses
+
+    def set_electronic_addresses(self, value):
+        for x in self._electronic_addresses:
+            x._organisation = None
+        for y in value:
+            y._organisation = self
+        self._electronic_addresses = value
+            
+    electronic_addresses = property(get_electronic_addresses, set_electronic_addresses)
+    
+    def add_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+            obj._organisation = self
+            self._electronic_addresses.append(obj)
+        
+    def remove_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+            obj._organisation = None
+            self._electronic_addresses.remove(obj)
 
     # <<< organisation
     # @generated
@@ -638,9 +1643,13 @@ class Organisation(IdentifiedObject):
         """
         self.street_address = street_address
         self.postal_address = postal_address
+        self._business_roles = []
         self.business_roles = business_roles
+        self._telephone_numbers = []
         self.telephone_numbers = telephone_numbers
+        self._market_roles = []
         self.market_roles = market_roles
+        self._electronic_addresses = []
         self.electronic_addresses = electronic_addresses
 
         super(Organisation, self).__init__(**kw_args)
@@ -665,10 +1674,45 @@ class TimePoint(IdentifiedObject):
     # Interval defining the window of time that this time point is valid (for example, seasonal, only on weekends, not on weekends, only 8:00 to 5:00, etc.).
     window = None
 
-    scheduled_events = []
+    def get_scheduled_events(self):
+        """ 
+        """
+        return self._scheduled_events
 
-    # Time schedule owning this time point.
-    time_schedule = None
+    def set_scheduled_events(self, value):
+        for x in self._scheduled_events:
+            x._time_point = None
+        for y in value:
+            y._time_point = self
+        self._scheduled_events = value
+            
+    scheduled_events = property(get_scheduled_events, set_scheduled_events)
+    
+    def add_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+            obj._time_point = self
+            self._scheduled_events.append(obj)
+        
+    def remove_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+            obj._time_point = None
+            self._scheduled_events.remove(obj)
+
+    def get_time_schedule(self):
+        """ Time schedule owning this time point.
+        """
+        return self._time_schedule
+
+    def set_time_schedule(self, value):
+        if self._time_schedule is not None:
+            filtered = [x for x in self.time_schedule.time_points if x != self]
+            self._time_schedule._time_points = filtered
+            
+        self._time_schedule = value
+        if self._time_schedule is not None:
+            self._time_schedule._time_points.append(self)
+
+    time_schedule = property(get_time_schedule, set_time_schedule)
 
     # <<< time_point
     # @generated
@@ -680,7 +1724,9 @@ class TimePoint(IdentifiedObject):
         self.relative_time_interval = relative_time_interval
         self.status = status
         self.window = window
+        self._scheduled_events = []
         self.scheduled_events = scheduled_events
+        self._time_schedule = None
         self.time_schedule = time_schedule
 
         super(TimePoint, self).__init__(**kw_args)
@@ -758,8 +1804,29 @@ class TimeSchedule(Document):
     # Schedule date and time interval.
     schedule_interval = None
 
-    # Sequence of time points belonging to this time schedule.
-    time_points = []
+    def get_time_points(self):
+        """ Sequence of time points belonging to this time schedule.
+        """
+        return self._time_points
+
+    def set_time_points(self, value):
+        for x in self._time_points:
+            x._time_schedule = None
+        for y in value:
+            y._time_schedule = self
+        self._time_points = value
+            
+    time_points = property(get_time_points, set_time_points)
+    
+    def add_time_points(self, *time_points):
+        for obj in time_points:
+            obj._time_schedule = self
+            self._time_points.append(obj)
+        
+    def remove_time_points(self, *time_points):
+        for obj in time_points:
+            obj._time_schedule = None
+            self._time_points.remove(obj)
 
     # <<< time_schedule
     # @generated
@@ -771,6 +1838,7 @@ class TimeSchedule(Document):
         self.offset = offset
         self.recurrence_period = recurrence_period
         self.schedule_interval = schedule_interval
+        self._time_points = []
         self.time_points = time_points
 
         super(TimeSchedule, self).__init__(**kw_args)

@@ -18,8 +18,15 @@ class SteamSupply(PowerSystemResource):
     # Rating of steam supply 
     steam_supply_rating = 0.0
 
-    # Steam turbines may have steam supplied by a steam supply
     steam_turbines = []
+    
+    def add_steam_turbines(self, *steam_turbines):
+        for obj in steam_turbines:
+	        self._steam_turbines.append(obj)
+        
+    def remove_steam_turbines(self, *steam_turbines):
+        for obj in steam_turbines:
+	        self._steam_turbines.remove(obj)
 
     # <<< steam_supply
     # @generated
@@ -27,6 +34,7 @@ class SteamSupply(PowerSystemResource):
         """ Initialises a new 'SteamSupply' instance.
         """
         self.steam_supply_rating = steam_supply_rating
+        self._steam_turbines = []
         self.steam_turbines = steam_turbines
 
         super(SteamSupply, self).__init__(**kw_args)
@@ -39,8 +47,15 @@ class PrimeMover(PowerSystemResource):
     # Rating of prime mover 
     prime_mover_rating = 0.0
 
-    # Synchronous machines this Prime mover drives.
     synchronous_machines = []
+    
+    def add_synchronous_machines(self, *synchronous_machines):
+        for obj in synchronous_machines:
+	        self._synchronous_machines.append(obj)
+        
+    def remove_synchronous_machines(self, *synchronous_machines):
+        for obj in synchronous_machines:
+	        self._synchronous_machines.remove(obj)
 
     # <<< prime_mover
     # @generated
@@ -48,6 +63,7 @@ class PrimeMover(PowerSystemResource):
         """ Initialises a new 'PrimeMover' instance.
         """
         self.prime_mover_rating = prime_mover_rating
+        self._synchronous_machines = []
         self.synchronous_machines = synchronous_machines
 
         super(PrimeMover, self).__init__(**kw_args)
@@ -57,14 +73,27 @@ class PrimeMover(PowerSystemResource):
 class CTTempActivePowerCurve(Curve):
     """ Relationship between the combustion turbine's power output rating in gross active power (X-axis) and the ambient air temperature (Y-axis)
     """
-    # A combustion turbine may have an active power versus ambient temperature relationship
-    combustion_turbine = None
+    def get_combustion_turbine(self):
+        """ A combustion turbine may have an active power versus ambient temperature relationship
+        """
+        return self._combustion_turbine
+
+    def set_combustion_turbine(self, value):
+        if self._combustion_turbine is not None:
+            self._combustion_turbine._cttemp_active_power_curve = None
+            
+        self._combustion_turbine = value
+        if self._combustion_turbine is not None:
+            self._combustion_turbine._cttemp_active_power_curve = self
+            
+    combustion_turbine = property(get_combustion_turbine, set_combustion_turbine)
 
     # <<< cttemp_active_power_curve
     # @generated
     def __init__(self, combustion_turbine=None, **kw_args):
         """ Initialises a new 'CTTempActivePowerCurve' instance.
         """
+        self._combustion_turbine = None
         self.combustion_turbine = combustion_turbine
 
         super(CTTempActivePowerCurve, self).__init__(**kw_args)
@@ -462,14 +491,51 @@ class CombustionTurbine(PrimeMover):
     # Off-nominal frequency effect on turbine auxiliaries. Per unit reduction in auxiliary active power consumption versus per unit reduction in frequency (from rated frequency). 
     aux_power_versus_frequency = ''
 
-    # A CAES air compressor is driven by combustion turbine
-    air_compressor = None
+    def get_air_compressor(self):
+        """ A CAES air compressor is driven by combustion turbine
+        """
+        return self._air_compressor
 
-    # A combustion turbine may have a heat recovery boiler for making steam
-    heat_recovery_boiler = None
+    def set_air_compressor(self, value):
+        if self._air_compressor is not None:
+            self._air_compressor._combustion_turbine = None
+            
+        self._air_compressor = value
+        if self._air_compressor is not None:
+            self._air_compressor._combustion_turbine = self
+            
+    air_compressor = property(get_air_compressor, set_air_compressor)
 
-    # A combustion turbine may have an active power versus ambient temperature relationship
-    cttemp_active_power_curve = None
+    def get_heat_recovery_boiler(self):
+        """ A combustion turbine may have a heat recovery boiler for making steam
+        """
+        return self._heat_recovery_boiler
+
+    def set_heat_recovery_boiler(self, value):
+        if self._heat_recovery_boiler is not None:
+            filtered = [x for x in self.heat_recovery_boiler.combustion_turbines if x != self]
+            self._heat_recovery_boiler._combustion_turbines = filtered
+            
+        self._heat_recovery_boiler = value
+        if self._heat_recovery_boiler is not None:
+            self._heat_recovery_boiler._combustion_turbines.append(self)
+
+    heat_recovery_boiler = property(get_heat_recovery_boiler, set_heat_recovery_boiler)
+
+    def get_cttemp_active_power_curve(self):
+        """ A combustion turbine may have an active power versus ambient temperature relationship
+        """
+        return self._cttemp_active_power_curve
+
+    def set_cttemp_active_power_curve(self, value):
+        if self._cttemp_active_power_curve is not None:
+            self._cttemp_active_power_curve._combustion_turbine = None
+            
+        self._cttemp_active_power_curve = value
+        if self._cttemp_active_power_curve is not None:
+            self._cttemp_active_power_curve._combustion_turbine = self
+            
+    cttemp_active_power_curve = property(get_cttemp_active_power_curve, set_cttemp_active_power_curve)
 
     # <<< combustion_turbine
     # @generated
@@ -484,8 +550,11 @@ class CombustionTurbine(PrimeMover):
         self.ambient_temp = ambient_temp
         self.heat_recovery_flag = heat_recovery_flag
         self.aux_power_versus_frequency = aux_power_versus_frequency
+        self._air_compressor = None
         self.air_compressor = air_compressor
+        self._heat_recovery_boiler = None
         self.heat_recovery_boiler = heat_recovery_boiler
+        self._cttemp_active_power_curve = None
         self.cttemp_active_power_curve = cttemp_active_power_curve
 
         super(CombustionTurbine, self).__init__(**kw_args)
@@ -545,8 +614,15 @@ class SteamTurbine(PrimeMover):
     # Fraction Of Power From Shaft 2 Intermediate Pressure Turbine output 
     shaft2_power_ip = 0.0
 
-    # Steam turbines may have steam supplied by a steam supply
     steam_supplys = []
+    
+    def add_steam_supplys(self, *steam_supplys):
+        for obj in steam_supplys:
+	        self._steam_supplys.append(obj)
+        
+    def remove_steam_supplys(self, *steam_supplys):
+        for obj in steam_supplys:
+	        self._steam_supplys.remove(obj)
 
     # <<< steam_turbine
     # @generated
@@ -565,6 +641,7 @@ class SteamTurbine(PrimeMover):
         self.shaft1_power_lp2 = shaft1_power_lp2
         self.reheater2_tc = reheater2_tc
         self.shaft2_power_ip = shaft2_power_ip
+        self._steam_supplys = []
         self.steam_supplys = steam_supplys
 
         super(SteamTurbine, self).__init__(**kw_args)
@@ -608,8 +685,29 @@ class HeatRecoveryBoiler(FossilSteamSupply):
     # The steam supply rating in kilopounds per hour, if dual pressure boiler 
     steam_supply_rating2 = 0.0
 
-    # A combustion turbine may have a heat recovery boiler for making steam
-    combustion_turbines = []
+    def get_combustion_turbines(self):
+        """ A combustion turbine may have a heat recovery boiler for making steam
+        """
+        return self._combustion_turbines
+
+    def set_combustion_turbines(self, value):
+        for x in self._combustion_turbines:
+            x._heat_recovery_boiler = None
+        for y in value:
+            y._heat_recovery_boiler = self
+        self._combustion_turbines = value
+            
+    combustion_turbines = property(get_combustion_turbines, set_combustion_turbines)
+    
+    def add_combustion_turbines(self, *combustion_turbines):
+        for obj in combustion_turbines:
+            obj._heat_recovery_boiler = self
+            self._combustion_turbines.append(obj)
+        
+    def remove_combustion_turbines(self, *combustion_turbines):
+        for obj in combustion_turbines:
+            obj._heat_recovery_boiler = None
+            self._combustion_turbines.remove(obj)
 
     # <<< heat_recovery_boiler
     # @generated
@@ -617,6 +715,7 @@ class HeatRecoveryBoiler(FossilSteamSupply):
         """ Initialises a new 'HeatRecoveryBoiler' instance.
         """
         self.steam_supply_rating2 = steam_supply_rating2
+        self._combustion_turbines = []
         self.combustion_turbines = combustion_turbines
 
         super(HeatRecoveryBoiler, self).__init__(**kw_args)

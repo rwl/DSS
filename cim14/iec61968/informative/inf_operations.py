@@ -42,16 +42,45 @@ class OperationalRestriction(Document):
 class ErpPersonScheduleStepRole(Role):
     """ Roles played between Persons and Schedule Steps.
     """
-    switching_step = None
+    def get_switching_step(self):
+        """ 
+        """
+        return self._switching_step
 
-    erp_person = None
+    def set_switching_step(self, value):
+        if self._switching_step is not None:
+            self._switching_step._erp_person_role = None
+            
+        self._switching_step = value
+        if self._switching_step is not None:
+            self._switching_step._erp_person_role = self
+            
+    switching_step = property(get_switching_step, set_switching_step)
+
+    def get_erp_person(self):
+        """ 
+        """
+        return self._erp_person
+
+    def set_erp_person(self, value):
+        if self._erp_person is not None:
+            filtered = [x for x in self.erp_person.switching_step_roles if x != self]
+            self._erp_person._switching_step_roles = filtered
+            
+        self._erp_person = value
+        if self._erp_person is not None:
+            self._erp_person._switching_step_roles.append(self)
+
+    erp_person = property(get_erp_person, set_erp_person)
 
     # <<< erp_person_schedule_step_role
     # @generated
     def __init__(self, switching_step=None, erp_person=None, **kw_args):
         """ Initialises a new 'ErpPersonScheduleStepRole' instance.
         """
+        self._switching_step = None
         self.switching_step = switching_step
+        self._erp_person = None
         self.erp_person = erp_person
 
         super(ErpPersonScheduleStepRole, self).__init__(**kw_args)
@@ -73,11 +102,36 @@ class OutageReport(Document):
     # Total outage duration. 
     outage_duration = ''
 
-    # reference to related document
-    outage_record = None
+    def get_outage_record(self):
+        """ reference to related document
+        """
+        return self._outage_record
 
-    # OutageHistory of a customer, which may include this OutageReport.
-    outage_history = None
+    def set_outage_record(self, value):
+        if self._outage_record is not None:
+            self._outage_record._outage_report = None
+            
+        self._outage_record = value
+        if self._outage_record is not None:
+            self._outage_record._outage_report = self
+            
+    outage_record = property(get_outage_record, set_outage_record)
+
+    def get_outage_history(self):
+        """ OutageHistory of a customer, which may include this OutageReport.
+        """
+        return self._outage_history
+
+    def set_outage_history(self, value):
+        if self._outage_history is not None:
+            filtered = [x for x in self.outage_history.outage_reports if x != self]
+            self._outage_history._outage_reports = filtered
+            
+        self._outage_history = value
+        if self._outage_history is not None:
+            self._outage_history._outage_reports.append(self)
+
+    outage_history = property(get_outage_history, set_outage_history)
 
     # <<< outage_report
     # @generated
@@ -88,7 +142,9 @@ class OutageReport(Document):
         self.average_cml = average_cml
         self.customer_count = customer_count
         self.outage_duration = outage_duration
+        self._outage_record = None
         self.outage_record = outage_record
+        self._outage_history = None
         self.outage_history = outage_history
 
         super(OutageReport, self).__init__(**kw_args)
@@ -102,6 +158,14 @@ class IncidentCode(IdentifiedObject):
     sub_code = ''
 
     incident_records = []
+    
+    def add_incident_records(self, *incident_records):
+        for obj in incident_records:
+	        self._incident_records.append(obj)
+        
+    def remove_incident_records(self, *incident_records):
+        for obj in incident_records:
+	        self._incident_records.remove(obj)
 
     # <<< incident_code
     # @generated
@@ -109,6 +173,7 @@ class IncidentCode(IdentifiedObject):
         """ Initialises a new 'IncidentCode' instance.
         """
         self.sub_code = sub_code
+        self._incident_records = []
         self.incident_records = incident_records
 
         super(IncidentCode, self).__init__(**kw_args)
@@ -143,8 +208,24 @@ class OutageCode(IdentifiedObject):
     sub_code = ''
 
     outage_records = []
+    
+    def add_outage_records(self, *outage_records):
+        for obj in outage_records:
+	        self._outage_records.append(obj)
+        
+    def remove_outage_records(self, *outage_records):
+        for obj in outage_records:
+	        self._outage_records.remove(obj)
 
     outage_steps = []
+    
+    def add_outage_steps(self, *outage_steps):
+        for obj in outage_steps:
+	        self._outage_steps.append(obj)
+        
+    def remove_outage_steps(self, *outage_steps):
+        for obj in outage_steps:
+	        self._outage_steps.remove(obj)
 
     # <<< outage_code
     # @generated
@@ -152,7 +233,9 @@ class OutageCode(IdentifiedObject):
         """ Initialises a new 'OutageCode' instance.
         """
         self.sub_code = sub_code
+        self._outage_records = []
         self.outage_records = outage_records
+        self._outage_steps = []
         self.outage_steps = outage_steps
 
         super(OutageCode, self).__init__(**kw_args)
@@ -168,19 +251,88 @@ class NetworkDataSet(IdentifiedObject):
     status = None
 
     land_bases = []
+    
+    def add_land_bases(self, *land_bases):
+        for obj in land_bases:
+	        self._land_bases.append(obj)
+        
+    def remove_land_bases(self, *land_bases):
+        for obj in land_bases:
+	        self._land_bases.remove(obj)
 
     power_system_resources = []
+    
+    def add_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.append(obj)
+        
+    def remove_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.remove(obj)
 
     circuits = []
+    
+    def add_circuits(self, *circuits):
+        for obj in circuits:
+	        self._circuits.append(obj)
+        
+    def remove_circuits(self, *circuits):
+        for obj in circuits:
+	        self._circuits.remove(obj)
 
     documents = []
+    
+    def add_documents(self, *documents):
+        for obj in documents:
+	        self._documents.append(obj)
+        
+    def remove_documents(self, *documents):
+        for obj in documents:
+	        self._documents.remove(obj)
 
     change_sets = []
+    
+    def add_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.append(obj)
+        
+    def remove_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.remove(obj)
 
-    # A NetworkDataSet may contain sections of circuits (vs. whole circuits).
     circuit_sections = []
+    
+    def add_circuit_sections(self, *circuit_sections):
+        for obj in circuit_sections:
+	        self._circuit_sections.append(obj)
+        
+    def remove_circuit_sections(self, *circuit_sections):
+        for obj in circuit_sections:
+	        self._circuit_sections.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._network_data_set = None
+        for y in value:
+            y._network_data_set = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._network_data_set = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._network_data_set = None
+            self._change_items.remove(obj)
 
     # <<< network_data_set
     # @generated
@@ -189,12 +341,19 @@ class NetworkDataSet(IdentifiedObject):
         """
         self.category = category
         self.status = status
+        self._land_bases = []
         self.land_bases = land_bases
+        self._power_system_resources = []
         self.power_system_resources = power_system_resources
+        self._circuits = []
         self.circuits = circuits
+        self._documents = []
         self.documents = documents
+        self._change_sets = []
         self.change_sets = change_sets
+        self._circuit_sections = []
         self.circuit_sections = circuit_sections
+        self._change_items = []
         self.change_items = change_items
 
         super(NetworkDataSet, self).__init__(**kw_args)
@@ -205,15 +364,33 @@ class LandBase(Document):
     """ Land base data.
     """
     change_sets = []
+    
+    def add_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.append(obj)
+        
+    def remove_change_sets(self, *change_sets):
+        for obj in change_sets:
+	        self._change_sets.remove(obj)
 
     network_data_sets = []
+    
+    def add_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.append(obj)
+        
+    def remove_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.remove(obj)
 
     # <<< land_base
     # @generated
     def __init__(self, change_sets=[], network_data_sets=[], **kw_args):
         """ Initialises a new 'LandBase' instance.
         """
+        self._change_sets = []
         self.change_sets = change_sets
+        self._network_data_sets = []
         self.network_data_sets = network_data_sets
 
         super(LandBase, self).__init__(**kw_args)
@@ -226,10 +403,53 @@ class PlannedOutage(Document):
     # Kind of outage. Values are: "fixed", "forced", "flexible"
     kind = 'fixed'
 
-    outage_schedules = []
+    def get_outage_schedules(self):
+        """ 
+        """
+        return self._outage_schedules
 
-    # All customers affected by this work. Derived from WorkOrder.connectedCustomers
-    customer_datas = []
+    def set_outage_schedules(self, value):
+        for x in self._outage_schedules:
+            x._planned_outage = None
+        for y in value:
+            y._planned_outage = self
+        self._outage_schedules = value
+            
+    outage_schedules = property(get_outage_schedules, set_outage_schedules)
+    
+    def add_outage_schedules(self, *outage_schedules):
+        for obj in outage_schedules:
+            obj._planned_outage = self
+            self._outage_schedules.append(obj)
+        
+    def remove_outage_schedules(self, *outage_schedules):
+        for obj in outage_schedules:
+            obj._planned_outage = None
+            self._outage_schedules.remove(obj)
+
+    def get_customer_datas(self):
+        """ All customers affected by this work. Derived from WorkOrder.connectedCustomers
+        """
+        return self._customer_datas
+
+    def set_customer_datas(self, value):
+        for x in self._customer_datas:
+            x._planned_outage = None
+        for y in value:
+            y._planned_outage = self
+        self._customer_datas = value
+            
+    customer_datas = property(get_customer_datas, set_customer_datas)
+    
+    def add_customer_datas(self, *customer_datas):
+        for obj in customer_datas:
+            obj._planned_outage = self
+            self._customer_datas.append(obj)
+        
+    def remove_customer_datas(self, *customer_datas):
+        for obj in customer_datas:
+            obj._planned_outage = None
+            self._customer_datas.remove(obj)
 
     # <<< planned_outage
     # @generated
@@ -237,7 +457,9 @@ class PlannedOutage(Document):
         """ Initialises a new 'PlannedOutage' instance.
         """
         self.kind = kind
+        self._outage_schedules = []
         self.outage_schedules = outage_schedules
+        self._customer_datas = []
         self.customer_datas = customer_datas
 
         super(PlannedOutage, self).__init__(**kw_args)
@@ -251,16 +473,98 @@ class CircuitSection(IdentifiedObject):
     connection_kind = 'nominally_connected'
 
     power_system_resources = []
+    
+    def add_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.append(obj)
+        
+    def remove_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.remove(obj)
 
-    member_of_circuit_section = None
+    def get_member_of_circuit_section(self):
+        """ 
+        """
+        return self._member_of_circuit_section
 
-    linear_conductors = []
+    def set_member_of_circuit_section(self, value):
+        if self._member_of_circuit_section is not None:
+            filtered = [x for x in self.member_of_circuit_section.contains_circuit_sections if x != self]
+            self._member_of_circuit_section._contains_circuit_sections = filtered
+            
+        self._member_of_circuit_section = value
+        if self._member_of_circuit_section is not None:
+            self._member_of_circuit_section._contains_circuit_sections.append(self)
 
-    contains_circuit_sections = []
+    member_of_circuit_section = property(get_member_of_circuit_section, set_member_of_circuit_section)
+
+    def get_linear_conductors(self):
+        """ 
+        """
+        return self._linear_conductors
+
+    def set_linear_conductors(self, value):
+        for x in self._linear_conductors:
+            x._circuit_section = None
+        for y in value:
+            y._circuit_section = self
+        self._linear_conductors = value
+            
+    linear_conductors = property(get_linear_conductors, set_linear_conductors)
+    
+    def add_linear_conductors(self, *linear_conductors):
+        for obj in linear_conductors:
+            obj._circuit_section = self
+            self._linear_conductors.append(obj)
+        
+    def remove_linear_conductors(self, *linear_conductors):
+        for obj in linear_conductors:
+            obj._circuit_section = None
+            self._linear_conductors.remove(obj)
+
+    def get_contains_circuit_sections(self):
+        """ 
+        """
+        return self._contains_circuit_sections
+
+    def set_contains_circuit_sections(self, value):
+        for x in self._contains_circuit_sections:
+            x._member_of_circuit_section = None
+        for y in value:
+            y._member_of_circuit_section = self
+        self._contains_circuit_sections = value
+            
+    contains_circuit_sections = property(get_contains_circuit_sections, set_contains_circuit_sections)
+    
+    def add_contains_circuit_sections(self, *contains_circuit_sections):
+        for obj in contains_circuit_sections:
+            obj._member_of_circuit_section = self
+            self._contains_circuit_sections.append(obj)
+        
+    def remove_contains_circuit_sections(self, *contains_circuit_sections):
+        for obj in contains_circuit_sections:
+            obj._member_of_circuit_section = None
+            self._contains_circuit_sections.remove(obj)
 
     network_data_sets = []
+    
+    def add_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.append(obj)
+        
+    def remove_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.remove(obj)
 
     circuits = []
+    
+    def add_circuits(self, *circuits):
+        for obj in circuits:
+	        self._circuits.append(obj)
+        
+    def remove_circuits(self, *circuits):
+        for obj in circuits:
+	        self._circuits.remove(obj)
 
     # <<< circuit_section
     # @generated
@@ -268,11 +572,17 @@ class CircuitSection(IdentifiedObject):
         """ Initialises a new 'CircuitSection' instance.
         """
         self.connection_kind = connection_kind
+        self._power_system_resources = []
         self.power_system_resources = power_system_resources
+        self._member_of_circuit_section = None
         self.member_of_circuit_section = member_of_circuit_section
+        self._linear_conductors = []
         self.linear_conductors = linear_conductors
+        self._contains_circuit_sections = []
         self.contains_circuit_sections = contains_circuit_sections
+        self._network_data_sets = []
         self.network_data_sets = network_data_sets
+        self._circuits = []
         self.circuits = circuits
 
         super(CircuitSection, self).__init__(**kw_args)
@@ -316,10 +626,46 @@ class TroubleTicket(Document):
     reporting_kind = 'letter'
 
     call_backs = []
+    
+    def add_call_backs(self, *call_backs):
+        for obj in call_backs:
+	        self._call_backs.append(obj)
+        
+    def remove_call_backs(self, *call_backs):
+        for obj in call_backs:
+	        self._call_backs.remove(obj)
 
-    customer_data = None
+    def get_customer_data(self):
+        """ 
+        """
+        return self._customer_data
 
-    incident_record = None
+    def set_customer_data(self, value):
+        if self._customer_data is not None:
+            filtered = [x for x in self.customer_data.trouble_tickets if x != self]
+            self._customer_data._trouble_tickets = filtered
+            
+        self._customer_data = value
+        if self._customer_data is not None:
+            self._customer_data._trouble_tickets.append(self)
+
+    customer_data = property(get_customer_data, set_customer_data)
+
+    def get_incident_record(self):
+        """ 
+        """
+        return self._incident_record
+
+    def set_incident_record(self, value):
+        if self._incident_record is not None:
+            filtered = [x for x in self.incident_record.trouble_tickets if x != self]
+            self._incident_record._trouble_tickets = filtered
+            
+        self._incident_record = value
+        if self._incident_record is not None:
+            self._incident_record._trouble_tickets.append(self)
+
+    incident_record = property(get_incident_record, set_incident_record)
 
     # <<< trouble_ticket
     # @generated
@@ -337,8 +683,11 @@ class TroubleTicket(Document):
         self.hazard_code = hazard_code
         self.call_back = call_back
         self.reporting_kind = reporting_kind
+        self._call_backs = []
         self.call_backs = call_backs
+        self._customer_data = None
         self.customer_data = customer_data
+        self._incident_record = None
         self.incident_record = incident_record
 
         super(TroubleTicket, self).__init__(**kw_args)
@@ -358,6 +707,14 @@ class OutageNotification(Document):
     expected_interruption_count = 0
 
     customer_datas = []
+    
+    def add_customer_datas(self, *customer_datas):
+        for obj in customer_datas:
+	        self._customer_datas.append(obj)
+        
+    def remove_customer_datas(self, *customer_datas):
+        for obj in customer_datas:
+	        self._customer_datas.remove(obj)
 
     # <<< outage_notification
     # @generated
@@ -367,6 +724,7 @@ class OutageNotification(Document):
         self.reason = reason
         self.duration = duration
         self.expected_interruption_count = expected_interruption_count
+        self._customer_datas = []
         self.customer_datas = customer_datas
 
         super(OutageNotification, self).__init__(**kw_args)
@@ -417,14 +775,65 @@ class OutageStep(IdentifiedObject):
     # Date and time interval between loss and restoration of power.
     no_power_interval = None
 
-    conducting_equipment_roles = []
+    def get_conducting_equipment_roles(self):
+        """ 
+        """
+        return self._conducting_equipment_roles
 
-    outage_record = None
+    def set_conducting_equipment_roles(self, value):
+        for x in self._conducting_equipment_roles:
+            x._outage_step = None
+        for y in value:
+            y._outage_step = self
+        self._conducting_equipment_roles = value
+            
+    conducting_equipment_roles = property(get_conducting_equipment_roles, set_conducting_equipment_roles)
+    
+    def add_conducting_equipment_roles(self, *conducting_equipment_roles):
+        for obj in conducting_equipment_roles:
+            obj._outage_step = self
+            self._conducting_equipment_roles.append(obj)
+        
+    def remove_conducting_equipment_roles(self, *conducting_equipment_roles):
+        for obj in conducting_equipment_roles:
+            obj._outage_step = None
+            self._conducting_equipment_roles.remove(obj)
 
-    # Multiple outage codes may apply to an outage step.
+    def get_outage_record(self):
+        """ 
+        """
+        return self._outage_record
+
+    def set_outage_record(self, value):
+        if self._outage_record is not None:
+            filtered = [x for x in self.outage_record.outage_steps if x != self]
+            self._outage_record._outage_steps = filtered
+            
+        self._outage_record = value
+        if self._outage_record is not None:
+            self._outage_record._outage_steps.append(self)
+
+    outage_record = property(get_outage_record, set_outage_record)
+
     outage_codes = []
+    
+    def add_outage_codes(self, *outage_codes):
+        for obj in outage_codes:
+	        self._outage_codes.append(obj)
+        
+    def remove_outage_codes(self, *outage_codes):
+        for obj in outage_codes:
+	        self._outage_codes.remove(obj)
 
     crews = []
+    
+    def add_crews(self, *crews):
+        for obj in crews:
+	        self._crews.append(obj)
+        
+    def remove_crews(self, *crews):
+        for obj in crews:
+	        self._crews.remove(obj)
 
     # <<< outage_step
     # @generated
@@ -445,9 +854,13 @@ class OutageStep(IdentifiedObject):
         self.total_cml = total_cml
         self.status = status
         self.no_power_interval = no_power_interval
+        self._conducting_equipment_roles = []
         self.conducting_equipment_roles = conducting_equipment_roles
+        self._outage_record = None
         self.outage_record = outage_record
+        self._outage_codes = []
         self.outage_codes = outage_codes
+        self._crews = []
         self.crews = crews
 
         super(OutageStep, self).__init__(**kw_args)
@@ -457,16 +870,46 @@ class OutageStep(IdentifiedObject):
 class OutageStepPsrRole(Role):
     """ Roles played between Power System Resources and Outage Steps. Examples roles include: normal supply, actual supply, interrupting device, restoration device.
     """
-    conducting_equipment = None
+    def get_conducting_equipment(self):
+        """ 
+        """
+        return self._conducting_equipment
 
-    outage_step = None
+    def set_conducting_equipment(self, value):
+        if self._conducting_equipment is not None:
+            filtered = [x for x in self.conducting_equipment.outage_step_roles if x != self]
+            self._conducting_equipment._outage_step_roles = filtered
+            
+        self._conducting_equipment = value
+        if self._conducting_equipment is not None:
+            self._conducting_equipment._outage_step_roles.append(self)
+
+    conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
+
+    def get_outage_step(self):
+        """ 
+        """
+        return self._outage_step
+
+    def set_outage_step(self, value):
+        if self._outage_step is not None:
+            filtered = [x for x in self.outage_step.conducting_equipment_roles if x != self]
+            self._outage_step._conducting_equipment_roles = filtered
+            
+        self._outage_step = value
+        if self._outage_step is not None:
+            self._outage_step._conducting_equipment_roles.append(self)
+
+    outage_step = property(get_outage_step, set_outage_step)
 
     # <<< outage_step_psr_role
     # @generated
     def __init__(self, conducting_equipment=None, outage_step=None, **kw_args):
         """ Initialises a new 'OutageStepPsrRole' instance.
         """
+        self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
+        self._outage_step = None
         self.outage_step = outage_step
 
         super(OutageStepPsrRole, self).__init__(**kw_args)
@@ -482,9 +925,39 @@ class IncidentRecord(Document):
     # Date and time first customer was impacted by the incident. 
     start_date_time = ''
 
-    trouble_tickets = []
+    def get_trouble_tickets(self):
+        """ 
+        """
+        return self._trouble_tickets
+
+    def set_trouble_tickets(self, value):
+        for x in self._trouble_tickets:
+            x._incident_record = None
+        for y in value:
+            y._incident_record = self
+        self._trouble_tickets = value
+            
+    trouble_tickets = property(get_trouble_tickets, set_trouble_tickets)
+    
+    def add_trouble_tickets(self, *trouble_tickets):
+        for obj in trouble_tickets:
+            obj._incident_record = self
+            self._trouble_tickets.append(obj)
+        
+    def remove_trouble_tickets(self, *trouble_tickets):
+        for obj in trouble_tickets:
+            obj._incident_record = None
+            self._trouble_tickets.remove(obj)
 
     incident_codes = []
+    
+    def add_incident_codes(self, *incident_codes):
+        for obj in incident_codes:
+	        self._incident_codes.append(obj)
+        
+    def remove_incident_codes(self, *incident_codes):
+        for obj in incident_codes:
+	        self._incident_codes.remove(obj)
 
     # <<< incident_record
     # @generated
@@ -493,7 +966,9 @@ class IncidentRecord(Document):
         """
         self.end_date_time = end_date_time
         self.start_date_time = start_date_time
+        self._trouble_tickets = []
         self.trouble_tickets = trouble_tickets
+        self._incident_codes = []
         self.incident_codes = incident_codes
 
         super(IncidentRecord, self).__init__(**kw_args)
@@ -512,12 +987,55 @@ class SwitchingSchedule(Document):
     # Completion date and time of switching. 
     end_date_time = ''
 
-    # All Crews executing this SwitchingSchedule.
     crews = []
+    
+    def add_crews(self, *crews):
+        for obj in crews:
+	        self._crews.append(obj)
+        
+    def remove_crews(self, *crews):
+        for obj in crews:
+	        self._crews.remove(obj)
 
-    schedule_steps = []
+    def get_schedule_steps(self):
+        """ 
+        """
+        return self._schedule_steps
 
-    work_task = None
+    def set_schedule_steps(self, value):
+        for x in self._schedule_steps:
+            x._switching_schedule = None
+        for y in value:
+            y._switching_schedule = self
+        self._schedule_steps = value
+            
+    schedule_steps = property(get_schedule_steps, set_schedule_steps)
+    
+    def add_schedule_steps(self, *schedule_steps):
+        for obj in schedule_steps:
+            obj._switching_schedule = self
+            self._schedule_steps.append(obj)
+        
+    def remove_schedule_steps(self, *schedule_steps):
+        for obj in schedule_steps:
+            obj._switching_schedule = None
+            self._schedule_steps.remove(obj)
+
+    def get_work_task(self):
+        """ 
+        """
+        return self._work_task
+
+    def set_work_task(self, value):
+        if self._work_task is not None:
+            filtered = [x for x in self.work_task.switching_schedules if x != self]
+            self._work_task._switching_schedules = filtered
+            
+        self._work_task = value
+        if self._work_task is not None:
+            self._work_task._switching_schedules.append(self)
+
+    work_task = property(get_work_task, set_work_task)
 
     # <<< switching_schedule
     # @generated
@@ -527,8 +1045,11 @@ class SwitchingSchedule(Document):
         self.reason = reason
         self.start_date_time = start_date_time
         self.end_date_time = end_date_time
+        self._crews = []
         self.crews = crews
+        self._schedule_steps = []
         self.schedule_steps = schedule_steps
+        self._work_task = None
         self.work_task = work_task
 
         super(SwitchingSchedule, self).__init__(**kw_args)
@@ -553,12 +1074,54 @@ class OutageRecord(Document):
     # Date and time restoration was completed for all customers impacted by this outage. 
     end_date_time = ''
 
-    outage_steps = []
+    def get_outage_steps(self):
+        """ 
+        """
+        return self._outage_steps
 
-    # Multiple outage codes may apply to an outage record.
+    def set_outage_steps(self, value):
+        for x in self._outage_steps:
+            x._outage_record = None
+        for y in value:
+            y._outage_record = self
+        self._outage_steps = value
+            
+    outage_steps = property(get_outage_steps, set_outage_steps)
+    
+    def add_outage_steps(self, *outage_steps):
+        for obj in outage_steps:
+            obj._outage_record = self
+            self._outage_steps.append(obj)
+        
+    def remove_outage_steps(self, *outage_steps):
+        for obj in outage_steps:
+            obj._outage_record = None
+            self._outage_steps.remove(obj)
+
     outage_codes = []
+    
+    def add_outage_codes(self, *outage_codes):
+        for obj in outage_codes:
+	        self._outage_codes.append(obj)
+        
+    def remove_outage_codes(self, *outage_codes):
+        for obj in outage_codes:
+	        self._outage_codes.remove(obj)
 
-    outage_report = None
+    def get_outage_report(self):
+        """ 
+        """
+        return self._outage_report
+
+    def set_outage_report(self, value):
+        if self._outage_report is not None:
+            self._outage_report._outage_record = None
+            
+        self._outage_report = value
+        if self._outage_report is not None:
+            self._outage_report._outage_record = self
+            
+    outage_report = property(get_outage_report, set_outage_report)
 
     # <<< outage_record
     # @generated
@@ -570,8 +1133,11 @@ class OutageRecord(Document):
         self.damage_code = damage_code
         self.is_planned = is_planned
         self.end_date_time = end_date_time
+        self._outage_steps = []
         self.outage_steps = outage_steps
+        self._outage_codes = []
         self.outage_codes = outage_codes
+        self._outage_report = None
         self.outage_report = outage_report
 
         super(OutageRecord, self).__init__(**kw_args)
@@ -588,10 +1154,34 @@ class Circuit(IdentifiedObject):
     connection_kind = 'nominally_connected'
 
     power_system_resources = []
+    
+    def add_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.append(obj)
+        
+    def remove_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.remove(obj)
 
     network_data_sets = []
+    
+    def add_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.append(obj)
+        
+    def remove_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.remove(obj)
 
     circuit_sections = []
+    
+    def add_circuit_sections(self, *circuit_sections):
+        for obj in circuit_sections:
+	        self._circuit_sections.append(obj)
+        
+    def remove_circuit_sections(self, *circuit_sections):
+        for obj in circuit_sections:
+	        self._circuit_sections.remove(obj)
 
     # <<< circuit
     # @generated
@@ -600,8 +1190,11 @@ class Circuit(IdentifiedObject):
         """
         self.rated_voltage = rated_voltage
         self.connection_kind = connection_kind
+        self._power_system_resources = []
         self.power_system_resources = power_system_resources
+        self._network_data_sets = []
         self.network_data_sets = network_data_sets
+        self._circuit_sections = []
         self.circuit_sections = circuit_sections
 
         super(Circuit, self).__init__(**kw_args)
@@ -614,12 +1207,58 @@ class ChangeSet(IdentifiedObject):
     status = None
 
     land_bases = []
+    
+    def add_land_bases(self, *land_bases):
+        for obj in land_bases:
+	        self._land_bases.append(obj)
+        
+    def remove_land_bases(self, *land_bases):
+        for obj in land_bases:
+	        self._land_bases.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._change_set = None
+        for y in value:
+            y._change_set = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._change_set = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._change_set = None
+            self._change_items.remove(obj)
 
     documents = []
+    
+    def add_documents(self, *documents):
+        for obj in documents:
+	        self._documents.append(obj)
+        
+    def remove_documents(self, *documents):
+        for obj in documents:
+	        self._documents.remove(obj)
 
     network_data_sets = []
+    
+    def add_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.append(obj)
+        
+    def remove_network_data_sets(self, *network_data_sets):
+        for obj in network_data_sets:
+	        self._network_data_sets.remove(obj)
 
     # <<< change_set
     # @generated
@@ -627,9 +1266,13 @@ class ChangeSet(IdentifiedObject):
         """ Initialises a new 'ChangeSet' instance.
         """
         self.status = status
+        self._land_bases = []
         self.land_bases = land_bases
+        self._change_items = []
         self.change_items = change_items
+        self._documents = []
         self.documents = documents
+        self._network_data_sets = []
         self.network_data_sets = network_data_sets
 
         super(ChangeSet, self).__init__(**kw_args)
@@ -639,16 +1282,46 @@ class ChangeSet(IdentifiedObject):
 class OrgPsrRole(Role):
     """ Roles played between Organisations and Power System Resources.
     """
-    erp_organisation = None
+    def get_erp_organisation(self):
+        """ 
+        """
+        return self._erp_organisation
 
-    power_system_resource = None
+    def set_erp_organisation(self, value):
+        if self._erp_organisation is not None:
+            filtered = [x for x in self.erp_organisation.power_system_resource_roles if x != self]
+            self._erp_organisation._power_system_resource_roles = filtered
+            
+        self._erp_organisation = value
+        if self._erp_organisation is not None:
+            self._erp_organisation._power_system_resource_roles.append(self)
+
+    erp_organisation = property(get_erp_organisation, set_erp_organisation)
+
+    def get_power_system_resource(self):
+        """ 
+        """
+        return self._power_system_resource
+
+    def set_power_system_resource(self, value):
+        if self._power_system_resource is not None:
+            filtered = [x for x in self.power_system_resource.erp_organisation_roles if x != self]
+            self._power_system_resource._erp_organisation_roles = filtered
+            
+        self._power_system_resource = value
+        if self._power_system_resource is not None:
+            self._power_system_resource._erp_organisation_roles.append(self)
+
+    power_system_resource = property(get_power_system_resource, set_power_system_resource)
 
     # <<< org_psr_role
     # @generated
     def __init__(self, erp_organisation=None, power_system_resource=None, **kw_args):
         """ Initialises a new 'OrgPsrRole' instance.
         """
+        self._erp_organisation = None
         self.erp_organisation = erp_organisation
+        self._power_system_resource = None
         self.power_system_resource = power_system_resource
 
         super(OrgPsrRole, self).__init__(**kw_args)
@@ -675,11 +1348,49 @@ class CallBack(IdentifiedObject):
 
     status = None
 
-    appointments = []
+    def get_appointments(self):
+        """ 
+        """
+        return self._appointments
+
+    def set_appointments(self, value):
+        for x in self._appointments:
+            x._call_back = None
+        for y in value:
+            y._call_back = self
+        self._appointments = value
+            
+    appointments = property(get_appointments, set_appointments)
+    
+    def add_appointments(self, *appointments):
+        for obj in appointments:
+            obj._call_back = self
+            self._appointments.append(obj)
+        
+    def remove_appointments(self, *appointments):
+        for obj in appointments:
+            obj._call_back = None
+            self._appointments.remove(obj)
 
     erp_persons = []
+    
+    def add_erp_persons(self, *erp_persons):
+        for obj in erp_persons:
+	        self._erp_persons.append(obj)
+        
+    def remove_erp_persons(self, *erp_persons):
+        for obj in erp_persons:
+	        self._erp_persons.remove(obj)
 
     trouble_tickets = []
+    
+    def add_trouble_tickets(self, *trouble_tickets):
+        for obj in trouble_tickets:
+	        self._trouble_tickets.append(obj)
+        
+    def remove_trouble_tickets(self, *trouble_tickets):
+        for obj in trouble_tickets:
+	        self._trouble_tickets.remove(obj)
 
     # <<< call_back
     # @generated
@@ -692,8 +1403,11 @@ class CallBack(IdentifiedObject):
         self.problem_info = problem_info
         self.date_time = date_time
         self.status = status
+        self._appointments = []
         self.appointments = appointments
+        self._erp_persons = []
         self.erp_persons = erp_persons
+        self._trouble_tickets = []
         self.trouble_tickets = trouble_tickets
 
         super(CallBack, self).__init__(**kw_args)
@@ -721,13 +1435,62 @@ class SwitchingStep(IdentifiedObject):
     # Status of this SwitchingStep. Values are: "confirmed", "skipped", "proposed", "instructed", "aborted"
     status_kind = 'confirmed'
 
-    erp_person_role = None
+    def get_erp_person_role(self):
+        """ 
+        """
+        return self._erp_person_role
+
+    def set_erp_person_role(self, value):
+        if self._erp_person_role is not None:
+            self._erp_person_role._switching_step = None
+            
+        self._erp_person_role = value
+        if self._erp_person_role is not None:
+            self._erp_person_role._switching_step = self
+            
+    erp_person_role = property(get_erp_person_role, set_erp_person_role)
 
     power_system_resources = []
+    
+    def add_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.append(obj)
+        
+    def remove_power_system_resources(self, *power_system_resources):
+        for obj in power_system_resources:
+	        self._power_system_resources.remove(obj)
 
-    switching_schedule = None
+    def get_switching_schedule(self):
+        """ 
+        """
+        return self._switching_schedule
 
-    safety_document = None
+    def set_switching_schedule(self, value):
+        if self._switching_schedule is not None:
+            filtered = [x for x in self.switching_schedule.schedule_steps if x != self]
+            self._switching_schedule._schedule_steps = filtered
+            
+        self._switching_schedule = value
+        if self._switching_schedule is not None:
+            self._switching_schedule._schedule_steps.append(self)
+
+    switching_schedule = property(get_switching_schedule, set_switching_schedule)
+
+    def get_safety_document(self):
+        """ 
+        """
+        return self._safety_document
+
+    def set_safety_document(self, value):
+        if self._safety_document is not None:
+            filtered = [x for x in self.safety_document.schedule_steps if x != self]
+            self._safety_document._schedule_steps = filtered
+            
+        self._safety_document = value
+        if self._safety_document is not None:
+            self._safety_document._schedule_steps.append(self)
+
+    safety_document = property(get_safety_document, set_safety_document)
 
     # <<< switching_step
     # @generated
@@ -740,9 +1503,13 @@ class SwitchingStep(IdentifiedObject):
         self.completed_date_time = completed_date_time
         self.required_control_action = required_control_action
         self.status_kind = status_kind
+        self._erp_person_role = None
         self.erp_person_role = erp_person_role
+        self._power_system_resources = []
         self.power_system_resources = power_system_resources
+        self._switching_schedule = None
         self.switching_schedule = switching_schedule
+        self._safety_document = None
         self.safety_document = safety_document
 
         super(SwitchingStep, self).__init__(**kw_args)
@@ -752,19 +1519,66 @@ class SwitchingStep(IdentifiedObject):
 class SafetyDocument(Document):
     """ Document used during the course of work on the electrical system for safety purposes. Note: ClearanceTag is a special case of a Safety Document.
     """
-    schedule_steps = []
+    def get_schedule_steps(self):
+        """ 
+        """
+        return self._schedule_steps
+
+    def set_schedule_steps(self, value):
+        for x in self._schedule_steps:
+            x._safety_document = None
+        for y in value:
+            y._safety_document = self
+        self._schedule_steps = value
+            
+    schedule_steps = property(get_schedule_steps, set_schedule_steps)
+    
+    def add_schedule_steps(self, *schedule_steps):
+        for obj in schedule_steps:
+            obj._safety_document = self
+            self._schedule_steps.append(obj)
+        
+    def remove_schedule_steps(self, *schedule_steps):
+        for obj in schedule_steps:
+            obj._safety_document = None
+            self._schedule_steps.remove(obj)
 
     clearance_tags = []
+    
+    def add_clearance_tags(self, *clearance_tags):
+        for obj in clearance_tags:
+	        self._clearance_tags.append(obj)
+        
+    def remove_clearance_tags(self, *clearance_tags):
+        for obj in clearance_tags:
+	        self._clearance_tags.remove(obj)
 
-    power_system_resource = None
+    def get_power_system_resource(self):
+        """ 
+        """
+        return self._power_system_resource
+
+    def set_power_system_resource(self, value):
+        if self._power_system_resource is not None:
+            filtered = [x for x in self.power_system_resource.safety_documents if x != self]
+            self._power_system_resource._safety_documents = filtered
+            
+        self._power_system_resource = value
+        if self._power_system_resource is not None:
+            self._power_system_resource._safety_documents.append(self)
+
+    power_system_resource = property(get_power_system_resource, set_power_system_resource)
 
     # <<< safety_document
     # @generated
     def __init__(self, schedule_steps=[], clearance_tags=[], power_system_resource=None, **kw_args):
         """ Initialises a new 'SafetyDocument' instance.
         """
+        self._schedule_steps = []
         self.schedule_steps = schedule_steps
+        self._clearance_tags = []
         self.clearance_tags = clearance_tags
+        self._power_system_resource = None
         self.power_system_resource = power_system_resource
 
         super(SafetyDocument, self).__init__(**kw_args)

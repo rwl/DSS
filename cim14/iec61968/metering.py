@@ -21,18 +21,46 @@ ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#IEC61968.Metering"
 class MeterServiceWork(Work):
     """ Work involving meters.
     """
-    # Old meter asset replaced by this work.
-    old_meter_asset = None
+    def get_old_meter_asset(self):
+        """ Old meter asset replaced by this work.
+        """
+        return self._old_meter_asset
 
-    # Meter asset on which this non-replacement work is performed.
-    meter_asset = None
+    def set_old_meter_asset(self, value):
+        if self._old_meter_asset is not None:
+            filtered = [x for x in self.old_meter_asset.meter_replacement_works if x != self]
+            self._old_meter_asset._meter_replacement_works = filtered
+            
+        self._old_meter_asset = value
+        if self._old_meter_asset is not None:
+            self._old_meter_asset._meter_replacement_works.append(self)
+
+    old_meter_asset = property(get_old_meter_asset, set_old_meter_asset)
+
+    def get_meter_asset(self):
+        """ Meter asset on which this non-replacement work is performed.
+        """
+        return self._meter_asset
+
+    def set_meter_asset(self, value):
+        if self._meter_asset is not None:
+            filtered = [x for x in self.meter_asset.meter_service_works if x != self]
+            self._meter_asset._meter_service_works = filtered
+            
+        self._meter_asset = value
+        if self._meter_asset is not None:
+            self._meter_asset._meter_service_works.append(self)
+
+    meter_asset = property(get_meter_asset, set_meter_asset)
 
     # <<< meter_service_work
     # @generated
     def __init__(self, old_meter_asset=None, meter_asset=None, **kw_args):
         """ Initialises a new 'MeterServiceWork' instance.
         """
+        self._old_meter_asset = None
         self.old_meter_asset = old_meter_asset
+        self._meter_asset = None
         self.meter_asset = meter_asset
 
         super(MeterServiceWork, self).__init__(**kw_args)
@@ -42,26 +70,76 @@ class MeterServiceWork(Work):
 class IntervalBlock(Element):
     """ Time sequence of Readings of the same ReadingType. Contained IntervalReadings may need conversion through the application of an offset and a scalar defined in associated Pending.
     """
-    # Meter reading containing this interval block.
-    meter_reading = None
+    def get_meter_reading(self):
+        """ Meter reading containing this interval block.
+        """
+        return self._meter_reading
 
-    # Pending conversion to apply to interval reading values contained by this block (after which the resulting reading type is different than the original because it reflects the conversion result).
-    pending = None
+    def set_meter_reading(self, value):
+        if self._meter_reading is not None:
+            filtered = [x for x in self.meter_reading.interval_blocks if x != self]
+            self._meter_reading._interval_blocks = filtered
+            
+        self._meter_reading = value
+        if self._meter_reading is not None:
+            self._meter_reading._interval_blocks.append(self)
 
-    # Type information for interval reading values contained in this block.
-    reading_type = None
+    meter_reading = property(get_meter_reading, set_meter_reading)
 
-    # Interval reading contained in this block.
+    def get_pending(self):
+        """ Pending conversion to apply to interval reading values contained by this block (after which the resulting reading type is different than the original because it reflects the conversion result).
+        """
+        return self._pending
+
+    def set_pending(self, value):
+        if self._pending is not None:
+            filtered = [x for x in self.pending.interval_blocks if x != self]
+            self._pending._interval_blocks = filtered
+            
+        self._pending = value
+        if self._pending is not None:
+            self._pending._interval_blocks.append(self)
+
+    pending = property(get_pending, set_pending)
+
+    def get_reading_type(self):
+        """ Type information for interval reading values contained in this block.
+        """
+        return self._reading_type
+
+    def set_reading_type(self, value):
+        if self._reading_type is not None:
+            filtered = [x for x in self.reading_type.interval_blocks if x != self]
+            self._reading_type._interval_blocks = filtered
+            
+        self._reading_type = value
+        if self._reading_type is not None:
+            self._reading_type._interval_blocks.append(self)
+
+    reading_type = property(get_reading_type, set_reading_type)
+
     interval_readings = []
+    
+    def add_interval_readings(self, *interval_readings):
+        for obj in interval_readings:
+	        self._interval_readings.append(obj)
+        
+    def remove_interval_readings(self, *interval_readings):
+        for obj in interval_readings:
+	        self._interval_readings.remove(obj)
 
     # <<< interval_block
     # @generated
     def __init__(self, meter_reading=None, pending=None, reading_type=None, interval_readings=[], **kw_args):
         """ Initialises a new 'IntervalBlock' instance.
         """
+        self._meter_reading = None
         self.meter_reading = meter_reading
+        self._pending = None
         self.pending = pending
+        self._reading_type = None
         self.reading_type = reading_type
+        self._interval_readings = []
         self.interval_readings = interval_readings
 
         super(IntervalBlock, self).__init__(**kw_args)
@@ -74,11 +152,37 @@ class ReadingQuality(Element):
     # Quality, to be specified if different than 'Good'. 
     quality = ''
 
-    # Interval reading value to which this quality applies.
-    interval_reading = None
+    def get_interval_reading(self):
+        """ Interval reading value to which this quality applies.
+        """
+        return self._interval_reading
 
-    # Reading value to which this quality applies.
-    reading = None
+    def set_interval_reading(self, value):
+        if self._interval_reading is not None:
+            filtered = [x for x in self.interval_reading.reading_qualities if x != self]
+            self._interval_reading._reading_qualities = filtered
+            
+        self._interval_reading = value
+        if self._interval_reading is not None:
+            self._interval_reading._reading_qualities.append(self)
+
+    interval_reading = property(get_interval_reading, set_interval_reading)
+
+    def get_reading(self):
+        """ Reading value to which this quality applies.
+        """
+        return self._reading
+
+    def set_reading(self, value):
+        if self._reading is not None:
+            filtered = [x for x in self.reading.reading_qualities if x != self]
+            self._reading._reading_qualities = filtered
+            
+        self._reading = value
+        if self._reading is not None:
+            self._reading._reading_qualities.append(self)
+
+    reading = property(get_reading, set_reading)
 
     # <<< reading_quality
     # @generated
@@ -86,7 +190,9 @@ class ReadingQuality(Element):
         """ Initialises a new 'ReadingQuality' instance.
         """
         self.quality = quality
+        self._interval_reading = None
         self.interval_reading = interval_reading
+        self._reading = None
         self.reading = reading
 
         super(ReadingQuality, self).__init__(**kw_args)
@@ -99,14 +205,55 @@ class EndDeviceGroup(IdentifiedObject):
     # Address of this end device group. 
     group_address = 0
 
-    # All end device assets this end device group refers to.
     end_device_assets = []
+    
+    def add_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+	        self._end_device_assets.append(obj)
+        
+    def remove_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+	        self._end_device_assets.remove(obj)
 
-    # All end device controls sending commands to this end device group.
-    end_device_controls = []
+    def get_end_device_controls(self):
+        """ All end device controls sending commands to this end device group.
+        """
+        return self._end_device_controls
 
-    # Demand response program for this group of end devices.
-    demand_response_program = None
+    def set_end_device_controls(self, value):
+        for x in self._end_device_controls:
+            x._end_device_group = None
+        for y in value:
+            y._end_device_group = self
+        self._end_device_controls = value
+            
+    end_device_controls = property(get_end_device_controls, set_end_device_controls)
+    
+    def add_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._end_device_group = self
+            self._end_device_controls.append(obj)
+        
+    def remove_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._end_device_group = None
+            self._end_device_controls.remove(obj)
+
+    def get_demand_response_program(self):
+        """ Demand response program for this group of end devices.
+        """
+        return self._demand_response_program
+
+    def set_demand_response_program(self, value):
+        if self._demand_response_program is not None:
+            filtered = [x for x in self.demand_response_program.end_device_groups if x != self]
+            self._demand_response_program._end_device_groups = filtered
+            
+        self._demand_response_program = value
+        if self._demand_response_program is not None:
+            self._demand_response_program._end_device_groups.append(self)
+
+    demand_response_program = property(get_demand_response_program, set_demand_response_program)
 
     # <<< end_device_group
     # @generated
@@ -114,8 +261,11 @@ class EndDeviceGroup(IdentifiedObject):
         """ Initialises a new 'EndDeviceGroup' instance.
         """
         self.group_address = group_address
+        self._end_device_assets = []
         self.end_device_assets = end_device_assets
+        self._end_device_controls = []
         self.end_device_controls = end_device_controls
+        self._demand_response_program = None
         self.demand_response_program = demand_response_program
 
         super(EndDeviceGroup, self).__init__(**kw_args)
@@ -131,11 +281,36 @@ class Register(IdentifiedObject):
     # Number of digits (dials on a mechanical meter) to the right of the decimal place. 
     right_digit_count = 0
 
-    # Device function metering quantities displayed by this register.
-    device_function = None
+    def get_device_function(self):
+        """ Device function metering quantities displayed by this register.
+        """
+        return self._device_function
 
-    # Reading type for values displayed by this register.
-    reading_type = None
+    def set_device_function(self, value):
+        if self._device_function is not None:
+            filtered = [x for x in self.device_function.registers if x != self]
+            self._device_function._registers = filtered
+            
+        self._device_function = value
+        if self._device_function is not None:
+            self._device_function._registers.append(self)
+
+    device_function = property(get_device_function, set_device_function)
+
+    def get_reading_type(self):
+        """ Reading type for values displayed by this register.
+        """
+        return self._reading_type
+
+    def set_reading_type(self, value):
+        if self._reading_type is not None:
+            self._reading_type._register = None
+            
+        self._reading_type = value
+        if self._reading_type is not None:
+            self._reading_type._register = self
+            
+    reading_type = property(get_reading_type, set_reading_type)
 
     # <<< register
     # @generated
@@ -144,7 +319,9 @@ class Register(IdentifiedObject):
         """
         self.left_digit_count = left_digit_count
         self.right_digit_count = right_digit_count
+        self._device_function = None
         self.device_function = device_function
+        self._reading_type = None
         self.reading_type = reading_type
 
         super(Register, self).__init__(**kw_args)
@@ -196,33 +373,163 @@ class ServiceDeliveryPoint(IdentifiedObject):
     # (optional for medium voltage connections) Reference to the low side terminal of a CT or PT that obtain readings from a medium or high voltage point. 
     ctpt_reference = 0
 
-    # All meter readings obtained from this service delivery point.
-    meter_readings = []
+    def get_meter_readings(self):
+        """ All meter readings obtained from this service delivery point.
+        """
+        return self._meter_readings
 
-    # All locations of this service delivery point.
+    def set_meter_readings(self, value):
+        for x in self._meter_readings:
+            x._service_delivery_point = None
+        for y in value:
+            y._service_delivery_point = self
+        self._meter_readings = value
+            
+    meter_readings = property(get_meter_readings, set_meter_readings)
+    
+    def add_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+            obj._service_delivery_point = self
+            self._meter_readings.append(obj)
+        
+    def remove_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+            obj._service_delivery_point = None
+            self._meter_readings.remove(obj)
+
     sdplocations = []
+    
+    def add_sdplocations(self, *sdplocations):
+        for obj in sdplocations:
+	        self._sdplocations.append(obj)
+        
+    def remove_sdplocations(self, *sdplocations):
+        for obj in sdplocations:
+	        self._sdplocations.remove(obj)
 
-    # Service category delivered by this service delivery point.
-    service_category = None
+    def get_service_category(self):
+        """ Service category delivered by this service delivery point.
+        """
+        return self._service_category
 
-    # Service location where the service delivered by this service delivery point is consumed.
-    service_location = None
+    def set_service_category(self, value):
+        if self._service_category is not None:
+            filtered = [x for x in self.service_category.service_delivery_points if x != self]
+            self._service_category._service_delivery_points = filtered
+            
+        self._service_category = value
+        if self._service_category is not None:
+            self._service_category._service_delivery_points.append(self)
 
-    # ServiceSupplier (Utility) utilising this service delivery point to deliver a service.
-    service_supplier = None
+    service_category = property(get_service_category, set_service_category)
 
-    # All pricing structures applicable to this service delivery point (with prepayment meter running as a stand-alone device, with no CustomerAgreement or Customer).
+    def get_service_location(self):
+        """ Service location where the service delivered by this service delivery point is consumed.
+        """
+        return self._service_location
+
+    def set_service_location(self, value):
+        if self._service_location is not None:
+            filtered = [x for x in self.service_location.service_delivery_points if x != self]
+            self._service_location._service_delivery_points = filtered
+            
+        self._service_location = value
+        if self._service_location is not None:
+            self._service_location._service_delivery_points.append(self)
+
+    service_location = property(get_service_location, set_service_location)
+
+    def get_service_supplier(self):
+        """ ServiceSupplier (Utility) utilising this service delivery point to deliver a service.
+        """
+        return self._service_supplier
+
+    def set_service_supplier(self, value):
+        if self._service_supplier is not None:
+            filtered = [x for x in self.service_supplier.service_delivery_points if x != self]
+            self._service_supplier._service_delivery_points = filtered
+            
+        self._service_supplier = value
+        if self._service_supplier is not None:
+            self._service_supplier._service_delivery_points.append(self)
+
+    service_supplier = property(get_service_supplier, set_service_supplier)
+
     pricing_structures = []
+    
+    def add_pricing_structures(self, *pricing_structures):
+        for obj in pricing_structures:
+	        self._pricing_structures.append(obj)
+        
+    def remove_pricing_structures(self, *pricing_structures):
+        for obj in pricing_structures:
+	        self._pricing_structures.remove(obj)
 
-    # All end device assets at this service delivery point.
-    end_device_assets = []
+    def get_end_device_assets(self):
+        """ All end device assets at this service delivery point.
+        """
+        return self._end_device_assets
+
+    def set_end_device_assets(self, value):
+        for x in self._end_device_assets:
+            x._service_delivery_point = None
+        for y in value:
+            y._service_delivery_point = self
+        self._end_device_assets = value
+            
+    end_device_assets = property(get_end_device_assets, set_end_device_assets)
+    
+    def add_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+            obj._service_delivery_point = self
+            self._end_device_assets.append(obj)
+        
+    def remove_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+            obj._service_delivery_point = None
+            self._end_device_assets.remove(obj)
 
     power_quality_pricings = []
+    
+    def add_power_quality_pricings(self, *power_quality_pricings):
+        for obj in power_quality_pricings:
+	        self._power_quality_pricings.append(obj)
+        
+    def remove_power_quality_pricings(self, *power_quality_pricings):
+        for obj in power_quality_pricings:
+	        self._power_quality_pricings.remove(obj)
 
-    # Customer agreement regulating this service delivery point.
-    customer_agreement = None
+    def get_customer_agreement(self):
+        """ Customer agreement regulating this service delivery point.
+        """
+        return self._customer_agreement
 
-    energy_consumer = None
+    def set_customer_agreement(self, value):
+        if self._customer_agreement is not None:
+            filtered = [x for x in self.customer_agreement.service_delivery_points if x != self]
+            self._customer_agreement._service_delivery_points = filtered
+            
+        self._customer_agreement = value
+        if self._customer_agreement is not None:
+            self._customer_agreement._service_delivery_points.append(self)
+
+    customer_agreement = property(get_customer_agreement, set_customer_agreement)
+
+    def get_energy_consumer(self):
+        """ 
+        """
+        return self._energy_consumer
+
+    def set_energy_consumer(self, value):
+        if self._energy_consumer is not None:
+            filtered = [x for x in self.energy_consumer.service_delivery_points if x != self]
+            self._energy_consumer._service_delivery_points = filtered
+            
+        self._energy_consumer = value
+        if self._energy_consumer is not None:
+            self._energy_consumer._service_delivery_points.append(self)
+
+    energy_consumer = property(get_energy_consumer, set_energy_consumer)
 
     # <<< service_delivery_point
     # @generated
@@ -243,15 +550,25 @@ class ServiceDeliveryPoint(IdentifiedObject):
         self.consumption_real_energy = consumption_real_energy
         self.service_priority = service_priority
         self.ctpt_reference = ctpt_reference
+        self._meter_readings = []
         self.meter_readings = meter_readings
+        self._sdplocations = []
         self.sdplocations = sdplocations
+        self._service_category = None
         self.service_category = service_category
+        self._service_location = None
         self.service_location = service_location
+        self._service_supplier = None
         self.service_supplier = service_supplier
+        self._pricing_structures = []
         self.pricing_structures = pricing_structures
+        self._end_device_assets = []
         self.end_device_assets = end_device_assets
+        self._power_quality_pricings = []
         self.power_quality_pricings = power_quality_pricings
+        self._customer_agreement = None
         self.customer_agreement = customer_agreement
+        self._energy_consumer = None
         self.energy_consumer = energy_consumer
 
         super(ServiceDeliveryPoint, self).__init__(**kw_args)
@@ -264,23 +581,111 @@ class MeterReading(IdentifiedObject):
     # Date and time interval of the data items contained within this meter reading.
     values_interval = None
 
-    # Service delivery point from which this meter reading (set of values) has been obtained.
-    service_delivery_point = None
+    def get_service_delivery_point(self):
+        """ Service delivery point from which this meter reading (set of values) has been obtained.
+        """
+        return self._service_delivery_point
 
-    # (could be deprecated in the future) Customer agreement for this meter reading.
-    customer_agreement = None
+    def set_service_delivery_point(self, value):
+        if self._service_delivery_point is not None:
+            filtered = [x for x in self.service_delivery_point.meter_readings if x != self]
+            self._service_delivery_point._meter_readings = filtered
+            
+        self._service_delivery_point = value
+        if self._service_delivery_point is not None:
+            self._service_delivery_point._meter_readings.append(self)
 
-    # All reading values contained within this meter reading.
+    service_delivery_point = property(get_service_delivery_point, set_service_delivery_point)
+
+    def get_customer_agreement(self):
+        """ (could be deprecated in the future) Customer agreement for this meter reading.
+        """
+        return self._customer_agreement
+
+    def set_customer_agreement(self, value):
+        if self._customer_agreement is not None:
+            filtered = [x for x in self.customer_agreement.meter_readings if x != self]
+            self._customer_agreement._meter_readings = filtered
+            
+        self._customer_agreement = value
+        if self._customer_agreement is not None:
+            self._customer_agreement._meter_readings.append(self)
+
+    customer_agreement = property(get_customer_agreement, set_customer_agreement)
+
     readings = []
+    
+    def add_readings(self, *readings):
+        for obj in readings:
+	        self._readings.append(obj)
+        
+    def remove_readings(self, *readings):
+        for obj in readings:
+	        self._readings.remove(obj)
 
-    # All interval blocks contained in this meter reading.
-    interval_blocks = []
+    def get_interval_blocks(self):
+        """ All interval blocks contained in this meter reading.
+        """
+        return self._interval_blocks
 
-    # All end device events associated with this set of measured values.
-    end_device_events = []
+    def set_interval_blocks(self, value):
+        for x in self._interval_blocks:
+            x._meter_reading = None
+        for y in value:
+            y._meter_reading = self
+        self._interval_blocks = value
+            
+    interval_blocks = property(get_interval_blocks, set_interval_blocks)
+    
+    def add_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._meter_reading = self
+            self._interval_blocks.append(obj)
+        
+    def remove_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._meter_reading = None
+            self._interval_blocks.remove(obj)
 
-    # Meter asset providing this meter reading.
-    meter_asset = None
+    def get_end_device_events(self):
+        """ All end device events associated with this set of measured values.
+        """
+        return self._end_device_events
+
+    def set_end_device_events(self, value):
+        for x in self._end_device_events:
+            x._meter_reading = None
+        for y in value:
+            y._meter_reading = self
+        self._end_device_events = value
+            
+    end_device_events = property(get_end_device_events, set_end_device_events)
+    
+    def add_end_device_events(self, *end_device_events):
+        for obj in end_device_events:
+            obj._meter_reading = self
+            self._end_device_events.append(obj)
+        
+    def remove_end_device_events(self, *end_device_events):
+        for obj in end_device_events:
+            obj._meter_reading = None
+            self._end_device_events.remove(obj)
+
+    def get_meter_asset(self):
+        """ Meter asset providing this meter reading.
+        """
+        return self._meter_asset
+
+    def set_meter_asset(self, value):
+        if self._meter_asset is not None:
+            filtered = [x for x in self.meter_asset.meter_readings if x != self]
+            self._meter_asset._meter_readings = filtered
+            
+        self._meter_asset = value
+        if self._meter_asset is not None:
+            self._meter_asset._meter_readings.append(self)
+
+    meter_asset = property(get_meter_asset, set_meter_asset)
 
     # <<< meter_reading
     # @generated
@@ -288,11 +693,17 @@ class MeterReading(IdentifiedObject):
         """ Initialises a new 'MeterReading' instance.
         """
         self.values_interval = values_interval
+        self._service_delivery_point = None
         self.service_delivery_point = service_delivery_point
+        self._customer_agreement = None
         self.customer_agreement = customer_agreement
+        self._readings = []
         self.readings = readings
+        self._interval_blocks = []
         self.interval_blocks = interval_blocks
+        self._end_device_events = []
         self.end_device_events = end_device_events
+        self._meter_asset = None
         self.meter_asset = meter_asset
 
         super(MeterReading, self).__init__(**kw_args)
@@ -317,17 +728,69 @@ class EndDeviceControl(IdentifiedObject):
     # (if control has scheduled duration) Date and time interval the control has been scheduled to execute within.
     scheduled_interval = None
 
-    # Demand response program for this end device control.
-    demand_response_program = None
+    def get_demand_response_program(self):
+        """ Demand response program for this end device control.
+        """
+        return self._demand_response_program
 
-    # Could be deprecated in the future.
-    customer_agreement = None
+    def set_demand_response_program(self, value):
+        if self._demand_response_program is not None:
+            filtered = [x for x in self.demand_response_program.end_device_controls if x != self]
+            self._demand_response_program._end_device_controls = filtered
+            
+        self._demand_response_program = value
+        if self._demand_response_program is not None:
+            self._demand_response_program._end_device_controls.append(self)
 
-    # End device asset receiving commands from this end device control.
-    end_device_asset = None
+    demand_response_program = property(get_demand_response_program, set_demand_response_program)
 
-    # End device group receiving commands from this end device control.
-    end_device_group = None
+    def get_customer_agreement(self):
+        """ Could be deprecated in the future.
+        """
+        return self._customer_agreement
+
+    def set_customer_agreement(self, value):
+        if self._customer_agreement is not None:
+            filtered = [x for x in self.customer_agreement.end_device_controls if x != self]
+            self._customer_agreement._end_device_controls = filtered
+            
+        self._customer_agreement = value
+        if self._customer_agreement is not None:
+            self._customer_agreement._end_device_controls.append(self)
+
+    customer_agreement = property(get_customer_agreement, set_customer_agreement)
+
+    def get_end_device_asset(self):
+        """ End device asset receiving commands from this end device control.
+        """
+        return self._end_device_asset
+
+    def set_end_device_asset(self, value):
+        if self._end_device_asset is not None:
+            filtered = [x for x in self.end_device_asset.end_device_controls if x != self]
+            self._end_device_asset._end_device_controls = filtered
+            
+        self._end_device_asset = value
+        if self._end_device_asset is not None:
+            self._end_device_asset._end_device_controls.append(self)
+
+    end_device_asset = property(get_end_device_asset, set_end_device_asset)
+
+    def get_end_device_group(self):
+        """ End device group receiving commands from this end device control.
+        """
+        return self._end_device_group
+
+    def set_end_device_group(self, value):
+        if self._end_device_group is not None:
+            filtered = [x for x in self.end_device_group.end_device_controls if x != self]
+            self._end_device_group._end_device_controls = filtered
+            
+        self._end_device_group = value
+        if self._end_device_group is not None:
+            self._end_device_group._end_device_controls.append(self)
+
+    end_device_group = property(get_end_device_group, set_end_device_group)
 
     # <<< end_device_control
     # @generated
@@ -339,9 +802,13 @@ class EndDeviceControl(IdentifiedObject):
         self.dr_program_mandatory = dr_program_mandatory
         self.price_signal = price_signal
         self.scheduled_interval = scheduled_interval
+        self._demand_response_program = None
         self.demand_response_program = demand_response_program
+        self._customer_agreement = None
         self.customer_agreement = customer_agreement
+        self._end_device_asset = None
         self.end_device_asset = end_device_asset
+        self._end_device_group = None
         self.end_device_group = end_device_group
 
         super(EndDeviceControl, self).__init__(**kw_args)
@@ -378,17 +845,83 @@ class ReadingType(IdentifiedObject):
     # Characteristics of a data value conveyed by a specific Reading, which allow an application to understand how a specific Reading is to be interpreted. 
     default_quality = ''
 
-    # All blocks containing interval reading values with this type information.
-    interval_blocks = []
+    def get_interval_blocks(self):
+        """ All blocks containing interval reading values with this type information.
+        """
+        return self._interval_blocks
 
-    # Pending conversion that produced this reading type.
-    pending = None
+    def set_interval_blocks(self, value):
+        for x in self._interval_blocks:
+            x._reading_type = None
+        for y in value:
+            y._reading_type = self
+        self._interval_blocks = value
+            
+    interval_blocks = property(get_interval_blocks, set_interval_blocks)
+    
+    def add_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._reading_type = self
+            self._interval_blocks.append(obj)
+        
+    def remove_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._reading_type = None
+            self._interval_blocks.remove(obj)
 
-    # All reading values with this type information.
-    readings = []
+    def get_pending(self):
+        """ Pending conversion that produced this reading type.
+        """
+        return self._pending
 
-    # Register displaying values with this type information.
-    register = None
+    def set_pending(self, value):
+        if self._pending is not None:
+            self._pending._reading_type = None
+            
+        self._pending = value
+        if self._pending is not None:
+            self._pending._reading_type = self
+            
+    pending = property(get_pending, set_pending)
+
+    def get_readings(self):
+        """ All reading values with this type information.
+        """
+        return self._readings
+
+    def set_readings(self, value):
+        for x in self._readings:
+            x._reading_type = None
+        for y in value:
+            y._reading_type = self
+        self._readings = value
+            
+    readings = property(get_readings, set_readings)
+    
+    def add_readings(self, *readings):
+        for obj in readings:
+            obj._reading_type = self
+            self._readings.append(obj)
+        
+    def remove_readings(self, *readings):
+        for obj in readings:
+            obj._reading_type = None
+            self._readings.remove(obj)
+
+    def get_register(self):
+        """ Register displaying values with this type information.
+        """
+        return self._register
+
+    def set_register(self, value):
+        if self._register is not None:
+            self._register._reading_type = None
+            
+        self._register = value
+        if self._register is not None:
+            self._register._reading_type = self
+            
+    register = property(get_register, set_register)
 
     # <<< reading_type
     # @generated
@@ -404,9 +937,13 @@ class ReadingType(IdentifiedObject):
         self.default_value_data_type = default_value_data_type
         self.kind = kind
         self.default_quality = default_quality
+        self._interval_blocks = []
         self.interval_blocks = interval_blocks
+        self._pending = None
         self.pending = pending
+        self._readings = []
         self.readings = readings
+        self._register = None
         self.register = register
 
         super(ReadingType, self).__init__(**kw_args)
@@ -419,11 +956,37 @@ class EndDeviceEvent(ActivityRecord):
     # (if user initiated) ID of user who initiated this end device event. 
     user_id = ''
 
-    # Device function that reported this end device event.
-    device_function = None
+    def get_device_function(self):
+        """ Device function that reported this end device event.
+        """
+        return self._device_function
 
-    # Set of measured values to which this event applies.
-    meter_reading = None
+    def set_device_function(self, value):
+        if self._device_function is not None:
+            filtered = [x for x in self.device_function.end_device_events if x != self]
+            self._device_function._end_device_events = filtered
+            
+        self._device_function = value
+        if self._device_function is not None:
+            self._device_function._end_device_events.append(self)
+
+    device_function = property(get_device_function, set_device_function)
+
+    def get_meter_reading(self):
+        """ Set of measured values to which this event applies.
+        """
+        return self._meter_reading
+
+    def set_meter_reading(self, value):
+        if self._meter_reading is not None:
+            filtered = [x for x in self.meter_reading.end_device_events if x != self]
+            self._meter_reading._end_device_events = filtered
+            
+        self._meter_reading = value
+        if self._meter_reading is not None:
+            self._meter_reading._end_device_events.append(self)
+
+    meter_reading = property(get_meter_reading, set_meter_reading)
 
     # <<< end_device_event
     # @generated
@@ -431,7 +994,9 @@ class EndDeviceEvent(ActivityRecord):
         """ Initialises a new 'EndDeviceEvent' instance.
         """
         self.user_id = user_id
+        self._device_function = None
         self.device_function = device_function
+        self._meter_reading = None
         self.meter_reading = meter_reading
 
         super(EndDeviceEvent, self).__init__(**kw_args)
@@ -453,8 +1018,15 @@ class SDPLocation(Location):
     # Remarks about this location. 
     remark = ''
 
-    # All service delivery points at this location.
     service_delivery_points = []
+    
+    def add_service_delivery_points(self, *service_delivery_points):
+        for obj in service_delivery_points:
+	        self._service_delivery_points.append(obj)
+        
+    def remove_service_delivery_points(self, *service_delivery_points):
+        for obj in service_delivery_points:
+	        self._service_delivery_points.remove(obj)
 
     # <<< sdplocation
     # @generated
@@ -465,6 +1037,7 @@ class SDPLocation(Location):
         self.site_access_problem = site_access_problem
         self.occupancy_date = occupancy_date
         self.remark = remark
+        self._service_delivery_points = []
         self.service_delivery_points = service_delivery_points
 
         super(SDPLocation, self).__init__(**kw_args)
@@ -489,11 +1062,44 @@ class Pending(Element):
     # (if scalar is rational number) When 'IntervalReading.value' is multiplied by this attribute and divided by 'scalarDenominator, it causes a unit of measure conversion to occur, resulting in the 'ReadingType.unit'. 
     scalar_denominator = 0
 
-    # Reading type resulting from this pending conversion.
-    reading_type = None
+    def get_reading_type(self):
+        """ Reading type resulting from this pending conversion.
+        """
+        return self._reading_type
 
-    # All blocks of interval reading values to which this pending conversion applies.
-    interval_blocks = []
+    def set_reading_type(self, value):
+        if self._reading_type is not None:
+            self._reading_type._pending = None
+            
+        self._reading_type = value
+        if self._reading_type is not None:
+            self._reading_type._pending = self
+            
+    reading_type = property(get_reading_type, set_reading_type)
+
+    def get_interval_blocks(self):
+        """ All blocks of interval reading values to which this pending conversion applies.
+        """
+        return self._interval_blocks
+
+    def set_interval_blocks(self, value):
+        for x in self._interval_blocks:
+            x._pending = None
+        for y in value:
+            y._pending = self
+        self._interval_blocks = value
+            
+    interval_blocks = property(get_interval_blocks, set_interval_blocks)
+    
+    def add_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._pending = self
+            self._interval_blocks.append(obj)
+        
+    def remove_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+            obj._pending = None
+            self._interval_blocks.remove(obj)
 
     # <<< pending
     # @generated
@@ -505,7 +1111,9 @@ class Pending(Element):
         self.scalar_numerator = scalar_numerator
         self.multiply_before_add = multiply_before_add
         self.scalar_denominator = scalar_denominator
+        self._reading_type = None
         self.reading_type = reading_type
+        self._interval_blocks = []
         self.interval_blocks = interval_blocks
 
         super(Pending, self).__init__(**kw_args)
@@ -518,17 +1126,85 @@ class DeviceFunction(AssetFunction):
     # True if the device function is disabled (deactivated). Default is false (i.e., function is enabled). 
     disabled = False
 
-    # End device asset that performs this function.
-    end_device_asset = None
+    def get_end_device_asset(self):
+        """ End device asset that performs this function.
+        """
+        return self._end_device_asset
 
-    # Communication equipment asset performing this device function.
-    com_equipment_asset = None
+    def set_end_device_asset(self, value):
+        if self._end_device_asset is not None:
+            filtered = [x for x in self.end_device_asset.device_functions if x != self]
+            self._end_device_asset._device_functions = filtered
+            
+        self._end_device_asset = value
+        if self._end_device_asset is not None:
+            self._end_device_asset._device_functions.append(self)
 
-    # All registers for quantities metered by this device function.
-    registers = []
+    end_device_asset = property(get_end_device_asset, set_end_device_asset)
 
-    # All events reported by this device function.
-    end_device_events = []
+    def get_com_equipment_asset(self):
+        """ Communication equipment asset performing this device function.
+        """
+        return self._com_equipment_asset
+
+    def set_com_equipment_asset(self, value):
+        if self._com_equipment_asset is not None:
+            filtered = [x for x in self.com_equipment_asset.device_functions if x != self]
+            self._com_equipment_asset._device_functions = filtered
+            
+        self._com_equipment_asset = value
+        if self._com_equipment_asset is not None:
+            self._com_equipment_asset._device_functions.append(self)
+
+    com_equipment_asset = property(get_com_equipment_asset, set_com_equipment_asset)
+
+    def get_registers(self):
+        """ All registers for quantities metered by this device function.
+        """
+        return self._registers
+
+    def set_registers(self, value):
+        for x in self._registers:
+            x._device_function = None
+        for y in value:
+            y._device_function = self
+        self._registers = value
+            
+    registers = property(get_registers, set_registers)
+    
+    def add_registers(self, *registers):
+        for obj in registers:
+            obj._device_function = self
+            self._registers.append(obj)
+        
+    def remove_registers(self, *registers):
+        for obj in registers:
+            obj._device_function = None
+            self._registers.remove(obj)
+
+    def get_end_device_events(self):
+        """ All events reported by this device function.
+        """
+        return self._end_device_events
+
+    def set_end_device_events(self, value):
+        for x in self._end_device_events:
+            x._device_function = None
+        for y in value:
+            y._device_function = self
+        self._end_device_events = value
+            
+    end_device_events = property(get_end_device_events, set_end_device_events)
+    
+    def add_end_device_events(self, *end_device_events):
+        for obj in end_device_events:
+            obj._device_function = self
+            self._end_device_events.append(obj)
+        
+    def remove_end_device_events(self, *end_device_events):
+        for obj in end_device_events:
+            obj._device_function = None
+            self._end_device_events.remove(obj)
 
     # <<< device_function
     # @generated
@@ -536,9 +1212,13 @@ class DeviceFunction(AssetFunction):
         """ Initialises a new 'DeviceFunction' instance.
         """
         self.disabled = disabled
+        self._end_device_asset = None
         self.end_device_asset = end_device_asset
+        self._com_equipment_asset = None
         self.com_equipment_asset = com_equipment_asset
+        self._registers = []
         self.registers = registers
+        self._end_device_events = []
         self.end_device_events = end_device_events
 
         super(DeviceFunction, self).__init__(**kw_args)
@@ -551,16 +1231,71 @@ class Reading(MeasurementValue):
     # Value of this reading. 
     value = 0.0
 
-    # Type information for this reading value.
-    reading_type = None
+    def get_reading_type(self):
+        """ Type information for this reading value.
+        """
+        return self._reading_type
 
-    # All meter readings (sets of values) containing this reading value.
+    def set_reading_type(self, value):
+        if self._reading_type is not None:
+            filtered = [x for x in self.reading_type.readings if x != self]
+            self._reading_type._readings = filtered
+            
+        self._reading_type = value
+        if self._reading_type is not None:
+            self._reading_type._readings.append(self)
+
+    reading_type = property(get_reading_type, set_reading_type)
+
     meter_readings = []
+    
+    def add_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+	        self._meter_readings.append(obj)
+        
+    def remove_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+	        self._meter_readings.remove(obj)
 
-    # Used only if quality of this reading value is different than 'Good'.
-    reading_qualities = []
+    def get_reading_qualities(self):
+        """ Used only if quality of this reading value is different than 'Good'.
+        """
+        return self._reading_qualities
 
-    end_device_asset = None
+    def set_reading_qualities(self, value):
+        for x in self._reading_qualities:
+            x._reading = None
+        for y in value:
+            y._reading = self
+        self._reading_qualities = value
+            
+    reading_qualities = property(get_reading_qualities, set_reading_qualities)
+    
+    def add_reading_qualities(self, *reading_qualities):
+        for obj in reading_qualities:
+            obj._reading = self
+            self._reading_qualities.append(obj)
+        
+    def remove_reading_qualities(self, *reading_qualities):
+        for obj in reading_qualities:
+            obj._reading = None
+            self._reading_qualities.remove(obj)
+
+    def get_end_device_asset(self):
+        """ 
+        """
+        return self._end_device_asset
+
+    def set_end_device_asset(self, value):
+        if self._end_device_asset is not None:
+            filtered = [x for x in self.end_device_asset.readings if x != self]
+            self._end_device_asset._readings = filtered
+            
+        self._end_device_asset = value
+        if self._end_device_asset is not None:
+            self._end_device_asset._readings.append(self)
+
+    end_device_asset = property(get_end_device_asset, set_end_device_asset)
 
     # <<< reading
     # @generated
@@ -568,9 +1303,13 @@ class Reading(MeasurementValue):
         """ Initialises a new 'Reading' instance.
         """
         self.value = value
+        self._reading_type = None
         self.reading_type = reading_type
+        self._meter_readings = []
         self.meter_readings = meter_readings
+        self._reading_qualities = []
         self.reading_qualities = reading_qualities
+        self._end_device_asset = None
         self.end_device_asset = end_device_asset
 
         super(Reading, self).__init__(**kw_args)
@@ -613,31 +1352,161 @@ class EndDeviceAsset(AssetContainer):
     # True if this end device asset is capable of supporting one or more relays. The relays may be programmable in the meter and tied to TOU, time pulse, load control or other functions. To determine whether this functionality is installed and enabled, check the 'DeviceFunction.disabled' attribute of the respective function contained by this end device asset. 
     relay_capable = False
 
-    # All sets of electrical properties for this end device asset.
     electrical_infos = []
+    
+    def add_electrical_infos(self, *electrical_infos):
+        for obj in electrical_infos:
+	        self._electrical_infos.append(obj)
+        
+    def remove_electrical_infos(self, *electrical_infos):
+        for obj in electrical_infos:
+	        self._electrical_infos.remove(obj)
 
-    # Customer owning this end device asset.
-    customer = None
+    def get_customer(self):
+        """ Customer owning this end device asset.
+        """
+        return self._customer
 
-    # All device functions this end device asset performs.
-    device_functions = []
+    def set_customer(self, value):
+        if self._customer is not None:
+            filtered = [x for x in self.customer.end_device_assets if x != self]
+            self._customer._end_device_assets = filtered
+            
+        self._customer = value
+        if self._customer is not None:
+            self._customer._end_device_assets.append(self)
 
-    # All end device groups referring to this end device asset.
+    customer = property(get_customer, set_customer)
+
+    def get_device_functions(self):
+        """ All device functions this end device asset performs.
+        """
+        return self._device_functions
+
+    def set_device_functions(self, value):
+        for x in self._device_functions:
+            x._end_device_asset = None
+        for y in value:
+            y._end_device_asset = self
+        self._device_functions = value
+            
+    device_functions = property(get_device_functions, set_device_functions)
+    
+    def add_device_functions(self, *device_functions):
+        for obj in device_functions:
+            obj._end_device_asset = self
+            self._device_functions.append(obj)
+        
+    def remove_device_functions(self, *device_functions):
+        for obj in device_functions:
+            obj._end_device_asset = None
+            self._device_functions.remove(obj)
+
     end_device_groups = []
+    
+    def add_end_device_groups(self, *end_device_groups):
+        for obj in end_device_groups:
+	        self._end_device_groups.append(obj)
+        
+    def remove_end_device_groups(self, *end_device_groups):
+        for obj in end_device_groups:
+	        self._end_device_groups.remove(obj)
 
-    # Product documentation for this end device asset.
-    end_device_model = None
+    def get_end_device_model(self):
+        """ Product documentation for this end device asset.
+        """
+        return self._end_device_model
 
-    # All end device controls sending commands to this end device asset.
-    end_device_controls = []
+    def set_end_device_model(self, value):
+        if self._end_device_model is not None:
+            filtered = [x for x in self.end_device_model.end_device_assets if x != self]
+            self._end_device_model._end_device_assets = filtered
+            
+        self._end_device_model = value
+        if self._end_device_model is not None:
+            self._end_device_model._end_device_assets.append(self)
 
-    readings = []
+    end_device_model = property(get_end_device_model, set_end_device_model)
 
-    # Service location whose service delivery is measured by this end device asset.
-    service_location = None
+    def get_end_device_controls(self):
+        """ All end device controls sending commands to this end device asset.
+        """
+        return self._end_device_controls
 
-    # Service delivery point to which this end device asset belongs.
-    service_delivery_point = None
+    def set_end_device_controls(self, value):
+        for x in self._end_device_controls:
+            x._end_device_asset = None
+        for y in value:
+            y._end_device_asset = self
+        self._end_device_controls = value
+            
+    end_device_controls = property(get_end_device_controls, set_end_device_controls)
+    
+    def add_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._end_device_asset = self
+            self._end_device_controls.append(obj)
+        
+    def remove_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._end_device_asset = None
+            self._end_device_controls.remove(obj)
+
+    def get_readings(self):
+        """ 
+        """
+        return self._readings
+
+    def set_readings(self, value):
+        for x in self._readings:
+            x._end_device_asset = None
+        for y in value:
+            y._end_device_asset = self
+        self._readings = value
+            
+    readings = property(get_readings, set_readings)
+    
+    def add_readings(self, *readings):
+        for obj in readings:
+            obj._end_device_asset = self
+            self._readings.append(obj)
+        
+    def remove_readings(self, *readings):
+        for obj in readings:
+            obj._end_device_asset = None
+            self._readings.remove(obj)
+
+    def get_service_location(self):
+        """ Service location whose service delivery is measured by this end device asset.
+        """
+        return self._service_location
+
+    def set_service_location(self, value):
+        if self._service_location is not None:
+            filtered = [x for x in self.service_location.end_device_assets if x != self]
+            self._service_location._end_device_assets = filtered
+            
+        self._service_location = value
+        if self._service_location is not None:
+            self._service_location._end_device_assets.append(self)
+
+    service_location = property(get_service_location, set_service_location)
+
+    def get_service_delivery_point(self):
+        """ Service delivery point to which this end device asset belongs.
+        """
+        return self._service_delivery_point
+
+    def set_service_delivery_point(self, value):
+        if self._service_delivery_point is not None:
+            filtered = [x for x in self.service_delivery_point.end_device_assets if x != self]
+            self._service_delivery_point._end_device_assets = filtered
+            
+        self._service_delivery_point = value
+        if self._service_delivery_point is not None:
+            self._service_delivery_point._end_device_assets.append(self)
+
+    service_delivery_point = property(get_service_delivery_point, set_service_delivery_point)
 
     # <<< end_device_asset
     # @generated
@@ -655,14 +1524,23 @@ class EndDeviceAsset(AssetContainer):
         self.demand_response = demand_response
         self.disconnect = disconnect
         self.relay_capable = relay_capable
+        self._electrical_infos = []
         self.electrical_infos = electrical_infos
+        self._customer = None
         self.customer = customer
+        self._device_functions = []
         self.device_functions = device_functions
+        self._end_device_groups = []
         self.end_device_groups = end_device_groups
+        self._end_device_model = None
         self.end_device_model = end_device_model
+        self._end_device_controls = []
         self.end_device_controls = end_device_controls
+        self._readings = []
         self.readings = readings
+        self._service_location = None
         self.service_location = service_location
+        self._service_delivery_point = None
         self.service_delivery_point = service_delivery_point
 
         super(EndDeviceAsset, self).__init__(**kw_args)
@@ -675,11 +1553,39 @@ class IntervalReading(MeasurementValue):
     # Value of this interval reading. 
     value = 0.0
 
-    # Used only if quality of this interval reading value is different than 'Good'.
-    reading_qualities = []
+    def get_reading_qualities(self):
+        """ Used only if quality of this interval reading value is different than 'Good'.
+        """
+        return self._reading_qualities
 
-    # All blocks containing this interval reading.
+    def set_reading_qualities(self, value):
+        for x in self._reading_qualities:
+            x._interval_reading = None
+        for y in value:
+            y._interval_reading = self
+        self._reading_qualities = value
+            
+    reading_qualities = property(get_reading_qualities, set_reading_qualities)
+    
+    def add_reading_qualities(self, *reading_qualities):
+        for obj in reading_qualities:
+            obj._interval_reading = self
+            self._reading_qualities.append(obj)
+        
+    def remove_reading_qualities(self, *reading_qualities):
+        for obj in reading_qualities:
+            obj._interval_reading = None
+            self._reading_qualities.remove(obj)
+
     interval_blocks = []
+    
+    def add_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+	        self._interval_blocks.append(obj)
+        
+    def remove_interval_blocks(self, *interval_blocks):
+        for obj in interval_blocks:
+	        self._interval_blocks.remove(obj)
 
     # <<< interval_reading
     # @generated
@@ -687,7 +1593,9 @@ class IntervalReading(MeasurementValue):
         """ Initialises a new 'IntervalReading' instance.
         """
         self.value = value
+        self._reading_qualities = []
         self.reading_qualities = reading_qualities
+        self._interval_blocks = []
         self.interval_blocks = interval_blocks
 
         super(IntervalReading, self).__init__(**kw_args)
@@ -703,14 +1611,77 @@ class DemandResponseProgram(IdentifiedObject):
     # Interval within which the program is valid.
     validity_interval = None
 
-    # All groups of end devices with this demand response program.
-    end_device_groups = []
+    def get_end_device_groups(self):
+        """ All groups of end devices with this demand response program.
+        """
+        return self._end_device_groups
 
-    # All end device controls with this demand response program.
-    end_device_controls = []
+    def set_end_device_groups(self, value):
+        for x in self._end_device_groups:
+            x._demand_response_program = None
+        for y in value:
+            y._demand_response_program = self
+        self._end_device_groups = value
+            
+    end_device_groups = property(get_end_device_groups, set_end_device_groups)
+    
+    def add_end_device_groups(self, *end_device_groups):
+        for obj in end_device_groups:
+            obj._demand_response_program = self
+            self._end_device_groups.append(obj)
+        
+    def remove_end_device_groups(self, *end_device_groups):
+        for obj in end_device_groups:
+            obj._demand_response_program = None
+            self._end_device_groups.remove(obj)
 
-    # All customer agreements with this demand response program.
-    customer_agreements = []
+    def get_end_device_controls(self):
+        """ All end device controls with this demand response program.
+        """
+        return self._end_device_controls
+
+    def set_end_device_controls(self, value):
+        for x in self._end_device_controls:
+            x._demand_response_program = None
+        for y in value:
+            y._demand_response_program = self
+        self._end_device_controls = value
+            
+    end_device_controls = property(get_end_device_controls, set_end_device_controls)
+    
+    def add_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._demand_response_program = self
+            self._end_device_controls.append(obj)
+        
+    def remove_end_device_controls(self, *end_device_controls):
+        for obj in end_device_controls:
+            obj._demand_response_program = None
+            self._end_device_controls.remove(obj)
+
+    def get_customer_agreements(self):
+        """ All customer agreements with this demand response program.
+        """
+        return self._customer_agreements
+
+    def set_customer_agreements(self, value):
+        for x in self._customer_agreements:
+            x._demand_response_program = None
+        for y in value:
+            y._demand_response_program = self
+        self._customer_agreements = value
+            
+    customer_agreements = property(get_customer_agreements, set_customer_agreements)
+    
+    def add_customer_agreements(self, *customer_agreements):
+        for obj in customer_agreements:
+            obj._demand_response_program = self
+            self._customer_agreements.append(obj)
+        
+    def remove_customer_agreements(self, *customer_agreements):
+        for obj in customer_agreements:
+            obj._demand_response_program = None
+            self._customer_agreements.remove(obj)
 
     # <<< demand_response_program
     # @generated
@@ -719,8 +1690,11 @@ class DemandResponseProgram(IdentifiedObject):
         """
         self.type = type
         self.validity_interval = validity_interval
+        self._end_device_groups = []
         self.end_device_groups = end_device_groups
+        self._end_device_controls = []
         self.end_device_controls = end_device_controls
+        self._customer_agreements = []
         self.customer_agreements = customer_agreements
 
         super(DemandResponseProgram, self).__init__(**kw_args)
@@ -763,8 +1737,21 @@ class ElectricMeteringFunction(DeviceFunction):
     # True if the demandMultiplier ratio has already been applied to the associated quantities. 
     demand_multiplier_applied = False
 
-    # Configuration for this electric metering function.
-    metering_function_configuration = None
+    def get_metering_function_configuration(self):
+        """ Configuration for this electric metering function.
+        """
+        return self._metering_function_configuration
+
+    def set_metering_function_configuration(self, value):
+        if self._metering_function_configuration is not None:
+            filtered = [x for x in self.metering_function_configuration.electric_metering_functions if x != self]
+            self._metering_function_configuration._electric_metering_functions = filtered
+            
+        self._metering_function_configuration = value
+        if self._metering_function_configuration is not None:
+            self._metering_function_configuration._electric_metering_functions.append(self)
+
+    metering_function_configuration = property(get_metering_function_configuration, set_metering_function_configuration)
 
     # <<< electric_metering_function
     # @generated
@@ -782,6 +1769,7 @@ class ElectricMeteringFunction(DeviceFunction):
         self.voltage_rating = voltage_rating
         self.k_wmultiplier = k_wmultiplier
         self.demand_multiplier_applied = demand_multiplier_applied
+        self._metering_function_configuration = None
         self.metering_function_configuration = metering_function_configuration
 
         super(ElectricMeteringFunction, self).__init__(**kw_args)
@@ -800,19 +1788,117 @@ class MeterAsset(EndDeviceAsset):
     # Display multiplier used to produce a displayed value from a register value. 
     k_r = 0.0
 
-    # All non-replacement works on this meter asset.
-    meter_service_works = []
+    def get_meter_service_works(self):
+        """ All non-replacement works on this meter asset.
+        """
+        return self._meter_service_works
 
-    meter_asset_model = None
+    def set_meter_service_works(self, value):
+        for x in self._meter_service_works:
+            x._meter_asset = None
+        for y in value:
+            y._meter_asset = self
+        self._meter_service_works = value
+            
+    meter_service_works = property(get_meter_service_works, set_meter_service_works)
+    
+    def add_meter_service_works(self, *meter_service_works):
+        for obj in meter_service_works:
+            obj._meter_asset = self
+            self._meter_service_works.append(obj)
+        
+    def remove_meter_service_works(self, *meter_service_works):
+        for obj in meter_service_works:
+            obj._meter_asset = None
+            self._meter_service_works.remove(obj)
 
-    # All meter readings provided by this meter asset.
-    meter_readings = []
+    def get_meter_asset_model(self):
+        """ 
+        """
+        return self._meter_asset_model
 
-    # All vending transactions on this meter asset.
-    vending_transactions = []
+    def set_meter_asset_model(self, value):
+        if self._meter_asset_model is not None:
+            filtered = [x for x in self.meter_asset_model.meter_assets if x != self]
+            self._meter_asset_model._meter_assets = filtered
+            
+        self._meter_asset_model = value
+        if self._meter_asset_model is not None:
+            self._meter_asset_model._meter_assets.append(self)
 
-    # All works on replacement of this old meter asset.
-    meter_replacement_works = []
+    meter_asset_model = property(get_meter_asset_model, set_meter_asset_model)
+
+    def get_meter_readings(self):
+        """ All meter readings provided by this meter asset.
+        """
+        return self._meter_readings
+
+    def set_meter_readings(self, value):
+        for x in self._meter_readings:
+            x._meter_asset = None
+        for y in value:
+            y._meter_asset = self
+        self._meter_readings = value
+            
+    meter_readings = property(get_meter_readings, set_meter_readings)
+    
+    def add_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+            obj._meter_asset = self
+            self._meter_readings.append(obj)
+        
+    def remove_meter_readings(self, *meter_readings):
+        for obj in meter_readings:
+            obj._meter_asset = None
+            self._meter_readings.remove(obj)
+
+    def get_vending_transactions(self):
+        """ All vending transactions on this meter asset.
+        """
+        return self._vending_transactions
+
+    def set_vending_transactions(self, value):
+        for x in self._vending_transactions:
+            x._meter_asset = None
+        for y in value:
+            y._meter_asset = self
+        self._vending_transactions = value
+            
+    vending_transactions = property(get_vending_transactions, set_vending_transactions)
+    
+    def add_vending_transactions(self, *vending_transactions):
+        for obj in vending_transactions:
+            obj._meter_asset = self
+            self._vending_transactions.append(obj)
+        
+    def remove_vending_transactions(self, *vending_transactions):
+        for obj in vending_transactions:
+            obj._meter_asset = None
+            self._vending_transactions.remove(obj)
+
+    def get_meter_replacement_works(self):
+        """ All works on replacement of this old meter asset.
+        """
+        return self._meter_replacement_works
+
+    def set_meter_replacement_works(self, value):
+        for x in self._meter_replacement_works:
+            x._old_meter_asset = None
+        for y in value:
+            y._old_meter_asset = self
+        self._meter_replacement_works = value
+            
+    meter_replacement_works = property(get_meter_replacement_works, set_meter_replacement_works)
+    
+    def add_meter_replacement_works(self, *meter_replacement_works):
+        for obj in meter_replacement_works:
+            obj._old_meter_asset = self
+            self._meter_replacement_works.append(obj)
+        
+    def remove_meter_replacement_works(self, *meter_replacement_works):
+        for obj in meter_replacement_works:
+            obj._old_meter_asset = None
+            self._meter_replacement_works.remove(obj)
 
     # <<< meter_asset
     # @generated
@@ -822,10 +1908,15 @@ class MeterAsset(EndDeviceAsset):
         self.k_h = k_h
         self.form_number = form_number
         self.k_r = k_r
+        self._meter_service_works = []
         self.meter_service_works = meter_service_works
+        self._meter_asset_model = None
         self.meter_asset_model = meter_asset_model
+        self._meter_readings = []
         self.meter_readings = meter_readings
+        self._vending_transactions = []
         self.vending_transactions = vending_transactions
+        self._meter_replacement_works = []
         self.meter_replacement_works = meter_replacement_works
 
         super(MeterAsset, self).__init__(**kw_args)

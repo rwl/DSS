@@ -23,22 +23,63 @@ class ProcedureDataSet(Document):
     """ A data set recorded each time a procedure is executed. Observed results are captured in associated measurement values and/or values for properties relevant to the type of procedure performed.
     """
     measurement_values = []
+    
+    def add_measurement_values(self, *measurement_values):
+        for obj in measurement_values:
+	        self._measurement_values.append(obj)
+        
+    def remove_measurement_values(self, *measurement_values):
+        for obj in measurement_values:
+	        self._measurement_values.remove(obj)
 
     transformer_observations = []
+    
+    def add_transformer_observations(self, *transformer_observations):
+        for obj in transformer_observations:
+	        self._transformer_observations.append(obj)
+        
+    def remove_transformer_observations(self, *transformer_observations):
+        for obj in transformer_observations:
+	        self._transformer_observations.remove(obj)
 
-    procedure = None
+    def get_procedure(self):
+        """ 
+        """
+        return self._procedure
 
-    # UserAttributes used to specify further properties of this procedure data set. Use 'name' to specify what kind of property it is, and 'value.value' attribute for the actual value.
+    def set_procedure(self, value):
+        if self._procedure is not None:
+            filtered = [x for x in self.procedure.procedure_data_sets if x != self]
+            self._procedure._procedure_data_sets = filtered
+            
+        self._procedure = value
+        if self._procedure is not None:
+            self._procedure._procedure_data_sets.append(self)
+
+    procedure = property(get_procedure, set_procedure)
+
     properties = []
+    
+    def add_properties(self, *properties):
+        for obj in properties:
+	        self._properties.append(obj)
+        
+    def remove_properties(self, *properties):
+        for obj in properties:
+	        self._properties.remove(obj)
 
     # <<< procedure_data_set
     # @generated
     def __init__(self, measurement_values=[], transformer_observations=[], procedure=None, properties=[], **kw_args):
         """ Initialises a new 'ProcedureDataSet' instance.
         """
+        self._measurement_values = []
         self.measurement_values = measurement_values
+        self._transformer_observations = []
         self.transformer_observations = transformer_observations
+        self._procedure = None
         self.procedure = procedure
+        self._properties = []
         self.properties = properties
 
         super(ProcedureDataSet, self).__init__(**kw_args)
@@ -58,6 +99,14 @@ class PowerRating(IdentifiedObject):
     power_rating = ''
 
     transformer_assets = []
+    
+    def add_transformer_assets(self, *transformer_assets):
+        for obj in transformer_assets:
+	        self._transformer_assets.append(obj)
+        
+    def remove_transformer_assets(self, *transformer_assets):
+        for obj in transformer_assets:
+	        self._transformer_assets.remove(obj)
 
     # <<< power_rating
     # @generated
@@ -67,6 +116,7 @@ class PowerRating(IdentifiedObject):
         self.cooling_kind = cooling_kind
         self.stage = stage
         self.power_rating = power_rating
+        self._transformer_assets = []
         self.transformer_assets = transformer_assets
 
         super(PowerRating, self).__init__(**kw_args)
@@ -93,33 +143,164 @@ class Facility(AssetContainer):
 class Specification(Document):
     """ Specification can be used for various purposes relative to an asset, a logical device (PowerSystemResource), location, etc. Examples include documents supplied by manufacturers such as asset installation instructions, asset maintenance instructions, etc.
     """
-    # UserAttributes used to specify further properties of the asset covered with this specification. Use 'name' to specify what kind of property it is, and 'value.value' attribute for the actual value.
-    asset_properites = []
+    def get_asset_properites(self):
+        """ UserAttributes used to specify further properties of the asset covered with this specification. Use 'name' to specify what kind of property it is, and 'value.value' attribute for the actual value.
+        """
+        return self._asset_properites
 
-    mediums = []
+    def set_asset_properites(self, value):
+        for x in self._asset_properites:
+            x._property_specification = None
+        for y in value:
+            y._property_specification = self
+        self._asset_properites = value
+            
+    asset_properites = property(get_asset_properites, set_asset_properites)
+    
+    def add_asset_properites(self, *asset_properites):
+        for obj in asset_properites:
+            obj._property_specification = self
+            self._asset_properites.append(obj)
+        
+    def remove_asset_properites(self, *asset_properites):
+        for obj in asset_properites:
+            obj._property_specification = None
+            self._asset_properites.remove(obj)
+
+    def get_mediums(self):
+        """ 
+        """
+        return self._mediums
+
+    def set_mediums(self, value):
+        for x in self._mediums:
+            x._specification = None
+        for y in value:
+            y._specification = self
+        self._mediums = value
+            
+    mediums = property(get_mediums, set_mediums)
+    
+    def add_mediums(self, *mediums):
+        for obj in mediums:
+            obj._specification = self
+            self._mediums.append(obj)
+        
+    def remove_mediums(self, *mediums):
+        for obj in mediums:
+            obj._specification = None
+            self._mediums.remove(obj)
 
     qualification_requirements = []
+    
+    def add_qualification_requirements(self, *qualification_requirements):
+        for obj in qualification_requirements:
+	        self._qualification_requirements.append(obj)
+        
+    def remove_qualification_requirements(self, *qualification_requirements):
+        for obj in qualification_requirements:
+	        self._qualification_requirements.remove(obj)
 
-    asset_property_curves = []
+    def get_asset_property_curves(self):
+        """ 
+        """
+        return self._asset_property_curves
+
+    def set_asset_property_curves(self, value):
+        for x in self._asset_property_curves:
+            x._specification = None
+        for y in value:
+            y._specification = self
+        self._asset_property_curves = value
+            
+    asset_property_curves = property(get_asset_property_curves, set_asset_property_curves)
+    
+    def add_asset_property_curves(self, *asset_property_curves):
+        for obj in asset_property_curves:
+            obj._specification = self
+            self._asset_property_curves.append(obj)
+        
+    def remove_asset_property_curves(self, *asset_property_curves):
+        for obj in asset_property_curves:
+            obj._specification = None
+            self._asset_property_curves.remove(obj)
 
     dimensions_infos = []
+    
+    def add_dimensions_infos(self, *dimensions_infos):
+        for obj in dimensions_infos:
+	        self._dimensions_infos.append(obj)
+        
+    def remove_dimensions_infos(self, *dimensions_infos):
+        for obj in dimensions_infos:
+	        self._dimensions_infos.remove(obj)
 
-    # UserAttributes used to specify ratings of the asset covered by this specification. Ratings also can be used to set the initial value of operational measurement limits. Use 'name' to specify what kind of rating it is (e.g., voltage, current), and 'value' attribute for the actual value and unit information of the rating.
-    ratings = []
+    def get_ratings(self):
+        """ UserAttributes used to specify ratings of the asset covered by this specification. Ratings also can be used to set the initial value of operational measurement limits. Use 'name' to specify what kind of rating it is (e.g., voltage, current), and 'value' attribute for the actual value and unit information of the rating.
+        """
+        return self._ratings
 
-    reliability_infos = []
+    def set_ratings(self, value):
+        for x in self._ratings:
+            x._rating_specification = None
+        for y in value:
+            y._rating_specification = self
+        self._ratings = value
+            
+    ratings = property(get_ratings, set_ratings)
+    
+    def add_ratings(self, *ratings):
+        for obj in ratings:
+            obj._rating_specification = self
+            self._ratings.append(obj)
+        
+    def remove_ratings(self, *ratings):
+        for obj in ratings:
+            obj._rating_specification = None
+            self._ratings.remove(obj)
+
+    def get_reliability_infos(self):
+        """ 
+        """
+        return self._reliability_infos
+
+    def set_reliability_infos(self, value):
+        for x in self._reliability_infos:
+            x._specification = None
+        for y in value:
+            y._specification = self
+        self._reliability_infos = value
+            
+    reliability_infos = property(get_reliability_infos, set_reliability_infos)
+    
+    def add_reliability_infos(self, *reliability_infos):
+        for obj in reliability_infos:
+            obj._specification = self
+            self._reliability_infos.append(obj)
+        
+    def remove_reliability_infos(self, *reliability_infos):
+        for obj in reliability_infos:
+            obj._specification = None
+            self._reliability_infos.remove(obj)
 
     # <<< specification
     # @generated
     def __init__(self, asset_properites=[], mediums=[], qualification_requirements=[], asset_property_curves=[], dimensions_infos=[], ratings=[], reliability_infos=[], **kw_args):
         """ Initialises a new 'Specification' instance.
         """
+        self._asset_properites = []
         self.asset_properites = asset_properites
+        self._mediums = []
         self.mediums = mediums
+        self._qualification_requirements = []
         self.qualification_requirements = qualification_requirements
+        self._asset_property_curves = []
         self.asset_property_curves = asset_property_curves
+        self._dimensions_infos = []
         self.dimensions_infos = dimensions_infos
+        self._ratings = []
         self.ratings = ratings
+        self._reliability_infos = []
         self.reliability_infos = reliability_infos
 
         super(Specification, self).__init__(**kw_args)
@@ -132,7 +313,20 @@ class SubstationAsset(AssetContainer):
     # Function of this substation asset. Values are: "distribution", "transmission", "sub_transmission", "industrial", "other", "generation"
     function = 'distribution'
 
-    substation = None
+    def get_substation(self):
+        """ 
+        """
+        return self._substation
+
+    def set_substation(self, value):
+        if self._substation is not None:
+            self._substation._substation_asset = None
+            
+        self._substation = value
+        if self._substation is not None:
+            self._substation._substation_asset = self
+            
+    substation = property(get_substation, set_substation)
 
     # <<< substation_asset
     # @generated
@@ -140,6 +334,7 @@ class SubstationAsset(AssetContainer):
         """ Initialises a new 'SubstationAsset' instance.
         """
         self.function = function
+        self._substation = None
         self.substation = substation
 
         super(SubstationAsset, self).__init__(**kw_args)
@@ -149,16 +344,46 @@ class SubstationAsset(AssetContainer):
 class DocAssetRole(Role):
     """ Roles played between Documents and Assets.
     """
-    asset = None
+    def get_asset(self):
+        """ 
+        """
+        return self._asset
 
-    document = None
+    def set_asset(self, value):
+        if self._asset is not None:
+            filtered = [x for x in self.asset.document_roles if x != self]
+            self._asset._document_roles = filtered
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._document_roles.append(self)
+
+    asset = property(get_asset, set_asset)
+
+    def get_document(self):
+        """ 
+        """
+        return self._document
+
+    def set_document(self, value):
+        if self._document is not None:
+            filtered = [x for x in self.document.asset_roles if x != self]
+            self._document._asset_roles = filtered
+            
+        self._document = value
+        if self._document is not None:
+            self._document._asset_roles.append(self)
+
+    document = property(get_document, set_document)
 
     # <<< doc_asset_role
     # @generated
     def __init__(self, asset=None, document=None, **kw_args):
         """ Initialises a new 'DocAssetRole' instance.
         """
+        self._asset = None
         self.asset = asset
+        self._document = None
         self.document = document
 
         super(DocAssetRole, self).__init__(**kw_args)
@@ -181,13 +406,72 @@ class Procedure(Document):
     sequence_number = ''
 
     compatible_units = []
+    
+    def add_compatible_units(self, *compatible_units):
+        for obj in compatible_units:
+	        self._compatible_units.append(obj)
+        
+    def remove_compatible_units(self, *compatible_units):
+        for obj in compatible_units:
+	        self._compatible_units.remove(obj)
 
     limits = []
+    
+    def add_limits(self, *limits):
+        for obj in limits:
+	        self._limits.append(obj)
+        
+    def remove_limits(self, *limits):
+        for obj in limits:
+	        self._limits.remove(obj)
 
-    procedure_data_sets = []
+    def get_procedure_data_sets(self):
+        """ 
+        """
+        return self._procedure_data_sets
 
-    # UserAttributes used to specify procedure values. An example is to have an instance for each of the following settings when conducting a test: voltage, current, frequency, temperature specified in 'name' attribute, and the corresponding value and units in 'value' attribute.
-    procedure_values = []
+    def set_procedure_data_sets(self, value):
+        for x in self._procedure_data_sets:
+            x._procedure = None
+        for y in value:
+            y._procedure = self
+        self._procedure_data_sets = value
+            
+    procedure_data_sets = property(get_procedure_data_sets, set_procedure_data_sets)
+    
+    def add_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+            obj._procedure = self
+            self._procedure_data_sets.append(obj)
+        
+    def remove_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+            obj._procedure = None
+            self._procedure_data_sets.remove(obj)
+
+    def get_procedure_values(self):
+        """ UserAttributes used to specify procedure values. An example is to have an instance for each of the following settings when conducting a test: voltage, current, frequency, temperature specified in 'name' attribute, and the corresponding value and units in 'value' attribute.
+        """
+        return self._procedure_values
+
+    def set_procedure_values(self, value):
+        for x in self._procedure_values:
+            x._procedure = None
+        for y in value:
+            y._procedure = self
+        self._procedure_values = value
+            
+    procedure_values = property(get_procedure_values, set_procedure_values)
+    
+    def add_procedure_values(self, *procedure_values):
+        for obj in procedure_values:
+            obj._procedure = self
+            self._procedure_values.append(obj)
+        
+    def remove_procedure_values(self, *procedure_values):
+        for obj in procedure_values:
+            obj._procedure = None
+            self._procedure_values.remove(obj)
 
     # <<< procedure
     # @generated
@@ -198,9 +482,13 @@ class Procedure(Document):
         self.kind = kind
         self.corporate_code = corporate_code
         self.sequence_number = sequence_number
+        self._compatible_units = []
         self.compatible_units = compatible_units
+        self._limits = []
         self.limits = limits
+        self._procedure_data_sets = []
         self.procedure_data_sets = procedure_data_sets
+        self._procedure_values = []
         self.procedure_values = procedure_values
 
         super(Procedure, self).__init__(**kw_args)
@@ -210,13 +498,28 @@ class Procedure(Document):
 class Cabinet(AssetContainer):
     """ Enclosure that offers protection to the equipment it contains and/or safety to people/animals outside it.
     """
-    cabinet_model = None
+    def get_cabinet_model(self):
+        """ 
+        """
+        return self._cabinet_model
+
+    def set_cabinet_model(self, value):
+        if self._cabinet_model is not None:
+            filtered = [x for x in self.cabinet_model.cabinets if x != self]
+            self._cabinet_model._cabinets = filtered
+            
+        self._cabinet_model = value
+        if self._cabinet_model is not None:
+            self._cabinet_model._cabinets.append(self)
+
+    cabinet_model = property(get_cabinet_model, set_cabinet_model)
 
     # <<< cabinet
     # @generated
     def __init__(self, cabinet_model=None, **kw_args):
         """ Initialises a new 'Cabinet' instance.
         """
+        self._cabinet_model = None
         self.cabinet_model = cabinet_model
 
         super(Cabinet, self).__init__(**kw_args)
@@ -241,11 +544,63 @@ class DimensionsInfo(IdentifiedObject):
     # Diameter measurement. 
     size_diameter = ''
 
-    assets = []
+    def get_assets(self):
+        """ 
+        """
+        return self._assets
 
-    locations = []
+    def set_assets(self, value):
+        for x in self._assets:
+            x._dimensions_info = None
+        for y in value:
+            y._dimensions_info = self
+        self._assets = value
+            
+    assets = property(get_assets, set_assets)
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+            obj._dimensions_info = self
+            self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+            obj._dimensions_info = None
+            self._assets.remove(obj)
+
+    def get_locations(self):
+        """ 
+        """
+        return self._locations
+
+    def set_locations(self, value):
+        for x in self._locations:
+            x._dimensions_info = None
+        for y in value:
+            y._dimensions_info = self
+        self._locations = value
+            
+    locations = property(get_locations, set_locations)
+    
+    def add_locations(self, *locations):
+        for obj in locations:
+            obj._dimensions_info = self
+            self._locations.append(obj)
+        
+    def remove_locations(self, *locations):
+        for obj in locations:
+            obj._dimensions_info = None
+            self._locations.remove(obj)
 
     specifications = []
+    
+    def add_specifications(self, *specifications):
+        for obj in specifications:
+	        self._specifications.append(obj)
+        
+    def remove_specifications(self, *specifications):
+        for obj in specifications:
+	        self._specifications.remove(obj)
 
     # <<< dimensions_info
     # @generated
@@ -257,8 +612,11 @@ class DimensionsInfo(IdentifiedObject):
         self.size_depth = size_depth
         self.size_width = size_width
         self.size_diameter = size_diameter
+        self._assets = []
         self.assets = assets
+        self._locations = []
         self.locations = locations
+        self._specifications = []
         self.specifications = specifications
 
         super(DimensionsInfo, self).__init__(**kw_args)
@@ -268,13 +626,28 @@ class DimensionsInfo(IdentifiedObject):
 class TapChangerAsset(Asset):
     """ Physical asset performing TapChanger function.
     """
-    tap_changer_model = None
+    def get_tap_changer_model(self):
+        """ 
+        """
+        return self._tap_changer_model
+
+    def set_tap_changer_model(self, value):
+        if self._tap_changer_model is not None:
+            filtered = [x for x in self.tap_changer_model.tap_changer_assets if x != self]
+            self._tap_changer_model._tap_changer_assets = filtered
+            
+        self._tap_changer_model = value
+        if self._tap_changer_model is not None:
+            self._tap_changer_model._tap_changer_assets.append(self)
+
+    tap_changer_model = property(get_tap_changer_model, set_tap_changer_model)
 
     # <<< tap_changer_asset
     # @generated
     def __init__(self, tap_changer_model=None, **kw_args):
         """ Initialises a new 'TapChangerAsset' instance.
         """
+        self._tap_changer_model = None
         self.tap_changer_model = tap_changer_model
 
         super(TapChangerAsset, self).__init__(**kw_args)
@@ -302,7 +675,29 @@ class Structure(AssetContainer):
     # Visible height of structure above ground level for overhead construction (e.g., Pole or Tower) or below ground level for an underground vault, manhole, etc. Refer to associated DimensionPropertiesInfo for other types of dimensions. 
     height = ''
 
-    structure_supports = []
+    def get_structure_supports(self):
+        """ 
+        """
+        return self._structure_supports
+
+    def set_structure_supports(self, value):
+        for x in self._structure_supports:
+            x._secured_structure = None
+        for y in value:
+            y._secured_structure = self
+        self._structure_supports = value
+            
+    structure_supports = property(get_structure_supports, set_structure_supports)
+    
+    def add_structure_supports(self, *structure_supports):
+        for obj in structure_supports:
+            obj._secured_structure = self
+            self._structure_supports.append(obj)
+        
+    def remove_structure_supports(self, *structure_supports):
+        for obj in structure_supports:
+            obj._secured_structure = None
+            self._structure_supports.remove(obj)
 
     # <<< structure
     # @generated
@@ -315,6 +710,7 @@ class Structure(AssetContainer):
         self.fumigant_name = fumigant_name
         self.fumigant_applied_date = fumigant_applied_date
         self.height = height
+        self._structure_supports = []
         self.structure_supports = structure_supports
 
         super(Structure, self).__init__(**kw_args)
@@ -339,7 +735,21 @@ class StructureSupport(Asset):
     # Direction of supporting anchor or guy. 
     direction = ''
 
-    secured_structure = None
+    def get_secured_structure(self):
+        """ 
+        """
+        return self._secured_structure
+
+    def set_secured_structure(self, value):
+        if self._secured_structure is not None:
+            filtered = [x for x in self.secured_structure.structure_supports if x != self]
+            self._secured_structure._structure_supports = filtered
+            
+        self._secured_structure = value
+        if self._secured_structure is not None:
+            self._secured_structure._structure_supports.append(self)
+
+    secured_structure = property(get_secured_structure, set_secured_structure)
 
     # <<< structure_support
     # @generated
@@ -351,6 +761,7 @@ class StructureSupport(Asset):
         self.rod_length = rod_length
         self.size = size
         self.direction = direction
+        self._secured_structure = None
         self.secured_structure = secured_structure
 
         super(StructureSupport, self).__init__(**kw_args)
@@ -387,11 +798,59 @@ class SwitchInfo(ElectricalInfo):
     # The highest value of current the switch can make at the rated voltage under specified operating conditions without suffering significant deterioration of its performance. 
     making_capacity = ''
 
-    switch_type_asset = None
+    def get_switch_type_asset(self):
+        """ 
+        """
+        return self._switch_type_asset
 
-    switch_asset_model = None
+    def set_switch_type_asset(self, value):
+        if self._switch_type_asset is not None:
+            self._switch_type_asset._switch_info = None
+            
+        self._switch_type_asset = value
+        if self._switch_type_asset is not None:
+            self._switch_type_asset._switch_info = self
+            
+    switch_type_asset = property(get_switch_type_asset, set_switch_type_asset)
 
-    switch_assets = []
+    def get_switch_asset_model(self):
+        """ 
+        """
+        return self._switch_asset_model
+
+    def set_switch_asset_model(self, value):
+        if self._switch_asset_model is not None:
+            self._switch_asset_model._switch_info = None
+            
+        self._switch_asset_model = value
+        if self._switch_asset_model is not None:
+            self._switch_asset_model._switch_info = self
+            
+    switch_asset_model = property(get_switch_asset_model, set_switch_asset_model)
+
+    def get_switch_assets(self):
+        """ 
+        """
+        return self._switch_assets
+
+    def set_switch_assets(self, value):
+        for x in self._switch_assets:
+            x._switch_info = None
+        for y in value:
+            y._switch_info = self
+        self._switch_assets = value
+            
+    switch_assets = property(get_switch_assets, set_switch_assets)
+    
+    def add_switch_assets(self, *switch_assets):
+        for obj in switch_assets:
+            obj._switch_info = self
+            self._switch_assets.append(obj)
+        
+    def remove_switch_assets(self, *switch_assets):
+        for obj in switch_assets:
+            obj._switch_info = None
+            self._switch_assets.remove(obj)
 
     # <<< switch_info
     # @generated
@@ -407,8 +866,11 @@ class SwitchInfo(ElectricalInfo):
         self.gang = gang
         self.withstand_current = withstand_current
         self.making_capacity = making_capacity
+        self._switch_type_asset = None
         self.switch_type_asset = switch_type_asset
+        self._switch_asset_model = None
         self.switch_asset_model = switch_asset_model
+        self._switch_assets = []
         self.switch_assets = switch_assets
 
         super(SwitchInfo, self).__init__(**kw_args)
@@ -424,9 +886,31 @@ class ElectricalAsset(Asset):
     # If 'isConnected' is true, then this is the as-built phase(s) that the asset is associatied with. Values are: "abn", "bc", "acn", "bn", "ac", "abc", "an", "ab", "c", "b", "abcn", "a", "cn", "n", "bcn"
     phase_code = 'abn'
 
-    conducting_equipment = None
+    def get_conducting_equipment(self):
+        """ 
+        """
+        return self._conducting_equipment
+
+    def set_conducting_equipment(self, value):
+        if self._conducting_equipment is not None:
+            filtered = [x for x in self.conducting_equipment.electrical_assets if x != self]
+            self._conducting_equipment._electrical_assets = filtered
+            
+        self._conducting_equipment = value
+        if self._conducting_equipment is not None:
+            self._conducting_equipment._electrical_assets.append(self)
+
+    conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
 
     electrical_infos = []
+    
+    def add_electrical_infos(self, *electrical_infos):
+        for obj in electrical_infos:
+	        self._electrical_infos.append(obj)
+        
+    def remove_electrical_infos(self, *electrical_infos):
+        for obj in electrical_infos:
+	        self._electrical_infos.remove(obj)
 
     # <<< electrical_asset
     # @generated
@@ -435,7 +919,9 @@ class ElectricalAsset(Asset):
         """
         self.is_connected = is_connected
         self.phase_code = phase_code
+        self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
+        self._electrical_infos = []
         self.electrical_infos = electrical_infos
 
         super(ElectricalAsset, self).__init__(**kw_args)
@@ -496,11 +982,59 @@ class ShuntImpedanceInfo(ElectricalInfo):
     # True if regulated voltages are measured line to line, otherwise they are measured line to ground. 
     v_reg_line_line = False
 
-    shunt_compensator_type_asset = None
+    def get_shunt_compensator_type_asset(self):
+        """ 
+        """
+        return self._shunt_compensator_type_asset
 
-    shunt_compensator_asset_model = None
+    def set_shunt_compensator_type_asset(self, value):
+        if self._shunt_compensator_type_asset is not None:
+            self._shunt_compensator_type_asset._shunt_impedance_info = None
+            
+        self._shunt_compensator_type_asset = value
+        if self._shunt_compensator_type_asset is not None:
+            self._shunt_compensator_type_asset._shunt_impedance_info = self
+            
+    shunt_compensator_type_asset = property(get_shunt_compensator_type_asset, set_shunt_compensator_type_asset)
 
-    shunt_compensator_assets = []
+    def get_shunt_compensator_asset_model(self):
+        """ 
+        """
+        return self._shunt_compensator_asset_model
+
+    def set_shunt_compensator_asset_model(self, value):
+        if self._shunt_compensator_asset_model is not None:
+            self._shunt_compensator_asset_model._shunt_impedance_info = None
+            
+        self._shunt_compensator_asset_model = value
+        if self._shunt_compensator_asset_model is not None:
+            self._shunt_compensator_asset_model._shunt_impedance_info = self
+            
+    shunt_compensator_asset_model = property(get_shunt_compensator_asset_model, set_shunt_compensator_asset_model)
+
+    def get_shunt_compensator_assets(self):
+        """ 
+        """
+        return self._shunt_compensator_assets
+
+    def set_shunt_compensator_assets(self, value):
+        for x in self._shunt_compensator_assets:
+            x._shunt_impedance_info = None
+        for y in value:
+            y._shunt_impedance_info = self
+        self._shunt_compensator_assets = value
+            
+    shunt_compensator_assets = property(get_shunt_compensator_assets, set_shunt_compensator_assets)
+    
+    def add_shunt_compensator_assets(self, *shunt_compensator_assets):
+        for obj in shunt_compensator_assets:
+            obj._shunt_impedance_info = self
+            self._shunt_compensator_assets.append(obj)
+        
+    def remove_shunt_compensator_assets(self, *shunt_compensator_assets):
+        for obj in shunt_compensator_assets:
+            obj._shunt_impedance_info = None
+            self._shunt_compensator_assets.remove(obj)
 
     # <<< shunt_impedance_info
     # @generated
@@ -524,8 +1058,11 @@ class ShuntImpedanceInfo(ElectricalInfo):
         self.branch_direct = branch_direct
         self.sensing_phase_code = sensing_phase_code
         self.v_reg_line_line = v_reg_line_line
+        self._shunt_compensator_type_asset = None
         self.shunt_compensator_type_asset = shunt_compensator_type_asset
+        self._shunt_compensator_asset_model = None
         self.shunt_compensator_asset_model = shunt_compensator_asset_model
+        self._shunt_compensator_assets = []
         self.shunt_compensator_assets = shunt_compensator_assets
 
         super(ShuntImpedanceInfo, self).__init__(**kw_args)
@@ -546,13 +1083,69 @@ class WindingInsulation(IdentifiedObject):
 
     status = None
 
-    from_transformer_winding = None
+    def get_from_transformer_winding(self):
+        """ 
+        """
+        return self._from_transformer_winding
 
-    ground = None
+    def set_from_transformer_winding(self, value):
+        if self._from_transformer_winding is not None:
+            filtered = [x for x in self.from_transformer_winding.from_winding_insulations if x != self]
+            self._from_transformer_winding._from_winding_insulations = filtered
+            
+        self._from_transformer_winding = value
+        if self._from_transformer_winding is not None:
+            self._from_transformer_winding._from_winding_insulations.append(self)
 
-    transformer_observation = None
+    from_transformer_winding = property(get_from_transformer_winding, set_from_transformer_winding)
 
-    to_transformer_winding = None
+    def get_ground(self):
+        """ 
+        """
+        return self._ground
+
+    def set_ground(self, value):
+        if self._ground is not None:
+            filtered = [x for x in self.ground.winding_insulations if x != self]
+            self._ground._winding_insulations = filtered
+            
+        self._ground = value
+        if self._ground is not None:
+            self._ground._winding_insulations.append(self)
+
+    ground = property(get_ground, set_ground)
+
+    def get_transformer_observation(self):
+        """ 
+        """
+        return self._transformer_observation
+
+    def set_transformer_observation(self, value):
+        if self._transformer_observation is not None:
+            filtered = [x for x in self.transformer_observation.winding_insulation_pfs if x != self]
+            self._transformer_observation._winding_insulation_pfs = filtered
+            
+        self._transformer_observation = value
+        if self._transformer_observation is not None:
+            self._transformer_observation._winding_insulation_pfs.append(self)
+
+    transformer_observation = property(get_transformer_observation, set_transformer_observation)
+
+    def get_to_transformer_winding(self):
+        """ 
+        """
+        return self._to_transformer_winding
+
+    def set_to_transformer_winding(self, value):
+        if self._to_transformer_winding is not None:
+            filtered = [x for x in self.to_transformer_winding.to_winding_insulations if x != self]
+            self._to_transformer_winding._to_winding_insulations = filtered
+            
+        self._to_transformer_winding = value
+        if self._to_transformer_winding is not None:
+            self._to_transformer_winding._to_winding_insulations.append(self)
+
+    to_transformer_winding = property(get_to_transformer_winding, set_to_transformer_winding)
 
     # <<< winding_insulation
     # @generated
@@ -563,9 +1156,13 @@ class WindingInsulation(IdentifiedObject):
         self.insulation_resistance = insulation_resistance
         self.insulation_pfstatus = insulation_pfstatus
         self.status = status
+        self._from_transformer_winding = None
         self.from_transformer_winding = from_transformer_winding
+        self._ground = None
         self.ground = ground
+        self._transformer_observation = None
         self.transformer_observation = transformer_observation
+        self._to_transformer_winding = None
         self.to_transformer_winding = to_transformer_winding
 
         super(WindingInsulation, self).__init__(**kw_args)
@@ -584,11 +1181,68 @@ class PotentialTransformerInfo(ElectricalInfo):
     # Ratio for the tertiary winding tap changer.
     tertiary_ratio = None
 
-    potential_transformer_assets = []
+    def get_potential_transformer_assets(self):
+        """ 
+        """
+        return self._potential_transformer_assets
 
-    potential_transformer_type_asset = None
+    def set_potential_transformer_assets(self, value):
+        for x in self._potential_transformer_assets:
+            x._potential_transformer_info = None
+        for y in value:
+            y._potential_transformer_info = self
+        self._potential_transformer_assets = value
+            
+    potential_transformer_assets = property(get_potential_transformer_assets, set_potential_transformer_assets)
+    
+    def add_potential_transformer_assets(self, *potential_transformer_assets):
+        for obj in potential_transformer_assets:
+            obj._potential_transformer_info = self
+            self._potential_transformer_assets.append(obj)
+        
+    def remove_potential_transformer_assets(self, *potential_transformer_assets):
+        for obj in potential_transformer_assets:
+            obj._potential_transformer_info = None
+            self._potential_transformer_assets.remove(obj)
 
-    potential_transformer_asset_models = []
+    def get_potential_transformer_type_asset(self):
+        """ 
+        """
+        return self._potential_transformer_type_asset
+
+    def set_potential_transformer_type_asset(self, value):
+        if self._potential_transformer_type_asset is not None:
+            self._potential_transformer_type_asset._potential_transformer_info = None
+            
+        self._potential_transformer_type_asset = value
+        if self._potential_transformer_type_asset is not None:
+            self._potential_transformer_type_asset._potential_transformer_info = self
+            
+    potential_transformer_type_asset = property(get_potential_transformer_type_asset, set_potential_transformer_type_asset)
+
+    def get_potential_transformer_asset_models(self):
+        """ 
+        """
+        return self._potential_transformer_asset_models
+
+    def set_potential_transformer_asset_models(self, value):
+        for x in self._potential_transformer_asset_models:
+            x._potential_transformer_info = None
+        for y in value:
+            y._potential_transformer_info = self
+        self._potential_transformer_asset_models = value
+            
+    potential_transformer_asset_models = property(get_potential_transformer_asset_models, set_potential_transformer_asset_models)
+    
+    def add_potential_transformer_asset_models(self, *potential_transformer_asset_models):
+        for obj in potential_transformer_asset_models:
+            obj._potential_transformer_info = self
+            self._potential_transformer_asset_models.append(obj)
+        
+    def remove_potential_transformer_asset_models(self, *potential_transformer_asset_models):
+        for obj in potential_transformer_asset_models:
+            obj._potential_transformer_info = None
+            self._potential_transformer_asset_models.remove(obj)
 
     # <<< potential_transformer_info
     # @generated
@@ -598,8 +1252,11 @@ class PotentialTransformerInfo(ElectricalInfo):
         self.secondary_ratio = secondary_ratio
         self.primary_ratio = primary_ratio
         self.tertiary_ratio = tertiary_ratio
+        self._potential_transformer_assets = []
         self.potential_transformer_assets = potential_transformer_assets
+        self._potential_transformer_type_asset = None
         self.potential_transformer_type_asset = potential_transformer_type_asset
+        self._potential_transformer_asset_models = []
         self.potential_transformer_asset_models = potential_transformer_asset_models
 
         super(PotentialTransformerInfo, self).__init__(**kw_args)
@@ -615,11 +1272,45 @@ class SVCInfo(ElectricalInfo):
     # Maximum capacitive reactive power 
     capacitive_rating = ''
 
-    svcasset_model = None
+    def get_svcasset_model(self):
+        """ 
+        """
+        return self._svcasset_model
 
-    svcasset = None
+    def set_svcasset_model(self, value):
+        if self._svcasset_model is not None:
+            self._svcasset_model._svc_info = None
+            
+        self._svcasset_model = value
+        if self._svcasset_model is not None:
+            self._svcasset_model._svc_info = self
+            
+    svcasset_model = property(get_svcasset_model, set_svcasset_model)
+
+    def get_svcasset(self):
+        """ 
+        """
+        return self._svcasset
+
+    def set_svcasset(self, value):
+        if self._svcasset is not None:
+            self._svcasset._svc_info = None
+            
+        self._svcasset = value
+        if self._svcasset is not None:
+            self._svcasset._svc_info = self
+            
+    svcasset = property(get_svcasset, set_svcasset)
 
     svctype_assets = []
+    
+    def add_svctype_assets(self, *svctype_assets):
+        for obj in svctype_assets:
+	        self._svctype_assets.append(obj)
+        
+    def remove_svctype_assets(self, *svctype_assets):
+        for obj in svctype_assets:
+	        self._svctype_assets.remove(obj)
 
     # <<< svcinfo
     # @generated
@@ -628,8 +1319,11 @@ class SVCInfo(ElectricalInfo):
         """
         self.inductive_rating = inductive_rating
         self.capacitive_rating = capacitive_rating
+        self._svcasset_model = None
         self.svcasset_model = svcasset_model
+        self._svcasset = None
         self.svcasset = svcasset
+        self._svctype_assets = []
         self.svctype_assets = svctype_assets
 
         super(SVCInfo, self).__init__(**kw_args)
@@ -642,9 +1336,37 @@ class CompositeSwitchAsset(Asset):
     # Kind of composite switch. Values are: "other", "throw_over", "ug_multi_switch", "esco_throw_over", "gral", "ral", "regulator_bypass"
     kind = 'other'
 
-    composite_switch_info = None
+    def get_composite_switch_info(self):
+        """ 
+        """
+        return self._composite_switch_info
 
-    composite_switch_asset_model = None
+    def set_composite_switch_info(self, value):
+        if self._composite_switch_info is not None:
+            filtered = [x for x in self.composite_switch_info.composite_switch_assets if x != self]
+            self._composite_switch_info._composite_switch_assets = filtered
+            
+        self._composite_switch_info = value
+        if self._composite_switch_info is not None:
+            self._composite_switch_info._composite_switch_assets.append(self)
+
+    composite_switch_info = property(get_composite_switch_info, set_composite_switch_info)
+
+    def get_composite_switch_asset_model(self):
+        """ 
+        """
+        return self._composite_switch_asset_model
+
+    def set_composite_switch_asset_model(self, value):
+        if self._composite_switch_asset_model is not None:
+            filtered = [x for x in self.composite_switch_asset_model.composite_switch_assets if x != self]
+            self._composite_switch_asset_model._composite_switch_assets = filtered
+            
+        self._composite_switch_asset_model = value
+        if self._composite_switch_asset_model is not None:
+            self._composite_switch_asset_model._composite_switch_assets.append(self)
+
+    composite_switch_asset_model = property(get_composite_switch_asset_model, set_composite_switch_asset_model)
 
     # <<< composite_switch_asset
     # @generated
@@ -652,7 +1374,9 @@ class CompositeSwitchAsset(Asset):
         """ Initialises a new 'CompositeSwitchAsset' instance.
         """
         self.kind = kind
+        self._composite_switch_info = None
         self.composite_switch_info = composite_switch_info
+        self._composite_switch_asset_model = None
         self.composite_switch_asset_model = composite_switch_asset_model
 
         super(CompositeSwitchAsset, self).__init__(**kw_args)
@@ -669,8 +1393,30 @@ class Medium(IdentifiedObject):
     kind = 'gas'
 
     assets = []
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+	        self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+	        self._assets.remove(obj)
 
-    specification = None
+    def get_specification(self):
+        """ 
+        """
+        return self._specification
+
+    def set_specification(self, value):
+        if self._specification is not None:
+            filtered = [x for x in self.specification.mediums if x != self]
+            self._specification._mediums = filtered
+            
+        self._specification = value
+        if self._specification is not None:
+            self._specification._mediums.append(self)
+
+    specification = property(get_specification, set_specification)
 
     # <<< medium
     # @generated
@@ -679,7 +1425,9 @@ class Medium(IdentifiedObject):
         """
         self.volume_spec = volume_spec
         self.kind = kind
+        self._assets = []
         self.assets = assets
+        self._specification = None
         self.specification = specification
 
         super(Medium, self).__init__(**kw_args)
@@ -689,16 +1437,46 @@ class Medium(IdentifiedObject):
 class AssetAssetRole(Role):
     """ Roles played between Assets and other Assets.
     """
-    from_asset = None
+    def get_from_asset(self):
+        """ 
+        """
+        return self._from_asset
 
-    to_asset = None
+    def set_from_asset(self, value):
+        if self._from_asset is not None:
+            filtered = [x for x in self.from_asset.to_asset_roles if x != self]
+            self._from_asset._to_asset_roles = filtered
+            
+        self._from_asset = value
+        if self._from_asset is not None:
+            self._from_asset._to_asset_roles.append(self)
+
+    from_asset = property(get_from_asset, set_from_asset)
+
+    def get_to_asset(self):
+        """ 
+        """
+        return self._to_asset
+
+    def set_to_asset(self, value):
+        if self._to_asset is not None:
+            filtered = [x for x in self.to_asset.from_asset_roles if x != self]
+            self._to_asset._from_asset_roles = filtered
+            
+        self._to_asset = value
+        if self._to_asset is not None:
+            self._to_asset._from_asset_roles.append(self)
+
+    to_asset = property(get_to_asset, set_to_asset)
 
     # <<< asset_asset_role
     # @generated
     def __init__(self, from_asset=None, to_asset=None, **kw_args):
         """ Initialises a new 'AssetAssetRole' instance.
         """
+        self._from_asset = None
         self.from_asset = from_asset
+        self._to_asset = None
         self.to_asset = to_asset
 
         super(AssetAssetRole, self).__init__(**kw_args)
@@ -714,11 +1492,37 @@ class WireArrangement(IdentifiedObject):
     # Mounting point where wire One is mounted. 
     mounting_point_x = 0
 
-    # Wire type mounted at a specified place in this wire arrangement.
-    wire_type = None
+    def get_wire_type(self):
+        """ Wire type mounted at a specified place in this wire arrangement.
+        """
+        return self._wire_type
 
-    # Conductor type owning this wire arangement.
-    conductor_type = None
+    def set_wire_type(self, value):
+        if self._wire_type is not None:
+            filtered = [x for x in self.wire_type.wire_arrangements if x != self]
+            self._wire_type._wire_arrangements = filtered
+            
+        self._wire_type = value
+        if self._wire_type is not None:
+            self._wire_type._wire_arrangements.append(self)
+
+    wire_type = property(get_wire_type, set_wire_type)
+
+    def get_conductor_type(self):
+        """ Conductor type owning this wire arangement.
+        """
+        return self._conductor_type
+
+    def set_conductor_type(self, value):
+        if self._conductor_type is not None:
+            filtered = [x for x in self.conductor_type.wire_arrangements if x != self]
+            self._conductor_type._wire_arrangements = filtered
+            
+        self._conductor_type = value
+        if self._conductor_type is not None:
+            self._conductor_type._wire_arrangements.append(self)
+
+    conductor_type = property(get_conductor_type, set_conductor_type)
 
     # <<< wire_arrangement
     # @generated
@@ -727,7 +1531,9 @@ class WireArrangement(IdentifiedObject):
         """
         self.mounting_point_y = mounting_point_y
         self.mounting_point_x = mounting_point_x
+        self._wire_type = None
         self.wire_type = wire_type
+        self._conductor_type = None
         self.conductor_type = conductor_type
 
         super(WireArrangement, self).__init__(**kw_args)
@@ -743,9 +1549,31 @@ class ReliabilityInfo(IdentifiedObject):
     # Mean time to repair (MTTR - hours). 
     m_ttr = ''
 
-    specification = None
+    def get_specification(self):
+        """ 
+        """
+        return self._specification
+
+    def set_specification(self, value):
+        if self._specification is not None:
+            filtered = [x for x in self.specification.reliability_infos if x != self]
+            self._specification._reliability_infos = filtered
+            
+        self._specification = value
+        if self._specification is not None:
+            self._specification._reliability_infos.append(self)
+
+    specification = property(get_specification, set_specification)
 
     assets = []
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+	        self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+	        self._assets.remove(obj)
 
     # <<< reliability_info
     # @generated
@@ -754,7 +1582,9 @@ class ReliabilityInfo(IdentifiedObject):
         """
         self.mom_failure_rate = mom_failure_rate
         self.m_ttr = m_ttr
+        self._specification = None
         self.specification = specification
+        self._assets = []
         self.assets = assets
 
         super(ReliabilityInfo, self).__init__(**kw_args)
@@ -818,11 +1648,77 @@ class TransformerInfo(ElectricalInfo):
     # Details on winding, allowing to specify winding code such as DYn11, DYn1 or DY11.
     winding_code = None
 
-    transformer_type_assets = []
+    def get_transformer_type_assets(self):
+        """ 
+        """
+        return self._transformer_type_assets
 
-    transformer_assets = []
+    def set_transformer_type_assets(self, value):
+        for x in self._transformer_type_assets:
+            x._transformer_info = None
+        for y in value:
+            y._transformer_info = self
+        self._transformer_type_assets = value
+            
+    transformer_type_assets = property(get_transformer_type_assets, set_transformer_type_assets)
+    
+    def add_transformer_type_assets(self, *transformer_type_assets):
+        for obj in transformer_type_assets:
+            obj._transformer_info = self
+            self._transformer_type_assets.append(obj)
+        
+    def remove_transformer_type_assets(self, *transformer_type_assets):
+        for obj in transformer_type_assets:
+            obj._transformer_info = None
+            self._transformer_type_assets.remove(obj)
 
-    transformer_asset_models = []
+    def get_transformer_assets(self):
+        """ 
+        """
+        return self._transformer_assets
+
+    def set_transformer_assets(self, value):
+        for x in self._transformer_assets:
+            x._transformer_info = None
+        for y in value:
+            y._transformer_info = self
+        self._transformer_assets = value
+            
+    transformer_assets = property(get_transformer_assets, set_transformer_assets)
+    
+    def add_transformer_assets(self, *transformer_assets):
+        for obj in transformer_assets:
+            obj._transformer_info = self
+            self._transformer_assets.append(obj)
+        
+    def remove_transformer_assets(self, *transformer_assets):
+        for obj in transformer_assets:
+            obj._transformer_info = None
+            self._transformer_assets.remove(obj)
+
+    def get_transformer_asset_models(self):
+        """ 
+        """
+        return self._transformer_asset_models
+
+    def set_transformer_asset_models(self, value):
+        for x in self._transformer_asset_models:
+            x._transformer_info = None
+        for y in value:
+            y._transformer_info = self
+        self._transformer_asset_models = value
+            
+    transformer_asset_models = property(get_transformer_asset_models, set_transformer_asset_models)
+    
+    def add_transformer_asset_models(self, *transformer_asset_models):
+        for obj in transformer_asset_models:
+            obj._transformer_info = self
+            self._transformer_asset_models.append(obj)
+        
+    def remove_transformer_asset_models(self, *transformer_asset_models):
+        for obj in transformer_asset_models:
+            obj._transformer_info = None
+            self._transformer_asset_models.remove(obj)
 
     # <<< transformer_info
     # @generated
@@ -847,8 +1743,11 @@ class TransformerInfo(ElectricalInfo):
         self.rev_reg_t = rev_reg_t
         self.impedance_hx = impedance_hx
         self.winding_code = winding_code
+        self._transformer_type_assets = []
         self.transformer_type_assets = transformer_type_assets
+        self._transformer_assets = []
         self.transformer_assets = transformer_assets
+        self._transformer_asset_models = []
         self.transformer_asset_models = transformer_asset_models
 
         super(TransformerInfo, self).__init__(**kw_args)
@@ -858,14 +1757,36 @@ class TransformerInfo(ElectricalInfo):
 class ComEquipmentAsset(AssetContainer):
     """ Communicaiton equipment, other than media, such as gateways, routers, controllers, etc.
     """
-    # All device functions of this communication equipment asset.
-    device_functions = []
+    def get_device_functions(self):
+        """ All device functions of this communication equipment asset.
+        """
+        return self._device_functions
+
+    def set_device_functions(self, value):
+        for x in self._device_functions:
+            x._com_equipment_asset = None
+        for y in value:
+            y._com_equipment_asset = self
+        self._device_functions = value
+            
+    device_functions = property(get_device_functions, set_device_functions)
+    
+    def add_device_functions(self, *device_functions):
+        for obj in device_functions:
+            obj._com_equipment_asset = self
+            self._device_functions.append(obj)
+        
+    def remove_device_functions(self, *device_functions):
+        for obj in device_functions:
+            obj._com_equipment_asset = None
+            self._device_functions.remove(obj)
 
     # <<< com_equipment_asset
     # @generated
     def __init__(self, device_functions=[], **kw_args):
         """ Initialises a new 'ComEquipmentAsset' instance.
         """
+        self._device_functions = []
         self.device_functions = device_functions
 
         super(ComEquipmentAsset, self).__init__(**kw_args)
@@ -881,15 +1802,92 @@ class ConductorType(IdentifiedObject):
     # Resistance of the sheath for cable conductors. 
     sheath_resistance = ''
 
-    # All wire arrangements for this conductor type.
-    wire_arrangements = []
+    def get_wire_arrangements(self):
+        """ All wire arrangements for this conductor type.
+        """
+        return self._wire_arrangements
 
-    linear_conductor_assets = []
+    def set_wire_arrangements(self, value):
+        for x in self._wire_arrangements:
+            x._conductor_type = None
+        for y in value:
+            y._conductor_type = self
+        self._wire_arrangements = value
+            
+    wire_arrangements = property(get_wire_arrangements, set_wire_arrangements)
+    
+    def add_wire_arrangements(self, *wire_arrangements):
+        for obj in wire_arrangements:
+            obj._conductor_type = self
+            self._wire_arrangements.append(obj)
+        
+    def remove_wire_arrangements(self, *wire_arrangements):
+        for obj in wire_arrangements:
+            obj._conductor_type = None
+            self._wire_arrangements.remove(obj)
 
-    # All conductors this conductor type physically describes.
-    conductors = []
+    def get_linear_conductor_assets(self):
+        """ 
+        """
+        return self._linear_conductor_assets
 
-    linear_conductro_type_asset = None
+    def set_linear_conductor_assets(self, value):
+        for x in self._linear_conductor_assets:
+            x._conductor_type = None
+        for y in value:
+            y._conductor_type = self
+        self._linear_conductor_assets = value
+            
+    linear_conductor_assets = property(get_linear_conductor_assets, set_linear_conductor_assets)
+    
+    def add_linear_conductor_assets(self, *linear_conductor_assets):
+        for obj in linear_conductor_assets:
+            obj._conductor_type = self
+            self._linear_conductor_assets.append(obj)
+        
+    def remove_linear_conductor_assets(self, *linear_conductor_assets):
+        for obj in linear_conductor_assets:
+            obj._conductor_type = None
+            self._linear_conductor_assets.remove(obj)
+
+    def get_conductors(self):
+        """ All conductors this conductor type physically describes.
+        """
+        return self._conductors
+
+    def set_conductors(self, value):
+        for x in self._conductors:
+            x._conductor_type = None
+        for y in value:
+            y._conductor_type = self
+        self._conductors = value
+            
+    conductors = property(get_conductors, set_conductors)
+    
+    def add_conductors(self, *conductors):
+        for obj in conductors:
+            obj._conductor_type = self
+            self._conductors.append(obj)
+        
+    def remove_conductors(self, *conductors):
+        for obj in conductors:
+            obj._conductor_type = None
+            self._conductors.remove(obj)
+
+    def get_linear_conductro_type_asset(self):
+        """ 
+        """
+        return self._linear_conductro_type_asset
+
+    def set_linear_conductro_type_asset(self, value):
+        if self._linear_conductro_type_asset is not None:
+            self._linear_conductro_type_asset._conductor_type = None
+            
+        self._linear_conductro_type_asset = value
+        if self._linear_conductro_type_asset is not None:
+            self._linear_conductro_type_asset._conductor_type = self
+            
+    linear_conductro_type_asset = property(get_linear_conductro_type_asset, set_linear_conductro_type_asset)
 
     # <<< conductor_type
     # @generated
@@ -898,9 +1896,13 @@ class ConductorType(IdentifiedObject):
         """
         self.sheath_reactance = sheath_reactance
         self.sheath_resistance = sheath_resistance
+        self._wire_arrangements = []
         self.wire_arrangements = wire_arrangements
+        self._linear_conductor_assets = []
         self.linear_conductor_assets = linear_conductor_assets
+        self._conductors = []
         self.conductors = conductors
+        self._linear_conductro_type_asset = None
         self.linear_conductro_type_asset = linear_conductro_type_asset
 
         super(ConductorType, self).__init__(**kw_args)
@@ -928,8 +1930,29 @@ class WireType(IdentifiedObject):
     # Number of conductor strands in the (symmetrical) bundle (1-12) 
     phase_conductor_count = 0
 
-    # All wire arrangements this wire type is mounted in.
-    wire_arrangements = []
+    def get_wire_arrangements(self):
+        """ All wire arrangements this wire type is mounted in.
+        """
+        return self._wire_arrangements
+
+    def set_wire_arrangements(self, value):
+        for x in self._wire_arrangements:
+            x._wire_type = None
+        for y in value:
+            y._wire_type = self
+        self._wire_arrangements = value
+            
+    wire_arrangements = property(get_wire_arrangements, set_wire_arrangements)
+    
+    def add_wire_arrangements(self, *wire_arrangements):
+        for obj in wire_arrangements:
+            obj._wire_type = self
+            self._wire_arrangements.append(obj)
+        
+    def remove_wire_arrangements(self, *wire_arrangements):
+        for obj in wire_arrangements:
+            obj._wire_type = None
+            self._wire_arrangements.remove(obj)
 
     # <<< wire_type
     # @generated
@@ -942,6 +1965,7 @@ class WireType(IdentifiedObject):
         self.phase_conductor_spacing = phase_conductor_spacing
         self.radius = radius
         self.phase_conductor_count = phase_conductor_count
+        self._wire_arrangements = []
         self.wire_arrangements = wire_arrangements
 
         super(WireType, self).__init__(**kw_args)
@@ -956,9 +1980,37 @@ class BushingInsulationPF(IdentifiedObject):
 
     status = None
 
-    transformer_observation = None
+    def get_transformer_observation(self):
+        """ 
+        """
+        return self._transformer_observation
 
-    bushing_asset = None
+    def set_transformer_observation(self, value):
+        if self._transformer_observation is not None:
+            filtered = [x for x in self.transformer_observation.bushing_insultation_pfs if x != self]
+            self._transformer_observation._bushing_insultation_pfs = filtered
+            
+        self._transformer_observation = value
+        if self._transformer_observation is not None:
+            self._transformer_observation._bushing_insultation_pfs.append(self)
+
+    transformer_observation = property(get_transformer_observation, set_transformer_observation)
+
+    def get_bushing_asset(self):
+        """ 
+        """
+        return self._bushing_asset
+
+    def set_bushing_asset(self, value):
+        if self._bushing_asset is not None:
+            filtered = [x for x in self.bushing_asset.bushing_insulation_pfs if x != self]
+            self._bushing_asset._bushing_insulation_pfs = filtered
+            
+        self._bushing_asset = value
+        if self._bushing_asset is not None:
+            self._bushing_asset._bushing_insulation_pfs.append(self)
+
+    bushing_asset = property(get_bushing_asset, set_bushing_asset)
 
     # <<< bushing_insulation_pf
     # @generated
@@ -967,7 +2019,9 @@ class BushingInsulationPF(IdentifiedObject):
         """
         self.test_kind = test_kind
         self.status = status
+        self._transformer_observation = None
         self.transformer_observation = transformer_observation
+        self._bushing_asset = None
         self.bushing_asset = bushing_asset
 
         super(BushingInsulationPF, self).__init__(**kw_args)
@@ -995,11 +2049,68 @@ class CurrentTransformerInfo(ElectricalInfo):
     # Ratio for the primary winding tap changer.
     primary_ratio = None
 
-    current_transformer_assert_models = []
+    def get_current_transformer_assert_models(self):
+        """ 
+        """
+        return self._current_transformer_assert_models
 
-    current_transformer_type_asset = None
+    def set_current_transformer_assert_models(self, value):
+        for x in self._current_transformer_assert_models:
+            x._current_transformer_info = None
+        for y in value:
+            y._current_transformer_info = self
+        self._current_transformer_assert_models = value
+            
+    current_transformer_assert_models = property(get_current_transformer_assert_models, set_current_transformer_assert_models)
+    
+    def add_current_transformer_assert_models(self, *current_transformer_assert_models):
+        for obj in current_transformer_assert_models:
+            obj._current_transformer_info = self
+            self._current_transformer_assert_models.append(obj)
+        
+    def remove_current_transformer_assert_models(self, *current_transformer_assert_models):
+        for obj in current_transformer_assert_models:
+            obj._current_transformer_info = None
+            self._current_transformer_assert_models.remove(obj)
 
-    current_transformer_assets = []
+    def get_current_transformer_type_asset(self):
+        """ 
+        """
+        return self._current_transformer_type_asset
+
+    def set_current_transformer_type_asset(self, value):
+        if self._current_transformer_type_asset is not None:
+            self._current_transformer_type_asset._current_transformer_info = None
+            
+        self._current_transformer_type_asset = value
+        if self._current_transformer_type_asset is not None:
+            self._current_transformer_type_asset._current_transformer_info = self
+            
+    current_transformer_type_asset = property(get_current_transformer_type_asset, set_current_transformer_type_asset)
+
+    def get_current_transformer_assets(self):
+        """ 
+        """
+        return self._current_transformer_assets
+
+    def set_current_transformer_assets(self, value):
+        for x in self._current_transformer_assets:
+            x._current_transformer_info = None
+        for y in value:
+            y._current_transformer_info = self
+        self._current_transformer_assets = value
+            
+    current_transformer_assets = property(get_current_transformer_assets, set_current_transformer_assets)
+    
+    def add_current_transformer_assets(self, *current_transformer_assets):
+        for obj in current_transformer_assets:
+            obj._current_transformer_info = self
+            self._current_transformer_assets.append(obj)
+        
+    def remove_current_transformer_assets(self, *current_transformer_assets):
+        for obj in current_transformer_assets:
+            obj._current_transformer_info = None
+            self._current_transformer_assets.remove(obj)
 
     # <<< current_transformer_info
     # @generated
@@ -1012,8 +2123,11 @@ class CurrentTransformerInfo(ElectricalInfo):
         self.secondary_ratio = secondary_ratio
         self.tertiary_ratio = tertiary_ratio
         self.primary_ratio = primary_ratio
+        self._current_transformer_assert_models = []
         self.current_transformer_assert_models = current_transformer_assert_models
+        self._current_transformer_type_asset = None
         self.current_transformer_type_asset = current_transformer_type_asset
+        self._current_transformer_assets = []
         self.current_transformer_assets = current_transformer_assets
 
         super(CurrentTransformerInfo, self).__init__(**kw_args)
@@ -1026,9 +2140,37 @@ class OrgAssetRole(Role):
     # If the role type is 'owner,' this indicate the percentage of ownership. 
     percent_ownership = 0.0
 
-    erp_organisation = None
+    def get_erp_organisation(self):
+        """ 
+        """
+        return self._erp_organisation
 
-    asset = None
+    def set_erp_organisation(self, value):
+        if self._erp_organisation is not None:
+            filtered = [x for x in self.erp_organisation.asset_roles if x != self]
+            self._erp_organisation._asset_roles = filtered
+            
+        self._erp_organisation = value
+        if self._erp_organisation is not None:
+            self._erp_organisation._asset_roles.append(self)
+
+    erp_organisation = property(get_erp_organisation, set_erp_organisation)
+
+    def get_asset(self):
+        """ 
+        """
+        return self._asset
+
+    def set_asset(self, value):
+        if self._asset is not None:
+            filtered = [x for x in self.asset.erp_organisation_roles if x != self]
+            self._asset._erp_organisation_roles = filtered
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._erp_organisation_roles.append(self)
+
+    asset = property(get_asset, set_asset)
 
     # <<< org_asset_role
     # @generated
@@ -1036,7 +2178,9 @@ class OrgAssetRole(Role):
         """ Initialises a new 'OrgAssetRole' instance.
         """
         self.percent_ownership = percent_ownership
+        self._erp_organisation = None
         self.erp_organisation = erp_organisation
+        self._asset = None
         self.asset = asset
 
         super(OrgAssetRole, self).__init__(**kw_args)
@@ -1055,9 +2199,37 @@ class Vehicle(Asset):
     # The general categorization type of vehicle as categorized by the utility's asset management standards and practices. Note: (1) Vehicle model is defined by VehicleAssetModel, and (2) Specific people and organizations and their roles relative to this vehicle may be determined by the inherited Asset-ErpPerson and Asset-Organization associations. Values are: "crew", "other", "user", "contractor"
     usage_kind = 'crew'
 
-    vehicle_asset_model = None
+    def get_vehicle_asset_model(self):
+        """ 
+        """
+        return self._vehicle_asset_model
 
-    crew = None
+    def set_vehicle_asset_model(self, value):
+        if self._vehicle_asset_model is not None:
+            filtered = [x for x in self.vehicle_asset_model.vehicles if x != self]
+            self._vehicle_asset_model._vehicles = filtered
+            
+        self._vehicle_asset_model = value
+        if self._vehicle_asset_model is not None:
+            self._vehicle_asset_model._vehicles.append(self)
+
+    vehicle_asset_model = property(get_vehicle_asset_model, set_vehicle_asset_model)
+
+    def get_crew(self):
+        """ 
+        """
+        return self._crew
+
+    def set_crew(self, value):
+        if self._crew is not None:
+            filtered = [x for x in self.crew.vehicles if x != self]
+            self._crew._vehicles = filtered
+            
+        self._crew = value
+        if self._crew is not None:
+            self._crew._vehicles.append(self)
+
+    crew = property(get_crew, set_crew)
 
     # <<< vehicle
     # @generated
@@ -1067,7 +2239,9 @@ class Vehicle(Asset):
         self.odometer_reading = odometer_reading
         self.odometer_read_date_time = odometer_read_date_time
         self.usage_kind = usage_kind
+        self._vehicle_asset_model = None
         self.vehicle_asset_model = vehicle_asset_model
+        self._crew = None
         self.crew = crew
 
         super(Vehicle, self).__init__(**kw_args)
@@ -1078,15 +2252,39 @@ class AssetPropertyCurve(Curve):
     """ An Asset Property that is described through curves rather than as a data point. The relationship is to be defined between an independent variable (X-axis) and one or two dependent variables (Y1-axis and Y2-axis).
     """
     assets = []
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+	        self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+	        self._assets.remove(obj)
 
-    specification = None
+    def get_specification(self):
+        """ 
+        """
+        return self._specification
+
+    def set_specification(self, value):
+        if self._specification is not None:
+            filtered = [x for x in self.specification.asset_property_curves if x != self]
+            self._specification._asset_property_curves = filtered
+            
+        self._specification = value
+        if self._specification is not None:
+            self._specification._asset_property_curves.append(self)
+
+    specification = property(get_specification, set_specification)
 
     # <<< asset_property_curve
     # @generated
     def __init__(self, assets=[], specification=None, **kw_args):
         """ Initialises a new 'AssetPropertyCurve' instance.
         """
+        self._assets = []
         self.assets = assets
+        self._specification = None
         self.specification = specification
 
         super(AssetPropertyCurve, self).__init__(**kw_args)
@@ -1099,9 +2297,37 @@ class Tool(Asset):
     # Date the tool was last caibrated, if applicable. 
     last_calibration_date = ''
 
-    crew = None
+    def get_crew(self):
+        """ 
+        """
+        return self._crew
 
-    tool_asset_model = None
+    def set_crew(self, value):
+        if self._crew is not None:
+            filtered = [x for x in self.crew.tools if x != self]
+            self._crew._tools = filtered
+            
+        self._crew = value
+        if self._crew is not None:
+            self._crew._tools.append(self)
+
+    crew = property(get_crew, set_crew)
+
+    def get_tool_asset_model(self):
+        """ 
+        """
+        return self._tool_asset_model
+
+    def set_tool_asset_model(self, value):
+        if self._tool_asset_model is not None:
+            filtered = [x for x in self.tool_asset_model.tools if x != self]
+            self._tool_asset_model._tools = filtered
+            
+        self._tool_asset_model = value
+        if self._tool_asset_model is not None:
+            self._tool_asset_model._tools.append(self)
+
+    tool_asset_model = property(get_tool_asset_model, set_tool_asset_model)
 
     # <<< tool
     # @generated
@@ -1109,7 +2335,9 @@ class Tool(Asset):
         """ Initialises a new 'Tool' instance.
         """
         self.last_calibration_date = last_calibration_date
+        self._crew = None
         self.crew = crew
+        self._tool_asset_model = None
         self.tool_asset_model = tool_asset_model
 
         super(Tool, self).__init__(**kw_args)
@@ -1190,14 +2418,88 @@ class TransformerObservation(IdentifiedObject):
     status = None
 
     procedure_data_sets = []
+    
+    def add_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+	        self._procedure_data_sets.append(obj)
+        
+    def remove_procedure_data_sets(self, *procedure_data_sets):
+        for obj in procedure_data_sets:
+	        self._procedure_data_sets.remove(obj)
 
-    winding_insulation_pfs = []
+    def get_winding_insulation_pfs(self):
+        """ 
+        """
+        return self._winding_insulation_pfs
 
-    bushing_insultation_pfs = []
+    def set_winding_insulation_pfs(self, value):
+        for x in self._winding_insulation_pfs:
+            x._transformer_observation = None
+        for y in value:
+            y._transformer_observation = self
+        self._winding_insulation_pfs = value
+            
+    winding_insulation_pfs = property(get_winding_insulation_pfs, set_winding_insulation_pfs)
+    
+    def add_winding_insulation_pfs(self, *winding_insulation_pfs):
+        for obj in winding_insulation_pfs:
+            obj._transformer_observation = self
+            self._winding_insulation_pfs.append(obj)
+        
+    def remove_winding_insulation_pfs(self, *winding_insulation_pfs):
+        for obj in winding_insulation_pfs:
+            obj._transformer_observation = None
+            self._winding_insulation_pfs.remove(obj)
 
-    transformer_asset = None
+    def get_bushing_insultation_pfs(self):
+        """ 
+        """
+        return self._bushing_insultation_pfs
+
+    def set_bushing_insultation_pfs(self, value):
+        for x in self._bushing_insultation_pfs:
+            x._transformer_observation = None
+        for y in value:
+            y._transformer_observation = self
+        self._bushing_insultation_pfs = value
+            
+    bushing_insultation_pfs = property(get_bushing_insultation_pfs, set_bushing_insultation_pfs)
+    
+    def add_bushing_insultation_pfs(self, *bushing_insultation_pfs):
+        for obj in bushing_insultation_pfs:
+            obj._transformer_observation = self
+            self._bushing_insultation_pfs.append(obj)
+        
+    def remove_bushing_insultation_pfs(self, *bushing_insultation_pfs):
+        for obj in bushing_insultation_pfs:
+            obj._transformer_observation = None
+            self._bushing_insultation_pfs.remove(obj)
+
+    def get_transformer_asset(self):
+        """ 
+        """
+        return self._transformer_asset
+
+    def set_transformer_asset(self, value):
+        if self._transformer_asset is not None:
+            filtered = [x for x in self.transformer_asset.transformer_observations if x != self]
+            self._transformer_asset._transformer_observations = filtered
+            
+        self._transformer_asset = value
+        if self._transformer_asset is not None:
+            self._transformer_asset._transformer_observations.append(self)
+
+    transformer_asset = property(get_transformer_asset, set_transformer_asset)
 
     winding_tests = []
+    
+    def add_winding_tests(self, *winding_tests):
+        for obj in winding_tests:
+	        self._winding_tests.append(obj)
+        
+    def remove_winding_tests(self, *winding_tests):
+        for obj in winding_tests:
+	        self._winding_tests.remove(obj)
 
     # <<< transformer_observation
     # @generated
@@ -1218,10 +2520,15 @@ class TransformerObservation(IdentifiedObject):
         self.oil_color = oil_color
         self.oil_ift = oil_ift
         self.status = status
+        self._procedure_data_sets = []
         self.procedure_data_sets = procedure_data_sets
+        self._winding_insulation_pfs = []
         self.winding_insulation_pfs = winding_insulation_pfs
+        self._bushing_insultation_pfs = []
         self.bushing_insultation_pfs = bushing_insultation_pfs
+        self._transformer_asset = None
         self.transformer_asset = transformer_asset
+        self._winding_tests = []
         self.winding_tests = winding_tests
 
         super(TransformerObservation, self).__init__(**kw_args)
@@ -1255,11 +2562,59 @@ class CompositeSwitchInfo(IdentifiedObject):
     # Initial operating mode, with the following values: Automatic, Manual. 
     init_op_mode = ''
 
-    composite_switch_type_asset = None
+    def get_composite_switch_type_asset(self):
+        """ 
+        """
+        return self._composite_switch_type_asset
 
-    composite_switch_asset_model = None
+    def set_composite_switch_type_asset(self, value):
+        if self._composite_switch_type_asset is not None:
+            self._composite_switch_type_asset._composite_switch_info = None
+            
+        self._composite_switch_type_asset = value
+        if self._composite_switch_type_asset is not None:
+            self._composite_switch_type_asset._composite_switch_info = self
+            
+    composite_switch_type_asset = property(get_composite_switch_type_asset, set_composite_switch_type_asset)
 
-    composite_switch_assets = []
+    def get_composite_switch_asset_model(self):
+        """ 
+        """
+        return self._composite_switch_asset_model
+
+    def set_composite_switch_asset_model(self, value):
+        if self._composite_switch_asset_model is not None:
+            self._composite_switch_asset_model._composite_switch_info = None
+            
+        self._composite_switch_asset_model = value
+        if self._composite_switch_asset_model is not None:
+            self._composite_switch_asset_model._composite_switch_info = self
+            
+    composite_switch_asset_model = property(get_composite_switch_asset_model, set_composite_switch_asset_model)
+
+    def get_composite_switch_assets(self):
+        """ 
+        """
+        return self._composite_switch_assets
+
+    def set_composite_switch_assets(self, value):
+        for x in self._composite_switch_assets:
+            x._composite_switch_info = None
+        for y in value:
+            y._composite_switch_info = self
+        self._composite_switch_assets = value
+            
+    composite_switch_assets = property(get_composite_switch_assets, set_composite_switch_assets)
+    
+    def add_composite_switch_assets(self, *composite_switch_assets):
+        for obj in composite_switch_assets:
+            obj._composite_switch_info = self
+            self._composite_switch_assets.append(obj)
+        
+    def remove_composite_switch_assets(self, *composite_switch_assets):
+        for obj in composite_switch_assets:
+            obj._composite_switch_info = None
+            self._composite_switch_assets.remove(obj)
 
     # <<< composite_switch_info
     # @generated
@@ -1274,8 +2629,11 @@ class CompositeSwitchInfo(IdentifiedObject):
         self.phase_code = phase_code
         self.switch_state_count = switch_state_count
         self.init_op_mode = init_op_mode
+        self._composite_switch_type_asset = None
         self.composite_switch_type_asset = composite_switch_type_asset
+        self._composite_switch_asset_model = None
         self.composite_switch_asset_model = composite_switch_asset_model
+        self._composite_switch_assets = []
         self.composite_switch_assets = composite_switch_assets
 
         super(CompositeSwitchInfo, self).__init__(**kw_args)
@@ -1285,16 +2643,46 @@ class CompositeSwitchInfo(IdentifiedObject):
 class AssetPsrRole(Role):
     """ Roles played between Assets and Power System Resources.
     """
-    asset = None
+    def get_asset(self):
+        """ 
+        """
+        return self._asset
 
-    power_system_resource = None
+    def set_asset(self, value):
+        if self._asset is not None:
+            filtered = [x for x in self.asset.power_system_resource_roles if x != self]
+            self._asset._power_system_resource_roles = filtered
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._power_system_resource_roles.append(self)
+
+    asset = property(get_asset, set_asset)
+
+    def get_power_system_resource(self):
+        """ 
+        """
+        return self._power_system_resource
+
+    def set_power_system_resource(self, value):
+        if self._power_system_resource is not None:
+            filtered = [x for x in self.power_system_resource.asset_roles if x != self]
+            self._power_system_resource._asset_roles = filtered
+            
+        self._power_system_resource = value
+        if self._power_system_resource is not None:
+            self._power_system_resource._asset_roles.append(self)
+
+    power_system_resource = property(get_power_system_resource, set_power_system_resource)
 
     # <<< asset_psr_role
     # @generated
     def __init__(self, asset=None, power_system_resource=None, **kw_args):
         """ Initialises a new 'AssetPsrRole' instance.
         """
+        self._asset = None
         self.asset = asset
+        self._power_system_resource = None
         self.power_system_resource = power_system_resource
 
         super(AssetPsrRole, self).__init__(**kw_args)
@@ -1306,7 +2694,20 @@ class PSRStatus(IdentifiedObject):
     """
     status = None
 
-    power_system_resource = None
+    def get_power_system_resource(self):
+        """ 
+        """
+        return self._power_system_resource
+
+    def set_power_system_resource(self, value):
+        if self._power_system_resource is not None:
+            self._power_system_resource._psrstatus = None
+            
+        self._power_system_resource = value
+        if self._power_system_resource is not None:
+            self._power_system_resource._psrstatus = self
+            
+    power_system_resource = property(get_power_system_resource, set_power_system_resource)
 
     # <<< psrstatus
     # @generated
@@ -1314,6 +2715,7 @@ class PSRStatus(IdentifiedObject):
         """ Initialises a new 'PSRStatus' instance.
         """
         self.status = status
+        self._power_system_resource = None
         self.power_system_resource = power_system_resource
 
         super(PSRStatus, self).__init__(**kw_args)
@@ -1323,19 +2725,72 @@ class PSRStatus(IdentifiedObject):
 class WorkEquipmentAsset(Asset):
     """ Various equipment used to perform units of work by crews, office staff, etc.
     """
-    crew = None
+    def get_crew(self):
+        """ 
+        """
+        return self._crew
 
-    work_equipment_asset_model = None
+    def set_crew(self, value):
+        if self._crew is not None:
+            filtered = [x for x in self.crew.work_equipment_assets if x != self]
+            self._crew._work_equipment_assets = filtered
+            
+        self._crew = value
+        if self._crew is not None:
+            self._crew._work_equipment_assets.append(self)
 
-    usages = []
+    crew = property(get_crew, set_crew)
+
+    def get_work_equipment_asset_model(self):
+        """ 
+        """
+        return self._work_equipment_asset_model
+
+    def set_work_equipment_asset_model(self, value):
+        if self._work_equipment_asset_model is not None:
+            filtered = [x for x in self.work_equipment_asset_model.work_equipment_assets if x != self]
+            self._work_equipment_asset_model._work_equipment_assets = filtered
+            
+        self._work_equipment_asset_model = value
+        if self._work_equipment_asset_model is not None:
+            self._work_equipment_asset_model._work_equipment_assets.append(self)
+
+    work_equipment_asset_model = property(get_work_equipment_asset_model, set_work_equipment_asset_model)
+
+    def get_usages(self):
+        """ 
+        """
+        return self._usages
+
+    def set_usages(self, value):
+        for x in self._usages:
+            x._work_equipment_asset = None
+        for y in value:
+            y._work_equipment_asset = self
+        self._usages = value
+            
+    usages = property(get_usages, set_usages)
+    
+    def add_usages(self, *usages):
+        for obj in usages:
+            obj._work_equipment_asset = self
+            self._usages.append(obj)
+        
+    def remove_usages(self, *usages):
+        for obj in usages:
+            obj._work_equipment_asset = None
+            self._usages.remove(obj)
 
     # <<< work_equipment_asset
     # @generated
     def __init__(self, crew=None, work_equipment_asset_model=None, usages=[], **kw_args):
         """ Initialises a new 'WorkEquipmentAsset' instance.
         """
+        self._crew = None
         self.crew = crew
+        self._work_equipment_asset_model = None
         self.work_equipment_asset_model = work_equipment_asset_model
+        self._usages = []
         self.usages = usages
 
         super(WorkEquipmentAsset, self).__init__(**kw_args)
@@ -1351,9 +2806,31 @@ class DuctBank(Asset):
     # Number of circuits in duct bank. Refer to associations between a duct (LinearAsset) and an ACLineSegment to understand which circuits are in which ducts. 
     circuit_count = 0
 
-    duct_band_type_asset = None
+    def get_duct_band_type_asset(self):
+        """ 
+        """
+        return self._duct_band_type_asset
+
+    def set_duct_band_type_asset(self, value):
+        if self._duct_band_type_asset is not None:
+            filtered = [x for x in self.duct_band_type_asset.duct_banks if x != self]
+            self._duct_band_type_asset._duct_banks = filtered
+            
+        self._duct_band_type_asset = value
+        if self._duct_band_type_asset is not None:
+            self._duct_band_type_asset._duct_banks.append(self)
+
+    duct_band_type_asset = property(get_duct_band_type_asset, set_duct_band_type_asset)
 
     cable_assets = []
+    
+    def add_cable_assets(self, *cable_assets):
+        for obj in cable_assets:
+	        self._cable_assets.append(obj)
+        
+    def remove_cable_assets(self, *cable_assets):
+        for obj in cable_assets:
+	        self._cable_assets.remove(obj)
 
     # <<< duct_bank
     # @generated
@@ -1362,7 +2839,9 @@ class DuctBank(Asset):
         """
         self.duct_count = duct_count
         self.circuit_count = circuit_count
+        self._duct_band_type_asset = None
         self.duct_band_type_asset = duct_band_type_asset
+        self._cable_assets = []
         self.cable_assets = cable_assets
 
         super(DuctBank, self).__init__(**kw_args)
@@ -1426,7 +2905,20 @@ class FinancialInfo(IdentifiedObject):
     # Date asset was purchased. 
     purchase_date = ''
 
-    asset = None
+    def get_asset(self):
+        """ 
+        """
+        return self._asset
+
+    def set_asset(self, value):
+        if self._asset is not None:
+            self._asset._financial_info = None
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._financial_info = self
+            
+    asset = property(get_asset, set_asset)
 
     # <<< financial_info
     # @generated
@@ -1444,6 +2936,7 @@ class FinancialInfo(IdentifiedObject):
         self.account = account
         self.value_date = value_date
         self.purchase_date = purchase_date
+        self._asset = None
         self.asset = asset
 
         super(FinancialInfo, self).__init__(**kw_args)
@@ -1470,19 +2963,63 @@ class Anchor(StructureSupport):
 class PotentialTransformerAsset(ElectricalAsset):
     """ Physical asset performing Potential Transformer (PT) function.
     """
-    potential_transformer_info = None
+    def get_potential_transformer_info(self):
+        """ 
+        """
+        return self._potential_transformer_info
 
-    potential_transformer = None
+    def set_potential_transformer_info(self, value):
+        if self._potential_transformer_info is not None:
+            filtered = [x for x in self.potential_transformer_info.potential_transformer_assets if x != self]
+            self._potential_transformer_info._potential_transformer_assets = filtered
+            
+        self._potential_transformer_info = value
+        if self._potential_transformer_info is not None:
+            self._potential_transformer_info._potential_transformer_assets.append(self)
 
-    potential_transformer_asset_model = None
+    potential_transformer_info = property(get_potential_transformer_info, set_potential_transformer_info)
+
+    def get_potential_transformer(self):
+        """ 
+        """
+        return self._potential_transformer
+
+    def set_potential_transformer(self, value):
+        if self._potential_transformer is not None:
+            self._potential_transformer._potential_transformer_asset = None
+            
+        self._potential_transformer = value
+        if self._potential_transformer is not None:
+            self._potential_transformer._potential_transformer_asset = self
+            
+    potential_transformer = property(get_potential_transformer, set_potential_transformer)
+
+    def get_potential_transformer_asset_model(self):
+        """ 
+        """
+        return self._potential_transformer_asset_model
+
+    def set_potential_transformer_asset_model(self, value):
+        if self._potential_transformer_asset_model is not None:
+            filtered = [x for x in self.potential_transformer_asset_model.potential_transformer_assets if x != self]
+            self._potential_transformer_asset_model._potential_transformer_assets = filtered
+            
+        self._potential_transformer_asset_model = value
+        if self._potential_transformer_asset_model is not None:
+            self._potential_transformer_asset_model._potential_transformer_assets.append(self)
+
+    potential_transformer_asset_model = property(get_potential_transformer_asset_model, set_potential_transformer_asset_model)
 
     # <<< potential_transformer_asset
     # @generated
     def __init__(self, potential_transformer_info=None, potential_transformer=None, potential_transformer_asset_model=None, **kw_args):
         """ Initialises a new 'PotentialTransformerAsset' instance.
         """
+        self._potential_transformer_info = None
         self.potential_transformer_info = potential_transformer_info
+        self._potential_transformer = None
         self.potential_transformer = potential_transformer
+        self._potential_transformer_asset_model = None
         self.potential_transformer_asset_model = potential_transformer_asset_model
 
         super(PotentialTransformerAsset, self).__init__(**kw_args)
@@ -1492,16 +3029,46 @@ class PotentialTransformerAsset(ElectricalAsset):
 class RecloserAsset(ElectricalAsset):
     """ Physical recloser performing a reclosing function, which is modeled through Breaker.
     """
-    recloser_asset_model = None
+    def get_recloser_asset_model(self):
+        """ 
+        """
+        return self._recloser_asset_model
 
-    recloser_info = None
+    def set_recloser_asset_model(self, value):
+        if self._recloser_asset_model is not None:
+            filtered = [x for x in self.recloser_asset_model.recloser_assets if x != self]
+            self._recloser_asset_model._recloser_assets = filtered
+            
+        self._recloser_asset_model = value
+        if self._recloser_asset_model is not None:
+            self._recloser_asset_model._recloser_assets.append(self)
+
+    recloser_asset_model = property(get_recloser_asset_model, set_recloser_asset_model)
+
+    def get_recloser_info(self):
+        """ 
+        """
+        return self._recloser_info
+
+    def set_recloser_info(self, value):
+        if self._recloser_info is not None:
+            filtered = [x for x in self.recloser_info.recloser_assets if x != self]
+            self._recloser_info._recloser_assets = filtered
+            
+        self._recloser_info = value
+        if self._recloser_info is not None:
+            self._recloser_info._recloser_assets.append(self)
+
+    recloser_info = property(get_recloser_info, set_recloser_info)
 
     # <<< recloser_asset
     # @generated
     def __init__(self, recloser_asset_model=None, recloser_info=None, **kw_args):
         """ Initialises a new 'RecloserAsset' instance.
         """
+        self._recloser_asset_model = None
         self.recloser_asset_model = recloser_asset_model
+        self._recloser_info = None
         self.recloser_info = recloser_info
 
         super(RecloserAsset, self).__init__(**kw_args)
@@ -1514,11 +3081,52 @@ class CurrentTransformerAsset(ElectricalAsset):
     # Type of CT as categorized by the utility's asset management standards and practices. 
     type_ct = ''
 
-    current_transformer = None
+    def get_current_transformer(self):
+        """ 
+        """
+        return self._current_transformer
 
-    current_transformer_info = None
+    def set_current_transformer(self, value):
+        if self._current_transformer is not None:
+            self._current_transformer._current_transformer_asset = None
+            
+        self._current_transformer = value
+        if self._current_transformer is not None:
+            self._current_transformer._current_transformer_asset = self
+            
+    current_transformer = property(get_current_transformer, set_current_transformer)
 
-    current_transformer_asset_model = None
+    def get_current_transformer_info(self):
+        """ 
+        """
+        return self._current_transformer_info
+
+    def set_current_transformer_info(self, value):
+        if self._current_transformer_info is not None:
+            filtered = [x for x in self.current_transformer_info.current_transformer_assets if x != self]
+            self._current_transformer_info._current_transformer_assets = filtered
+            
+        self._current_transformer_info = value
+        if self._current_transformer_info is not None:
+            self._current_transformer_info._current_transformer_assets.append(self)
+
+    current_transformer_info = property(get_current_transformer_info, set_current_transformer_info)
+
+    def get_current_transformer_asset_model(self):
+        """ 
+        """
+        return self._current_transformer_asset_model
+
+    def set_current_transformer_asset_model(self, value):
+        if self._current_transformer_asset_model is not None:
+            filtered = [x for x in self.current_transformer_asset_model.current_transformer_assets if x != self]
+            self._current_transformer_asset_model._current_transformer_assets = filtered
+            
+        self._current_transformer_asset_model = value
+        if self._current_transformer_asset_model is not None:
+            self._current_transformer_asset_model._current_transformer_assets.append(self)
+
+    current_transformer_asset_model = property(get_current_transformer_asset_model, set_current_transformer_asset_model)
 
     # <<< current_transformer_asset
     # @generated
@@ -1526,8 +3134,11 @@ class CurrentTransformerAsset(ElectricalAsset):
         """ Initialises a new 'CurrentTransformerAsset' instance.
         """
         self.type_ct = type_ct
+        self._current_transformer = None
         self.current_transformer = current_transformer
+        self._current_transformer_info = None
         self.current_transformer_info = current_transformer_info
+        self._current_transformer_asset_model = None
         self.current_transformer_asset_model = current_transformer_asset_model
 
         super(CurrentTransformerAsset, self).__init__(**kw_args)
@@ -1546,10 +3157,37 @@ class Streetlight(ElectricalAsset):
     # Actual power rating of light. 
     light_rating = ''
 
-    # Streetlight(s) may be attached to a pole.
-    attached_to_pole = None
+    def get_attached_to_pole(self):
+        """ Streetlight(s) may be attached to a pole.
+        """
+        return self._attached_to_pole
 
-    streetlight_asset_model = None
+    def set_attached_to_pole(self, value):
+        if self._attached_to_pole is not None:
+            filtered = [x for x in self.attached_to_pole.support_streetlights if x != self]
+            self._attached_to_pole._support_streetlights = filtered
+            
+        self._attached_to_pole = value
+        if self._attached_to_pole is not None:
+            self._attached_to_pole._support_streetlights.append(self)
+
+    attached_to_pole = property(get_attached_to_pole, set_attached_to_pole)
+
+    def get_streetlight_asset_model(self):
+        """ 
+        """
+        return self._streetlight_asset_model
+
+    def set_streetlight_asset_model(self, value):
+        if self._streetlight_asset_model is not None:
+            filtered = [x for x in self.streetlight_asset_model.streetlights if x != self]
+            self._streetlight_asset_model._streetlights = filtered
+            
+        self._streetlight_asset_model = value
+        if self._streetlight_asset_model is not None:
+            self._streetlight_asset_model._streetlights.append(self)
+
+    streetlight_asset_model = property(get_streetlight_asset_model, set_streetlight_asset_model)
 
     # <<< streetlight
     # @generated
@@ -1559,7 +3197,9 @@ class Streetlight(ElectricalAsset):
         self.arm_length = arm_length
         self.lamp_kind = lamp_kind
         self.light_rating = light_rating
+        self._attached_to_pole = None
         self.attached_to_pole = attached_to_pole
+        self._streetlight_asset_model = None
         self.streetlight_asset_model = streetlight_asset_model
 
         super(Streetlight, self).__init__(**kw_args)
@@ -1578,15 +3218,79 @@ class LinearConductorAsset(ElectricalAsset):
     # Description of the method used for grounding the linear conductor. For a cable, the grounding/bonding shield may be multi-point, single-point, cross cable, or other. 
     grounding_method = ''
 
-    circuit_section = None
+    def get_circuit_section(self):
+        """ 
+        """
+        return self._circuit_section
 
-    conductor_type = None
+    def set_circuit_section(self, value):
+        if self._circuit_section is not None:
+            filtered = [x for x in self.circuit_section.linear_conductors if x != self]
+            self._circuit_section._linear_conductors = filtered
+            
+        self._circuit_section = value
+        if self._circuit_section is not None:
+            self._circuit_section._linear_conductors.append(self)
 
-    linear_conductor_type_asset = None
+    circuit_section = property(get_circuit_section, set_circuit_section)
+
+    def get_conductor_type(self):
+        """ 
+        """
+        return self._conductor_type
+
+    def set_conductor_type(self, value):
+        if self._conductor_type is not None:
+            filtered = [x for x in self.conductor_type.linear_conductor_assets if x != self]
+            self._conductor_type._linear_conductor_assets = filtered
+            
+        self._conductor_type = value
+        if self._conductor_type is not None:
+            self._conductor_type._linear_conductor_assets.append(self)
+
+    conductor_type = property(get_conductor_type, set_conductor_type)
+
+    def get_linear_conductor_type_asset(self):
+        """ 
+        """
+        return self._linear_conductor_type_asset
+
+    def set_linear_conductor_type_asset(self, value):
+        if self._linear_conductor_type_asset is not None:
+            filtered = [x for x in self.linear_conductor_type_asset.linear_conductor_assets if x != self]
+            self._linear_conductor_type_asset._linear_conductor_assets = filtered
+            
+        self._linear_conductor_type_asset = value
+        if self._linear_conductor_type_asset is not None:
+            self._linear_conductor_type_asset._linear_conductor_assets.append(self)
+
+    linear_conductor_type_asset = property(get_linear_conductor_type_asset, set_linear_conductor_type_asset)
 
     conductors = []
+    
+    def add_conductors(self, *conductors):
+        for obj in conductors:
+	        self._conductors.append(obj)
+        
+    def remove_conductors(self, *conductors):
+        for obj in conductors:
+	        self._conductors.remove(obj)
 
-    linear_conductor_asset_model = None
+    def get_linear_conductor_asset_model(self):
+        """ 
+        """
+        return self._linear_conductor_asset_model
+
+    def set_linear_conductor_asset_model(self, value):
+        if self._linear_conductor_asset_model is not None:
+            filtered = [x for x in self.linear_conductor_asset_model.linear_conductor_assets if x != self]
+            self._linear_conductor_asset_model._linear_conductor_assets = filtered
+            
+        self._linear_conductor_asset_model = value
+        if self._linear_conductor_asset_model is not None:
+            self._linear_conductor_asset_model._linear_conductor_assets.append(self)
+
+    linear_conductor_asset_model = property(get_linear_conductor_asset_model, set_linear_conductor_asset_model)
 
     # <<< linear_conductor_asset
     # @generated
@@ -1596,10 +3300,15 @@ class LinearConductorAsset(ElectricalAsset):
         self.is_horizontal = is_horizontal
         self.insulated = insulated
         self.grounding_method = grounding_method
+        self._circuit_section = None
         self.circuit_section = circuit_section
+        self._conductor_type = None
         self.conductor_type = conductor_type
+        self._linear_conductor_type_asset = None
         self.linear_conductor_type_asset = linear_conductor_type_asset
+        self._conductors = []
         self.conductors = conductors
+        self._linear_conductor_asset_model = None
         self.linear_conductor_asset_model = linear_conductor_asset_model
 
         super(LinearConductorAsset, self).__init__(**kw_args)
@@ -1615,7 +3324,21 @@ class ProtectionEquipmentAsset(ElectricalAsset):
     # Actual ground trip for this type of relay, if applicable. 
     ground_trip = ''
 
-    protection_equipment_asset_model = None
+    def get_protection_equipment_asset_model(self):
+        """ 
+        """
+        return self._protection_equipment_asset_model
+
+    def set_protection_equipment_asset_model(self, value):
+        if self._protection_equipment_asset_model is not None:
+            filtered = [x for x in self.protection_equipment_asset_model.protection_equipment_assets if x != self]
+            self._protection_equipment_asset_model._protection_equipment_assets = filtered
+            
+        self._protection_equipment_asset_model = value
+        if self._protection_equipment_asset_model is not None:
+            self._protection_equipment_asset_model._protection_equipment_assets.append(self)
+
+    protection_equipment_asset_model = property(get_protection_equipment_asset_model, set_protection_equipment_asset_model)
 
     # <<< protection_equipment_asset
     # @generated
@@ -1624,6 +3347,7 @@ class ProtectionEquipmentAsset(ElectricalAsset):
         """
         self.phase_trip = phase_trip
         self.ground_trip = ground_trip
+        self._protection_equipment_asset_model = None
         self.protection_equipment_asset_model = protection_equipment_asset_model
 
         super(ProtectionEquipmentAsset, self).__init__(**kw_args)
@@ -1654,10 +3378,45 @@ class Pole(Structure):
     # The framing structure mounted on the pole. 
     construction = ''
 
-    # Streetlight(s) may be attached to a pole.
-    support_streetlights = []
+    def get_support_streetlights(self):
+        """ Streetlight(s) may be attached to a pole.
+        """
+        return self._support_streetlights
 
-    pole_model = None
+    def set_support_streetlights(self, value):
+        for x in self._support_streetlights:
+            x._attached_to_pole = None
+        for y in value:
+            y._attached_to_pole = self
+        self._support_streetlights = value
+            
+    support_streetlights = property(get_support_streetlights, set_support_streetlights)
+    
+    def add_support_streetlights(self, *support_streetlights):
+        for obj in support_streetlights:
+            obj._attached_to_pole = self
+            self._support_streetlights.append(obj)
+        
+    def remove_support_streetlights(self, *support_streetlights):
+        for obj in support_streetlights:
+            obj._attached_to_pole = None
+            self._support_streetlights.remove(obj)
+
+    def get_pole_model(self):
+        """ 
+        """
+        return self._pole_model
+
+    def set_pole_model(self, value):
+        if self._pole_model is not None:
+            filtered = [x for x in self.pole_model.poles if x != self]
+            self._pole_model._poles = filtered
+            
+        self._pole_model = value
+        if self._pole_model is not None:
+            self._pole_model._poles.append(self)
+
+    pole_model = property(get_pole_model, set_pole_model)
 
     # <<< pole
     # @generated
@@ -1671,7 +3430,9 @@ class Pole(Structure):
         self.treated_date = treated_date
         self.preservative_kind = preservative_kind
         self.construction = construction
+        self._support_streetlights = []
         self.support_streetlights = support_streetlights
+        self._pole_model = None
         self.pole_model = pole_model
 
         super(Pole, self).__init__(**kw_args)
@@ -1681,16 +3442,40 @@ class Pole(Structure):
 class CableAsset(LinearConductorAsset):
     """ Insultated physical cable for performing the Conductor role used in undergrond and other applications..
     """
-    duct_bank_type_asset = None
+    def get_duct_bank_type_asset(self):
+        """ 
+        """
+        return self._duct_bank_type_asset
+
+    def set_duct_bank_type_asset(self, value):
+        if self._duct_bank_type_asset is not None:
+            filtered = [x for x in self.duct_bank_type_asset.cable_assets if x != self]
+            self._duct_bank_type_asset._cable_assets = filtered
+            
+        self._duct_bank_type_asset = value
+        if self._duct_bank_type_asset is not None:
+            self._duct_bank_type_asset._cable_assets.append(self)
+
+    duct_bank_type_asset = property(get_duct_bank_type_asset, set_duct_bank_type_asset)
 
     duct_banks = []
+    
+    def add_duct_banks(self, *duct_banks):
+        for obj in duct_banks:
+	        self._duct_banks.append(obj)
+        
+    def remove_duct_banks(self, *duct_banks):
+        for obj in duct_banks:
+	        self._duct_banks.remove(obj)
 
     # <<< cable_asset
     # @generated
     def __init__(self, duct_bank_type_asset=None, duct_banks=[], **kw_args):
         """ Initialises a new 'CableAsset' instance.
         """
+        self._duct_bank_type_asset = None
         self.duct_bank_type_asset = duct_bank_type_asset
+        self._duct_banks = []
         self.duct_banks = duct_banks
 
         super(CableAsset, self).__init__(**kw_args)
@@ -1703,7 +3488,21 @@ class FACTSDeviceAsset(ElectricalAsset):
     # Kind of FACTS device. Values are: "tsbr", "tssc", "svc", "statcom", "tcvl", "tcpar", "tcsc", "upfc"
     kind = 'tsbr'
 
-    factsdevice_asset_model = None
+    def get_factsdevice_asset_model(self):
+        """ 
+        """
+        return self._factsdevice_asset_model
+
+    def set_factsdevice_asset_model(self, value):
+        if self._factsdevice_asset_model is not None:
+            filtered = [x for x in self.factsdevice_asset_model.factsdevice_assets if x != self]
+            self._factsdevice_asset_model._factsdevice_assets = filtered
+            
+        self._factsdevice_asset_model = value
+        if self._factsdevice_asset_model is not None:
+            self._factsdevice_asset_model._factsdevice_assets.append(self)
+
+    factsdevice_asset_model = property(get_factsdevice_asset_model, set_factsdevice_asset_model)
 
     # <<< factsdevice_asset
     # @generated
@@ -1711,6 +3510,7 @@ class FACTSDeviceAsset(ElectricalAsset):
         """ Initialises a new 'FACTSDeviceAsset' instance.
         """
         self.kind = kind
+        self._factsdevice_asset_model = None
         self.factsdevice_asset_model = factsdevice_asset_model
 
         super(FACTSDeviceAsset, self).__init__(**kw_args)
@@ -1749,16 +3549,46 @@ class TestDataSet(ProcedureDataSet):
 class FaultIndicatorAsset(ElectricalAsset):
     """ Physical asset performing FaultIndicator function.
     """
-    fault_indicator_asset_model = None
+    def get_fault_indicator_asset_model(self):
+        """ 
+        """
+        return self._fault_indicator_asset_model
 
-    fault_indicator = None
+    def set_fault_indicator_asset_model(self, value):
+        if self._fault_indicator_asset_model is not None:
+            filtered = [x for x in self.fault_indicator_asset_model.fault_indicator_assets if x != self]
+            self._fault_indicator_asset_model._fault_indicator_assets = filtered
+            
+        self._fault_indicator_asset_model = value
+        if self._fault_indicator_asset_model is not None:
+            self._fault_indicator_asset_model._fault_indicator_assets.append(self)
+
+    fault_indicator_asset_model = property(get_fault_indicator_asset_model, set_fault_indicator_asset_model)
+
+    def get_fault_indicator(self):
+        """ 
+        """
+        return self._fault_indicator
+
+    def set_fault_indicator(self, value):
+        if self._fault_indicator is not None:
+            filtered = [x for x in self.fault_indicator.fault_indicator_assets if x != self]
+            self._fault_indicator._fault_indicator_assets = filtered
+            
+        self._fault_indicator = value
+        if self._fault_indicator is not None:
+            self._fault_indicator._fault_indicator_assets.append(self)
+
+    fault_indicator = property(get_fault_indicator, set_fault_indicator)
 
     # <<< fault_indicator_asset
     # @generated
     def __init__(self, fault_indicator_asset_model=None, fault_indicator=None, **kw_args):
         """ Initialises a new 'FaultIndicatorAsset' instance.
         """
+        self._fault_indicator_asset_model = None
         self.fault_indicator_asset_model = fault_indicator_asset_model
+        self._fault_indicator = None
         self.fault_indicator = fault_indicator
 
         super(FaultIndicatorAsset, self).__init__(**kw_args)
@@ -1792,13 +3622,71 @@ class TransformerAsset(ElectricalAsset):
     # Date and time this asset was last reconditioned or had a major overhaul. 
     reconditioned_date_time = ''
 
-    transformer_observations = []
+    def get_transformer_observations(self):
+        """ 
+        """
+        return self._transformer_observations
 
-    transformer_asset_model = None
+    def set_transformer_observations(self, value):
+        for x in self._transformer_observations:
+            x._transformer_asset = None
+        for y in value:
+            y._transformer_asset = self
+        self._transformer_observations = value
+            
+    transformer_observations = property(get_transformer_observations, set_transformer_observations)
+    
+    def add_transformer_observations(self, *transformer_observations):
+        for obj in transformer_observations:
+            obj._transformer_asset = self
+            self._transformer_observations.append(obj)
+        
+    def remove_transformer_observations(self, *transformer_observations):
+        for obj in transformer_observations:
+            obj._transformer_asset = None
+            self._transformer_observations.remove(obj)
+
+    def get_transformer_asset_model(self):
+        """ 
+        """
+        return self._transformer_asset_model
+
+    def set_transformer_asset_model(self, value):
+        if self._transformer_asset_model is not None:
+            filtered = [x for x in self.transformer_asset_model.transformer_assets if x != self]
+            self._transformer_asset_model._transformer_assets = filtered
+            
+        self._transformer_asset_model = value
+        if self._transformer_asset_model is not None:
+            self._transformer_asset_model._transformer_assets.append(self)
+
+    transformer_asset_model = property(get_transformer_asset_model, set_transformer_asset_model)
 
     power_ratings = []
+    
+    def add_power_ratings(self, *power_ratings):
+        for obj in power_ratings:
+	        self._power_ratings.append(obj)
+        
+    def remove_power_ratings(self, *power_ratings):
+        for obj in power_ratings:
+	        self._power_ratings.remove(obj)
 
-    transformer_info = None
+    def get_transformer_info(self):
+        """ 
+        """
+        return self._transformer_info
+
+    def set_transformer_info(self, value):
+        if self._transformer_info is not None:
+            filtered = [x for x in self.transformer_info.transformer_assets if x != self]
+            self._transformer_info._transformer_assets = filtered
+            
+        self._transformer_info = value
+        if self._transformer_info is not None:
+            self._transformer_info._transformer_assets.append(self)
+
+    transformer_info = property(get_transformer_info, set_transformer_info)
 
     # <<< transformer_asset
     # @generated
@@ -1813,9 +3701,13 @@ class TransformerAsset(ElectricalAsset):
         self.construction_kind = construction_kind
         self.hour_over_load_rating = hour_over_load_rating
         self.reconditioned_date_time = reconditioned_date_time
+        self._transformer_observations = []
         self.transformer_observations = transformer_observations
+        self._transformer_asset_model = None
         self.transformer_asset_model = transformer_asset_model
+        self._power_ratings = []
         self.power_ratings = power_ratings
+        self._transformer_info = None
         self.transformer_info = transformer_info
 
         super(TransformerAsset, self).__init__(**kw_args)
@@ -1825,13 +3717,28 @@ class TransformerAsset(ElectricalAsset):
 class OverheadConductorAsset(LinearConductorAsset):
     """ Physical conductor performing the Conductor role that is used in overhead applications.
     """
-    mounting_point = None
+    def get_mounting_point(self):
+        """ 
+        """
+        return self._mounting_point
+
+    def set_mounting_point(self, value):
+        if self._mounting_point is not None:
+            filtered = [x for x in self.mounting_point.overhead_conductors if x != self]
+            self._mounting_point._overhead_conductors = filtered
+            
+        self._mounting_point = value
+        if self._mounting_point is not None:
+            self._mounting_point._overhead_conductors.append(self)
+
+    mounting_point = property(get_mounting_point, set_mounting_point)
 
     # <<< overhead_conductor_asset
     # @generated
     def __init__(self, mounting_point=None, **kw_args):
         """ Initialises a new 'OverheadConductorAsset' instance.
         """
+        self._mounting_point = None
         self.mounting_point = mounting_point
 
         super(OverheadConductorAsset, self).__init__(**kw_args)
@@ -1841,13 +3748,28 @@ class OverheadConductorAsset(LinearConductorAsset):
 class BusbarAsset(ElectricalAsset):
     """ Physical asset used to perform the BusbarSection's role.
     """
-    busbar_asset_model = None
+    def get_busbar_asset_model(self):
+        """ 
+        """
+        return self._busbar_asset_model
+
+    def set_busbar_asset_model(self, value):
+        if self._busbar_asset_model is not None:
+            filtered = [x for x in self.busbar_asset_model.busbar_assets if x != self]
+            self._busbar_asset_model._busbar_assets = filtered
+            
+        self._busbar_asset_model = value
+        if self._busbar_asset_model is not None:
+            self._busbar_asset_model._busbar_assets.append(self)
+
+    busbar_asset_model = property(get_busbar_asset_model, set_busbar_asset_model)
 
     # <<< busbar_asset
     # @generated
     def __init__(self, busbar_asset_model=None, **kw_args):
         """ Initialises a new 'BusbarAsset' instance.
         """
+        self._busbar_asset_model = None
         self.busbar_asset_model = busbar_asset_model
 
         super(BusbarAsset, self).__init__(**kw_args)
@@ -1857,13 +3779,27 @@ class BusbarAsset(ElectricalAsset):
 class SeriesCompensatorAsset(ElectricalAsset):
     """ For a a series capacitor or reactor, this is the physical asset performing the SeriesCompensator role (PSR).
     """
-    series_compensator_asset_model = None
+    def get_series_compensator_asset_model(self):
+        """ 
+        """
+        return self._series_compensator_asset_model
+
+    def set_series_compensator_asset_model(self, value):
+        if self._series_compensator_asset_model is not None:
+            self._series_compensator_asset_model._series_compensator_asset = None
+            
+        self._series_compensator_asset_model = value
+        if self._series_compensator_asset_model is not None:
+            self._series_compensator_asset_model._series_compensator_asset = self
+            
+    series_compensator_asset_model = property(get_series_compensator_asset_model, set_series_compensator_asset_model)
 
     # <<< series_compensator_asset
     # @generated
     def __init__(self, series_compensator_asset_model=None, **kw_args):
         """ Initialises a new 'SeriesCompensatorAsset' instance.
         """
+        self._series_compensator_asset_model = None
         self.series_compensator_asset_model = series_compensator_asset_model
 
         super(SeriesCompensatorAsset, self).__init__(**kw_args)
@@ -1873,16 +3809,45 @@ class SeriesCompensatorAsset(ElectricalAsset):
 class SurgeProtectorAsset(ElectricalAsset):
     """ Physical asset performing SurgeProtector function.
     """
-    surge_protector = None
+    def get_surge_protector(self):
+        """ 
+        """
+        return self._surge_protector
 
-    surge_protector_asset_model = None
+    def set_surge_protector(self, value):
+        if self._surge_protector is not None:
+            self._surge_protector._surge_protector_asset = None
+            
+        self._surge_protector = value
+        if self._surge_protector is not None:
+            self._surge_protector._surge_protector_asset = self
+            
+    surge_protector = property(get_surge_protector, set_surge_protector)
+
+    def get_surge_protector_asset_model(self):
+        """ 
+        """
+        return self._surge_protector_asset_model
+
+    def set_surge_protector_asset_model(self, value):
+        if self._surge_protector_asset_model is not None:
+            filtered = [x for x in self.surge_protector_asset_model.surge_protector_assets if x != self]
+            self._surge_protector_asset_model._surge_protector_assets = filtered
+            
+        self._surge_protector_asset_model = value
+        if self._surge_protector_asset_model is not None:
+            self._surge_protector_asset_model._surge_protector_assets.append(self)
+
+    surge_protector_asset_model = property(get_surge_protector_asset_model, set_surge_protector_asset_model)
 
     # <<< surge_protector_asset
     # @generated
     def __init__(self, surge_protector=None, surge_protector_asset_model=None, **kw_args):
         """ Initialises a new 'SurgeProtectorAsset' instance.
         """
+        self._surge_protector = None
         self.surge_protector = surge_protector
+        self._surge_protector_asset_model = None
         self.surge_protector_asset_model = surge_protector_asset_model
 
         super(SurgeProtectorAsset, self).__init__(**kw_args)
@@ -1921,13 +3886,28 @@ class UndergroundStructure(Structure):
 class GeneratorAsset(ElectricalAsset):
     """ Physical asset performing the Generator role.
     """
-    generator_asset_model = None
+    def get_generator_asset_model(self):
+        """ 
+        """
+        return self._generator_asset_model
+
+    def set_generator_asset_model(self, value):
+        if self._generator_asset_model is not None:
+            filtered = [x for x in self.generator_asset_model.generator_assets if x != self]
+            self._generator_asset_model._generator_assets = filtered
+            
+        self._generator_asset_model = value
+        if self._generator_asset_model is not None:
+            self._generator_asset_model._generator_assets.append(self)
+
+    generator_asset_model = property(get_generator_asset_model, set_generator_asset_model)
 
     # <<< generator_asset
     # @generated
     def __init__(self, generator_asset_model=None, **kw_args):
         """ Initialises a new 'GeneratorAsset' instance.
         """
+        self._generator_asset_model = None
         self.generator_asset_model = generator_asset_model
 
         super(GeneratorAsset, self).__init__(**kw_args)
@@ -1940,11 +3920,68 @@ class BreakerInfo(SwitchInfo):
     # Phase trip rating. 
     phase_trip = ''
 
-    breaker_asset_models = []
+    def get_breaker_asset_models(self):
+        """ 
+        """
+        return self._breaker_asset_models
 
-    breaker_assets = []
+    def set_breaker_asset_models(self, value):
+        for x in self._breaker_asset_models:
+            x._breaker_info = None
+        for y in value:
+            y._breaker_info = self
+        self._breaker_asset_models = value
+            
+    breaker_asset_models = property(get_breaker_asset_models, set_breaker_asset_models)
+    
+    def add_breaker_asset_models(self, *breaker_asset_models):
+        for obj in breaker_asset_models:
+            obj._breaker_info = self
+            self._breaker_asset_models.append(obj)
+        
+    def remove_breaker_asset_models(self, *breaker_asset_models):
+        for obj in breaker_asset_models:
+            obj._breaker_info = None
+            self._breaker_asset_models.remove(obj)
 
-    breaker_type_asset = None
+    def get_breaker_assets(self):
+        """ 
+        """
+        return self._breaker_assets
+
+    def set_breaker_assets(self, value):
+        for x in self._breaker_assets:
+            x._breaker_info = None
+        for y in value:
+            y._breaker_info = self
+        self._breaker_assets = value
+            
+    breaker_assets = property(get_breaker_assets, set_breaker_assets)
+    
+    def add_breaker_assets(self, *breaker_assets):
+        for obj in breaker_assets:
+            obj._breaker_info = self
+            self._breaker_assets.append(obj)
+        
+    def remove_breaker_assets(self, *breaker_assets):
+        for obj in breaker_assets:
+            obj._breaker_info = None
+            self._breaker_assets.remove(obj)
+
+    def get_breaker_type_asset(self):
+        """ 
+        """
+        return self._breaker_type_asset
+
+    def set_breaker_type_asset(self, value):
+        if self._breaker_type_asset is not None:
+            self._breaker_type_asset._breaker_info = None
+            
+        self._breaker_type_asset = value
+        if self._breaker_type_asset is not None:
+            self._breaker_type_asset._breaker_info = self
+            
+    breaker_type_asset = property(get_breaker_type_asset, set_breaker_type_asset)
 
     # <<< breaker_info
     # @generated
@@ -1952,8 +3989,11 @@ class BreakerInfo(SwitchInfo):
         """ Initialises a new 'BreakerInfo' instance.
         """
         self.phase_trip = phase_trip
+        self._breaker_asset_models = []
         self.breaker_asset_models = breaker_asset_models
+        self._breaker_assets = []
         self.breaker_assets = breaker_assets
+        self._breaker_type_asset = None
         self.breaker_type_asset = breaker_type_asset
 
         super(BreakerInfo, self).__init__(**kw_args)
@@ -1978,11 +4018,68 @@ class RecloserInfo(SwitchInfo):
     # Total number of phase reclose operations. 
     reclose_lockout_count = 0
 
-    recloser_assets = []
+    def get_recloser_assets(self):
+        """ 
+        """
+        return self._recloser_assets
 
-    recloser_asset_models = []
+    def set_recloser_assets(self, value):
+        for x in self._recloser_assets:
+            x._recloser_info = None
+        for y in value:
+            y._recloser_info = self
+        self._recloser_assets = value
+            
+    recloser_assets = property(get_recloser_assets, set_recloser_assets)
+    
+    def add_recloser_assets(self, *recloser_assets):
+        for obj in recloser_assets:
+            obj._recloser_info = self
+            self._recloser_assets.append(obj)
+        
+    def remove_recloser_assets(self, *recloser_assets):
+        for obj in recloser_assets:
+            obj._recloser_info = None
+            self._recloser_assets.remove(obj)
 
-    recloser_type_asset = None
+    def get_recloser_asset_models(self):
+        """ 
+        """
+        return self._recloser_asset_models
+
+    def set_recloser_asset_models(self, value):
+        for x in self._recloser_asset_models:
+            x._recloser_info = None
+        for y in value:
+            y._recloser_info = self
+        self._recloser_asset_models = value
+            
+    recloser_asset_models = property(get_recloser_asset_models, set_recloser_asset_models)
+    
+    def add_recloser_asset_models(self, *recloser_asset_models):
+        for obj in recloser_asset_models:
+            obj._recloser_info = self
+            self._recloser_asset_models.append(obj)
+        
+    def remove_recloser_asset_models(self, *recloser_asset_models):
+        for obj in recloser_asset_models:
+            obj._recloser_info = None
+            self._recloser_asset_models.remove(obj)
+
+    def get_recloser_type_asset(self):
+        """ 
+        """
+        return self._recloser_type_asset
+
+    def set_recloser_type_asset(self, value):
+        if self._recloser_type_asset is not None:
+            self._recloser_type_asset._recloser_info = None
+            
+        self._recloser_type_asset = value
+        if self._recloser_type_asset is not None:
+            self._recloser_type_asset._recloser_info = self
+            
+    recloser_type_asset = property(get_recloser_type_asset, set_recloser_type_asset)
 
     # <<< recloser_info
     # @generated
@@ -1994,8 +4091,11 @@ class RecloserInfo(SwitchInfo):
         self.ground_trip_capable = ground_trip_capable
         self.ground_trip_rating = ground_trip_rating
         self.reclose_lockout_count = reclose_lockout_count
+        self._recloser_assets = []
         self.recloser_assets = recloser_assets
+        self._recloser_asset_models = []
         self.recloser_asset_models = recloser_asset_models
+        self._recloser_type_asset = None
         self.recloser_type_asset = recloser_type_asset
 
         super(RecloserInfo, self).__init__(**kw_args)
@@ -2008,7 +4108,21 @@ class Tower(Structure):
     # Construction structure on the tower. Values are: "tension", "suspension"
     construction_kind = 'tension'
 
-    tower_asset_model = None
+    def get_tower_asset_model(self):
+        """ 
+        """
+        return self._tower_asset_model
+
+    def set_tower_asset_model(self, value):
+        if self._tower_asset_model is not None:
+            filtered = [x for x in self.tower_asset_model.towers if x != self]
+            self._tower_asset_model._towers = filtered
+            
+        self._tower_asset_model = value
+        if self._tower_asset_model is not None:
+            self._tower_asset_model._towers.append(self)
+
+    tower_asset_model = property(get_tower_asset_model, set_tower_asset_model)
 
     # <<< tower
     # @generated
@@ -2016,6 +4130,7 @@ class Tower(Structure):
         """ Initialises a new 'Tower' instance.
         """
         self.construction_kind = construction_kind
+        self._tower_asset_model = None
         self.tower_asset_model = tower_asset_model
 
         super(Tower, self).__init__(**kw_args)
@@ -2050,16 +4165,46 @@ class JointAsset(ElectricalAsset):
 class SwitchAsset(ElectricalAsset):
     """ Physical asset performing Switch function.
     """
-    switch_info = None
+    def get_switch_info(self):
+        """ 
+        """
+        return self._switch_info
 
-    switch_asset_model = None
+    def set_switch_info(self, value):
+        if self._switch_info is not None:
+            filtered = [x for x in self.switch_info.switch_assets if x != self]
+            self._switch_info._switch_assets = filtered
+            
+        self._switch_info = value
+        if self._switch_info is not None:
+            self._switch_info._switch_assets.append(self)
+
+    switch_info = property(get_switch_info, set_switch_info)
+
+    def get_switch_asset_model(self):
+        """ 
+        """
+        return self._switch_asset_model
+
+    def set_switch_asset_model(self, value):
+        if self._switch_asset_model is not None:
+            filtered = [x for x in self.switch_asset_model.switch_assets if x != self]
+            self._switch_asset_model._switch_assets = filtered
+            
+        self._switch_asset_model = value
+        if self._switch_asset_model is not None:
+            self._switch_asset_model._switch_assets.append(self)
+
+    switch_asset_model = property(get_switch_asset_model, set_switch_asset_model)
 
     # <<< switch_asset
     # @generated
     def __init__(self, switch_info=None, switch_asset_model=None, **kw_args):
         """ Initialises a new 'SwitchAsset' instance.
         """
+        self._switch_info = None
         self.switch_info = switch_info
+        self._switch_asset_model = None
         self.switch_asset_model = switch_asset_model
 
         super(SwitchAsset, self).__init__(**kw_args)
@@ -2081,11 +4226,59 @@ class BushingAsset(ElectricalAsset):
     # Factory Measured Insulation Power Factor measured between the Power Factor tap and ground. 
     c2_power_factor = 0.0
 
-    bushing_insulation_pfs = []
+    def get_bushing_insulation_pfs(self):
+        """ 
+        """
+        return self._bushing_insulation_pfs
 
-    terminal = None
+    def set_bushing_insulation_pfs(self, value):
+        for x in self._bushing_insulation_pfs:
+            x._bushing_asset = None
+        for y in value:
+            y._bushing_asset = self
+        self._bushing_insulation_pfs = value
+            
+    bushing_insulation_pfs = property(get_bushing_insulation_pfs, set_bushing_insulation_pfs)
+    
+    def add_bushing_insulation_pfs(self, *bushing_insulation_pfs):
+        for obj in bushing_insulation_pfs:
+            obj._bushing_asset = self
+            self._bushing_insulation_pfs.append(obj)
+        
+    def remove_bushing_insulation_pfs(self, *bushing_insulation_pfs):
+        for obj in bushing_insulation_pfs:
+            obj._bushing_asset = None
+            self._bushing_insulation_pfs.remove(obj)
 
-    bushing_model = None
+    def get_terminal(self):
+        """ 
+        """
+        return self._terminal
+
+    def set_terminal(self, value):
+        if self._terminal is not None:
+            self._terminal._bushing_asset = None
+            
+        self._terminal = value
+        if self._terminal is not None:
+            self._terminal._bushing_asset = self
+            
+    terminal = property(get_terminal, set_terminal)
+
+    def get_bushing_model(self):
+        """ 
+        """
+        return self._bushing_model
+
+    def set_bushing_model(self, value):
+        if self._bushing_model is not None:
+            self._bushing_model._bushing_asset = None
+            
+        self._bushing_model = value
+        if self._bushing_model is not None:
+            self._bushing_model._bushing_asset = self
+            
+    bushing_model = property(get_bushing_model, set_bushing_model)
 
     # <<< bushing_asset
     # @generated
@@ -2096,8 +4289,11 @@ class BushingAsset(ElectricalAsset):
         self.c1_capacitance = c1_capacitance
         self.c2_capacitance = c2_capacitance
         self.c2_power_factor = c2_power_factor
+        self._bushing_insulation_pfs = []
         self.bushing_insulation_pfs = bushing_insulation_pfs
+        self._terminal = None
         self.terminal = terminal
+        self._bushing_model = None
         self.bushing_model = bushing_model
 
         super(BushingAsset, self).__init__(**kw_args)
@@ -2107,16 +4303,46 @@ class BushingAsset(ElectricalAsset):
 class BreakerAsset(ElectricalAsset):
     """ Physical asset performing Breaker role.
     """
-    breaker_asset_model = None
+    def get_breaker_asset_model(self):
+        """ 
+        """
+        return self._breaker_asset_model
 
-    breaker_info = None
+    def set_breaker_asset_model(self, value):
+        if self._breaker_asset_model is not None:
+            filtered = [x for x in self.breaker_asset_model.breaker_assets if x != self]
+            self._breaker_asset_model._breaker_assets = filtered
+            
+        self._breaker_asset_model = value
+        if self._breaker_asset_model is not None:
+            self._breaker_asset_model._breaker_assets.append(self)
+
+    breaker_asset_model = property(get_breaker_asset_model, set_breaker_asset_model)
+
+    def get_breaker_info(self):
+        """ 
+        """
+        return self._breaker_info
+
+    def set_breaker_info(self, value):
+        if self._breaker_info is not None:
+            filtered = [x for x in self.breaker_info.breaker_assets if x != self]
+            self._breaker_info._breaker_assets = filtered
+            
+        self._breaker_info = value
+        if self._breaker_info is not None:
+            self._breaker_info._breaker_assets.append(self)
+
+    breaker_info = property(get_breaker_info, set_breaker_info)
 
     # <<< breaker_asset
     # @generated
     def __init__(self, breaker_asset_model=None, breaker_info=None, **kw_args):
         """ Initialises a new 'BreakerAsset' instance.
         """
+        self._breaker_asset_model = None
         self.breaker_asset_model = breaker_asset_model
+        self._breaker_info = None
         self.breaker_info = breaker_info
 
         super(BreakerAsset, self).__init__(**kw_args)
@@ -2126,16 +4352,46 @@ class BreakerAsset(ElectricalAsset):
 class ShuntCompensatorAsset(ElectricalAsset):
     """ For a shunt capacitor or reactor or switchable bank of shunt capacitors or reactors, this is the physical asset performing the ShuntCompensator role (PSR).
     """
-    shunt_compensator_asset_model = None
+    def get_shunt_compensator_asset_model(self):
+        """ 
+        """
+        return self._shunt_compensator_asset_model
 
-    shunt_impedance_info = None
+    def set_shunt_compensator_asset_model(self, value):
+        if self._shunt_compensator_asset_model is not None:
+            filtered = [x for x in self.shunt_compensator_asset_model.shunt_compensator_assets if x != self]
+            self._shunt_compensator_asset_model._shunt_compensator_assets = filtered
+            
+        self._shunt_compensator_asset_model = value
+        if self._shunt_compensator_asset_model is not None:
+            self._shunt_compensator_asset_model._shunt_compensator_assets.append(self)
+
+    shunt_compensator_asset_model = property(get_shunt_compensator_asset_model, set_shunt_compensator_asset_model)
+
+    def get_shunt_impedance_info(self):
+        """ 
+        """
+        return self._shunt_impedance_info
+
+    def set_shunt_impedance_info(self, value):
+        if self._shunt_impedance_info is not None:
+            filtered = [x for x in self.shunt_impedance_info.shunt_compensator_assets if x != self]
+            self._shunt_impedance_info._shunt_compensator_assets = filtered
+            
+        self._shunt_impedance_info = value
+        if self._shunt_impedance_info is not None:
+            self._shunt_impedance_info._shunt_compensator_assets.append(self)
+
+    shunt_impedance_info = property(get_shunt_impedance_info, set_shunt_impedance_info)
 
     # <<< shunt_compensator_asset
     # @generated
     def __init__(self, shunt_compensator_asset_model=None, shunt_impedance_info=None, **kw_args):
         """ Initialises a new 'ShuntCompensatorAsset' instance.
         """
+        self._shunt_compensator_asset_model = None
         self.shunt_compensator_asset_model = shunt_compensator_asset_model
+        self._shunt_impedance_info = None
         self.shunt_impedance_info = shunt_impedance_info
 
         super(ShuntCompensatorAsset, self).__init__(**kw_args)
@@ -2145,16 +4401,45 @@ class ShuntCompensatorAsset(ElectricalAsset):
 class SVCAsset(FACTSDeviceAsset):
     """ Physical asset performing StaticVarCompensator function.
     """
-    svc_info = None
+    def get_svc_info(self):
+        """ 
+        """
+        return self._svc_info
 
-    svcasset_model = None
+    def set_svc_info(self, value):
+        if self._svc_info is not None:
+            self._svc_info._svcasset = None
+            
+        self._svc_info = value
+        if self._svc_info is not None:
+            self._svc_info._svcasset = self
+            
+    svc_info = property(get_svc_info, set_svc_info)
+
+    def get_svcasset_model(self):
+        """ 
+        """
+        return self._svcasset_model
+
+    def set_svcasset_model(self, value):
+        if self._svcasset_model is not None:
+            filtered = [x for x in self.svcasset_model.svcassets if x != self]
+            self._svcasset_model._svcassets = filtered
+            
+        self._svcasset_model = value
+        if self._svcasset_model is not None:
+            self._svcasset_model._svcassets.append(self)
+
+    svcasset_model = property(get_svcasset_model, set_svcasset_model)
 
     # <<< svcasset
     # @generated
     def __init__(self, svc_info=None, svcasset_model=None, **kw_args):
         """ Initialises a new 'SVCAsset' instance.
         """
+        self._svc_info = None
         self.svc_info = svc_info
+        self._svcasset_model = None
         self.svcasset_model = svcasset_model
 
         super(SVCAsset, self).__init__(**kw_args)
@@ -2164,16 +4449,45 @@ class SVCAsset(FACTSDeviceAsset):
 class ResistorAsset(ElectricalAsset):
     """ Physical asset performing Resistor function.
     """
-    resistor = None
+    def get_resistor(self):
+        """ 
+        """
+        return self._resistor
 
-    resistor_asset_model = None
+    def set_resistor(self, value):
+        if self._resistor is not None:
+            self._resistor._resistor_asset = None
+            
+        self._resistor = value
+        if self._resistor is not None:
+            self._resistor._resistor_asset = self
+            
+    resistor = property(get_resistor, set_resistor)
+
+    def get_resistor_asset_model(self):
+        """ 
+        """
+        return self._resistor_asset_model
+
+    def set_resistor_asset_model(self, value):
+        if self._resistor_asset_model is not None:
+            filtered = [x for x in self.resistor_asset_model.resistor_assets if x != self]
+            self._resistor_asset_model._resistor_assets = filtered
+            
+        self._resistor_asset_model = value
+        if self._resistor_asset_model is not None:
+            self._resistor_asset_model._resistor_assets.append(self)
+
+    resistor_asset_model = property(get_resistor_asset_model, set_resistor_asset_model)
 
     # <<< resistor_asset
     # @generated
     def __init__(self, resistor=None, resistor_asset_model=None, **kw_args):
         """ Initialises a new 'ResistorAsset' instance.
         """
+        self._resistor = None
         self.resistor = resistor
+        self._resistor_asset_model = None
         self.resistor_asset_model = resistor_asset_model
 
         super(ResistorAsset, self).__init__(**kw_args)

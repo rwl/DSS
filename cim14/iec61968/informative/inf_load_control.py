@@ -34,8 +34,38 @@ class LoadMgmtFunction(DeviceFunction):
     is_auto_op = False
 
     switches = []
+    
+    def add_switches(self, *switches):
+        for obj in switches:
+	        self._switches.append(obj)
+        
+    def remove_switches(self, *switches):
+        for obj in switches:
+	        self._switches.remove(obj)
 
-    load_mgmt_records = []
+    def get_load_mgmt_records(self):
+        """ 
+        """
+        return self._load_mgmt_records
+
+    def set_load_mgmt_records(self, value):
+        for x in self._load_mgmt_records:
+            x._load_mgmt_function = None
+        for y in value:
+            y._load_mgmt_function = self
+        self._load_mgmt_records = value
+            
+    load_mgmt_records = property(get_load_mgmt_records, set_load_mgmt_records)
+    
+    def add_load_mgmt_records(self, *load_mgmt_records):
+        for obj in load_mgmt_records:
+            obj._load_mgmt_function = self
+            self._load_mgmt_records.append(obj)
+        
+    def remove_load_mgmt_records(self, *load_mgmt_records):
+        for obj in load_mgmt_records:
+            obj._load_mgmt_function = None
+            self._load_mgmt_records.remove(obj)
 
     # <<< load_mgmt_function
     # @generated
@@ -48,7 +78,9 @@ class LoadMgmtFunction(DeviceFunction):
         self.load_status = load_status
         self.over_ride_time_out = over_ride_time_out
         self.is_auto_op = is_auto_op
+        self._switches = []
         self.switches = switches
+        self._load_mgmt_records = []
         self.load_mgmt_records = load_mgmt_records
 
         super(LoadMgmtFunction, self).__init__(**kw_args)
@@ -61,7 +93,21 @@ class LoadMgmtRecord(ActivityRecord):
     # The measured reduction of the total load power as a result of the load shed activation. Thus it is the difference in power before and after the load shed operation. 
     load_reduction = ''
 
-    load_mgmt_function = None
+    def get_load_mgmt_function(self):
+        """ 
+        """
+        return self._load_mgmt_function
+
+    def set_load_mgmt_function(self, value):
+        if self._load_mgmt_function is not None:
+            filtered = [x for x in self.load_mgmt_function.load_mgmt_records if x != self]
+            self._load_mgmt_function._load_mgmt_records = filtered
+            
+        self._load_mgmt_function = value
+        if self._load_mgmt_function is not None:
+            self._load_mgmt_function._load_mgmt_records.append(self)
+
+    load_mgmt_function = property(get_load_mgmt_function, set_load_mgmt_function)
 
     # <<< load_mgmt_record
     # @generated
@@ -69,6 +115,7 @@ class LoadMgmtRecord(ActivityRecord):
         """ Initialises a new 'LoadMgmtRecord' instance.
         """
         self.load_reduction = load_reduction
+        self._load_mgmt_function = None
         self.load_mgmt_function = load_mgmt_function
 
         super(LoadMgmtRecord, self).__init__(**kw_args)

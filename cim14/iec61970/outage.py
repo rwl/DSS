@@ -21,11 +21,31 @@ class SwitchingOperation(IdentifiedObject):
     # Time of operation in same units as OutageSchedule.xAxixUnits. 
     operation_time = ''
 
-    # An OutageSchedule may operate many switches.
-    outage_schedule = None
+    def get_outage_schedule(self):
+        """ An OutageSchedule may operate many switches.
+        """
+        return self._outage_schedule
 
-    # A switch may be operated by many schedules.
+    def set_outage_schedule(self, value):
+        if self._outage_schedule is not None:
+            filtered = [x for x in self.outage_schedule.switching_operations if x != self]
+            self._outage_schedule._switching_operations = filtered
+            
+        self._outage_schedule = value
+        if self._outage_schedule is not None:
+            self._outage_schedule._switching_operations.append(self)
+
+    outage_schedule = property(get_outage_schedule, set_outage_schedule)
+
     switches = []
+    
+    def add_switches(self, *switches):
+        for obj in switches:
+	        self._switches.append(obj)
+        
+    def remove_switches(self, *switches):
+        for obj in switches:
+	        self._switches.remove(obj)
 
     # <<< switching_operation
     # @generated
@@ -34,7 +54,9 @@ class SwitchingOperation(IdentifiedObject):
         """
         self.new_state = new_state
         self.operation_time = operation_time
+        self._outage_schedule = None
         self.outage_schedule = outage_schedule
+        self._switches = []
         self.switches = switches
 
         super(SwitchingOperation, self).__init__(**kw_args)
@@ -44,21 +66,71 @@ class SwitchingOperation(IdentifiedObject):
 class OutageSchedule(IrregularIntervalSchedule):
     """ The period of time that a piece of equipment is out of service, for example, for maintenance or testing; including the equipment's active power rating while under maintenance. The X-axis represents absolute time and the Y-axis represents the equipment's available rating while out of service.
     """
-    planned_outage = None
+    def get_planned_outage(self):
+        """ 
+        """
+        return self._planned_outage
 
-    # A power system resource may have an outage schedule
-    power_system_resource = None
+    def set_planned_outage(self, value):
+        if self._planned_outage is not None:
+            filtered = [x for x in self.planned_outage.outage_schedules if x != self]
+            self._planned_outage._outage_schedules = filtered
+            
+        self._planned_outage = value
+        if self._planned_outage is not None:
+            self._planned_outage._outage_schedules.append(self)
 
-    # An OutageSchedule may operate many switches.
-    switching_operations = []
+    planned_outage = property(get_planned_outage, set_planned_outage)
+
+    def get_power_system_resource(self):
+        """ A power system resource may have an outage schedule
+        """
+        return self._power_system_resource
+
+    def set_power_system_resource(self, value):
+        if self._power_system_resource is not None:
+            self._power_system_resource._outage_schedule = None
+            
+        self._power_system_resource = value
+        if self._power_system_resource is not None:
+            self._power_system_resource._outage_schedule = self
+            
+    power_system_resource = property(get_power_system_resource, set_power_system_resource)
+
+    def get_switching_operations(self):
+        """ An OutageSchedule may operate many switches.
+        """
+        return self._switching_operations
+
+    def set_switching_operations(self, value):
+        for x in self._switching_operations:
+            x._outage_schedule = None
+        for y in value:
+            y._outage_schedule = self
+        self._switching_operations = value
+            
+    switching_operations = property(get_switching_operations, set_switching_operations)
+    
+    def add_switching_operations(self, *switching_operations):
+        for obj in switching_operations:
+            obj._outage_schedule = self
+            self._switching_operations.append(obj)
+        
+    def remove_switching_operations(self, *switching_operations):
+        for obj in switching_operations:
+            obj._outage_schedule = None
+            self._switching_operations.remove(obj)
 
     # <<< outage_schedule
     # @generated
     def __init__(self, planned_outage=None, power_system_resource=None, switching_operations=[], **kw_args):
         """ Initialises a new 'OutageSchedule' instance.
         """
+        self._planned_outage = None
         self.planned_outage = planned_outage
+        self._power_system_resource = None
         self.power_system_resource = power_system_resource
+        self._switching_operations = []
         self.switching_operations = switching_operations
 
         super(OutageSchedule, self).__init__(**kw_args)
@@ -92,13 +164,47 @@ class ClearanceTag(IdentifiedObject):
     # The name of the person who is authorized to issue the tag 
     authority_name = ''
 
-    # Conducting equipment may have multiple clearance tags for authorized field work
-    conducting_equipment = None
+    def get_conducting_equipment(self):
+        """ Conducting equipment may have multiple clearance tags for authorized field work
+        """
+        return self._conducting_equipment
+
+    def set_conducting_equipment(self, value):
+        if self._conducting_equipment is not None:
+            filtered = [x for x in self.conducting_equipment.clearance_tags if x != self]
+            self._conducting_equipment._clearance_tags = filtered
+            
+        self._conducting_equipment = value
+        if self._conducting_equipment is not None:
+            self._conducting_equipment._clearance_tags.append(self)
+
+    conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
 
     safety_documents = []
+    
+    def add_safety_documents(self, *safety_documents):
+        for obj in safety_documents:
+	        self._safety_documents.append(obj)
+        
+    def remove_safety_documents(self, *safety_documents):
+        for obj in safety_documents:
+	        self._safety_documents.remove(obj)
 
-    # The type of tag, depending on the purpose of the work to be performed and/or the type of supervisory control allowed.
-    clearance_tag_type = None
+    def get_clearance_tag_type(self):
+        """ The type of tag, depending on the purpose of the work to be performed and/or the type of supervisory control allowed.
+        """
+        return self._clearance_tag_type
+
+    def set_clearance_tag_type(self, value):
+        if self._clearance_tag_type is not None:
+            filtered = [x for x in self.clearance_tag_type.clearance_tags if x != self]
+            self._clearance_tag_type._clearance_tags = filtered
+            
+        self._clearance_tag_type = value
+        if self._clearance_tag_type is not None:
+            self._clearance_tag_type._clearance_tags.append(self)
+
+    clearance_tag_type = property(get_clearance_tag_type, set_clearance_tag_type)
 
     # <<< clearance_tag
     # @generated
@@ -113,8 +219,11 @@ class ClearanceTag(IdentifiedObject):
         self.work_description = work_description
         self.ground_req_flag = ground_req_flag
         self.authority_name = authority_name
+        self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
+        self._safety_documents = []
         self.safety_documents = safety_documents
+        self._clearance_tag_type = None
         self.clearance_tag_type = clearance_tag_type
 
         super(ClearanceTag, self).__init__(**kw_args)
@@ -124,14 +233,36 @@ class ClearanceTag(IdentifiedObject):
 class ClearanceTagType(IdentifiedObject):
     """ Type of ClearanceTag. Could indicate the type of work to be performed and/or the type of supervisory control.
     """
-    # The ClearanceTags currently being defined for this type.
-    clearance_tags = []
+    def get_clearance_tags(self):
+        """ The ClearanceTags currently being defined for this type.
+        """
+        return self._clearance_tags
+
+    def set_clearance_tags(self, value):
+        for x in self._clearance_tags:
+            x._clearance_tag_type = None
+        for y in value:
+            y._clearance_tag_type = self
+        self._clearance_tags = value
+            
+    clearance_tags = property(get_clearance_tags, set_clearance_tags)
+    
+    def add_clearance_tags(self, *clearance_tags):
+        for obj in clearance_tags:
+            obj._clearance_tag_type = self
+            self._clearance_tags.append(obj)
+        
+    def remove_clearance_tags(self, *clearance_tags):
+        for obj in clearance_tags:
+            obj._clearance_tag_type = None
+            self._clearance_tags.remove(obj)
 
     # <<< clearance_tag_type
     # @generated
     def __init__(self, clearance_tags=[], **kw_args):
         """ Initialises a new 'ClearanceTagType' instance.
         """
+        self._clearance_tags = []
         self.clearance_tags = clearance_tags
 
         super(ClearanceTagType, self).__init__(**kw_args)

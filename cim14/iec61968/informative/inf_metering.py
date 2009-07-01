@@ -29,14 +29,36 @@ class ComPort(IdentifiedObject):
 class MeteringFunctionConfiguration(IdentifiedObject):
     """ The configuration of data for a given meter function.
     """
-    # All electric metering functions with this configuration.
-    electric_metering_functions = []
+    def get_electric_metering_functions(self):
+        """ All electric metering functions with this configuration.
+        """
+        return self._electric_metering_functions
+
+    def set_electric_metering_functions(self, value):
+        for x in self._electric_metering_functions:
+            x._metering_function_configuration = None
+        for y in value:
+            y._metering_function_configuration = self
+        self._electric_metering_functions = value
+            
+    electric_metering_functions = property(get_electric_metering_functions, set_electric_metering_functions)
+    
+    def add_electric_metering_functions(self, *electric_metering_functions):
+        for obj in electric_metering_functions:
+            obj._metering_function_configuration = self
+            self._electric_metering_functions.append(obj)
+        
+    def remove_electric_metering_functions(self, *electric_metering_functions):
+        for obj in electric_metering_functions:
+            obj._metering_function_configuration = None
+            self._electric_metering_functions.remove(obj)
 
     # <<< metering_function_configuration
     # @generated
     def __init__(self, electric_metering_functions=[], **kw_args):
         """ Initialises a new 'MeteringFunctionConfiguration' instance.
         """
+        self._electric_metering_functions = []
         self.electric_metering_functions = electric_metering_functions
 
         super(MeteringFunctionConfiguration, self).__init__(**kw_args)

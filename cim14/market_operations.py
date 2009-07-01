@@ -27,18 +27,90 @@ class RegisteredResource(IdentifiedObject):
     rto_id = ''
 
     resource_groups = []
+    
+    def add_resource_groups(self, *resource_groups):
+        for obj in resource_groups:
+	        self._resource_groups.append(obj)
+        
+    def remove_resource_groups(self, *resource_groups):
+        for obj in resource_groups:
+	        self._resource_groups.remove(obj)
 
-    organisation = None
+    def get_organisation(self):
+        """ 
+        """
+        return self._organisation
 
-    # A registered resource injects power at one or more connectivity nodes related to a pnode
-    pnode = None
+    def set_organisation(self, value):
+        if self._organisation is not None:
+            filtered = [x for x in self.organisation.registered_resources if x != self]
+            self._organisation._registered_resources = filtered
+            
+        self._organisation = value
+        if self._organisation is not None:
+            self._organisation._registered_resources.append(self)
 
-    meters = []
+    organisation = property(get_organisation, set_organisation)
 
-    # A registered resource is eligible to bid market products
+    def get_pnode(self):
+        """ A registered resource injects power at one or more connectivity nodes related to a pnode
+        """
+        return self._pnode
+
+    def set_pnode(self, value):
+        if self._pnode is not None:
+            filtered = [x for x in self.pnode.registered_resources if x != self]
+            self._pnode._registered_resources = filtered
+            
+        self._pnode = value
+        if self._pnode is not None:
+            self._pnode._registered_resources.append(self)
+
+    pnode = property(get_pnode, set_pnode)
+
+    def get_meters(self):
+        """ 
+        """
+        return self._meters
+
+    def set_meters(self, value):
+        for x in self._meters:
+            x._registered_resource = None
+        for y in value:
+            y._registered_resource = self
+        self._meters = value
+            
+    meters = property(get_meters, set_meters)
+    
+    def add_meters(self, *meters):
+        for obj in meters:
+            obj._registered_resource = self
+            self._meters.append(obj)
+        
+    def remove_meters(self, *meters):
+        for obj in meters:
+            obj._registered_resource = None
+            self._meters.remove(obj)
+
     market_products = []
+    
+    def add_market_products(self, *market_products):
+        for obj in market_products:
+	        self._market_products.append(obj)
+        
+    def remove_market_products(self, *market_products):
+        for obj in market_products:
+	        self._market_products.remove(obj)
 
     markets = []
+    
+    def add_markets(self, *markets):
+        for obj in markets:
+	        self._markets.append(obj)
+        
+    def remove_markets(self, *markets):
+        for obj in markets:
+	        self._markets.remove(obj)
 
     # <<< registered_resource
     # @generated
@@ -46,11 +118,17 @@ class RegisteredResource(IdentifiedObject):
         """ Initialises a new 'RegisteredResource' instance.
         """
         self.rto_id = rto_id
+        self._resource_groups = []
         self.resource_groups = resource_groups
+        self._organisation = None
         self.organisation = organisation
+        self._pnode = None
         self.pnode = pnode
+        self._meters = []
         self.meters = meters
+        self._market_products = []
         self.market_products = market_products
+        self._markets = []
         self.markets = markets
 
         super(RegisteredResource, self).__init__(**kw_args)
@@ -60,25 +138,126 @@ class RegisteredResource(IdentifiedObject):
 class RTO(ErpOrganisation):
     """ Regional transmission operator.
     """
-    security_constraints_linear = []
+    def get_security_constraints_linear(self):
+        """ 
+        """
+        return self._security_constraints_linear
+
+    def set_security_constraints_linear(self, value):
+        for x in self._security_constraints_linear:
+            x._rto = None
+        for y in value:
+            y._rto = self
+        self._security_constraints_linear = value
+            
+    security_constraints_linear = property(get_security_constraints_linear, set_security_constraints_linear)
+    
+    def add_security_constraints_linear(self, *security_constraints_linear):
+        for obj in security_constraints_linear:
+            obj._rto = self
+            self._security_constraints_linear.append(obj)
+        
+    def remove_security_constraints_linear(self, *security_constraints_linear):
+        for obj in security_constraints_linear:
+            obj._rto = None
+            self._security_constraints_linear.remove(obj)
 
     resource_group_reqs = []
+    
+    def add_resource_group_reqs(self, *resource_group_reqs):
+        for obj in resource_group_reqs:
+	        self._resource_group_reqs.append(obj)
+        
+    def remove_resource_group_reqs(self, *resource_group_reqs):
+        for obj in resource_group_reqs:
+	        self._resource_group_reqs.remove(obj)
 
-    security_constraints = []
+    def get_security_constraints(self):
+        """ 
+        """
+        return self._security_constraints
 
-    markets = []
+    def set_security_constraints(self, value):
+        for x in self._security_constraints:
+            x._rto = None
+        for y in value:
+            y._rto = self
+        self._security_constraints = value
+            
+    security_constraints = property(get_security_constraints, set_security_constraints)
+    
+    def add_security_constraints(self, *security_constraints):
+        for obj in security_constraints:
+            obj._rto = self
+            self._security_constraints.append(obj)
+        
+    def remove_security_constraints(self, *security_constraints):
+        for obj in security_constraints:
+            obj._rto = None
+            self._security_constraints.remove(obj)
 
-    pnodes = []
+    def get_markets(self):
+        """ 
+        """
+        return self._markets
+
+    def set_markets(self, value):
+        for x in self._markets:
+            x._rto = None
+        for y in value:
+            y._rto = self
+        self._markets = value
+            
+    markets = property(get_markets, set_markets)
+    
+    def add_markets(self, *markets):
+        for obj in markets:
+            obj._rto = self
+            self._markets.append(obj)
+        
+    def remove_markets(self, *markets):
+        for obj in markets:
+            obj._rto = None
+            self._markets.remove(obj)
+
+    def get_pnodes(self):
+        """ 
+        """
+        return self._pnodes
+
+    def set_pnodes(self, value):
+        for x in self._pnodes:
+            x._rto = None
+        for y in value:
+            y._rto = self
+        self._pnodes = value
+            
+    pnodes = property(get_pnodes, set_pnodes)
+    
+    def add_pnodes(self, *pnodes):
+        for obj in pnodes:
+            obj._rto = self
+            self._pnodes.append(obj)
+        
+    def remove_pnodes(self, *pnodes):
+        for obj in pnodes:
+            obj._rto = None
+            self._pnodes.remove(obj)
 
     # <<< rto
     # @generated
     def __init__(self, security_constraints_linear=[], resource_group_reqs=[], security_constraints=[], markets=[], pnodes=[], **kw_args):
         """ Initialises a new 'RTO' instance.
         """
+        self._security_constraints_linear = []
         self.security_constraints_linear = security_constraints_linear
+        self._resource_group_reqs = []
         self.resource_group_reqs = resource_group_reqs
+        self._security_constraints = []
         self.security_constraints = security_constraints
+        self._markets = []
         self.markets = markets
+        self._pnodes = []
         self.pnodes = pnodes
 
         super(RTO, self).__init__(**kw_args)
@@ -88,13 +267,28 @@ class RTO(ErpOrganisation):
 class Meter(IdentifiedObject):
     """ This is generic logical meter object.
     """
-    registered_resource = None
+    def get_registered_resource(self):
+        """ 
+        """
+        return self._registered_resource
+
+    def set_registered_resource(self, value):
+        if self._registered_resource is not None:
+            filtered = [x for x in self.registered_resource.meters if x != self]
+            self._registered_resource._meters = filtered
+            
+        self._registered_resource = value
+        if self._registered_resource is not None:
+            self._registered_resource._meters.append(self)
+
+    registered_resource = property(get_registered_resource, set_registered_resource)
 
     # <<< meter
     # @generated
     def __init__(self, registered_resource=None, **kw_args):
         """ Initialises a new 'Meter' instance.
         """
+        self._registered_resource = None
         self.registered_resource = registered_resource
 
         super(Meter, self).__init__(**kw_args)
@@ -104,19 +298,63 @@ class Meter(IdentifiedObject):
 class ContingencyConstraintLimit(Curve):
     """ Possibly time-varying max MW or MVA and optionally Min MW limit or MVA limit (Y1 and Y2, respectively) assigned to a constraint for a specific contingency. Use CurveSchedule XAxisUnits to specify MW or MVA.
     """
-    mwlimit_schedules = None
+    def get_mwlimit_schedules(self):
+        """ 
+        """
+        return self._mwlimit_schedules
 
-    contingency = None
+    def set_mwlimit_schedules(self, value):
+        if self._mwlimit_schedules is not None:
+            self._mwlimit_schedules._security_constraint_limit = None
+            
+        self._mwlimit_schedules = value
+        if self._mwlimit_schedules is not None:
+            self._mwlimit_schedules._security_constraint_limit = self
+            
+    mwlimit_schedules = property(get_mwlimit_schedules, set_mwlimit_schedules)
 
-    security_constraint_sum = None
+    def get_contingency(self):
+        """ 
+        """
+        return self._contingency
+
+    def set_contingency(self, value):
+        if self._contingency is not None:
+            filtered = [x for x in self.contingency.contingency_constraint_limit if x != self]
+            self._contingency._contingency_constraint_limit = filtered
+            
+        self._contingency = value
+        if self._contingency is not None:
+            self._contingency._contingency_constraint_limit.append(self)
+
+    contingency = property(get_contingency, set_contingency)
+
+    def get_security_constraint_sum(self):
+        """ 
+        """
+        return self._security_constraint_sum
+
+    def set_security_constraint_sum(self, value):
+        if self._security_constraint_sum is not None:
+            filtered = [x for x in self.security_constraint_sum.contingency_constraint_limits if x != self]
+            self._security_constraint_sum._contingency_constraint_limits = filtered
+            
+        self._security_constraint_sum = value
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._contingency_constraint_limits.append(self)
+
+    security_constraint_sum = property(get_security_constraint_sum, set_security_constraint_sum)
 
     # <<< contingency_constraint_limit
     # @generated
     def __init__(self, mwlimit_schedules=None, contingency=None, security_constraint_sum=None, **kw_args):
         """ Initialises a new 'ContingencyConstraintLimit' instance.
         """
+        self._mwlimit_schedules = None
         self.mwlimit_schedules = mwlimit_schedules
+        self._contingency = None
         self.contingency = contingency
+        self._security_constraint_sum = None
         self.security_constraint_sum = security_constraint_sum
 
         super(ContingencyConstraintLimit, self).__init__(**kw_args)
@@ -126,13 +364,36 @@ class ContingencyConstraintLimit(Curve):
 class BidPriceCurve(Curve):
     """ Relationship between unit operating price in $/hour (Y-axis) and unit output in MW (X-axis).
     """
-    product_bids = []
+    def get_product_bids(self):
+        """ 
+        """
+        return self._product_bids
+
+    def set_product_bids(self, value):
+        for x in self._product_bids:
+            x._bid_price_curve = None
+        for y in value:
+            y._bid_price_curve = self
+        self._product_bids = value
+            
+    product_bids = property(get_product_bids, set_product_bids)
+    
+    def add_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._bid_price_curve = self
+            self._product_bids.append(obj)
+        
+    def remove_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._bid_price_curve = None
+            self._product_bids.remove(obj)
 
     # <<< bid_price_curve
     # @generated
     def __init__(self, product_bids=[], **kw_args):
         """ Initialises a new 'BidPriceCurve' instance.
         """
+        self._product_bids = []
         self.product_bids = product_bids
 
         super(BidPriceCurve, self).__init__(**kw_args)
@@ -157,11 +418,47 @@ class FTR(Agreement):
     # Quantity, typically MWs - Seller owns all rights being offered, MWs over time on same Point of Receipt, Point of Delivery, or Resource. 
     base_energy = ''
 
-    flowgate = None
+    def get_flowgate(self):
+        """ 
+        """
+        return self._flowgate
+
+    def set_flowgate(self, value):
+        if self._flowgate is not None:
+            filtered = [x for x in self.flowgate.ftrs if x != self]
+            self._flowgate._ftrs = filtered
+            
+        self._flowgate = value
+        if self._flowgate is not None:
+            self._flowgate._ftrs.append(self)
+
+    flowgate = property(get_flowgate, set_flowgate)
 
     pnodes = []
+    
+    def add_pnodes(self, *pnodes):
+        for obj in pnodes:
+	        self._pnodes.append(obj)
+        
+    def remove_pnodes(self, *pnodes):
+        for obj in pnodes:
+	        self._pnodes.remove(obj)
 
-    energy_price_curve = None
+    def get_energy_price_curve(self):
+        """ 
+        """
+        return self._energy_price_curve
+
+    def set_energy_price_curve(self, value):
+        if self._energy_price_curve is not None:
+            filtered = [x for x in self.energy_price_curve.ftrs if x != self]
+            self._energy_price_curve._ftrs = filtered
+            
+        self._energy_price_curve = value
+        if self._energy_price_curve is not None:
+            self._energy_price_curve._ftrs.append(self)
+
+    energy_price_curve = property(get_energy_price_curve, set_energy_price_curve)
 
     # <<< ftr
     # @generated
@@ -173,8 +470,11 @@ class FTR(Agreement):
         self.optimized = optimized
         self.action = action
         self.base_energy = base_energy
+        self._flowgate = None
         self.flowgate = flowgate
+        self._pnodes = []
         self.pnodes = pnodes
+        self._energy_price_curve = None
         self.energy_price_curve = energy_price_curve
 
         super(FTR, self).__init__(**kw_args)
@@ -191,9 +491,37 @@ class ChargeProfileData(Element):
     # The sequence number of the profile. 
     sequence = 0
 
-    charge_profile = None
+    def get_charge_profile(self):
+        """ 
+        """
+        return self._charge_profile
 
-    bill_determinant = None
+    def set_charge_profile(self, value):
+        if self._charge_profile is not None:
+            filtered = [x for x in self.charge_profile.charge_profile_data if x != self]
+            self._charge_profile._charge_profile_data = filtered
+            
+        self._charge_profile = value
+        if self._charge_profile is not None:
+            self._charge_profile._charge_profile_data.append(self)
+
+    charge_profile = property(get_charge_profile, set_charge_profile)
+
+    def get_bill_determinant(self):
+        """ 
+        """
+        return self._bill_determinant
+
+    def set_bill_determinant(self, value):
+        if self._bill_determinant is not None:
+            filtered = [x for x in self.bill_determinant.charge_profile_data if x != self]
+            self._bill_determinant._charge_profile_data = filtered
+            
+        self._bill_determinant = value
+        if self._bill_determinant is not None:
+            self._bill_determinant._charge_profile_data.append(self)
+
+    bill_determinant = property(get_bill_determinant, set_bill_determinant)
 
     # <<< charge_profile_data
     # @generated
@@ -203,7 +531,9 @@ class ChargeProfileData(Element):
         self.time_stamp = time_stamp
         self.value = value
         self.sequence = sequence
+        self._charge_profile = None
         self.charge_profile = charge_profile
+        self._bill_determinant = None
         self.bill_determinant = bill_determinant
 
         super(ChargeProfileData, self).__init__(**kw_args)
@@ -222,8 +552,29 @@ class TransmissionReliabilityMargin(IdentifiedObject):
     # unit of the TRM value. Could be MW or Percentage. 
     value_unit = ''
 
-    # A fowgate may have 0 to 1 TRM
-    flowgate = []
+    def get_flowgate(self):
+        """ A fowgate may have 0 to 1 TRM
+        """
+        return self._flowgate
+
+    def set_flowgate(self, value):
+        for x in self._flowgate:
+            x._transmission_reliability_margin = None
+        for y in value:
+            y._transmission_reliability_margin = self
+        self._flowgate = value
+            
+    flowgate = property(get_flowgate, set_flowgate)
+    
+    def add_flowgate(self, *flowgate):
+        for obj in flowgate:
+            obj._transmission_reliability_margin = self
+            self._flowgate.append(obj)
+        
+    def remove_flowgate(self, *flowgate):
+        for obj in flowgate:
+            obj._transmission_reliability_margin = None
+            self._flowgate.remove(obj)
 
     # <<< transmission_reliability_margin
     # @generated
@@ -233,6 +584,7 @@ class TransmissionReliabilityMargin(IdentifiedObject):
         self.trm_value = trm_value
         self.trm_type = trm_type
         self.value_unit = value_unit
+        self._flowgate = []
         self.flowgate = flowgate
 
         super(TransmissionReliabilityMargin, self).__init__(**kw_args)
@@ -257,7 +609,21 @@ class UnitInitialConditions(IdentifiedObject):
     # Time and date for resourceStatus 
     status_date = ''
 
-    generating_unit = None
+    def get_generating_unit(self):
+        """ 
+        """
+        return self._generating_unit
+
+    def set_generating_unit(self, value):
+        if self._generating_unit is not None:
+            filtered = [x for x in self.generating_unit.unit_initial_conditions if x != self]
+            self._generating_unit._unit_initial_conditions = filtered
+            
+        self._generating_unit = value
+        if self._generating_unit is not None:
+            self._generating_unit._unit_initial_conditions.append(self)
+
+    generating_unit = property(get_generating_unit, set_generating_unit)
 
     # <<< unit_initial_conditions
     # @generated
@@ -269,6 +635,7 @@ class UnitInitialConditions(IdentifiedObject):
         self.time_in_status = time_in_status
         self.resource_mw = resource_mw
         self.status_date = status_date
+        self._generating_unit = None
         self.generating_unit = generating_unit
 
         super(UnitInitialConditions, self).__init__(**kw_args)
@@ -293,22 +660,157 @@ class Pnode(IdentifiedObject):
     # Start date-time of the period in which the price node definition is valid. 
     begin_period = ''
 
-    connectivity_node = None
+    def get_connectivity_node(self):
+        """ 
+        """
+        return self._connectivity_node
 
-    rto = None
+    def set_connectivity_node(self, value):
+        if self._connectivity_node is not None:
+            self._connectivity_node._pnode = None
+            
+        self._connectivity_node = value
+        if self._connectivity_node is not None:
+            self._connectivity_node._pnode = self
+            
+    connectivity_node = property(get_connectivity_node, set_connectivity_node)
 
-    measurements = []
+    def get_rto(self):
+        """ 
+        """
+        return self._rto
 
-    receipt_transaction_bids = []
+    def set_rto(self, value):
+        if self._rto is not None:
+            filtered = [x for x in self.rto.pnodes if x != self]
+            self._rto._pnodes = filtered
+            
+        self._rto = value
+        if self._rto is not None:
+            self._rto._pnodes.append(self)
 
-    pnode_clearing = None
+    rto = property(get_rto, set_rto)
+
+    def get_measurements(self):
+        """ 
+        """
+        return self._measurements
+
+    def set_measurements(self, value):
+        for x in self._measurements:
+            x._pnode = None
+        for y in value:
+            y._pnode = self
+        self._measurements = value
+            
+    measurements = property(get_measurements, set_measurements)
+    
+    def add_measurements(self, *measurements):
+        for obj in measurements:
+            obj._pnode = self
+            self._measurements.append(obj)
+        
+    def remove_measurements(self, *measurements):
+        for obj in measurements:
+            obj._pnode = None
+            self._measurements.remove(obj)
+
+    def get_receipt_transaction_bids(self):
+        """ 
+        """
+        return self._receipt_transaction_bids
+
+    def set_receipt_transaction_bids(self, value):
+        for x in self._receipt_transaction_bids:
+            x._receipt_pnode = None
+        for y in value:
+            y._receipt_pnode = self
+        self._receipt_transaction_bids = value
+            
+    receipt_transaction_bids = property(get_receipt_transaction_bids, set_receipt_transaction_bids)
+    
+    def add_receipt_transaction_bids(self, *receipt_transaction_bids):
+        for obj in receipt_transaction_bids:
+            obj._receipt_pnode = self
+            self._receipt_transaction_bids.append(obj)
+        
+    def remove_receipt_transaction_bids(self, *receipt_transaction_bids):
+        for obj in receipt_transaction_bids:
+            obj._receipt_pnode = None
+            self._receipt_transaction_bids.remove(obj)
+
+    def get_pnode_clearing(self):
+        """ 
+        """
+        return self._pnode_clearing
+
+    def set_pnode_clearing(self, value):
+        if self._pnode_clearing is not None:
+            self._pnode_clearing._pnode = None
+            
+        self._pnode_clearing = value
+        if self._pnode_clearing is not None:
+            self._pnode_clearing._pnode = self
+            
+    pnode_clearing = property(get_pnode_clearing, set_pnode_clearing)
 
     ftrs = []
+    
+    def add_ftrs(self, *ftrs):
+        for obj in ftrs:
+	        self._ftrs.append(obj)
+        
+    def remove_ftrs(self, *ftrs):
+        for obj in ftrs:
+	        self._ftrs.remove(obj)
 
-    # A registered resource injects power at one or more connectivity nodes related to a pnode
-    registered_resources = []
+    def get_registered_resources(self):
+        """ A registered resource injects power at one or more connectivity nodes related to a pnode
+        """
+        return self._registered_resources
 
-    delivery_transaction_bids = []
+    def set_registered_resources(self, value):
+        for x in self._registered_resources:
+            x._pnode = None
+        for y in value:
+            y._pnode = self
+        self._registered_resources = value
+            
+    registered_resources = property(get_registered_resources, set_registered_resources)
+    
+    def add_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+            obj._pnode = self
+            self._registered_resources.append(obj)
+        
+    def remove_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+            obj._pnode = None
+            self._registered_resources.remove(obj)
+
+    def get_delivery_transaction_bids(self):
+        """ 
+        """
+        return self._delivery_transaction_bids
+
+    def set_delivery_transaction_bids(self, value):
+        for x in self._delivery_transaction_bids:
+            x._delivery_pnode = None
+        for y in value:
+            y._delivery_pnode = self
+        self._delivery_transaction_bids = value
+            
+    delivery_transaction_bids = property(get_delivery_transaction_bids, set_delivery_transaction_bids)
+    
+    def add_delivery_transaction_bids(self, *delivery_transaction_bids):
+        for obj in delivery_transaction_bids:
+            obj._delivery_pnode = self
+            self._delivery_transaction_bids.append(obj)
+        
+    def remove_delivery_transaction_bids(self, *delivery_transaction_bids):
+        for obj in delivery_transaction_bids:
+            obj._delivery_pnode = None
+            self._delivery_transaction_bids.remove(obj)
 
     # <<< pnode
     # @generated
@@ -320,13 +822,21 @@ class Pnode(IdentifiedObject):
         self.type = type
         self.usage = usage
         self.begin_period = begin_period
+        self._connectivity_node = None
         self.connectivity_node = connectivity_node
+        self._rto = None
         self.rto = rto
+        self._measurements = []
         self.measurements = measurements
+        self._receipt_transaction_bids = []
         self.receipt_transaction_bids = receipt_transaction_bids
+        self._pnode_clearing = None
         self.pnode_clearing = pnode_clearing
+        self._ftrs = []
         self.ftrs = ftrs
+        self._registered_resources = []
         self.registered_resources = registered_resources
+        self._delivery_transaction_bids = []
         self.delivery_transaction_bids = delivery_transaction_bids
 
         super(Pnode, self).__init__(**kw_args)
@@ -336,18 +846,40 @@ class Pnode(IdentifiedObject):
 class CapacityBenefitMargin(Profile):
     """ Capacity Benefit Margin (CBM) is defined as that amount of transmission transfer capability reserved by load serving entities to ensure access to generation from interconnected systems to meet generation reliability requirements. Reservation fo CBM by a load serving entity allows that entity to reduce its installed generating capacity below that which may otherwise have been necessary without interconnections to meet its generation reliability requirements.  CBM is modeled as a profile with values in different time periods which are represented by the profile data.
     """
-    # Capacity Benefit Margin may differ based on the season
-    season = None
+    def get_season(self):
+        """ Capacity Benefit Margin may differ based on the season
+        """
+        return self._season
 
-    # A flowgate may have 0 to n CBM profile Each season may be a CBM which contains a set of profile data
+    def set_season(self, value):
+        if self._season is not None:
+            filtered = [x for x in self.season.capacity_benefit_margin if x != self]
+            self._season._capacity_benefit_margin = filtered
+            
+        self._season = value
+        if self._season is not None:
+            self._season._capacity_benefit_margin.append(self)
+
+    season = property(get_season, set_season)
+
     flowgate = []
+    
+    def add_flowgate(self, *flowgate):
+        for obj in flowgate:
+	        self._flowgate.append(obj)
+        
+    def remove_flowgate(self, *flowgate):
+        for obj in flowgate:
+	        self._flowgate.remove(obj)
 
     # <<< capacity_benefit_margin
     # @generated
     def __init__(self, season=None, flowgate=[], **kw_args):
         """ Initialises a new 'CapacityBenefitMargin' instance.
         """
+        self._season = None
         self.season = season
+        self._flowgate = []
         self.flowgate = flowgate
 
         super(CapacityBenefitMargin, self).__init__(**kw_args)
@@ -357,16 +889,48 @@ class CapacityBenefitMargin(Profile):
 class EnergyPriceCurve(Curve):
     """ Relationship between a price in $/hour (Y-axis) and a MW value (X-axis).
     """
-    ftrs = []
+    def get_ftrs(self):
+        """ 
+        """
+        return self._ftrs
+
+    def set_ftrs(self, value):
+        for x in self._ftrs:
+            x._energy_price_curve = None
+        for y in value:
+            y._energy_price_curve = self
+        self._ftrs = value
+            
+    ftrs = property(get_ftrs, set_ftrs)
+    
+    def add_ftrs(self, *ftrs):
+        for obj in ftrs:
+            obj._energy_price_curve = self
+            self._ftrs.append(obj)
+        
+    def remove_ftrs(self, *ftrs):
+        for obj in ftrs:
+            obj._energy_price_curve = None
+            self._ftrs.remove(obj)
 
     energy_transactions = []
+    
+    def add_energy_transactions(self, *energy_transactions):
+        for obj in energy_transactions:
+	        self._energy_transactions.append(obj)
+        
+    def remove_energy_transactions(self, *energy_transactions):
+        for obj in energy_transactions:
+	        self._energy_transactions.remove(obj)
 
     # <<< energy_price_curve
     # @generated
     def __init__(self, ftrs=[], energy_transactions=[], **kw_args):
         """ Initialises a new 'EnergyPriceCurve' instance.
         """
+        self._ftrs = []
         self.ftrs = ftrs
+        self._energy_transactions = []
         self.energy_transactions = energy_transactions
 
         super(EnergyPriceCurve, self).__init__(**kw_args)
@@ -376,24 +940,92 @@ class EnergyPriceCurve(Curve):
 class MarketProduct(IdentifiedObject):
     """ A product traded by an RTO (e.g., energy, 10 minute spinning reserve).  Ancillary service product examples include: Regulation Up Regulation Dn Spinning Reserve Non-Spinning Reserve Operating Reserve
     """
-    # Market product associated with reserve requirement must be a reserve or regulation product.
-    reserve_reqs = []
+    def get_reserve_reqs(self):
+        """ Market product associated with reserve requirement must be a reserve or regulation product.
+        """
+        return self._reserve_reqs
 
-    product_bids = []
+    def set_reserve_reqs(self, value):
+        for x in self._reserve_reqs:
+            x._market_product = None
+        for y in value:
+            y._market_product = self
+        self._reserve_reqs = value
+            
+    reserve_reqs = property(get_reserve_reqs, set_reserve_reqs)
+    
+    def add_reserve_reqs(self, *reserve_reqs):
+        for obj in reserve_reqs:
+            obj._market_product = self
+            self._reserve_reqs.append(obj)
+        
+    def remove_reserve_reqs(self, *reserve_reqs):
+        for obj in reserve_reqs:
+            obj._market_product = None
+            self._reserve_reqs.remove(obj)
 
-    # A registered resource is eligible to bid market products
+    def get_product_bids(self):
+        """ 
+        """
+        return self._product_bids
+
+    def set_product_bids(self, value):
+        for x in self._product_bids:
+            x._market_product = None
+        for y in value:
+            y._market_product = self
+        self._product_bids = value
+            
+    product_bids = property(get_product_bids, set_product_bids)
+    
+    def add_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._market_product = self
+            self._product_bids.append(obj)
+        
+    def remove_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._market_product = None
+            self._product_bids.remove(obj)
+
     registered_resources = []
+    
+    def add_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.append(obj)
+        
+    def remove_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.remove(obj)
 
-    market = None
+    def get_market(self):
+        """ 
+        """
+        return self._market
+
+    def set_market(self, value):
+        if self._market is not None:
+            filtered = [x for x in self.market.market_products if x != self]
+            self._market._market_products = filtered
+            
+        self._market = value
+        if self._market is not None:
+            self._market._market_products.append(self)
+
+    market = property(get_market, set_market)
 
     # <<< market_product
     # @generated
     def __init__(self, reserve_reqs=[], product_bids=[], registered_resources=[], market=None, **kw_args):
         """ Initialises a new 'MarketProduct' instance.
         """
+        self._reserve_reqs = []
         self.reserve_reqs = reserve_reqs
+        self._product_bids = []
         self.product_bids = product_bids
+        self._registered_resources = []
         self.registered_resources = registered_resources
+        self._market = None
         self.market = market
 
         super(MarketProduct, self).__init__(**kw_args)
@@ -514,11 +1146,54 @@ class PassThroughBill(Document):
     # The company to which the PTB transaction is billed. 
     billed_to = ''
 
-    market_statement_line_item = None
+    def get_market_statement_line_item(self):
+        """ 
+        """
+        return self._market_statement_line_item
 
-    charge_profiles = []
+    def set_market_statement_line_item(self, value):
+        if self._market_statement_line_item is not None:
+            self._market_statement_line_item._pass_through_bill = None
+            
+        self._market_statement_line_item = value
+        if self._market_statement_line_item is not None:
+            self._market_statement_line_item._pass_through_bill = self
+            
+    market_statement_line_item = property(get_market_statement_line_item, set_market_statement_line_item)
+
+    def get_charge_profiles(self):
+        """ 
+        """
+        return self._charge_profiles
+
+    def set_charge_profiles(self, value):
+        for x in self._charge_profiles:
+            x._pass_trough_bill = None
+        for y in value:
+            y._pass_trough_bill = self
+        self._charge_profiles = value
+            
+    charge_profiles = property(get_charge_profiles, set_charge_profiles)
+    
+    def add_charge_profiles(self, *charge_profiles):
+        for obj in charge_profiles:
+            obj._pass_trough_bill = self
+            self._charge_profiles.append(obj)
+        
+    def remove_charge_profiles(self, *charge_profiles):
+        for obj in charge_profiles:
+            obj._pass_trough_bill = None
+            self._charge_profiles.remove(obj)
 
     user_attributes = []
+    
+    def add_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.append(obj)
+        
+    def remove_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.remove(obj)
 
     # <<< pass_through_bill
     # @generated
@@ -547,8 +1222,11 @@ class PassThroughBill(Document):
         self.bill_start = bill_start
         self.amount = amount
         self.billed_to = billed_to
+        self._market_statement_line_item = None
         self.market_statement_line_item = market_statement_line_item
+        self._charge_profiles = []
         self.charge_profiles = charge_profiles
+        self._user_attributes = []
         self.user_attributes = user_attributes
 
         super(PassThroughBill, self).__init__(**kw_args)
@@ -562,6 +1240,14 @@ class RampRateCurve(Curve):
     ramp_rate_type = ''
 
     generating_unit = []
+    
+    def add_generating_unit(self, *generating_unit):
+        for obj in generating_unit:
+	        self._generating_unit.append(obj)
+        
+    def remove_generating_unit(self, *generating_unit):
+        for obj in generating_unit:
+	        self._generating_unit.remove(obj)
 
     # <<< ramp_rate_curve
     # @generated
@@ -569,6 +1255,7 @@ class RampRateCurve(Curve):
         """ Initialises a new 'RampRateCurve' instance.
         """
         self.ramp_rate_type = ramp_rate_type
+        self._generating_unit = []
         self.generating_unit = generating_unit
 
         super(RampRateCurve, self).__init__(**kw_args)
@@ -587,12 +1274,60 @@ class Bid(Document):
  
     market_type = ''
 
-    bid_clearing = None
+    def get_bid_clearing(self):
+        """ 
+        """
+        return self._bid_clearing
 
-    market = None
+    def set_bid_clearing(self, value):
+        if self._bid_clearing is not None:
+            self._bid_clearing._bid = None
+            
+        self._bid_clearing = value
+        if self._bid_clearing is not None:
+            self._bid_clearing._bid = self
+            
+    bid_clearing = property(get_bid_clearing, set_bid_clearing)
 
-    # A bid comprises one or more product bids of market products
-    product_bids = []
+    def get_market(self):
+        """ 
+        """
+        return self._market
+
+    def set_market(self, value):
+        if self._market is not None:
+            filtered = [x for x in self.market.bids if x != self]
+            self._market._bids = filtered
+            
+        self._market = value
+        if self._market is not None:
+            self._market._bids.append(self)
+
+    market = property(get_market, set_market)
+
+    def get_product_bids(self):
+        """ A bid comprises one or more product bids of market products
+        """
+        return self._product_bids
+
+    def set_product_bids(self, value):
+        for x in self._product_bids:
+            x._bid = None
+        for y in value:
+            y._bid = self
+        self._product_bids = value
+            
+    product_bids = property(get_product_bids, set_product_bids)
+    
+    def add_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._bid = self
+            self._product_bids.append(obj)
+        
+    def remove_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._bid = None
+            self._product_bids.remove(obj)
 
     # <<< bid
     # @generated
@@ -602,8 +1337,11 @@ class Bid(Document):
         self.stop_time = stop_time
         self.start_time = start_time
         self.market_type = market_type
+        self._bid_clearing = None
         self.bid_clearing = bid_clearing
+        self._market = None
         self.market = market
+        self._product_bids = []
         self.product_bids = product_bids
 
         super(Bid, self).__init__(**kw_args)
@@ -625,11 +1363,60 @@ class ChargeProfile(Profile):
     # The number of intervals in the profile data. 
     number_interval = 0
 
-    charge_profile_data = []
+    def get_charge_profile_data(self):
+        """ 
+        """
+        return self._charge_profile_data
 
-    pass_trough_bill = None
+    def set_charge_profile_data(self, value):
+        for x in self._charge_profile_data:
+            x._charge_profile = None
+        for y in value:
+            y._charge_profile = self
+        self._charge_profile_data = value
+            
+    charge_profile_data = property(get_charge_profile_data, set_charge_profile_data)
+    
+    def add_charge_profile_data(self, *charge_profile_data):
+        for obj in charge_profile_data:
+            obj._charge_profile = self
+            self._charge_profile_data.append(obj)
+        
+    def remove_charge_profile_data(self, *charge_profile_data):
+        for obj in charge_profile_data:
+            obj._charge_profile = None
+            self._charge_profile_data.remove(obj)
 
-    bill_determinant = None
+    def get_pass_trough_bill(self):
+        """ 
+        """
+        return self._pass_trough_bill
+
+    def set_pass_trough_bill(self, value):
+        if self._pass_trough_bill is not None:
+            filtered = [x for x in self.pass_trough_bill.charge_profiles if x != self]
+            self._pass_trough_bill._charge_profiles = filtered
+            
+        self._pass_trough_bill = value
+        if self._pass_trough_bill is not None:
+            self._pass_trough_bill._charge_profiles.append(self)
+
+    pass_trough_bill = property(get_pass_trough_bill, set_pass_trough_bill)
+
+    def get_bill_determinant(self):
+        """ 
+        """
+        return self._bill_determinant
+
+    def set_bill_determinant(self, value):
+        if self._bill_determinant is not None:
+            self._bill_determinant._charge_profile = None
+            
+        self._bill_determinant = value
+        if self._bill_determinant is not None:
+            self._bill_determinant._charge_profile = self
+            
+    bill_determinant = property(get_bill_determinant, set_bill_determinant)
 
     # <<< charge_profile
     # @generated
@@ -640,8 +1427,11 @@ class ChargeProfile(Profile):
         self.frequency = frequency
         self.type = type
         self.number_interval = number_interval
+        self._charge_profile_data = []
         self.charge_profile_data = charge_profile_data
+        self._pass_trough_bill = None
         self.pass_trough_bill = pass_trough_bill
+        self._bill_determinant = None
         self.bill_determinant = bill_determinant
 
         super(ChargeProfile, self).__init__(**kw_args)
@@ -652,15 +1442,39 @@ class ResourceGroupReq(IdentifiedObject):
     """ Ancillary service requirements for a market.
     """
     rtos = []
+    
+    def add_rtos(self, *rtos):
+        for obj in rtos:
+	        self._rtos.append(obj)
+        
+    def remove_rtos(self, *rtos):
+        for obj in rtos:
+	        self._rtos.remove(obj)
 
-    resource_group = None
+    def get_resource_group(self):
+        """ 
+        """
+        return self._resource_group
+
+    def set_resource_group(self, value):
+        if self._resource_group is not None:
+            filtered = [x for x in self.resource_group.resource_group_reqs if x != self]
+            self._resource_group._resource_group_reqs = filtered
+            
+        self._resource_group = value
+        if self._resource_group is not None:
+            self._resource_group._resource_group_reqs.append(self)
+
+    resource_group = property(get_resource_group, set_resource_group)
 
     # <<< resource_group_req
     # @generated
     def __init__(self, rtos=[], resource_group=None, **kw_args):
         """ Initialises a new 'ResourceGroupReq' instance.
         """
+        self._rtos = []
         self.rtos = rtos
+        self._resource_group = None
         self.resource_group = resource_group
 
         super(ResourceGroupReq, self).__init__(**kw_args)
@@ -700,17 +1514,127 @@ class Market(IdentifiedObject):
     # Ramping time interval for non-spinning reserve. 
     ramp_interval_non_spin_res = ''
 
-    market_products = []
+    def get_market_products(self):
+        """ 
+        """
+        return self._market_products
+
+    def set_market_products(self, value):
+        for x in self._market_products:
+            x._market = None
+        for y in value:
+            y._market = self
+        self._market_products = value
+            
+    market_products = property(get_market_products, set_market_products)
+    
+    def add_market_products(self, *market_products):
+        for obj in market_products:
+            obj._market = self
+            self._market_products.append(obj)
+        
+    def remove_market_products(self, *market_products):
+        for obj in market_products:
+            obj._market = None
+            self._market_products.remove(obj)
 
     registered_resources = []
+    
+    def add_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.append(obj)
+        
+    def remove_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.remove(obj)
 
-    rto = None
+    def get_rto(self):
+        """ 
+        """
+        return self._rto
 
-    settlements = []
+    def set_rto(self, value):
+        if self._rto is not None:
+            filtered = [x for x in self.rto.markets if x != self]
+            self._rto._markets = filtered
+            
+        self._rto = value
+        if self._rto is not None:
+            self._rto._markets.append(self)
 
-    bids = []
+    rto = property(get_rto, set_rto)
 
-    market_factors = []
+    def get_settlements(self):
+        """ 
+        """
+        return self._settlements
+
+    def set_settlements(self, value):
+        for x in self._settlements:
+            x._market = None
+        for y in value:
+            y._market = self
+        self._settlements = value
+            
+    settlements = property(get_settlements, set_settlements)
+    
+    def add_settlements(self, *settlements):
+        for obj in settlements:
+            obj._market = self
+            self._settlements.append(obj)
+        
+    def remove_settlements(self, *settlements):
+        for obj in settlements:
+            obj._market = None
+            self._settlements.remove(obj)
+
+    def get_bids(self):
+        """ 
+        """
+        return self._bids
+
+    def set_bids(self, value):
+        for x in self._bids:
+            x._market = None
+        for y in value:
+            y._market = self
+        self._bids = value
+            
+    bids = property(get_bids, set_bids)
+    
+    def add_bids(self, *bids):
+        for obj in bids:
+            obj._market = self
+            self._bids.append(obj)
+        
+    def remove_bids(self, *bids):
+        for obj in bids:
+            obj._market = None
+            self._bids.remove(obj)
+
+    def get_market_factors(self):
+        """ 
+        """
+        return self._market_factors
+
+    def set_market_factors(self, value):
+        for x in self._market_factors:
+            x._market = None
+        for y in value:
+            y._market = self
+        self._market_factors = value
+            
+    market_factors = property(get_market_factors, set_market_factors)
+    
+    def add_market_factors(self, *market_factors):
+        for obj in market_factors:
+            obj._market = self
+            self._market_factors.append(obj)
+        
+    def remove_market_factors(self, *market_factors):
+        for obj in market_factors:
+            obj._market = None
+            self._market_factors.remove(obj)
 
     # <<< market
     # @generated
@@ -727,11 +1651,17 @@ class Market(IdentifiedObject):
         self.type = type
         self.ramp_interval_reg = ramp_interval_reg
         self.ramp_interval_non_spin_res = ramp_interval_non_spin_res
+        self._market_products = []
         self.market_products = market_products
+        self._registered_resources = []
         self.registered_resources = registered_resources
+        self._rto = None
         self.rto = rto
+        self._settlements = []
         self.settlements = settlements
+        self._bids = []
         self.bids = bids
+        self._market_factors = []
         self.market_factors = market_factors
 
         super(Market, self).__init__(**kw_args)
@@ -747,7 +1677,21 @@ class ConstraintTerm(IdentifiedObject):
  
     factor = ''
 
-    security_constraint_sum = None
+    def get_security_constraint_sum(self):
+        """ 
+        """
+        return self._security_constraint_sum
+
+    def set_security_constraint_sum(self, value):
+        if self._security_constraint_sum is not None:
+            filtered = [x for x in self.security_constraint_sum.constraint_terms if x != self]
+            self._security_constraint_sum._constraint_terms = filtered
+            
+        self._security_constraint_sum = value
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._constraint_terms.append(self)
+
+    security_constraint_sum = property(get_security_constraint_sum, set_security_constraint_sum)
 
     # <<< constraint_term
     # @generated
@@ -756,6 +1700,7 @@ class ConstraintTerm(IdentifiedObject):
         """
         self.function = function
         self.factor = factor
+        self._security_constraint_sum = None
         self.security_constraint_sum = security_constraint_sum
 
         super(ConstraintTerm, self).__init__(**kw_args)
@@ -819,15 +1764,86 @@ class MarketStatementLineItem(IdentifiedObject):
     # Current settlement amount. 
     current_amount = 0.0
 
-    component_market_statement_line_item = []
+    def get_component_market_statement_line_item(self):
+        """ 
+        """
+        return self._component_market_statement_line_item
+
+    def set_component_market_statement_line_item(self, value):
+        for x in self._component_market_statement_line_item:
+            x._container_market_statement_line_item = None
+        for y in value:
+            y._container_market_statement_line_item = self
+        self._component_market_statement_line_item = value
+            
+    component_market_statement_line_item = property(get_component_market_statement_line_item, set_component_market_statement_line_item)
+    
+    def add_component_market_statement_line_item(self, *component_market_statement_line_item):
+        for obj in component_market_statement_line_item:
+            obj._container_market_statement_line_item = self
+            self._component_market_statement_line_item.append(obj)
+        
+    def remove_component_market_statement_line_item(self, *component_market_statement_line_item):
+        for obj in component_market_statement_line_item:
+            obj._container_market_statement_line_item = None
+            self._component_market_statement_line_item.remove(obj)
 
     user_attributes = []
+    
+    def add_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.append(obj)
+        
+    def remove_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.remove(obj)
 
-    pass_through_bill = None
+    def get_pass_through_bill(self):
+        """ 
+        """
+        return self._pass_through_bill
 
-    market_statement = None
+    def set_pass_through_bill(self, value):
+        if self._pass_through_bill is not None:
+            self._pass_through_bill._market_statement_line_item = None
+            
+        self._pass_through_bill = value
+        if self._pass_through_bill is not None:
+            self._pass_through_bill._market_statement_line_item = self
+            
+    pass_through_bill = property(get_pass_through_bill, set_pass_through_bill)
 
-    container_market_statement_line_item = None
+    def get_market_statement(self):
+        """ 
+        """
+        return self._market_statement
+
+    def set_market_statement(self, value):
+        if self._market_statement is not None:
+            filtered = [x for x in self.market_statement.market_statement_line_item if x != self]
+            self._market_statement._market_statement_line_item = filtered
+            
+        self._market_statement = value
+        if self._market_statement is not None:
+            self._market_statement._market_statement_line_item.append(self)
+
+    market_statement = property(get_market_statement, set_market_statement)
+
+    def get_container_market_statement_line_item(self):
+        """ 
+        """
+        return self._container_market_statement_line_item
+
+    def set_container_market_statement_line_item(self, value):
+        if self._container_market_statement_line_item is not None:
+            filtered = [x for x in self.container_market_statement_line_item.component_market_statement_line_item if x != self]
+            self._container_market_statement_line_item._component_market_statement_line_item = filtered
+            
+        self._container_market_statement_line_item = value
+        if self._container_market_statement_line_item is not None:
+            self._container_market_statement_line_item._component_market_statement_line_item.append(self)
+
+    container_market_statement_line_item = property(get_container_market_statement_line_item, set_container_market_statement_line_item)
 
     # <<< market_statement_line_item
     # @generated
@@ -852,10 +1868,15 @@ class MarketStatementLineItem(IdentifiedObject):
         self.current_price = current_price
         self.interval_date = interval_date
         self.current_amount = current_amount
+        self._component_market_statement_line_item = []
         self.component_market_statement_line_item = component_market_statement_line_item
+        self._user_attributes = []
         self.user_attributes = user_attributes
+        self._pass_through_bill = None
         self.pass_through_bill = pass_through_bill
+        self._market_statement = None
         self.market_statement = market_statement
+        self._container_market_statement_line_item = None
         self.container_market_statement_line_item = container_market_statement_line_item
 
         super(MarketStatementLineItem, self).__init__(**kw_args)
@@ -865,13 +1886,27 @@ class MarketStatementLineItem(IdentifiedObject):
 class MWLimitSchedule(Curve):
     """ Maximum MW and optionally Minimum MW (Y1 and Y2, respectively)
     """
-    security_constraint_limit = None
+    def get_security_constraint_limit(self):
+        """ 
+        """
+        return self._security_constraint_limit
+
+    def set_security_constraint_limit(self, value):
+        if self._security_constraint_limit is not None:
+            self._security_constraint_limit._mwlimit_schedules = None
+            
+        self._security_constraint_limit = value
+        if self._security_constraint_limit is not None:
+            self._security_constraint_limit._mwlimit_schedules = self
+            
+    security_constraint_limit = property(get_security_constraint_limit, set_security_constraint_limit)
 
     # <<< mwlimit_schedule
     # @generated
     def __init__(self, security_constraint_limit=None, **kw_args):
         """ Initialises a new 'MWLimitSchedule' instance.
         """
+        self._security_constraint_limit = None
         self.security_constraint_limit = security_constraint_limit
 
         super(MWLimitSchedule, self).__init__(**kw_args)
@@ -881,23 +1916,82 @@ class MWLimitSchedule(Curve):
 class ProductBid(IdentifiedObject):
     """ Component of a bid that pertains to one market product.
     """
-    # A bid comprises one or more product bids of market products
-    bid = None
+    def get_bid(self):
+        """ A bid comprises one or more product bids of market products
+        """
+        return self._bid
 
-    product_bid_clearing = None
+    def set_bid(self, value):
+        if self._bid is not None:
+            filtered = [x for x in self.bid.product_bids if x != self]
+            self._bid._product_bids = filtered
+            
+        self._bid = value
+        if self._bid is not None:
+            self._bid._product_bids.append(self)
 
-    bid_price_curve = None
+    bid = property(get_bid, set_bid)
 
-    market_product = None
+    def get_product_bid_clearing(self):
+        """ 
+        """
+        return self._product_bid_clearing
+
+    def set_product_bid_clearing(self, value):
+        if self._product_bid_clearing is not None:
+            filtered = [x for x in self.product_bid_clearing.product_bids if x != self]
+            self._product_bid_clearing._product_bids = filtered
+            
+        self._product_bid_clearing = value
+        if self._product_bid_clearing is not None:
+            self._product_bid_clearing._product_bids.append(self)
+
+    product_bid_clearing = property(get_product_bid_clearing, set_product_bid_clearing)
+
+    def get_bid_price_curve(self):
+        """ 
+        """
+        return self._bid_price_curve
+
+    def set_bid_price_curve(self, value):
+        if self._bid_price_curve is not None:
+            filtered = [x for x in self.bid_price_curve.product_bids if x != self]
+            self._bid_price_curve._product_bids = filtered
+            
+        self._bid_price_curve = value
+        if self._bid_price_curve is not None:
+            self._bid_price_curve._product_bids.append(self)
+
+    bid_price_curve = property(get_bid_price_curve, set_bid_price_curve)
+
+    def get_market_product(self):
+        """ 
+        """
+        return self._market_product
+
+    def set_market_product(self, value):
+        if self._market_product is not None:
+            filtered = [x for x in self.market_product.product_bids if x != self]
+            self._market_product._product_bids = filtered
+            
+        self._market_product = value
+        if self._market_product is not None:
+            self._market_product._product_bids.append(self)
+
+    market_product = property(get_market_product, set_market_product)
 
     # <<< product_bid
     # @generated
     def __init__(self, bid=None, product_bid_clearing=None, bid_price_curve=None, market_product=None, **kw_args):
         """ Initialises a new 'ProductBid' instance.
         """
+        self._bid = None
         self.bid = bid
+        self._product_bid_clearing = None
         self.product_bid_clearing = product_bid_clearing
+        self._bid_price_curve = None
         self.bid_price_curve = bid_price_curve
+        self._market_product = None
         self.market_product = market_product
 
         super(ProductBid, self).__init__(**kw_args)
@@ -916,7 +2010,21 @@ class SecurityConstraints(IdentifiedObject):
     # Actual branch or group of branches MW flow (only for transmission constraints) 
     actual_mw = ''
 
-    rto = None
+    def get_rto(self):
+        """ 
+        """
+        return self._rto
+
+    def set_rto(self, value):
+        if self._rto is not None:
+            filtered = [x for x in self.rto.security_constraints if x != self]
+            self._rto._security_constraints = filtered
+            
+        self._rto = value
+        if self._rto is not None:
+            self._rto._security_constraints.append(self)
+
+    rto = property(get_rto, set_rto)
 
     # <<< security_constraints
     # @generated
@@ -926,6 +2034,7 @@ class SecurityConstraints(IdentifiedObject):
         self.max_mw = max_mw
         self.min_mw = min_mw
         self.actual_mw = actual_mw
+        self._rto = None
         self.rto = rto
 
         super(SecurityConstraints, self).__init__(**kw_args)
@@ -950,7 +2059,29 @@ class MarketStatement(Document):
     # The date of which Settlement is run. 
     trade_date = ''
 
-    market_statement_line_item = []
+    def get_market_statement_line_item(self):
+        """ 
+        """
+        return self._market_statement_line_item
+
+    def set_market_statement_line_item(self, value):
+        for x in self._market_statement_line_item:
+            x._market_statement = None
+        for y in value:
+            y._market_statement = self
+        self._market_statement_line_item = value
+            
+    market_statement_line_item = property(get_market_statement_line_item, set_market_statement_line_item)
+    
+    def add_market_statement_line_item(self, *market_statement_line_item):
+        for obj in market_statement_line_item:
+            obj._market_statement = self
+            self._market_statement_line_item.append(obj)
+        
+    def remove_market_statement_line_item(self, *market_statement_line_item):
+        for obj in market_statement_line_item:
+            obj._market_statement = None
+            self._market_statement_line_item.remove(obj)
 
     # <<< market_statement
     # @generated
@@ -962,6 +2093,7 @@ class MarketStatement(Document):
         self.end = end
         self.reference_number = reference_number
         self.trade_date = trade_date
+        self._market_statement_line_item = []
         self.market_statement_line_item = market_statement_line_item
 
         super(MarketStatement, self).__init__(**kw_args)
@@ -971,13 +2103,27 @@ class MarketStatement(Document):
 class SensitivityPriceCurve(Curve):
     """ Optionally, this curve expresses elasticity of the associated requirement.  For example, used to reduce requirements when clearing price exceeds reasonable values when the supply quantity becomes scarce.  For example, a single point value of $1000/MW for a spinning reserve will cause a reduction in the required spinning reserve.  X axis is constrained quantity (e.g., MW) Y1 axis is money per constrained quantity
     """
-    reserve_req = None
+    def get_reserve_req(self):
+        """ 
+        """
+        return self._reserve_req
+
+    def set_reserve_req(self, value):
+        if self._reserve_req is not None:
+            self._reserve_req._sensitivity_price_curve = None
+            
+        self._reserve_req = value
+        if self._reserve_req is not None:
+            self._reserve_req._sensitivity_price_curve = self
+            
+    reserve_req = property(get_reserve_req, set_reserve_req)
 
     # <<< sensitivity_price_curve
     # @generated
     def __init__(self, reserve_req=None, **kw_args):
         """ Initialises a new 'SensitivityPriceCurve' instance.
         """
+        self._reserve_req = None
         self.reserve_req = reserve_req
 
         super(SensitivityPriceCurve, self).__init__(**kw_args)
@@ -990,11 +2136,41 @@ class Settlement(Document):
     # The trade date on which the settlement is run. 
     trade_date = ''
 
-    market = None
+    def get_market(self):
+        """ 
+        """
+        return self._market
+
+    def set_market(self, value):
+        if self._market is not None:
+            filtered = [x for x in self.market.settlements if x != self]
+            self._market._settlements = filtered
+            
+        self._market = value
+        if self._market is not None:
+            self._market._settlements.append(self)
+
+    market = property(get_market, set_market)
 
     erp_invoice_line_items = []
+    
+    def add_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.append(obj)
+        
+    def remove_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.remove(obj)
 
     erp_ledger_entries = []
+    
+    def add_erp_ledger_entries(self, *erp_ledger_entries):
+        for obj in erp_ledger_entries:
+	        self._erp_ledger_entries.append(obj)
+        
+    def remove_erp_ledger_entries(self, *erp_ledger_entries):
+        for obj in erp_ledger_entries:
+	        self._erp_ledger_entries.remove(obj)
 
     # <<< settlement
     # @generated
@@ -1002,8 +2178,11 @@ class Settlement(Document):
         """ Initialises a new 'Settlement' instance.
         """
         self.trade_date = trade_date
+        self._market = None
         self.market = market
+        self._erp_invoice_line_items = []
         self.erp_invoice_line_items = erp_invoice_line_items
+        self._erp_ledger_entries = []
         self.erp_ledger_entries = erp_ledger_entries
 
         super(Settlement, self).__init__(**kw_args)
@@ -1026,11 +2205,54 @@ class BillDeterminant(Document):
     # Level in charge calculation order. 
     calculation_level = ''
 
-    charge_profile_data = []
+    def get_charge_profile_data(self):
+        """ 
+        """
+        return self._charge_profile_data
 
-    charge_profile = None
+    def set_charge_profile_data(self, value):
+        for x in self._charge_profile_data:
+            x._bill_determinant = None
+        for y in value:
+            y._bill_determinant = self
+        self._charge_profile_data = value
+            
+    charge_profile_data = property(get_charge_profile_data, set_charge_profile_data)
+    
+    def add_charge_profile_data(self, *charge_profile_data):
+        for obj in charge_profile_data:
+            obj._bill_determinant = self
+            self._charge_profile_data.append(obj)
+        
+    def remove_charge_profile_data(self, *charge_profile_data):
+        for obj in charge_profile_data:
+            obj._bill_determinant = None
+            self._charge_profile_data.remove(obj)
+
+    def get_charge_profile(self):
+        """ 
+        """
+        return self._charge_profile
+
+    def set_charge_profile(self, value):
+        if self._charge_profile is not None:
+            self._charge_profile._bill_determinant = None
+            
+        self._charge_profile = value
+        if self._charge_profile is not None:
+            self._charge_profile._bill_determinant = self
+            
+    charge_profile = property(get_charge_profile, set_charge_profile)
 
     user_attributes = []
+    
+    def add_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.append(obj)
+        
+    def remove_user_attributes(self, *user_attributes):
+        for obj in user_attributes:
+	        self._user_attributes.remove(obj)
 
     # <<< bill_determinant
     # @generated
@@ -1042,8 +2264,11 @@ class BillDeterminant(Document):
         self.precision_level = precision_level
         self.unit_of_measure = unit_of_measure
         self.calculation_level = calculation_level
+        self._charge_profile_data = []
         self.charge_profile_data = charge_profile_data
+        self._charge_profile = None
         self.charge_profile = charge_profile
+        self._user_attributes = []
         self.user_attributes = user_attributes
 
         super(BillDeterminant, self).__init__(**kw_args)
@@ -1056,11 +2281,41 @@ class MarketFactors(Document):
     # The start of the time interval for which requirement is defined. 
     interval_start_time = ''
 
-    market = None
+    def get_market(self):
+        """ 
+        """
+        return self._market
+
+    def set_market(self, value):
+        if self._market is not None:
+            filtered = [x for x in self.market.market_factors if x != self]
+            self._market._market_factors = filtered
+            
+        self._market = value
+        if self._market is not None:
+            self._market._market_factors.append(self)
+
+    market = property(get_market, set_market)
 
     erp_invoices = []
+    
+    def add_erp_invoices(self, *erp_invoices):
+        for obj in erp_invoices:
+	        self._erp_invoices.append(obj)
+        
+    def remove_erp_invoices(self, *erp_invoices):
+        for obj in erp_invoices:
+	        self._erp_invoices.remove(obj)
 
     activity_records = []
+    
+    def add_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.append(obj)
+        
+    def remove_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.remove(obj)
 
     # <<< market_factors
     # @generated
@@ -1068,8 +2323,11 @@ class MarketFactors(Document):
         """ Initialises a new 'MarketFactors' instance.
         """
         self.interval_start_time = interval_start_time
+        self._market = None
         self.market = market
+        self._erp_invoices = []
         self.erp_invoices = erp_invoices
+        self._activity_records = []
         self.activity_records = activity_records
 
         super(MarketFactors, self).__init__(**kw_args)
@@ -1079,13 +2337,27 @@ class MarketFactors(Document):
 class DefaultConstraintLimit(Curve):
     """ Possibly time-varying max MW or MVA and optionally Min MW limit or MVA limit (Y1 and Y2, respectively) applied as a default value if no specific constraint limits are specified for a contingency analysis. Use CurveSchedule XAxisUnits to specify MW or MVA.
     """
-    security_constraint_sum = None
+    def get_security_constraint_sum(self):
+        """ 
+        """
+        return self._security_constraint_sum
+
+    def set_security_constraint_sum(self, value):
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._default_constraint_limit = None
+            
+        self._security_constraint_sum = value
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._default_constraint_limit = self
+            
+    security_constraint_sum = property(get_security_constraint_sum, set_security_constraint_sum)
 
     # <<< default_constraint_limit
     # @generated
     def __init__(self, security_constraint_sum=None, **kw_args):
         """ Initialises a new 'DefaultConstraintLimit' instance.
         """
+        self._security_constraint_sum = None
         self.security_constraint_sum = security_constraint_sum
 
         super(DefaultConstraintLimit, self).__init__(**kw_args)
@@ -1109,13 +2381,36 @@ class SchedulingCoordinator(ErpOrganisation):
 class BidSet(IdentifiedObject):
     """ As set of mutually exclusive bids for which a maximum of one may be scheduled. Of these generating bids, only one generating bid can be scheduled at a time.
     """
-    generating_bids = []
+    def get_generating_bids(self):
+        """ 
+        """
+        return self._generating_bids
+
+    def set_generating_bids(self, value):
+        for x in self._generating_bids:
+            x._bid_set = None
+        for y in value:
+            y._bid_set = self
+        self._generating_bids = value
+            
+    generating_bids = property(get_generating_bids, set_generating_bids)
+    
+    def add_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._bid_set = self
+            self._generating_bids.append(obj)
+        
+    def remove_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._bid_set = None
+            self._generating_bids.remove(obj)
 
     # <<< bid_set
     # @generated
     def __init__(self, generating_bids=[], **kw_args):
         """ Initialises a new 'BidSet' instance.
         """
+        self._generating_bids = []
         self.generating_bids = generating_bids
 
         super(BidSet, self).__init__(**kw_args)
@@ -1125,13 +2420,36 @@ class BidSet(IdentifiedObject):
 class LoadReductionPriceCurve(Curve):
     """ This is the price sensitivity that bidder expresses for allowing market load interruption.  Relationship between price (Y1-axis) vs. MW (X-axis).
     """
-    load_bids = []
+    def get_load_bids(self):
+        """ 
+        """
+        return self._load_bids
+
+    def set_load_bids(self, value):
+        for x in self._load_bids:
+            x._load_reduction_price_curve = None
+        for y in value:
+            y._load_reduction_price_curve = self
+        self._load_bids = value
+            
+    load_bids = property(get_load_bids, set_load_bids)
+    
+    def add_load_bids(self, *load_bids):
+        for obj in load_bids:
+            obj._load_reduction_price_curve = self
+            self._load_bids.append(obj)
+        
+    def remove_load_bids(self, *load_bids):
+        for obj in load_bids:
+            obj._load_reduction_price_curve = None
+            self._load_bids.remove(obj)
 
     # <<< load_reduction_price_curve
     # @generated
     def __init__(self, load_bids=[], **kw_args):
         """ Initialises a new 'LoadReductionPriceCurve' instance.
         """
+        self._load_bids = []
         self.load_bids = load_bids
 
         super(LoadReductionPriceCurve, self).__init__(**kw_args)
@@ -1150,7 +2468,20 @@ class BidClearing(Element):
     # No-load cost in monetary units. 
     no_load_cost = ''
 
-    bid = None
+    def get_bid(self):
+        """ 
+        """
+        return self._bid
+
+    def set_bid(self, value):
+        if self._bid is not None:
+            self._bid._bid_clearing = None
+            
+        self._bid = value
+        if self._bid is not None:
+            self._bid._bid_clearing = self
+            
+    bid = property(get_bid, set_bid)
 
     # <<< bid_clearing
     # @generated
@@ -1160,6 +2491,7 @@ class BidClearing(Element):
         self.lost_op_cost = lost_op_cost
         self.start_up_cost = start_up_cost
         self.no_load_cost = no_load_cost
+        self._bid = None
         self.bid = bid
 
         super(BidClearing, self).__init__(**kw_args)
@@ -1205,25 +2537,125 @@ class Flowgate(PowerSystemResource):
     # Date at which point Flowgate should be removed from the Interchange Distribution Calculatin (IDC). 
     deletion_date = ''
 
-    # A flowgate can be reciprocal flowgate for 0 to n transmission providers. A transmission provider may be a reciprocal entity for 0 to n flowgates.
     transmission_provider = []
+    
+    def add_transmission_provider(self, *transmission_provider):
+        for obj in transmission_provider:
+	        self._transmission_provider.append(obj)
+        
+    def remove_transmission_provider(self, *transmission_provider):
+        for obj in transmission_provider:
+	        self._transmission_provider.remove(obj)
 
-    # A control area may own 0 to n flowgates A flowgate must be owned by exactly 1 control area
-    sub_control_area = None
+    def get_sub_control_area(self):
+        """ A control area may own 0 to n flowgates A flowgate must be owned by exactly 1 control area
+        """
+        return self._sub_control_area
 
-    ftrs = []
+    def set_sub_control_area(self, value):
+        if self._sub_control_area is not None:
+            filtered = [x for x in self.sub_control_area.flowgate if x != self]
+            self._sub_control_area._flowgate = filtered
+            
+        self._sub_control_area = value
+        if self._sub_control_area is not None:
+            self._sub_control_area._flowgate.append(self)
+
+    sub_control_area = property(get_sub_control_area, set_sub_control_area)
+
+    def get_ftrs(self):
+        """ 
+        """
+        return self._ftrs
+
+    def set_ftrs(self, value):
+        for x in self._ftrs:
+            x._flowgate = None
+        for y in value:
+            y._flowgate = self
+        self._ftrs = value
+            
+    ftrs = property(get_ftrs, set_ftrs)
+    
+    def add_ftrs(self, *ftrs):
+        for obj in ftrs:
+            obj._flowgate = self
+            self._ftrs.append(obj)
+        
+    def remove_ftrs(self, *ftrs):
+        for obj in ftrs:
+            obj._flowgate = None
+            self._ftrs.remove(obj)
 
     lines = []
+    
+    def add_lines(self, *lines):
+        for obj in lines:
+	        self._lines.append(obj)
+        
+    def remove_lines(self, *lines):
+        for obj in lines:
+	        self._lines.remove(obj)
 
-    # A flowgate may have 0 to n CBM profile Each season may be a CBM which contains a set of profile data
     capacity_benefit_margin = []
+    
+    def add_capacity_benefit_margin(self, *capacity_benefit_margin):
+        for obj in capacity_benefit_margin:
+	        self._capacity_benefit_margin.append(obj)
+        
+    def remove_capacity_benefit_margin(self, *capacity_benefit_margin):
+        for obj in capacity_benefit_margin:
+	        self._capacity_benefit_margin.remove(obj)
 
-    # A fowgate may have 0 to 1 TRM
-    transmission_reliability_margin = None
+    def get_transmission_reliability_margin(self):
+        """ A fowgate may have 0 to 1 TRM
+        """
+        return self._transmission_reliability_margin
 
-    violation_limits = []
+    def set_transmission_reliability_margin(self, value):
+        if self._transmission_reliability_margin is not None:
+            filtered = [x for x in self.transmission_reliability_margin.flowgate if x != self]
+            self._transmission_reliability_margin._flowgate = filtered
+            
+        self._transmission_reliability_margin = value
+        if self._transmission_reliability_margin is not None:
+            self._transmission_reliability_margin._flowgate.append(self)
+
+    transmission_reliability_margin = property(get_transmission_reliability_margin, set_transmission_reliability_margin)
+
+    def get_violation_limits(self):
+        """ 
+        """
+        return self._violation_limits
+
+    def set_violation_limits(self, value):
+        for x in self._violation_limits:
+            x._flowgate = None
+        for y in value:
+            y._flowgate = self
+        self._violation_limits = value
+            
+    violation_limits = property(get_violation_limits, set_violation_limits)
+    
+    def add_violation_limits(self, *violation_limits):
+        for obj in violation_limits:
+            obj._flowgate = self
+            self._violation_limits.append(obj)
+        
+    def remove_violation_limits(self, *violation_limits):
+        for obj in violation_limits:
+            obj._flowgate = None
+            self._violation_limits.remove(obj)
 
     power_transormers = []
+    
+    def add_power_transormers(self, *power_transormers):
+        for obj in power_transormers:
+	        self._power_transormers.append(obj)
+        
+    def remove_power_transormers(self, *power_transormers):
+        for obj in power_transormers:
+	        self._power_transormers.remove(obj)
 
     # <<< flowgate
     # @generated
@@ -1242,13 +2674,21 @@ class Flowgate(PowerSystemResource):
         self.coordination_study_date = coordination_study_date
         self.idc_assigned_id = idc_assigned_id
         self.deletion_date = deletion_date
+        self._transmission_provider = []
         self.transmission_provider = transmission_provider
+        self._sub_control_area = None
         self.sub_control_area = sub_control_area
+        self._ftrs = []
         self.ftrs = ftrs
+        self._lines = []
         self.lines = lines
+        self._capacity_benefit_margin = []
         self.capacity_benefit_margin = capacity_benefit_margin
+        self._transmission_reliability_margin = None
         self.transmission_reliability_margin = transmission_reliability_margin
+        self._violation_limits = []
         self.violation_limits = violation_limits
+        self._power_transormers = []
         self.power_transormers = power_transormers
 
         super(Flowgate, self).__init__(**kw_args)
@@ -1258,13 +2698,36 @@ class Flowgate(PowerSystemResource):
 class NotificationTimeCurve(Curve):
     """ Notification time curve as a function of down time.  Relationship between crew notification time (Y1-axis) and unit startup time (Y2-axis) vs. unit elapsed down time (X-axis).
     """
-    generating_bids = []
+    def get_generating_bids(self):
+        """ 
+        """
+        return self._generating_bids
+
+    def set_generating_bids(self, value):
+        for x in self._generating_bids:
+            x._notification_time_curve = None
+        for y in value:
+            y._notification_time_curve = self
+        self._generating_bids = value
+            
+    generating_bids = property(get_generating_bids, set_generating_bids)
+    
+    def add_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._notification_time_curve = self
+            self._generating_bids.append(obj)
+        
+    def remove_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._notification_time_curve = None
+            self._generating_bids.remove(obj)
 
     # <<< notification_time_curve
     # @generated
     def __init__(self, generating_bids=[], **kw_args):
         """ Initialises a new 'NotificationTimeCurve' instance.
         """
+        self._generating_bids = []
         self.generating_bids = generating_bids
 
         super(NotificationTimeCurve, self).__init__(**kw_args)
@@ -1274,13 +2737,27 @@ class NotificationTimeCurve(Curve):
 class BaseCaseConstraintLimit(Curve):
     """ Possibly time-varying max MW or MVA and optionally Min MW limit or MVA limit (Y1 and Y2, respectively) assigned to a contingency analysis base case. Use CurveSchedule XAxisUnits to specify MW or MVA. To be used only if the BaseCaseConstraintLimit differs from the DefaultConstraintLimit.
     """
-    security_constraint_sum = None
+    def get_security_constraint_sum(self):
+        """ 
+        """
+        return self._security_constraint_sum
+
+    def set_security_constraint_sum(self, value):
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._base_case_constraint_limit = None
+            
+        self._security_constraint_sum = value
+        if self._security_constraint_sum is not None:
+            self._security_constraint_sum._base_case_constraint_limit = self
+            
+    security_constraint_sum = property(get_security_constraint_sum, set_security_constraint_sum)
 
     # <<< base_case_constraint_limit
     # @generated
     def __init__(self, security_constraint_sum=None, **kw_args):
         """ Initialises a new 'BaseCaseConstraintLimit' instance.
         """
+        self._security_constraint_sum = None
         self.security_constraint_sum = security_constraint_sum
 
         super(BaseCaseConstraintLimit, self).__init__(**kw_args)
@@ -1290,13 +2767,36 @@ class BaseCaseConstraintLimit(Curve):
 class StartUpTimeCurve(Curve):
     """ Startup time curve as a function of down time, where time is specified in seconds.  Relationship between unit startup time (Y1-axis) vs. unit elapsed down time (X-axis).
     """
-    generating_bids = []
+    def get_generating_bids(self):
+        """ 
+        """
+        return self._generating_bids
+
+    def set_generating_bids(self, value):
+        for x in self._generating_bids:
+            x._start_up_time_curve = None
+        for y in value:
+            y._start_up_time_curve = self
+        self._generating_bids = value
+            
+    generating_bids = property(get_generating_bids, set_generating_bids)
+    
+    def add_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._start_up_time_curve = self
+            self._generating_bids.append(obj)
+        
+    def remove_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._start_up_time_curve = None
+            self._generating_bids.remove(obj)
 
     # <<< start_up_time_curve
     # @generated
     def __init__(self, generating_bids=[], **kw_args):
         """ Initialises a new 'StartUpTimeCurve' instance.
         """
+        self._generating_bids = []
         self.generating_bids = generating_bids
 
         super(StartUpTimeCurve, self).__init__(**kw_args)
@@ -1306,16 +2806,48 @@ class StartUpTimeCurve(Curve):
 class ResourceGroup(IdentifiedObject):
     """ A logical grouping of resources that are used to model location of types of requirements for ancillary services such as spinning reserve zones, regulation zones, etc.
     """
-    resource_group_reqs = []
+    def get_resource_group_reqs(self):
+        """ 
+        """
+        return self._resource_group_reqs
+
+    def set_resource_group_reqs(self, value):
+        for x in self._resource_group_reqs:
+            x._resource_group = None
+        for y in value:
+            y._resource_group = self
+        self._resource_group_reqs = value
+            
+    resource_group_reqs = property(get_resource_group_reqs, set_resource_group_reqs)
+    
+    def add_resource_group_reqs(self, *resource_group_reqs):
+        for obj in resource_group_reqs:
+            obj._resource_group = self
+            self._resource_group_reqs.append(obj)
+        
+    def remove_resource_group_reqs(self, *resource_group_reqs):
+        for obj in resource_group_reqs:
+            obj._resource_group = None
+            self._resource_group_reqs.remove(obj)
 
     registered_resources = []
+    
+    def add_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.append(obj)
+        
+    def remove_registered_resources(self, *registered_resources):
+        for obj in registered_resources:
+	        self._registered_resources.remove(obj)
 
     # <<< resource_group
     # @generated
     def __init__(self, resource_group_reqs=[], registered_resources=[], **kw_args):
         """ Initialises a new 'ResourceGroup' instance.
         """
+        self._resource_group_reqs = []
         self.resource_group_reqs = resource_group_reqs
+        self._registered_resources = []
         self.registered_resources = registered_resources
 
         super(ResourceGroup, self).__init__(**kw_args)
@@ -1325,13 +2857,27 @@ class ResourceGroup(IdentifiedObject):
 class ReserveReqCurve(RegularIntervalSchedule):
     """ A curve relating  reserve requirement versus time, showing the values of a specific reserve requirement for each unit of the period covered. The  curve can be based on 'absolute' time or on 'normalized' time.  X is time, typically expressed in absolute time Y1 is reserve requirement, typically expressed in MW
     """
-    reserve_req = None
+    def get_reserve_req(self):
+        """ 
+        """
+        return self._reserve_req
+
+    def set_reserve_req(self, value):
+        if self._reserve_req is not None:
+            self._reserve_req._reserve_req_curve = None
+            
+        self._reserve_req = value
+        if self._reserve_req is not None:
+            self._reserve_req._reserve_req_curve = self
+            
+    reserve_req = property(get_reserve_req, set_reserve_req)
 
     # <<< reserve_req_curve
     # @generated
     def __init__(self, reserve_req=None, **kw_args):
         """ Initialises a new 'ReserveReqCurve' instance.
         """
+        self._reserve_req = None
         self.reserve_req = reserve_req
 
         super(ReserveReqCurve, self).__init__(**kw_args)
@@ -1341,16 +2887,48 @@ class ReserveReqCurve(RegularIntervalSchedule):
 class StartUpCostCurve(Curve):
     """ Startup costs and time as a function of down time.  Relationship between unit startup cost (Y1-axis) and unit startup time (Y2-axis) vs. unit elapsed down time (X-axis).
     """
-    generating_bids = []
+    def get_generating_bids(self):
+        """ 
+        """
+        return self._generating_bids
+
+    def set_generating_bids(self, value):
+        for x in self._generating_bids:
+            x._start_up_cost_curve = None
+        for y in value:
+            y._start_up_cost_curve = self
+        self._generating_bids = value
+            
+    generating_bids = property(get_generating_bids, set_generating_bids)
+    
+    def add_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._start_up_cost_curve = self
+            self._generating_bids.append(obj)
+        
+    def remove_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._start_up_cost_curve = None
+            self._generating_bids.remove(obj)
 
     registered_generators = []
+    
+    def add_registered_generators(self, *registered_generators):
+        for obj in registered_generators:
+	        self._registered_generators.append(obj)
+        
+    def remove_registered_generators(self, *registered_generators):
+        for obj in registered_generators:
+	        self._registered_generators.remove(obj)
 
     # <<< start_up_cost_curve
     # @generated
     def __init__(self, generating_bids=[], registered_generators=[], **kw_args):
         """ Initialises a new 'StartUpCostCurve' instance.
         """
+        self._generating_bids = []
         self.generating_bids = generating_bids
+        self._registered_generators = []
         self.registered_generators = registered_generators
 
         super(StartUpCostCurve, self).__init__(**kw_args)
@@ -1363,14 +2941,63 @@ class ViolationLimit(Limit):
     # True if limit is enforced. 
     enforced = False
 
-    # Limits may differ based on the season
-    season = None
+    def get_season(self):
+        """ Limits may differ based on the season
+        """
+        return self._season
+
+    def set_season(self, value):
+        if self._season is not None:
+            filtered = [x for x in self.season.violation_limits if x != self]
+            self._season._violation_limits = filtered
+            
+        self._season = value
+        if self._season is not None:
+            self._season._violation_limits.append(self)
+
+    season = property(get_season, set_season)
 
     organisations = []
+    
+    def add_organisations(self, *organisations):
+        for obj in organisations:
+	        self._organisations.append(obj)
+        
+    def remove_organisations(self, *organisations):
+        for obj in organisations:
+	        self._organisations.remove(obj)
 
-    measurement = None
+    def get_measurement(self):
+        """ 
+        """
+        return self._measurement
 
-    flowgate = None
+    def set_measurement(self, value):
+        if self._measurement is not None:
+            filtered = [x for x in self.measurement.violation_limits if x != self]
+            self._measurement._violation_limits = filtered
+            
+        self._measurement = value
+        if self._measurement is not None:
+            self._measurement._violation_limits.append(self)
+
+    measurement = property(get_measurement, set_measurement)
+
+    def get_flowgate(self):
+        """ 
+        """
+        return self._flowgate
+
+    def set_flowgate(self, value):
+        if self._flowgate is not None:
+            filtered = [x for x in self.flowgate.violation_limits if x != self]
+            self._flowgate._violation_limits = filtered
+            
+        self._flowgate = value
+        if self._flowgate is not None:
+            self._flowgate._violation_limits.append(self)
+
+    flowgate = property(get_flowgate, set_flowgate)
 
     # <<< violation_limit
     # @generated
@@ -1378,9 +3005,13 @@ class ViolationLimit(Limit):
         """ Initialises a new 'ViolationLimit' instance.
         """
         self.enforced = enforced
+        self._season = None
         self.season = season
+        self._organisations = []
         self.organisations = organisations
+        self._measurement = None
         self.measurement = measurement
+        self._flowgate = None
         self.flowgate = flowgate
 
         super(ViolationLimit, self).__init__(**kw_args)
@@ -1391,12 +3022,21 @@ class LossPenaltyFactor(MarketFactors):
     """ Loss penalty factor applied to a ConnectivityNode for a given time interval.
     """
     connectivity_nodes = []
+    
+    def add_connectivity_nodes(self, *connectivity_nodes):
+        for obj in connectivity_nodes:
+	        self._connectivity_nodes.append(obj)
+        
+    def remove_connectivity_nodes(self, *connectivity_nodes):
+        for obj in connectivity_nodes:
+	        self._connectivity_nodes.remove(obj)
 
     # <<< loss_penalty_factor
     # @generated
     def __init__(self, connectivity_nodes=[], **kw_args):
         """ Initialises a new 'LossPenaltyFactor' instance.
         """
+        self._connectivity_nodes = []
         self.connectivity_nodes = connectivity_nodes
 
         super(LossPenaltyFactor, self).__init__(**kw_args)
@@ -1409,7 +3049,29 @@ class ProductBidClearing(MarketFactors):
     # Cleared MWs. 
     cleared_mw = ''
 
-    product_bids = []
+    def get_product_bids(self):
+        """ 
+        """
+        return self._product_bids
+
+    def set_product_bids(self, value):
+        for x in self._product_bids:
+            x._product_bid_clearing = None
+        for y in value:
+            y._product_bid_clearing = self
+        self._product_bids = value
+            
+    product_bids = property(get_product_bids, set_product_bids)
+    
+    def add_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._product_bid_clearing = self
+            self._product_bids.append(obj)
+        
+    def remove_product_bids(self, *product_bids):
+        for obj in product_bids:
+            obj._product_bid_clearing = None
+            self._product_bids.remove(obj)
 
     # <<< product_bid_clearing
     # @generated
@@ -1417,6 +3079,7 @@ class ProductBidClearing(MarketFactors):
         """ Initialises a new 'ProductBidClearing' instance.
         """
         self.cleared_mw = cleared_mw
+        self._product_bids = []
         self.product_bids = product_bids
 
         super(ProductBidClearing, self).__init__(**kw_args)
@@ -1435,7 +3098,21 @@ class AncillaryServiceClearing(MarketFactors):
     # Requirement type:  'En' - Energy  'Ru' - Regulation Up  'Rd' - Regulation Dn  'Sr' - Spinning Reserve  'Nr' - Non-Spinning Reserve  'Or' - Operating Reserve 
     commodity_type = ''
 
-    market_case_clearing = None
+    def get_market_case_clearing(self):
+        """ 
+        """
+        return self._market_case_clearing
+
+    def set_market_case_clearing(self, value):
+        if self._market_case_clearing is not None:
+            filtered = [x for x in self.market_case_clearing.ancillary_service_clearing if x != self]
+            self._market_case_clearing._ancillary_service_clearing = filtered
+            
+        self._market_case_clearing = value
+        if self._market_case_clearing is not None:
+            self._market_case_clearing._ancillary_service_clearing.append(self)
+
+    market_case_clearing = property(get_market_case_clearing, set_market_case_clearing)
 
     # <<< ancillary_service_clearing
     # @generated
@@ -1445,6 +3122,7 @@ class AncillaryServiceClearing(MarketFactors):
         self.mcp = mcp
         self.cleared_mw = cleared_mw
         self.commodity_type = commodity_type
+        self._market_case_clearing = None
         self.market_case_clearing = market_case_clearing
 
         super(AncillaryServiceClearing, self).__init__(**kw_args)
@@ -1454,20 +3132,62 @@ class AncillaryServiceClearing(MarketFactors):
 class ReserveReq(ResourceGroupReq):
     """ Requirements for minimum amount of reserve and/or regulation to be supplied by a set of qualified resources.
     """
-    sensitivity_price_curve = None
+    def get_sensitivity_price_curve(self):
+        """ 
+        """
+        return self._sensitivity_price_curve
 
-    # Market product associated with reserve requirement must be a reserve or regulation product.
-    market_product = None
+    def set_sensitivity_price_curve(self, value):
+        if self._sensitivity_price_curve is not None:
+            self._sensitivity_price_curve._reserve_req = None
+            
+        self._sensitivity_price_curve = value
+        if self._sensitivity_price_curve is not None:
+            self._sensitivity_price_curve._reserve_req = self
+            
+    sensitivity_price_curve = property(get_sensitivity_price_curve, set_sensitivity_price_curve)
 
-    reserve_req_curve = None
+    def get_market_product(self):
+        """ Market product associated with reserve requirement must be a reserve or regulation product.
+        """
+        return self._market_product
+
+    def set_market_product(self, value):
+        if self._market_product is not None:
+            filtered = [x for x in self.market_product.reserve_reqs if x != self]
+            self._market_product._reserve_reqs = filtered
+            
+        self._market_product = value
+        if self._market_product is not None:
+            self._market_product._reserve_reqs.append(self)
+
+    market_product = property(get_market_product, set_market_product)
+
+    def get_reserve_req_curve(self):
+        """ 
+        """
+        return self._reserve_req_curve
+
+    def set_reserve_req_curve(self, value):
+        if self._reserve_req_curve is not None:
+            self._reserve_req_curve._reserve_req = None
+            
+        self._reserve_req_curve = value
+        if self._reserve_req_curve is not None:
+            self._reserve_req_curve._reserve_req = self
+            
+    reserve_req_curve = property(get_reserve_req_curve, set_reserve_req_curve)
 
     # <<< reserve_req
     # @generated
     def __init__(self, sensitivity_price_curve=None, market_product=None, reserve_req_curve=None, **kw_args):
         """ Initialises a new 'ReserveReq' instance.
         """
+        self._sensitivity_price_curve = None
         self.sensitivity_price_curve = sensitivity_price_curve
+        self._market_product = None
         self.market_product = market_product
+        self._reserve_req_curve = None
         self.reserve_req_curve = reserve_req_curve
 
         super(ReserveReq, self).__init__(**kw_args)
@@ -1491,14 +3211,87 @@ class RegisteredGenerator(RegisteredResource):
     maximum_allowable_spinning_reserve = ''
 
     start_up_cost_curves = []
+    
+    def add_start_up_cost_curves(self, *start_up_cost_curves):
+        for obj in start_up_cost_curves:
+	        self._start_up_cost_curves.append(obj)
+        
+    def remove_start_up_cost_curves(self, *start_up_cost_curves):
+        for obj in start_up_cost_curves:
+	        self._start_up_cost_curves.remove(obj)
 
-    generating_bids = []
+    def get_generating_bids(self):
+        """ 
+        """
+        return self._generating_bids
 
-    unit_initial_conditions = []
+    def set_generating_bids(self, value):
+        for x in self._generating_bids:
+            x._registered_generator = None
+        for y in value:
+            y._registered_generator = self
+        self._generating_bids = value
+            
+    generating_bids = property(get_generating_bids, set_generating_bids)
+    
+    def add_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._registered_generator = self
+            self._generating_bids.append(obj)
+        
+    def remove_generating_bids(self, *generating_bids):
+        for obj in generating_bids:
+            obj._registered_generator = None
+            self._generating_bids.remove(obj)
+
+    def get_unit_initial_conditions(self):
+        """ 
+        """
+        return self._unit_initial_conditions
+
+    def set_unit_initial_conditions(self, value):
+        for x in self._unit_initial_conditions:
+            x._generating_unit = None
+        for y in value:
+            y._generating_unit = self
+        self._unit_initial_conditions = value
+            
+    unit_initial_conditions = property(get_unit_initial_conditions, set_unit_initial_conditions)
+    
+    def add_unit_initial_conditions(self, *unit_initial_conditions):
+        for obj in unit_initial_conditions:
+            obj._generating_unit = self
+            self._unit_initial_conditions.append(obj)
+        
+    def remove_unit_initial_conditions(self, *unit_initial_conditions):
+        for obj in unit_initial_conditions:
+            obj._generating_unit = None
+            self._unit_initial_conditions.remove(obj)
 
     ramp_rate_curves = []
+    
+    def add_ramp_rate_curves(self, *ramp_rate_curves):
+        for obj in ramp_rate_curves:
+	        self._ramp_rate_curves.append(obj)
+        
+    def remove_ramp_rate_curves(self, *ramp_rate_curves):
+        for obj in ramp_rate_curves:
+	        self._ramp_rate_curves.remove(obj)
 
-    generating_unit = None
+    def get_generating_unit(self):
+        """ 
+        """
+        return self._generating_unit
+
+    def set_generating_unit(self, value):
+        if self._generating_unit is not None:
+            self._generating_unit._registered_generator = None
+            
+        self._generating_unit = value
+        if self._generating_unit is not None:
+            self._generating_unit._registered_generator = self
+            
+    generating_unit = property(get_generating_unit, set_generating_unit)
 
     # <<< registered_generator
     # @generated
@@ -1510,10 +3303,15 @@ class RegisteredGenerator(RegisteredResource):
         self.high_control_limit = high_control_limit
         self.low_control_limit = low_control_limit
         self.maximum_allowable_spinning_reserve = maximum_allowable_spinning_reserve
+        self._start_up_cost_curves = []
         self.start_up_cost_curves = start_up_cost_curves
+        self._generating_bids = []
         self.generating_bids = generating_bids
+        self._unit_initial_conditions = []
         self.unit_initial_conditions = unit_initial_conditions
+        self._ramp_rate_curves = []
         self.ramp_rate_curves = ramp_rate_curves
+        self._generating_unit = None
         self.generating_unit = generating_unit
 
         super(RegisteredGenerator, self).__init__(**kw_args)
@@ -1523,25 +3321,114 @@ class RegisteredGenerator(RegisteredResource):
 class SecurityConstraintSum(MarketFactors):
     """ Typically provided by RTO systems, constraints identified in both base case and critical contingency cases have to be transferred. A constraint has N (>=1) constraint terms. A term is represented by an instance of TerminalConstraintTerm.  The constraint expression is: minValue <= c1*x1 + c2*x2 + .... cn*xn + k <= maxValue where: - cn is ConstraintTerm.factor  - xn is the flow at the terminal Flow into the associated equipment is positive for the purpose of ConnectivityNode NodeConstraintTerm  k is SecurityConstraintsLinear.resourceMW The units of k are assumed to be same as the units of the flows, xn.  The constants, cn, are dimensionless. With these conventions, cn and k are all positive for a typical constraint such as 'weighted sum of generation must be less than limit'. Furthermore, cn are all 1.0 for a case such as 'interface flow must be less than limit', assuming the terminals are chosen on the importing side of the interface.
     """
-    constraint_terms = []
+    def get_constraint_terms(self):
+        """ 
+        """
+        return self._constraint_terms
 
-    rto = None
+    def set_constraint_terms(self, value):
+        for x in self._constraint_terms:
+            x._security_constraint_sum = None
+        for y in value:
+            y._security_constraint_sum = self
+        self._constraint_terms = value
+            
+    constraint_terms = property(get_constraint_terms, set_constraint_terms)
+    
+    def add_constraint_terms(self, *constraint_terms):
+        for obj in constraint_terms:
+            obj._security_constraint_sum = self
+            self._constraint_terms.append(obj)
+        
+    def remove_constraint_terms(self, *constraint_terms):
+        for obj in constraint_terms:
+            obj._security_constraint_sum = None
+            self._constraint_terms.remove(obj)
 
-    contingency_constraint_limits = []
+    def get_rto(self):
+        """ 
+        """
+        return self._rto
 
-    default_constraint_limit = None
+    def set_rto(self, value):
+        if self._rto is not None:
+            filtered = [x for x in self.rto.security_constraints_linear if x != self]
+            self._rto._security_constraints_linear = filtered
+            
+        self._rto = value
+        if self._rto is not None:
+            self._rto._security_constraints_linear.append(self)
 
-    base_case_constraint_limit = None
+    rto = property(get_rto, set_rto)
+
+    def get_contingency_constraint_limits(self):
+        """ 
+        """
+        return self._contingency_constraint_limits
+
+    def set_contingency_constraint_limits(self, value):
+        for x in self._contingency_constraint_limits:
+            x._security_constraint_sum = None
+        for y in value:
+            y._security_constraint_sum = self
+        self._contingency_constraint_limits = value
+            
+    contingency_constraint_limits = property(get_contingency_constraint_limits, set_contingency_constraint_limits)
+    
+    def add_contingency_constraint_limits(self, *contingency_constraint_limits):
+        for obj in contingency_constraint_limits:
+            obj._security_constraint_sum = self
+            self._contingency_constraint_limits.append(obj)
+        
+    def remove_contingency_constraint_limits(self, *contingency_constraint_limits):
+        for obj in contingency_constraint_limits:
+            obj._security_constraint_sum = None
+            self._contingency_constraint_limits.remove(obj)
+
+    def get_default_constraint_limit(self):
+        """ 
+        """
+        return self._default_constraint_limit
+
+    def set_default_constraint_limit(self, value):
+        if self._default_constraint_limit is not None:
+            self._default_constraint_limit._security_constraint_sum = None
+            
+        self._default_constraint_limit = value
+        if self._default_constraint_limit is not None:
+            self._default_constraint_limit._security_constraint_sum = self
+            
+    default_constraint_limit = property(get_default_constraint_limit, set_default_constraint_limit)
+
+    def get_base_case_constraint_limit(self):
+        """ 
+        """
+        return self._base_case_constraint_limit
+
+    def set_base_case_constraint_limit(self, value):
+        if self._base_case_constraint_limit is not None:
+            self._base_case_constraint_limit._security_constraint_sum = None
+            
+        self._base_case_constraint_limit = value
+        if self._base_case_constraint_limit is not None:
+            self._base_case_constraint_limit._security_constraint_sum = self
+            
+    base_case_constraint_limit = property(get_base_case_constraint_limit, set_base_case_constraint_limit)
 
     # <<< security_constraint_sum
     # @generated
     def __init__(self, constraint_terms=[], rto=None, contingency_constraint_limits=[], default_constraint_limit=None, base_case_constraint_limit=None, **kw_args):
         """ Initialises a new 'SecurityConstraintSum' instance.
         """
+        self._constraint_terms = []
         self.constraint_terms = constraint_terms
+        self._rto = None
         self.rto = rto
+        self._contingency_constraint_limits = []
         self.contingency_constraint_limits = contingency_constraint_limits
+        self._default_constraint_limit = None
         self.default_constraint_limit = default_constraint_limit
+        self._base_case_constraint_limit = None
         self.base_case_constraint_limit = base_case_constraint_limit
 
         super(SecurityConstraintSum, self).__init__(**kw_args)
@@ -1549,16 +3436,54 @@ class SecurityConstraintSum(MarketFactors):
 
 
 class RegisteredLoad(RegisteredResource):
-    load_area = None
+    def get_load_area(self):
+        """ 
+        """
+        return self._load_area
 
-    load_bids = []
+    def set_load_area(self, value):
+        if self._load_area is not None:
+            filtered = [x for x in self.load_area.registered_loads if x != self]
+            self._load_area._registered_loads = filtered
+            
+        self._load_area = value
+        if self._load_area is not None:
+            self._load_area._registered_loads.append(self)
+
+    load_area = property(get_load_area, set_load_area)
+
+    def get_load_bids(self):
+        """ 
+        """
+        return self._load_bids
+
+    def set_load_bids(self, value):
+        for x in self._load_bids:
+            x._registered_load = None
+        for y in value:
+            y._registered_load = self
+        self._load_bids = value
+            
+    load_bids = property(get_load_bids, set_load_bids)
+    
+    def add_load_bids(self, *load_bids):
+        for obj in load_bids:
+            obj._registered_load = self
+            self._load_bids.append(obj)
+        
+    def remove_load_bids(self, *load_bids):
+        for obj in load_bids:
+            obj._registered_load = None
+            self._load_bids.remove(obj)
 
     # <<< registered_load
     # @generated
     def __init__(self, load_area=None, load_bids=[], **kw_args):
         """ Initialises a new 'RegisteredLoad' instance.
         """
+        self._load_area = None
         self.load_area = load_area
+        self._load_bids = []
         self.load_bids = load_bids
 
         super(RegisteredLoad, self).__init__(**kw_args)
@@ -1613,13 +3538,28 @@ class ResourceBid(Bid):
 class TerminalConstraintTerm(ConstraintTerm):
     """ A constraint term associated with a specific terminal on a physical piece of equipment.
     """
-    terminal = None
+    def get_terminal(self):
+        """ 
+        """
+        return self._terminal
+
+    def set_terminal(self, value):
+        if self._terminal is not None:
+            filtered = [x for x in self.terminal.terminal_constraints if x != self]
+            self._terminal._terminal_constraints = filtered
+            
+        self._terminal = value
+        if self._terminal is not None:
+            self._terminal._terminal_constraints.append(self)
+
+    terminal = property(get_terminal, set_terminal)
 
     # <<< terminal_constraint_term
     # @generated
     def __init__(self, terminal=None, **kw_args):
         """ Initialises a new 'TerminalConstraintTerm' instance.
         """
+        self._terminal = None
         self.terminal = terminal
 
         super(TerminalConstraintTerm, self).__init__(**kw_args)
@@ -1638,7 +3578,20 @@ class PnodeClearing(MarketFactors):
     # Congestion component of Location Marginal Price (LMP) in monetary units per MW. 
     congest_lmp = ''
 
-    pnode = None
+    def get_pnode(self):
+        """ 
+        """
+        return self._pnode
+
+    def set_pnode(self, value):
+        if self._pnode is not None:
+            self._pnode._pnode_clearing = None
+            
+        self._pnode = value
+        if self._pnode is not None:
+            self._pnode._pnode_clearing = self
+            
+    pnode = property(get_pnode, set_pnode)
 
     # <<< pnode_clearing
     # @generated
@@ -1648,6 +3601,7 @@ class PnodeClearing(MarketFactors):
         self.cost_lmp = cost_lmp
         self.loss_lmp = loss_lmp
         self.congest_lmp = congest_lmp
+        self._pnode = None
         self.pnode = pnode
 
         super(PnodeClearing, self).__init__(**kw_args)
@@ -1660,13 +3614,77 @@ class TransactionBid(Bid):
  
     energy_trans_id = ''
 
-    delivery_pnode = None
+    def get_delivery_pnode(self):
+        """ 
+        """
+        return self._delivery_pnode
 
-    energy_trans_id = None
+    def set_delivery_pnode(self, value):
+        if self._delivery_pnode is not None:
+            filtered = [x for x in self.delivery_pnode.delivery_transaction_bids if x != self]
+            self._delivery_pnode._delivery_transaction_bids = filtered
+            
+        self._delivery_pnode = value
+        if self._delivery_pnode is not None:
+            self._delivery_pnode._delivery_transaction_bids.append(self)
 
-    energy_profiles = []
+    delivery_pnode = property(get_delivery_pnode, set_delivery_pnode)
 
-    receipt_pnode = None
+    def get_energy_trans_id(self):
+        """ 
+        """
+        return self._energy_trans_id
+
+    def set_energy_trans_id(self, value):
+        if self._energy_trans_id is not None:
+            filtered = [x for x in self.energy_trans_id.energy_trans_id if x != self]
+            self._energy_trans_id._energy_trans_id = filtered
+            
+        self._energy_trans_id = value
+        if self._energy_trans_id is not None:
+            self._energy_trans_id._energy_trans_id.append(self)
+
+    energy_trans_id = property(get_energy_trans_id, set_energy_trans_id)
+
+    def get_energy_profiles(self):
+        """ 
+        """
+        return self._energy_profiles
+
+    def set_energy_profiles(self, value):
+        for x in self._energy_profiles:
+            x._transaction_bid = None
+        for y in value:
+            y._transaction_bid = self
+        self._energy_profiles = value
+            
+    energy_profiles = property(get_energy_profiles, set_energy_profiles)
+    
+    def add_energy_profiles(self, *energy_profiles):
+        for obj in energy_profiles:
+            obj._transaction_bid = self
+            self._energy_profiles.append(obj)
+        
+    def remove_energy_profiles(self, *energy_profiles):
+        for obj in energy_profiles:
+            obj._transaction_bid = None
+            self._energy_profiles.remove(obj)
+
+    def get_receipt_pnode(self):
+        """ 
+        """
+        return self._receipt_pnode
+
+    def set_receipt_pnode(self, value):
+        if self._receipt_pnode is not None:
+            filtered = [x for x in self.receipt_pnode.receipt_transaction_bids if x != self]
+            self._receipt_pnode._receipt_transaction_bids = filtered
+            
+        self._receipt_pnode = value
+        if self._receipt_pnode is not None:
+            self._receipt_pnode._receipt_transaction_bids.append(self)
+
+    receipt_pnode = property(get_receipt_pnode, set_receipt_pnode)
 
     # <<< transaction_bid
     # @generated
@@ -1674,9 +3692,13 @@ class TransactionBid(Bid):
         """ Initialises a new 'TransactionBid' instance.
         """
         self.energy_trans_id = energy_trans_id
+        self._delivery_pnode = None
         self.delivery_pnode = delivery_pnode
+        self._energy_trans_id = None
         self.energy_trans_id = energy_trans_id
+        self._energy_profiles = []
         self.energy_profiles = energy_profiles
+        self._receipt_pnode = None
         self.receipt_pnode = receipt_pnode
 
         super(TransactionBid, self).__init__(**kw_args)
@@ -1686,13 +3708,28 @@ class TransactionBid(Bid):
 class NodeConstraintTerm(ConstraintTerm):
     """ To be used only to constrain a quantity that cannot be associated with a terminal. For example, a registered generating unit that is not electrically connected to the network.
     """
-    connectivity_node = None
+    def get_connectivity_node(self):
+        """ 
+        """
+        return self._connectivity_node
+
+    def set_connectivity_node(self, value):
+        if self._connectivity_node is not None:
+            filtered = [x for x in self.connectivity_node.node_constraint_terms if x != self]
+            self._connectivity_node._node_constraint_terms = filtered
+            
+        self._connectivity_node = value
+        if self._connectivity_node is not None:
+            self._connectivity_node._node_constraint_terms.append(self)
+
+    connectivity_node = property(get_connectivity_node, set_connectivity_node)
 
     # <<< node_constraint_term
     # @generated
     def __init__(self, connectivity_node=None, **kw_args):
         """ Initialises a new 'NodeConstraintTerm' instance.
         """
+        self._connectivity_node = None
         self.connectivity_node = connectivity_node
 
         super(NodeConstraintTerm, self).__init__(**kw_args)
@@ -1736,7 +3773,29 @@ class MarketCaseClearing(MarketFactors):
     # Last time and date clearing results were manually modified. 
     modified_date = ''
 
-    ancillary_service_clearing = []
+    def get_ancillary_service_clearing(self):
+        """ 
+        """
+        return self._ancillary_service_clearing
+
+    def set_ancillary_service_clearing(self, value):
+        for x in self._ancillary_service_clearing:
+            x._market_case_clearing = None
+        for y in value:
+            y._market_case_clearing = self
+        self._ancillary_service_clearing = value
+            
+    ancillary_service_clearing = property(get_ancillary_service_clearing, set_ancillary_service_clearing)
+    
+    def add_ancillary_service_clearing(self, *ancillary_service_clearing):
+        for obj in ancillary_service_clearing:
+            obj._market_case_clearing = self
+            self._ancillary_service_clearing.append(obj)
+        
+    def remove_ancillary_service_clearing(self, *ancillary_service_clearing):
+        for obj in ancillary_service_clearing:
+            obj._market_case_clearing = None
+            self._ancillary_service_clearing.remove(obj)
 
     # <<< market_case_clearing
     # @generated
@@ -1746,6 +3805,7 @@ class MarketCaseClearing(MarketFactors):
         self.case_type = case_type
         self.posted_date = posted_date
         self.modified_date = modified_date
+        self._ancillary_service_clearing = []
         self.ancillary_service_clearing = ancillary_service_clearing
 
         super(MarketCaseClearing, self).__init__(**kw_args)
@@ -1774,9 +3834,37 @@ class LoadBid(ResourceBid):
     # Minimum MW load below which it may not be reduced. 
     min_load = ''
 
-    registered_load = None
+    def get_registered_load(self):
+        """ 
+        """
+        return self._registered_load
 
-    load_reduction_price_curve = None
+    def set_registered_load(self, value):
+        if self._registered_load is not None:
+            filtered = [x for x in self.registered_load.load_bids if x != self]
+            self._registered_load._load_bids = filtered
+            
+        self._registered_load = value
+        if self._registered_load is not None:
+            self._registered_load._load_bids.append(self)
+
+    registered_load = property(get_registered_load, set_registered_load)
+
+    def get_load_reduction_price_curve(self):
+        """ 
+        """
+        return self._load_reduction_price_curve
+
+    def set_load_reduction_price_curve(self, value):
+        if self._load_reduction_price_curve is not None:
+            filtered = [x for x in self.load_reduction_price_curve.load_bids if x != self]
+            self._load_reduction_price_curve._load_bids = filtered
+            
+        self._load_reduction_price_curve = value
+        if self._load_reduction_price_curve is not None:
+            self._load_reduction_price_curve._load_bids.append(self)
+
+    load_reduction_price_curve = property(get_load_reduction_price_curve, set_load_reduction_price_curve)
 
     # <<< load_bid
     # @generated
@@ -1790,7 +3878,9 @@ class LoadBid(ResourceBid):
         self.min_load_reduction_cost = min_load_reduction_cost
         self.min_load_reduction = min_load_reduction
         self.min_load = min_load
+        self._registered_load = None
         self.registered_load = registered_load
+        self._load_reduction_price_curve = None
         self.load_reduction_price_curve = load_reduction_price_curve
 
         super(LoadBid, self).__init__(**kw_args)
@@ -1837,15 +3927,85 @@ class GeneratingBid(ResourceBid):
     # Minimum power rating for unit under emergency conditions, which is less than or equal to the economic minimum. 
     min_emergency_mw = ''
 
-    bid_set = None
+    def get_bid_set(self):
+        """ 
+        """
+        return self._bid_set
 
-    notification_time_curve = None
+    def set_bid_set(self, value):
+        if self._bid_set is not None:
+            filtered = [x for x in self.bid_set.generating_bids if x != self]
+            self._bid_set._generating_bids = filtered
+            
+        self._bid_set = value
+        if self._bid_set is not None:
+            self._bid_set._generating_bids.append(self)
 
-    start_up_cost_curve = None
+    bid_set = property(get_bid_set, set_bid_set)
 
-    start_up_time_curve = None
+    def get_notification_time_curve(self):
+        """ 
+        """
+        return self._notification_time_curve
 
-    registered_generator = None
+    def set_notification_time_curve(self, value):
+        if self._notification_time_curve is not None:
+            filtered = [x for x in self.notification_time_curve.generating_bids if x != self]
+            self._notification_time_curve._generating_bids = filtered
+            
+        self._notification_time_curve = value
+        if self._notification_time_curve is not None:
+            self._notification_time_curve._generating_bids.append(self)
+
+    notification_time_curve = property(get_notification_time_curve, set_notification_time_curve)
+
+    def get_start_up_cost_curve(self):
+        """ 
+        """
+        return self._start_up_cost_curve
+
+    def set_start_up_cost_curve(self, value):
+        if self._start_up_cost_curve is not None:
+            filtered = [x for x in self.start_up_cost_curve.generating_bids if x != self]
+            self._start_up_cost_curve._generating_bids = filtered
+            
+        self._start_up_cost_curve = value
+        if self._start_up_cost_curve is not None:
+            self._start_up_cost_curve._generating_bids.append(self)
+
+    start_up_cost_curve = property(get_start_up_cost_curve, set_start_up_cost_curve)
+
+    def get_start_up_time_curve(self):
+        """ 
+        """
+        return self._start_up_time_curve
+
+    def set_start_up_time_curve(self, value):
+        if self._start_up_time_curve is not None:
+            filtered = [x for x in self.start_up_time_curve.generating_bids if x != self]
+            self._start_up_time_curve._generating_bids = filtered
+            
+        self._start_up_time_curve = value
+        if self._start_up_time_curve is not None:
+            self._start_up_time_curve._generating_bids.append(self)
+
+    start_up_time_curve = property(get_start_up_time_curve, set_start_up_time_curve)
+
+    def get_registered_generator(self):
+        """ 
+        """
+        return self._registered_generator
+
+    def set_registered_generator(self, value):
+        if self._registered_generator is not None:
+            filtered = [x for x in self.registered_generator.generating_bids if x != self]
+            self._registered_generator._generating_bids = filtered
+            
+        self._registered_generator = value
+        if self._registered_generator is not None:
+            self._registered_generator._generating_bids.append(self)
+
+    registered_generator = property(get_registered_generator, set_registered_generator)
 
     # <<< generating_bid
     # @generated
@@ -1865,10 +4025,15 @@ class GeneratingBid(ResourceBid):
         self.start_up_type = start_up_type
         self.up_time_min = up_time_min
         self.min_emergency_mw = min_emergency_mw
+        self._bid_set = None
         self.bid_set = bid_set
+        self._notification_time_curve = None
         self.notification_time_curve = notification_time_curve
+        self._start_up_cost_curve = None
         self.start_up_cost_curve = start_up_cost_curve
+        self._start_up_time_curve = None
         self.start_up_time_curve = start_up_time_curve
+        self._registered_generator = None
         self.registered_generator = registered_generator
 
         super(GeneratingBid, self).__init__(**kw_args)

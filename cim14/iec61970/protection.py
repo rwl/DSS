@@ -27,14 +27,41 @@ class ProtectionEquipment(Equipment):
     # The time delay from detection of abnormal conditions to relay operation. 
     relay_delay_time = ''
 
-    # Protection equipment may be used to protect specific Conducting Equipment. Multiple equipment may be protected or monitored by multiple protection equipment.
     conducting_equipments = []
+    
+    def add_conducting_equipments(self, *conducting_equipments):
+        for obj in conducting_equipments:
+	        self._conducting_equipments.append(obj)
+        
+    def remove_conducting_equipments(self, *conducting_equipments):
+        for obj in conducting_equipments:
+	        self._conducting_equipments.remove(obj)
 
-    # The Unit for the Protection Equipment.
-    unit = None
+    def get_unit(self):
+        """ The Unit for the Protection Equipment.
+        """
+        return self._unit
 
-    # Protected switches operated by this ProtectionEquipment.
+    def set_unit(self, value):
+        if self._unit is not None:
+            filtered = [x for x in self.unit.protection_equipments if x != self]
+            self._unit._protection_equipments = filtered
+            
+        self._unit = value
+        if self._unit is not None:
+            self._unit._protection_equipments.append(self)
+
+    unit = property(get_unit, set_unit)
+
     protected_switches = []
+    
+    def add_protected_switches(self, *protected_switches):
+        for obj in protected_switches:
+	        self._protected_switches.append(obj)
+        
+    def remove_protected_switches(self, *protected_switches):
+        for obj in protected_switches:
+	        self._protected_switches.remove(obj)
 
     # <<< protection_equipment
     # @generated
@@ -45,8 +72,11 @@ class ProtectionEquipment(Equipment):
         self.power_direction_flag = power_direction_flag
         self.high_limit = high_limit
         self.relay_delay_time = relay_delay_time
+        self._conducting_equipments = []
         self.conducting_equipments = conducting_equipments
+        self._unit = None
         self.unit = unit
+        self._protected_switches = []
         self.protected_switches = protected_switches
 
         super(ProtectionEquipment, self).__init__(**kw_args)
@@ -56,16 +86,54 @@ class ProtectionEquipment(Equipment):
 class FaultIndicator(Equipment):
     """ A FaultIndicator is typically only an indicator (which may or may not be remotely monitored), and not a piece of equipment that actually initiates a protection event. It is used for FLISR (Fault Location, Isolation and Restoration) purposes, assisting with the dispatch of crews to 'most likely' part of the network (i.e. assists with determining circuit section where the fault most likely happened).
     """
-    fault_indicator_type_asset = None
+    def get_fault_indicator_type_asset(self):
+        """ 
+        """
+        return self._fault_indicator_type_asset
 
-    fault_indicator_assets = []
+    def set_fault_indicator_type_asset(self, value):
+        if self._fault_indicator_type_asset is not None:
+            filtered = [x for x in self.fault_indicator_type_asset.fault_indicators if x != self]
+            self._fault_indicator_type_asset._fault_indicators = filtered
+            
+        self._fault_indicator_type_asset = value
+        if self._fault_indicator_type_asset is not None:
+            self._fault_indicator_type_asset._fault_indicators.append(self)
+
+    fault_indicator_type_asset = property(get_fault_indicator_type_asset, set_fault_indicator_type_asset)
+
+    def get_fault_indicator_assets(self):
+        """ 
+        """
+        return self._fault_indicator_assets
+
+    def set_fault_indicator_assets(self, value):
+        for x in self._fault_indicator_assets:
+            x._fault_indicator = None
+        for y in value:
+            y._fault_indicator = self
+        self._fault_indicator_assets = value
+            
+    fault_indicator_assets = property(get_fault_indicator_assets, set_fault_indicator_assets)
+    
+    def add_fault_indicator_assets(self, *fault_indicator_assets):
+        for obj in fault_indicator_assets:
+            obj._fault_indicator = self
+            self._fault_indicator_assets.append(obj)
+        
+    def remove_fault_indicator_assets(self, *fault_indicator_assets):
+        for obj in fault_indicator_assets:
+            obj._fault_indicator = None
+            self._fault_indicator_assets.remove(obj)
 
     # <<< fault_indicator
     # @generated
     def __init__(self, fault_indicator_type_asset=None, fault_indicator_assets=[], **kw_args):
         """ Initialises a new 'FaultIndicator' instance.
         """
+        self._fault_indicator_type_asset = None
         self.fault_indicator_type_asset = fault_indicator_type_asset
+        self._fault_indicator_assets = []
         self.fault_indicator_assets = fault_indicator_assets
 
         super(FaultIndicator, self).__init__(**kw_args)
@@ -75,16 +143,45 @@ class FaultIndicator(Equipment):
 class SurgeProtector(Equipment):
     """ Shunt device, installed on the network, usually in the proximity of electrical equipment in order to protect the said equipment against transient voltage spikes caused by lightning or switching activity.
     """
-    surge_protector_asset = None
+    def get_surge_protector_asset(self):
+        """ 
+        """
+        return self._surge_protector_asset
 
-    surge_protector_type_asset = None
+    def set_surge_protector_asset(self, value):
+        if self._surge_protector_asset is not None:
+            self._surge_protector_asset._surge_protector = None
+            
+        self._surge_protector_asset = value
+        if self._surge_protector_asset is not None:
+            self._surge_protector_asset._surge_protector = self
+            
+    surge_protector_asset = property(get_surge_protector_asset, set_surge_protector_asset)
+
+    def get_surge_protector_type_asset(self):
+        """ 
+        """
+        return self._surge_protector_type_asset
+
+    def set_surge_protector_type_asset(self, value):
+        if self._surge_protector_type_asset is not None:
+            filtered = [x for x in self.surge_protector_type_asset.surge_protectors if x != self]
+            self._surge_protector_type_asset._surge_protectors = filtered
+            
+        self._surge_protector_type_asset = value
+        if self._surge_protector_type_asset is not None:
+            self._surge_protector_type_asset._surge_protectors.append(self)
+
+    surge_protector_type_asset = property(get_surge_protector_type_asset, set_surge_protector_type_asset)
 
     # <<< surge_protector
     # @generated
     def __init__(self, surge_protector_asset=None, surge_protector_type_asset=None, **kw_args):
         """ Initialises a new 'SurgeProtector' instance.
         """
+        self._surge_protector_asset = None
         self.surge_protector_asset = surge_protector_asset
+        self._surge_protector_type_asset = None
         self.surge_protector_type_asset = surge_protector_type_asset
 
         super(SurgeProtector, self).__init__(**kw_args)
@@ -100,8 +197,21 @@ class RecloseSequence(IdentifiedObject):
     # Indicates the time lapse before the reclose step will execute a reclose. 
     reclose_delay = ''
 
-    # A breaker may have zero or more automatic reclosures after a trip occurs.
-    protected_switch = None
+    def get_protected_switch(self):
+        """ A breaker may have zero or more automatic reclosures after a trip occurs.
+        """
+        return self._protected_switch
+
+    def set_protected_switch(self, value):
+        if self._protected_switch is not None:
+            filtered = [x for x in self.protected_switch.reclose_sequences if x != self]
+            self._protected_switch._reclose_sequences = filtered
+            
+        self._protected_switch = value
+        if self._protected_switch is not None:
+            self._protected_switch._reclose_sequences.append(self)
+
+    protected_switch = property(get_protected_switch, set_protected_switch)
 
     # <<< reclose_sequence
     # @generated
@@ -110,6 +220,7 @@ class RecloseSequence(IdentifiedObject):
         """
         self.reclose_step = reclose_step
         self.reclose_delay = reclose_delay
+        self._protected_switch = None
         self.protected_switch = protected_switch
 
         super(RecloseSequence, self).__init__(**kw_args)

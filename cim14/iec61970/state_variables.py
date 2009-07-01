@@ -34,8 +34,20 @@ class SvVoltage(StateVariable):
     # The voltage magnitude of the topological node. 
     v = ''
 
-    # The topological node associated with the voltage state.
-    topological_node = None
+    def get_topological_node(self):
+        """ The topological node associated with the voltage state.
+        """
+        return self._topological_node
+
+    def set_topological_node(self, value):
+        if self._topological_node is not None:
+            self._topological_node._sv_voltage = None
+            
+        self._topological_node = value
+        if self._topological_node is not None:
+            self._topological_node._sv_voltage = self
+            
+    topological_node = property(get_topological_node, set_topological_node)
 
     # <<< sv_voltage
     # @generated
@@ -44,6 +56,7 @@ class SvVoltage(StateVariable):
         """
         self.angle = angle
         self.v = v
+        self._topological_node = None
         self.topological_node = topological_node
 
         super(SvVoltage, self).__init__(**kw_args)
@@ -59,8 +72,20 @@ class SvShuntCompensatorSections(StateVariable):
     # The number of sections in service as a continous variable. 
     continuous_sections = 0.0
 
-    # The shunt compensator for which the state applies.
-    shunt_compensator = None
+    def get_shunt_compensator(self):
+        """ The shunt compensator for which the state applies.
+        """
+        return self._shunt_compensator
+
+    def set_shunt_compensator(self, value):
+        if self._shunt_compensator is not None:
+            self._shunt_compensator._sv_shunt_compensator_sections = None
+            
+        self._shunt_compensator = value
+        if self._shunt_compensator is not None:
+            self._shunt_compensator._sv_shunt_compensator_sections = self
+            
+    shunt_compensator = property(get_shunt_compensator, set_shunt_compensator)
 
     # <<< sv_shunt_compensator_sections
     # @generated
@@ -69,6 +94,7 @@ class SvShuntCompensatorSections(StateVariable):
         """
         self.sections = sections
         self.continuous_sections = continuous_sections
+        self._shunt_compensator = None
         self.shunt_compensator = shunt_compensator
 
         super(SvShuntCompensatorSections, self).__init__(**kw_args)
@@ -84,8 +110,20 @@ class SvTapStep(StateVariable):
     # The floating point tap position. 
     continuous_position = 0.0
 
-    # The tap changer associated with the tap step state.
-    tap_changer = None
+    def get_tap_changer(self):
+        """ The tap changer associated with the tap step state.
+        """
+        return self._tap_changer
+
+    def set_tap_changer(self, value):
+        if self._tap_changer is not None:
+            self._tap_changer._sv_tap_step = None
+            
+        self._tap_changer = value
+        if self._tap_changer is not None:
+            self._tap_changer._sv_tap_step = self
+            
+    tap_changer = property(get_tap_changer, set_tap_changer)
 
     # <<< sv_tap_step
     # @generated
@@ -94,6 +132,7 @@ class SvTapStep(StateVariable):
         """
         self.position = position
         self.continuous_position = continuous_position
+        self._tap_changer = None
         self.tap_changer = tap_changer
 
         super(SvTapStep, self).__init__(**kw_args)
@@ -109,8 +148,20 @@ class SvPowerFlow(StateVariable):
     # The reactive power flow into the terminal. 
     q = ''
 
-    # The terminal associated with the power flow state.
-    terminal = None
+    def get_terminal(self):
+        """ The terminal associated with the power flow state.
+        """
+        return self._terminal
+
+    def set_terminal(self, value):
+        if self._terminal is not None:
+            self._terminal._sv_power_flow = None
+            
+        self._terminal = value
+        if self._terminal is not None:
+            self._terminal._sv_power_flow = self
+            
+    terminal = property(get_terminal, set_terminal)
 
     # <<< sv_power_flow
     # @generated
@@ -119,6 +170,7 @@ class SvPowerFlow(StateVariable):
         """
         self.p = p
         self.q = q
+        self._terminal = None
         self.terminal = terminal
 
         super(SvPowerFlow, self).__init__(**kw_args)
@@ -134,8 +186,20 @@ class SvInjection(StateVariable):
     # The activive power injected into the bus at this location. 
     q_net_injection = ''
 
-    # The topological node associated with the state injection.
-    topological_node = None
+    def get_topological_node(self):
+        """ The topological node associated with the state injection.
+        """
+        return self._topological_node
+
+    def set_topological_node(self, value):
+        if self._topological_node is not None:
+            self._topological_node._sv_injection = None
+            
+        self._topological_node = value
+        if self._topological_node is not None:
+            self._topological_node._sv_injection = self
+            
+    topological_node = property(get_topological_node, set_topological_node)
 
     # <<< sv_injection
     # @generated
@@ -144,6 +208,7 @@ class SvInjection(StateVariable):
         """
         self.p_net_injection = p_net_injection
         self.q_net_injection = q_net_injection
+        self._topological_node = None
         self.topological_node = topological_node
 
         super(SvInjection, self).__init__(**kw_args)
@@ -156,8 +221,20 @@ class SvStatus(StateVariable):
     # The in service status as a result of topology processing. 
     in_service = False
 
-    # The conducting equipment associated with the status state.
-    conducting_equipment = None
+    def get_conducting_equipment(self):
+        """ The conducting equipment associated with the status state.
+        """
+        return self._conducting_equipment
+
+    def set_conducting_equipment(self, value):
+        if self._conducting_equipment is not None:
+            self._conducting_equipment._sv_status = None
+            
+        self._conducting_equipment = value
+        if self._conducting_equipment is not None:
+            self._conducting_equipment._sv_status = self
+            
+    conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
 
     # <<< sv_status
     # @generated
@@ -165,6 +242,7 @@ class SvStatus(StateVariable):
         """ Initialises a new 'SvStatus' instance.
         """
         self.in_service = in_service
+        self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
 
         super(SvStatus, self).__init__(**kw_args)

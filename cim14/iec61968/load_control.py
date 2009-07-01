@@ -40,6 +40,14 @@ class ConnectDisconnectFunction(DeviceFunction):
     rcd_info = None
 
     switches = []
+    
+    def add_switches(self, *switches):
+        for obj in switches:
+	        self._switches.append(obj)
+        
+    def remove_switches(self, *switches):
+        for obj in switches:
+	        self._switches.remove(obj)
 
     # <<< connect_disconnect_function
     # @generated
@@ -54,6 +62,7 @@ class ConnectDisconnectFunction(DeviceFunction):
         self.is_remote_auto_discon_op = is_remote_auto_discon_op
         self.is_delayed_discon = is_delayed_discon
         self.rcd_info = rcd_info
+        self._switches = []
         self.switches = switches
 
         super(ConnectDisconnectFunction, self).__init__(**kw_args)

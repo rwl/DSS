@@ -27,8 +27,21 @@ class Seal(IdentifiedObject):
     # Condition of seal. Values are: "locked", "other", "broken", "missing", "open"
     condition = 'locked'
 
-    # Asset container to which this seal is applied.
-    asset_container = None
+    def get_asset_container(self):
+        """ Asset container to which this seal is applied.
+        """
+        return self._asset_container
+
+    def set_asset_container(self, value):
+        if self._asset_container is not None:
+            filtered = [x for x in self.asset_container.seals if x != self]
+            self._asset_container._seals = filtered
+            
+        self._asset_container = value
+        if self._asset_container is not None:
+            self._asset_container._seals.append(self)
+
+    asset_container = property(get_asset_container, set_asset_container)
 
     # <<< seal
     # @generated
@@ -39,6 +52,7 @@ class Seal(IdentifiedObject):
         self.applied_date_time = applied_date_time
         self.seal_number = seal_number
         self.condition = condition
+        self._asset_container = None
         self.asset_container = asset_container
 
         super(Seal, self).__init__(**kw_args)
@@ -115,59 +129,428 @@ class Asset(IdentifiedObject):
     # Status of this asset.
     status = None
 
-    to_asset_roles = []
+    def get_to_asset_roles(self):
+        """ 
+        """
+        return self._to_asset_roles
+
+    def set_to_asset_roles(self, value):
+        for x in self._to_asset_roles:
+            x._from_asset = None
+        for y in value:
+            y._from_asset = self
+        self._to_asset_roles = value
+            
+    to_asset_roles = property(get_to_asset_roles, set_to_asset_roles)
+    
+    def add_to_asset_roles(self, *to_asset_roles):
+        for obj in to_asset_roles:
+            obj._from_asset = self
+            self._to_asset_roles.append(obj)
+        
+    def remove_to_asset_roles(self, *to_asset_roles):
+        for obj in to_asset_roles:
+            obj._from_asset = None
+            self._to_asset_roles.remove(obj)
 
     erp_rec_delivery_items = []
+    
+    def add_erp_rec_delivery_items(self, *erp_rec_delivery_items):
+        for obj in erp_rec_delivery_items:
+	        self._erp_rec_delivery_items.append(obj)
+        
+    def remove_erp_rec_delivery_items(self, *erp_rec_delivery_items):
+        for obj in erp_rec_delivery_items:
+	        self._erp_rec_delivery_items.remove(obj)
 
-    asset_functions = []
+    def get_asset_functions(self):
+        """ 
+        """
+        return self._asset_functions
 
-    # All electronic addresses of this asset.
-    electronic_addresses = []
+    def set_asset_functions(self, value):
+        for x in self._asset_functions:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._asset_functions = value
+            
+    asset_functions = property(get_asset_functions, set_asset_functions)
+    
+    def add_asset_functions(self, *asset_functions):
+        for obj in asset_functions:
+            obj._asset = self
+            self._asset_functions.append(obj)
+        
+    def remove_asset_functions(self, *asset_functions):
+        for obj in asset_functions:
+            obj._asset = None
+            self._asset_functions.remove(obj)
 
-    dimensions_info = None
+    def get_electronic_addresses(self):
+        """ All electronic addresses of this asset.
+        """
+        return self._electronic_addresses
 
-    erp_item_master = None
+    def set_electronic_addresses(self, value):
+        for x in self._electronic_addresses:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._electronic_addresses = value
+            
+    electronic_addresses = property(get_electronic_addresses, set_electronic_addresses)
+    
+    def add_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+            obj._asset = self
+            self._electronic_addresses.append(obj)
+        
+    def remove_electronic_addresses(self, *electronic_addresses):
+        for obj in electronic_addresses:
+            obj._asset = None
+            self._electronic_addresses.remove(obj)
 
-    # UserAttributes used to specify further properties of this asset. Use 'name' to specify what kind of property it is, and 'value.value' attribute for the actual value.
+    def get_dimensions_info(self):
+        """ 
+        """
+        return self._dimensions_info
+
+    def set_dimensions_info(self, value):
+        if self._dimensions_info is not None:
+            filtered = [x for x in self.dimensions_info.assets if x != self]
+            self._dimensions_info._assets = filtered
+            
+        self._dimensions_info = value
+        if self._dimensions_info is not None:
+            self._dimensions_info._assets.append(self)
+
+    dimensions_info = property(get_dimensions_info, set_dimensions_info)
+
+    def get_erp_item_master(self):
+        """ 
+        """
+        return self._erp_item_master
+
+    def set_erp_item_master(self, value):
+        if self._erp_item_master is not None:
+            self._erp_item_master._asset = None
+            
+        self._erp_item_master = value
+        if self._erp_item_master is not None:
+            self._erp_item_master._asset = self
+            
+    erp_item_master = property(get_erp_item_master, set_erp_item_master)
+
     properties = []
+    
+    def add_properties(self, *properties):
+        for obj in properties:
+	        self._properties.append(obj)
+        
+    def remove_properties(self, *properties):
+        for obj in properties:
+	        self._properties.remove(obj)
 
-    erp_inventory = None
+    def get_erp_inventory(self):
+        """ 
+        """
+        return self._erp_inventory
+
+    def set_erp_inventory(self, value):
+        if self._erp_inventory is not None:
+            self._erp_inventory._asset = None
+            
+        self._erp_inventory = value
+        if self._erp_inventory is not None:
+            self._erp_inventory._asset = self
+            
+    erp_inventory = property(get_erp_inventory, set_erp_inventory)
 
     scheduled_events = []
+    
+    def add_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+	        self._scheduled_events.append(obj)
+        
+    def remove_scheduled_events(self, *scheduled_events):
+        for obj in scheduled_events:
+	        self._scheduled_events.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
 
-    # UserAttributes used to specify ratings of this asset. Ratings also can be used to set the initial value of operational measurement limits. Use 'name' to specify what kind of rating it is (e.g., voltage, current), and 'value' attribute for the actual value and unit information of the rating.
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._asset = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._asset = None
+            self._change_items.remove(obj)
+
     ratings = []
+    
+    def add_ratings(self, *ratings):
+        for obj in ratings:
+	        self._ratings.append(obj)
+        
+    def remove_ratings(self, *ratings):
+        for obj in ratings:
+	        self._ratings.remove(obj)
 
-    asset_container = None
+    def get_asset_container(self):
+        """ 
+        """
+        return self._asset_container
 
-    work_task = None
+    def set_asset_container(self, value):
+        if self._asset_container is not None:
+            filtered = [x for x in self.asset_container.assets if x != self]
+            self._asset_container._assets = filtered
+            
+        self._asset_container = value
+        if self._asset_container is not None:
+            self._asset_container._assets.append(self)
 
-    document_roles = []
+    asset_container = property(get_asset_container, set_asset_container)
 
-    from_asset_roles = []
+    def get_work_task(self):
+        """ 
+        """
+        return self._work_task
 
-    financial_info = None
+    def set_work_task(self, value):
+        if self._work_task is not None:
+            filtered = [x for x in self.work_task.assets if x != self]
+            self._work_task._assets = filtered
+            
+        self._work_task = value
+        if self._work_task is not None:
+            self._work_task._assets.append(self)
+
+    work_task = property(get_work_task, set_work_task)
+
+    def get_document_roles(self):
+        """ 
+        """
+        return self._document_roles
+
+    def set_document_roles(self, value):
+        for x in self._document_roles:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._document_roles = value
+            
+    document_roles = property(get_document_roles, set_document_roles)
+    
+    def add_document_roles(self, *document_roles):
+        for obj in document_roles:
+            obj._asset = self
+            self._document_roles.append(obj)
+        
+    def remove_document_roles(self, *document_roles):
+        for obj in document_roles:
+            obj._asset = None
+            self._document_roles.remove(obj)
+
+    def get_from_asset_roles(self):
+        """ 
+        """
+        return self._from_asset_roles
+
+    def set_from_asset_roles(self, value):
+        for x in self._from_asset_roles:
+            x._to_asset = None
+        for y in value:
+            y._to_asset = self
+        self._from_asset_roles = value
+            
+    from_asset_roles = property(get_from_asset_roles, set_from_asset_roles)
+    
+    def add_from_asset_roles(self, *from_asset_roles):
+        for obj in from_asset_roles:
+            obj._to_asset = self
+            self._from_asset_roles.append(obj)
+        
+    def remove_from_asset_roles(self, *from_asset_roles):
+        for obj in from_asset_roles:
+            obj._to_asset = None
+            self._from_asset_roles.remove(obj)
+
+    def get_financial_info(self):
+        """ 
+        """
+        return self._financial_info
+
+    def set_financial_info(self, value):
+        if self._financial_info is not None:
+            self._financial_info._asset = None
+            
+        self._financial_info = value
+        if self._financial_info is not None:
+            self._financial_info._asset = self
+            
+    financial_info = property(get_financial_info, set_financial_info)
 
     asset_property_curves = []
+    
+    def add_asset_property_curves(self, *asset_property_curves):
+        for obj in asset_property_curves:
+	        self._asset_property_curves.append(obj)
+        
+    def remove_asset_property_curves(self, *asset_property_curves):
+        for obj in asset_property_curves:
+	        self._asset_property_curves.remove(obj)
 
-    erp_organisation_roles = []
+    def get_erp_organisation_roles(self):
+        """ 
+        """
+        return self._erp_organisation_roles
 
-    measurements = []
+    def set_erp_organisation_roles(self, value):
+        for x in self._erp_organisation_roles:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._erp_organisation_roles = value
+            
+    erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
+    
+    def add_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._asset = self
+            self._erp_organisation_roles.append(obj)
+        
+    def remove_erp_organisation_roles(self, *erp_organisation_roles):
+        for obj in erp_organisation_roles:
+            obj._asset = None
+            self._erp_organisation_roles.remove(obj)
+
+    def get_measurements(self):
+        """ 
+        """
+        return self._measurements
+
+    def set_measurements(self, value):
+        for x in self._measurements:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._measurements = value
+            
+    measurements = property(get_measurements, set_measurements)
+    
+    def add_measurements(self, *measurements):
+        for obj in measurements:
+            obj._asset = self
+            self._measurements.append(obj)
+        
+    def remove_measurements(self, *measurements):
+        for obj in measurements:
+            obj._asset = None
+            self._measurements.remove(obj)
 
     hazards = []
+    
+    def add_hazards(self, *hazards):
+        for obj in hazards:
+	        self._hazards.append(obj)
+        
+    def remove_hazards(self, *hazards):
+        for obj in hazards:
+	        self._hazards.remove(obj)
 
     mediums = []
+    
+    def add_mediums(self, *mediums):
+        for obj in mediums:
+	        self._mediums.append(obj)
+        
+    def remove_mediums(self, *mediums):
+        for obj in mediums:
+	        self._mediums.remove(obj)
 
     reliability_infos = []
+    
+    def add_reliability_infos(self, *reliability_infos):
+        for obj in reliability_infos:
+	        self._reliability_infos.append(obj)
+        
+    def remove_reliability_infos(self, *reliability_infos):
+        for obj in reliability_infos:
+	        self._reliability_infos.remove(obj)
 
-    location_roles = []
+    def get_location_roles(self):
+        """ 
+        """
+        return self._location_roles
 
-    power_system_resource_roles = []
+    def set_location_roles(self, value):
+        for x in self._location_roles:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._location_roles = value
+            
+    location_roles = property(get_location_roles, set_location_roles)
+    
+    def add_location_roles(self, *location_roles):
+        for obj in location_roles:
+            obj._asset = self
+            self._location_roles.append(obj)
+        
+    def remove_location_roles(self, *location_roles):
+        for obj in location_roles:
+            obj._asset = None
+            self._location_roles.remove(obj)
 
-    # All activity records created for this asset.
+    def get_power_system_resource_roles(self):
+        """ 
+        """
+        return self._power_system_resource_roles
+
+    def set_power_system_resource_roles(self, value):
+        for x in self._power_system_resource_roles:
+            x._asset = None
+        for y in value:
+            y._asset = self
+        self._power_system_resource_roles = value
+            
+    power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
+    
+    def add_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._asset = self
+            self._power_system_resource_roles.append(obj)
+        
+    def remove_power_system_resource_roles(self, *power_system_resource_roles):
+        for obj in power_system_resource_roles:
+            obj._asset = None
+            self._power_system_resource_roles.remove(obj)
+
     activity_records = []
+    
+    def add_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.append(obj)
+        
+    def remove_activity_records(self, *activity_records):
+        for obj in activity_records:
+	        self._activity_records.remove(obj)
 
     # <<< asset
     # @generated
@@ -188,30 +571,55 @@ class Asset(IdentifiedObject):
         self.serial_number = serial_number
         self.acceptance_test = acceptance_test
         self.status = status
+        self._to_asset_roles = []
         self.to_asset_roles = to_asset_roles
+        self._erp_rec_delivery_items = []
         self.erp_rec_delivery_items = erp_rec_delivery_items
+        self._asset_functions = []
         self.asset_functions = asset_functions
+        self._electronic_addresses = []
         self.electronic_addresses = electronic_addresses
+        self._dimensions_info = None
         self.dimensions_info = dimensions_info
+        self._erp_item_master = None
         self.erp_item_master = erp_item_master
+        self._properties = []
         self.properties = properties
+        self._erp_inventory = None
         self.erp_inventory = erp_inventory
+        self._scheduled_events = []
         self.scheduled_events = scheduled_events
+        self._change_items = []
         self.change_items = change_items
+        self._ratings = []
         self.ratings = ratings
+        self._asset_container = None
         self.asset_container = asset_container
+        self._work_task = None
         self.work_task = work_task
+        self._document_roles = []
         self.document_roles = document_roles
+        self._from_asset_roles = []
         self.from_asset_roles = from_asset_roles
+        self._financial_info = None
         self.financial_info = financial_info
+        self._asset_property_curves = []
         self.asset_property_curves = asset_property_curves
+        self._erp_organisation_roles = []
         self.erp_organisation_roles = erp_organisation_roles
+        self._measurements = []
         self.measurements = measurements
+        self._hazards = []
         self.hazards = hazards
+        self._mediums = []
         self.mediums = mediums
+        self._reliability_infos = []
         self.reliability_infos = reliability_infos
+        self._location_roles = []
         self.location_roles = location_roles
+        self._power_system_resource_roles = []
         self.power_system_resource_roles = power_system_resource_roles
+        self._activity_records = []
         self.activity_records = activity_records
 
         super(Asset, self).__init__(**kw_args)
@@ -266,14 +674,73 @@ class ElectricalInfo(IdentifiedObject):
     # Frequency at which stated device ratings apply, typically 50Hz or 60Hz. 
     frequency = ''
 
-    # All end device assets having this set of electrical properties.
     end_device_assets = []
+    
+    def add_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+	        self._end_device_assets.append(obj)
+        
+    def remove_end_device_assets(self, *end_device_assets):
+        for obj in end_device_assets:
+	        self._end_device_assets.remove(obj)
 
     electrical_assets = []
+    
+    def add_electrical_assets(self, *electrical_assets):
+        for obj in electrical_assets:
+	        self._electrical_assets.append(obj)
+        
+    def remove_electrical_assets(self, *electrical_assets):
+        for obj in electrical_assets:
+	        self._electrical_assets.remove(obj)
 
-    electrical_asset_model_roles = []
+    def get_electrical_asset_model_roles(self):
+        """ 
+        """
+        return self._electrical_asset_model_roles
 
-    electrical_type_asset_roles = []
+    def set_electrical_asset_model_roles(self, value):
+        for x in self._electrical_asset_model_roles:
+            x._electrical_info = None
+        for y in value:
+            y._electrical_info = self
+        self._electrical_asset_model_roles = value
+            
+    electrical_asset_model_roles = property(get_electrical_asset_model_roles, set_electrical_asset_model_roles)
+    
+    def add_electrical_asset_model_roles(self, *electrical_asset_model_roles):
+        for obj in electrical_asset_model_roles:
+            obj._electrical_info = self
+            self._electrical_asset_model_roles.append(obj)
+        
+    def remove_electrical_asset_model_roles(self, *electrical_asset_model_roles):
+        for obj in electrical_asset_model_roles:
+            obj._electrical_info = None
+            self._electrical_asset_model_roles.remove(obj)
+
+    def get_electrical_type_asset_roles(self):
+        """ 
+        """
+        return self._electrical_type_asset_roles
+
+    def set_electrical_type_asset_roles(self, value):
+        for x in self._electrical_type_asset_roles:
+            x._electrical_info = None
+        for y in value:
+            y._electrical_info = self
+        self._electrical_type_asset_roles = value
+            
+    electrical_type_asset_roles = property(get_electrical_type_asset_roles, set_electrical_type_asset_roles)
+    
+    def add_electrical_type_asset_roles(self, *electrical_type_asset_roles):
+        for obj in electrical_type_asset_roles:
+            obj._electrical_info = self
+            self._electrical_type_asset_roles.append(obj)
+        
+    def remove_electrical_type_asset_roles(self, *electrical_type_asset_roles):
+        for obj in electrical_type_asset_roles:
+            obj._electrical_info = None
+            self._electrical_type_asset_roles.remove(obj)
 
     # <<< electrical_info
     # @generated
@@ -295,9 +762,13 @@ class ElectricalInfo(IdentifiedObject):
         self.bil = bil
         self.rated_current = rated_current
         self.frequency = frequency
+        self._end_device_assets = []
         self.end_device_assets = end_device_assets
+        self._electrical_assets = []
         self.electrical_assets = electrical_assets
+        self._electrical_asset_model_roles = []
         self.electrical_asset_model_roles = electrical_asset_model_roles
+        self._electrical_type_asset_roles = []
         self.electrical_type_asset_roles = electrical_type_asset_roles
 
         super(ElectricalInfo, self).__init__(**kw_args)
@@ -307,20 +778,74 @@ class ElectricalInfo(IdentifiedObject):
 class AssetContainer(Asset):
     """ Asset that is aggregation of other assets such as conductors, transformers, switchgear, land, fences, buildings, equipment, vehicles, etc.
     """
-    # All seals applied to this asset container.
-    seals = []
+    def get_seals(self):
+        """ All seals applied to this asset container.
+        """
+        return self._seals
+
+    def set_seals(self, value):
+        for x in self._seals:
+            x._asset_container = None
+        for y in value:
+            y._asset_container = self
+        self._seals = value
+            
+    seals = property(get_seals, set_seals)
+    
+    def add_seals(self, *seals):
+        for obj in seals:
+            obj._asset_container = self
+            self._seals.append(obj)
+        
+    def remove_seals(self, *seals):
+        for obj in seals:
+            obj._asset_container = None
+            self._seals.remove(obj)
 
     land_properties = []
+    
+    def add_land_properties(self, *land_properties):
+        for obj in land_properties:
+	        self._land_properties.append(obj)
+        
+    def remove_land_properties(self, *land_properties):
+        for obj in land_properties:
+	        self._land_properties.remove(obj)
 
-    assets = []
+    def get_assets(self):
+        """ 
+        """
+        return self._assets
+
+    def set_assets(self, value):
+        for x in self._assets:
+            x._asset_container = None
+        for y in value:
+            y._asset_container = self
+        self._assets = value
+            
+    assets = property(get_assets, set_assets)
+    
+    def add_assets(self, *assets):
+        for obj in assets:
+            obj._asset_container = self
+            self._assets.append(obj)
+        
+    def remove_assets(self, *assets):
+        for obj in assets:
+            obj._asset_container = None
+            self._assets.remove(obj)
 
     # <<< asset_container
     # @generated
     def __init__(self, seals=[], land_properties=[], assets=[], **kw_args):
         """ Initialises a new 'AssetContainer' instance.
         """
+        self._seals = []
         self.seals = seals
+        self._land_properties = []
         self.land_properties = land_properties
+        self._assets = []
         self.assets = assets
 
         super(AssetContainer, self).__init__(**kw_args)
@@ -345,9 +870,37 @@ class AssetFunction(Asset):
     # Password needed to access this function. 
     password = ''
 
-    asset = None
+    def get_asset(self):
+        """ 
+        """
+        return self._asset
 
-    asset_function_asset_model = None
+    def set_asset(self, value):
+        if self._asset is not None:
+            filtered = [x for x in self.asset.asset_functions if x != self]
+            self._asset._asset_functions = filtered
+            
+        self._asset = value
+        if self._asset is not None:
+            self._asset._asset_functions.append(self)
+
+    asset = property(get_asset, set_asset)
+
+    def get_asset_function_asset_model(self):
+        """ 
+        """
+        return self._asset_function_asset_model
+
+    def set_asset_function_asset_model(self, value):
+        if self._asset_function_asset_model is not None:
+            filtered = [x for x in self.asset_function_asset_model.asset_functions if x != self]
+            self._asset_function_asset_model._asset_functions = filtered
+            
+        self._asset_function_asset_model = value
+        if self._asset_function_asset_model is not None:
+            self._asset_function_asset_model._asset_functions.append(self)
+
+    asset_function_asset_model = property(get_asset_function_asset_model, set_asset_function_asset_model)
 
     # <<< asset_function
     # @generated
@@ -359,7 +912,9 @@ class AssetFunction(Asset):
         self.program_id = program_id
         self.firmware_id = firmware_id
         self.password = password
+        self._asset = None
         self.asset = asset
+        self._asset_function_asset_model = None
         self.asset_function_asset_model = asset_function_asset_model
 
         super(AssetFunction, self).__init__(**kw_args)

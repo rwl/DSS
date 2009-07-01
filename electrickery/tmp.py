@@ -7,9 +7,11 @@ class A(object):
     def get_bs(self):
         """ Property 'bs'.
         """
+        print "GETTING PROPERTY 'bs'"
         return self._bs
 
     def set_bs(self, value):
+        print "SETTING PROPERTY 'bs'"
         for b in self._bs:
             b._a = None
         for b in value:
@@ -17,13 +19,16 @@ class A(object):
 
     bs = property(get_bs, set_bs)
 
-    def add_b(self, b):
-        b._a = self
-        self._bs.append(b)
+    def add_b(self, *bs):
+        for b in bs:
+            print "ADDING B"
+            b._a = self
+            self._bs.append(b)
 
-    def del_b(self, b):
-        b._a = None
-        self._bs.remove(b)
+    def del_b(self, *bs):
+        for b in bs:
+            b._a = None
+            self._bs.remove(b)
 
 
 class B(object):
@@ -42,7 +47,7 @@ class B(object):
     def set_a(self, value):
         if self._a is not None:
             # Remove the old object.
-            self._a.bs = [b for b in self._a.bs if b != self._a]
+            self._a.bs = [b for b in self._a.bs if b != self]
 
         self._a = value
         if self._a is not None:
@@ -87,15 +92,17 @@ class C(object):
 
 if __name__ == "__main__":
     a = A([])
-    b1 = B(a, None)
+    b1 = B(None, None)
+    
+#    a.bs.append(b1)
 
     b2 = B(None, None)
-    a.add_b(b2)
+    a.add_b(b1, b2)
 
-    c1 = C(b1)
+#    c1 = C(b1)
 
-    a.del_b(b2)
+#    a.del_b(b2)
 
-    print a.bs
-    print b2.a
-    print b1.c
+#    print a.bs
+#    print b2.a
+#    print b1.c

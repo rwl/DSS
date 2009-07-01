@@ -15,14 +15,22 @@ ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#IEC61970.SCADA"
 class CommunicationLink(PowerSystemResource):
     """ The connection to remote units is through one or more communication links. Reduntant links may exist. The CommunicationLink class inherit PowerSystemResource. The intention is to allow CommunicationLinks to have Measurements. These Measurements can be used to model link status as operational, out of service, unit failure etc.
     """
-    # RTUs may be attached to communication links.
     remote_units = []
+    
+    def add_remote_units(self, *remote_units):
+        for obj in remote_units:
+	        self._remote_units.append(obj)
+        
+    def remove_remote_units(self, *remote_units):
+        for obj in remote_units:
+	        self._remote_units.remove(obj)
 
     # <<< communication_link
     # @generated
     def __init__(self, remote_units=[], **kw_args):
         """ Initialises a new 'CommunicationLink' instance.
         """
+        self._remote_units = []
         self.remote_units = remote_units
 
         super(CommunicationLink, self).__init__(**kw_args)
@@ -32,14 +40,28 @@ class CommunicationLink(PowerSystemResource):
 class RemotePoint(IdentifiedObject):
     """ For a RTU remote points correspond to telemetered values or control outputs. Other units (e.g. control centers) usually also contain calculated values.
     """
-    # Remote unit this point belongs to.
-    remote_unit = None
+    def get_remote_unit(self):
+        """ Remote unit this point belongs to.
+        """
+        return self._remote_unit
+
+    def set_remote_unit(self, value):
+        if self._remote_unit is not None:
+            filtered = [x for x in self.remote_unit.remote_points if x != self]
+            self._remote_unit._remote_points = filtered
+            
+        self._remote_unit = value
+        if self._remote_unit is not None:
+            self._remote_unit._remote_points.append(self)
+
+    remote_unit = property(get_remote_unit, set_remote_unit)
 
     # <<< remote_point
     # @generated
     def __init__(self, remote_unit=None, **kw_args):
         """ Initialises a new 'RemotePoint' instance.
         """
+        self._remote_unit = None
         self.remote_unit = remote_unit
 
         super(RemotePoint, self).__init__(**kw_args)
@@ -52,11 +74,39 @@ class RemoteUnit(PowerSystemResource):
     # Type of remote unit. Values are: "control_center", "ied", "rtu", "substation_control_system"
     remote_unit_type = 'control_center'
 
-    # RTUs may be attached to communication links.
     communication_links = []
+    
+    def add_communication_links(self, *communication_links):
+        for obj in communication_links:
+	        self._communication_links.append(obj)
+        
+    def remove_communication_links(self, *communication_links):
+        for obj in communication_links:
+	        self._communication_links.remove(obj)
 
-    # Remote points this Remote unit contains.
-    remote_points = []
+    def get_remote_points(self):
+        """ Remote points this Remote unit contains.
+        """
+        return self._remote_points
+
+    def set_remote_points(self, value):
+        for x in self._remote_points:
+            x._remote_unit = None
+        for y in value:
+            y._remote_unit = self
+        self._remote_points = value
+            
+    remote_points = property(get_remote_points, set_remote_points)
+    
+    def add_remote_points(self, *remote_points):
+        for obj in remote_points:
+            obj._remote_unit = self
+            self._remote_points.append(obj)
+        
+    def remove_remote_points(self, *remote_points):
+        for obj in remote_points:
+            obj._remote_unit = None
+            self._remote_points.remove(obj)
 
     # <<< remote_unit
     # @generated
@@ -64,7 +114,9 @@ class RemoteUnit(PowerSystemResource):
         """ Initialises a new 'RemoteUnit' instance.
         """
         self.remote_unit_type = remote_unit_type
+        self._communication_links = []
         self.communication_links = communication_links
+        self._remote_points = []
         self.remote_points = remote_points
 
         super(RemoteUnit, self).__init__(**kw_args)
@@ -86,8 +138,20 @@ class RemoteSource(RemotePoint):
     # The minimum value the telemetry item can return. 
     sensor_minimum = 0.0
 
-    # Link to the physical telemetered point associated with this measurement.
-    measurement_value = None
+    def get_measurement_value(self):
+        """ Link to the physical telemetered point associated with this measurement.
+        """
+        return self._measurement_value
+
+    def set_measurement_value(self, value):
+        if self._measurement_value is not None:
+            self._measurement_value._remote_source = None
+            
+        self._measurement_value = value
+        if self._measurement_value is not None:
+            self._measurement_value._remote_source = self
+            
+    measurement_value = property(get_measurement_value, set_measurement_value)
 
     # <<< remote_source
     # @generated
@@ -98,6 +162,7 @@ class RemoteSource(RemotePoint):
         self.scan_interval = scan_interval
         self.sensor_maximum = sensor_maximum
         self.sensor_minimum = sensor_minimum
+        self._measurement_value = None
         self.measurement_value = measurement_value
 
         super(RemoteSource, self).__init__(**kw_args)
@@ -116,8 +181,20 @@ class RemoteControl(RemotePoint):
     # Set to true if the actuator is remotely controlled. 
     remote_controlled = False
 
-    # The Control for the RemoteControl point.
-    control = None
+    def get_control(self):
+        """ The Control for the RemoteControl point.
+        """
+        return self._control
+
+    def set_control(self, value):
+        if self._control is not None:
+            self._control._remote_control = None
+            
+        self._control = value
+        if self._control is not None:
+            self._control._remote_control = self
+            
+    control = property(get_control, set_control)
 
     # <<< remote_control
     # @generated
@@ -127,6 +204,7 @@ class RemoteControl(RemotePoint):
         self.actuator_maximum = actuator_maximum
         self.actuator_minimum = actuator_minimum
         self.remote_controlled = remote_controlled
+        self._control = None
         self.control = control
 
         super(RemoteControl, self).__init__(**kw_args)

@@ -24,20 +24,73 @@ class TransmissionPath(Element):
     # The total transmission capability of a transmission path in the reference direction 
     total_transfer_capability = ''
 
-    # A transmission service is offered on a transmission path.
     offered_on = []
+    
+    def add_offered_on(self, *offered_on):
+        for obj in offered_on:
+	        self._offered_on.append(obj)
+        
+    def remove_offered_on(self, *offered_on):
+        for obj in offered_on:
+	        self._offered_on.remove(obj)
 
-    # A transmission path has a 'point-of-delivery' service point
-    delivery_point_for = None
+    def get_delivery_point_for(self):
+        """ A transmission path has a 'point-of-delivery' service point
+        """
+        return self._delivery_point_for
 
-    # A transmission path has a 'point-of-receipt' service point
-    point_of_receipt_for = None
+    def set_delivery_point_for(self, value):
+        if self._delivery_point_for is not None:
+            filtered = [x for x in self.delivery_point_for.has_apod_ if x != self]
+            self._delivery_point_for._has_apod_ = filtered
+            
+        self._delivery_point_for = value
+        if self._delivery_point_for is not None:
+            self._delivery_point_for._has_apod_.append(self)
 
-    # A transmission product is located on a transmission path.
+    delivery_point_for = property(get_delivery_point_for, set_delivery_point_for)
+
+    def get_point_of_receipt_for(self):
+        """ A transmission path has a 'point-of-receipt' service point
+        """
+        return self._point_of_receipt_for
+
+    def set_point_of_receipt_for(self, value):
+        if self._point_of_receipt_for is not None:
+            filtered = [x for x in self.point_of_receipt_for.has_apor_ if x != self]
+            self._point_of_receipt_for._has_apor_ = filtered
+            
+        self._point_of_receipt_for = value
+        if self._point_of_receipt_for is not None:
+            self._point_of_receipt_for._has_apor_.append(self)
+
+    point_of_receipt_for = property(get_point_of_receipt_for, set_point_of_receipt_for)
+
     located_on = []
+    
+    def add_located_on(self, *located_on):
+        for obj in located_on:
+	        self._located_on.append(obj)
+        
+    def remove_located_on(self, *located_on):
+        for obj in located_on:
+	        self._located_on.remove(obj)
 
-    # A TransmissionPath is contained in a TransmissionCorridor.
-    for = None
+    def get_for(self):
+        """ A TransmissionPath is contained in a TransmissionCorridor.
+        """
+        return self._for
+
+    def set_for(self, value):
+        if self._for is not None:
+            filtered = [x for x in self.for.contained_in if x != self]
+            self._for._contained_in = filtered
+            
+        self._for = value
+        if self._for is not None:
+            self._for._contained_in.append(self)
+
+    for = property(get_for, set_for)
 
     # <<< transmission_path
     # @generated
@@ -47,10 +100,15 @@ class TransmissionPath(Element):
         self.parallel_path_flag = parallel_path_flag
         self.avail_transfer_capability = avail_transfer_capability
         self.total_transfer_capability = total_transfer_capability
+        self._offered_on = []
         self.offered_on = offered_on
+        self._delivery_point_for = None
         self.delivery_point_for = delivery_point_for
+        self._point_of_receipt_for = None
         self.point_of_receipt_for = point_of_receipt_for
+        self._located_on = []
         self.located_on = located_on
+        self._for = None
         self.for = for
 
         super(TransmissionPath, self).__init__(**kw_args)
@@ -63,14 +121,68 @@ class TiePoint(IdentifiedObject):
     # The MW rating of the tie point 
     tie_point_mwrating = ''
 
-    # A measurement is made on the B side of a tie point
-    by_measurements = []
+    def get_by_measurements(self):
+        """ A measurement is made on the B side of a tie point
+        """
+        return self._by_measurements
 
-    # A measurement is made on the A side of a tie point
-    for_measurements = []
+    def set_by_measurements(self, value):
+        for x in self._by_measurements:
+            x._by_tie_point = None
+        for y in value:
+            y._by_tie_point = self
+        self._by_measurements = value
+            
+    by_measurements = property(get_by_measurements, set_by_measurements)
+    
+    def add_by_measurements(self, *by_measurements):
+        for obj in by_measurements:
+            obj._by_tie_point = self
+            self._by_measurements.append(obj)
+        
+    def remove_by_measurements(self, *by_measurements):
+        for obj in by_measurements:
+            obj._by_tie_point = None
+            self._by_measurements.remove(obj)
 
-    # A tiepoint may be declared as a service point.
-    declared_service_point = None
+    def get_for_measurements(self):
+        """ A measurement is made on the A side of a tie point
+        """
+        return self._for_measurements
+
+    def set_for_measurements(self, value):
+        for x in self._for_measurements:
+            x._for_tie_point = None
+        for y in value:
+            y._for_tie_point = self
+        self._for_measurements = value
+            
+    for_measurements = property(get_for_measurements, set_for_measurements)
+    
+    def add_for_measurements(self, *for_measurements):
+        for obj in for_measurements:
+            obj._for_tie_point = self
+            self._for_measurements.append(obj)
+        
+    def remove_for_measurements(self, *for_measurements):
+        for obj in for_measurements:
+            obj._for_tie_point = None
+            self._for_measurements.remove(obj)
+
+    def get_declared_service_point(self):
+        """ A tiepoint may be declared as a service point.
+        """
+        return self._declared_service_point
+
+    def set_declared_service_point(self, value):
+        if self._declared_service_point is not None:
+            self._declared_service_point._declare_tie_point = None
+            
+        self._declared_service_point = value
+        if self._declared_service_point is not None:
+            self._declared_service_point._declare_tie_point = self
+            
+    declared_service_point = property(get_declared_service_point, set_declared_service_point)
 
     # <<< tie_point
     # @generated
@@ -78,8 +190,11 @@ class TiePoint(IdentifiedObject):
         """ Initialises a new 'TiePoint' instance.
         """
         self.tie_point_mwrating = tie_point_mwrating
+        self._by_measurements = []
         self.by_measurements = by_measurements
+        self._for_measurements = []
         self.for_measurements = for_measurements
+        self._declared_service_point = None
         self.declared_service_point = declared_service_point
 
         super(TiePoint, self).__init__(**kw_args)
@@ -89,26 +204,76 @@ class TiePoint(IdentifiedObject):
 class AncillaryService(IdentifiedObject):
     """ All of these services relate  to various aspects of insuring that the production of energy matches consumption of energy at any given time.  They are very critical to the security and reliability of the interconnected network. Some examples of AncillaryServices include Operating/Supplemental Reserve, Energy Imbalance Service, Operating/Spinning Reserve, Reactive Supply and Voltage Control, and Regulation and Frequency Response.
     """
-    # AncillaryServices are sold through a contract which offers a particular OpenAccessProduct.
-    open_access_product = None
+    def get_open_access_product(self):
+        """ AncillaryServices are sold through a contract which offers a particular OpenAccessProduct.
+        """
+        return self._open_access_product
 
-    # Sale of ancillary services provided by ControlAreaOperators.
-    control_area_operator = None
+    def set_open_access_product(self, value):
+        if self._open_access_product is not None:
+            filtered = [x for x in self.open_access_product.ancillary_services if x != self]
+            self._open_access_product._ancillary_services = filtered
+            
+        self._open_access_product = value
+        if self._open_access_product is not None:
+            self._open_access_product._ancillary_services.append(self)
 
-    # A ServiceReservation guarantees a certain AncillaryService.
-    reserved_by_service_reservation = None
+    open_access_product = property(get_open_access_product, set_open_access_product)
 
-    # A TransmissionProvider offers AncillaryServices. One type of AncillaryServices is a shipping and handling fee to manage the services purchased, another is the reactive power support used to control the voltage on the  transmission system.  This is the amount needed to support the path or amount necessary to maintain the proper voltage at a ServicePoint.
+    def get_control_area_operator(self):
+        """ Sale of ancillary services provided by ControlAreaOperators.
+        """
+        return self._control_area_operator
+
+    def set_control_area_operator(self, value):
+        if self._control_area_operator is not None:
+            filtered = [x for x in self.control_area_operator.ancillary_service if x != self]
+            self._control_area_operator._ancillary_service = filtered
+            
+        self._control_area_operator = value
+        if self._control_area_operator is not None:
+            self._control_area_operator._ancillary_service.append(self)
+
+    control_area_operator = property(get_control_area_operator, set_control_area_operator)
+
+    def get_reserved_by_service_reservation(self):
+        """ A ServiceReservation guarantees a certain AncillaryService.
+        """
+        return self._reserved_by_service_reservation
+
+    def set_reserved_by_service_reservation(self, value):
+        if self._reserved_by_service_reservation is not None:
+            filtered = [x for x in self.reserved_by_service_reservation.reserves_ancillary_services if x != self]
+            self._reserved_by_service_reservation._reserves_ancillary_services = filtered
+            
+        self._reserved_by_service_reservation = value
+        if self._reserved_by_service_reservation is not None:
+            self._reserved_by_service_reservation._reserves_ancillary_services.append(self)
+
+    reserved_by_service_reservation = property(get_reserved_by_service_reservation, set_reserved_by_service_reservation)
+
     transmission_providers = []
+    
+    def add_transmission_providers(self, *transmission_providers):
+        for obj in transmission_providers:
+	        self._transmission_providers.append(obj)
+        
+    def remove_transmission_providers(self, *transmission_providers):
+        for obj in transmission_providers:
+	        self._transmission_providers.remove(obj)
 
     # <<< ancillary_service
     # @generated
     def __init__(self, open_access_product=None, control_area_operator=None, reserved_by_service_reservation=None, transmission_providers=[], **kw_args):
         """ Initialises a new 'AncillaryService' instance.
         """
+        self._open_access_product = None
         self.open_access_product = open_access_product
+        self._control_area_operator = None
         self.control_area_operator = control_area_operator
+        self._reserved_by_service_reservation = None
         self.reserved_by_service_reservation = reserved_by_service_reservation
+        self._transmission_providers = []
         self.transmission_providers = transmission_providers
 
         super(AncillaryService, self).__init__(**kw_args)
@@ -118,30 +283,101 @@ class AncillaryService(IdentifiedObject):
 class ServiceReservation(Element):
     """ A ServiceReservation is a reservation for either AncillaryServices or TransmissionServices. In the case of TransmissionServices, this is the right to some amount of AvailableTransmissionCapacity for a product on a path in a direction for some specific period of time
     """
-    # A ServiceReservation guarantees a certain AncillaryService.
-    reserves_ancillary_services = []
+    def get_reserves_ancillary_services(self):
+        """ A ServiceReservation guarantees a certain AncillaryService.
+        """
+        return self._reserves_ancillary_services
 
-    # A service reservation reserves a particular transmission service.
+    def set_reserves_ancillary_services(self, value):
+        for x in self._reserves_ancillary_services:
+            x._reserved_by_service_reservation = None
+        for y in value:
+            y._reserved_by_service_reservation = self
+        self._reserves_ancillary_services = value
+            
+    reserves_ancillary_services = property(get_reserves_ancillary_services, set_reserves_ancillary_services)
+    
+    def add_reserves_ancillary_services(self, *reserves_ancillary_services):
+        for obj in reserves_ancillary_services:
+            obj._reserved_by_service_reservation = self
+            self._reserves_ancillary_services.append(obj)
+        
+    def remove_reserves_ancillary_services(self, *reserves_ancillary_services):
+        for obj in reserves_ancillary_services:
+            obj._reserved_by_service_reservation = None
+            self._reserves_ancillary_services.remove(obj)
+
     reserves_transmission_service = []
+    
+    def add_reserves_transmission_service(self, *reserves_transmission_service):
+        for obj in reserves_transmission_service:
+	        self._reserves_transmission_service.append(obj)
+        
+    def remove_reserves_transmission_service(self, *reserves_transmission_service):
+        for obj in reserves_transmission_service:
+	        self._reserves_transmission_service.remove(obj)
 
-    # A Marketer holds title to a ServiceReservation.
-    holds = None
+    def get_holds(self):
+        """ A Marketer holds title to a ServiceReservation.
+        """
+        return self._holds
 
-    # A ServiceReservation may be resold by a Marketer.
-    resells = None
+    def set_holds(self, value):
+        if self._holds is not None:
+            filtered = [x for x in self.holds.held_by if x != self]
+            self._holds._held_by = filtered
+            
+        self._holds = value
+        if self._holds is not None:
+            self._holds._held_by.append(self)
 
-    # A TransmissionProvider sells the right to transmit energy across the wires in a ServiceReservation.
-    sells = None
+    holds = property(get_holds, set_holds)
+
+    def get_resells(self):
+        """ A ServiceReservation may be resold by a Marketer.
+        """
+        return self._resells
+
+    def set_resells(self, value):
+        if self._resells is not None:
+            self._resells._resold_by = None
+            
+        self._resells = value
+        if self._resells is not None:
+            self._resells._resold_by = self
+            
+    resells = property(get_resells, set_resells)
+
+    def get_sells(self):
+        """ A TransmissionProvider sells the right to transmit energy across the wires in a ServiceReservation.
+        """
+        return self._sells
+
+    def set_sells(self, value):
+        if self._sells is not None:
+            filtered = [x for x in self.sells.sold_by if x != self]
+            self._sells._sold_by = filtered
+            
+        self._sells = value
+        if self._sells is not None:
+            self._sells._sold_by.append(self)
+
+    sells = property(get_sells, set_sells)
 
     # <<< service_reservation
     # @generated
     def __init__(self, reserves_ancillary_services=[], reserves_transmission_service=[], holds=None, resells=None, sells=None, **kw_args):
         """ Initialises a new 'ServiceReservation' instance.
         """
+        self._reserves_ancillary_services = []
         self.reserves_ancillary_services = reserves_ancillary_services
+        self._reserves_transmission_service = []
         self.reserves_transmission_service = reserves_transmission_service
+        self._holds = None
         self.holds = holds
+        self._resells = None
         self.resells = resells
+        self._sells = None
         self.sells = sells
 
         super(ServiceReservation, self).__init__(**kw_args)
@@ -151,42 +387,163 @@ class ServiceReservation(Element):
 class ServicePoint(IdentifiedObject):
     """ Each ServicePoint is contained within (or on the boundary of) an ElectronicIinterchangeArea. ServicePoints are defined termination points of a transmission path (down to distribution level or to a customer - generation or consumption or both).
     """
-    # A transmission path has a 'point-of-delivery' service point
-    has_apod_ = []
+    def get_has_apod_(self):
+        """ A transmission path has a 'point-of-delivery' service point
+        """
+        return self._has_apod_
 
-    # A CustomerConsumer may have one or more ServicePoints.
-    customer_consumer = None
+    def set_has_apod_(self, value):
+        for x in self._has_apod_:
+            x._delivery_point_for = None
+        for y in value:
+            y._delivery_point_for = self
+        self._has_apod_ = value
+            
+    has_apod_ = property(get_has_apod_, set_has_apod_)
+    
+    def add_has_apod_(self, *has_apod_):
+        for obj in has_apod_:
+            obj._delivery_point_for = self
+            self._has_apod_.append(obj)
+        
+    def remove_has_apod_(self, *has_apod_):
+        for obj in has_apod_:
+            obj._delivery_point_for = None
+            self._has_apod_.remove(obj)
 
-    # A transmission path has a 'point-of-receipt' service point
-    has_apor_ = []
+    def get_customer_consumer(self):
+        """ A CustomerConsumer may have one or more ServicePoints.
+        """
+        return self._customer_consumer
 
-    # A TransmissionProvider registers one or more ServicePoints.
-    transmission_provider = None
+    def set_customer_consumer(self, value):
+        if self._customer_consumer is not None:
+            filtered = [x for x in self.customer_consumer.service_point if x != self]
+            self._customer_consumer._service_point = filtered
+            
+        self._customer_consumer = value
+        if self._customer_consumer is not None:
+            self._customer_consumer._service_point.append(self)
 
-    # A tiepoint may be declared as a service point.
-    declare_tie_point = None
+    customer_consumer = property(get_customer_consumer, set_customer_consumer)
 
-    # A GenerationProvider has one or more ServicePoints where energy is injected into the network.
-    generation_provider = None
+    def get_has_apor_(self):
+        """ A transmission path has a 'point-of-receipt' service point
+        """
+        return self._has_apor_
 
-    # A transmission path's service point is part of an interchange area
-    member_of = None
+    def set_has_apor_(self, value):
+        for x in self._has_apor_:
+            x._point_of_receipt_for = None
+        for y in value:
+            y._point_of_receipt_for = self
+        self._has_apor_ = value
+            
+    has_apor_ = property(get_has_apor_, set_has_apor_)
+    
+    def add_has_apor_(self, *has_apor_):
+        for obj in has_apor_:
+            obj._point_of_receipt_for = self
+            self._has_apor_.append(obj)
+        
+    def remove_has_apor_(self, *has_apor_):
+        for obj in has_apor_:
+            obj._point_of_receipt_for = None
+            self._has_apor_.remove(obj)
 
-    # An EnergyProduct injects energy into a service point.
+    def get_transmission_provider(self):
+        """ A TransmissionProvider registers one or more ServicePoints.
+        """
+        return self._transmission_provider
+
+    def set_transmission_provider(self, value):
+        if self._transmission_provider is not None:
+            filtered = [x for x in self.transmission_provider.service_point if x != self]
+            self._transmission_provider._service_point = filtered
+            
+        self._transmission_provider = value
+        if self._transmission_provider is not None:
+            self._transmission_provider._service_point.append(self)
+
+    transmission_provider = property(get_transmission_provider, set_transmission_provider)
+
+    def get_declare_tie_point(self):
+        """ A tiepoint may be declared as a service point.
+        """
+        return self._declare_tie_point
+
+    def set_declare_tie_point(self, value):
+        if self._declare_tie_point is not None:
+            self._declare_tie_point._declared_service_point = None
+            
+        self._declare_tie_point = value
+        if self._declare_tie_point is not None:
+            self._declare_tie_point._declared_service_point = self
+            
+    declare_tie_point = property(get_declare_tie_point, set_declare_tie_point)
+
+    def get_generation_provider(self):
+        """ A GenerationProvider has one or more ServicePoints where energy is injected into the network.
+        """
+        return self._generation_provider
+
+    def set_generation_provider(self, value):
+        if self._generation_provider is not None:
+            filtered = [x for x in self.generation_provider.service_point if x != self]
+            self._generation_provider._service_point = filtered
+            
+        self._generation_provider = value
+        if self._generation_provider is not None:
+            self._generation_provider._service_point.append(self)
+
+    generation_provider = property(get_generation_provider, set_generation_provider)
+
+    def get_member_of(self):
+        """ A transmission path's service point is part of an interchange area
+        """
+        return self._member_of
+
+    def set_member_of(self, value):
+        if self._member_of is not None:
+            filtered = [x for x in self.member_of.part_of if x != self]
+            self._member_of._part_of = filtered
+            
+        self._member_of = value
+        if self._member_of is not None:
+            self._member_of._part_of.append(self)
+
+    member_of = property(get_member_of, set_member_of)
+
     energy_products = []
+    
+    def add_energy_products(self, *energy_products):
+        for obj in energy_products:
+	        self._energy_products.append(obj)
+        
+    def remove_energy_products(self, *energy_products):
+        for obj in energy_products:
+	        self._energy_products.remove(obj)
 
     # <<< service_point
     # @generated
     def __init__(self, has_apod_=[], customer_consumer=None, has_apor_=[], transmission_provider=None, declare_tie_point=None, generation_provider=None, member_of=None, energy_products=[], **kw_args):
         """ Initialises a new 'ServicePoint' instance.
         """
+        self._has_apod_ = []
         self.has_apod_ = has_apod_
+        self._customer_consumer = None
         self.customer_consumer = customer_consumer
+        self._has_apor_ = []
         self.has_apor_ = has_apor_
+        self._transmission_provider = None
         self.transmission_provider = transmission_provider
+        self._declare_tie_point = None
         self.declare_tie_point = declare_tie_point
+        self._generation_provider = None
         self.generation_provider = generation_provider
+        self._member_of = None
         self.member_of = member_of
+        self._energy_products = []
         self.energy_products = energy_products
 
         super(ServicePoint, self).__init__(**kw_args)
@@ -196,34 +553,94 @@ class ServicePoint(IdentifiedObject):
 class TransmissionService(IdentifiedObject):
     """ Transmission products along posted transmission path.
     """
-    # A service reservation reserves a particular transmission service.
     reserved_by_service_reservation = []
+    
+    def add_reserved_by_service_reservation(self, *reserved_by_service_reservation):
+        for obj in reserved_by_service_reservation:
+	        self._reserved_by_service_reservation.append(obj)
+        
+    def remove_reserved_by_service_reservation(self, *reserved_by_service_reservation):
+        for obj in reserved_by_service_reservation:
+	        self._reserved_by_service_reservation.remove(obj)
 
-    # A transmission service is offered on a transmission path.
     offering = []
+    
+    def add_offering(self, *offering):
+        for obj in offering:
+	        self._offering.append(obj)
+        
+    def remove_offering(self, *offering):
+        for obj in offering:
+	        self._offering.remove(obj)
 
-    # A TransmissionService is sold according to the terms of a particular OpenAccessProduct agreement.
-    trans_contract_for = None
+    def get_trans_contract_for(self):
+        """ A TransmissionService is sold according to the terms of a particular OpenAccessProduct agreement.
+        """
+        return self._trans_contract_for
 
-    # A transmission schedule posts the available transmission capacity for a transmission line.
+    def set_trans_contract_for(self, value):
+        if self._trans_contract_for is not None:
+            filtered = [x for x in self.trans_contract_for.provided_by_transmission_service if x != self]
+            self._trans_contract_for._provided_by_transmission_service = filtered
+            
+        self._trans_contract_for = value
+        if self._trans_contract_for is not None:
+            self._trans_contract_for._provided_by_transmission_service.append(self)
+
+    trans_contract_for = property(get_trans_contract_for, set_trans_contract_for)
+
     scheduled_by = []
+    
+    def add_scheduled_by(self, *scheduled_by):
+        for obj in scheduled_by:
+	        self._scheduled_by.append(obj)
+        
+    def remove_scheduled_by(self, *scheduled_by):
+        for obj in scheduled_by:
+	        self._scheduled_by.remove(obj)
 
-    # The combination of a TransmissionProduct on a TransmissionPath is a TransmissionService, for which the TransmissionProvider must post one or two ATC's (AvailableTransmissionCapacity - Amount of possible flow by  direction).
-    offers = None
+    def get_offers(self):
+        """ The combination of a TransmissionProduct on a TransmissionPath is a TransmissionService, for which the TransmissionProvider must post one or two ATC's (AvailableTransmissionCapacity - Amount of possible flow by  direction).
+        """
+        return self._offers
 
-    # A transmission product is offered as a transmission service along a transmission path.
+    def set_offers(self, value):
+        if self._offers is not None:
+            filtered = [x for x in self.offers.offered_by if x != self]
+            self._offers._offered_by = filtered
+            
+        self._offers = value
+        if self._offers is not None:
+            self._offers._offered_by.append(self)
+
+    offers = property(get_offers, set_offers)
+
     offered_as = []
+    
+    def add_offered_as(self, *offered_as):
+        for obj in offered_as:
+	        self._offered_as.append(obj)
+        
+    def remove_offered_as(self, *offered_as):
+        for obj in offered_as:
+	        self._offered_as.remove(obj)
 
     # <<< transmission_service
     # @generated
     def __init__(self, reserved_by_service_reservation=[], offering=[], trans_contract_for=None, scheduled_by=[], offers=None, offered_as=[], **kw_args):
         """ Initialises a new 'TransmissionService' instance.
         """
+        self._reserved_by_service_reservation = []
         self.reserved_by_service_reservation = reserved_by_service_reservation
+        self._offering = []
         self.offering = offering
+        self._trans_contract_for = None
         self.trans_contract_for = trans_contract_for
+        self._scheduled_by = []
         self.scheduled_by = scheduled_by
+        self._offers = None
         self.offers = offers
+        self._offered_as = []
         self.offered_as = offered_as
 
         super(TransmissionService, self).__init__(**kw_args)

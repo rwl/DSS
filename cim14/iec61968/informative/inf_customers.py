@@ -41,7 +41,21 @@ class PhaseLoad(IdentifiedObject):
     # Percentage of the active power of the load which has constant current. 
     p_constant_current_pct = ''
 
-    energy_consumer = None
+    def get_energy_consumer(self):
+        """ 
+        """
+        return self._energy_consumer
+
+    def set_energy_consumer(self, value):
+        if self._energy_consumer is not None:
+            filtered = [x for x in self.energy_consumer.phase_loads if x != self]
+            self._energy_consumer._phase_loads = filtered
+            
+        self._energy_consumer = value
+        if self._energy_consumer is not None:
+            self._energy_consumer._phase_loads.append(self)
+
+    energy_consumer = property(get_energy_consumer, set_energy_consumer)
 
     # <<< phase_load
     # @generated
@@ -56,6 +70,7 @@ class PhaseLoad(IdentifiedObject):
         self.p_constant_power_pct = p_constant_power_pct
         self.q_constant_current_pct = q_constant_current_pct
         self.p_constant_current_pct = p_constant_current_pct
+        self._energy_consumer = None
         self.energy_consumer = energy_consumer
 
         super(PhaseLoad, self).__init__(**kw_args)
@@ -104,8 +119,30 @@ class CustomerBillingInfo(Document):
     billing_date = ''
 
     erp_invoice_line_items = []
+    
+    def add_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.append(obj)
+        
+    def remove_erp_invoice_line_items(self, *erp_invoice_line_items):
+        for obj in erp_invoice_line_items:
+	        self._erp_invoice_line_items.remove(obj)
 
-    customer_account = None
+    def get_customer_account(self):
+        """ 
+        """
+        return self._customer_account
+
+    def set_customer_account(self, value):
+        if self._customer_account is not None:
+            filtered = [x for x in self.customer_account.customer_billing_infos if x != self]
+            self._customer_account._customer_billing_infos = filtered
+            
+        self._customer_account = value
+        if self._customer_account is not None:
+            self._customer_account._customer_billing_infos.append(self)
+
+    customer_account = property(get_customer_account, set_customer_account)
 
     # <<< customer_billing_info
     # @generated
@@ -120,7 +157,9 @@ class CustomerBillingInfo(Document):
         self.last_payment_amt = last_payment_amt
         self.pymt_plan_type = pymt_plan_type
         self.billing_date = billing_date
+        self._erp_invoice_line_items = []
         self.erp_invoice_line_items = erp_invoice_line_items
+        self._customer_account = None
         self.customer_account = customer_account
 
         super(CustomerBillingInfo, self).__init__(**kw_args)
@@ -130,14 +169,36 @@ class CustomerBillingInfo(Document):
 class OutageHistory(Document):
     """ A document collecting OutageReports, that allows utilities to examine the number of outages suffered by a customer. Also provides data to calculate the total supply interruption to any customer over a given period.
     """
-    # OutageReports per customer for which this OutageHistory is created.
-    outage_reports = []
+    def get_outage_reports(self):
+        """ OutageReports per customer for which this OutageHistory is created.
+        """
+        return self._outage_reports
+
+    def set_outage_reports(self, value):
+        for x in self._outage_reports:
+            x._outage_history = None
+        for y in value:
+            y._outage_history = self
+        self._outage_reports = value
+            
+    outage_reports = property(get_outage_reports, set_outage_reports)
+    
+    def add_outage_reports(self, *outage_reports):
+        for obj in outage_reports:
+            obj._outage_history = self
+            self._outage_reports.append(obj)
+        
+    def remove_outage_reports(self, *outage_reports):
+        for obj in outage_reports:
+            obj._outage_history = None
+            self._outage_reports.remove(obj)
 
     # <<< outage_history
     # @generated
     def __init__(self, outage_reports=[], **kw_args):
         """ Initialises a new 'OutageHistory' instance.
         """
+        self._outage_reports = []
         self.outage_reports = outage_reports
 
         super(OutageHistory, self).__init__(**kw_args)
@@ -201,11 +262,55 @@ class WorkBillingInfo(Document):
     # Discount from standard price. 
     discount = 0.0
 
-    customer_account = None
+    def get_customer_account(self):
+        """ 
+        """
+        return self._customer_account
 
-    works = []
+    def set_customer_account(self, value):
+        if self._customer_account is not None:
+            filtered = [x for x in self.customer_account.work_billing_infos if x != self]
+            self._customer_account._work_billing_infos = filtered
+            
+        self._customer_account = value
+        if self._customer_account is not None:
+            self._customer_account._work_billing_infos.append(self)
+
+    customer_account = property(get_customer_account, set_customer_account)
+
+    def get_works(self):
+        """ 
+        """
+        return self._works
+
+    def set_works(self, value):
+        for x in self._works:
+            x._work_billing_info = None
+        for y in value:
+            y._work_billing_info = self
+        self._works = value
+            
+    works = property(get_works, set_works)
+    
+    def add_works(self, *works):
+        for obj in works:
+            obj._work_billing_info = self
+            self._works.append(obj)
+        
+    def remove_works(self, *works):
+        for obj in works:
+            obj._work_billing_info = None
+            self._works.remove(obj)
 
     erp_line_items = []
+    
+    def add_erp_line_items(self, *erp_line_items):
+        for obj in erp_line_items:
+	        self._erp_line_items.append(obj)
+        
+    def remove_erp_line_items(self, *erp_line_items):
+        for obj in erp_line_items:
+	        self._erp_line_items.remove(obj)
 
     # <<< work_billing_info
     # @generated
@@ -219,8 +324,11 @@ class WorkBillingInfo(Document):
         self.received_date = received_date
         self.cost_estimate = cost_estimate
         self.discount = discount
+        self._customer_account = None
         self.customer_account = customer_account
+        self._works = []
         self.works = works
+        self._erp_line_items = []
         self.erp_line_items = erp_line_items
 
         super(WorkBillingInfo, self).__init__(**kw_args)
@@ -230,13 +338,27 @@ class WorkBillingInfo(Document):
 class SubscribePowerCurve(Curve):
     """ Price curve for specifying the cost of energy (X) at points in time (y1) according to a prcing structure, which is based on a tariff.
     """
-    pricing_structure = None
+    def get_pricing_structure(self):
+        """ 
+        """
+        return self._pricing_structure
+
+    def set_pricing_structure(self, value):
+        if self._pricing_structure is not None:
+            self._pricing_structure._subscribe_power_curve = None
+            
+        self._pricing_structure = value
+        if self._pricing_structure is not None:
+            self._pricing_structure._subscribe_power_curve = self
+            
+    pricing_structure = property(get_pricing_structure, set_pricing_structure)
 
     # <<< subscribe_power_curve
     # @generated
     def __init__(self, pricing_structure=None, **kw_args):
         """ Initialises a new 'SubscribePowerCurve' instance.
         """
+        self._pricing_structure = None
         self.pricing_structure = pricing_structure
 
         super(SubscribePowerCurve, self).__init__(**kw_args)
@@ -273,9 +395,31 @@ class PowerQualityPricing(Document):
     # Normal high voltage limit. 
     normal_high_volt_limit = ''
 
-    pricing_structure = None
+    def get_pricing_structure(self):
+        """ 
+        """
+        return self._pricing_structure
+
+    def set_pricing_structure(self, value):
+        if self._pricing_structure is not None:
+            filtered = [x for x in self.pricing_structure.power_quality_pricings if x != self]
+            self._pricing_structure._power_quality_pricings = filtered
+            
+        self._pricing_structure = value
+        if self._pricing_structure is not None:
+            self._pricing_structure._power_quality_pricings.append(self)
+
+    pricing_structure = property(get_pricing_structure, set_pricing_structure)
 
     service_delivery_points = []
+    
+    def add_service_delivery_points(self, *service_delivery_points):
+        for obj in service_delivery_points:
+	        self._service_delivery_points.append(obj)
+        
+    def remove_service_delivery_points(self, *service_delivery_points):
+        for obj in service_delivery_points:
+	        self._service_delivery_points.remove(obj)
 
     # <<< power_quality_pricing
     # @generated
@@ -291,7 +435,9 @@ class PowerQualityPricing(Document):
         self.volt_imbalance_viol_cost = volt_imbalance_viol_cost
         self.emergency_high_volt_limit = emergency_high_volt_limit
         self.normal_high_volt_limit = normal_high_volt_limit
+        self._pricing_structure = None
         self.pricing_structure = pricing_structure
+        self._service_delivery_points = []
         self.service_delivery_points = service_delivery_points
 
         super(PowerQualityPricing, self).__init__(**kw_args)
@@ -304,7 +450,29 @@ class StandardIndustryCode(Document):
     # Standard alphanumeric code assigned to a particular product/service within an industry. 
     code = ''
 
-    customer_agreements = []
+    def get_customer_agreements(self):
+        """ 
+        """
+        return self._customer_agreements
+
+    def set_customer_agreements(self, value):
+        for x in self._customer_agreements:
+            x._standard_industry_code = None
+        for y in value:
+            y._standard_industry_code = self
+        self._customer_agreements = value
+            
+    customer_agreements = property(get_customer_agreements, set_customer_agreements)
+    
+    def add_customer_agreements(self, *customer_agreements):
+        for obj in customer_agreements:
+            obj._standard_industry_code = self
+            self._customer_agreements.append(obj)
+        
+    def remove_customer_agreements(self, *customer_agreements):
+        for obj in customer_agreements:
+            obj._standard_industry_code = None
+            self._customer_agreements.remove(obj)
 
     # <<< standard_industry_code
     # @generated
@@ -312,6 +480,7 @@ class StandardIndustryCode(Document):
         """ Initialises a new 'StandardIndustryCode' instance.
         """
         self.code = code
+        self._customer_agreements = []
         self.customer_agreements = customer_agreements
 
         super(StandardIndustryCode, self).__init__(**kw_args)

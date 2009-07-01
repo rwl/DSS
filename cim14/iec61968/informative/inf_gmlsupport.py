@@ -24,10 +24,34 @@ class GmlSvgParameter(IdentifiedObject):
     value = ''
 
     gml_stokes = []
+    
+    def add_gml_stokes(self, *gml_stokes):
+        for obj in gml_stokes:
+	        self._gml_stokes.append(obj)
+        
+    def remove_gml_stokes(self, *gml_stokes):
+        for obj in gml_stokes:
+	        self._gml_stokes.remove(obj)
 
     gml_fonts = []
+    
+    def add_gml_fonts(self, *gml_fonts):
+        for obj in gml_fonts:
+	        self._gml_fonts.append(obj)
+        
+    def remove_gml_fonts(self, *gml_fonts):
+        for obj in gml_fonts:
+	        self._gml_fonts.remove(obj)
 
     gml_fills = []
+    
+    def add_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+	        self._gml_fills.append(obj)
+        
+    def remove_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+	        self._gml_fills.remove(obj)
 
     # <<< gml_svg_parameter
     # @generated
@@ -36,8 +60,11 @@ class GmlSvgParameter(IdentifiedObject):
         """
         self.attribute = attribute
         self.value = value
+        self._gml_stokes = []
         self.gml_stokes = gml_stokes
+        self._gml_fonts = []
         self.gml_fonts = gml_fonts
+        self._gml_fills = []
         self.gml_fills = gml_fills
 
         super(GmlSvgParameter, self).__init__(**kw_args)
@@ -56,11 +83,77 @@ class GmlColour(IdentifiedObject):
     # The color value for GREEN (RGB-encoded using two hexadecimal digits per primary-color component, in the order Red, Green, Blue, prefixed with a hash (#) sign.) 
     green = ''
 
-    gml_fills = []
+    def get_gml_fills(self):
+        """ 
+        """
+        return self._gml_fills
 
-    gml_fonts = []
+    def set_gml_fills(self, value):
+        for x in self._gml_fills:
+            x._gml_colour = None
+        for y in value:
+            y._gml_colour = self
+        self._gml_fills = value
+            
+    gml_fills = property(get_gml_fills, set_gml_fills)
+    
+    def add_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+            obj._gml_colour = self
+            self._gml_fills.append(obj)
+        
+    def remove_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+            obj._gml_colour = None
+            self._gml_fills.remove(obj)
 
-    gml_strokes = []
+    def get_gml_fonts(self):
+        """ 
+        """
+        return self._gml_fonts
+
+    def set_gml_fonts(self, value):
+        for x in self._gml_fonts:
+            x._gml_colour = None
+        for y in value:
+            y._gml_colour = self
+        self._gml_fonts = value
+            
+    gml_fonts = property(get_gml_fonts, set_gml_fonts)
+    
+    def add_gml_fonts(self, *gml_fonts):
+        for obj in gml_fonts:
+            obj._gml_colour = self
+            self._gml_fonts.append(obj)
+        
+    def remove_gml_fonts(self, *gml_fonts):
+        for obj in gml_fonts:
+            obj._gml_colour = None
+            self._gml_fonts.remove(obj)
+
+    def get_gml_strokes(self):
+        """ 
+        """
+        return self._gml_strokes
+
+    def set_gml_strokes(self, value):
+        for x in self._gml_strokes:
+            x._gml_colour = None
+        for y in value:
+            y._gml_colour = self
+        self._gml_strokes = value
+            
+    gml_strokes = property(get_gml_strokes, set_gml_strokes)
+    
+    def add_gml_strokes(self, *gml_strokes):
+        for obj in gml_strokes:
+            obj._gml_colour = self
+            self._gml_strokes.append(obj)
+        
+    def remove_gml_strokes(self, *gml_strokes):
+        for obj in gml_strokes:
+            obj._gml_colour = None
+            self._gml_strokes.remove(obj)
 
     # <<< gml_colour
     # @generated
@@ -70,8 +163,11 @@ class GmlColour(IdentifiedObject):
         self.blue = blue
         self.red = red
         self.green = green
+        self._gml_fills = []
         self.gml_fills = gml_fills
+        self._gml_fonts = []
         self.gml_fonts = gml_fonts
+        self._gml_strokes = []
         self.gml_strokes = gml_strokes
 
         super(GmlColour, self).__init__(**kw_args)
@@ -81,31 +177,164 @@ class GmlColour(IdentifiedObject):
 class GmlDiagramObject(Location):
     """ Any of the magnitudes that serve to define the position of a point by reference to a fixed figure, system of lines, etc.
     """
-    gml_raster_symbols = []
+    def get_gml_raster_symbols(self):
+        """ 
+        """
+        return self._gml_raster_symbols
 
-    gml_point_symbols = []
+    def set_gml_raster_symbols(self, value):
+        for x in self._gml_raster_symbols:
+            x._gml_diagram_object = None
+        for y in value:
+            y._gml_diagram_object = self
+        self._gml_raster_symbols = value
+            
+    gml_raster_symbols = property(get_gml_raster_symbols, set_gml_raster_symbols)
+    
+    def add_gml_raster_symbols(self, *gml_raster_symbols):
+        for obj in gml_raster_symbols:
+            obj._gml_diagram_object = self
+            self._gml_raster_symbols.append(obj)
+        
+    def remove_gml_raster_symbols(self, *gml_raster_symbols):
+        for obj in gml_raster_symbols:
+            obj._gml_diagram_object = None
+            self._gml_raster_symbols.remove(obj)
+
+    def get_gml_point_symbols(self):
+        """ 
+        """
+        return self._gml_point_symbols
+
+    def set_gml_point_symbols(self, value):
+        for x in self._gml_point_symbols:
+            x._gml_diagram_object = None
+        for y in value:
+            y._gml_diagram_object = self
+        self._gml_point_symbols = value
+            
+    gml_point_symbols = property(get_gml_point_symbols, set_gml_point_symbols)
+    
+    def add_gml_point_symbols(self, *gml_point_symbols):
+        for obj in gml_point_symbols:
+            obj._gml_diagram_object = self
+            self._gml_point_symbols.append(obj)
+        
+    def remove_gml_point_symbols(self, *gml_point_symbols):
+        for obj in gml_point_symbols:
+            obj._gml_diagram_object = None
+            self._gml_point_symbols.remove(obj)
 
     diagrams = []
+    
+    def add_diagrams(self, *diagrams):
+        for obj in diagrams:
+	        self._diagrams.append(obj)
+        
+    def remove_diagrams(self, *diagrams):
+        for obj in diagrams:
+	        self._diagrams.remove(obj)
 
-    gml_polygon_symbols = []
+    def get_gml_polygon_symbols(self):
+        """ 
+        """
+        return self._gml_polygon_symbols
 
-    gml_line_symbols = []
+    def set_gml_polygon_symbols(self, value):
+        for x in self._gml_polygon_symbols:
+            x._gml_diagram_object = None
+        for y in value:
+            y._gml_diagram_object = self
+        self._gml_polygon_symbols = value
+            
+    gml_polygon_symbols = property(get_gml_polygon_symbols, set_gml_polygon_symbols)
+    
+    def add_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_diagram_object = self
+            self._gml_polygon_symbols.append(obj)
+        
+    def remove_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_diagram_object = None
+            self._gml_polygon_symbols.remove(obj)
+
+    def get_gml_line_symbols(self):
+        """ 
+        """
+        return self._gml_line_symbols
+
+    def set_gml_line_symbols(self, value):
+        for x in self._gml_line_symbols:
+            x._gml_diagram_object = None
+        for y in value:
+            y._gml_diagram_object = self
+        self._gml_line_symbols = value
+            
+    gml_line_symbols = property(get_gml_line_symbols, set_gml_line_symbols)
+    
+    def add_gml_line_symbols(self, *gml_line_symbols):
+        for obj in gml_line_symbols:
+            obj._gml_diagram_object = self
+            self._gml_line_symbols.append(obj)
+        
+    def remove_gml_line_symbols(self, *gml_line_symbols):
+        for obj in gml_line_symbols:
+            obj._gml_diagram_object = None
+            self._gml_line_symbols.remove(obj)
 
     gml_coordinate_systems = []
+    
+    def add_gml_coordinate_systems(self, *gml_coordinate_systems):
+        for obj in gml_coordinate_systems:
+	        self._gml_coordinate_systems.append(obj)
+        
+    def remove_gml_coordinate_systems(self, *gml_coordinate_systems):
+        for obj in gml_coordinate_systems:
+	        self._gml_coordinate_systems.remove(obj)
 
-    gml_text_symbols = []
+    def get_gml_text_symbols(self):
+        """ 
+        """
+        return self._gml_text_symbols
+
+    def set_gml_text_symbols(self, value):
+        for x in self._gml_text_symbols:
+            x._gml_diagram_object = None
+        for y in value:
+            y._gml_diagram_object = self
+        self._gml_text_symbols = value
+            
+    gml_text_symbols = property(get_gml_text_symbols, set_gml_text_symbols)
+    
+    def add_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_diagram_object = self
+            self._gml_text_symbols.append(obj)
+        
+    def remove_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_diagram_object = None
+            self._gml_text_symbols.remove(obj)
 
     # <<< gml_diagram_object
     # @generated
     def __init__(self, gml_raster_symbols=[], gml_point_symbols=[], diagrams=[], gml_polygon_symbols=[], gml_line_symbols=[], gml_coordinate_systems=[], gml_text_symbols=[], **kw_args):
         """ Initialises a new 'GmlDiagramObject' instance.
         """
+        self._gml_raster_symbols = []
         self.gml_raster_symbols = gml_raster_symbols
+        self._gml_point_symbols = []
         self.gml_point_symbols = gml_point_symbols
+        self._diagrams = []
         self.diagrams = diagrams
+        self._gml_polygon_symbols = []
         self.gml_polygon_symbols = gml_polygon_symbols
+        self._gml_line_symbols = []
         self.gml_line_symbols = gml_line_symbols
+        self._gml_coordinate_systems = []
         self.gml_coordinate_systems = gml_coordinate_systems
+        self._gml_text_symbols = []
         self.gml_text_symbols = gml_text_symbols
 
         super(GmlDiagramObject, self).__init__(**kw_args)
@@ -136,9 +365,39 @@ class GmlGraphic(IdentifiedObject):
     # Specifies the level of translucency to use when rendering the Graphic.The value is encoded as a floating-point value between 0.0 and 1.0 with 0.0 representing completely transparent and 1.0 representing completely opaque, with a linear scale of translucency for intermediate values. The default value is 1.0 
     opacity = 0.0
 
-    gml_point_symbols = []
+    def get_gml_point_symbols(self):
+        """ 
+        """
+        return self._gml_point_symbols
+
+    def set_gml_point_symbols(self, value):
+        for x in self._gml_point_symbols:
+            x._gml_graphic = None
+        for y in value:
+            y._gml_graphic = self
+        self._gml_point_symbols = value
+            
+    gml_point_symbols = property(get_gml_point_symbols, set_gml_point_symbols)
+    
+    def add_gml_point_symbols(self, *gml_point_symbols):
+        for obj in gml_point_symbols:
+            obj._gml_graphic = self
+            self._gml_point_symbols.append(obj)
+        
+    def remove_gml_point_symbols(self, *gml_point_symbols):
+        for obj in gml_point_symbols:
+            obj._gml_graphic = None
+            self._gml_point_symbols.remove(obj)
 
     gml_marks = []
+    
+    def add_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.append(obj)
+        
+    def remove_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.remove(obj)
 
     # <<< gml_graphic
     # @generated
@@ -152,7 +411,9 @@ class GmlGraphic(IdentifiedObject):
         self.size = size
         self.x_scale = x_scale
         self.opacity = opacity
+        self._gml_point_symbols = []
         self.gml_point_symbols = gml_point_symbols
+        self._gml_marks = []
         self.gml_marks = gml_marks
 
         super(GmlGraphic, self).__init__(**kw_args)
@@ -165,15 +426,89 @@ class GmlFill(IdentifiedObject):
     # Specifies the level of translucency to use when rendering the Fill. The value is encoded as a floating-point value between 0.0 and 1.0 with 0.0 representing completely transparent and 1.0 representing completely opaque, with a linear scale of translucency for intermediate values. The default value is 1.0 
     opacity = 0.0
 
-    gml_colour = None
+    def get_gml_colour(self):
+        """ 
+        """
+        return self._gml_colour
 
-    gml_polygon_symbols = []
+    def set_gml_colour(self, value):
+        if self._gml_colour is not None:
+            filtered = [x for x in self.gml_colour.gml_fills if x != self]
+            self._gml_colour._gml_fills = filtered
+            
+        self._gml_colour = value
+        if self._gml_colour is not None:
+            self._gml_colour._gml_fills.append(self)
+
+    gml_colour = property(get_gml_colour, set_gml_colour)
+
+    def get_gml_polygon_symbols(self):
+        """ 
+        """
+        return self._gml_polygon_symbols
+
+    def set_gml_polygon_symbols(self, value):
+        for x in self._gml_polygon_symbols:
+            x._gml_fill = None
+        for y in value:
+            y._gml_fill = self
+        self._gml_polygon_symbols = value
+            
+    gml_polygon_symbols = property(get_gml_polygon_symbols, set_gml_polygon_symbols)
+    
+    def add_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_fill = self
+            self._gml_polygon_symbols.append(obj)
+        
+    def remove_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_fill = None
+            self._gml_polygon_symbols.remove(obj)
 
     gml_marks = []
+    
+    def add_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.append(obj)
+        
+    def remove_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.remove(obj)
 
-    gml_text_symbols = []
+    def get_gml_text_symbols(self):
+        """ 
+        """
+        return self._gml_text_symbols
+
+    def set_gml_text_symbols(self, value):
+        for x in self._gml_text_symbols:
+            x._gml_fill = None
+        for y in value:
+            y._gml_fill = self
+        self._gml_text_symbols = value
+            
+    gml_text_symbols = property(get_gml_text_symbols, set_gml_text_symbols)
+    
+    def add_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_fill = self
+            self._gml_text_symbols.append(obj)
+        
+    def remove_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_fill = None
+            self._gml_text_symbols.remove(obj)
 
     gml_svg_parameters = []
+    
+    def add_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.append(obj)
+        
+    def remove_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.remove(obj)
 
     # <<< gml_fill
     # @generated
@@ -181,10 +516,15 @@ class GmlFill(IdentifiedObject):
         """ Initialises a new 'GmlFill' instance.
         """
         self.opacity = opacity
+        self._gml_colour = None
         self.gml_colour = gml_colour
+        self._gml_polygon_symbols = []
         self.gml_polygon_symbols = gml_polygon_symbols
+        self._gml_marks = []
         self.gml_marks = gml_marks
+        self._gml_text_symbols = []
         self.gml_text_symbols = gml_text_symbols
+        self._gml_svg_parameters = []
         self.gml_svg_parameters = gml_svg_parameters
 
         super(GmlFill, self).__init__(**kw_args)
@@ -195,15 +535,47 @@ class GmlSelector(IdentifiedObject):
     """ A diagram element that allows selection by a user, i.e. as 'hyperNode' for navigating between diagrams, or as composite object representing multiple grouped objects.
     """
     locations = []
+    
+    def add_locations(self, *locations):
+        for obj in locations:
+	        self._locations.append(obj)
+        
+    def remove_locations(self, *locations):
+        for obj in locations:
+	        self._locations.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._gml_selector = None
+        for y in value:
+            y._gml_selector = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._gml_selector = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._gml_selector = None
+            self._change_items.remove(obj)
 
     # <<< gml_selector
     # @generated
     def __init__(self, locations=[], change_items=[], **kw_args):
         """ Initialises a new 'GmlSelector' instance.
         """
+        self._locations = []
         self.locations = locations
+        self._change_items = []
         self.change_items = change_items
 
         super(GmlSelector, self).__init__(**kw_args)
@@ -234,7 +606,29 @@ class GmlLabelPlacement(IdentifiedObject):
     # X-coordinate location inside of a label to use for anchoring the label to the main-geometry point. 
     anchor_x = ''
 
-    gml_text_symbols = []
+    def get_gml_text_symbols(self):
+        """ 
+        """
+        return self._gml_text_symbols
+
+    def set_gml_text_symbols(self, value):
+        for x in self._gml_text_symbols:
+            x._gml_label_placement = None
+        for y in value:
+            y._gml_label_placement = self
+        self._gml_text_symbols = value
+            
+    gml_text_symbols = property(get_gml_text_symbols, set_gml_text_symbols)
+    
+    def add_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_label_placement = self
+            self._gml_text_symbols.append(obj)
+        
+    def remove_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_label_placement = None
+            self._gml_text_symbols.remove(obj)
 
     # <<< gml_label_placement
     # @generated
@@ -248,6 +642,7 @@ class GmlLabelPlacement(IdentifiedObject):
         self.anchor_y = anchor_y
         self.displacement_x = displacement_x
         self.anchor_x = anchor_x
+        self._gml_text_symbols = []
         self.gml_text_symbols = gml_text_symbols
 
         super(GmlLabelPlacement, self).__init__(**kw_args)
@@ -267,8 +662,30 @@ class GmlSymbol(IdentifiedObject):
     type = ''
 
     gml_feature_styles = []
+    
+    def add_gml_feature_styles(self, *gml_feature_styles):
+        for obj in gml_feature_styles:
+	        self._gml_feature_styles.append(obj)
+        
+    def remove_gml_feature_styles(self, *gml_feature_styles):
+        for obj in gml_feature_styles:
+	        self._gml_feature_styles.remove(obj)
 
-    gml_base_symbol = None
+    def get_gml_base_symbol(self):
+        """ 
+        """
+        return self._gml_base_symbol
+
+    def set_gml_base_symbol(self, value):
+        if self._gml_base_symbol is not None:
+            filtered = [x for x in self.gml_base_symbol.gml_symbols if x != self]
+            self._gml_base_symbol._gml_symbols = filtered
+            
+        self._gml_base_symbol = value
+        if self._gml_base_symbol is not None:
+            self._gml_base_symbol._gml_symbols.append(self)
+
+    gml_base_symbol = property(get_gml_base_symbol, set_gml_base_symbol)
 
     # <<< gml_symbol
     # @generated
@@ -278,7 +695,9 @@ class GmlSymbol(IdentifiedObject):
         self.level = level
         self.version = version
         self.type = type
+        self._gml_feature_styles = []
         self.gml_feature_styles = gml_feature_styles
+        self._gml_base_symbol = None
         self.gml_base_symbol = gml_base_symbol
 
         super(GmlSymbol, self).__init__(**kw_args)
@@ -297,9 +716,37 @@ class GmlValue(IdentifiedObject):
  
     time_period = ''
 
-    measurement_value = None
+    def get_measurement_value(self):
+        """ 
+        """
+        return self._measurement_value
 
-    gml_observation = None
+    def set_measurement_value(self, value):
+        if self._measurement_value is not None:
+            filtered = [x for x in self.measurement_value.gml_values if x != self]
+            self._measurement_value._gml_values = filtered
+            
+        self._measurement_value = value
+        if self._measurement_value is not None:
+            self._measurement_value._gml_values.append(self)
+
+    measurement_value = property(get_measurement_value, set_measurement_value)
+
+    def get_gml_observation(self):
+        """ 
+        """
+        return self._gml_observation
+
+    def set_gml_observation(self, value):
+        if self._gml_observation is not None:
+            filtered = [x for x in self.gml_observation.gml_values if x != self]
+            self._gml_observation._gml_values = filtered
+            
+        self._gml_observation = value
+        if self._gml_observation is not None:
+            self._gml_observation._gml_values.append(self)
+
+    gml_observation = property(get_gml_observation, set_gml_observation)
 
     # <<< gml_value
     # @generated
@@ -309,7 +756,9 @@ class GmlValue(IdentifiedObject):
         self.value = value
         self.date_time = date_time
         self.time_period = time_period
+        self._measurement_value = None
         self.measurement_value = measurement_value
+        self._gml_observation = None
         self.gml_observation = gml_observation
 
         super(GmlValue, self).__init__(**kw_args)
@@ -319,13 +768,36 @@ class GmlValue(IdentifiedObject):
 class GmlBaseSymbol(IdentifiedObject):
     """ Allows referencing and extension of external symbols, which may be stored in a symbol repository. The graphical properties from a referenced external symbol override the ones read in from the base symbol.
     """
-    gml_symbols = []
+    def get_gml_symbols(self):
+        """ 
+        """
+        return self._gml_symbols
+
+    def set_gml_symbols(self, value):
+        for x in self._gml_symbols:
+            x._gml_base_symbol = None
+        for y in value:
+            y._gml_base_symbol = self
+        self._gml_symbols = value
+            
+    gml_symbols = property(get_gml_symbols, set_gml_symbols)
+    
+    def add_gml_symbols(self, *gml_symbols):
+        for obj in gml_symbols:
+            obj._gml_base_symbol = self
+            self._gml_symbols.append(obj)
+        
+    def remove_gml_symbols(self, *gml_symbols):
+        for obj in gml_symbols:
+            obj._gml_base_symbol = None
+            self._gml_symbols.remove(obj)
 
     # <<< gml_base_symbol
     # @generated
     def __init__(self, gml_symbols=[], **kw_args):
         """ Initialises a new 'GmlBaseSymbol' instance.
         """
+        self._gml_symbols = []
         self.gml_symbols = gml_symbols
 
         super(GmlBaseSymbol, self).__init__(**kw_args)
@@ -360,10 +832,62 @@ class GmlCoordinateSystem(IdentifiedObject):
     x_max = ''
 
     gml_diagram_objects = []
+    
+    def add_gml_diagram_objects(self, *gml_diagram_objects):
+        for obj in gml_diagram_objects:
+	        self._gml_diagram_objects.append(obj)
+        
+    def remove_gml_diagram_objects(self, *gml_diagram_objects):
+        for obj in gml_diagram_objects:
+	        self._gml_diagram_objects.remove(obj)
 
-    diagrams = []
+    def get_diagrams(self):
+        """ 
+        """
+        return self._diagrams
 
-    gml_positions = []
+    def set_diagrams(self, value):
+        for x in self._diagrams:
+            x._gml_coordinate_system = None
+        for y in value:
+            y._gml_coordinate_system = self
+        self._diagrams = value
+            
+    diagrams = property(get_diagrams, set_diagrams)
+    
+    def add_diagrams(self, *diagrams):
+        for obj in diagrams:
+            obj._gml_coordinate_system = self
+            self._diagrams.append(obj)
+        
+    def remove_diagrams(self, *diagrams):
+        for obj in diagrams:
+            obj._gml_coordinate_system = None
+            self._diagrams.remove(obj)
+
+    def get_gml_positions(self):
+        """ 
+        """
+        return self._gml_positions
+
+    def set_gml_positions(self, value):
+        for x in self._gml_positions:
+            x._gml_coordinate_system = None
+        for y in value:
+            y._gml_coordinate_system = self
+        self._gml_positions = value
+            
+    gml_positions = property(get_gml_positions, set_gml_positions)
+    
+    def add_gml_positions(self, *gml_positions):
+        for obj in gml_positions:
+            obj._gml_coordinate_system = self
+            self._gml_positions.append(obj)
+        
+    def remove_gml_positions(self, *gml_positions):
+        for obj in gml_positions:
+            obj._gml_coordinate_system = None
+            self._gml_positions.remove(obj)
 
     # <<< gml_coordinate_system
     # @generated
@@ -378,8 +902,11 @@ class GmlCoordinateSystem(IdentifiedObject):
         self.z_max = z_max
         self.x_min = x_min
         self.x_max = x_max
+        self._gml_diagram_objects = []
         self.gml_diagram_objects = gml_diagram_objects
+        self._diagrams = []
         self.diagrams = diagrams
+        self._gml_positions = []
         self.gml_positions = gml_positions
 
         super(GmlCoordinateSystem, self).__init__(**kw_args)
@@ -398,11 +925,69 @@ class GmlLabelStyle(IdentifiedObject):
     # Allows us to specify a transformation expression that will be applied to the symbol in the rendering phase. Its type is xsd:string and the value is specified in the SVG specification (transform attribute). 
     transform = ''
 
-    gml_topology_styles = []
+    def get_gml_topology_styles(self):
+        """ 
+        """
+        return self._gml_topology_styles
 
-    gml_feature_style = None
+    def set_gml_topology_styles(self, value):
+        for x in self._gml_topology_styles:
+            x._gml_lable_style = None
+        for y in value:
+            y._gml_lable_style = self
+        self._gml_topology_styles = value
+            
+    gml_topology_styles = property(get_gml_topology_styles, set_gml_topology_styles)
+    
+    def add_gml_topology_styles(self, *gml_topology_styles):
+        for obj in gml_topology_styles:
+            obj._gml_lable_style = self
+            self._gml_topology_styles.append(obj)
+        
+    def remove_gml_topology_styles(self, *gml_topology_styles):
+        for obj in gml_topology_styles:
+            obj._gml_lable_style = None
+            self._gml_topology_styles.remove(obj)
 
-    gml_geometry_styles = []
+    def get_gml_feature_style(self):
+        """ 
+        """
+        return self._gml_feature_style
+
+    def set_gml_feature_style(self, value):
+        if self._gml_feature_style is not None:
+            filtered = [x for x in self.gml_feature_style.gml_label_styles if x != self]
+            self._gml_feature_style._gml_label_styles = filtered
+            
+        self._gml_feature_style = value
+        if self._gml_feature_style is not None:
+            self._gml_feature_style._gml_label_styles.append(self)
+
+    gml_feature_style = property(get_gml_feature_style, set_gml_feature_style)
+
+    def get_gml_geometry_styles(self):
+        """ 
+        """
+        return self._gml_geometry_styles
+
+    def set_gml_geometry_styles(self, value):
+        for x in self._gml_geometry_styles:
+            x._gml_label_style = None
+        for y in value:
+            y._gml_label_style = self
+        self._gml_geometry_styles = value
+            
+    gml_geometry_styles = property(get_gml_geometry_styles, set_gml_geometry_styles)
+    
+    def add_gml_geometry_styles(self, *gml_geometry_styles):
+        for obj in gml_geometry_styles:
+            obj._gml_label_style = self
+            self._gml_geometry_styles.append(obj)
+        
+    def remove_gml_geometry_styles(self, *gml_geometry_styles):
+        for obj in gml_geometry_styles:
+            obj._gml_label_style = None
+            self._gml_geometry_styles.remove(obj)
 
     # <<< gml_label_style
     # @generated
@@ -412,8 +997,11 @@ class GmlLabelStyle(IdentifiedObject):
         self.style = style
         self.label_expression = label_expression
         self.transform = transform
+        self._gml_topology_styles = []
         self.gml_topology_styles = gml_topology_styles
+        self._gml_feature_style = None
         self.gml_feature_style = gml_feature_style
+        self._gml_geometry_styles = []
         self.gml_geometry_styles = gml_geometry_styles
 
         super(GmlLabelStyle, self).__init__(**kw_args)
@@ -427,10 +1015,34 @@ class GmlMark(IdentifiedObject):
     well_known_name = ''
 
     gml_graphics = []
+    
+    def add_gml_graphics(self, *gml_graphics):
+        for obj in gml_graphics:
+	        self._gml_graphics.append(obj)
+        
+    def remove_gml_graphics(self, *gml_graphics):
+        for obj in gml_graphics:
+	        self._gml_graphics.remove(obj)
 
     gml_strokes = []
+    
+    def add_gml_strokes(self, *gml_strokes):
+        for obj in gml_strokes:
+	        self._gml_strokes.append(obj)
+        
+    def remove_gml_strokes(self, *gml_strokes):
+        for obj in gml_strokes:
+	        self._gml_strokes.remove(obj)
 
     gml_fills = []
+    
+    def add_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+	        self._gml_fills.append(obj)
+        
+    def remove_gml_fills(self, *gml_fills):
+        for obj in gml_fills:
+	        self._gml_fills.remove(obj)
 
     # <<< gml_mark
     # @generated
@@ -438,8 +1050,11 @@ class GmlMark(IdentifiedObject):
         """ Initialises a new 'GmlMark' instance.
         """
         self.well_known_name = well_known_name
+        self._gml_graphics = []
         self.gml_graphics = gml_graphics
+        self._gml_strokes = []
         self.gml_strokes = gml_strokes
+        self._gml_fills = []
         self.gml_fills = gml_fills
 
         super(GmlMark, self).__init__(**kw_args)
@@ -449,13 +1064,28 @@ class GmlMark(IdentifiedObject):
 class GmlPosition(PositionPoint):
     """ Position point with a GML coordinate reference system.
     """
-    gml_coordinate_system = None
+    def get_gml_coordinate_system(self):
+        """ 
+        """
+        return self._gml_coordinate_system
+
+    def set_gml_coordinate_system(self, value):
+        if self._gml_coordinate_system is not None:
+            filtered = [x for x in self.gml_coordinate_system.gml_positions if x != self]
+            self._gml_coordinate_system._gml_positions = filtered
+            
+        self._gml_coordinate_system = value
+        if self._gml_coordinate_system is not None:
+            self._gml_coordinate_system._gml_positions.append(self)
+
+    gml_coordinate_system = property(get_gml_coordinate_system, set_gml_coordinate_system)
 
     # <<< gml_position
     # @generated
     def __init__(self, gml_coordinate_system=None, **kw_args):
         """ Initialises a new 'GmlPosition' instance.
         """
+        self._gml_coordinate_system = None
         self.gml_coordinate_system = gml_coordinate_system
 
         super(GmlPosition, self).__init__(**kw_args)
@@ -471,7 +1101,29 @@ class GmlHalo(IdentifiedObject):
     # Specifies the level of translucency to use when rendering the Fill. The value is encoded as a floating-point value between 0.0 and 1.0 with 0.0 representing completely transparent and 1.0 representing completely opaque, with a linear scale of translucency for intermediate values. The default value is 1.0 
     opacity = 0.0
 
-    gml_text_symbols = []
+    def get_gml_text_symbols(self):
+        """ 
+        """
+        return self._gml_text_symbols
+
+    def set_gml_text_symbols(self, value):
+        for x in self._gml_text_symbols:
+            x._gml_halo = None
+        for y in value:
+            y._gml_halo = self
+        self._gml_text_symbols = value
+            
+    gml_text_symbols = property(get_gml_text_symbols, set_gml_text_symbols)
+    
+    def add_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_halo = self
+            self._gml_text_symbols.append(obj)
+        
+    def remove_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_halo = None
+            self._gml_text_symbols.remove(obj)
 
     # <<< gml_halo
     # @generated
@@ -480,6 +1132,7 @@ class GmlHalo(IdentifiedObject):
         """
         self.radius = radius
         self.opacity = opacity
+        self._gml_text_symbols = []
         self.gml_text_symbols = gml_text_symbols
 
         super(GmlHalo, self).__init__(**kw_args)
@@ -504,11 +1157,55 @@ class GmlFont(IdentifiedObject):
     # The size to use for the font in pixels. The default is defined to be 10 pixels, though various systems may have restrictions on what sizes are available. 
     size = ''
 
-    gml_colour = None
+    def get_gml_colour(self):
+        """ 
+        """
+        return self._gml_colour
+
+    def set_gml_colour(self, value):
+        if self._gml_colour is not None:
+            filtered = [x for x in self.gml_colour.gml_fonts if x != self]
+            self._gml_colour._gml_fonts = filtered
+            
+        self._gml_colour = value
+        if self._gml_colour is not None:
+            self._gml_colour._gml_fonts.append(self)
+
+    gml_colour = property(get_gml_colour, set_gml_colour)
 
     gml_svg_parameters = []
+    
+    def add_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.append(obj)
+        
+    def remove_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.remove(obj)
 
-    gml_text_symbols = []
+    def get_gml_text_symbols(self):
+        """ 
+        """
+        return self._gml_text_symbols
+
+    def set_gml_text_symbols(self, value):
+        for x in self._gml_text_symbols:
+            x._gml_font = None
+        for y in value:
+            y._gml_font = self
+        self._gml_text_symbols = value
+            
+    gml_text_symbols = property(get_gml_text_symbols, set_gml_text_symbols)
+    
+    def add_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_font = self
+            self._gml_text_symbols.append(obj)
+        
+    def remove_gml_text_symbols(self, *gml_text_symbols):
+        for obj in gml_text_symbols:
+            obj._gml_font = None
+            self._gml_text_symbols.remove(obj)
 
     # <<< gml_font
     # @generated
@@ -520,8 +1217,11 @@ class GmlFont(IdentifiedObject):
         self.style = style
         self.weight = weight
         self.size = size
+        self._gml_colour = None
         self.gml_colour = gml_colour
+        self._gml_svg_parameters = []
         self.gml_svg_parameters = gml_svg_parameters
+        self._gml_text_symbols = []
         self.gml_text_symbols = gml_text_symbols
 
         super(GmlFont, self).__init__(**kw_args)
@@ -531,16 +1231,46 @@ class GmlFont(IdentifiedObject):
 class GmlTopologyStyle(IdentifiedObject):
     """ The style for one topology property. Similarly to the Geometry style, a feature can have multiple topology properties, thus multiple topology style descriptors can be specified within one feature style.
     """
-    gml_lable_style = None
+    def get_gml_lable_style(self):
+        """ 
+        """
+        return self._gml_lable_style
 
-    gml_feature_style = None
+    def set_gml_lable_style(self, value):
+        if self._gml_lable_style is not None:
+            filtered = [x for x in self.gml_lable_style.gml_topology_styles if x != self]
+            self._gml_lable_style._gml_topology_styles = filtered
+            
+        self._gml_lable_style = value
+        if self._gml_lable_style is not None:
+            self._gml_lable_style._gml_topology_styles.append(self)
+
+    gml_lable_style = property(get_gml_lable_style, set_gml_lable_style)
+
+    def get_gml_feature_style(self):
+        """ 
+        """
+        return self._gml_feature_style
+
+    def set_gml_feature_style(self, value):
+        if self._gml_feature_style is not None:
+            filtered = [x for x in self.gml_feature_style.gml_tobology_styles if x != self]
+            self._gml_feature_style._gml_tobology_styles = filtered
+            
+        self._gml_feature_style = value
+        if self._gml_feature_style is not None:
+            self._gml_feature_style._gml_tobology_styles.append(self)
+
+    gml_feature_style = property(get_gml_feature_style, set_gml_feature_style)
 
     # <<< gml_topology_style
     # @generated
     def __init__(self, gml_lable_style=None, gml_feature_style=None, **kw_args):
         """ Initialises a new 'GmlTopologyStyle' instance.
         """
+        self._gml_lable_style = None
         self.gml_lable_style = gml_lable_style
+        self._gml_feature_style = None
         self.gml_feature_style = gml_feature_style
 
         super(GmlTopologyStyle, self).__init__(**kw_args)
@@ -559,9 +1289,37 @@ class GmlGeometryStyle(IdentifiedObject):
     # The name of the geometry property of a feature to which this GeometryStyle applies. 
     geometry_property = ''
 
-    gml_label_style = None
+    def get_gml_label_style(self):
+        """ 
+        """
+        return self._gml_label_style
 
-    gml_feature_style = None
+    def set_gml_label_style(self, value):
+        if self._gml_label_style is not None:
+            filtered = [x for x in self.gml_label_style.gml_geometry_styles if x != self]
+            self._gml_label_style._gml_geometry_styles = filtered
+            
+        self._gml_label_style = value
+        if self._gml_label_style is not None:
+            self._gml_label_style._gml_geometry_styles.append(self)
+
+    gml_label_style = property(get_gml_label_style, set_gml_label_style)
+
+    def get_gml_feature_style(self):
+        """ 
+        """
+        return self._gml_feature_style
+
+    def set_gml_feature_style(self, value):
+        if self._gml_feature_style is not None:
+            filtered = [x for x in self.gml_feature_style.gml_geometry_styles if x != self]
+            self._gml_feature_style._gml_geometry_styles = filtered
+            
+        self._gml_feature_style = value
+        if self._gml_feature_style is not None:
+            self._gml_feature_style._gml_geometry_styles.append(self)
+
+    gml_feature_style = property(get_gml_feature_style, set_gml_feature_style)
 
     # <<< gml_geometry_style
     # @generated
@@ -571,7 +1329,9 @@ class GmlGeometryStyle(IdentifiedObject):
         self.symbol = symbol
         self.geometry_type = geometry_type
         self.geometry_property = geometry_property
+        self._gml_label_style = None
         self.gml_label_style = gml_label_style
+        self._gml_feature_style = None
         self.gml_feature_style = gml_feature_style
 
         super(GmlGeometryStyle, self).__init__(**kw_args)
@@ -582,12 +1342,21 @@ class GmlFeatureType(IdentifiedObject):
     """ Type classification of feature.
     """
     gml_feature_styles = []
+    
+    def add_gml_feature_styles(self, *gml_feature_styles):
+        for obj in gml_feature_styles:
+	        self._gml_feature_styles.append(obj)
+        
+    def remove_gml_feature_styles(self, *gml_feature_styles):
+        for obj in gml_feature_styles:
+	        self._gml_feature_styles.remove(obj)
 
     # <<< gml_feature_type
     # @generated
     def __init__(self, gml_feature_styles=[], **kw_args):
         """ Initialises a new 'GmlFeatureType' instance.
         """
+        self._gml_feature_styles = []
         self.gml_feature_styles = gml_feature_styles
 
         super(GmlFeatureType, self).__init__(**kw_args)
@@ -609,11 +1378,63 @@ class GmlObservation(Element):
     # Contains or points to the specimen, region or station which is the object of the observation 
     target = ''
 
-    gml_values = []
+    def get_gml_values(self):
+        """ 
+        """
+        return self._gml_values
+
+    def set_gml_values(self, value):
+        for x in self._gml_values:
+            x._gml_observation = None
+        for y in value:
+            y._gml_observation = self
+        self._gml_values = value
+            
+    gml_values = property(get_gml_values, set_gml_values)
+    
+    def add_gml_values(self, *gml_values):
+        for obj in gml_values:
+            obj._gml_observation = self
+            self._gml_values.append(obj)
+        
+    def remove_gml_values(self, *gml_values):
+        for obj in gml_values:
+            obj._gml_observation = None
+            self._gml_values.remove(obj)
 
     locations = []
+    
+    def add_locations(self, *locations):
+        for obj in locations:
+	        self._locations.append(obj)
+        
+    def remove_locations(self, *locations):
+        for obj in locations:
+	        self._locations.remove(obj)
 
-    change_items = []
+    def get_change_items(self):
+        """ 
+        """
+        return self._change_items
+
+    def set_change_items(self, value):
+        for x in self._change_items:
+            x._gml_observation = None
+        for y in value:
+            y._gml_observation = self
+        self._change_items = value
+            
+    change_items = property(get_change_items, set_change_items)
+    
+    def add_change_items(self, *change_items):
+        for obj in change_items:
+            obj._gml_observation = self
+            self._change_items.append(obj)
+        
+    def remove_change_items(self, *change_items):
+        for obj in change_items:
+            obj._gml_observation = None
+            self._change_items.remove(obj)
 
     # <<< gml_observation
     # @generated
@@ -624,8 +1445,11 @@ class GmlObservation(Element):
         self.date_time = date_time
         self.using = using
         self.target = target
+        self._gml_values = []
         self.gml_values = gml_values
+        self._locations = []
         self.locations = locations
+        self._change_items = []
         self.change_items = change_items
 
         super(GmlObservation, self).__init__(**kw_args)
@@ -656,15 +1480,89 @@ class GmlStroke(IdentifiedObject):
     # Enumerated values telling how line strings should be capped (at the two ends of the line string). The values are represented as content strings.  The allowed values for line cap are 'butt', 'round', and 'square'. The default values are system-dependent. 
     line_cap = ''
 
-    gml_line_symbols = []
+    def get_gml_line_symbols(self):
+        """ 
+        """
+        return self._gml_line_symbols
+
+    def set_gml_line_symbols(self, value):
+        for x in self._gml_line_symbols:
+            x._gml_stroke = None
+        for y in value:
+            y._gml_stroke = self
+        self._gml_line_symbols = value
+            
+    gml_line_symbols = property(get_gml_line_symbols, set_gml_line_symbols)
+    
+    def add_gml_line_symbols(self, *gml_line_symbols):
+        for obj in gml_line_symbols:
+            obj._gml_stroke = self
+            self._gml_line_symbols.append(obj)
+        
+    def remove_gml_line_symbols(self, *gml_line_symbols):
+        for obj in gml_line_symbols:
+            obj._gml_stroke = None
+            self._gml_line_symbols.remove(obj)
 
     gml_svg_parameters = []
+    
+    def add_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.append(obj)
+        
+    def remove_gml_svg_parameters(self, *gml_svg_parameters):
+        for obj in gml_svg_parameters:
+	        self._gml_svg_parameters.remove(obj)
 
-    gml_colour = None
+    def get_gml_colour(self):
+        """ 
+        """
+        return self._gml_colour
 
-    gml_polygon_symbols = []
+    def set_gml_colour(self, value):
+        if self._gml_colour is not None:
+            filtered = [x for x in self.gml_colour.gml_strokes if x != self]
+            self._gml_colour._gml_strokes = filtered
+            
+        self._gml_colour = value
+        if self._gml_colour is not None:
+            self._gml_colour._gml_strokes.append(self)
+
+    gml_colour = property(get_gml_colour, set_gml_colour)
+
+    def get_gml_polygon_symbols(self):
+        """ 
+        """
+        return self._gml_polygon_symbols
+
+    def set_gml_polygon_symbols(self, value):
+        for x in self._gml_polygon_symbols:
+            x._gml_stroke = None
+        for y in value:
+            y._gml_stroke = self
+        self._gml_polygon_symbols = value
+            
+    gml_polygon_symbols = property(get_gml_polygon_symbols, set_gml_polygon_symbols)
+    
+    def add_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_stroke = self
+            self._gml_polygon_symbols.append(obj)
+        
+    def remove_gml_polygon_symbols(self, *gml_polygon_symbols):
+        for obj in gml_polygon_symbols:
+            obj._gml_stroke = None
+            self._gml_polygon_symbols.remove(obj)
 
     gml_marks = []
+    
+    def add_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.append(obj)
+        
+    def remove_gml_marks(self, *gml_marks):
+        for obj in gml_marks:
+	        self._gml_marks.remove(obj)
 
     # <<< gml_stroke
     # @generated
@@ -678,10 +1576,15 @@ class GmlStroke(IdentifiedObject):
         self.dash_array = dash_array
         self.width = width
         self.line_cap = line_cap
+        self._gml_line_symbols = []
         self.gml_line_symbols = gml_line_symbols
+        self._gml_svg_parameters = []
         self.gml_svg_parameters = gml_svg_parameters
+        self._gml_colour = None
         self.gml_colour = gml_colour
+        self._gml_polygon_symbols = []
         self.gml_polygon_symbols = gml_polygon_symbols
+        self._gml_marks = []
         self.gml_marks = gml_marks
 
         super(GmlStroke, self).__init__(**kw_args)
@@ -713,14 +1616,96 @@ class GmlFeatureStyle(IdentifiedObject):
     version = ''
 
     gml_symbols = []
+    
+    def add_gml_symbols(self, *gml_symbols):
+        for obj in gml_symbols:
+	        self._gml_symbols.append(obj)
+        
+    def remove_gml_symbols(self, *gml_symbols):
+        for obj in gml_symbols:
+	        self._gml_symbols.remove(obj)
 
-    gml_label_styles = []
+    def get_gml_label_styles(self):
+        """ 
+        """
+        return self._gml_label_styles
+
+    def set_gml_label_styles(self, value):
+        for x in self._gml_label_styles:
+            x._gml_feature_style = None
+        for y in value:
+            y._gml_feature_style = self
+        self._gml_label_styles = value
+            
+    gml_label_styles = property(get_gml_label_styles, set_gml_label_styles)
+    
+    def add_gml_label_styles(self, *gml_label_styles):
+        for obj in gml_label_styles:
+            obj._gml_feature_style = self
+            self._gml_label_styles.append(obj)
+        
+    def remove_gml_label_styles(self, *gml_label_styles):
+        for obj in gml_label_styles:
+            obj._gml_feature_style = None
+            self._gml_label_styles.remove(obj)
 
     gml_feature_types = []
+    
+    def add_gml_feature_types(self, *gml_feature_types):
+        for obj in gml_feature_types:
+	        self._gml_feature_types.append(obj)
+        
+    def remove_gml_feature_types(self, *gml_feature_types):
+        for obj in gml_feature_types:
+	        self._gml_feature_types.remove(obj)
 
-    gml_tobology_styles = []
+    def get_gml_tobology_styles(self):
+        """ 
+        """
+        return self._gml_tobology_styles
 
-    gml_geometry_styles = []
+    def set_gml_tobology_styles(self, value):
+        for x in self._gml_tobology_styles:
+            x._gml_feature_style = None
+        for y in value:
+            y._gml_feature_style = self
+        self._gml_tobology_styles = value
+            
+    gml_tobology_styles = property(get_gml_tobology_styles, set_gml_tobology_styles)
+    
+    def add_gml_tobology_styles(self, *gml_tobology_styles):
+        for obj in gml_tobology_styles:
+            obj._gml_feature_style = self
+            self._gml_tobology_styles.append(obj)
+        
+    def remove_gml_tobology_styles(self, *gml_tobology_styles):
+        for obj in gml_tobology_styles:
+            obj._gml_feature_style = None
+            self._gml_tobology_styles.remove(obj)
+
+    def get_gml_geometry_styles(self):
+        """ 
+        """
+        return self._gml_geometry_styles
+
+    def set_gml_geometry_styles(self, value):
+        for x in self._gml_geometry_styles:
+            x._gml_feature_style = None
+        for y in value:
+            y._gml_feature_style = self
+        self._gml_geometry_styles = value
+            
+    gml_geometry_styles = property(get_gml_geometry_styles, set_gml_geometry_styles)
+    
+    def add_gml_geometry_styles(self, *gml_geometry_styles):
+        for obj in gml_geometry_styles:
+            obj._gml_feature_style = self
+            self._gml_geometry_styles.append(obj)
+        
+    def remove_gml_geometry_styles(self, *gml_geometry_styles):
+        for obj in gml_geometry_styles:
+            obj._gml_feature_style = None
+            self._gml_geometry_styles.remove(obj)
 
     # <<< gml_feature_style
     # @generated
@@ -734,10 +1719,15 @@ class GmlFeatureStyle(IdentifiedObject):
         self.query_grammar = query_grammar
         self.base_type = base_type
         self.version = version
+        self._gml_symbols = []
         self.gml_symbols = gml_symbols
+        self._gml_label_styles = []
         self.gml_label_styles = gml_label_styles
+        self._gml_feature_types = []
         self.gml_feature_types = gml_feature_types
+        self._gml_tobology_styles = []
         self.gml_tobology_styles = gml_tobology_styles
+        self._gml_geometry_styles = []
         self.gml_geometry_styles = gml_geometry_styles
 
         super(GmlFeatureStyle, self).__init__(**kw_args)
@@ -762,15 +1752,85 @@ class GmlTextSymbol(GmlSymbol):
     # Generic method for capturing all unspecified information pertaining to the TextSymbol. 
     property = ''
 
-    gml_label_placement = None
+    def get_gml_label_placement(self):
+        """ 
+        """
+        return self._gml_label_placement
 
-    gml_diagram_object = None
+    def set_gml_label_placement(self, value):
+        if self._gml_label_placement is not None:
+            filtered = [x for x in self.gml_label_placement.gml_text_symbols if x != self]
+            self._gml_label_placement._gml_text_symbols = filtered
+            
+        self._gml_label_placement = value
+        if self._gml_label_placement is not None:
+            self._gml_label_placement._gml_text_symbols.append(self)
 
-    gml_font = None
+    gml_label_placement = property(get_gml_label_placement, set_gml_label_placement)
 
-    gml_halo = None
+    def get_gml_diagram_object(self):
+        """ 
+        """
+        return self._gml_diagram_object
 
-    gml_fill = None
+    def set_gml_diagram_object(self, value):
+        if self._gml_diagram_object is not None:
+            filtered = [x for x in self.gml_diagram_object.gml_text_symbols if x != self]
+            self._gml_diagram_object._gml_text_symbols = filtered
+            
+        self._gml_diagram_object = value
+        if self._gml_diagram_object is not None:
+            self._gml_diagram_object._gml_text_symbols.append(self)
+
+    gml_diagram_object = property(get_gml_diagram_object, set_gml_diagram_object)
+
+    def get_gml_font(self):
+        """ 
+        """
+        return self._gml_font
+
+    def set_gml_font(self, value):
+        if self._gml_font is not None:
+            filtered = [x for x in self.gml_font.gml_text_symbols if x != self]
+            self._gml_font._gml_text_symbols = filtered
+            
+        self._gml_font = value
+        if self._gml_font is not None:
+            self._gml_font._gml_text_symbols.append(self)
+
+    gml_font = property(get_gml_font, set_gml_font)
+
+    def get_gml_halo(self):
+        """ 
+        """
+        return self._gml_halo
+
+    def set_gml_halo(self, value):
+        if self._gml_halo is not None:
+            filtered = [x for x in self.gml_halo.gml_text_symbols if x != self]
+            self._gml_halo._gml_text_symbols = filtered
+            
+        self._gml_halo = value
+        if self._gml_halo is not None:
+            self._gml_halo._gml_text_symbols.append(self)
+
+    gml_halo = property(get_gml_halo, set_gml_halo)
+
+    def get_gml_fill(self):
+        """ 
+        """
+        return self._gml_fill
+
+    def set_gml_fill(self, value):
+        if self._gml_fill is not None:
+            filtered = [x for x in self.gml_fill.gml_text_symbols if x != self]
+            self._gml_fill._gml_text_symbols = filtered
+            
+        self._gml_fill = value
+        if self._gml_fill is not None:
+            self._gml_fill._gml_text_symbols.append(self)
+
+    gml_fill = property(get_gml_fill, set_gml_fill)
 
     # <<< gml_text_symbol
     # @generated
@@ -782,10 +1842,15 @@ class GmlTextSymbol(GmlSymbol):
         self.label = label
         self.label_type = label_type
         self.property = property
+        self._gml_label_placement = None
         self.gml_label_placement = gml_label_placement
+        self._gml_diagram_object = None
         self.gml_diagram_object = gml_diagram_object
+        self._gml_font = None
         self.gml_font = gml_font
+        self._gml_halo = None
         self.gml_halo = gml_halo
+        self._gml_fill = None
         self.gml_fill = gml_fill
 
         super(GmlTextSymbol, self).__init__(**kw_args)
@@ -815,9 +1880,37 @@ class GmlLineSymbol(GmlSymbol):
     # For dynamic network update (i.e. colouring) purposes 
     source_side = ''
 
-    gml_stroke = None
+    def get_gml_stroke(self):
+        """ 
+        """
+        return self._gml_stroke
 
-    gml_diagram_object = None
+    def set_gml_stroke(self, value):
+        if self._gml_stroke is not None:
+            filtered = [x for x in self.gml_stroke.gml_line_symbols if x != self]
+            self._gml_stroke._gml_line_symbols = filtered
+            
+        self._gml_stroke = value
+        if self._gml_stroke is not None:
+            self._gml_stroke._gml_line_symbols.append(self)
+
+    gml_stroke = property(get_gml_stroke, set_gml_stroke)
+
+    def get_gml_diagram_object(self):
+        """ 
+        """
+        return self._gml_diagram_object
+
+    def set_gml_diagram_object(self, value):
+        if self._gml_diagram_object is not None:
+            filtered = [x for x in self.gml_diagram_object.gml_line_symbols if x != self]
+            self._gml_diagram_object._gml_line_symbols = filtered
+            
+        self._gml_diagram_object = value
+        if self._gml_diagram_object is not None:
+            self._gml_diagram_object._gml_line_symbols.append(self)
+
+    gml_diagram_object = property(get_gml_diagram_object, set_gml_diagram_object)
 
     # <<< gml_line_symbol
     # @generated
@@ -825,7 +1918,9 @@ class GmlLineSymbol(GmlSymbol):
         """ Initialises a new 'GmlLineSymbol' instance.
         """
         self.source_side = source_side
+        self._gml_stroke = None
         self.gml_stroke = gml_stroke
+        self._gml_diagram_object = None
         self.gml_diagram_object = gml_diagram_object
 
         super(GmlLineSymbol, self).__init__(**kw_args)
@@ -849,16 +1944,46 @@ class GmlPointGeometry(GmlDiagramObject):
 class GmlPointSymbol(GmlSymbol):
     """ Used to draw a 'graphic' at a point.
     """
-    gml_diagram_object = None
+    def get_gml_diagram_object(self):
+        """ 
+        """
+        return self._gml_diagram_object
 
-    gml_graphic = None
+    def set_gml_diagram_object(self, value):
+        if self._gml_diagram_object is not None:
+            filtered = [x for x in self.gml_diagram_object.gml_point_symbols if x != self]
+            self._gml_diagram_object._gml_point_symbols = filtered
+            
+        self._gml_diagram_object = value
+        if self._gml_diagram_object is not None:
+            self._gml_diagram_object._gml_point_symbols.append(self)
+
+    gml_diagram_object = property(get_gml_diagram_object, set_gml_diagram_object)
+
+    def get_gml_graphic(self):
+        """ 
+        """
+        return self._gml_graphic
+
+    def set_gml_graphic(self, value):
+        if self._gml_graphic is not None:
+            filtered = [x for x in self.gml_graphic.gml_point_symbols if x != self]
+            self._gml_graphic._gml_point_symbols = filtered
+            
+        self._gml_graphic = value
+        if self._gml_graphic is not None:
+            self._gml_graphic._gml_point_symbols.append(self)
+
+    gml_graphic = property(get_gml_graphic, set_gml_graphic)
 
     # <<< gml_point_symbol
     # @generated
     def __init__(self, gml_diagram_object=None, gml_graphic=None, **kw_args):
         """ Initialises a new 'GmlPointSymbol' instance.
         """
+        self._gml_diagram_object = None
         self.gml_diagram_object = gml_diagram_object
+        self._gml_graphic = None
         self.gml_graphic = gml_graphic
 
         super(GmlPointSymbol, self).__init__(**kw_args)
@@ -906,7 +2031,21 @@ class GmlRasterSymbol(GmlSymbol):
     # If the BrightnessOnly flag is 0 (false, default), the shading is applied to the layer being rendered as the current RasterSymbol. If BrightnessOnly is 1 (true), the shading is applied to the brightness of the colors in the rendering canvas generated so far by other layers, with the effect of relief-shading these other layers. 
     brighness_only = False
 
-    gml_diagram_object = None
+    def get_gml_diagram_object(self):
+        """ 
+        """
+        return self._gml_diagram_object
+
+    def set_gml_diagram_object(self, value):
+        if self._gml_diagram_object is not None:
+            filtered = [x for x in self.gml_diagram_object.gml_raster_symbols if x != self]
+            self._gml_diagram_object._gml_raster_symbols = filtered
+            
+        self._gml_diagram_object = value
+        if self._gml_diagram_object is not None:
+            self._gml_diagram_object._gml_raster_symbols.append(self)
+
+    gml_diagram_object = property(get_gml_diagram_object, set_gml_diagram_object)
 
     # <<< gml_raster_symbol
     # @generated
@@ -921,6 +2060,7 @@ class GmlRasterSymbol(GmlSymbol):
         self.relief_factor = relief_factor
         self.overlapbehaviour = overlapbehaviour
         self.brighness_only = brighness_only
+        self._gml_diagram_object = None
         self.gml_diagram_object = gml_diagram_object
 
         super(GmlRasterSymbol, self).__init__(**kw_args)
@@ -930,19 +2070,64 @@ class GmlRasterSymbol(GmlSymbol):
 class GmlPolygonSymbol(GmlSymbol):
     """ Used to draw a polygon (or other area-type geometries), including filling its interior and stroking its border (outline).
     """
-    gml_stroke = None
+    def get_gml_stroke(self):
+        """ 
+        """
+        return self._gml_stroke
 
-    gml_diagram_object = None
+    def set_gml_stroke(self, value):
+        if self._gml_stroke is not None:
+            filtered = [x for x in self.gml_stroke.gml_polygon_symbols if x != self]
+            self._gml_stroke._gml_polygon_symbols = filtered
+            
+        self._gml_stroke = value
+        if self._gml_stroke is not None:
+            self._gml_stroke._gml_polygon_symbols.append(self)
 
-    gml_fill = None
+    gml_stroke = property(get_gml_stroke, set_gml_stroke)
+
+    def get_gml_diagram_object(self):
+        """ 
+        """
+        return self._gml_diagram_object
+
+    def set_gml_diagram_object(self, value):
+        if self._gml_diagram_object is not None:
+            filtered = [x for x in self.gml_diagram_object.gml_polygon_symbols if x != self]
+            self._gml_diagram_object._gml_polygon_symbols = filtered
+            
+        self._gml_diagram_object = value
+        if self._gml_diagram_object is not None:
+            self._gml_diagram_object._gml_polygon_symbols.append(self)
+
+    gml_diagram_object = property(get_gml_diagram_object, set_gml_diagram_object)
+
+    def get_gml_fill(self):
+        """ 
+        """
+        return self._gml_fill
+
+    def set_gml_fill(self, value):
+        if self._gml_fill is not None:
+            filtered = [x for x in self.gml_fill.gml_polygon_symbols if x != self]
+            self._gml_fill._gml_polygon_symbols = filtered
+            
+        self._gml_fill = value
+        if self._gml_fill is not None:
+            self._gml_fill._gml_polygon_symbols.append(self)
+
+    gml_fill = property(get_gml_fill, set_gml_fill)
 
     # <<< gml_polygon_symbol
     # @generated
     def __init__(self, gml_stroke=None, gml_diagram_object=None, gml_fill=None, **kw_args):
         """ Initialises a new 'GmlPolygonSymbol' instance.
         """
+        self._gml_stroke = None
         self.gml_stroke = gml_stroke
+        self._gml_diagram_object = None
         self.gml_diagram_object = gml_diagram_object
+        self._gml_fill = None
         self.gml_fill = gml_fill
 
         super(GmlPolygonSymbol, self).__init__(**kw_args)

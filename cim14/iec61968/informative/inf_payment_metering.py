@@ -25,8 +25,21 @@ class TransactionSummary(Element):
     # Totalised amount transacted during the shift for this specific 'transactionKind', i.e., sum of 'Transaction.line.amount' per 'Transaction.kind'. Cumulative amount of rounding errors due to process rounding not reflected in 'LineDetail.amount' for 'transactionKind', i.e., sum of 'Transaction.line.rounding' per 'Transaction.kind'.
     line = None
 
-    # Shift to which this summary applies.
-    shift = None
+    def get_shift(self):
+        """ Shift to which this summary applies.
+        """
+        return self._shift
+
+    def set_shift(self, value):
+        if self._shift is not None:
+            filtered = [x for x in self.shift.transaction_summaries if x != self]
+            self._shift._transaction_summaries = filtered
+            
+        self._shift = value
+        if self._shift is not None:
+            self._shift._transaction_summaries.append(self)
+
+    shift = property(get_shift, set_shift)
 
     # <<< transaction_summary
     # @generated
@@ -35,6 +48,7 @@ class TransactionSummary(Element):
         """
         self.transaction_kind = transaction_kind
         self.line = line
+        self._shift = None
         self.shift = shift
 
         super(TransactionSummary, self).__init__(**kw_args)
@@ -56,13 +70,53 @@ class BankStatement(Document):
     # True if mechantCreditAmount has been cerdited to MerchantAccount; typically happens when bank statement details are captured into payment system. 
     posted = False
 
-    merchant_account = None
+    def get_merchant_account(self):
+        """ 
+        """
+        return self._merchant_account
 
-    # The Vendor that made this BankStatement (by making deposit).
-    vendor = None
+    def set_merchant_account(self, value):
+        if self._merchant_account is not None:
+            filtered = [x for x in self.merchant_account.bank_statements if x != self]
+            self._merchant_account._bank_statements = filtered
+            
+        self._merchant_account = value
+        if self._merchant_account is not None:
+            self._merchant_account._bank_statements.append(self)
 
-    # BankAccount that generated this bank statement.
-    bank_account = None
+    merchant_account = property(get_merchant_account, set_merchant_account)
+
+    def get_vendor(self):
+        """ The Vendor that made this BankStatement (by making deposit).
+        """
+        return self._vendor
+
+    def set_vendor(self, value):
+        if self._vendor is not None:
+            filtered = [x for x in self.vendor.bank_statements if x != self]
+            self._vendor._bank_statements = filtered
+            
+        self._vendor = value
+        if self._vendor is not None:
+            self._vendor._bank_statements.append(self)
+
+    vendor = property(get_vendor, set_vendor)
+
+    def get_bank_account(self):
+        """ BankAccount that generated this bank statement.
+        """
+        return self._bank_account
+
+    def set_bank_account(self, value):
+        if self._bank_account is not None:
+            filtered = [x for x in self.bank_account.bank_statements if x != self]
+            self._bank_account._bank_statements = filtered
+            
+        self._bank_account = value
+        if self._bank_account is not None:
+            self._bank_account._bank_statements.append(self)
+
+    bank_account = property(get_bank_account, set_bank_account)
 
     # <<< bank_statement
     # @generated
@@ -73,8 +127,11 @@ class BankStatement(Document):
         self.deposit_date_time = deposit_date_time
         self.merchant_credit_amount = merchant_credit_amount
         self.posted = posted
+        self._merchant_account = None
         self.merchant_account = merchant_account
+        self._vendor = None
         self.vendor = vendor
+        self._bank_account = None
         self.bank_account = bank_account
 
         super(BankStatement, self).__init__(**kw_args)
@@ -93,11 +150,69 @@ class SDPAccountingFunction(DeviceFunction):
     # The value is a predefined set point for the level of the availableCredit to reach when a warning will be indicated to the customer. It serves to warn the customer that it is time to purchase more credit in the case of a prepayment meter implementation. The units are either in currency units or service units, depending on the value of accountingMode.
     low_credit_warning_level = None
 
-    charge_registers = []
+    def get_charge_registers(self):
+        """ 
+        """
+        return self._charge_registers
 
-    credit_registers = []
+    def set_charge_registers(self, value):
+        for x in self._charge_registers:
+            x._spaccounting_function = None
+        for y in value:
+            y._spaccounting_function = self
+        self._charge_registers = value
+            
+    charge_registers = property(get_charge_registers, set_charge_registers)
+    
+    def add_charge_registers(self, *charge_registers):
+        for obj in charge_registers:
+            obj._spaccounting_function = self
+            self._charge_registers.append(obj)
+        
+    def remove_charge_registers(self, *charge_registers):
+        for obj in charge_registers:
+            obj._spaccounting_function = None
+            self._charge_registers.remove(obj)
 
-    service_kind = None
+    def get_credit_registers(self):
+        """ 
+        """
+        return self._credit_registers
+
+    def set_credit_registers(self, value):
+        for x in self._credit_registers:
+            x._sdpaccounting_function = None
+        for y in value:
+            y._sdpaccounting_function = self
+        self._credit_registers = value
+            
+    credit_registers = property(get_credit_registers, set_credit_registers)
+    
+    def add_credit_registers(self, *credit_registers):
+        for obj in credit_registers:
+            obj._sdpaccounting_function = self
+            self._credit_registers.append(obj)
+        
+    def remove_credit_registers(self, *credit_registers):
+        for obj in credit_registers:
+            obj._sdpaccounting_function = None
+            self._credit_registers.remove(obj)
+
+    def get_service_kind(self):
+        """ 
+        """
+        return self._service_kind
+
+    def set_service_kind(self, value):
+        if self._service_kind is not None:
+            filtered = [x for x in self.service_kind.spaccounting_functions if x != self]
+            self._service_kind._spaccounting_functions = filtered
+            
+        self._service_kind = value
+        if self._service_kind is not None:
+            self._service_kind._spaccounting_functions.append(self)
+
+    service_kind = property(get_service_kind, set_service_kind)
 
     # <<< sdpaccounting_function
     # @generated
@@ -107,8 +222,11 @@ class SDPAccountingFunction(DeviceFunction):
         self.available_credit = available_credit
         self.credit_expiry_level = credit_expiry_level
         self.low_credit_warning_level = low_credit_warning_level
+        self._charge_registers = []
         self.charge_registers = charge_registers
+        self._credit_registers = []
         self.credit_registers = credit_registers
+        self._service_kind = None
         self.service_kind = service_kind
 
         super(SDPAccountingFunction, self).__init__(**kw_args)
@@ -124,8 +242,21 @@ class ReceiptSummary(Element):
     # Totalised amount receipted during the shift for 'tenderKind', i.e., sum of ('Tender.amount' - 'Tender.change') per 'Tender.kind'.
     line = None
 
-    # Shift for which this summary is given.
-    shift = None
+    def get_shift(self):
+        """ Shift for which this summary is given.
+        """
+        return self._shift
+
+    def set_shift(self, value):
+        if self._shift is not None:
+            filtered = [x for x in self.shift.receipt_summaries if x != self]
+            self._shift._receipt_summaries = filtered
+            
+        self._shift = value
+        if self._shift is not None:
+            self._shift._receipt_summaries.append(self)
+
+    shift = property(get_shift, set_shift)
 
     # <<< receipt_summary
     # @generated
@@ -134,6 +265,7 @@ class ReceiptSummary(Element):
         """
         self.tender_kind = tender_kind
         self.line = line
+        self._shift = None
         self.shift = shift
 
         super(ReceiptSummary, self).__init__(**kw_args)
@@ -149,7 +281,21 @@ class CreditRegister(IdentifiedObject):
     # Credit amount in favour of the customer. The units are either in currency units or service units, depending on the value of 'AccountingUnit.accountingMode'.
     credit_amount = None
 
-    sdpaccounting_function = None
+    def get_sdpaccounting_function(self):
+        """ 
+        """
+        return self._sdpaccounting_function
+
+    def set_sdpaccounting_function(self, value):
+        if self._sdpaccounting_function is not None:
+            filtered = [x for x in self.sdpaccounting_function.credit_registers if x != self]
+            self._sdpaccounting_function._credit_registers = filtered
+            
+        self._sdpaccounting_function = value
+        if self._sdpaccounting_function is not None:
+            self._sdpaccounting_function._credit_registers.append(self)
+
+    sdpaccounting_function = property(get_sdpaccounting_function, set_sdpaccounting_function)
 
     # <<< credit_register
     # @generated
@@ -158,6 +304,7 @@ class CreditRegister(IdentifiedObject):
         """
         self.credit_kind = credit_kind
         self.credit_amount = credit_amount
+        self._sdpaccounting_function = None
         self.sdpaccounting_function = sdpaccounting_function
 
         super(CreditRegister, self).__init__(**kw_args)
@@ -190,8 +337,29 @@ class Bank(Organisation):
     # Codified reference to the particular branch of the bank where BankAccount is held. 
     branch_code = ''
 
-    # All BankAccounts this Bank provides.
-    bank_accounts = []
+    def get_bank_accounts(self):
+        """ All BankAccounts this Bank provides.
+        """
+        return self._bank_accounts
+
+    def set_bank_accounts(self, value):
+        for x in self._bank_accounts:
+            x._bank = None
+        for y in value:
+            y._bank = self
+        self._bank_accounts = value
+            
+    bank_accounts = property(get_bank_accounts, set_bank_accounts)
+    
+    def add_bank_accounts(self, *bank_accounts):
+        for obj in bank_accounts:
+            obj._bank = self
+            self._bank_accounts.append(obj)
+        
+    def remove_bank_accounts(self, *bank_accounts):
+        for obj in bank_accounts:
+            obj._bank = None
+            self._bank_accounts.remove(obj)
 
     # <<< bank
     # @generated
@@ -201,6 +369,7 @@ class Bank(Organisation):
         self.iban = iban
         self.bic = bic
         self.branch_code = branch_code
+        self._bank_accounts = []
         self.bank_accounts = bank_accounts
 
         super(Bank, self).__init__(**kw_args)
@@ -216,7 +385,21 @@ class ChargeRegister(IdentifiedObject):
     # Charge amount in favour of the supplier. The units are either in currency units or service units, depending on the value of 'AccountingUnit.accountingMode'.
     charge_amount = None
 
-    spaccounting_function = None
+    def get_spaccounting_function(self):
+        """ 
+        """
+        return self._spaccounting_function
+
+    def set_spaccounting_function(self, value):
+        if self._spaccounting_function is not None:
+            filtered = [x for x in self.spaccounting_function.charge_registers if x != self]
+            self._spaccounting_function._charge_registers = filtered
+            
+        self._spaccounting_function = value
+        if self._spaccounting_function is not None:
+            self._spaccounting_function._charge_registers.append(self)
+
+    spaccounting_function = property(get_spaccounting_function, set_spaccounting_function)
 
     # <<< charge_register
     # @generated
@@ -225,6 +408,7 @@ class ChargeRegister(IdentifiedObject):
         """
         self.charge_kind = charge_kind
         self.charge_amount = charge_amount
+        self._spaccounting_function = None
         self.spaccounting_function = spaccounting_function
 
         super(ChargeRegister, self).__init__(**kw_args)
@@ -240,8 +424,21 @@ class Token(IdentifiedObject):
     # Coded representation of the token that is transferred to the payment meter. 
     code = ''
 
-    # PointOfSale tha sold or dispensed this Token.
-    point_of_sale = None
+    def get_point_of_sale(self):
+        """ PointOfSale tha sold or dispensed this Token.
+        """
+        return self._point_of_sale
+
+    def set_point_of_sale(self, value):
+        if self._point_of_sale is not None:
+            filtered = [x for x in self.point_of_sale.tokens if x != self]
+            self._point_of_sale._tokens = filtered
+            
+        self._point_of_sale = value
+        if self._point_of_sale is not None:
+            self._point_of_sale._tokens.append(self)
+
+    point_of_sale = property(get_point_of_sale, set_point_of_sale)
 
     # <<< token
     # @generated
@@ -250,6 +447,7 @@ class Token(IdentifiedObject):
         """
         self.comment = comment
         self.code = code
+        self._point_of_sale = None
         self.point_of_sale = point_of_sale
 
         super(Token, self).__init__(**kw_args)
