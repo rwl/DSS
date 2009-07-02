@@ -21,14 +21,30 @@ class ComPort(IdentifiedObject):
     def __init__(self, **kw_args):
         """ Initialises a new 'ComPort' instance.
         """
+        
 
         super(ComPort, self).__init__(**kw_args)
     # >>> com_port
+        
 
 
 class MeteringFunctionConfiguration(IdentifiedObject):
     """ The configuration of data for a given meter function.
     """
+    # <<< metering_function_configuration
+    # @generated
+    def __init__(self, electric_metering_functions=[], **kw_args):
+        """ Initialises a new 'MeteringFunctionConfiguration' instance.
+        """
+        
+        self._electric_metering_functions = []
+        self.electric_metering_functions = electric_metering_functions
+
+        super(MeteringFunctionConfiguration, self).__init__(**kw_args)
+    # >>> metering_function_configuration
+        
+    # <<< electric_metering_functions
+    # @generated
     def get_electric_metering_functions(self):
         """ All electric metering functions with this configuration.
         """
@@ -52,17 +68,8 @@ class MeteringFunctionConfiguration(IdentifiedObject):
         for obj in electric_metering_functions:
             obj._metering_function_configuration = None
             self._electric_metering_functions.remove(obj)
+    # >>> electric_metering_functions
 
-    # <<< metering_function_configuration
-    # @generated
-    def __init__(self, electric_metering_functions=[], **kw_args):
-        """ Initialises a new 'MeteringFunctionConfiguration' instance.
-        """
-        self._electric_metering_functions = []
-        self.electric_metering_functions = electric_metering_functions
-
-        super(MeteringFunctionConfiguration, self).__init__(**kw_args)
-    # >>> metering_function_configuration
 
 
 class WaterMeteringFunction(DeviceFunction):
@@ -74,9 +81,11 @@ class WaterMeteringFunction(DeviceFunction):
     def __init__(self, **kw_args):
         """ Initialises a new 'WaterMeteringFunction' instance.
         """
+        
 
         super(WaterMeteringFunction, self).__init__(**kw_args)
     # >>> water_metering_function
+        
 
 
 class GasMeteringFunction(DeviceFunction):
@@ -88,9 +97,11 @@ class GasMeteringFunction(DeviceFunction):
     def __init__(self, **kw_args):
         """ Initialises a new 'GasMeteringFunction' instance.
         """
+        
 
         super(GasMeteringFunction, self).__init__(**kw_args)
     # >>> gas_metering_function
+        
 
 
 # <<< inf_metering

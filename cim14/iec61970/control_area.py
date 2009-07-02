@@ -15,15 +15,34 @@ ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#IEC61970.ControlArea"
 class ControlArea(PowerSystemResource):
     """ A <b>control area </b>is a grouping of <b>generating units</b> and/or loads and a cutset of tie lines (as <b>terminals</b>) which may be used for a variety of purposes including automatic generation control, powerflow solution area interchange control specification, and input to load forecasting.   Note that any number of overlapping control area specifications can be superimposed on the physical model.
     """
-    # The specified positive net interchange into the control area. 
-    net_interchange = ''
+    # <<< control_area
+    # @generated
+    def __init__(self, net_interchange='', type='forecast', p_tolerance='', control_area_generating_unit=[], tie_flow=[], bus_name_marker=[], energy_area=None, topological_node=[], **kw_args):
+        """ Initialises a new 'ControlArea' instance.
+        """
+        # The specified positive net interchange into the control area. 
+        self.net_interchange = ''
+        # The type of control area defintion used to determine if this is used for automatic generation control, for planning interchange control, or other purposes. Values are: "forecast", "interchange", "agc"
+        self.type = 'forecast'
+        # Active power net interchange tolerance 
+        self.p_tolerance = ''
+        
+        self._control_area_generating_unit = []
+        self.control_area_generating_unit = control_area_generating_unit
+        self._tie_flow = []
+        self.tie_flow = tie_flow
+        self._bus_name_marker = []
+        self.bus_name_marker = bus_name_marker
+        self._energy_area = None
+        self.energy_area = energy_area
+        self._topological_node = []
+        self.topological_node = topological_node
 
-    # The type of control area defintion used to determine if this is used for automatic generation control, for planning interchange control, or other purposes. Values are: "forecast", "interchange", "agc"
-    type = 'forecast'
-
-    # Active power net interchange tolerance 
-    p_tolerance = ''
-
+        super(ControlArea, self).__init__(**kw_args)
+    # >>> control_area
+        
+    # <<< control_area_generating_unit
+    # @generated
     def get_control_area_generating_unit(self):
         """ The generating unit specificaitons for the control area.
         """
@@ -47,7 +66,10 @@ class ControlArea(PowerSystemResource):
         for obj in control_area_generating_unit:
             obj._control_area = None
             self._control_area_generating_unit.remove(obj)
+    # >>> control_area_generating_unit
 
+    # <<< tie_flow
+    # @generated
     def get_tie_flow(self):
         """ The tie flows associated with the control area.
         """
@@ -71,7 +93,10 @@ class ControlArea(PowerSystemResource):
         for obj in tie_flow:
             obj._control_area = None
             self._tie_flow.remove(obj)
+    # >>> tie_flow
 
+    # <<< bus_name_marker
+    # @generated
     def get_bus_name_marker(self):
         """ BusNameMarker objects that belong to the control area.
         """
@@ -95,7 +120,10 @@ class ControlArea(PowerSystemResource):
         for obj in bus_name_marker:
             obj._control_area = None
             self._bus_name_marker.remove(obj)
+    # >>> bus_name_marker
 
+    # <<< energy_area
+    # @generated
     def get_energy_area(self):
         """ The energy area that is forecast from this control area specification.
         """
@@ -110,7 +138,10 @@ class ControlArea(PowerSystemResource):
             self._energy_area._control_area = self
             
     energy_area = property(get_energy_area, set_energy_area)
+    # >>> energy_area
 
+    # <<< topological_node
+    # @generated
     def get_topological_node(self):
         """ The topological nodes included in the control area.
         """
@@ -134,36 +165,31 @@ class ControlArea(PowerSystemResource):
         for obj in topological_node:
             obj._control_area = None
             self._topological_node.remove(obj)
+    # >>> topological_node
 
-    # <<< control_area
-    # @generated
-    def __init__(self, net_interchange='', type='forecast', p_tolerance='', control_area_generating_unit=[], tie_flow=[], bus_name_marker=[], energy_area=None, topological_node=[], **kw_args):
-        """ Initialises a new 'ControlArea' instance.
-        """
-        self.net_interchange = net_interchange
-        self.type = type
-        self.p_tolerance = p_tolerance
-        self._control_area_generating_unit = []
-        self.control_area_generating_unit = control_area_generating_unit
-        self._tie_flow = []
-        self.tie_flow = tie_flow
-        self._bus_name_marker = []
-        self.bus_name_marker = bus_name_marker
-        self._energy_area = None
-        self.energy_area = energy_area
-        self._topological_node = []
-        self.topological_node = topological_node
-
-        super(ControlArea, self).__init__(**kw_args)
-    # >>> control_area
 
 
 class AltTieMeas(Element):
     """ A prioritized measurement to be used for the tie flow as part of the control area specification.
     """
-    # Priority of a measurement usage.   Lower numbers have first priority. 
-    priority = 0
+    # <<< alt_tie_meas
+    # @generated
+    def __init__(self, priority=0, tie_flow=None, analog_value=None, **kw_args):
+        """ Initialises a new 'AltTieMeas' instance.
+        """
+        # Priority of a measurement usage.   Lower numbers have first priority. 
+        self.priority = 0
+        
+        self._tie_flow = None
+        self.tie_flow = tie_flow
+        self._analog_value = None
+        self.analog_value = analog_value
 
+        super(AltTieMeas, self).__init__(**kw_args)
+    # >>> alt_tie_meas
+        
+    # <<< tie_flow
+    # @generated
     def get_tie_flow(self):
         """ The tie flow of the alternate measurements.
         """
@@ -179,7 +205,10 @@ class AltTieMeas(Element):
             self._tie_flow._alt_tie_meas.append(self)
 
     tie_flow = property(get_tie_flow, set_tie_flow)
+    # >>> tie_flow
 
+    # <<< analog_value
+    # @generated
     def get_analog_value(self):
         """ The specific analog value used as a source.
         """
@@ -195,28 +224,33 @@ class AltTieMeas(Element):
             self._analog_value._alt_tie_meas.append(self)
 
     analog_value = property(get_analog_value, set_analog_value)
+    # >>> analog_value
 
-    # <<< alt_tie_meas
-    # @generated
-    def __init__(self, priority=0, tie_flow=None, analog_value=None, **kw_args):
-        """ Initialises a new 'AltTieMeas' instance.
-        """
-        self.priority = priority
-        self._tie_flow = None
-        self.tie_flow = tie_flow
-        self._analog_value = None
-        self.analog_value = analog_value
-
-        super(AltTieMeas, self).__init__(**kw_args)
-    # >>> alt_tie_meas
 
 
 class TieFlow(Element):
     """ A flow specification in terms of location and direction for a control area.
     """
-    # The flow is positive into the terminal.  A flow is positive if it is an import into the control area. 
-    positive_flow_in = False
+    # <<< tie_flow
+    # @generated
+    def __init__(self, positive_flow_in=False, alt_tie_meas=[], control_area=None, terminal=None, **kw_args):
+        """ Initialises a new 'TieFlow' instance.
+        """
+        # The flow is positive into the terminal.  A flow is positive if it is an import into the control area. 
+        self.positive_flow_in = False
+        
+        self._alt_tie_meas = []
+        self.alt_tie_meas = alt_tie_meas
+        self._control_area = None
+        self.control_area = control_area
+        self._terminal = None
+        self.terminal = terminal
 
+        super(TieFlow, self).__init__(**kw_args)
+    # >>> tie_flow
+        
+    # <<< alt_tie_meas
+    # @generated
     def get_alt_tie_meas(self):
         """ The primary and alternate tie flow measurements associated with the tie flow.
         """
@@ -240,7 +274,10 @@ class TieFlow(Element):
         for obj in alt_tie_meas:
             obj._tie_flow = None
             self._alt_tie_meas.remove(obj)
+    # >>> alt_tie_meas
 
+    # <<< control_area
+    # @generated
     def get_control_area(self):
         """ The control area of the tie flows.
         """
@@ -256,7 +293,10 @@ class TieFlow(Element):
             self._control_area._tie_flow.append(self)
 
     control_area = property(get_control_area, set_control_area)
+    # >>> control_area
 
+    # <<< terminal
+    # @generated
     def get_terminal(self):
         """ The terminal to which this tie flow belongs.
         """
@@ -272,30 +312,31 @@ class TieFlow(Element):
             self._terminal._tie_flow.append(self)
 
     terminal = property(get_terminal, set_terminal)
+    # >>> terminal
 
-    # <<< tie_flow
-    # @generated
-    def __init__(self, positive_flow_in=False, alt_tie_meas=[], control_area=None, terminal=None, **kw_args):
-        """ Initialises a new 'TieFlow' instance.
-        """
-        self.positive_flow_in = positive_flow_in
-        self._alt_tie_meas = []
-        self.alt_tie_meas = alt_tie_meas
-        self._control_area = None
-        self.control_area = control_area
-        self._terminal = None
-        self.terminal = terminal
-
-        super(TieFlow, self).__init__(**kw_args)
-    # >>> tie_flow
 
 
 class AltGeneratingUnitMeas(Element):
     """ A prioritized measurement to be used for the generating unit in the control area specificaiton.
     """
-    # Priority of a measurement usage.   Lower numbers have first priority. 
-    priority = 0
+    # <<< alt_generating_unit_meas
+    # @generated
+    def __init__(self, priority=0, analog_value=None, control_area_generating_unit=None, **kw_args):
+        """ Initialises a new 'AltGeneratingUnitMeas' instance.
+        """
+        # Priority of a measurement usage.   Lower numbers have first priority. 
+        self.priority = 0
+        
+        self._analog_value = None
+        self.analog_value = analog_value
+        self._control_area_generating_unit = None
+        self.control_area_generating_unit = control_area_generating_unit
 
+        super(AltGeneratingUnitMeas, self).__init__(**kw_args)
+    # >>> alt_generating_unit_meas
+        
+    # <<< analog_value
+    # @generated
     def get_analog_value(self):
         """ The specific analog value used as a source.
         """
@@ -311,7 +352,10 @@ class AltGeneratingUnitMeas(Element):
             self._analog_value._alt_generating_unit.append(self)
 
     analog_value = property(get_analog_value, set_analog_value)
+    # >>> analog_value
 
+    # <<< control_area_generating_unit
+    # @generated
     def get_control_area_generating_unit(self):
         """ The control aread generating unit to which the prioritized measurement assignment is applied.
         """
@@ -327,25 +371,31 @@ class AltGeneratingUnitMeas(Element):
             self._control_area_generating_unit._alt_generating_unit_meas.append(self)
 
     control_area_generating_unit = property(get_control_area_generating_unit, set_control_area_generating_unit)
+    # >>> control_area_generating_unit
 
-    # <<< alt_generating_unit_meas
-    # @generated
-    def __init__(self, priority=0, analog_value=None, control_area_generating_unit=None, **kw_args):
-        """ Initialises a new 'AltGeneratingUnitMeas' instance.
-        """
-        self.priority = priority
-        self._analog_value = None
-        self.analog_value = analog_value
-        self._control_area_generating_unit = None
-        self.control_area_generating_unit = control_area_generating_unit
-
-        super(AltGeneratingUnitMeas, self).__init__(**kw_args)
-    # >>> alt_generating_unit_meas
 
 
 class ControlAreaGeneratingUnit(Element):
     """ A control area generating unit. This class is needed so that alternate control area definitions may include the same generating unit.   Note only one instance within a control area should reference a specific generating unit.
     """
+    # <<< control_area_generating_unit
+    # @generated
+    def __init__(self, alt_generating_unit_meas=[], control_area=None, generating_unit=None, **kw_args):
+        """ Initialises a new 'ControlAreaGeneratingUnit' instance.
+        """
+        
+        self._alt_generating_unit_meas = []
+        self.alt_generating_unit_meas = alt_generating_unit_meas
+        self._control_area = None
+        self.control_area = control_area
+        self._generating_unit = None
+        self.generating_unit = generating_unit
+
+        super(ControlAreaGeneratingUnit, self).__init__(**kw_args)
+    # >>> control_area_generating_unit
+        
+    # <<< alt_generating_unit_meas
+    # @generated
     def get_alt_generating_unit_meas(self):
         """ The link to prioritized measurements for this GeneratingUnit.
         """
@@ -369,7 +419,10 @@ class ControlAreaGeneratingUnit(Element):
         for obj in alt_generating_unit_meas:
             obj._control_area_generating_unit = None
             self._alt_generating_unit_meas.remove(obj)
+    # >>> alt_generating_unit_meas
 
+    # <<< control_area
+    # @generated
     def get_control_area(self):
         """ The parent control area for the generating unit specifications.
         """
@@ -385,7 +438,10 @@ class ControlAreaGeneratingUnit(Element):
             self._control_area._control_area_generating_unit.append(self)
 
     control_area = property(get_control_area, set_control_area)
+    # >>> control_area
 
+    # <<< generating_unit
+    # @generated
     def get_generating_unit(self):
         """ The generating unit specified for this control area.  Note that a control area should include a GeneratingUnit only once.
         """
@@ -401,21 +457,8 @@ class ControlAreaGeneratingUnit(Element):
             self._generating_unit._control_area_generating_unit.append(self)
 
     generating_unit = property(get_generating_unit, set_generating_unit)
+    # >>> generating_unit
 
-    # <<< control_area_generating_unit
-    # @generated
-    def __init__(self, alt_generating_unit_meas=[], control_area=None, generating_unit=None, **kw_args):
-        """ Initialises a new 'ControlAreaGeneratingUnit' instance.
-        """
-        self._alt_generating_unit_meas = []
-        self.alt_generating_unit_meas = alt_generating_unit_meas
-        self._control_area = None
-        self.control_area = control_area
-        self._generating_unit = None
-        self.generating_unit = generating_unit
-
-        super(ControlAreaGeneratingUnit, self).__init__(**kw_args)
-    # >>> control_area_generating_unit
 
 
 # <<< control_area

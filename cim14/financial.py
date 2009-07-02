@@ -17,6 +17,24 @@ ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#Financial"
 class GenerationProvider(ErpOrganisation):
     """ The energy seller in the energy marketplace.
     """
+    # <<< generation_provider
+    # @generated
+    def __init__(self, generating_units=[], service_point=[], energy_products=[], **kw_args):
+        """ Initialises a new 'GenerationProvider' instance.
+        """
+        
+        self._generating_units = []
+        self.generating_units = generating_units
+        self._service_point = []
+        self.service_point = service_point
+        self._energy_products = []
+        self.energy_products = energy_products
+
+        super(GenerationProvider, self).__init__(**kw_args)
+    # >>> generation_provider
+        
+    # <<< generating_units
+    # @generated
     def get_generating_units(self):
         """ A GenerationProvider operates one or more GeneratingUnits.
         """
@@ -40,7 +58,10 @@ class GenerationProvider(ErpOrganisation):
         for obj in generating_units:
             obj._operated_by_generation_provider = None
             self._generating_units.remove(obj)
+    # >>> generating_units
 
+    # <<< service_point
+    # @generated
     def get_service_point(self):
         """ A GenerationProvider has one or more ServicePoints where energy is injected into the network.
         """
@@ -64,7 +85,10 @@ class GenerationProvider(ErpOrganisation):
         for obj in service_point:
             obj._generation_provider = None
             self._service_point.remove(obj)
+    # >>> service_point
 
+    # <<< energy_products
+    # @generated
     def get_energy_products(self):
         """ 
         """
@@ -88,44 +112,91 @@ class GenerationProvider(ErpOrganisation):
         for obj in energy_products:
             obj._generation_provider = None
             self._energy_products.remove(obj)
+    # >>> energy_products
 
-    # <<< generation_provider
-    # @generated
-    def __init__(self, generating_units=[], service_point=[], energy_products=[], **kw_args):
-        """ Initialises a new 'GenerationProvider' instance.
-        """
-        self._generating_units = []
-        self.generating_units = generating_units
-        self._service_point = []
-        self.service_point = service_point
-        self._energy_products = []
-        self.energy_products = energy_products
-
-        super(GenerationProvider, self).__init__(**kw_args)
-    # >>> generation_provider
 
 
 class TransmissionProduct(IdentifiedObject):
-    location_for = []
+    # <<< transmission_product
+    # @generated
+    def __init__(self, location_for=[], offers=[], transmission_provider=None, **kw_args):
+        """ Initialises a new 'TransmissionProduct' instance.
+        """
+        
+        self._location_for = []
+        self.location_for = location_for
+        self._offers = []
+        self.offers = offers
+        self._transmission_provider = None
+        self.transmission_provider = transmission_provider
+
+        super(TransmissionProduct, self).__init__(**kw_args)
+    # >>> transmission_product
+        
+    # <<< location_for
+    # @generated
+    def get_location_for(self):
+        """ A transmission product is located on a transmission path.
+        """
+        return self._location_for
+
+    def set_location_for(self, value):
+        for p in self._location_for:
+            filtered = [q for q in p.located_on if q != self]
+            self._location_for._located_on = filtered
+        for r in value:
+            if self not in r._located_on:
+                r._located_on.append(self)
+        self._location_for = value
+            
+    location_for = property(get_location_for, set_location_for)
     
     def add_location_for(self, *location_for):
         for obj in location_for:
-	        self._location_for.append(obj)
+            if self not in obj._located_on:
+                obj._located_on.append(self)
+            self._location_for.append(obj)
         
     def remove_location_for(self, *location_for):
         for obj in location_for:
-	        self._location_for.remove(obj)
+            if self in obj._located_on:
+                obj._located_on.remove(self)
+            self._location_for.remove(obj)
+    # >>> location_for
 
-    offers = []
+    # <<< offers
+    # @generated
+    def get_offers(self):
+        """ A transmission product is offered as a transmission service along a transmission path.
+        """
+        return self._offers
+
+    def set_offers(self, value):
+        for p in self._offers:
+            filtered = [q for q in p.offered_as if q != self]
+            self._offers._offered_as = filtered
+        for r in value:
+            if self not in r._offered_as:
+                r._offered_as.append(self)
+        self._offers = value
+            
+    offers = property(get_offers, set_offers)
     
     def add_offers(self, *offers):
         for obj in offers:
-	        self._offers.append(obj)
+            if self not in obj._offered_as:
+                obj._offered_as.append(self)
+            self._offers.append(obj)
         
     def remove_offers(self, *offers):
         for obj in offers:
-	        self._offers.remove(obj)
+            if self in obj._offered_as:
+                obj._offered_as.remove(self)
+            self._offers.remove(obj)
+    # >>> offers
 
+    # <<< transmission_provider
+    # @generated
     def get_transmission_provider(self):
         """ A TransmissionProvider offers a TransmissionProduct.
         """
@@ -141,26 +212,29 @@ class TransmissionProduct(IdentifiedObject):
             self._transmission_provider._transmission_products.append(self)
 
     transmission_provider = property(get_transmission_provider, set_transmission_provider)
+    # >>> transmission_provider
 
-    # <<< transmission_product
-    # @generated
-    def __init__(self, location_for=[], offers=[], transmission_provider=None, **kw_args):
-        """ Initialises a new 'TransmissionProduct' instance.
-        """
-        self._location_for = []
-        self.location_for = location_for
-        self._offers = []
-        self.offers = offers
-        self._transmission_provider = None
-        self.transmission_provider = transmission_provider
-
-        super(TransmissionProduct, self).__init__(**kw_args)
-    # >>> transmission_product
 
 
 class CustomerConsumer(ErpOrganisation):
     """ The energy buyer in the energy marketplace.
     """
+    # <<< customer_consumer
+    # @generated
+    def __init__(self, service_point=[], tie_lines=[], **kw_args):
+        """ Initialises a new 'CustomerConsumer' instance.
+        """
+        
+        self._service_point = []
+        self.service_point = service_point
+        self._tie_lines = []
+        self.tie_lines = tie_lines
+
+        super(CustomerConsumer, self).__init__(**kw_args)
+    # >>> customer_consumer
+        
+    # <<< service_point
+    # @generated
     def get_service_point(self):
         """ A CustomerConsumer may have one or more ServicePoints.
         """
@@ -184,7 +258,10 @@ class CustomerConsumer(ErpOrganisation):
         for obj in service_point:
             obj._customer_consumer = None
             self._service_point.remove(obj)
+    # >>> service_point
 
+    # <<< tie_lines
+    # @generated
     def get_tie_lines(self):
         """ A  ControlAreaOperator or CustomerConsumer may ring their perimeter with metering, which can create a unique SubControlArea at the collection of metering points, called a TieLine.
         """
@@ -208,24 +285,31 @@ class CustomerConsumer(ErpOrganisation):
         for obj in tie_lines:
             obj._customer_consumer = None
             self._tie_lines.remove(obj)
+    # >>> tie_lines
 
-    # <<< customer_consumer
-    # @generated
-    def __init__(self, service_point=[], tie_lines=[], **kw_args):
-        """ Initialises a new 'CustomerConsumer' instance.
-        """
-        self._service_point = []
-        self.service_point = service_point
-        self._tie_lines = []
-        self.tie_lines = tie_lines
-
-        super(CustomerConsumer, self).__init__(**kw_args)
-    # >>> customer_consumer
 
 
 class ControlAreaOperator(ErpOrganisation):
     """ Operates the Control Area. Approves and implements energy transactions. Verifies both Inter-Control Area and Intra-Control Area transactions for the power system before granting approval (and implementing) the transactions.
     """
+    # <<< control_area_operator
+    # @generated
+    def __init__(self, controlled_by=None, ancillary_service=[], tie_lines=[], **kw_args):
+        """ Initialises a new 'ControlAreaOperator' instance.
+        """
+        
+        self._controlled_by = None
+        self.controlled_by = controlled_by
+        self._ancillary_service = []
+        self.ancillary_service = ancillary_service
+        self._tie_lines = []
+        self.tie_lines = tie_lines
+
+        super(ControlAreaOperator, self).__init__(**kw_args)
+    # >>> control_area_operator
+        
+    # <<< controlled_by
+    # @generated
     def get_controlled_by(self):
         """ A ControlAreaCompany controls a ControlArea.
         """
@@ -240,7 +324,10 @@ class ControlAreaOperator(ErpOrganisation):
             self._controlled_by._controls = self
             
     controlled_by = property(get_controlled_by, set_controlled_by)
+    # >>> controlled_by
 
+    # <<< ancillary_service
+    # @generated
     def get_ancillary_service(self):
         """ Sale of ancillary services provided by ControlAreaOperators.
         """
@@ -264,61 +351,112 @@ class ControlAreaOperator(ErpOrganisation):
         for obj in ancillary_service:
             obj._control_area_operator = None
             self._ancillary_service.remove(obj)
+    # >>> ancillary_service
 
-    tie_lines = []
+    # <<< tie_lines
+    # @generated
+    def get_tie_lines(self):
+        """ A ControlAreaOperator has a collection of tie points that ring the ControlArea, called a TieLine.
+        """
+        return self._tie_lines
+
+    def set_tie_lines(self, value):
+        for p in self._tie_lines:
+            filtered = [q for q in p.control_area_operators if q != self]
+            self._tie_lines._control_area_operators = filtered
+        for r in value:
+            if self not in r._control_area_operators:
+                r._control_area_operators.append(self)
+        self._tie_lines = value
+            
+    tie_lines = property(get_tie_lines, set_tie_lines)
     
     def add_tie_lines(self, *tie_lines):
         for obj in tie_lines:
-	        self._tie_lines.append(obj)
+            if self not in obj._control_area_operators:
+                obj._control_area_operators.append(self)
+            self._tie_lines.append(obj)
         
     def remove_tie_lines(self, *tie_lines):
         for obj in tie_lines:
-	        self._tie_lines.remove(obj)
+            if self in obj._control_area_operators:
+                obj._control_area_operators.remove(self)
+            self._tie_lines.remove(obj)
+    # >>> tie_lines
 
-    # <<< control_area_operator
-    # @generated
-    def __init__(self, controlled_by=None, ancillary_service=[], tie_lines=[], **kw_args):
-        """ Initialises a new 'ControlAreaOperator' instance.
-        """
-        self._controlled_by = None
-        self.controlled_by = controlled_by
-        self._ancillary_service = []
-        self.ancillary_service = ancillary_service
-        self._tie_lines = []
-        self.tie_lines = tie_lines
-
-        super(ControlAreaOperator, self).__init__(**kw_args)
-    # >>> control_area_operator
 
 
 class IntSchedAgreement(Agreement):
     """ A type of agreement that provides the default method by which interchange schedules are to be integrated to obtain hourly energy schedules for accounting.
     """
-    organisations = []
-    
-    def add_organisations(self, *organisations):
-        for obj in organisations:
-	        self._organisations.append(obj)
-        
-    def remove_organisations(self, *organisations):
-        for obj in organisations:
-	        self._organisations.remove(obj)
-
     # <<< int_sched_agreement
     # @generated
     def __init__(self, organisations=[], **kw_args):
         """ Initialises a new 'IntSchedAgreement' instance.
         """
+        
         self._organisations = []
         self.organisations = organisations
 
         super(IntSchedAgreement, self).__init__(**kw_args)
     # >>> int_sched_agreement
+        
+    # <<< organisations
+    # @generated
+    def get_organisations(self):
+        """ 
+        """
+        return self._organisations
+
+    def set_organisations(self, value):
+        for p in self._organisations:
+            filtered = [q for q in p.int_sched_agreement if q != self]
+            self._organisations._int_sched_agreement = filtered
+        for r in value:
+            if self not in r._int_sched_agreement:
+                r._int_sched_agreement.append(self)
+        self._organisations = value
+            
+    organisations = property(get_organisations, set_organisations)
+    
+    def add_organisations(self, *organisations):
+        for obj in organisations:
+            if self not in obj._int_sched_agreement:
+                obj._int_sched_agreement.append(self)
+            self._organisations.append(obj)
+        
+    def remove_organisations(self, *organisations):
+        for obj in organisations:
+            if self in obj._int_sched_agreement:
+                obj._int_sched_agreement.remove(self)
+            self._organisations.remove(obj)
+    # >>> organisations
+
 
 
 class Marketer(ErpOrganisation):
     """ Matches buyers and sellers, and secures transmission (and other ancillary services) needed to complete the energy transaction.
     """
+    # <<< marketer
+    # @generated
+    def __init__(self, holds_title_to_energy_products=[], resold_by=None, held_by=[], resells_energy_product=[], **kw_args):
+        """ Initialises a new 'Marketer' instance.
+        """
+        
+        self._holds_title_to_energy_products = []
+        self.holds_title_to_energy_products = holds_title_to_energy_products
+        self._resold_by = None
+        self.resold_by = resold_by
+        self._held_by = []
+        self.held_by = held_by
+        self._resells_energy_product = []
+        self.resells_energy_product = resells_energy_product
+
+        super(Marketer, self).__init__(**kw_args)
+    # >>> marketer
+        
+    # <<< holds_title_to_energy_products
+    # @generated
     def get_holds_title_to_energy_products(self):
         """ A Marketer holds title to an EnergyProduct.
         """
@@ -342,7 +480,10 @@ class Marketer(ErpOrganisation):
         for obj in holds_title_to_energy_products:
             obj._title_held_by_marketer = None
             self._holds_title_to_energy_products.remove(obj)
+    # >>> holds_title_to_energy_products
 
+    # <<< resold_by
+    # @generated
     def get_resold_by(self):
         """ A ServiceReservation may be resold by a Marketer.
         """
@@ -357,7 +498,10 @@ class Marketer(ErpOrganisation):
             self._resold_by._resells = self
             
     resold_by = property(get_resold_by, set_resold_by)
+    # >>> resold_by
 
+    # <<< held_by
+    # @generated
     def get_held_by(self):
         """ A Marketer holds title to a ServiceReservation.
         """
@@ -381,57 +525,77 @@ class Marketer(ErpOrganisation):
         for obj in held_by:
             obj._holds = None
             self._held_by.remove(obj)
+    # >>> held_by
 
-    resells_energy_product = []
+    # <<< resells_energy_product
+    # @generated
+    def get_resells_energy_product(self):
+        """ A Marketer may resell an EnergyProduct.
+        """
+        return self._resells_energy_product
+
+    def set_resells_energy_product(self, value):
+        for p in self._resells_energy_product:
+            filtered = [q for q in p.resold_by_marketers if q != self]
+            self._resells_energy_product._resold_by_marketers = filtered
+        for r in value:
+            if self not in r._resold_by_marketers:
+                r._resold_by_marketers.append(self)
+        self._resells_energy_product = value
+            
+    resells_energy_product = property(get_resells_energy_product, set_resells_energy_product)
     
     def add_resells_energy_product(self, *resells_energy_product):
         for obj in resells_energy_product:
-	        self._resells_energy_product.append(obj)
+            if self not in obj._resold_by_marketers:
+                obj._resold_by_marketers.append(self)
+            self._resells_energy_product.append(obj)
         
     def remove_resells_energy_product(self, *resells_energy_product):
         for obj in resells_energy_product:
-	        self._resells_energy_product.remove(obj)
+            if self in obj._resold_by_marketers:
+                obj._resold_by_marketers.remove(self)
+            self._resells_energy_product.remove(obj)
+    # >>> resells_energy_product
 
-    # <<< marketer
-    # @generated
-    def __init__(self, holds_title_to_energy_products=[], resold_by=None, held_by=[], resells_energy_product=[], **kw_args):
-        """ Initialises a new 'Marketer' instance.
-        """
-        self._holds_title_to_energy_products = []
-        self.holds_title_to_energy_products = holds_title_to_energy_products
-        self._resold_by = None
-        self.resold_by = resold_by
-        self._held_by = []
-        self.held_by = held_by
-        self._resells_energy_product = []
-        self.resells_energy_product = resells_energy_product
-
-        super(Marketer, self).__init__(**kw_args)
-    # >>> marketer
 
 
 class FinancialVersion(Element):
- 
-    date = ''
-
- 
-    version = ''
-
     # <<< financial_version
     # @generated
     def __init__(self, date='', version='', **kw_args):
         """ Initialises a new 'FinancialVersion' instance.
         """
-        self.date = date
-        self.version = version
+ 
+        self.date = ''
+ 
+        self.version = ''
+        
 
         super(FinancialVersion, self).__init__(**kw_args)
     # >>> financial_version
+        
 
 
 class OpenAccessProduct(Agreement):
     """ Contracts for services offered commercially.
     """
+    # <<< open_access_product
+    # @generated
+    def __init__(self, ancillary_services=[], provided_by_transmission_service=[], **kw_args):
+        """ Initialises a new 'OpenAccessProduct' instance.
+        """
+        
+        self._ancillary_services = []
+        self.ancillary_services = ancillary_services
+        self._provided_by_transmission_service = []
+        self.provided_by_transmission_service = provided_by_transmission_service
+
+        super(OpenAccessProduct, self).__init__(**kw_args)
+    # >>> open_access_product
+        
+    # <<< ancillary_services
+    # @generated
     def get_ancillary_services(self):
         """ AncillaryServices are sold through a contract which offers a particular OpenAccessProduct.
         """
@@ -455,7 +619,10 @@ class OpenAccessProduct(Agreement):
         for obj in ancillary_services:
             obj._open_access_product = None
             self._ancillary_services.remove(obj)
+    # >>> ancillary_services
 
+    # <<< provided_by_transmission_service
+    # @generated
     def get_provided_by_transmission_service(self):
         """ A TransmissionService is sold according to the terms of a particular OpenAccessProduct agreement.
         """
@@ -479,24 +646,39 @@ class OpenAccessProduct(Agreement):
         for obj in provided_by_transmission_service:
             obj._trans_contract_for = None
             self._provided_by_transmission_service.remove(obj)
+    # >>> provided_by_transmission_service
 
-    # <<< open_access_product
-    # @generated
-    def __init__(self, ancillary_services=[], provided_by_transmission_service=[], **kw_args):
-        """ Initialises a new 'OpenAccessProduct' instance.
-        """
-        self._ancillary_services = []
-        self.ancillary_services = ancillary_services
-        self._provided_by_transmission_service = []
-        self.provided_by_transmission_service = provided_by_transmission_service
-
-        super(OpenAccessProduct, self).__init__(**kw_args)
-    # >>> open_access_product
 
 
 class TransmissionProvider(ErpOrganisation):
     """ Provider of the transmission capacity (interconnecting wires between Generation and Consumption) required to fulfill and Energy Transaction's energy exchange. Posts information for transmission paths and AvailableTransmissionCapacities on a reservation node. Buys and sells its products and services on the same reservation node.
     """
+    # <<< transmission_provider
+    # @generated
+    def __init__(self, service_point=[], transmission_products=[], flowgate=[], for_=[], offered_by=[], sold_by=[], ancillary_services=[], **kw_args):
+        """ Initialises a new 'TransmissionProvider' instance.
+        """
+        
+        self._service_point = []
+        self.service_point = service_point
+        self._transmission_products = []
+        self.transmission_products = transmission_products
+        self._flowgate = []
+        self.flowgate = flowgate
+        self._for_ = []
+        self.for_ = for_
+        self._offered_by = []
+        self.offered_by = offered_by
+        self._sold_by = []
+        self.sold_by = sold_by
+        self._ancillary_services = []
+        self.ancillary_services = ancillary_services
+
+        super(TransmissionProvider, self).__init__(**kw_args)
+    # >>> transmission_provider
+        
+    # <<< service_point
+    # @generated
     def get_service_point(self):
         """ A TransmissionProvider registers one or more ServicePoints.
         """
@@ -520,7 +702,10 @@ class TransmissionProvider(ErpOrganisation):
         for obj in service_point:
             obj._transmission_provider = None
             self._service_point.remove(obj)
+    # >>> service_point
 
+    # <<< transmission_products
+    # @generated
     def get_transmission_products(self):
         """ A TransmissionProvider offers a TransmissionProduct.
         """
@@ -544,17 +729,41 @@ class TransmissionProvider(ErpOrganisation):
         for obj in transmission_products:
             obj._transmission_provider = None
             self._transmission_products.remove(obj)
+    # >>> transmission_products
 
-    flowgate = []
+    # <<< flowgate
+    # @generated
+    def get_flowgate(self):
+        """ A flowgate can be reciprocal flowgate for 0 to n transmission providers. A transmission provider may be a reciprocal entity for 0 to n flowgates.
+        """
+        return self._flowgate
+
+    def set_flowgate(self, value):
+        for p in self._flowgate:
+            filtered = [q for q in p.transmission_provider if q != self]
+            self._flowgate._transmission_provider = filtered
+        for r in value:
+            if self not in r._transmission_provider:
+                r._transmission_provider.append(self)
+        self._flowgate = value
+            
+    flowgate = property(get_flowgate, set_flowgate)
     
     def add_flowgate(self, *flowgate):
         for obj in flowgate:
-	        self._flowgate.append(obj)
+            if self not in obj._transmission_provider:
+                obj._transmission_provider.append(self)
+            self._flowgate.append(obj)
         
     def remove_flowgate(self, *flowgate):
         for obj in flowgate:
-	        self._flowgate.remove(obj)
+            if self in obj._transmission_provider:
+                obj._transmission_provider.remove(self)
+            self._flowgate.remove(obj)
+    # >>> flowgate
 
+    # <<< for_
+    # @generated
     def get_for_(self):
         """ Part of the LossProfile for an EnergyTransaction may be a loss for a TransmissionProvider.
         """
@@ -578,7 +787,10 @@ class TransmissionProvider(ErpOrganisation):
         for obj in for_:
             obj._has_loss_ = None
             self._for_.remove(obj)
+    # >>> for_
 
+    # <<< offered_by
+    # @generated
     def get_offered_by(self):
         """ The combination of a TransmissionProduct on a TransmissionPath is a TransmissionService, for which the TransmissionProvider must post one or two ATC's (AvailableTransmissionCapacity - Amount of possible flow by  direction).
         """
@@ -602,7 +814,10 @@ class TransmissionProvider(ErpOrganisation):
         for obj in offered_by:
             obj._offers = None
             self._offered_by.remove(obj)
+    # >>> offered_by
 
+    # <<< sold_by
+    # @generated
     def get_sold_by(self):
         """ A TransmissionProvider sells the right to transmit energy across the wires in a ServiceReservation.
         """
@@ -626,39 +841,39 @@ class TransmissionProvider(ErpOrganisation):
         for obj in sold_by:
             obj._sells = None
             self._sold_by.remove(obj)
+    # >>> sold_by
 
-    ancillary_services = []
+    # <<< ancillary_services
+    # @generated
+    def get_ancillary_services(self):
+        """ A TransmissionProvider offers AncillaryServices. One type of AncillaryServices is a shipping and handling fee to manage the services purchased, another is the reactive power support used to control the voltage on the  transmission system.  This is the amount needed to support the path or amount necessary to maintain the proper voltage at a ServicePoint.
+        """
+        return self._ancillary_services
+
+    def set_ancillary_services(self, value):
+        for p in self._ancillary_services:
+            filtered = [q for q in p.transmission_providers if q != self]
+            self._ancillary_services._transmission_providers = filtered
+        for r in value:
+            if self not in r._transmission_providers:
+                r._transmission_providers.append(self)
+        self._ancillary_services = value
+            
+    ancillary_services = property(get_ancillary_services, set_ancillary_services)
     
     def add_ancillary_services(self, *ancillary_services):
         for obj in ancillary_services:
-	        self._ancillary_services.append(obj)
+            if self not in obj._transmission_providers:
+                obj._transmission_providers.append(self)
+            self._ancillary_services.append(obj)
         
     def remove_ancillary_services(self, *ancillary_services):
         for obj in ancillary_services:
-	        self._ancillary_services.remove(obj)
+            if self in obj._transmission_providers:
+                obj._transmission_providers.remove(self)
+            self._ancillary_services.remove(obj)
+    # >>> ancillary_services
 
-    # <<< transmission_provider
-    # @generated
-    def __init__(self, service_point=[], transmission_products=[], flowgate=[], for_=[], offered_by=[], sold_by=[], ancillary_services=[], **kw_args):
-        """ Initialises a new 'TransmissionProvider' instance.
-        """
-        self._service_point = []
-        self.service_point = service_point
-        self._transmission_products = []
-        self.transmission_products = transmission_products
-        self._flowgate = []
-        self.flowgate = flowgate
-        self._for_ = []
-        self.for_ = for_
-        self._offered_by = []
-        self.offered_by = offered_by
-        self._sold_by = []
-        self.sold_by = sold_by
-        self._ancillary_services = []
-        self.ancillary_services = ancillary_services
-
-        super(TransmissionProvider, self).__init__(**kw_args)
-    # >>> transmission_provider
 
 
 # <<< financial

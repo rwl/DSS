@@ -20,20 +20,34 @@ class StateVariable(Element):
     def __init__(self, **kw_args):
         """ Initialises a new 'StateVariable' instance.
         """
+        
 
         super(StateVariable, self).__init__(**kw_args)
     # >>> state_variable
+        
 
 
 class SvVoltage(StateVariable):
     """ State variable for voltage.
     """
-    # The voltage angle in radians of the topological node. 
-    angle = ''
+    # <<< sv_voltage
+    # @generated
+    def __init__(self, angle='', v='', topological_node=None, **kw_args):
+        """ Initialises a new 'SvVoltage' instance.
+        """
+        # The voltage angle in radians of the topological node. 
+        self.angle = ''
+        # The voltage magnitude of the topological node. 
+        self.v = ''
+        
+        self._topological_node = None
+        self.topological_node = topological_node
 
-    # The voltage magnitude of the topological node. 
-    v = ''
-
+        super(SvVoltage, self).__init__(**kw_args)
+    # >>> sv_voltage
+        
+    # <<< topological_node
+    # @generated
     def get_topological_node(self):
         """ The topological node associated with the voltage state.
         """
@@ -48,30 +62,31 @@ class SvVoltage(StateVariable):
             self._topological_node._sv_voltage = self
             
     topological_node = property(get_topological_node, set_topological_node)
+    # >>> topological_node
 
-    # <<< sv_voltage
-    # @generated
-    def __init__(self, angle='', v='', topological_node=None, **kw_args):
-        """ Initialises a new 'SvVoltage' instance.
-        """
-        self.angle = angle
-        self.v = v
-        self._topological_node = None
-        self.topological_node = topological_node
-
-        super(SvVoltage, self).__init__(**kw_args)
-    # >>> sv_voltage
 
 
 class SvShuntCompensatorSections(StateVariable):
     """ State variable for the number of sections in service for a shunt compensator.
     """
-    # The number of sections in service. 
-    sections = 0
+    # <<< sv_shunt_compensator_sections
+    # @generated
+    def __init__(self, sections=0, continuous_sections=0.0, shunt_compensator=None, **kw_args):
+        """ Initialises a new 'SvShuntCompensatorSections' instance.
+        """
+        # The number of sections in service. 
+        self.sections = 0
+        # The number of sections in service as a continous variable. 
+        self.continuous_sections = 0.0
+        
+        self._shunt_compensator = None
+        self.shunt_compensator = shunt_compensator
 
-    # The number of sections in service as a continous variable. 
-    continuous_sections = 0.0
-
+        super(SvShuntCompensatorSections, self).__init__(**kw_args)
+    # >>> sv_shunt_compensator_sections
+        
+    # <<< shunt_compensator
+    # @generated
     def get_shunt_compensator(self):
         """ The shunt compensator for which the state applies.
         """
@@ -86,30 +101,31 @@ class SvShuntCompensatorSections(StateVariable):
             self._shunt_compensator._sv_shunt_compensator_sections = self
             
     shunt_compensator = property(get_shunt_compensator, set_shunt_compensator)
+    # >>> shunt_compensator
 
-    # <<< sv_shunt_compensator_sections
-    # @generated
-    def __init__(self, sections=0, continuous_sections=0.0, shunt_compensator=None, **kw_args):
-        """ Initialises a new 'SvShuntCompensatorSections' instance.
-        """
-        self.sections = sections
-        self.continuous_sections = continuous_sections
-        self._shunt_compensator = None
-        self.shunt_compensator = shunt_compensator
-
-        super(SvShuntCompensatorSections, self).__init__(**kw_args)
-    # >>> sv_shunt_compensator_sections
 
 
 class SvTapStep(StateVariable):
     """ State variable for transformer tap step.     Normally a profile specifies only one of the attributes 'position'or 'tapRatio'.
     """
-    # The integer tap position. 
-    position = 0
+    # <<< sv_tap_step
+    # @generated
+    def __init__(self, position=0, continuous_position=0.0, tap_changer=None, **kw_args):
+        """ Initialises a new 'SvTapStep' instance.
+        """
+        # The integer tap position. 
+        self.position = 0
+        # The floating point tap position. 
+        self.continuous_position = 0.0
+        
+        self._tap_changer = None
+        self.tap_changer = tap_changer
 
-    # The floating point tap position. 
-    continuous_position = 0.0
-
+        super(SvTapStep, self).__init__(**kw_args)
+    # >>> sv_tap_step
+        
+    # <<< tap_changer
+    # @generated
     def get_tap_changer(self):
         """ The tap changer associated with the tap step state.
         """
@@ -124,30 +140,31 @@ class SvTapStep(StateVariable):
             self._tap_changer._sv_tap_step = self
             
     tap_changer = property(get_tap_changer, set_tap_changer)
+    # >>> tap_changer
 
-    # <<< sv_tap_step
-    # @generated
-    def __init__(self, position=0, continuous_position=0.0, tap_changer=None, **kw_args):
-        """ Initialises a new 'SvTapStep' instance.
-        """
-        self.position = position
-        self.continuous_position = continuous_position
-        self._tap_changer = None
-        self.tap_changer = tap_changer
-
-        super(SvTapStep, self).__init__(**kw_args)
-    # >>> sv_tap_step
 
 
 class SvPowerFlow(StateVariable):
     """ State variable for power flow.
     """
-    # The active power flow into the terminal. 
-    p = ''
+    # <<< sv_power_flow
+    # @generated
+    def __init__(self, p='', q='', terminal=None, **kw_args):
+        """ Initialises a new 'SvPowerFlow' instance.
+        """
+        # The active power flow into the terminal. 
+        self.p = ''
+        # The reactive power flow into the terminal. 
+        self.q = ''
+        
+        self._terminal = None
+        self.terminal = terminal
 
-    # The reactive power flow into the terminal. 
-    q = ''
-
+        super(SvPowerFlow, self).__init__(**kw_args)
+    # >>> sv_power_flow
+        
+    # <<< terminal
+    # @generated
     def get_terminal(self):
         """ The terminal associated with the power flow state.
         """
@@ -162,30 +179,31 @@ class SvPowerFlow(StateVariable):
             self._terminal._sv_power_flow = self
             
     terminal = property(get_terminal, set_terminal)
+    # >>> terminal
 
-    # <<< sv_power_flow
-    # @generated
-    def __init__(self, p='', q='', terminal=None, **kw_args):
-        """ Initialises a new 'SvPowerFlow' instance.
-        """
-        self.p = p
-        self.q = q
-        self._terminal = None
-        self.terminal = terminal
-
-        super(SvPowerFlow, self).__init__(**kw_args)
-    # >>> sv_power_flow
 
 
 class SvInjection(StateVariable):
     """ Injectixon state variable.
     """
-    # The activive power injected into the bus at this location. 
-    p_net_injection = ''
+    # <<< sv_injection
+    # @generated
+    def __init__(self, p_net_injection='', q_net_injection='', topological_node=None, **kw_args):
+        """ Initialises a new 'SvInjection' instance.
+        """
+        # The activive power injected into the bus at this location. 
+        self.p_net_injection = ''
+        # The activive power injected into the bus at this location. 
+        self.q_net_injection = ''
+        
+        self._topological_node = None
+        self.topological_node = topological_node
 
-    # The activive power injected into the bus at this location. 
-    q_net_injection = ''
-
+        super(SvInjection, self).__init__(**kw_args)
+    # >>> sv_injection
+        
+    # <<< topological_node
+    # @generated
     def get_topological_node(self):
         """ The topological node associated with the state injection.
         """
@@ -200,27 +218,29 @@ class SvInjection(StateVariable):
             self._topological_node._sv_injection = self
             
     topological_node = property(get_topological_node, set_topological_node)
+    # >>> topological_node
 
-    # <<< sv_injection
-    # @generated
-    def __init__(self, p_net_injection='', q_net_injection='', topological_node=None, **kw_args):
-        """ Initialises a new 'SvInjection' instance.
-        """
-        self.p_net_injection = p_net_injection
-        self.q_net_injection = q_net_injection
-        self._topological_node = None
-        self.topological_node = topological_node
-
-        super(SvInjection, self).__init__(**kw_args)
-    # >>> sv_injection
 
 
 class SvStatus(StateVariable):
     """ State variable for status.
     """
-    # The in service status as a result of topology processing. 
-    in_service = False
+    # <<< sv_status
+    # @generated
+    def __init__(self, in_service=False, conducting_equipment=None, **kw_args):
+        """ Initialises a new 'SvStatus' instance.
+        """
+        # The in service status as a result of topology processing. 
+        self.in_service = False
+        
+        self._conducting_equipment = None
+        self.conducting_equipment = conducting_equipment
 
+        super(SvStatus, self).__init__(**kw_args)
+    # >>> sv_status
+        
+    # <<< conducting_equipment
+    # @generated
     def get_conducting_equipment(self):
         """ The conducting equipment associated with the status state.
         """
@@ -235,18 +255,8 @@ class SvStatus(StateVariable):
             self._conducting_equipment._sv_status = self
             
     conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
+    # >>> conducting_equipment
 
-    # <<< sv_status
-    # @generated
-    def __init__(self, in_service=False, conducting_equipment=None, **kw_args):
-        """ Initialises a new 'SvStatus' instance.
-        """
-        self.in_service = in_service
-        self._conducting_equipment = None
-        self.conducting_equipment = conducting_equipment
-
-        super(SvStatus, self).__init__(**kw_args)
-    # >>> sv_status
 
 
 # <<< state_variables

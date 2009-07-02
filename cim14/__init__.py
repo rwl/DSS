@@ -11,9 +11,22 @@ ns_prefix = "cim"
 ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#"
 
 class Element(object):
+    # <<< element
+    # @generated
+    def __init__(self, uri='', model=None, **kw_args):
+        """ Initialises a new 'Element' instance.
+        """
  
-    uri = ''
+        self.uri = ''
+        
+        self._model = None
+        self.model = model
 
+        super(Element, self).__init__(**kw_args)
+    # >>> element
+        
+    # <<< model
+    # @generated
     def get_model(self):
         """ 
         """
@@ -29,21 +42,25 @@ class Element(object):
             self._model._elements.append(self)
 
     model = property(get_model, set_model)
+    # >>> model
 
-    # <<< element
-    # @generated
-    def __init__(self, uri='', model=None, **kw_args):
-        """ Initialises a new 'Element' instance.
-        """
-        self.uri = uri
-        self._model = None
-        self.model = model
-
-        super(Element, self).__init__(**kw_args)
-    # >>> element
 
 
 class Model(object):
+    # <<< model
+    # @generated
+    def __init__(self, elements=[], **kw_args):
+        """ Initialises a new 'Model' instance.
+        """
+        
+        self._elements = []
+        self.elements = elements
+
+        super(Model, self).__init__(**kw_args)
+    # >>> model
+        
+    # <<< elements
+    # @generated
     def get_elements(self):
         """ 
         """
@@ -67,38 +84,27 @@ class Model(object):
         for obj in elements:
             obj._model = None
             self._elements.remove(obj)
+    # >>> elements
 
-    # <<< model
-    # @generated
-    def __init__(self, elements=[], **kw_args):
-        """ Initialises a new 'Model' instance.
-        """
-        self._elements = []
-        self.elements = elements
-
-        super(Model, self).__init__(**kw_args)
-    # >>> model
 
 
 class CombinedVersion(Element):
     """ The combined version denotes the versions of the subpackages that have been combined into the total CIIMmodel. This is a convenience instead of having to look at each subpackage.
     """
-    # Form is IEC61970CIMXXvYY_IEC61968CIMXXvYY_combined where XX is the major CIM package version and the YY is the minor version, and different packages could have different major and minor versions.   For example IEC61970CIM13v18_IEC61968CIM10v16_combined.  Additional packages might be added in the future. 
-    version = ''
-
-    # Form is YYYY-MM-DD for example for January 5, 2009 it is 2009-01-05. 
-    date = ''
-
     # <<< combined_version
     # @generated
     def __init__(self, version='', date='', **kw_args):
         """ Initialises a new 'CombinedVersion' instance.
         """
-        self.version = version
-        self.date = date
+        # Form is IEC61970CIMXXvYY_IEC61968CIMXXvYY_combined where XX is the major CIM package version and the YY is the minor version, and different packages could have different major and minor versions.   For example IEC61970CIM13v18_IEC61968CIM10v16_combined.  Additional packages might be added in the future. 
+        self.version = ''
+        # Form is YYYY-MM-DD for example for January 5, 2009 it is 2009-01-05. 
+        self.date = ''
+        
 
         super(CombinedVersion, self).__init__(**kw_args)
     # >>> combined_version
+        
 
 
 # <<< cim14

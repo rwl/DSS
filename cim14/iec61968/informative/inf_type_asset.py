@@ -16,6 +16,22 @@ ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#IEC61968.Informative.InfTypeA
 class ElecAMElecPropRole(Role):
     """ ElectricalAssetModel - ElectrialProperties Role. Used to define what the properties refers to in the AssetModel. e.g. for a Transformer, it will have an association to an instance of ElectricalProperties for each Winding, with the roleType defining whether it is the primary, secondary, tertiary, quartiary winding.
     """
+    # <<< elec_amelec_prop_role
+    # @generated
+    def __init__(self, electrical_asset_model=None, electrical_info=None, **kw_args):
+        """ Initialises a new 'ElecAMElecPropRole' instance.
+        """
+        
+        self._electrical_asset_model = None
+        self.electrical_asset_model = electrical_asset_model
+        self._electrical_info = None
+        self.electrical_info = electrical_info
+
+        super(ElecAMElecPropRole, self).__init__(**kw_args)
+    # >>> elec_amelec_prop_role
+        
+    # <<< electrical_asset_model
+    # @generated
     def get_electrical_asset_model(self):
         """ 
         """
@@ -31,7 +47,10 @@ class ElecAMElecPropRole(Role):
             self._electrical_asset_model._electrical_info_roles.append(self)
 
     electrical_asset_model = property(get_electrical_asset_model, set_electrical_asset_model)
+    # >>> electrical_asset_model
 
+    # <<< electrical_info
+    # @generated
     def get_electrical_info(self):
         """ 
         """
@@ -47,49 +66,19 @@ class ElecAMElecPropRole(Role):
             self._electrical_info._electrical_asset_model_roles.append(self)
 
     electrical_info = property(get_electrical_info, set_electrical_info)
+    # >>> electrical_info
 
-    # <<< elec_amelec_prop_role
-    # @generated
-    def __init__(self, electrical_asset_model=None, electrical_info=None, **kw_args):
-        """ Initialises a new 'ElecAMElecPropRole' instance.
-        """
-        self._electrical_asset_model = None
-        self.electrical_asset_model = electrical_asset_model
-        self._electrical_info = None
-        self.electrical_info = electrical_info
-
-        super(ElecAMElecPropRole, self).__init__(**kw_args)
-    # >>> elec_amelec_prop_role
 
 
 class Connection(IdentifiedObject):
     """ A structure can have multiple connection points for electrical connections (e.g. line) each with multiple mounting points, one for each phase. e.g. a Tower may have three Connections, two with three mounting points, one for each phase and a third with a single mounting point for the neutral line. A pole, on the other hand, may have a single Connection with one, two or three mounting points depending on whether it is carrying 1,2 or 3 phases.
     """
-    structure_type_assets = []
-    
-    def add_structure_type_assets(self, *structure_type_assets):
-        for obj in structure_type_assets:
-	        self._structure_type_assets.append(obj)
-        
-    def remove_structure_type_assets(self, *structure_type_assets):
-        for obj in structure_type_assets:
-	        self._structure_type_assets.remove(obj)
-
-    mounting_points = []
-    
-    def add_mounting_points(self, *mounting_points):
-        for obj in mounting_points:
-	        self._mounting_points.append(obj)
-        
-    def remove_mounting_points(self, *mounting_points):
-        for obj in mounting_points:
-	        self._mounting_points.remove(obj)
-
     # <<< connection
     # @generated
     def __init__(self, structure_type_assets=[], mounting_points=[], **kw_args):
         """ Initialises a new 'Connection' instance.
         """
+        
         self._structure_type_assets = []
         self.structure_type_assets = structure_type_assets
         self._mounting_points = []
@@ -97,11 +86,90 @@ class Connection(IdentifiedObject):
 
         super(Connection, self).__init__(**kw_args)
     # >>> connection
+        
+    # <<< structure_type_assets
+    # @generated
+    def get_structure_type_assets(self):
+        """ 
+        """
+        return self._structure_type_assets
+
+    def set_structure_type_assets(self, value):
+        for p in self._structure_type_assets:
+            filtered = [q for q in p.mount_connections if q != self]
+            self._structure_type_assets._mount_connections = filtered
+        for r in value:
+            if self not in r._mount_connections:
+                r._mount_connections.append(self)
+        self._structure_type_assets = value
+            
+    structure_type_assets = property(get_structure_type_assets, set_structure_type_assets)
+    
+    def add_structure_type_assets(self, *structure_type_assets):
+        for obj in structure_type_assets:
+            if self not in obj._mount_connections:
+                obj._mount_connections.append(self)
+            self._structure_type_assets.append(obj)
+        
+    def remove_structure_type_assets(self, *structure_type_assets):
+        for obj in structure_type_assets:
+            if self in obj._mount_connections:
+                obj._mount_connections.remove(self)
+            self._structure_type_assets.remove(obj)
+    # >>> structure_type_assets
+
+    # <<< mounting_points
+    # @generated
+    def get_mounting_points(self):
+        """ 
+        """
+        return self._mounting_points
+
+    def set_mounting_points(self, value):
+        for p in self._mounting_points:
+            filtered = [q for q in p.connections if q != self]
+            self._mounting_points._connections = filtered
+        for r in value:
+            if self not in r._connections:
+                r._connections.append(self)
+        self._mounting_points = value
+            
+    mounting_points = property(get_mounting_points, set_mounting_points)
+    
+    def add_mounting_points(self, *mounting_points):
+        for obj in mounting_points:
+            if self not in obj._connections:
+                obj._connections.append(self)
+            self._mounting_points.append(obj)
+        
+    def remove_mounting_points(self, *mounting_points):
+        for obj in mounting_points:
+            if self in obj._connections:
+                obj._connections.remove(self)
+            self._mounting_points.remove(obj)
+    # >>> mounting_points
+
 
 
 class ElecTAElecPropRole(Role):
     """ ElectricalTypeAsset - ElectrialProperties Role. Used to define what the properties refers to in the TypeAsset. e.g. for a Transformer, it will have an association to an instance of ElectricalProperties for each Winding, with the roleType defining whether it is the primary, secondary, tertiary, quartiary winding.
     """
+    # <<< elec_taelec_prop_role
+    # @generated
+    def __init__(self, electrical_type_asset=None, electrical_info=None, **kw_args):
+        """ Initialises a new 'ElecTAElecPropRole' instance.
+        """
+        
+        self._electrical_type_asset = None
+        self.electrical_type_asset = electrical_type_asset
+        self._electrical_info = None
+        self.electrical_info = electrical_info
+
+        super(ElecTAElecPropRole, self).__init__(**kw_args)
+    # >>> elec_taelec_prop_role
+        
+    # <<< electrical_type_asset
+    # @generated
     def get_electrical_type_asset(self):
         """ 
         """
@@ -117,7 +185,10 @@ class ElecTAElecPropRole(Role):
             self._electrical_type_asset._electrical_info_roles.append(self)
 
     electrical_type_asset = property(get_electrical_type_asset, set_electrical_type_asset)
+    # >>> electrical_type_asset
 
+    # <<< electrical_info
+    # @generated
     def get_electrical_info(self):
         """ 
         """
@@ -133,33 +204,45 @@ class ElecTAElecPropRole(Role):
             self._electrical_info._electrical_type_asset_roles.append(self)
 
     electrical_info = property(get_electrical_info, set_electrical_info)
+    # >>> electrical_info
 
-    # <<< elec_taelec_prop_role
-    # @generated
-    def __init__(self, electrical_type_asset=None, electrical_info=None, **kw_args):
-        """ Initialises a new 'ElecTAElecPropRole' instance.
-        """
-        self._electrical_type_asset = None
-        self.electrical_type_asset = electrical_type_asset
-        self._electrical_info = None
-        self.electrical_info = electrical_info
-
-        super(ElecTAElecPropRole, self).__init__(**kw_args)
-    # >>> elec_taelec_prop_role
 
 
 class TypeAsset(Document):
     """ Whereas an AssetModel is a particular model and version of a vendor's product, a TypeAsset is documentation for a generic asset or material item that may be used for design purposes. Any number of AssetModels may be used to perform this generic function. The primary role of the TypeAsset is typically defined by the PowereSystemResource it is associated with.
     """
-    # True if item is a stock item (default). 
-    stock_item = False
+    # <<< type_asset
+    # @generated
+    def __init__(self, stock_item=False, quantity='', estimated_unit_cost='', erp_req_line_items=[], asset_models=[], erp_bom_item_datas=[], type_asset_catalogue=None, erp_inventory_issues=[], cuwork_equipment_asset=None, cuasset=None, **kw_args):
+        """ Initialises a new 'TypeAsset' instance.
+        """
+        # True if item is a stock item (default). 
+        self.stock_item = False
+        # The value, unit of measure, and multiplier for the quantity. 
+        self.quantity = ''
+        # Estimated unit cost (or cost per unit length) of the this type of asset. It does not include labor to install/construct or configure it. 
+        self.estimated_unit_cost = ''
+        
+        self._erp_req_line_items = []
+        self.erp_req_line_items = erp_req_line_items
+        self._asset_models = []
+        self.asset_models = asset_models
+        self._erp_bom_item_datas = []
+        self.erp_bom_item_datas = erp_bom_item_datas
+        self._type_asset_catalogue = None
+        self.type_asset_catalogue = type_asset_catalogue
+        self._erp_inventory_issues = []
+        self.erp_inventory_issues = erp_inventory_issues
+        self._cuwork_equipment_asset = None
+        self.cuwork_equipment_asset = cuwork_equipment_asset
+        self._cuasset = None
+        self.cuasset = cuasset
 
-    # The value, unit of measure, and multiplier for the quantity. 
-    quantity = ''
-
-    # Estimated unit cost (or cost per unit length) of the this type of asset. It does not include labor to install/construct or configure it. 
-    estimated_unit_cost = ''
-
+        super(TypeAsset, self).__init__(**kw_args)
+    # >>> type_asset
+        
+    # <<< erp_req_line_items
+    # @generated
     def get_erp_req_line_items(self):
         """ 
         """
@@ -183,7 +266,10 @@ class TypeAsset(Document):
         for obj in erp_req_line_items:
             obj._type_asset = None
             self._erp_req_line_items.remove(obj)
+    # >>> erp_req_line_items
 
+    # <<< asset_models
+    # @generated
     def get_asset_models(self):
         """ A type of asset may be satisified with many different types of asset models.
         """
@@ -207,7 +293,10 @@ class TypeAsset(Document):
         for obj in asset_models:
             obj._type_asset = None
             self._asset_models.remove(obj)
+    # >>> asset_models
 
+    # <<< erp_bom_item_datas
+    # @generated
     def get_erp_bom_item_datas(self):
         """ 
         """
@@ -231,7 +320,10 @@ class TypeAsset(Document):
         for obj in erp_bom_item_datas:
             obj._type_asset = None
             self._erp_bom_item_datas.remove(obj)
+    # >>> erp_bom_item_datas
 
+    # <<< type_asset_catalogue
+    # @generated
     def get_type_asset_catalogue(self):
         """ 
         """
@@ -247,7 +339,10 @@ class TypeAsset(Document):
             self._type_asset_catalogue._type_assets.append(self)
 
     type_asset_catalogue = property(get_type_asset_catalogue, set_type_asset_catalogue)
+    # >>> type_asset_catalogue
 
+    # <<< erp_inventory_issues
+    # @generated
     def get_erp_inventory_issues(self):
         """ 
         """
@@ -271,7 +366,10 @@ class TypeAsset(Document):
         for obj in erp_inventory_issues:
             obj._type_asset = None
             self._erp_inventory_issues.remove(obj)
+    # >>> erp_inventory_issues
 
+    # <<< cuwork_equipment_asset
+    # @generated
     def get_cuwork_equipment_asset(self):
         """ 
         """
@@ -286,7 +384,10 @@ class TypeAsset(Document):
             self._cuwork_equipment_asset._type_asset = self
             
     cuwork_equipment_asset = property(get_cuwork_equipment_asset, set_cuwork_equipment_asset)
+    # >>> cuwork_equipment_asset
 
+    # <<< cuasset
+    # @generated
     def get_cuasset(self):
         """ 
         """
@@ -301,56 +402,66 @@ class TypeAsset(Document):
             self._cuasset._type_asset = self
             
     cuasset = property(get_cuasset, set_cuasset)
+    # >>> cuasset
 
-    # <<< type_asset
-    # @generated
-    def __init__(self, stock_item=False, quantity='', estimated_unit_cost='', erp_req_line_items=[], asset_models=[], erp_bom_item_datas=[], type_asset_catalogue=None, erp_inventory_issues=[], cuwork_equipment_asset=None, cuasset=None, **kw_args):
-        """ Initialises a new 'TypeAsset' instance.
-        """
-        self.stock_item = stock_item
-        self.quantity = quantity
-        self.estimated_unit_cost = estimated_unit_cost
-        self._erp_req_line_items = []
-        self.erp_req_line_items = erp_req_line_items
-        self._asset_models = []
-        self.asset_models = asset_models
-        self._erp_bom_item_datas = []
-        self.erp_bom_item_datas = erp_bom_item_datas
-        self._type_asset_catalogue = None
-        self.type_asset_catalogue = type_asset_catalogue
-        self._erp_inventory_issues = []
-        self.erp_inventory_issues = erp_inventory_issues
-        self._cuwork_equipment_asset = None
-        self.cuwork_equipment_asset = cuwork_equipment_asset
-        self._cuasset = None
-        self.cuasset = cuasset
-
-        super(TypeAsset, self).__init__(**kw_args)
-    # >>> type_asset
 
 
 class MountingPoint(IdentifiedObject):
     """ Point on a structure that a connection may have a conductor connected to. Defined with an x and y coordinate plus a phase. A connection may have multiple mounting points, one for each phase.
     """
+    # <<< mounting_point
+    # @generated
+    def __init__(self, x_coord=0, phase_code='abn', y_coord=0, connections=[], overhead_conductors=[], **kw_args):
+        """ Initialises a new 'MountingPoint' instance.
+        """
  
-    x_coord = 0
-
+        self.x_coord = 0
  Values are: "abn", "bc", "acn", "bn", "ac", "abc", "an", "ab", "c", "b", "abcn", "a", "cn", "n", "bcn"
-    phase_code = 'abn'
-
+        self.phase_code = 'abn'
  
-    y_coord = 0
+        self.y_coord = 0
+        
+        self._connections = []
+        self.connections = connections
+        self._overhead_conductors = []
+        self.overhead_conductors = overhead_conductors
 
-    connections = []
+        super(MountingPoint, self).__init__(**kw_args)
+    # >>> mounting_point
+        
+    # <<< connections
+    # @generated
+    def get_connections(self):
+        """ 
+        """
+        return self._connections
+
+    def set_connections(self, value):
+        for p in self._connections:
+            filtered = [q for q in p.mounting_points if q != self]
+            self._connections._mounting_points = filtered
+        for r in value:
+            if self not in r._mounting_points:
+                r._mounting_points.append(self)
+        self._connections = value
+            
+    connections = property(get_connections, set_connections)
     
     def add_connections(self, *connections):
         for obj in connections:
-	        self._connections.append(obj)
+            if self not in obj._mounting_points:
+                obj._mounting_points.append(self)
+            self._connections.append(obj)
         
     def remove_connections(self, *connections):
         for obj in connections:
-	        self._connections.remove(obj)
+            if self in obj._mounting_points:
+                obj._mounting_points.remove(self)
+            self._connections.remove(obj)
+    # >>> connections
 
+    # <<< overhead_conductors
+    # @generated
     def get_overhead_conductors(self):
         """ 
         """
@@ -374,29 +485,33 @@ class MountingPoint(IdentifiedObject):
         for obj in overhead_conductors:
             obj._mounting_point = None
             self._overhead_conductors.remove(obj)
+    # >>> overhead_conductors
 
-    # <<< mounting_point
-    # @generated
-    def __init__(self, x_coord=0, phase_code='abn', y_coord=0, connections=[], overhead_conductors=[], **kw_args):
-        """ Initialises a new 'MountingPoint' instance.
-        """
-        self.x_coord = x_coord
-        self.phase_code = phase_code
-        self.y_coord = y_coord
-        self._connections = []
-        self.connections = connections
-        self._overhead_conductors = []
-        self.overhead_conductors = overhead_conductors
-
-        super(MountingPoint, self).__init__(**kw_args)
-    # >>> mounting_point
 
 
 class TypeAssetCatalogue(IdentifiedObject):
     """ Catalogue of generic types of assets (TypeAsset) that may be used for design purposes. It is not associated with a particular manufacturer.
     """
-    status = None
+    # <<< type_asset_catalogue
+    # @generated
+    def __init__(self, status=None, type_assets=[], **kw_args):
+        """ Initialises a new 'TypeAssetCatalogue' instance.
+        """
+        
+        self.status = status
+        self._type_assets = []
+        self.type_assets = type_assets
 
+        super(TypeAssetCatalogue, self).__init__(**kw_args)
+    # >>> type_asset_catalogue
+        
+    # <<< status
+    # @generated
+    status = None
+    # >>> status
+
+    # <<< type_assets
+    # @generated
     def get_type_assets(self):
         """ 
         """
@@ -420,23 +535,27 @@ class TypeAssetCatalogue(IdentifiedObject):
         for obj in type_assets:
             obj._type_asset_catalogue = None
             self._type_assets.remove(obj)
+    # >>> type_assets
 
-    # <<< type_asset_catalogue
-    # @generated
-    def __init__(self, status=None, type_assets=[], **kw_args):
-        """ Initialises a new 'TypeAssetCatalogue' instance.
-        """
-        self.status = status
-        self._type_assets = []
-        self.type_assets = type_assets
-
-        super(TypeAssetCatalogue, self).__init__(**kw_args)
-    # >>> type_asset_catalogue
 
 
 class ToolTypeAsset(TypeAsset):
     """ Documentation for a generic tool that may be used for various purposes such as work planning.
     """
+    # <<< tool_type_asset
+    # @generated
+    def __init__(self, tool_asset_models=[], **kw_args):
+        """ Initialises a new 'ToolTypeAsset' instance.
+        """
+        
+        self._tool_asset_models = []
+        self.tool_asset_models = tool_asset_models
+
+        super(ToolTypeAsset, self).__init__(**kw_args)
+    # >>> tool_type_asset
+        
+    # <<< tool_asset_models
+    # @generated
     def get_tool_asset_models(self):
         """ 
         """
@@ -460,22 +579,27 @@ class ToolTypeAsset(TypeAsset):
         for obj in tool_asset_models:
             obj._tool_type_asset = None
             self._tool_asset_models.remove(obj)
+    # >>> tool_asset_models
 
-    # <<< tool_type_asset
-    # @generated
-    def __init__(self, tool_asset_models=[], **kw_args):
-        """ Initialises a new 'ToolTypeAsset' instance.
-        """
-        self._tool_asset_models = []
-        self.tool_asset_models = tool_asset_models
-
-        super(ToolTypeAsset, self).__init__(**kw_args)
-    # >>> tool_type_asset
 
 
 class AssetFunctionTypeAsset(TypeAsset):
     """ Documentation for a generic Asset Function that may be used for various purposes such as work planning.
     """
+    # <<< asset_function_type_asset
+    # @generated
+    def __init__(self, asset_function_asset_models=[], **kw_args):
+        """ Initialises a new 'AssetFunctionTypeAsset' instance.
+        """
+        
+        self._asset_function_asset_models = []
+        self.asset_function_asset_models = asset_function_asset_models
+
+        super(AssetFunctionTypeAsset, self).__init__(**kw_args)
+    # >>> asset_function_type_asset
+        
+    # <<< asset_function_asset_models
+    # @generated
     def get_asset_function_asset_models(self):
         """ 
         """
@@ -499,17 +623,8 @@ class AssetFunctionTypeAsset(TypeAsset):
         for obj in asset_function_asset_models:
             obj._asset_function_type_asset = None
             self._asset_function_asset_models.remove(obj)
+    # >>> asset_function_asset_models
 
-    # <<< asset_function_type_asset
-    # @generated
-    def __init__(self, asset_function_asset_models=[], **kw_args):
-        """ Initialises a new 'AssetFunctionTypeAsset' instance.
-        """
-        self._asset_function_asset_models = []
-        self.asset_function_asset_models = asset_function_asset_models
-
-        super(AssetFunctionTypeAsset, self).__init__(**kw_args)
-    # >>> asset_function_type_asset
 
 
 class SubstationTypeAsset(TypeAsset):
@@ -521,14 +636,30 @@ class SubstationTypeAsset(TypeAsset):
     def __init__(self, **kw_args):
         """ Initialises a new 'SubstationTypeAsset' instance.
         """
+        
 
         super(SubstationTypeAsset, self).__init__(**kw_args)
     # >>> substation_type_asset
+        
 
 
 class WorkEquipmentTypeAsset(TypeAsset):
     """ Documentation for generic equipment that may be used for various purposes such as work planning.
     """
+    # <<< work_equipment_type_asset
+    # @generated
+    def __init__(self, work_equipment_asset_models=[], **kw_args):
+        """ Initialises a new 'WorkEquipmentTypeAsset' instance.
+        """
+        
+        self._work_equipment_asset_models = []
+        self.work_equipment_asset_models = work_equipment_asset_models
+
+        super(WorkEquipmentTypeAsset, self).__init__(**kw_args)
+    # >>> work_equipment_type_asset
+        
+    # <<< work_equipment_asset_models
+    # @generated
     def get_work_equipment_asset_models(self):
         """ 
         """
@@ -552,17 +683,8 @@ class WorkEquipmentTypeAsset(TypeAsset):
         for obj in work_equipment_asset_models:
             obj._work_equipment_type_asset = None
             self._work_equipment_asset_models.remove(obj)
+    # >>> work_equipment_asset_models
 
-    # <<< work_equipment_type_asset
-    # @generated
-    def __init__(self, work_equipment_asset_models=[], **kw_args):
-        """ Initialises a new 'WorkEquipmentTypeAsset' instance.
-        """
-        self._work_equipment_asset_models = []
-        self.work_equipment_asset_models = work_equipment_asset_models
-
-        super(WorkEquipmentTypeAsset, self).__init__(**kw_args)
-    # >>> work_equipment_type_asset
 
 
 class ComEquipmentTypeAsset(TypeAsset):
@@ -574,14 +696,30 @@ class ComEquipmentTypeAsset(TypeAsset):
     def __init__(self, **kw_args):
         """ Initialises a new 'ComEquipmentTypeAsset' instance.
         """
+        
 
         super(ComEquipmentTypeAsset, self).__init__(**kw_args)
     # >>> com_equipment_type_asset
+        
 
 
 class VehicleTypeAsset(TypeAsset):
     """ Documentation for a generic vehicle that may be used for various purposes such as work planning.
     """
+    # <<< vehicle_type_asset
+    # @generated
+    def __init__(self, vehicle_asset_models=[], **kw_args):
+        """ Initialises a new 'VehicleTypeAsset' instance.
+        """
+        
+        self._vehicle_asset_models = []
+        self.vehicle_asset_models = vehicle_asset_models
+
+        super(VehicleTypeAsset, self).__init__(**kw_args)
+    # >>> vehicle_type_asset
+        
+    # <<< vehicle_asset_models
+    # @generated
     def get_vehicle_asset_models(self):
         """ 
         """
@@ -605,22 +743,27 @@ class VehicleTypeAsset(TypeAsset):
         for obj in vehicle_asset_models:
             obj._vehicle_type_asset = None
             self._vehicle_asset_models.remove(obj)
+    # >>> vehicle_asset_models
 
-    # <<< vehicle_type_asset
-    # @generated
-    def __init__(self, vehicle_asset_models=[], **kw_args):
-        """ Initialises a new 'VehicleTypeAsset' instance.
-        """
-        self._vehicle_asset_models = []
-        self.vehicle_asset_models = vehicle_asset_models
-
-        super(VehicleTypeAsset, self).__init__(**kw_args)
-    # >>> vehicle_type_asset
 
 
 class EndDeviceTypeAsset(TypeAsset):
     """ Documentation for generic End Device that may be used for various purposes such as work planning.
     """
+    # <<< end_device_type_asset
+    # @generated
+    def __init__(self, end_device_models=[], **kw_args):
+        """ Initialises a new 'EndDeviceTypeAsset' instance.
+        """
+        
+        self._end_device_models = []
+        self.end_device_models = end_device_models
+
+        super(EndDeviceTypeAsset, self).__init__(**kw_args)
+    # >>> end_device_type_asset
+        
+    # <<< end_device_models
+    # @generated
     def get_end_device_models(self):
         """ 
         """
@@ -644,22 +787,27 @@ class EndDeviceTypeAsset(TypeAsset):
         for obj in end_device_models:
             obj._end_device_type_asset = None
             self._end_device_models.remove(obj)
+    # >>> end_device_models
 
-    # <<< end_device_type_asset
-    # @generated
-    def __init__(self, end_device_models=[], **kw_args):
-        """ Initialises a new 'EndDeviceTypeAsset' instance.
-        """
-        self._end_device_models = []
-        self.end_device_models = end_device_models
-
-        super(EndDeviceTypeAsset, self).__init__(**kw_args)
-    # >>> end_device_type_asset
 
 
 class ElectricalTypeAsset(TypeAsset):
     """ Generic TypeAsset for all types of component in the network that have electrical characteristics.
     """
+    # <<< electrical_type_asset
+    # @generated
+    def __init__(self, electrical_info_roles=[], **kw_args):
+        """ Initialises a new 'ElectricalTypeAsset' instance.
+        """
+        
+        self._electrical_info_roles = []
+        self.electrical_info_roles = electrical_info_roles
+
+        super(ElectricalTypeAsset, self).__init__(**kw_args)
+    # >>> electrical_type_asset
+        
+    # <<< electrical_info_roles
+    # @generated
     def get_electrical_info_roles(self):
         """ 
         """
@@ -683,28 +831,31 @@ class ElectricalTypeAsset(TypeAsset):
         for obj in electrical_info_roles:
             obj._electrical_type_asset = None
             self._electrical_info_roles.remove(obj)
+    # >>> electrical_info_roles
 
-    # <<< electrical_type_asset
-    # @generated
-    def __init__(self, electrical_info_roles=[], **kw_args):
-        """ Initialises a new 'ElectricalTypeAsset' instance.
-        """
-        self._electrical_info_roles = []
-        self.electrical_info_roles = electrical_info_roles
-
-        super(ElectricalTypeAsset, self).__init__(**kw_args)
-    # >>> electrical_type_asset
 
 
 class ProtectionEquipmentTypeAsset(ElectricalTypeAsset):
     """ Documentation for generic protection equiment that may be used for design purposes.
     """
-    # Default ground trip setting for this type of relay, if applicable. 
-    default_ground_trip = ''
+    # <<< protection_equipment_type_asset
+    # @generated
+    def __init__(self, default_ground_trip='', default_phase_trip='', protection_equipment_asset_models=[], **kw_args):
+        """ Initialises a new 'ProtectionEquipmentTypeAsset' instance.
+        """
+        # Default ground trip setting for this type of relay, if applicable. 
+        self.default_ground_trip = ''
+        # Default phase trip setting for this type of relay, if applicable. 
+        self.default_phase_trip = ''
+        
+        self._protection_equipment_asset_models = []
+        self.protection_equipment_asset_models = protection_equipment_asset_models
 
-    # Default phase trip setting for this type of relay, if applicable. 
-    default_phase_trip = ''
-
+        super(ProtectionEquipmentTypeAsset, self).__init__(**kw_args)
+    # >>> protection_equipment_type_asset
+        
+    # <<< protection_equipment_asset_models
+    # @generated
     def get_protection_equipment_asset_models(self):
         """ 
         """
@@ -728,24 +879,29 @@ class ProtectionEquipmentTypeAsset(ElectricalTypeAsset):
         for obj in protection_equipment_asset_models:
             obj._protection_equipment_type_asset = None
             self._protection_equipment_asset_models.remove(obj)
+    # >>> protection_equipment_asset_models
 
-    # <<< protection_equipment_type_asset
-    # @generated
-    def __init__(self, default_ground_trip='', default_phase_trip='', protection_equipment_asset_models=[], **kw_args):
-        """ Initialises a new 'ProtectionEquipmentTypeAsset' instance.
-        """
-        self.default_ground_trip = default_ground_trip
-        self.default_phase_trip = default_phase_trip
-        self._protection_equipment_asset_models = []
-        self.protection_equipment_asset_models = protection_equipment_asset_models
-
-        super(ProtectionEquipmentTypeAsset, self).__init__(**kw_args)
-    # >>> protection_equipment_type_asset
 
 
 class BreakerTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic breaker asset that may be used for design purposes.
     """
+    # <<< breaker_type_asset
+    # @generated
+    def __init__(self, breaker_info=None, breaker_asset_models=[], **kw_args):
+        """ Initialises a new 'BreakerTypeAsset' instance.
+        """
+        
+        self._breaker_info = None
+        self.breaker_info = breaker_info
+        self._breaker_asset_models = []
+        self.breaker_asset_models = breaker_asset_models
+
+        super(BreakerTypeAsset, self).__init__(**kw_args)
+    # >>> breaker_type_asset
+        
+    # <<< breaker_info
+    # @generated
     def get_breaker_info(self):
         """ 
         """
@@ -760,7 +916,10 @@ class BreakerTypeAsset(ElectricalTypeAsset):
             self._breaker_info._breaker_type_asset = self
             
     breaker_info = property(get_breaker_info, set_breaker_info)
+    # >>> breaker_info
 
+    # <<< breaker_asset_models
+    # @generated
     def get_breaker_asset_models(self):
         """ 
         """
@@ -784,30 +943,33 @@ class BreakerTypeAsset(ElectricalTypeAsset):
         for obj in breaker_asset_models:
             obj._breaker_type_asset = None
             self._breaker_asset_models.remove(obj)
+    # >>> breaker_asset_models
 
-    # <<< breaker_type_asset
-    # @generated
-    def __init__(self, breaker_info=None, breaker_asset_models=[], **kw_args):
-        """ Initialises a new 'BreakerTypeAsset' instance.
-        """
-        self._breaker_info = None
-        self.breaker_info = breaker_info
-        self._breaker_asset_models = []
-        self.breaker_asset_models = breaker_asset_models
-
-        super(BreakerTypeAsset, self).__init__(**kw_args)
-    # >>> breaker_type_asset
 
 
 class TransformerTypeAsset(ElectricalTypeAsset):
     """ Documentation for generic transformers that may be used for various purposes such as work planning. The operating voltages can be found via the ElectricalProperties class. e.g. a two winding transformer will have two instances of ElectricalProperties and the primary/secondaryWinding can be found from the ratedKV attributes of each and the ElecTAElecPropRole used to define which is the primaryWinding and which is the secondaryWinding.
     """
-    # Maximum loss of power in the transformer core. 
-    core_loss = ''
+    # <<< transformer_type_asset
+    # @generated
+    def __init__(self, core_loss='', winding_count=0, transformer_asset_models=[], transformer_info=None, **kw_args):
+        """ Initialises a new 'TransformerTypeAsset' instance.
+        """
+        # Maximum loss of power in the transformer core. 
+        self.core_loss = ''
+        # Number of windings. 
+        self.winding_count = 0
+        
+        self._transformer_asset_models = []
+        self.transformer_asset_models = transformer_asset_models
+        self._transformer_info = None
+        self.transformer_info = transformer_info
 
-    # Number of windings. 
-    winding_count = 0
-
+        super(TransformerTypeAsset, self).__init__(**kw_args)
+    # >>> transformer_type_asset
+        
+    # <<< transformer_asset_models
+    # @generated
     def get_transformer_asset_models(self):
         """ 
         """
@@ -831,7 +993,10 @@ class TransformerTypeAsset(ElectricalTypeAsset):
         for obj in transformer_asset_models:
             obj._transformer_type_asset = None
             self._transformer_asset_models.remove(obj)
+    # >>> transformer_asset_models
 
+    # <<< transformer_info
+    # @generated
     def get_transformer_info(self):
         """ 
         """
@@ -847,26 +1012,27 @@ class TransformerTypeAsset(ElectricalTypeAsset):
             self._transformer_info._transformer_type_assets.append(self)
 
     transformer_info = property(get_transformer_info, set_transformer_info)
+    # >>> transformer_info
 
-    # <<< transformer_type_asset
-    # @generated
-    def __init__(self, core_loss='', winding_count=0, transformer_asset_models=[], transformer_info=None, **kw_args):
-        """ Initialises a new 'TransformerTypeAsset' instance.
-        """
-        self.core_loss = core_loss
-        self.winding_count = winding_count
-        self._transformer_asset_models = []
-        self.transformer_asset_models = transformer_asset_models
-        self._transformer_info = None
-        self.transformer_info = transformer_info
-
-        super(TransformerTypeAsset, self).__init__(**kw_args)
-    # >>> transformer_type_asset
 
 
 class BushingTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic bushing that may be used for various purposes such as work planning.
     """
+    # <<< bushing_type_asset
+    # @generated
+    def __init__(self, bushing_models=[], **kw_args):
+        """ Initialises a new 'BushingTypeAsset' instance.
+        """
+        
+        self._bushing_models = []
+        self.bushing_models = bushing_models
+
+        super(BushingTypeAsset, self).__init__(**kw_args)
+    # >>> bushing_type_asset
+        
+    # <<< bushing_models
+    # @generated
     def get_bushing_models(self):
         """ 
         """
@@ -890,51 +1056,81 @@ class BushingTypeAsset(ElectricalTypeAsset):
         for obj in bushing_models:
             obj._bushing_type_asset = None
             self._bushing_models.remove(obj)
+    # >>> bushing_models
 
-    # <<< bushing_type_asset
-    # @generated
-    def __init__(self, bushing_models=[], **kw_args):
-        """ Initialises a new 'BushingTypeAsset' instance.
-        """
-        self._bushing_models = []
-        self.bushing_models = bushing_models
-
-        super(BushingTypeAsset, self).__init__(**kw_args)
-    # >>> bushing_type_asset
 
 
 class StructureTypeAsset(TypeAsset):
     """ A Type of Structural Asset with properties common to a large number of asset models.
     """
-    # Maximum rated voltage of the equipment that can be mounted on/contained within the structure. 
-    rated_voltage = ''
-
-    mount_connections = []
-    
-    def add_mount_connections(self, *mount_connections):
-        for obj in mount_connections:
-	        self._mount_connections.append(obj)
-        
-    def remove_mount_connections(self, *mount_connections):
-        for obj in mount_connections:
-	        self._mount_connections.remove(obj)
-
     # <<< structure_type_asset
     # @generated
     def __init__(self, rated_voltage='', mount_connections=[], **kw_args):
         """ Initialises a new 'StructureTypeAsset' instance.
         """
-        self.rated_voltage = rated_voltage
+        # Maximum rated voltage of the equipment that can be mounted on/contained within the structure. 
+        self.rated_voltage = ''
+        
         self._mount_connections = []
         self.mount_connections = mount_connections
 
         super(StructureTypeAsset, self).__init__(**kw_args)
     # >>> structure_type_asset
+        
+    # <<< mount_connections
+    # @generated
+    def get_mount_connections(self):
+        """ 
+        """
+        return self._mount_connections
+
+    def set_mount_connections(self, value):
+        for p in self._mount_connections:
+            filtered = [q for q in p.structure_type_assets if q != self]
+            self._mount_connections._structure_type_assets = filtered
+        for r in value:
+            if self not in r._structure_type_assets:
+                r._structure_type_assets.append(self)
+        self._mount_connections = value
+            
+    mount_connections = property(get_mount_connections, set_mount_connections)
+    
+    def add_mount_connections(self, *mount_connections):
+        for obj in mount_connections:
+            if self not in obj._structure_type_assets:
+                obj._structure_type_assets.append(self)
+            self._mount_connections.append(obj)
+        
+    def remove_mount_connections(self, *mount_connections):
+        for obj in mount_connections:
+            if self in obj._structure_type_assets:
+                obj._structure_type_assets.remove(self)
+            self._mount_connections.remove(obj)
+    # >>> mount_connections
+
 
 
 class CompositeSwitchTypeAsset(TypeAsset):
     """ Documentation for a generic composite switch asset that may be used for design purposes. A composite wwitch is an amalgamation of multiple Switches.
     """
+    # <<< composite_switch_type_asset
+    # @generated
+    def __init__(self, composite_switch_asset_models=[], switch_types_assets=[], composite_switch_info=None, **kw_args):
+        """ Initialises a new 'CompositeSwitchTypeAsset' instance.
+        """
+        
+        self._composite_switch_asset_models = []
+        self.composite_switch_asset_models = composite_switch_asset_models
+        self._switch_types_assets = []
+        self.switch_types_assets = switch_types_assets
+        self._composite_switch_info = None
+        self.composite_switch_info = composite_switch_info
+
+        super(CompositeSwitchTypeAsset, self).__init__(**kw_args)
+    # >>> composite_switch_type_asset
+        
+    # <<< composite_switch_asset_models
+    # @generated
     def get_composite_switch_asset_models(self):
         """ 
         """
@@ -958,7 +1154,10 @@ class CompositeSwitchTypeAsset(TypeAsset):
         for obj in composite_switch_asset_models:
             obj._composite_switch_type_asset = None
             self._composite_switch_asset_models.remove(obj)
+    # >>> composite_switch_asset_models
 
+    # <<< switch_types_assets
+    # @generated
     def get_switch_types_assets(self):
         """ 
         """
@@ -982,7 +1181,10 @@ class CompositeSwitchTypeAsset(TypeAsset):
         for obj in switch_types_assets:
             obj._composite_switch_type_asset = None
             self._switch_types_assets.remove(obj)
+    # >>> switch_types_assets
 
+    # <<< composite_switch_info
+    # @generated
     def get_composite_switch_info(self):
         """ 
         """
@@ -997,32 +1199,33 @@ class CompositeSwitchTypeAsset(TypeAsset):
             self._composite_switch_info._composite_switch_type_asset = self
             
     composite_switch_info = property(get_composite_switch_info, set_composite_switch_info)
+    # >>> composite_switch_info
 
-    # <<< composite_switch_type_asset
-    # @generated
-    def __init__(self, composite_switch_asset_models=[], switch_types_assets=[], composite_switch_info=None, **kw_args):
-        """ Initialises a new 'CompositeSwitchTypeAsset' instance.
-        """
-        self._composite_switch_asset_models = []
-        self.composite_switch_asset_models = composite_switch_asset_models
-        self._switch_types_assets = []
-        self.switch_types_assets = switch_types_assets
-        self._composite_switch_info = None
-        self.composite_switch_info = composite_switch_info
-
-        super(CompositeSwitchTypeAsset, self).__init__(**kw_args)
-    # >>> composite_switch_type_asset
 
 
 class DuctTypeAsset(StructureTypeAsset):
     """ A Duct contains underground cables and is contained within a duct bank. The xCoord and yCoord attributes define its positioning within the DuctBank.
     """
-    # Y position of the duct within the duct bank. 
-    y_coord = 0
+    # <<< duct_type_asset
+    # @generated
+    def __init__(self, y_coord=0, x_coord=0, cable_assets=[], duct_bank_type_asset=None, **kw_args):
+        """ Initialises a new 'DuctTypeAsset' instance.
+        """
+        # Y position of the duct within the duct bank. 
+        self.y_coord = 0
+        # X position of the duct within the duct bank. 
+        self.x_coord = 0
+        
+        self._cable_assets = []
+        self.cable_assets = cable_assets
+        self._duct_bank_type_asset = None
+        self.duct_bank_type_asset = duct_bank_type_asset
 
-    # X position of the duct within the duct bank. 
-    x_coord = 0
-
+        super(DuctTypeAsset, self).__init__(**kw_args)
+    # >>> duct_type_asset
+        
+    # <<< cable_assets
+    # @generated
     def get_cable_assets(self):
         """ 
         """
@@ -1046,7 +1249,10 @@ class DuctTypeAsset(StructureTypeAsset):
         for obj in cable_assets:
             obj._duct_bank_type_asset = None
             self._cable_assets.remove(obj)
+    # >>> cable_assets
 
+    # <<< duct_bank_type_asset
+    # @generated
     def get_duct_bank_type_asset(self):
         """ 
         """
@@ -1062,26 +1268,27 @@ class DuctTypeAsset(StructureTypeAsset):
             self._duct_bank_type_asset._duct_type_assets.append(self)
 
     duct_bank_type_asset = property(get_duct_bank_type_asset, set_duct_bank_type_asset)
+    # >>> duct_bank_type_asset
 
-    # <<< duct_type_asset
-    # @generated
-    def __init__(self, y_coord=0, x_coord=0, cable_assets=[], duct_bank_type_asset=None, **kw_args):
-        """ Initialises a new 'DuctTypeAsset' instance.
-        """
-        self.y_coord = y_coord
-        self.x_coord = x_coord
-        self._cable_assets = []
-        self.cable_assets = cable_assets
-        self._duct_bank_type_asset = None
-        self.duct_bank_type_asset = duct_bank_type_asset
-
-        super(DuctTypeAsset, self).__init__(**kw_args)
-    # >>> duct_type_asset
 
 
 class CabinetTypeAsset(StructureTypeAsset):
     """ Documentation for a generic cabinet that may be used for various purposes such as work planning.
     """
+    # <<< cabinet_type_asset
+    # @generated
+    def __init__(self, cabinet_models=[], **kw_args):
+        """ Initialises a new 'CabinetTypeAsset' instance.
+        """
+        
+        self._cabinet_models = []
+        self.cabinet_models = cabinet_models
+
+        super(CabinetTypeAsset, self).__init__(**kw_args)
+    # >>> cabinet_type_asset
+        
+    # <<< cabinet_models
+    # @generated
     def get_cabinet_models(self):
         """ 
         """
@@ -1105,34 +1312,37 @@ class CabinetTypeAsset(StructureTypeAsset):
         for obj in cabinet_models:
             obj._cabinet_type_asset = None
             self._cabinet_models.remove(obj)
+    # >>> cabinet_models
 
-    # <<< cabinet_type_asset
-    # @generated
-    def __init__(self, cabinet_models=[], **kw_args):
-        """ Initialises a new 'CabinetTypeAsset' instance.
-        """
-        self._cabinet_models = []
-        self.cabinet_models = cabinet_models
-
-        super(CabinetTypeAsset, self).__init__(**kw_args)
-    # >>> cabinet_type_asset
 
 
 class SurgeProtectorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic surge arrestor that may be used for design purposes.
     """
+    # <<< surge_protector_type_asset
+    # @generated
+    def __init__(self, maximum_energy_absorption=0.0, maximum_continous_operating_voltage='', maximum_current_rating='', nominal_design_voltage='', surge_protectors=[], surge_protector_asset_models=[], **kw_args):
+        """ Initialises a new 'SurgeProtectorTypeAsset' instance.
+        """
  
-    maximum_energy_absorption = 0.0
-
+        self.maximum_energy_absorption = 0.0
  
-    maximum_continous_operating_voltage = ''
-
+        self.maximum_continous_operating_voltage = ''
  
-    maximum_current_rating = ''
-
+        self.maximum_current_rating = ''
  
-    nominal_design_voltage = ''
+        self.nominal_design_voltage = ''
+        
+        self._surge_protectors = []
+        self.surge_protectors = surge_protectors
+        self._surge_protector_asset_models = []
+        self.surge_protector_asset_models = surge_protector_asset_models
 
+        super(SurgeProtectorTypeAsset, self).__init__(**kw_args)
+    # >>> surge_protector_type_asset
+        
+    # <<< surge_protectors
+    # @generated
     def get_surge_protectors(self):
         """ 
         """
@@ -1156,7 +1366,10 @@ class SurgeProtectorTypeAsset(ElectricalTypeAsset):
         for obj in surge_protectors:
             obj._surge_protector_type_asset = None
             self._surge_protectors.remove(obj)
+    # >>> surge_protectors
 
+    # <<< surge_protector_asset_models
+    # @generated
     def get_surge_protector_asset_models(self):
         """ 
         """
@@ -1180,58 +1393,61 @@ class SurgeProtectorTypeAsset(ElectricalTypeAsset):
         for obj in surge_protector_asset_models:
             obj._surge_protector_type_asset = None
             self._surge_protector_asset_models.remove(obj)
+    # >>> surge_protector_asset_models
 
-    # <<< surge_protector_type_asset
-    # @generated
-    def __init__(self, maximum_energy_absorption=0.0, maximum_continous_operating_voltage='', maximum_current_rating='', nominal_design_voltage='', surge_protectors=[], surge_protector_asset_models=[], **kw_args):
-        """ Initialises a new 'SurgeProtectorTypeAsset' instance.
-        """
-        self.maximum_energy_absorption = maximum_energy_absorption
-        self.maximum_continous_operating_voltage = maximum_continous_operating_voltage
-        self.maximum_current_rating = maximum_current_rating
-        self.nominal_design_voltage = nominal_design_voltage
-        self._surge_protectors = []
-        self.surge_protectors = surge_protectors
-        self._surge_protector_asset_models = []
-        self.surge_protector_asset_models = surge_protector_asset_models
-
-        super(SurgeProtectorTypeAsset, self).__init__(**kw_args)
-    # >>> surge_protector_type_asset
 
 
 class CurrentTransformerTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic Current Transformer (CT) that may be used for various purposes such as work planning.
     """
+    # <<< current_transformer_type_asset
+    # @generated
+    def __init__(self, ct_class='', knee_point_current='', accuracy_class='', core_burden='', knee_point_voltage='', core_count=0, usage='', accuracy_limit='', max_ratio=None, nominal_ratio=None, current_transformer_info=None, current_transformers=[], current_transformer_asset_models=[], **kw_args):
+        """ Initialises a new 'CurrentTransformerTypeAsset' instance.
+        """
  
-    ct_class = ''
-
-    # Maximum primary current where the CT still displays linear characteristicts. 
-    knee_point_current = ''
-
-    # CT accuracy classification 
-    accuracy_class = ''
-
-    # Power burden of the CT core 
-    core_burden = ''
-
-    # Maximum voltage across the secondary terminals where the CT still displays linear characteristicts. 
-    knee_point_voltage = ''
-
-    # Number of cores. 
-    core_count = 0
-
-    # eg. metering, protection, etc 
-    usage = ''
-
+        self.ct_class = ''
+        # Maximum primary current where the CT still displays linear characteristicts. 
+        self.knee_point_current = ''
+        # CT accuracy classification 
+        self.accuracy_class = ''
+        # Power burden of the CT core 
+        self.core_burden = ''
+        # Maximum voltage across the secondary terminals where the CT still displays linear characteristicts. 
+        self.knee_point_voltage = ''
+        # Number of cores. 
+        self.core_count = 0
+        # eg. metering, protection, etc 
+        self.usage = ''
  
-    accuracy_limit = ''
+        self.accuracy_limit = ''
+        
+        self.max_ratio = max_ratio
+        self.nominal_ratio = nominal_ratio
+        self._current_transformer_info = None
+        self.current_transformer_info = current_transformer_info
+        self._current_transformers = []
+        self.current_transformers = current_transformers
+        self._current_transformer_asset_models = []
+        self.current_transformer_asset_models = current_transformer_asset_models
 
+        super(CurrentTransformerTypeAsset, self).__init__(**kw_args)
+    # >>> current_transformer_type_asset
+        
+    # <<< max_ratio
+    # @generated
     # Maximum ratio between the primary and secondary current.
     max_ratio = None
+    # >>> max_ratio
 
+    # <<< nominal_ratio
+    # @generated
     # Nominal ratio between the primary and secondary current; i.e. 100:5
     nominal_ratio = None
+    # >>> nominal_ratio
 
+    # <<< current_transformer_info
+    # @generated
     def get_current_transformer_info(self):
         """ 
         """
@@ -1246,7 +1462,10 @@ class CurrentTransformerTypeAsset(ElectricalTypeAsset):
             self._current_transformer_info._current_transformer_type_asset = self
             
     current_transformer_info = property(get_current_transformer_info, set_current_transformer_info)
+    # >>> current_transformer_info
 
+    # <<< current_transformers
+    # @generated
     def get_current_transformers(self):
         """ 
         """
@@ -1270,7 +1489,10 @@ class CurrentTransformerTypeAsset(ElectricalTypeAsset):
         for obj in current_transformers:
             obj._current_transformer_type_asset = None
             self._current_transformers.remove(obj)
+    # >>> current_transformers
 
+    # <<< current_transformer_asset_models
+    # @generated
     def get_current_transformer_asset_models(self):
         """ 
         """
@@ -1294,36 +1516,27 @@ class CurrentTransformerTypeAsset(ElectricalTypeAsset):
         for obj in current_transformer_asset_models:
             obj._current_transformer_type_asset = None
             self._current_transformer_asset_models.remove(obj)
+    # >>> current_transformer_asset_models
 
-    # <<< current_transformer_type_asset
-    # @generated
-    def __init__(self, ct_class='', knee_point_current='', accuracy_class='', core_burden='', knee_point_voltage='', core_count=0, usage='', accuracy_limit='', max_ratio=None, nominal_ratio=None, current_transformer_info=None, current_transformers=[], current_transformer_asset_models=[], **kw_args):
-        """ Initialises a new 'CurrentTransformerTypeAsset' instance.
-        """
-        self.ct_class = ct_class
-        self.knee_point_current = knee_point_current
-        self.accuracy_class = accuracy_class
-        self.core_burden = core_burden
-        self.knee_point_voltage = knee_point_voltage
-        self.core_count = core_count
-        self.usage = usage
-        self.accuracy_limit = accuracy_limit
-        self.max_ratio = max_ratio
-        self.nominal_ratio = nominal_ratio
-        self._current_transformer_info = None
-        self.current_transformer_info = current_transformer_info
-        self._current_transformers = []
-        self.current_transformers = current_transformers
-        self._current_transformer_asset_models = []
-        self.current_transformer_asset_models = current_transformer_asset_models
-
-        super(CurrentTransformerTypeAsset, self).__init__(**kw_args)
-    # >>> current_transformer_type_asset
 
 
 class TowerTypeAsset(StructureTypeAsset):
     """ Documentation for a generic tower that may be used for various purposes such as work planning. A transmission tower carrying two 3-phase circuits will have 2 instances of Connection, each of which will have 3 MountingPoint instances, one for each phase all with coordinates relative to a common origin on the tower. (It may also have a 3rd Connection with a single MountingPoint for the Neutral line).
     """
+    # <<< tower_type_asset
+    # @generated
+    def __init__(self, tower_asset_models=[], **kw_args):
+        """ Initialises a new 'TowerTypeAsset' instance.
+        """
+        
+        self._tower_asset_models = []
+        self.tower_asset_models = tower_asset_models
+
+        super(TowerTypeAsset, self).__init__(**kw_args)
+    # >>> tower_type_asset
+        
+    # <<< tower_asset_models
+    # @generated
     def get_tower_asset_models(self):
         """ 
         """
@@ -1347,22 +1560,29 @@ class TowerTypeAsset(StructureTypeAsset):
         for obj in tower_asset_models:
             obj._tower_type_asset = None
             self._tower_asset_models.remove(obj)
+    # >>> tower_asset_models
 
-    # <<< tower_type_asset
-    # @generated
-    def __init__(self, tower_asset_models=[], **kw_args):
-        """ Initialises a new 'TowerTypeAsset' instance.
-        """
-        self._tower_asset_models = []
-        self.tower_asset_models = tower_asset_models
-
-        super(TowerTypeAsset, self).__init__(**kw_args)
-    # >>> tower_type_asset
 
 
 class RecloserTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic recloser asset that may be used for design purposes.
     """
+    # <<< recloser_type_asset
+    # @generated
+    def __init__(self, recloser_asset_models=[], recloser_info=None, **kw_args):
+        """ Initialises a new 'RecloserTypeAsset' instance.
+        """
+        
+        self._recloser_asset_models = []
+        self.recloser_asset_models = recloser_asset_models
+        self._recloser_info = None
+        self.recloser_info = recloser_info
+
+        super(RecloserTypeAsset, self).__init__(**kw_args)
+    # >>> recloser_type_asset
+        
+    # <<< recloser_asset_models
+    # @generated
     def get_recloser_asset_models(self):
         """ 
         """
@@ -1386,7 +1606,10 @@ class RecloserTypeAsset(ElectricalTypeAsset):
         for obj in recloser_asset_models:
             obj._recloser_type_asset = None
             self._recloser_asset_models.remove(obj)
+    # >>> recloser_asset_models
 
+    # <<< recloser_info
+    # @generated
     def get_recloser_info(self):
         """ 
         """
@@ -1401,32 +1624,41 @@ class RecloserTypeAsset(ElectricalTypeAsset):
             self._recloser_info._recloser_type_asset = self
             
     recloser_info = property(get_recloser_info, set_recloser_info)
+    # >>> recloser_info
 
-    # <<< recloser_type_asset
-    # @generated
-    def __init__(self, recloser_asset_models=[], recloser_info=None, **kw_args):
-        """ Initialises a new 'RecloserTypeAsset' instance.
-        """
-        self._recloser_asset_models = []
-        self.recloser_asset_models = recloser_asset_models
-        self._recloser_info = None
-        self.recloser_info = recloser_info
-
-        super(RecloserTypeAsset, self).__init__(**kw_args)
-    # >>> recloser_type_asset
 
 
 class PotentialTransformerTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic Potential Transformer (PT) that may be used for various purposes such as work planning.
     """
+    # <<< potential_transformer_type_asset
+    # @generated
+    def __init__(self, accuracy_class='', pt_class='', nominal_ratio=None, potential_transformers=[], potential_transformer_asset_models=[], potential_transformer_info=None, **kw_args):
+        """ Initialises a new 'PotentialTransformerTypeAsset' instance.
+        """
  
-    accuracy_class = ''
-
+        self.accuracy_class = ''
  
-    pt_class = ''
+        self.pt_class = ''
+        
+        self.nominal_ratio = nominal_ratio
+        self._potential_transformers = []
+        self.potential_transformers = potential_transformers
+        self._potential_transformer_asset_models = []
+        self.potential_transformer_asset_models = potential_transformer_asset_models
+        self._potential_transformer_info = None
+        self.potential_transformer_info = potential_transformer_info
 
+        super(PotentialTransformerTypeAsset, self).__init__(**kw_args)
+    # >>> potential_transformer_type_asset
+        
+    # <<< nominal_ratio
+    # @generated
     nominal_ratio = None
+    # >>> nominal_ratio
 
+    # <<< potential_transformers
+    # @generated
     def get_potential_transformers(self):
         """ 
         """
@@ -1450,7 +1682,10 @@ class PotentialTransformerTypeAsset(ElectricalTypeAsset):
         for obj in potential_transformers:
             obj._potential_transformer_type_asset = None
             self._potential_transformers.remove(obj)
+    # >>> potential_transformers
 
+    # <<< potential_transformer_asset_models
+    # @generated
     def get_potential_transformer_asset_models(self):
         """ 
         """
@@ -1474,7 +1709,10 @@ class PotentialTransformerTypeAsset(ElectricalTypeAsset):
         for obj in potential_transformer_asset_models:
             obj._potential_transformer_type_asset = None
             self._potential_transformer_asset_models.remove(obj)
+    # >>> potential_transformer_asset_models
 
+    # <<< potential_transformer_info
+    # @generated
     def get_potential_transformer_info(self):
         """ 
         """
@@ -1489,29 +1727,29 @@ class PotentialTransformerTypeAsset(ElectricalTypeAsset):
             self._potential_transformer_info._potential_transformer_type_asset = self
             
     potential_transformer_info = property(get_potential_transformer_info, set_potential_transformer_info)
+    # >>> potential_transformer_info
 
-    # <<< potential_transformer_type_asset
-    # @generated
-    def __init__(self, accuracy_class='', pt_class='', nominal_ratio=None, potential_transformers=[], potential_transformer_asset_models=[], potential_transformer_info=None, **kw_args):
-        """ Initialises a new 'PotentialTransformerTypeAsset' instance.
-        """
-        self.accuracy_class = accuracy_class
-        self.pt_class = pt_class
-        self.nominal_ratio = nominal_ratio
-        self._potential_transformers = []
-        self.potential_transformers = potential_transformers
-        self._potential_transformer_asset_models = []
-        self.potential_transformer_asset_models = potential_transformer_asset_models
-        self._potential_transformer_info = None
-        self.potential_transformer_info = potential_transformer_info
-
-        super(PotentialTransformerTypeAsset, self).__init__(**kw_args)
-    # >>> potential_transformer_type_asset
 
 
 class DuctBankTypeAsset(StructureTypeAsset):
     """ A DuctBank contains multiple Ducts. The DuctBank itself should have no connections, since these are defined by the individual ducts within it. However, it will have a ConstructionType and the material it is constructed from.
     """
+    # <<< duct_bank_type_asset
+    # @generated
+    def __init__(self, duct_banks=[], duct_type_assets=[], **kw_args):
+        """ Initialises a new 'DuctBankTypeAsset' instance.
+        """
+        
+        self._duct_banks = []
+        self.duct_banks = duct_banks
+        self._duct_type_assets = []
+        self.duct_type_assets = duct_type_assets
+
+        super(DuctBankTypeAsset, self).__init__(**kw_args)
+    # >>> duct_bank_type_asset
+        
+    # <<< duct_banks
+    # @generated
     def get_duct_banks(self):
         """ 
         """
@@ -1535,7 +1773,10 @@ class DuctBankTypeAsset(StructureTypeAsset):
         for obj in duct_banks:
             obj._duct_band_type_asset = None
             self._duct_banks.remove(obj)
+    # >>> duct_banks
 
+    # <<< duct_type_assets
+    # @generated
     def get_duct_type_assets(self):
         """ 
         """
@@ -1559,27 +1800,31 @@ class DuctBankTypeAsset(StructureTypeAsset):
         for obj in duct_type_assets:
             obj._duct_bank_type_asset = None
             self._duct_type_assets.remove(obj)
+    # >>> duct_type_assets
 
-    # <<< duct_bank_type_asset
-    # @generated
-    def __init__(self, duct_banks=[], duct_type_assets=[], **kw_args):
-        """ Initialises a new 'DuctBankTypeAsset' instance.
-        """
-        self._duct_banks = []
-        self.duct_banks = duct_banks
-        self._duct_type_assets = []
-        self.duct_type_assets = duct_type_assets
-
-        super(DuctBankTypeAsset, self).__init__(**kw_args)
-    # >>> duct_bank_type_asset
 
 
 class FaultIndicatorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic fault indicator that may be used for design purposes.
     """
-    # Kind of reset mechanisim of this fault indicator. Values are: "remote", "automatic", "other", "manual"
-    reset_kind = 'remote'
+    # <<< fault_indicator_type_asset
+    # @generated
+    def __init__(self, reset_kind='remote', fault_indicators=[], fault_indicator_asset_models=[], **kw_args):
+        """ Initialises a new 'FaultIndicatorTypeAsset' instance.
+        """
+        # Kind of reset mechanisim of this fault indicator. Values are: "remote", "automatic", "other", "manual"
+        self.reset_kind = 'remote'
+        
+        self._fault_indicators = []
+        self.fault_indicators = fault_indicators
+        self._fault_indicator_asset_models = []
+        self.fault_indicator_asset_models = fault_indicator_asset_models
 
+        super(FaultIndicatorTypeAsset, self).__init__(**kw_args)
+    # >>> fault_indicator_type_asset
+        
+    # <<< fault_indicators
+    # @generated
     def get_fault_indicators(self):
         """ 
         """
@@ -1603,7 +1848,10 @@ class FaultIndicatorTypeAsset(ElectricalTypeAsset):
         for obj in fault_indicators:
             obj._fault_indicator_type_asset = None
             self._fault_indicators.remove(obj)
+    # >>> fault_indicators
 
+    # <<< fault_indicator_asset_models
+    # @generated
     def get_fault_indicator_asset_models(self):
         """ 
         """
@@ -1627,25 +1875,31 @@ class FaultIndicatorTypeAsset(ElectricalTypeAsset):
         for obj in fault_indicator_asset_models:
             obj._fault_indicator_type_asset = None
             self._fault_indicator_asset_models.remove(obj)
+    # >>> fault_indicator_asset_models
 
-    # <<< fault_indicator_type_asset
-    # @generated
-    def __init__(self, reset_kind='remote', fault_indicators=[], fault_indicator_asset_models=[], **kw_args):
-        """ Initialises a new 'FaultIndicatorTypeAsset' instance.
-        """
-        self.reset_kind = reset_kind
-        self._fault_indicators = []
-        self.fault_indicators = fault_indicators
-        self._fault_indicator_asset_models = []
-        self.fault_indicator_asset_models = fault_indicator_asset_models
-
-        super(FaultIndicatorTypeAsset, self).__init__(**kw_args)
-    # >>> fault_indicator_type_asset
 
 
 class SwitchTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic switch asset that may be used for design purposes.
     """
+    # <<< switch_type_asset
+    # @generated
+    def __init__(self, switch_asset_models=[], composite_switch_type_asset=None, switch_info=None, **kw_args):
+        """ Initialises a new 'SwitchTypeAsset' instance.
+        """
+        
+        self._switch_asset_models = []
+        self.switch_asset_models = switch_asset_models
+        self._composite_switch_type_asset = None
+        self.composite_switch_type_asset = composite_switch_type_asset
+        self._switch_info = None
+        self.switch_info = switch_info
+
+        super(SwitchTypeAsset, self).__init__(**kw_args)
+    # >>> switch_type_asset
+        
+    # <<< switch_asset_models
+    # @generated
     def get_switch_asset_models(self):
         """ 
         """
@@ -1669,7 +1923,10 @@ class SwitchTypeAsset(ElectricalTypeAsset):
         for obj in switch_asset_models:
             obj._switch_type_asset = None
             self._switch_asset_models.remove(obj)
+    # >>> switch_asset_models
 
+    # <<< composite_switch_type_asset
+    # @generated
     def get_composite_switch_type_asset(self):
         """ 
         """
@@ -1685,7 +1942,10 @@ class SwitchTypeAsset(ElectricalTypeAsset):
             self._composite_switch_type_asset._switch_types_assets.append(self)
 
     composite_switch_type_asset = property(get_composite_switch_type_asset, set_composite_switch_type_asset)
+    # >>> composite_switch_type_asset
 
+    # <<< switch_info
+    # @generated
     def get_switch_info(self):
         """ 
         """
@@ -1700,26 +1960,27 @@ class SwitchTypeAsset(ElectricalTypeAsset):
             self._switch_info._switch_type_asset = self
             
     switch_info = property(get_switch_info, set_switch_info)
+    # >>> switch_info
 
-    # <<< switch_type_asset
-    # @generated
-    def __init__(self, switch_asset_models=[], composite_switch_type_asset=None, switch_info=None, **kw_args):
-        """ Initialises a new 'SwitchTypeAsset' instance.
-        """
-        self._switch_asset_models = []
-        self.switch_asset_models = switch_asset_models
-        self._composite_switch_type_asset = None
-        self.composite_switch_type_asset = composite_switch_type_asset
-        self._switch_info = None
-        self.switch_info = switch_info
-
-        super(SwitchTypeAsset, self).__init__(**kw_args)
-    # >>> switch_type_asset
 
 
 class SeriesCompensatorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic series compensator that may be used for design purposes.
     """
+    # <<< series_compensator_type_asset
+    # @generated
+    def __init__(self, shunt_compensator_asset_models=[], **kw_args):
+        """ Initialises a new 'SeriesCompensatorTypeAsset' instance.
+        """
+        
+        self._shunt_compensator_asset_models = []
+        self.shunt_compensator_asset_models = shunt_compensator_asset_models
+
+        super(SeriesCompensatorTypeAsset, self).__init__(**kw_args)
+    # >>> series_compensator_type_asset
+        
+    # <<< shunt_compensator_asset_models
+    # @generated
     def get_shunt_compensator_asset_models(self):
         """ 
         """
@@ -1743,70 +2004,59 @@ class SeriesCompensatorTypeAsset(ElectricalTypeAsset):
         for obj in shunt_compensator_asset_models:
             obj._shunt_compensator_type_asset = None
             self._shunt_compensator_asset_models.remove(obj)
+    # >>> shunt_compensator_asset_models
 
-    # <<< series_compensator_type_asset
-    # @generated
-    def __init__(self, shunt_compensator_asset_models=[], **kw_args):
-        """ Initialises a new 'SeriesCompensatorTypeAsset' instance.
-        """
-        self._shunt_compensator_asset_models = []
-        self.shunt_compensator_asset_models = shunt_compensator_asset_models
-
-        super(SeriesCompensatorTypeAsset, self).__init__(**kw_args)
-    # >>> series_compensator_type_asset
 
 
 class GeneratorTypeAsset(ElectricalTypeAsset):
     """ Documentation for generic generation equipment that may be used for various purposes such as work planning. It defines both the Real and Reactive power properties (modelled at the PSR level as a GeneratingUnit + SynchronousMachine)
     """
-    # Maximum real power limit. 
-    max_p = ''
+    # <<< generator_type_asset
+    # @generated
+    def __init__(self, max_p='', min_p='', x_quad_subtrans='', x_quad_sync='', x_direct_trans='', r_direct_trans='', x_quad_trans='', r_direct_subtrans='', r_quad_sync='', r_direct_sync='', r_quad_trans='', max_q='', min_q='', x_direct_subtrans='', x_direct_sync='', r_quad_subtrans='', generator_asset_models=[], **kw_args):
+        """ Initialises a new 'GeneratorTypeAsset' instance.
+        """
+        # Maximum real power limit. 
+        self.max_p = ''
+        # Minimum real power generated. 
+        self.min_p = ''
+        # Quadrature-axis subtransient reactance 
+        self.x_quad_subtrans = ''
+        # Quadrature-axis synchronous reactance 
+        self.x_quad_sync = ''
+        # Direct-axis Transient reactance 
+        self.x_direct_trans = ''
+        # Direct-axis Transient resistance 
+        self.r_direct_trans = ''
+        # Quadrature-axis transient reactance. 
+        self.x_quad_trans = ''
+        # Direct-axis subtransient resistance 
+        self.r_direct_subtrans = ''
+        # Quadrature-axis synchronous resistance 
+        self.r_quad_sync = ''
+        # Direct-axis synchronous resistance 
+        self.r_direct_sync = ''
+        # Quadrature-axis Transient resistance 
+        self.r_quad_trans = ''
+        # Maximum reactive power limit. 
+        self.max_q = ''
+        # Minimum reactive power generated. 
+        self.min_q = ''
+        # Direct-axis subtransient reactance 
+        self.x_direct_subtrans = ''
+        # Direct-axis synchronous reactance 
+        self.x_direct_sync = ''
+        # Quadrature-axis subtransient resistance 
+        self.r_quad_subtrans = ''
+        
+        self._generator_asset_models = []
+        self.generator_asset_models = generator_asset_models
 
-    # Minimum real power generated. 
-    min_p = ''
-
-    # Quadrature-axis subtransient reactance 
-    x_quad_subtrans = ''
-
-    # Quadrature-axis synchronous reactance 
-    x_quad_sync = ''
-
-    # Direct-axis Transient reactance 
-    x_direct_trans = ''
-
-    # Direct-axis Transient resistance 
-    r_direct_trans = ''
-
-    # Quadrature-axis transient reactance. 
-    x_quad_trans = ''
-
-    # Direct-axis subtransient resistance 
-    r_direct_subtrans = ''
-
-    # Quadrature-axis synchronous resistance 
-    r_quad_sync = ''
-
-    # Direct-axis synchronous resistance 
-    r_direct_sync = ''
-
-    # Quadrature-axis Transient resistance 
-    r_quad_trans = ''
-
-    # Maximum reactive power limit. 
-    max_q = ''
-
-    # Minimum reactive power generated. 
-    min_q = ''
-
-    # Direct-axis subtransient reactance 
-    x_direct_subtrans = ''
-
-    # Direct-axis synchronous reactance 
-    x_direct_sync = ''
-
-    # Quadrature-axis subtransient resistance 
-    r_quad_subtrans = ''
-
+        super(GeneratorTypeAsset, self).__init__(**kw_args)
+    # >>> generator_type_asset
+        
+    # <<< generator_asset_models
+    # @generated
     def get_generator_asset_models(self):
         """ 
         """
@@ -1830,44 +2080,31 @@ class GeneratorTypeAsset(ElectricalTypeAsset):
         for obj in generator_asset_models:
             obj._generator_type_asset = None
             self._generator_asset_models.remove(obj)
+    # >>> generator_asset_models
 
-    # <<< generator_type_asset
-    # @generated
-    def __init__(self, max_p='', min_p='', x_quad_subtrans='', x_quad_sync='', x_direct_trans='', r_direct_trans='', x_quad_trans='', r_direct_subtrans='', r_quad_sync='', r_direct_sync='', r_quad_trans='', max_q='', min_q='', x_direct_subtrans='', x_direct_sync='', r_quad_subtrans='', generator_asset_models=[], **kw_args):
-        """ Initialises a new 'GeneratorTypeAsset' instance.
-        """
-        self.max_p = max_p
-        self.min_p = min_p
-        self.x_quad_subtrans = x_quad_subtrans
-        self.x_quad_sync = x_quad_sync
-        self.x_direct_trans = x_direct_trans
-        self.r_direct_trans = r_direct_trans
-        self.x_quad_trans = x_quad_trans
-        self.r_direct_subtrans = r_direct_subtrans
-        self.r_quad_sync = r_quad_sync
-        self.r_direct_sync = r_direct_sync
-        self.r_quad_trans = r_quad_trans
-        self.max_q = max_q
-        self.min_q = min_q
-        self.x_direct_subtrans = x_direct_subtrans
-        self.x_direct_sync = x_direct_sync
-        self.r_quad_subtrans = r_quad_subtrans
-        self._generator_asset_models = []
-        self.generator_asset_models = generator_asset_models
-
-        super(GeneratorTypeAsset, self).__init__(**kw_args)
-    # >>> generator_type_asset
 
 
 class PoleTypeAsset(StructureTypeAsset):
     """ Documentation for a generic pole that may be used for various purposes such as work planning. A pole typically has a single Connection with 1,2 or 3 mounting points.
     """
-    # Diameter of the pole. 
-    diameter = ''
+    # <<< pole_type_asset
+    # @generated
+    def __init__(self, diameter='', length='', pole_models=[], **kw_args):
+        """ Initialises a new 'PoleTypeAsset' instance.
+        """
+        # Diameter of the pole. 
+        self.diameter = ''
+        # Length of the pole (inclusive of any section of the pole that may be underground post-installation). 
+        self.length = ''
+        
+        self._pole_models = []
+        self.pole_models = pole_models
 
-    # Length of the pole (inclusive of any section of the pole that may be underground post-installation). 
-    length = ''
-
+        super(PoleTypeAsset, self).__init__(**kw_args)
+    # >>> pole_type_asset
+        
+    # <<< pole_models
+    # @generated
     def get_pole_models(self):
         """ 
         """
@@ -1891,24 +2128,27 @@ class PoleTypeAsset(StructureTypeAsset):
         for obj in pole_models:
             obj._pole_type_asset = None
             self._pole_models.remove(obj)
+    # >>> pole_models
 
-    # <<< pole_type_asset
-    # @generated
-    def __init__(self, diameter='', length='', pole_models=[], **kw_args):
-        """ Initialises a new 'PoleTypeAsset' instance.
-        """
-        self.diameter = diameter
-        self.length = length
-        self._pole_models = []
-        self.pole_models = pole_models
-
-        super(PoleTypeAsset, self).__init__(**kw_args)
-    # >>> pole_type_asset
 
 
 class FACTSDeviceTypeAsset(ElectricalTypeAsset):
     """ Documentation for generic Flexible alternating current transmission systems (FACTS) devices that may be used for various purposes such as work planning.
     """
+    # <<< factsdevice_type_asset
+    # @generated
+    def __init__(self, factsdevice_asset_models=[], **kw_args):
+        """ Initialises a new 'FACTSDeviceTypeAsset' instance.
+        """
+        
+        self._factsdevice_asset_models = []
+        self.factsdevice_asset_models = factsdevice_asset_models
+
+        super(FACTSDeviceTypeAsset, self).__init__(**kw_args)
+    # >>> factsdevice_type_asset
+        
+    # <<< factsdevice_asset_models
+    # @generated
     def get_factsdevice_asset_models(self):
         """ 
         """
@@ -1932,22 +2172,29 @@ class FACTSDeviceTypeAsset(ElectricalTypeAsset):
         for obj in factsdevice_asset_models:
             obj._factsdevice_type_asset = None
             self._factsdevice_asset_models.remove(obj)
+    # >>> factsdevice_asset_models
 
-    # <<< factsdevice_type_asset
-    # @generated
-    def __init__(self, factsdevice_asset_models=[], **kw_args):
-        """ Initialises a new 'FACTSDeviceTypeAsset' instance.
-        """
-        self._factsdevice_asset_models = []
-        self.factsdevice_asset_models = factsdevice_asset_models
-
-        super(FACTSDeviceTypeAsset, self).__init__(**kw_args)
-    # >>> factsdevice_type_asset
 
 
 class SVCTypeAsset(FACTSDeviceTypeAsset):
     """ Documentation for a generic Static Var Compensator (SVC) that may be used for various purposes such as work planning.
     """
+    # <<< svctype_asset
+    # @generated
+    def __init__(self, svcasset_models=[], svc_infos=[], **kw_args):
+        """ Initialises a new 'SVCTypeAsset' instance.
+        """
+        
+        self._svcasset_models = []
+        self.svcasset_models = svcasset_models
+        self._svc_infos = []
+        self.svc_infos = svc_infos
+
+        super(SVCTypeAsset, self).__init__(**kw_args)
+    # >>> svctype_asset
+        
+    # <<< svcasset_models
+    # @generated
     def get_svcasset_models(self):
         """ 
         """
@@ -1971,63 +2218,108 @@ class SVCTypeAsset(FACTSDeviceTypeAsset):
         for obj in svcasset_models:
             obj._svctype_asset = None
             self._svcasset_models.remove(obj)
+    # >>> svcasset_models
 
-    svc_infos = []
+    # <<< svc_infos
+    # @generated
+    def get_svc_infos(self):
+        """ 
+        """
+        return self._svc_infos
+
+    def set_svc_infos(self, value):
+        for p in self._svc_infos:
+            filtered = [q for q in p.svctype_assets if q != self]
+            self._svc_infos._svctype_assets = filtered
+        for r in value:
+            if self not in r._svctype_assets:
+                r._svctype_assets.append(self)
+        self._svc_infos = value
+            
+    svc_infos = property(get_svc_infos, set_svc_infos)
     
     def add_svc_infos(self, *svc_infos):
         for obj in svc_infos:
-	        self._svc_infos.append(obj)
+            if self not in obj._svctype_assets:
+                obj._svctype_assets.append(self)
+            self._svc_infos.append(obj)
         
     def remove_svc_infos(self, *svc_infos):
         for obj in svc_infos:
-	        self._svc_infos.remove(obj)
+            if self in obj._svctype_assets:
+                obj._svctype_assets.remove(self)
+            self._svc_infos.remove(obj)
+    # >>> svc_infos
 
-    # <<< svctype_asset
-    # @generated
-    def __init__(self, svcasset_models=[], svc_infos=[], **kw_args):
-        """ Initialises a new 'SVCTypeAsset' instance.
-        """
-        self._svcasset_models = []
-        self.svcasset_models = svcasset_models
-        self._svc_infos = []
-        self.svc_infos = svc_infos
-
-        super(SVCTypeAsset, self).__init__(**kw_args)
-    # >>> svctype_asset
 
 
 class StreetlightTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic streetlight that may be used for various purposes such as work planning. Use 'category' for utility specific categorisation, such as luminar, grid light, lantern, open bottom, flood, etc.
     """
-    # Nominal (as designed) power rating of light. 
-    light_rating = ''
-
-    streetlight_asset_models = []
-    
-    def add_streetlight_asset_models(self, *streetlight_asset_models):
-        for obj in streetlight_asset_models:
-	        self._streetlight_asset_models.append(obj)
-        
-    def remove_streetlight_asset_models(self, *streetlight_asset_models):
-        for obj in streetlight_asset_models:
-	        self._streetlight_asset_models.remove(obj)
-
     # <<< streetlight_type_asset
     # @generated
     def __init__(self, light_rating='', streetlight_asset_models=[], **kw_args):
         """ Initialises a new 'StreetlightTypeAsset' instance.
         """
-        self.light_rating = light_rating
+        # Nominal (as designed) power rating of light. 
+        self.light_rating = ''
+        
         self._streetlight_asset_models = []
         self.streetlight_asset_models = streetlight_asset_models
 
         super(StreetlightTypeAsset, self).__init__(**kw_args)
     # >>> streetlight_type_asset
+        
+    # <<< streetlight_asset_models
+    # @generated
+    def get_streetlight_asset_models(self):
+        """ 
+        """
+        return self._streetlight_asset_models
+
+    def set_streetlight_asset_models(self, value):
+        for p in self._streetlight_asset_models:
+            filtered = [q for q in p.streetlight_type_assets if q != self]
+            self._streetlight_asset_models._streetlight_type_assets = filtered
+        for r in value:
+            if self not in r._streetlight_type_assets:
+                r._streetlight_type_assets.append(self)
+        self._streetlight_asset_models = value
+            
+    streetlight_asset_models = property(get_streetlight_asset_models, set_streetlight_asset_models)
+    
+    def add_streetlight_asset_models(self, *streetlight_asset_models):
+        for obj in streetlight_asset_models:
+            if self not in obj._streetlight_type_assets:
+                obj._streetlight_type_assets.append(self)
+            self._streetlight_asset_models.append(obj)
+        
+    def remove_streetlight_asset_models(self, *streetlight_asset_models):
+        for obj in streetlight_asset_models:
+            if self in obj._streetlight_type_assets:
+                obj._streetlight_type_assets.remove(self)
+            self._streetlight_asset_models.remove(obj)
+    # >>> streetlight_asset_models
+
 
 
 class BusbarTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic busbar that may be used for design purposes. It is typically associated with PoserSystemResource BusbarSection.
     """
+    # <<< busbar_type_asset
+    # @generated
+    def __init__(self, busbar_type_assets=[], **kw_args):
+        """ Initialises a new 'BusbarTypeAsset' instance.
+        """
+        
+        self._busbar_type_assets = []
+        self.busbar_type_assets = busbar_type_assets
+
+        super(BusbarTypeAsset, self).__init__(**kw_args)
+    # >>> busbar_type_asset
+        
+    # <<< busbar_type_assets
+    # @generated
     def get_busbar_type_assets(self):
         """ 
         """
@@ -2051,37 +2343,43 @@ class BusbarTypeAsset(ElectricalTypeAsset):
         for obj in busbar_type_assets:
             obj._busbar_asset_model = None
             self._busbar_type_assets.remove(obj)
+    # >>> busbar_type_assets
 
-    # <<< busbar_type_asset
-    # @generated
-    def __init__(self, busbar_type_assets=[], **kw_args):
-        """ Initialises a new 'BusbarTypeAsset' instance.
-        """
-        self._busbar_type_assets = []
-        self.busbar_type_assets = busbar_type_assets
-
-        super(BusbarTypeAsset, self).__init__(**kw_args)
-    # >>> busbar_type_asset
 
 
 class LinearConductorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic linear conductor that may be used for various purposes such as work planning. ElectricalProperties are defined as being per unit length (which is defined by 'unitLength').
     """
-    # Radius of the conductor 
-    radius = 0
+    # <<< linear_conductor_type_asset
+    # @generated
+    def __init__(self, radius=0, insulated=False, size='', gmr='', unit_length=0, conductor_type=None, linear_conductor_asset_models=[], conductors=[], linear_conductor_assets=[], **kw_args):
+        """ Initialises a new 'LinearConductorTypeAsset' instance.
+        """
+        # Radius of the conductor 
+        self.radius = 0
+        # True if conductor is insultated. 
+        self.insulated = False
+        # Commonly referred to size for this type of conductor. 
+        self.size = ''
+        # Geometric mean radius (GMR): If the conductor were replaced by a thin walled tube of radius with this value, then its reactance would be identical to that of the actual conductor. 
+        self.gmr = ''
+        # Length of each unit of the LinearConductor which has characteristics defined by the associated ElectricalProperties. 
+        self.unit_length = 0
+        
+        self._conductor_type = None
+        self.conductor_type = conductor_type
+        self._linear_conductor_asset_models = []
+        self.linear_conductor_asset_models = linear_conductor_asset_models
+        self._conductors = []
+        self.conductors = conductors
+        self._linear_conductor_assets = []
+        self.linear_conductor_assets = linear_conductor_assets
 
-    # True if conductor is insultated. 
-    insulated = False
-
-    # Commonly referred to size for this type of conductor. 
-    size = ''
-
-    # Geometric mean radius (GMR): If the conductor were replaced by a thin walled tube of radius with this value, then its reactance would be identical to that of the actual conductor. 
-    gmr = ''
-
-    # Length of each unit of the LinearConductor which has characteristics defined by the associated ElectricalProperties. 
-    unit_length = 0
-
+        super(LinearConductorTypeAsset, self).__init__(**kw_args)
+    # >>> linear_conductor_type_asset
+        
+    # <<< conductor_type
+    # @generated
     def get_conductor_type(self):
         """ 
         """
@@ -2096,7 +2394,10 @@ class LinearConductorTypeAsset(ElectricalTypeAsset):
             self._conductor_type._linear_conductro_type_asset = self
             
     conductor_type = property(get_conductor_type, set_conductor_type)
+    # >>> conductor_type
 
+    # <<< linear_conductor_asset_models
+    # @generated
     def get_linear_conductor_asset_models(self):
         """ 
         """
@@ -2120,17 +2421,41 @@ class LinearConductorTypeAsset(ElectricalTypeAsset):
         for obj in linear_conductor_asset_models:
             obj._linear_conductor_type_asset = None
             self._linear_conductor_asset_models.remove(obj)
+    # >>> linear_conductor_asset_models
 
-    conductors = []
+    # <<< conductors
+    # @generated
+    def get_conductors(self):
+        """ 
+        """
+        return self._conductors
+
+    def set_conductors(self, value):
+        for p in self._conductors:
+            filtered = [q for q in p.linear_conductor_type_assets if q != self]
+            self._conductors._linear_conductor_type_assets = filtered
+        for r in value:
+            if self not in r._linear_conductor_type_assets:
+                r._linear_conductor_type_assets.append(self)
+        self._conductors = value
+            
+    conductors = property(get_conductors, set_conductors)
     
     def add_conductors(self, *conductors):
         for obj in conductors:
-	        self._conductors.append(obj)
+            if self not in obj._linear_conductor_type_assets:
+                obj._linear_conductor_type_assets.append(self)
+            self._conductors.append(obj)
         
     def remove_conductors(self, *conductors):
         for obj in conductors:
-	        self._conductors.remove(obj)
+            if self in obj._linear_conductor_type_assets:
+                obj._linear_conductor_type_assets.remove(self)
+            self._conductors.remove(obj)
+    # >>> conductors
 
+    # <<< linear_conductor_assets
+    # @generated
     def get_linear_conductor_assets(self):
         """ 
         """
@@ -2154,33 +2479,27 @@ class LinearConductorTypeAsset(ElectricalTypeAsset):
         for obj in linear_conductor_assets:
             obj._linear_conductor_type_asset = None
             self._linear_conductor_assets.remove(obj)
+    # >>> linear_conductor_assets
 
-    # <<< linear_conductor_type_asset
-    # @generated
-    def __init__(self, radius=0, insulated=False, size='', gmr='', unit_length=0, conductor_type=None, linear_conductor_asset_models=[], conductors=[], linear_conductor_assets=[], **kw_args):
-        """ Initialises a new 'LinearConductorTypeAsset' instance.
-        """
-        self.radius = radius
-        self.insulated = insulated
-        self.size = size
-        self.gmr = gmr
-        self.unit_length = unit_length
-        self._conductor_type = None
-        self.conductor_type = conductor_type
-        self._linear_conductor_asset_models = []
-        self.linear_conductor_asset_models = linear_conductor_asset_models
-        self._conductors = []
-        self.conductors = conductors
-        self._linear_conductor_assets = []
-        self.linear_conductor_assets = linear_conductor_assets
-
-        super(LinearConductorTypeAsset, self).__init__(**kw_args)
-    # >>> linear_conductor_type_asset
 
 
 class MeterTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic meter that may be used for design purposes. Rather than being associated with CustomerMeter, it is associated with EnergyConsumer as it may be used for many applications, such as tie line metering, in addition to customer metering.
     """
+    # <<< meter_type_asset
+    # @generated
+    def __init__(self, meter_asset_models=[], **kw_args):
+        """ Initialises a new 'MeterTypeAsset' instance.
+        """
+        
+        self._meter_asset_models = []
+        self.meter_asset_models = meter_asset_models
+
+        super(MeterTypeAsset, self).__init__(**kw_args)
+    # >>> meter_type_asset
+        
+    # <<< meter_asset_models
+    # @generated
     def get_meter_asset_models(self):
         """ 
         """
@@ -2204,25 +2523,31 @@ class MeterTypeAsset(ElectricalTypeAsset):
         for obj in meter_asset_models:
             obj._meter_type_asset = None
             self._meter_asset_models.remove(obj)
+    # >>> meter_asset_models
 
-    # <<< meter_type_asset
-    # @generated
-    def __init__(self, meter_asset_models=[], **kw_args):
-        """ Initialises a new 'MeterTypeAsset' instance.
-        """
-        self._meter_asset_models = []
-        self.meter_asset_models = meter_asset_models
-
-        super(MeterTypeAsset, self).__init__(**kw_args)
-    # >>> meter_type_asset
 
 
 class ShuntCompensatorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic shunt compensator that may be used for design purposes.
     """
-    # Maximum allowed Apparent Power loss 
-    max_power_loss = ''
+    # <<< shunt_compensator_type_asset
+    # @generated
+    def __init__(self, max_power_loss='', shunt_impedance_info=None, shunt_compensator_asset_models=[], **kw_args):
+        """ Initialises a new 'ShuntCompensatorTypeAsset' instance.
+        """
+        # Maximum allowed Apparent Power loss 
+        self.max_power_loss = ''
+        
+        self._shunt_impedance_info = None
+        self.shunt_impedance_info = shunt_impedance_info
+        self._shunt_compensator_asset_models = []
+        self.shunt_compensator_asset_models = shunt_compensator_asset_models
 
+        super(ShuntCompensatorTypeAsset, self).__init__(**kw_args)
+    # >>> shunt_compensator_type_asset
+        
+    # <<< shunt_impedance_info
+    # @generated
     def get_shunt_impedance_info(self):
         """ 
         """
@@ -2237,7 +2562,10 @@ class ShuntCompensatorTypeAsset(ElectricalTypeAsset):
             self._shunt_impedance_info._shunt_compensator_type_asset = self
             
     shunt_impedance_info = property(get_shunt_impedance_info, set_shunt_impedance_info)
+    # >>> shunt_impedance_info
 
+    # <<< shunt_compensator_asset_models
+    # @generated
     def get_shunt_compensator_asset_models(self):
         """ 
         """
@@ -2261,25 +2589,27 @@ class ShuntCompensatorTypeAsset(ElectricalTypeAsset):
         for obj in shunt_compensator_asset_models:
             obj._shunt_compensator_type_asset = None
             self._shunt_compensator_asset_models.remove(obj)
+    # >>> shunt_compensator_asset_models
 
-    # <<< shunt_compensator_type_asset
-    # @generated
-    def __init__(self, max_power_loss='', shunt_impedance_info=None, shunt_compensator_asset_models=[], **kw_args):
-        """ Initialises a new 'ShuntCompensatorTypeAsset' instance.
-        """
-        self.max_power_loss = max_power_loss
-        self._shunt_impedance_info = None
-        self.shunt_impedance_info = shunt_impedance_info
-        self._shunt_compensator_asset_models = []
-        self.shunt_compensator_asset_models = shunt_compensator_asset_models
-
-        super(ShuntCompensatorTypeAsset, self).__init__(**kw_args)
-    # >>> shunt_compensator_type_asset
 
 
 class ComFunctionTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic communication function that may be used for various purposes such as work planning.
     """
+    # <<< com_function_type_asset
+    # @generated
+    def __init__(self, com_function_asset_models=[], **kw_args):
+        """ Initialises a new 'ComFunctionTypeAsset' instance.
+        """
+        
+        self._com_function_asset_models = []
+        self.com_function_asset_models = com_function_asset_models
+
+        super(ComFunctionTypeAsset, self).__init__(**kw_args)
+    # >>> com_function_type_asset
+        
+    # <<< com_function_asset_models
+    # @generated
     def get_com_function_asset_models(self):
         """ 
         """
@@ -2303,43 +2633,41 @@ class ComFunctionTypeAsset(ElectricalTypeAsset):
         for obj in com_function_asset_models:
             obj._com_function_type_asset = None
             self._com_function_asset_models.remove(obj)
+    # >>> com_function_asset_models
 
-    # <<< com_function_type_asset
-    # @generated
-    def __init__(self, com_function_asset_models=[], **kw_args):
-        """ Initialises a new 'ComFunctionTypeAsset' instance.
-        """
-        self._com_function_asset_models = []
-        self.com_function_asset_models = com_function_asset_models
-
-        super(ComFunctionTypeAsset, self).__init__(**kw_args)
-    # >>> com_function_type_asset
 
 
 class TapChangerTypeAsset(ElectricalTypeAsset):
     """ Documentation for generic tap changers that may be used for various purposes such as work planning.
     """
-    # Tap step increment, in per cent of nominal voltage, per step position. 
-    step_voltage_increment = ''
+    # <<< tap_changer_type_asset
+    # @generated
+    def __init__(self, step_voltage_increment='', step_phase_increment='', high_step=0, neutral_step=0, subsequent_delay='', initial_delay='', low_step=0, tap_changer_models=[], **kw_args):
+        """ Initialises a new 'TapChangerTypeAsset' instance.
+        """
+        # Tap step increment, in per cent of nominal voltage, per step position. 
+        self.step_voltage_increment = ''
+        # Phase shift, in degrees, per step position 
+        self.step_phase_increment = ''
+        # Highest possible tap step position, advance from neutral 
+        self.high_step = 0
+        # The neutral tap step position for this type of winding. 
+        self.neutral_step = 0
+        # Maximum allowed delay for isubsequent tap changer operations 
+        self.subsequent_delay = ''
+        # Maximum allowed delay for initial tap changer operation (first step change) 
+        self.initial_delay = ''
+        # Lowest possible tap step position, retard from neutral 
+        self.low_step = 0
+        
+        self._tap_changer_models = []
+        self.tap_changer_models = tap_changer_models
 
-    # Phase shift, in degrees, per step position 
-    step_phase_increment = ''
-
-    # Highest possible tap step position, advance from neutral 
-    high_step = 0
-
-    # The neutral tap step position for this type of winding. 
-    neutral_step = 0
-
-    # Maximum allowed delay for isubsequent tap changer operations 
-    subsequent_delay = ''
-
-    # Maximum allowed delay for initial tap changer operation (first step change) 
-    initial_delay = ''
-
-    # Lowest possible tap step position, retard from neutral 
-    low_step = 0
-
+        super(TapChangerTypeAsset, self).__init__(**kw_args)
+    # >>> tap_changer_type_asset
+        
+    # <<< tap_changer_models
+    # @generated
     def get_tap_changer_models(self):
         """ 
         """
@@ -2363,29 +2691,29 @@ class TapChangerTypeAsset(ElectricalTypeAsset):
         for obj in tap_changer_models:
             obj._tap_changer_type_asset = None
             self._tap_changer_models.remove(obj)
+    # >>> tap_changer_models
 
-    # <<< tap_changer_type_asset
-    # @generated
-    def __init__(self, step_voltage_increment='', step_phase_increment='', high_step=0, neutral_step=0, subsequent_delay='', initial_delay='', low_step=0, tap_changer_models=[], **kw_args):
-        """ Initialises a new 'TapChangerTypeAsset' instance.
-        """
-        self.step_voltage_increment = step_voltage_increment
-        self.step_phase_increment = step_phase_increment
-        self.high_step = high_step
-        self.neutral_step = neutral_step
-        self.subsequent_delay = subsequent_delay
-        self.initial_delay = initial_delay
-        self.low_step = low_step
-        self._tap_changer_models = []
-        self.tap_changer_models = tap_changer_models
-
-        super(TapChangerTypeAsset, self).__init__(**kw_args)
-    # >>> tap_changer_type_asset
 
 
 class ResistorTypeAsset(ElectricalTypeAsset):
     """ Documentation for a generic resistor that may be used for design purposes.
     """
+    # <<< resistor_type_asset
+    # @generated
+    def __init__(self, resistor_asset_models=[], resistors=[], **kw_args):
+        """ Initialises a new 'ResistorTypeAsset' instance.
+        """
+        
+        self._resistor_asset_models = []
+        self.resistor_asset_models = resistor_asset_models
+        self._resistors = []
+        self.resistors = resistors
+
+        super(ResistorTypeAsset, self).__init__(**kw_args)
+    # >>> resistor_type_asset
+        
+    # <<< resistor_asset_models
+    # @generated
     def get_resistor_asset_models(self):
         """ 
         """
@@ -2409,7 +2737,10 @@ class ResistorTypeAsset(ElectricalTypeAsset):
         for obj in resistor_asset_models:
             obj._resistor_type_asset = None
             self._resistor_asset_models.remove(obj)
+    # >>> resistor_asset_models
 
+    # <<< resistors
+    # @generated
     def get_resistors(self):
         """ 
         """
@@ -2433,30 +2764,31 @@ class ResistorTypeAsset(ElectricalTypeAsset):
         for obj in resistors:
             obj._resistor_type_asset = None
             self._resistors.remove(obj)
+    # >>> resistors
 
-    # <<< resistor_type_asset
-    # @generated
-    def __init__(self, resistor_asset_models=[], resistors=[], **kw_args):
-        """ Initialises a new 'ResistorTypeAsset' instance.
-        """
-        self._resistor_asset_models = []
-        self.resistor_asset_models = resistor_asset_models
-        self._resistors = []
-        self.resistors = resistors
-
-        super(ResistorTypeAsset, self).__init__(**kw_args)
-    # >>> resistor_type_asset
 
 
 class OverheadConductorTypeAsset(LinearConductorTypeAsset):
     """ Documentation for a generic Overhead Conductor that may be used for various purposes such as work planning. It is a specialisation of LinearConductor that includes attributes specific to overhead lines.
     """
-    # Spacing between the individual conductor strands for a single overhead conductor phase. 
-    conductor_spacing = ''
+    # <<< overhead_conductor_type_asset
+    # @generated
+    def __init__(self, conductor_spacing='', conductor_count=0, overhead_conductor_models=[], **kw_args):
+        """ Initialises a new 'OverheadConductorTypeAsset' instance.
+        """
+        # Spacing between the individual conductor strands for a single overhead conductor phase. 
+        self.conductor_spacing = ''
+        # Number of conductor strands for a particular overhead conductor phase. Separate phases and their spacings are modelled by the MountingPoint positions for the structure the Overhead Conductor is supported by (e.g. pole, tower) 
+        self.conductor_count = 0
+        
+        self._overhead_conductor_models = []
+        self.overhead_conductor_models = overhead_conductor_models
 
-    # Number of conductor strands for a particular overhead conductor phase. Separate phases and their spacings are modelled by the MountingPoint positions for the structure the Overhead Conductor is supported by (e.g. pole, tower) 
-    conductor_count = 0
-
+        super(OverheadConductorTypeAsset, self).__init__(**kw_args)
+    # >>> overhead_conductor_type_asset
+        
+    # <<< overhead_conductor_models
+    # @generated
     def get_overhead_conductor_models(self):
         """ 
         """
@@ -2480,33 +2812,33 @@ class OverheadConductorTypeAsset(LinearConductorTypeAsset):
         for obj in overhead_conductor_models:
             obj._overhead_conductor_type_asset = None
             self._overhead_conductor_models.remove(obj)
+    # >>> overhead_conductor_models
 
-    # <<< overhead_conductor_type_asset
-    # @generated
-    def __init__(self, conductor_spacing='', conductor_count=0, overhead_conductor_models=[], **kw_args):
-        """ Initialises a new 'OverheadConductorTypeAsset' instance.
-        """
-        self.conductor_spacing = conductor_spacing
-        self.conductor_count = conductor_count
-        self._overhead_conductor_models = []
-        self.overhead_conductor_models = overhead_conductor_models
-
-        super(OverheadConductorTypeAsset, self).__init__(**kw_args)
-    # >>> overhead_conductor_type_asset
 
 
 class CableTypeAsset(LinearConductorTypeAsset):
     """ Documentation for a generic cable that may be used for various purposes such as work planning. It is a specialisation of LinearConductor that includes attributes specific to underground cables.
     """
-    # Outside diameter over the shield (inches) for a non concentric neutral cable. 
-    outside_diameter = ''
+    # <<< cable_type_asset
+    # @generated
+    def __init__(self, outside_diameter='', conductor_spacing='', shield_thickness='', cable_asset_models=[], **kw_args):
+        """ Initialises a new 'CableTypeAsset' instance.
+        """
+        # Outside diameter over the shield (inches) for a non concentric neutral cable. 
+        self.outside_diameter = ''
+        # Phase conductor spacing for a three conductor cable if a distribution model is given. 
+        self.conductor_spacing = ''
+        # Thickness of the shielding 
+        self.shield_thickness = ''
+        
+        self._cable_asset_models = []
+        self.cable_asset_models = cable_asset_models
 
-    # Phase conductor spacing for a three conductor cable if a distribution model is given. 
-    conductor_spacing = ''
-
-    # Thickness of the shielding 
-    shield_thickness = ''
-
+        super(CableTypeAsset, self).__init__(**kw_args)
+    # >>> cable_type_asset
+        
+    # <<< cable_asset_models
+    # @generated
     def get_cable_asset_models(self):
         """ 
         """
@@ -2530,20 +2862,8 @@ class CableTypeAsset(LinearConductorTypeAsset):
         for obj in cable_asset_models:
             obj._cable_type_asset = None
             self._cable_asset_models.remove(obj)
+    # >>> cable_asset_models
 
-    # <<< cable_type_asset
-    # @generated
-    def __init__(self, outside_diameter='', conductor_spacing='', shield_thickness='', cable_asset_models=[], **kw_args):
-        """ Initialises a new 'CableTypeAsset' instance.
-        """
-        self.outside_diameter = outside_diameter
-        self.conductor_spacing = conductor_spacing
-        self.shield_thickness = shield_thickness
-        self._cable_asset_models = []
-        self.cable_asset_models = cable_asset_models
-
-        super(CableTypeAsset, self).__init__(**kw_args)
-    # >>> cable_type_asset
 
 
 # <<< inf_type_asset
