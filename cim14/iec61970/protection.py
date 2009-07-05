@@ -17,24 +17,30 @@ class ProtectionEquipment(Equipment):
     """
     # <<< protection_equipment
     # @generated
-    def __init__(self, low_limit=0.0, power_direction_flag=False, high_limit=0.0, relay_delay_time='', conducting_equipments=[], unit=None, protected_switches=[], **kw_args):
+    def __init__(self, low_limit=0.0, power_direction_flag=False, high_limit=0.0, relay_delay_time=0.0, conducting_equipments=None, unit=None, protected_switches=None, **kw_args):
         """ Initialises a new 'ProtectionEquipment' instance.
         """
         # The minimum allowable value. 
-        self.low_limit = 0.0
+        self.low_limit = low_limit
         # Direction same as positive active power flow value. 
-        self.power_direction_flag = False
+        self.power_direction_flag = power_direction_flag
         # The maximum allowable value. 
-        self.high_limit = 0.0
+        self.high_limit = high_limit
         # The time delay from detection of abnormal conditions to relay operation. 
-        self.relay_delay_time = ''
+        self.relay_delay_time = relay_delay_time
         
         self._conducting_equipments = []
-        self.conducting_equipments = conducting_equipments
+        if conducting_equipments is None:
+            self.conducting_equipments = []
+        else:
+            self.conducting_equipments = conducting_equipments
         self._unit = None
         self.unit = unit
         self._protected_switches = []
-        self.protected_switches = protected_switches
+        if protected_switches is None:
+            self.protected_switches = []
+        else:
+            self.protected_switches = protected_switches
 
         super(ProtectionEquipment, self).__init__(**kw_args)
     # >>> protection_equipment
@@ -84,7 +90,8 @@ class ProtectionEquipment(Equipment):
             
         self._unit = value
         if self._unit is not None:
-            self._unit._protection_equipments.append(self)
+            if self not in self._unit._protection_equipments:
+                self._unit._protection_equipments.append(self)
 
     unit = property(get_unit, set_unit)
     # >>> unit
@@ -127,14 +134,17 @@ class FaultIndicator(Equipment):
     """
     # <<< fault_indicator
     # @generated
-    def __init__(self, fault_indicator_type_asset=None, fault_indicator_assets=[], **kw_args):
+    def __init__(self, fault_indicator_type_asset=None, fault_indicator_assets=None, **kw_args):
         """ Initialises a new 'FaultIndicator' instance.
         """
         
         self._fault_indicator_type_asset = None
         self.fault_indicator_type_asset = fault_indicator_type_asset
         self._fault_indicator_assets = []
-        self.fault_indicator_assets = fault_indicator_assets
+        if fault_indicator_assets is None:
+            self.fault_indicator_assets = []
+        else:
+            self.fault_indicator_assets = fault_indicator_assets
 
         super(FaultIndicator, self).__init__(**kw_args)
     # >>> fault_indicator
@@ -153,7 +163,8 @@ class FaultIndicator(Equipment):
             
         self._fault_indicator_type_asset = value
         if self._fault_indicator_type_asset is not None:
-            self._fault_indicator_type_asset._fault_indicators.append(self)
+            if self not in self._fault_indicator_type_asset._fault_indicators:
+                self._fault_indicator_type_asset._fault_indicators.append(self)
 
     fault_indicator_type_asset = property(get_fault_indicator_type_asset, set_fault_indicator_type_asset)
     # >>> fault_indicator_type_asset
@@ -167,9 +178,9 @@ class FaultIndicator(Equipment):
 
     def set_fault_indicator_assets(self, value):
         for x in self._fault_indicator_assets:
-            x._fault_indicator = None
+            x.fault_indicator = None
         for y in value:
-            y._fault_indicator = self
+            y.fault_indicator = self
         self._fault_indicator_assets = value
             
     fault_indicator_assets = property(get_fault_indicator_assets, set_fault_indicator_assets)
@@ -177,7 +188,8 @@ class FaultIndicator(Equipment):
     def add_fault_indicator_assets(self, *fault_indicator_assets):
         for obj in fault_indicator_assets:
             obj._fault_indicator = self
-            self._fault_indicator_assets.append(obj)
+            if obj not in self._fault_indicator_assets:
+                self._fault_indicator_assets.append(obj)
         
     def remove_fault_indicator_assets(self, *fault_indicator_assets):
         for obj in fault_indicator_assets:
@@ -236,7 +248,8 @@ class SurgeProtector(Equipment):
             
         self._surge_protector_type_asset = value
         if self._surge_protector_type_asset is not None:
-            self._surge_protector_type_asset._surge_protectors.append(self)
+            if self not in self._surge_protector_type_asset._surge_protectors:
+                self._surge_protector_type_asset._surge_protectors.append(self)
 
     surge_protector_type_asset = property(get_surge_protector_type_asset, set_surge_protector_type_asset)
     # >>> surge_protector_type_asset
@@ -248,13 +261,13 @@ class RecloseSequence(IdentifiedObject):
     """
     # <<< reclose_sequence
     # @generated
-    def __init__(self, reclose_step=0, reclose_delay='', protected_switch=None, **kw_args):
+    def __init__(self, reclose_step=0, reclose_delay=0.0, protected_switch=None, **kw_args):
         """ Initialises a new 'RecloseSequence' instance.
         """
         # Indicates the ordinal position of the reclose step relative to other steps in the sequence. 
-        self.reclose_step = 0
+        self.reclose_step = reclose_step
         # Indicates the time lapse before the reclose step will execute a reclose. 
-        self.reclose_delay = ''
+        self.reclose_delay = reclose_delay
         
         self._protected_switch = None
         self.protected_switch = protected_switch
@@ -276,7 +289,8 @@ class RecloseSequence(IdentifiedObject):
             
         self._protected_switch = value
         if self._protected_switch is not None:
-            self._protected_switch._reclose_sequences.append(self)
+            if self not in self._protected_switch._reclose_sequences:
+                self._protected_switch._reclose_sequences.append(self)
 
     protected_switch = property(get_protected_switch, set_protected_switch)
     # >>> protected_switch
@@ -288,15 +302,15 @@ class SynchrocheckRelay(ProtectionEquipment):
     """
     # <<< synchrocheck_relay
     # @generated
-    def __init__(self, max_freq_diff='', max_volt_diff='', max_angle_diff='', **kw_args):
+    def __init__(self, max_freq_diff=0.0, max_volt_diff=0.0, max_angle_diff=0.0, **kw_args):
         """ Initialises a new 'SynchrocheckRelay' instance.
         """
         # The maximum allowable frequency difference across the open device 
-        self.max_freq_diff = ''
+        self.max_freq_diff = max_freq_diff
         # The maximum allowable difference voltage across the open device 
-        self.max_volt_diff = ''
+        self.max_volt_diff = max_volt_diff
         # The maximum allowable voltage vector phase angle difference across the open device 
-        self.max_angle_diff = ''
+        self.max_angle_diff = max_angle_diff
         
 
         super(SynchrocheckRelay, self).__init__(**kw_args)
@@ -309,23 +323,23 @@ class CurrentRelay(ProtectionEquipment):
     """
     # <<< current_relay
     # @generated
-    def __init__(self, time_delay2='', current_limit2='', time_delay1='', time_delay3='', current_limit1='', inverse_time_flag=False, current_limit3='', **kw_args):
+    def __init__(self, time_delay2=0.0, current_limit2=0.0, time_delay1=0.0, time_delay3=0.0, current_limit1=0.0, inverse_time_flag=False, current_limit3=0.0, **kw_args):
         """ Initialises a new 'CurrentRelay' instance.
         """
         # Inverse time delay #2 for current limit #2 
-        self.time_delay2 = ''
+        self.time_delay2 = time_delay2
         # Current limit #2 for inverse time pickup 
-        self.current_limit2 = ''
+        self.current_limit2 = current_limit2
         # Inverse time delay #1 for current limit #1 
-        self.time_delay1 = ''
+        self.time_delay1 = time_delay1
         # Inverse time delay #3 for current limit #3 
-        self.time_delay3 = ''
+        self.time_delay3 = time_delay3
         # Current limit #1 for inverse time pickup 
-        self.current_limit1 = ''
+        self.current_limit1 = current_limit1
         # Set true if the current relay has inverse time characteristic. 
-        self.inverse_time_flag = False
+        self.inverse_time_flag = inverse_time_flag
         # Current limit #3 for inverse time pickup 
-        self.current_limit3 = ''
+        self.current_limit3 = current_limit3
         
 
         super(CurrentRelay, self).__init__(**kw_args)

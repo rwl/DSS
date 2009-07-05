@@ -33,12 +33,15 @@ class MeteringFunctionConfiguration(IdentifiedObject):
     """
     # <<< metering_function_configuration
     # @generated
-    def __init__(self, electric_metering_functions=[], **kw_args):
+    def __init__(self, electric_metering_functions=None, **kw_args):
         """ Initialises a new 'MeteringFunctionConfiguration' instance.
         """
         
         self._electric_metering_functions = []
-        self.electric_metering_functions = electric_metering_functions
+        if electric_metering_functions is None:
+            self.electric_metering_functions = []
+        else:
+            self.electric_metering_functions = electric_metering_functions
 
         super(MeteringFunctionConfiguration, self).__init__(**kw_args)
     # >>> metering_function_configuration
@@ -52,9 +55,9 @@ class MeteringFunctionConfiguration(IdentifiedObject):
 
     def set_electric_metering_functions(self, value):
         for x in self._electric_metering_functions:
-            x._metering_function_configuration = None
+            x.metering_function_configuration = None
         for y in value:
-            y._metering_function_configuration = self
+            y.metering_function_configuration = self
         self._electric_metering_functions = value
             
     electric_metering_functions = property(get_electric_metering_functions, set_electric_metering_functions)
@@ -62,7 +65,8 @@ class MeteringFunctionConfiguration(IdentifiedObject):
     def add_electric_metering_functions(self, *electric_metering_functions):
         for obj in electric_metering_functions:
             obj._metering_function_configuration = self
-            self._electric_metering_functions.append(obj)
+            if obj not in self._electric_metering_functions:
+                self._electric_metering_functions.append(obj)
         
     def remove_electric_metering_functions(self, *electric_metering_functions):
         for obj in electric_metering_functions:

@@ -18,13 +18,13 @@ class ScheduledEvent(IdentifiedObject):
     """
     # <<< scheduled_event
     # @generated
-    def __init__(self, duration='', category='', status=None, activity_record=None, time_point=None, assets=[], schedule_parameter_info=None, document=None, **kw_args):
+    def __init__(self, duration=0.0, category='', status=None, activity_record=None, time_point=None, assets=None, schedule_parameter_info=None, document=None, **kw_args):
         """ Initialises a new 'ScheduledEvent' instance.
         """
         # Duration of the scheduled event, for example, the time to ramp between values. 
-        self.duration = ''
+        self.duration = duration
         # Category of scheduled event. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._activity_record = None
@@ -32,7 +32,10 @@ class ScheduledEvent(IdentifiedObject):
         self._time_point = None
         self.time_point = time_point
         self._assets = []
-        self.assets = assets
+        if assets is None:
+            self.assets = []
+        else:
+            self.assets = assets
         self._schedule_parameter_info = None
         self.schedule_parameter_info = schedule_parameter_info
         self._document = None
@@ -78,7 +81,8 @@ class ScheduledEvent(IdentifiedObject):
             
         self._time_point = value
         if self._time_point is not None:
-            self._time_point._scheduled_events.append(self)
+            if self not in self._time_point._scheduled_events:
+                self._time_point._scheduled_events.append(self)
 
     time_point = property(get_time_point, set_time_point)
     # >>> time_point
@@ -128,7 +132,8 @@ class ScheduledEvent(IdentifiedObject):
             
         self._schedule_parameter_info = value
         if self._schedule_parameter_info is not None:
-            self._schedule_parameter_info._scheduled_events.append(self)
+            if self not in self._schedule_parameter_info._scheduled_events:
+                self._schedule_parameter_info._scheduled_events.append(self)
 
     schedule_parameter_info = property(get_schedule_parameter_info, set_schedule_parameter_info)
     # >>> schedule_parameter_info
@@ -147,7 +152,8 @@ class ScheduledEvent(IdentifiedObject):
             
         self._document = value
         if self._document is not None:
-            self._document._scheduled_events.append(self)
+            if self not in self._document._scheduled_events:
+                self._document._scheduled_events.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -163,9 +169,9 @@ class ChangeItem(IdentifiedObject):
         """ Initialises a new 'ChangeItem' instance.
         """
         # Kind of change for the associated object. Values are: "modify", "add", "delete"
-        self.kind = 'modify'
+        self.kind = kind
         # Relative order of this ChangeItem in an ordered sequence of changes. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         
         self.status = status
         self._power_system_resource = None
@@ -213,7 +219,8 @@ class ChangeItem(IdentifiedObject):
             
         self._power_system_resource = value
         if self._power_system_resource is not None:
-            self._power_system_resource._change_items.append(self)
+            if self not in self._power_system_resource._change_items:
+                self._power_system_resource._change_items.append(self)
 
     power_system_resource = property(get_power_system_resource, set_power_system_resource)
     # >>> power_system_resource
@@ -232,7 +239,8 @@ class ChangeItem(IdentifiedObject):
             
         self._measurement = value
         if self._measurement is not None:
-            self._measurement._change_items.append(self)
+            if self not in self._measurement._change_items:
+                self._measurement._change_items.append(self)
 
     measurement = property(get_measurement, set_measurement)
     # >>> measurement
@@ -251,7 +259,8 @@ class ChangeItem(IdentifiedObject):
             
         self._document = value
         if self._document is not None:
-            self._document._change_items.append(self)
+            if self not in self._document._change_items:
+                self._document._change_items.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -270,7 +279,8 @@ class ChangeItem(IdentifiedObject):
             
         self._change_set = value
         if self._change_set is not None:
-            self._change_set._change_items.append(self)
+            if self not in self._change_set._change_items:
+                self._change_set._change_items.append(self)
 
     change_set = property(get_change_set, set_change_set)
     # >>> change_set
@@ -289,7 +299,8 @@ class ChangeItem(IdentifiedObject):
             
         self._network_data_set = value
         if self._network_data_set is not None:
-            self._network_data_set._change_items.append(self)
+            if self not in self._network_data_set._change_items:
+                self._network_data_set._change_items.append(self)
 
     network_data_set = property(get_network_data_set, set_network_data_set)
     # >>> network_data_set
@@ -308,7 +319,8 @@ class ChangeItem(IdentifiedObject):
             
         self._gml_selector = value
         if self._gml_selector is not None:
-            self._gml_selector._change_items.append(self)
+            if self not in self._gml_selector._change_items:
+                self._gml_selector._change_items.append(self)
 
     gml_selector = property(get_gml_selector, set_gml_selector)
     # >>> gml_selector
@@ -327,7 +339,8 @@ class ChangeItem(IdentifiedObject):
             
         self._location = value
         if self._location is not None:
-            self._location._change_items.append(self)
+            if self not in self._location._change_items:
+                self._location._change_items.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -346,7 +359,8 @@ class ChangeItem(IdentifiedObject):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._change_items.append(self)
+            if self not in self._erp_person._change_items:
+                self._erp_person._change_items.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -365,7 +379,8 @@ class ChangeItem(IdentifiedObject):
             
         self._asset = value
         if self._asset is not None:
-            self._asset._change_items.append(self)
+            if self not in self._asset._change_items:
+                self._asset._change_items.append(self)
 
     asset = property(get_asset, set_asset)
     # >>> asset
@@ -384,7 +399,8 @@ class ChangeItem(IdentifiedObject):
             
         self._organisation = value
         if self._organisation is not None:
-            self._organisation._change_items.append(self)
+            if self not in self._organisation._change_items:
+                self._organisation._change_items.append(self)
 
     organisation = property(get_organisation, set_organisation)
     # >>> organisation
@@ -403,7 +419,8 @@ class ChangeItem(IdentifiedObject):
             
         self._gml_observation = value
         if self._gml_observation is not None:
-            self._gml_observation._change_items.append(self)
+            if self not in self._gml_observation._change_items:
+                self._gml_observation._change_items.append(self)
 
     gml_observation = property(get_gml_observation, set_gml_observation)
     # >>> gml_observation
@@ -419,7 +436,7 @@ class Role(IdentifiedObject):
         """ Initialises a new 'Role' instance.
         """
         # Category of role. 
-        self.category = ''
+        self.category = category
         
         self.status = status
 
@@ -438,19 +455,28 @@ class Craft(IdentifiedObject):
     """
     # <<< craft
     # @generated
-    def __init__(self, category='', status=None, erp_persons=[], capabilities=[], skills=[], **kw_args):
+    def __init__(self, category='', status=None, erp_persons=None, capabilities=None, skills=None, **kw_args):
         """ Initialises a new 'Craft' instance.
         """
         # Category by utility's work mangement standards and practices. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
         self._capabilities = []
-        self.capabilities = capabilities
+        if capabilities is None:
+            self.capabilities = []
+        else:
+            self.capabilities = capabilities
         self._skills = []
-        self.skills = skills
+        if skills is None:
+            self.skills = []
+        else:
+            self.skills = skills
 
         super(Craft, self).__init__(**kw_args)
     # >>> craft
@@ -560,20 +586,26 @@ class ScheduleParameterInfo(IdentifiedObject):
     """
     # <<< schedule_parameter_info
     # @generated
-    def __init__(self, estimated_window='', status=None, requested_window=None, scheduled_events=[], for_inspection_data_set=None, documents=[], **kw_args):
+    def __init__(self, estimated_window='', status=None, requested_window=None, scheduled_events=None, for_inspection_data_set=None, documents=None, **kw_args):
         """ Initialises a new 'ScheduleParameterInfo' instance.
         """
         # Estimated date and time for activity execution (with earliest possibility of activity initiation and latest possibility of activity completion). 
-        self.estimated_window = ''
+        self.estimated_window = estimated_window
         
         self.status = status
         self.requested_window = requested_window
         self._scheduled_events = []
-        self.scheduled_events = scheduled_events
+        if scheduled_events is None:
+            self.scheduled_events = []
+        else:
+            self.scheduled_events = scheduled_events
         self._for_inspection_data_set = None
         self.for_inspection_data_set = for_inspection_data_set
         self._documents = []
-        self.documents = documents
+        if documents is None:
+            self.documents = []
+        else:
+            self.documents = documents
 
         super(ScheduleParameterInfo, self).__init__(**kw_args)
     # >>> schedule_parameter_info
@@ -598,9 +630,9 @@ class ScheduleParameterInfo(IdentifiedObject):
 
     def set_scheduled_events(self, value):
         for x in self._scheduled_events:
-            x._schedule_parameter_info = None
+            x.schedule_parameter_info = None
         for y in value:
-            y._schedule_parameter_info = self
+            y.schedule_parameter_info = self
         self._scheduled_events = value
             
     scheduled_events = property(get_scheduled_events, set_scheduled_events)
@@ -608,7 +640,8 @@ class ScheduleParameterInfo(IdentifiedObject):
     def add_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
             obj._schedule_parameter_info = self
-            self._scheduled_events.append(obj)
+            if obj not in self._scheduled_events:
+                self._scheduled_events.append(obj)
         
     def remove_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
@@ -630,7 +663,8 @@ class ScheduleParameterInfo(IdentifiedObject):
             
         self._for_inspection_data_set = value
         if self._for_inspection_data_set is not None:
-            self._for_inspection_data_set._according_to_schedules.append(self)
+            if self not in self._for_inspection_data_set._according_to_schedules:
+                self._for_inspection_data_set._according_to_schedules.append(self)
 
     for_inspection_data_set = property(get_for_inspection_data_set, set_for_inspection_data_set)
     # >>> for_inspection_data_set
@@ -673,18 +707,24 @@ class Diagram(Document):
     """
     # <<< diagram
     # @generated
-    def __init__(self, kind='geographic', gml_coordinate_system=None, gml_diagram_objects=[], design_locations=[], **kw_args):
+    def __init__(self, kind='geographic', gml_coordinate_system=None, gml_diagram_objects=None, design_locations=None, **kw_args):
         """ Initialises a new 'Diagram' instance.
         """
         # Kind of this diagram. Values are: "geographic", "design_sketch", "schematic", "other", "internal_view"
-        self.kind = 'geographic'
+        self.kind = kind
         
         self._gml_coordinate_system = None
         self.gml_coordinate_system = gml_coordinate_system
         self._gml_diagram_objects = []
-        self.gml_diagram_objects = gml_diagram_objects
+        if gml_diagram_objects is None:
+            self.gml_diagram_objects = []
+        else:
+            self.gml_diagram_objects = gml_diagram_objects
         self._design_locations = []
-        self.design_locations = design_locations
+        if design_locations is None:
+            self.design_locations = []
+        else:
+            self.design_locations = design_locations
 
         super(Diagram, self).__init__(**kw_args)
     # >>> diagram
@@ -703,7 +743,8 @@ class Diagram(Document):
             
         self._gml_coordinate_system = value
         if self._gml_coordinate_system is not None:
-            self._gml_coordinate_system._diagrams.append(self)
+            if self not in self._gml_coordinate_system._diagrams:
+                self._gml_coordinate_system._diagrams.append(self)
 
     gml_coordinate_system = property(get_gml_coordinate_system, set_gml_coordinate_system)
     # >>> gml_coordinate_system
@@ -777,18 +818,21 @@ class BankAccount(Document):
     """
     # <<< bank_account
     # @generated
-    def __init__(self, account_number='', bank=None, service_supplier=None, bank_statements=[], **kw_args):
+    def __init__(self, account_number='', bank=None, service_supplier=None, bank_statements=None, **kw_args):
         """ Initialises a new 'BankAccount' instance.
         """
         # Account reference number. 
-        self.account_number = ''
+        self.account_number = account_number
         
         self._bank = None
         self.bank = bank
         self._service_supplier = None
         self.service_supplier = service_supplier
         self._bank_statements = []
-        self.bank_statements = bank_statements
+        if bank_statements is None:
+            self.bank_statements = []
+        else:
+            self.bank_statements = bank_statements
 
         super(BankAccount, self).__init__(**kw_args)
     # >>> bank_account
@@ -807,7 +851,8 @@ class BankAccount(Document):
             
         self._bank = value
         if self._bank is not None:
-            self._bank._bank_accounts.append(self)
+            if self not in self._bank._bank_accounts:
+                self._bank._bank_accounts.append(self)
 
     bank = property(get_bank, set_bank)
     # >>> bank
@@ -826,7 +871,8 @@ class BankAccount(Document):
             
         self._service_supplier = value
         if self._service_supplier is not None:
-            self._service_supplier._bank_accounts.append(self)
+            if self not in self._service_supplier._bank_accounts:
+                self._service_supplier._bank_accounts.append(self)
 
     service_supplier = property(get_service_supplier, set_service_supplier)
     # >>> service_supplier
@@ -840,9 +886,9 @@ class BankAccount(Document):
 
     def set_bank_statements(self, value):
         for x in self._bank_statements:
-            x._bank_account = None
+            x.bank_account = None
         for y in value:
-            y._bank_account = self
+            y.bank_account = self
         self._bank_statements = value
             
     bank_statements = property(get_bank_statements, set_bank_statements)
@@ -850,7 +896,8 @@ class BankAccount(Document):
     def add_bank_statements(self, *bank_statements):
         for obj in bank_statements:
             obj._bank_account = self
-            self._bank_statements.append(obj)
+            if obj not in self._bank_statements:
+                self._bank_statements.append(obj)
         
     def remove_bank_statements(self, *bank_statements):
         for obj in bank_statements:
@@ -865,15 +912,18 @@ class BusinessRole(IdentifiedObject):
     """
     # <<< business_role
     # @generated
-    def __init__(self, category='', status=None, organisations=[], **kw_args):
+    def __init__(self, category='', status=None, organisations=None, **kw_args):
         """ Initialises a new 'BusinessRole' instance.
         """
         # Category by utility's corporate standards and practices. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._organisations = []
-        self.organisations = organisations
+        if organisations is None:
+            self.organisations = []
+        else:
+            self.organisations = organisations
 
         super(BusinessRole, self).__init__(**kw_args)
     # >>> business_role
@@ -921,22 +971,28 @@ class Skill(Document):
     """
     # <<< skill
     # @generated
-    def __init__(self, expiration_date_time='', effective_date_time='', level='other', certified_date='', crafts=[], qualification_requirements=[], erp_person=None, **kw_args):
+    def __init__(self, expiration_date_time='', effective_date_time='', level='other', certified_date='', crafts=None, qualification_requirements=None, erp_person=None, **kw_args):
         """ Initialises a new 'Skill' instance.
         """
         # Date and time skill certification expires. 
-        self.expiration_date_time = ''
+        self.expiration_date_time = expiration_date_time
         # Date and time skill became effective. 
-        self.effective_date_time = ''
+        self.effective_date_time = effective_date_time
         # Level of skill for a Craft. Values are: "other", "apprentice", "standard", "master"
-        self.level = 'other'
+        self.level = level
         # Date of certification. 
-        self.certified_date = ''
+        self.certified_date = certified_date
         
         self._crafts = []
-        self.crafts = crafts
+        if crafts is None:
+            self.crafts = []
+        else:
+            self.crafts = crafts
         self._qualification_requirements = []
-        self.qualification_requirements = qualification_requirements
+        if qualification_requirements is None:
+            self.qualification_requirements = []
+        else:
+            self.qualification_requirements = qualification_requirements
         self._erp_person = None
         self.erp_person = erp_person
 
@@ -1019,7 +1075,8 @@ class Skill(Document):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._skills.append(self)
+            if self not in self._erp_person._skills:
+                self._erp_person._skills.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -1047,15 +1104,18 @@ class MarketRole(IdentifiedObject):
     """
     # <<< market_role
     # @generated
-    def __init__(self, kind='energy_service_consumer', status=None, organisations=[], **kw_args):
+    def __init__(self, kind='energy_service_consumer', status=None, organisations=None, **kw_args):
         """ Initialises a new 'MarketRole' instance.
         """
         # Kind of role an organisation plays in a market. Values are: "energy_service_consumer", "transmission_service_provider", "transmission_owner", "interchange_authority", "transmission_operator", "transmission_planner", "standards_developer", "planning_authority", "load_serving_entity", "competitive_retailer", "compliance_monitor", "resource_planner", "generator_owner", "distribution_provider", "reliability_authority", "balancing_authority", "other", "purchasing_selling_entity", "generator_operator"
-        self.kind = 'energy_service_consumer'
+        self.kind = kind
         
         self.status = status
         self._organisations = []
-        self.organisations = organisations
+        if organisations is None:
+            self.organisations = []
+        else:
+            self.organisations = organisations
 
         super(MarketRole, self).__init__(**kw_args)
     # >>> market_role
@@ -1107,9 +1167,9 @@ class Ratio(Element):
         """ Initialises a new 'Ratio' instance.
         """
         # The part of a fraction that is above the line and signifies the number to be divided by the denominator. 
-        self.numerator = 0.0
+        self.numerator = numerator
         # The part of a fraction that is below the line and that functions as the divisor of the numerator. 
-        self.denominator = 0.0
+        self.denominator = denominator
         
 
         super(Ratio, self).__init__(**kw_args)
@@ -1148,7 +1208,8 @@ class DocDocRole(Role):
             
         self._to_document = value
         if self._to_document is not None:
-            self._to_document._from_document_roles.append(self)
+            if self not in self._to_document._from_document_roles:
+                self._to_document._from_document_roles.append(self)
 
     to_document = property(get_to_document, set_to_document)
     # >>> to_document
@@ -1167,7 +1228,8 @@ class DocDocRole(Role):
             
         self._from_document = value
         if self._from_document is not None:
-            self._from_document._to_document_roles.append(self)
+            if self not in self._from_document._to_document_roles:
+                self._from_document._to_document_roles.append(self)
 
     from_document = property(get_from_document, set_from_document)
     # >>> from_document
@@ -1205,7 +1267,8 @@ class DocPsrRole(Role):
             
         self._document = value
         if self._document is not None:
-            self._document._power_system_resource_roles.append(self)
+            if self not in self._document._power_system_resource_roles:
+                self._document._power_system_resource_roles.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -1224,7 +1287,8 @@ class DocPsrRole(Role):
             
         self._power_system_resource = value
         if self._power_system_resource is not None:
-            self._power_system_resource._document_roles.append(self)
+            if self not in self._power_system_resource._document_roles:
+                self._power_system_resource._document_roles.append(self)
 
     power_system_resource = property(get_power_system_resource, set_power_system_resource)
     # >>> power_system_resource
@@ -1240,9 +1304,9 @@ class Map(Diagram):
         """ Initialises a new 'Map' instance.
         """
         # Page number for particular set of maps specified by 'category'. 
-        self.page_number = 0
+        self.page_number = page_number
         # Map grid number. 
-        self.map_loc_grid = ''
+        self.map_loc_grid = map_loc_grid
         
 
         super(Map, self).__init__(**kw_args)

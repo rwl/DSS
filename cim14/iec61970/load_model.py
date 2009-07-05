@@ -46,7 +46,8 @@ class SeasonDayTypeSchedule(RegularIntervalSchedule):
             
         self._day_type = value
         if self._day_type is not None:
-            self._day_type._season_day_type_schedules.append(self)
+            if self not in self._day_type._season_day_type_schedules:
+                self._day_type._season_day_type_schedules.append(self)
 
     day_type = property(get_day_type, set_day_type)
     # >>> day_type
@@ -65,7 +66,8 @@ class SeasonDayTypeSchedule(RegularIntervalSchedule):
             
         self._season = value
         if self._season is not None:
-            self._season._season_day_type_schedules.append(self)
+            if self not in self._season._season_day_type_schedules:
+                self._season._season_day_type_schedules.append(self)
 
     season = property(get_season, set_season)
     # >>> season
@@ -77,12 +79,15 @@ class LoadGroup(IdentifiedObject):
     """
     # <<< load_group
     # @generated
-    def __init__(self, registered_loads=[], sub_load_area=None, **kw_args):
+    def __init__(self, registered_loads=None, sub_load_area=None, **kw_args):
         """ Initialises a new 'LoadGroup' instance.
         """
         
         self._registered_loads = []
-        self.registered_loads = registered_loads
+        if registered_loads is None:
+            self.registered_loads = []
+        else:
+            self.registered_loads = registered_loads
         self._sub_load_area = None
         self.sub_load_area = sub_load_area
 
@@ -98,9 +103,9 @@ class LoadGroup(IdentifiedObject):
 
     def set_registered_loads(self, value):
         for x in self._registered_loads:
-            x._load_area = None
+            x.load_area = None
         for y in value:
-            y._load_area = self
+            y.load_area = self
         self._registered_loads = value
             
     registered_loads = property(get_registered_loads, set_registered_loads)
@@ -108,7 +113,8 @@ class LoadGroup(IdentifiedObject):
     def add_registered_loads(self, *registered_loads):
         for obj in registered_loads:
             obj._load_area = self
-            self._registered_loads.append(obj)
+            if obj not in self._registered_loads:
+                self._registered_loads.append(obj)
         
     def remove_registered_loads(self, *registered_loads):
         for obj in registered_loads:
@@ -130,7 +136,8 @@ class LoadGroup(IdentifiedObject):
             
         self._sub_load_area = value
         if self._sub_load_area is not None:
-            self._sub_load_area._load_groups.append(self)
+            if self not in self._sub_load_area._load_groups:
+                self._sub_load_area._load_groups.append(self)
 
     sub_load_area = property(get_sub_load_area, set_sub_load_area)
     # >>> sub_load_area
@@ -142,22 +149,31 @@ class Season(Element):
     """
     # <<< season
     # @generated
-    def __init__(self, end_date='', name='spring', start_date='', season_day_type_schedules=[], capacity_benefit_margin=[], violation_limits=[], **kw_args):
+    def __init__(self, end_date='', name='spring', start_date='', season_day_type_schedules=None, capacity_benefit_margin=None, violation_limits=None, **kw_args):
         """ Initialises a new 'Season' instance.
         """
         # Date season ends 
-        self.end_date = ''
+        self.end_date = end_date
         # Name of the Season Values are: "spring", "winter", "summer", "fall"
-        self.name = 'spring'
+        self.name = name
         # Date season starts 
-        self.start_date = ''
+        self.start_date = start_date
         
         self._season_day_type_schedules = []
-        self.season_day_type_schedules = season_day_type_schedules
+        if season_day_type_schedules is None:
+            self.season_day_type_schedules = []
+        else:
+            self.season_day_type_schedules = season_day_type_schedules
         self._capacity_benefit_margin = []
-        self.capacity_benefit_margin = capacity_benefit_margin
+        if capacity_benefit_margin is None:
+            self.capacity_benefit_margin = []
+        else:
+            self.capacity_benefit_margin = capacity_benefit_margin
         self._violation_limits = []
-        self.violation_limits = violation_limits
+        if violation_limits is None:
+            self.violation_limits = []
+        else:
+            self.violation_limits = violation_limits
 
         super(Season, self).__init__(**kw_args)
     # >>> season
@@ -171,9 +187,9 @@ class Season(Element):
 
     def set_season_day_type_schedules(self, value):
         for x in self._season_day_type_schedules:
-            x._season = None
+            x.season = None
         for y in value:
-            y._season = self
+            y.season = self
         self._season_day_type_schedules = value
             
     season_day_type_schedules = property(get_season_day_type_schedules, set_season_day_type_schedules)
@@ -181,7 +197,8 @@ class Season(Element):
     def add_season_day_type_schedules(self, *season_day_type_schedules):
         for obj in season_day_type_schedules:
             obj._season = self
-            self._season_day_type_schedules.append(obj)
+            if obj not in self._season_day_type_schedules:
+                self._season_day_type_schedules.append(obj)
         
     def remove_season_day_type_schedules(self, *season_day_type_schedules):
         for obj in season_day_type_schedules:
@@ -198,9 +215,9 @@ class Season(Element):
 
     def set_capacity_benefit_margin(self, value):
         for x in self._capacity_benefit_margin:
-            x._season = None
+            x.season = None
         for y in value:
-            y._season = self
+            y.season = self
         self._capacity_benefit_margin = value
             
     capacity_benefit_margin = property(get_capacity_benefit_margin, set_capacity_benefit_margin)
@@ -208,7 +225,8 @@ class Season(Element):
     def add_capacity_benefit_margin(self, *capacity_benefit_margin):
         for obj in capacity_benefit_margin:
             obj._season = self
-            self._capacity_benefit_margin.append(obj)
+            if obj not in self._capacity_benefit_margin:
+                self._capacity_benefit_margin.append(obj)
         
     def remove_capacity_benefit_margin(self, *capacity_benefit_margin):
         for obj in capacity_benefit_margin:
@@ -225,9 +243,9 @@ class Season(Element):
 
     def set_violation_limits(self, value):
         for x in self._violation_limits:
-            x._season = None
+            x.season = None
         for y in value:
-            y._season = self
+            y.season = self
         self._violation_limits = value
             
     violation_limits = property(get_violation_limits, set_violation_limits)
@@ -235,7 +253,8 @@ class Season(Element):
     def add_violation_limits(self, *violation_limits):
         for obj in violation_limits:
             obj._season = self
-            self._violation_limits.append(obj)
+            if obj not in self._violation_limits:
+                self._violation_limits.append(obj)
         
     def remove_violation_limits(self, *violation_limits):
         for obj in violation_limits:
@@ -274,7 +293,8 @@ class NonConformLoad(EnergyConsumer):
             
         self._load_group = value
         if self._load_group is not None:
-            self._load_group._energy_consumers.append(self)
+            if self not in self._load_group._energy_consumers:
+                self._load_group._energy_consumers.append(self)
 
     load_group = property(get_load_group, set_load_group)
     # >>> load_group
@@ -321,12 +341,15 @@ class DayType(IdentifiedObject):
     """
     # <<< day_type
     # @generated
-    def __init__(self, season_day_type_schedules=[], **kw_args):
+    def __init__(self, season_day_type_schedules=None, **kw_args):
         """ Initialises a new 'DayType' instance.
         """
         
         self._season_day_type_schedules = []
-        self.season_day_type_schedules = season_day_type_schedules
+        if season_day_type_schedules is None:
+            self.season_day_type_schedules = []
+        else:
+            self.season_day_type_schedules = season_day_type_schedules
 
         super(DayType, self).__init__(**kw_args)
     # >>> day_type
@@ -340,9 +363,9 @@ class DayType(IdentifiedObject):
 
     def set_season_day_type_schedules(self, value):
         for x in self._season_day_type_schedules:
-            x._day_type = None
+            x.day_type = None
         for y in value:
-            y._day_type = self
+            y.day_type = self
         self._season_day_type_schedules = value
             
     season_day_type_schedules = property(get_season_day_type_schedules, set_season_day_type_schedules)
@@ -350,7 +373,8 @@ class DayType(IdentifiedObject):
     def add_season_day_type_schedules(self, *season_day_type_schedules):
         for obj in season_day_type_schedules:
             obj._day_type = self
-            self._season_day_type_schedules.append(obj)
+            if obj not in self._season_day_type_schedules:
+                self._season_day_type_schedules.append(obj)
         
     def remove_season_day_type_schedules(self, *season_day_type_schedules):
         for obj in season_day_type_schedules:
@@ -405,7 +429,8 @@ class ConformLoad(EnergyConsumer):
             
         self._load_group = value
         if self._load_group is not None:
-            self._load_group._energy_consumers.append(self)
+            if self not in self._load_group._energy_consumers:
+                self._load_group._energy_consumers.append(self)
 
     load_group = property(get_load_group, set_load_group)
     # >>> load_group
@@ -417,16 +442,19 @@ class PowerCutZone(PowerSystemResource):
     """
     # <<< power_cut_zone
     # @generated
-    def __init__(self, cut_level2='', cut_level1='', energy_consumers=[], **kw_args):
+    def __init__(self, cut_level2=0.0, cut_level1=0.0, energy_consumers=None, **kw_args):
         """ Initialises a new 'PowerCutZone' instance.
         """
         # Second level (amount) of load to cut as a percentage of total zone load 
-        self.cut_level2 = ''
+        self.cut_level2 = cut_level2
         # First level (amount) of load to cut as a percentage of total zone load 
-        self.cut_level1 = ''
+        self.cut_level1 = cut_level1
         
         self._energy_consumers = []
-        self.energy_consumers = energy_consumers
+        if energy_consumers is None:
+            self.energy_consumers = []
+        else:
+            self.energy_consumers = energy_consumers
 
         super(PowerCutZone, self).__init__(**kw_args)
     # >>> power_cut_zone
@@ -440,9 +468,9 @@ class PowerCutZone(PowerSystemResource):
 
     def set_energy_consumers(self, value):
         for x in self._energy_consumers:
-            x._power_cut_zone = None
+            x.power_cut_zone = None
         for y in value:
-            y._power_cut_zone = self
+            y.power_cut_zone = self
         self._energy_consumers = value
             
     energy_consumers = property(get_energy_consumers, set_energy_consumers)
@@ -450,7 +478,8 @@ class PowerCutZone(PowerSystemResource):
     def add_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
             obj._power_cut_zone = self
-            self._energy_consumers.append(obj)
+            if obj not in self._energy_consumers:
+                self._energy_consumers.append(obj)
         
     def remove_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
@@ -465,34 +494,37 @@ class LoadResponseCharacteristic(IdentifiedObject):
     """
     # <<< load_response_characteristic
     # @generated
-    def __init__(self, p_constant_impedance=0.0, q_constant_power=0.0, p_voltage_exponent=0.0, q_constant_current=0.0, q_frequency_exponent=0.0, p_frequency_exponent=0.0, p_constant_current=0.0, q_constant_impedance=0.0, exponent_model=False, q_voltage_exponent=0.0, p_constant_power=0.0, energy_consumer=[], **kw_args):
+    def __init__(self, p_constant_impedance=0.0, q_constant_power=0.0, p_voltage_exponent=0.0, q_constant_current=0.0, q_frequency_exponent=0.0, p_frequency_exponent=0.0, p_constant_current=0.0, q_constant_impedance=0.0, exponent_model=False, q_voltage_exponent=0.0, p_constant_power=0.0, energy_consumer=None, **kw_args):
         """ Initialises a new 'LoadResponseCharacteristic' instance.
         """
         # Portion of active power load modeled as constant impedance.  Used only if the useExponentModel is false.    This value is noralized against the sum of pZ, pI, and pP. 
-        self.p_constant_impedance = 0.0
+        self.p_constant_impedance = p_constant_impedance
         # Portion of reactive power load modeled as constant power. Used only if the useExponentModel is false.    This value is noralized against the sum of qZ, qI, and qP. 
-        self.q_constant_power = 0.0
+        self.q_constant_power = q_constant_power
         # Exponent of per unit voltage effecting real power.   This model used only when 'useExponentModel' is true. 
-        self.p_voltage_exponent = 0.0
+        self.p_voltage_exponent = p_voltage_exponent
         # Portion of reactive power load modeled as constant current. Used only if the useExponentModel is false.    This value is noralized against the sum of qZ, qI, and qP. 
-        self.q_constant_current = 0.0
+        self.q_constant_current = q_constant_current
         # Exponent of per unit frequency effecting reactive power 
-        self.q_frequency_exponent = 0.0
+        self.q_frequency_exponent = q_frequency_exponent
         # Exponent of per unit frequency effecting active power 
-        self.p_frequency_exponent = 0.0
+        self.p_frequency_exponent = p_frequency_exponent
         # Portion of active power load modeled as constant current. Used only if the useExponentModel is false.    This value is noralized against the sum of pZ, pI, and pP. 
-        self.p_constant_current = 0.0
+        self.p_constant_current = p_constant_current
         # Portion of reactive power load modeled as constant impedance.  Used only if the useExponentModel is false.    This value is noralized against the sum of qZ, qI, and qP. 
-        self.q_constant_impedance = 0.0
+        self.q_constant_impedance = q_constant_impedance
         # Indicates the exponential voltage dependency model (pVoltateExponent and qVoltageExponent) is to be used.   If false, the coeficient model (consisting of pConstantImpedance, pConstantCurrent, pConstantPower, qConstantImpedance, qConstantCurrent, and qConstantPower) is to be used. 
-        self.exponent_model = False
+        self.exponent_model = exponent_model
         # Exponent of per unit voltage effecting reactive power.   This model used only when 'useExponentModel' is true. 
-        self.q_voltage_exponent = 0.0
+        self.q_voltage_exponent = q_voltage_exponent
         # Portion of active power load modeled as constant power. Used only if the useExponentModel is false.    This value is noralized against the sum of pZ, pI, and pP. 
-        self.p_constant_power = 0.0
+        self.p_constant_power = p_constant_power
         
         self._energy_consumer = []
-        self.energy_consumer = energy_consumer
+        if energy_consumer is None:
+            self.energy_consumer = []
+        else:
+            self.energy_consumer = energy_consumer
 
         super(LoadResponseCharacteristic, self).__init__(**kw_args)
     # >>> load_response_characteristic
@@ -506,9 +538,9 @@ class LoadResponseCharacteristic(IdentifiedObject):
 
     def set_energy_consumer(self, value):
         for x in self._energy_consumer:
-            x._load_response = None
+            x.load_response = None
         for y in value:
-            y._load_response = self
+            y.load_response = self
         self._energy_consumer = value
             
     energy_consumer = property(get_energy_consumer, set_energy_consumer)
@@ -516,7 +548,8 @@ class LoadResponseCharacteristic(IdentifiedObject):
     def add_energy_consumer(self, *energy_consumer):
         for obj in energy_consumer:
             obj._load_response = self
-            self._energy_consumer.append(obj)
+            if obj not in self._energy_consumer:
+                self._energy_consumer.append(obj)
         
     def remove_energy_consumer(self, *energy_consumer):
         for obj in energy_consumer:
@@ -531,14 +564,20 @@ class ConformLoadGroup(LoadGroup):
     """
     # <<< conform_load_group
     # @generated
-    def __init__(self, energy_consumers=[], conform_load_schedules=[], **kw_args):
+    def __init__(self, energy_consumers=None, conform_load_schedules=None, **kw_args):
         """ Initialises a new 'ConformLoadGroup' instance.
         """
         
         self._energy_consumers = []
-        self.energy_consumers = energy_consumers
+        if energy_consumers is None:
+            self.energy_consumers = []
+        else:
+            self.energy_consumers = energy_consumers
         self._conform_load_schedules = []
-        self.conform_load_schedules = conform_load_schedules
+        if conform_load_schedules is None:
+            self.conform_load_schedules = []
+        else:
+            self.conform_load_schedules = conform_load_schedules
 
         super(ConformLoadGroup, self).__init__(**kw_args)
     # >>> conform_load_group
@@ -552,9 +591,9 @@ class ConformLoadGroup(LoadGroup):
 
     def set_energy_consumers(self, value):
         for x in self._energy_consumers:
-            x._load_group = None
+            x.load_group = None
         for y in value:
-            y._load_group = self
+            y.load_group = self
         self._energy_consumers = value
             
     energy_consumers = property(get_energy_consumers, set_energy_consumers)
@@ -562,7 +601,8 @@ class ConformLoadGroup(LoadGroup):
     def add_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
             obj._load_group = self
-            self._energy_consumers.append(obj)
+            if obj not in self._energy_consumers:
+                self._energy_consumers.append(obj)
         
     def remove_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
@@ -579,9 +619,9 @@ class ConformLoadGroup(LoadGroup):
 
     def set_conform_load_schedules(self, value):
         for x in self._conform_load_schedules:
-            x._conform_load_group = None
+            x.conform_load_group = None
         for y in value:
-            y._conform_load_group = self
+            y.conform_load_group = self
         self._conform_load_schedules = value
             
     conform_load_schedules = property(get_conform_load_schedules, set_conform_load_schedules)
@@ -589,7 +629,8 @@ class ConformLoadGroup(LoadGroup):
     def add_conform_load_schedules(self, *conform_load_schedules):
         for obj in conform_load_schedules:
             obj._conform_load_group = self
-            self._conform_load_schedules.append(obj)
+            if obj not in self._conform_load_schedules:
+                self._conform_load_schedules.append(obj)
         
     def remove_conform_load_schedules(self, *conform_load_schedules):
         for obj in conform_load_schedules:
@@ -628,7 +669,8 @@ class NonConformLoadSchedule(SeasonDayTypeSchedule):
             
         self._non_conform_load_group = value
         if self._non_conform_load_group is not None:
-            self._non_conform_load_group._non_conform_load_schedules.append(self)
+            if self not in self._non_conform_load_group._non_conform_load_schedules:
+                self._non_conform_load_group._non_conform_load_schedules.append(self)
 
     non_conform_load_group = property(get_non_conform_load_group, set_non_conform_load_group)
     # >>> non_conform_load_group
@@ -640,12 +682,15 @@ class SubLoadArea(EnergyArea):
     """
     # <<< sub_load_area
     # @generated
-    def __init__(self, load_groups=[], load_area=None, **kw_args):
+    def __init__(self, load_groups=None, load_area=None, **kw_args):
         """ Initialises a new 'SubLoadArea' instance.
         """
         
         self._load_groups = []
-        self.load_groups = load_groups
+        if load_groups is None:
+            self.load_groups = []
+        else:
+            self.load_groups = load_groups
         self._load_area = None
         self.load_area = load_area
 
@@ -661,9 +706,9 @@ class SubLoadArea(EnergyArea):
 
     def set_load_groups(self, value):
         for x in self._load_groups:
-            x._sub_load_area = None
+            x.sub_load_area = None
         for y in value:
-            y._sub_load_area = self
+            y.sub_load_area = self
         self._load_groups = value
             
     load_groups = property(get_load_groups, set_load_groups)
@@ -671,7 +716,8 @@ class SubLoadArea(EnergyArea):
     def add_load_groups(self, *load_groups):
         for obj in load_groups:
             obj._sub_load_area = self
-            self._load_groups.append(obj)
+            if obj not in self._load_groups:
+                self._load_groups.append(obj)
         
     def remove_load_groups(self, *load_groups):
         for obj in load_groups:
@@ -693,7 +739,8 @@ class SubLoadArea(EnergyArea):
             
         self._load_area = value
         if self._load_area is not None:
-            self._load_area._sub_load_areas.append(self)
+            if self not in self._load_area._sub_load_areas:
+                self._load_area._sub_load_areas.append(self)
 
     load_area = property(get_load_area, set_load_area)
     # >>> load_area
@@ -729,7 +776,8 @@ class ConformLoadSchedule(SeasonDayTypeSchedule):
             
         self._conform_load_group = value
         if self._conform_load_group is not None:
-            self._conform_load_group._conform_load_schedules.append(self)
+            if self not in self._conform_load_group._conform_load_schedules:
+                self._conform_load_group._conform_load_schedules.append(self)
 
     conform_load_group = property(get_conform_load_group, set_conform_load_group)
     # >>> conform_load_group
@@ -741,14 +789,20 @@ class NonConformLoadGroup(LoadGroup):
     """
     # <<< non_conform_load_group
     # @generated
-    def __init__(self, energy_consumers=[], non_conform_load_schedules=[], **kw_args):
+    def __init__(self, energy_consumers=None, non_conform_load_schedules=None, **kw_args):
         """ Initialises a new 'NonConformLoadGroup' instance.
         """
         
         self._energy_consumers = []
-        self.energy_consumers = energy_consumers
+        if energy_consumers is None:
+            self.energy_consumers = []
+        else:
+            self.energy_consumers = energy_consumers
         self._non_conform_load_schedules = []
-        self.non_conform_load_schedules = non_conform_load_schedules
+        if non_conform_load_schedules is None:
+            self.non_conform_load_schedules = []
+        else:
+            self.non_conform_load_schedules = non_conform_load_schedules
 
         super(NonConformLoadGroup, self).__init__(**kw_args)
     # >>> non_conform_load_group
@@ -762,9 +816,9 @@ class NonConformLoadGroup(LoadGroup):
 
     def set_energy_consumers(self, value):
         for x in self._energy_consumers:
-            x._load_group = None
+            x.load_group = None
         for y in value:
-            y._load_group = self
+            y.load_group = self
         self._energy_consumers = value
             
     energy_consumers = property(get_energy_consumers, set_energy_consumers)
@@ -772,7 +826,8 @@ class NonConformLoadGroup(LoadGroup):
     def add_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
             obj._load_group = self
-            self._energy_consumers.append(obj)
+            if obj not in self._energy_consumers:
+                self._energy_consumers.append(obj)
         
     def remove_energy_consumers(self, *energy_consumers):
         for obj in energy_consumers:
@@ -789,9 +844,9 @@ class NonConformLoadGroup(LoadGroup):
 
     def set_non_conform_load_schedules(self, value):
         for x in self._non_conform_load_schedules:
-            x._non_conform_load_group = None
+            x.non_conform_load_group = None
         for y in value:
-            y._non_conform_load_group = self
+            y.non_conform_load_group = self
         self._non_conform_load_schedules = value
             
     non_conform_load_schedules = property(get_non_conform_load_schedules, set_non_conform_load_schedules)
@@ -799,7 +854,8 @@ class NonConformLoadGroup(LoadGroup):
     def add_non_conform_load_schedules(self, *non_conform_load_schedules):
         for obj in non_conform_load_schedules:
             obj._non_conform_load_group = self
-            self._non_conform_load_schedules.append(obj)
+            if obj not in self._non_conform_load_schedules:
+                self._non_conform_load_schedules.append(obj)
         
     def remove_non_conform_load_schedules(self, *non_conform_load_schedules):
         for obj in non_conform_load_schedules:
@@ -814,12 +870,15 @@ class LoadArea(EnergyArea):
     """
     # <<< load_area
     # @generated
-    def __init__(self, sub_load_areas=[], **kw_args):
+    def __init__(self, sub_load_areas=None, **kw_args):
         """ Initialises a new 'LoadArea' instance.
         """
         
         self._sub_load_areas = []
-        self.sub_load_areas = sub_load_areas
+        if sub_load_areas is None:
+            self.sub_load_areas = []
+        else:
+            self.sub_load_areas = sub_load_areas
 
         super(LoadArea, self).__init__(**kw_args)
     # >>> load_area
@@ -833,9 +892,9 @@ class LoadArea(EnergyArea):
 
     def set_sub_load_areas(self, value):
         for x in self._sub_load_areas:
-            x._load_area = None
+            x.load_area = None
         for y in value:
-            y._load_area = self
+            y.load_area = self
         self._sub_load_areas = value
             
     sub_load_areas = property(get_sub_load_areas, set_sub_load_areas)
@@ -843,7 +902,8 @@ class LoadArea(EnergyArea):
     def add_sub_load_areas(self, *sub_load_areas):
         for obj in sub_load_areas:
             obj._load_area = self
-            self._sub_load_areas.append(obj)
+            if obj not in self._sub_load_areas:
+                self._sub_load_areas.append(obj)
         
     def remove_sub_load_areas(self, *sub_load_areas):
         for obj in sub_load_areas:

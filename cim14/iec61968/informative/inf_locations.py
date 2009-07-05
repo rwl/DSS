@@ -45,7 +45,8 @@ class PsrLocRole(Role):
             
         self._power_system_resource = value
         if self._power_system_resource is not None:
-            self._power_system_resource._location_roles.append(self)
+            if self not in self._power_system_resource._location_roles:
+                self._power_system_resource._location_roles.append(self)
 
     power_system_resource = property(get_power_system_resource, set_power_system_resource)
     # >>> power_system_resource
@@ -64,7 +65,8 @@ class PsrLocRole(Role):
             
         self._location = value
         if self._location is not None:
-            self._location._power_system_resource_roles.append(self)
+            if self not in self._location._power_system_resource_roles:
+                self._location._power_system_resource_roles.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -76,12 +78,15 @@ class OrgPropertyRole(Role):
     """
     # <<< org_property_role
     # @generated
-    def __init__(self, land_property=[], erp_organisation=None, **kw_args):
+    def __init__(self, land_property=None, erp_organisation=None, **kw_args):
         """ Initialises a new 'OrgPropertyRole' instance.
         """
         
         self._land_property = []
-        self.land_property = land_property
+        if land_property is None:
+            self.land_property = []
+        else:
+            self.land_property = land_property
         self._erp_organisation = None
         self.erp_organisation = erp_organisation
 
@@ -133,7 +138,8 @@ class OrgPropertyRole(Role):
             
         self._erp_organisation = value
         if self._erp_organisation is not None:
-            self._erp_organisation._land_property_roles.append(self)
+            if self not in self._erp_organisation._land_property_roles:
+                self._erp_organisation._land_property_roles.append(self)
 
     erp_organisation = property(get_erp_organisation, set_erp_organisation)
     # >>> erp_organisation
@@ -149,7 +155,7 @@ class LocationGrant(Agreement):
         """ Initialises a new 'LocationGrant' instance.
         """
         # Property related information that describes the Grant's land parcel. For example, it may be a deed book number, deed book page number, and parcel number. 
-        self.property_data = ''
+        self.property_data = property_data
         
         self._land_property = None
         self.land_property = land_property
@@ -171,7 +177,8 @@ class LocationGrant(Agreement):
             
         self._land_property = value
         if self._land_property is not None:
-            self._land_property._location_grants.append(self)
+            if self not in self._land_property._location_grants:
+                self._land_property._location_grants.append(self)
 
     land_property = property(get_land_property, set_land_property)
     # >>> land_property
@@ -183,14 +190,17 @@ class RightOfWay(Agreement):
     """
     # <<< right_of_way
     # @generated
-    def __init__(self, property_data='', land_properties=[], **kw_args):
+    def __init__(self, property_data='', land_properties=None, **kw_args):
         """ Initialises a new 'RightOfWay' instance.
         """
         # Property related information that describes the ROW's land parcel. For example, it may be a deed book number, deed book page number, and parcel number. 
-        self.property_data = ''
+        self.property_data = property_data
         
         self._land_properties = []
-        self.land_properties = land_properties
+        if land_properties is None:
+            self.land_properties = []
+        else:
+            self.land_properties = land_properties
 
         super(RightOfWay, self).__init__(**kw_args)
     # >>> right_of_way
@@ -259,7 +269,8 @@ class OrgLocRole(Role):
             
         self._location = value
         if self._location is not None:
-            self._location._erp_organisation_roles.append(self)
+            if self not in self._location._erp_organisation_roles:
+                self._location._erp_organisation_roles.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -278,7 +289,8 @@ class OrgLocRole(Role):
             
         self._erp_organisation = value
         if self._erp_organisation is not None:
-            self._erp_organisation._location_roles.append(self)
+            if self not in self._erp_organisation._location_roles:
+                self._erp_organisation._location_roles.append(self)
 
     erp_organisation = property(get_erp_organisation, set_erp_organisation)
     # >>> erp_organisation
@@ -290,13 +302,16 @@ class RedLine(IdentifiedObject):
     """
     # <<< red_line
     # @generated
-    def __init__(self, status=None, locations=[], **kw_args):
+    def __init__(self, status=None, locations=None, **kw_args):
         """ Initialises a new 'RedLine' instance.
         """
         
         self.status = status
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
 
         super(RedLine, self).__init__(**kw_args)
     # >>> red_line
@@ -344,17 +359,23 @@ class Hazard(IdentifiedObject):
     """
     # <<< hazard
     # @generated
-    def __init__(self, category='', status=None, assets=[], locations=[], **kw_args):
+    def __init__(self, category='', status=None, assets=None, locations=None, **kw_args):
         """ Initialises a new 'Hazard' instance.
         """
         # Category by utility's corporate standards and practices. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._assets = []
-        self.assets = assets
+        if assets is None:
+            self.assets = []
+        else:
+            self.assets = assets
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
 
         super(Hazard, self).__init__(**kw_args)
     # >>> hazard
@@ -459,7 +480,8 @@ class PersonPropertyRole(Role):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._land_property_roles.append(self)
+            if self not in self._erp_person._land_property_roles:
+                self._erp_person._land_property_roles.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -478,7 +500,8 @@ class PersonPropertyRole(Role):
             
         self._land_property = value
         if self._land_property is not None:
-            self._land_property._erp_person_roles.append(self)
+            if self not in self._land_property._erp_person_roles:
+                self._land_property._erp_person_roles.append(self)
 
     land_property = property(get_land_property, set_land_property)
     # >>> land_property
@@ -516,7 +539,8 @@ class ErpPersonLocRole(Role):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._location_roles.append(self)
+            if self not in self._erp_person._location_roles:
+                self._erp_person._location_roles.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -535,7 +559,8 @@ class ErpPersonLocRole(Role):
             
         self._location = value
         if self._location is not None:
-            self._location._erp_person_roles.append(self)
+            if self not in self._location._erp_person_roles:
+                self._location._erp_person_roles.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -547,17 +572,23 @@ class Route(IdentifiedObject):
     """
     # <<< route
     # @generated
-    def __init__(self, category='', status=None, crews=[], locations=[], **kw_args):
+    def __init__(self, category='', status=None, crews=None, locations=None, **kw_args):
         """ Initialises a new 'Route' instance.
         """
         # Category by utility's work management standards and practices. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
 
         super(Route, self).__init__(**kw_args)
     # >>> route
@@ -576,9 +607,9 @@ class Route(IdentifiedObject):
 
     def set_crews(self, value):
         for x in self._crews:
-            x._route = None
+            x.route = None
         for y in value:
-            y._route = self
+            y.route = self
         self._crews = value
             
     crews = property(get_crews, set_crews)
@@ -586,7 +617,8 @@ class Route(IdentifiedObject):
     def add_crews(self, *crews):
         for obj in crews:
             obj._route = self
-            self._crews.append(obj)
+            if obj not in self._crews:
+                self._crews.append(obj)
         
     def remove_crews(self, *crews):
         for obj in crews:
@@ -636,7 +668,7 @@ class Zone(Location):
         """ Initialises a new 'Zone' instance.
         """
         # Kind of this zone. Values are: "special_restriction_land", "weather_zone", "other", "electrical_network"
-        self.kind = 'special_restriction_land'
+        self.kind = kind
         
 
         super(Zone, self).__init__(**kw_args)
@@ -675,7 +707,8 @@ class AssetLocRole(Role):
             
         self._location = value
         if self._location is not None:
-            self._location._asset_roles.append(self)
+            if self not in self._location._asset_roles:
+                self._location._asset_roles.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -694,7 +727,8 @@ class AssetLocRole(Role):
             
         self._asset = value
         if self._asset is not None:
-            self._asset._location_roles.append(self)
+            if self not in self._asset._location_roles:
+                self._asset._location_roles.append(self)
 
     asset = property(get_asset, set_asset)
     # >>> asset
@@ -706,31 +740,52 @@ class LandProperty(IdentifiedObject):
     """
     # <<< land_property
     # @generated
-    def __init__(self, kind='customer_premise', demographic_kind='urban', external_record_reference='', status=None, location_grants=[], asset_containers=[], locations=[], erp_organisation_roles=[], erp_site_level_datas=[], right_of_ways=[], erp_person_roles=[], **kw_args):
+    def __init__(self, kind='customer_premise', demographic_kind='urban', external_record_reference='', status=None, location_grants=None, asset_containers=None, locations=None, erp_organisation_roles=None, erp_site_level_datas=None, right_of_ways=None, erp_person_roles=None, **kw_args):
         """ Initialises a new 'LandProperty' instance.
         """
         # Kind of (land) property, categorised according to its main functional use from the utility's perspective. Values are: "customer_premise", "building", "external", "store", "grid_supply_point", "substation", "depot"
-        self.kind = 'customer_premise'
+        self.kind = kind
         # Demographics around the site. Values are: "urban", "other", "rural"
-        self.demographic_kind = 'urban'
+        self.demographic_kind = demographic_kind
         # Reference allocated by the governing organisation (such as municipality) to this piece of land that has a formal reference to Surveyor General's records. The governing organisation is specified in associated Organisation. 
-        self.external_record_reference = ''
+        self.external_record_reference = external_record_reference
         
         self.status = status
         self._location_grants = []
-        self.location_grants = location_grants
+        if location_grants is None:
+            self.location_grants = []
+        else:
+            self.location_grants = location_grants
         self._asset_containers = []
-        self.asset_containers = asset_containers
+        if asset_containers is None:
+            self.asset_containers = []
+        else:
+            self.asset_containers = asset_containers
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
         self._erp_organisation_roles = []
-        self.erp_organisation_roles = erp_organisation_roles
+        if erp_organisation_roles is None:
+            self.erp_organisation_roles = []
+        else:
+            self.erp_organisation_roles = erp_organisation_roles
         self._erp_site_level_datas = []
-        self.erp_site_level_datas = erp_site_level_datas
+        if erp_site_level_datas is None:
+            self.erp_site_level_datas = []
+        else:
+            self.erp_site_level_datas = erp_site_level_datas
         self._right_of_ways = []
-        self.right_of_ways = right_of_ways
+        if right_of_ways is None:
+            self.right_of_ways = []
+        else:
+            self.right_of_ways = right_of_ways
         self._erp_person_roles = []
-        self.erp_person_roles = erp_person_roles
+        if erp_person_roles is None:
+            self.erp_person_roles = []
+        else:
+            self.erp_person_roles = erp_person_roles
 
         super(LandProperty, self).__init__(**kw_args)
     # >>> land_property
@@ -749,9 +804,9 @@ class LandProperty(IdentifiedObject):
 
     def set_location_grants(self, value):
         for x in self._location_grants:
-            x._land_property = None
+            x.land_property = None
         for y in value:
-            y._land_property = self
+            y.land_property = self
         self._location_grants = value
             
     location_grants = property(get_location_grants, set_location_grants)
@@ -759,7 +814,8 @@ class LandProperty(IdentifiedObject):
     def add_location_grants(self, *location_grants):
         for obj in location_grants:
             obj._land_property = self
-            self._location_grants.append(obj)
+            if obj not in self._location_grants:
+                self._location_grants.append(obj)
         
     def remove_location_grants(self, *location_grants):
         for obj in location_grants:
@@ -869,9 +925,9 @@ class LandProperty(IdentifiedObject):
 
     def set_erp_site_level_datas(self, value):
         for x in self._erp_site_level_datas:
-            x._land_property = None
+            x.land_property = None
         for y in value:
-            y._land_property = self
+            y.land_property = self
         self._erp_site_level_datas = value
             
     erp_site_level_datas = property(get_erp_site_level_datas, set_erp_site_level_datas)
@@ -879,7 +935,8 @@ class LandProperty(IdentifiedObject):
     def add_erp_site_level_datas(self, *erp_site_level_datas):
         for obj in erp_site_level_datas:
             obj._land_property = self
-            self._erp_site_level_datas.append(obj)
+            if obj not in self._erp_site_level_datas:
+                self._erp_site_level_datas.append(obj)
         
     def remove_erp_site_level_datas(self, *erp_site_level_datas):
         for obj in erp_site_level_datas:
@@ -927,9 +984,9 @@ class LandProperty(IdentifiedObject):
 
     def set_erp_person_roles(self, value):
         for x in self._erp_person_roles:
-            x._land_property = None
+            x.land_property = None
         for y in value:
-            y._land_property = self
+            y.land_property = self
         self._erp_person_roles = value
             
     erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
@@ -937,7 +994,8 @@ class LandProperty(IdentifiedObject):
     def add_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
             obj._land_property = self
-            self._erp_person_roles.append(obj)
+            if obj not in self._erp_person_roles:
+                self._erp_person_roles.append(obj)
         
     def remove_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
@@ -978,7 +1036,8 @@ class DocLocRole(Role):
             
         self._location = value
         if self._location is not None:
-            self._location._document_roles.append(self)
+            if self not in self._location._document_roles:
+                self._location._document_roles.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -997,7 +1056,8 @@ class DocLocRole(Role):
             
         self._document = value
         if self._document is not None:
-            self._document._location_roles.append(self)
+            if self not in self._document._location_roles:
+                self._document._location_roles.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -1013,7 +1073,7 @@ class LocLocRole(Role):
         """ Initialises a new 'LocLocRole' instance.
         """
         # Detailed directional information. 
-        self.direction_info = ''
+        self.direction_info = direction_info
         
         self._from_location = None
         self.from_location = from_location
@@ -1037,7 +1097,8 @@ class LocLocRole(Role):
             
         self._from_location = value
         if self._from_location is not None:
-            self._from_location._to_location_roles.append(self)
+            if self not in self._from_location._to_location_roles:
+                self._from_location._to_location_roles.append(self)
 
     from_location = property(get_from_location, set_from_location)
     # >>> from_location
@@ -1056,7 +1117,8 @@ class LocLocRole(Role):
             
         self._to_location = value
         if self._to_location is not None:
-            self._to_location._from_location_roles.append(self)
+            if self not in self._to_location._from_location_roles:
+                self._to_location._from_location_roles.append(self)
 
     to_location = property(get_to_location, set_to_location)
     # >>> to_location

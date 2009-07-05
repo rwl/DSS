@@ -16,7 +16,7 @@ class BusNameMarker(IdentifiedObject):
     """
     # <<< bus_name_marker
     # @generated
-    def __init__(self, control_area=None, reporting_group=None, connectivity_node=[], **kw_args):
+    def __init__(self, control_area=None, reporting_group=None, connectivity_node=None, **kw_args):
         """ Initialises a new 'BusNameMarker' instance.
         """
         
@@ -25,7 +25,10 @@ class BusNameMarker(IdentifiedObject):
         self._reporting_group = None
         self.reporting_group = reporting_group
         self._connectivity_node = []
-        self.connectivity_node = connectivity_node
+        if connectivity_node is None:
+            self.connectivity_node = []
+        else:
+            self.connectivity_node = connectivity_node
 
         super(BusNameMarker, self).__init__(**kw_args)
     # >>> bus_name_marker
@@ -44,7 +47,8 @@ class BusNameMarker(IdentifiedObject):
             
         self._control_area = value
         if self._control_area is not None:
-            self._control_area._bus_name_marker.append(self)
+            if self not in self._control_area._bus_name_marker:
+                self._control_area._bus_name_marker.append(self)
 
     control_area = property(get_control_area, set_control_area)
     # >>> control_area
@@ -63,7 +67,8 @@ class BusNameMarker(IdentifiedObject):
             
         self._reporting_group = value
         if self._reporting_group is not None:
-            self._reporting_group._bus_name_marker.append(self)
+            if self not in self._reporting_group._bus_name_marker:
+                self._reporting_group._bus_name_marker.append(self)
 
     reporting_group = property(get_reporting_group, set_reporting_group)
     # >>> reporting_group
@@ -77,9 +82,9 @@ class BusNameMarker(IdentifiedObject):
 
     def set_connectivity_node(self, value):
         for x in self._connectivity_node:
-            x._bus_name_marker = None
+            x.bus_name_marker = None
         for y in value:
-            y._bus_name_marker = self
+            y.bus_name_marker = self
         self._connectivity_node = value
             
     connectivity_node = property(get_connectivity_node, set_connectivity_node)
@@ -87,7 +92,8 @@ class BusNameMarker(IdentifiedObject):
     def add_connectivity_node(self, *connectivity_node):
         for obj in connectivity_node:
             obj._bus_name_marker = self
-            self._connectivity_node.append(obj)
+            if obj not in self._connectivity_node:
+                self._connectivity_node.append(obj)
         
     def remove_connectivity_node(self, *connectivity_node):
         for obj in connectivity_node:
@@ -102,38 +108,41 @@ class TopologicalNode(IdentifiedObject):
     """
     # <<< topological_node
     # @generated
-    def __init__(self, observability_flag=False, x_per_r=0.0, x0_per_x=0.0, load_carrying=False, net_injection_p='', phase_angle='', voltage='', r0_per_r=0.0, s_short_circuit='', energized=False, net_injection_q='', angle_ref_topological_island=None, connectivity_node_container=None, connectivity_nodes=[], sv_voltage=None, reporting_group=None, sv_injection=None, control_area=None, terminal=[], topological_island=None, **kw_args):
+    def __init__(self, observability_flag=False, x_per_r=0.0, x0_per_x=0.0, load_carrying=False, net_injection_p=0.0, phase_angle=0.0, voltage=0.0, r0_per_r=0.0, s_short_circuit=0.0, energized=False, net_injection_q=0.0, angle_ref_topological_island=None, connectivity_node_container=None, connectivity_nodes=None, sv_voltage=None, reporting_group=None, sv_injection=None, control_area=None, terminal=None, topological_island=None, **kw_args):
         """ Initialises a new 'TopologicalNode' instance.
         """
         # The observability status of the node. 
-        self.observability_flag = False
+        self.observability_flag = observability_flag
         # Ratio of positive sequence reactance per postive sequence resistance. 
-        self.x_per_r = 0.0
+        self.x_per_r = x_per_r
         # The ratio of zero sequence reactance per positive sequence reactance. 
-        self.x0_per_x = 0.0
+        self.x0_per_x = x0_per_x
         # True if node is load carrying 
-        self.load_carrying = False
+        self.load_carrying = load_carrying
         # Net injection active power 
-        self.net_injection_p = ''
+        self.net_injection_p = net_injection_p
         # Phase angle of node 
-        self.phase_angle = ''
+        self.phase_angle = phase_angle
         # Voltage of node 
-        self.voltage = ''
+        self.voltage = voltage
         # The ratio of zero sequence resistance to positive sequence resistance. 
-        self.r0_per_r = 0.0
+        self.r0_per_r = r0_per_r
         # The short circuit apparent power drawn at this node when faulted. 
-        self.s_short_circuit = ''
+        self.s_short_circuit = s_short_circuit
         # True if node energized 
-        self.energized = False
+        self.energized = energized
         # Net injection reactive power 
-        self.net_injection_q = ''
+        self.net_injection_q = net_injection_q
         
         self._angle_ref_topological_island = None
         self.angle_ref_topological_island = angle_ref_topological_island
         self._connectivity_node_container = None
         self.connectivity_node_container = connectivity_node_container
         self._connectivity_nodes = []
-        self.connectivity_nodes = connectivity_nodes
+        if connectivity_nodes is None:
+            self.connectivity_nodes = []
+        else:
+            self.connectivity_nodes = connectivity_nodes
         self._sv_voltage = None
         self.sv_voltage = sv_voltage
         self._reporting_group = None
@@ -143,7 +152,10 @@ class TopologicalNode(IdentifiedObject):
         self._control_area = None
         self.control_area = control_area
         self._terminal = []
-        self.terminal = terminal
+        if terminal is None:
+            self.terminal = []
+        else:
+            self.terminal = terminal
         self._topological_island = None
         self.topological_island = topological_island
 
@@ -182,7 +194,8 @@ class TopologicalNode(IdentifiedObject):
             
         self._connectivity_node_container = value
         if self._connectivity_node_container is not None:
-            self._connectivity_node_container._topological_node.append(self)
+            if self not in self._connectivity_node_container._topological_node:
+                self._connectivity_node_container._topological_node.append(self)
 
     connectivity_node_container = property(get_connectivity_node_container, set_connectivity_node_container)
     # >>> connectivity_node_container
@@ -196,9 +209,9 @@ class TopologicalNode(IdentifiedObject):
 
     def set_connectivity_nodes(self, value):
         for x in self._connectivity_nodes:
-            x._topological_node = None
+            x.topological_node = None
         for y in value:
-            y._topological_node = self
+            y.topological_node = self
         self._connectivity_nodes = value
             
     connectivity_nodes = property(get_connectivity_nodes, set_connectivity_nodes)
@@ -206,7 +219,8 @@ class TopologicalNode(IdentifiedObject):
     def add_connectivity_nodes(self, *connectivity_nodes):
         for obj in connectivity_nodes:
             obj._topological_node = self
-            self._connectivity_nodes.append(obj)
+            if obj not in self._connectivity_nodes:
+                self._connectivity_nodes.append(obj)
         
     def remove_connectivity_nodes(self, *connectivity_nodes):
         for obj in connectivity_nodes:
@@ -246,7 +260,8 @@ class TopologicalNode(IdentifiedObject):
             
         self._reporting_group = value
         if self._reporting_group is not None:
-            self._reporting_group._topological_node.append(self)
+            if self not in self._reporting_group._topological_node:
+                self._reporting_group._topological_node.append(self)
 
     reporting_group = property(get_reporting_group, set_reporting_group)
     # >>> reporting_group
@@ -283,7 +298,8 @@ class TopologicalNode(IdentifiedObject):
             
         self._control_area = value
         if self._control_area is not None:
-            self._control_area._topological_node.append(self)
+            if self not in self._control_area._topological_node:
+                self._control_area._topological_node.append(self)
 
     control_area = property(get_control_area, set_control_area)
     # >>> control_area
@@ -297,9 +313,9 @@ class TopologicalNode(IdentifiedObject):
 
     def set_terminal(self, value):
         for x in self._terminal:
-            x._topological_node = None
+            x.topological_node = None
         for y in value:
-            y._topological_node = self
+            y.topological_node = self
         self._terminal = value
             
     terminal = property(get_terminal, set_terminal)
@@ -307,7 +323,8 @@ class TopologicalNode(IdentifiedObject):
     def add_terminal(self, *terminal):
         for obj in terminal:
             obj._topological_node = self
-            self._terminal.append(obj)
+            if obj not in self._terminal:
+                self._terminal.append(obj)
         
     def remove_terminal(self, *terminal):
         for obj in terminal:
@@ -329,7 +346,8 @@ class TopologicalNode(IdentifiedObject):
             
         self._topological_island = value
         if self._topological_island is not None:
-            self._topological_island._topological_nodes.append(self)
+            if self not in self._topological_island._topological_nodes:
+                self._topological_island._topological_nodes.append(self)
 
     topological_island = property(get_topological_island, set_topological_island)
     # >>> topological_island
@@ -341,12 +359,15 @@ class TopologicalIsland(IdentifiedObject):
     """
     # <<< topological_island
     # @generated
-    def __init__(self, topological_nodes=[], angle_ref_topological_node=None, **kw_args):
+    def __init__(self, topological_nodes=None, angle_ref_topological_node=None, **kw_args):
         """ Initialises a new 'TopologicalIsland' instance.
         """
         
         self._topological_nodes = []
-        self.topological_nodes = topological_nodes
+        if topological_nodes is None:
+            self.topological_nodes = []
+        else:
+            self.topological_nodes = topological_nodes
         self._angle_ref_topological_node = None
         self.angle_ref_topological_node = angle_ref_topological_node
 
@@ -362,9 +383,9 @@ class TopologicalIsland(IdentifiedObject):
 
     def set_topological_nodes(self, value):
         for x in self._topological_nodes:
-            x._topological_island = None
+            x.topological_island = None
         for y in value:
-            y._topological_island = self
+            y.topological_island = self
         self._topological_nodes = value
             
     topological_nodes = property(get_topological_nodes, set_topological_nodes)
@@ -372,7 +393,8 @@ class TopologicalIsland(IdentifiedObject):
     def add_topological_nodes(self, *topological_nodes):
         for obj in topological_nodes:
             obj._topological_island = self
-            self._topological_nodes.append(obj)
+            if obj not in self._topological_nodes:
+                self._topological_nodes.append(obj)
         
     def remove_topological_nodes(self, *topological_nodes):
         for obj in topological_nodes:
@@ -405,7 +427,7 @@ class ConnectivityNode(IdentifiedObject):
     """
     # <<< connectivity_node
     # @generated
-    def __init__(self, topological_node=None, connectivity_node_container=None, pnode=None, bus_name_marker=None, loss_penalty_factors=[], terminals=[], node_constraint_terms=[], **kw_args):
+    def __init__(self, topological_node=None, connectivity_node_container=None, pnode=None, bus_name_marker=None, loss_penalty_factors=None, terminals=None, node_constraint_terms=None, **kw_args):
         """ Initialises a new 'ConnectivityNode' instance.
         """
         
@@ -418,11 +440,20 @@ class ConnectivityNode(IdentifiedObject):
         self._bus_name_marker = None
         self.bus_name_marker = bus_name_marker
         self._loss_penalty_factors = []
-        self.loss_penalty_factors = loss_penalty_factors
+        if loss_penalty_factors is None:
+            self.loss_penalty_factors = []
+        else:
+            self.loss_penalty_factors = loss_penalty_factors
         self._terminals = []
-        self.terminals = terminals
+        if terminals is None:
+            self.terminals = []
+        else:
+            self.terminals = terminals
         self._node_constraint_terms = []
-        self.node_constraint_terms = node_constraint_terms
+        if node_constraint_terms is None:
+            self.node_constraint_terms = []
+        else:
+            self.node_constraint_terms = node_constraint_terms
 
         super(ConnectivityNode, self).__init__(**kw_args)
     # >>> connectivity_node
@@ -441,7 +472,8 @@ class ConnectivityNode(IdentifiedObject):
             
         self._topological_node = value
         if self._topological_node is not None:
-            self._topological_node._connectivity_nodes.append(self)
+            if self not in self._topological_node._connectivity_nodes:
+                self._topological_node._connectivity_nodes.append(self)
 
     topological_node = property(get_topological_node, set_topological_node)
     # >>> topological_node
@@ -460,7 +492,8 @@ class ConnectivityNode(IdentifiedObject):
             
         self._connectivity_node_container = value
         if self._connectivity_node_container is not None:
-            self._connectivity_node_container._connectivity_nodes.append(self)
+            if self not in self._connectivity_node_container._connectivity_nodes:
+                self._connectivity_node_container._connectivity_nodes.append(self)
 
     connectivity_node_container = property(get_connectivity_node_container, set_connectivity_node_container)
     # >>> connectivity_node_container
@@ -497,7 +530,8 @@ class ConnectivityNode(IdentifiedObject):
             
         self._bus_name_marker = value
         if self._bus_name_marker is not None:
-            self._bus_name_marker._connectivity_node.append(self)
+            if self not in self._bus_name_marker._connectivity_node:
+                self._bus_name_marker._connectivity_node.append(self)
 
     bus_name_marker = property(get_bus_name_marker, set_bus_name_marker)
     # >>> bus_name_marker
@@ -542,9 +576,9 @@ class ConnectivityNode(IdentifiedObject):
 
     def set_terminals(self, value):
         for x in self._terminals:
-            x._connectivity_node = None
+            x.connectivity_node = None
         for y in value:
-            y._connectivity_node = self
+            y.connectivity_node = self
         self._terminals = value
             
     terminals = property(get_terminals, set_terminals)
@@ -552,7 +586,8 @@ class ConnectivityNode(IdentifiedObject):
     def add_terminals(self, *terminals):
         for obj in terminals:
             obj._connectivity_node = self
-            self._terminals.append(obj)
+            if obj not in self._terminals:
+                self._terminals.append(obj)
         
     def remove_terminals(self, *terminals):
         for obj in terminals:
@@ -569,9 +604,9 @@ class ConnectivityNode(IdentifiedObject):
 
     def set_node_constraint_terms(self, value):
         for x in self._node_constraint_terms:
-            x._connectivity_node = None
+            x.connectivity_node = None
         for y in value:
-            y._connectivity_node = self
+            y.connectivity_node = self
         self._node_constraint_terms = value
             
     node_constraint_terms = property(get_node_constraint_terms, set_node_constraint_terms)
@@ -579,7 +614,8 @@ class ConnectivityNode(IdentifiedObject):
     def add_node_constraint_terms(self, *node_constraint_terms):
         for obj in node_constraint_terms:
             obj._connectivity_node = self
-            self._node_constraint_terms.append(obj)
+            if obj not in self._node_constraint_terms:
+                self._node_constraint_terms.append(obj)
         
     def remove_node_constraint_terms(self, *node_constraint_terms):
         for obj in node_constraint_terms:

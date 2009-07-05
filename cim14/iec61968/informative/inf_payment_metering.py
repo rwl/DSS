@@ -25,7 +25,7 @@ class TransactionSummary(Element):
         """ Initialises a new 'TransactionSummary' instance.
         """
         # 'Transaction.kind' for which 'transactionsTotal' is given. Values are: "token_sale_payment", "token_free_issue", "transaction_reversal", "other", "token_exchange", "token_grant", "token_cancellation", "auxiliary_charge_payment", "account_payment", "diverse_payment", "service_charge_payment", "tax_charge_payment", "meter_configuration_token"
-        self.transaction_kind = 'token_sale_payment'
+        self.transaction_kind = transaction_kind
         
         self.line = line
         self._shift = None
@@ -54,7 +54,8 @@ class TransactionSummary(Element):
             
         self._shift = value
         if self._shift is not None:
-            self._shift._transaction_summaries.append(self)
+            if self not in self._shift._transaction_summaries:
+                self._shift._transaction_summaries.append(self)
 
     shift = property(get_shift, set_shift)
     # >>> shift
@@ -66,17 +67,17 @@ class BankStatement(Document):
     """
     # <<< bank_statement
     # @generated
-    def __init__(self, deposit_amount='', deposit_date_time='', merchant_credit_amount='', posted=False, merchant_account=None, vendor=None, bank_account=None, **kw_args):
+    def __init__(self, deposit_amount=0.0, deposit_date_time='', merchant_credit_amount=0.0, posted=False, merchant_account=None, vendor=None, bank_account=None, **kw_args):
         """ Initialises a new 'BankStatement' instance.
         """
         # The amount that is deposited into the bank via BankAccount. 
-        self.deposit_amount = ''
+        self.deposit_amount = deposit_amount
         # The date and time the deposit is made. 
-        self.deposit_date_time = ''
+        self.deposit_date_time = deposit_date_time
         # The amount on this statement that is to be credited to MerchantAccount. 
-        self.merchant_credit_amount = ''
+        self.merchant_credit_amount = merchant_credit_amount
         # True if mechantCreditAmount has been cerdited to MerchantAccount; typically happens when bank statement details are captured into payment system. 
-        self.posted = False
+        self.posted = posted
         
         self._merchant_account = None
         self.merchant_account = merchant_account
@@ -102,7 +103,8 @@ class BankStatement(Document):
             
         self._merchant_account = value
         if self._merchant_account is not None:
-            self._merchant_account._bank_statements.append(self)
+            if self not in self._merchant_account._bank_statements:
+                self._merchant_account._bank_statements.append(self)
 
     merchant_account = property(get_merchant_account, set_merchant_account)
     # >>> merchant_account
@@ -121,7 +123,8 @@ class BankStatement(Document):
             
         self._vendor = value
         if self._vendor is not None:
-            self._vendor._bank_statements.append(self)
+            if self not in self._vendor._bank_statements:
+                self._vendor._bank_statements.append(self)
 
     vendor = property(get_vendor, set_vendor)
     # >>> vendor
@@ -140,7 +143,8 @@ class BankStatement(Document):
             
         self._bank_account = value
         if self._bank_account is not None:
-            self._bank_account._bank_statements.append(self)
+            if self not in self._bank_account._bank_statements:
+                self._bank_account._bank_statements.append(self)
 
     bank_account = property(get_bank_account, set_bank_account)
     # >>> bank_account
@@ -152,7 +156,7 @@ class SDPAccountingFunction(DeviceFunction):
     """
     # <<< sdpaccounting_function
     # @generated
-    def __init__(self, available_credit=None, credit_expiry_level=None, low_credit_warning_level=None, charge_registers=[], credit_registers=[], service_kind=None, **kw_args):
+    def __init__(self, available_credit=None, credit_expiry_level=None, low_credit_warning_level=None, charge_registers=None, credit_registers=None, service_kind=None, **kw_args):
         """ Initialises a new 'SDPAccountingFunction' instance.
         """
         
@@ -160,9 +164,15 @@ class SDPAccountingFunction(DeviceFunction):
         self.credit_expiry_level = credit_expiry_level
         self.low_credit_warning_level = low_credit_warning_level
         self._charge_registers = []
-        self.charge_registers = charge_registers
+        if charge_registers is None:
+            self.charge_registers = []
+        else:
+            self.charge_registers = charge_registers
         self._credit_registers = []
-        self.credit_registers = credit_registers
+        if credit_registers is None:
+            self.credit_registers = []
+        else:
+            self.credit_registers = credit_registers
         self._service_kind = None
         self.service_kind = service_kind
 
@@ -196,9 +206,9 @@ class SDPAccountingFunction(DeviceFunction):
 
     def set_charge_registers(self, value):
         for x in self._charge_registers:
-            x._spaccounting_function = None
+            x.spaccounting_function = None
         for y in value:
-            y._spaccounting_function = self
+            y.spaccounting_function = self
         self._charge_registers = value
             
     charge_registers = property(get_charge_registers, set_charge_registers)
@@ -206,7 +216,8 @@ class SDPAccountingFunction(DeviceFunction):
     def add_charge_registers(self, *charge_registers):
         for obj in charge_registers:
             obj._spaccounting_function = self
-            self._charge_registers.append(obj)
+            if obj not in self._charge_registers:
+                self._charge_registers.append(obj)
         
     def remove_charge_registers(self, *charge_registers):
         for obj in charge_registers:
@@ -223,9 +234,9 @@ class SDPAccountingFunction(DeviceFunction):
 
     def set_credit_registers(self, value):
         for x in self._credit_registers:
-            x._sdpaccounting_function = None
+            x.sdpaccounting_function = None
         for y in value:
-            y._sdpaccounting_function = self
+            y.sdpaccounting_function = self
         self._credit_registers = value
             
     credit_registers = property(get_credit_registers, set_credit_registers)
@@ -233,7 +244,8 @@ class SDPAccountingFunction(DeviceFunction):
     def add_credit_registers(self, *credit_registers):
         for obj in credit_registers:
             obj._sdpaccounting_function = self
-            self._credit_registers.append(obj)
+            if obj not in self._credit_registers:
+                self._credit_registers.append(obj)
         
     def remove_credit_registers(self, *credit_registers):
         for obj in credit_registers:
@@ -255,7 +267,8 @@ class SDPAccountingFunction(DeviceFunction):
             
         self._service_kind = value
         if self._service_kind is not None:
-            self._service_kind._spaccounting_functions.append(self)
+            if self not in self._service_kind._spaccounting_functions:
+                self._service_kind._spaccounting_functions.append(self)
 
     service_kind = property(get_service_kind, set_service_kind)
     # >>> service_kind
@@ -271,7 +284,7 @@ class ReceiptSummary(Element):
         """ Initialises a new 'ReceiptSummary' instance.
         """
         # 'Tender.kind' for which 'receiptsTotal' is given. Values are: "cheque", "cash", "card", "other", "unspecified"
-        self.tender_kind = 'cheque'
+        self.tender_kind = tender_kind
         
         self.line = line
         self._shift = None
@@ -300,7 +313,8 @@ class ReceiptSummary(Element):
             
         self._shift = value
         if self._shift is not None:
-            self._shift._receipt_summaries.append(self)
+            if self not in self._shift._receipt_summaries:
+                self._shift._receipt_summaries.append(self)
 
     shift = property(get_shift, set_shift)
     # >>> shift
@@ -316,7 +330,7 @@ class CreditRegister(IdentifiedObject):
         """ Initialises a new 'CreditRegister' instance.
         """
         # Several different types of credit are typically implemented in the case of a prepayment meter.  For example: credit transferred by means of a token carrier, or credit advanced automatically inside the meter under certain conditions, or credit held in reserved to be released under emergency conditions, or credit granted by local authority as a basic life support mechanism and may be dispensed automatically by the meter under certain conditions or credit available under severe climate conditions such as during winter over a weekend. Values are: "reserve_credit", "lifeline_credit", "other", "grant_credit", "token_credit", "advance_credit"
-        self.credit_kind = 'reserve_credit'
+        self.credit_kind = credit_kind
         
         self.credit_amount = credit_amount
         self._sdpaccounting_function = None
@@ -345,7 +359,8 @@ class CreditRegister(IdentifiedObject):
             
         self._sdpaccounting_function = value
         if self._sdpaccounting_function is not None:
-            self._sdpaccounting_function._credit_registers.append(self)
+            if self not in self._sdpaccounting_function._credit_registers:
+                self._sdpaccounting_function._credit_registers.append(self)
 
     sdpaccounting_function = property(get_sdpaccounting_function, set_sdpaccounting_function)
     # >>> sdpaccounting_function
@@ -373,18 +388,21 @@ class Bank(Organisation):
     """
     # <<< bank
     # @generated
-    def __init__(self, iban='', bic='', branch_code='', bank_accounts=[], **kw_args):
+    def __init__(self, iban='', bic='', branch_code='', bank_accounts=None, **kw_args):
         """ Initialises a new 'Bank' instance.
         """
         # International bank account number defined in ISO 13616; for countries where IBAN is not in operation, the existing BIC or SWIFT codes may be used instead (see ISO 9362). 
-        self.iban = ''
+        self.iban = iban
         # Bank identifier code as defined in ISO 9362; for use in countries wher IBAN is not yet in operation. 
-        self.bic = ''
+        self.bic = bic
         # Codified reference to the particular branch of the bank where BankAccount is held. 
-        self.branch_code = ''
+        self.branch_code = branch_code
         
         self._bank_accounts = []
-        self.bank_accounts = bank_accounts
+        if bank_accounts is None:
+            self.bank_accounts = []
+        else:
+            self.bank_accounts = bank_accounts
 
         super(Bank, self).__init__(**kw_args)
     # >>> bank
@@ -398,9 +416,9 @@ class Bank(Organisation):
 
     def set_bank_accounts(self, value):
         for x in self._bank_accounts:
-            x._bank = None
+            x.bank = None
         for y in value:
-            y._bank = self
+            y.bank = self
         self._bank_accounts = value
             
     bank_accounts = property(get_bank_accounts, set_bank_accounts)
@@ -408,7 +426,8 @@ class Bank(Organisation):
     def add_bank_accounts(self, *bank_accounts):
         for obj in bank_accounts:
             obj._bank = self
-            self._bank_accounts.append(obj)
+            if obj not in self._bank_accounts:
+                self._bank_accounts.append(obj)
         
     def remove_bank_accounts(self, *bank_accounts):
         for obj in bank_accounts:
@@ -427,7 +446,7 @@ class ChargeRegister(IdentifiedObject):
         """ Initialises a new 'ChargeRegister' instance.
         """
         # Several different types of charges are typically implemented in the case of a prepayment meter. For example: a charge according to a tariff for consumption and possibly a demand component, or a charge for a debt that is loaded in the meter to be recovered on a time basis, or a standing charge to be levied at the end of each billing period, or a tax charge loaded in the meter to be recovered on a consumption basis or a time basis. Values are: "consumption_charge", "auxiliary_charge", "other", "tax_charge", "demand_charge"
-        self.charge_kind = 'consumption_charge'
+        self.charge_kind = charge_kind
         
         self.charge_amount = charge_amount
         self._spaccounting_function = None
@@ -456,7 +475,8 @@ class ChargeRegister(IdentifiedObject):
             
         self._spaccounting_function = value
         if self._spaccounting_function is not None:
-            self._spaccounting_function._charge_registers.append(self)
+            if self not in self._spaccounting_function._charge_registers:
+                self._spaccounting_function._charge_registers.append(self)
 
     spaccounting_function = property(get_spaccounting_function, set_spaccounting_function)
     # >>> spaccounting_function
@@ -472,9 +492,9 @@ class Token(IdentifiedObject):
         """ Initialises a new 'Token' instance.
         """
         # Free-format note relevant to this token. 
-        self.comment = ''
+        self.comment = comment
         # Coded representation of the token that is transferred to the payment meter. 
-        self.code = ''
+        self.code = code
         
         self._point_of_sale = None
         self.point_of_sale = point_of_sale
@@ -496,7 +516,8 @@ class Token(IdentifiedObject):
             
         self._point_of_sale = value
         if self._point_of_sale is not None:
-            self._point_of_sale._tokens.append(self)
+            if self not in self._point_of_sale._tokens:
+                self._point_of_sale._tokens.append(self)
 
     point_of_sale = property(get_point_of_sale, set_point_of_sale)
     # >>> point_of_sale

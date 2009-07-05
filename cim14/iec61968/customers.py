@@ -20,33 +20,51 @@ class Customer(Organisation):
     """
     # <<< customer
     # @generated
-    def __init__(self, vip=False, puc_number='', kind='energy_service_scheduler', special_need='', status=None, customer_agreements=[], works=[], planned_outage=None, erp_persons=[], outage_notifications=[], trouble_tickets=[], end_device_assets=[], **kw_args):
+    def __init__(self, vip=False, puc_number='', kind='energy_service_scheduler', special_need='', status=None, customer_agreements=None, works=None, planned_outage=None, erp_persons=None, outage_notifications=None, trouble_tickets=None, end_device_assets=None, **kw_args):
         """ Initialises a new 'Customer' instance.
         """
         # True if this is an important customer. Importance is for matters different than those in 'specialNeed' attribute. 
-        self.vip = False
+        self.vip = vip
         # (if applicable) Public Utility Commission identification number. 
-        self.puc_number = ''
+        self.puc_number = puc_number
         # Kind of customer. Values are: "energy_service_scheduler", "wind_machine", "residential_and_commercial", "internal_use", "residential_streetlight_others", "energy_service_supplier", "commercial_industrial", "other", "pumping_load", "residential_and_streetlight", "residential", "residential_farm_service"
-        self.kind = 'energy_service_scheduler'
+        self.kind = kind
         # True if customer organisation has special service needs such as life support, hospitals, etc. 
-        self.special_need = ''
+        self.special_need = special_need
         
         self.status = status
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
         self._planned_outage = None
         self.planned_outage = planned_outage
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
         self._outage_notifications = []
-        self.outage_notifications = outage_notifications
+        if outage_notifications is None:
+            self.outage_notifications = []
+        else:
+            self.outage_notifications = outage_notifications
         self._trouble_tickets = []
-        self.trouble_tickets = trouble_tickets
+        if trouble_tickets is None:
+            self.trouble_tickets = []
+        else:
+            self.trouble_tickets = trouble_tickets
         self._end_device_assets = []
-        self.end_device_assets = end_device_assets
+        if end_device_assets is None:
+            self.end_device_assets = []
+        else:
+            self.end_device_assets = end_device_assets
 
         super(Customer, self).__init__(**kw_args)
     # >>> customer
@@ -66,9 +84,9 @@ class Customer(Organisation):
 
     def set_customer_agreements(self, value):
         for x in self._customer_agreements:
-            x._customer = None
+            x.customer = None
         for y in value:
-            y._customer = self
+            y.customer = self
         self._customer_agreements = value
             
     customer_agreements = property(get_customer_agreements, set_customer_agreements)
@@ -76,7 +94,8 @@ class Customer(Organisation):
     def add_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
             obj._customer = self
-            self._customer_agreements.append(obj)
+            if obj not in self._customer_agreements:
+                self._customer_agreements.append(obj)
         
     def remove_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
@@ -129,7 +148,8 @@ class Customer(Organisation):
             
         self._planned_outage = value
         if self._planned_outage is not None:
-            self._planned_outage._customer_datas.append(self)
+            if self not in self._planned_outage._customer_datas:
+                self._planned_outage._customer_datas.append(self)
 
     planned_outage = property(get_planned_outage, set_planned_outage)
     # >>> planned_outage
@@ -143,9 +163,9 @@ class Customer(Organisation):
 
     def set_erp_persons(self, value):
         for x in self._erp_persons:
-            x._customer_data = None
+            x.customer_data = None
         for y in value:
-            y._customer_data = self
+            y.customer_data = self
         self._erp_persons = value
             
     erp_persons = property(get_erp_persons, set_erp_persons)
@@ -153,7 +173,8 @@ class Customer(Organisation):
     def add_erp_persons(self, *erp_persons):
         for obj in erp_persons:
             obj._customer_data = self
-            self._erp_persons.append(obj)
+            if obj not in self._erp_persons:
+                self._erp_persons.append(obj)
         
     def remove_erp_persons(self, *erp_persons):
         for obj in erp_persons:
@@ -201,9 +222,9 @@ class Customer(Organisation):
 
     def set_trouble_tickets(self, value):
         for x in self._trouble_tickets:
-            x._customer_data = None
+            x.customer_data = None
         for y in value:
-            y._customer_data = self
+            y.customer_data = self
         self._trouble_tickets = value
             
     trouble_tickets = property(get_trouble_tickets, set_trouble_tickets)
@@ -211,7 +232,8 @@ class Customer(Organisation):
     def add_trouble_tickets(self, *trouble_tickets):
         for obj in trouble_tickets:
             obj._customer_data = self
-            self._trouble_tickets.append(obj)
+            if obj not in self._trouble_tickets:
+                self._trouble_tickets.append(obj)
         
     def remove_trouble_tickets(self, *trouble_tickets):
         for obj in trouble_tickets:
@@ -228,9 +250,9 @@ class Customer(Organisation):
 
     def set_end_device_assets(self, value):
         for x in self._end_device_assets:
-            x._customer = None
+            x.customer = None
         for y in value:
-            y._customer = self
+            y.customer = self
         self._end_device_assets = value
             
     end_device_assets = property(get_end_device_assets, set_end_device_assets)
@@ -238,7 +260,8 @@ class Customer(Organisation):
     def add_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
             obj._customer = self
-            self._end_device_assets.append(obj)
+            if obj not in self._end_device_assets:
+                self._end_device_assets.append(obj)
         
     def remove_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
@@ -253,22 +276,31 @@ class ServiceLocation(Location):
     """
     # <<< service_location
     # @generated
-    def __init__(self, site_access_problem='', access_method='', needs_inspection=False, service_delivery_points=[], customer_agreements=[], end_device_assets=[], **kw_args):
+    def __init__(self, site_access_problem='', access_method='', needs_inspection=False, service_delivery_points=None, customer_agreements=None, end_device_assets=None, **kw_args):
         """ Initialises a new 'ServiceLocation' instance.
         """
         # Problems previously encountered when visiting or performing work on this site. Examples include: bad dog, viloent customer, verbally abusive occupant, obstructions, safety hazards, etc. 
-        self.site_access_problem = ''
+        self.site_access_problem = site_access_problem
         # Method for the service person to access the appropriate service locations. For example, a description of where to obtain a key if the facility is unmanned and secured. 
-        self.access_method = ''
+        self.access_method = access_method
         # True if inspection is needed of facilities at this service location. This could be requested by a customer, due to suspected tampering, environmental concerns (e.g., a fire in the vicinity), or to correct incompatible data. 
-        self.needs_inspection = False
+        self.needs_inspection = needs_inspection
         
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
         self._end_device_assets = []
-        self.end_device_assets = end_device_assets
+        if end_device_assets is None:
+            self.end_device_assets = []
+        else:
+            self.end_device_assets = end_device_assets
 
         super(ServiceLocation, self).__init__(**kw_args)
     # >>> service_location
@@ -282,9 +314,9 @@ class ServiceLocation(Location):
 
     def set_service_delivery_points(self, value):
         for x in self._service_delivery_points:
-            x._service_location = None
+            x.service_location = None
         for y in value:
-            y._service_location = self
+            y.service_location = self
         self._service_delivery_points = value
             
     service_delivery_points = property(get_service_delivery_points, set_service_delivery_points)
@@ -292,7 +324,8 @@ class ServiceLocation(Location):
     def add_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
             obj._service_location = self
-            self._service_delivery_points.append(obj)
+            if obj not in self._service_delivery_points:
+                self._service_delivery_points.append(obj)
         
     def remove_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
@@ -340,9 +373,9 @@ class ServiceLocation(Location):
 
     def set_end_device_assets(self, value):
         for x in self._end_device_assets:
-            x._service_location = None
+            x.service_location = None
         for y in value:
-            y._service_location = self
+            y.service_location = self
         self._end_device_assets = value
             
     end_device_assets = property(get_end_device_assets, set_end_device_assets)
@@ -350,7 +383,8 @@ class ServiceLocation(Location):
     def add_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
             obj._service_location = self
-            self._end_device_assets.append(obj)
+            if obj not in self._end_device_assets:
+                self._end_device_assets.append(obj)
         
     def remove_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
@@ -365,12 +399,15 @@ class CustomerAgreement(Agreement):
     """
     # <<< customer_agreement
     # @generated
-    def __init__(self, service_delivery_points=[], customer=None, service_supplier=None, customer_account=None, standard_industry_code=None, end_device_controls=[], service_category=None, equipments=[], auxiliary_agreements=[], service_locations=[], pricing_structures=[], demand_response_program=None, meter_readings=[], **kw_args):
+    def __init__(self, service_delivery_points=None, customer=None, service_supplier=None, customer_account=None, standard_industry_code=None, end_device_controls=None, service_category=None, equipments=None, auxiliary_agreements=None, service_locations=None, pricing_structures=None, demand_response_program=None, meter_readings=None, **kw_args):
         """ Initialises a new 'CustomerAgreement' instance.
         """
         
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._customer = None
         self.customer = customer
         self._service_supplier = None
@@ -380,21 +417,39 @@ class CustomerAgreement(Agreement):
         self._standard_industry_code = None
         self.standard_industry_code = standard_industry_code
         self._end_device_controls = []
-        self.end_device_controls = end_device_controls
+        if end_device_controls is None:
+            self.end_device_controls = []
+        else:
+            self.end_device_controls = end_device_controls
         self._service_category = None
         self.service_category = service_category
         self._equipments = []
-        self.equipments = equipments
+        if equipments is None:
+            self.equipments = []
+        else:
+            self.equipments = equipments
         self._auxiliary_agreements = []
-        self.auxiliary_agreements = auxiliary_agreements
+        if auxiliary_agreements is None:
+            self.auxiliary_agreements = []
+        else:
+            self.auxiliary_agreements = auxiliary_agreements
         self._service_locations = []
-        self.service_locations = service_locations
+        if service_locations is None:
+            self.service_locations = []
+        else:
+            self.service_locations = service_locations
         self._pricing_structures = []
-        self.pricing_structures = pricing_structures
+        if pricing_structures is None:
+            self.pricing_structures = []
+        else:
+            self.pricing_structures = pricing_structures
         self._demand_response_program = None
         self.demand_response_program = demand_response_program
         self._meter_readings = []
-        self.meter_readings = meter_readings
+        if meter_readings is None:
+            self.meter_readings = []
+        else:
+            self.meter_readings = meter_readings
 
         super(CustomerAgreement, self).__init__(**kw_args)
     # >>> customer_agreement
@@ -408,9 +463,9 @@ class CustomerAgreement(Agreement):
 
     def set_service_delivery_points(self, value):
         for x in self._service_delivery_points:
-            x._customer_agreement = None
+            x.customer_agreement = None
         for y in value:
-            y._customer_agreement = self
+            y.customer_agreement = self
         self._service_delivery_points = value
             
     service_delivery_points = property(get_service_delivery_points, set_service_delivery_points)
@@ -418,7 +473,8 @@ class CustomerAgreement(Agreement):
     def add_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
             obj._customer_agreement = self
-            self._service_delivery_points.append(obj)
+            if obj not in self._service_delivery_points:
+                self._service_delivery_points.append(obj)
         
     def remove_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
@@ -440,7 +496,8 @@ class CustomerAgreement(Agreement):
             
         self._customer = value
         if self._customer is not None:
-            self._customer._customer_agreements.append(self)
+            if self not in self._customer._customer_agreements:
+                self._customer._customer_agreements.append(self)
 
     customer = property(get_customer, set_customer)
     # >>> customer
@@ -459,7 +516,8 @@ class CustomerAgreement(Agreement):
             
         self._service_supplier = value
         if self._service_supplier is not None:
-            self._service_supplier._customer_agreements.append(self)
+            if self not in self._service_supplier._customer_agreements:
+                self._service_supplier._customer_agreements.append(self)
 
     service_supplier = property(get_service_supplier, set_service_supplier)
     # >>> service_supplier
@@ -478,7 +536,8 @@ class CustomerAgreement(Agreement):
             
         self._customer_account = value
         if self._customer_account is not None:
-            self._customer_account._customer_agreements.append(self)
+            if self not in self._customer_account._customer_agreements:
+                self._customer_account._customer_agreements.append(self)
 
     customer_account = property(get_customer_account, set_customer_account)
     # >>> customer_account
@@ -497,7 +556,8 @@ class CustomerAgreement(Agreement):
             
         self._standard_industry_code = value
         if self._standard_industry_code is not None:
-            self._standard_industry_code._customer_agreements.append(self)
+            if self not in self._standard_industry_code._customer_agreements:
+                self._standard_industry_code._customer_agreements.append(self)
 
     standard_industry_code = property(get_standard_industry_code, set_standard_industry_code)
     # >>> standard_industry_code
@@ -511,9 +571,9 @@ class CustomerAgreement(Agreement):
 
     def set_end_device_controls(self, value):
         for x in self._end_device_controls:
-            x._customer_agreement = None
+            x.customer_agreement = None
         for y in value:
-            y._customer_agreement = self
+            y.customer_agreement = self
         self._end_device_controls = value
             
     end_device_controls = property(get_end_device_controls, set_end_device_controls)
@@ -521,7 +581,8 @@ class CustomerAgreement(Agreement):
     def add_end_device_controls(self, *end_device_controls):
         for obj in end_device_controls:
             obj._customer_agreement = self
-            self._end_device_controls.append(obj)
+            if obj not in self._end_device_controls:
+                self._end_device_controls.append(obj)
         
     def remove_end_device_controls(self, *end_device_controls):
         for obj in end_device_controls:
@@ -543,7 +604,8 @@ class CustomerAgreement(Agreement):
             
         self._service_category = value
         if self._service_category is not None:
-            self._service_category._customer_agreements.append(self)
+            if self not in self._service_category._customer_agreements:
+                self._service_category._customer_agreements.append(self)
 
     service_category = property(get_service_category, set_service_category)
     # >>> service_category
@@ -588,9 +650,9 @@ class CustomerAgreement(Agreement):
 
     def set_auxiliary_agreements(self, value):
         for x in self._auxiliary_agreements:
-            x._customer_agreement = None
+            x.customer_agreement = None
         for y in value:
-            y._customer_agreement = self
+            y.customer_agreement = self
         self._auxiliary_agreements = value
             
     auxiliary_agreements = property(get_auxiliary_agreements, set_auxiliary_agreements)
@@ -598,7 +660,8 @@ class CustomerAgreement(Agreement):
     def add_auxiliary_agreements(self, *auxiliary_agreements):
         for obj in auxiliary_agreements:
             obj._customer_agreement = self
-            self._auxiliary_agreements.append(obj)
+            if obj not in self._auxiliary_agreements:
+                self._auxiliary_agreements.append(obj)
         
     def remove_auxiliary_agreements(self, *auxiliary_agreements):
         for obj in auxiliary_agreements:
@@ -682,7 +745,8 @@ class CustomerAgreement(Agreement):
             
         self._demand_response_program = value
         if self._demand_response_program is not None:
-            self._demand_response_program._customer_agreements.append(self)
+            if self not in self._demand_response_program._customer_agreements:
+                self._demand_response_program._customer_agreements.append(self)
 
     demand_response_program = property(get_demand_response_program, set_demand_response_program)
     # >>> demand_response_program
@@ -696,9 +760,9 @@ class CustomerAgreement(Agreement):
 
     def set_meter_readings(self, value):
         for x in self._meter_readings:
-            x._customer_agreement = None
+            x.customer_agreement = None
         for y in value:
-            y._customer_agreement = self
+            y.customer_agreement = self
         self._meter_readings = value
             
     meter_readings = property(get_meter_readings, set_meter_readings)
@@ -706,7 +770,8 @@ class CustomerAgreement(Agreement):
     def add_meter_readings(self, *meter_readings):
         for obj in meter_readings:
             obj._customer_agreement = self
-            self._meter_readings.append(obj)
+            if obj not in self._meter_readings:
+                self._meter_readings.append(obj)
         
     def remove_meter_readings(self, *meter_readings):
         for obj in meter_readings:
@@ -721,24 +786,39 @@ class CustomerAccount(Document):
     """
     # <<< customer_account
     # @generated
-    def __init__(self, budget_bill='', billing_cycle='', customer_billing_infos=[], payment_transactions=[], erp_invoicees=[], work_billing_infos=[], customer_agreements=[], **kw_args):
+    def __init__(self, budget_bill='', billing_cycle='', customer_billing_infos=None, payment_transactions=None, erp_invoicees=None, work_billing_infos=None, customer_agreements=None, **kw_args):
         """ Initialises a new 'CustomerAccount' instance.
         """
         # Budget bill code. 
-        self.budget_bill = ''
+        self.budget_bill = budget_bill
         # Cycle day on which this customer account will normally be billed, used to determine when to produce the CustomerBillingInfo for this customer account. 
-        self.billing_cycle = ''
+        self.billing_cycle = billing_cycle
         
         self._customer_billing_infos = []
-        self.customer_billing_infos = customer_billing_infos
+        if customer_billing_infos is None:
+            self.customer_billing_infos = []
+        else:
+            self.customer_billing_infos = customer_billing_infos
         self._payment_transactions = []
-        self.payment_transactions = payment_transactions
+        if payment_transactions is None:
+            self.payment_transactions = []
+        else:
+            self.payment_transactions = payment_transactions
         self._erp_invoicees = []
-        self.erp_invoicees = erp_invoicees
+        if erp_invoicees is None:
+            self.erp_invoicees = []
+        else:
+            self.erp_invoicees = erp_invoicees
         self._work_billing_infos = []
-        self.work_billing_infos = work_billing_infos
+        if work_billing_infos is None:
+            self.work_billing_infos = []
+        else:
+            self.work_billing_infos = work_billing_infos
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
 
         super(CustomerAccount, self).__init__(**kw_args)
     # >>> customer_account
@@ -752,9 +832,9 @@ class CustomerAccount(Document):
 
     def set_customer_billing_infos(self, value):
         for x in self._customer_billing_infos:
-            x._customer_account = None
+            x.customer_account = None
         for y in value:
-            y._customer_account = self
+            y.customer_account = self
         self._customer_billing_infos = value
             
     customer_billing_infos = property(get_customer_billing_infos, set_customer_billing_infos)
@@ -762,7 +842,8 @@ class CustomerAccount(Document):
     def add_customer_billing_infos(self, *customer_billing_infos):
         for obj in customer_billing_infos:
             obj._customer_account = self
-            self._customer_billing_infos.append(obj)
+            if obj not in self._customer_billing_infos:
+                self._customer_billing_infos.append(obj)
         
     def remove_customer_billing_infos(self, *customer_billing_infos):
         for obj in customer_billing_infos:
@@ -779,9 +860,9 @@ class CustomerAccount(Document):
 
     def set_payment_transactions(self, value):
         for x in self._payment_transactions:
-            x._customer_account = None
+            x.customer_account = None
         for y in value:
-            y._customer_account = self
+            y.customer_account = self
         self._payment_transactions = value
             
     payment_transactions = property(get_payment_transactions, set_payment_transactions)
@@ -789,7 +870,8 @@ class CustomerAccount(Document):
     def add_payment_transactions(self, *payment_transactions):
         for obj in payment_transactions:
             obj._customer_account = self
-            self._payment_transactions.append(obj)
+            if obj not in self._payment_transactions:
+                self._payment_transactions.append(obj)
         
     def remove_payment_transactions(self, *payment_transactions):
         for obj in payment_transactions:
@@ -806,9 +888,9 @@ class CustomerAccount(Document):
 
     def set_erp_invoicees(self, value):
         for x in self._erp_invoicees:
-            x._customer_account = None
+            x.customer_account = None
         for y in value:
-            y._customer_account = self
+            y.customer_account = self
         self._erp_invoicees = value
             
     erp_invoicees = property(get_erp_invoicees, set_erp_invoicees)
@@ -816,7 +898,8 @@ class CustomerAccount(Document):
     def add_erp_invoicees(self, *erp_invoicees):
         for obj in erp_invoicees:
             obj._customer_account = self
-            self._erp_invoicees.append(obj)
+            if obj not in self._erp_invoicees:
+                self._erp_invoicees.append(obj)
         
     def remove_erp_invoicees(self, *erp_invoicees):
         for obj in erp_invoicees:
@@ -833,9 +916,9 @@ class CustomerAccount(Document):
 
     def set_work_billing_infos(self, value):
         for x in self._work_billing_infos:
-            x._customer_account = None
+            x.customer_account = None
         for y in value:
-            y._customer_account = self
+            y.customer_account = self
         self._work_billing_infos = value
             
     work_billing_infos = property(get_work_billing_infos, set_work_billing_infos)
@@ -843,7 +926,8 @@ class CustomerAccount(Document):
     def add_work_billing_infos(self, *work_billing_infos):
         for obj in work_billing_infos:
             obj._customer_account = self
-            self._work_billing_infos.append(obj)
+            if obj not in self._work_billing_infos:
+                self._work_billing_infos.append(obj)
         
     def remove_work_billing_infos(self, *work_billing_infos):
         for obj in work_billing_infos:
@@ -860,9 +944,9 @@ class CustomerAccount(Document):
 
     def set_customer_agreements(self, value):
         for x in self._customer_agreements:
-            x._customer_account = None
+            x.customer_account = None
         for y in value:
-            y._customer_account = self
+            y.customer_account = self
         self._customer_agreements = value
             
     customer_agreements = property(get_customer_agreements, set_customer_agreements)
@@ -870,7 +954,8 @@ class CustomerAccount(Document):
     def add_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
             obj._customer_account = self
-            self._customer_agreements.append(obj)
+            if obj not in self._customer_agreements:
+                self._customer_agreements.append(obj)
         
     def remove_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
@@ -885,18 +970,24 @@ class Tariff(Document):
     """
     # <<< tariff
     # @generated
-    def __init__(self, start_date='', end_date='', pricing_structures=[], tariff_profiles=[], **kw_args):
+    def __init__(self, start_date='', end_date='', pricing_structures=None, tariff_profiles=None, **kw_args):
         """ Initialises a new 'Tariff' instance.
         """
         # Date tarrif was activated. 
-        self.start_date = ''
+        self.start_date = start_date
         # (if tariff became inactive) Date tarrif was terminated. 
-        self.end_date = ''
+        self.end_date = end_date
         
         self._pricing_structures = []
-        self.pricing_structures = pricing_structures
+        if pricing_structures is None:
+            self.pricing_structures = []
+        else:
+            self.pricing_structures = pricing_structures
         self._tariff_profiles = []
-        self.tariff_profiles = tariff_profiles
+        if tariff_profiles is None:
+            self.tariff_profiles = []
+        else:
+            self.tariff_profiles = tariff_profiles
 
         super(Tariff, self).__init__(**kw_args)
     # >>> tariff
@@ -970,20 +1061,32 @@ class ServiceCategory(IdentifiedObject):
     """
     # <<< service_category
     # @generated
-    def __init__(self, kind='refuse', pricing_structures=[], customer_agreements=[], service_delivery_points=[], spaccounting_functions=[], **kw_args):
+    def __init__(self, kind='refuse', pricing_structures=None, customer_agreements=None, service_delivery_points=None, spaccounting_functions=None, **kw_args):
         """ Initialises a new 'ServiceCategory' instance.
         """
         # Kind of service. Values are: "refuse", "electricty", "other", "water", "tv_licence", "sewerage", "time", "internet", "gas", "rates", "heat"
-        self.kind = 'refuse'
+        self.kind = kind
         
         self._pricing_structures = []
-        self.pricing_structures = pricing_structures
+        if pricing_structures is None:
+            self.pricing_structures = []
+        else:
+            self.pricing_structures = pricing_structures
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._spaccounting_functions = []
-        self.spaccounting_functions = spaccounting_functions
+        if spaccounting_functions is None:
+            self.spaccounting_functions = []
+        else:
+            self.spaccounting_functions = spaccounting_functions
 
         super(ServiceCategory, self).__init__(**kw_args)
     # >>> service_category
@@ -997,9 +1100,9 @@ class ServiceCategory(IdentifiedObject):
 
     def set_pricing_structures(self, value):
         for x in self._pricing_structures:
-            x._service_category = None
+            x.service_category = None
         for y in value:
-            y._service_category = self
+            y.service_category = self
         self._pricing_structures = value
             
     pricing_structures = property(get_pricing_structures, set_pricing_structures)
@@ -1007,7 +1110,8 @@ class ServiceCategory(IdentifiedObject):
     def add_pricing_structures(self, *pricing_structures):
         for obj in pricing_structures:
             obj._service_category = self
-            self._pricing_structures.append(obj)
+            if obj not in self._pricing_structures:
+                self._pricing_structures.append(obj)
         
     def remove_pricing_structures(self, *pricing_structures):
         for obj in pricing_structures:
@@ -1024,9 +1128,9 @@ class ServiceCategory(IdentifiedObject):
 
     def set_customer_agreements(self, value):
         for x in self._customer_agreements:
-            x._service_category = None
+            x.service_category = None
         for y in value:
-            y._service_category = self
+            y.service_category = self
         self._customer_agreements = value
             
     customer_agreements = property(get_customer_agreements, set_customer_agreements)
@@ -1034,7 +1138,8 @@ class ServiceCategory(IdentifiedObject):
     def add_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
             obj._service_category = self
-            self._customer_agreements.append(obj)
+            if obj not in self._customer_agreements:
+                self._customer_agreements.append(obj)
         
     def remove_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
@@ -1051,9 +1156,9 @@ class ServiceCategory(IdentifiedObject):
 
     def set_service_delivery_points(self, value):
         for x in self._service_delivery_points:
-            x._service_category = None
+            x.service_category = None
         for y in value:
-            y._service_category = self
+            y.service_category = self
         self._service_delivery_points = value
             
     service_delivery_points = property(get_service_delivery_points, set_service_delivery_points)
@@ -1061,7 +1166,8 @@ class ServiceCategory(IdentifiedObject):
     def add_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
             obj._service_category = self
-            self._service_delivery_points.append(obj)
+            if obj not in self._service_delivery_points:
+                self._service_delivery_points.append(obj)
         
     def remove_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
@@ -1078,9 +1184,9 @@ class ServiceCategory(IdentifiedObject):
 
     def set_spaccounting_functions(self, value):
         for x in self._spaccounting_functions:
-            x._service_kind = None
+            x.service_kind = None
         for y in value:
-            y._service_kind = self
+            y.service_kind = self
         self._spaccounting_functions = value
             
     spaccounting_functions = property(get_spaccounting_functions, set_spaccounting_functions)
@@ -1088,7 +1194,8 @@ class ServiceCategory(IdentifiedObject):
     def add_spaccounting_functions(self, *spaccounting_functions):
         for obj in spaccounting_functions:
             obj._service_kind = self
-            self._spaccounting_functions.append(obj)
+            if obj not in self._spaccounting_functions:
+                self._spaccounting_functions.append(obj)
         
     def remove_spaccounting_functions(self, *spaccounting_functions):
         for obj in spaccounting_functions:
@@ -1103,34 +1210,49 @@ class PricingStructure(Document):
     """
     # <<< pricing_structure
     # @generated
-    def __init__(self, daily_floor_usage=0, daily_ceiling_usage=0, tax_exemption=False, code='', daily_estimated_usage=0, revenue_kind='residential', subscribe_power_curve=None, service_delivery_points=[], customer_agreements=[], transactions=[], tariffs=[], power_quality_pricings=[], service_category=None, **kw_args):
+    def __init__(self, daily_floor_usage=0, daily_ceiling_usage=0, tax_exemption=False, code='', daily_estimated_usage=0, revenue_kind='residential', subscribe_power_curve=None, service_delivery_points=None, customer_agreements=None, transactions=None, tariffs=None, power_quality_pricings=None, service_category=None, **kw_args):
         """ Initialises a new 'PricingStructure' instance.
         """
         # Absolute minimum valid non-demand usage quantity used in validating a customer's billed non-demand usage. 
-        self.daily_floor_usage = 0
+        self.daily_floor_usage = daily_floor_usage
         # Absolute maximum valid non-demand usage quantity used in validating a customer's billed non-demand usage. 
-        self.daily_ceiling_usage = 0
+        self.daily_ceiling_usage = daily_ceiling_usage
         # True if this pricing structure is not taxable. 
-        self.tax_exemption = False
+        self.tax_exemption = tax_exemption
         # Unique user-allocated key for this pricing structure, used by company representatives to identify the correct price structure for allocating to a customer. For rate schedules it is often prefixed by a state code. 
-        self.code = ''
+        self.code = code
         # Used in place of actual computed estimated average when history of usage is not available, and typically manually entered by customer accounting. 
-        self.daily_estimated_usage = 0
+        self.daily_estimated_usage = daily_estimated_usage
         # (Accounting) Kind of revenue, often used to determine the grace period allowed, before collection actions are taken on a customer (grace periods vary between revenue classes). Values are: "residential", "industrial", "non_residential", "irrigation", "commercial", "street_light", "other"
-        self.revenue_kind = 'residential'
+        self.revenue_kind = revenue_kind
         
         self._subscribe_power_curve = None
         self.subscribe_power_curve = subscribe_power_curve
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
         self._transactions = []
-        self.transactions = transactions
+        if transactions is None:
+            self.transactions = []
+        else:
+            self.transactions = transactions
         self._tariffs = []
-        self.tariffs = tariffs
+        if tariffs is None:
+            self.tariffs = []
+        else:
+            self.tariffs = tariffs
         self._power_quality_pricings = []
-        self.power_quality_pricings = power_quality_pricings
+        if power_quality_pricings is None:
+            self.power_quality_pricings = []
+        else:
+            self.power_quality_pricings = power_quality_pricings
         self._service_category = None
         self.service_category = service_category
 
@@ -1226,9 +1348,9 @@ class PricingStructure(Document):
 
     def set_transactions(self, value):
         for x in self._transactions:
-            x._pricing_structure = None
+            x.pricing_structure = None
         for y in value:
-            y._pricing_structure = self
+            y.pricing_structure = self
         self._transactions = value
             
     transactions = property(get_transactions, set_transactions)
@@ -1236,7 +1358,8 @@ class PricingStructure(Document):
     def add_transactions(self, *transactions):
         for obj in transactions:
             obj._pricing_structure = self
-            self._transactions.append(obj)
+            if obj not in self._transactions:
+                self._transactions.append(obj)
         
     def remove_transactions(self, *transactions):
         for obj in transactions:
@@ -1284,9 +1407,9 @@ class PricingStructure(Document):
 
     def set_power_quality_pricings(self, value):
         for x in self._power_quality_pricings:
-            x._pricing_structure = None
+            x.pricing_structure = None
         for y in value:
-            y._pricing_structure = self
+            y.pricing_structure = self
         self._power_quality_pricings = value
             
     power_quality_pricings = property(get_power_quality_pricings, set_power_quality_pricings)
@@ -1294,7 +1417,8 @@ class PricingStructure(Document):
     def add_power_quality_pricings(self, *power_quality_pricings):
         for obj in power_quality_pricings:
             obj._pricing_structure = self
-            self._power_quality_pricings.append(obj)
+            if obj not in self._power_quality_pricings:
+                self._power_quality_pricings.append(obj)
         
     def remove_power_quality_pricings(self, *power_quality_pricings):
         for obj in power_quality_pricings:
@@ -1316,7 +1440,8 @@ class PricingStructure(Document):
             
         self._service_category = value
         if self._service_category is not None:
-            self._service_category._pricing_structures.append(self)
+            if self not in self._service_category._pricing_structures:
+                self._service_category._pricing_structures.append(self)
 
     service_category = property(get_service_category, set_service_category)
     # >>> service_category

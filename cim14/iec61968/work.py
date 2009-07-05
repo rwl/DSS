@@ -16,34 +16,49 @@ class Work(Document):
     """
     # <<< work
     # @generated
-    def __init__(self, kind='disconnect', priority='', request_date_time='', work_billing_info=None, project=None, designs=[], customers=[], work_flow_steps=[], business_case=None, work_cost_details=[], request=None, work_tasks=[], erp_project_accounting=None, **kw_args):
+    def __init__(self, kind='disconnect', priority='', request_date_time='', work_billing_info=None, project=None, designs=None, customers=None, work_flow_steps=None, business_case=None, work_cost_details=None, request=None, work_tasks=None, erp_project_accounting=None, **kw_args):
         """ Initialises a new 'Work' instance.
         """
         # Kind of work. Values are: "disconnect", "service", "other", "maintenance", "meter", "inspection", "reconnect", "construction"
-        self.kind = 'disconnect'
+        self.kind = kind
         # Priority of work. 
-        self.priority = ''
+        self.priority = priority
         # Date and time work was requested. 
-        self.request_date_time = ''
+        self.request_date_time = request_date_time
         
         self._work_billing_info = None
         self.work_billing_info = work_billing_info
         self._project = None
         self.project = project
         self._designs = []
-        self.designs = designs
+        if designs is None:
+            self.designs = []
+        else:
+            self.designs = designs
         self._customers = []
-        self.customers = customers
+        if customers is None:
+            self.customers = []
+        else:
+            self.customers = customers
         self._work_flow_steps = []
-        self.work_flow_steps = work_flow_steps
+        if work_flow_steps is None:
+            self.work_flow_steps = []
+        else:
+            self.work_flow_steps = work_flow_steps
         self._business_case = None
         self.business_case = business_case
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
         self._request = None
         self.request = request
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._erp_project_accounting = None
         self.erp_project_accounting = erp_project_accounting
 
@@ -64,7 +79,8 @@ class Work(Document):
             
         self._work_billing_info = value
         if self._work_billing_info is not None:
-            self._work_billing_info._works.append(self)
+            if self not in self._work_billing_info._works:
+                self._work_billing_info._works.append(self)
 
     work_billing_info = property(get_work_billing_info, set_work_billing_info)
     # >>> work_billing_info
@@ -83,7 +99,8 @@ class Work(Document):
             
         self._project = value
         if self._project is not None:
-            self._project._works.append(self)
+            if self not in self._project._works:
+                self._project._works.append(self)
 
     project = property(get_project, set_project)
     # >>> project
@@ -97,9 +114,9 @@ class Work(Document):
 
     def set_designs(self, value):
         for x in self._designs:
-            x._work = None
+            x.work = None
         for y in value:
-            y._work = self
+            y.work = self
         self._designs = value
             
     designs = property(get_designs, set_designs)
@@ -107,7 +124,8 @@ class Work(Document):
     def add_designs(self, *designs):
         for obj in designs:
             obj._work = self
-            self._designs.append(obj)
+            if obj not in self._designs:
+                self._designs.append(obj)
         
     def remove_designs(self, *designs):
         for obj in designs:
@@ -155,9 +173,9 @@ class Work(Document):
 
     def set_work_flow_steps(self, value):
         for x in self._work_flow_steps:
-            x._work = None
+            x.work = None
         for y in value:
-            y._work = self
+            y.work = self
         self._work_flow_steps = value
             
     work_flow_steps = property(get_work_flow_steps, set_work_flow_steps)
@@ -165,7 +183,8 @@ class Work(Document):
     def add_work_flow_steps(self, *work_flow_steps):
         for obj in work_flow_steps:
             obj._work = self
-            self._work_flow_steps.append(obj)
+            if obj not in self._work_flow_steps:
+                self._work_flow_steps.append(obj)
         
     def remove_work_flow_steps(self, *work_flow_steps):
         for obj in work_flow_steps:
@@ -187,7 +206,8 @@ class Work(Document):
             
         self._business_case = value
         if self._business_case is not None:
-            self._business_case._works.append(self)
+            if self not in self._business_case._works:
+                self._business_case._works.append(self)
 
     business_case = property(get_business_case, set_business_case)
     # >>> business_case
@@ -237,7 +257,8 @@ class Work(Document):
             
         self._request = value
         if self._request is not None:
-            self._request._works.append(self)
+            if self not in self._request._works:
+                self._request._works.append(self)
 
     request = property(get_request, set_request)
     # >>> request
@@ -251,9 +272,9 @@ class Work(Document):
 
     def set_work_tasks(self, value):
         for x in self._work_tasks:
-            x._work = None
+            x.work = None
         for y in value:
-            y._work = self
+            y.work = self
         self._work_tasks = value
             
     work_tasks = property(get_work_tasks, set_work_tasks)
@@ -261,7 +282,8 @@ class Work(Document):
     def add_work_tasks(self, *work_tasks):
         for obj in work_tasks:
             obj._work = self
-            self._work_tasks.append(obj)
+            if obj not in self._work_tasks:
+                self._work_tasks.append(obj)
         
     def remove_work_tasks(self, *work_tasks):
         for obj in work_tasks:
@@ -283,7 +305,8 @@ class Work(Document):
             
         self._erp_project_accounting = value
         if self._erp_project_accounting is not None:
-            self._erp_project_accounting._works.append(self)
+            if self not in self._erp_project_accounting._works:
+                self._erp_project_accounting._works.append(self)
 
     erp_project_accounting = property(get_erp_project_accounting, set_erp_project_accounting)
     # >>> erp_project_accounting

@@ -17,26 +17,32 @@ class LoadMgmtFunction(DeviceFunction):
     """
     # <<< load_mgmt_function
     # @generated
-    def __init__(self, scheduling_basis='manual_control', remote_over_ride=False, manual_over_ride=False, load_status='limited_load', over_ride_time_out='', is_auto_op=False, switches=[], load_mgmt_records=[], **kw_args):
+    def __init__(self, scheduling_basis='manual_control', remote_over_ride=False, manual_over_ride=False, load_status='limited_load', over_ride_time_out=0.0, is_auto_op=False, switches=None, load_mgmt_records=None, **kw_args):
         """ Initialises a new 'LoadMgmtFunction' instance.
         """
         # The basis of Load Management scheduling used here: Time Based, Tariff Based, Remote Control and Manual Control. Values are: "manual_control", "time_based", "remote_control", "tariff_based"
-        self.scheduling_basis = 'manual_control'
+        self.scheduling_basis = scheduling_basis
         # True if the currently active schedule is being remotely over-ridden to either shed load or to limit load. 
-        self.remote_over_ride = False
+        self.remote_over_ride = remote_over_ride
         # True if the currently active schedule is being manually over-ridden to either shed load or to limit load. 
-        self.manual_over_ride = False
+        self.manual_over_ride = manual_over_ride
         # The present state of the load being either shed (noLoad), limited (limitedLoad) or fully connected (fullLoad). This refers only to the portion of the customer load that is under control of the LoadMgmtFunction. Values are: "limited_load", "full_load", "no_load"
-        self.load_status = 'limited_load'
+        self.load_status = load_status
         # After a command had been received to activate the mannualOverRide state or remoteOverRideState, the normal (halted) schedule will resume after this specified time duration had elapsed. 
-        self.over_ride_time_out = ''
+        self.over_ride_time_out = over_ride_time_out
         # True if LoadMgmtFunction operates under automatic control, otherwise it operates under manual control. 
-        self.is_auto_op = False
+        self.is_auto_op = is_auto_op
         
         self._switches = []
-        self.switches = switches
+        if switches is None:
+            self.switches = []
+        else:
+            self.switches = switches
         self._load_mgmt_records = []
-        self.load_mgmt_records = load_mgmt_records
+        if load_mgmt_records is None:
+            self.load_mgmt_records = []
+        else:
+            self.load_mgmt_records = load_mgmt_records
 
         super(LoadMgmtFunction, self).__init__(**kw_args)
     # >>> load_mgmt_function
@@ -81,9 +87,9 @@ class LoadMgmtFunction(DeviceFunction):
 
     def set_load_mgmt_records(self, value):
         for x in self._load_mgmt_records:
-            x._load_mgmt_function = None
+            x.load_mgmt_function = None
         for y in value:
-            y._load_mgmt_function = self
+            y.load_mgmt_function = self
         self._load_mgmt_records = value
             
     load_mgmt_records = property(get_load_mgmt_records, set_load_mgmt_records)
@@ -91,7 +97,8 @@ class LoadMgmtFunction(DeviceFunction):
     def add_load_mgmt_records(self, *load_mgmt_records):
         for obj in load_mgmt_records:
             obj._load_mgmt_function = self
-            self._load_mgmt_records.append(obj)
+            if obj not in self._load_mgmt_records:
+                self._load_mgmt_records.append(obj)
         
     def remove_load_mgmt_records(self, *load_mgmt_records):
         for obj in load_mgmt_records:
@@ -106,11 +113,11 @@ class LoadMgmtRecord(ActivityRecord):
     """
     # <<< load_mgmt_record
     # @generated
-    def __init__(self, load_reduction='', load_mgmt_function=None, **kw_args):
+    def __init__(self, load_reduction=0.0, load_mgmt_function=None, **kw_args):
         """ Initialises a new 'LoadMgmtRecord' instance.
         """
         # The measured reduction of the total load power as a result of the load shed activation. Thus it is the difference in power before and after the load shed operation. 
-        self.load_reduction = ''
+        self.load_reduction = load_reduction
         
         self._load_mgmt_function = None
         self.load_mgmt_function = load_mgmt_function
@@ -132,7 +139,8 @@ class LoadMgmtRecord(ActivityRecord):
             
         self._load_mgmt_function = value
         if self._load_mgmt_function is not None:
-            self._load_mgmt_function._load_mgmt_records.append(self)
+            if self not in self._load_mgmt_function._load_mgmt_records:
+                self._load_mgmt_function._load_mgmt_records.append(self)
 
     load_mgmt_function = property(get_load_mgmt_function, set_load_mgmt_function)
     # >>> load_mgmt_function
@@ -144,11 +152,11 @@ class LoadShedFunction(LoadMgmtFunction):
     """
     # <<< load_shed_function
     # @generated
-    def __init__(self, switched_load='', **kw_args):
+    def __init__(self, switched_load=0.0, **kw_args):
         """ Initialises a new 'LoadShedFunction' instance.
         """
         # The value of the load that is connected to the shedding switch. Typically this is a noted nominal value rather than a measured value. 
-        self.switched_load = ''
+        self.switched_load = switched_load
         
 
         super(LoadShedFunction, self).__init__(**kw_args)
@@ -161,17 +169,17 @@ class LoadLimitFunction(LoadMgmtFunction):
     """
     # <<< load_limit_function
     # @generated
-    def __init__(self, maximum_load='', reconnect_time_delay='', is_auto_recon_op=False, disconnect_time_delay='', **kw_args):
+    def __init__(self, maximum_load=0.0, reconnect_time_delay=0.0, is_auto_recon_op=False, disconnect_time_delay=0.0, **kw_args):
         """ Initialises a new 'LoadLimitFunction' instance.
         """
         # The power level, to which the customer load is being limited when this function activates. When the maximum load is exceeded the switch will typically open to shed the complete customer load. 
-        self.maximum_load = ''
+        self.maximum_load = maximum_load
         # From the point when the load recovers from an overload condition and crosses the maximumLoad threshold going down, there may be a finite time delay before the switch actually reconnects the load. Typically this is to give overload conditions sufficient time to clear, thus preventing unnecessary load switching activity. 
-        self.reconnect_time_delay = ''
+        self.reconnect_time_delay = reconnect_time_delay
         # True if the switch will reconnect automatically, otherwise it will reconnect under manual control. 
-        self.is_auto_recon_op = False
+        self.is_auto_recon_op = is_auto_recon_op
         # From the point when the maximumLoad threshold is crossed there may be a finite delay before the switch actually disconnects the load. Typically this is to buffer against transient load fluctuations. 
-        self.disconnect_time_delay = ''
+        self.disconnect_time_delay = disconnect_time_delay
         
 
         super(LoadLimitFunction, self).__init__(**kw_args)

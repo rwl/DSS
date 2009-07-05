@@ -18,16 +18,25 @@ class ValueAliasSet(IdentifiedObject):
     """
     # <<< value_alias_set
     # @generated
-    def __init__(self, commands=[], discretes=[], values=[], **kw_args):
+    def __init__(self, commands=None, discretes=None, values=None, **kw_args):
         """ Initialises a new 'ValueAliasSet' instance.
         """
         
         self._commands = []
-        self.commands = commands
+        if commands is None:
+            self.commands = []
+        else:
+            self.commands = commands
         self._discretes = []
-        self.discretes = discretes
+        if discretes is None:
+            self.discretes = []
+        else:
+            self.discretes = discretes
         self._values = []
-        self.values = values
+        if values is None:
+            self.values = []
+        else:
+            self.values = values
 
         super(ValueAliasSet, self).__init__(**kw_args)
     # >>> value_alias_set
@@ -41,9 +50,9 @@ class ValueAliasSet(IdentifiedObject):
 
     def set_commands(self, value):
         for x in self._commands:
-            x._value_alias_set = None
+            x.value_alias_set = None
         for y in value:
-            y._value_alias_set = self
+            y.value_alias_set = self
         self._commands = value
             
     commands = property(get_commands, set_commands)
@@ -51,7 +60,8 @@ class ValueAliasSet(IdentifiedObject):
     def add_commands(self, *commands):
         for obj in commands:
             obj._value_alias_set = self
-            self._commands.append(obj)
+            if obj not in self._commands:
+                self._commands.append(obj)
         
     def remove_commands(self, *commands):
         for obj in commands:
@@ -68,9 +78,9 @@ class ValueAliasSet(IdentifiedObject):
 
     def set_discretes(self, value):
         for x in self._discretes:
-            x._value_alias_set = None
+            x.value_alias_set = None
         for y in value:
-            y._value_alias_set = self
+            y.value_alias_set = self
         self._discretes = value
             
     discretes = property(get_discretes, set_discretes)
@@ -78,7 +88,8 @@ class ValueAliasSet(IdentifiedObject):
     def add_discretes(self, *discretes):
         for obj in discretes:
             obj._value_alias_set = self
-            self._discretes.append(obj)
+            if obj not in self._discretes:
+                self._discretes.append(obj)
         
     def remove_discretes(self, *discretes):
         for obj in discretes:
@@ -95,9 +106,9 @@ class ValueAliasSet(IdentifiedObject):
 
     def set_values(self, value):
         for x in self._values:
-            x._value_alias_set = None
+            x.value_alias_set = None
         for y in value:
-            y._value_alias_set = self
+            y.value_alias_set = self
         self._values = value
             
     values = property(get_values, set_values)
@@ -105,7 +116,8 @@ class ValueAliasSet(IdentifiedObject):
     def add_values(self, *values):
         for obj in values:
             obj._value_alias_set = self
-            self._values.append(obj)
+            if obj not in self._values:
+                self._values.append(obj)
         
     def remove_values(self, *values):
         for obj in values:
@@ -124,7 +136,7 @@ class LimitSet(IdentifiedObject):
         """ Initialises a new 'LimitSet' instance.
         """
         # Tells if the limit values are in percentage of normalValue or the specified Unit for Measurements and Controls. 
-        self.is_percentage_limits = False
+        self.is_percentage_limits = is_percentage_limits
         
 
         super(LimitSet, self).__init__(**kw_args)
@@ -137,36 +149,51 @@ class Measurement(IdentifiedObject):
     """
     # <<< measurement
     # @generated
-    def __init__(self, measurement_type='', asset=None, unit=None, documents=[], power_system_resource=None, terminal=None, locations=[], for_tie_point=None, dynamic_schedules=[], pnode=None, by_tie_point=None, violation_limits=[], change_items=[], **kw_args):
+    def __init__(self, measurement_type='', asset=None, unit=None, documents=None, power_system_resource=None, terminal=None, locations=None, for_tie_point=None, dynamic_schedules=None, pnode=None, by_tie_point=None, violation_limits=None, change_items=None, **kw_args):
         """ Initialises a new 'Measurement' instance.
         """
         # Specifies the type of Measurement, e.g. IndoorTemperature, OutDoorTemperature, BusVoltage, GeneratorVoltage, LineFlow etc. 
-        self.measurement_type = ''
+        self.measurement_type = measurement_type
         
         self._asset = None
         self.asset = asset
         self._unit = None
         self.unit = unit
         self._documents = []
-        self.documents = documents
+        if documents is None:
+            self.documents = []
+        else:
+            self.documents = documents
         self._power_system_resource = None
         self.power_system_resource = power_system_resource
         self._terminal = None
         self.terminal = terminal
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
         self._for_tie_point = None
         self.for_tie_point = for_tie_point
         self._dynamic_schedules = []
-        self.dynamic_schedules = dynamic_schedules
+        if dynamic_schedules is None:
+            self.dynamic_schedules = []
+        else:
+            self.dynamic_schedules = dynamic_schedules
         self._pnode = None
         self.pnode = pnode
         self._by_tie_point = None
         self.by_tie_point = by_tie_point
         self._violation_limits = []
-        self.violation_limits = violation_limits
+        if violation_limits is None:
+            self.violation_limits = []
+        else:
+            self.violation_limits = violation_limits
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
 
         super(Measurement, self).__init__(**kw_args)
     # >>> measurement
@@ -185,7 +212,8 @@ class Measurement(IdentifiedObject):
             
         self._asset = value
         if self._asset is not None:
-            self._asset._measurements.append(self)
+            if self not in self._asset._measurements:
+                self._asset._measurements.append(self)
 
     asset = property(get_asset, set_asset)
     # >>> asset
@@ -204,7 +232,8 @@ class Measurement(IdentifiedObject):
             
         self._unit = value
         if self._unit is not None:
-            self._unit._measurements.append(self)
+            if self not in self._unit._measurements:
+                self._unit._measurements.append(self)
 
     unit = property(get_unit, set_unit)
     # >>> unit
@@ -254,7 +283,8 @@ class Measurement(IdentifiedObject):
             
         self._power_system_resource = value
         if self._power_system_resource is not None:
-            self._power_system_resource._measurements.append(self)
+            if self not in self._power_system_resource._measurements:
+                self._power_system_resource._measurements.append(self)
 
     power_system_resource = property(get_power_system_resource, set_power_system_resource)
     # >>> power_system_resource
@@ -273,7 +303,8 @@ class Measurement(IdentifiedObject):
             
         self._terminal = value
         if self._terminal is not None:
-            self._terminal._measurements.append(self)
+            if self not in self._terminal._measurements:
+                self._terminal._measurements.append(self)
 
     terminal = property(get_terminal, set_terminal)
     # >>> terminal
@@ -323,7 +354,8 @@ class Measurement(IdentifiedObject):
             
         self._for_tie_point = value
         if self._for_tie_point is not None:
-            self._for_tie_point._for_measurements.append(self)
+            if self not in self._for_tie_point._for_measurements:
+                self._for_tie_point._for_measurements.append(self)
 
     for_tie_point = property(get_for_tie_point, set_for_tie_point)
     # >>> for_tie_point
@@ -337,9 +369,9 @@ class Measurement(IdentifiedObject):
 
     def set_dynamic_schedules(self, value):
         for x in self._dynamic_schedules:
-            x._measurement = None
+            x.measurement = None
         for y in value:
-            y._measurement = self
+            y.measurement = self
         self._dynamic_schedules = value
             
     dynamic_schedules = property(get_dynamic_schedules, set_dynamic_schedules)
@@ -347,7 +379,8 @@ class Measurement(IdentifiedObject):
     def add_dynamic_schedules(self, *dynamic_schedules):
         for obj in dynamic_schedules:
             obj._measurement = self
-            self._dynamic_schedules.append(obj)
+            if obj not in self._dynamic_schedules:
+                self._dynamic_schedules.append(obj)
         
     def remove_dynamic_schedules(self, *dynamic_schedules):
         for obj in dynamic_schedules:
@@ -369,7 +402,8 @@ class Measurement(IdentifiedObject):
             
         self._pnode = value
         if self._pnode is not None:
-            self._pnode._measurements.append(self)
+            if self not in self._pnode._measurements:
+                self._pnode._measurements.append(self)
 
     pnode = property(get_pnode, set_pnode)
     # >>> pnode
@@ -388,7 +422,8 @@ class Measurement(IdentifiedObject):
             
         self._by_tie_point = value
         if self._by_tie_point is not None:
-            self._by_tie_point._by_measurements.append(self)
+            if self not in self._by_tie_point._by_measurements:
+                self._by_tie_point._by_measurements.append(self)
 
     by_tie_point = property(get_by_tie_point, set_by_tie_point)
     # >>> by_tie_point
@@ -402,9 +437,9 @@ class Measurement(IdentifiedObject):
 
     def set_violation_limits(self, value):
         for x in self._violation_limits:
-            x._measurement = None
+            x.measurement = None
         for y in value:
-            y._measurement = self
+            y.measurement = self
         self._violation_limits = value
             
     violation_limits = property(get_violation_limits, set_violation_limits)
@@ -412,7 +447,8 @@ class Measurement(IdentifiedObject):
     def add_violation_limits(self, *violation_limits):
         for obj in violation_limits:
             obj._measurement = self
-            self._violation_limits.append(obj)
+            if obj not in self._violation_limits:
+                self._violation_limits.append(obj)
         
     def remove_violation_limits(self, *violation_limits):
         for obj in violation_limits:
@@ -429,9 +465,9 @@ class Measurement(IdentifiedObject):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._measurement = None
+            x.measurement = None
         for y in value:
-            y._measurement = self
+            y.measurement = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -439,7 +475,8 @@ class Measurement(IdentifiedObject):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._measurement = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -458,29 +495,29 @@ class Quality61850(Element):
         """ Initialises a new 'Quality61850' instance.
         """
         # A correlation function has detected that the value is not consitent with other values. Typically set by a network State Estimator. 
-        self.suspect = False
+        self.suspect = suspect
         # Measurement value is old and possibly invalid, as it has not been successfully updated during a specified time interval. 
-        self.old_data = False
+        self.old_data = old_data
         # Measurement value is transmitted for test purposes. 
-        self.test = False
+        self.test = test
         # Measurement value is beyond a predefined range of value. 
-        self.out_of_range = False
+        self.out_of_range = out_of_range
         # Measurement value is blocked and hence unavailable for transmission. 
-        self.operator_blocked = False
+        self.operator_blocked = operator_blocked
         # Validity of the measurement value. Values are: "good", "questionable", "invalid"
-        self.validity = 'good'
+        self.validity = validity
         # Measurement value may be incorrect due to a reference being out of calibration. 
-        self.bad_reference = False
+        self.bad_reference = bad_reference
         # Value has been replaced by State Estimator. estimatorReplaced is not an IEC61850 quality bit but has been put in this class for convenience. 
-        self.estimator_replaced = False
+        self.estimator_replaced = estimator_replaced
         # Source gives information related to the origin of a value. The value may be acquired from the process, defaulted or substituted. Values are: "substituted", "process", "defaulted"
-        self.source = 'substituted'
+        self.source = source
         # To prevent some overload of the communication it is sensible to detect and suppress oscillating (fast changing) binary inputs. If a signal changes in a defined time (tosc) twice in the same direction (from 0 to 1 or from 1 to 0) then oscillation is detected and the detail quality identifier 'oscillatory' is set. If it is detected a configured numbers of transient changes could be passed by. In this time the validity status 'questionable' is set. If after this defined numbers of changes the signal is still in the oscillating state the value shall be set either to the opposite state of the previous stable value or to a defined default value. In this case the validity status 'questionable' is reset and 'invalid' is set as long as the signal is oscillating. If it is configured such that no transient changes should be passed by then the validity status 'invalid' is set immediately in addition to the detail quality identifier 'oscillatory' (used for status information only). 
-        self.oscillatory = False
+        self.oscillatory = oscillatory
         # Measurement value is beyond the capability of being  represented properly. For example, a counter value overflows from maximum count back to a value of zero. 
-        self.over_flow = False
+        self.over_flow = over_flow
         # This identifier indicates that a supervision function has detected an internal or external failure, e.g. communication failure. 
-        self.failure = False
+        self.failure = failure
         
 
         super(Quality61850, self).__init__(**kw_args)
@@ -497,17 +534,17 @@ class CurrentTransformer(Equipment):
         """ Initialises a new 'CurrentTransformer' instance.
         """
         # CT classification; i.e. class 10P. 
-        self.ct_class = ''
+        self.ct_class = ct_class
         # Percent of rated current for which the CT remains accurate within specified limits. 
-        self.accuracy_limit = ''
+        self.accuracy_limit = accuracy_limit
         # For multi-ratio CT's, the maximum permissable ratio attainable. 
-        self.max_ratio = 0.0
+        self.max_ratio = max_ratio
         # Number of cores. 
-        self.core_count = 0
+        self.core_count = core_count
         # Intended usage of the CT; i.e. metering, protection. 
-        self.usage = ''
+        self.usage = usage
         # CT accuracy classification. 
-        self.accuracy_class = ''
+        self.accuracy_class = accuracy_class
         
         self._current_transformer_type_asset = None
         self.current_transformer_type_asset = current_transformer_type_asset
@@ -531,7 +568,8 @@ class CurrentTransformer(Equipment):
             
         self._current_transformer_type_asset = value
         if self._current_transformer_type_asset is not None:
-            self._current_transformer_type_asset._current_transformers.append(self)
+            if self not in self._current_transformer_type_asset._current_transformers:
+                self._current_transformer_type_asset._current_transformers.append(self)
 
     current_transformer_type_asset = property(get_current_transformer_type_asset, set_current_transformer_type_asset)
     # >>> current_transformer_type_asset
@@ -565,9 +603,9 @@ class Control(IdentifiedObject):
         """ Initialises a new 'Control' instance.
         """
         # Indicates that a client is currently sending control commands that has not completed 
-        self.operation_in_progress = False
+        self.operation_in_progress = operation_in_progress
         # The last time a control output was sent 
-        self.time_stamp = ''
+        self.time_stamp = time_stamp
         
         self._control_type = None
         self.control_type = control_type
@@ -595,7 +633,8 @@ class Control(IdentifiedObject):
             
         self._control_type = value
         if self._control_type is not None:
-            self._control_type._controls.append(self)
+            if self not in self._control_type._controls:
+                self._control_type._controls.append(self)
 
     control_type = property(get_control_type, set_control_type)
     # >>> control_type
@@ -632,7 +671,8 @@ class Control(IdentifiedObject):
             
         self._unit = value
         if self._unit is not None:
-            self._unit._controls.append(self)
+            if self not in self._unit._controls:
+                self._unit._controls.append(self)
 
     unit = property(get_unit, set_unit)
     # >>> unit
@@ -651,7 +691,8 @@ class Control(IdentifiedObject):
             
         self._regulating_cond_eq = value
         if self._regulating_cond_eq is not None:
-            self._regulating_cond_eq._controls.append(self)
+            if self not in self._regulating_cond_eq._controls:
+                self._regulating_cond_eq._controls.append(self)
 
     regulating_cond_eq = property(get_regulating_cond_eq, set_regulating_cond_eq)
     # >>> regulating_cond_eq
@@ -663,12 +704,15 @@ class ControlType(IdentifiedObject):
     """
     # <<< control_type
     # @generated
-    def __init__(self, controls=[], **kw_args):
+    def __init__(self, controls=None, **kw_args):
         """ Initialises a new 'ControlType' instance.
         """
         
         self._controls = []
-        self.controls = controls
+        if controls is None:
+            self.controls = []
+        else:
+            self.controls = controls
 
         super(ControlType, self).__init__(**kw_args)
     # >>> control_type
@@ -682,9 +726,9 @@ class ControlType(IdentifiedObject):
 
     def set_controls(self, value):
         for x in self._controls:
-            x._control_type = None
+            x.control_type = None
         for y in value:
-            y._control_type = self
+            y.control_type = self
         self._controls = value
             
     controls = property(get_controls, set_controls)
@@ -692,7 +736,8 @@ class ControlType(IdentifiedObject):
     def add_controls(self, *controls):
         for obj in controls:
             obj._control_type = self
-            self._controls.append(obj)
+            if obj not in self._controls:
+                self._controls.append(obj)
         
     def remove_controls(self, *controls):
         for obj in controls:
@@ -707,16 +752,19 @@ class MeasurementValue(IdentifiedObject):
     """
     # <<< measurement_value
     # @generated
-    def __init__(self, time_stamp='', sensor_accuracy='', gml_values=[], measurement_value_source=None, erp_person=None, measurement_value_quality=None, procedure_data_sets=[], remote_source=None, **kw_args):
+    def __init__(self, time_stamp='', sensor_accuracy=0.0, gml_values=None, measurement_value_source=None, erp_person=None, measurement_value_quality=None, procedure_data_sets=None, remote_source=None, **kw_args):
         """ Initialises a new 'MeasurementValue' instance.
         """
         # The time when the value was last updated 
-        self.time_stamp = ''
+        self.time_stamp = time_stamp
         # The limit, expressed as a percentage of the sensor maximum, that errors will not exceed when the sensor is used under  reference conditions. 
-        self.sensor_accuracy = ''
+        self.sensor_accuracy = sensor_accuracy
         
         self._gml_values = []
-        self.gml_values = gml_values
+        if gml_values is None:
+            self.gml_values = []
+        else:
+            self.gml_values = gml_values
         self._measurement_value_source = None
         self.measurement_value_source = measurement_value_source
         self._erp_person = None
@@ -724,7 +772,10 @@ class MeasurementValue(IdentifiedObject):
         self._measurement_value_quality = None
         self.measurement_value_quality = measurement_value_quality
         self._procedure_data_sets = []
-        self.procedure_data_sets = procedure_data_sets
+        if procedure_data_sets is None:
+            self.procedure_data_sets = []
+        else:
+            self.procedure_data_sets = procedure_data_sets
         self._remote_source = None
         self.remote_source = remote_source
 
@@ -740,9 +791,9 @@ class MeasurementValue(IdentifiedObject):
 
     def set_gml_values(self, value):
         for x in self._gml_values:
-            x._measurement_value = None
+            x.measurement_value = None
         for y in value:
-            y._measurement_value = self
+            y.measurement_value = self
         self._gml_values = value
             
     gml_values = property(get_gml_values, set_gml_values)
@@ -750,7 +801,8 @@ class MeasurementValue(IdentifiedObject):
     def add_gml_values(self, *gml_values):
         for obj in gml_values:
             obj._measurement_value = self
-            self._gml_values.append(obj)
+            if obj not in self._gml_values:
+                self._gml_values.append(obj)
         
     def remove_gml_values(self, *gml_values):
         for obj in gml_values:
@@ -772,7 +824,8 @@ class MeasurementValue(IdentifiedObject):
             
         self._measurement_value_source = value
         if self._measurement_value_source is not None:
-            self._measurement_value_source._measurement_values.append(self)
+            if self not in self._measurement_value_source._measurement_values:
+                self._measurement_value_source._measurement_values.append(self)
 
     measurement_value_source = property(get_measurement_value_source, set_measurement_value_source)
     # >>> measurement_value_source
@@ -791,7 +844,8 @@ class MeasurementValue(IdentifiedObject):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._measurement_values.append(self)
+            if self not in self._erp_person._measurement_values:
+                self._erp_person._measurement_values.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -874,7 +928,7 @@ class ValueToAlias(IdentifiedObject):
         """ Initialises a new 'ValueToAlias' instance.
         """
         # The value that is mapped 
-        self.value = 0
+        self.value = value
         
         self._value_alias_set = None
         self.value_alias_set = value_alias_set
@@ -896,7 +950,8 @@ class ValueToAlias(IdentifiedObject):
             
         self._value_alias_set = value
         if self._value_alias_set is not None:
-            self._value_alias_set._values.append(self)
+            if self not in self._value_alias_set._values:
+                self._value_alias_set._values.append(self)
 
     value_alias_set = property(get_value_alias_set, set_value_alias_set)
     # >>> value_alias_set
@@ -908,12 +963,15 @@ class MeasurementValueSource(IdentifiedObject):
     """
     # <<< measurement_value_source
     # @generated
-    def __init__(self, measurement_values=[], **kw_args):
+    def __init__(self, measurement_values=None, **kw_args):
         """ Initialises a new 'MeasurementValueSource' instance.
         """
         
         self._measurement_values = []
-        self.measurement_values = measurement_values
+        if measurement_values is None:
+            self.measurement_values = []
+        else:
+            self.measurement_values = measurement_values
 
         super(MeasurementValueSource, self).__init__(**kw_args)
     # >>> measurement_value_source
@@ -927,9 +985,9 @@ class MeasurementValueSource(IdentifiedObject):
 
     def set_measurement_values(self, value):
         for x in self._measurement_values:
-            x._measurement_value_source = None
+            x.measurement_value_source = None
         for y in value:
-            y._measurement_value_source = self
+            y.measurement_value_source = self
         self._measurement_values = value
             
     measurement_values = property(get_measurement_values, set_measurement_values)
@@ -937,7 +995,8 @@ class MeasurementValueSource(IdentifiedObject):
     def add_measurement_values(self, *measurement_values):
         for obj in measurement_values:
             obj._measurement_value_source = self
-            self._measurement_values.append(obj)
+            if obj not in self._measurement_values:
+                self._measurement_values.append(obj)
         
     def remove_measurement_values(self, *measurement_values):
         for obj in measurement_values:
@@ -956,11 +1015,11 @@ class PotentialTransformer(Equipment):
         """ Initialises a new 'PotentialTransformer' instance.
         """
         # Nominal ratio between the primary and secondary voltage. 
-        self.nominal_ratio = 0.0
+        self.nominal_ratio = nominal_ratio
         # PT classification. 
-        self.pt_class = ''
+        self.pt_class = pt_class
         # PT accuracy classification. 
-        self.accuracy_class = ''
+        self.accuracy_class = accuracy_class
         
         self._potential_transformer_asset = None
         self.potential_transformer_asset = potential_transformer_asset
@@ -1002,7 +1061,8 @@ class PotentialTransformer(Equipment):
             
         self._potential_transformer_type_asset = value
         if self._potential_transformer_type_asset is not None:
-            self._potential_transformer_type_asset._potential_transformers.append(self)
+            if self not in self._potential_transformer_type_asset._potential_transformers:
+                self._potential_transformer_type_asset._potential_transformers.append(self)
 
     potential_transformer_type_asset = property(get_potential_transformer_type_asset, set_potential_transformer_type_asset)
     # >>> potential_transformer_type_asset
@@ -1014,12 +1074,15 @@ class Limit(IdentifiedObject):
     """
     # <<< limit
     # @generated
-    def __init__(self, procedures=[], **kw_args):
+    def __init__(self, procedures=None, **kw_args):
         """ Initialises a new 'Limit' instance.
         """
         
         self._procedures = []
-        self.procedures = procedures
+        if procedures is None:
+            self.procedures = []
+        else:
+            self.procedures = procedures
 
         super(Limit, self).__init__(**kw_args)
     # >>> limit
@@ -1066,7 +1129,7 @@ class AccumulatorLimit(Limit):
         """ Initialises a new 'AccumulatorLimit' instance.
         """
         # The value to supervise against. The value is positive. 
-        self.value = 0
+        self.value = value
         
         self._limit_set = None
         self.limit_set = limit_set
@@ -1088,7 +1151,8 @@ class AccumulatorLimit(Limit):
             
         self._limit_set = value
         if self._limit_set is not None:
-            self._limit_set._limits.append(self)
+            if self not in self._limit_set._limits:
+                self._limit_set._limits.append(self)
 
     limit_set = property(get_limit_set, set_limit_set)
     # >>> limit_set
@@ -1100,14 +1164,20 @@ class AccumulatorLimitSet(LimitSet):
     """
     # <<< accumulator_limit_set
     # @generated
-    def __init__(self, measurements=[], limits=[], **kw_args):
+    def __init__(self, measurements=None, limits=None, **kw_args):
         """ Initialises a new 'AccumulatorLimitSet' instance.
         """
         
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._limits = []
-        self.limits = limits
+        if limits is None:
+            self.limits = []
+        else:
+            self.limits = limits
 
         super(AccumulatorLimitSet, self).__init__(**kw_args)
     # >>> accumulator_limit_set
@@ -1152,9 +1222,9 @@ class AccumulatorLimitSet(LimitSet):
 
     def set_limits(self, value):
         for x in self._limits:
-            x._limit_set = None
+            x.limit_set = None
         for y in value:
-            y._limit_set = self
+            y.limit_set = self
         self._limits = value
             
     limits = property(get_limits, set_limits)
@@ -1162,7 +1232,8 @@ class AccumulatorLimitSet(LimitSet):
     def add_limits(self, *limits):
         for obj in limits:
             obj._limit_set = self
-            self._limits.append(obj)
+            if obj not in self._limits:
+                self._limits.append(obj)
         
     def remove_limits(self, *limits):
         for obj in limits:
@@ -1181,13 +1252,13 @@ class SetPoint(Control):
         """ Initialises a new 'SetPoint' instance.
         """
         # Normal value for Control.value e.g. used for percentage scaling 
-        self.normal_value = 0.0
+        self.normal_value = normal_value
         # Normal value range minimum for any of the Control.value. Used for scaling, e.g. in bar graphs. 
-        self.min_value = 0.0
+        self.min_value = min_value
         # Normal value range maximum for any of the Control.value. Used for scaling, e.g. in bar graphs. 
-        self.max_value = 0.0
+        self.max_value = max_value
         # The value representing the actuator output 
-        self.value = 0.0
+        self.value = value
         
         self._analog = None
         self.analog = analog
@@ -1224,7 +1295,7 @@ class AccumulatorValue(MeasurementValue):
         """ Initialises a new 'AccumulatorValue' instance.
         """
         # The value to supervise. The value is positive. 
-        self.value = 0
+        self.value = value
         
         self._accumulator = None
         self.accumulator = accumulator
@@ -1246,7 +1317,8 @@ class AccumulatorValue(MeasurementValue):
             
         self._accumulator = value
         if self._accumulator is not None:
-            self._accumulator._accumulator_values.append(self)
+            if self not in self._accumulator._accumulator_values:
+                self._accumulator._accumulator_values.append(self)
 
     accumulator = property(get_accumulator, set_accumulator)
     # >>> accumulator
@@ -1258,18 +1330,24 @@ class AnalogValue(MeasurementValue):
     """
     # <<< analog_value
     # @generated
-    def __init__(self, value=0.0, alt_generating_unit=[], analog=None, alt_tie_meas=[], **kw_args):
+    def __init__(self, value=0.0, alt_generating_unit=None, analog=None, alt_tie_meas=None, **kw_args):
         """ Initialises a new 'AnalogValue' instance.
         """
         # The value to supervise. 
-        self.value = 0.0
+        self.value = value
         
         self._alt_generating_unit = []
-        self.alt_generating_unit = alt_generating_unit
+        if alt_generating_unit is None:
+            self.alt_generating_unit = []
+        else:
+            self.alt_generating_unit = alt_generating_unit
         self._analog = None
         self.analog = analog
         self._alt_tie_meas = []
-        self.alt_tie_meas = alt_tie_meas
+        if alt_tie_meas is None:
+            self.alt_tie_meas = []
+        else:
+            self.alt_tie_meas = alt_tie_meas
 
         super(AnalogValue, self).__init__(**kw_args)
     # >>> analog_value
@@ -1283,9 +1361,9 @@ class AnalogValue(MeasurementValue):
 
     def set_alt_generating_unit(self, value):
         for x in self._alt_generating_unit:
-            x._analog_value = None
+            x.analog_value = None
         for y in value:
-            y._analog_value = self
+            y.analog_value = self
         self._alt_generating_unit = value
             
     alt_generating_unit = property(get_alt_generating_unit, set_alt_generating_unit)
@@ -1293,7 +1371,8 @@ class AnalogValue(MeasurementValue):
     def add_alt_generating_unit(self, *alt_generating_unit):
         for obj in alt_generating_unit:
             obj._analog_value = self
-            self._alt_generating_unit.append(obj)
+            if obj not in self._alt_generating_unit:
+                self._alt_generating_unit.append(obj)
         
     def remove_alt_generating_unit(self, *alt_generating_unit):
         for obj in alt_generating_unit:
@@ -1315,7 +1394,8 @@ class AnalogValue(MeasurementValue):
             
         self._analog = value
         if self._analog is not None:
-            self._analog._analog_values.append(self)
+            if self not in self._analog._analog_values:
+                self._analog._analog_values.append(self)
 
     analog = property(get_analog, set_analog)
     # >>> analog
@@ -1329,9 +1409,9 @@ class AnalogValue(MeasurementValue):
 
     def set_alt_tie_meas(self, value):
         for x in self._alt_tie_meas:
-            x._analog_value = None
+            x.analog_value = None
         for y in value:
-            y._analog_value = self
+            y.analog_value = self
         self._alt_tie_meas = value
             
     alt_tie_meas = property(get_alt_tie_meas, set_alt_tie_meas)
@@ -1339,7 +1419,8 @@ class AnalogValue(MeasurementValue):
     def add_alt_tie_meas(self, *alt_tie_meas):
         for obj in alt_tie_meas:
             obj._analog_value = self
-            self._alt_tie_meas.append(obj)
+            if obj not in self._alt_tie_meas:
+                self._alt_tie_meas.append(obj)
         
     def remove_alt_tie_meas(self, *alt_tie_meas):
         for obj in alt_tie_meas:
@@ -1358,7 +1439,7 @@ class DiscreteValue(MeasurementValue):
         """ Initialises a new 'DiscreteValue' instance.
         """
         # The value to supervise. 
-        self.value = 0
+        self.value = value
         
         self._discrete = None
         self.discrete = discrete
@@ -1380,7 +1461,8 @@ class DiscreteValue(MeasurementValue):
             
         self._discrete = value
         if self._discrete is not None:
-            self._discrete._discrete_values.append(self)
+            if self not in self._discrete._discrete_values:
+                self._discrete._discrete_values.append(self)
 
     discrete = property(get_discrete, set_discrete)
     # >>> discrete
@@ -1392,16 +1474,22 @@ class Accumulator(Measurement):
     """
     # <<< accumulator
     # @generated
-    def __init__(self, max_value=0, accumulator_values=[], limit_sets=[], **kw_args):
+    def __init__(self, max_value=0, accumulator_values=None, limit_sets=None, **kw_args):
         """ Initialises a new 'Accumulator' instance.
         """
         # Normal value range maximum for any of the MeasurementValue.values. Used for scaling, e.g. in bar graphs or of telemetered raw values. 
-        self.max_value = 0
+        self.max_value = max_value
         
         self._accumulator_values = []
-        self.accumulator_values = accumulator_values
+        if accumulator_values is None:
+            self.accumulator_values = []
+        else:
+            self.accumulator_values = accumulator_values
         self._limit_sets = []
-        self.limit_sets = limit_sets
+        if limit_sets is None:
+            self.limit_sets = []
+        else:
+            self.limit_sets = limit_sets
 
         super(Accumulator, self).__init__(**kw_args)
     # >>> accumulator
@@ -1415,9 +1503,9 @@ class Accumulator(Measurement):
 
     def set_accumulator_values(self, value):
         for x in self._accumulator_values:
-            x._accumulator = None
+            x.accumulator = None
         for y in value:
-            y._accumulator = self
+            y.accumulator = self
         self._accumulator_values = value
             
     accumulator_values = property(get_accumulator_values, set_accumulator_values)
@@ -1425,7 +1513,8 @@ class Accumulator(Measurement):
     def add_accumulator_values(self, *accumulator_values):
         for obj in accumulator_values:
             obj._accumulator = self
-            self._accumulator_values.append(obj)
+            if obj not in self._accumulator_values:
+                self._accumulator_values.append(obj)
         
     def remove_accumulator_values(self, *accumulator_values):
         for obj in accumulator_values:
@@ -1471,14 +1560,20 @@ class AnalogLimitSet(LimitSet):
     """
     # <<< analog_limit_set
     # @generated
-    def __init__(self, measurements=[], limits=[], **kw_args):
+    def __init__(self, measurements=None, limits=None, **kw_args):
         """ Initialises a new 'AnalogLimitSet' instance.
         """
         
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._limits = []
-        self.limits = limits
+        if limits is None:
+            self.limits = []
+        else:
+            self.limits = limits
 
         super(AnalogLimitSet, self).__init__(**kw_args)
     # >>> analog_limit_set
@@ -1523,9 +1618,9 @@ class AnalogLimitSet(LimitSet):
 
     def set_limits(self, value):
         for x in self._limits:
-            x._limit_set = None
+            x.limit_set = None
         for y in value:
-            y._limit_set = self
+            y.limit_set = self
         self._limits = value
             
     limits = property(get_limits, set_limits)
@@ -1533,7 +1628,8 @@ class AnalogLimitSet(LimitSet):
     def add_limits(self, *limits):
         for obj in limits:
             obj._limit_set = self
-            self._limits.append(obj)
+            if obj not in self._limits:
+                self._limits.append(obj)
         
     def remove_limits(self, *limits):
         for obj in limits:
@@ -1587,7 +1683,7 @@ class StringMeasurementValue(MeasurementValue):
         """ Initialises a new 'StringMeasurementValue' instance.
         """
         # The value to supervise. 
-        self.value = ''
+        self.value = value
         
         self._string_measurement = None
         self.string_measurement = string_measurement
@@ -1609,7 +1705,8 @@ class StringMeasurementValue(MeasurementValue):
             
         self._string_measurement = value
         if self._string_measurement is not None:
-            self._string_measurement._string_measurement_values.append(self)
+            if self not in self._string_measurement._string_measurement_values:
+                self._string_measurement._string_measurement_values.append(self)
 
     string_measurement = property(get_string_measurement, set_string_measurement)
     # >>> string_measurement
@@ -1621,12 +1718,15 @@ class StringMeasurement(Measurement):
     """
     # <<< string_measurement
     # @generated
-    def __init__(self, string_measurement_values=[], **kw_args):
+    def __init__(self, string_measurement_values=None, **kw_args):
         """ Initialises a new 'StringMeasurement' instance.
         """
         
         self._string_measurement_values = []
-        self.string_measurement_values = string_measurement_values
+        if string_measurement_values is None:
+            self.string_measurement_values = []
+        else:
+            self.string_measurement_values = string_measurement_values
 
         super(StringMeasurement, self).__init__(**kw_args)
     # >>> string_measurement
@@ -1640,9 +1740,9 @@ class StringMeasurement(Measurement):
 
     def set_string_measurement_values(self, value):
         for x in self._string_measurement_values:
-            x._string_measurement = None
+            x.string_measurement = None
         for y in value:
-            y._string_measurement = self
+            y.string_measurement = self
         self._string_measurement_values = value
             
     string_measurement_values = property(get_string_measurement_values, set_string_measurement_values)
@@ -1650,7 +1750,8 @@ class StringMeasurement(Measurement):
     def add_string_measurement_values(self, *string_measurement_values):
         for obj in string_measurement_values:
             obj._string_measurement = self
-            self._string_measurement_values.append(obj)
+            if obj not in self._string_measurement_values:
+                self._string_measurement_values.append(obj)
         
     def remove_string_measurement_values(self, *string_measurement_values):
         for obj in string_measurement_values:
@@ -1669,9 +1770,9 @@ class Command(Control):
         """ Initialises a new 'Command' instance.
         """
         # The value representing the actuator output 
-        self.value = 0
+        self.value = value
         # Normal value for Control.value e.g. used for percentage scaling 
-        self.normal_value = 0
+        self.normal_value = normal_value
         
         self._value_alias_set = None
         self.value_alias_set = value_alias_set
@@ -1695,7 +1796,8 @@ class Command(Control):
             
         self._value_alias_set = value
         if self._value_alias_set is not None:
-            self._value_alias_set._commands.append(self)
+            if self not in self._value_alias_set._commands:
+                self._value_alias_set._commands.append(self)
 
     value_alias_set = property(get_value_alias_set, set_value_alias_set)
     # >>> value_alias_set
@@ -1729,7 +1831,7 @@ class AnalogLimit(Limit):
         """ Initialises a new 'AnalogLimit' instance.
         """
         # The value to supervise against. 
-        self.value = 0.0
+        self.value = value
         
         self._limit_set = None
         self.limit_set = limit_set
@@ -1751,7 +1853,8 @@ class AnalogLimit(Limit):
             
         self._limit_set = value
         if self._limit_set is not None:
-            self._limit_set._limits.append(self)
+            if self not in self._limit_set._limits:
+                self._limit_set._limits.append(self)
 
     limit_set = property(get_limit_set, set_limit_set)
     # >>> limit_set
@@ -1763,20 +1866,23 @@ class Discrete(Measurement):
     """
     # <<< discrete
     # @generated
-    def __init__(self, normal_value=0, max_value=0, min_value=0, command=None, discrete_values=[], value_alias_set=None, **kw_args):
+    def __init__(self, normal_value=0, max_value=0, min_value=0, command=None, discrete_values=None, value_alias_set=None, **kw_args):
         """ Initialises a new 'Discrete' instance.
         """
         # Normal measurement value, e.g., used for percentage calculations. 
-        self.normal_value = 0
+        self.normal_value = normal_value
         # Normal value range maximum for any of the MeasurementValue.values. Used for scaling, e.g. in bar graphs or of telemetered raw values. 
-        self.max_value = 0
+        self.max_value = max_value
         # Normal value range minimum for any of the MeasurementValue.values. Used for scaling, e.g. in bar graphs or of telemetered raw values 
-        self.min_value = 0
+        self.min_value = min_value
         
         self._command = None
         self.command = command
         self._discrete_values = []
-        self.discrete_values = discrete_values
+        if discrete_values is None:
+            self.discrete_values = []
+        else:
+            self.discrete_values = discrete_values
         self._value_alias_set = None
         self.value_alias_set = value_alias_set
 
@@ -1810,9 +1916,9 @@ class Discrete(Measurement):
 
     def set_discrete_values(self, value):
         for x in self._discrete_values:
-            x._discrete = None
+            x.discrete = None
         for y in value:
-            y._discrete = self
+            y.discrete = self
         self._discrete_values = value
             
     discrete_values = property(get_discrete_values, set_discrete_values)
@@ -1820,7 +1926,8 @@ class Discrete(Measurement):
     def add_discrete_values(self, *discrete_values):
         for obj in discrete_values:
             obj._discrete = self
-            self._discrete_values.append(obj)
+            if obj not in self._discrete_values:
+                self._discrete_values.append(obj)
         
     def remove_discrete_values(self, *discrete_values):
         for obj in discrete_values:
@@ -1842,7 +1949,8 @@ class Discrete(Measurement):
             
         self._value_alias_set = value
         if self._value_alias_set is not None:
-            self._value_alias_set._discretes.append(self)
+            if self not in self._value_alias_set._discretes:
+                self._value_alias_set._discretes.append(self)
 
     value_alias_set = property(get_value_alias_set, set_value_alias_set)
     # >>> value_alias_set
@@ -1854,22 +1962,28 @@ class Analog(Measurement):
     """
     # <<< analog
     # @generated
-    def __init__(self, min_value=0.0, positive_flow_in=False, normal_value=0.0, max_value=0.0, limit_sets=[], analog_values=[], set_point=None, **kw_args):
+    def __init__(self, min_value=0.0, positive_flow_in=False, normal_value=0.0, max_value=0.0, limit_sets=None, analog_values=None, set_point=None, **kw_args):
         """ Initialises a new 'Analog' instance.
         """
         # Normal value range minimum for any of the MeasurementValue.values. Used for scaling, e.g. in bar graphs or of telemetered raw values 
-        self.min_value = 0.0
+        self.min_value = min_value
         # If true then this measurement is an active power, reactive power or current with the convention that a positive value measured at the Terminal means power is flowing into the related PowerSystemResource. 
-        self.positive_flow_in = False
+        self.positive_flow_in = positive_flow_in
         # Normal measurement value, e.g., used for percentage calculations. 
-        self.normal_value = 0.0
+        self.normal_value = normal_value
         # Normal value range maximum for any of the MeasurementValue.values. Used for scaling, e.g. in bar graphs or of telemetered raw values. 
-        self.max_value = 0.0
+        self.max_value = max_value
         
         self._limit_sets = []
-        self.limit_sets = limit_sets
+        if limit_sets is None:
+            self.limit_sets = []
+        else:
+            self.limit_sets = limit_sets
         self._analog_values = []
-        self.analog_values = analog_values
+        if analog_values is None:
+            self.analog_values = []
+        else:
+            self.analog_values = analog_values
         self._set_point = None
         self.set_point = set_point
 
@@ -1916,9 +2030,9 @@ class Analog(Measurement):
 
     def set_analog_values(self, value):
         for x in self._analog_values:
-            x._analog = None
+            x.analog = None
         for y in value:
-            y._analog = self
+            y.analog = self
         self._analog_values = value
             
     analog_values = property(get_analog_values, set_analog_values)
@@ -1926,7 +2040,8 @@ class Analog(Measurement):
     def add_analog_values(self, *analog_values):
         for obj in analog_values:
             obj._analog = self
-            self._analog_values.append(obj)
+            if obj not in self._analog_values:
+                self._analog_values.append(obj)
         
     def remove_analog_values(self, *analog_values):
         for obj in analog_values:

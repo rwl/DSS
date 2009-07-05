@@ -17,24 +17,30 @@ class TransmissionPath(Element):
     """
     # <<< transmission_path
     # @generated
-    def __init__(self, parallel_path_flag=False, avail_transfer_capability='', total_transfer_capability='', offered_on=[], delivery_point_for=None, point_of_receipt_for=None, located_on=[], for=None, **kw_args):
+    def __init__(self, parallel_path_flag=False, avail_transfer_capability=0.0, total_transfer_capability=0.0, offered_on=None, delivery_point_for=None, point_of_receipt_for=None, located_on=None, for=None, **kw_args):
         """ Initialises a new 'TransmissionPath' instance.
         """
         # Flag which indicates if the transmission path is also a designated interconnection 'parallel path' 
-        self.parallel_path_flag = False
+        self.parallel_path_flag = parallel_path_flag
         # The available transmission capability of a transmission path for the reference direction 
-        self.avail_transfer_capability = ''
+        self.avail_transfer_capability = avail_transfer_capability
         # The total transmission capability of a transmission path in the reference direction 
-        self.total_transfer_capability = ''
+        self.total_transfer_capability = total_transfer_capability
         
         self._offered_on = []
-        self.offered_on = offered_on
+        if offered_on is None:
+            self.offered_on = []
+        else:
+            self.offered_on = offered_on
         self._delivery_point_for = None
         self.delivery_point_for = delivery_point_for
         self._point_of_receipt_for = None
         self.point_of_receipt_for = point_of_receipt_for
         self._located_on = []
-        self.located_on = located_on
+        if located_on is None:
+            self.located_on = []
+        else:
+            self.located_on = located_on
         self._for = None
         self.for = for
 
@@ -86,7 +92,8 @@ class TransmissionPath(Element):
             
         self._delivery_point_for = value
         if self._delivery_point_for is not None:
-            self._delivery_point_for._has_apod_.append(self)
+            if self not in self._delivery_point_for._has_apod_:
+                self._delivery_point_for._has_apod_.append(self)
 
     delivery_point_for = property(get_delivery_point_for, set_delivery_point_for)
     # >>> delivery_point_for
@@ -105,7 +112,8 @@ class TransmissionPath(Element):
             
         self._point_of_receipt_for = value
         if self._point_of_receipt_for is not None:
-            self._point_of_receipt_for._has_apor_.append(self)
+            if self not in self._point_of_receipt_for._has_apor_:
+                self._point_of_receipt_for._has_apor_.append(self)
 
     point_of_receipt_for = property(get_point_of_receipt_for, set_point_of_receipt_for)
     # >>> point_of_receipt_for
@@ -155,7 +163,8 @@ class TransmissionPath(Element):
             
         self._for = value
         if self._for is not None:
-            self._for._contained_in.append(self)
+            if self not in self._for._contained_in:
+                self._for._contained_in.append(self)
 
     for = property(get_for, set_for)
     # >>> for
@@ -167,16 +176,22 @@ class TiePoint(IdentifiedObject):
     """
     # <<< tie_point
     # @generated
-    def __init__(self, tie_point_mwrating='', by_measurements=[], for_measurements=[], declared_service_point=None, **kw_args):
+    def __init__(self, tie_point_mwrating=0.0, by_measurements=None, for_measurements=None, declared_service_point=None, **kw_args):
         """ Initialises a new 'TiePoint' instance.
         """
         # The MW rating of the tie point 
-        self.tie_point_mwrating = ''
+        self.tie_point_mwrating = tie_point_mwrating
         
         self._by_measurements = []
-        self.by_measurements = by_measurements
+        if by_measurements is None:
+            self.by_measurements = []
+        else:
+            self.by_measurements = by_measurements
         self._for_measurements = []
-        self.for_measurements = for_measurements
+        if for_measurements is None:
+            self.for_measurements = []
+        else:
+            self.for_measurements = for_measurements
         self._declared_service_point = None
         self.declared_service_point = declared_service_point
 
@@ -192,9 +207,9 @@ class TiePoint(IdentifiedObject):
 
     def set_by_measurements(self, value):
         for x in self._by_measurements:
-            x._by_tie_point = None
+            x.by_tie_point = None
         for y in value:
-            y._by_tie_point = self
+            y.by_tie_point = self
         self._by_measurements = value
             
     by_measurements = property(get_by_measurements, set_by_measurements)
@@ -202,7 +217,8 @@ class TiePoint(IdentifiedObject):
     def add_by_measurements(self, *by_measurements):
         for obj in by_measurements:
             obj._by_tie_point = self
-            self._by_measurements.append(obj)
+            if obj not in self._by_measurements:
+                self._by_measurements.append(obj)
         
     def remove_by_measurements(self, *by_measurements):
         for obj in by_measurements:
@@ -219,9 +235,9 @@ class TiePoint(IdentifiedObject):
 
     def set_for_measurements(self, value):
         for x in self._for_measurements:
-            x._for_tie_point = None
+            x.for_tie_point = None
         for y in value:
-            y._for_tie_point = self
+            y.for_tie_point = self
         self._for_measurements = value
             
     for_measurements = property(get_for_measurements, set_for_measurements)
@@ -229,7 +245,8 @@ class TiePoint(IdentifiedObject):
     def add_for_measurements(self, *for_measurements):
         for obj in for_measurements:
             obj._for_tie_point = self
-            self._for_measurements.append(obj)
+            if obj not in self._for_measurements:
+                self._for_measurements.append(obj)
         
     def remove_for_measurements(self, *for_measurements):
         for obj in for_measurements:
@@ -262,7 +279,7 @@ class AncillaryService(IdentifiedObject):
     """
     # <<< ancillary_service
     # @generated
-    def __init__(self, open_access_product=None, control_area_operator=None, reserved_by_service_reservation=None, transmission_providers=[], **kw_args):
+    def __init__(self, open_access_product=None, control_area_operator=None, reserved_by_service_reservation=None, transmission_providers=None, **kw_args):
         """ Initialises a new 'AncillaryService' instance.
         """
         
@@ -273,7 +290,10 @@ class AncillaryService(IdentifiedObject):
         self._reserved_by_service_reservation = None
         self.reserved_by_service_reservation = reserved_by_service_reservation
         self._transmission_providers = []
-        self.transmission_providers = transmission_providers
+        if transmission_providers is None:
+            self.transmission_providers = []
+        else:
+            self.transmission_providers = transmission_providers
 
         super(AncillaryService, self).__init__(**kw_args)
     # >>> ancillary_service
@@ -292,7 +312,8 @@ class AncillaryService(IdentifiedObject):
             
         self._open_access_product = value
         if self._open_access_product is not None:
-            self._open_access_product._ancillary_services.append(self)
+            if self not in self._open_access_product._ancillary_services:
+                self._open_access_product._ancillary_services.append(self)
 
     open_access_product = property(get_open_access_product, set_open_access_product)
     # >>> open_access_product
@@ -311,7 +332,8 @@ class AncillaryService(IdentifiedObject):
             
         self._control_area_operator = value
         if self._control_area_operator is not None:
-            self._control_area_operator._ancillary_service.append(self)
+            if self not in self._control_area_operator._ancillary_service:
+                self._control_area_operator._ancillary_service.append(self)
 
     control_area_operator = property(get_control_area_operator, set_control_area_operator)
     # >>> control_area_operator
@@ -330,7 +352,8 @@ class AncillaryService(IdentifiedObject):
             
         self._reserved_by_service_reservation = value
         if self._reserved_by_service_reservation is not None:
-            self._reserved_by_service_reservation._reserves_ancillary_services.append(self)
+            if self not in self._reserved_by_service_reservation._reserves_ancillary_services:
+                self._reserved_by_service_reservation._reserves_ancillary_services.append(self)
 
     reserved_by_service_reservation = property(get_reserved_by_service_reservation, set_reserved_by_service_reservation)
     # >>> reserved_by_service_reservation
@@ -373,14 +396,20 @@ class ServiceReservation(Element):
     """
     # <<< service_reservation
     # @generated
-    def __init__(self, reserves_ancillary_services=[], reserves_transmission_service=[], holds=None, resells=None, sells=None, **kw_args):
+    def __init__(self, reserves_ancillary_services=None, reserves_transmission_service=None, holds=None, resells=None, sells=None, **kw_args):
         """ Initialises a new 'ServiceReservation' instance.
         """
         
         self._reserves_ancillary_services = []
-        self.reserves_ancillary_services = reserves_ancillary_services
+        if reserves_ancillary_services is None:
+            self.reserves_ancillary_services = []
+        else:
+            self.reserves_ancillary_services = reserves_ancillary_services
         self._reserves_transmission_service = []
-        self.reserves_transmission_service = reserves_transmission_service
+        if reserves_transmission_service is None:
+            self.reserves_transmission_service = []
+        else:
+            self.reserves_transmission_service = reserves_transmission_service
         self._holds = None
         self.holds = holds
         self._resells = None
@@ -400,9 +429,9 @@ class ServiceReservation(Element):
 
     def set_reserves_ancillary_services(self, value):
         for x in self._reserves_ancillary_services:
-            x._reserved_by_service_reservation = None
+            x.reserved_by_service_reservation = None
         for y in value:
-            y._reserved_by_service_reservation = self
+            y.reserved_by_service_reservation = self
         self._reserves_ancillary_services = value
             
     reserves_ancillary_services = property(get_reserves_ancillary_services, set_reserves_ancillary_services)
@@ -410,7 +439,8 @@ class ServiceReservation(Element):
     def add_reserves_ancillary_services(self, *reserves_ancillary_services):
         for obj in reserves_ancillary_services:
             obj._reserved_by_service_reservation = self
-            self._reserves_ancillary_services.append(obj)
+            if obj not in self._reserves_ancillary_services:
+                self._reserves_ancillary_services.append(obj)
         
     def remove_reserves_ancillary_services(self, *reserves_ancillary_services):
         for obj in reserves_ancillary_services:
@@ -463,7 +493,8 @@ class ServiceReservation(Element):
             
         self._holds = value
         if self._holds is not None:
-            self._holds._held_by.append(self)
+            if self not in self._holds._held_by:
+                self._holds._held_by.append(self)
 
     holds = property(get_holds, set_holds)
     # >>> holds
@@ -500,7 +531,8 @@ class ServiceReservation(Element):
             
         self._sells = value
         if self._sells is not None:
-            self._sells._sold_by.append(self)
+            if self not in self._sells._sold_by:
+                self._sells._sold_by.append(self)
 
     sells = property(get_sells, set_sells)
     # >>> sells
@@ -512,16 +544,22 @@ class ServicePoint(IdentifiedObject):
     """
     # <<< service_point
     # @generated
-    def __init__(self, has_apod_=[], customer_consumer=None, has_apor_=[], transmission_provider=None, declare_tie_point=None, generation_provider=None, member_of=None, energy_products=[], **kw_args):
+    def __init__(self, has_apod_=None, customer_consumer=None, has_apor_=None, transmission_provider=None, declare_tie_point=None, generation_provider=None, member_of=None, energy_products=None, **kw_args):
         """ Initialises a new 'ServicePoint' instance.
         """
         
         self._has_apod_ = []
-        self.has_apod_ = has_apod_
+        if has_apod_ is None:
+            self.has_apod_ = []
+        else:
+            self.has_apod_ = has_apod_
         self._customer_consumer = None
         self.customer_consumer = customer_consumer
         self._has_apor_ = []
-        self.has_apor_ = has_apor_
+        if has_apor_ is None:
+            self.has_apor_ = []
+        else:
+            self.has_apor_ = has_apor_
         self._transmission_provider = None
         self.transmission_provider = transmission_provider
         self._declare_tie_point = None
@@ -531,7 +569,10 @@ class ServicePoint(IdentifiedObject):
         self._member_of = None
         self.member_of = member_of
         self._energy_products = []
-        self.energy_products = energy_products
+        if energy_products is None:
+            self.energy_products = []
+        else:
+            self.energy_products = energy_products
 
         super(ServicePoint, self).__init__(**kw_args)
     # >>> service_point
@@ -545,9 +586,9 @@ class ServicePoint(IdentifiedObject):
 
     def set_has_apod_(self, value):
         for x in self._has_apod_:
-            x._delivery_point_for = None
+            x.delivery_point_for = None
         for y in value:
-            y._delivery_point_for = self
+            y.delivery_point_for = self
         self._has_apod_ = value
             
     has_apod_ = property(get_has_apod_, set_has_apod_)
@@ -555,7 +596,8 @@ class ServicePoint(IdentifiedObject):
     def add_has_apod_(self, *has_apod_):
         for obj in has_apod_:
             obj._delivery_point_for = self
-            self._has_apod_.append(obj)
+            if obj not in self._has_apod_:
+                self._has_apod_.append(obj)
         
     def remove_has_apod_(self, *has_apod_):
         for obj in has_apod_:
@@ -577,7 +619,8 @@ class ServicePoint(IdentifiedObject):
             
         self._customer_consumer = value
         if self._customer_consumer is not None:
-            self._customer_consumer._service_point.append(self)
+            if self not in self._customer_consumer._service_point:
+                self._customer_consumer._service_point.append(self)
 
     customer_consumer = property(get_customer_consumer, set_customer_consumer)
     # >>> customer_consumer
@@ -591,9 +634,9 @@ class ServicePoint(IdentifiedObject):
 
     def set_has_apor_(self, value):
         for x in self._has_apor_:
-            x._point_of_receipt_for = None
+            x.point_of_receipt_for = None
         for y in value:
-            y._point_of_receipt_for = self
+            y.point_of_receipt_for = self
         self._has_apor_ = value
             
     has_apor_ = property(get_has_apor_, set_has_apor_)
@@ -601,7 +644,8 @@ class ServicePoint(IdentifiedObject):
     def add_has_apor_(self, *has_apor_):
         for obj in has_apor_:
             obj._point_of_receipt_for = self
-            self._has_apor_.append(obj)
+            if obj not in self._has_apor_:
+                self._has_apor_.append(obj)
         
     def remove_has_apor_(self, *has_apor_):
         for obj in has_apor_:
@@ -623,7 +667,8 @@ class ServicePoint(IdentifiedObject):
             
         self._transmission_provider = value
         if self._transmission_provider is not None:
-            self._transmission_provider._service_point.append(self)
+            if self not in self._transmission_provider._service_point:
+                self._transmission_provider._service_point.append(self)
 
     transmission_provider = property(get_transmission_provider, set_transmission_provider)
     # >>> transmission_provider
@@ -660,7 +705,8 @@ class ServicePoint(IdentifiedObject):
             
         self._generation_provider = value
         if self._generation_provider is not None:
-            self._generation_provider._service_point.append(self)
+            if self not in self._generation_provider._service_point:
+                self._generation_provider._service_point.append(self)
 
     generation_provider = property(get_generation_provider, set_generation_provider)
     # >>> generation_provider
@@ -679,7 +725,8 @@ class ServicePoint(IdentifiedObject):
             
         self._member_of = value
         if self._member_of is not None:
-            self._member_of._part_of.append(self)
+            if self not in self._member_of._part_of:
+                self._member_of._part_of.append(self)
 
     member_of = property(get_member_of, set_member_of)
     # >>> member_of
@@ -722,22 +769,34 @@ class TransmissionService(IdentifiedObject):
     """
     # <<< transmission_service
     # @generated
-    def __init__(self, reserved_by_service_reservation=[], offering=[], trans_contract_for=None, scheduled_by=[], offers=None, offered_as=[], **kw_args):
+    def __init__(self, reserved_by_service_reservation=None, offering=None, trans_contract_for=None, scheduled_by=None, offers=None, offered_as=None, **kw_args):
         """ Initialises a new 'TransmissionService' instance.
         """
         
         self._reserved_by_service_reservation = []
-        self.reserved_by_service_reservation = reserved_by_service_reservation
+        if reserved_by_service_reservation is None:
+            self.reserved_by_service_reservation = []
+        else:
+            self.reserved_by_service_reservation = reserved_by_service_reservation
         self._offering = []
-        self.offering = offering
+        if offering is None:
+            self.offering = []
+        else:
+            self.offering = offering
         self._trans_contract_for = None
         self.trans_contract_for = trans_contract_for
         self._scheduled_by = []
-        self.scheduled_by = scheduled_by
+        if scheduled_by is None:
+            self.scheduled_by = []
+        else:
+            self.scheduled_by = scheduled_by
         self._offers = None
         self.offers = offers
         self._offered_as = []
-        self.offered_as = offered_as
+        if offered_as is None:
+            self.offered_as = []
+        else:
+            self.offered_as = offered_as
 
         super(TransmissionService, self).__init__(**kw_args)
     # >>> transmission_service
@@ -818,7 +877,8 @@ class TransmissionService(IdentifiedObject):
             
         self._trans_contract_for = value
         if self._trans_contract_for is not None:
-            self._trans_contract_for._provided_by_transmission_service.append(self)
+            if self not in self._trans_contract_for._provided_by_transmission_service:
+                self._trans_contract_for._provided_by_transmission_service.append(self)
 
     trans_contract_for = property(get_trans_contract_for, set_trans_contract_for)
     # >>> trans_contract_for
@@ -868,7 +928,8 @@ class TransmissionService(IdentifiedObject):
             
         self._offers = value
         if self._offers is not None:
-            self._offers._offered_by.append(self)
+            if self not in self._offers._offered_by:
+                self._offers._offered_by.append(self)
 
     offers = property(get_offers, set_offers)
     # >>> offers
@@ -913,9 +974,9 @@ class ReservationVersion(Element):
         """ Initialises a new 'ReservationVersion' instance.
         """
  
-        self.date = ''
+        self.date = date
  
-        self.version = ''
+        self.version = version
         
 
         super(ReservationVersion, self).__init__(**kw_args)

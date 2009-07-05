@@ -32,13 +32,13 @@ class SvVoltage(StateVariable):
     """
     # <<< sv_voltage
     # @generated
-    def __init__(self, angle='', v='', topological_node=None, **kw_args):
+    def __init__(self, angle=0.0, v=0.0, topological_node=None, **kw_args):
         """ Initialises a new 'SvVoltage' instance.
         """
         # The voltage angle in radians of the topological node. 
-        self.angle = ''
+        self.angle = angle
         # The voltage magnitude of the topological node. 
-        self.v = ''
+        self.v = v
         
         self._topological_node = None
         self.topological_node = topological_node
@@ -75,9 +75,9 @@ class SvShuntCompensatorSections(StateVariable):
         """ Initialises a new 'SvShuntCompensatorSections' instance.
         """
         # The number of sections in service. 
-        self.sections = 0
+        self.sections = sections
         # The number of sections in service as a continous variable. 
-        self.continuous_sections = 0.0
+        self.continuous_sections = continuous_sections
         
         self._shunt_compensator = None
         self.shunt_compensator = shunt_compensator
@@ -114,9 +114,9 @@ class SvTapStep(StateVariable):
         """ Initialises a new 'SvTapStep' instance.
         """
         # The integer tap position. 
-        self.position = 0
+        self.position = position
         # The floating point tap position. 
-        self.continuous_position = 0.0
+        self.continuous_position = continuous_position
         
         self._tap_changer = None
         self.tap_changer = tap_changer
@@ -149,13 +149,13 @@ class SvPowerFlow(StateVariable):
     """
     # <<< sv_power_flow
     # @generated
-    def __init__(self, p='', q='', terminal=None, **kw_args):
+    def __init__(self, p=0.0, q=0.0, terminal=None, **kw_args):
         """ Initialises a new 'SvPowerFlow' instance.
         """
         # The active power flow into the terminal. 
-        self.p = ''
+        self.p = p
         # The reactive power flow into the terminal. 
-        self.q = ''
+        self.q = q
         
         self._terminal = None
         self.terminal = terminal
@@ -188,13 +188,13 @@ class SvInjection(StateVariable):
     """
     # <<< sv_injection
     # @generated
-    def __init__(self, p_net_injection='', q_net_injection='', topological_node=None, **kw_args):
+    def __init__(self, p_net_injection=0.0, q_net_injection=0.0, topological_node=None, **kw_args):
         """ Initialises a new 'SvInjection' instance.
         """
         # The activive power injected into the bus at this location. 
-        self.p_net_injection = ''
+        self.p_net_injection = p_net_injection
         # The activive power injected into the bus at this location. 
-        self.q_net_injection = ''
+        self.q_net_injection = q_net_injection
         
         self._topological_node = None
         self.topological_node = topological_node
@@ -231,7 +231,7 @@ class SvStatus(StateVariable):
         """ Initialises a new 'SvStatus' instance.
         """
         # The in service status as a result of topology processing. 
-        self.in_service = False
+        self.in_service = in_service
         
         self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment

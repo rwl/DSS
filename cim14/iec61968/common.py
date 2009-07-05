@@ -21,15 +21,15 @@ class TelephoneNumber(IdentifiedObject):
         """ Initialises a new 'TelephoneNumber' instance.
         """
         # Country code. 
-        self.country_code = ''
+        self.country_code = country_code
         # (if applicable) City code. 
-        self.city_code = ''
+        self.city_code = city_code
         # Main (local) part of this telephone number. 
-        self.local_number = ''
+        self.local_number = local_number
         # (if applicable) Extension for this telephone number. 
-        self.extension = ''
+        self.extension = extension
         # Area or region code. 
-        self.area_code = ''
+        self.area_code = area_code
         
         self._organisation = None
         self.organisation = organisation
@@ -53,7 +53,8 @@ class TelephoneNumber(IdentifiedObject):
             
         self._organisation = value
         if self._organisation is not None:
-            self._organisation._telephone_numbers.append(self)
+            if self not in self._organisation._telephone_numbers:
+                self._organisation._telephone_numbers.append(self)
 
     organisation = property(get_organisation, set_organisation)
     # >>> organisation
@@ -72,7 +73,8 @@ class TelephoneNumber(IdentifiedObject):
             
         self._location = value
         if self._location is not None:
-            self._location._telephone_numbers.append(self)
+            if self not in self._location._telephone_numbers:
+                self._location._telephone_numbers.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -84,65 +86,125 @@ class Location(IdentifiedObject):
     """
     # <<< location
     # @generated
-    def __init__(self, corporate_code='', direction='', is_polygon=False, geo_info_reference='', category='', secondary_address=None, status=None, main_address=None, gml_selectors=[], to_location_roles=[], erp_person_roles=[], change_items=[], power_system_resource_roles=[], land_properties=[], red_lines=[], erp_organisation_roles=[], hazards=[], from_location_roles=[], measurements=[], asset_roles=[], document_roles=[], position_points=[], electronic_addresses=[], telephone_numbers=[], dimensions_info=None, routes=[], gml_observatins=[], activity_records=[], crews=[], **kw_args):
+    def __init__(self, corporate_code='', direction='', is_polygon=False, geo_info_reference='', category='', secondary_address=None, status=None, main_address=None, gml_selectors=None, to_location_roles=None, erp_person_roles=None, change_items=None, power_system_resource_roles=None, land_properties=None, red_lines=None, erp_organisation_roles=None, hazards=None, from_location_roles=None, measurements=None, asset_roles=None, document_roles=None, position_points=None, electronic_addresses=None, telephone_numbers=None, dimensions_info=None, routes=None, gml_observatins=None, activity_records=None, crews=None, **kw_args):
         """ Initialises a new 'Location' instance.
         """
         # Utility-specific code for the location. 
-        self.corporate_code = ''
+        self.corporate_code = corporate_code
         # (if applicable) Direction that allows field crews to quickly find a given asset. For a given location, such as a street address, this is the relative direction in wich to find the asset. For example, a Streetlight may be located at the 'NW' (northwest) corner of the customer's site, or a ServiceDeliveryPoint may be located on the second floor of an appartment building. 
-        self.direction = ''
+        self.direction = direction
         # True if the first and last point (in the sequence of associated PositionPoints) are to be connected, thus forming a polygon rather than merely a sequence of line segments. 
-        self.is_polygon = False
+        self.is_polygon = is_polygon
         # (if applicable) Reference to geographical information source, often external to the utility. 
-        self.geo_info_reference = ''
+        self.geo_info_reference = geo_info_reference
         # Category by utility's corporate standards and practices, relative to the location itself (e.g., geographical, functional accounting, etc., not a given property that happens to exist at that location). 
-        self.category = ''
+        self.category = category
         
         self.secondary_address = secondary_address
         self.status = status
         self.main_address = main_address
         self._gml_selectors = []
-        self.gml_selectors = gml_selectors
+        if gml_selectors is None:
+            self.gml_selectors = []
+        else:
+            self.gml_selectors = gml_selectors
         self._to_location_roles = []
-        self.to_location_roles = to_location_roles
+        if to_location_roles is None:
+            self.to_location_roles = []
+        else:
+            self.to_location_roles = to_location_roles
         self._erp_person_roles = []
-        self.erp_person_roles = erp_person_roles
+        if erp_person_roles is None:
+            self.erp_person_roles = []
+        else:
+            self.erp_person_roles = erp_person_roles
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
         self._power_system_resource_roles = []
-        self.power_system_resource_roles = power_system_resource_roles
+        if power_system_resource_roles is None:
+            self.power_system_resource_roles = []
+        else:
+            self.power_system_resource_roles = power_system_resource_roles
         self._land_properties = []
-        self.land_properties = land_properties
+        if land_properties is None:
+            self.land_properties = []
+        else:
+            self.land_properties = land_properties
         self._red_lines = []
-        self.red_lines = red_lines
+        if red_lines is None:
+            self.red_lines = []
+        else:
+            self.red_lines = red_lines
         self._erp_organisation_roles = []
-        self.erp_organisation_roles = erp_organisation_roles
+        if erp_organisation_roles is None:
+            self.erp_organisation_roles = []
+        else:
+            self.erp_organisation_roles = erp_organisation_roles
         self._hazards = []
-        self.hazards = hazards
+        if hazards is None:
+            self.hazards = []
+        else:
+            self.hazards = hazards
         self._from_location_roles = []
-        self.from_location_roles = from_location_roles
+        if from_location_roles is None:
+            self.from_location_roles = []
+        else:
+            self.from_location_roles = from_location_roles
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._asset_roles = []
-        self.asset_roles = asset_roles
+        if asset_roles is None:
+            self.asset_roles = []
+        else:
+            self.asset_roles = asset_roles
         self._document_roles = []
-        self.document_roles = document_roles
+        if document_roles is None:
+            self.document_roles = []
+        else:
+            self.document_roles = document_roles
         self._position_points = []
-        self.position_points = position_points
+        if position_points is None:
+            self.position_points = []
+        else:
+            self.position_points = position_points
         self._electronic_addresses = []
-        self.electronic_addresses = electronic_addresses
+        if electronic_addresses is None:
+            self.electronic_addresses = []
+        else:
+            self.electronic_addresses = electronic_addresses
         self._telephone_numbers = []
-        self.telephone_numbers = telephone_numbers
+        if telephone_numbers is None:
+            self.telephone_numbers = []
+        else:
+            self.telephone_numbers = telephone_numbers
         self._dimensions_info = None
         self.dimensions_info = dimensions_info
         self._routes = []
-        self.routes = routes
+        if routes is None:
+            self.routes = []
+        else:
+            self.routes = routes
         self._gml_observatins = []
-        self.gml_observatins = gml_observatins
+        if gml_observatins is None:
+            self.gml_observatins = []
+        else:
+            self.gml_observatins = gml_observatins
         self._activity_records = []
-        self.activity_records = activity_records
+        if activity_records is None:
+            self.activity_records = []
+        else:
+            self.activity_records = activity_records
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
 
         super(Location, self).__init__(**kw_args)
     # >>> location
@@ -205,9 +267,9 @@ class Location(IdentifiedObject):
 
     def set_to_location_roles(self, value):
         for x in self._to_location_roles:
-            x._from_location = None
+            x.from_location = None
         for y in value:
-            y._from_location = self
+            y.from_location = self
         self._to_location_roles = value
             
     to_location_roles = property(get_to_location_roles, set_to_location_roles)
@@ -215,7 +277,8 @@ class Location(IdentifiedObject):
     def add_to_location_roles(self, *to_location_roles):
         for obj in to_location_roles:
             obj._from_location = self
-            self._to_location_roles.append(obj)
+            if obj not in self._to_location_roles:
+                self._to_location_roles.append(obj)
         
     def remove_to_location_roles(self, *to_location_roles):
         for obj in to_location_roles:
@@ -232,9 +295,9 @@ class Location(IdentifiedObject):
 
     def set_erp_person_roles(self, value):
         for x in self._erp_person_roles:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._erp_person_roles = value
             
     erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
@@ -242,7 +305,8 @@ class Location(IdentifiedObject):
     def add_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
             obj._location = self
-            self._erp_person_roles.append(obj)
+            if obj not in self._erp_person_roles:
+                self._erp_person_roles.append(obj)
         
     def remove_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
@@ -259,9 +323,9 @@ class Location(IdentifiedObject):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -269,7 +333,8 @@ class Location(IdentifiedObject):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._location = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -286,9 +351,9 @@ class Location(IdentifiedObject):
 
     def set_power_system_resource_roles(self, value):
         for x in self._power_system_resource_roles:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._power_system_resource_roles = value
             
     power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
@@ -296,7 +361,8 @@ class Location(IdentifiedObject):
     def add_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
             obj._location = self
-            self._power_system_resource_roles.append(obj)
+            if obj not in self._power_system_resource_roles:
+                self._power_system_resource_roles.append(obj)
         
     def remove_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
@@ -375,9 +441,9 @@ class Location(IdentifiedObject):
 
     def set_erp_organisation_roles(self, value):
         for x in self._erp_organisation_roles:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._erp_organisation_roles = value
             
     erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
@@ -385,7 +451,8 @@ class Location(IdentifiedObject):
     def add_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
             obj._location = self
-            self._erp_organisation_roles.append(obj)
+            if obj not in self._erp_organisation_roles:
+                self._erp_organisation_roles.append(obj)
         
     def remove_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
@@ -433,9 +500,9 @@ class Location(IdentifiedObject):
 
     def set_from_location_roles(self, value):
         for x in self._from_location_roles:
-            x._to_location = None
+            x.to_location = None
         for y in value:
-            y._to_location = self
+            y.to_location = self
         self._from_location_roles = value
             
     from_location_roles = property(get_from_location_roles, set_from_location_roles)
@@ -443,7 +510,8 @@ class Location(IdentifiedObject):
     def add_from_location_roles(self, *from_location_roles):
         for obj in from_location_roles:
             obj._to_location = self
-            self._from_location_roles.append(obj)
+            if obj not in self._from_location_roles:
+                self._from_location_roles.append(obj)
         
     def remove_from_location_roles(self, *from_location_roles):
         for obj in from_location_roles:
@@ -491,9 +559,9 @@ class Location(IdentifiedObject):
 
     def set_asset_roles(self, value):
         for x in self._asset_roles:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._asset_roles = value
             
     asset_roles = property(get_asset_roles, set_asset_roles)
@@ -501,7 +569,8 @@ class Location(IdentifiedObject):
     def add_asset_roles(self, *asset_roles):
         for obj in asset_roles:
             obj._location = self
-            self._asset_roles.append(obj)
+            if obj not in self._asset_roles:
+                self._asset_roles.append(obj)
         
     def remove_asset_roles(self, *asset_roles):
         for obj in asset_roles:
@@ -518,9 +587,9 @@ class Location(IdentifiedObject):
 
     def set_document_roles(self, value):
         for x in self._document_roles:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._document_roles = value
             
     document_roles = property(get_document_roles, set_document_roles)
@@ -528,7 +597,8 @@ class Location(IdentifiedObject):
     def add_document_roles(self, *document_roles):
         for obj in document_roles:
             obj._location = self
-            self._document_roles.append(obj)
+            if obj not in self._document_roles:
+                self._document_roles.append(obj)
         
     def remove_document_roles(self, *document_roles):
         for obj in document_roles:
@@ -545,9 +615,9 @@ class Location(IdentifiedObject):
 
     def set_position_points(self, value):
         for x in self._position_points:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._position_points = value
             
     position_points = property(get_position_points, set_position_points)
@@ -555,7 +625,8 @@ class Location(IdentifiedObject):
     def add_position_points(self, *position_points):
         for obj in position_points:
             obj._location = self
-            self._position_points.append(obj)
+            if obj not in self._position_points:
+                self._position_points.append(obj)
         
     def remove_position_points(self, *position_points):
         for obj in position_points:
@@ -603,9 +674,9 @@ class Location(IdentifiedObject):
 
     def set_telephone_numbers(self, value):
         for x in self._telephone_numbers:
-            x._location = None
+            x.location = None
         for y in value:
-            y._location = self
+            y.location = self
         self._telephone_numbers = value
             
     telephone_numbers = property(get_telephone_numbers, set_telephone_numbers)
@@ -613,7 +684,8 @@ class Location(IdentifiedObject):
     def add_telephone_numbers(self, *telephone_numbers):
         for obj in telephone_numbers:
             obj._location = self
-            self._telephone_numbers.append(obj)
+            if obj not in self._telephone_numbers:
+                self._telephone_numbers.append(obj)
         
     def remove_telephone_numbers(self, *telephone_numbers):
         for obj in telephone_numbers:
@@ -635,7 +707,8 @@ class Location(IdentifiedObject):
             
         self._dimensions_info = value
         if self._dimensions_info is not None:
-            self._dimensions_info._locations.append(self)
+            if self not in self._dimensions_info._locations:
+                self._dimensions_info._locations.append(self)
 
     dimensions_info = property(get_dimensions_info, set_dimensions_info)
     # >>> dimensions_info
@@ -771,35 +844,56 @@ class ActivityRecord(IdentifiedObject):
     """
     # <<< activity_record
     # @generated
-    def __init__(self, severity='', reason='', category='', created_date_time='', status=None, organisations=[], market_factors=[], locations=[], assets=[], power_system_resources=[], documents=[], scheduled_event=None, erp_persons=[], **kw_args):
+    def __init__(self, severity='', reason='', category='', created_date_time='', status=None, organisations=None, market_factors=None, locations=None, assets=None, power_system_resources=None, documents=None, scheduled_event=None, erp_persons=None, **kw_args):
         """ Initialises a new 'ActivityRecord' instance.
         """
         # Severity level of event resulting in this activity record. 
-        self.severity = ''
+        self.severity = severity
         # Reason for event resulting in this activity record, typically supplied when user initiated. 
-        self.reason = ''
+        self.reason = reason
         # Category of event resulting in this activity record. 
-        self.category = ''
+        self.category = category
         # Date and time this activity record has been created (different from the 'status.dateTime', which is the time of a status change of the associated object, if applicable). 
-        self.created_date_time = ''
+        self.created_date_time = created_date_time
         
         self.status = status
         self._organisations = []
-        self.organisations = organisations
+        if organisations is None:
+            self.organisations = []
+        else:
+            self.organisations = organisations
         self._market_factors = []
-        self.market_factors = market_factors
+        if market_factors is None:
+            self.market_factors = []
+        else:
+            self.market_factors = market_factors
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
         self._assets = []
-        self.assets = assets
+        if assets is None:
+            self.assets = []
+        else:
+            self.assets = assets
         self._power_system_resources = []
-        self.power_system_resources = power_system_resources
+        if power_system_resources is None:
+            self.power_system_resources = []
+        else:
+            self.power_system_resources = power_system_resources
         self._documents = []
-        self.documents = documents
+        if documents is None:
+            self.documents = []
+        else:
+            self.documents = documents
         self._scheduled_event = None
         self.scheduled_event = scheduled_event
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
 
         super(ActivityRecord, self).__init__(**kw_args)
     # >>> activity_record
@@ -1056,13 +1150,13 @@ class PositionPoint(Element):
         """ Initialises a new 'PositionPoint' instance.
         """
         # X axis position. 
-        self.x_position = ''
+        self.x_position = x_position
         # Y axis position. 
-        self.y_position = ''
+        self.y_position = y_position
         # Zero-relative sequence number of this point within a series of points. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         # (if applicable) Z axis position. 
-        self.z_position = ''
+        self.z_position = z_position
         
         self._location = None
         self.location = location
@@ -1084,7 +1178,8 @@ class PositionPoint(Element):
             
         self._location = value
         if self._location is not None:
-            self._location._position_points.append(self)
+            if self not in self._location._position_points:
+                self._location._position_points.append(self)
 
     location = property(get_location, set_location)
     # >>> location
@@ -1136,15 +1231,15 @@ class TownDetail(Element):
         """ Initialises a new 'TownDetail' instance.
         """
         # Town name. 
-        self.name = ''
+        self.name = name
         # Town section. For example, it is common for there to be 36 sections per township. 
-        self.section = ''
+        self.section = section
         # Name of the state or province. 
-        self.state_or_province = ''
+        self.state_or_province = state_or_province
         # Town code. 
-        self.code = ''
+        self.code = code
         # Name of the country. 
-        self.country = ''
+        self.country = country
         
 
         super(TownDetail, self).__init__(**kw_args)
@@ -1157,38 +1252,62 @@ class UserAttribute(Element):
     """
     # <<< user_attribute
     # @generated
-    def __init__(self, value='', sequence_number=0, name='', property_specification=None, procedure_data_sets=[], property_assets=[], erp_ledger_entries=[], erp_statement_line_items=[], bill_determinants=[], pass_through_bills=[], rating_specification=None, transaction=None, erp_invoice_line_items=[], rating_assets=[], procedure=None, **kw_args):
+    def __init__(self, value='', sequence_number=0, name='', property_specification=None, procedure_data_sets=None, property_assets=None, erp_ledger_entries=None, erp_statement_line_items=None, bill_determinants=None, pass_through_bills=None, rating_specification=None, transaction=None, erp_invoice_line_items=None, rating_assets=None, procedure=None, **kw_args):
         """ Initialises a new 'UserAttribute' instance.
         """
         # Value of an attribute, including unit information. 
-        self.value = ''
+        self.value = value
         # Sequence number for this attribute in a list of attributes. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         # Name of an attribute. 
-        self.name = ''
+        self.name = name
         
         self._property_specification = None
         self.property_specification = property_specification
         self._procedure_data_sets = []
-        self.procedure_data_sets = procedure_data_sets
+        if procedure_data_sets is None:
+            self.procedure_data_sets = []
+        else:
+            self.procedure_data_sets = procedure_data_sets
         self._property_assets = []
-        self.property_assets = property_assets
+        if property_assets is None:
+            self.property_assets = []
+        else:
+            self.property_assets = property_assets
         self._erp_ledger_entries = []
-        self.erp_ledger_entries = erp_ledger_entries
+        if erp_ledger_entries is None:
+            self.erp_ledger_entries = []
+        else:
+            self.erp_ledger_entries = erp_ledger_entries
         self._erp_statement_line_items = []
-        self.erp_statement_line_items = erp_statement_line_items
+        if erp_statement_line_items is None:
+            self.erp_statement_line_items = []
+        else:
+            self.erp_statement_line_items = erp_statement_line_items
         self._bill_determinants = []
-        self.bill_determinants = bill_determinants
+        if bill_determinants is None:
+            self.bill_determinants = []
+        else:
+            self.bill_determinants = bill_determinants
         self._pass_through_bills = []
-        self.pass_through_bills = pass_through_bills
+        if pass_through_bills is None:
+            self.pass_through_bills = []
+        else:
+            self.pass_through_bills = pass_through_bills
         self._rating_specification = None
         self.rating_specification = rating_specification
         self._transaction = None
         self.transaction = transaction
         self._erp_invoice_line_items = []
-        self.erp_invoice_line_items = erp_invoice_line_items
+        if erp_invoice_line_items is None:
+            self.erp_invoice_line_items = []
+        else:
+            self.erp_invoice_line_items = erp_invoice_line_items
         self._rating_assets = []
-        self.rating_assets = rating_assets
+        if rating_assets is None:
+            self.rating_assets = []
+        else:
+            self.rating_assets = rating_assets
         self._procedure = None
         self.procedure = procedure
 
@@ -1209,7 +1328,8 @@ class UserAttribute(Element):
             
         self._property_specification = value
         if self._property_specification is not None:
-            self._property_specification._asset_properites.append(self)
+            if self not in self._property_specification._asset_properites:
+                self._property_specification._asset_properites.append(self)
 
     property_specification = property(get_property_specification, set_property_specification)
     # >>> property_specification
@@ -1414,7 +1534,8 @@ class UserAttribute(Element):
             
         self._rating_specification = value
         if self._rating_specification is not None:
-            self._rating_specification._ratings.append(self)
+            if self not in self._rating_specification._ratings:
+                self._rating_specification._ratings.append(self)
 
     rating_specification = property(get_rating_specification, set_rating_specification)
     # >>> rating_specification
@@ -1433,7 +1554,8 @@ class UserAttribute(Element):
             
         self._transaction = value
         if self._transaction is not None:
-            self._transaction._user_attributes.append(self)
+            if self not in self._transaction._user_attributes:
+                self._transaction._user_attributes.append(self)
 
     transaction = property(get_transaction, set_transaction)
     # >>> transaction
@@ -1514,7 +1636,8 @@ class UserAttribute(Element):
             
         self._procedure = value
         if self._procedure is not None:
-            self._procedure._procedure_values.append(self)
+            if self not in self._procedure._procedure_values:
+                self._procedure._procedure_values.append(self)
 
     procedure = property(get_procedure, set_procedure)
     # >>> procedure
@@ -1526,54 +1649,96 @@ class Document(IdentifiedObject):
     """
     # <<< document
     # @generated
-    def __init__(self, last_modified_date_time='', subject='', title='', revision_number='', created_date_time='', category='', doc_status=None, status=None, from_document_roles=[], schedule_parameter_infos=[], change_items=[], network_data_sets=[], activity_records=[], power_system_resource_roles=[], location_roles=[], change_sets=[], erp_person_roles=[], asset_roles=[], scheduled_events=[], electronic_address=None, measurements=[], to_document_roles=[], erp_organisation_roles=[], **kw_args):
+    def __init__(self, last_modified_date_time='', subject='', title='', revision_number='', created_date_time='', category='', doc_status=None, status=None, from_document_roles=None, schedule_parameter_infos=None, change_items=None, network_data_sets=None, activity_records=None, power_system_resource_roles=None, location_roles=None, change_sets=None, erp_person_roles=None, asset_roles=None, scheduled_events=None, electronic_address=None, measurements=None, to_document_roles=None, erp_organisation_roles=None, **kw_args):
         """ Initialises a new 'Document' instance.
         """
         # Date and time this document was last modified. Documents may potentially be modified many times during their lifetime. 
-        self.last_modified_date_time = ''
+        self.last_modified_date_time = last_modified_date_time
         # Document subject. 
-        self.subject = ''
+        self.subject = subject
         # Document title. 
-        self.title = ''
+        self.title = title
         # Revision number for this document. 
-        self.revision_number = ''
+        self.revision_number = revision_number
         # Date and time that this document was created. 
-        self.created_date_time = ''
+        self.created_date_time = created_date_time
         # Utility-specific categorisation of this document, according to their corporate standards, practices, and existing IT systems (e.g., for management of assets, maintenance, work, outage, customers, etc.). 
-        self.category = ''
+        self.category = category
         
         self.doc_status = doc_status
         self.status = status
         self._from_document_roles = []
-        self.from_document_roles = from_document_roles
+        if from_document_roles is None:
+            self.from_document_roles = []
+        else:
+            self.from_document_roles = from_document_roles
         self._schedule_parameter_infos = []
-        self.schedule_parameter_infos = schedule_parameter_infos
+        if schedule_parameter_infos is None:
+            self.schedule_parameter_infos = []
+        else:
+            self.schedule_parameter_infos = schedule_parameter_infos
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
         self._network_data_sets = []
-        self.network_data_sets = network_data_sets
+        if network_data_sets is None:
+            self.network_data_sets = []
+        else:
+            self.network_data_sets = network_data_sets
         self._activity_records = []
-        self.activity_records = activity_records
+        if activity_records is None:
+            self.activity_records = []
+        else:
+            self.activity_records = activity_records
         self._power_system_resource_roles = []
-        self.power_system_resource_roles = power_system_resource_roles
+        if power_system_resource_roles is None:
+            self.power_system_resource_roles = []
+        else:
+            self.power_system_resource_roles = power_system_resource_roles
         self._location_roles = []
-        self.location_roles = location_roles
+        if location_roles is None:
+            self.location_roles = []
+        else:
+            self.location_roles = location_roles
         self._change_sets = []
-        self.change_sets = change_sets
+        if change_sets is None:
+            self.change_sets = []
+        else:
+            self.change_sets = change_sets
         self._erp_person_roles = []
-        self.erp_person_roles = erp_person_roles
+        if erp_person_roles is None:
+            self.erp_person_roles = []
+        else:
+            self.erp_person_roles = erp_person_roles
         self._asset_roles = []
-        self.asset_roles = asset_roles
+        if asset_roles is None:
+            self.asset_roles = []
+        else:
+            self.asset_roles = asset_roles
         self._scheduled_events = []
-        self.scheduled_events = scheduled_events
+        if scheduled_events is None:
+            self.scheduled_events = []
+        else:
+            self.scheduled_events = scheduled_events
         self._electronic_address = None
         self.electronic_address = electronic_address
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._to_document_roles = []
-        self.to_document_roles = to_document_roles
+        if to_document_roles is None:
+            self.to_document_roles = []
+        else:
+            self.to_document_roles = to_document_roles
         self._erp_organisation_roles = []
-        self.erp_organisation_roles = erp_organisation_roles
+        if erp_organisation_roles is None:
+            self.erp_organisation_roles = []
+        else:
+            self.erp_organisation_roles = erp_organisation_roles
 
         super(Document, self).__init__(**kw_args)
     # >>> document
@@ -1599,9 +1764,9 @@ class Document(IdentifiedObject):
 
     def set_from_document_roles(self, value):
         for x in self._from_document_roles:
-            x._to_document = None
+            x.to_document = None
         for y in value:
-            y._to_document = self
+            y.to_document = self
         self._from_document_roles = value
             
     from_document_roles = property(get_from_document_roles, set_from_document_roles)
@@ -1609,7 +1774,8 @@ class Document(IdentifiedObject):
     def add_from_document_roles(self, *from_document_roles):
         for obj in from_document_roles:
             obj._to_document = self
-            self._from_document_roles.append(obj)
+            if obj not in self._from_document_roles:
+                self._from_document_roles.append(obj)
         
     def remove_from_document_roles(self, *from_document_roles):
         for obj in from_document_roles:
@@ -1657,9 +1823,9 @@ class Document(IdentifiedObject):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -1667,7 +1833,8 @@ class Document(IdentifiedObject):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._document = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -1746,9 +1913,9 @@ class Document(IdentifiedObject):
 
     def set_power_system_resource_roles(self, value):
         for x in self._power_system_resource_roles:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._power_system_resource_roles = value
             
     power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
@@ -1756,7 +1923,8 @@ class Document(IdentifiedObject):
     def add_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
             obj._document = self
-            self._power_system_resource_roles.append(obj)
+            if obj not in self._power_system_resource_roles:
+                self._power_system_resource_roles.append(obj)
         
     def remove_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
@@ -1773,9 +1941,9 @@ class Document(IdentifiedObject):
 
     def set_location_roles(self, value):
         for x in self._location_roles:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._location_roles = value
             
     location_roles = property(get_location_roles, set_location_roles)
@@ -1783,7 +1951,8 @@ class Document(IdentifiedObject):
     def add_location_roles(self, *location_roles):
         for obj in location_roles:
             obj._document = self
-            self._location_roles.append(obj)
+            if obj not in self._location_roles:
+                self._location_roles.append(obj)
         
     def remove_location_roles(self, *location_roles):
         for obj in location_roles:
@@ -1831,9 +2000,9 @@ class Document(IdentifiedObject):
 
     def set_erp_person_roles(self, value):
         for x in self._erp_person_roles:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._erp_person_roles = value
             
     erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
@@ -1841,7 +2010,8 @@ class Document(IdentifiedObject):
     def add_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
             obj._document = self
-            self._erp_person_roles.append(obj)
+            if obj not in self._erp_person_roles:
+                self._erp_person_roles.append(obj)
         
     def remove_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
@@ -1858,9 +2028,9 @@ class Document(IdentifiedObject):
 
     def set_asset_roles(self, value):
         for x in self._asset_roles:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._asset_roles = value
             
     asset_roles = property(get_asset_roles, set_asset_roles)
@@ -1868,7 +2038,8 @@ class Document(IdentifiedObject):
     def add_asset_roles(self, *asset_roles):
         for obj in asset_roles:
             obj._document = self
-            self._asset_roles.append(obj)
+            if obj not in self._asset_roles:
+                self._asset_roles.append(obj)
         
     def remove_asset_roles(self, *asset_roles):
         for obj in asset_roles:
@@ -1885,9 +2056,9 @@ class Document(IdentifiedObject):
 
     def set_scheduled_events(self, value):
         for x in self._scheduled_events:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._scheduled_events = value
             
     scheduled_events = property(get_scheduled_events, set_scheduled_events)
@@ -1895,7 +2066,8 @@ class Document(IdentifiedObject):
     def add_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
             obj._document = self
-            self._scheduled_events.append(obj)
+            if obj not in self._scheduled_events:
+                self._scheduled_events.append(obj)
         
     def remove_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
@@ -1961,9 +2133,9 @@ class Document(IdentifiedObject):
 
     def set_to_document_roles(self, value):
         for x in self._to_document_roles:
-            x._from_document = None
+            x.from_document = None
         for y in value:
-            y._from_document = self
+            y.from_document = self
         self._to_document_roles = value
             
     to_document_roles = property(get_to_document_roles, set_to_document_roles)
@@ -1971,7 +2143,8 @@ class Document(IdentifiedObject):
     def add_to_document_roles(self, *to_document_roles):
         for obj in to_document_roles:
             obj._from_document = self
-            self._to_document_roles.append(obj)
+            if obj not in self._to_document_roles:
+                self._to_document_roles.append(obj)
         
     def remove_to_document_roles(self, *to_document_roles):
         for obj in to_document_roles:
@@ -1988,9 +2161,9 @@ class Document(IdentifiedObject):
 
     def set_erp_organisation_roles(self, value):
         for x in self._erp_organisation_roles:
-            x._document = None
+            x.document = None
         for y in value:
-            y._document = self
+            y.document = self
         self._erp_organisation_roles = value
             
     erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
@@ -1998,7 +2171,8 @@ class Document(IdentifiedObject):
     def add_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
             obj._document = self
-            self._erp_organisation_roles.append(obj)
+            if obj not in self._erp_organisation_roles:
+                self._erp_organisation_roles.append(obj)
         
     def remove_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
@@ -2013,27 +2187,30 @@ class ElectronicAddress(IdentifiedObject):
     """
     # <<< electronic_address
     # @generated
-    def __init__(self, password='', radio='', email='', web='', user_id='', lan='', status=None, organisation=None, locations=[], document=None, cashier=None, asset=None, erp_telephone_numbers=[], erp_person=None, **kw_args):
+    def __init__(self, password='', radio='', email='', web='', user_id='', lan='', status=None, organisation=None, locations=None, document=None, cashier=None, asset=None, erp_telephone_numbers=None, erp_person=None, **kw_args):
         """ Initialises a new 'ElectronicAddress' instance.
         """
         # Password needed to log in. 
-        self.password = ''
+        self.password = password
         # Radio address. 
-        self.radio = ''
+        self.radio = radio
         # Email address. 
-        self.email = ''
+        self.email = email
         # World Wide Web address. 
-        self.web = ''
+        self.web = web
         # User ID needed to log in, which can be for an individual person, an organisation, a location, etc. 
-        self.user_id = ''
+        self.user_id = user_id
         # Address on local area network. 
-        self.lan = ''
+        self.lan = lan
         
         self.status = status
         self._organisation = None
         self.organisation = organisation
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
         self._document = None
         self.document = document
         self._cashier = None
@@ -2041,7 +2218,10 @@ class ElectronicAddress(IdentifiedObject):
         self._asset = None
         self.asset = asset
         self._erp_telephone_numbers = []
-        self.erp_telephone_numbers = erp_telephone_numbers
+        if erp_telephone_numbers is None:
+            self.erp_telephone_numbers = []
+        else:
+            self.erp_telephone_numbers = erp_telephone_numbers
         self._erp_person = None
         self.erp_person = erp_person
 
@@ -2068,7 +2248,8 @@ class ElectronicAddress(IdentifiedObject):
             
         self._organisation = value
         if self._organisation is not None:
-            self._organisation._electronic_addresses.append(self)
+            if self not in self._organisation._electronic_addresses:
+                self._organisation._electronic_addresses.append(self)
 
     organisation = property(get_organisation, set_organisation)
     # >>> organisation
@@ -2136,7 +2317,8 @@ class ElectronicAddress(IdentifiedObject):
             
         self._cashier = value
         if self._cashier is not None:
-            self._cashier._electronic_addresses.append(self)
+            if self not in self._cashier._electronic_addresses:
+                self._cashier._electronic_addresses.append(self)
 
     cashier = property(get_cashier, set_cashier)
     # >>> cashier
@@ -2155,7 +2337,8 @@ class ElectronicAddress(IdentifiedObject):
             
         self._asset = value
         if self._asset is not None:
-            self._asset._electronic_addresses.append(self)
+            if self not in self._asset._electronic_addresses:
+                self._asset._electronic_addresses.append(self)
 
     asset = property(get_asset, set_asset)
     # >>> asset
@@ -2169,9 +2352,9 @@ class ElectronicAddress(IdentifiedObject):
 
     def set_erp_telephone_numbers(self, value):
         for x in self._erp_telephone_numbers:
-            x._electronic_address = None
+            x.electronic_address = None
         for y in value:
-            y._electronic_address = self
+            y.electronic_address = self
         self._erp_telephone_numbers = value
             
     erp_telephone_numbers = property(get_erp_telephone_numbers, set_erp_telephone_numbers)
@@ -2179,7 +2362,8 @@ class ElectronicAddress(IdentifiedObject):
     def add_erp_telephone_numbers(self, *erp_telephone_numbers):
         for obj in erp_telephone_numbers:
             obj._electronic_address = self
-            self._erp_telephone_numbers.append(obj)
+            if obj not in self._erp_telephone_numbers:
+                self._erp_telephone_numbers.append(obj)
         
     def remove_erp_telephone_numbers(self, *erp_telephone_numbers):
         for obj in erp_telephone_numbers:
@@ -2201,7 +2385,8 @@ class ElectronicAddress(IdentifiedObject):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._electronic_addresses.append(self)
+            if self not in self._erp_person._electronic_addresses:
+                self._erp_person._electronic_addresses.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -2217,13 +2402,13 @@ class Status(Element):
         """ Initialises a new 'Status' instance.
         """
         # Date and time for which status 'value' applies. 
-        self.date_time = ''
+        self.date_time = date_time
         # Pertinent information regarding the current 'value', as free form text. 
-        self.remark = ''
+        self.remark = remark
         # Reason code or explanation for why an object went to the current status 'value'. 
-        self.reason = ''
+        self.reason = reason
         # Status value at 'dateTime'; prior status changes may have been kept in instances of ActivityRecords associated with the object to which this Status applies. 
-        self.value = ''
+        self.value = value
         
 
         super(Status, self).__init__(**kw_args)
@@ -2240,9 +2425,9 @@ class PostalAddress(Element):
         """ Initialises a new 'PostalAddress' instance.
         """
         # Postal code for the address. 
-        self.postal_code = ''
+        self.postal_code = postal_code
         # Post office box. 
-        self.po_box = ''
+        self.po_box = po_box
         
         self.town_detail = town_detail
         self.street_detail = street_detail
@@ -2273,9 +2458,9 @@ class DateTimeInterval(Element):
         """ Initialises a new 'DateTimeInterval' instance.
         """
         # Date and time that this interval started. 
-        self.start = ''
+        self.start = start
         # Date and time that this interval ended. 
-        self.end = ''
+        self.end = end
         
 
         super(DateTimeInterval, self).__init__(**kw_args)
@@ -2288,20 +2473,32 @@ class Organisation(IdentifiedObject):
     """
     # <<< organisation
     # @generated
-    def __init__(self, street_address=None, postal_address=None, business_roles=[], telephone_numbers=[], market_roles=[], electronic_addresses=[], **kw_args):
+    def __init__(self, street_address=None, postal_address=None, business_roles=None, telephone_numbers=None, market_roles=None, electronic_addresses=None, **kw_args):
         """ Initialises a new 'Organisation' instance.
         """
         
         self.street_address = street_address
         self.postal_address = postal_address
         self._business_roles = []
-        self.business_roles = business_roles
+        if business_roles is None:
+            self.business_roles = []
+        else:
+            self.business_roles = business_roles
         self._telephone_numbers = []
-        self.telephone_numbers = telephone_numbers
+        if telephone_numbers is None:
+            self.telephone_numbers = []
+        else:
+            self.telephone_numbers = telephone_numbers
         self._market_roles = []
-        self.market_roles = market_roles
+        if market_roles is None:
+            self.market_roles = []
+        else:
+            self.market_roles = market_roles
         self._electronic_addresses = []
-        self.electronic_addresses = electronic_addresses
+        if electronic_addresses is None:
+            self.electronic_addresses = []
+        else:
+            self.electronic_addresses = electronic_addresses
 
         super(Organisation, self).__init__(**kw_args)
     # >>> organisation
@@ -2358,9 +2555,9 @@ class Organisation(IdentifiedObject):
 
     def set_telephone_numbers(self, value):
         for x in self._telephone_numbers:
-            x._organisation = None
+            x.organisation = None
         for y in value:
-            y._organisation = self
+            y.organisation = self
         self._telephone_numbers = value
             
     telephone_numbers = property(get_telephone_numbers, set_telephone_numbers)
@@ -2368,7 +2565,8 @@ class Organisation(IdentifiedObject):
     def add_telephone_numbers(self, *telephone_numbers):
         for obj in telephone_numbers:
             obj._organisation = self
-            self._telephone_numbers.append(obj)
+            if obj not in self._telephone_numbers:
+                self._telephone_numbers.append(obj)
         
     def remove_telephone_numbers(self, *telephone_numbers):
         for obj in telephone_numbers:
@@ -2416,9 +2614,9 @@ class Organisation(IdentifiedObject):
 
     def set_electronic_addresses(self, value):
         for x in self._electronic_addresses:
-            x._organisation = None
+            x.organisation = None
         for y in value:
-            y._organisation = self
+            y.organisation = self
         self._electronic_addresses = value
             
     electronic_addresses = property(get_electronic_addresses, set_electronic_addresses)
@@ -2426,7 +2624,8 @@ class Organisation(IdentifiedObject):
     def add_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
             obj._organisation = self
-            self._electronic_addresses.append(obj)
+            if obj not in self._electronic_addresses:
+                self._electronic_addresses.append(obj)
         
     def remove_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
@@ -2441,20 +2640,23 @@ class TimePoint(IdentifiedObject):
     """
     # <<< time_point
     # @generated
-    def __init__(self, sequence_number=0, absolute_time='', relative_time_interval='', status=None, window=None, scheduled_events=[], time_schedule=None, **kw_args):
+    def __init__(self, sequence_number=0, absolute_time='', relative_time_interval=0.0, status=None, window=None, scheduled_events=None, time_schedule=None, **kw_args):
         """ Initialises a new 'TimePoint' instance.
         """
         # (if sequence-based) Relative sequence number for this time point. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         # Absolute date and time for this time point. For calendar-based time point, it is typically manually entered, while for interval-based or sequence-based time point it is derived. 
-        self.absolute_time = ''
+        self.absolute_time = absolute_time
         # (if interval-based) A point in time relative to scheduled start time in 'TimeSchedule.scheduleInterval.start'. 
-        self.relative_time_interval = ''
+        self.relative_time_interval = relative_time_interval
         
         self.status = status
         self.window = window
         self._scheduled_events = []
-        self.scheduled_events = scheduled_events
+        if scheduled_events is None:
+            self.scheduled_events = []
+        else:
+            self.scheduled_events = scheduled_events
         self._time_schedule = None
         self.time_schedule = time_schedule
 
@@ -2482,9 +2684,9 @@ class TimePoint(IdentifiedObject):
 
     def set_scheduled_events(self, value):
         for x in self._scheduled_events:
-            x._time_point = None
+            x.time_point = None
         for y in value:
-            y._time_point = self
+            y.time_point = self
         self._scheduled_events = value
             
     scheduled_events = property(get_scheduled_events, set_scheduled_events)
@@ -2492,7 +2694,8 @@ class TimePoint(IdentifiedObject):
     def add_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
             obj._time_point = self
-            self._scheduled_events.append(obj)
+            if obj not in self._scheduled_events:
+                self._scheduled_events.append(obj)
         
     def remove_scheduled_events(self, *scheduled_events):
         for obj in scheduled_events:
@@ -2514,7 +2717,8 @@ class TimePoint(IdentifiedObject):
             
         self._time_schedule = value
         if self._time_schedule is not None:
-            self._time_schedule._time_points.append(self)
+            if self not in self._time_schedule._time_points:
+                self._time_schedule._time_points.append(self)
 
     time_schedule = property(get_time_schedule, set_time_schedule)
     # >>> time_schedule
@@ -2530,25 +2734,25 @@ class StreetDetail(Element):
         """ Initialises a new 'StreetDetail' instance.
         """
         # Suffix to the street name. For example: North, South, East, West. 
-        self.suffix = ''
+        self.suffix = suffix
         # (if applicable) In certain cases the physical location of the place of interest does not have a direct point of entry from the street, but may be located inside a larger structure such as a building, complex, office block, apartment, etc. 
-        self.building_name = ''
+        self.building_name = building_name
         # Name of the street. 
-        self.name = ''
+        self.name = name
         # True if this street is within the legal geographical boundaries of the specified town (default). 
-        self.within_town_limits = False
+        self.within_town_limits = within_town_limits
         # Prefix to the street name. For example: North, South, East, West. 
-        self.prefix = ''
+        self.prefix = prefix
         # (if applicable) Utilities often make use of external reference systems, such as those of the town-planner's department or surveyor general's mapping system, that allocate global reference codes to streets. 
-        self.code = ''
+        self.code = code
         # Designator of the specific location on the street. 
-        self.number = ''
+        self.number = number
         # Additional address information, for example a mailstop. 
-        self.address_general = ''
+        self.address_general = address_general
         # Type of street. Examples include: street, circle, boulevard, avenue, road, drive, etc. 
-        self.type = ''
+        self.type = type
         # Number of the apartment or suite. 
-        self.suite_number = ''
+        self.suite_number = suite_number
         
 
         super(StreetDetail, self).__init__(**kw_args)
@@ -2561,21 +2765,24 @@ class TimeSchedule(Document):
     """
     # <<< time_schedule
     # @generated
-    def __init__(self, recurrence_pattern='', disabled=False, offset='', recurrence_period='', schedule_interval=None, time_points=[], **kw_args):
+    def __init__(self, recurrence_pattern='', disabled=False, offset=0.0, recurrence_period=0.0, schedule_interval=None, time_points=None, **kw_args):
         """ Initialises a new 'TimeSchedule' instance.
         """
         # Interval at which the scheduled action repeats (e.g., first Monday of every month, last day of the month, etc.). 
-        self.recurrence_pattern = ''
+        self.recurrence_pattern = recurrence_pattern
         # True if this schedule is deactivated (disabled). 
-        self.disabled = False
+        self.disabled = disabled
         # The offset from midnight (i.e., 0 hours, 0 minutes, 0 seconds) for the periodic time points to begin. For example, for an interval meter that is set up for five minute intervals ('recurrencePeriod'=300=5 min), setting 'offset'=120=2 min would result in scheduled events to read the meter executing at 2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, and 57 minutes past each hour. 
-        self.offset = ''
+        self.offset = offset
         # Duration between time points, from the beginning of one period to the beginning of the next period. Note that a device like a meter may have multiple interval periods (e.g., 1, 5, 15, 30, or 60 minutes). 
-        self.recurrence_period = ''
+        self.recurrence_period = recurrence_period
         
         self.schedule_interval = schedule_interval
         self._time_points = []
-        self.time_points = time_points
+        if time_points is None:
+            self.time_points = []
+        else:
+            self.time_points = time_points
 
         super(TimeSchedule, self).__init__(**kw_args)
     # >>> time_schedule
@@ -2595,9 +2802,9 @@ class TimeSchedule(Document):
 
     def set_time_points(self, value):
         for x in self._time_points:
-            x._time_schedule = None
+            x.time_schedule = None
         for y in value:
-            y._time_schedule = self
+            y.time_schedule = self
         self._time_points = value
             
     time_points = property(get_time_points, set_time_points)
@@ -2605,7 +2812,8 @@ class TimeSchedule(Document):
     def add_time_points(self, *time_points):
         for obj in time_points:
             obj._time_schedule = self
-            self._time_points.append(obj)
+            if obj not in self._time_points:
+                self._time_points.append(obj)
         
     def remove_time_points(self, *time_points):
         for obj in time_points:
@@ -2624,7 +2832,7 @@ class Agreement(Document):
         """ Initialises a new 'Agreement' instance.
         """
         # Date this agreement was consumated among associated persons and/or organisations. 
-        self.sign_date = ''
+        self.sign_date = sign_date
         
         self.validity_interval = validity_interval
 

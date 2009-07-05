@@ -21,23 +21,26 @@ class ErpLedgerEntry(IdentifiedObject):
     """
     # <<< erp_ledger_entry
     # @generated
-    def __init__(self, transaction_date_time='', account_kind='normal', amount='', account_id='', posted_date_time='', status=None, settlements=[], erp_jounal_entry=None, erp_ledger=None, erp_ledger_entry=None, user_attributes=[], **kw_args):
+    def __init__(self, transaction_date_time='', account_kind='normal', amount=0.0, account_id='', posted_date_time='', status=None, settlements=None, erp_jounal_entry=None, erp_ledger=None, erp_ledger_entry=None, user_attributes=None, **kw_args):
         """ Initialises a new 'ErpLedgerEntry' instance.
         """
         # Date and time journal entry was recorded. 
-        self.transaction_date_time = ''
+        self.transaction_date_time = transaction_date_time
         # Kind of account for this entry. Values are: "normal", "statistical", "estimate", "reversal"
-        self.account_kind = 'normal'
+        self.account_kind = account_kind
         # The amount of the debit or credit for this account. 
-        self.amount = ''
+        self.amount = amount
         # Account identifier for this entry. 
-        self.account_id = ''
+        self.account_id = account_id
         # Date and time this entry was posted to the ledger. 
-        self.posted_date_time = ''
+        self.posted_date_time = posted_date_time
         
         self.status = status
         self._settlements = []
-        self.settlements = settlements
+        if settlements is None:
+            self.settlements = []
+        else:
+            self.settlements = settlements
         self._erp_jounal_entry = None
         self.erp_jounal_entry = erp_jounal_entry
         self._erp_ledger = None
@@ -45,7 +48,10 @@ class ErpLedgerEntry(IdentifiedObject):
         self._erp_ledger_entry = None
         self.erp_ledger_entry = erp_ledger_entry
         self._user_attributes = []
-        self.user_attributes = user_attributes
+        if user_attributes is None:
+            self.user_attributes = []
+        else:
+            self.user_attributes = user_attributes
 
         super(ErpLedgerEntry, self).__init__(**kw_args)
     # >>> erp_ledger_entry
@@ -118,7 +124,8 @@ class ErpLedgerEntry(IdentifiedObject):
             
         self._erp_ledger = value
         if self._erp_ledger is not None:
-            self._erp_ledger._erp_ledger_entries.append(self)
+            if self not in self._erp_ledger._erp_ledger_entries:
+                self._erp_ledger._erp_ledger_entries.append(self)
 
     erp_ledger = property(get_erp_ledger, set_erp_ledger)
     # >>> erp_ledger
@@ -179,12 +186,15 @@ class ErpLedger(Document):
     """
     # <<< erp_ledger
     # @generated
-    def __init__(self, erp_ledger_entries=[], **kw_args):
+    def __init__(self, erp_ledger_entries=None, **kw_args):
         """ Initialises a new 'ErpLedger' instance.
         """
         
         self._erp_ledger_entries = []
-        self.erp_ledger_entries = erp_ledger_entries
+        if erp_ledger_entries is None:
+            self.erp_ledger_entries = []
+        else:
+            self.erp_ledger_entries = erp_ledger_entries
 
         super(ErpLedger, self).__init__(**kw_args)
     # >>> erp_ledger
@@ -198,9 +208,9 @@ class ErpLedger(Document):
 
     def set_erp_ledger_entries(self, value):
         for x in self._erp_ledger_entries:
-            x._erp_ledger = None
+            x.erp_ledger = None
         for y in value:
-            y._erp_ledger = self
+            y.erp_ledger = self
         self._erp_ledger_entries = value
             
     erp_ledger_entries = property(get_erp_ledger_entries, set_erp_ledger_entries)
@@ -208,7 +218,8 @@ class ErpLedger(Document):
     def add_erp_ledger_entries(self, *erp_ledger_entries):
         for obj in erp_ledger_entries:
             obj._erp_ledger = self
-            self._erp_ledger_entries.append(obj)
+            if obj not in self._erp_ledger_entries:
+                self._erp_ledger_entries.append(obj)
         
     def remove_erp_ledger_entries(self, *erp_ledger_entries):
         for obj in erp_ledger_entries:
@@ -223,7 +234,7 @@ class ErpRecLineItem(IdentifiedObject):
     """
     # <<< erp_rec_line_item
     # @generated
-    def __init__(self, status=None, erp_receivable=None, erp_payments=[], erp_invoice_line_item=None, erp_journal_entries=[], **kw_args):
+    def __init__(self, status=None, erp_receivable=None, erp_payments=None, erp_invoice_line_item=None, erp_journal_entries=None, **kw_args):
         """ Initialises a new 'ErpRecLineItem' instance.
         """
         
@@ -231,11 +242,17 @@ class ErpRecLineItem(IdentifiedObject):
         self._erp_receivable = None
         self.erp_receivable = erp_receivable
         self._erp_payments = []
-        self.erp_payments = erp_payments
+        if erp_payments is None:
+            self.erp_payments = []
+        else:
+            self.erp_payments = erp_payments
         self._erp_invoice_line_item = None
         self.erp_invoice_line_item = erp_invoice_line_item
         self._erp_journal_entries = []
-        self.erp_journal_entries = erp_journal_entries
+        if erp_journal_entries is None:
+            self.erp_journal_entries = []
+        else:
+            self.erp_journal_entries = erp_journal_entries
 
         super(ErpRecLineItem, self).__init__(**kw_args)
     # >>> erp_rec_line_item
@@ -259,7 +276,8 @@ class ErpRecLineItem(IdentifiedObject):
             
         self._erp_receivable = value
         if self._erp_receivable is not None:
-            self._erp_receivable._erp_rec_line_items.append(self)
+            if self not in self._erp_receivable._erp_rec_line_items:
+                self._erp_receivable._erp_rec_line_items.append(self)
 
     erp_receivable = property(get_erp_receivable, set_erp_receivable)
     # >>> erp_receivable
@@ -377,7 +395,8 @@ class DocOrgRole(Role):
             
         self._document = value
         if self._document is not None:
-            self._document._erp_organisation_roles.append(self)
+            if self not in self._document._erp_organisation_roles:
+                self._document._erp_organisation_roles.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -396,7 +415,8 @@ class DocOrgRole(Role):
             
         self._erp_organisation = value
         if self._erp_organisation is not None:
-            self._erp_organisation._document_roles.append(self)
+            if self not in self._erp_organisation._document_roles:
+                self._erp_organisation._document_roles.append(self)
 
     erp_organisation = property(get_erp_organisation, set_erp_organisation)
     # >>> erp_organisation
@@ -440,7 +460,8 @@ class ErpIssueInventory(IdentifiedObject):
             
         self._type_material = value
         if self._type_material is not None:
-            self._type_material._erp_issue_inventories.append(self)
+            if self not in self._type_material._erp_issue_inventories:
+                self._type_material._erp_issue_inventories.append(self)
 
     type_material = property(get_type_material, set_type_material)
     # >>> type_material
@@ -459,7 +480,8 @@ class ErpIssueInventory(IdentifiedObject):
             
         self._type_asset = value
         if self._type_asset is not None:
-            self._type_asset._erp_inventory_issues.append(self)
+            if self not in self._type_asset._erp_inventory_issues:
+                self._type_asset._erp_inventory_issues.append(self)
 
     type_asset = property(get_type_asset, set_type_asset)
     # >>> type_asset
@@ -512,12 +534,15 @@ class ErpPurchaseOrder(Document):
     """
     # <<< erp_purchase_order
     # @generated
-    def __init__(self, erp_poline_items=[], **kw_args):
+    def __init__(self, erp_poline_items=None, **kw_args):
         """ Initialises a new 'ErpPurchaseOrder' instance.
         """
         
         self._erp_poline_items = []
-        self.erp_poline_items = erp_poline_items
+        if erp_poline_items is None:
+            self.erp_poline_items = []
+        else:
+            self.erp_poline_items = erp_poline_items
 
         super(ErpPurchaseOrder, self).__init__(**kw_args)
     # >>> erp_purchase_order
@@ -531,9 +556,9 @@ class ErpPurchaseOrder(Document):
 
     def set_erp_poline_items(self, value):
         for x in self._erp_poline_items:
-            x._erp_purchase_order = None
+            x.erp_purchase_order = None
         for y in value:
-            y._erp_purchase_order = self
+            y.erp_purchase_order = self
         self._erp_poline_items = value
             
     erp_poline_items = property(get_erp_poline_items, set_erp_poline_items)
@@ -541,7 +566,8 @@ class ErpPurchaseOrder(Document):
     def add_erp_poline_items(self, *erp_poline_items):
         for obj in erp_poline_items:
             obj._erp_purchase_order = self
-            self._erp_poline_items.append(obj)
+            if obj not in self._erp_poline_items:
+                self._erp_poline_items.append(obj)
         
     def remove_erp_poline_items(self, *erp_poline_items):
         for obj in erp_poline_items:
@@ -556,19 +582,25 @@ class ErpPayableLineItem(IdentifiedObject):
     """
     # <<< erp_payable_line_item
     # @generated
-    def __init__(self, status=None, erp_journal_entries=[], erp_payable=None, erp_invoice_line_item=None, erp_payments=[], **kw_args):
+    def __init__(self, status=None, erp_journal_entries=None, erp_payable=None, erp_invoice_line_item=None, erp_payments=None, **kw_args):
         """ Initialises a new 'ErpPayableLineItem' instance.
         """
         
         self.status = status
         self._erp_journal_entries = []
-        self.erp_journal_entries = erp_journal_entries
+        if erp_journal_entries is None:
+            self.erp_journal_entries = []
+        else:
+            self.erp_journal_entries = erp_journal_entries
         self._erp_payable = None
         self.erp_payable = erp_payable
         self._erp_invoice_line_item = None
         self.erp_invoice_line_item = erp_invoice_line_item
         self._erp_payments = []
-        self.erp_payments = erp_payments
+        if erp_payments is None:
+            self.erp_payments = []
+        else:
+            self.erp_payments = erp_payments
 
         super(ErpPayableLineItem, self).__init__(**kw_args)
     # >>> erp_payable_line_item
@@ -623,7 +655,8 @@ class ErpPayableLineItem(IdentifiedObject):
             
         self._erp_payable = value
         if self._erp_payable is not None:
-            self._erp_payable._erp_payable_line_items.append(self)
+            if self not in self._erp_payable._erp_payable_line_items:
+                self._erp_payable._erp_payable_line_items.append(self)
 
     erp_payable = property(get_erp_payable, set_erp_payable)
     # >>> erp_payable
@@ -684,12 +717,15 @@ class ErpQuote(Document):
     """
     # <<< erp_quote
     # @generated
-    def __init__(self, erp_quote_line_items=[], **kw_args):
+    def __init__(self, erp_quote_line_items=None, **kw_args):
         """ Initialises a new 'ErpQuote' instance.
         """
         
         self._erp_quote_line_items = []
-        self.erp_quote_line_items = erp_quote_line_items
+        if erp_quote_line_items is None:
+            self.erp_quote_line_items = []
+        else:
+            self.erp_quote_line_items = erp_quote_line_items
 
         super(ErpQuote, self).__init__(**kw_args)
     # >>> erp_quote
@@ -703,9 +739,9 @@ class ErpQuote(Document):
 
     def set_erp_quote_line_items(self, value):
         for x in self._erp_quote_line_items:
-            x._erp_quote = None
+            x.erp_quote = None
         for y in value:
-            y._erp_quote = self
+            y.erp_quote = self
         self._erp_quote_line_items = value
             
     erp_quote_line_items = property(get_erp_quote_line_items, set_erp_quote_line_items)
@@ -713,7 +749,8 @@ class ErpQuote(Document):
     def add_erp_quote_line_items(self, *erp_quote_line_items):
         for obj in erp_quote_line_items:
             obj._erp_quote = self
-            self._erp_quote_line_items.append(obj)
+            if obj not in self._erp_quote_line_items:
+                self._erp_quote_line_items.append(obj)
         
     def remove_erp_quote_line_items(self, *erp_quote_line_items):
         for obj in erp_quote_line_items:
@@ -728,12 +765,15 @@ class ErpBOM(Document):
     """
     # <<< erp_bom
     # @generated
-    def __init__(self, erp_bom_item_datas=[], design=None, **kw_args):
+    def __init__(self, erp_bom_item_datas=None, design=None, **kw_args):
         """ Initialises a new 'ErpBOM' instance.
         """
         
         self._erp_bom_item_datas = []
-        self.erp_bom_item_datas = erp_bom_item_datas
+        if erp_bom_item_datas is None:
+            self.erp_bom_item_datas = []
+        else:
+            self.erp_bom_item_datas = erp_bom_item_datas
         self._design = None
         self.design = design
 
@@ -749,9 +789,9 @@ class ErpBOM(Document):
 
     def set_erp_bom_item_datas(self, value):
         for x in self._erp_bom_item_datas:
-            x._erp_bom = None
+            x.erp_bom = None
         for y in value:
-            y._erp_bom = self
+            y.erp_bom = self
         self._erp_bom_item_datas = value
             
     erp_bom_item_datas = property(get_erp_bom_item_datas, set_erp_bom_item_datas)
@@ -759,7 +799,8 @@ class ErpBOM(Document):
     def add_erp_bom_item_datas(self, *erp_bom_item_datas):
         for obj in erp_bom_item_datas:
             obj._erp_bom = self
-            self._erp_bom_item_datas.append(obj)
+            if obj not in self._erp_bom_item_datas:
+                self._erp_bom_item_datas.append(obj)
         
     def remove_erp_bom_item_datas(self, *erp_bom_item_datas):
         for obj in erp_bom_item_datas:
@@ -781,7 +822,8 @@ class ErpBOM(Document):
             
         self._design = value
         if self._design is not None:
-            self._design._erp_boms.append(self)
+            if self not in self._design._erp_boms:
+                self._design._erp_boms.append(self)
 
     design = property(get_design, set_design)
     # >>> design
@@ -793,32 +835,35 @@ class ErpInvoice(Document):
     """
     # <<< erp_invoice
     # @generated
-    def __init__(self, transaction_date='', transfer_type='', due_date='', kind='sales', reference_number='', amount='', bill_media_kind='electronic', pro_forma=False, mailed_date='', customer_account=None, erp_invoice_line_items=[], **kw_args):
+    def __init__(self, transaction_date='', transfer_type='', due_date='', kind='sales', reference_number='', amount=0.0, bill_media_kind='electronic', pro_forma=False, mailed_date='', customer_account=None, erp_invoice_line_items=None, **kw_args):
         """ Initialises a new 'ErpInvoice' instance.
         """
         # The date of which the invoice is issued. 
-        self.transaction_date = ''
+        self.transaction_date = transaction_date
         # The type of invoice transfer. 
-        self.transfer_type = ''
+        self.transfer_type = transfer_type
         # Calculated date upon which the Invoice amount is due. 
-        self.due_date = ''
+        self.due_date = due_date
         # Kind of invoice (default is 'sales'). Values are: "sales", "purchase"
-        self.kind = 'sales'
+        self.kind = kind
         # The number of an invoice to be reference by this invoice. 
-        self.reference_number = ''
+        self.reference_number = reference_number
         # Total amount due on this invoice based on line items and applicable adjustments. 
-        self.amount = ''
+        self.amount = amount
         # Kind of media by which the CustomerBillingInfo was delivered. Values are: "electronic", "other", "paper"
-        self.bill_media_kind = 'electronic'
+        self.bill_media_kind = bill_media_kind
         # True if payment is to be paid by a Customer to accept a particular ErpQuote (with associated Design) and have work initiated, at which time an associated ErpInvoice should automatically be generated. EprPayment.subjectStatus satisfies terms specificed in the ErpQuote. 
-        self.pro_forma = False
+        self.pro_forma = pro_forma
         # Date on which the customer billing statement/invoice was printed/mailed. 
-        self.mailed_date = ''
+        self.mailed_date = mailed_date
         
         self._customer_account = None
         self.customer_account = customer_account
         self._erp_invoice_line_items = []
-        self.erp_invoice_line_items = erp_invoice_line_items
+        if erp_invoice_line_items is None:
+            self.erp_invoice_line_items = []
+        else:
+            self.erp_invoice_line_items = erp_invoice_line_items
 
         super(ErpInvoice, self).__init__(**kw_args)
     # >>> erp_invoice
@@ -837,7 +882,8 @@ class ErpInvoice(Document):
             
         self._customer_account = value
         if self._customer_account is not None:
-            self._customer_account._erp_invoicees.append(self)
+            if self not in self._customer_account._erp_invoicees:
+                self._customer_account._erp_invoicees.append(self)
 
     customer_account = property(get_customer_account, set_customer_account)
     # >>> customer_account
@@ -851,9 +897,9 @@ class ErpInvoice(Document):
 
     def set_erp_invoice_line_items(self, value):
         for x in self._erp_invoice_line_items:
-            x._erp_invoice = None
+            x.erp_invoice = None
         for y in value:
-            y._erp_invoice = self
+            y.erp_invoice = self
         self._erp_invoice_line_items = value
             
     erp_invoice_line_items = property(get_erp_invoice_line_items, set_erp_invoice_line_items)
@@ -861,7 +907,8 @@ class ErpInvoice(Document):
     def add_erp_invoice_line_items(self, *erp_invoice_line_items):
         for obj in erp_invoice_line_items:
             obj._erp_invoice = self
-            self._erp_invoice_line_items.append(obj)
+            if obj not in self._erp_invoice_line_items:
+                self._erp_invoice_line_items.append(obj)
         
     def remove_erp_invoice_line_items(self, *erp_invoice_line_items):
         for obj in erp_invoice_line_items:
@@ -926,7 +973,8 @@ class ErpLedBudLineItem(IdentifiedObject):
             
         self._erp_ledger_budget = value
         if self._erp_ledger_budget is not None:
-            self._erp_ledger_budget._erp_led_bud_line_items.append(self)
+            if self not in self._erp_ledger_budget._erp_led_bud_line_items:
+                self._erp_ledger_budget._erp_led_bud_line_items.append(self)
 
     erp_ledger_budget = property(get_erp_ledger_budget, set_erp_ledger_budget)
     # >>> erp_ledger_budget
@@ -938,18 +986,27 @@ class ErpPayment(Document):
     """
     # <<< erp_payment
     # @generated
-    def __init__(self, terms_payment='', erp_rec_line_items=[], erp_invoice_line_items=[], erp_payable_line_items=[], **kw_args):
+    def __init__(self, terms_payment='', erp_rec_line_items=None, erp_invoice_line_items=None, erp_payable_line_items=None, **kw_args):
         """ Initialises a new 'ErpPayment' instance.
         """
         # Payment terms (e.g., net 30). 
-        self.terms_payment = ''
+        self.terms_payment = terms_payment
         
         self._erp_rec_line_items = []
-        self.erp_rec_line_items = erp_rec_line_items
+        if erp_rec_line_items is None:
+            self.erp_rec_line_items = []
+        else:
+            self.erp_rec_line_items = erp_rec_line_items
         self._erp_invoice_line_items = []
-        self.erp_invoice_line_items = erp_invoice_line_items
+        if erp_invoice_line_items is None:
+            self.erp_invoice_line_items = []
+        else:
+            self.erp_invoice_line_items = erp_invoice_line_items
         self._erp_payable_line_items = []
-        self.erp_payable_line_items = erp_payable_line_items
+        if erp_payable_line_items is None:
+            self.erp_payable_line_items = []
+        else:
+            self.erp_payable_line_items = erp_payable_line_items
 
         super(ErpPayment, self).__init__(**kw_args)
     # >>> erp_payment
@@ -1102,7 +1159,8 @@ class ErpInventoryCount(IdentifiedObject):
             
         self._material_item = value
         if self._material_item is not None:
-            self._material_item._erp_inventory_counts.append(self)
+            if self not in self._material_item._erp_inventory_counts:
+                self._material_item._erp_inventory_counts.append(self)
 
     material_item = property(get_material_item, set_material_item)
     # >>> material_item
@@ -1121,7 +1179,8 @@ class ErpInventoryCount(IdentifiedObject):
             
         self._asset_model = value
         if self._asset_model is not None:
-            self._asset_model._erp_inventory_counts.append(self)
+            if self not in self._asset_model._erp_inventory_counts:
+                self._asset_model._erp_inventory_counts.append(self)
 
     asset_model = property(get_asset_model, set_asset_model)
     # >>> asset_model
@@ -1133,12 +1192,15 @@ class ErpTimeSheet(Document):
     """
     # <<< erp_time_sheet
     # @generated
-    def __init__(self, erp_time_entries=[], **kw_args):
+    def __init__(self, erp_time_entries=None, **kw_args):
         """ Initialises a new 'ErpTimeSheet' instance.
         """
         
         self._erp_time_entries = []
-        self.erp_time_entries = erp_time_entries
+        if erp_time_entries is None:
+            self.erp_time_entries = []
+        else:
+            self.erp_time_entries = erp_time_entries
 
         super(ErpTimeSheet, self).__init__(**kw_args)
     # >>> erp_time_sheet
@@ -1152,9 +1214,9 @@ class ErpTimeSheet(Document):
 
     def set_erp_time_entries(self, value):
         for x in self._erp_time_entries:
-            x._erp_time_sheet = None
+            x.erp_time_sheet = None
         for y in value:
-            y._erp_time_sheet = self
+            y.erp_time_sheet = self
         self._erp_time_entries = value
             
     erp_time_entries = property(get_erp_time_entries, set_erp_time_entries)
@@ -1162,7 +1224,8 @@ class ErpTimeSheet(Document):
     def add_erp_time_entries(self, *erp_time_entries):
         for obj in erp_time_entries:
             obj._erp_time_sheet = self
-            self._erp_time_entries.append(obj)
+            if obj not in self._erp_time_entries:
+                self._erp_time_entries.append(obj)
         
     def remove_erp_time_entries(self, *erp_time_entries):
         for obj in erp_time_entries:
@@ -1181,7 +1244,7 @@ class OrgOrgRole(Role):
         """ Initialises a new 'OrgOrgRole' instance.
         """
         # Identifiers of the organisation held by another organisation, such as a government agency (federal, state, province, city, county), financial institution (Dun and Bradstreet), etc. 
-        self.client_id = ''
+        self.client_id = client_id
         
         self._parent_organisation = None
         self.parent_organisation = parent_organisation
@@ -1205,7 +1268,8 @@ class OrgOrgRole(Role):
             
         self._parent_organisation = value
         if self._parent_organisation is not None:
-            self._parent_organisation._child_organisation_roles.append(self)
+            if self not in self._parent_organisation._child_organisation_roles:
+                self._parent_organisation._child_organisation_roles.append(self)
 
     parent_organisation = property(get_parent_organisation, set_parent_organisation)
     # >>> parent_organisation
@@ -1224,7 +1288,8 @@ class OrgOrgRole(Role):
             
         self._child_organisation = value
         if self._child_organisation is not None:
-            self._child_organisation._parent_organisation_roles.append(self)
+            if self not in self._child_organisation._parent_organisation_roles:
+                self._child_organisation._parent_organisation_roles.append(self)
 
     child_organisation = property(get_child_organisation, set_child_organisation)
     # >>> child_organisation
@@ -1277,18 +1342,30 @@ class ErpProjectAccounting(Document):
     """
     # <<< erp_project_accounting
     # @generated
-    def __init__(self, works=[], work_cost_details=[], projects=[], erp_time_entries=[], **kw_args):
+    def __init__(self, works=None, work_cost_details=None, projects=None, erp_time_entries=None, **kw_args):
         """ Initialises a new 'ErpProjectAccounting' instance.
         """
         
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
         self._projects = []
-        self.projects = projects
+        if projects is None:
+            self.projects = []
+        else:
+            self.projects = projects
         self._erp_time_entries = []
-        self.erp_time_entries = erp_time_entries
+        if erp_time_entries is None:
+            self.erp_time_entries = []
+        else:
+            self.erp_time_entries = erp_time_entries
 
         super(ErpProjectAccounting, self).__init__(**kw_args)
     # >>> erp_project_accounting
@@ -1302,9 +1379,9 @@ class ErpProjectAccounting(Document):
 
     def set_works(self, value):
         for x in self._works:
-            x._erp_project_accounting = None
+            x.erp_project_accounting = None
         for y in value:
-            y._erp_project_accounting = self
+            y.erp_project_accounting = self
         self._works = value
             
     works = property(get_works, set_works)
@@ -1312,7 +1389,8 @@ class ErpProjectAccounting(Document):
     def add_works(self, *works):
         for obj in works:
             obj._erp_project_accounting = self
-            self._works.append(obj)
+            if obj not in self._works:
+                self._works.append(obj)
         
     def remove_works(self, *works):
         for obj in works:
@@ -1329,9 +1407,9 @@ class ErpProjectAccounting(Document):
 
     def set_work_cost_details(self, value):
         for x in self._work_cost_details:
-            x._erp_project_accounting = None
+            x.erp_project_accounting = None
         for y in value:
-            y._erp_project_accounting = self
+            y.erp_project_accounting = self
         self._work_cost_details = value
             
     work_cost_details = property(get_work_cost_details, set_work_cost_details)
@@ -1339,7 +1417,8 @@ class ErpProjectAccounting(Document):
     def add_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
             obj._erp_project_accounting = self
-            self._work_cost_details.append(obj)
+            if obj not in self._work_cost_details:
+                self._work_cost_details.append(obj)
         
     def remove_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
@@ -1356,9 +1435,9 @@ class ErpProjectAccounting(Document):
 
     def set_projects(self, value):
         for x in self._projects:
-            x._erp_project_accounting = None
+            x.erp_project_accounting = None
         for y in value:
-            y._erp_project_accounting = self
+            y.erp_project_accounting = self
         self._projects = value
             
     projects = property(get_projects, set_projects)
@@ -1366,7 +1445,8 @@ class ErpProjectAccounting(Document):
     def add_projects(self, *projects):
         for obj in projects:
             obj._erp_project_accounting = self
-            self._projects.append(obj)
+            if obj not in self._projects:
+                self._projects.append(obj)
         
     def remove_projects(self, *projects):
         for obj in projects:
@@ -1383,9 +1463,9 @@ class ErpProjectAccounting(Document):
 
     def set_erp_time_entries(self, value):
         for x in self._erp_time_entries:
-            x._erp_project_accounting = None
+            x.erp_project_accounting = None
         for y in value:
-            y._erp_project_accounting = self
+            y.erp_project_accounting = self
         self._erp_time_entries = value
             
     erp_time_entries = property(get_erp_time_entries, set_erp_time_entries)
@@ -1393,7 +1473,8 @@ class ErpProjectAccounting(Document):
     def add_erp_time_entries(self, *erp_time_entries):
         for obj in erp_time_entries:
             obj._erp_project_accounting = self
-            self._erp_time_entries.append(obj)
+            if obj not in self._erp_time_entries:
+                self._erp_time_entries.append(obj)
         
     def remove_erp_time_entries(self, *erp_time_entries):
         for obj in erp_time_entries:
@@ -1408,12 +1489,15 @@ class ErpReceivable(Document):
     """
     # <<< erp_receivable
     # @generated
-    def __init__(self, erp_rec_line_items=[], **kw_args):
+    def __init__(self, erp_rec_line_items=None, **kw_args):
         """ Initialises a new 'ErpReceivable' instance.
         """
         
         self._erp_rec_line_items = []
-        self.erp_rec_line_items = erp_rec_line_items
+        if erp_rec_line_items is None:
+            self.erp_rec_line_items = []
+        else:
+            self.erp_rec_line_items = erp_rec_line_items
 
         super(ErpReceivable, self).__init__(**kw_args)
     # >>> erp_receivable
@@ -1427,9 +1511,9 @@ class ErpReceivable(Document):
 
     def set_erp_rec_line_items(self, value):
         for x in self._erp_rec_line_items:
-            x._erp_receivable = None
+            x.erp_receivable = None
         for y in value:
-            y._erp_receivable = self
+            y.erp_receivable = self
         self._erp_rec_line_items = value
             
     erp_rec_line_items = property(get_erp_rec_line_items, set_erp_rec_line_items)
@@ -1437,7 +1521,8 @@ class ErpReceivable(Document):
     def add_erp_rec_line_items(self, *erp_rec_line_items):
         for obj in erp_rec_line_items:
             obj._erp_receivable = self
-            self._erp_rec_line_items.append(obj)
+            if obj not in self._erp_rec_line_items:
+                self._erp_rec_line_items.append(obj)
         
     def remove_erp_rec_line_items(self, *erp_rec_line_items):
         for obj in erp_rec_line_items:
@@ -1456,7 +1541,7 @@ class ErpBankAccount(BankAccount):
         """ Initialises a new 'ErpBankAccount' instance.
         """
         # Bank ABA. 
-        self.bank_aba = ''
+        self.bank_aba = bank_aba
         
 
         super(ErpBankAccount, self).__init__(**kw_args)
@@ -1473,7 +1558,7 @@ class OrgErpPersonRole(Role):
         """ Initialises a new 'OrgErpPersonRole' instance.
         """
         # Identifiers of the person held by an organisation, such as a government agency (federal, state, province, city, county), financial institutions, etc. 
-        self.client_id = ''
+        self.client_id = client_id
         
         self._erp_organisation = None
         self.erp_organisation = erp_organisation
@@ -1497,7 +1582,8 @@ class OrgErpPersonRole(Role):
             
         self._erp_organisation = value
         if self._erp_organisation is not None:
-            self._erp_organisation._erp_person_roles.append(self)
+            if self not in self._erp_organisation._erp_person_roles:
+                self._erp_organisation._erp_person_roles.append(self)
 
     erp_organisation = property(get_erp_organisation, set_erp_organisation)
     # >>> erp_organisation
@@ -1516,7 +1602,8 @@ class OrgErpPersonRole(Role):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._erp_organisation_roles.append(self)
+            if self not in self._erp_person._erp_organisation_roles:
+                self._erp_person._erp_organisation_roles.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -1560,7 +1647,8 @@ class ErpTimeEntry(IdentifiedObject):
             
         self._erp_time_sheet = value
         if self._erp_time_sheet is not None:
-            self._erp_time_sheet._erp_time_entries.append(self)
+            if self not in self._erp_time_sheet._erp_time_entries:
+                self._erp_time_sheet._erp_time_entries.append(self)
 
     erp_time_sheet = property(get_erp_time_sheet, set_erp_time_sheet)
     # >>> erp_time_sheet
@@ -1579,7 +1667,8 @@ class ErpTimeEntry(IdentifiedObject):
             
         self._erp_project_accounting = value
         if self._erp_project_accounting is not None:
-            self._erp_project_accounting._erp_time_entries.append(self)
+            if self not in self._erp_project_accounting._erp_time_entries:
+                self._erp_project_accounting._erp_time_entries.append(self)
 
     erp_project_accounting = property(get_erp_project_accounting, set_erp_project_accounting)
     # >>> erp_project_accounting
@@ -1591,14 +1680,20 @@ class ErpPayable(Document):
     """
     # <<< erp_payable
     # @generated
-    def __init__(self, erp_payable_line_items=[], contractor_items=[], **kw_args):
+    def __init__(self, erp_payable_line_items=None, contractor_items=None, **kw_args):
         """ Initialises a new 'ErpPayable' instance.
         """
         
         self._erp_payable_line_items = []
-        self.erp_payable_line_items = erp_payable_line_items
+        if erp_payable_line_items is None:
+            self.erp_payable_line_items = []
+        else:
+            self.erp_payable_line_items = erp_payable_line_items
         self._contractor_items = []
-        self.contractor_items = contractor_items
+        if contractor_items is None:
+            self.contractor_items = []
+        else:
+            self.contractor_items = contractor_items
 
         super(ErpPayable, self).__init__(**kw_args)
     # >>> erp_payable
@@ -1612,9 +1707,9 @@ class ErpPayable(Document):
 
     def set_erp_payable_line_items(self, value):
         for x in self._erp_payable_line_items:
-            x._erp_payable = None
+            x.erp_payable = None
         for y in value:
-            y._erp_payable = self
+            y.erp_payable = self
         self._erp_payable_line_items = value
             
     erp_payable_line_items = property(get_erp_payable_line_items, set_erp_payable_line_items)
@@ -1622,7 +1717,8 @@ class ErpPayable(Document):
     def add_erp_payable_line_items(self, *erp_payable_line_items):
         for obj in erp_payable_line_items:
             obj._erp_payable = self
-            self._erp_payable_line_items.append(obj)
+            if obj not in self._erp_payable_line_items:
+                self._erp_payable_line_items.append(obj)
         
     def remove_erp_payable_line_items(self, *erp_payable_line_items):
         for obj in erp_payable_line_items:
@@ -1668,65 +1764,113 @@ class ErpPerson(IdentifiedObject):
     """
     # <<< erp_person
     # @generated
-    def __init__(self, first_name='', suffix='', prefix='', government_id='', last_name='', m_name='', special_need='', category='', status=None, crafts=[], labor_items=[], erp_personnel=None, location_roles=[], electronic_addresses=[], switching_step_roles=[], activity_records=[], land_property_roles=[], erp_organisation_roles=[], call_backs=[], change_items=[], skills=[], erp_competency=None, erp_telephone_numbers=[], customer_data=None, document_roles=[], crews=[], measurement_values=[], appointments=[], **kw_args):
+    def __init__(self, first_name='', suffix='', prefix='', government_id='', last_name='', m_name='', special_need='', category='', status=None, crafts=None, labor_items=None, erp_personnel=None, location_roles=None, electronic_addresses=None, switching_step_roles=None, activity_records=None, land_property_roles=None, erp_organisation_roles=None, call_backs=None, change_items=None, skills=None, erp_competency=None, erp_telephone_numbers=None, customer_data=None, document_roles=None, crews=None, measurement_values=None, appointments=None, **kw_args):
         """ Initialises a new 'ErpPerson' instance.
         """
         # Person's first name. 
-        self.first_name = ''
+        self.first_name = first_name
         # A suffix for the person's name, such as II, III, etc. 
-        self.suffix = ''
+        self.suffix = suffix
         # A prefix or title for the person's name, such as Miss, Mister, Doctor, etc. 
-        self.prefix = ''
+        self.prefix = prefix
         # Unique identifier for person relative to its governing authority, for example a federal tax identifier (such as a Social Security number in the United States). 
-        self.government_id = ''
+        self.government_id = government_id
         # Person's last (family, sir) name. 
-        self.last_name = ''
+        self.last_name = last_name
         # Middle name(s) or initial(s). 
-        self.m_name = ''
+        self.m_name = m_name
         # Special service needs for the person (contact) are described; examples include life support, etc. 
-        self.special_need = ''
+        self.special_need = special_need
         # Category of this person relative to utility operations, classified according to the utility's corporate standards and practices. Examples include employee, contractor, agent, not affiliated, etc. Note that this field is not used to indicate whether this person is a customer of the utility. Often an employee or contractor is also a customer. Customer information is gained with relationship to Organisation and CustomerData. In similar fashion, this field does not indicate the various roles this person may fill as part of utility operations. 
-        self.category = ''
+        self.category = category
         
         self.status = status
         self._crafts = []
-        self.crafts = crafts
+        if crafts is None:
+            self.crafts = []
+        else:
+            self.crafts = crafts
         self._labor_items = []
-        self.labor_items = labor_items
+        if labor_items is None:
+            self.labor_items = []
+        else:
+            self.labor_items = labor_items
         self._erp_personnel = None
         self.erp_personnel = erp_personnel
         self._location_roles = []
-        self.location_roles = location_roles
+        if location_roles is None:
+            self.location_roles = []
+        else:
+            self.location_roles = location_roles
         self._electronic_addresses = []
-        self.electronic_addresses = electronic_addresses
+        if electronic_addresses is None:
+            self.electronic_addresses = []
+        else:
+            self.electronic_addresses = electronic_addresses
         self._switching_step_roles = []
-        self.switching_step_roles = switching_step_roles
+        if switching_step_roles is None:
+            self.switching_step_roles = []
+        else:
+            self.switching_step_roles = switching_step_roles
         self._activity_records = []
-        self.activity_records = activity_records
+        if activity_records is None:
+            self.activity_records = []
+        else:
+            self.activity_records = activity_records
         self._land_property_roles = []
-        self.land_property_roles = land_property_roles
+        if land_property_roles is None:
+            self.land_property_roles = []
+        else:
+            self.land_property_roles = land_property_roles
         self._erp_organisation_roles = []
-        self.erp_organisation_roles = erp_organisation_roles
+        if erp_organisation_roles is None:
+            self.erp_organisation_roles = []
+        else:
+            self.erp_organisation_roles = erp_organisation_roles
         self._call_backs = []
-        self.call_backs = call_backs
+        if call_backs is None:
+            self.call_backs = []
+        else:
+            self.call_backs = call_backs
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
         self._skills = []
-        self.skills = skills
+        if skills is None:
+            self.skills = []
+        else:
+            self.skills = skills
         self._erp_competency = None
         self.erp_competency = erp_competency
         self._erp_telephone_numbers = []
-        self.erp_telephone_numbers = erp_telephone_numbers
+        if erp_telephone_numbers is None:
+            self.erp_telephone_numbers = []
+        else:
+            self.erp_telephone_numbers = erp_telephone_numbers
         self._customer_data = None
         self.customer_data = customer_data
         self._document_roles = []
-        self.document_roles = document_roles
+        if document_roles is None:
+            self.document_roles = []
+        else:
+            self.document_roles = document_roles
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
         self._measurement_values = []
-        self.measurement_values = measurement_values
+        if measurement_values is None:
+            self.measurement_values = []
+        else:
+            self.measurement_values = measurement_values
         self._appointments = []
-        self.appointments = appointments
+        if appointments is None:
+            self.appointments = []
+        else:
+            self.appointments = appointments
 
         super(ErpPerson, self).__init__(**kw_args)
     # >>> erp_person
@@ -1812,7 +1956,8 @@ class ErpPerson(IdentifiedObject):
             
         self._erp_personnel = value
         if self._erp_personnel is not None:
-            self._erp_personnel._erp_persons.append(self)
+            if self not in self._erp_personnel._erp_persons:
+                self._erp_personnel._erp_persons.append(self)
 
     erp_personnel = property(get_erp_personnel, set_erp_personnel)
     # >>> erp_personnel
@@ -1826,9 +1971,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_location_roles(self, value):
         for x in self._location_roles:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._location_roles = value
             
     location_roles = property(get_location_roles, set_location_roles)
@@ -1836,7 +1981,8 @@ class ErpPerson(IdentifiedObject):
     def add_location_roles(self, *location_roles):
         for obj in location_roles:
             obj._erp_person = self
-            self._location_roles.append(obj)
+            if obj not in self._location_roles:
+                self._location_roles.append(obj)
         
     def remove_location_roles(self, *location_roles):
         for obj in location_roles:
@@ -1853,9 +1999,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_electronic_addresses(self, value):
         for x in self._electronic_addresses:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._electronic_addresses = value
             
     electronic_addresses = property(get_electronic_addresses, set_electronic_addresses)
@@ -1863,7 +2009,8 @@ class ErpPerson(IdentifiedObject):
     def add_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
             obj._erp_person = self
-            self._electronic_addresses.append(obj)
+            if obj not in self._electronic_addresses:
+                self._electronic_addresses.append(obj)
         
     def remove_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
@@ -1880,9 +2027,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_switching_step_roles(self, value):
         for x in self._switching_step_roles:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._switching_step_roles = value
             
     switching_step_roles = property(get_switching_step_roles, set_switching_step_roles)
@@ -1890,7 +2037,8 @@ class ErpPerson(IdentifiedObject):
     def add_switching_step_roles(self, *switching_step_roles):
         for obj in switching_step_roles:
             obj._erp_person = self
-            self._switching_step_roles.append(obj)
+            if obj not in self._switching_step_roles:
+                self._switching_step_roles.append(obj)
         
     def remove_switching_step_roles(self, *switching_step_roles):
         for obj in switching_step_roles:
@@ -1938,9 +2086,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_land_property_roles(self, value):
         for x in self._land_property_roles:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._land_property_roles = value
             
     land_property_roles = property(get_land_property_roles, set_land_property_roles)
@@ -1948,7 +2096,8 @@ class ErpPerson(IdentifiedObject):
     def add_land_property_roles(self, *land_property_roles):
         for obj in land_property_roles:
             obj._erp_person = self
-            self._land_property_roles.append(obj)
+            if obj not in self._land_property_roles:
+                self._land_property_roles.append(obj)
         
     def remove_land_property_roles(self, *land_property_roles):
         for obj in land_property_roles:
@@ -1965,9 +2114,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_erp_organisation_roles(self, value):
         for x in self._erp_organisation_roles:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._erp_organisation_roles = value
             
     erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
@@ -1975,7 +2124,8 @@ class ErpPerson(IdentifiedObject):
     def add_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
             obj._erp_person = self
-            self._erp_organisation_roles.append(obj)
+            if obj not in self._erp_organisation_roles:
+                self._erp_organisation_roles.append(obj)
         
     def remove_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
@@ -2023,9 +2173,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -2033,7 +2183,8 @@ class ErpPerson(IdentifiedObject):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._erp_person = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -2050,9 +2201,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_skills(self, value):
         for x in self._skills:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._skills = value
             
     skills = property(get_skills, set_skills)
@@ -2060,7 +2211,8 @@ class ErpPerson(IdentifiedObject):
     def add_skills(self, *skills):
         for obj in skills:
             obj._erp_person = self
-            self._skills.append(obj)
+            if obj not in self._skills:
+                self._skills.append(obj)
         
     def remove_skills(self, *skills):
         for obj in skills:
@@ -2082,7 +2234,8 @@ class ErpPerson(IdentifiedObject):
             
         self._erp_competency = value
         if self._erp_competency is not None:
-            self._erp_competency._erp_persons.append(self)
+            if self not in self._erp_competency._erp_persons:
+                self._erp_competency._erp_persons.append(self)
 
     erp_competency = property(get_erp_competency, set_erp_competency)
     # >>> erp_competency
@@ -2132,7 +2285,8 @@ class ErpPerson(IdentifiedObject):
             
         self._customer_data = value
         if self._customer_data is not None:
-            self._customer_data._erp_persons.append(self)
+            if self not in self._customer_data._erp_persons:
+                self._customer_data._erp_persons.append(self)
 
     customer_data = property(get_customer_data, set_customer_data)
     # >>> customer_data
@@ -2146,9 +2300,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_document_roles(self, value):
         for x in self._document_roles:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._document_roles = value
             
     document_roles = property(get_document_roles, set_document_roles)
@@ -2156,7 +2310,8 @@ class ErpPerson(IdentifiedObject):
     def add_document_roles(self, *document_roles):
         for obj in document_roles:
             obj._erp_person = self
-            self._document_roles.append(obj)
+            if obj not in self._document_roles:
+                self._document_roles.append(obj)
         
     def remove_document_roles(self, *document_roles):
         for obj in document_roles:
@@ -2204,9 +2359,9 @@ class ErpPerson(IdentifiedObject):
 
     def set_measurement_values(self, value):
         for x in self._measurement_values:
-            x._erp_person = None
+            x.erp_person = None
         for y in value:
-            y._erp_person = self
+            y.erp_person = self
         self._measurement_values = value
             
     measurement_values = property(get_measurement_values, set_measurement_values)
@@ -2214,7 +2369,8 @@ class ErpPerson(IdentifiedObject):
     def add_measurement_values(self, *measurement_values):
         for obj in measurement_values:
             obj._erp_person = self
-            self._measurement_values.append(obj)
+            if obj not in self._measurement_values:
+                self._measurement_values.append(obj)
         
     def remove_measurement_values(self, *measurement_values):
         for obj in measurement_values:
@@ -2300,7 +2456,8 @@ class ErpQuoteLineItem(IdentifiedObject):
             
         self._asset_model_catalogue_item = value
         if self._asset_model_catalogue_item is not None:
-            self._asset_model_catalogue_item._erp_quote_line_items.append(self)
+            if self not in self._asset_model_catalogue_item._erp_quote_line_items:
+                self._asset_model_catalogue_item._erp_quote_line_items.append(self)
 
     asset_model_catalogue_item = property(get_asset_model_catalogue_item, set_asset_model_catalogue_item)
     # >>> asset_model_catalogue_item
@@ -2337,7 +2494,8 @@ class ErpQuoteLineItem(IdentifiedObject):
             
         self._erp_quote = value
         if self._erp_quote is not None:
-            self._erp_quote._erp_quote_line_items.append(self)
+            if self not in self._erp_quote._erp_quote_line_items:
+                self._erp_quote._erp_quote_line_items.append(self)
 
     erp_quote = property(get_erp_quote, set_erp_quote)
     # >>> erp_quote
@@ -2403,33 +2561,42 @@ class ErpJournalEntry(IdentifiedObject):
     """
     # <<< erp_journal_entry
     # @generated
-    def __init__(self, posting_date_time='', amount='', source_id='', transaction_date_time='', account_id='', status=None, erp_rec_line_items=[], erp_journal=None, erp_payable_line_items=[], erp_ledger_entry=None, erp_invoice_line_item=None, cost_types=[], **kw_args):
+    def __init__(self, posting_date_time='', amount=0.0, source_id='', transaction_date_time='', account_id='', status=None, erp_rec_line_items=None, erp_journal=None, erp_payable_line_items=None, erp_ledger_entry=None, erp_invoice_line_item=None, cost_types=None, **kw_args):
         """ Initialises a new 'ErpJournalEntry' instance.
         """
         # Date and time this entry is to be posted to the ledger. 
-        self.posting_date_time = ''
+        self.posting_date_time = posting_date_time
         # The amount of the debit or credit for this account. 
-        self.amount = ''
+        self.amount = amount
         # The identifer of the source for this entry. 
-        self.source_id = ''
+        self.source_id = source_id
         # Date and time journal entry was recorded. 
-        self.transaction_date_time = ''
+        self.transaction_date_time = transaction_date_time
         # Account identifier for this entry. 
-        self.account_id = ''
+        self.account_id = account_id
         
         self.status = status
         self._erp_rec_line_items = []
-        self.erp_rec_line_items = erp_rec_line_items
+        if erp_rec_line_items is None:
+            self.erp_rec_line_items = []
+        else:
+            self.erp_rec_line_items = erp_rec_line_items
         self._erp_journal = None
         self.erp_journal = erp_journal
         self._erp_payable_line_items = []
-        self.erp_payable_line_items = erp_payable_line_items
+        if erp_payable_line_items is None:
+            self.erp_payable_line_items = []
+        else:
+            self.erp_payable_line_items = erp_payable_line_items
         self._erp_ledger_entry = None
         self.erp_ledger_entry = erp_ledger_entry
         self._erp_invoice_line_item = None
         self.erp_invoice_line_item = erp_invoice_line_item
         self._cost_types = []
-        self.cost_types = cost_types
+        if cost_types is None:
+            self.cost_types = []
+        else:
+            self.cost_types = cost_types
 
         super(ErpJournalEntry, self).__init__(**kw_args)
     # >>> erp_journal_entry
@@ -2484,7 +2651,8 @@ class ErpJournalEntry(IdentifiedObject):
             
         self._erp_journal = value
         if self._erp_journal is not None:
-            self._erp_journal._erp_journal_entries.append(self)
+            if self not in self._erp_journal._erp_journal_entries:
+                self._erp_journal._erp_journal_entries.append(self)
 
     erp_journal = property(get_erp_journal, set_erp_journal)
     # >>> erp_journal
@@ -2552,7 +2720,8 @@ class ErpJournalEntry(IdentifiedObject):
             
         self._erp_invoice_line_item = value
         if self._erp_invoice_line_item is not None:
-            self._erp_invoice_line_item._erp_journal_entries.append(self)
+            if self not in self._erp_invoice_line_item._erp_journal_entries:
+                self._erp_invoice_line_item._erp_journal_entries.append(self)
 
     erp_invoice_line_item = property(get_erp_invoice_line_item, set_erp_invoice_line_item)
     # >>> erp_invoice_line_item
@@ -2623,7 +2792,8 @@ class ErpBomItemData(IdentifiedObject):
             
         self._type_asset = value
         if self._type_asset is not None:
-            self._type_asset._erp_bom_item_datas.append(self)
+            if self not in self._type_asset._erp_bom_item_datas:
+                self._type_asset._erp_bom_item_datas.append(self)
 
     type_asset = property(get_type_asset, set_type_asset)
     # >>> type_asset
@@ -2642,7 +2812,8 @@ class ErpBomItemData(IdentifiedObject):
             
         self._erp_bom = value
         if self._erp_bom is not None:
-            self._erp_bom._erp_bom_item_datas.append(self)
+            if self not in self._erp_bom._erp_bom_item_datas:
+                self._erp_bom._erp_bom_item_datas.append(self)
 
     erp_bom = property(get_erp_bom, set_erp_bom)
     # >>> erp_bom
@@ -2661,7 +2832,8 @@ class ErpBomItemData(IdentifiedObject):
             
         self._design_location = value
         if self._design_location is not None:
-            self._design_location._erp_bom_item_datas.append(self)
+            if self not in self._design_location._erp_bom_item_datas:
+                self._design_location._erp_bom_item_datas.append(self)
 
     design_location = property(get_design_location, set_design_location)
     # >>> design_location
@@ -2673,12 +2845,15 @@ class ErpCompetency(IdentifiedObject):
     """
     # <<< erp_competency
     # @generated
-    def __init__(self, erp_persons=[], **kw_args):
+    def __init__(self, erp_persons=None, **kw_args):
         """ Initialises a new 'ErpCompetency' instance.
         """
         
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
 
         super(ErpCompetency, self).__init__(**kw_args)
     # >>> erp_competency
@@ -2692,9 +2867,9 @@ class ErpCompetency(IdentifiedObject):
 
     def set_erp_persons(self, value):
         for x in self._erp_persons:
-            x._erp_competency = None
+            x.erp_competency = None
         for y in value:
-            y._erp_competency = self
+            y.erp_competency = self
         self._erp_persons = value
             
     erp_persons = property(get_erp_persons, set_erp_persons)
@@ -2702,7 +2877,8 @@ class ErpCompetency(IdentifiedObject):
     def add_erp_persons(self, *erp_persons):
         for obj in erp_persons:
             obj._erp_competency = self
-            self._erp_persons.append(obj)
+            if obj not in self._erp_persons:
+                self._erp_persons.append(obj)
         
     def remove_erp_persons(self, *erp_persons):
         for obj in erp_persons:
@@ -2733,12 +2909,15 @@ class ErpLedgerBudget(Document):
     """
     # <<< erp_ledger_budget
     # @generated
-    def __init__(self, erp_led_bud_line_items=[], **kw_args):
+    def __init__(self, erp_led_bud_line_items=None, **kw_args):
         """ Initialises a new 'ErpLedgerBudget' instance.
         """
         
         self._erp_led_bud_line_items = []
-        self.erp_led_bud_line_items = erp_led_bud_line_items
+        if erp_led_bud_line_items is None:
+            self.erp_led_bud_line_items = []
+        else:
+            self.erp_led_bud_line_items = erp_led_bud_line_items
 
         super(ErpLedgerBudget, self).__init__(**kw_args)
     # >>> erp_ledger_budget
@@ -2752,9 +2931,9 @@ class ErpLedgerBudget(Document):
 
     def set_erp_led_bud_line_items(self, value):
         for x in self._erp_led_bud_line_items:
-            x._erp_ledger_budget = None
+            x.erp_ledger_budget = None
         for y in value:
-            y._erp_ledger_budget = self
+            y.erp_ledger_budget = self
         self._erp_led_bud_line_items = value
             
     erp_led_bud_line_items = property(get_erp_led_bud_line_items, set_erp_led_bud_line_items)
@@ -2762,7 +2941,8 @@ class ErpLedgerBudget(Document):
     def add_erp_led_bud_line_items(self, *erp_led_bud_line_items):
         for obj in erp_led_bud_line_items:
             obj._erp_ledger_budget = self
-            self._erp_led_bud_line_items.append(obj)
+            if obj not in self._erp_led_bud_line_items:
+                self._erp_led_bud_line_items.append(obj)
         
     def remove_erp_led_bud_line_items(self, *erp_led_bud_line_items):
         for obj in erp_led_bud_line_items:
@@ -2777,56 +2957,101 @@ class ErpOrganisation(Organisation):
     """
     # <<< erp_organisation
     # @generated
-    def __init__(self, opt_out=False, mode='', is_cost_center=False, code='', is_profit_center=False, government_id='', category='', industry_id='', registered_resources=[], parent_organisation_roles=[], location_roles=[], requests=[], erp_person_roles=[], change_items=[], child_organisation_roles=[], activity_records=[], int_sched_agreement=[], land_property_roles=[], power_system_resource_roles=[], asset_roles=[], violation_limits=[], document_roles=[], crews=[], **kw_args):
+    def __init__(self, opt_out=False, mode='', is_cost_center=False, code='', is_profit_center=False, government_id='', category='', industry_id='', registered_resources=None, parent_organisation_roles=None, location_roles=None, requests=None, erp_person_roles=None, change_items=None, child_organisation_roles=None, activity_records=None, int_sched_agreement=None, land_property_roles=None, power_system_resource_roles=None, asset_roles=None, violation_limits=None, document_roles=None, crews=None, **kw_args):
         """ Initialises a new 'ErpOrganisation' instance.
         """
         # True if organisation 'opted out', i.e., has requested that their contact information not be shared with other organisations for purposes of solicitation. 
-        self.opt_out = False
+        self.opt_out = opt_out
         # Operational mode of the organisation, often required for outage reporting purposes. Some utilities use text to describe various modes (like nominal, emergency, storm, other), while others use severity ratings (for example, 0 is a nominal condition and 5 is the most severe condition). 
-        self.mode = ''
+        self.mode = mode
         # True if organisation is cost center. 
-        self.is_cost_center = False
+        self.is_cost_center = is_cost_center
         # Designated code for organisation. 
-        self.code = ''
+        self.code = code
         # True if organisation is profit center. 
-        self.is_profit_center = False
+        self.is_profit_center = is_profit_center
         # Unique identifier for organisation relative to its governing authority, for example a federal tax identifier. 
-        self.government_id = ''
+        self.government_id = government_id
         # Category by utility's corporate standards and practices. 
-        self.category = ''
+        self.category = category
         # Unique identifier for a given organisation (business). In the USA, this is a 'Dunns' or D&amp;B number. This identifier is typically in addition to the identifiers that organizations assign (on an internal basis) to each of their locations. Note that a unique identifier can be set up for each location of an organisation. This requirement is supported through the recursive Organisation-Organisation relationship, where each child Organisation can have a specified physical location. 
-        self.industry_id = ''
+        self.industry_id = industry_id
         
         self._registered_resources = []
-        self.registered_resources = registered_resources
+        if registered_resources is None:
+            self.registered_resources = []
+        else:
+            self.registered_resources = registered_resources
         self._parent_organisation_roles = []
-        self.parent_organisation_roles = parent_organisation_roles
+        if parent_organisation_roles is None:
+            self.parent_organisation_roles = []
+        else:
+            self.parent_organisation_roles = parent_organisation_roles
         self._location_roles = []
-        self.location_roles = location_roles
+        if location_roles is None:
+            self.location_roles = []
+        else:
+            self.location_roles = location_roles
         self._requests = []
-        self.requests = requests
+        if requests is None:
+            self.requests = []
+        else:
+            self.requests = requests
         self._erp_person_roles = []
-        self.erp_person_roles = erp_person_roles
+        if erp_person_roles is None:
+            self.erp_person_roles = []
+        else:
+            self.erp_person_roles = erp_person_roles
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
         self._child_organisation_roles = []
-        self.child_organisation_roles = child_organisation_roles
+        if child_organisation_roles is None:
+            self.child_organisation_roles = []
+        else:
+            self.child_organisation_roles = child_organisation_roles
         self._activity_records = []
-        self.activity_records = activity_records
+        if activity_records is None:
+            self.activity_records = []
+        else:
+            self.activity_records = activity_records
         self._int_sched_agreement = []
-        self.int_sched_agreement = int_sched_agreement
+        if int_sched_agreement is None:
+            self.int_sched_agreement = []
+        else:
+            self.int_sched_agreement = int_sched_agreement
         self._land_property_roles = []
-        self.land_property_roles = land_property_roles
+        if land_property_roles is None:
+            self.land_property_roles = []
+        else:
+            self.land_property_roles = land_property_roles
         self._power_system_resource_roles = []
-        self.power_system_resource_roles = power_system_resource_roles
+        if power_system_resource_roles is None:
+            self.power_system_resource_roles = []
+        else:
+            self.power_system_resource_roles = power_system_resource_roles
         self._asset_roles = []
-        self.asset_roles = asset_roles
+        if asset_roles is None:
+            self.asset_roles = []
+        else:
+            self.asset_roles = asset_roles
         self._violation_limits = []
-        self.violation_limits = violation_limits
+        if violation_limits is None:
+            self.violation_limits = []
+        else:
+            self.violation_limits = violation_limits
         self._document_roles = []
-        self.document_roles = document_roles
+        if document_roles is None:
+            self.document_roles = []
+        else:
+            self.document_roles = document_roles
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
 
         super(ErpOrganisation, self).__init__(**kw_args)
     # >>> erp_organisation
@@ -2840,9 +3065,9 @@ class ErpOrganisation(Organisation):
 
     def set_registered_resources(self, value):
         for x in self._registered_resources:
-            x._organisation = None
+            x.organisation = None
         for y in value:
-            y._organisation = self
+            y.organisation = self
         self._registered_resources = value
             
     registered_resources = property(get_registered_resources, set_registered_resources)
@@ -2850,7 +3075,8 @@ class ErpOrganisation(Organisation):
     def add_registered_resources(self, *registered_resources):
         for obj in registered_resources:
             obj._organisation = self
-            self._registered_resources.append(obj)
+            if obj not in self._registered_resources:
+                self._registered_resources.append(obj)
         
     def remove_registered_resources(self, *registered_resources):
         for obj in registered_resources:
@@ -2867,9 +3093,9 @@ class ErpOrganisation(Organisation):
 
     def set_parent_organisation_roles(self, value):
         for x in self._parent_organisation_roles:
-            x._child_organisation = None
+            x.child_organisation = None
         for y in value:
-            y._child_organisation = self
+            y.child_organisation = self
         self._parent_organisation_roles = value
             
     parent_organisation_roles = property(get_parent_organisation_roles, set_parent_organisation_roles)
@@ -2877,7 +3103,8 @@ class ErpOrganisation(Organisation):
     def add_parent_organisation_roles(self, *parent_organisation_roles):
         for obj in parent_organisation_roles:
             obj._child_organisation = self
-            self._parent_organisation_roles.append(obj)
+            if obj not in self._parent_organisation_roles:
+                self._parent_organisation_roles.append(obj)
         
     def remove_parent_organisation_roles(self, *parent_organisation_roles):
         for obj in parent_organisation_roles:
@@ -2894,9 +3121,9 @@ class ErpOrganisation(Organisation):
 
     def set_location_roles(self, value):
         for x in self._location_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._location_roles = value
             
     location_roles = property(get_location_roles, set_location_roles)
@@ -2904,7 +3131,8 @@ class ErpOrganisation(Organisation):
     def add_location_roles(self, *location_roles):
         for obj in location_roles:
             obj._erp_organisation = self
-            self._location_roles.append(obj)
+            if obj not in self._location_roles:
+                self._location_roles.append(obj)
         
     def remove_location_roles(self, *location_roles):
         for obj in location_roles:
@@ -2921,9 +3149,9 @@ class ErpOrganisation(Organisation):
 
     def set_requests(self, value):
         for x in self._requests:
-            x._organisation = None
+            x.organisation = None
         for y in value:
-            y._organisation = self
+            y.organisation = self
         self._requests = value
             
     requests = property(get_requests, set_requests)
@@ -2931,7 +3159,8 @@ class ErpOrganisation(Organisation):
     def add_requests(self, *requests):
         for obj in requests:
             obj._organisation = self
-            self._requests.append(obj)
+            if obj not in self._requests:
+                self._requests.append(obj)
         
     def remove_requests(self, *requests):
         for obj in requests:
@@ -2948,9 +3177,9 @@ class ErpOrganisation(Organisation):
 
     def set_erp_person_roles(self, value):
         for x in self._erp_person_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._erp_person_roles = value
             
     erp_person_roles = property(get_erp_person_roles, set_erp_person_roles)
@@ -2958,7 +3187,8 @@ class ErpOrganisation(Organisation):
     def add_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
             obj._erp_organisation = self
-            self._erp_person_roles.append(obj)
+            if obj not in self._erp_person_roles:
+                self._erp_person_roles.append(obj)
         
     def remove_erp_person_roles(self, *erp_person_roles):
         for obj in erp_person_roles:
@@ -2975,9 +3205,9 @@ class ErpOrganisation(Organisation):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._organisation = None
+            x.organisation = None
         for y in value:
-            y._organisation = self
+            y.organisation = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -2985,7 +3215,8 @@ class ErpOrganisation(Organisation):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._organisation = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -3002,9 +3233,9 @@ class ErpOrganisation(Organisation):
 
     def set_child_organisation_roles(self, value):
         for x in self._child_organisation_roles:
-            x._parent_organisation = None
+            x.parent_organisation = None
         for y in value:
-            y._parent_organisation = self
+            y.parent_organisation = self
         self._child_organisation_roles = value
             
     child_organisation_roles = property(get_child_organisation_roles, set_child_organisation_roles)
@@ -3012,7 +3243,8 @@ class ErpOrganisation(Organisation):
     def add_child_organisation_roles(self, *child_organisation_roles):
         for obj in child_organisation_roles:
             obj._parent_organisation = self
-            self._child_organisation_roles.append(obj)
+            if obj not in self._child_organisation_roles:
+                self._child_organisation_roles.append(obj)
         
     def remove_child_organisation_roles(self, *child_organisation_roles):
         for obj in child_organisation_roles:
@@ -3091,9 +3323,9 @@ class ErpOrganisation(Organisation):
 
     def set_land_property_roles(self, value):
         for x in self._land_property_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._land_property_roles = value
             
     land_property_roles = property(get_land_property_roles, set_land_property_roles)
@@ -3101,7 +3333,8 @@ class ErpOrganisation(Organisation):
     def add_land_property_roles(self, *land_property_roles):
         for obj in land_property_roles:
             obj._erp_organisation = self
-            self._land_property_roles.append(obj)
+            if obj not in self._land_property_roles:
+                self._land_property_roles.append(obj)
         
     def remove_land_property_roles(self, *land_property_roles):
         for obj in land_property_roles:
@@ -3118,9 +3351,9 @@ class ErpOrganisation(Organisation):
 
     def set_power_system_resource_roles(self, value):
         for x in self._power_system_resource_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._power_system_resource_roles = value
             
     power_system_resource_roles = property(get_power_system_resource_roles, set_power_system_resource_roles)
@@ -3128,7 +3361,8 @@ class ErpOrganisation(Organisation):
     def add_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
             obj._erp_organisation = self
-            self._power_system_resource_roles.append(obj)
+            if obj not in self._power_system_resource_roles:
+                self._power_system_resource_roles.append(obj)
         
     def remove_power_system_resource_roles(self, *power_system_resource_roles):
         for obj in power_system_resource_roles:
@@ -3145,9 +3379,9 @@ class ErpOrganisation(Organisation):
 
     def set_asset_roles(self, value):
         for x in self._asset_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._asset_roles = value
             
     asset_roles = property(get_asset_roles, set_asset_roles)
@@ -3155,7 +3389,8 @@ class ErpOrganisation(Organisation):
     def add_asset_roles(self, *asset_roles):
         for obj in asset_roles:
             obj._erp_organisation = self
-            self._asset_roles.append(obj)
+            if obj not in self._asset_roles:
+                self._asset_roles.append(obj)
         
     def remove_asset_roles(self, *asset_roles):
         for obj in asset_roles:
@@ -3203,9 +3438,9 @@ class ErpOrganisation(Organisation):
 
     def set_document_roles(self, value):
         for x in self._document_roles:
-            x._erp_organisation = None
+            x.erp_organisation = None
         for y in value:
-            y._erp_organisation = self
+            y.erp_organisation = self
         self._document_roles = value
             
     document_roles = property(get_document_roles, set_document_roles)
@@ -3213,7 +3448,8 @@ class ErpOrganisation(Organisation):
     def add_document_roles(self, *document_roles):
         for obj in document_roles:
             obj._erp_organisation = self
-            self._document_roles.append(obj)
+            if obj not in self._document_roles:
+                self._document_roles.append(obj)
         
     def remove_document_roles(self, *document_roles):
         for obj in document_roles:
@@ -3259,56 +3495,80 @@ class ErpInvoiceLineItem(Document):
     """
     # <<< erp_invoice_line_item
     # @generated
-    def __init__(self, previous_amount=0.0, line_number='', account_gl='', line_amount=0.0, start='', end='', kind='other', date_gl='', line_version='', net_amount=0.0, component_erp_invoice_line_items=[], erp_payable_line_item=None, erp_rec_delv_line_item=None, customer_billing_infos=[], erp_payments=[], erp_rec_line_item=None, market_factors=[], settlements=[], erp_invoice=None, erp_quote_line_item=None, work_billing_infos=[], user_attributes=[], erp_journal_entries=[], container_erp_invoice_line_item=None, **kw_args):
+    def __init__(self, previous_amount=0.0, line_number='', account_gl='', line_amount=0.0, start='', end='', kind='other', date_gl='', line_version='', net_amount=0.0, component_erp_invoice_line_items=None, erp_payable_line_item=None, erp_rec_delv_line_item=None, customer_billing_infos=None, erp_payments=None, erp_rec_line_item=None, market_factors=None, settlements=None, erp_invoice=None, erp_quote_line_item=None, work_billing_infos=None, user_attributes=None, erp_journal_entries=None, container_erp_invoice_line_item=None, **kw_args):
         """ Initialises a new 'ErpInvoiceLineItem' instance.
         """
         # The previous line item charge amount. 
-        self.previous_amount = 0.0
+        self.previous_amount = previous_amount
         # Line item number on invoice statement. 
-        self.line_number = ''
+        self.line_number = line_number
         # GL account code, must be a valid combination. 
-        self.account_gl = ''
+        self.account_gl = account_gl
         # The amount due for this line item. 
-        self.line_amount = 0.0
+        self.line_amount = line_amount
         # The start of a bill period for the line item. 
-        self.start = ''
+        self.start = start
         # The end of a bill period for the line item. 
-        self.end = ''
+        self.end = end
         # Kind of line item. Values are: "other", "recalculation", "initial"
-        self.kind = 'other'
+        self.kind = kind
         # Date line item will be posted to the General Ledger. 
-        self.date_gl = ''
+        self.date_gl = date_gl
         # The version number of the bill run. 
-        self.line_version = ''
+        self.line_version = line_version
         # The net line item charge amount. 
-        self.net_amount = 0.0
+        self.net_amount = net_amount
         
         self._component_erp_invoice_line_items = []
-        self.component_erp_invoice_line_items = component_erp_invoice_line_items
+        if component_erp_invoice_line_items is None:
+            self.component_erp_invoice_line_items = []
+        else:
+            self.component_erp_invoice_line_items = component_erp_invoice_line_items
         self._erp_payable_line_item = None
         self.erp_payable_line_item = erp_payable_line_item
         self._erp_rec_delv_line_item = None
         self.erp_rec_delv_line_item = erp_rec_delv_line_item
         self._customer_billing_infos = []
-        self.customer_billing_infos = customer_billing_infos
+        if customer_billing_infos is None:
+            self.customer_billing_infos = []
+        else:
+            self.customer_billing_infos = customer_billing_infos
         self._erp_payments = []
-        self.erp_payments = erp_payments
+        if erp_payments is None:
+            self.erp_payments = []
+        else:
+            self.erp_payments = erp_payments
         self._erp_rec_line_item = None
         self.erp_rec_line_item = erp_rec_line_item
         self._market_factors = []
-        self.market_factors = market_factors
+        if market_factors is None:
+            self.market_factors = []
+        else:
+            self.market_factors = market_factors
         self._settlements = []
-        self.settlements = settlements
+        if settlements is None:
+            self.settlements = []
+        else:
+            self.settlements = settlements
         self._erp_invoice = None
         self.erp_invoice = erp_invoice
         self._erp_quote_line_item = None
         self.erp_quote_line_item = erp_quote_line_item
         self._work_billing_infos = []
-        self.work_billing_infos = work_billing_infos
+        if work_billing_infos is None:
+            self.work_billing_infos = []
+        else:
+            self.work_billing_infos = work_billing_infos
         self._user_attributes = []
-        self.user_attributes = user_attributes
+        if user_attributes is None:
+            self.user_attributes = []
+        else:
+            self.user_attributes = user_attributes
         self._erp_journal_entries = []
-        self.erp_journal_entries = erp_journal_entries
+        if erp_journal_entries is None:
+            self.erp_journal_entries = []
+        else:
+            self.erp_journal_entries = erp_journal_entries
         self._container_erp_invoice_line_item = None
         self.container_erp_invoice_line_item = container_erp_invoice_line_item
 
@@ -3324,9 +3584,9 @@ class ErpInvoiceLineItem(Document):
 
     def set_component_erp_invoice_line_items(self, value):
         for x in self._component_erp_invoice_line_items:
-            x._container_erp_invoice_line_item = None
+            x.container_erp_invoice_line_item = None
         for y in value:
-            y._container_erp_invoice_line_item = self
+            y.container_erp_invoice_line_item = self
         self._component_erp_invoice_line_items = value
             
     component_erp_invoice_line_items = property(get_component_erp_invoice_line_items, set_component_erp_invoice_line_items)
@@ -3334,7 +3594,8 @@ class ErpInvoiceLineItem(Document):
     def add_component_erp_invoice_line_items(self, *component_erp_invoice_line_items):
         for obj in component_erp_invoice_line_items:
             obj._container_erp_invoice_line_item = self
-            self._component_erp_invoice_line_items.append(obj)
+            if obj not in self._component_erp_invoice_line_items:
+                self._component_erp_invoice_line_items.append(obj)
         
     def remove_component_erp_invoice_line_items(self, *component_erp_invoice_line_items):
         for obj in component_erp_invoice_line_items:
@@ -3534,7 +3795,8 @@ class ErpInvoiceLineItem(Document):
             
         self._erp_invoice = value
         if self._erp_invoice is not None:
-            self._erp_invoice._erp_invoice_line_items.append(self)
+            if self not in self._erp_invoice._erp_invoice_line_items:
+                self._erp_invoice._erp_invoice_line_items.append(self)
 
     erp_invoice = property(get_erp_invoice, set_erp_invoice)
     # >>> erp_invoice
@@ -3628,9 +3890,9 @@ class ErpInvoiceLineItem(Document):
 
     def set_erp_journal_entries(self, value):
         for x in self._erp_journal_entries:
-            x._erp_invoice_line_item = None
+            x.erp_invoice_line_item = None
         for y in value:
-            y._erp_invoice_line_item = self
+            y.erp_invoice_line_item = self
         self._erp_journal_entries = value
             
     erp_journal_entries = property(get_erp_journal_entries, set_erp_journal_entries)
@@ -3638,7 +3900,8 @@ class ErpInvoiceLineItem(Document):
     def add_erp_journal_entries(self, *erp_journal_entries):
         for obj in erp_journal_entries:
             obj._erp_invoice_line_item = self
-            self._erp_journal_entries.append(obj)
+            if obj not in self._erp_journal_entries:
+                self._erp_journal_entries.append(obj)
         
     def remove_erp_journal_entries(self, *erp_journal_entries):
         for obj in erp_journal_entries:
@@ -3660,7 +3923,8 @@ class ErpInvoiceLineItem(Document):
             
         self._container_erp_invoice_line_item = value
         if self._container_erp_invoice_line_item is not None:
-            self._container_erp_invoice_line_item._component_erp_invoice_line_items.append(self)
+            if self not in self._container_erp_invoice_line_item._component_erp_invoice_line_items:
+                self._container_erp_invoice_line_item._component_erp_invoice_line_items.append(self)
 
     container_erp_invoice_line_item = property(get_container_erp_invoice_line_item, set_container_erp_invoice_line_item)
     # >>> container_erp_invoice_line_item
@@ -3698,7 +3962,8 @@ class DocErpPersonRole(Role):
             
         self._erp_person = value
         if self._erp_person is not None:
-            self._erp_person._document_roles.append(self)
+            if self not in self._erp_person._document_roles:
+                self._erp_person._document_roles.append(self)
 
     erp_person = property(get_erp_person, set_erp_person)
     # >>> erp_person
@@ -3717,7 +3982,8 @@ class DocErpPersonRole(Role):
             
         self._document = value
         if self._document is not None:
-            self._document._erp_person_roles.append(self)
+            if self not in self._document._erp_person_roles:
+                self._document._erp_person_roles.append(self)
 
     document = property(get_document, set_document)
     # >>> document
@@ -3729,12 +3995,15 @@ class ErpRequisition(Document):
     """
     # <<< erp_requisition
     # @generated
-    def __init__(self, erp_req_line_items=[], **kw_args):
+    def __init__(self, erp_req_line_items=None, **kw_args):
         """ Initialises a new 'ErpRequisition' instance.
         """
         
         self._erp_req_line_items = []
-        self.erp_req_line_items = erp_req_line_items
+        if erp_req_line_items is None:
+            self.erp_req_line_items = []
+        else:
+            self.erp_req_line_items = erp_req_line_items
 
         super(ErpRequisition, self).__init__(**kw_args)
     # >>> erp_requisition
@@ -3748,9 +4017,9 @@ class ErpRequisition(Document):
 
     def set_erp_req_line_items(self, value):
         for x in self._erp_req_line_items:
-            x._erp_requisition = None
+            x.erp_requisition = None
         for y in value:
-            y._erp_requisition = self
+            y.erp_requisition = self
         self._erp_req_line_items = value
             
     erp_req_line_items = property(get_erp_req_line_items, set_erp_req_line_items)
@@ -3758,7 +4027,8 @@ class ErpRequisition(Document):
     def add_erp_req_line_items(self, *erp_req_line_items):
         for obj in erp_req_line_items:
             obj._erp_requisition = self
-            self._erp_req_line_items.append(obj)
+            if obj not in self._erp_req_line_items:
+                self._erp_req_line_items.append(obj)
         
     def remove_erp_req_line_items(self, *erp_req_line_items):
         for obj in erp_req_line_items:
@@ -3773,12 +4043,15 @@ class ErpReceiveDelivery(Document):
     """
     # <<< erp_receive_delivery
     # @generated
-    def __init__(self, erp_rec_delv_line_items=[], **kw_args):
+    def __init__(self, erp_rec_delv_line_items=None, **kw_args):
         """ Initialises a new 'ErpReceiveDelivery' instance.
         """
         
         self._erp_rec_delv_line_items = []
-        self.erp_rec_delv_line_items = erp_rec_delv_line_items
+        if erp_rec_delv_line_items is None:
+            self.erp_rec_delv_line_items = []
+        else:
+            self.erp_rec_delv_line_items = erp_rec_delv_line_items
 
         super(ErpReceiveDelivery, self).__init__(**kw_args)
     # >>> erp_receive_delivery
@@ -3792,9 +4065,9 @@ class ErpReceiveDelivery(Document):
 
     def set_erp_rec_delv_line_items(self, value):
         for x in self._erp_rec_delv_line_items:
-            x._erp_receive_delivery = None
+            x.erp_receive_delivery = None
         for y in value:
-            y._erp_receive_delivery = self
+            y.erp_receive_delivery = self
         self._erp_rec_delv_line_items = value
             
     erp_rec_delv_line_items = property(get_erp_rec_delv_line_items, set_erp_rec_delv_line_items)
@@ -3802,7 +4075,8 @@ class ErpReceiveDelivery(Document):
     def add_erp_rec_delv_line_items(self, *erp_rec_delv_line_items):
         for obj in erp_rec_delv_line_items:
             obj._erp_receive_delivery = self
-            self._erp_rec_delv_line_items.append(obj)
+            if obj not in self._erp_rec_delv_line_items:
+                self._erp_rec_delv_line_items.append(obj)
         
     def remove_erp_rec_delv_line_items(self, *erp_rec_delv_line_items):
         for obj in erp_rec_delv_line_items:
@@ -3833,13 +4107,16 @@ class ErpPersonnel(IdentifiedObject):
     """
     # <<< erp_personnel
     # @generated
-    def __init__(self, status=None, erp_persons=[], **kw_args):
+    def __init__(self, status=None, erp_persons=None, **kw_args):
         """ Initialises a new 'ErpPersonnel' instance.
         """
         
         self.status = status
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
 
         super(ErpPersonnel, self).__init__(**kw_args)
     # >>> erp_personnel
@@ -3858,9 +4135,9 @@ class ErpPersonnel(IdentifiedObject):
 
     def set_erp_persons(self, value):
         for x in self._erp_persons:
-            x._erp_personnel = None
+            x.erp_personnel = None
         for y in value:
-            y._erp_personnel = self
+            y.erp_personnel = self
         self._erp_persons = value
             
     erp_persons = property(get_erp_persons, set_erp_persons)
@@ -3868,7 +4145,8 @@ class ErpPersonnel(IdentifiedObject):
     def add_erp_persons(self, *erp_persons):
         for obj in erp_persons:
             obj._erp_personnel = self
-            self._erp_persons.append(obj)
+            if obj not in self._erp_persons:
+                self._erp_persons.append(obj)
         
     def remove_erp_persons(self, *erp_persons):
         for obj in erp_persons:
@@ -3883,13 +4161,16 @@ class ErpRecDelvLineItem(IdentifiedObject):
     """
     # <<< erp_rec_delv_line_item
     # @generated
-    def __init__(self, status=None, material_items=[], erp_invoice_line_item=None, erp_receive_delivery=None, erp_poline_item=None, assets=[], **kw_args):
+    def __init__(self, status=None, material_items=None, erp_invoice_line_item=None, erp_receive_delivery=None, erp_poline_item=None, assets=None, **kw_args):
         """ Initialises a new 'ErpRecDelvLineItem' instance.
         """
         
         self.status = status
         self._material_items = []
-        self.material_items = material_items
+        if material_items is None:
+            self.material_items = []
+        else:
+            self.material_items = material_items
         self._erp_invoice_line_item = None
         self.erp_invoice_line_item = erp_invoice_line_item
         self._erp_receive_delivery = None
@@ -3897,7 +4178,10 @@ class ErpRecDelvLineItem(IdentifiedObject):
         self._erp_poline_item = None
         self.erp_poline_item = erp_poline_item
         self._assets = []
-        self.assets = assets
+        if assets is None:
+            self.assets = []
+        else:
+            self.assets = assets
 
         super(ErpRecDelvLineItem, self).__init__(**kw_args)
     # >>> erp_rec_delv_line_item
@@ -3970,7 +4254,8 @@ class ErpRecDelvLineItem(IdentifiedObject):
             
         self._erp_receive_delivery = value
         if self._erp_receive_delivery is not None:
-            self._erp_receive_delivery._erp_rec_delv_line_items.append(self)
+            if self not in self._erp_receive_delivery._erp_rec_delv_line_items:
+                self._erp_receive_delivery._erp_rec_delv_line_items.append(self)
 
     erp_receive_delivery = property(get_erp_receive_delivery, set_erp_receive_delivery)
     # >>> erp_receive_delivery
@@ -4031,17 +4316,20 @@ class ErpTelephoneNumber(TelephoneNumber):
     """
     # <<< erp_telephone_number
     # @generated
-    def __init__(self, usage='', status=None, electronic_address=None, erp_persons=[], **kw_args):
+    def __init__(self, usage='', status=None, electronic_address=None, erp_persons=None, **kw_args):
         """ Initialises a new 'ErpTelephoneNumber' instance.
         """
         # The purpose of the telephone: home, mobile, home fax, office, office fax, switchboard, other. 
-        self.usage = ''
+        self.usage = usage
         
         self.status = status
         self._electronic_address = None
         self.electronic_address = electronic_address
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
 
         super(ErpTelephoneNumber, self).__init__(**kw_args)
     # >>> erp_telephone_number
@@ -4065,7 +4353,8 @@ class ErpTelephoneNumber(TelephoneNumber):
             
         self._electronic_address = value
         if self._electronic_address is not None:
-            self._electronic_address._erp_telephone_numbers.append(self)
+            if self not in self._electronic_address._erp_telephone_numbers:
+                self._electronic_address._erp_telephone_numbers.append(self)
 
     electronic_address = property(get_electronic_address, set_electronic_address)
     # >>> electronic_address
@@ -4138,7 +4427,8 @@ class ErpSiteLevelData(IdentifiedObject):
             
         self._land_property = value
         if self._land_property is not None:
-            self._land_property._erp_site_level_datas.append(self)
+            if self not in self._land_property._erp_site_level_datas:
+                self._land_property._erp_site_level_datas.append(self)
 
     land_property = property(get_land_property, set_land_property)
     # >>> land_property
@@ -4150,17 +4440,17 @@ class ErpReqLineItem(IdentifiedObject):
     """
     # <<< erp_req_line_item
     # @generated
-    def __init__(self, quantity=0, code='', delivery_date='', cost='', status=None, type_material=None, type_asset=None, erp_requisition=None, erp_quote_line_item=None, erp_poline_item=None, **kw_args):
+    def __init__(self, quantity=0, code='', delivery_date='', cost=0.0, status=None, type_material=None, type_asset=None, erp_requisition=None, erp_quote_line_item=None, erp_poline_item=None, **kw_args):
         """ Initialises a new 'ErpReqLineItem' instance.
         """
         # Quantity of item requisitioned. 
-        self.quantity = 0
+        self.quantity = quantity
  
-        self.code = ''
+        self.code = code
  
-        self.delivery_date = ''
+        self.delivery_date = delivery_date
         # Cost of material 
-        self.cost = ''
+        self.cost = cost
         
         self.status = status
         self._type_material = None
@@ -4196,7 +4486,8 @@ class ErpReqLineItem(IdentifiedObject):
             
         self._type_material = value
         if self._type_material is not None:
-            self._type_material._erp_req_line_items.append(self)
+            if self not in self._type_material._erp_req_line_items:
+                self._type_material._erp_req_line_items.append(self)
 
     type_material = property(get_type_material, set_type_material)
     # >>> type_material
@@ -4215,7 +4506,8 @@ class ErpReqLineItem(IdentifiedObject):
             
         self._type_asset = value
         if self._type_asset is not None:
-            self._type_asset._erp_req_line_items.append(self)
+            if self not in self._type_asset._erp_req_line_items:
+                self._type_asset._erp_req_line_items.append(self)
 
     type_asset = property(get_type_asset, set_type_asset)
     # >>> type_asset
@@ -4234,7 +4526,8 @@ class ErpReqLineItem(IdentifiedObject):
             
         self._erp_requisition = value
         if self._erp_requisition is not None:
-            self._erp_requisition._erp_req_line_items.append(self)
+            if self not in self._erp_requisition._erp_req_line_items:
+                self._erp_requisition._erp_req_line_items.append(self)
 
     erp_requisition = property(get_erp_requisition, set_erp_requisition)
     # >>> erp_requisition
@@ -4282,12 +4575,15 @@ class ErpJournal(Document):
     """
     # <<< erp_journal
     # @generated
-    def __init__(self, erp_journal_entries=[], **kw_args):
+    def __init__(self, erp_journal_entries=None, **kw_args):
         """ Initialises a new 'ErpJournal' instance.
         """
         
         self._erp_journal_entries = []
-        self.erp_journal_entries = erp_journal_entries
+        if erp_journal_entries is None:
+            self.erp_journal_entries = []
+        else:
+            self.erp_journal_entries = erp_journal_entries
 
         super(ErpJournal, self).__init__(**kw_args)
     # >>> erp_journal
@@ -4301,9 +4597,9 @@ class ErpJournal(Document):
 
     def set_erp_journal_entries(self, value):
         for x in self._erp_journal_entries:
-            x._erp_journal = None
+            x.erp_journal = None
         for y in value:
-            y._erp_journal = self
+            y.erp_journal = self
         self._erp_journal_entries = value
             
     erp_journal_entries = property(get_erp_journal_entries, set_erp_journal_entries)
@@ -4311,7 +4607,8 @@ class ErpJournal(Document):
     def add_erp_journal_entries(self, *erp_journal_entries):
         for obj in erp_journal_entries:
             obj._erp_journal = self
-            self._erp_journal_entries.append(obj)
+            if obj not in self._erp_journal_entries:
+                self._erp_journal_entries.append(obj)
         
     def remove_erp_journal_entries(self, *erp_journal_entries):
         for obj in erp_journal_entries:
@@ -4394,7 +4691,8 @@ class ErpPOLineItem(Document):
             
         self._erp_purchase_order = value
         if self._erp_purchase_order is not None:
-            self._erp_purchase_order._erp_poline_items.append(self)
+            if self not in self._erp_purchase_order._erp_poline_items:
+                self._erp_purchase_order._erp_poline_items.append(self)
 
     erp_purchase_order = property(get_erp_purchase_order, set_erp_purchase_order)
     # >>> erp_purchase_order
@@ -4413,7 +4711,8 @@ class ErpPOLineItem(Document):
             
         self._asset_model_catalogue_item = value
         if self._asset_model_catalogue_item is not None:
-            self._asset_model_catalogue_item._erp_poline_items.append(self)
+            if self not in self._asset_model_catalogue_item._erp_poline_items:
+                self._asset_model_catalogue_item._erp_poline_items.append(self)
 
     asset_model_catalogue_item = property(get_asset_model_catalogue_item, set_asset_model_catalogue_item)
     # >>> asset_model_catalogue_item
@@ -4432,7 +4731,8 @@ class ErpPOLineItem(Document):
             
         self._material_item = value
         if self._material_item is not None:
-            self._material_item._erp_poline_items.append(self)
+            if self not in self._material_item._erp_poline_items:
+                self._material_item._erp_poline_items.append(self)
 
     material_item = property(get_material_item, set_material_item)
     # >>> material_item

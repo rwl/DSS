@@ -17,12 +17,15 @@ class CommunicationLink(PowerSystemResource):
     """
     # <<< communication_link
     # @generated
-    def __init__(self, remote_units=[], **kw_args):
+    def __init__(self, remote_units=None, **kw_args):
         """ Initialises a new 'CommunicationLink' instance.
         """
         
         self._remote_units = []
-        self.remote_units = remote_units
+        if remote_units is None:
+            self.remote_units = []
+        else:
+            self.remote_units = remote_units
 
         super(CommunicationLink, self).__init__(**kw_args)
     # >>> communication_link
@@ -89,7 +92,8 @@ class RemotePoint(IdentifiedObject):
             
         self._remote_unit = value
         if self._remote_unit is not None:
-            self._remote_unit._remote_points.append(self)
+            if self not in self._remote_unit._remote_points:
+                self._remote_unit._remote_points.append(self)
 
     remote_unit = property(get_remote_unit, set_remote_unit)
     # >>> remote_unit
@@ -101,16 +105,22 @@ class RemoteUnit(PowerSystemResource):
     """
     # <<< remote_unit
     # @generated
-    def __init__(self, remote_unit_type='control_center', communication_links=[], remote_points=[], **kw_args):
+    def __init__(self, remote_unit_type='control_center', communication_links=None, remote_points=None, **kw_args):
         """ Initialises a new 'RemoteUnit' instance.
         """
         # Type of remote unit. Values are: "control_center", "ied", "rtu", "substation_control_system"
-        self.remote_unit_type = 'control_center'
+        self.remote_unit_type = remote_unit_type
         
         self._communication_links = []
-        self.communication_links = communication_links
+        if communication_links is None:
+            self.communication_links = []
+        else:
+            self.communication_links = communication_links
         self._remote_points = []
-        self.remote_points = remote_points
+        if remote_points is None:
+            self.remote_points = []
+        else:
+            self.remote_points = remote_points
 
         super(RemoteUnit, self).__init__(**kw_args)
     # >>> remote_unit
@@ -155,9 +165,9 @@ class RemoteUnit(PowerSystemResource):
 
     def set_remote_points(self, value):
         for x in self._remote_points:
-            x._remote_unit = None
+            x.remote_unit = None
         for y in value:
-            y._remote_unit = self
+            y.remote_unit = self
         self._remote_points = value
             
     remote_points = property(get_remote_points, set_remote_points)
@@ -165,7 +175,8 @@ class RemoteUnit(PowerSystemResource):
     def add_remote_points(self, *remote_points):
         for obj in remote_points:
             obj._remote_unit = self
-            self._remote_points.append(obj)
+            if obj not in self._remote_points:
+                self._remote_points.append(obj)
         
     def remove_remote_points(self, *remote_points):
         for obj in remote_points:
@@ -180,17 +191,17 @@ class RemoteSource(RemotePoint):
     """
     # <<< remote_source
     # @generated
-    def __init__(self, deadband=0.0, scan_interval='', sensor_maximum=0.0, sensor_minimum=0.0, measurement_value=None, **kw_args):
+    def __init__(self, deadband=0.0, scan_interval=0.0, sensor_maximum=0.0, sensor_minimum=0.0, measurement_value=None, **kw_args):
         """ Initialises a new 'RemoteSource' instance.
         """
         # The smallest change in value to be reported. 
-        self.deadband = 0.0
+        self.deadband = deadband
         # The time interval between scans. 
-        self.scan_interval = ''
+        self.scan_interval = scan_interval
         # The maximum value the telemetry item can return. 
-        self.sensor_maximum = 0.0
+        self.sensor_maximum = sensor_maximum
         # The minimum value the telemetry item can return. 
-        self.sensor_minimum = 0.0
+        self.sensor_minimum = sensor_minimum
         
         self._measurement_value = None
         self.measurement_value = measurement_value
@@ -227,11 +238,11 @@ class RemoteControl(RemotePoint):
         """ Initialises a new 'RemoteControl' instance.
         """
         # The maximum set point value accepted by the remote control point. 
-        self.actuator_maximum = 0.0
+        self.actuator_maximum = actuator_maximum
         # The minimum set point value accepted by the remote control point. 
-        self.actuator_minimum = 0.0
+        self.actuator_minimum = actuator_minimum
         # Set to true if the actuator is remotely controlled. 
-        self.remote_controlled = False
+        self.remote_controlled = remote_controlled
         
         self._control = None
         self.control = control

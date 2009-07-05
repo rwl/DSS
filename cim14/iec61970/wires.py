@@ -18,73 +18,76 @@ ns_prefix = "cim.IEC61970.Wires"
 ns_uri = "http://iec.ch/TC57/2009/CIM-schema-cim14#IEC61970.Wires"
 
 class TransformerWinding(ConductingEquipment):
-    """ A winding is associated with each defined terminal of a transformer (or
-        phase shifter).
+    """ A winding is associated with each defined terminal of a transformer (or phase shifter).
     """
     # <<< transformer_winding
     # @generated
-    def __init__(self, grounded=False, r0='', emergency_s='', insulation_u='',
-            xground='', x='', g0='', b0='', connection_type='zn', x0='',
-            rground='', short_term_s='', g='', rated_s='', b='',
-            winding_type='primary', r='', rated_u='',
-            from_winding_insulations=[], to_winding_test=[],
-            ratio_tap_changer=None, power_transformer=None,
-            from_winding_test=[], phase_tap_changer=None,
-            to_winding_insulations=[], **kw_args):
+    def __init__(self, grounded=False, r0=0.0, emergency_s=0.0, insulation_u=0.0, xground=0.0, x=0.0, g0=0.0, b0=0.0, connection_type='zn', x0=0.0, rground=0.0, short_term_s=0.0, g=0.0, rated_s=0.0, b=0.0, winding_type='primary', r=0.0, rated_u=0.0, from_winding_insulations=None, to_winding_test=None, ratio_tap_changer=None, power_transformer=None, from_winding_test=None, phase_tap_changer=None, to_winding_insulations=None, **kw_args):
         """ Initialises a new 'TransformerWinding' instance.
         """
         # Set if the winding is grounded. 
-        self.grounded = False
+        self.grounded = grounded
         # Zero sequence series resistance of the winding. 
-        self.r0 = ''
-        # The apparent power that the winding can carry  under emergency
-        # conditions. 
-        self.emergency_s = ''
+        self.r0 = r0
+        # The apparent power that the winding can carry  under emergency conditions. 
+        self.emergency_s = emergency_s
         # Basic insulation level voltage rating 
-        self.insulation_u = ''
+        self.insulation_u = insulation_u
         # Ground reactance path through connected grounding transformer. 
-        self.xground = ''
+        self.xground = xground
         # Positive sequence series reactance of the winding. 
-        self.x = ''
+        self.x = x
         # Zero sequence magnetizing branch conductance. 
-        self.g0 = ''
+        self.g0 = g0
         # Zero sequence magnetizing branch susceptance. 
-        self.b0 = ''
+        self.b0 = b0
         # The type of connection of the winding. Values are: "zn", "y", "d", "z", "yn"
-        self.connection_type = 'zn'
+        self.connection_type = connection_type
         # Zero sequence series reactance of the winding. 
-        self.x0 = ''
+        self.x0 = x0
         # Ground resistance path through connected grounding transformer. 
-        self.rground = ''
+        self.rground = rground
         # Apparent power that the winding can carry for a short period of time. 
-        self.short_term_s = ''
+        self.short_term_s = short_term_s
         # Magnetizing branch conductance (G mag). 
-        self.g = ''
+        self.g = g
         # The normal apparent power rating for the winding 
-        self.rated_s = ''
+        self.rated_s = rated_s
         # Magnetizing branch susceptance (B mag). 
-        self.b = ''
+        self.b = b
         # The type of winding. Values are: "primary", "secondary", "quaternary", "tertiary"
-        self.winding_type = 'primary'
+        self.winding_type = winding_type
         # Positive sequence series resistance of the winding. 
-        self.r = ''
+        self.r = r
         # The rated voltage (phase-to-phase) of the winding, usually the same as the neutral voltage. 
-        self.rated_u = ''
+        self.rated_u = rated_u
         
         self._from_winding_insulations = []
-        self.from_winding_insulations = from_winding_insulations
+        if from_winding_insulations is None:
+            self.from_winding_insulations = []
+        else:
+            self.from_winding_insulations = from_winding_insulations
         self._to_winding_test = []
-        self.to_winding_test = to_winding_test
+        if to_winding_test is None:
+            self.to_winding_test = []
+        else:
+            self.to_winding_test = to_winding_test
         self._ratio_tap_changer = None
         self.ratio_tap_changer = ratio_tap_changer
         self._power_transformer = None
         self.power_transformer = power_transformer
         self._from_winding_test = []
-        self.from_winding_test = from_winding_test
+        if from_winding_test is None:
+            self.from_winding_test = []
+        else:
+            self.from_winding_test = from_winding_test
         self._phase_tap_changer = None
         self.phase_tap_changer = phase_tap_changer
         self._to_winding_insulations = []
-        self.to_winding_insulations = to_winding_insulations
+        if to_winding_insulations is None:
+            self.to_winding_insulations = []
+        else:
+            self.to_winding_insulations = to_winding_insulations
 
         super(TransformerWinding, self).__init__(**kw_args)
     # >>> transformer_winding
@@ -98,9 +101,9 @@ class TransformerWinding(ConductingEquipment):
 
     def set_from_winding_insulations(self, value):
         for x in self._from_winding_insulations:
-            x._from_transformer_winding = None
+            x.from_transformer_winding = None
         for y in value:
-            y._from_transformer_winding = self
+            y.from_transformer_winding = self
         self._from_winding_insulations = value
             
     from_winding_insulations = property(get_from_winding_insulations, set_from_winding_insulations)
@@ -108,7 +111,8 @@ class TransformerWinding(ConductingEquipment):
     def add_from_winding_insulations(self, *from_winding_insulations):
         for obj in from_winding_insulations:
             obj._from_transformer_winding = self
-            self._from_winding_insulations.append(obj)
+            if obj not in self._from_winding_insulations:
+                self._from_winding_insulations.append(obj)
         
     def remove_from_winding_insulations(self, *from_winding_insulations):
         for obj in from_winding_insulations:
@@ -125,9 +129,9 @@ class TransformerWinding(ConductingEquipment):
 
     def set_to_winding_test(self, value):
         for x in self._to_winding_test:
-            x._to_transformer_winding = None
+            x.to_transformer_winding = None
         for y in value:
-            y._to_transformer_winding = self
+            y.to_transformer_winding = self
         self._to_winding_test = value
             
     to_winding_test = property(get_to_winding_test, set_to_winding_test)
@@ -135,7 +139,8 @@ class TransformerWinding(ConductingEquipment):
     def add_to_winding_test(self, *to_winding_test):
         for obj in to_winding_test:
             obj._to_transformer_winding = self
-            self._to_winding_test.append(obj)
+            if obj not in self._to_winding_test:
+                self._to_winding_test.append(obj)
         
     def remove_to_winding_test(self, *to_winding_test):
         for obj in to_winding_test:
@@ -175,7 +180,8 @@ class TransformerWinding(ConductingEquipment):
             
         self._power_transformer = value
         if self._power_transformer is not None:
-            self._power_transformer._transformer_windings.append(self)
+            if self not in self._power_transformer._transformer_windings:
+                self._power_transformer._transformer_windings.append(self)
 
     power_transformer = property(get_power_transformer, set_power_transformer)
     # >>> power_transformer
@@ -189,9 +195,9 @@ class TransformerWinding(ConductingEquipment):
 
     def set_from_winding_test(self, value):
         for x in self._from_winding_test:
-            x._from_transformer_winding = None
+            x.from_transformer_winding = None
         for y in value:
-            y._from_transformer_winding = self
+            y.from_transformer_winding = self
         self._from_winding_test = value
             
     from_winding_test = property(get_from_winding_test, set_from_winding_test)
@@ -199,7 +205,8 @@ class TransformerWinding(ConductingEquipment):
     def add_from_winding_test(self, *from_winding_test):
         for obj in from_winding_test:
             obj._from_transformer_winding = self
-            self._from_winding_test.append(obj)
+            if obj not in self._from_winding_test:
+                self._from_winding_test.append(obj)
         
     def remove_from_winding_test(self, *from_winding_test):
         for obj in from_winding_test:
@@ -234,9 +241,9 @@ class TransformerWinding(ConductingEquipment):
 
     def set_to_winding_insulations(self, value):
         for x in self._to_winding_insulations:
-            x._to_transformer_winding = None
+            x.to_transformer_winding = None
         for y in value:
-            y._to_transformer_winding = self
+            y.to_transformer_winding = self
         self._to_winding_insulations = value
             
     to_winding_insulations = property(get_to_winding_insulations, set_to_winding_insulations)
@@ -244,7 +251,8 @@ class TransformerWinding(ConductingEquipment):
     def add_to_winding_insulations(self, *to_winding_insulations):
         for obj in to_winding_insulations:
             obj._to_transformer_winding = self
-            self._to_winding_insulations.append(obj)
+            if obj not in self._to_winding_insulations:
+                self._to_winding_insulations.append(obj)
         
     def remove_to_winding_insulations(self, *to_winding_insulations):
         for obj in to_winding_insulations:
@@ -259,22 +267,28 @@ class RegulatingControl(PowerSystemResource):
     """
     # <<< regulating_control
     # @generated
-    def __init__(self, target_range=0.0, discrete=False, target_value=0.0, mode='admittance', tap_changer=[], regulating_cond_eq=[], regulation_schedule=None, terminal=None, **kw_args):
+    def __init__(self, target_range=0.0, discrete=False, target_value=0.0, mode='admittance', tap_changer=None, regulating_cond_eq=None, regulation_schedule=None, terminal=None, **kw_args):
         """ Initialises a new 'RegulatingControl' instance.
         """
         # This is the case input target range.   This performs the same function as the value2 attribute on the regulation schedule in the case that schedules are not used.   The units of those appropriate for the mode. 
-        self.target_range = 0.0
+        self.target_range = target_range
         # The regulation is performed in a discrete mode. 
-        self.discrete = False
+        self.discrete = discrete
         # The target value specified for case input.   This value can be used for the target value wihout the use of schedules. The value has the units appropriate to the mode attribute. 
-        self.target_value = 0.0
+        self.target_value = target_value
         # The regulating control mode presently available.  This specifications allows for determining the kind of regualation without need for obtaining the units from a schedule. Values are: "admittance", "fixed", "active_power", "current_flow", "voltage", "reactive_power"
-        self.mode = 'admittance'
+        self.mode = mode
         
         self._tap_changer = []
-        self.tap_changer = tap_changer
+        if tap_changer is None:
+            self.tap_changer = []
+        else:
+            self.tap_changer = tap_changer
         self._regulating_cond_eq = []
-        self.regulating_cond_eq = regulating_cond_eq
+        if regulating_cond_eq is None:
+            self.regulating_cond_eq = []
+        else:
+            self.regulating_cond_eq = regulating_cond_eq
         self._regulation_schedule = None
         self.regulation_schedule = regulation_schedule
         self._terminal = None
@@ -292,9 +306,9 @@ class RegulatingControl(PowerSystemResource):
 
     def set_tap_changer(self, value):
         for x in self._tap_changer:
-            x._regulating_control = None
+            x.regulating_control = None
         for y in value:
-            y._regulating_control = self
+            y.regulating_control = self
         self._tap_changer = value
             
     tap_changer = property(get_tap_changer, set_tap_changer)
@@ -302,7 +316,8 @@ class RegulatingControl(PowerSystemResource):
     def add_tap_changer(self, *tap_changer):
         for obj in tap_changer:
             obj._regulating_control = self
-            self._tap_changer.append(obj)
+            if obj not in self._tap_changer:
+                self._tap_changer.append(obj)
         
     def remove_tap_changer(self, *tap_changer):
         for obj in tap_changer:
@@ -319,9 +334,9 @@ class RegulatingControl(PowerSystemResource):
 
     def set_regulating_cond_eq(self, value):
         for x in self._regulating_cond_eq:
-            x._regulating_control = None
+            x.regulating_control = None
         for y in value:
-            y._regulating_control = self
+            y.regulating_control = self
         self._regulating_cond_eq = value
             
     regulating_cond_eq = property(get_regulating_cond_eq, set_regulating_cond_eq)
@@ -329,7 +344,8 @@ class RegulatingControl(PowerSystemResource):
     def add_regulating_cond_eq(self, *regulating_cond_eq):
         for obj in regulating_cond_eq:
             obj._regulating_control = self
-            self._regulating_cond_eq.append(obj)
+            if obj not in self._regulating_cond_eq:
+                self._regulating_cond_eq.append(obj)
         
     def remove_regulating_cond_eq(self, *regulating_cond_eq):
         for obj in regulating_cond_eq:
@@ -351,7 +367,8 @@ class RegulatingControl(PowerSystemResource):
             
         self._regulation_schedule = value
         if self._regulation_schedule is not None:
-            self._regulation_schedule._regulating_control.append(self)
+            if self not in self._regulation_schedule._regulating_control:
+                self._regulation_schedule._regulating_control.append(self)
 
     regulation_schedule = property(get_regulation_schedule, set_regulation_schedule)
     # >>> regulation_schedule
@@ -370,7 +387,8 @@ class RegulatingControl(PowerSystemResource):
             
         self._terminal = value
         if self._terminal is not None:
-            self._terminal._regulating_control.append(self)
+            if self not in self._terminal._regulating_control:
+                self._terminal._regulating_control.append(self)
 
     terminal = property(get_terminal, set_terminal)
     # >>> terminal
@@ -382,14 +400,17 @@ class RegulatingCondEq(ConductingEquipment):
     """
     # <<< regulating_cond_eq
     # @generated
-    def __init__(self, regulating_control=None, controls=[], **kw_args):
+    def __init__(self, regulating_control=None, controls=None, **kw_args):
         """ Initialises a new 'RegulatingCondEq' instance.
         """
         
         self._regulating_control = None
         self.regulating_control = regulating_control
         self._controls = []
-        self.controls = controls
+        if controls is None:
+            self.controls = []
+        else:
+            self.controls = controls
 
         super(RegulatingCondEq, self).__init__(**kw_args)
     # >>> regulating_cond_eq
@@ -408,7 +429,8 @@ class RegulatingCondEq(ConductingEquipment):
             
         self._regulating_control = value
         if self._regulating_control is not None:
-            self._regulating_control._regulating_cond_eq.append(self)
+            if self not in self._regulating_control._regulating_cond_eq:
+                self._regulating_control._regulating_cond_eq.append(self)
 
     regulating_control = property(get_regulating_control, set_regulating_control)
     # >>> regulating_control
@@ -422,9 +444,9 @@ class RegulatingCondEq(ConductingEquipment):
 
     def set_controls(self, value):
         for x in self._controls:
-            x._regulating_cond_eq = None
+            x.regulating_cond_eq = None
         for y in value:
-            y._regulating_cond_eq = self
+            y.regulating_cond_eq = self
         self._controls = value
             
     controls = property(get_controls, set_controls)
@@ -432,7 +454,8 @@ class RegulatingCondEq(ConductingEquipment):
     def add_controls(self, *controls):
         for obj in controls:
             obj._regulating_cond_eq = self
-            self._controls.append(obj)
+            if obj not in self._controls:
+                self._controls.append(obj)
         
     def remove_controls(self, *controls):
         for obj in controls:
@@ -447,33 +470,33 @@ class RectifierInverter(ConductingEquipment):
     """
     # <<< rectifier_inverter
     # @generated
-    def __init__(self, min_p='', operating_mode='', compound_resistance='', rated_u='', commutating_reactance='', bridges=0, max_u='', frequency='', max_p='', min_compound_voltage='', min_u='', commutating_resistance='', **kw_args):
+    def __init__(self, min_p=0.0, operating_mode='', compound_resistance=0.0, rated_u=0.0, commutating_reactance=0.0, bridges=0, max_u=0.0, frequency=0.0, max_p=0.0, min_compound_voltage=0.0, min_u=0.0, commutating_resistance=0.0, **kw_args):
         """ Initialises a new 'RectifierInverter' instance.
         """
         # The minimum active power on the DC side at which the converter should operate. 
-        self.min_p = ''
+        self.min_p = min_p
         # Operating mode for the converter. 
-        self.operating_mode = ''
+        self.operating_mode = operating_mode
         # Compounding resistance. 
-        self.compound_resistance = ''
+        self.compound_resistance = compound_resistance
         # Rectifier/inverter primary base voltage 
-        self.rated_u = ''
+        self.rated_u = rated_u
         # Commutating reactance at AC bus frequency. 
-        self.commutating_reactance = ''
+        self.commutating_reactance = commutating_reactance
         # Number of bridges 
-        self.bridges = 0
+        self.bridges = bridges
         # The maximum voltage on the DC side at which the converter should operate. 
-        self.max_u = ''
+        self.max_u = max_u
         # Frequency on the AC side. 
-        self.frequency = ''
+        self.frequency = frequency
         # The maximum active power on the DC side at which the fconverter should operate. 
-        self.max_p = ''
+        self.max_p = max_p
         # Minimum compounded DC voltage 
-        self.min_compound_voltage = ''
+        self.min_compound_voltage = min_compound_voltage
         # The minimum voltage on the DC side at which the converter should operate. 
-        self.min_u = ''
+        self.min_u = min_u
         # Commutating resistance. 
-        self.commutating_resistance = ''
+        self.commutating_resistance = commutating_resistance
         
 
         super(RectifierInverter, self).__init__(**kw_args)
@@ -486,26 +509,35 @@ class Switch(ConductingEquipment):
     """
     # <<< switch
     # @generated
-    def __init__(self, switch_on_count=0, normal_open=False, retained=False, switch_on_date='', connect_disconnect_functions=[], composite_switch=None, load_mgmt_functions=[], switching_operations=[], **kw_args):
+    def __init__(self, switch_on_count=0, normal_open=False, retained=False, switch_on_date='', connect_disconnect_functions=None, composite_switch=None, load_mgmt_functions=None, switching_operations=None, **kw_args):
         """ Initialises a new 'Switch' instance.
         """
         # The switch on count since the switch was last reset or initialized. 
-        self.switch_on_count = 0
+        self.switch_on_count = switch_on_count
         # The attribute is used in cases when no Measurement for the status value is present. If the Switch has a status measurment the Discrete.normalValue is expected to match with the Switch.normalOpen. 
-        self.normal_open = False
+        self.normal_open = normal_open
         # Branch is retained in a bus branch model. 
-        self.retained = False
+        self.retained = retained
         # The date and time when the switch was last switched on. 
-        self.switch_on_date = ''
+        self.switch_on_date = switch_on_date
         
         self._connect_disconnect_functions = []
-        self.connect_disconnect_functions = connect_disconnect_functions
+        if connect_disconnect_functions is None:
+            self.connect_disconnect_functions = []
+        else:
+            self.connect_disconnect_functions = connect_disconnect_functions
         self._composite_switch = None
         self.composite_switch = composite_switch
         self._load_mgmt_functions = []
-        self.load_mgmt_functions = load_mgmt_functions
+        if load_mgmt_functions is None:
+            self.load_mgmt_functions = []
+        else:
+            self.load_mgmt_functions = load_mgmt_functions
         self._switching_operations = []
-        self.switching_operations = switching_operations
+        if switching_operations is None:
+            self.switching_operations = []
+        else:
+            self.switching_operations = switching_operations
 
         super(Switch, self).__init__(**kw_args)
     # >>> switch
@@ -555,7 +587,8 @@ class Switch(ConductingEquipment):
             
         self._composite_switch = value
         if self._composite_switch is not None:
-            self._composite_switch._switches.append(self)
+            if self not in self._composite_switch._switches:
+                self._composite_switch._switches.append(self)
 
     composite_switch = property(get_composite_switch, set_composite_switch)
     # >>> composite_switch
@@ -629,7 +662,7 @@ class Line(EquipmentContainer):
     """
     # <<< line
     # @generated
-    def __init__(self, transmission_right_of_way=None, region=None, flowgates=[], **kw_args):
+    def __init__(self, transmission_right_of_way=None, region=None, flowgates=None, **kw_args):
         """ Initialises a new 'Line' instance.
         """
         
@@ -638,7 +671,10 @@ class Line(EquipmentContainer):
         self._region = None
         self.region = region
         self._flowgates = []
-        self.flowgates = flowgates
+        if flowgates is None:
+            self.flowgates = []
+        else:
+            self.flowgates = flowgates
 
         super(Line, self).__init__(**kw_args)
     # >>> line
@@ -657,7 +693,8 @@ class Line(EquipmentContainer):
             
         self._transmission_right_of_way = value
         if self._transmission_right_of_way is not None:
-            self._transmission_right_of_way._lines.append(self)
+            if self not in self._transmission_right_of_way._lines:
+                self._transmission_right_of_way._lines.append(self)
 
     transmission_right_of_way = property(get_transmission_right_of_way, set_transmission_right_of_way)
     # >>> transmission_right_of_way
@@ -676,7 +713,8 @@ class Line(EquipmentContainer):
             
         self._region = value
         if self._region is not None:
-            self._region._lines.append(self)
+            if self not in self._region._lines:
+                self._region._lines.append(self)
 
     region = property(get_region, set_region)
     # >>> region
@@ -719,18 +757,24 @@ class ReactiveCapabilityCurve(Curve):
     """
     # <<< reactive_capability_curve
     # @generated
-    def __init__(self, hydrogen_pressure='', coolant_temperature='', synchronous_machines=[], initially_used_by_synchronous_machines=[], **kw_args):
+    def __init__(self, hydrogen_pressure=0.0, coolant_temperature=0.0, synchronous_machines=None, initially_used_by_synchronous_machines=None, **kw_args):
         """ Initialises a new 'ReactiveCapabilityCurve' instance.
         """
         # The hydrogen coolant pressure 
-        self.hydrogen_pressure = ''
+        self.hydrogen_pressure = hydrogen_pressure
         # The machine's coolant temperature (e.g., ambient air or stator circulating water). 
-        self.coolant_temperature = ''
+        self.coolant_temperature = coolant_temperature
         
         self._synchronous_machines = []
-        self.synchronous_machines = synchronous_machines
+        if synchronous_machines is None:
+            self.synchronous_machines = []
+        else:
+            self.synchronous_machines = synchronous_machines
         self._initially_used_by_synchronous_machines = []
-        self.initially_used_by_synchronous_machines = initially_used_by_synchronous_machines
+        if initially_used_by_synchronous_machines is None:
+            self.initially_used_by_synchronous_machines = []
+        else:
+            self.initially_used_by_synchronous_machines = initially_used_by_synchronous_machines
 
         super(ReactiveCapabilityCurve, self).__init__(**kw_args)
     # >>> reactive_capability_curve
@@ -775,9 +819,9 @@ class ReactiveCapabilityCurve(Curve):
 
     def set_initially_used_by_synchronous_machines(self, value):
         for x in self._initially_used_by_synchronous_machines:
-            x._initial_reactive_capability_curve = None
+            x.initial_reactive_capability_curve = None
         for y in value:
-            y._initial_reactive_capability_curve = self
+            y.initial_reactive_capability_curve = self
         self._initially_used_by_synchronous_machines = value
             
     initially_used_by_synchronous_machines = property(get_initially_used_by_synchronous_machines, set_initially_used_by_synchronous_machines)
@@ -785,7 +829,8 @@ class ReactiveCapabilityCurve(Curve):
     def add_initially_used_by_synchronous_machines(self, *initially_used_by_synchronous_machines):
         for obj in initially_used_by_synchronous_machines:
             obj._initial_reactive_capability_curve = self
-            self._initially_used_by_synchronous_machines.append(obj)
+            if obj not in self._initially_used_by_synchronous_machines:
+                self._initially_used_by_synchronous_machines.append(obj)
         
     def remove_initially_used_by_synchronous_machines(self, *initially_used_by_synchronous_machines):
         for obj in initially_used_by_synchronous_machines:
@@ -800,13 +845,13 @@ class SeriesCompensator(ConductingEquipment):
     """
     # <<< series_compensator
     # @generated
-    def __init__(self, r='', x='', **kw_args):
+    def __init__(self, r=0.0, x=0.0, **kw_args):
         """ Initialises a new 'SeriesCompensator' instance.
         """
         # Positive sequence resistance. 
-        self.r = ''
+        self.r = r
         # Positive sequence reactance. 
-        self.x = ''
+        self.x = x
         
 
         super(SeriesCompensator, self).__init__(**kw_args)
@@ -819,24 +864,30 @@ class EnergyConsumer(ConductingEquipment):
     """
     # <<< energy_consumer
     # @generated
-    def __init__(self, customer_count=0, pfixed='', qfixed_pct='', pfixed_pct='', qfixed='', service_delivery_points=[], phase_loads=[], power_cut_zone=None, load_response=None, **kw_args):
+    def __init__(self, customer_count=0, pfixed=0.0, qfixed_pct=0.0, pfixed_pct=0.0, qfixed=0.0, service_delivery_points=None, phase_loads=None, power_cut_zone=None, load_response=None, **kw_args):
         """ Initialises a new 'EnergyConsumer' instance.
         """
         # Number of individual customers represented by this Demand 
-        self.customer_count = 0
+        self.customer_count = customer_count
         # Active power of the load that is a fixed quantity. 
-        self.pfixed = ''
+        self.pfixed = pfixed
         # Fixed reactive power as per cent of load group fixed reactive power. 
-        self.qfixed_pct = ''
+        self.qfixed_pct = qfixed_pct
         # Fixed active power as per cent of load group fixed active power 
-        self.pfixed_pct = ''
+        self.pfixed_pct = pfixed_pct
         # Reactive power of the load that is a fixed quantity. 
-        self.qfixed = ''
+        self.qfixed = qfixed
         
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._phase_loads = []
-        self.phase_loads = phase_loads
+        if phase_loads is None:
+            self.phase_loads = []
+        else:
+            self.phase_loads = phase_loads
         self._power_cut_zone = None
         self.power_cut_zone = power_cut_zone
         self._load_response = None
@@ -854,9 +905,9 @@ class EnergyConsumer(ConductingEquipment):
 
     def set_service_delivery_points(self, value):
         for x in self._service_delivery_points:
-            x._energy_consumer = None
+            x.energy_consumer = None
         for y in value:
-            y._energy_consumer = self
+            y.energy_consumer = self
         self._service_delivery_points = value
             
     service_delivery_points = property(get_service_delivery_points, set_service_delivery_points)
@@ -864,7 +915,8 @@ class EnergyConsumer(ConductingEquipment):
     def add_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
             obj._energy_consumer = self
-            self._service_delivery_points.append(obj)
+            if obj not in self._service_delivery_points:
+                self._service_delivery_points.append(obj)
         
     def remove_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
@@ -881,9 +933,9 @@ class EnergyConsumer(ConductingEquipment):
 
     def set_phase_loads(self, value):
         for x in self._phase_loads:
-            x._energy_consumer = None
+            x.energy_consumer = None
         for y in value:
-            y._energy_consumer = self
+            y.energy_consumer = self
         self._phase_loads = value
             
     phase_loads = property(get_phase_loads, set_phase_loads)
@@ -891,7 +943,8 @@ class EnergyConsumer(ConductingEquipment):
     def add_phase_loads(self, *phase_loads):
         for obj in phase_loads:
             obj._energy_consumer = self
-            self._phase_loads.append(obj)
+            if obj not in self._phase_loads:
+                self._phase_loads.append(obj)
         
     def remove_phase_loads(self, *phase_loads):
         for obj in phase_loads:
@@ -913,7 +966,8 @@ class EnergyConsumer(ConductingEquipment):
             
         self._power_cut_zone = value
         if self._power_cut_zone is not None:
-            self._power_cut_zone._energy_consumers.append(self)
+            if self not in self._power_cut_zone._energy_consumers:
+                self._power_cut_zone._energy_consumers.append(self)
 
     power_cut_zone = property(get_power_cut_zone, set_power_cut_zone)
     # >>> power_cut_zone
@@ -932,7 +986,8 @@ class EnergyConsumer(ConductingEquipment):
             
         self._load_response = value
         if self._load_response is not None:
-            self._load_response._energy_consumer.append(self)
+            if self not in self._load_response._energy_consumer:
+                self._load_response._energy_consumer.append(self)
 
     load_response = property(get_load_response, set_load_response)
     # >>> load_response
@@ -944,20 +999,26 @@ class RegulationSchedule(RegularIntervalSchedule):
     """
     # <<< regulation_schedule
     # @generated
-    def __init__(self, line_drop_r='', line_drop_compensation=False, line_drop_x='', regulating_control=[], voltage_control_zones=[], **kw_args):
+    def __init__(self, line_drop_r=0.0, line_drop_compensation=False, line_drop_x=0.0, regulating_control=None, voltage_control_zones=None, **kw_args):
         """ Initialises a new 'RegulationSchedule' instance.
         """
         # Line drop resistance. 
-        self.line_drop_r = ''
+        self.line_drop_r = line_drop_r
         # Flag to indicate that line drop compensation is to be applied 
-        self.line_drop_compensation = False
+        self.line_drop_compensation = line_drop_compensation
         # Line drop reactance. 
-        self.line_drop_x = ''
+        self.line_drop_x = line_drop_x
         
         self._regulating_control = []
-        self.regulating_control = regulating_control
+        if regulating_control is None:
+            self.regulating_control = []
+        else:
+            self.regulating_control = regulating_control
         self._voltage_control_zones = []
-        self.voltage_control_zones = voltage_control_zones
+        if voltage_control_zones is None:
+            self.voltage_control_zones = []
+        else:
+            self.voltage_control_zones = voltage_control_zones
 
         super(RegulationSchedule, self).__init__(**kw_args)
     # >>> regulation_schedule
@@ -971,9 +1032,9 @@ class RegulationSchedule(RegularIntervalSchedule):
 
     def set_regulating_control(self, value):
         for x in self._regulating_control:
-            x._regulation_schedule = None
+            x.regulation_schedule = None
         for y in value:
-            y._regulation_schedule = self
+            y.regulation_schedule = self
         self._regulating_control = value
             
     regulating_control = property(get_regulating_control, set_regulating_control)
@@ -981,7 +1042,8 @@ class RegulationSchedule(RegularIntervalSchedule):
     def add_regulating_control(self, *regulating_control):
         for obj in regulating_control:
             obj._regulation_schedule = self
-            self._regulating_control.append(obj)
+            if obj not in self._regulating_control:
+                self._regulating_control.append(obj)
         
     def remove_regulating_control(self, *regulating_control):
         for obj in regulating_control:
@@ -998,9 +1060,9 @@ class RegulationSchedule(RegularIntervalSchedule):
 
     def set_voltage_control_zones(self, value):
         for x in self._voltage_control_zones:
-            x._regulation_schedule = None
+            x.regulation_schedule = None
         for y in value:
-            y._regulation_schedule = self
+            y.regulation_schedule = self
         self._voltage_control_zones = value
             
     voltage_control_zones = property(get_voltage_control_zones, set_voltage_control_zones)
@@ -1008,7 +1070,8 @@ class RegulationSchedule(RegularIntervalSchedule):
     def add_voltage_control_zones(self, *voltage_control_zones):
         for obj in voltage_control_zones:
             obj._regulation_schedule = self
-            self._voltage_control_zones.append(obj)
+            if obj not in self._voltage_control_zones:
+                self._voltage_control_zones.append(obj)
         
     def remove_voltage_control_zones(self, *voltage_control_zones):
         for obj in voltage_control_zones:
@@ -1065,7 +1128,8 @@ class Resistor(ConductingEquipment):
             
         self._resistor_type_asset = value
         if self._resistor_type_asset is not None:
-            self._resistor_type_asset._resistors.append(self)
+            if self not in self._resistor_type_asset._resistors:
+                self._resistor_type_asset._resistors.append(self)
 
     resistor_type_asset = property(get_resistor_type_asset, set_resistor_type_asset)
     # >>> resistor_type_asset
@@ -1095,14 +1159,17 @@ class CompositeSwitch(Equipment):
     """
     # <<< composite_switch
     # @generated
-    def __init__(self, composite_switch_type='', switches=[], **kw_args):
+    def __init__(self, composite_switch_type='', switches=None, **kw_args):
         """ Initialises a new 'CompositeSwitch' instance.
         """
         # An alphanumeric code that can be used as a reference to extar information such as the description of the interlocking scheme if any 
-        self.composite_switch_type = ''
+        self.composite_switch_type = composite_switch_type
         
         self._switches = []
-        self.switches = switches
+        if switches is None:
+            self.switches = []
+        else:
+            self.switches = switches
 
         super(CompositeSwitch, self).__init__(**kw_args)
     # >>> composite_switch
@@ -1116,9 +1183,9 @@ class CompositeSwitch(Equipment):
 
     def set_switches(self, value):
         for x in self._switches:
-            x._composite_switch = None
+            x.composite_switch = None
         for y in value:
-            y._composite_switch = self
+            y.composite_switch = self
         self._switches = value
             
     switches = property(get_switches, set_switches)
@@ -1126,7 +1193,8 @@ class CompositeSwitch(Equipment):
     def add_switches(self, *switches):
         for obj in switches:
             obj._composite_switch = self
-            self._switches.append(obj)
+            if obj not in self._switches:
+                self._switches.append(obj)
         
     def remove_switches(self, *switches):
         for obj in switches:
@@ -1141,32 +1209,35 @@ class WindingTest(IdentifiedObject):
     """
     # <<< winding_test
     # @generated
-    def __init__(self, voltage='', exciting_current='', no_load_loss='', leakage_impedance='', load_loss='', to_tap_step=0, phase_shift='', from_tap_step=0, from_transformer_winding=None, to_transformer_winding=None, transformer_observations=[], **kw_args):
+    def __init__(self, voltage=0.0, exciting_current=0.0, no_load_loss=0.0, leakage_impedance=0.0, load_loss=0.0, to_tap_step=0, phase_shift=0.0, from_tap_step=0, from_transformer_winding=None, to_transformer_winding=None, transformer_observations=None, **kw_args):
         """ Initialises a new 'WindingTest' instance.
         """
         # The voltage measured at the open-circuited 'to' winding, with the 'from' winding set to the 'from' winding's rated voltage and all other windings open-circuited. 
-        self.voltage = ''
+        self.voltage = voltage
         # The exciting current on open-circuit test, expressed as a percentage of rated current, at nominal voltage 
-        self.exciting_current = ''
+        self.exciting_current = exciting_current
         # The no load loss kW 'to' winding open-circuited) from the test report. 
-        self.no_load_loss = ''
+        self.no_load_loss = no_load_loss
         # The leakage impedance measured at the 'from' winding  with the 'to' winding short-circuited and all other windings open-circuited.  Leakage impedance is expressed in units based on the apparent power and voltage ratings of the 'from' winding. 
-        self.leakage_impedance = ''
+        self.leakage_impedance = leakage_impedance
         # The load loss kW ('to' winding short-circuited) from the test report. 
-        self.load_loss = ''
+        self.load_loss = load_loss
         # The tap step number for the 'to' winding of the test pair. 
-        self.to_tap_step = 0
+        self.to_tap_step = to_tap_step
         # The phase shift measured at the open-circuited 'to' winding, with the 'from' winding set to the 'from' winding's rated voltage and all other windings open-circuited. 
-        self.phase_shift = ''
+        self.phase_shift = phase_shift
         # The tap step number for the 'from' winding of the test pair. 
-        self.from_tap_step = 0
+        self.from_tap_step = from_tap_step
         
         self._from_transformer_winding = None
         self.from_transformer_winding = from_transformer_winding
         self._to_transformer_winding = None
         self.to_transformer_winding = to_transformer_winding
         self._transformer_observations = []
-        self.transformer_observations = transformer_observations
+        if transformer_observations is None:
+            self.transformer_observations = []
+        else:
+            self.transformer_observations = transformer_observations
 
         super(WindingTest, self).__init__(**kw_args)
     # >>> winding_test
@@ -1185,7 +1256,8 @@ class WindingTest(IdentifiedObject):
             
         self._from_transformer_winding = value
         if self._from_transformer_winding is not None:
-            self._from_transformer_winding._from_winding_test.append(self)
+            if self not in self._from_transformer_winding._from_winding_test:
+                self._from_transformer_winding._from_winding_test.append(self)
 
     from_transformer_winding = property(get_from_transformer_winding, set_from_transformer_winding)
     # >>> from_transformer_winding
@@ -1204,7 +1276,8 @@ class WindingTest(IdentifiedObject):
             
         self._to_transformer_winding = value
         if self._to_transformer_winding is not None:
-            self._to_transformer_winding._to_winding_test.append(self)
+            if self not in self._to_transformer_winding._to_winding_test:
+                self._to_transformer_winding._to_winding_test.append(self)
 
     to_transformer_winding = property(get_to_transformer_winding, set_to_transformer_winding)
     # >>> to_transformer_winding
@@ -1247,29 +1320,29 @@ class TapChanger(PowerSystemResource):
     """
     # <<< tap_changer
     # @generated
-    def __init__(self, normal_step=0, low_step=0, step_voltage_increment='', high_step=0, initial_delay='', type='phase_control', tcul_control_mode='local', subsequent_delay='', neutral_step=0, neutral_u='', sv_tap_step=None, regulating_control=None, **kw_args):
+    def __init__(self, normal_step=0, low_step=0, step_voltage_increment=0.0, high_step=0, initial_delay=0.0, type='phase_control', tcul_control_mode='local', subsequent_delay=0.0, neutral_step=0, neutral_u=0.0, sv_tap_step=None, regulating_control=None, **kw_args):
         """ Initialises a new 'TapChanger' instance.
         """
         # The tap step position used in 'normal' network operation for this winding. For a 'Fixed' tap changer indicates the current physical tap setting. 
-        self.normal_step = 0
+        self.normal_step = normal_step
         # Lowest possible tap step position, retard from neutral 
-        self.low_step = 0
+        self.low_step = low_step
         # Tap step increment, in per cent of nominal voltage, per step position. 
-        self.step_voltage_increment = ''
+        self.step_voltage_increment = step_voltage_increment
         # Highest possible tap step position, advance from neutral 
-        self.high_step = 0
+        self.high_step = high_step
         # For an LTC, the delay for initial tap changer operation (first step change) 
-        self.initial_delay = ''
+        self.initial_delay = initial_delay
         # The type of tap changer. Indicates the ability of the transformer to perform various regulation tasks. The tap changer must be also be associated wtih a RegulationControl object before any regulation is possible. Values are: "phase_control", "fixed", "voltage_control", "voltage_and_phase_control"
-        self.type = 'phase_control'
+        self.type = type
         # For an LTC, the tap changer control mode. Values are: "local", "off", "volt", "active", "reactive"
-        self.tcul_control_mode = 'local'
+        self.tcul_control_mode = tcul_control_mode
         # For an LTC, the delay for subsequent tap changer operation (second and later step changes) 
-        self.subsequent_delay = ''
+        self.subsequent_delay = subsequent_delay
         # The neutral tap step position for this winding. 
-        self.neutral_step = 0
+        self.neutral_step = neutral_step
         # Voltage at which the winding operates at the neutral tap setting. 
-        self.neutral_u = ''
+        self.neutral_u = neutral_u
         
         self._sv_tap_step = None
         self.sv_tap_step = sv_tap_step
@@ -1311,7 +1384,8 @@ class TapChanger(PowerSystemResource):
             
         self._regulating_control = value
         if self._regulating_control is not None:
-            self._regulating_control._tap_changer.append(self)
+            if self not in self._regulating_control._tap_changer:
+                self._regulating_control._tap_changer.append(self)
 
     regulating_control = property(get_regulating_control, set_regulating_control)
     # >>> regulating_control
@@ -1358,17 +1432,17 @@ class MutualCoupling(IdentifiedObject):
     """
     # <<< mutual_coupling
     # @generated
-    def __init__(self, b0ch='', g0ch='', r0='', x0='', first_terminal=None, second_terminal=None, **kw_args):
+    def __init__(self, b0ch=0.0, g0ch=0.0, r0=0.0, x0=0.0, first_terminal=None, second_terminal=None, **kw_args):
         """ Initialises a new 'MutualCoupling' instance.
         """
         # Zero sequence mutual coupling shunt (charging) susceptance, uniformly distributed, of the entire line section. 
-        self.b0ch = ''
+        self.b0ch = b0ch
         # Zero sequence mutual coupling shunt (charging) conductance, uniformly distributed, of the entire line section. 
-        self.g0ch = ''
+        self.g0ch = g0ch
         # Zero sequence branch-to-branch mutual impedance coupling, resistance 
-        self.r0 = ''
+        self.r0 = r0
         # Zero sequence branch-to-branch mutual impedance coupling, reactance 
-        self.x0 = ''
+        self.x0 = x0
         
         self._first_terminal = None
         self.first_terminal = first_terminal
@@ -1392,7 +1466,8 @@ class MutualCoupling(IdentifiedObject):
             
         self._first_terminal = value
         if self._first_terminal is not None:
-            self._first_terminal._has_first_mutual_coupling.append(self)
+            if self not in self._first_terminal._has_first_mutual_coupling:
+                self._first_terminal._has_first_mutual_coupling.append(self)
 
     first_terminal = property(get_first_terminal, set_first_terminal)
     # >>> first_terminal
@@ -1411,7 +1486,8 @@ class MutualCoupling(IdentifiedObject):
             
         self._second_terminal = value
         if self._second_terminal is not None:
-            self._second_terminal._has_second_mutual_coupling.append(self)
+            if self not in self._second_terminal._has_second_mutual_coupling:
+                self._second_terminal._has_second_mutual_coupling.append(self)
 
     second_terminal = property(get_second_terminal, set_second_terminal)
     # >>> second_terminal
@@ -1423,29 +1499,29 @@ class EnergySource(ConductingEquipment):
     """
     # <<< energy_source
     # @generated
-    def __init__(self, voltage_angle='', voltage_magnitude='', r0='', xn='', x='', nominal_voltage='', rn='', x0='', active_power='', r='', **kw_args):
+    def __init__(self, voltage_angle=0.0, voltage_magnitude=0.0, r0=0.0, xn=0.0, x=0.0, nominal_voltage=0.0, rn=0.0, x0=0.0, active_power=0.0, r=0.0, **kw_args):
         """ Initialises a new 'EnergySource' instance.
         """
         # Phase angle of a-phase open circuit. 
-        self.voltage_angle = ''
+        self.voltage_angle = voltage_angle
         # Phase-to-phase open circuit voltage magnitude. 
-        self.voltage_magnitude = ''
+        self.voltage_magnitude = voltage_magnitude
         # Zero sequence Thevenin resistance. 
-        self.r0 = ''
+        self.r0 = r0
         # Negative sequence Thevenin reactance. 
-        self.xn = ''
+        self.xn = xn
         # Positive sequence Thevenin reactance. 
-        self.x = ''
+        self.x = x
         # Phase-to-phase nominal voltage. 
-        self.nominal_voltage = ''
+        self.nominal_voltage = nominal_voltage
         # Negative sequence Thevenin resistance. 
-        self.rn = ''
+        self.rn = rn
         # Zero sequence Thevenin reactance. 
-        self.x0 = ''
+        self.x0 = x0
         # High voltage source load 
-        self.active_power = ''
+        self.active_power = active_power
         # Positive sequence Thevenin resistance. 
-        self.r = ''
+        self.r = r
         
 
         super(EnergySource, self).__init__(**kw_args)
@@ -1484,7 +1560,8 @@ class VoltageControlZone(PowerSystemResource):
             
         self._regulation_schedule = value
         if self._regulation_schedule is not None:
-            self._regulation_schedule._voltage_control_zones.append(self)
+            if self not in self._regulation_schedule._voltage_control_zones:
+                self._regulation_schedule._voltage_control_zones.append(self)
 
     regulation_schedule = property(get_regulation_schedule, set_regulation_schedule)
     # >>> regulation_schedule
@@ -1514,32 +1591,38 @@ class Conductor(ConductingEquipment):
     """
     # <<< conductor
     # @generated
-    def __init__(self, g0ch='', gch='', x='', x0='', bch='', b0ch='', r0='', r='', linear_conductor_type_assets=[], conductor_type=None, linear_conductor_assets=[], **kw_args):
+    def __init__(self, g0ch=0.0, gch=0.0, x=0.0, x0=0.0, bch=0.0, b0ch=0.0, r0=0.0, r=0.0, linear_conductor_type_assets=None, conductor_type=None, linear_conductor_assets=None, **kw_args):
         """ Initialises a new 'Conductor' instance.
         """
         # Zero sequence shunt (charging) conductance, uniformly distributed, of the entire line section. 
-        self.g0ch = ''
+        self.g0ch = g0ch
         # Positive sequence shunt (charging) conductance, uniformly distributed, of the entire line section. 
-        self.gch = ''
+        self.gch = gch
         # Positive sequence series reactance of the entire line section. 
-        self.x = ''
+        self.x = x
         # Zero sequence series reactance of the entire line section. 
-        self.x0 = ''
+        self.x0 = x0
         # Positive sequence shunt (charging) susceptance, uniformly distributed, of the entire line section. 
-        self.bch = ''
+        self.bch = bch
         # Zero sequence shunt (charging) susceptance, uniformly distributed, of the entire line section. 
-        self.b0ch = ''
+        self.b0ch = b0ch
         # Zero sequence series resistance of the entire line section. 
-        self.r0 = ''
+        self.r0 = r0
         # Positive sequence series resistance of the entire line section. 
-        self.r = ''
+        self.r = r
         
         self._linear_conductor_type_assets = []
-        self.linear_conductor_type_assets = linear_conductor_type_assets
+        if linear_conductor_type_assets is None:
+            self.linear_conductor_type_assets = []
+        else:
+            self.linear_conductor_type_assets = linear_conductor_type_assets
         self._conductor_type = None
         self.conductor_type = conductor_type
         self._linear_conductor_assets = []
-        self.linear_conductor_assets = linear_conductor_assets
+        if linear_conductor_assets is None:
+            self.linear_conductor_assets = []
+        else:
+            self.linear_conductor_assets = linear_conductor_assets
 
         super(Conductor, self).__init__(**kw_args)
     # >>> conductor
@@ -1589,7 +1672,8 @@ class Conductor(ConductingEquipment):
             
         self._conductor_type = value
         if self._conductor_type is not None:
-            self._conductor_type._conductors.append(self)
+            if self not in self._conductor_type._conductors:
+                self._conductor_type._conductors.append(self)
 
     conductor_type = property(get_conductor_type, set_conductor_type)
     # >>> conductor_type
@@ -1648,12 +1732,15 @@ class Ground(ConductingEquipment):
     """
     # <<< ground
     # @generated
-    def __init__(self, winding_insulations=[], **kw_args):
+    def __init__(self, winding_insulations=None, **kw_args):
         """ Initialises a new 'Ground' instance.
         """
         
         self._winding_insulations = []
-        self.winding_insulations = winding_insulations
+        if winding_insulations is None:
+            self.winding_insulations = []
+        else:
+            self.winding_insulations = winding_insulations
 
         super(Ground, self).__init__(**kw_args)
     # >>> ground
@@ -1667,9 +1754,9 @@ class Ground(ConductingEquipment):
 
     def set_winding_insulations(self, value):
         for x in self._winding_insulations:
-            x._ground = None
+            x.ground = None
         for y in value:
-            y._ground = self
+            y.ground = self
         self._winding_insulations = value
             
     winding_insulations = property(get_winding_insulations, set_winding_insulations)
@@ -1677,7 +1764,8 @@ class Ground(ConductingEquipment):
     def add_winding_insulations(self, *winding_insulations):
         for obj in winding_insulations:
             obj._ground = self
-            self._winding_insulations.append(obj)
+            if obj not in self._winding_insulations:
+                self._winding_insulations.append(obj)
         
     def remove_winding_insulations(self, *winding_insulations):
         for obj in winding_insulations:
@@ -1692,24 +1780,30 @@ class PowerTransformer(Equipment):
     """
     # <<< power_transformer
     # @generated
-    def __init__(self, bmag_sat='', mag_sat_flux='', phases='abn', mag_base_u='', transformer_windings=[], heat_exchanger=None, flowgates=[], **kw_args):
+    def __init__(self, bmag_sat=0.0, mag_sat_flux=0.0, phases='abn', mag_base_u=0.0, transformer_windings=None, heat_exchanger=None, flowgates=None, **kw_args):
         """ Initialises a new 'PowerTransformer' instance.
         """
         # Core shunt magnetizing susceptance in the saturation region. 
-        self.bmag_sat = ''
+        self.bmag_sat = bmag_sat
         # Core magnetizing saturation curve knee flux level. 
-        self.mag_sat_flux = ''
+        self.mag_sat_flux = mag_sat_flux
         # Describes the phases carried by a power transformer. Values are: "abn", "bc", "acn", "bn", "ac", "abc", "an", "ab", "c", "b", "abcn", "a", "cn", "n", "bcn"
-        self.phases = 'abn'
+        self.phases = phases
         # The reference voltage at which the magnetizing saturation measurements were made 
-        self.mag_base_u = ''
+        self.mag_base_u = mag_base_u
         
         self._transformer_windings = []
-        self.transformer_windings = transformer_windings
+        if transformer_windings is None:
+            self.transformer_windings = []
+        else:
+            self.transformer_windings = transformer_windings
         self._heat_exchanger = None
         self.heat_exchanger = heat_exchanger
         self._flowgates = []
-        self.flowgates = flowgates
+        if flowgates is None:
+            self.flowgates = []
+        else:
+            self.flowgates = flowgates
 
         super(PowerTransformer, self).__init__(**kw_args)
     # >>> power_transformer
@@ -1723,9 +1817,9 @@ class PowerTransformer(Equipment):
 
     def set_transformer_windings(self, value):
         for x in self._transformer_windings:
-            x._power_transformer = None
+            x.power_transformer = None
         for y in value:
-            y._power_transformer = self
+            y.power_transformer = self
         self._transformer_windings = value
             
     transformer_windings = property(get_transformer_windings, set_transformer_windings)
@@ -1733,7 +1827,8 @@ class PowerTransformer(Equipment):
     def add_transformer_windings(self, *transformer_windings):
         for obj in transformer_windings:
             obj._power_transformer = self
-            self._transformer_windings.append(obj)
+            if obj not in self._transformer_windings:
+                self._transformer_windings.append(obj)
         
     def remove_transformer_windings(self, *transformer_windings):
         for obj in transformer_windings:
@@ -1880,80 +1975,86 @@ class SynchronousMachine(RegulatingCondEq):
     """
     # <<< synchronous_machine
     # @generated
-    def __init__(self, type='generator', max_u='', min_u='', x_direct_subtrans='', coolant_type='water', condenser_p='', x_quad_sync='', r0='', a_vrto_manual_lead='', x0='', reference_priority=0, r='', x_quad_trans='', r2='', base_q='', inertia='', x2='', a_vrto_manual_lag='', x_direct_trans='', q_percent='', coolant_condition=0.0, manual_to_avr='', operating_mode='generator', x_direct_sync='', max_q='', damping='', rated_s='', min_q='', x_quad_subtrans='', x='', initial_reactive_capability_curve=None, hydro_pump=None, reactive_capability_curves=[], generating_unit=None, prime_movers=[], **kw_args):
+    def __init__(self, type='generator', max_u=0.0, min_u=0.0, x_direct_subtrans=0.0, coolant_type='water', condenser_p=0.0, x_quad_sync=0.0, r0=0.0, a_vrto_manual_lead=0.0, x0=0.0, reference_priority=0, r=0.0, x_quad_trans=0.0, r2=0.0, base_q=0.0, inertia=0.0, x2=0.0, a_vrto_manual_lag=0.0, x_direct_trans=0.0, q_percent=0.0, coolant_condition=0.0, manual_to_avr=0.0, operating_mode='generator', x_direct_sync=0.0, max_q=0.0, damping=0.0, rated_s=0.0, min_q=0.0, x_quad_subtrans=0.0, x=0.0, initial_reactive_capability_curve=None, hydro_pump=None, reactive_capability_curves=None, generating_unit=None, prime_movers=None, **kw_args):
         """ Initialises a new 'SynchronousMachine' instance.
         """
         # Modes that this synchronous machine can operate in. Values are: "generator", "condenser", "generator_or_condenser"
-        self.type = 'generator'
+        self.type = type
         # Maximum voltage limit for the unit. 
-        self.max_u = ''
+        self.max_u = max_u
         # Minimum voltage  limit for the unit. 
-        self.min_u = ''
+        self.min_u = min_u
         # Direct-axis subtransient reactance, also known as X'd. 
-        self.x_direct_subtrans = ''
+        self.x_direct_subtrans = x_direct_subtrans
         # Method of cooling the machine. Values are: "water", "air", "hydrogen_gas"
-        self.coolant_type = 'water'
+        self.coolant_type = coolant_type
         # Active power consumed when in condenser mode operation. 
-        self.condenser_p = ''
+        self.condenser_p = condenser_p
         # Quadrature-axis synchronous reactance (Xq) , the ratio of the component of reactive armature voltage, due to the quadrature-axis component of armature current, to this component of current, under steady state conditions and at rated frequency. 
-        self.x_quad_sync = ''
+        self.x_quad_sync = x_quad_sync
         # Zero sequence resistance of the synchronous machine. 
-        self.r0 = ''
+        self.r0 = r0
         # Time delay required when switching from Automatic Voltage Regulation (AVR) to Manual for a leading MVAr violation. 
-        self.a_vrto_manual_lead = ''
+        self.a_vrto_manual_lead = a_vrto_manual_lead
         # Zero sequence reactance of the synchronous machine. 
-        self.x0 = ''
+        self.x0 = x0
         # Priority of unit for reference bus selection. 0 = don t care (default) 1 = highest priority. 2 is less than 1 and so on. 
-        self.reference_priority = 0
+        self.reference_priority = reference_priority
         # Positive sequence resistance of the synchronous machine. 
-        self.r = ''
+        self.r = r
         # Quadrature-axis transient reactance, also known as X'q. 
-        self.x_quad_trans = ''
+        self.x_quad_trans = x_quad_trans
         # Negative sequence resistance. 
-        self.r2 = ''
+        self.r2 = r2
         # Default base reactive power value. This value represents the initial reactive power that can be used by any application function. 
-        self.base_q = ''
+        self.base_q = base_q
         # The energy stored in the rotor when operating at rated speed. This value is used in the accelerating power reference frame for  operator training simulator solutions. 
-        self.inertia = ''
+        self.inertia = inertia
         # Negative sequence reactance. 
-        self.x2 = ''
+        self.x2 = x2
         # Time delay required when switching from Automatic Voltage Regulation (AVR) to Manual for a lagging MVAr violation. 
-        self.a_vrto_manual_lag = ''
+        self.a_vrto_manual_lag = a_vrto_manual_lag
         # Direct-axis transient reactance, also known as X'd. 
-        self.x_direct_trans = ''
+        self.x_direct_trans = x_direct_trans
         # Percent of the coordinated reactive control that comes from this machine. 
-        self.q_percent = ''
+        self.q_percent = q_percent
         # Temperature or pressure of coolant medium 
-        self.coolant_condition = 0.0
+        self.coolant_condition = coolant_condition
         # Time delay required when switching from Manual to Automatic Voltage Regulation. This value is used in the accelerating power reference frame for powerflow solutions 
-        self.manual_to_avr = ''
+        self.manual_to_avr = manual_to_avr
         # Current mode of operation. Values are: "generator", "condenser"
-        self.operating_mode = 'generator'
+        self.operating_mode = operating_mode
         # Direct-axis synchronous reactance. The quotient of a sustained value of that AC component of armature voltage that is produced by the total direct-axis flux due to direct-axis armature current and the value of the AC component of this current, the machine running at rated speed. (Xd) 
-        self.x_direct_sync = ''
+        self.x_direct_sync = x_direct_sync
         # Maximum reactive power limit. This is the maximum (nameplate) limit for the unit. 
-        self.max_q = ''
+        self.max_q = max_q
         # Damping torque coefficient, a proportionality constant that, when multiplied by the angular velocity of the rotor poles with respect to the magnetic field (frequency), results in the damping torque. 
-        self.damping = ''
+        self.damping = damping
         # Nameplate apparent power rating for the unit 
-        self.rated_s = ''
+        self.rated_s = rated_s
         # Minimum reactive power limit for the unit. 
-        self.min_q = ''
+        self.min_q = min_q
         # Quadrature-axis subtransient reactance, also known as X'q. 
-        self.x_quad_subtrans = ''
+        self.x_quad_subtrans = x_quad_subtrans
         # Positive sequence reactance of the synchronous machine. 
-        self.x = ''
+        self.x = x
         
         self._initial_reactive_capability_curve = None
         self.initial_reactive_capability_curve = initial_reactive_capability_curve
         self._hydro_pump = None
         self.hydro_pump = hydro_pump
         self._reactive_capability_curves = []
-        self.reactive_capability_curves = reactive_capability_curves
+        if reactive_capability_curves is None:
+            self.reactive_capability_curves = []
+        else:
+            self.reactive_capability_curves = reactive_capability_curves
         self._generating_unit = None
         self.generating_unit = generating_unit
         self._prime_movers = []
-        self.prime_movers = prime_movers
+        if prime_movers is None:
+            self.prime_movers = []
+        else:
+            self.prime_movers = prime_movers
 
         super(SynchronousMachine, self).__init__(**kw_args)
     # >>> synchronous_machine
@@ -1972,7 +2073,8 @@ class SynchronousMachine(RegulatingCondEq):
             
         self._initial_reactive_capability_curve = value
         if self._initial_reactive_capability_curve is not None:
-            self._initial_reactive_capability_curve._initially_used_by_synchronous_machines.append(self)
+            if self not in self._initial_reactive_capability_curve._initially_used_by_synchronous_machines:
+                self._initial_reactive_capability_curve._initially_used_by_synchronous_machines.append(self)
 
     initial_reactive_capability_curve = property(get_initial_reactive_capability_curve, set_initial_reactive_capability_curve)
     # >>> initial_reactive_capability_curve
@@ -2040,7 +2142,8 @@ class SynchronousMachine(RegulatingCondEq):
             
         self._generating_unit = value
         if self._generating_unit is not None:
-            self._generating_unit._synchronous_machines.append(self)
+            if self not in self._generating_unit._synchronous_machines:
+                self._generating_unit._synchronous_machines.append(self)
 
     generating_unit = property(get_generating_unit, set_generating_unit)
     # >>> generating_unit
@@ -2083,19 +2186,19 @@ class StaticVarCompensator(RegulatingCondEq):
     """
     # <<< static_var_compensator
     # @generated
-    def __init__(self, capacitive_rating='', voltage_set_point='', s_vccontrol_mode='off', slope='', inductive_rating='', **kw_args):
+    def __init__(self, capacitive_rating=0.0, voltage_set_point=0.0, s_vccontrol_mode='off', slope=0.0, inductive_rating=0.0, **kw_args):
         """ Initialises a new 'StaticVarCompensator' instance.
         """
         # Maximum available capacitive reactive power 
-        self.capacitive_rating = ''
+        self.capacitive_rating = capacitive_rating
         # The reactive power output of the SVC is proportional to the difference between the voltage at the regulated bus and the voltage setpoint.  When the regulated bus voltage is equal to the voltage setpoint, the reactive power output is zero. 
-        self.voltage_set_point = ''
+        self.voltage_set_point = voltage_set_point
         # SVC control mode. Values are: "off", "reactive_power", "voltage"
-        self.s_vccontrol_mode = 'off'
+        self.s_vccontrol_mode = s_vccontrol_mode
         # The characteristics slope of an SVC defines how the reactive power output changes in proportion to the difference between the regulated bus voltage and the voltage setpoint. 
-        self.slope = ''
+        self.slope = slope
         # Maximum available inductive reactive power 
-        self.inductive_rating = ''
+        self.inductive_rating = inductive_rating
         
 
         super(StaticVarCompensator, self).__init__(**kw_args)
@@ -2143,13 +2246,13 @@ class DCLineSegment(Conductor):
     """
     # <<< dcline_segment
     # @generated
-    def __init__(self, dc_segment_resistance='', dc_segment_inductance='', **kw_args):
+    def __init__(self, dc_segment_resistance=0.0, dc_segment_inductance=0.0, **kw_args):
         """ Initialises a new 'DCLineSegment' instance.
         """
         # Resistance of the DC line segment. 
-        self.dc_segment_resistance = ''
+        self.dc_segment_resistance = dc_segment_resistance
         # Inductance of the DC line segment. 
-        self.dc_segment_inductance = ''
+        self.dc_segment_inductance = dc_segment_inductance
         
 
         super(DCLineSegment, self).__init__(**kw_args)
@@ -2162,21 +2265,21 @@ class FrequencyConverter(RegulatingCondEq):
     """
     # <<< frequency_converter
     # @generated
-    def __init__(self, max_p='', frequency='', min_p='', operating_mode='', min_u='', max_u='', **kw_args):
+    def __init__(self, max_p=0.0, frequency=0.0, min_p=0.0, operating_mode='', min_u=0.0, max_u=0.0, **kw_args):
         """ Initialises a new 'FrequencyConverter' instance.
         """
         # The maximum active power on the DC side at which the frequence converter should operate. 
-        self.max_p = ''
+        self.max_p = max_p
         # Frequency on the AC side. 
-        self.frequency = ''
+        self.frequency = frequency
         # The minimum active power on the DC side at which the frequence converter should operate. 
-        self.min_p = ''
+        self.min_p = min_p
         # Operating mode for the frequency converter 
-        self.operating_mode = ''
+        self.operating_mode = operating_mode
         # The minimum voltage on the DC side at which the frequency converter should operate. 
-        self.min_u = ''
+        self.min_u = min_u
         # The maximum voltage on the DC side at which the frequency converter should operate. 
-        self.max_u = ''
+        self.max_u = max_u
         
 
         super(FrequencyConverter, self).__init__(**kw_args)
@@ -2205,37 +2308,37 @@ class ShuntCompensator(RegulatingCondEq):
     """
     # <<< shunt_compensator
     # @generated
-    def __init__(self, nom_q='', max_u='', a_vrdelay='', nom_u='', voltage_sensitivity='', reactive_per_section='', maximum_sections=0, switch_on_date='', normal_sections=0, b0_per_section='', min_u='', g0_per_section='', y_per_section='', switch_on_count=0, sv_shunt_compensator_sections=None, **kw_args):
+    def __init__(self, nom_q=0.0, max_u=0.0, a_vrdelay=0.0, nom_u=0.0, voltage_sensitivity=0.0, reactive_per_section=0.0, maximum_sections=0, switch_on_date='', normal_sections=0, b0_per_section=0.0, min_u=0.0, g0_per_section=0.0, y_per_section=0.0, switch_on_count=0, sv_shunt_compensator_sections=None, **kw_args):
         """ Initialises a new 'ShuntCompensator' instance.
         """
         # Nominal reactive power output of the capacitor bank at the nominal voltage. This number should be positive. 
-        self.nom_q = ''
+        self.nom_q = nom_q
         # The maximum voltage at which the capacitor bank should operate. 
-        self.max_u = ''
+        self.max_u = max_u
         # Time delay required for the device to be connected or disconnected by automatic voltage regulation (AVR). 
-        self.a_vrdelay = ''
+        self.a_vrdelay = a_vrdelay
         # The nominal voltage at which the nominal reactive power was measured. This should normally be within 10% of the voltage at which the capacitor is connected to the network. 
-        self.nom_u = ''
+        self.nom_u = nom_u
         # Voltage sensitivity required for the device to regulate the bus voltage, in voltage/reactive power. 
-        self.voltage_sensitivity = ''
+        self.voltage_sensitivity = voltage_sensitivity
         # For a capacitor bank, the size in reactive power of each switchable section at the nominal voltage. 
-        self.reactive_per_section = ''
+        self.reactive_per_section = reactive_per_section
         # For a capacitor bank, the maximum number of sections that may be switched in. 
-        self.maximum_sections = 0
+        self.maximum_sections = maximum_sections
         # The date and time when the capacitor bank was last switched on. 
-        self.switch_on_date = ''
+        self.switch_on_date = switch_on_date
         # For a capacitor bank, the normal number of sections switched in. This number should correspond to the nominal reactive power (nomQ). 
-        self.normal_sections = 0
+        self.normal_sections = normal_sections
         # Zero sequence shunt (charging) susceptance per section 
-        self.b0_per_section = ''
+        self.b0_per_section = b0_per_section
         # The minimum voltage at which the capacitor bank should operate. 
-        self.min_u = ''
+        self.min_u = min_u
         # Zero sequence shunt (charging) conductance per section 
-        self.g0_per_section = ''
+        self.g0_per_section = g0_per_section
         # For a capacitor bank, the admittance of each switchable section. Calculated using the reactive power per section and corrected for network voltage. 
-        self.y_per_section = ''
+        self.y_per_section = y_per_section
         # The switch on count since the capacitor count was last reset or initialized. 
-        self.switch_on_count = 0
+        self.switch_on_count = switch_on_count
         
         self._sv_shunt_compensator_sections = None
         self.sv_shunt_compensator_sections = sv_shunt_compensator_sections
@@ -2268,14 +2371,20 @@ class ProtectedSwitch(Switch):
     """
     # <<< protected_switch
     # @generated
-    def __init__(self, reclose_sequences=[], protection_equipments=[], **kw_args):
+    def __init__(self, reclose_sequences=None, protection_equipments=None, **kw_args):
         """ Initialises a new 'ProtectedSwitch' instance.
         """
         
         self._reclose_sequences = []
-        self.reclose_sequences = reclose_sequences
+        if reclose_sequences is None:
+            self.reclose_sequences = []
+        else:
+            self.reclose_sequences = reclose_sequences
         self._protection_equipments = []
-        self.protection_equipments = protection_equipments
+        if protection_equipments is None:
+            self.protection_equipments = []
+        else:
+            self.protection_equipments = protection_equipments
 
         super(ProtectedSwitch, self).__init__(**kw_args)
     # >>> protected_switch
@@ -2289,9 +2398,9 @@ class ProtectedSwitch(Switch):
 
     def set_reclose_sequences(self, value):
         for x in self._reclose_sequences:
-            x._protected_switch = None
+            x.protected_switch = None
         for y in value:
-            y._protected_switch = self
+            y.protected_switch = self
         self._reclose_sequences = value
             
     reclose_sequences = property(get_reclose_sequences, set_reclose_sequences)
@@ -2299,7 +2408,8 @@ class ProtectedSwitch(Switch):
     def add_reclose_sequences(self, *reclose_sequences):
         for obj in reclose_sequences:
             obj._protected_switch = self
-            self._reclose_sequences.append(obj)
+            if obj not in self._reclose_sequences:
+                self._reclose_sequences.append(obj)
         
     def remove_reclose_sequences(self, *reclose_sequences):
         for obj in reclose_sequences:
@@ -2345,11 +2455,11 @@ class Fuse(Switch):
     """
     # <<< fuse
     # @generated
-    def __init__(self, amp_rating='', **kw_args):
+    def __init__(self, amp_rating=0.0, **kw_args):
         """ Initialises a new 'Fuse' instance.
         """
         # Fault interrupting current rating. 
-        self.amp_rating = ''
+        self.amp_rating = amp_rating
         
 
         super(Fuse, self).__init__(**kw_args)
@@ -2362,23 +2472,23 @@ class PhaseTapChanger(TapChanger):
     """
     # <<< phase_tap_changer
     # @generated
-    def __init__(self, nominal_voltage_out_of_phase='', x_step_max='', phase_tap_changer_type='unknown', x_step_min='', winding_connection_angle='', voltage_step_increment_out_of_phase='', step_phase_shift_increment='', transformer_winding=None, **kw_args):
+    def __init__(self, nominal_voltage_out_of_phase=0.0, x_step_max=0.0, phase_tap_changer_type='unknown', x_step_min=0.0, winding_connection_angle=0.0, voltage_step_increment_out_of_phase=0.0, step_phase_shift_increment=0.0, transformer_winding=None, **kw_args):
         """ Initialises a new 'PhaseTapChanger' instance.
         """
         # Similar to TapChanger.nominalVoltage, but this is the nominal voltage in the out of phase winding at the nominal tap step. A typical case may have zero voltage at the nominal step, indicating no phase shift at the nominal voltage. 
-        self.nominal_voltage_out_of_phase = ''
+        self.nominal_voltage_out_of_phase = nominal_voltage_out_of_phase
         # The reactance at the maximum tap step. 
-        self.x_step_max = ''
+        self.x_step_max = x_step_max
         # The type of phase shifter construction. Values are: "unknown", "asymmetrical", "symmetrical"
-        self.phase_tap_changer_type = 'unknown'
+        self.phase_tap_changer_type = phase_tap_changer_type
         # The reactance at the minimum tap step. 
-        self.x_step_min = ''
+        self.x_step_min = x_step_min
         # The phase angle between the in-phase winding and the out-of -phase winding used for creating phase shift.   It is only possible to have a symmemtrical transformer if this angle is 90 degrees. 
-        self.winding_connection_angle = ''
+        self.winding_connection_angle = winding_connection_angle
         # The voltage step increment on the out of phase winding.    This voltage step on the out of phase winding of the phase shifter.  Similar to TapChanger.voltageStepIncrement, but it is applied only to the out of phase winding. 
-        self.voltage_step_increment_out_of_phase = ''
+        self.voltage_step_increment_out_of_phase = voltage_step_increment_out_of_phase
         # Phase shift per step position. A positive value indicates a positive phase shift from the winding where the tap is located to the other winding (for a two-winding transformer). The actual phase shift increment might be more accureatly computed from the symmetrical or asymmetrical models or a tap step table lookup if those are available. 
-        self.step_phase_shift_increment = ''
+        self.step_phase_shift_increment = step_phase_shift_increment
         
         self._transformer_winding = None
         self.transformer_winding = transformer_winding
@@ -2411,13 +2521,13 @@ class Breaker(ProtectedSwitch):
     """
     # <<< breaker
     # @generated
-    def __init__(self, in_transit_time='', rated_current='', **kw_args):
+    def __init__(self, in_transit_time=0.0, rated_current=0.0, **kw_args):
         """ Initialises a new 'Breaker' instance.
         """
         # The transition time from open to close. 
-        self.in_transit_time = ''
+        self.in_transit_time = in_transit_time
         # Fault interrupting current rating. 
-        self.rated_current = ''
+        self.rated_current = rated_current
         
 
         super(Breaker, self).__init__(**kw_args)
@@ -2446,11 +2556,11 @@ class LoadBreakSwitch(ProtectedSwitch):
     """
     # <<< load_break_switch
     # @generated
-    def __init__(self, rated_current='', **kw_args):
+    def __init__(self, rated_current=0.0, **kw_args):
         """ Initialises a new 'LoadBreakSwitch' instance.
         """
         # Current carrying capacity of a wire or cable under stated thermal conditions. 
-        self.rated_current = ''
+        self.rated_current = rated_current
         
 
         super(LoadBreakSwitch, self).__init__(**kw_args)

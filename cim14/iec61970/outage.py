@@ -17,18 +17,21 @@ class SwitchingOperation(IdentifiedObject):
     """
     # <<< switching_operation
     # @generated
-    def __init__(self, new_state='open', operation_time='', outage_schedule=None, switches=[], **kw_args):
+    def __init__(self, new_state='open', operation_time='', outage_schedule=None, switches=None, **kw_args):
         """ Initialises a new 'SwitchingOperation' instance.
         """
         # The switch position that shall result from this SwitchingOperation Values are: "open", "close"
-        self.new_state = 'open'
+        self.new_state = new_state
         # Time of operation in same units as OutageSchedule.xAxixUnits. 
-        self.operation_time = ''
+        self.operation_time = operation_time
         
         self._outage_schedule = None
         self.outage_schedule = outage_schedule
         self._switches = []
-        self.switches = switches
+        if switches is None:
+            self.switches = []
+        else:
+            self.switches = switches
 
         super(SwitchingOperation, self).__init__(**kw_args)
     # >>> switching_operation
@@ -47,7 +50,8 @@ class SwitchingOperation(IdentifiedObject):
             
         self._outage_schedule = value
         if self._outage_schedule is not None:
-            self._outage_schedule._switching_operations.append(self)
+            if self not in self._outage_schedule._switching_operations:
+                self._outage_schedule._switching_operations.append(self)
 
     outage_schedule = property(get_outage_schedule, set_outage_schedule)
     # >>> outage_schedule
@@ -90,7 +94,7 @@ class OutageSchedule(IrregularIntervalSchedule):
     """
     # <<< outage_schedule
     # @generated
-    def __init__(self, planned_outage=None, power_system_resource=None, switching_operations=[], **kw_args):
+    def __init__(self, planned_outage=None, power_system_resource=None, switching_operations=None, **kw_args):
         """ Initialises a new 'OutageSchedule' instance.
         """
         
@@ -99,7 +103,10 @@ class OutageSchedule(IrregularIntervalSchedule):
         self._power_system_resource = None
         self.power_system_resource = power_system_resource
         self._switching_operations = []
-        self.switching_operations = switching_operations
+        if switching_operations is None:
+            self.switching_operations = []
+        else:
+            self.switching_operations = switching_operations
 
         super(OutageSchedule, self).__init__(**kw_args)
     # >>> outage_schedule
@@ -118,7 +125,8 @@ class OutageSchedule(IrregularIntervalSchedule):
             
         self._planned_outage = value
         if self._planned_outage is not None:
-            self._planned_outage._outage_schedules.append(self)
+            if self not in self._planned_outage._outage_schedules:
+                self._planned_outage._outage_schedules.append(self)
 
     planned_outage = property(get_planned_outage, set_planned_outage)
     # >>> planned_outage
@@ -150,9 +158,9 @@ class OutageSchedule(IrregularIntervalSchedule):
 
     def set_switching_operations(self, value):
         for x in self._switching_operations:
-            x._outage_schedule = None
+            x.outage_schedule = None
         for y in value:
-            y._outage_schedule = self
+            y.outage_schedule = self
         self._switching_operations = value
             
     switching_operations = property(get_switching_operations, set_switching_operations)
@@ -160,7 +168,8 @@ class OutageSchedule(IrregularIntervalSchedule):
     def add_switching_operations(self, *switching_operations):
         for obj in switching_operations:
             obj._outage_schedule = self
-            self._switching_operations.append(obj)
+            if obj not in self._switching_operations:
+                self._switching_operations.append(obj)
         
     def remove_switching_operations(self, *switching_operations):
         for obj in switching_operations:
@@ -175,30 +184,33 @@ class ClearanceTag(IdentifiedObject):
     """
     # <<< clearance_tag
     # @generated
-    def __init__(self, work_start_time='', phase_check_req_flag=False, deenergize_req_flag=False, work_end_time='', tag_issue_time='', work_description='', ground_req_flag=False, authority_name='', conducting_equipment=None, safety_documents=[], clearance_tag_type=None, **kw_args):
+    def __init__(self, work_start_time='', phase_check_req_flag=False, deenergize_req_flag=False, work_end_time='', tag_issue_time='', work_description='', ground_req_flag=False, authority_name='', conducting_equipment=None, safety_documents=None, clearance_tag_type=None, **kw_args):
         """ Initialises a new 'ClearanceTag' instance.
         """
         # The time at which the clearance tag is scheduled to be set. 
-        self.work_start_time = ''
+        self.work_start_time = work_start_time
         # Set true if equipment phasing must be checked 
-        self.phase_check_req_flag = False
+        self.phase_check_req_flag = phase_check_req_flag
         # Set true if equipment must be deenergized 
-        self.deenergize_req_flag = False
+        self.deenergize_req_flag = deenergize_req_flag
         # The time at which the clearance tag is scheduled to be removed 
-        self.work_end_time = ''
+        self.work_end_time = work_end_time
         # The time at which the clearance tag was issued 
-        self.tag_issue_time = ''
+        self.tag_issue_time = tag_issue_time
         # Description of the work to be performed 
-        self.work_description = ''
+        self.work_description = work_description
         # Set true if equipment must be grounded 
-        self.ground_req_flag = False
+        self.ground_req_flag = ground_req_flag
         # The name of the person who is authorized to issue the tag 
-        self.authority_name = ''
+        self.authority_name = authority_name
         
         self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
         self._safety_documents = []
-        self.safety_documents = safety_documents
+        if safety_documents is None:
+            self.safety_documents = []
+        else:
+            self.safety_documents = safety_documents
         self._clearance_tag_type = None
         self.clearance_tag_type = clearance_tag_type
 
@@ -219,7 +231,8 @@ class ClearanceTag(IdentifiedObject):
             
         self._conducting_equipment = value
         if self._conducting_equipment is not None:
-            self._conducting_equipment._clearance_tags.append(self)
+            if self not in self._conducting_equipment._clearance_tags:
+                self._conducting_equipment._clearance_tags.append(self)
 
     conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
     # >>> conducting_equipment
@@ -269,7 +282,8 @@ class ClearanceTag(IdentifiedObject):
             
         self._clearance_tag_type = value
         if self._clearance_tag_type is not None:
-            self._clearance_tag_type._clearance_tags.append(self)
+            if self not in self._clearance_tag_type._clearance_tags:
+                self._clearance_tag_type._clearance_tags.append(self)
 
     clearance_tag_type = property(get_clearance_tag_type, set_clearance_tag_type)
     # >>> clearance_tag_type
@@ -281,12 +295,15 @@ class ClearanceTagType(IdentifiedObject):
     """
     # <<< clearance_tag_type
     # @generated
-    def __init__(self, clearance_tags=[], **kw_args):
+    def __init__(self, clearance_tags=None, **kw_args):
         """ Initialises a new 'ClearanceTagType' instance.
         """
         
         self._clearance_tags = []
-        self.clearance_tags = clearance_tags
+        if clearance_tags is None:
+            self.clearance_tags = []
+        else:
+            self.clearance_tags = clearance_tags
 
         super(ClearanceTagType, self).__init__(**kw_args)
     # >>> clearance_tag_type
@@ -300,9 +317,9 @@ class ClearanceTagType(IdentifiedObject):
 
     def set_clearance_tags(self, value):
         for x in self._clearance_tags:
-            x._clearance_tag_type = None
+            x.clearance_tag_type = None
         for y in value:
-            y._clearance_tag_type = self
+            y.clearance_tag_type = self
         self._clearance_tags = value
             
     clearance_tags = property(get_clearance_tags, set_clearance_tags)
@@ -310,7 +327,8 @@ class ClearanceTagType(IdentifiedObject):
     def add_clearance_tags(self, *clearance_tags):
         for obj in clearance_tags:
             obj._clearance_tag_type = self
-            self._clearance_tags.append(obj)
+            if obj not in self._clearance_tags:
+                self._clearance_tags.append(obj)
         
     def remove_clearance_tags(self, *clearance_tags):
         for obj in clearance_tags:

@@ -40,7 +40,8 @@ class ContingencyElement(IdentifiedObject):
             
         self._contingency = value
         if self._contingency is not None:
-            self._contingency._contingency_element.append(self)
+            if self not in self._contingency._contingency_element:
+                self._contingency._contingency_element.append(self)
 
     contingency = property(get_contingency, set_contingency)
     # >>> contingency
@@ -52,16 +53,22 @@ class Contingency(IdentifiedObject):
     """
     # <<< contingency
     # @generated
-    def __init__(self, must_study=False, contingency_element=[], contingency_constraint_limit=[], **kw_args):
+    def __init__(self, must_study=False, contingency_element=None, contingency_constraint_limit=None, **kw_args):
         """ Initialises a new 'Contingency' instance.
         """
         # Set true if must study this contingency. 
-        self.must_study = False
+        self.must_study = must_study
         
         self._contingency_element = []
-        self.contingency_element = contingency_element
+        if contingency_element is None:
+            self.contingency_element = []
+        else:
+            self.contingency_element = contingency_element
         self._contingency_constraint_limit = []
-        self.contingency_constraint_limit = contingency_constraint_limit
+        if contingency_constraint_limit is None:
+            self.contingency_constraint_limit = []
+        else:
+            self.contingency_constraint_limit = contingency_constraint_limit
 
         super(Contingency, self).__init__(**kw_args)
     # >>> contingency
@@ -75,9 +82,9 @@ class Contingency(IdentifiedObject):
 
     def set_contingency_element(self, value):
         for x in self._contingency_element:
-            x._contingency = None
+            x.contingency = None
         for y in value:
-            y._contingency = self
+            y.contingency = self
         self._contingency_element = value
             
     contingency_element = property(get_contingency_element, set_contingency_element)
@@ -85,7 +92,8 @@ class Contingency(IdentifiedObject):
     def add_contingency_element(self, *contingency_element):
         for obj in contingency_element:
             obj._contingency = self
-            self._contingency_element.append(obj)
+            if obj not in self._contingency_element:
+                self._contingency_element.append(obj)
         
     def remove_contingency_element(self, *contingency_element):
         for obj in contingency_element:
@@ -102,9 +110,9 @@ class Contingency(IdentifiedObject):
 
     def set_contingency_constraint_limit(self, value):
         for x in self._contingency_constraint_limit:
-            x._contingency = None
+            x.contingency = None
         for y in value:
-            y._contingency = self
+            y.contingency = self
         self._contingency_constraint_limit = value
             
     contingency_constraint_limit = property(get_contingency_constraint_limit, set_contingency_constraint_limit)
@@ -112,7 +120,8 @@ class Contingency(IdentifiedObject):
     def add_contingency_constraint_limit(self, *contingency_constraint_limit):
         for obj in contingency_constraint_limit:
             obj._contingency = self
-            self._contingency_constraint_limit.append(obj)
+            if obj not in self._contingency_constraint_limit:
+                self._contingency_constraint_limit.append(obj)
         
     def remove_contingency_constraint_limit(self, *contingency_constraint_limit):
         for obj in contingency_constraint_limit:
@@ -131,7 +140,7 @@ class ContingencyEquipment(ContingencyElement):
         """ Initialises a new 'ContingencyEquipment' instance.
         """
         # The status for the associated equipment when in the contingency state.   This status is independent of the case to which the contingency is originally applied, but defines the equipment status when the contingency is applied. Values are: "out_of_service", "in_service"
-        self.contingent_status = 'out_of_service'
+        self.contingent_status = contingent_status
         
         self._equipment = None
         self.equipment = equipment
@@ -153,7 +162,8 @@ class ContingencyEquipment(ContingencyElement):
             
         self._equipment = value
         if self._equipment is not None:
-            self._equipment._contingency_equipment.append(self)
+            if self not in self._equipment._contingency_equipment:
+                self._equipment._contingency_equipment.append(self)
 
     equipment = property(get_equipment, set_equipment)
     # >>> equipment

@@ -20,11 +20,11 @@ class RegularTimePoint(Element):
         """ Initialises a new 'RegularTimePoint' instance.
         """
         # The first value at the time. The meaning of the value is defined by the class inhering the RegularIntervalSchedule. 
-        self.value1 = 0.0
+        self.value1 = value1
         # The position of the RegularTimePoint in the sequence. Note that time points don't have to be sequential, i.e. time points may be omitted. The actual time for a RegularTimePoint is computed by multiplying the RegularIntervalSchedule.timeStep with the RegularTimePoint.sequenceNumber and add the BasicIntervalSchedule.startTime. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         # The second value at the time. The meaning of the value is defined by the class inhering the RegularIntervalSchedule. 
-        self.value2 = 0.0
+        self.value2 = value2
         
         self._interval_schedule = None
         self.interval_schedule = interval_schedule
@@ -46,7 +46,8 @@ class RegularTimePoint(Element):
             
         self._interval_schedule = value
         if self._interval_schedule is not None:
-            self._interval_schedule._time_points.append(self)
+            if self not in self._interval_schedule._time_points:
+                self._interval_schedule._time_points.append(self)
 
     interval_schedule = property(get_interval_schedule, set_interval_schedule)
     # >>> interval_schedule
@@ -58,11 +59,11 @@ class OperatingShare(Element):
     """
     # <<< operating_share
     # @generated
-    def __init__(self, percentage='', power_system_resource=None, operating_participant=None, **kw_args):
+    def __init__(self, percentage=0.0, power_system_resource=None, operating_participant=None, **kw_args):
         """ Initialises a new 'OperatingShare' instance.
         """
         # Percentage ownership for this device.   The percentage indicates the percentage ownership of the PSROwner for the PowerSystemResource.  The total percentage ownership for a PowerSystemResource should add to 100%. 
-        self.percentage = ''
+        self.percentage = percentage
         
         self._power_system_resource = None
         self.power_system_resource = power_system_resource
@@ -86,7 +87,8 @@ class OperatingShare(Element):
             
         self._power_system_resource = value
         if self._power_system_resource is not None:
-            self._power_system_resource._operating_share.append(self)
+            if self not in self._power_system_resource._operating_share:
+                self._power_system_resource._operating_share.append(self)
 
     power_system_resource = property(get_power_system_resource, set_power_system_resource)
     # >>> power_system_resource
@@ -105,7 +107,8 @@ class OperatingShare(Element):
             
         self._operating_participant = value
         if self._operating_participant is not None:
-            self._operating_participant._operating_share.append(self)
+            if self not in self._operating_participant._operating_share:
+                self._operating_participant._operating_share.append(self)
 
     operating_participant = property(get_operating_participant, set_operating_participant)
     # >>> operating_participant
@@ -121,17 +124,17 @@ class IdentifiedObject(Element):
         """ Initialises a new 'IdentifiedObject' instance.
         """
         # A Model Authority issues mRIDs. Given that each Model Authority has a unique id and this id is part of the mRID, then the mRID is globally unique. 
-        self.m_rid = ''
+        self.m_rid = m_rid
         # The name is a free text human readable name of the object. It may be non unique and may not correlate to a naming hierarchy. 
-        self.name = ''
+        self.name = name
         # The pathname is a system unique name composed from all IdentifiedObject.localNames in a naming hierarchy path from the object to the root. 
-        self.path_name = ''
+        self.path_name = path_name
         # The description is a free human readable text describing or naming the object. It may be non unique and may not correlate to a naming hierarchy. 
-        self.description = ''
+        self.description = description
         # The localName is a human readable name of the object. It is only used with objects organized in a naming hierarchy. The simplest naming hierarchy has just one parent (the root) giving a flat naming hierarchy. However, the naming hierarchy usually has several levels, e.g. Substation, VoltageLevel, Equipment etc. Children of the same parent have names that are unique among them. If the uniqueness requirement cannot be met IdentifiedObject.localName shall not be used, use IdentifiedObject.name  instead. 
-        self.local_name = ''
+        self.local_name = local_name
         # The aliasName is free text human readable name of the object alternative to IdentifiedObject.name. It may be non unique and may not correlate to a naming hierarchy. 
-        self.alias_name = ''
+        self.alias_name = alias_name
         
         self._modeling_authority_set = None
         self.modeling_authority_set = modeling_authority_set
@@ -153,7 +156,8 @@ class IdentifiedObject(Element):
             
         self._modeling_authority_set = value
         if self._modeling_authority_set is not None:
-            self._modeling_authority_set._identified_objects.append(self)
+            if self not in self._modeling_authority_set._identified_objects:
+                self._modeling_authority_set._identified_objects.append(self)
 
     modeling_authority_set = property(get_modeling_authority_set, set_modeling_authority_set)
     # >>> modeling_authority_set
@@ -165,15 +169,15 @@ class IrregularTimePoint(Element):
     """
     # <<< irregular_time_point
     # @generated
-    def __init__(self, value2=0.0, time='', value1=0.0, interval_schedule=None, **kw_args):
+    def __init__(self, value2=0.0, time=0.0, value1=0.0, interval_schedule=None, **kw_args):
         """ Initialises a new 'IrregularTimePoint' instance.
         """
         # The second value at the time. The meaning of the value is defined by the class inhering the IrregularIntervalSchedule. 
-        self.value2 = 0.0
+        self.value2 = value2
         # The time is relative the BasicTimeSchedule.startTime. 
-        self.time = ''
+        self.time = time
         # The first value at the time. The meaning of the value is defined by the class inhering the IrregularIntervalSchedule. 
-        self.value1 = 0.0
+        self.value1 = value1
         
         self._interval_schedule = None
         self.interval_schedule = interval_schedule
@@ -195,7 +199,8 @@ class IrregularTimePoint(Element):
             
         self._interval_schedule = value
         if self._interval_schedule is not None:
-            self._interval_schedule._time_points.append(self)
+            if self not in self._interval_schedule._time_points:
+                self._interval_schedule._time_points.append(self)
 
     interval_schedule = property(get_interval_schedule, set_interval_schedule)
     # >>> interval_schedule
@@ -211,11 +216,11 @@ class CurveData(Element):
         """ Initialises a new 'CurveData' instance.
         """
         # The data value of the second Y-axis variable (if present), depending on the Y-axis units 
-        self.y2value = 0.0
+        self.y2value = y2value
         # The data value of the X-axis variable,  depending on the X-axis units 
-        self.xvalue = 0.0
+        self.xvalue = xvalue
         # The data value of the  first Y-axis variable, depending on the Y-axis units 
-        self.y1value = 0.0
+        self.y1value = y1value
         
         self._curve = None
         self.curve = curve
@@ -237,7 +242,8 @@ class CurveData(Element):
             
         self._curve = value
         if self._curve is not None:
-            self._curve._curve_datas.append(self)
+            if self not in self._curve._curve_datas:
+                self._curve._curve_datas.append(self)
 
     curve = property(get_curve, set_curve)
     # >>> curve
@@ -249,46 +255,91 @@ class PowerSystemResource(IdentifiedObject):
     """
     # <<< power_system_resource
     # @generated
-    def __init__(self, activity_records=[], outage_schedule=None, schedule_steps=[], reporting_group=[], circuit_sections=[], measurements=[], network_data_sets=[], operating_share=[], psr_lists=[], safety_documents=[], circuits=[], psrtype=None, psrstatus=None, asset_roles=[], document_roles=[], erp_organisation_roles=[], change_items=[], location_roles=[], **kw_args):
+    def __init__(self, activity_records=None, outage_schedule=None, schedule_steps=None, reporting_group=None, circuit_sections=None, measurements=None, network_data_sets=None, operating_share=None, psr_lists=None, safety_documents=None, circuits=None, psrtype=None, psrstatus=None, asset_roles=None, document_roles=None, erp_organisation_roles=None, change_items=None, location_roles=None, **kw_args):
         """ Initialises a new 'PowerSystemResource' instance.
         """
         
         self._activity_records = []
-        self.activity_records = activity_records
+        if activity_records is None:
+            self.activity_records = []
+        else:
+            self.activity_records = activity_records
         self._outage_schedule = None
         self.outage_schedule = outage_schedule
         self._schedule_steps = []
-        self.schedule_steps = schedule_steps
+        if schedule_steps is None:
+            self.schedule_steps = []
+        else:
+            self.schedule_steps = schedule_steps
         self._reporting_group = []
-        self.reporting_group = reporting_group
+        if reporting_group is None:
+            self.reporting_group = []
+        else:
+            self.reporting_group = reporting_group
         self._circuit_sections = []
-        self.circuit_sections = circuit_sections
+        if circuit_sections is None:
+            self.circuit_sections = []
+        else:
+            self.circuit_sections = circuit_sections
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._network_data_sets = []
-        self.network_data_sets = network_data_sets
+        if network_data_sets is None:
+            self.network_data_sets = []
+        else:
+            self.network_data_sets = network_data_sets
         self._operating_share = []
-        self.operating_share = operating_share
+        if operating_share is None:
+            self.operating_share = []
+        else:
+            self.operating_share = operating_share
         self._psr_lists = []
-        self.psr_lists = psr_lists
+        if psr_lists is None:
+            self.psr_lists = []
+        else:
+            self.psr_lists = psr_lists
         self._safety_documents = []
-        self.safety_documents = safety_documents
+        if safety_documents is None:
+            self.safety_documents = []
+        else:
+            self.safety_documents = safety_documents
         self._circuits = []
-        self.circuits = circuits
+        if circuits is None:
+            self.circuits = []
+        else:
+            self.circuits = circuits
         self._psrtype = None
         self.psrtype = psrtype
         self._psrstatus = None
         self.psrstatus = psrstatus
         self._asset_roles = []
-        self.asset_roles = asset_roles
+        if asset_roles is None:
+            self.asset_roles = []
+        else:
+            self.asset_roles = asset_roles
         self._document_roles = []
-        self.document_roles = document_roles
+        if document_roles is None:
+            self.document_roles = []
+        else:
+            self.document_roles = document_roles
         self._erp_organisation_roles = []
-        self.erp_organisation_roles = erp_organisation_roles
+        if erp_organisation_roles is None:
+            self.erp_organisation_roles = []
+        else:
+            self.erp_organisation_roles = erp_organisation_roles
         self._change_items = []
-        self.change_items = change_items
+        if change_items is None:
+            self.change_items = []
+        else:
+            self.change_items = change_items
         self._location_roles = []
-        self.location_roles = location_roles
+        if location_roles is None:
+            self.location_roles = []
+        else:
+            self.location_roles = location_roles
 
         super(PowerSystemResource, self).__init__(**kw_args)
     # >>> power_system_resource
@@ -444,9 +495,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_measurements(self, value):
         for x in self._measurements:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._measurements = value
             
     measurements = property(get_measurements, set_measurements)
@@ -454,7 +505,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_measurements(self, *measurements):
         for obj in measurements:
             obj._power_system_resource = self
-            self._measurements.append(obj)
+            if obj not in self._measurements:
+                self._measurements.append(obj)
         
     def remove_measurements(self, *measurements):
         for obj in measurements:
@@ -502,9 +554,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_operating_share(self, value):
         for x in self._operating_share:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._operating_share = value
             
     operating_share = property(get_operating_share, set_operating_share)
@@ -512,7 +564,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_operating_share(self, *operating_share):
         for obj in operating_share:
             obj._power_system_resource = self
-            self._operating_share.append(obj)
+            if obj not in self._operating_share:
+                self._operating_share.append(obj)
         
     def remove_operating_share(self, *operating_share):
         for obj in operating_share:
@@ -560,9 +613,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_safety_documents(self, value):
         for x in self._safety_documents:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._safety_documents = value
             
     safety_documents = property(get_safety_documents, set_safety_documents)
@@ -570,7 +623,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_safety_documents(self, *safety_documents):
         for obj in safety_documents:
             obj._power_system_resource = self
-            self._safety_documents.append(obj)
+            if obj not in self._safety_documents:
+                self._safety_documents.append(obj)
         
     def remove_safety_documents(self, *safety_documents):
         for obj in safety_documents:
@@ -623,7 +677,8 @@ class PowerSystemResource(IdentifiedObject):
             
         self._psrtype = value
         if self._psrtype is not None:
-            self._psrtype._power_system_resources.append(self)
+            if self not in self._psrtype._power_system_resources:
+                self._psrtype._power_system_resources.append(self)
 
     psrtype = property(get_psrtype, set_psrtype)
     # >>> psrtype
@@ -655,9 +710,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_asset_roles(self, value):
         for x in self._asset_roles:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._asset_roles = value
             
     asset_roles = property(get_asset_roles, set_asset_roles)
@@ -665,7 +720,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_asset_roles(self, *asset_roles):
         for obj in asset_roles:
             obj._power_system_resource = self
-            self._asset_roles.append(obj)
+            if obj not in self._asset_roles:
+                self._asset_roles.append(obj)
         
     def remove_asset_roles(self, *asset_roles):
         for obj in asset_roles:
@@ -682,9 +738,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_document_roles(self, value):
         for x in self._document_roles:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._document_roles = value
             
     document_roles = property(get_document_roles, set_document_roles)
@@ -692,7 +748,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_document_roles(self, *document_roles):
         for obj in document_roles:
             obj._power_system_resource = self
-            self._document_roles.append(obj)
+            if obj not in self._document_roles:
+                self._document_roles.append(obj)
         
     def remove_document_roles(self, *document_roles):
         for obj in document_roles:
@@ -709,9 +766,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_erp_organisation_roles(self, value):
         for x in self._erp_organisation_roles:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._erp_organisation_roles = value
             
     erp_organisation_roles = property(get_erp_organisation_roles, set_erp_organisation_roles)
@@ -719,7 +776,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
             obj._power_system_resource = self
-            self._erp_organisation_roles.append(obj)
+            if obj not in self._erp_organisation_roles:
+                self._erp_organisation_roles.append(obj)
         
     def remove_erp_organisation_roles(self, *erp_organisation_roles):
         for obj in erp_organisation_roles:
@@ -736,9 +794,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_change_items(self, value):
         for x in self._change_items:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._change_items = value
             
     change_items = property(get_change_items, set_change_items)
@@ -746,7 +804,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_change_items(self, *change_items):
         for obj in change_items:
             obj._power_system_resource = self
-            self._change_items.append(obj)
+            if obj not in self._change_items:
+                self._change_items.append(obj)
         
     def remove_change_items(self, *change_items):
         for obj in change_items:
@@ -763,9 +822,9 @@ class PowerSystemResource(IdentifiedObject):
 
     def set_location_roles(self, value):
         for x in self._location_roles:
-            x._power_system_resource = None
+            x.power_system_resource = None
         for y in value:
-            y._power_system_resource = self
+            y.power_system_resource = self
         self._location_roles = value
             
     location_roles = property(get_location_roles, set_location_roles)
@@ -773,7 +832,8 @@ class PowerSystemResource(IdentifiedObject):
     def add_location_roles(self, *location_roles):
         for obj in location_roles:
             obj._power_system_resource = self
-            self._location_roles.append(obj)
+            if obj not in self._location_roles:
+                self._location_roles.append(obj)
         
     def remove_location_roles(self, *location_roles):
         for obj in location_roles:
@@ -788,14 +848,17 @@ class PsrList(IdentifiedObject):
     """
     # <<< psr_list
     # @generated
-    def __init__(self, type_psrlist='', power_system_resources=[], **kw_args):
+    def __init__(self, type_psrlist='', power_system_resources=None, **kw_args):
         """ Initialises a new 'PsrList' instance.
         """
         # Type of power system resources in this list. 
-        self.type_psrlist = ''
+        self.type_psrlist = type_psrlist
         
         self._power_system_resources = []
-        self.power_system_resources = power_system_resources
+        if power_system_resources is None:
+            self.power_system_resources = []
+        else:
+            self.power_system_resources = power_system_resources
 
         super(PsrList, self).__init__(**kw_args)
     # >>> psr_list
@@ -838,12 +901,15 @@ class OperatingParticipant(IdentifiedObject):
     """
     # <<< operating_participant
     # @generated
-    def __init__(self, operating_share=[], **kw_args):
+    def __init__(self, operating_share=None, **kw_args):
         """ Initialises a new 'OperatingParticipant' instance.
         """
         
         self._operating_share = []
-        self.operating_share = operating_share
+        if operating_share is None:
+            self.operating_share = []
+        else:
+            self.operating_share = operating_share
 
         super(OperatingParticipant, self).__init__(**kw_args)
     # >>> operating_participant
@@ -857,9 +923,9 @@ class OperatingParticipant(IdentifiedObject):
 
     def set_operating_share(self, value):
         for x in self._operating_share:
-            x._operating_participant = None
+            x.operating_participant = None
         for y in value:
-            y._operating_participant = self
+            y.operating_participant = self
         self._operating_share = value
             
     operating_share = property(get_operating_share, set_operating_share)
@@ -867,7 +933,8 @@ class OperatingParticipant(IdentifiedObject):
     def add_operating_share(self, *operating_share):
         for obj in operating_share:
             obj._operating_participant = self
-            self._operating_share.append(obj)
+            if obj not in self._operating_share:
+                self._operating_share.append(obj)
         
     def remove_operating_share(self, *operating_share):
         for obj in operating_share:
@@ -882,14 +949,20 @@ class ConnectivityNodeContainer(PowerSystemResource):
     """
     # <<< connectivity_node_container
     # @generated
-    def __init__(self, connectivity_nodes=[], topological_node=[], **kw_args):
+    def __init__(self, connectivity_nodes=None, topological_node=None, **kw_args):
         """ Initialises a new 'ConnectivityNodeContainer' instance.
         """
         
         self._connectivity_nodes = []
-        self.connectivity_nodes = connectivity_nodes
+        if connectivity_nodes is None:
+            self.connectivity_nodes = []
+        else:
+            self.connectivity_nodes = connectivity_nodes
         self._topological_node = []
-        self.topological_node = topological_node
+        if topological_node is None:
+            self.topological_node = []
+        else:
+            self.topological_node = topological_node
 
         super(ConnectivityNodeContainer, self).__init__(**kw_args)
     # >>> connectivity_node_container
@@ -903,9 +976,9 @@ class ConnectivityNodeContainer(PowerSystemResource):
 
     def set_connectivity_nodes(self, value):
         for x in self._connectivity_nodes:
-            x._connectivity_node_container = None
+            x.connectivity_node_container = None
         for y in value:
-            y._connectivity_node_container = self
+            y.connectivity_node_container = self
         self._connectivity_nodes = value
             
     connectivity_nodes = property(get_connectivity_nodes, set_connectivity_nodes)
@@ -913,7 +986,8 @@ class ConnectivityNodeContainer(PowerSystemResource):
     def add_connectivity_nodes(self, *connectivity_nodes):
         for obj in connectivity_nodes:
             obj._connectivity_node_container = self
-            self._connectivity_nodes.append(obj)
+            if obj not in self._connectivity_nodes:
+                self._connectivity_nodes.append(obj)
         
     def remove_connectivity_nodes(self, *connectivity_nodes):
         for obj in connectivity_nodes:
@@ -930,9 +1004,9 @@ class ConnectivityNodeContainer(PowerSystemResource):
 
     def set_topological_node(self, value):
         for x in self._topological_node:
-            x._connectivity_node_container = None
+            x.connectivity_node_container = None
         for y in value:
-            y._connectivity_node_container = self
+            y.connectivity_node_container = self
         self._topological_node = value
             
     topological_node = property(get_topological_node, set_topological_node)
@@ -940,7 +1014,8 @@ class ConnectivityNodeContainer(PowerSystemResource):
     def add_topological_node(self, *topological_node):
         for obj in topological_node:
             obj._connectivity_node_container = self
-            self._topological_node.append(obj)
+            if obj not in self._topological_node:
+                self._topological_node.append(obj)
         
     def remove_topological_node(self, *topological_node):
         for obj in topological_node:
@@ -955,12 +1030,15 @@ class ModelingAuthoritySet(IdentifiedObject):
     """
     # <<< modeling_authority_set
     # @generated
-    def __init__(self, identified_objects=[], modeling_authority=None, **kw_args):
+    def __init__(self, identified_objects=None, modeling_authority=None, **kw_args):
         """ Initialises a new 'ModelingAuthoritySet' instance.
         """
         
         self._identified_objects = []
-        self.identified_objects = identified_objects
+        if identified_objects is None:
+            self.identified_objects = []
+        else:
+            self.identified_objects = identified_objects
         self._modeling_authority = None
         self.modeling_authority = modeling_authority
 
@@ -976,9 +1054,9 @@ class ModelingAuthoritySet(IdentifiedObject):
 
     def set_identified_objects(self, value):
         for x in self._identified_objects:
-            x._modeling_authority_set = None
+            x.modeling_authority_set = None
         for y in value:
-            y._modeling_authority_set = self
+            y.modeling_authority_set = self
         self._identified_objects = value
             
     identified_objects = property(get_identified_objects, set_identified_objects)
@@ -986,7 +1064,8 @@ class ModelingAuthoritySet(IdentifiedObject):
     def add_identified_objects(self, *identified_objects):
         for obj in identified_objects:
             obj._modeling_authority_set = self
-            self._identified_objects.append(obj)
+            if obj not in self._identified_objects:
+                self._identified_objects.append(obj)
         
     def remove_identified_objects(self, *identified_objects):
         for obj in identified_objects:
@@ -1008,7 +1087,8 @@ class ModelingAuthoritySet(IdentifiedObject):
             
         self._modeling_authority = value
         if self._modeling_authority is not None:
-            self._modeling_authority._modeling_authority_sets.append(self)
+            if self not in self._modeling_authority._modeling_authority_sets:
+                self._modeling_authority._modeling_authority_sets.append(self)
 
     modeling_authority = property(get_modeling_authority, set_modeling_authority)
     # >>> modeling_authority
@@ -1020,12 +1100,15 @@ class GeographicalRegion(IdentifiedObject):
     """
     # <<< geographical_region
     # @generated
-    def __init__(self, regions=[], **kw_args):
+    def __init__(self, regions=None, **kw_args):
         """ Initialises a new 'GeographicalRegion' instance.
         """
         
         self._regions = []
-        self.regions = regions
+        if regions is None:
+            self.regions = []
+        else:
+            self.regions = regions
 
         super(GeographicalRegion, self).__init__(**kw_args)
     # >>> geographical_region
@@ -1039,9 +1122,9 @@ class GeographicalRegion(IdentifiedObject):
 
     def set_regions(self, value):
         for x in self._regions:
-            x._region = None
+            x.region = None
         for y in value:
-            y._region = self
+            y.region = self
         self._regions = value
             
     regions = property(get_regions, set_regions)
@@ -1049,7 +1132,8 @@ class GeographicalRegion(IdentifiedObject):
     def add_regions(self, *regions):
         for obj in regions:
             obj._region = self
-            self._regions.append(obj)
+            if obj not in self._regions:
+                self._regions.append(obj)
         
     def remove_regions(self, *regions):
         for obj in regions:
@@ -1064,16 +1148,25 @@ class Unit(IdentifiedObject):
     """
     # <<< unit
     # @generated
-    def __init__(self, protection_equipments=[], measurements=[], controls=[], **kw_args):
+    def __init__(self, protection_equipments=None, measurements=None, controls=None, **kw_args):
         """ Initialises a new 'Unit' instance.
         """
         
         self._protection_equipments = []
-        self.protection_equipments = protection_equipments
+        if protection_equipments is None:
+            self.protection_equipments = []
+        else:
+            self.protection_equipments = protection_equipments
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._controls = []
-        self.controls = controls
+        if controls is None:
+            self.controls = []
+        else:
+            self.controls = controls
 
         super(Unit, self).__init__(**kw_args)
     # >>> unit
@@ -1087,9 +1180,9 @@ class Unit(IdentifiedObject):
 
     def set_protection_equipments(self, value):
         for x in self._protection_equipments:
-            x._unit = None
+            x.unit = None
         for y in value:
-            y._unit = self
+            y.unit = self
         self._protection_equipments = value
             
     protection_equipments = property(get_protection_equipments, set_protection_equipments)
@@ -1097,7 +1190,8 @@ class Unit(IdentifiedObject):
     def add_protection_equipments(self, *protection_equipments):
         for obj in protection_equipments:
             obj._unit = self
-            self._protection_equipments.append(obj)
+            if obj not in self._protection_equipments:
+                self._protection_equipments.append(obj)
         
     def remove_protection_equipments(self, *protection_equipments):
         for obj in protection_equipments:
@@ -1114,9 +1208,9 @@ class Unit(IdentifiedObject):
 
     def set_measurements(self, value):
         for x in self._measurements:
-            x._unit = None
+            x.unit = None
         for y in value:
-            y._unit = self
+            y.unit = self
         self._measurements = value
             
     measurements = property(get_measurements, set_measurements)
@@ -1124,7 +1218,8 @@ class Unit(IdentifiedObject):
     def add_measurements(self, *measurements):
         for obj in measurements:
             obj._unit = self
-            self._measurements.append(obj)
+            if obj not in self._measurements:
+                self._measurements.append(obj)
         
     def remove_measurements(self, *measurements):
         for obj in measurements:
@@ -1141,9 +1236,9 @@ class Unit(IdentifiedObject):
 
     def set_controls(self, value):
         for x in self._controls:
-            x._unit = None
+            x.unit = None
         for y in value:
-            y._unit = self
+            y.unit = self
         self._controls = value
             
     controls = property(get_controls, set_controls)
@@ -1151,7 +1246,8 @@ class Unit(IdentifiedObject):
     def add_controls(self, *controls):
         for obj in controls:
             obj._unit = self
-            self._controls.append(obj)
+            if obj not in self._controls:
+                self._controls.append(obj)
         
     def remove_controls(self, *controls):
         for obj in controls:
@@ -1170,15 +1266,15 @@ class BasicIntervalSchedule(IdentifiedObject):
         """ Initialises a new 'BasicIntervalSchedule' instance.
         """
         # Value2 units of measure. Values are: "_c", "m2", "hz-1", "rad", "vah", "v_var", "ohm", "w_hz", "s", "v", "n", "none", "varh", "hz", "s-1", "h", "a", "h", "w_s", "deg", "var", "f", "m3", "j", "s", "wh", "w", "va", "min", "j_s", "g", "m", "kg_j", "pa"
-        self.value2_unit = '_c'
+        self.value2_unit = value2_unit
         # Value1 units of measure. Values are: "_c", "m2", "hz-1", "rad", "vah", "v_var", "ohm", "w_hz", "s", "v", "n", "none", "varh", "hz", "s-1", "h", "a", "h", "w_s", "deg", "var", "f", "m3", "j", "s", "wh", "w", "va", "min", "j_s", "g", "m", "kg_j", "pa"
-        self.value1_unit = '_c'
+        self.value1_unit = value1_unit
         # Multiplier for value2. Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.value2_multiplier = 'micro'
+        self.value2_multiplier = value2_multiplier
         # Multiplier for value1. Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.value1_multiplier = 'micro'
+        self.value1_multiplier = value1_multiplier
         # The time for the first time point. 
-        self.start_time = ''
+        self.start_time = start_time
         
 
         super(BasicIntervalSchedule, self).__init__(**kw_args)
@@ -1191,12 +1287,15 @@ class PSRType(IdentifiedObject):
     """
     # <<< psrtype
     # @generated
-    def __init__(self, power_system_resources=[], **kw_args):
+    def __init__(self, power_system_resources=None, **kw_args):
         """ Initialises a new 'PSRType' instance.
         """
         
         self._power_system_resources = []
-        self.power_system_resources = power_system_resources
+        if power_system_resources is None:
+            self.power_system_resources = []
+        else:
+            self.power_system_resources = power_system_resources
 
         super(PSRType, self).__init__(**kw_args)
     # >>> psrtype
@@ -1210,9 +1309,9 @@ class PSRType(IdentifiedObject):
 
     def set_power_system_resources(self, value):
         for x in self._power_system_resources:
-            x._psrtype = None
+            x.psrtype = None
         for y in value:
-            y._psrtype = self
+            y.psrtype = self
         self._power_system_resources = value
             
     power_system_resources = property(get_power_system_resources, set_power_system_resources)
@@ -1220,7 +1319,8 @@ class PSRType(IdentifiedObject):
     def add_power_system_resources(self, *power_system_resources):
         for obj in power_system_resources:
             obj._psrtype = self
-            self._power_system_resources.append(obj)
+            if obj not in self._power_system_resources:
+                self._power_system_resources.append(obj)
         
     def remove_power_system_resources(self, *power_system_resources):
         for obj in power_system_resources:
@@ -1235,12 +1335,15 @@ class EquipmentContainer(ConnectivityNodeContainer):
     """
     # <<< equipment_container
     # @generated
-    def __init__(self, equipments=[], **kw_args):
+    def __init__(self, equipments=None, **kw_args):
         """ Initialises a new 'EquipmentContainer' instance.
         """
         
         self._equipments = []
-        self.equipments = equipments
+        if equipments is None:
+            self.equipments = []
+        else:
+            self.equipments = equipments
 
         super(EquipmentContainer, self).__init__(**kw_args)
     # >>> equipment_container
@@ -1254,9 +1357,9 @@ class EquipmentContainer(ConnectivityNodeContainer):
 
     def set_equipments(self, value):
         for x in self._equipments:
-            x._equipment_container = None
+            x.equipment_container = None
         for y in value:
-            y._equipment_container = self
+            y.equipment_container = self
         self._equipments = value
             
     equipments = property(get_equipments, set_equipments)
@@ -1264,7 +1367,8 @@ class EquipmentContainer(ConnectivityNodeContainer):
     def add_equipments(self, *equipments):
         for obj in equipments:
             obj._equipment_container = self
-            self._equipments.append(obj)
+            if obj not in self._equipments:
+                self._equipments.append(obj)
         
     def remove_equipments(self, *equipments):
         for obj in equipments:
@@ -1279,20 +1383,29 @@ class Equipment(PowerSystemResource):
     """
     # <<< equipment
     # @generated
-    def __init__(self, normal_ily_in_service=False, equivalent=False, contingency_equipment=[], customer_agreements=[], operational_limit_set=[], equipment_container=None, **kw_args):
+    def __init__(self, normal_ily_in_service=False, equivalent=False, contingency_equipment=None, customer_agreements=None, operational_limit_set=None, equipment_container=None, **kw_args):
         """ Initialises a new 'Equipment' instance.
         """
         # The equipment is normally in service. 
-        self.normal_ily_in_service = False
+        self.normal_ily_in_service = normal_ily_in_service
         # Indicates if the equipment is real equipment (false) or an equivalent. 
-        self.equivalent = False
+        self.equivalent = equivalent
         
         self._contingency_equipment = []
-        self.contingency_equipment = contingency_equipment
+        if contingency_equipment is None:
+            self.contingency_equipment = []
+        else:
+            self.contingency_equipment = contingency_equipment
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
         self._operational_limit_set = []
-        self.operational_limit_set = operational_limit_set
+        if operational_limit_set is None:
+            self.operational_limit_set = []
+        else:
+            self.operational_limit_set = operational_limit_set
         self._equipment_container = None
         self.equipment_container = equipment_container
 
@@ -1308,9 +1421,9 @@ class Equipment(PowerSystemResource):
 
     def set_contingency_equipment(self, value):
         for x in self._contingency_equipment:
-            x._equipment = None
+            x.equipment = None
         for y in value:
-            y._equipment = self
+            y.equipment = self
         self._contingency_equipment = value
             
     contingency_equipment = property(get_contingency_equipment, set_contingency_equipment)
@@ -1318,7 +1431,8 @@ class Equipment(PowerSystemResource):
     def add_contingency_equipment(self, *contingency_equipment):
         for obj in contingency_equipment:
             obj._equipment = self
-            self._contingency_equipment.append(obj)
+            if obj not in self._contingency_equipment:
+                self._contingency_equipment.append(obj)
         
     def remove_contingency_equipment(self, *contingency_equipment):
         for obj in contingency_equipment:
@@ -1366,9 +1480,9 @@ class Equipment(PowerSystemResource):
 
     def set_operational_limit_set(self, value):
         for x in self._operational_limit_set:
-            x._equipment = None
+            x.equipment = None
         for y in value:
-            y._equipment = self
+            y.equipment = self
         self._operational_limit_set = value
             
     operational_limit_set = property(get_operational_limit_set, set_operational_limit_set)
@@ -1376,7 +1490,8 @@ class Equipment(PowerSystemResource):
     def add_operational_limit_set(self, *operational_limit_set):
         for obj in operational_limit_set:
             obj._equipment = self
-            self._operational_limit_set.append(obj)
+            if obj not in self._operational_limit_set:
+                self._operational_limit_set.append(obj)
         
     def remove_operational_limit_set(self, *operational_limit_set):
         for obj in operational_limit_set:
@@ -1398,7 +1513,8 @@ class Equipment(PowerSystemResource):
             
         self._equipment_container = value
         if self._equipment_container is not None:
-            self._equipment_container._equipments.append(self)
+            if self not in self._equipment_container._equipments:
+                self._equipment_container._equipments.append(self)
 
     equipment_container = property(get_equipment_container, set_equipment_container)
     # >>> equipment_container
@@ -1410,18 +1526,27 @@ class ReportingGroup(IdentifiedObject):
     """
     # <<< reporting_group
     # @generated
-    def __init__(self, bus_name_marker=[], reporting_super_group=None, topological_node=[], power_system_resource=[], **kw_args):
+    def __init__(self, bus_name_marker=None, reporting_super_group=None, topological_node=None, power_system_resource=None, **kw_args):
         """ Initialises a new 'ReportingGroup' instance.
         """
         
         self._bus_name_marker = []
-        self.bus_name_marker = bus_name_marker
+        if bus_name_marker is None:
+            self.bus_name_marker = []
+        else:
+            self.bus_name_marker = bus_name_marker
         self._reporting_super_group = None
         self.reporting_super_group = reporting_super_group
         self._topological_node = []
-        self.topological_node = topological_node
+        if topological_node is None:
+            self.topological_node = []
+        else:
+            self.topological_node = topological_node
         self._power_system_resource = []
-        self.power_system_resource = power_system_resource
+        if power_system_resource is None:
+            self.power_system_resource = []
+        else:
+            self.power_system_resource = power_system_resource
 
         super(ReportingGroup, self).__init__(**kw_args)
     # >>> reporting_group
@@ -1435,9 +1560,9 @@ class ReportingGroup(IdentifiedObject):
 
     def set_bus_name_marker(self, value):
         for x in self._bus_name_marker:
-            x._reporting_group = None
+            x.reporting_group = None
         for y in value:
-            y._reporting_group = self
+            y.reporting_group = self
         self._bus_name_marker = value
             
     bus_name_marker = property(get_bus_name_marker, set_bus_name_marker)
@@ -1445,7 +1570,8 @@ class ReportingGroup(IdentifiedObject):
     def add_bus_name_marker(self, *bus_name_marker):
         for obj in bus_name_marker:
             obj._reporting_group = self
-            self._bus_name_marker.append(obj)
+            if obj not in self._bus_name_marker:
+                self._bus_name_marker.append(obj)
         
     def remove_bus_name_marker(self, *bus_name_marker):
         for obj in bus_name_marker:
@@ -1467,7 +1593,8 @@ class ReportingGroup(IdentifiedObject):
             
         self._reporting_super_group = value
         if self._reporting_super_group is not None:
-            self._reporting_super_group._reporting_group.append(self)
+            if self not in self._reporting_super_group._reporting_group:
+                self._reporting_super_group._reporting_group.append(self)
 
     reporting_super_group = property(get_reporting_super_group, set_reporting_super_group)
     # >>> reporting_super_group
@@ -1481,9 +1608,9 @@ class ReportingGroup(IdentifiedObject):
 
     def set_topological_node(self, value):
         for x in self._topological_node:
-            x._reporting_group = None
+            x.reporting_group = None
         for y in value:
-            y._reporting_group = self
+            y.reporting_group = self
         self._topological_node = value
             
     topological_node = property(get_topological_node, set_topological_node)
@@ -1491,7 +1618,8 @@ class ReportingGroup(IdentifiedObject):
     def add_topological_node(self, *topological_node):
         for obj in topological_node:
             obj._reporting_group = self
-            self._topological_node.append(obj)
+            if obj not in self._topological_node:
+                self._topological_node.append(obj)
         
     def remove_topological_node(self, *topological_node):
         for obj in topological_node:
@@ -1537,12 +1665,15 @@ class ReportingSuperGroup(IdentifiedObject):
     """
     # <<< reporting_super_group
     # @generated
-    def __init__(self, reporting_group=[], **kw_args):
+    def __init__(self, reporting_group=None, **kw_args):
         """ Initialises a new 'ReportingSuperGroup' instance.
         """
         
         self._reporting_group = []
-        self.reporting_group = reporting_group
+        if reporting_group is None:
+            self.reporting_group = []
+        else:
+            self.reporting_group = reporting_group
 
         super(ReportingSuperGroup, self).__init__(**kw_args)
     # >>> reporting_super_group
@@ -1556,9 +1687,9 @@ class ReportingSuperGroup(IdentifiedObject):
 
     def set_reporting_group(self, value):
         for x in self._reporting_group:
-            x._reporting_super_group = None
+            x.reporting_super_group = None
         for y in value:
-            y._reporting_super_group = self
+            y.reporting_super_group = self
         self._reporting_group = value
             
     reporting_group = property(get_reporting_group, set_reporting_group)
@@ -1566,7 +1697,8 @@ class ReportingSuperGroup(IdentifiedObject):
     def add_reporting_group(self, *reporting_group):
         for obj in reporting_group:
             obj._reporting_super_group = self
-            self._reporting_group.append(obj)
+            if obj not in self._reporting_group:
+                self._reporting_group.append(obj)
         
     def remove_reporting_group(self, *reporting_group):
         for obj in reporting_group:
@@ -1581,16 +1713,22 @@ class SubGeographicalRegion(IdentifiedObject):
     """
     # <<< sub_geographical_region
     # @generated
-    def __init__(self, substations=[], region=None, lines=[], **kw_args):
+    def __init__(self, substations=None, region=None, lines=None, **kw_args):
         """ Initialises a new 'SubGeographicalRegion' instance.
         """
         
         self._substations = []
-        self.substations = substations
+        if substations is None:
+            self.substations = []
+        else:
+            self.substations = substations
         self._region = None
         self.region = region
         self._lines = []
-        self.lines = lines
+        if lines is None:
+            self.lines = []
+        else:
+            self.lines = lines
 
         super(SubGeographicalRegion, self).__init__(**kw_args)
     # >>> sub_geographical_region
@@ -1604,9 +1742,9 @@ class SubGeographicalRegion(IdentifiedObject):
 
     def set_substations(self, value):
         for x in self._substations:
-            x._region = None
+            x.region = None
         for y in value:
-            y._region = self
+            y.region = self
         self._substations = value
             
     substations = property(get_substations, set_substations)
@@ -1614,7 +1752,8 @@ class SubGeographicalRegion(IdentifiedObject):
     def add_substations(self, *substations):
         for obj in substations:
             obj._region = self
-            self._substations.append(obj)
+            if obj not in self._substations:
+                self._substations.append(obj)
         
     def remove_substations(self, *substations):
         for obj in substations:
@@ -1636,7 +1775,8 @@ class SubGeographicalRegion(IdentifiedObject):
             
         self._region = value
         if self._region is not None:
-            self._region._regions.append(self)
+            if self not in self._region._regions:
+                self._region._regions.append(self)
 
     region = property(get_region, set_region)
     # >>> region
@@ -1650,9 +1790,9 @@ class SubGeographicalRegion(IdentifiedObject):
 
     def set_lines(self, value):
         for x in self._lines:
-            x._region = None
+            x.region = None
         for y in value:
-            y._region = self
+            y.region = self
         self._lines = value
             
     lines = property(get_lines, set_lines)
@@ -1660,7 +1800,8 @@ class SubGeographicalRegion(IdentifiedObject):
     def add_lines(self, *lines):
         for obj in lines:
             obj._region = self
-            self._lines.append(obj)
+            if obj not in self._lines:
+                self._lines.append(obj)
         
     def remove_lines(self, *lines):
         for obj in lines:
@@ -1675,12 +1816,15 @@ class ModelingAuthority(IdentifiedObject):
     """
     # <<< modeling_authority
     # @generated
-    def __init__(self, modeling_authority_sets=[], **kw_args):
+    def __init__(self, modeling_authority_sets=None, **kw_args):
         """ Initialises a new 'ModelingAuthority' instance.
         """
         
         self._modeling_authority_sets = []
-        self.modeling_authority_sets = modeling_authority_sets
+        if modeling_authority_sets is None:
+            self.modeling_authority_sets = []
+        else:
+            self.modeling_authority_sets = modeling_authority_sets
 
         super(ModelingAuthority, self).__init__(**kw_args)
     # >>> modeling_authority
@@ -1694,9 +1838,9 @@ class ModelingAuthority(IdentifiedObject):
 
     def set_modeling_authority_sets(self, value):
         for x in self._modeling_authority_sets:
-            x._modeling_authority = None
+            x.modeling_authority = None
         for y in value:
-            y._modeling_authority = self
+            y.modeling_authority = self
         self._modeling_authority_sets = value
             
     modeling_authority_sets = property(get_modeling_authority_sets, set_modeling_authority_sets)
@@ -1704,7 +1848,8 @@ class ModelingAuthority(IdentifiedObject):
     def add_modeling_authority_sets(self, *modeling_authority_sets):
         for obj in modeling_authority_sets:
             obj._modeling_authority = self
-            self._modeling_authority_sets.append(obj)
+            if obj not in self._modeling_authority_sets:
+                self._modeling_authority_sets.append(obj)
         
     def remove_modeling_authority_sets(self, *modeling_authority_sets):
         for obj in modeling_authority_sets:
@@ -1719,26 +1864,29 @@ class Curve(IdentifiedObject):
     """
     # <<< curve
     # @generated
-    def __init__(self, y2_multiplier='micro', y2_unit='_c', y1_multiplier='micro', y1_unit='_c', curve_style='straight_line_yvalues', x_multiplier='micro', x_unit='_c', curve_datas=[], **kw_args):
+    def __init__(self, y2_multiplier='micro', y2_unit='_c', y1_multiplier='micro', y1_unit='_c', curve_style='straight_line_yvalues', x_multiplier='micro', x_unit='_c', curve_datas=None, **kw_args):
         """ Initialises a new 'Curve' instance.
         """
         # Multiplier for Y2-axis. Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.y2_multiplier = 'micro'
+        self.y2_multiplier = y2_multiplier
         # The Y2-axis units of measure. Values are: "_c", "m2", "hz-1", "rad", "vah", "v_var", "ohm", "w_hz", "s", "v", "n", "none", "varh", "hz", "s-1", "h", "a", "h", "w_s", "deg", "var", "f", "m3", "j", "s", "wh", "w", "va", "min", "j_s", "g", "m", "kg_j", "pa"
-        self.y2_unit = '_c'
+        self.y2_unit = y2_unit
         # Multiplier for Y1-axis Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.y1_multiplier = 'micro'
+        self.y1_multiplier = y1_multiplier
         # The Y1-axis units of measure. Values are: "_c", "m2", "hz-1", "rad", "vah", "v_var", "ohm", "w_hz", "s", "v", "n", "none", "varh", "hz", "s-1", "h", "a", "h", "w_s", "deg", "var", "f", "m3", "j", "s", "wh", "w", "va", "min", "j_s", "g", "m", "kg_j", "pa"
-        self.y1_unit = '_c'
+        self.y1_unit = y1_unit
         # The style or shape of the curve. Values are: "straight_line_yvalues", "constant_yvalue", "formula", "ramp_yvalue"
-        self.curve_style = 'straight_line_yvalues'
+        self.curve_style = curve_style
         # Multiplier for X-axis. Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.x_multiplier = 'micro'
+        self.x_multiplier = x_multiplier
         # The X-axis units of measure. Values are: "_c", "m2", "hz-1", "rad", "vah", "v_var", "ohm", "w_hz", "s", "v", "n", "none", "varh", "hz", "s-1", "h", "a", "h", "w_s", "deg", "var", "f", "m3", "j", "s", "wh", "w", "va", "min", "j_s", "g", "m", "kg_j", "pa"
-        self.x_unit = '_c'
+        self.x_unit = x_unit
         
         self._curve_datas = []
-        self.curve_datas = curve_datas
+        if curve_datas is None:
+            self.curve_datas = []
+        else:
+            self.curve_datas = curve_datas
 
         super(Curve, self).__init__(**kw_args)
     # >>> curve
@@ -1752,9 +1900,9 @@ class Curve(IdentifiedObject):
 
     def set_curve_datas(self, value):
         for x in self._curve_datas:
-            x._curve = None
+            x.curve = None
         for y in value:
-            y._curve = self
+            y.curve = self
         self._curve_datas = value
             
     curve_datas = property(get_curve_datas, set_curve_datas)
@@ -1762,7 +1910,8 @@ class Curve(IdentifiedObject):
     def add_curve_datas(self, *curve_datas):
         for obj in curve_datas:
             obj._curve = self
-            self._curve_datas.append(obj)
+            if obj not in self._curve_datas:
+                self._curve_datas.append(obj)
         
     def remove_curve_datas(self, *curve_datas):
         for obj in curve_datas:
@@ -1777,18 +1926,24 @@ class BaseVoltage(IdentifiedObject):
     """
     # <<< base_voltage
     # @generated
-    def __init__(self, is_dc=False, nominal_voltage='', voltage_level=[], conducting_equipment=[], **kw_args):
+    def __init__(self, is_dc=False, nominal_voltage=0.0, voltage_level=None, conducting_equipment=None, **kw_args):
         """ Initialises a new 'BaseVoltage' instance.
         """
         # If true, this is a direct current base voltage and items assigned to this base voltage are also associated with a direct current capabilities.   False indicates alternating current. 
-        self.is_dc = False
+        self.is_dc = is_dc
         # The PowerSystemResource's base voltage. 
-        self.nominal_voltage = ''
+        self.nominal_voltage = nominal_voltage
         
         self._voltage_level = []
-        self.voltage_level = voltage_level
+        if voltage_level is None:
+            self.voltage_level = []
+        else:
+            self.voltage_level = voltage_level
         self._conducting_equipment = []
-        self.conducting_equipment = conducting_equipment
+        if conducting_equipment is None:
+            self.conducting_equipment = []
+        else:
+            self.conducting_equipment = conducting_equipment
 
         super(BaseVoltage, self).__init__(**kw_args)
     # >>> base_voltage
@@ -1802,9 +1957,9 @@ class BaseVoltage(IdentifiedObject):
 
     def set_voltage_level(self, value):
         for x in self._voltage_level:
-            x._base_voltage = None
+            x.base_voltage = None
         for y in value:
-            y._base_voltage = self
+            y.base_voltage = self
         self._voltage_level = value
             
     voltage_level = property(get_voltage_level, set_voltage_level)
@@ -1812,7 +1967,8 @@ class BaseVoltage(IdentifiedObject):
     def add_voltage_level(self, *voltage_level):
         for obj in voltage_level:
             obj._base_voltage = self
-            self._voltage_level.append(obj)
+            if obj not in self._voltage_level:
+                self._voltage_level.append(obj)
         
     def remove_voltage_level(self, *voltage_level):
         for obj in voltage_level:
@@ -1829,9 +1985,9 @@ class BaseVoltage(IdentifiedObject):
 
     def set_conducting_equipment(self, value):
         for x in self._conducting_equipment:
-            x._base_voltage = None
+            x.base_voltage = None
         for y in value:
-            y._base_voltage = self
+            y.base_voltage = self
         self._conducting_equipment = value
             
     conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
@@ -1839,7 +1995,8 @@ class BaseVoltage(IdentifiedObject):
     def add_conducting_equipment(self, *conducting_equipment):
         for obj in conducting_equipment:
             obj._base_voltage = self
-            self._conducting_equipment.append(obj)
+            if obj not in self._conducting_equipment:
+                self._conducting_equipment.append(obj)
         
     def remove_conducting_equipment(self, *conducting_equipment):
         for obj in conducting_equipment:
@@ -1858,13 +2015,13 @@ class Bay(EquipmentContainer):
         """ Initialises a new 'Bay' instance.
         """
         # Indicates the presence/absence of active/reactive power measurements. 
-        self.bay_power_meas_flag = False
+        self.bay_power_meas_flag = bay_power_meas_flag
         # Bus bar configuration. Values are: "double_bus", "main_with_transfer", "single_bus", "ring_bus"
-        self.bus_bar_configuration = 'double_bus'
+        self.bus_bar_configuration = bus_bar_configuration
         # Breaker configuration. Values are: "single_breaker", "no_breaker", "breaker_and_ahalf", "double_breaker"
-        self.breaker_configuration = 'single_breaker'
+        self.breaker_configuration = breaker_configuration
         # Indicates the presence/absence of energy measurements. 
-        self.bay_energy_meas_flag = False
+        self.bay_energy_meas_flag = bay_energy_meas_flag
         
         self._substation = None
         self.substation = substation
@@ -1888,7 +2045,8 @@ class Bay(EquipmentContainer):
             
         self._substation = value
         if self._substation is not None:
-            self._substation._bays.append(self)
+            if self not in self._substation._bays:
+                self._substation._bays.append(self)
 
     substation = property(get_substation, set_substation)
     # >>> substation
@@ -1907,7 +2065,8 @@ class Bay(EquipmentContainer):
             
         self._voltage_level = value
         if self._voltage_level is not None:
-            self._voltage_level._bays.append(self)
+            if self not in self._voltage_level._bays:
+                self._voltage_level._bays.append(self)
 
     voltage_level = property(get_voltage_level, set_voltage_level)
     # >>> voltage_level
@@ -1919,16 +2078,19 @@ class RegularIntervalSchedule(BasicIntervalSchedule):
     """
     # <<< regular_interval_schedule
     # @generated
-    def __init__(self, end_time='', time_step='', time_points=[], **kw_args):
+    def __init__(self, end_time='', time_step=0.0, time_points=None, **kw_args):
         """ Initialises a new 'RegularIntervalSchedule' instance.
         """
         # The time for the last time point. 
-        self.end_time = ''
+        self.end_time = end_time
         # The time between each pair of subsequent RegularTimePoints. 
-        self.time_step = ''
+        self.time_step = time_step
         
         self._time_points = []
-        self.time_points = time_points
+        if time_points is None:
+            self.time_points = []
+        else:
+            self.time_points = time_points
 
         super(RegularIntervalSchedule, self).__init__(**kw_args)
     # >>> regular_interval_schedule
@@ -1942,9 +2104,9 @@ class RegularIntervalSchedule(BasicIntervalSchedule):
 
     def set_time_points(self, value):
         for x in self._time_points:
-            x._interval_schedule = None
+            x.interval_schedule = None
         for y in value:
-            y._interval_schedule = self
+            y.interval_schedule = self
         self._time_points = value
             
     time_points = property(get_time_points, set_time_points)
@@ -1952,7 +2114,8 @@ class RegularIntervalSchedule(BasicIntervalSchedule):
     def add_time_points(self, *time_points):
         for obj in time_points:
             obj._interval_schedule = self
-            self._time_points.append(obj)
+            if obj not in self._time_points:
+                self._time_points.append(obj)
         
     def remove_time_points(self, *time_points):
         for obj in time_points:
@@ -1967,11 +2130,11 @@ class BasePower(IdentifiedObject):
     """
     # <<< base_power
     # @generated
-    def __init__(self, base_power='', **kw_args):
+    def __init__(self, base_power=0.0, **kw_args):
         """ Initialises a new 'BasePower' instance.
         """
         # Definition of base power. 
-        self.base_power = ''
+        self.base_power = base_power
         
 
         super(BasePower, self).__init__(**kw_args)
@@ -1984,36 +2147,60 @@ class Terminal(IdentifiedObject):
     """
     # <<< terminal
     # @generated
-    def __init__(self, connected=False, measurements=[], terminal_constraints=[], has_second_mutual_coupling=[], operational_limit_set=[], tie_flow=[], sv_power_flow=None, regulating_control=[], conducting_equipment=None, connectivity_node=None, has_first_mutual_coupling=[], topological_node=None, branch_group_terminal=[], bushing_asset=None, **kw_args):
+    def __init__(self, connected=False, measurements=None, terminal_constraints=None, has_second_mutual_coupling=None, operational_limit_set=None, tie_flow=None, sv_power_flow=None, regulating_control=None, conducting_equipment=None, connectivity_node=None, has_first_mutual_coupling=None, topological_node=None, branch_group_terminal=None, bushing_asset=None, **kw_args):
         """ Initialises a new 'Terminal' instance.
         """
         # The terminal connection status.   True implies the terminal is connected, and false implies the terminal is not connected. This is the result of topoplogical processing of a detailed Connectivity node and Switch model whether present in the model or not.   A terminal that is not connected cannot support a current flow.   A terminal that is connected may have flow.  In general a multi-terminal device may simultaneously have connected and disconnected terminals.  No other aspect of the algorithm 
-        self.connected = False
+        self.connected = connected
         
         self._measurements = []
-        self.measurements = measurements
+        if measurements is None:
+            self.measurements = []
+        else:
+            self.measurements = measurements
         self._terminal_constraints = []
-        self.terminal_constraints = terminal_constraints
+        if terminal_constraints is None:
+            self.terminal_constraints = []
+        else:
+            self.terminal_constraints = terminal_constraints
         self._has_second_mutual_coupling = []
-        self.has_second_mutual_coupling = has_second_mutual_coupling
+        if has_second_mutual_coupling is None:
+            self.has_second_mutual_coupling = []
+        else:
+            self.has_second_mutual_coupling = has_second_mutual_coupling
         self._operational_limit_set = []
-        self.operational_limit_set = operational_limit_set
+        if operational_limit_set is None:
+            self.operational_limit_set = []
+        else:
+            self.operational_limit_set = operational_limit_set
         self._tie_flow = []
-        self.tie_flow = tie_flow
+        if tie_flow is None:
+            self.tie_flow = []
+        else:
+            self.tie_flow = tie_flow
         self._sv_power_flow = None
         self.sv_power_flow = sv_power_flow
         self._regulating_control = []
-        self.regulating_control = regulating_control
+        if regulating_control is None:
+            self.regulating_control = []
+        else:
+            self.regulating_control = regulating_control
         self._conducting_equipment = None
         self.conducting_equipment = conducting_equipment
         self._connectivity_node = None
         self.connectivity_node = connectivity_node
         self._has_first_mutual_coupling = []
-        self.has_first_mutual_coupling = has_first_mutual_coupling
+        if has_first_mutual_coupling is None:
+            self.has_first_mutual_coupling = []
+        else:
+            self.has_first_mutual_coupling = has_first_mutual_coupling
         self._topological_node = None
         self.topological_node = topological_node
         self._branch_group_terminal = []
-        self.branch_group_terminal = branch_group_terminal
+        if branch_group_terminal is None:
+            self.branch_group_terminal = []
+        else:
+            self.branch_group_terminal = branch_group_terminal
         self._bushing_asset = None
         self.bushing_asset = bushing_asset
 
@@ -2029,9 +2216,9 @@ class Terminal(IdentifiedObject):
 
     def set_measurements(self, value):
         for x in self._measurements:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._measurements = value
             
     measurements = property(get_measurements, set_measurements)
@@ -2039,7 +2226,8 @@ class Terminal(IdentifiedObject):
     def add_measurements(self, *measurements):
         for obj in measurements:
             obj._terminal = self
-            self._measurements.append(obj)
+            if obj not in self._measurements:
+                self._measurements.append(obj)
         
     def remove_measurements(self, *measurements):
         for obj in measurements:
@@ -2056,9 +2244,9 @@ class Terminal(IdentifiedObject):
 
     def set_terminal_constraints(self, value):
         for x in self._terminal_constraints:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._terminal_constraints = value
             
     terminal_constraints = property(get_terminal_constraints, set_terminal_constraints)
@@ -2066,7 +2254,8 @@ class Terminal(IdentifiedObject):
     def add_terminal_constraints(self, *terminal_constraints):
         for obj in terminal_constraints:
             obj._terminal = self
-            self._terminal_constraints.append(obj)
+            if obj not in self._terminal_constraints:
+                self._terminal_constraints.append(obj)
         
     def remove_terminal_constraints(self, *terminal_constraints):
         for obj in terminal_constraints:
@@ -2083,9 +2272,9 @@ class Terminal(IdentifiedObject):
 
     def set_has_second_mutual_coupling(self, value):
         for x in self._has_second_mutual_coupling:
-            x._second_terminal = None
+            x.second_terminal = None
         for y in value:
-            y._second_terminal = self
+            y.second_terminal = self
         self._has_second_mutual_coupling = value
             
     has_second_mutual_coupling = property(get_has_second_mutual_coupling, set_has_second_mutual_coupling)
@@ -2093,7 +2282,8 @@ class Terminal(IdentifiedObject):
     def add_has_second_mutual_coupling(self, *has_second_mutual_coupling):
         for obj in has_second_mutual_coupling:
             obj._second_terminal = self
-            self._has_second_mutual_coupling.append(obj)
+            if obj not in self._has_second_mutual_coupling:
+                self._has_second_mutual_coupling.append(obj)
         
     def remove_has_second_mutual_coupling(self, *has_second_mutual_coupling):
         for obj in has_second_mutual_coupling:
@@ -2110,9 +2300,9 @@ class Terminal(IdentifiedObject):
 
     def set_operational_limit_set(self, value):
         for x in self._operational_limit_set:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._operational_limit_set = value
             
     operational_limit_set = property(get_operational_limit_set, set_operational_limit_set)
@@ -2120,7 +2310,8 @@ class Terminal(IdentifiedObject):
     def add_operational_limit_set(self, *operational_limit_set):
         for obj in operational_limit_set:
             obj._terminal = self
-            self._operational_limit_set.append(obj)
+            if obj not in self._operational_limit_set:
+                self._operational_limit_set.append(obj)
         
     def remove_operational_limit_set(self, *operational_limit_set):
         for obj in operational_limit_set:
@@ -2137,9 +2328,9 @@ class Terminal(IdentifiedObject):
 
     def set_tie_flow(self, value):
         for x in self._tie_flow:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._tie_flow = value
             
     tie_flow = property(get_tie_flow, set_tie_flow)
@@ -2147,7 +2338,8 @@ class Terminal(IdentifiedObject):
     def add_tie_flow(self, *tie_flow):
         for obj in tie_flow:
             obj._terminal = self
-            self._tie_flow.append(obj)
+            if obj not in self._tie_flow:
+                self._tie_flow.append(obj)
         
     def remove_tie_flow(self, *tie_flow):
         for obj in tie_flow:
@@ -2182,9 +2374,9 @@ class Terminal(IdentifiedObject):
 
     def set_regulating_control(self, value):
         for x in self._regulating_control:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._regulating_control = value
             
     regulating_control = property(get_regulating_control, set_regulating_control)
@@ -2192,7 +2384,8 @@ class Terminal(IdentifiedObject):
     def add_regulating_control(self, *regulating_control):
         for obj in regulating_control:
             obj._terminal = self
-            self._regulating_control.append(obj)
+            if obj not in self._regulating_control:
+                self._regulating_control.append(obj)
         
     def remove_regulating_control(self, *regulating_control):
         for obj in regulating_control:
@@ -2214,7 +2407,8 @@ class Terminal(IdentifiedObject):
             
         self._conducting_equipment = value
         if self._conducting_equipment is not None:
-            self._conducting_equipment._terminals.append(self)
+            if self not in self._conducting_equipment._terminals:
+                self._conducting_equipment._terminals.append(self)
 
     conducting_equipment = property(get_conducting_equipment, set_conducting_equipment)
     # >>> conducting_equipment
@@ -2233,7 +2427,8 @@ class Terminal(IdentifiedObject):
             
         self._connectivity_node = value
         if self._connectivity_node is not None:
-            self._connectivity_node._terminals.append(self)
+            if self not in self._connectivity_node._terminals:
+                self._connectivity_node._terminals.append(self)
 
     connectivity_node = property(get_connectivity_node, set_connectivity_node)
     # >>> connectivity_node
@@ -2247,9 +2442,9 @@ class Terminal(IdentifiedObject):
 
     def set_has_first_mutual_coupling(self, value):
         for x in self._has_first_mutual_coupling:
-            x._first_terminal = None
+            x.first_terminal = None
         for y in value:
-            y._first_terminal = self
+            y.first_terminal = self
         self._has_first_mutual_coupling = value
             
     has_first_mutual_coupling = property(get_has_first_mutual_coupling, set_has_first_mutual_coupling)
@@ -2257,7 +2452,8 @@ class Terminal(IdentifiedObject):
     def add_has_first_mutual_coupling(self, *has_first_mutual_coupling):
         for obj in has_first_mutual_coupling:
             obj._first_terminal = self
-            self._has_first_mutual_coupling.append(obj)
+            if obj not in self._has_first_mutual_coupling:
+                self._has_first_mutual_coupling.append(obj)
         
     def remove_has_first_mutual_coupling(self, *has_first_mutual_coupling):
         for obj in has_first_mutual_coupling:
@@ -2279,7 +2475,8 @@ class Terminal(IdentifiedObject):
             
         self._topological_node = value
         if self._topological_node is not None:
-            self._topological_node._terminal.append(self)
+            if self not in self._topological_node._terminal:
+                self._topological_node._terminal.append(self)
 
     topological_node = property(get_topological_node, set_topological_node)
     # >>> topological_node
@@ -2293,9 +2490,9 @@ class Terminal(IdentifiedObject):
 
     def set_branch_group_terminal(self, value):
         for x in self._branch_group_terminal:
-            x._terminal = None
+            x.terminal = None
         for y in value:
-            y._terminal = self
+            y.terminal = self
         self._branch_group_terminal = value
             
     branch_group_terminal = property(get_branch_group_terminal, set_branch_group_terminal)
@@ -2303,7 +2500,8 @@ class Terminal(IdentifiedObject):
     def add_branch_group_terminal(self, *branch_group_terminal):
         for obj in branch_group_terminal:
             obj._terminal = self
-            self._branch_group_terminal.append(obj)
+            if obj not in self._branch_group_terminal:
+                self._branch_group_terminal.append(obj)
         
     def remove_branch_group_terminal(self, *branch_group_terminal):
         for obj in branch_group_terminal:
@@ -2336,18 +2534,24 @@ class Substation(EquipmentContainer):
     """
     # <<< substation
     # @generated
-    def __init__(self, region=None, voltage_levels=[], substation_asset=None, bays=[], **kw_args):
+    def __init__(self, region=None, voltage_levels=None, substation_asset=None, bays=None, **kw_args):
         """ Initialises a new 'Substation' instance.
         """
         
         self._region = None
         self.region = region
         self._voltage_levels = []
-        self.voltage_levels = voltage_levels
+        if voltage_levels is None:
+            self.voltage_levels = []
+        else:
+            self.voltage_levels = voltage_levels
         self._substation_asset = None
         self.substation_asset = substation_asset
         self._bays = []
-        self.bays = bays
+        if bays is None:
+            self.bays = []
+        else:
+            self.bays = bays
 
         super(Substation, self).__init__(**kw_args)
     # >>> substation
@@ -2366,7 +2570,8 @@ class Substation(EquipmentContainer):
             
         self._region = value
         if self._region is not None:
-            self._region._substations.append(self)
+            if self not in self._region._substations:
+                self._region._substations.append(self)
 
     region = property(get_region, set_region)
     # >>> region
@@ -2380,9 +2585,9 @@ class Substation(EquipmentContainer):
 
     def set_voltage_levels(self, value):
         for x in self._voltage_levels:
-            x._substation = None
+            x.substation = None
         for y in value:
-            y._substation = self
+            y.substation = self
         self._voltage_levels = value
             
     voltage_levels = property(get_voltage_levels, set_voltage_levels)
@@ -2390,7 +2595,8 @@ class Substation(EquipmentContainer):
     def add_voltage_levels(self, *voltage_levels):
         for obj in voltage_levels:
             obj._substation = self
-            self._voltage_levels.append(obj)
+            if obj not in self._voltage_levels:
+                self._voltage_levels.append(obj)
         
     def remove_voltage_levels(self, *voltage_levels):
         for obj in voltage_levels:
@@ -2425,9 +2631,9 @@ class Substation(EquipmentContainer):
 
     def set_bays(self, value):
         for x in self._bays:
-            x._substation = None
+            x.substation = None
         for y in value:
-            y._substation = self
+            y.substation = self
         self._bays = value
             
     bays = property(get_bays, set_bays)
@@ -2435,7 +2641,8 @@ class Substation(EquipmentContainer):
     def add_bays(self, *bays):
         for obj in bays:
             obj._substation = self
-            self._bays.append(obj)
+            if obj not in self._bays:
+                self._bays.append(obj)
         
     def remove_bays(self, *bays):
         for obj in bays:
@@ -2450,16 +2657,19 @@ class VoltageLevel(EquipmentContainer):
     """
     # <<< voltage_level
     # @generated
-    def __init__(self, low_voltage_limit='', high_voltage_limit='', bays=[], base_voltage=None, substation=None, **kw_args):
+    def __init__(self, low_voltage_limit=0.0, high_voltage_limit=0.0, bays=None, base_voltage=None, substation=None, **kw_args):
         """ Initialises a new 'VoltageLevel' instance.
         """
         # The bus bar's low voltage limit 
-        self.low_voltage_limit = ''
+        self.low_voltage_limit = low_voltage_limit
         # The bus bar's high voltage limit 
-        self.high_voltage_limit = ''
+        self.high_voltage_limit = high_voltage_limit
         
         self._bays = []
-        self.bays = bays
+        if bays is None:
+            self.bays = []
+        else:
+            self.bays = bays
         self._base_voltage = None
         self.base_voltage = base_voltage
         self._substation = None
@@ -2477,9 +2687,9 @@ class VoltageLevel(EquipmentContainer):
 
     def set_bays(self, value):
         for x in self._bays:
-            x._voltage_level = None
+            x.voltage_level = None
         for y in value:
-            y._voltage_level = self
+            y.voltage_level = self
         self._bays = value
             
     bays = property(get_bays, set_bays)
@@ -2487,7 +2697,8 @@ class VoltageLevel(EquipmentContainer):
     def add_bays(self, *bays):
         for obj in bays:
             obj._voltage_level = self
-            self._bays.append(obj)
+            if obj not in self._bays:
+                self._bays.append(obj)
         
     def remove_bays(self, *bays):
         for obj in bays:
@@ -2509,7 +2720,8 @@ class VoltageLevel(EquipmentContainer):
             
         self._base_voltage = value
         if self._base_voltage is not None:
-            self._base_voltage._voltage_level.append(self)
+            if self not in self._base_voltage._voltage_level:
+                self._base_voltage._voltage_level.append(self)
 
     base_voltage = property(get_base_voltage, set_base_voltage)
     # >>> base_voltage
@@ -2528,7 +2740,8 @@ class VoltageLevel(EquipmentContainer):
             
         self._substation = value
         if self._substation is not None:
-            self._substation._voltage_levels.append(self)
+            if self not in self._substation._voltage_levels:
+                self._substation._voltage_levels.append(self)
 
     substation = property(get_substation, set_substation)
     # >>> substation
@@ -2540,12 +2753,15 @@ class IrregularIntervalSchedule(BasicIntervalSchedule):
     """
     # <<< irregular_interval_schedule
     # @generated
-    def __init__(self, time_points=[], **kw_args):
+    def __init__(self, time_points=None, **kw_args):
         """ Initialises a new 'IrregularIntervalSchedule' instance.
         """
         
         self._time_points = []
-        self.time_points = time_points
+        if time_points is None:
+            self.time_points = []
+        else:
+            self.time_points = time_points
 
         super(IrregularIntervalSchedule, self).__init__(**kw_args)
     # >>> irregular_interval_schedule
@@ -2559,9 +2775,9 @@ class IrregularIntervalSchedule(BasicIntervalSchedule):
 
     def set_time_points(self, value):
         for x in self._time_points:
-            x._interval_schedule = None
+            x.interval_schedule = None
         for y in value:
-            y._interval_schedule = self
+            y.interval_schedule = self
         self._time_points = value
             
     time_points = property(get_time_points, set_time_points)
@@ -2569,7 +2785,8 @@ class IrregularIntervalSchedule(BasicIntervalSchedule):
     def add_time_points(self, *time_points):
         for obj in time_points:
             obj._interval_schedule = self
-            self._time_points.append(obj)
+            if obj not in self._time_points:
+                self._time_points.append(obj)
         
     def remove_time_points(self, *time_points):
         for obj in time_points:
@@ -2584,26 +2801,41 @@ class ConductingEquipment(Equipment):
     """
     # <<< conducting_equipment
     # @generated
-    def __init__(self, phases='abn', electrical_assets=[], protection_equipments=[], outage_step_roles=[], sv_status=None, clearance_tags=[], base_voltage=None, terminals=[], **kw_args):
+    def __init__(self, phases='abn', electrical_assets=None, protection_equipments=None, outage_step_roles=None, sv_status=None, clearance_tags=None, base_voltage=None, terminals=None, **kw_args):
         """ Initialises a new 'ConductingEquipment' instance.
         """
         # Describes the phases carried by a conducting equipment. Values are: "abn", "bc", "acn", "bn", "ac", "abc", "an", "ab", "c", "b", "abcn", "a", "cn", "n", "bcn"
-        self.phases = 'abn'
+        self.phases = phases
         
         self._electrical_assets = []
-        self.electrical_assets = electrical_assets
+        if electrical_assets is None:
+            self.electrical_assets = []
+        else:
+            self.electrical_assets = electrical_assets
         self._protection_equipments = []
-        self.protection_equipments = protection_equipments
+        if protection_equipments is None:
+            self.protection_equipments = []
+        else:
+            self.protection_equipments = protection_equipments
         self._outage_step_roles = []
-        self.outage_step_roles = outage_step_roles
+        if outage_step_roles is None:
+            self.outage_step_roles = []
+        else:
+            self.outage_step_roles = outage_step_roles
         self._sv_status = None
         self.sv_status = sv_status
         self._clearance_tags = []
-        self.clearance_tags = clearance_tags
+        if clearance_tags is None:
+            self.clearance_tags = []
+        else:
+            self.clearance_tags = clearance_tags
         self._base_voltage = None
         self.base_voltage = base_voltage
         self._terminals = []
-        self.terminals = terminals
+        if terminals is None:
+            self.terminals = []
+        else:
+            self.terminals = terminals
 
         super(ConductingEquipment, self).__init__(**kw_args)
     # >>> conducting_equipment
@@ -2617,9 +2849,9 @@ class ConductingEquipment(Equipment):
 
     def set_electrical_assets(self, value):
         for x in self._electrical_assets:
-            x._conducting_equipment = None
+            x.conducting_equipment = None
         for y in value:
-            y._conducting_equipment = self
+            y.conducting_equipment = self
         self._electrical_assets = value
             
     electrical_assets = property(get_electrical_assets, set_electrical_assets)
@@ -2627,7 +2859,8 @@ class ConductingEquipment(Equipment):
     def add_electrical_assets(self, *electrical_assets):
         for obj in electrical_assets:
             obj._conducting_equipment = self
-            self._electrical_assets.append(obj)
+            if obj not in self._electrical_assets:
+                self._electrical_assets.append(obj)
         
     def remove_electrical_assets(self, *electrical_assets):
         for obj in electrical_assets:
@@ -2675,9 +2908,9 @@ class ConductingEquipment(Equipment):
 
     def set_outage_step_roles(self, value):
         for x in self._outage_step_roles:
-            x._conducting_equipment = None
+            x.conducting_equipment = None
         for y in value:
-            y._conducting_equipment = self
+            y.conducting_equipment = self
         self._outage_step_roles = value
             
     outage_step_roles = property(get_outage_step_roles, set_outage_step_roles)
@@ -2685,7 +2918,8 @@ class ConductingEquipment(Equipment):
     def add_outage_step_roles(self, *outage_step_roles):
         for obj in outage_step_roles:
             obj._conducting_equipment = self
-            self._outage_step_roles.append(obj)
+            if obj not in self._outage_step_roles:
+                self._outage_step_roles.append(obj)
         
     def remove_outage_step_roles(self, *outage_step_roles):
         for obj in outage_step_roles:
@@ -2720,9 +2954,9 @@ class ConductingEquipment(Equipment):
 
     def set_clearance_tags(self, value):
         for x in self._clearance_tags:
-            x._conducting_equipment = None
+            x.conducting_equipment = None
         for y in value:
-            y._conducting_equipment = self
+            y.conducting_equipment = self
         self._clearance_tags = value
             
     clearance_tags = property(get_clearance_tags, set_clearance_tags)
@@ -2730,7 +2964,8 @@ class ConductingEquipment(Equipment):
     def add_clearance_tags(self, *clearance_tags):
         for obj in clearance_tags:
             obj._conducting_equipment = self
-            self._clearance_tags.append(obj)
+            if obj not in self._clearance_tags:
+                self._clearance_tags.append(obj)
         
     def remove_clearance_tags(self, *clearance_tags):
         for obj in clearance_tags:
@@ -2752,7 +2987,8 @@ class ConductingEquipment(Equipment):
             
         self._base_voltage = value
         if self._base_voltage is not None:
-            self._base_voltage._conducting_equipment.append(self)
+            if self not in self._base_voltage._conducting_equipment:
+                self._base_voltage._conducting_equipment.append(self)
 
     base_voltage = property(get_base_voltage, set_base_voltage)
     # >>> base_voltage
@@ -2766,9 +3002,9 @@ class ConductingEquipment(Equipment):
 
     def set_terminals(self, value):
         for x in self._terminals:
-            x._conducting_equipment = None
+            x.conducting_equipment = None
         for y in value:
-            y._conducting_equipment = self
+            y.conducting_equipment = self
         self._terminals = value
             
     terminals = property(get_terminals, set_terminals)
@@ -2776,7 +3012,8 @@ class ConductingEquipment(Equipment):
     def add_terminals(self, *terminals):
         for obj in terminals:
             obj._conducting_equipment = self
-            self._terminals.append(obj)
+            if obj not in self._terminals:
+                self._terminals.append(obj)
         
     def remove_terminals(self, *terminals):
         for obj in terminals:

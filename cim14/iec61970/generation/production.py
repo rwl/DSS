@@ -20,46 +20,61 @@ class Reservoir(PowerSystemResource):
     """
     # <<< reservoir
     # @generated
-    def __init__(self, spillway_crest_length='', river_outlet_works='', normal_min_operate_level='', gross_capacity='', spillway_crest_level='', energy_storage_rating=0.0, full_supply_level='', spill_way_gate_type='', spillway_capacity=0.0, active_storage_capacity='', spill_travel_delay='', upstream_from_hydro_power_plants=[], spills_into_reservoirs=[], target_level_schedule=None, spills_from_reservoir=None, level_vs_volume_curves=[], inflow_forecasts=[], hydro_power_plants=[], **kw_args):
+    def __init__(self, spillway_crest_length=0.0, river_outlet_works='', normal_min_operate_level=0.0, gross_capacity=0.0, spillway_crest_level=0.0, energy_storage_rating=0.0, full_supply_level=0.0, spill_way_gate_type='', spillway_capacity=0.0, active_storage_capacity=0.0, spill_travel_delay=0.0, upstream_from_hydro_power_plants=None, spills_into_reservoirs=None, target_level_schedule=None, spills_from_reservoir=None, level_vs_volume_curves=None, inflow_forecasts=None, hydro_power_plants=None, **kw_args):
         """ Initialises a new 'Reservoir' instance.
         """
         # The length of the spillway crest 
-        self.spillway_crest_length = ''
+        self.spillway_crest_length = spillway_crest_length
         # River outlet works for riparian right releases or other purposes 
-        self.river_outlet_works = ''
+        self.river_outlet_works = river_outlet_works
         # Normal minimum operating level below which the penstocks will draw air 
-        self.normal_min_operate_level = ''
+        self.normal_min_operate_level = normal_min_operate_level
         # Total capacity of reservoir 
-        self.gross_capacity = ''
+        self.gross_capacity = gross_capacity
         # Spillway crest level above which water will spill 
-        self.spillway_crest_level = ''
+        self.spillway_crest_level = spillway_crest_level
         # The reservoir's energy storage rating in energy for given head conditions 
-        self.energy_storage_rating = 0.0
+        self.energy_storage_rating = energy_storage_rating
         # Full supply level, above which water will spill. This can be the spillway crest level or the top of closed gates. 
-        self.full_supply_level = ''
+        self.full_supply_level = full_supply_level
         # Type of spillway gate, including parameters 
-        self.spill_way_gate_type = ''
+        self.spill_way_gate_type = spill_way_gate_type
         # The flow capacity of the spillway in cubic meters per second 
-        self.spillway_capacity = 0.0
+        self.spillway_capacity = spillway_capacity
         # Storage volume between the full supply level and the normal minimum operating level 
-        self.active_storage_capacity = ''
+        self.active_storage_capacity = active_storage_capacity
         # The spillway water travel delay to the next downstream reservoir 
-        self.spill_travel_delay = ''
+        self.spill_travel_delay = spill_travel_delay
         
         self._upstream_from_hydro_power_plants = []
-        self.upstream_from_hydro_power_plants = upstream_from_hydro_power_plants
+        if upstream_from_hydro_power_plants is None:
+            self.upstream_from_hydro_power_plants = []
+        else:
+            self.upstream_from_hydro_power_plants = upstream_from_hydro_power_plants
         self._spills_into_reservoirs = []
-        self.spills_into_reservoirs = spills_into_reservoirs
+        if spills_into_reservoirs is None:
+            self.spills_into_reservoirs = []
+        else:
+            self.spills_into_reservoirs = spills_into_reservoirs
         self._target_level_schedule = None
         self.target_level_schedule = target_level_schedule
         self._spills_from_reservoir = None
         self.spills_from_reservoir = spills_from_reservoir
         self._level_vs_volume_curves = []
-        self.level_vs_volume_curves = level_vs_volume_curves
+        if level_vs_volume_curves is None:
+            self.level_vs_volume_curves = []
+        else:
+            self.level_vs_volume_curves = level_vs_volume_curves
         self._inflow_forecasts = []
-        self.inflow_forecasts = inflow_forecasts
+        if inflow_forecasts is None:
+            self.inflow_forecasts = []
+        else:
+            self.inflow_forecasts = inflow_forecasts
         self._hydro_power_plants = []
-        self.hydro_power_plants = hydro_power_plants
+        if hydro_power_plants is None:
+            self.hydro_power_plants = []
+        else:
+            self.hydro_power_plants = hydro_power_plants
 
         super(Reservoir, self).__init__(**kw_args)
     # >>> reservoir
@@ -73,9 +88,9 @@ class Reservoir(PowerSystemResource):
 
     def set_upstream_from_hydro_power_plants(self, value):
         for x in self._upstream_from_hydro_power_plants:
-            x._gen_source_pump_discharge_reservoir = None
+            x.gen_source_pump_discharge_reservoir = None
         for y in value:
-            y._gen_source_pump_discharge_reservoir = self
+            y.gen_source_pump_discharge_reservoir = self
         self._upstream_from_hydro_power_plants = value
             
     upstream_from_hydro_power_plants = property(get_upstream_from_hydro_power_plants, set_upstream_from_hydro_power_plants)
@@ -83,7 +98,8 @@ class Reservoir(PowerSystemResource):
     def add_upstream_from_hydro_power_plants(self, *upstream_from_hydro_power_plants):
         for obj in upstream_from_hydro_power_plants:
             obj._gen_source_pump_discharge_reservoir = self
-            self._upstream_from_hydro_power_plants.append(obj)
+            if obj not in self._upstream_from_hydro_power_plants:
+                self._upstream_from_hydro_power_plants.append(obj)
         
     def remove_upstream_from_hydro_power_plants(self, *upstream_from_hydro_power_plants):
         for obj in upstream_from_hydro_power_plants:
@@ -100,9 +116,9 @@ class Reservoir(PowerSystemResource):
 
     def set_spills_into_reservoirs(self, value):
         for x in self._spills_into_reservoirs:
-            x._spills_from_reservoir = None
+            x.spills_from_reservoir = None
         for y in value:
-            y._spills_from_reservoir = self
+            y.spills_from_reservoir = self
         self._spills_into_reservoirs = value
             
     spills_into_reservoirs = property(get_spills_into_reservoirs, set_spills_into_reservoirs)
@@ -110,7 +126,8 @@ class Reservoir(PowerSystemResource):
     def add_spills_into_reservoirs(self, *spills_into_reservoirs):
         for obj in spills_into_reservoirs:
             obj._spills_from_reservoir = self
-            self._spills_into_reservoirs.append(obj)
+            if obj not in self._spills_into_reservoirs:
+                self._spills_into_reservoirs.append(obj)
         
     def remove_spills_into_reservoirs(self, *spills_into_reservoirs):
         for obj in spills_into_reservoirs:
@@ -150,7 +167,8 @@ class Reservoir(PowerSystemResource):
             
         self._spills_from_reservoir = value
         if self._spills_from_reservoir is not None:
-            self._spills_from_reservoir._spills_into_reservoirs.append(self)
+            if self not in self._spills_from_reservoir._spills_into_reservoirs:
+                self._spills_from_reservoir._spills_into_reservoirs.append(self)
 
     spills_from_reservoir = property(get_spills_from_reservoir, set_spills_from_reservoir)
     # >>> spills_from_reservoir
@@ -164,9 +182,9 @@ class Reservoir(PowerSystemResource):
 
     def set_level_vs_volume_curves(self, value):
         for x in self._level_vs_volume_curves:
-            x._reservoir = None
+            x.reservoir = None
         for y in value:
-            y._reservoir = self
+            y.reservoir = self
         self._level_vs_volume_curves = value
             
     level_vs_volume_curves = property(get_level_vs_volume_curves, set_level_vs_volume_curves)
@@ -174,7 +192,8 @@ class Reservoir(PowerSystemResource):
     def add_level_vs_volume_curves(self, *level_vs_volume_curves):
         for obj in level_vs_volume_curves:
             obj._reservoir = self
-            self._level_vs_volume_curves.append(obj)
+            if obj not in self._level_vs_volume_curves:
+                self._level_vs_volume_curves.append(obj)
         
     def remove_level_vs_volume_curves(self, *level_vs_volume_curves):
         for obj in level_vs_volume_curves:
@@ -191,9 +210,9 @@ class Reservoir(PowerSystemResource):
 
     def set_inflow_forecasts(self, value):
         for x in self._inflow_forecasts:
-            x._reservoir = None
+            x.reservoir = None
         for y in value:
-            y._reservoir = self
+            y.reservoir = self
         self._inflow_forecasts = value
             
     inflow_forecasts = property(get_inflow_forecasts, set_inflow_forecasts)
@@ -201,7 +220,8 @@ class Reservoir(PowerSystemResource):
     def add_inflow_forecasts(self, *inflow_forecasts):
         for obj in inflow_forecasts:
             obj._reservoir = self
-            self._inflow_forecasts.append(obj)
+            if obj not in self._inflow_forecasts:
+                self._inflow_forecasts.append(obj)
         
     def remove_inflow_forecasts(self, *inflow_forecasts):
         for obj in inflow_forecasts:
@@ -218,9 +238,9 @@ class Reservoir(PowerSystemResource):
 
     def set_hydro_power_plants(self, value):
         for x in self._hydro_power_plants:
-            x._reservoir = None
+            x.reservoir = None
         for y in value:
-            y._reservoir = self
+            y.reservoir = self
         self._hydro_power_plants = value
             
     hydro_power_plants = property(get_hydro_power_plants, set_hydro_power_plants)
@@ -228,7 +248,8 @@ class Reservoir(PowerSystemResource):
     def add_hydro_power_plants(self, *hydro_power_plants):
         for obj in hydro_power_plants:
             obj._reservoir = self
-            self._hydro_power_plants.append(obj)
+            if obj not in self._hydro_power_plants:
+                self._hydro_power_plants.append(obj)
         
     def remove_hydro_power_plants(self, *hydro_power_plants):
         for obj in hydro_power_plants:
@@ -267,7 +288,8 @@ class GrossToNetActivePowerCurve(Curve):
             
         self._generating_unit = value
         if self._generating_unit is not None:
-            self._generating_unit._gross_to_net_active_power_curves.append(self)
+            if self not in self._generating_unit._gross_to_net_active_power_curves:
+                self._generating_unit._gross_to_net_active_power_curves.append(self)
 
     generating_unit = property(get_generating_unit, set_generating_unit)
     # >>> generating_unit
@@ -279,13 +301,13 @@ class ShutdownCurve(Curve):
     """
     # <<< shutdown_curve
     # @generated
-    def __init__(self, shutdown_cost='', shutdown_date='', thermal_generating_unit=None, **kw_args):
+    def __init__(self, shutdown_cost=0.0, shutdown_date='', thermal_generating_unit=None, **kw_args):
         """ Initialises a new 'ShutdownCurve' instance.
         """
         # Fixed shutdown cost 
-        self.shutdown_cost = ''
+        self.shutdown_cost = shutdown_cost
         # The date and time of the most recent generating unit shutdown 
-        self.shutdown_date = ''
+        self.shutdown_date = shutdown_date
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -318,17 +340,17 @@ class HydroPump(PowerSystemResource):
     """
     # <<< hydro_pump
     # @generated
-    def __init__(self, pump_power_at_min_head='', pump_disch_at_min_head=0.0, pump_disch_at_max_head=0.0, pump_power_at_max_head='', hydro_pump_op_schedule=None, synchronous_machine=None, hydro_power_plant=None, **kw_args):
+    def __init__(self, pump_power_at_min_head=0.0, pump_disch_at_min_head=0.0, pump_disch_at_max_head=0.0, pump_power_at_max_head=0.0, hydro_pump_op_schedule=None, synchronous_machine=None, hydro_power_plant=None, **kw_args):
         """ Initialises a new 'HydroPump' instance.
         """
         # The pumping power under minimum head conditions, usually at full gate. 
-        self.pump_power_at_min_head = ''
+        self.pump_power_at_min_head = pump_power_at_min_head
         # The pumping discharge (m3/sec) under minimum head conditions, usually at full gate 
-        self.pump_disch_at_min_head = 0.0
+        self.pump_disch_at_min_head = pump_disch_at_min_head
         # The pumping discharge (m3/sec) under maximum head conditions, usually at full gate 
-        self.pump_disch_at_max_head = 0.0
+        self.pump_disch_at_max_head = pump_disch_at_max_head
         # The pumping power under maximum head conditions, usually at full gate 
-        self.pump_power_at_max_head = ''
+        self.pump_power_at_max_head = pump_power_at_max_head
         
         self._hydro_pump_op_schedule = None
         self.hydro_pump_op_schedule = hydro_pump_op_schedule
@@ -390,7 +412,8 @@ class HydroPump(PowerSystemResource):
             
         self._hydro_power_plant = value
         if self._hydro_power_plant is not None:
-            self._hydro_power_plant._hydro_pumps.append(self)
+            if self not in self._hydro_power_plant._hydro_pumps:
+                self._hydro_power_plant._hydro_pumps.append(self)
 
     hydro_power_plant = property(get_hydro_power_plant, set_hydro_power_plant)
     # >>> hydro_power_plant
@@ -402,15 +425,15 @@ class EmissionCurve(Curve):
     """
     # <<< emission_curve
     # @generated
-    def __init__(self, is_net_gross_p=False, emission_type='nitrogen_oxide', emission_content='', thermal_generating_unit=None, **kw_args):
+    def __init__(self, is_net_gross_p=False, emission_type='nitrogen_oxide', emission_content=0.0, thermal_generating_unit=None, **kw_args):
         """ Initialises a new 'EmissionCurve' instance.
         """
         # Flag is set to true when output is expressed in net active power 
-        self.is_net_gross_p = False
+        self.is_net_gross_p = is_net_gross_p
         # The type of emission, which also gives the production rate measurement unit. The y1AxisUnits of the curve contains the unit of measure (e.g. kg) and the emissionType is the type of emission (e.g. sulfer dioxide). Values are: "nitrogen_oxide", "chlorine", "hydrogen_sulfide", "sulfur_dioxide", "carbon_disulfide", "carbon_dioxide"
-        self.emission_type = 'nitrogen_oxide'
+        self.emission_type = emission_type
         # The emission content per quantity of fuel burned 
-        self.emission_content = ''
+        self.emission_content = emission_content
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -432,7 +455,8 @@ class EmissionCurve(Curve):
             
         self._thermal_generating_unit = value
         if self._thermal_generating_unit is not None:
-            self._thermal_generating_unit._emission_curves.append(self)
+            if self not in self._thermal_generating_unit._emission_curves:
+                self._thermal_generating_unit._emission_curves.append(self)
 
     thermal_generating_unit = property(get_thermal_generating_unit, set_thermal_generating_unit)
     # >>> thermal_generating_unit
@@ -448,7 +472,7 @@ class AirCompressor(PowerSystemResource):
         """ Initialises a new 'AirCompressor' instance.
         """
         # Rating of the CAES air compressor 
-        self.air_compressor_rating = 0.0
+        self.air_compressor_rating = air_compressor_rating
         
         self._combustion_turbine = None
         self.combustion_turbine = combustion_turbine
@@ -505,9 +529,9 @@ class EmissionAccount(Curve):
         """ Initialises a new 'EmissionAccount' instance.
         """
         # The type of emission, for example sulfur dioxide (SO2). The y1AxisUnits of the curve contains the unit of measure (e.g. kg) and the emissionType is the type of emission (e.g. sulfer dioxide). Values are: "nitrogen_oxide", "chlorine", "hydrogen_sulfide", "sulfur_dioxide", "carbon_disulfide", "carbon_dioxide"
-        self.emission_type = 'nitrogen_oxide'
+        self.emission_type = emission_type
         # The source of the emission value. Values are: "calculated", "measured"
-        self.emission_value_source = 'calculated'
+        self.emission_value_source = emission_value_source
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -529,7 +553,8 @@ class EmissionAccount(Curve):
             
         self._thermal_generating_unit = value
         if self._thermal_generating_unit is not None:
-            self._thermal_generating_unit._emmission_accounts.append(self)
+            if self not in self._thermal_generating_unit._emmission_accounts:
+                self._thermal_generating_unit._emmission_accounts.append(self)
 
     thermal_generating_unit = property(get_thermal_generating_unit, set_thermal_generating_unit)
     # >>> thermal_generating_unit
@@ -565,7 +590,8 @@ class LevelVsVolumeCurve(Curve):
             
         self._reservoir = value
         if self._reservoir is not None:
-            self._reservoir._level_vs_volume_curves.append(self)
+            if self not in self._reservoir._level_vs_volume_curves:
+                self._reservoir._level_vs_volume_curves.append(self)
 
     reservoir = property(get_reservoir, set_reservoir)
     # >>> reservoir
@@ -577,100 +603,103 @@ class GeneratingUnit(Equipment):
     """
     # <<< generating_unit
     # @generated
-    def __init__(self, gen_control_source='unavailable', startup_time='', min_operating_p='', high_control_limit='', minimum_off_time='', energy_min_p='', base_p='', min_economic_p='', spin_reserve_ramp='', control_pulse_high='', low_control_limit='', governor_scd='', gen_control_mode='pulse', control_deadband='', step_change='', rated_net_max_p='', short_pf=0.0, gen_operating_mode='mrn', governor_mpl='', initial_p='', disp_reserve_flag=False, control_response_rate='', auto_cntrl_margin_p='', efficiency='', rated_gross_min_p='', model_detail='', lower_ramp_rate='', max_economic_p='', control_pulse_low='', maximum_allowable_spinning_reserve='', rated_gross_max_p='', normal_pf=0.0, variable_cost='', startup_cost='', long_pf=0.0, alloc_spin_res_p='', tie_line_pf=0.0, fast_start_flag=False, nominal_p='', max_operating_p='', fuel_priority=0, raise_ramp_rate='', penalty_factor=0.0, registered_generator=None, control_area_generating_unit=[], sub_control_area=None, gen_unit_op_schedule=None, operated_by_generation_provider=None, synchronous_machines=[], gross_to_net_active_power_curves=[], gen_unit_op_cost_curves=[], **kw_args):
+    def __init__(self, gen_control_source='unavailable', startup_time=0.0, min_operating_p=0.0, high_control_limit=0.0, minimum_off_time=0.0, energy_min_p=0.0, base_p=0.0, min_economic_p=0.0, spin_reserve_ramp=0.0, control_pulse_high=0.0, low_control_limit=0.0, governor_scd=0.0, gen_control_mode='pulse', control_deadband=0.0, step_change=0.0, rated_net_max_p=0.0, short_pf=0.0, gen_operating_mode='mrn', governor_mpl=0.0, initial_p=0.0, disp_reserve_flag=False, control_response_rate=0.0, auto_cntrl_margin_p=0.0, efficiency=0.0, rated_gross_min_p=0.0, model_detail=0, lower_ramp_rate=0.0, max_economic_p=0.0, control_pulse_low=0.0, maximum_allowable_spinning_reserve=0.0, rated_gross_max_p=0.0, normal_pf=0.0, variable_cost=0.0, startup_cost=0.0, long_pf=0.0, alloc_spin_res_p=0.0, tie_line_pf=0.0, fast_start_flag=False, nominal_p=0.0, max_operating_p=0.0, fuel_priority=0, raise_ramp_rate=0.0, penalty_factor=0.0, registered_generator=None, control_area_generating_unit=None, sub_control_area=None, gen_unit_op_schedule=None, operated_by_generation_provider=None, synchronous_machines=None, gross_to_net_active_power_curves=None, gen_unit_op_cost_curves=None, **kw_args):
         """ Initialises a new 'GeneratingUnit' instance.
         """
         # The source of controls for a generating unit. Values are: "unavailable", "off_agc", "on_agc", "plant_control"
-        self.gen_control_source = 'unavailable'
+        self.gen_control_source = gen_control_source
         # Time it takes to get the unit on-line, from the time that the prime mover mechanical power is applied 
-        self.startup_time = ''
+        self.startup_time = startup_time
         # This is the minimum operating active power limit the dispatcher can enter for this unit. 
-        self.min_operating_p = ''
+        self.min_operating_p = min_operating_p
         # High limit for secondary (AGC) control 
-        self.high_control_limit = ''
+        self.high_control_limit = high_control_limit
         # Minimum time interval between unit shutdown and startup 
-        self.minimum_off_time = ''
+        self.minimum_off_time = minimum_off_time
  
-        self.energy_min_p = ''
+        self.energy_min_p = energy_min_p
         # For dispatchable units, this value represents the economic active power basepoint, for units that are not dispatchable, this value represents the fixed generation value. The value must be between the operating low and high limits. 
-        self.base_p = ''
+        self.base_p = base_p
         # Low economic active power limit that must be greater than or equal to the minimum operating active power limit 
-        self.min_economic_p = ''
+        self.min_economic_p = min_economic_p
  
-        self.spin_reserve_ramp = ''
+        self.spin_reserve_ramp = spin_reserve_ramp
         # Pulse high limit which is the largest control pulse that the unit can respond to 
-        self.control_pulse_high = ''
+        self.control_pulse_high = control_pulse_high
         # Low limit for secondary (AGC) control 
-        self.low_control_limit = ''
+        self.low_control_limit = low_control_limit
         # Governor Speed Changer Droop.   This is the change in generator power output divided by the change in frequency normalized by the nominal power of the generator and the nominal frequency and expressed in percent and negated. A positive value of speed change droop provides additional generator output upon a drop in frequency. 
-        self.governor_scd = ''
+        self.governor_scd = governor_scd
         # The unit control mode. Values are: "pulse", "setpoint"
-        self.gen_control_mode = 'pulse'
+        self.gen_control_mode = gen_control_mode
         # Unit control error deadband. When a unit's desired active power change is less than this deadband, then no control pulses will be sent to the unit. 
-        self.control_deadband = ''
+        self.control_deadband = control_deadband
  
-        self.step_change = ''
+        self.step_change = step_change
         # The net rated maximum capacity determined by subtracting the auxiliary power used to operate the internal plant machinery from the rated gross maximum capacity 
-        self.rated_net_max_p = ''
+        self.rated_net_max_p = rated_net_max_p
         # Generating unit economic participation factor 
-        self.short_pf = 0.0
+        self.short_pf = short_pf
         # Operating mode for secondary control. Values are: "mrn", "manual", "reg", "lfc", "edc", "fixed", "agc", "off"
-        self.gen_operating_mode = 'mrn'
+        self.gen_operating_mode = gen_operating_mode
         # Governor Motor Position Limit 
-        self.governor_mpl = ''
+        self.governor_mpl = governor_mpl
         # Default Initial active power  which is used to store a powerflow result for the initial active power for this unit in this network configuration 
-        self.initial_p = ''
+        self.initial_p = initial_p
  
-        self.disp_reserve_flag = False
+        self.disp_reserve_flag = disp_reserve_flag
         # Unit response rate which specifies the active power change for a control pulse of one second in the most responsive loading level of the unit. 
-        self.control_response_rate = ''
+        self.control_response_rate = control_response_rate
         # The planned unused capacity which can be used to support automatic control overruns. 
-        self.auto_cntrl_margin_p = ''
+        self.auto_cntrl_margin_p = auto_cntrl_margin_p
         # The efficiency of the unit in converting mechanical energy, from the prime mover, into electrical energy. 
-        self.efficiency = ''
+        self.efficiency = efficiency
         # The gross rated minimum generation level which the unit can safely operate at while delivering power to the transmission grid 
-        self.rated_gross_min_p = ''
+        self.rated_gross_min_p = rated_gross_min_p
         # Detail level of the generator model data 
-        self.model_detail = ''
+        self.model_detail = model_detail
  
-        self.lower_ramp_rate = ''
+        self.lower_ramp_rate = lower_ramp_rate
         # Maximum high economic active power limit, that should not exceed the maximum operating active power limit 
-        self.max_economic_p = ''
+        self.max_economic_p = max_economic_p
         # Pulse low limit which is the smallest control pulse that the unit can respond to 
-        self.control_pulse_low = ''
+        self.control_pulse_low = control_pulse_low
         # Maximum allowable spinning reserve. Spinning reserve will never be considered greater than this value regardless of the current operating point. 
-        self.maximum_allowable_spinning_reserve = ''
+        self.maximum_allowable_spinning_reserve = maximum_allowable_spinning_reserve
         # The unit's gross rated maximum capacity (Book Value). 
-        self.rated_gross_max_p = ''
+        self.rated_gross_max_p = rated_gross_max_p
         # Generating unit economic participation factor 
-        self.normal_pf = 0.0
+        self.normal_pf = normal_pf
         # The variable cost component of production per unit of ActivePower. 
-        self.variable_cost = ''
+        self.variable_cost = variable_cost
         # The initial startup cost incurred for each start of the GeneratingUnit. 
-        self.startup_cost = ''
+        self.startup_cost = startup_cost
         # Generating unit economic participation factor 
-        self.long_pf = 0.0
+        self.long_pf = long_pf
         # The planned unused capacity (spinning reserve) which can be used to support emergency load 
-        self.alloc_spin_res_p = ''
+        self.alloc_spin_res_p = alloc_spin_res_p
         # Generating unit economic participation factor 
-        self.tie_line_pf = 0.0
+        self.tie_line_pf = tie_line_pf
  
-        self.fast_start_flag = False
+        self.fast_start_flag = fast_start_flag
         # The nominal power of the generating unit.  Used to give precise meaning to percentage based attributes such as the govenor speed change droop (govenorSCD attribute). 
-        self.nominal_p = ''
+        self.nominal_p = nominal_p
         # This is the maximum operating active power limit the dispatcher can enter for this unit 
-        self.max_operating_p = ''
+        self.max_operating_p = max_operating_p
  
-        self.fuel_priority = 0
+        self.fuel_priority = fuel_priority
  
-        self.raise_ramp_rate = ''
+        self.raise_ramp_rate = raise_ramp_rate
         # Defined as: 1 / ( 1 - Incremental Transmission Loss); with the Incremental Transmission Loss expressed as a plus or minus value. The typical range of penalty factors is (0.9 to 1.1). 
-        self.penalty_factor = 0.0
+        self.penalty_factor = penalty_factor
         
         self._registered_generator = None
         self.registered_generator = registered_generator
         self._control_area_generating_unit = []
-        self.control_area_generating_unit = control_area_generating_unit
+        if control_area_generating_unit is None:
+            self.control_area_generating_unit = []
+        else:
+            self.control_area_generating_unit = control_area_generating_unit
         self._sub_control_area = None
         self.sub_control_area = sub_control_area
         self._gen_unit_op_schedule = None
@@ -678,11 +707,20 @@ class GeneratingUnit(Equipment):
         self._operated_by_generation_provider = None
         self.operated_by_generation_provider = operated_by_generation_provider
         self._synchronous_machines = []
-        self.synchronous_machines = synchronous_machines
+        if synchronous_machines is None:
+            self.synchronous_machines = []
+        else:
+            self.synchronous_machines = synchronous_machines
         self._gross_to_net_active_power_curves = []
-        self.gross_to_net_active_power_curves = gross_to_net_active_power_curves
+        if gross_to_net_active_power_curves is None:
+            self.gross_to_net_active_power_curves = []
+        else:
+            self.gross_to_net_active_power_curves = gross_to_net_active_power_curves
         self._gen_unit_op_cost_curves = []
-        self.gen_unit_op_cost_curves = gen_unit_op_cost_curves
+        if gen_unit_op_cost_curves is None:
+            self.gen_unit_op_cost_curves = []
+        else:
+            self.gen_unit_op_cost_curves = gen_unit_op_cost_curves
 
         super(GeneratingUnit, self).__init__(**kw_args)
     # >>> generating_unit
@@ -714,9 +752,9 @@ class GeneratingUnit(Equipment):
 
     def set_control_area_generating_unit(self, value):
         for x in self._control_area_generating_unit:
-            x._generating_unit = None
+            x.generating_unit = None
         for y in value:
-            y._generating_unit = self
+            y.generating_unit = self
         self._control_area_generating_unit = value
             
     control_area_generating_unit = property(get_control_area_generating_unit, set_control_area_generating_unit)
@@ -724,7 +762,8 @@ class GeneratingUnit(Equipment):
     def add_control_area_generating_unit(self, *control_area_generating_unit):
         for obj in control_area_generating_unit:
             obj._generating_unit = self
-            self._control_area_generating_unit.append(obj)
+            if obj not in self._control_area_generating_unit:
+                self._control_area_generating_unit.append(obj)
         
     def remove_control_area_generating_unit(self, *control_area_generating_unit):
         for obj in control_area_generating_unit:
@@ -746,7 +785,8 @@ class GeneratingUnit(Equipment):
             
         self._sub_control_area = value
         if self._sub_control_area is not None:
-            self._sub_control_area._generating_units.append(self)
+            if self not in self._sub_control_area._generating_units:
+                self._sub_control_area._generating_units.append(self)
 
     sub_control_area = property(get_sub_control_area, set_sub_control_area)
     # >>> sub_control_area
@@ -783,7 +823,8 @@ class GeneratingUnit(Equipment):
             
         self._operated_by_generation_provider = value
         if self._operated_by_generation_provider is not None:
-            self._operated_by_generation_provider._generating_units.append(self)
+            if self not in self._operated_by_generation_provider._generating_units:
+                self._operated_by_generation_provider._generating_units.append(self)
 
     operated_by_generation_provider = property(get_operated_by_generation_provider, set_operated_by_generation_provider)
     # >>> operated_by_generation_provider
@@ -797,9 +838,9 @@ class GeneratingUnit(Equipment):
 
     def set_synchronous_machines(self, value):
         for x in self._synchronous_machines:
-            x._generating_unit = None
+            x.generating_unit = None
         for y in value:
-            y._generating_unit = self
+            y.generating_unit = self
         self._synchronous_machines = value
             
     synchronous_machines = property(get_synchronous_machines, set_synchronous_machines)
@@ -807,7 +848,8 @@ class GeneratingUnit(Equipment):
     def add_synchronous_machines(self, *synchronous_machines):
         for obj in synchronous_machines:
             obj._generating_unit = self
-            self._synchronous_machines.append(obj)
+            if obj not in self._synchronous_machines:
+                self._synchronous_machines.append(obj)
         
     def remove_synchronous_machines(self, *synchronous_machines):
         for obj in synchronous_machines:
@@ -824,9 +866,9 @@ class GeneratingUnit(Equipment):
 
     def set_gross_to_net_active_power_curves(self, value):
         for x in self._gross_to_net_active_power_curves:
-            x._generating_unit = None
+            x.generating_unit = None
         for y in value:
-            y._generating_unit = self
+            y.generating_unit = self
         self._gross_to_net_active_power_curves = value
             
     gross_to_net_active_power_curves = property(get_gross_to_net_active_power_curves, set_gross_to_net_active_power_curves)
@@ -834,7 +876,8 @@ class GeneratingUnit(Equipment):
     def add_gross_to_net_active_power_curves(self, *gross_to_net_active_power_curves):
         for obj in gross_to_net_active_power_curves:
             obj._generating_unit = self
-            self._gross_to_net_active_power_curves.append(obj)
+            if obj not in self._gross_to_net_active_power_curves:
+                self._gross_to_net_active_power_curves.append(obj)
         
     def remove_gross_to_net_active_power_curves(self, *gross_to_net_active_power_curves):
         for obj in gross_to_net_active_power_curves:
@@ -851,9 +894,9 @@ class GeneratingUnit(Equipment):
 
     def set_gen_unit_op_cost_curves(self, value):
         for x in self._gen_unit_op_cost_curves:
-            x._generating_unit = None
+            x.generating_unit = None
         for y in value:
-            y._generating_unit = self
+            y.generating_unit = self
         self._gen_unit_op_cost_curves = value
             
     gen_unit_op_cost_curves = property(get_gen_unit_op_cost_curves, set_gen_unit_op_cost_curves)
@@ -861,7 +904,8 @@ class GeneratingUnit(Equipment):
     def add_gen_unit_op_cost_curves(self, *gen_unit_op_cost_curves):
         for obj in gen_unit_op_cost_curves:
             obj._generating_unit = self
-            self._gen_unit_op_cost_curves.append(obj)
+            if obj not in self._gen_unit_op_cost_curves:
+                self._gen_unit_op_cost_curves.append(obj)
         
     def remove_gen_unit_op_cost_curves(self, *gen_unit_op_cost_curves):
         for obj in gen_unit_op_cost_curves:
@@ -880,15 +924,15 @@ class FuelAllocationSchedule(Curve):
         """ Initialises a new 'FuelAllocationSchedule' instance.
         """
         # The minimum amount fuel that is allocated for consumption for the scheduled time period, e.g., based on a 'take-or-pay' contract 
-        self.min_fuel_allocation = 0.0
+        self.min_fuel_allocation = min_fuel_allocation
         # The start time and date of the fuel allocation schedule 
-        self.fuel_allocation_start_date = ''
+        self.fuel_allocation_start_date = fuel_allocation_start_date
         # The maximum amount fuel that is allocated for consumption for the scheduled time period 
-        self.max_fuel_allocation = 0.0
+        self.max_fuel_allocation = max_fuel_allocation
         # The type of fuel, which also indicates the corresponding measurement unit Values are: "coal", "oil", "gas"
-        self.fuel_type = 'coal'
+        self.fuel_type = fuel_type
         # The end time and date of the fuel allocation schedule 
-        self.fuel_allocation_end_date = ''
+        self.fuel_allocation_end_date = fuel_allocation_end_date
         
         self._fossil_fuel = None
         self.fossil_fuel = fossil_fuel
@@ -912,7 +956,8 @@ class FuelAllocationSchedule(Curve):
             
         self._fossil_fuel = value
         if self._fossil_fuel is not None:
-            self._fossil_fuel._fuel_allocation_schedules.append(self)
+            if self not in self._fossil_fuel._fuel_allocation_schedules:
+                self._fossil_fuel._fuel_allocation_schedules.append(self)
 
     fossil_fuel = property(get_fossil_fuel, set_fossil_fuel)
     # >>> fossil_fuel
@@ -931,7 +976,8 @@ class FuelAllocationSchedule(Curve):
             
         self._thermal_generating_unit = value
         if self._thermal_generating_unit is not None:
-            self._thermal_generating_unit._fuel_allocation_schedules.append(self)
+            if self not in self._thermal_generating_unit._fuel_allocation_schedules:
+                self._thermal_generating_unit._fuel_allocation_schedules.append(self)
 
     thermal_generating_unit = property(get_thermal_generating_unit, set_thermal_generating_unit)
     # >>> thermal_generating_unit
@@ -943,13 +989,13 @@ class CAESPlant(PowerSystemResource):
     """
     # <<< caesplant
     # @generated
-    def __init__(self, energy_storage_capacity='', rated_capacity_p='', thermal_generating_unit=None, air_compressor=None, **kw_args):
+    def __init__(self, energy_storage_capacity=0.0, rated_capacity_p=0.0, thermal_generating_unit=None, air_compressor=None, **kw_args):
         """ Initialises a new 'CAESPlant' instance.
         """
         # The rated energy storage capacity. 
-        self.energy_storage_capacity = ''
+        self.energy_storage_capacity = energy_storage_capacity
         # The CAES plant's gross rated generating capacity 
-        self.rated_capacity_p = ''
+        self.rated_capacity_p = rated_capacity_p
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -1002,13 +1048,13 @@ class TargetLevelSchedule(Curve):
     """
     # <<< target_level_schedule
     # @generated
-    def __init__(self, low_level_limit='', high_level_limit='', reservoir=None, **kw_args):
+    def __init__(self, low_level_limit=0.0, high_level_limit=0.0, reservoir=None, **kw_args):
         """ Initialises a new 'TargetLevelSchedule' instance.
         """
         # Low target level limit, below which the reservoir operation will be penalized 
-        self.low_level_limit = ''
+        self.low_level_limit = low_level_limit
         # High target level limit, above which the reservoir operation will be penalized 
-        self.high_level_limit = ''
+        self.high_level_limit = high_level_limit
         
         self._reservoir = None
         self.reservoir = reservoir
@@ -1045,7 +1091,7 @@ class HeatRateCurve(Curve):
         """ Initialises a new 'HeatRateCurve' instance.
         """
         # Flag is set to true when output is expressed in net active power 
-        self.is_net_gross_p = False
+        self.is_net_gross_p = is_net_gross_p
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -1082,7 +1128,7 @@ class GenUnitOpCostCurve(Curve):
         """ Initialises a new 'GenUnitOpCostCurve' instance.
         """
         # Flag is set to true when output is expressed in net active power 
-        self.is_net_gross_p = False
+        self.is_net_gross_p = is_net_gross_p
         
         self._generating_unit = None
         self.generating_unit = generating_unit
@@ -1104,7 +1150,8 @@ class GenUnitOpCostCurve(Curve):
             
         self._generating_unit = value
         if self._generating_unit is not None:
-            self._generating_unit._gen_unit_op_cost_curves.append(self)
+            if self not in self._generating_unit._gen_unit_op_cost_curves:
+                self._generating_unit._gen_unit_op_cost_curves.append(self)
 
     generating_unit = property(get_generating_unit, set_generating_unit)
     # >>> generating_unit
@@ -1116,29 +1163,29 @@ class StartupModel(IdentifiedObject):
     """
     # <<< startup_model
     # @generated
-    def __init__(self, startup_priority=0, startup_cost='', hot_standby_heat='', stby_aux_p='', risk_factor_cost='', startup_date='', minimum_down_time='', fixed_maint_cost='', incremental_maint_cost='', minimum_run_time='', start_ign_fuel_curve=None, start_main_fuel_curve=None, thermal_generating_unit=None, start_ramp_curve=None, **kw_args):
+    def __init__(self, startup_priority=0, startup_cost=0.0, hot_standby_heat=0.0, stby_aux_p=0.0, risk_factor_cost=0.0, startup_date='', minimum_down_time=0.0, fixed_maint_cost=0.0, incremental_maint_cost=0.0, minimum_run_time=0.0, start_ign_fuel_curve=None, start_main_fuel_curve=None, thermal_generating_unit=None, start_ramp_curve=None, **kw_args):
         """ Initialises a new 'StartupModel' instance.
         """
         # Startup priority within control area where lower numbers indicate higher priorities.  More than one unit in an area may be assigned the same priority. 
-        self.startup_priority = 0
+        self.startup_priority = startup_priority
         # Total miscellaneous start up costs 
-        self.startup_cost = ''
+        self.startup_cost = startup_cost
         # The amount of heat input per time uint required for hot standby operation 
-        self.hot_standby_heat = ''
+        self.hot_standby_heat = hot_standby_heat
         # The unit's auxiliary active power consumption to maintain standby mode 
-        self.stby_aux_p = ''
+        self.stby_aux_p = stby_aux_p
         # The opportunity cost associated with the return in monetary unit. This represents the restart's 'share' of the unit depreciation and risk of an event which would damage the unit. 
-        self.risk_factor_cost = ''
+        self.risk_factor_cost = risk_factor_cost
         # The date and time of the most recent generating unit startup 
-        self.startup_date = ''
+        self.startup_date = startup_date
         # The minimum number of hours the unit must be down before restart 
-        self.minimum_down_time = ''
+        self.minimum_down_time = minimum_down_time
         # Fixed Maintenance Cost 
-        self.fixed_maint_cost = ''
+        self.fixed_maint_cost = fixed_maint_cost
         # Incremental Maintenance Cost 
-        self.incremental_maint_cost = ''
+        self.incremental_maint_cost = incremental_maint_cost
         # The minimum number of hours the unit must be operating before being allowed to shut down 
-        self.minimum_run_time = ''
+        self.minimum_run_time = minimum_run_time
         
         self._start_ign_fuel_curve = None
         self.start_ign_fuel_curve = start_ign_fuel_curve
@@ -1231,32 +1278,35 @@ class FossilFuel(IdentifiedObject):
     """
     # <<< fossil_fuel
     # @generated
-    def __init__(self, fuel_sulfur='', fuel_handling_cost='', fuel_eff_factor='', fuel_cost='', fuel_mixture='', fossil_fuel_type='coal', low_breakpoint_p='', fuel_heat_content=0.0, high_breakpoint_p='', fuel_dispatch_cost='', fuel_allocation_schedules=[], thermal_generating_unit=None, **kw_args):
+    def __init__(self, fuel_sulfur=0.0, fuel_handling_cost=0.0, fuel_eff_factor=0.0, fuel_cost=0.0, fuel_mixture=0.0, fossil_fuel_type='coal', low_breakpoint_p=0.0, fuel_heat_content=0.0, high_breakpoint_p=0.0, fuel_dispatch_cost=0.0, fuel_allocation_schedules=None, thermal_generating_unit=None, **kw_args):
         """ Initialises a new 'FossilFuel' instance.
         """
         # The fuel's fraction of pollution credit per unit of heat content 
-        self.fuel_sulfur = ''
+        self.fuel_sulfur = fuel_sulfur
         # Handling and processing cost associated with this fuel 
-        self.fuel_handling_cost = ''
+        self.fuel_handling_cost = fuel_handling_cost
         # The efficiency factor for the fuel (per unit) in terms of the effective energy absorbed 
-        self.fuel_eff_factor = ''
+        self.fuel_eff_factor = fuel_eff_factor
         # The cost in terms of heat value for the given type of fuel 
-        self.fuel_cost = ''
+        self.fuel_cost = fuel_cost
         # Relative amount of the given type of fuel, when multiple fuels are being consumed. 
-        self.fuel_mixture = ''
+        self.fuel_mixture = fuel_mixture
         # The type of fossil fuel, such as coal, oil, or gas. Values are: "coal", "oil", "gas"
-        self.fossil_fuel_type = 'coal'
+        self.fossil_fuel_type = fossil_fuel_type
         # The active power output level of the unit at which the given type of fuel is switched off. This fuel (e.g., oil) is sometimes used to stabilize the base fuel (e.g., coal) at low active power output levels. 
-        self.low_breakpoint_p = ''
+        self.low_breakpoint_p = low_breakpoint_p
         # The amount of heat per weight (or volume) of the given type of fuel 
-        self.fuel_heat_content = 0.0
+        self.fuel_heat_content = fuel_heat_content
         # The active power output level of the unit at which the given type of fuel is switched on. This fuel (e.g., oil) is sometimes used to supplement the base fuel (e.g., coal) at high active power output levels. 
-        self.high_breakpoint_p = ''
+        self.high_breakpoint_p = high_breakpoint_p
         # The cost of fuel used for economic dispatching which includes: fuel cost, transportation cost,  and incremental maintenance cost 
-        self.fuel_dispatch_cost = ''
+        self.fuel_dispatch_cost = fuel_dispatch_cost
         
         self._fuel_allocation_schedules = []
-        self.fuel_allocation_schedules = fuel_allocation_schedules
+        if fuel_allocation_schedules is None:
+            self.fuel_allocation_schedules = []
+        else:
+            self.fuel_allocation_schedules = fuel_allocation_schedules
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
 
@@ -1272,9 +1322,9 @@ class FossilFuel(IdentifiedObject):
 
     def set_fuel_allocation_schedules(self, value):
         for x in self._fuel_allocation_schedules:
-            x._fossil_fuel = None
+            x.fossil_fuel = None
         for y in value:
-            y._fossil_fuel = self
+            y.fossil_fuel = self
         self._fuel_allocation_schedules = value
             
     fuel_allocation_schedules = property(get_fuel_allocation_schedules, set_fuel_allocation_schedules)
@@ -1282,7 +1332,8 @@ class FossilFuel(IdentifiedObject):
     def add_fuel_allocation_schedules(self, *fuel_allocation_schedules):
         for obj in fuel_allocation_schedules:
             obj._fossil_fuel = self
-            self._fuel_allocation_schedules.append(obj)
+            if obj not in self._fuel_allocation_schedules:
+                self._fuel_allocation_schedules.append(obj)
         
     def remove_fuel_allocation_schedules(self, *fuel_allocation_schedules):
         for obj in fuel_allocation_schedules:
@@ -1304,7 +1355,8 @@ class FossilFuel(IdentifiedObject):
             
         self._thermal_generating_unit = value
         if self._thermal_generating_unit is not None:
-            self._thermal_generating_unit._fossil_fuels.append(self)
+            if self not in self._thermal_generating_unit._fossil_fuels:
+                self._thermal_generating_unit._fossil_fuels.append(self)
 
     thermal_generating_unit = property(get_thermal_generating_unit, set_thermal_generating_unit)
     # >>> thermal_generating_unit
@@ -1320,7 +1372,7 @@ class StartMainFuelCurve(Curve):
         """ Initialises a new 'StartMainFuelCurve' instance.
         """
         # Type of main fuel Values are: "coal", "oil", "gas"
-        self.main_fuel_type = 'coal'
+        self.main_fuel_type = main_fuel_type
         
         self._startup_model = None
         self.startup_model = startup_model
@@ -1353,24 +1405,27 @@ class CogenerationPlant(PowerSystemResource):
     """
     # <<< cogeneration_plant
     # @generated
-    def __init__(self, cogen_lpsendout_rating=0.0, cogen_hpsteam_rating=0.0, rated_p='', cogen_hpsendout_rating=0.0, cogen_lpsteam_rating=0.0, steam_sendout_schedule=None, thermal_generating_units=[], **kw_args):
+    def __init__(self, cogen_lpsendout_rating=0.0, cogen_hpsteam_rating=0.0, rated_p=0.0, cogen_hpsendout_rating=0.0, cogen_lpsteam_rating=0.0, steam_sendout_schedule=None, thermal_generating_units=None, **kw_args):
         """ Initialises a new 'CogenerationPlant' instance.
         """
         # The low pressure steam sendout 
-        self.cogen_lpsendout_rating = 0.0
+        self.cogen_lpsendout_rating = cogen_lpsendout_rating
         # The high pressure steam rating 
-        self.cogen_hpsteam_rating = 0.0
+        self.cogen_hpsteam_rating = cogen_hpsteam_rating
         # The rated output active power of the cogeneration plant 
-        self.rated_p = ''
+        self.rated_p = rated_p
         # The high pressure steam sendout 
-        self.cogen_hpsendout_rating = 0.0
+        self.cogen_hpsendout_rating = cogen_hpsendout_rating
         # The low pressure steam rating 
-        self.cogen_lpsteam_rating = 0.0
+        self.cogen_lpsteam_rating = cogen_lpsteam_rating
         
         self._steam_sendout_schedule = None
         self.steam_sendout_schedule = steam_sendout_schedule
         self._thermal_generating_units = []
-        self.thermal_generating_units = thermal_generating_units
+        if thermal_generating_units is None:
+            self.thermal_generating_units = []
+        else:
+            self.thermal_generating_units = thermal_generating_units
 
         super(CogenerationPlant, self).__init__(**kw_args)
     # >>> cogeneration_plant
@@ -1402,9 +1457,9 @@ class CogenerationPlant(PowerSystemResource):
 
     def set_thermal_generating_units(self, value):
         for x in self._thermal_generating_units:
-            x._cogeneration_plant = None
+            x.cogeneration_plant = None
         for y in value:
-            y._cogeneration_plant = self
+            y.cogeneration_plant = self
         self._thermal_generating_units = value
             
     thermal_generating_units = property(get_thermal_generating_units, set_thermal_generating_units)
@@ -1412,7 +1467,8 @@ class CogenerationPlant(PowerSystemResource):
     def add_thermal_generating_units(self, *thermal_generating_units):
         for obj in thermal_generating_units:
             obj._cogeneration_plant = self
-            self._thermal_generating_units.append(obj)
+            if obj not in self._thermal_generating_units:
+                self._thermal_generating_units.append(obj)
         
     def remove_thermal_generating_units(self, *thermal_generating_units):
         for obj in thermal_generating_units:
@@ -1451,7 +1507,8 @@ class HydroGeneratingEfficiencyCurve(Curve):
             
         self._hydro_generating_unit = value
         if self._hydro_generating_unit is not None:
-            self._hydro_generating_unit._hydro_generating_efficiency_curves.append(self)
+            if self not in self._hydro_generating_unit._hydro_generating_efficiency_curves:
+                self._hydro_generating_unit._hydro_generating_efficiency_curves.append(self)
 
     hydro_generating_unit = property(get_hydro_generating_unit, set_hydro_generating_unit)
     # >>> hydro_generating_unit
@@ -1533,19 +1590,19 @@ class HeatInputCurve(Curve):
     """
     # <<< heat_input_curve
     # @generated
-    def __init__(self, aux_power_mult='', heat_input_offset='', is_net_gross_p=False, heat_input_eff='', aux_power_offset='', thermal_generating_unit=None, **kw_args):
+    def __init__(self, aux_power_mult=0.0, heat_input_offset=0.0, is_net_gross_p=False, heat_input_eff=0.0, aux_power_offset=0.0, thermal_generating_unit=None, **kw_args):
         """ Initialises a new 'HeatInputCurve' instance.
         """
         # Power output - auxiliary power multiplier adjustment factor. 
-        self.aux_power_mult = ''
+        self.aux_power_mult = aux_power_mult
         # Heat input - offset adjustment factor. 
-        self.heat_input_offset = ''
+        self.heat_input_offset = heat_input_offset
         # Flag is set to true when output is expressed in net active power 
-        self.is_net_gross_p = False
+        self.is_net_gross_p = is_net_gross_p
         # Heat input - efficiency multiplier adjustment factor. 
-        self.heat_input_eff = ''
+        self.heat_input_eff = heat_input_eff
         # Power output - auxiliary power offset adjustment factor 
-        self.aux_power_offset = ''
+        self.aux_power_offset = aux_power_offset
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -1582,7 +1639,7 @@ class StartIgnFuelCurve(Curve):
         """ Initialises a new 'StartIgnFuelCurve' instance.
         """
         # Type of ignition fuel Values are: "coal", "oil", "gas"
-        self.ignition_fuel_type = 'coal'
+        self.ignition_fuel_type = ignition_fuel_type
         
         self._startup_model = None
         self.startup_model = startup_model
@@ -1639,7 +1696,8 @@ class TailbayLossCurve(Curve):
             
         self._hydro_generating_unit = value
         if self._hydro_generating_unit is not None:
-            self._hydro_generating_unit._tailbay_loss_curve.append(self)
+            if self not in self._hydro_generating_unit._tailbay_loss_curve:
+                self._hydro_generating_unit._tailbay_loss_curve.append(self)
 
     hydro_generating_unit = property(get_hydro_generating_unit, set_hydro_generating_unit)
     # >>> hydro_generating_unit
@@ -1651,11 +1709,11 @@ class StartRampCurve(Curve):
     """
     # <<< start_ramp_curve
     # @generated
-    def __init__(self, hot_standby_ramp='', startup_model=None, **kw_args):
+    def __init__(self, hot_standby_ramp=0.0, startup_model=None, **kw_args):
         """ Initialises a new 'StartRampCurve' instance.
         """
         # The startup ramp rate in gross for a unit that is on hot standby 
-        self.hot_standby_ramp = ''
+        self.hot_standby_ramp = hot_standby_ramp
         
         self._startup_model = None
         self.startup_model = startup_model
@@ -1692,7 +1750,7 @@ class IncrementalHeatRateCurve(Curve):
         """ Initialises a new 'IncrementalHeatRateCurve' instance.
         """
         # Flag is set to true when output is expressed in net active power 
-        self.is_net_gross_p = False
+        self.is_net_gross_p = is_net_gross_p
         
         self._thermal_generating_unit = None
         self.thermal_generating_unit = thermal_generating_unit
@@ -1725,14 +1783,17 @@ class CombinedCyclePlant(PowerSystemResource):
     """
     # <<< combined_cycle_plant
     # @generated
-    def __init__(self, comb_cycle_plant_rating='', thermal_generating_units=[], **kw_args):
+    def __init__(self, comb_cycle_plant_rating=0.0, thermal_generating_units=None, **kw_args):
         """ Initialises a new 'CombinedCyclePlant' instance.
         """
         # The combined cycle plant's active power output rating 
-        self.comb_cycle_plant_rating = ''
+        self.comb_cycle_plant_rating = comb_cycle_plant_rating
         
         self._thermal_generating_units = []
-        self.thermal_generating_units = thermal_generating_units
+        if thermal_generating_units is None:
+            self.thermal_generating_units = []
+        else:
+            self.thermal_generating_units = thermal_generating_units
 
         super(CombinedCyclePlant, self).__init__(**kw_args)
     # >>> combined_cycle_plant
@@ -1746,9 +1807,9 @@ class CombinedCyclePlant(PowerSystemResource):
 
     def set_thermal_generating_units(self, value):
         for x in self._thermal_generating_units:
-            x._combined_cycle_plant = None
+            x.combined_cycle_plant = None
         for y in value:
-            y._combined_cycle_plant = self
+            y.combined_cycle_plant = self
         self._thermal_generating_units = value
             
     thermal_generating_units = property(get_thermal_generating_units, set_thermal_generating_units)
@@ -1756,7 +1817,8 @@ class CombinedCyclePlant(PowerSystemResource):
     def add_thermal_generating_units(self, *thermal_generating_units):
         for obj in thermal_generating_units:
             obj._combined_cycle_plant = self
-            self._thermal_generating_units.append(obj)
+            if obj not in self._thermal_generating_units:
+                self._thermal_generating_units.append(obj)
         
     def remove_thermal_generating_units(self, *thermal_generating_units):
         for obj in thermal_generating_units:
@@ -1795,7 +1857,8 @@ class InflowForecast(RegularIntervalSchedule):
             
         self._reservoir = value
         if self._reservoir is not None:
-            self._reservoir._inflow_forecasts.append(self)
+            if self not in self._reservoir._inflow_forecasts:
+                self._reservoir._inflow_forecasts.append(self)
 
     reservoir = property(get_reservoir, set_reservoir)
     # >>> reservoir
@@ -1842,36 +1905,42 @@ class HydroPowerPlant(PowerSystemResource):
     """
     # <<< hydro_power_plant
     # @generated
-    def __init__(self, gen_rated_p='', plant_rated_head='', discharge_travel_delay='', surge_tank_crest_level='', penstock_type='', hydro_plant_type='major_storage', plant_discharge_capacity=0.0, pump_rated_p='', surge_tank_code='', reservoir=None, hydro_pumps=[], gen_source_pump_discharge_reservoir=None, hydro_generating_units=[], **kw_args):
+    def __init__(self, gen_rated_p=0.0, plant_rated_head=0.0, discharge_travel_delay=0.0, surge_tank_crest_level=0.0, penstock_type='', hydro_plant_type='major_storage', plant_discharge_capacity=0.0, pump_rated_p=0.0, surge_tank_code='', reservoir=None, hydro_pumps=None, gen_source_pump_discharge_reservoir=None, hydro_generating_units=None, **kw_args):
         """ Initialises a new 'HydroPowerPlant' instance.
         """
         # The hydro plant's generating rating active power for rated head conditions 
-        self.gen_rated_p = ''
+        self.gen_rated_p = gen_rated_p
         # The plant's rated gross head 
-        self.plant_rated_head = ''
+        self.plant_rated_head = plant_rated_head
         # Water travel delay from tailbay to next downstream hydro power station 
-        self.discharge_travel_delay = ''
+        self.discharge_travel_delay = discharge_travel_delay
         # The level at which the surge tank spills 
-        self.surge_tank_crest_level = ''
+        self.surge_tank_crest_level = surge_tank_crest_level
         # Type and configuration of hydro plant penstock(s) 
-        self.penstock_type = ''
+        self.penstock_type = penstock_type
         # The type of hydro power plant. Values are: "major_storage", "run_of_river", "minor_storage", "pumped_storage"
-        self.hydro_plant_type = 'major_storage'
+        self.hydro_plant_type = hydro_plant_type
         # Total plant discharge capacity in cubic meters per second 
-        self.plant_discharge_capacity = 0.0
+        self.plant_discharge_capacity = plant_discharge_capacity
         # The hydro plant's pumping rating active power for rated head conditions 
-        self.pump_rated_p = ''
+        self.pump_rated_p = pump_rated_p
         # A code describing the type (or absence) of surge tank that is associated with the hydro power plant 
-        self.surge_tank_code = ''
+        self.surge_tank_code = surge_tank_code
         
         self._reservoir = None
         self.reservoir = reservoir
         self._hydro_pumps = []
-        self.hydro_pumps = hydro_pumps
+        if hydro_pumps is None:
+            self.hydro_pumps = []
+        else:
+            self.hydro_pumps = hydro_pumps
         self._gen_source_pump_discharge_reservoir = None
         self.gen_source_pump_discharge_reservoir = gen_source_pump_discharge_reservoir
         self._hydro_generating_units = []
-        self.hydro_generating_units = hydro_generating_units
+        if hydro_generating_units is None:
+            self.hydro_generating_units = []
+        else:
+            self.hydro_generating_units = hydro_generating_units
 
         super(HydroPowerPlant, self).__init__(**kw_args)
     # >>> hydro_power_plant
@@ -1890,7 +1959,8 @@ class HydroPowerPlant(PowerSystemResource):
             
         self._reservoir = value
         if self._reservoir is not None:
-            self._reservoir._hydro_power_plants.append(self)
+            if self not in self._reservoir._hydro_power_plants:
+                self._reservoir._hydro_power_plants.append(self)
 
     reservoir = property(get_reservoir, set_reservoir)
     # >>> reservoir
@@ -1904,9 +1974,9 @@ class HydroPowerPlant(PowerSystemResource):
 
     def set_hydro_pumps(self, value):
         for x in self._hydro_pumps:
-            x._hydro_power_plant = None
+            x.hydro_power_plant = None
         for y in value:
-            y._hydro_power_plant = self
+            y.hydro_power_plant = self
         self._hydro_pumps = value
             
     hydro_pumps = property(get_hydro_pumps, set_hydro_pumps)
@@ -1914,7 +1984,8 @@ class HydroPowerPlant(PowerSystemResource):
     def add_hydro_pumps(self, *hydro_pumps):
         for obj in hydro_pumps:
             obj._hydro_power_plant = self
-            self._hydro_pumps.append(obj)
+            if obj not in self._hydro_pumps:
+                self._hydro_pumps.append(obj)
         
     def remove_hydro_pumps(self, *hydro_pumps):
         for obj in hydro_pumps:
@@ -1936,7 +2007,8 @@ class HydroPowerPlant(PowerSystemResource):
             
         self._gen_source_pump_discharge_reservoir = value
         if self._gen_source_pump_discharge_reservoir is not None:
-            self._gen_source_pump_discharge_reservoir._upstream_from_hydro_power_plants.append(self)
+            if self not in self._gen_source_pump_discharge_reservoir._upstream_from_hydro_power_plants:
+                self._gen_source_pump_discharge_reservoir._upstream_from_hydro_power_plants.append(self)
 
     gen_source_pump_discharge_reservoir = property(get_gen_source_pump_discharge_reservoir, set_gen_source_pump_discharge_reservoir)
     # >>> gen_source_pump_discharge_reservoir
@@ -1950,9 +2022,9 @@ class HydroPowerPlant(PowerSystemResource):
 
     def set_hydro_generating_units(self, value):
         for x in self._hydro_generating_units:
-            x._hydro_power_plant = None
+            x.hydro_power_plant = None
         for y in value:
-            y._hydro_power_plant = self
+            y.hydro_power_plant = self
         self._hydro_generating_units = value
             
     hydro_generating_units = property(get_hydro_generating_units, set_hydro_generating_units)
@@ -1960,7 +2032,8 @@ class HydroPowerPlant(PowerSystemResource):
     def add_hydro_generating_units(self, *hydro_generating_units):
         for obj in hydro_generating_units:
             obj._hydro_power_plant = self
-            self._hydro_generating_units.append(obj)
+            if obj not in self._hydro_generating_units:
+                self._hydro_generating_units.append(obj)
         
     def remove_hydro_generating_units(self, *hydro_generating_units):
         for obj in hydro_generating_units:
@@ -2010,26 +2083,35 @@ class ThermalGeneratingUnit(GeneratingUnit):
     """
     # <<< thermal_generating_unit
     # @generated
-    def __init__(self, o_mcost='', heat_input_curve=None, emission_curves=[], incremental_heat_rate_curve=None, fuel_allocation_schedules=[], cogeneration_plant=None, startup_model=None, fossil_fuels=[], combined_cycle_plant=None, caesplant=None, heat_rate_curve=None, emmission_accounts=[], shutdown_curve=None, **kw_args):
+    def __init__(self, o_mcost=0.0, heat_input_curve=None, emission_curves=None, incremental_heat_rate_curve=None, fuel_allocation_schedules=None, cogeneration_plant=None, startup_model=None, fossil_fuels=None, combined_cycle_plant=None, caesplant=None, heat_rate_curve=None, emmission_accounts=None, shutdown_curve=None, **kw_args):
         """ Initialises a new 'ThermalGeneratingUnit' instance.
         """
         # Operating and maintenance cost for the thermal unit 
-        self.o_mcost = ''
+        self.o_mcost = o_mcost
         
         self._heat_input_curve = None
         self.heat_input_curve = heat_input_curve
         self._emission_curves = []
-        self.emission_curves = emission_curves
+        if emission_curves is None:
+            self.emission_curves = []
+        else:
+            self.emission_curves = emission_curves
         self._incremental_heat_rate_curve = None
         self.incremental_heat_rate_curve = incremental_heat_rate_curve
         self._fuel_allocation_schedules = []
-        self.fuel_allocation_schedules = fuel_allocation_schedules
+        if fuel_allocation_schedules is None:
+            self.fuel_allocation_schedules = []
+        else:
+            self.fuel_allocation_schedules = fuel_allocation_schedules
         self._cogeneration_plant = None
         self.cogeneration_plant = cogeneration_plant
         self._startup_model = None
         self.startup_model = startup_model
         self._fossil_fuels = []
-        self.fossil_fuels = fossil_fuels
+        if fossil_fuels is None:
+            self.fossil_fuels = []
+        else:
+            self.fossil_fuels = fossil_fuels
         self._combined_cycle_plant = None
         self.combined_cycle_plant = combined_cycle_plant
         self._caesplant = None
@@ -2037,7 +2119,10 @@ class ThermalGeneratingUnit(GeneratingUnit):
         self._heat_rate_curve = None
         self.heat_rate_curve = heat_rate_curve
         self._emmission_accounts = []
-        self.emmission_accounts = emmission_accounts
+        if emmission_accounts is None:
+            self.emmission_accounts = []
+        else:
+            self.emmission_accounts = emmission_accounts
         self._shutdown_curve = None
         self.shutdown_curve = shutdown_curve
 
@@ -2071,9 +2156,9 @@ class ThermalGeneratingUnit(GeneratingUnit):
 
     def set_emission_curves(self, value):
         for x in self._emission_curves:
-            x._thermal_generating_unit = None
+            x.thermal_generating_unit = None
         for y in value:
-            y._thermal_generating_unit = self
+            y.thermal_generating_unit = self
         self._emission_curves = value
             
     emission_curves = property(get_emission_curves, set_emission_curves)
@@ -2081,7 +2166,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
     def add_emission_curves(self, *emission_curves):
         for obj in emission_curves:
             obj._thermal_generating_unit = self
-            self._emission_curves.append(obj)
+            if obj not in self._emission_curves:
+                self._emission_curves.append(obj)
         
     def remove_emission_curves(self, *emission_curves):
         for obj in emission_curves:
@@ -2116,9 +2202,9 @@ class ThermalGeneratingUnit(GeneratingUnit):
 
     def set_fuel_allocation_schedules(self, value):
         for x in self._fuel_allocation_schedules:
-            x._thermal_generating_unit = None
+            x.thermal_generating_unit = None
         for y in value:
-            y._thermal_generating_unit = self
+            y.thermal_generating_unit = self
         self._fuel_allocation_schedules = value
             
     fuel_allocation_schedules = property(get_fuel_allocation_schedules, set_fuel_allocation_schedules)
@@ -2126,7 +2212,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
     def add_fuel_allocation_schedules(self, *fuel_allocation_schedules):
         for obj in fuel_allocation_schedules:
             obj._thermal_generating_unit = self
-            self._fuel_allocation_schedules.append(obj)
+            if obj not in self._fuel_allocation_schedules:
+                self._fuel_allocation_schedules.append(obj)
         
     def remove_fuel_allocation_schedules(self, *fuel_allocation_schedules):
         for obj in fuel_allocation_schedules:
@@ -2148,7 +2235,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
             
         self._cogeneration_plant = value
         if self._cogeneration_plant is not None:
-            self._cogeneration_plant._thermal_generating_units.append(self)
+            if self not in self._cogeneration_plant._thermal_generating_units:
+                self._cogeneration_plant._thermal_generating_units.append(self)
 
     cogeneration_plant = property(get_cogeneration_plant, set_cogeneration_plant)
     # >>> cogeneration_plant
@@ -2180,9 +2268,9 @@ class ThermalGeneratingUnit(GeneratingUnit):
 
     def set_fossil_fuels(self, value):
         for x in self._fossil_fuels:
-            x._thermal_generating_unit = None
+            x.thermal_generating_unit = None
         for y in value:
-            y._thermal_generating_unit = self
+            y.thermal_generating_unit = self
         self._fossil_fuels = value
             
     fossil_fuels = property(get_fossil_fuels, set_fossil_fuels)
@@ -2190,7 +2278,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
     def add_fossil_fuels(self, *fossil_fuels):
         for obj in fossil_fuels:
             obj._thermal_generating_unit = self
-            self._fossil_fuels.append(obj)
+            if obj not in self._fossil_fuels:
+                self._fossil_fuels.append(obj)
         
     def remove_fossil_fuels(self, *fossil_fuels):
         for obj in fossil_fuels:
@@ -2212,7 +2301,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
             
         self._combined_cycle_plant = value
         if self._combined_cycle_plant is not None:
-            self._combined_cycle_plant._thermal_generating_units.append(self)
+            if self not in self._combined_cycle_plant._thermal_generating_units:
+                self._combined_cycle_plant._thermal_generating_units.append(self)
 
     combined_cycle_plant = property(get_combined_cycle_plant, set_combined_cycle_plant)
     # >>> combined_cycle_plant
@@ -2262,9 +2352,9 @@ class ThermalGeneratingUnit(GeneratingUnit):
 
     def set_emmission_accounts(self, value):
         for x in self._emmission_accounts:
-            x._thermal_generating_unit = None
+            x.thermal_generating_unit = None
         for y in value:
-            y._thermal_generating_unit = self
+            y.thermal_generating_unit = self
         self._emmission_accounts = value
             
     emmission_accounts = property(get_emmission_accounts, set_emmission_accounts)
@@ -2272,7 +2362,8 @@ class ThermalGeneratingUnit(GeneratingUnit):
     def add_emmission_accounts(self, *emmission_accounts):
         for obj in emmission_accounts:
             obj._thermal_generating_unit = self
-            self._emmission_accounts.append(obj)
+            if obj not in self._emmission_accounts:
+                self._emmission_accounts.append(obj)
         
     def remove_emmission_accounts(self, *emmission_accounts):
         for obj in emmission_accounts:
@@ -2305,22 +2396,28 @@ class HydroGeneratingUnit(GeneratingUnit):
     """
     # <<< hydro_generating_unit
     # @generated
-    def __init__(self, hydro_unit_water_cost=0.0, energy_conversion_capability='generator', penstock_loss_curve=None, tailbay_loss_curve=[], hydro_power_plant=None, hydro_generating_efficiency_curves=[], **kw_args):
+    def __init__(self, hydro_unit_water_cost=0.0, energy_conversion_capability='generator', penstock_loss_curve=None, tailbay_loss_curve=None, hydro_power_plant=None, hydro_generating_efficiency_curves=None, **kw_args):
         """ Initialises a new 'HydroGeneratingUnit' instance.
         """
         # The equivalent cost of water that drives the hydro turbine, expressed as cost per volume. 
-        self.hydro_unit_water_cost = 0.0
+        self.hydro_unit_water_cost = hydro_unit_water_cost
         # Energy conversion capability for generating. Values are: "generator", "pump_and_generator"
-        self.energy_conversion_capability = 'generator'
+        self.energy_conversion_capability = energy_conversion_capability
         
         self._penstock_loss_curve = None
         self.penstock_loss_curve = penstock_loss_curve
         self._tailbay_loss_curve = []
-        self.tailbay_loss_curve = tailbay_loss_curve
+        if tailbay_loss_curve is None:
+            self.tailbay_loss_curve = []
+        else:
+            self.tailbay_loss_curve = tailbay_loss_curve
         self._hydro_power_plant = None
         self.hydro_power_plant = hydro_power_plant
         self._hydro_generating_efficiency_curves = []
-        self.hydro_generating_efficiency_curves = hydro_generating_efficiency_curves
+        if hydro_generating_efficiency_curves is None:
+            self.hydro_generating_efficiency_curves = []
+        else:
+            self.hydro_generating_efficiency_curves = hydro_generating_efficiency_curves
 
         super(HydroGeneratingUnit, self).__init__(**kw_args)
     # >>> hydro_generating_unit
@@ -2352,9 +2449,9 @@ class HydroGeneratingUnit(GeneratingUnit):
 
     def set_tailbay_loss_curve(self, value):
         for x in self._tailbay_loss_curve:
-            x._hydro_generating_unit = None
+            x.hydro_generating_unit = None
         for y in value:
-            y._hydro_generating_unit = self
+            y.hydro_generating_unit = self
         self._tailbay_loss_curve = value
             
     tailbay_loss_curve = property(get_tailbay_loss_curve, set_tailbay_loss_curve)
@@ -2362,7 +2459,8 @@ class HydroGeneratingUnit(GeneratingUnit):
     def add_tailbay_loss_curve(self, *tailbay_loss_curve):
         for obj in tailbay_loss_curve:
             obj._hydro_generating_unit = self
-            self._tailbay_loss_curve.append(obj)
+            if obj not in self._tailbay_loss_curve:
+                self._tailbay_loss_curve.append(obj)
         
     def remove_tailbay_loss_curve(self, *tailbay_loss_curve):
         for obj in tailbay_loss_curve:
@@ -2384,7 +2482,8 @@ class HydroGeneratingUnit(GeneratingUnit):
             
         self._hydro_power_plant = value
         if self._hydro_power_plant is not None:
-            self._hydro_power_plant._hydro_generating_units.append(self)
+            if self not in self._hydro_power_plant._hydro_generating_units:
+                self._hydro_power_plant._hydro_generating_units.append(self)
 
     hydro_power_plant = property(get_hydro_power_plant, set_hydro_power_plant)
     # >>> hydro_power_plant
@@ -2398,9 +2497,9 @@ class HydroGeneratingUnit(GeneratingUnit):
 
     def set_hydro_generating_efficiency_curves(self, value):
         for x in self._hydro_generating_efficiency_curves:
-            x._hydro_generating_unit = None
+            x.hydro_generating_unit = None
         for y in value:
-            y._hydro_generating_unit = self
+            y.hydro_generating_unit = self
         self._hydro_generating_efficiency_curves = value
             
     hydro_generating_efficiency_curves = property(get_hydro_generating_efficiency_curves, set_hydro_generating_efficiency_curves)
@@ -2408,7 +2507,8 @@ class HydroGeneratingUnit(GeneratingUnit):
     def add_hydro_generating_efficiency_curves(self, *hydro_generating_efficiency_curves):
         for obj in hydro_generating_efficiency_curves:
             obj._hydro_generating_unit = self
-            self._hydro_generating_efficiency_curves.append(obj)
+            if obj not in self._hydro_generating_efficiency_curves:
+                self._hydro_generating_efficiency_curves.append(obj)
         
     def remove_hydro_generating_efficiency_curves(self, *hydro_generating_efficiency_curves):
         for obj in hydro_generating_efficiency_curves:

@@ -41,7 +41,8 @@ class EquivalentEquipment(ConductingEquipment):
             
         self._equivalent_network = value
         if self._equivalent_network is not None:
-            self._equivalent_network._equivalent_equipments.append(self)
+            if self not in self._equivalent_network._equivalent_equipments:
+                self._equivalent_network._equivalent_equipments.append(self)
 
     equivalent_network = property(get_equivalent_network, set_equivalent_network)
     # >>> equivalent_network
@@ -53,12 +54,15 @@ class EquivalentNetwork(ConnectivityNodeContainer):
     """
     # <<< equivalent_network
     # @generated
-    def __init__(self, equivalent_equipments=[], **kw_args):
+    def __init__(self, equivalent_equipments=None, **kw_args):
         """ Initialises a new 'EquivalentNetwork' instance.
         """
         
         self._equivalent_equipments = []
-        self.equivalent_equipments = equivalent_equipments
+        if equivalent_equipments is None:
+            self.equivalent_equipments = []
+        else:
+            self.equivalent_equipments = equivalent_equipments
 
         super(EquivalentNetwork, self).__init__(**kw_args)
     # >>> equivalent_network
@@ -72,9 +76,9 @@ class EquivalentNetwork(ConnectivityNodeContainer):
 
     def set_equivalent_equipments(self, value):
         for x in self._equivalent_equipments:
-            x._equivalent_network = None
+            x.equivalent_network = None
         for y in value:
-            y._equivalent_network = self
+            y.equivalent_network = self
         self._equivalent_equipments = value
             
     equivalent_equipments = property(get_equivalent_equipments, set_equivalent_equipments)
@@ -82,7 +86,8 @@ class EquivalentNetwork(ConnectivityNodeContainer):
     def add_equivalent_equipments(self, *equivalent_equipments):
         for obj in equivalent_equipments:
             obj._equivalent_network = self
-            self._equivalent_equipments.append(obj)
+            if obj not in self._equivalent_equipments:
+                self._equivalent_equipments.append(obj)
         
     def remove_equivalent_equipments(self, *equivalent_equipments):
         for obj in equivalent_equipments:
@@ -97,13 +102,13 @@ class EquivalentShunt(EquivalentEquipment):
     """
     # <<< equivalent_shunt
     # @generated
-    def __init__(self, g='', b='', **kw_args):
+    def __init__(self, g=0.0, b=0.0, **kw_args):
         """ Initialises a new 'EquivalentShunt' instance.
         """
         # Positive sequence shunt conductance. 
-        self.g = ''
+        self.g = g
         # Positive sequence shunt susceptance. 
-        self.b = ''
+        self.b = b
         
 
         super(EquivalentShunt, self).__init__(**kw_args)
@@ -116,13 +121,13 @@ class EquivalentBranch(EquivalentEquipment):
     """
     # <<< equivalent_branch
     # @generated
-    def __init__(self, x='', r='', **kw_args):
+    def __init__(self, x=0.0, r=0.0, **kw_args):
         """ Initialises a new 'EquivalentBranch' instance.
         """
         # Positive sequence series reactance of the reduced branch. 
-        self.x = ''
+        self.x = x
         # Positive sequence series resistance of the reduced branch. 
-        self.r = ''
+        self.r = r
         
 
         super(EquivalentBranch, self).__init__(**kw_args)

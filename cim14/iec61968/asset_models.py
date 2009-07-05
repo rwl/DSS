@@ -16,26 +16,32 @@ class AssetModel(Document):
     """
     # <<< asset_model
     # @generated
-    def __init__(self, model_number='', weight_total='', model_version='', corporate_standard_kind='standard', usage_kind='other', type_asset=None, asset_model_catalogue_items=[], erp_inventory_counts=[], **kw_args):
+    def __init__(self, model_number='', weight_total=0.0, model_version='', corporate_standard_kind='standard', usage_kind='other', type_asset=None, asset_model_catalogue_items=None, erp_inventory_counts=None, **kw_args):
         """ Initialises a new 'AssetModel' instance.
         """
         # Manufacturer's model number. 
-        self.model_number = ''
+        self.model_number = model_number
         # Total manufactured weight of asset. 
-        self.weight_total = ''
+        self.weight_total = weight_total
         # Version number for product model, which indicates vintage of the product. 
-        self.model_version = ''
+        self.model_version = model_version
         # Kind of coporate standard for this asset model. Values are: "standard", "other", "experimental", "under_evaluation"
-        self.corporate_standard_kind = 'standard'
+        self.corporate_standard_kind = corporate_standard_kind
         # Intended usage for this asset model. Values are: "other", "substation", "unknown", "customer_substation", "distribution_overhead", "distribution_underground", "streetlight", "transmission"
-        self.usage_kind = 'other'
+        self.usage_kind = usage_kind
         
         self._type_asset = None
         self.type_asset = type_asset
         self._asset_model_catalogue_items = []
-        self.asset_model_catalogue_items = asset_model_catalogue_items
+        if asset_model_catalogue_items is None:
+            self.asset_model_catalogue_items = []
+        else:
+            self.asset_model_catalogue_items = asset_model_catalogue_items
         self._erp_inventory_counts = []
-        self.erp_inventory_counts = erp_inventory_counts
+        if erp_inventory_counts is None:
+            self.erp_inventory_counts = []
+        else:
+            self.erp_inventory_counts = erp_inventory_counts
 
         super(AssetModel, self).__init__(**kw_args)
     # >>> asset_model
@@ -54,7 +60,8 @@ class AssetModel(Document):
             
         self._type_asset = value
         if self._type_asset is not None:
-            self._type_asset._asset_models.append(self)
+            if self not in self._type_asset._asset_models:
+                self._type_asset._asset_models.append(self)
 
     type_asset = property(get_type_asset, set_type_asset)
     # >>> type_asset
@@ -68,9 +75,9 @@ class AssetModel(Document):
 
     def set_asset_model_catalogue_items(self, value):
         for x in self._asset_model_catalogue_items:
-            x._asset_model = None
+            x.asset_model = None
         for y in value:
-            y._asset_model = self
+            y.asset_model = self
         self._asset_model_catalogue_items = value
             
     asset_model_catalogue_items = property(get_asset_model_catalogue_items, set_asset_model_catalogue_items)
@@ -78,7 +85,8 @@ class AssetModel(Document):
     def add_asset_model_catalogue_items(self, *asset_model_catalogue_items):
         for obj in asset_model_catalogue_items:
             obj._asset_model = self
-            self._asset_model_catalogue_items.append(obj)
+            if obj not in self._asset_model_catalogue_items:
+                self._asset_model_catalogue_items.append(obj)
         
     def remove_asset_model_catalogue_items(self, *asset_model_catalogue_items):
         for obj in asset_model_catalogue_items:
@@ -95,9 +103,9 @@ class AssetModel(Document):
 
     def set_erp_inventory_counts(self, value):
         for x in self._erp_inventory_counts:
-            x._asset_model = None
+            x.asset_model = None
         for y in value:
-            y._asset_model = self
+            y.asset_model = self
         self._erp_inventory_counts = value
             
     erp_inventory_counts = property(get_erp_inventory_counts, set_erp_inventory_counts)
@@ -105,7 +113,8 @@ class AssetModel(Document):
     def add_erp_inventory_counts(self, *erp_inventory_counts):
         for obj in erp_inventory_counts:
             obj._asset_model = self
-            self._erp_inventory_counts.append(obj)
+            if obj not in self._erp_inventory_counts:
+                self._erp_inventory_counts.append(obj)
         
     def remove_erp_inventory_counts(self, *erp_inventory_counts):
         for obj in erp_inventory_counts:
@@ -120,12 +129,15 @@ class EndDeviceModel(AssetModel):
     """
     # <<< end_device_model
     # @generated
-    def __init__(self, end_device_assets=[], end_device_type_asset=None, **kw_args):
+    def __init__(self, end_device_assets=None, end_device_type_asset=None, **kw_args):
         """ Initialises a new 'EndDeviceModel' instance.
         """
         
         self._end_device_assets = []
-        self.end_device_assets = end_device_assets
+        if end_device_assets is None:
+            self.end_device_assets = []
+        else:
+            self.end_device_assets = end_device_assets
         self._end_device_type_asset = None
         self.end_device_type_asset = end_device_type_asset
 
@@ -141,9 +153,9 @@ class EndDeviceModel(AssetModel):
 
     def set_end_device_assets(self, value):
         for x in self._end_device_assets:
-            x._end_device_model = None
+            x.end_device_model = None
         for y in value:
-            y._end_device_model = self
+            y.end_device_model = self
         self._end_device_assets = value
             
     end_device_assets = property(get_end_device_assets, set_end_device_assets)
@@ -151,7 +163,8 @@ class EndDeviceModel(AssetModel):
     def add_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
             obj._end_device_model = self
-            self._end_device_assets.append(obj)
+            if obj not in self._end_device_assets:
+                self._end_device_assets.append(obj)
         
     def remove_end_device_assets(self, *end_device_assets):
         for obj in end_device_assets:
@@ -173,7 +186,8 @@ class EndDeviceModel(AssetModel):
             
         self._end_device_type_asset = value
         if self._end_device_type_asset is not None:
-            self._end_device_type_asset._end_device_models.append(self)
+            if self not in self._end_device_type_asset._end_device_models:
+                self._end_device_type_asset._end_device_models.append(self)
 
     end_device_type_asset = property(get_end_device_type_asset, set_end_device_type_asset)
     # >>> end_device_type_asset

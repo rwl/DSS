@@ -17,26 +17,38 @@ class ControlArea(PowerSystemResource):
     """
     # <<< control_area
     # @generated
-    def __init__(self, net_interchange='', type='forecast', p_tolerance='', control_area_generating_unit=[], tie_flow=[], bus_name_marker=[], energy_area=None, topological_node=[], **kw_args):
+    def __init__(self, net_interchange=0.0, type='forecast', p_tolerance=0.0, control_area_generating_unit=None, tie_flow=None, bus_name_marker=None, energy_area=None, topological_node=None, **kw_args):
         """ Initialises a new 'ControlArea' instance.
         """
         # The specified positive net interchange into the control area. 
-        self.net_interchange = ''
+        self.net_interchange = net_interchange
         # The type of control area defintion used to determine if this is used for automatic generation control, for planning interchange control, or other purposes. Values are: "forecast", "interchange", "agc"
-        self.type = 'forecast'
+        self.type = type
         # Active power net interchange tolerance 
-        self.p_tolerance = ''
+        self.p_tolerance = p_tolerance
         
         self._control_area_generating_unit = []
-        self.control_area_generating_unit = control_area_generating_unit
+        if control_area_generating_unit is None:
+            self.control_area_generating_unit = []
+        else:
+            self.control_area_generating_unit = control_area_generating_unit
         self._tie_flow = []
-        self.tie_flow = tie_flow
+        if tie_flow is None:
+            self.tie_flow = []
+        else:
+            self.tie_flow = tie_flow
         self._bus_name_marker = []
-        self.bus_name_marker = bus_name_marker
+        if bus_name_marker is None:
+            self.bus_name_marker = []
+        else:
+            self.bus_name_marker = bus_name_marker
         self._energy_area = None
         self.energy_area = energy_area
         self._topological_node = []
-        self.topological_node = topological_node
+        if topological_node is None:
+            self.topological_node = []
+        else:
+            self.topological_node = topological_node
 
         super(ControlArea, self).__init__(**kw_args)
     # >>> control_area
@@ -50,9 +62,9 @@ class ControlArea(PowerSystemResource):
 
     def set_control_area_generating_unit(self, value):
         for x in self._control_area_generating_unit:
-            x._control_area = None
+            x.control_area = None
         for y in value:
-            y._control_area = self
+            y.control_area = self
         self._control_area_generating_unit = value
             
     control_area_generating_unit = property(get_control_area_generating_unit, set_control_area_generating_unit)
@@ -60,7 +72,8 @@ class ControlArea(PowerSystemResource):
     def add_control_area_generating_unit(self, *control_area_generating_unit):
         for obj in control_area_generating_unit:
             obj._control_area = self
-            self._control_area_generating_unit.append(obj)
+            if obj not in self._control_area_generating_unit:
+                self._control_area_generating_unit.append(obj)
         
     def remove_control_area_generating_unit(self, *control_area_generating_unit):
         for obj in control_area_generating_unit:
@@ -77,9 +90,9 @@ class ControlArea(PowerSystemResource):
 
     def set_tie_flow(self, value):
         for x in self._tie_flow:
-            x._control_area = None
+            x.control_area = None
         for y in value:
-            y._control_area = self
+            y.control_area = self
         self._tie_flow = value
             
     tie_flow = property(get_tie_flow, set_tie_flow)
@@ -87,7 +100,8 @@ class ControlArea(PowerSystemResource):
     def add_tie_flow(self, *tie_flow):
         for obj in tie_flow:
             obj._control_area = self
-            self._tie_flow.append(obj)
+            if obj not in self._tie_flow:
+                self._tie_flow.append(obj)
         
     def remove_tie_flow(self, *tie_flow):
         for obj in tie_flow:
@@ -104,9 +118,9 @@ class ControlArea(PowerSystemResource):
 
     def set_bus_name_marker(self, value):
         for x in self._bus_name_marker:
-            x._control_area = None
+            x.control_area = None
         for y in value:
-            y._control_area = self
+            y.control_area = self
         self._bus_name_marker = value
             
     bus_name_marker = property(get_bus_name_marker, set_bus_name_marker)
@@ -114,7 +128,8 @@ class ControlArea(PowerSystemResource):
     def add_bus_name_marker(self, *bus_name_marker):
         for obj in bus_name_marker:
             obj._control_area = self
-            self._bus_name_marker.append(obj)
+            if obj not in self._bus_name_marker:
+                self._bus_name_marker.append(obj)
         
     def remove_bus_name_marker(self, *bus_name_marker):
         for obj in bus_name_marker:
@@ -149,9 +164,9 @@ class ControlArea(PowerSystemResource):
 
     def set_topological_node(self, value):
         for x in self._topological_node:
-            x._control_area = None
+            x.control_area = None
         for y in value:
-            y._control_area = self
+            y.control_area = self
         self._topological_node = value
             
     topological_node = property(get_topological_node, set_topological_node)
@@ -159,7 +174,8 @@ class ControlArea(PowerSystemResource):
     def add_topological_node(self, *topological_node):
         for obj in topological_node:
             obj._control_area = self
-            self._topological_node.append(obj)
+            if obj not in self._topological_node:
+                self._topological_node.append(obj)
         
     def remove_topological_node(self, *topological_node):
         for obj in topological_node:
@@ -178,7 +194,7 @@ class AltTieMeas(Element):
         """ Initialises a new 'AltTieMeas' instance.
         """
         # Priority of a measurement usage.   Lower numbers have first priority. 
-        self.priority = 0
+        self.priority = priority
         
         self._tie_flow = None
         self.tie_flow = tie_flow
@@ -202,7 +218,8 @@ class AltTieMeas(Element):
             
         self._tie_flow = value
         if self._tie_flow is not None:
-            self._tie_flow._alt_tie_meas.append(self)
+            if self not in self._tie_flow._alt_tie_meas:
+                self._tie_flow._alt_tie_meas.append(self)
 
     tie_flow = property(get_tie_flow, set_tie_flow)
     # >>> tie_flow
@@ -221,7 +238,8 @@ class AltTieMeas(Element):
             
         self._analog_value = value
         if self._analog_value is not None:
-            self._analog_value._alt_tie_meas.append(self)
+            if self not in self._analog_value._alt_tie_meas:
+                self._analog_value._alt_tie_meas.append(self)
 
     analog_value = property(get_analog_value, set_analog_value)
     # >>> analog_value
@@ -233,14 +251,17 @@ class TieFlow(Element):
     """
     # <<< tie_flow
     # @generated
-    def __init__(self, positive_flow_in=False, alt_tie_meas=[], control_area=None, terminal=None, **kw_args):
+    def __init__(self, positive_flow_in=False, alt_tie_meas=None, control_area=None, terminal=None, **kw_args):
         """ Initialises a new 'TieFlow' instance.
         """
         # The flow is positive into the terminal.  A flow is positive if it is an import into the control area. 
-        self.positive_flow_in = False
+        self.positive_flow_in = positive_flow_in
         
         self._alt_tie_meas = []
-        self.alt_tie_meas = alt_tie_meas
+        if alt_tie_meas is None:
+            self.alt_tie_meas = []
+        else:
+            self.alt_tie_meas = alt_tie_meas
         self._control_area = None
         self.control_area = control_area
         self._terminal = None
@@ -258,9 +279,9 @@ class TieFlow(Element):
 
     def set_alt_tie_meas(self, value):
         for x in self._alt_tie_meas:
-            x._tie_flow = None
+            x.tie_flow = None
         for y in value:
-            y._tie_flow = self
+            y.tie_flow = self
         self._alt_tie_meas = value
             
     alt_tie_meas = property(get_alt_tie_meas, set_alt_tie_meas)
@@ -268,7 +289,8 @@ class TieFlow(Element):
     def add_alt_tie_meas(self, *alt_tie_meas):
         for obj in alt_tie_meas:
             obj._tie_flow = self
-            self._alt_tie_meas.append(obj)
+            if obj not in self._alt_tie_meas:
+                self._alt_tie_meas.append(obj)
         
     def remove_alt_tie_meas(self, *alt_tie_meas):
         for obj in alt_tie_meas:
@@ -290,7 +312,8 @@ class TieFlow(Element):
             
         self._control_area = value
         if self._control_area is not None:
-            self._control_area._tie_flow.append(self)
+            if self not in self._control_area._tie_flow:
+                self._control_area._tie_flow.append(self)
 
     control_area = property(get_control_area, set_control_area)
     # >>> control_area
@@ -309,7 +332,8 @@ class TieFlow(Element):
             
         self._terminal = value
         if self._terminal is not None:
-            self._terminal._tie_flow.append(self)
+            if self not in self._terminal._tie_flow:
+                self._terminal._tie_flow.append(self)
 
     terminal = property(get_terminal, set_terminal)
     # >>> terminal
@@ -325,7 +349,7 @@ class AltGeneratingUnitMeas(Element):
         """ Initialises a new 'AltGeneratingUnitMeas' instance.
         """
         # Priority of a measurement usage.   Lower numbers have first priority. 
-        self.priority = 0
+        self.priority = priority
         
         self._analog_value = None
         self.analog_value = analog_value
@@ -349,7 +373,8 @@ class AltGeneratingUnitMeas(Element):
             
         self._analog_value = value
         if self._analog_value is not None:
-            self._analog_value._alt_generating_unit.append(self)
+            if self not in self._analog_value._alt_generating_unit:
+                self._analog_value._alt_generating_unit.append(self)
 
     analog_value = property(get_analog_value, set_analog_value)
     # >>> analog_value
@@ -368,7 +393,8 @@ class AltGeneratingUnitMeas(Element):
             
         self._control_area_generating_unit = value
         if self._control_area_generating_unit is not None:
-            self._control_area_generating_unit._alt_generating_unit_meas.append(self)
+            if self not in self._control_area_generating_unit._alt_generating_unit_meas:
+                self._control_area_generating_unit._alt_generating_unit_meas.append(self)
 
     control_area_generating_unit = property(get_control_area_generating_unit, set_control_area_generating_unit)
     # >>> control_area_generating_unit
@@ -380,12 +406,15 @@ class ControlAreaGeneratingUnit(Element):
     """
     # <<< control_area_generating_unit
     # @generated
-    def __init__(self, alt_generating_unit_meas=[], control_area=None, generating_unit=None, **kw_args):
+    def __init__(self, alt_generating_unit_meas=None, control_area=None, generating_unit=None, **kw_args):
         """ Initialises a new 'ControlAreaGeneratingUnit' instance.
         """
         
         self._alt_generating_unit_meas = []
-        self.alt_generating_unit_meas = alt_generating_unit_meas
+        if alt_generating_unit_meas is None:
+            self.alt_generating_unit_meas = []
+        else:
+            self.alt_generating_unit_meas = alt_generating_unit_meas
         self._control_area = None
         self.control_area = control_area
         self._generating_unit = None
@@ -403,9 +432,9 @@ class ControlAreaGeneratingUnit(Element):
 
     def set_alt_generating_unit_meas(self, value):
         for x in self._alt_generating_unit_meas:
-            x._control_area_generating_unit = None
+            x.control_area_generating_unit = None
         for y in value:
-            y._control_area_generating_unit = self
+            y.control_area_generating_unit = self
         self._alt_generating_unit_meas = value
             
     alt_generating_unit_meas = property(get_alt_generating_unit_meas, set_alt_generating_unit_meas)
@@ -413,7 +442,8 @@ class ControlAreaGeneratingUnit(Element):
     def add_alt_generating_unit_meas(self, *alt_generating_unit_meas):
         for obj in alt_generating_unit_meas:
             obj._control_area_generating_unit = self
-            self._alt_generating_unit_meas.append(obj)
+            if obj not in self._alt_generating_unit_meas:
+                self._alt_generating_unit_meas.append(obj)
         
     def remove_alt_generating_unit_meas(self, *alt_generating_unit_meas):
         for obj in alt_generating_unit_meas:
@@ -435,7 +465,8 @@ class ControlAreaGeneratingUnit(Element):
             
         self._control_area = value
         if self._control_area is not None:
-            self._control_area._control_area_generating_unit.append(self)
+            if self not in self._control_area._control_area_generating_unit:
+                self._control_area._control_area_generating_unit.append(self)
 
     control_area = property(get_control_area, set_control_area)
     # >>> control_area
@@ -454,7 +485,8 @@ class ControlAreaGeneratingUnit(Element):
             
         self._generating_unit = value
         if self._generating_unit is not None:
-            self._generating_unit._control_area_generating_unit.append(self)
+            if self not in self._generating_unit._control_area_generating_unit:
+                self._generating_unit._control_area_generating_unit.append(self)
 
     generating_unit = property(get_generating_unit, set_generating_unit)
     # >>> generating_unit

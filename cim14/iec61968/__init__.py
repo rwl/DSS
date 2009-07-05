@@ -20,9 +20,9 @@ class IEC61968CIMVersion(Element):
         """ Initialises a new 'IEC61968CIMVersion' instance.
         """
         # Form is IEC61968CIMXXvYY where XX is the major CIM package version and the YY is the minor version.  For example IEC61968CIM10v17. 
-        self.version = ''
+        self.version = version
         # Form is YYYY-MM-DD for example for January 5, 2009 it is 2009-01-05. 
-        self.date = ''
+        self.date = date
         
 
         super(IEC61968CIMVersion, self).__init__(**kw_args)

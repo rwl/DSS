@@ -21,24 +21,30 @@ class Request(Document):
     """
     # <<< request
     # @generated
-    def __init__(self, corporate_code='', action_needed='', priority='', erp_quote_line_item=None, organisation=None, works=[], projects=[], **kw_args):
+    def __init__(self, corporate_code='', action_needed='', priority='', erp_quote_line_item=None, organisation=None, works=None, projects=None, **kw_args):
         """ Initialises a new 'Request' instance.
         """
         # The corporate code for this request. 
-        self.corporate_code = ''
+        self.corporate_code = corporate_code
         # Based on the current 'Status.status', the action that is needed before this Request can transition to the desired state, such as initiating the requested Work. For example, missing or additionally needed information may be required from the requesting organisation before a work Design may be created. 
-        self.action_needed = ''
+        self.action_needed = action_needed
         # The priority of this request. 
-        self.priority = ''
+        self.priority = priority
         
         self._erp_quote_line_item = None
         self.erp_quote_line_item = erp_quote_line_item
         self._organisation = None
         self.organisation = organisation
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
         self._projects = []
-        self.projects = projects
+        if projects is None:
+            self.projects = []
+        else:
+            self.projects = projects
 
         super(Request, self).__init__(**kw_args)
     # >>> request
@@ -75,7 +81,8 @@ class Request(Document):
             
         self._organisation = value
         if self._organisation is not None:
-            self._organisation._requests.append(self)
+            if self not in self._organisation._requests:
+                self._organisation._requests.append(self)
 
     organisation = property(get_organisation, set_organisation)
     # >>> organisation
@@ -89,9 +96,9 @@ class Request(Document):
 
     def set_works(self, value):
         for x in self._works:
-            x._request = None
+            x.request = None
         for y in value:
-            y._request = self
+            y.request = self
         self._works = value
             
     works = property(get_works, set_works)
@@ -99,7 +106,8 @@ class Request(Document):
     def add_works(self, *works):
         for obj in works:
             obj._request = self
-            self._works.append(obj)
+            if obj not in self._works:
+                self._works.append(obj)
         
     def remove_works(self, *works):
         for obj in works:
@@ -145,29 +153,41 @@ class CostType(IdentifiedObject):
     """
     # <<< cost_type
     # @generated
-    def __init__(self, amount_assignment_flag=False, code='', level='', stage='', status=None, parent_cost_type=None, child_cost_types=[], compatible_units=[], erp_journal_entries=[], work_cost_details=[], **kw_args):
+    def __init__(self, amount_assignment_flag=False, code='', level='', stage='', status=None, parent_cost_type=None, child_cost_types=None, compatible_units=None, erp_journal_entries=None, work_cost_details=None, **kw_args):
         """ Initialises a new 'CostType' instance.
         """
         # True if an amount can be assigned to the resource element (e.g., building in service, transmission plant, software development capital); false otherwise (e.g., internal labor, material components). 
-        self.amount_assignment_flag = False
+        self.amount_assignment_flag = amount_assignment_flag
         # A codified representation of the resource element. 
-        self.code = ''
+        self.code = code
         # The level of the resource element in the hierarchy of resource elements (recursive relationship). 
-        self.level = ''
+        self.level = level
         # The stage for which this costType applies: estimated design, estimated actual or actual actual. 
-        self.stage = ''
+        self.stage = stage
         
         self.status = status
         self._parent_cost_type = None
         self.parent_cost_type = parent_cost_type
         self._child_cost_types = []
-        self.child_cost_types = child_cost_types
+        if child_cost_types is None:
+            self.child_cost_types = []
+        else:
+            self.child_cost_types = child_cost_types
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._erp_journal_entries = []
-        self.erp_journal_entries = erp_journal_entries
+        if erp_journal_entries is None:
+            self.erp_journal_entries = []
+        else:
+            self.erp_journal_entries = erp_journal_entries
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
 
         super(CostType, self).__init__(**kw_args)
     # >>> cost_type
@@ -191,7 +211,8 @@ class CostType(IdentifiedObject):
             
         self._parent_cost_type = value
         if self._parent_cost_type is not None:
-            self._parent_cost_type._child_cost_types.append(self)
+            if self not in self._parent_cost_type._child_cost_types:
+                self._parent_cost_type._child_cost_types.append(self)
 
     parent_cost_type = property(get_parent_cost_type, set_parent_cost_type)
     # >>> parent_cost_type
@@ -205,9 +226,9 @@ class CostType(IdentifiedObject):
 
     def set_child_cost_types(self, value):
         for x in self._child_cost_types:
-            x._parent_cost_type = None
+            x.parent_cost_type = None
         for y in value:
-            y._parent_cost_type = self
+            y.parent_cost_type = self
         self._child_cost_types = value
             
     child_cost_types = property(get_child_cost_types, set_child_cost_types)
@@ -215,7 +236,8 @@ class CostType(IdentifiedObject):
     def add_child_cost_types(self, *child_cost_types):
         for obj in child_cost_types:
             obj._parent_cost_type = self
-            self._child_cost_types.append(obj)
+            if obj not in self._child_cost_types:
+                self._child_cost_types.append(obj)
         
     def remove_child_cost_types(self, *child_cost_types):
         for obj in child_cost_types:
@@ -232,9 +254,9 @@ class CostType(IdentifiedObject):
 
     def set_compatible_units(self, value):
         for x in self._compatible_units:
-            x._cost_type = None
+            x.cost_type = None
         for y in value:
-            y._cost_type = self
+            y.cost_type = self
         self._compatible_units = value
             
     compatible_units = property(get_compatible_units, set_compatible_units)
@@ -242,7 +264,8 @@ class CostType(IdentifiedObject):
     def add_compatible_units(self, *compatible_units):
         for obj in compatible_units:
             obj._cost_type = self
-            self._compatible_units.append(obj)
+            if obj not in self._compatible_units:
+                self._compatible_units.append(obj)
         
     def remove_compatible_units(self, *compatible_units):
         for obj in compatible_units:
@@ -290,9 +313,9 @@ class CostType(IdentifiedObject):
 
     def set_work_cost_details(self, value):
         for x in self._work_cost_details:
-            x._cost_type = None
+            x.cost_type = None
         for y in value:
-            y._cost_type = self
+            y.cost_type = self
         self._work_cost_details = value
             
     work_cost_details = property(get_work_cost_details, set_work_cost_details)
@@ -300,7 +323,8 @@ class CostType(IdentifiedObject):
     def add_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
             obj._cost_type = self
-            self._work_cost_details.append(obj)
+            if obj not in self._work_cost_details:
+                self._work_cost_details.append(obj)
         
     def remove_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
@@ -349,7 +373,8 @@ class Usage(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._usages.append(self)
+            if self not in self._work_task._usages:
+                self._work_task._usages.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -368,7 +393,8 @@ class Usage(IdentifiedObject):
             
         self._work_equipment_asset = value
         if self._work_equipment_asset is not None:
-            self._work_equipment_asset._usages.append(self)
+            if self not in self._work_equipment_asset._usages:
+                self._work_equipment_asset._usages.append(self)
 
     work_equipment_asset = property(get_work_equipment_asset, set_work_equipment_asset)
     # >>> work_equipment_asset
@@ -387,7 +413,8 @@ class Usage(IdentifiedObject):
             
         self._material_item = value
         if self._material_item is not None:
-            self._material_item._usages.append(self)
+            if self not in self._material_item._usages:
+                self._material_item._usages.append(self)
 
     material_item = property(get_material_item, set_material_item)
     # >>> material_item
@@ -399,20 +426,32 @@ class QualificationRequirement(IdentifiedObject):
     """
     # <<< qualification_requirement
     # @generated
-    def __init__(self, qualification_id='', culabor_items=[], skills=[], specifications=[], work_tasks=[], **kw_args):
+    def __init__(self, qualification_id='', culabor_items=None, skills=None, specifications=None, work_tasks=None, **kw_args):
         """ Initialises a new 'QualificationRequirement' instance.
         """
         # Qualification identifier. 
-        self.qualification_id = ''
+        self.qualification_id = qualification_id
         
         self._culabor_items = []
-        self.culabor_items = culabor_items
+        if culabor_items is None:
+            self.culabor_items = []
+        else:
+            self.culabor_items = culabor_items
         self._skills = []
-        self.skills = skills
+        if skills is None:
+            self.skills = []
+        else:
+            self.skills = skills
         self._specifications = []
-        self.specifications = specifications
+        if specifications is None:
+            self.specifications = []
+        else:
+            self.specifications = specifications
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
 
         super(QualificationRequirement, self).__init__(**kw_args)
     # >>> qualification_requirement
@@ -552,33 +591,33 @@ class DiagnosisDataSet(ProcedureDataSet):
         """ Initialises a new 'DiagnosisDataSet' instance.
         """
         # Effect of problem. 
-        self.effect = ''
+        self.effect = effect
         # Root origin of problem determined during diagnosis. 
-        self.root_origin = ''
+        self.root_origin = root_origin
         # Code for diagnosed probem category. 
-        self.final_code = ''
+        self.final_code = final_code
         # Date and time preliminary assessment of problem was performed. 
-        self.preliminary_date = ''
+        self.preliminary_date = preliminary_date
         # Remarks pertaining to root cause findings during problem diagnosis. 
-        self.root_remark = ''
+        self.root_remark = root_remark
         # Phase(s) diagnosed. Values are: "abn", "bc", "acn", "bn", "ac", "abc", "an", "ab", "c", "b", "abcn", "a", "cn", "n", "bcn"
-        self.phase_code = 'abn'
+        self.phase_code = phase_code
         # Cause of problem determined during diagnosis. 
-        self.final_cause = ''
+        self.final_cause = final_cause
         # Root cause of problem determined during diagnosis. 
-        self.root_cause = ''
+        self.root_cause = root_cause
         # Remarks pertaining to preliminary assessment of problem. 
-        self.preliminary_remark = ''
+        self.preliminary_remark = preliminary_remark
         # Date and time diagnosis was completed. 
-        self.final_date = ''
+        self.final_date = final_date
         # Origin of problem determined during diagnosis. 
-        self.final_origin = ''
+        self.final_origin = final_origin
         # Failuer mode, for example: Failure to Insulate; Failure to conduct; Failure to contain oil; Failure to provide ground plane; Other. 
-        self.failure_mode = ''
+        self.failure_mode = failure_mode
         # Remarks pertaining to findings during problem diagnosis. 
-        self.final_remark = ''
+        self.final_remark = final_remark
         # Code for problem category determined during preliminary assessment. 
-        self.preliminary_code = ''
+        self.preliminary_code = preliminary_code
         
 
         super(DiagnosisDataSet, self).__init__(**kw_args)
@@ -591,26 +630,38 @@ class TypeMaterial(Document):
     """
     # <<< type_material
     # @generated
-    def __init__(self, cost_type='', quantity='', est_unit_cost='', stock_item=False, erp_issue_inventories=[], erp_req_line_items=[], material_items=[], cumaterial_items=[], **kw_args):
+    def __init__(self, cost_type='', quantity='', est_unit_cost=0.0, stock_item=False, erp_issue_inventories=None, erp_req_line_items=None, material_items=None, cumaterial_items=None, **kw_args):
         """ Initialises a new 'TypeMaterial' instance.
         """
         # The category of cost to which this Material Item belongs. 
-        self.cost_type = ''
+        self.cost_type = cost_type
         # The value, unit of measure, and multiplier for the quantity. 
-        self.quantity = ''
+        self.quantity = quantity
         # The estimated unit cost of this type of material, either for a unit cost or cost per unit length. Cost is for material or asset only and does not include labor to install/construct or configure it. 
-        self.est_unit_cost = ''
+        self.est_unit_cost = est_unit_cost
         # True if item is a stock item (default). 
-        self.stock_item = False
+        self.stock_item = stock_item
         
         self._erp_issue_inventories = []
-        self.erp_issue_inventories = erp_issue_inventories
+        if erp_issue_inventories is None:
+            self.erp_issue_inventories = []
+        else:
+            self.erp_issue_inventories = erp_issue_inventories
         self._erp_req_line_items = []
-        self.erp_req_line_items = erp_req_line_items
+        if erp_req_line_items is None:
+            self.erp_req_line_items = []
+        else:
+            self.erp_req_line_items = erp_req_line_items
         self._material_items = []
-        self.material_items = material_items
+        if material_items is None:
+            self.material_items = []
+        else:
+            self.material_items = material_items
         self._cumaterial_items = []
-        self.cumaterial_items = cumaterial_items
+        if cumaterial_items is None:
+            self.cumaterial_items = []
+        else:
+            self.cumaterial_items = cumaterial_items
 
         super(TypeMaterial, self).__init__(**kw_args)
     # >>> type_material
@@ -624,9 +675,9 @@ class TypeMaterial(Document):
 
     def set_erp_issue_inventories(self, value):
         for x in self._erp_issue_inventories:
-            x._type_material = None
+            x.type_material = None
         for y in value:
-            y._type_material = self
+            y.type_material = self
         self._erp_issue_inventories = value
             
     erp_issue_inventories = property(get_erp_issue_inventories, set_erp_issue_inventories)
@@ -634,7 +685,8 @@ class TypeMaterial(Document):
     def add_erp_issue_inventories(self, *erp_issue_inventories):
         for obj in erp_issue_inventories:
             obj._type_material = self
-            self._erp_issue_inventories.append(obj)
+            if obj not in self._erp_issue_inventories:
+                self._erp_issue_inventories.append(obj)
         
     def remove_erp_issue_inventories(self, *erp_issue_inventories):
         for obj in erp_issue_inventories:
@@ -651,9 +703,9 @@ class TypeMaterial(Document):
 
     def set_erp_req_line_items(self, value):
         for x in self._erp_req_line_items:
-            x._type_material = None
+            x.type_material = None
         for y in value:
-            y._type_material = self
+            y.type_material = self
         self._erp_req_line_items = value
             
     erp_req_line_items = property(get_erp_req_line_items, set_erp_req_line_items)
@@ -661,7 +713,8 @@ class TypeMaterial(Document):
     def add_erp_req_line_items(self, *erp_req_line_items):
         for obj in erp_req_line_items:
             obj._type_material = self
-            self._erp_req_line_items.append(obj)
+            if obj not in self._erp_req_line_items:
+                self._erp_req_line_items.append(obj)
         
     def remove_erp_req_line_items(self, *erp_req_line_items):
         for obj in erp_req_line_items:
@@ -678,9 +731,9 @@ class TypeMaterial(Document):
 
     def set_material_items(self, value):
         for x in self._material_items:
-            x._type_material = None
+            x.type_material = None
         for y in value:
-            y._type_material = self
+            y.type_material = self
         self._material_items = value
             
     material_items = property(get_material_items, set_material_items)
@@ -688,7 +741,8 @@ class TypeMaterial(Document):
     def add_material_items(self, *material_items):
         for obj in material_items:
             obj._type_material = self
-            self._material_items.append(obj)
+            if obj not in self._material_items:
+                self._material_items.append(obj)
         
     def remove_material_items(self, *material_items):
         for obj in material_items:
@@ -705,9 +759,9 @@ class TypeMaterial(Document):
 
     def set_cumaterial_items(self, value):
         for x in self._cumaterial_items:
-            x._type_material = None
+            x.type_material = None
         for y in value:
-            y._type_material = self
+            y.type_material = self
         self._cumaterial_items = value
             
     cumaterial_items = property(get_cumaterial_items, set_cumaterial_items)
@@ -715,7 +769,8 @@ class TypeMaterial(Document):
     def add_cumaterial_items(self, *cumaterial_items):
         for obj in cumaterial_items:
             obj._type_material = self
-            self._cumaterial_items.append(obj)
+            if obj not in self._cumaterial_items:
+                self._cumaterial_items.append(obj)
         
     def remove_cumaterial_items(self, *cumaterial_items):
         for obj in cumaterial_items:
@@ -730,15 +785,18 @@ class CULaborCode(IdentifiedObject):
     """
     # <<< culabor_code
     # @generated
-    def __init__(self, code='', status=None, culabor_items=[], **kw_args):
+    def __init__(self, code='', status=None, culabor_items=None, **kw_args):
         """ Initialises a new 'CULaborCode' instance.
         """
         # Labor code. 
-        self.code = ''
+        self.code = code
         
         self.status = status
         self._culabor_items = []
-        self.culabor_items = culabor_items
+        if culabor_items is None:
+            self.culabor_items = []
+        else:
+            self.culabor_items = culabor_items
 
         super(CULaborCode, self).__init__(**kw_args)
     # >>> culabor_code
@@ -757,9 +815,9 @@ class CULaborCode(IdentifiedObject):
 
     def set_culabor_items(self, value):
         for x in self._culabor_items:
-            x._culabor_code = None
+            x.culabor_code = None
         for y in value:
-            y._culabor_code = self
+            y.culabor_code = self
         self._culabor_items = value
             
     culabor_items = property(get_culabor_items, set_culabor_items)
@@ -767,7 +825,8 @@ class CULaborCode(IdentifiedObject):
     def add_culabor_items(self, *culabor_items):
         for obj in culabor_items:
             obj._culabor_code = self
-            self._culabor_items.append(obj)
+            if obj not in self._culabor_items:
+                self._culabor_items.append(obj)
         
     def remove_culabor_items(self, *culabor_items):
         for obj in culabor_items:
@@ -782,13 +841,13 @@ class EquipmentItem(IdentifiedObject):
     """
     # <<< equipment_item
     # @generated
-    def __init__(self, cost='', code='', status=None, work_task=None, work_cost_detail=None, **kw_args):
+    def __init__(self, cost=0.0, code='', status=None, work_task=None, work_cost_detail=None, **kw_args):
         """ Initialises a new 'EquipmentItem' instance.
         """
         # The cost for vehicle usage. 
-        self.cost = ''
+        self.cost = cost
         # Code for type of vehicle. 
-        self.code = ''
+        self.code = code
         
         self.status = status
         self._work_task = None
@@ -818,7 +877,8 @@ class EquipmentItem(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._equipment_items.append(self)
+            if self not in self._work_task._equipment_items:
+                self._work_task._equipment_items.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -837,7 +897,8 @@ class EquipmentItem(IdentifiedObject):
             
         self._work_cost_detail = value
         if self._work_cost_detail is not None:
-            self._work_cost_detail._equipment_items.append(self)
+            if self not in self._work_cost_detail._equipment_items:
+                self._work_cost_detail._equipment_items.append(self)
 
     work_cost_detail = property(get_work_cost_detail, set_work_cost_detail)
     # >>> work_cost_detail
@@ -849,18 +910,21 @@ class ShiftPattern(IdentifiedObject):
     """
     # <<< shift_pattern
     # @generated
-    def __init__(self, cycle_count=0, assignment_type='', validity_interval=None, status=None, crews=[], **kw_args):
+    def __init__(self, cycle_count=0, assignment_type='', validity_interval=None, status=None, crews=None, **kw_args):
         """ Initialises a new 'ShiftPattern' instance.
         """
         # Number of cycles for a temporary shift. 
-        self.cycle_count = 0
+        self.cycle_count = cycle_count
         # Type of assignement intended to be worked on this shift, for example, temporary, standard, etc. 
-        self.assignment_type = ''
+        self.assignment_type = assignment_type
         
         self.validity_interval = validity_interval
         self.status = status
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
 
         super(ShiftPattern, self).__init__(**kw_args)
     # >>> shift_pattern
@@ -918,15 +982,15 @@ class AccessPermit(Document):
         """ Initialises a new 'AccessPermit' instance.
         """
         # Permit identifier. 
-        self.permit_id = ''
+        self.permit_id = permit_id
         # Permit expiration date. 
-        self.expiration_date = ''
+        self.expiration_date = expiration_date
         # Total cost of permit. 
-        self.payment = 0.0
+        self.payment = payment
         # Date that permit became official. 
-        self.date_effective = ''
+        self.date_effective = date_effective
         # Permit application number that is used by municipality, state, province, etc. 
-        self.application_number = ''
+        self.application_number = application_number
         
 
         super(AccessPermit, self).__init__(**kw_args)
@@ -939,20 +1003,23 @@ class Appointment(ScheduledEvent):
     """
     # <<< appointment
     # @generated
-    def __init__(self, remark='', call_ahead=False, meeting_interval=None, address=None, call_back=None, erp_persons=[], **kw_args):
+    def __init__(self, remark='', call_ahead=False, meeting_interval=None, address=None, call_back=None, erp_persons=None, **kw_args):
         """ Initialises a new 'Appointment' instance.
         """
         # Information about the appointment. 
-        self.remark = ''
+        self.remark = remark
         # True if requested to call customer when someone is about to arrive at their premises. 
-        self.call_ahead = False
+        self.call_ahead = call_ahead
         
         self.meeting_interval = meeting_interval
         self.address = address
         self._call_back = None
         self.call_back = call_back
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
 
         super(Appointment, self).__init__(**kw_args)
     # >>> appointment
@@ -983,7 +1050,8 @@ class Appointment(ScheduledEvent):
             
         self._call_back = value
         if self._call_back is not None:
-            self._call_back._appointments.append(self)
+            if self not in self._call_back._appointments:
+                self._call_back._appointments.append(self)
 
     call_back = property(get_call_back, set_call_back)
     # >>> call_back
@@ -1026,14 +1094,17 @@ class Project(Document):
     """
     # <<< project
     # @generated
-    def __init__(self, budget='', works=[], business_case=None, erp_project_accounting=None, parent_project=None, sub_projects=[], requests=[], **kw_args):
+    def __init__(self, budget=0.0, works=None, business_case=None, erp_project_accounting=None, parent_project=None, sub_projects=None, requests=None, **kw_args):
         """ Initialises a new 'Project' instance.
         """
         # Overall project budget. 
-        self.budget = ''
+        self.budget = budget
         
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
         self._business_case = None
         self.business_case = business_case
         self._erp_project_accounting = None
@@ -1041,9 +1112,15 @@ class Project(Document):
         self._parent_project = None
         self.parent_project = parent_project
         self._sub_projects = []
-        self.sub_projects = sub_projects
+        if sub_projects is None:
+            self.sub_projects = []
+        else:
+            self.sub_projects = sub_projects
         self._requests = []
-        self.requests = requests
+        if requests is None:
+            self.requests = []
+        else:
+            self.requests = requests
 
         super(Project, self).__init__(**kw_args)
     # >>> project
@@ -1057,9 +1134,9 @@ class Project(Document):
 
     def set_works(self, value):
         for x in self._works:
-            x._project = None
+            x.project = None
         for y in value:
-            y._project = self
+            y.project = self
         self._works = value
             
     works = property(get_works, set_works)
@@ -1067,7 +1144,8 @@ class Project(Document):
     def add_works(self, *works):
         for obj in works:
             obj._project = self
-            self._works.append(obj)
+            if obj not in self._works:
+                self._works.append(obj)
         
     def remove_works(self, *works):
         for obj in works:
@@ -1089,7 +1167,8 @@ class Project(Document):
             
         self._business_case = value
         if self._business_case is not None:
-            self._business_case._projects.append(self)
+            if self not in self._business_case._projects:
+                self._business_case._projects.append(self)
 
     business_case = property(get_business_case, set_business_case)
     # >>> business_case
@@ -1108,7 +1187,8 @@ class Project(Document):
             
         self._erp_project_accounting = value
         if self._erp_project_accounting is not None:
-            self._erp_project_accounting._projects.append(self)
+            if self not in self._erp_project_accounting._projects:
+                self._erp_project_accounting._projects.append(self)
 
     erp_project_accounting = property(get_erp_project_accounting, set_erp_project_accounting)
     # >>> erp_project_accounting
@@ -1127,7 +1207,8 @@ class Project(Document):
             
         self._parent_project = value
         if self._parent_project is not None:
-            self._parent_project._sub_projects.append(self)
+            if self not in self._parent_project._sub_projects:
+                self._parent_project._sub_projects.append(self)
 
     parent_project = property(get_parent_project, set_parent_project)
     # >>> parent_project
@@ -1141,9 +1222,9 @@ class Project(Document):
 
     def set_sub_projects(self, value):
         for x in self._sub_projects:
-            x._parent_project = None
+            x.parent_project = None
         for y in value:
-            y._parent_project = self
+            y.parent_project = self
         self._sub_projects = value
             
     sub_projects = property(get_sub_projects, set_sub_projects)
@@ -1151,7 +1232,8 @@ class Project(Document):
     def add_sub_projects(self, *sub_projects):
         for obj in sub_projects:
             obj._parent_project = self
-            self._sub_projects.append(obj)
+            if obj not in self._sub_projects:
+                self._sub_projects.append(obj)
         
     def remove_sub_projects(self, *sub_projects):
         for obj in sub_projects:
@@ -1197,35 +1279,50 @@ class DesignLocationCU(IdentifiedObject):
     """
     # <<< design_location_cu
     # @generated
-    def __init__(self, cu_account='', cu_quantity='', cu_usage='', energization_flag=False, year_removal='', cu_action='install', status=None, compatible_units=[], design_location=None, cugroups=[], work_tasks=[], condition_factors=[], designs=[], **kw_args):
+    def __init__(self, cu_account='', cu_quantity=0, cu_usage='', energization_flag=False, year_removal='', cu_action='install', status=None, compatible_units=None, design_location=None, cugroups=None, work_tasks=None, condition_factors=None, designs=None, **kw_args):
         """ Initialises a new 'DesignLocationCU' instance.
         """
         # A code that helps direct accounting (capital, expense, or accounting treatment). 
-        self.cu_account = ''
+        self.cu_account = cu_account
         # The quantity of the CU being assigned to this location. 
-        self.cu_quantity = ''
+        self.cu_quantity = cu_quantity
         # As the same CU can be used for different purposes and accounting purposes, usage must be specified. Examples include: distribution, transmission, substation. 
-        self.cu_usage = ''
+        self.cu_usage = cu_usage
         # True if associated electrical equipment is intended to be energized while work is being performed. 
-        self.energization_flag = False
+        self.energization_flag = energization_flag
         # Year when a CU that represents an asset is removed. 
-        self.year_removal = ''
+        self.year_removal = year_removal
         # A code that instructs the crew what action to perform. Values are: "install", "abandon", "remove", "transfer"
-        self.cu_action = 'install'
+        self.cu_action = cu_action
         
         self.status = status
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._design_location = None
         self.design_location = design_location
         self._cugroups = []
-        self.cugroups = cugroups
+        if cugroups is None:
+            self.cugroups = []
+        else:
+            self.cugroups = cugroups
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._condition_factors = []
-        self.condition_factors = condition_factors
+        if condition_factors is None:
+            self.condition_factors = []
+        else:
+            self.condition_factors = condition_factors
         self._designs = []
-        self.designs = designs
+        if designs is None:
+            self.designs = []
+        else:
+            self.designs = designs
 
         super(DesignLocationCU, self).__init__(**kw_args)
     # >>> design_location_cu
@@ -1280,7 +1377,8 @@ class DesignLocationCU(IdentifiedObject):
             
         self._design_location = value
         if self._design_location is not None:
-            self._design_location._design_location_cus.append(self)
+            if self not in self._design_location._design_location_cus:
+                self._design_location._design_location_cus.append(self)
 
     design_location = property(get_design_location, set_design_location)
     # >>> design_location
@@ -1416,16 +1514,19 @@ class Assignment(Document):
     """
     # <<< assignment
     # @generated
-    def __init__(self, effective_date='', expiration_date='', crews=[], **kw_args):
+    def __init__(self, effective_date='', expiration_date='', crews=None, **kw_args):
         """ Initialises a new 'Assignment' instance.
         """
         # Date and time assignment became effective. 
-        self.effective_date = ''
+        self.effective_date = effective_date
         # Date and time assignment expires. 
-        self.expiration_date = ''
+        self.expiration_date = expiration_date
         
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
 
         super(Assignment, self).__init__(**kw_args)
     # >>> assignment
@@ -1468,21 +1569,27 @@ class CUMaterialItem(IdentifiedObject):
     """
     # <<< cumaterial_item
     # @generated
-    def __init__(self, corporate_code='', quantity='', status=None, type_material=None, compatible_units=[], property_units=[], **kw_args):
+    def __init__(self, corporate_code='', quantity=0, status=None, type_material=None, compatible_units=None, property_units=None, **kw_args):
         """ Initialises a new 'CUMaterialItem' instance.
         """
         # Code for material. 
-        self.corporate_code = ''
+        self.corporate_code = corporate_code
         # Quantity of the TypeMaterial for this CU, used to determine estimated costs based on a per unit cost or a cost per unit length specified in the TypeMaterial. 
-        self.quantity = ''
+        self.quantity = quantity
         
         self.status = status
         self._type_material = None
         self.type_material = type_material
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._property_units = []
-        self.property_units = property_units
+        if property_units is None:
+            self.property_units = []
+        else:
+            self.property_units = property_units
 
         super(CUMaterialItem, self).__init__(**kw_args)
     # >>> cumaterial_item
@@ -1506,7 +1613,8 @@ class CUMaterialItem(IdentifiedObject):
             
         self._type_material = value
         if self._type_material is not None:
-            self._type_material._cumaterial_items.append(self)
+            if self not in self._type_material._cumaterial_items:
+                self._type_material._cumaterial_items.append(self)
 
     type_material = property(get_type_material, set_type_material)
     # >>> type_material
@@ -1580,22 +1688,25 @@ class WorkLocation(Location):
     """
     # <<< work_location
     # @generated
-    def __init__(self, nearest_intersection='', subdivision='', block='', lot='', one_call_request=None, design_locations=[], **kw_args):
+    def __init__(self, nearest_intersection='', subdivision='', block='', lot='', one_call_request=None, design_locations=None, **kw_args):
         """ Initialises a new 'WorkLocation' instance.
         """
         # The names of streets at the nearest intersection to work area. 
-        self.nearest_intersection = ''
+        self.nearest_intersection = nearest_intersection
         # Name, identifier, or description of the subdivision, if applicable, in which work is to occur. 
-        self.subdivision = ''
+        self.subdivision = subdivision
         # Name, identifier, or description of the block, if applicable, in which work is to occur. 
-        self.block = ''
+        self.block = block
         # Name, identifier, or description of the lot, if applicable, in which work is to occur. 
-        self.lot = ''
+        self.lot = lot
         
         self._one_call_request = None
         self.one_call_request = one_call_request
         self._design_locations = []
-        self.design_locations = design_locations
+        if design_locations is None:
+            self.design_locations = []
+        else:
+            self.design_locations = design_locations
 
         super(WorkLocation, self).__init__(**kw_args)
     # >>> work_location
@@ -1614,7 +1725,8 @@ class WorkLocation(Location):
             
         self._one_call_request = value
         if self._one_call_request is not None:
-            self._one_call_request._work_locations.append(self)
+            if self not in self._one_call_request._work_locations:
+                self._one_call_request._work_locations.append(self)
 
     one_call_request = property(get_one_call_request, set_one_call_request)
     # >>> one_call_request
@@ -1657,23 +1769,32 @@ class PropertyUnit(IdentifiedObject):
     """
     # <<< property_unit
     # @generated
-    def __init__(self, activity_code='install', property_account='', accounting_usage='', status=None, work_cost_details=[], cumaterial_items=[], compatible_units=[], **kw_args):
+    def __init__(self, activity_code='install', property_account='', accounting_usage='', status=None, work_cost_details=None, cumaterial_items=None, compatible_units=None, **kw_args):
         """ Initialises a new 'PropertyUnit' instance.
         """
         # Activity code identifies a specific and distinguishable work action. Values are: "install", "abandon", "remove", "transfer"
-        self.activity_code = 'install'
+        self.activity_code = activity_code
         # Used for property record accounting. For example, in the USA, this would be a FERC account. 
-        self.property_account = ''
+        self.property_account = property_account
         # A code that identifies appropriate type of property accounts such as distribution, streetlgihts, communications. 
-        self.accounting_usage = ''
+        self.accounting_usage = accounting_usage
         
         self.status = status
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
         self._cumaterial_items = []
-        self.cumaterial_items = cumaterial_items
+        if cumaterial_items is None:
+            self.cumaterial_items = []
+        else:
+            self.cumaterial_items = cumaterial_items
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
 
         super(PropertyUnit, self).__init__(**kw_args)
     # >>> property_unit
@@ -1754,9 +1875,9 @@ class PropertyUnit(IdentifiedObject):
 
     def set_compatible_units(self, value):
         for x in self._compatible_units:
-            x._property_unit = None
+            x.property_unit = None
         for y in value:
-            y._property_unit = self
+            y.property_unit = self
         self._compatible_units = value
             
     compatible_units = property(get_compatible_units, set_compatible_units)
@@ -1764,7 +1885,8 @@ class PropertyUnit(IdentifiedObject):
     def add_compatible_units(self, *compatible_units):
         for obj in compatible_units:
             obj._property_unit = self
-            self._compatible_units.append(obj)
+            if obj not in self._compatible_units:
+                self._compatible_units.append(obj)
         
     def remove_compatible_units(self, *compatible_units):
         for obj in compatible_units:
@@ -1779,17 +1901,20 @@ class CUContractorItem(IdentifiedObject):
     """
     # <<< cucontractor_item
     # @generated
-    def __init__(self, activity_code='', bid_amount='', status=None, compatible_units=[], **kw_args):
+    def __init__(self, activity_code='', bid_amount=0.0, status=None, compatible_units=None, **kw_args):
         """ Initialises a new 'CUContractorItem' instance.
         """
         # Activity code identifies a specific and distinguishable unit of work. 
-        self.activity_code = ''
+        self.activity_code = activity_code
         # The amount that a given contractor will charge for performing this unit of work. 
-        self.bid_amount = ''
+        self.bid_amount = bid_amount
         
         self.status = status
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
 
         super(CUContractorItem, self).__init__(**kw_args)
     # >>> cucontractor_item
@@ -1841,13 +1966,13 @@ class MaintenanceDataSet(ProcedureDataSet):
         """ Initialises a new 'MaintenanceDataSet' instance.
         """
         # Description of the condition of the asset just prior to maintenance being performed. 
-        self.condition_before = ''
+        self.condition_before = condition_before
         # Code for the type of maintenance performed. 
-        self.maint_code = ''
+        self.maint_code = maint_code
         # Date and time maintenance procedure was completed. 
-        self.maint_date = ''
+        self.maint_date = maint_date
         # Condition of asset just following maintenance procedure. 
-        self.condition_after = ''
+        self.condition_after = condition_after
         
 
         super(MaintenanceDataSet, self).__init__(**kw_args)
@@ -1860,15 +1985,18 @@ class WorkFlowStep(IdentifiedObject):
     """
     # <<< work_flow_step
     # @generated
-    def __init__(self, sequence_number=0, status=None, work_tasks=[], work=None, **kw_args):
+    def __init__(self, sequence_number=0, status=None, work_tasks=None, work=None, **kw_args):
         """ Initialises a new 'WorkFlowStep' instance.
         """
         # Used to define dependencies of each work flow step, which is for the instance of WorkTask associated with a given instance of WorkFlow. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         
         self.status = status
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._work = None
         self.work = work
 
@@ -1889,9 +2017,9 @@ class WorkFlowStep(IdentifiedObject):
 
     def set_work_tasks(self, value):
         for x in self._work_tasks:
-            x._work_flow_step = None
+            x.work_flow_step = None
         for y in value:
-            y._work_flow_step = self
+            y.work_flow_step = self
         self._work_tasks = value
             
     work_tasks = property(get_work_tasks, set_work_tasks)
@@ -1899,7 +2027,8 @@ class WorkFlowStep(IdentifiedObject):
     def add_work_tasks(self, *work_tasks):
         for obj in work_tasks:
             obj._work_flow_step = self
-            self._work_tasks.append(obj)
+            if obj not in self._work_tasks:
+                self._work_tasks.append(obj)
         
     def remove_work_tasks(self, *work_tasks):
         for obj in work_tasks:
@@ -1921,7 +2050,8 @@ class WorkFlowStep(IdentifiedObject):
             
         self._work = value
         if self._work is not None:
-            self._work._work_flow_steps.append(self)
+            if self not in self._work._work_flow_steps:
+                self._work._work_flow_steps.append(self)
 
     work = property(get_work, set_work)
     # >>> work
@@ -1933,22 +2063,28 @@ class Capability(IdentifiedObject):
     """
     # <<< capability
     # @generated
-    def __init__(self, performance_factor='', category='', validity_interval=None, status=None, crew=None, crafts=[], work_tasks=[], **kw_args):
+    def __init__(self, performance_factor='', category='', validity_interval=None, status=None, crew=None, crafts=None, work_tasks=None, **kw_args):
         """ Initialises a new 'Capability' instance.
         """
         # Capability performance factor. 
-        self.performance_factor = ''
+        self.performance_factor = performance_factor
         # Category by utility's work management standards and practices. 
-        self.category = ''
+        self.category = category
         
         self.validity_interval = validity_interval
         self.status = status
         self._crew = None
         self.crew = crew
         self._crafts = []
-        self.crafts = crafts
+        if crafts is None:
+            self.crafts = []
+        else:
+            self.crafts = crafts
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
 
         super(Capability, self).__init__(**kw_args)
     # >>> capability
@@ -1978,7 +2114,8 @@ class Capability(IdentifiedObject):
             
         self._crew = value
         if self._crew is not None:
-            self._crew._capabilities.append(self)
+            if self not in self._crew._capabilities:
+                self._crew._capabilities.append(self)
 
     crew = property(get_crew, set_crew)
     # >>> crew
@@ -2052,16 +2189,19 @@ class InspectionDataSet(ProcedureDataSet):
     """
     # <<< inspection_data_set
     # @generated
-    def __init__(self, inspect_date='', location_condition='', according_to_schedules=[], **kw_args):
+    def __init__(self, inspect_date='', location_condition='', according_to_schedules=None, **kw_args):
         """ Initialises a new 'InspectionDataSet' instance.
         """
         # Date and time this inspections was completed. 
-        self.inspect_date = ''
+        self.inspect_date = inspect_date
         # A general description of the conditions of the location where the asset resides. 
-        self.location_condition = ''
+        self.location_condition = location_condition
         
         self._according_to_schedules = []
-        self.according_to_schedules = according_to_schedules
+        if according_to_schedules is None:
+            self.according_to_schedules = []
+        else:
+            self.according_to_schedules = according_to_schedules
 
         super(InspectionDataSet, self).__init__(**kw_args)
     # >>> inspection_data_set
@@ -2075,9 +2215,9 @@ class InspectionDataSet(ProcedureDataSet):
 
     def set_according_to_schedules(self, value):
         for x in self._according_to_schedules:
-            x._for_inspection_data_set = None
+            x.for_inspection_data_set = None
         for y in value:
-            y._for_inspection_data_set = self
+            y.for_inspection_data_set = self
         self._according_to_schedules = value
             
     according_to_schedules = property(get_according_to_schedules, set_according_to_schedules)
@@ -2085,7 +2225,8 @@ class InspectionDataSet(ProcedureDataSet):
     def add_according_to_schedules(self, *according_to_schedules):
         for obj in according_to_schedules:
             obj._for_inspection_data_set = self
-            self._according_to_schedules.append(obj)
+            if obj not in self._according_to_schedules:
+                self._according_to_schedules.append(obj)
         
     def remove_according_to_schedules(self, *according_to_schedules):
         for obj in according_to_schedules:
@@ -2100,21 +2241,27 @@ class CULaborItem(IdentifiedObject):
     """
     # <<< culabor_item
     # @generated
-    def __init__(self, labor_duration='', activity_code='', labor_rate='', status=None, qualification_requirements=[], compatible_units=[], culabor_code=None, **kw_args):
+    def __init__(self, labor_duration=0.0, activity_code='', labor_rate=0.0, status=None, qualification_requirements=None, compatible_units=None, culabor_code=None, **kw_args):
         """ Initialises a new 'CULaborItem' instance.
         """
         # Estimated time to perform work. 
-        self.labor_duration = ''
+        self.labor_duration = labor_duration
         # Activity code identifies a specific and distinguishable unit of work. 
-        self.activity_code = ''
+        self.activity_code = activity_code
         # The labor rate applied for work. 
-        self.labor_rate = ''
+        self.labor_rate = labor_rate
         
         self.status = status
         self._qualification_requirements = []
-        self.qualification_requirements = qualification_requirements
+        if qualification_requirements is None:
+            self.qualification_requirements = []
+        else:
+            self.qualification_requirements = qualification_requirements
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._culabor_code = None
         self.culabor_code = culabor_code
 
@@ -2202,7 +2349,8 @@ class CULaborItem(IdentifiedObject):
             
         self._culabor_code = value
         if self._culabor_code is not None:
-            self._culabor_code._culabor_items.append(self)
+            if self not in self._culabor_code._culabor_items:
+                self._culabor_code._culabor_items.append(self)
 
     culabor_code = property(get_culabor_code, set_culabor_code)
     # >>> culabor_code
@@ -2214,36 +2362,57 @@ class CompatibleUnit(Document):
     """
     # <<< compatible_unit
     # @generated
-    def __init__(self, quantity='', est_cost='', cuwork_equipment_items=[], procedures=[], cugroup=None, cuassets=[], cost_type=None, cucontractor_items=[], culabor_items=[], cuallowable_action=None, property_unit=None, design_location_cus=[], cumaterial_items=[], **kw_args):
+    def __init__(self, quantity='', est_cost=0.0, cuwork_equipment_items=None, procedures=None, cugroup=None, cuassets=None, cost_type=None, cucontractor_items=None, culabor_items=None, cuallowable_action=None, property_unit=None, design_location_cus=None, cumaterial_items=None, **kw_args):
         """ Initialises a new 'CompatibleUnit' instance.
         """
         # The quantity, unit of measure, and multiplier at the CU level that applies to the materials. 
-        self.quantity = ''
+        self.quantity = quantity
         # Estimated total cost for perfoming CU. 
-        self.est_cost = ''
+        self.est_cost = est_cost
         
         self._cuwork_equipment_items = []
-        self.cuwork_equipment_items = cuwork_equipment_items
+        if cuwork_equipment_items is None:
+            self.cuwork_equipment_items = []
+        else:
+            self.cuwork_equipment_items = cuwork_equipment_items
         self._procedures = []
-        self.procedures = procedures
+        if procedures is None:
+            self.procedures = []
+        else:
+            self.procedures = procedures
         self._cugroup = None
         self.cugroup = cugroup
         self._cuassets = []
-        self.cuassets = cuassets
+        if cuassets is None:
+            self.cuassets = []
+        else:
+            self.cuassets = cuassets
         self._cost_type = None
         self.cost_type = cost_type
         self._cucontractor_items = []
-        self.cucontractor_items = cucontractor_items
+        if cucontractor_items is None:
+            self.cucontractor_items = []
+        else:
+            self.cucontractor_items = cucontractor_items
         self._culabor_items = []
-        self.culabor_items = culabor_items
+        if culabor_items is None:
+            self.culabor_items = []
+        else:
+            self.culabor_items = culabor_items
         self._cuallowable_action = None
         self.cuallowable_action = cuallowable_action
         self._property_unit = None
         self.property_unit = property_unit
         self._design_location_cus = []
-        self.design_location_cus = design_location_cus
+        if design_location_cus is None:
+            self.design_location_cus = []
+        else:
+            self.design_location_cus = design_location_cus
         self._cumaterial_items = []
-        self.cumaterial_items = cumaterial_items
+        if cumaterial_items is None:
+            self.cumaterial_items = []
+        else:
+            self.cumaterial_items = cumaterial_items
 
         super(CompatibleUnit, self).__init__(**kw_args)
     # >>> compatible_unit
@@ -2324,7 +2493,8 @@ class CompatibleUnit(Document):
             
         self._cugroup = value
         if self._cugroup is not None:
-            self._cugroup._compatible_units.append(self)
+            if self not in self._cugroup._compatible_units:
+                self._cugroup._compatible_units.append(self)
 
     cugroup = property(get_cugroup, set_cugroup)
     # >>> cugroup
@@ -2374,7 +2544,8 @@ class CompatibleUnit(Document):
             
         self._cost_type = value
         if self._cost_type is not None:
-            self._cost_type._compatible_units.append(self)
+            if self not in self._cost_type._compatible_units:
+                self._cost_type._compatible_units.append(self)
 
     cost_type = property(get_cost_type, set_cost_type)
     # >>> cost_type
@@ -2455,7 +2626,8 @@ class CompatibleUnit(Document):
             
         self._cuallowable_action = value
         if self._cuallowable_action is not None:
-            self._cuallowable_action._compatible_units.append(self)
+            if self not in self._cuallowable_action._compatible_units:
+                self._cuallowable_action._compatible_units.append(self)
 
     cuallowable_action = property(get_cuallowable_action, set_cuallowable_action)
     # >>> cuallowable_action
@@ -2474,7 +2646,8 @@ class CompatibleUnit(Document):
             
         self._property_unit = value
         if self._property_unit is not None:
-            self._property_unit._compatible_units.append(self)
+            if self not in self._property_unit._compatible_units:
+                self._property_unit._compatible_units.append(self)
 
     property_unit = property(get_property_unit, set_property_unit)
     # >>> property_unit
@@ -2548,39 +2721,51 @@ class MaterialItem(IdentifiedObject):
     """
     # <<< material_item
     # @generated
-    def __init__(self, quantity='', external_ref_id='', cost_description='', cost_type='', material_code='', account='', actual_cost='', status=None, type_material=None, erp_inventory_counts=[], usages=[], design_location=None, work_cost_detail=None, erp_rec_delv_line_items=[], erp_poline_items=[], work_task=None, **kw_args):
+    def __init__(self, quantity=0, external_ref_id='', cost_description='', cost_type='', material_code='', account='', actual_cost=0.0, status=None, type_material=None, erp_inventory_counts=None, usages=None, design_location=None, work_cost_detail=None, erp_rec_delv_line_items=None, erp_poline_items=None, work_task=None, **kw_args):
         """ Initialises a new 'MaterialItem' instance.
         """
         # The quantity of material used. 
-        self.quantity = ''
+        self.quantity = quantity
         # External reference identifier for this actual material item such as a purchase order number, a serial number, etc. 
-        self.external_ref_id = ''
+        self.external_ref_id = external_ref_id
         # Description of the cost. 
-        self.cost_description = ''
+        self.cost_description = cost_description
         # The category of cost to which this Material Item belongs. 
-        self.cost_type = ''
+        self.cost_type = cost_type
         # Code for material. 
-        self.material_code = ''
+        self.material_code = material_code
         # The account to which this actual material item is charged. 
-        self.account = ''
+        self.account = account
         # The actual cost of this particular material in this particular quantity. 
-        self.actual_cost = ''
+        self.actual_cost = actual_cost
         
         self.status = status
         self._type_material = None
         self.type_material = type_material
         self._erp_inventory_counts = []
-        self.erp_inventory_counts = erp_inventory_counts
+        if erp_inventory_counts is None:
+            self.erp_inventory_counts = []
+        else:
+            self.erp_inventory_counts = erp_inventory_counts
         self._usages = []
-        self.usages = usages
+        if usages is None:
+            self.usages = []
+        else:
+            self.usages = usages
         self._design_location = None
         self.design_location = design_location
         self._work_cost_detail = None
         self.work_cost_detail = work_cost_detail
         self._erp_rec_delv_line_items = []
-        self.erp_rec_delv_line_items = erp_rec_delv_line_items
+        if erp_rec_delv_line_items is None:
+            self.erp_rec_delv_line_items = []
+        else:
+            self.erp_rec_delv_line_items = erp_rec_delv_line_items
         self._erp_poline_items = []
-        self.erp_poline_items = erp_poline_items
+        if erp_poline_items is None:
+            self.erp_poline_items = []
+        else:
+            self.erp_poline_items = erp_poline_items
         self._work_task = None
         self.work_task = work_task
 
@@ -2606,7 +2791,8 @@ class MaterialItem(IdentifiedObject):
             
         self._type_material = value
         if self._type_material is not None:
-            self._type_material._material_items.append(self)
+            if self not in self._type_material._material_items:
+                self._type_material._material_items.append(self)
 
     type_material = property(get_type_material, set_type_material)
     # >>> type_material
@@ -2620,9 +2806,9 @@ class MaterialItem(IdentifiedObject):
 
     def set_erp_inventory_counts(self, value):
         for x in self._erp_inventory_counts:
-            x._material_item = None
+            x.material_item = None
         for y in value:
-            y._material_item = self
+            y.material_item = self
         self._erp_inventory_counts = value
             
     erp_inventory_counts = property(get_erp_inventory_counts, set_erp_inventory_counts)
@@ -2630,7 +2816,8 @@ class MaterialItem(IdentifiedObject):
     def add_erp_inventory_counts(self, *erp_inventory_counts):
         for obj in erp_inventory_counts:
             obj._material_item = self
-            self._erp_inventory_counts.append(obj)
+            if obj not in self._erp_inventory_counts:
+                self._erp_inventory_counts.append(obj)
         
     def remove_erp_inventory_counts(self, *erp_inventory_counts):
         for obj in erp_inventory_counts:
@@ -2647,9 +2834,9 @@ class MaterialItem(IdentifiedObject):
 
     def set_usages(self, value):
         for x in self._usages:
-            x._material_item = None
+            x.material_item = None
         for y in value:
-            y._material_item = self
+            y.material_item = self
         self._usages = value
             
     usages = property(get_usages, set_usages)
@@ -2657,7 +2844,8 @@ class MaterialItem(IdentifiedObject):
     def add_usages(self, *usages):
         for obj in usages:
             obj._material_item = self
-            self._usages.append(obj)
+            if obj not in self._usages:
+                self._usages.append(obj)
         
     def remove_usages(self, *usages):
         for obj in usages:
@@ -2679,7 +2867,8 @@ class MaterialItem(IdentifiedObject):
             
         self._design_location = value
         if self._design_location is not None:
-            self._design_location._material_items.append(self)
+            if self not in self._design_location._material_items:
+                self._design_location._material_items.append(self)
 
     design_location = property(get_design_location, set_design_location)
     # >>> design_location
@@ -2698,7 +2887,8 @@ class MaterialItem(IdentifiedObject):
             
         self._work_cost_detail = value
         if self._work_cost_detail is not None:
-            self._work_cost_detail._material_items.append(self)
+            if self not in self._work_cost_detail._material_items:
+                self._work_cost_detail._material_items.append(self)
 
     work_cost_detail = property(get_work_cost_detail, set_work_cost_detail)
     # >>> work_cost_detail
@@ -2743,9 +2933,9 @@ class MaterialItem(IdentifiedObject):
 
     def set_erp_poline_items(self, value):
         for x in self._erp_poline_items:
-            x._material_item = None
+            x.material_item = None
         for y in value:
-            y._material_item = self
+            y.material_item = self
         self._erp_poline_items = value
             
     erp_poline_items = property(get_erp_poline_items, set_erp_poline_items)
@@ -2753,7 +2943,8 @@ class MaterialItem(IdentifiedObject):
     def add_erp_poline_items(self, *erp_poline_items):
         for obj in erp_poline_items:
             obj._material_item = self
-            self._erp_poline_items.append(obj)
+            if obj not in self._erp_poline_items:
+                self._erp_poline_items.append(obj)
         
     def remove_erp_poline_items(self, *erp_poline_items):
         for obj in erp_poline_items:
@@ -2775,7 +2966,8 @@ class MaterialItem(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._material_items.append(self)
+            if self not in self._work_task._material_items:
+                self._work_task._material_items.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -2787,18 +2979,21 @@ class OneCallRequest(Document):
     """
     # <<< one_call_request
     # @generated
-    def __init__(self, explosives_used=False, marked_indicator=False, marking_instruction='', work_locations=[], **kw_args):
+    def __init__(self, explosives_used=False, marked_indicator=False, marking_instruction='', work_locations=None, **kw_args):
         """ Initialises a new 'OneCallRequest' instance.
         """
         # True if explosives have been or are planned to be used. 
-        self.explosives_used = False
+        self.explosives_used = explosives_used
         # True if work location has been marked, for example for a dig area. 
-        self.marked_indicator = False
+        self.marked_indicator = marked_indicator
         # Instructions for marking a dig area, if applicable. 
-        self.marking_instruction = ''
+        self.marking_instruction = marking_instruction
         
         self._work_locations = []
-        self.work_locations = work_locations
+        if work_locations is None:
+            self.work_locations = []
+        else:
+            self.work_locations = work_locations
 
         super(OneCallRequest, self).__init__(**kw_args)
     # >>> one_call_request
@@ -2812,9 +3007,9 @@ class OneCallRequest(Document):
 
     def set_work_locations(self, value):
         for x in self._work_locations:
-            x._one_call_request = None
+            x.one_call_request = None
         for y in value:
-            y._one_call_request = self
+            y.one_call_request = self
         self._work_locations = value
             
     work_locations = property(get_work_locations, set_work_locations)
@@ -2822,7 +3017,8 @@ class OneCallRequest(Document):
     def add_work_locations(self, *work_locations):
         for obj in work_locations:
             obj._one_call_request = self
-            self._work_locations.append(obj)
+            if obj not in self._work_locations:
+                self._work_locations.append(obj)
         
     def remove_work_locations(self, *work_locations):
         for obj in work_locations:
@@ -2872,11 +3068,11 @@ class WorkStatusEntry(ActivityRecord):
     """
     # <<< work_status_entry
     # @generated
-    def __init__(self, percent_complete='', **kw_args):
+    def __init__(self, percent_complete=0.0, **kw_args):
         """ Initialises a new 'WorkStatusEntry' instance.
         """
         # Estimated percentage of completion of this individual work task or overall work order. 
-        self.percent_complete = ''
+        self.percent_complete = percent_complete
         
 
         super(WorkStatusEntry, self).__init__(**kw_args)
@@ -2889,19 +3085,19 @@ class MiscCostItem(IdentifiedObject):
     """
     # <<< misc_cost_item
     # @generated
-    def __init__(self, account='', external_ref_id='', cost_per_unit='', cost_type='', quantity='', status=None, work_task=None, design_location=None, work_cost_detail=None, **kw_args):
+    def __init__(self, account='', external_ref_id='', cost_per_unit=0.0, cost_type='', quantity=0, status=None, work_task=None, design_location=None, work_cost_detail=None, **kw_args):
         """ Initialises a new 'MiscCostItem' instance.
         """
         # This drives the accounting treatment for this misc. item. 
-        self.account = ''
+        self.account = account
         # External Reference ID (e.g. PO#, Serial #) 
-        self.external_ref_id = ''
+        self.external_ref_id = external_ref_id
         # The cost per unit for this misc. item. 
-        self.cost_per_unit = ''
+        self.cost_per_unit = cost_per_unit
         # The cost category for accounting, such as material, labor, vehicle, contractor, equipment, overhead. 
-        self.cost_type = ''
+        self.cost_type = cost_type
         # The quantity of the misc. item being assigned to this location. 
-        self.quantity = ''
+        self.quantity = quantity
         
         self.status = status
         self._work_task = None
@@ -2933,7 +3129,8 @@ class MiscCostItem(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._misc_cost_items.append(self)
+            if self not in self._work_task._misc_cost_items:
+                self._work_task._misc_cost_items.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -2952,7 +3149,8 @@ class MiscCostItem(IdentifiedObject):
             
         self._design_location = value
         if self._design_location is not None:
-            self._design_location._misc_cost_items.append(self)
+            if self not in self._design_location._misc_cost_items:
+                self._design_location._misc_cost_items.append(self)
 
     design_location = property(get_design_location, set_design_location)
     # >>> design_location
@@ -2971,7 +3169,8 @@ class MiscCostItem(IdentifiedObject):
             
         self._work_cost_detail = value
         if self._work_cost_detail is not None:
-            self._work_cost_detail._misc_cost_items.append(self)
+            if self not in self._work_cost_detail._misc_cost_items:
+                self._work_cost_detail._misc_cost_items.append(self)
 
     work_cost_detail = property(get_work_cost_detail, set_work_cost_detail)
     # >>> work_cost_detail
@@ -2983,38 +3182,74 @@ class Crew(IdentifiedObject):
     """
     # <<< crew
     # @generated
-    def __init__(self, category='', work_tasks=[], vehicles=[], capabilities=[], route=None, work_equipment_assets=[], shift_patterns=[], switching_schedules=[], tools=[], outage_steps=[], locations=[], crew_members=[], organisations=[], assignments=[], **kw_args):
+    def __init__(self, category='', work_tasks=None, vehicles=None, capabilities=None, route=None, work_equipment_assets=None, shift_patterns=None, switching_schedules=None, tools=None, outage_steps=None, locations=None, crew_members=None, organisations=None, assignments=None, **kw_args):
         """ Initialises a new 'Crew' instance.
         """
         # Category by utility's work management standards and practices. 
-        self.category = ''
+        self.category = category
         
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._vehicles = []
-        self.vehicles = vehicles
+        if vehicles is None:
+            self.vehicles = []
+        else:
+            self.vehicles = vehicles
         self._capabilities = []
-        self.capabilities = capabilities
+        if capabilities is None:
+            self.capabilities = []
+        else:
+            self.capabilities = capabilities
         self._route = None
         self.route = route
         self._work_equipment_assets = []
-        self.work_equipment_assets = work_equipment_assets
+        if work_equipment_assets is None:
+            self.work_equipment_assets = []
+        else:
+            self.work_equipment_assets = work_equipment_assets
         self._shift_patterns = []
-        self.shift_patterns = shift_patterns
+        if shift_patterns is None:
+            self.shift_patterns = []
+        else:
+            self.shift_patterns = shift_patterns
         self._switching_schedules = []
-        self.switching_schedules = switching_schedules
+        if switching_schedules is None:
+            self.switching_schedules = []
+        else:
+            self.switching_schedules = switching_schedules
         self._tools = []
-        self.tools = tools
+        if tools is None:
+            self.tools = []
+        else:
+            self.tools = tools
         self._outage_steps = []
-        self.outage_steps = outage_steps
+        if outage_steps is None:
+            self.outage_steps = []
+        else:
+            self.outage_steps = outage_steps
         self._locations = []
-        self.locations = locations
+        if locations is None:
+            self.locations = []
+        else:
+            self.locations = locations
         self._crew_members = []
-        self.crew_members = crew_members
+        if crew_members is None:
+            self.crew_members = []
+        else:
+            self.crew_members = crew_members
         self._organisations = []
-        self.organisations = organisations
+        if organisations is None:
+            self.organisations = []
+        else:
+            self.organisations = organisations
         self._assignments = []
-        self.assignments = assignments
+        if assignments is None:
+            self.assignments = []
+        else:
+            self.assignments = assignments
 
         super(Crew, self).__init__(**kw_args)
     # >>> crew
@@ -3059,9 +3294,9 @@ class Crew(IdentifiedObject):
 
     def set_vehicles(self, value):
         for x in self._vehicles:
-            x._crew = None
+            x.crew = None
         for y in value:
-            y._crew = self
+            y.crew = self
         self._vehicles = value
             
     vehicles = property(get_vehicles, set_vehicles)
@@ -3069,7 +3304,8 @@ class Crew(IdentifiedObject):
     def add_vehicles(self, *vehicles):
         for obj in vehicles:
             obj._crew = self
-            self._vehicles.append(obj)
+            if obj not in self._vehicles:
+                self._vehicles.append(obj)
         
     def remove_vehicles(self, *vehicles):
         for obj in vehicles:
@@ -3086,9 +3322,9 @@ class Crew(IdentifiedObject):
 
     def set_capabilities(self, value):
         for x in self._capabilities:
-            x._crew = None
+            x.crew = None
         for y in value:
-            y._crew = self
+            y.crew = self
         self._capabilities = value
             
     capabilities = property(get_capabilities, set_capabilities)
@@ -3096,7 +3332,8 @@ class Crew(IdentifiedObject):
     def add_capabilities(self, *capabilities):
         for obj in capabilities:
             obj._crew = self
-            self._capabilities.append(obj)
+            if obj not in self._capabilities:
+                self._capabilities.append(obj)
         
     def remove_capabilities(self, *capabilities):
         for obj in capabilities:
@@ -3118,7 +3355,8 @@ class Crew(IdentifiedObject):
             
         self._route = value
         if self._route is not None:
-            self._route._crews.append(self)
+            if self not in self._route._crews:
+                self._route._crews.append(self)
 
     route = property(get_route, set_route)
     # >>> route
@@ -3132,9 +3370,9 @@ class Crew(IdentifiedObject):
 
     def set_work_equipment_assets(self, value):
         for x in self._work_equipment_assets:
-            x._crew = None
+            x.crew = None
         for y in value:
-            y._crew = self
+            y.crew = self
         self._work_equipment_assets = value
             
     work_equipment_assets = property(get_work_equipment_assets, set_work_equipment_assets)
@@ -3142,7 +3380,8 @@ class Crew(IdentifiedObject):
     def add_work_equipment_assets(self, *work_equipment_assets):
         for obj in work_equipment_assets:
             obj._crew = self
-            self._work_equipment_assets.append(obj)
+            if obj not in self._work_equipment_assets:
+                self._work_equipment_assets.append(obj)
         
     def remove_work_equipment_assets(self, *work_equipment_assets):
         for obj in work_equipment_assets:
@@ -3221,9 +3460,9 @@ class Crew(IdentifiedObject):
 
     def set_tools(self, value):
         for x in self._tools:
-            x._crew = None
+            x.crew = None
         for y in value:
-            y._crew = self
+            y.crew = self
         self._tools = value
             
     tools = property(get_tools, set_tools)
@@ -3231,7 +3470,8 @@ class Crew(IdentifiedObject):
     def add_tools(self, *tools):
         for obj in tools:
             obj._crew = self
-            self._tools.append(obj)
+            if obj not in self._tools:
+                self._tools.append(obj)
         
     def remove_tools(self, *tools):
         for obj in tools:
@@ -3401,44 +3641,65 @@ class WorkCostDetail(Document):
     """
     # <<< work_cost_detail
     # @generated
-    def __init__(self, debit_flag=False, type_work_cost='', amount='', transaction_date='', erp_project_accounting=None, design=None, material_items=[], work_cost_summary=None, overhead_cost=None, labor_items=[], works=[], misc_cost_items=[], equipment_items=[], cost_type=None, contractor_items=[], work_task=None, property_units=[], **kw_args):
+    def __init__(self, debit_flag=False, type_work_cost='', amount=0.0, transaction_date='', erp_project_accounting=None, design=None, material_items=None, work_cost_summary=None, overhead_cost=None, labor_items=None, works=None, misc_cost_items=None, equipment_items=None, cost_type=None, contractor_items=None, work_task=None, property_units=None, **kw_args):
         """ Initialises a new 'WorkCostDetail' instance.
         """
         # True if 'amount' attribute is a debit, false if it is a credit. 
-        self.debit_flag = False
+        self.debit_flag = debit_flag
         # The type of cost. 
-        self.type_work_cost = ''
+        self.type_work_cost = type_work_cost
         # Amount in designated currency for work, either a total or an individual element. As defined in the attribute 'type,' multiple instances are applicable to each work for: planned cost, actual cost, authorized cost, budgeted cost, forecasted cost, other. 
-        self.amount = ''
+        self.amount = amount
         # Date that amount is posted to the work. 
-        self.transaction_date = ''
+        self.transaction_date = transaction_date
         
         self._erp_project_accounting = None
         self.erp_project_accounting = erp_project_accounting
         self._design = None
         self.design = design
         self._material_items = []
-        self.material_items = material_items
+        if material_items is None:
+            self.material_items = []
+        else:
+            self.material_items = material_items
         self._work_cost_summary = None
         self.work_cost_summary = work_cost_summary
         self._overhead_cost = None
         self.overhead_cost = overhead_cost
         self._labor_items = []
-        self.labor_items = labor_items
+        if labor_items is None:
+            self.labor_items = []
+        else:
+            self.labor_items = labor_items
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
         self._misc_cost_items = []
-        self.misc_cost_items = misc_cost_items
+        if misc_cost_items is None:
+            self.misc_cost_items = []
+        else:
+            self.misc_cost_items = misc_cost_items
         self._equipment_items = []
-        self.equipment_items = equipment_items
+        if equipment_items is None:
+            self.equipment_items = []
+        else:
+            self.equipment_items = equipment_items
         self._cost_type = None
         self.cost_type = cost_type
         self._contractor_items = []
-        self.contractor_items = contractor_items
+        if contractor_items is None:
+            self.contractor_items = []
+        else:
+            self.contractor_items = contractor_items
         self._work_task = None
         self.work_task = work_task
         self._property_units = []
-        self.property_units = property_units
+        if property_units is None:
+            self.property_units = []
+        else:
+            self.property_units = property_units
 
         super(WorkCostDetail, self).__init__(**kw_args)
     # >>> work_cost_detail
@@ -3457,7 +3718,8 @@ class WorkCostDetail(Document):
             
         self._erp_project_accounting = value
         if self._erp_project_accounting is not None:
-            self._erp_project_accounting._work_cost_details.append(self)
+            if self not in self._erp_project_accounting._work_cost_details:
+                self._erp_project_accounting._work_cost_details.append(self)
 
     erp_project_accounting = property(get_erp_project_accounting, set_erp_project_accounting)
     # >>> erp_project_accounting
@@ -3476,7 +3738,8 @@ class WorkCostDetail(Document):
             
         self._design = value
         if self._design is not None:
-            self._design._work_cost_details.append(self)
+            if self not in self._design._work_cost_details:
+                self._design._work_cost_details.append(self)
 
     design = property(get_design, set_design)
     # >>> design
@@ -3490,9 +3753,9 @@ class WorkCostDetail(Document):
 
     def set_material_items(self, value):
         for x in self._material_items:
-            x._work_cost_detail = None
+            x.work_cost_detail = None
         for y in value:
-            y._work_cost_detail = self
+            y.work_cost_detail = self
         self._material_items = value
             
     material_items = property(get_material_items, set_material_items)
@@ -3500,7 +3763,8 @@ class WorkCostDetail(Document):
     def add_material_items(self, *material_items):
         for obj in material_items:
             obj._work_cost_detail = self
-            self._material_items.append(obj)
+            if obj not in self._material_items:
+                self._material_items.append(obj)
         
     def remove_material_items(self, *material_items):
         for obj in material_items:
@@ -3540,7 +3804,8 @@ class WorkCostDetail(Document):
             
         self._overhead_cost = value
         if self._overhead_cost is not None:
-            self._overhead_cost._work_cost_details.append(self)
+            if self not in self._overhead_cost._work_cost_details:
+                self._overhead_cost._work_cost_details.append(self)
 
     overhead_cost = property(get_overhead_cost, set_overhead_cost)
     # >>> overhead_cost
@@ -3554,9 +3819,9 @@ class WorkCostDetail(Document):
 
     def set_labor_items(self, value):
         for x in self._labor_items:
-            x._work_cost_detail = None
+            x.work_cost_detail = None
         for y in value:
-            y._work_cost_detail = self
+            y.work_cost_detail = self
         self._labor_items = value
             
     labor_items = property(get_labor_items, set_labor_items)
@@ -3564,7 +3829,8 @@ class WorkCostDetail(Document):
     def add_labor_items(self, *labor_items):
         for obj in labor_items:
             obj._work_cost_detail = self
-            self._labor_items.append(obj)
+            if obj not in self._labor_items:
+                self._labor_items.append(obj)
         
     def remove_labor_items(self, *labor_items):
         for obj in labor_items:
@@ -3612,9 +3878,9 @@ class WorkCostDetail(Document):
 
     def set_misc_cost_items(self, value):
         for x in self._misc_cost_items:
-            x._work_cost_detail = None
+            x.work_cost_detail = None
         for y in value:
-            y._work_cost_detail = self
+            y.work_cost_detail = self
         self._misc_cost_items = value
             
     misc_cost_items = property(get_misc_cost_items, set_misc_cost_items)
@@ -3622,7 +3888,8 @@ class WorkCostDetail(Document):
     def add_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
             obj._work_cost_detail = self
-            self._misc_cost_items.append(obj)
+            if obj not in self._misc_cost_items:
+                self._misc_cost_items.append(obj)
         
     def remove_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
@@ -3639,9 +3906,9 @@ class WorkCostDetail(Document):
 
     def set_equipment_items(self, value):
         for x in self._equipment_items:
-            x._work_cost_detail = None
+            x.work_cost_detail = None
         for y in value:
-            y._work_cost_detail = self
+            y.work_cost_detail = self
         self._equipment_items = value
             
     equipment_items = property(get_equipment_items, set_equipment_items)
@@ -3649,7 +3916,8 @@ class WorkCostDetail(Document):
     def add_equipment_items(self, *equipment_items):
         for obj in equipment_items:
             obj._work_cost_detail = self
-            self._equipment_items.append(obj)
+            if obj not in self._equipment_items:
+                self._equipment_items.append(obj)
         
     def remove_equipment_items(self, *equipment_items):
         for obj in equipment_items:
@@ -3671,7 +3939,8 @@ class WorkCostDetail(Document):
             
         self._cost_type = value
         if self._cost_type is not None:
-            self._cost_type._work_cost_details.append(self)
+            if self not in self._cost_type._work_cost_details:
+                self._cost_type._work_cost_details.append(self)
 
     cost_type = property(get_cost_type, set_cost_type)
     # >>> cost_type
@@ -3685,9 +3954,9 @@ class WorkCostDetail(Document):
 
     def set_contractor_items(self, value):
         for x in self._contractor_items:
-            x._work_cost_detail = None
+            x.work_cost_detail = None
         for y in value:
-            y._work_cost_detail = self
+            y.work_cost_detail = self
         self._contractor_items = value
             
     contractor_items = property(get_contractor_items, set_contractor_items)
@@ -3695,7 +3964,8 @@ class WorkCostDetail(Document):
     def add_contractor_items(self, *contractor_items):
         for obj in contractor_items:
             obj._work_cost_detail = self
-            self._contractor_items.append(obj)
+            if obj not in self._contractor_items:
+                self._contractor_items.append(obj)
         
     def remove_contractor_items(self, *contractor_items):
         for obj in contractor_items:
@@ -3717,7 +3987,8 @@ class WorkCostDetail(Document):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._work_cost_details.append(self)
+            if self not in self._work_task._work_cost_details:
+                self._work_task._work_cost_details.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -3760,13 +4031,16 @@ class CUAllowableAction(IdentifiedObject):
     """
     # <<< cuallowable_action
     # @generated
-    def __init__(self, status=None, compatible_units=[], **kw_args):
+    def __init__(self, status=None, compatible_units=None, **kw_args):
         """ Initialises a new 'CUAllowableAction' instance.
         """
         
         self.status = status
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
 
         super(CUAllowableAction, self).__init__(**kw_args)
     # >>> cuallowable_action
@@ -3785,9 +4059,9 @@ class CUAllowableAction(IdentifiedObject):
 
     def set_compatible_units(self, value):
         for x in self._compatible_units:
-            x._cuallowable_action = None
+            x.cuallowable_action = None
         for y in value:
-            y._cuallowable_action = self
+            y.cuallowable_action = self
         self._compatible_units = value
             
     compatible_units = property(get_compatible_units, set_compatible_units)
@@ -3795,7 +4069,8 @@ class CUAllowableAction(IdentifiedObject):
     def add_compatible_units(self, *compatible_units):
         for obj in compatible_units:
             obj._cuallowable_action = self
-            self._compatible_units.append(obj)
+            if obj not in self._compatible_units:
+                self._compatible_units.append(obj)
         
     def remove_compatible_units(self, *compatible_units):
         for obj in compatible_units:
@@ -3810,16 +4085,22 @@ class BusinessCase(Document):
     """
     # <<< business_case
     # @generated
-    def __init__(self, corporate_code='', projects=[], works=[], **kw_args):
+    def __init__(self, corporate_code='', projects=None, works=None, **kw_args):
         """ Initialises a new 'BusinessCase' instance.
         """
         # A codified representation of the business case (i.e., codes for highway relocation, replace substation transformers, etc.). 
-        self.corporate_code = ''
+        self.corporate_code = corporate_code
         
         self._projects = []
-        self.projects = projects
+        if projects is None:
+            self.projects = []
+        else:
+            self.projects = projects
         self._works = []
-        self.works = works
+        if works is None:
+            self.works = []
+        else:
+            self.works = works
 
         super(BusinessCase, self).__init__(**kw_args)
     # >>> business_case
@@ -3833,9 +4114,9 @@ class BusinessCase(Document):
 
     def set_projects(self, value):
         for x in self._projects:
-            x._business_case = None
+            x.business_case = None
         for y in value:
-            y._business_case = self
+            y.business_case = self
         self._projects = value
             
     projects = property(get_projects, set_projects)
@@ -3843,7 +4124,8 @@ class BusinessCase(Document):
     def add_projects(self, *projects):
         for obj in projects:
             obj._business_case = self
-            self._projects.append(obj)
+            if obj not in self._projects:
+                self._projects.append(obj)
         
     def remove_projects(self, *projects):
         for obj in projects:
@@ -3860,9 +4142,9 @@ class BusinessCase(Document):
 
     def set_works(self, value):
         for x in self._works:
-            x._business_case = None
+            x.business_case = None
         for y in value:
-            y._business_case = self
+            y.business_case = self
         self._works = value
             
     works = property(get_works, set_works)
@@ -3870,7 +4152,8 @@ class BusinessCase(Document):
     def add_works(self, *works):
         for obj in works:
             obj._business_case = self
-            self._works.append(obj)
+            if obj not in self._works:
+                self._works.append(obj)
         
     def remove_works(self, *works):
         for obj in works:
@@ -3885,21 +4168,24 @@ class LaborItem(IdentifiedObject):
     """
     # <<< labor_item
     # @generated
-    def __init__(self, activity_code='', labor_duration='', labor_rate='', cost='', status=None, erp_persons=[], work_cost_detail=None, work_task=None, **kw_args):
+    def __init__(self, activity_code='', labor_duration=0.0, labor_rate=0.0, cost=0.0, status=None, erp_persons=None, work_cost_detail=None, work_task=None, **kw_args):
         """ Initialises a new 'LaborItem' instance.
         """
         # Activity code identifies a specific and distinguishable unit of work. 
-        self.activity_code = ''
+        self.activity_code = activity_code
         # Time required to perform work. 
-        self.labor_duration = ''
+        self.labor_duration = labor_duration
         # The labor rate applied for work. 
-        self.labor_rate = ''
+        self.labor_rate = labor_rate
         # Total cost for labor. Note that this may not be able to be derived from labor rate and time charged. 
-        self.cost = ''
+        self.cost = cost
         
         self.status = status
         self._erp_persons = []
-        self.erp_persons = erp_persons
+        if erp_persons is None:
+            self.erp_persons = []
+        else:
+            self.erp_persons = erp_persons
         self._work_cost_detail = None
         self.work_cost_detail = work_cost_detail
         self._work_task = None
@@ -3958,7 +4244,8 @@ class LaborItem(IdentifiedObject):
             
         self._work_cost_detail = value
         if self._work_cost_detail is not None:
-            self._work_cost_detail._labor_items.append(self)
+            if self not in self._work_cost_detail._labor_items:
+                self._work_cost_detail._labor_items.append(self)
 
     work_cost_detail = property(get_work_cost_detail, set_work_cost_detail)
     # >>> work_cost_detail
@@ -3977,7 +4264,8 @@ class LaborItem(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._labor_items.append(self)
+            if self not in self._work_task._labor_items:
+                self._work_task._labor_items.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -3989,32 +4277,50 @@ class Design(Document):
     """
     # <<< design
     # @generated
-    def __init__(self, cost_estimate='', kind='other', price='', erp_boms=[], erp_quote_line_item=None, design_locations=[], work=None, condition_factors=[], work_cost_details=[], work_tasks=[], design_locations_cus=[], **kw_args):
+    def __init__(self, cost_estimate=0.0, kind='other', price=0.0, erp_boms=None, erp_quote_line_item=None, design_locations=None, work=None, condition_factors=None, work_cost_details=None, work_tasks=None, design_locations_cus=None, **kw_args):
         """ Initialises a new 'Design' instance.
         """
         # Estimated cost (not price) of design. 
-        self.cost_estimate = ''
+        self.cost_estimate = cost_estimate
         # Kind of this design. Values are: "other", "as_built", "estimated"
-        self.kind = 'other'
+        self.kind = kind
         # Price to customer for implementing design. 
-        self.price = ''
+        self.price = price
         
         self._erp_boms = []
-        self.erp_boms = erp_boms
+        if erp_boms is None:
+            self.erp_boms = []
+        else:
+            self.erp_boms = erp_boms
         self._erp_quote_line_item = None
         self.erp_quote_line_item = erp_quote_line_item
         self._design_locations = []
-        self.design_locations = design_locations
+        if design_locations is None:
+            self.design_locations = []
+        else:
+            self.design_locations = design_locations
         self._work = None
         self.work = work
         self._condition_factors = []
-        self.condition_factors = condition_factors
+        if condition_factors is None:
+            self.condition_factors = []
+        else:
+            self.condition_factors = condition_factors
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._design_locations_cus = []
-        self.design_locations_cus = design_locations_cus
+        if design_locations_cus is None:
+            self.design_locations_cus = []
+        else:
+            self.design_locations_cus = design_locations_cus
 
         super(Design, self).__init__(**kw_args)
     # >>> design
@@ -4028,9 +4334,9 @@ class Design(Document):
 
     def set_erp_boms(self, value):
         for x in self._erp_boms:
-            x._design = None
+            x.design = None
         for y in value:
-            y._design = self
+            y.design = self
         self._erp_boms = value
             
     erp_boms = property(get_erp_boms, set_erp_boms)
@@ -4038,7 +4344,8 @@ class Design(Document):
     def add_erp_boms(self, *erp_boms):
         for obj in erp_boms:
             obj._design = self
-            self._erp_boms.append(obj)
+            if obj not in self._erp_boms:
+                self._erp_boms.append(obj)
         
     def remove_erp_boms(self, *erp_boms):
         for obj in erp_boms:
@@ -4109,7 +4416,8 @@ class Design(Document):
             
         self._work = value
         if self._work is not None:
-            self._work._designs.append(self)
+            if self not in self._work._designs:
+                self._work._designs.append(self)
 
     work = property(get_work, set_work)
     # >>> work
@@ -4154,9 +4462,9 @@ class Design(Document):
 
     def set_work_cost_details(self, value):
         for x in self._work_cost_details:
-            x._design = None
+            x.design = None
         for y in value:
-            y._design = self
+            y.design = self
         self._work_cost_details = value
             
     work_cost_details = property(get_work_cost_details, set_work_cost_details)
@@ -4164,7 +4472,8 @@ class Design(Document):
     def add_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
             obj._design = self
-            self._work_cost_details.append(obj)
+            if obj not in self._work_cost_details:
+                self._work_cost_details.append(obj)
         
     def remove_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
@@ -4181,9 +4490,9 @@ class Design(Document):
 
     def set_work_tasks(self, value):
         for x in self._work_tasks:
-            x._design = None
+            x.design = None
         for y in value:
-            y._design = self
+            y.design = self
         self._work_tasks = value
             
     work_tasks = property(get_work_tasks, set_work_tasks)
@@ -4191,7 +4500,8 @@ class Design(Document):
     def add_work_tasks(self, *work_tasks):
         for obj in work_tasks:
             obj._design = self
-            self._work_tasks.append(obj)
+            if obj not in self._work_tasks:
+                self._work_tasks.append(obj)
         
     def remove_work_tasks(self, *work_tasks):
         for obj in work_tasks:
@@ -4237,48 +4547,87 @@ class WorkTask(Document):
     """
     # <<< work_task
     # @generated
-    def __init__(self, sched_override='', priority='', qualification_requirements=[], design=None, design_location_cus=[], misc_cost_items=[], switching_schedules=[], capabilities=[], usages=[], overhead_cost=None, work_flow_step=None, material_items=[], labor_items=[], crews=[], work=None, contractor_items=[], equipment_items=[], work_cost_details=[], assets=[], **kw_args):
+    def __init__(self, sched_override='', priority='', qualification_requirements=None, design=None, design_location_cus=None, misc_cost_items=None, switching_schedules=None, capabilities=None, usages=None, overhead_cost=None, work_flow_step=None, material_items=None, labor_items=None, crews=None, work=None, contractor_items=None, equipment_items=None, work_cost_details=None, assets=None, **kw_args):
         """ Initialises a new 'WorkTask' instance.
         """
         # If specified, override schedule and perform this task in accordance with instructions specified here. 
-        self.sched_override = ''
+        self.sched_override = sched_override
         # The priority of this work task. 
-        self.priority = ''
+        self.priority = priority
         
         self._qualification_requirements = []
-        self.qualification_requirements = qualification_requirements
+        if qualification_requirements is None:
+            self.qualification_requirements = []
+        else:
+            self.qualification_requirements = qualification_requirements
         self._design = None
         self.design = design
         self._design_location_cus = []
-        self.design_location_cus = design_location_cus
+        if design_location_cus is None:
+            self.design_location_cus = []
+        else:
+            self.design_location_cus = design_location_cus
         self._misc_cost_items = []
-        self.misc_cost_items = misc_cost_items
+        if misc_cost_items is None:
+            self.misc_cost_items = []
+        else:
+            self.misc_cost_items = misc_cost_items
         self._switching_schedules = []
-        self.switching_schedules = switching_schedules
+        if switching_schedules is None:
+            self.switching_schedules = []
+        else:
+            self.switching_schedules = switching_schedules
         self._capabilities = []
-        self.capabilities = capabilities
+        if capabilities is None:
+            self.capabilities = []
+        else:
+            self.capabilities = capabilities
         self._usages = []
-        self.usages = usages
+        if usages is None:
+            self.usages = []
+        else:
+            self.usages = usages
         self._overhead_cost = None
         self.overhead_cost = overhead_cost
         self._work_flow_step = None
         self.work_flow_step = work_flow_step
         self._material_items = []
-        self.material_items = material_items
+        if material_items is None:
+            self.material_items = []
+        else:
+            self.material_items = material_items
         self._labor_items = []
-        self.labor_items = labor_items
+        if labor_items is None:
+            self.labor_items = []
+        else:
+            self.labor_items = labor_items
         self._crews = []
-        self.crews = crews
+        if crews is None:
+            self.crews = []
+        else:
+            self.crews = crews
         self._work = None
         self.work = work
         self._contractor_items = []
-        self.contractor_items = contractor_items
+        if contractor_items is None:
+            self.contractor_items = []
+        else:
+            self.contractor_items = contractor_items
         self._equipment_items = []
-        self.equipment_items = equipment_items
+        if equipment_items is None:
+            self.equipment_items = []
+        else:
+            self.equipment_items = equipment_items
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
         self._assets = []
-        self.assets = assets
+        if assets is None:
+            self.assets = []
+        else:
+            self.assets = assets
 
         super(WorkTask, self).__init__(**kw_args)
     # >>> work_task
@@ -4328,7 +4677,8 @@ class WorkTask(Document):
             
         self._design = value
         if self._design is not None:
-            self._design._work_tasks.append(self)
+            if self not in self._design._work_tasks:
+                self._design._work_tasks.append(self)
 
     design = property(get_design, set_design)
     # >>> design
@@ -4373,9 +4723,9 @@ class WorkTask(Document):
 
     def set_misc_cost_items(self, value):
         for x in self._misc_cost_items:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._misc_cost_items = value
             
     misc_cost_items = property(get_misc_cost_items, set_misc_cost_items)
@@ -4383,7 +4733,8 @@ class WorkTask(Document):
     def add_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
             obj._work_task = self
-            self._misc_cost_items.append(obj)
+            if obj not in self._misc_cost_items:
+                self._misc_cost_items.append(obj)
         
     def remove_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
@@ -4400,9 +4751,9 @@ class WorkTask(Document):
 
     def set_switching_schedules(self, value):
         for x in self._switching_schedules:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._switching_schedules = value
             
     switching_schedules = property(get_switching_schedules, set_switching_schedules)
@@ -4410,7 +4761,8 @@ class WorkTask(Document):
     def add_switching_schedules(self, *switching_schedules):
         for obj in switching_schedules:
             obj._work_task = self
-            self._switching_schedules.append(obj)
+            if obj not in self._switching_schedules:
+                self._switching_schedules.append(obj)
         
     def remove_switching_schedules(self, *switching_schedules):
         for obj in switching_schedules:
@@ -4458,9 +4810,9 @@ class WorkTask(Document):
 
     def set_usages(self, value):
         for x in self._usages:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._usages = value
             
     usages = property(get_usages, set_usages)
@@ -4468,7 +4820,8 @@ class WorkTask(Document):
     def add_usages(self, *usages):
         for obj in usages:
             obj._work_task = self
-            self._usages.append(obj)
+            if obj not in self._usages:
+                self._usages.append(obj)
         
     def remove_usages(self, *usages):
         for obj in usages:
@@ -4490,7 +4843,8 @@ class WorkTask(Document):
             
         self._overhead_cost = value
         if self._overhead_cost is not None:
-            self._overhead_cost._work_tasks.append(self)
+            if self not in self._overhead_cost._work_tasks:
+                self._overhead_cost._work_tasks.append(self)
 
     overhead_cost = property(get_overhead_cost, set_overhead_cost)
     # >>> overhead_cost
@@ -4509,7 +4863,8 @@ class WorkTask(Document):
             
         self._work_flow_step = value
         if self._work_flow_step is not None:
-            self._work_flow_step._work_tasks.append(self)
+            if self not in self._work_flow_step._work_tasks:
+                self._work_flow_step._work_tasks.append(self)
 
     work_flow_step = property(get_work_flow_step, set_work_flow_step)
     # >>> work_flow_step
@@ -4523,9 +4878,9 @@ class WorkTask(Document):
 
     def set_material_items(self, value):
         for x in self._material_items:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._material_items = value
             
     material_items = property(get_material_items, set_material_items)
@@ -4533,7 +4888,8 @@ class WorkTask(Document):
     def add_material_items(self, *material_items):
         for obj in material_items:
             obj._work_task = self
-            self._material_items.append(obj)
+            if obj not in self._material_items:
+                self._material_items.append(obj)
         
     def remove_material_items(self, *material_items):
         for obj in material_items:
@@ -4550,9 +4906,9 @@ class WorkTask(Document):
 
     def set_labor_items(self, value):
         for x in self._labor_items:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._labor_items = value
             
     labor_items = property(get_labor_items, set_labor_items)
@@ -4560,7 +4916,8 @@ class WorkTask(Document):
     def add_labor_items(self, *labor_items):
         for obj in labor_items:
             obj._work_task = self
-            self._labor_items.append(obj)
+            if obj not in self._labor_items:
+                self._labor_items.append(obj)
         
     def remove_labor_items(self, *labor_items):
         for obj in labor_items:
@@ -4613,7 +4970,8 @@ class WorkTask(Document):
             
         self._work = value
         if self._work is not None:
-            self._work._work_tasks.append(self)
+            if self not in self._work._work_tasks:
+                self._work._work_tasks.append(self)
 
     work = property(get_work, set_work)
     # >>> work
@@ -4627,9 +4985,9 @@ class WorkTask(Document):
 
     def set_contractor_items(self, value):
         for x in self._contractor_items:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._contractor_items = value
             
     contractor_items = property(get_contractor_items, set_contractor_items)
@@ -4637,7 +4995,8 @@ class WorkTask(Document):
     def add_contractor_items(self, *contractor_items):
         for obj in contractor_items:
             obj._work_task = self
-            self._contractor_items.append(obj)
+            if obj not in self._contractor_items:
+                self._contractor_items.append(obj)
         
     def remove_contractor_items(self, *contractor_items):
         for obj in contractor_items:
@@ -4654,9 +5013,9 @@ class WorkTask(Document):
 
     def set_equipment_items(self, value):
         for x in self._equipment_items:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._equipment_items = value
             
     equipment_items = property(get_equipment_items, set_equipment_items)
@@ -4664,7 +5023,8 @@ class WorkTask(Document):
     def add_equipment_items(self, *equipment_items):
         for obj in equipment_items:
             obj._work_task = self
-            self._equipment_items.append(obj)
+            if obj not in self._equipment_items:
+                self._equipment_items.append(obj)
         
     def remove_equipment_items(self, *equipment_items):
         for obj in equipment_items:
@@ -4681,9 +5041,9 @@ class WorkTask(Document):
 
     def set_work_cost_details(self, value):
         for x in self._work_cost_details:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._work_cost_details = value
             
     work_cost_details = property(get_work_cost_details, set_work_cost_details)
@@ -4691,7 +5051,8 @@ class WorkTask(Document):
     def add_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
             obj._work_task = self
-            self._work_cost_details.append(obj)
+            if obj not in self._work_cost_details:
+                self._work_cost_details.append(obj)
         
     def remove_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
@@ -4708,9 +5069,9 @@ class WorkTask(Document):
 
     def set_assets(self, value):
         for x in self._assets:
-            x._work_task = None
+            x.work_task = None
         for y in value:
-            y._work_task = self
+            y.work_task = self
         self._assets = value
             
     assets = property(get_assets, set_assets)
@@ -4718,7 +5079,8 @@ class WorkTask(Document):
     def add_assets(self, *assets):
         for obj in assets:
             obj._work_task = self
-            self._assets.append(obj)
+            if obj not in self._assets:
+                self._assets.append(obj)
         
     def remove_assets(self, *assets):
         for obj in assets:
@@ -4733,13 +5095,13 @@ class NonStandardItem(Document):
     """
     # <<< non_standard_item
     # @generated
-    def __init__(self, code='', amount='', **kw_args):
+    def __init__(self, code='', amount=0.0, **kw_args):
         """ Initialises a new 'NonStandardItem' instance.
         """
         # The category of non-standard work. 
-        self.code = ''
+        self.code = code
         # The projected cost for this item. 
-        self.amount = ''
+        self.amount = amount
         
 
         super(NonStandardItem, self).__init__(**kw_args)
@@ -4752,21 +5114,30 @@ class ConditionFactor(IdentifiedObject):
     """
     # <<< condition_factor
     # @generated
-    def __init__(self, kind='material', cf_value='', status=None, designs=[], design_location_cus=[], design_locations=[], **kw_args):
+    def __init__(self, kind='material', cf_value='', status=None, designs=None, design_location_cus=None, design_locations=None, **kw_args):
         """ Initialises a new 'ConditionFactor' instance.
         """
         # Kind of this condition factor. Values are: "material", "travel", "other", "account_allocation", "labor"
-        self.kind = 'material'
+        self.kind = kind
         # The actual value of the condition factor, such as labor flat fee or percentage. 
-        self.cf_value = ''
+        self.cf_value = cf_value
         
         self.status = status
         self._designs = []
-        self.designs = designs
+        if designs is None:
+            self.designs = []
+        else:
+            self.designs = designs
         self._design_location_cus = []
-        self.design_location_cus = design_location_cus
+        if design_location_cus is None:
+            self.design_location_cus = []
+        else:
+            self.design_location_cus = design_location_cus
         self._design_locations = []
-        self.design_locations = design_locations
+        if design_locations is None:
+            self.design_locations = []
+        else:
+            self.design_locations = design_locations
 
         super(ConditionFactor, self).__init__(**kw_args)
     # >>> condition_factor
@@ -4876,19 +5247,31 @@ class CUGroup(IdentifiedObject):
     """
     # <<< cugroup
     # @generated
-    def __init__(self, status=None, compatible_units=[], design_location_cus=[], child_cugroups=[], parent_cugroups=[], **kw_args):
+    def __init__(self, status=None, compatible_units=None, design_location_cus=None, child_cugroups=None, parent_cugroups=None, **kw_args):
         """ Initialises a new 'CUGroup' instance.
         """
         
         self.status = status
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._design_location_cus = []
-        self.design_location_cus = design_location_cus
+        if design_location_cus is None:
+            self.design_location_cus = []
+        else:
+            self.design_location_cus = design_location_cus
         self._child_cugroups = []
-        self.child_cugroups = child_cugroups
+        if child_cugroups is None:
+            self.child_cugroups = []
+        else:
+            self.child_cugroups = child_cugroups
         self._parent_cugroups = []
-        self.parent_cugroups = parent_cugroups
+        if parent_cugroups is None:
+            self.parent_cugroups = []
+        else:
+            self.parent_cugroups = parent_cugroups
 
         super(CUGroup, self).__init__(**kw_args)
     # >>> cugroup
@@ -4907,9 +5290,9 @@ class CUGroup(IdentifiedObject):
 
     def set_compatible_units(self, value):
         for x in self._compatible_units:
-            x._cugroup = None
+            x.cugroup = None
         for y in value:
-            y._cugroup = self
+            y.cugroup = self
         self._compatible_units = value
             
     compatible_units = property(get_compatible_units, set_compatible_units)
@@ -4917,7 +5300,8 @@ class CUGroup(IdentifiedObject):
     def add_compatible_units(self, *compatible_units):
         for obj in compatible_units:
             obj._cugroup = self
-            self._compatible_units.append(obj)
+            if obj not in self._compatible_units:
+                self._compatible_units.append(obj)
         
     def remove_compatible_units(self, *compatible_units):
         for obj in compatible_units:
@@ -5025,19 +5409,22 @@ class ContractorItem(IdentifiedObject):
     """
     # <<< contractor_item
     # @generated
-    def __init__(self, bid_amount='', cost='', activity_code='', status=None, erp_payables=[], work_cost_detail=None, work_task=None, **kw_args):
+    def __init__(self, bid_amount=0.0, cost=0.0, activity_code='', status=None, erp_payables=None, work_cost_detail=None, work_task=None, **kw_args):
         """ Initialises a new 'ContractorItem' instance.
         """
         # The amount that a given contractor will charge for performing this unit of work. 
-        self.bid_amount = ''
+        self.bid_amount = bid_amount
         # The total amount charged. 
-        self.cost = ''
+        self.cost = cost
         # Activity code identifies a specific and distinguishable unit of work. 
-        self.activity_code = ''
+        self.activity_code = activity_code
         
         self.status = status
         self._erp_payables = []
-        self.erp_payables = erp_payables
+        if erp_payables is None:
+            self.erp_payables = []
+        else:
+            self.erp_payables = erp_payables
         self._work_cost_detail = None
         self.work_cost_detail = work_cost_detail
         self._work_task = None
@@ -5096,7 +5483,8 @@ class ContractorItem(IdentifiedObject):
             
         self._work_cost_detail = value
         if self._work_cost_detail is not None:
-            self._work_cost_detail._contractor_items.append(self)
+            if self not in self._work_cost_detail._contractor_items:
+                self._work_cost_detail._contractor_items.append(self)
 
     work_cost_detail = property(get_work_cost_detail, set_work_cost_detail)
     # >>> work_cost_detail
@@ -5115,7 +5503,8 @@ class ContractorItem(IdentifiedObject):
             
         self._work_task = value
         if self._work_task is not None:
-            self._work_task._contractor_items.append(self)
+            if self not in self._work_task._contractor_items:
+                self._work_task._contractor_items.append(self)
 
     work_task = property(get_work_task, set_work_task)
     # >>> work_task
@@ -5127,19 +5516,22 @@ class CUAsset(IdentifiedObject):
     """
     # <<< cuasset
     # @generated
-    def __init__(self, quantity='', type_asset_code='', status=None, type_asset=None, compatible_units=[], **kw_args):
+    def __init__(self, quantity=0, type_asset_code='', status=None, type_asset=None, compatible_units=None, **kw_args):
         """ Initialises a new 'CUAsset' instance.
         """
         # Quantity of the type asset within the CU. 
-        self.quantity = ''
+        self.quantity = quantity
         # The code for this type of asset. 
-        self.type_asset_code = ''
+        self.type_asset_code = type_asset_code
         
         self.status = status
         self._type_asset = None
         self.type_asset = type_asset
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
 
         super(CUAsset, self).__init__(**kw_args)
     # >>> cuasset
@@ -5205,29 +5597,53 @@ class DesignLocation(IdentifiedObject):
     """
     # <<< design_location
     # @generated
-    def __init__(self, span_length='', status=None, diagrams=[], erp_bom_item_datas=[], misc_cost_items=[], design_location_cus=[], material_items=[], condition_factors=[], work_locations=[], designs=[], **kw_args):
+    def __init__(self, span_length=0.0, status=None, diagrams=None, erp_bom_item_datas=None, misc_cost_items=None, design_location_cus=None, material_items=None, condition_factors=None, work_locations=None, designs=None, **kw_args):
         """ Initialises a new 'DesignLocation' instance.
         """
         # The legth of the span from the previous pole to this pole. 
-        self.span_length = ''
+        self.span_length = span_length
         
         self.status = status
         self._diagrams = []
-        self.diagrams = diagrams
+        if diagrams is None:
+            self.diagrams = []
+        else:
+            self.diagrams = diagrams
         self._erp_bom_item_datas = []
-        self.erp_bom_item_datas = erp_bom_item_datas
+        if erp_bom_item_datas is None:
+            self.erp_bom_item_datas = []
+        else:
+            self.erp_bom_item_datas = erp_bom_item_datas
         self._misc_cost_items = []
-        self.misc_cost_items = misc_cost_items
+        if misc_cost_items is None:
+            self.misc_cost_items = []
+        else:
+            self.misc_cost_items = misc_cost_items
         self._design_location_cus = []
-        self.design_location_cus = design_location_cus
+        if design_location_cus is None:
+            self.design_location_cus = []
+        else:
+            self.design_location_cus = design_location_cus
         self._material_items = []
-        self.material_items = material_items
+        if material_items is None:
+            self.material_items = []
+        else:
+            self.material_items = material_items
         self._condition_factors = []
-        self.condition_factors = condition_factors
+        if condition_factors is None:
+            self.condition_factors = []
+        else:
+            self.condition_factors = condition_factors
         self._work_locations = []
-        self.work_locations = work_locations
+        if work_locations is None:
+            self.work_locations = []
+        else:
+            self.work_locations = work_locations
         self._designs = []
-        self.designs = designs
+        if designs is None:
+            self.designs = []
+        else:
+            self.designs = designs
 
         super(DesignLocation, self).__init__(**kw_args)
     # >>> design_location
@@ -5277,9 +5693,9 @@ class DesignLocation(IdentifiedObject):
 
     def set_erp_bom_item_datas(self, value):
         for x in self._erp_bom_item_datas:
-            x._design_location = None
+            x.design_location = None
         for y in value:
-            y._design_location = self
+            y.design_location = self
         self._erp_bom_item_datas = value
             
     erp_bom_item_datas = property(get_erp_bom_item_datas, set_erp_bom_item_datas)
@@ -5287,7 +5703,8 @@ class DesignLocation(IdentifiedObject):
     def add_erp_bom_item_datas(self, *erp_bom_item_datas):
         for obj in erp_bom_item_datas:
             obj._design_location = self
-            self._erp_bom_item_datas.append(obj)
+            if obj not in self._erp_bom_item_datas:
+                self._erp_bom_item_datas.append(obj)
         
     def remove_erp_bom_item_datas(self, *erp_bom_item_datas):
         for obj in erp_bom_item_datas:
@@ -5304,9 +5721,9 @@ class DesignLocation(IdentifiedObject):
 
     def set_misc_cost_items(self, value):
         for x in self._misc_cost_items:
-            x._design_location = None
+            x.design_location = None
         for y in value:
-            y._design_location = self
+            y.design_location = self
         self._misc_cost_items = value
             
     misc_cost_items = property(get_misc_cost_items, set_misc_cost_items)
@@ -5314,7 +5731,8 @@ class DesignLocation(IdentifiedObject):
     def add_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
             obj._design_location = self
-            self._misc_cost_items.append(obj)
+            if obj not in self._misc_cost_items:
+                self._misc_cost_items.append(obj)
         
     def remove_misc_cost_items(self, *misc_cost_items):
         for obj in misc_cost_items:
@@ -5331,9 +5749,9 @@ class DesignLocation(IdentifiedObject):
 
     def set_design_location_cus(self, value):
         for x in self._design_location_cus:
-            x._design_location = None
+            x.design_location = None
         for y in value:
-            y._design_location = self
+            y.design_location = self
         self._design_location_cus = value
             
     design_location_cus = property(get_design_location_cus, set_design_location_cus)
@@ -5341,7 +5759,8 @@ class DesignLocation(IdentifiedObject):
     def add_design_location_cus(self, *design_location_cus):
         for obj in design_location_cus:
             obj._design_location = self
-            self._design_location_cus.append(obj)
+            if obj not in self._design_location_cus:
+                self._design_location_cus.append(obj)
         
     def remove_design_location_cus(self, *design_location_cus):
         for obj in design_location_cus:
@@ -5358,9 +5777,9 @@ class DesignLocation(IdentifiedObject):
 
     def set_material_items(self, value):
         for x in self._material_items:
-            x._design_location = None
+            x.design_location = None
         for y in value:
-            y._design_location = self
+            y.design_location = self
         self._material_items = value
             
     material_items = property(get_material_items, set_material_items)
@@ -5368,7 +5787,8 @@ class DesignLocation(IdentifiedObject):
     def add_material_items(self, *material_items):
         for obj in material_items:
             obj._design_location = self
-            self._material_items.append(obj)
+            if obj not in self._material_items:
+                self._material_items.append(obj)
         
     def remove_material_items(self, *material_items):
         for obj in material_items:
@@ -5476,19 +5896,25 @@ class OverheadCost(IdentifiedObject):
     """
     # <<< overhead_cost
     # @generated
-    def __init__(self, cost='', code='', status=None, work_tasks=[], work_cost_details=[], **kw_args):
+    def __init__(self, cost=0.0, code='', status=None, work_tasks=None, work_cost_details=None, **kw_args):
         """ Initialises a new 'OverheadCost' instance.
         """
         # The overhead cost to be applied. 
-        self.cost = ''
+        self.cost = cost
         # Overhead code. 
-        self.code = ''
+        self.code = code
         
         self.status = status
         self._work_tasks = []
-        self.work_tasks = work_tasks
+        if work_tasks is None:
+            self.work_tasks = []
+        else:
+            self.work_tasks = work_tasks
         self._work_cost_details = []
-        self.work_cost_details = work_cost_details
+        if work_cost_details is None:
+            self.work_cost_details = []
+        else:
+            self.work_cost_details = work_cost_details
 
         super(OverheadCost, self).__init__(**kw_args)
     # >>> overhead_cost
@@ -5507,9 +5933,9 @@ class OverheadCost(IdentifiedObject):
 
     def set_work_tasks(self, value):
         for x in self._work_tasks:
-            x._overhead_cost = None
+            x.overhead_cost = None
         for y in value:
-            y._overhead_cost = self
+            y.overhead_cost = self
         self._work_tasks = value
             
     work_tasks = property(get_work_tasks, set_work_tasks)
@@ -5517,7 +5943,8 @@ class OverheadCost(IdentifiedObject):
     def add_work_tasks(self, *work_tasks):
         for obj in work_tasks:
             obj._overhead_cost = self
-            self._work_tasks.append(obj)
+            if obj not in self._work_tasks:
+                self._work_tasks.append(obj)
         
     def remove_work_tasks(self, *work_tasks):
         for obj in work_tasks:
@@ -5534,9 +5961,9 @@ class OverheadCost(IdentifiedObject):
 
     def set_work_cost_details(self, value):
         for x in self._work_cost_details:
-            x._overhead_cost = None
+            x.overhead_cost = None
         for y in value:
-            y._overhead_cost = self
+            y.overhead_cost = self
         self._work_cost_details = value
             
     work_cost_details = property(get_work_cost_details, set_work_cost_details)
@@ -5544,7 +5971,8 @@ class OverheadCost(IdentifiedObject):
     def add_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
             obj._overhead_cost = self
-            self._work_cost_details.append(obj)
+            if obj not in self._work_cost_details:
+                self._work_cost_details.append(obj)
         
     def remove_work_cost_details(self, *work_cost_details):
         for obj in work_cost_details:
@@ -5563,7 +5991,7 @@ class Regulation(Document):
         """ Initialises a new 'Regulation' instance.
         """
         # External reference to regulation, if applicable. 
-        self.reference_number = ''
+        self.reference_number = reference_number
         
 
         super(Regulation, self).__init__(**kw_args)
@@ -5580,19 +6008,19 @@ class InfoQuestion(Document):
         """ Initialises a new 'InfoQuestion' instance.
         """
         # Answer to question. 
-        self.answer = ''
+        self.answer = answer
         # Remarks to qualify the question in this situation. 
-        self.question_remark = ''
+        self.question_remark = question_remark
         # The question code. If blank, refer to questionText. 
-        self.question_code = ''
+        self.question_code = question_code
         # The category of the question. 
-        self.question_category = ''
+        self.question_category = question_category
         # The date and time the quesiton was answered. 
-        self.answer_date_time = ''
+        self.answer_date_time = answer_date_time
         # Remarks to qualify the answer. 
-        self.answer_remark = ''
+        self.answer_remark = answer_remark
         # For non-coded questions, the question is provided here. 
-        self.question_text = ''
+        self.question_text = question_text
         
 
         super(InfoQuestion, self).__init__(**kw_args)
@@ -5605,17 +6033,20 @@ class CUWorkEquipmentItem(IdentifiedObject):
     """
     # <<< cuwork_equipment_item
     # @generated
-    def __init__(self, equip_code='', rate='', status=None, compatible_units=[], type_asset=None, **kw_args):
+    def __init__(self, equip_code='', rate=0.0, status=None, compatible_units=None, type_asset=None, **kw_args):
         """ Initialises a new 'CUWorkEquipmentItem' instance.
         """
         # The equipment type code. 
-        self.equip_code = ''
+        self.equip_code = equip_code
         # Standard usage rate for the type of vehicle. 
-        self.rate = ''
+        self.rate = rate
         
         self.status = status
         self._compatible_units = []
-        self.compatible_units = compatible_units
+        if compatible_units is None:
+            self.compatible_units = []
+        else:
+            self.compatible_units = compatible_units
         self._type_asset = None
         self.type_asset = type_asset
 

@@ -19,16 +19,25 @@ class GenerationProvider(ErpOrganisation):
     """
     # <<< generation_provider
     # @generated
-    def __init__(self, generating_units=[], service_point=[], energy_products=[], **kw_args):
+    def __init__(self, generating_units=None, service_point=None, energy_products=None, **kw_args):
         """ Initialises a new 'GenerationProvider' instance.
         """
         
         self._generating_units = []
-        self.generating_units = generating_units
+        if generating_units is None:
+            self.generating_units = []
+        else:
+            self.generating_units = generating_units
         self._service_point = []
-        self.service_point = service_point
+        if service_point is None:
+            self.service_point = []
+        else:
+            self.service_point = service_point
         self._energy_products = []
-        self.energy_products = energy_products
+        if energy_products is None:
+            self.energy_products = []
+        else:
+            self.energy_products = energy_products
 
         super(GenerationProvider, self).__init__(**kw_args)
     # >>> generation_provider
@@ -42,9 +51,9 @@ class GenerationProvider(ErpOrganisation):
 
     def set_generating_units(self, value):
         for x in self._generating_units:
-            x._operated_by_generation_provider = None
+            x.operated_by_generation_provider = None
         for y in value:
-            y._operated_by_generation_provider = self
+            y.operated_by_generation_provider = self
         self._generating_units = value
             
     generating_units = property(get_generating_units, set_generating_units)
@@ -52,7 +61,8 @@ class GenerationProvider(ErpOrganisation):
     def add_generating_units(self, *generating_units):
         for obj in generating_units:
             obj._operated_by_generation_provider = self
-            self._generating_units.append(obj)
+            if obj not in self._generating_units:
+                self._generating_units.append(obj)
         
     def remove_generating_units(self, *generating_units):
         for obj in generating_units:
@@ -69,9 +79,9 @@ class GenerationProvider(ErpOrganisation):
 
     def set_service_point(self, value):
         for x in self._service_point:
-            x._generation_provider = None
+            x.generation_provider = None
         for y in value:
-            y._generation_provider = self
+            y.generation_provider = self
         self._service_point = value
             
     service_point = property(get_service_point, set_service_point)
@@ -79,7 +89,8 @@ class GenerationProvider(ErpOrganisation):
     def add_service_point(self, *service_point):
         for obj in service_point:
             obj._generation_provider = self
-            self._service_point.append(obj)
+            if obj not in self._service_point:
+                self._service_point.append(obj)
         
     def remove_service_point(self, *service_point):
         for obj in service_point:
@@ -96,9 +107,9 @@ class GenerationProvider(ErpOrganisation):
 
     def set_energy_products(self, value):
         for x in self._energy_products:
-            x._generation_provider = None
+            x.generation_provider = None
         for y in value:
-            y._generation_provider = self
+            y.generation_provider = self
         self._energy_products = value
             
     energy_products = property(get_energy_products, set_energy_products)
@@ -106,7 +117,8 @@ class GenerationProvider(ErpOrganisation):
     def add_energy_products(self, *energy_products):
         for obj in energy_products:
             obj._generation_provider = self
-            self._energy_products.append(obj)
+            if obj not in self._energy_products:
+                self._energy_products.append(obj)
         
     def remove_energy_products(self, *energy_products):
         for obj in energy_products:
@@ -119,14 +131,20 @@ class GenerationProvider(ErpOrganisation):
 class TransmissionProduct(IdentifiedObject):
     # <<< transmission_product
     # @generated
-    def __init__(self, location_for=[], offers=[], transmission_provider=None, **kw_args):
+    def __init__(self, location_for=None, offers=None, transmission_provider=None, **kw_args):
         """ Initialises a new 'TransmissionProduct' instance.
         """
         
         self._location_for = []
-        self.location_for = location_for
+        if location_for is None:
+            self.location_for = []
+        else:
+            self.location_for = location_for
         self._offers = []
-        self.offers = offers
+        if offers is None:
+            self.offers = []
+        else:
+            self.offers = offers
         self._transmission_provider = None
         self.transmission_provider = transmission_provider
 
@@ -209,7 +227,8 @@ class TransmissionProduct(IdentifiedObject):
             
         self._transmission_provider = value
         if self._transmission_provider is not None:
-            self._transmission_provider._transmission_products.append(self)
+            if self not in self._transmission_provider._transmission_products:
+                self._transmission_provider._transmission_products.append(self)
 
     transmission_provider = property(get_transmission_provider, set_transmission_provider)
     # >>> transmission_provider
@@ -221,14 +240,20 @@ class CustomerConsumer(ErpOrganisation):
     """
     # <<< customer_consumer
     # @generated
-    def __init__(self, service_point=[], tie_lines=[], **kw_args):
+    def __init__(self, service_point=None, tie_lines=None, **kw_args):
         """ Initialises a new 'CustomerConsumer' instance.
         """
         
         self._service_point = []
-        self.service_point = service_point
+        if service_point is None:
+            self.service_point = []
+        else:
+            self.service_point = service_point
         self._tie_lines = []
-        self.tie_lines = tie_lines
+        if tie_lines is None:
+            self.tie_lines = []
+        else:
+            self.tie_lines = tie_lines
 
         super(CustomerConsumer, self).__init__(**kw_args)
     # >>> customer_consumer
@@ -242,9 +267,9 @@ class CustomerConsumer(ErpOrganisation):
 
     def set_service_point(self, value):
         for x in self._service_point:
-            x._customer_consumer = None
+            x.customer_consumer = None
         for y in value:
-            y._customer_consumer = self
+            y.customer_consumer = self
         self._service_point = value
             
     service_point = property(get_service_point, set_service_point)
@@ -252,7 +277,8 @@ class CustomerConsumer(ErpOrganisation):
     def add_service_point(self, *service_point):
         for obj in service_point:
             obj._customer_consumer = self
-            self._service_point.append(obj)
+            if obj not in self._service_point:
+                self._service_point.append(obj)
         
     def remove_service_point(self, *service_point):
         for obj in service_point:
@@ -269,9 +295,9 @@ class CustomerConsumer(ErpOrganisation):
 
     def set_tie_lines(self, value):
         for x in self._tie_lines:
-            x._customer_consumer = None
+            x.customer_consumer = None
         for y in value:
-            y._customer_consumer = self
+            y.customer_consumer = self
         self._tie_lines = value
             
     tie_lines = property(get_tie_lines, set_tie_lines)
@@ -279,7 +305,8 @@ class CustomerConsumer(ErpOrganisation):
     def add_tie_lines(self, *tie_lines):
         for obj in tie_lines:
             obj._customer_consumer = self
-            self._tie_lines.append(obj)
+            if obj not in self._tie_lines:
+                self._tie_lines.append(obj)
         
     def remove_tie_lines(self, *tie_lines):
         for obj in tie_lines:
@@ -294,16 +321,22 @@ class ControlAreaOperator(ErpOrganisation):
     """
     # <<< control_area_operator
     # @generated
-    def __init__(self, controlled_by=None, ancillary_service=[], tie_lines=[], **kw_args):
+    def __init__(self, controlled_by=None, ancillary_service=None, tie_lines=None, **kw_args):
         """ Initialises a new 'ControlAreaOperator' instance.
         """
         
         self._controlled_by = None
         self.controlled_by = controlled_by
         self._ancillary_service = []
-        self.ancillary_service = ancillary_service
+        if ancillary_service is None:
+            self.ancillary_service = []
+        else:
+            self.ancillary_service = ancillary_service
         self._tie_lines = []
-        self.tie_lines = tie_lines
+        if tie_lines is None:
+            self.tie_lines = []
+        else:
+            self.tie_lines = tie_lines
 
         super(ControlAreaOperator, self).__init__(**kw_args)
     # >>> control_area_operator
@@ -335,9 +368,9 @@ class ControlAreaOperator(ErpOrganisation):
 
     def set_ancillary_service(self, value):
         for x in self._ancillary_service:
-            x._control_area_operator = None
+            x.control_area_operator = None
         for y in value:
-            y._control_area_operator = self
+            y.control_area_operator = self
         self._ancillary_service = value
             
     ancillary_service = property(get_ancillary_service, set_ancillary_service)
@@ -345,7 +378,8 @@ class ControlAreaOperator(ErpOrganisation):
     def add_ancillary_service(self, *ancillary_service):
         for obj in ancillary_service:
             obj._control_area_operator = self
-            self._ancillary_service.append(obj)
+            if obj not in self._ancillary_service:
+                self._ancillary_service.append(obj)
         
     def remove_ancillary_service(self, *ancillary_service):
         for obj in ancillary_service:
@@ -391,12 +425,15 @@ class IntSchedAgreement(Agreement):
     """
     # <<< int_sched_agreement
     # @generated
-    def __init__(self, organisations=[], **kw_args):
+    def __init__(self, organisations=None, **kw_args):
         """ Initialises a new 'IntSchedAgreement' instance.
         """
         
         self._organisations = []
-        self.organisations = organisations
+        if organisations is None:
+            self.organisations = []
+        else:
+            self.organisations = organisations
 
         super(IntSchedAgreement, self).__init__(**kw_args)
     # >>> int_sched_agreement
@@ -439,18 +476,27 @@ class Marketer(ErpOrganisation):
     """
     # <<< marketer
     # @generated
-    def __init__(self, holds_title_to_energy_products=[], resold_by=None, held_by=[], resells_energy_product=[], **kw_args):
+    def __init__(self, holds_title_to_energy_products=None, resold_by=None, held_by=None, resells_energy_product=None, **kw_args):
         """ Initialises a new 'Marketer' instance.
         """
         
         self._holds_title_to_energy_products = []
-        self.holds_title_to_energy_products = holds_title_to_energy_products
+        if holds_title_to_energy_products is None:
+            self.holds_title_to_energy_products = []
+        else:
+            self.holds_title_to_energy_products = holds_title_to_energy_products
         self._resold_by = None
         self.resold_by = resold_by
         self._held_by = []
-        self.held_by = held_by
+        if held_by is None:
+            self.held_by = []
+        else:
+            self.held_by = held_by
         self._resells_energy_product = []
-        self.resells_energy_product = resells_energy_product
+        if resells_energy_product is None:
+            self.resells_energy_product = []
+        else:
+            self.resells_energy_product = resells_energy_product
 
         super(Marketer, self).__init__(**kw_args)
     # >>> marketer
@@ -464,9 +510,9 @@ class Marketer(ErpOrganisation):
 
     def set_holds_title_to_energy_products(self, value):
         for x in self._holds_title_to_energy_products:
-            x._title_held_by_marketer = None
+            x.title_held_by_marketer = None
         for y in value:
-            y._title_held_by_marketer = self
+            y.title_held_by_marketer = self
         self._holds_title_to_energy_products = value
             
     holds_title_to_energy_products = property(get_holds_title_to_energy_products, set_holds_title_to_energy_products)
@@ -474,7 +520,8 @@ class Marketer(ErpOrganisation):
     def add_holds_title_to_energy_products(self, *holds_title_to_energy_products):
         for obj in holds_title_to_energy_products:
             obj._title_held_by_marketer = self
-            self._holds_title_to_energy_products.append(obj)
+            if obj not in self._holds_title_to_energy_products:
+                self._holds_title_to_energy_products.append(obj)
         
     def remove_holds_title_to_energy_products(self, *holds_title_to_energy_products):
         for obj in holds_title_to_energy_products:
@@ -509,9 +556,9 @@ class Marketer(ErpOrganisation):
 
     def set_held_by(self, value):
         for x in self._held_by:
-            x._holds = None
+            x.holds = None
         for y in value:
-            y._holds = self
+            y.holds = self
         self._held_by = value
             
     held_by = property(get_held_by, set_held_by)
@@ -519,7 +566,8 @@ class Marketer(ErpOrganisation):
     def add_held_by(self, *held_by):
         for obj in held_by:
             obj._holds = self
-            self._held_by.append(obj)
+            if obj not in self._held_by:
+                self._held_by.append(obj)
         
     def remove_held_by(self, *held_by):
         for obj in held_by:
@@ -567,9 +615,9 @@ class FinancialVersion(Element):
         """ Initialises a new 'FinancialVersion' instance.
         """
  
-        self.date = ''
+        self.date = date
  
-        self.version = ''
+        self.version = version
         
 
         super(FinancialVersion, self).__init__(**kw_args)
@@ -582,14 +630,20 @@ class OpenAccessProduct(Agreement):
     """
     # <<< open_access_product
     # @generated
-    def __init__(self, ancillary_services=[], provided_by_transmission_service=[], **kw_args):
+    def __init__(self, ancillary_services=None, provided_by_transmission_service=None, **kw_args):
         """ Initialises a new 'OpenAccessProduct' instance.
         """
         
         self._ancillary_services = []
-        self.ancillary_services = ancillary_services
+        if ancillary_services is None:
+            self.ancillary_services = []
+        else:
+            self.ancillary_services = ancillary_services
         self._provided_by_transmission_service = []
-        self.provided_by_transmission_service = provided_by_transmission_service
+        if provided_by_transmission_service is None:
+            self.provided_by_transmission_service = []
+        else:
+            self.provided_by_transmission_service = provided_by_transmission_service
 
         super(OpenAccessProduct, self).__init__(**kw_args)
     # >>> open_access_product
@@ -603,9 +657,9 @@ class OpenAccessProduct(Agreement):
 
     def set_ancillary_services(self, value):
         for x in self._ancillary_services:
-            x._open_access_product = None
+            x.open_access_product = None
         for y in value:
-            y._open_access_product = self
+            y.open_access_product = self
         self._ancillary_services = value
             
     ancillary_services = property(get_ancillary_services, set_ancillary_services)
@@ -613,7 +667,8 @@ class OpenAccessProduct(Agreement):
     def add_ancillary_services(self, *ancillary_services):
         for obj in ancillary_services:
             obj._open_access_product = self
-            self._ancillary_services.append(obj)
+            if obj not in self._ancillary_services:
+                self._ancillary_services.append(obj)
         
     def remove_ancillary_services(self, *ancillary_services):
         for obj in ancillary_services:
@@ -630,9 +685,9 @@ class OpenAccessProduct(Agreement):
 
     def set_provided_by_transmission_service(self, value):
         for x in self._provided_by_transmission_service:
-            x._trans_contract_for = None
+            x.trans_contract_for = None
         for y in value:
-            y._trans_contract_for = self
+            y.trans_contract_for = self
         self._provided_by_transmission_service = value
             
     provided_by_transmission_service = property(get_provided_by_transmission_service, set_provided_by_transmission_service)
@@ -640,7 +695,8 @@ class OpenAccessProduct(Agreement):
     def add_provided_by_transmission_service(self, *provided_by_transmission_service):
         for obj in provided_by_transmission_service:
             obj._trans_contract_for = self
-            self._provided_by_transmission_service.append(obj)
+            if obj not in self._provided_by_transmission_service:
+                self._provided_by_transmission_service.append(obj)
         
     def remove_provided_by_transmission_service(self, *provided_by_transmission_service):
         for obj in provided_by_transmission_service:
@@ -655,24 +711,45 @@ class TransmissionProvider(ErpOrganisation):
     """
     # <<< transmission_provider
     # @generated
-    def __init__(self, service_point=[], transmission_products=[], flowgate=[], for_=[], offered_by=[], sold_by=[], ancillary_services=[], **kw_args):
+    def __init__(self, service_point=None, transmission_products=None, flowgate=None, for_=None, offered_by=None, sold_by=None, ancillary_services=None, **kw_args):
         """ Initialises a new 'TransmissionProvider' instance.
         """
         
         self._service_point = []
-        self.service_point = service_point
+        if service_point is None:
+            self.service_point = []
+        else:
+            self.service_point = service_point
         self._transmission_products = []
-        self.transmission_products = transmission_products
+        if transmission_products is None:
+            self.transmission_products = []
+        else:
+            self.transmission_products = transmission_products
         self._flowgate = []
-        self.flowgate = flowgate
+        if flowgate is None:
+            self.flowgate = []
+        else:
+            self.flowgate = flowgate
         self._for_ = []
-        self.for_ = for_
+        if for_ is None:
+            self.for_ = []
+        else:
+            self.for_ = for_
         self._offered_by = []
-        self.offered_by = offered_by
+        if offered_by is None:
+            self.offered_by = []
+        else:
+            self.offered_by = offered_by
         self._sold_by = []
-        self.sold_by = sold_by
+        if sold_by is None:
+            self.sold_by = []
+        else:
+            self.sold_by = sold_by
         self._ancillary_services = []
-        self.ancillary_services = ancillary_services
+        if ancillary_services is None:
+            self.ancillary_services = []
+        else:
+            self.ancillary_services = ancillary_services
 
         super(TransmissionProvider, self).__init__(**kw_args)
     # >>> transmission_provider
@@ -686,9 +763,9 @@ class TransmissionProvider(ErpOrganisation):
 
     def set_service_point(self, value):
         for x in self._service_point:
-            x._transmission_provider = None
+            x.transmission_provider = None
         for y in value:
-            y._transmission_provider = self
+            y.transmission_provider = self
         self._service_point = value
             
     service_point = property(get_service_point, set_service_point)
@@ -696,7 +773,8 @@ class TransmissionProvider(ErpOrganisation):
     def add_service_point(self, *service_point):
         for obj in service_point:
             obj._transmission_provider = self
-            self._service_point.append(obj)
+            if obj not in self._service_point:
+                self._service_point.append(obj)
         
     def remove_service_point(self, *service_point):
         for obj in service_point:
@@ -713,9 +791,9 @@ class TransmissionProvider(ErpOrganisation):
 
     def set_transmission_products(self, value):
         for x in self._transmission_products:
-            x._transmission_provider = None
+            x.transmission_provider = None
         for y in value:
-            y._transmission_provider = self
+            y.transmission_provider = self
         self._transmission_products = value
             
     transmission_products = property(get_transmission_products, set_transmission_products)
@@ -723,7 +801,8 @@ class TransmissionProvider(ErpOrganisation):
     def add_transmission_products(self, *transmission_products):
         for obj in transmission_products:
             obj._transmission_provider = self
-            self._transmission_products.append(obj)
+            if obj not in self._transmission_products:
+                self._transmission_products.append(obj)
         
     def remove_transmission_products(self, *transmission_products):
         for obj in transmission_products:
@@ -771,9 +850,9 @@ class TransmissionProvider(ErpOrganisation):
 
     def set_for_(self, value):
         for x in self._for_:
-            x._has_loss_ = None
+            x.has_loss_ = None
         for y in value:
-            y._has_loss_ = self
+            y.has_loss_ = self
         self._for_ = value
             
     for_ = property(get_for_, set_for_)
@@ -781,7 +860,8 @@ class TransmissionProvider(ErpOrganisation):
     def add_for_(self, *for_):
         for obj in for_:
             obj._has_loss_ = self
-            self._for_.append(obj)
+            if obj not in self._for_:
+                self._for_.append(obj)
         
     def remove_for_(self, *for_):
         for obj in for_:
@@ -798,9 +878,9 @@ class TransmissionProvider(ErpOrganisation):
 
     def set_offered_by(self, value):
         for x in self._offered_by:
-            x._offers = None
+            x.offers = None
         for y in value:
-            y._offers = self
+            y.offers = self
         self._offered_by = value
             
     offered_by = property(get_offered_by, set_offered_by)
@@ -808,7 +888,8 @@ class TransmissionProvider(ErpOrganisation):
     def add_offered_by(self, *offered_by):
         for obj in offered_by:
             obj._offers = self
-            self._offered_by.append(obj)
+            if obj not in self._offered_by:
+                self._offered_by.append(obj)
         
     def remove_offered_by(self, *offered_by):
         for obj in offered_by:
@@ -825,9 +906,9 @@ class TransmissionProvider(ErpOrganisation):
 
     def set_sold_by(self, value):
         for x in self._sold_by:
-            x._sells = None
+            x.sells = None
         for y in value:
-            y._sells = self
+            y.sells = self
         self._sold_by = value
             
     sold_by = property(get_sold_by, set_sold_by)
@@ -835,7 +916,8 @@ class TransmissionProvider(ErpOrganisation):
     def add_sold_by(self, *sold_by):
         for obj in sold_by:
             obj._sells = self
-            self._sold_by.append(obj)
+            if obj not in self._sold_by:
+                self._sold_by.append(obj)
         
     def remove_sold_by(self, *sold_by):
         for obj in sold_by:

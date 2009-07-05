@@ -20,16 +20,22 @@ class PointOfSale(IdentifiedObject):
     """
     # <<< point_of_sale
     # @generated
-    def __init__(self, location='', cashier_shifts=[], tokens=[], vendor=None, **kw_args):
+    def __init__(self, location='', cashier_shifts=None, tokens=None, vendor=None, **kw_args):
         """ Initialises a new 'PointOfSale' instance.
         """
         # Local description for where this pont of sale is physically located. 
-        self.location = ''
+        self.location = location
         
         self._cashier_shifts = []
-        self.cashier_shifts = cashier_shifts
+        if cashier_shifts is None:
+            self.cashier_shifts = []
+        else:
+            self.cashier_shifts = cashier_shifts
         self._tokens = []
-        self.tokens = tokens
+        if tokens is None:
+            self.tokens = []
+        else:
+            self.tokens = tokens
         self._vendor = None
         self.vendor = vendor
 
@@ -45,9 +51,9 @@ class PointOfSale(IdentifiedObject):
 
     def set_cashier_shifts(self, value):
         for x in self._cashier_shifts:
-            x._point_of_sale = None
+            x.point_of_sale = None
         for y in value:
-            y._point_of_sale = self
+            y.point_of_sale = self
         self._cashier_shifts = value
             
     cashier_shifts = property(get_cashier_shifts, set_cashier_shifts)
@@ -55,7 +61,8 @@ class PointOfSale(IdentifiedObject):
     def add_cashier_shifts(self, *cashier_shifts):
         for obj in cashier_shifts:
             obj._point_of_sale = self
-            self._cashier_shifts.append(obj)
+            if obj not in self._cashier_shifts:
+                self._cashier_shifts.append(obj)
         
     def remove_cashier_shifts(self, *cashier_shifts):
         for obj in cashier_shifts:
@@ -72,9 +79,9 @@ class PointOfSale(IdentifiedObject):
 
     def set_tokens(self, value):
         for x in self._tokens:
-            x._point_of_sale = None
+            x.point_of_sale = None
         for y in value:
-            y._point_of_sale = self
+            y.point_of_sale = self
         self._tokens = value
             
     tokens = property(get_tokens, set_tokens)
@@ -82,7 +89,8 @@ class PointOfSale(IdentifiedObject):
     def add_tokens(self, *tokens):
         for obj in tokens:
             obj._point_of_sale = self
-            self._tokens.append(obj)
+            if obj not in self._tokens:
+                self._tokens.append(obj)
         
     def remove_tokens(self, *tokens):
         for obj in tokens:
@@ -104,7 +112,8 @@ class PointOfSale(IdentifiedObject):
             
         self._vendor = value
         if self._vendor is not None:
-            self._vendor._point_of_sales.append(self)
+            if self not in self._vendor._point_of_sales:
+                self._vendor._point_of_sales.append(self)
 
     vendor = property(get_vendor, set_vendor)
     # >>> vendor
@@ -120,13 +129,13 @@ class Cheque(Element):
         """ Initialises a new 'Cheque' instance.
         """
         # The magnetic ink character recognition number printed on the cheque. 
-        self.micr_number = ''
+        self.micr_number = micr_number
         # Cheque reference number as printed on the cheque. 
-        self.cheque_number = ''
+        self.cheque_number = cheque_number
         # Kind of cheque. Values are: "postal_order", "other", "bank_order"
-        self.kind = 'postal_order'
+        self.kind = kind
         # Date when cheque becomes valid. 
-        self.date = ''
+        self.date = date
         
         self.bank_account_detail = bank_account_detail
         self._tender = None
@@ -166,20 +175,32 @@ class Vendor(IdentifiedObject):
     """
     # <<< vendor
     # @generated
-    def __init__(self, merchant_account=None, cashiers=[], bank_statements=[], point_of_sales=[], vendor_shifts=[], **kw_args):
+    def __init__(self, merchant_account=None, cashiers=None, bank_statements=None, point_of_sales=None, vendor_shifts=None, **kw_args):
         """ Initialises a new 'Vendor' instance.
         """
         
         self._merchant_account = None
         self.merchant_account = merchant_account
         self._cashiers = []
-        self.cashiers = cashiers
+        if cashiers is None:
+            self.cashiers = []
+        else:
+            self.cashiers = cashiers
         self._bank_statements = []
-        self.bank_statements = bank_statements
+        if bank_statements is None:
+            self.bank_statements = []
+        else:
+            self.bank_statements = bank_statements
         self._point_of_sales = []
-        self.point_of_sales = point_of_sales
+        if point_of_sales is None:
+            self.point_of_sales = []
+        else:
+            self.point_of_sales = point_of_sales
         self._vendor_shifts = []
-        self.vendor_shifts = vendor_shifts
+        if vendor_shifts is None:
+            self.vendor_shifts = []
+        else:
+            self.vendor_shifts = vendor_shifts
 
         super(Vendor, self).__init__(**kw_args)
     # >>> vendor
@@ -198,7 +219,8 @@ class Vendor(IdentifiedObject):
             
         self._merchant_account = value
         if self._merchant_account is not None:
-            self._merchant_account._vendors.append(self)
+            if self not in self._merchant_account._vendors:
+                self._merchant_account._vendors.append(self)
 
     merchant_account = property(get_merchant_account, set_merchant_account)
     # >>> merchant_account
@@ -212,9 +234,9 @@ class Vendor(IdentifiedObject):
 
     def set_cashiers(self, value):
         for x in self._cashiers:
-            x._vendor = None
+            x.vendor = None
         for y in value:
-            y._vendor = self
+            y.vendor = self
         self._cashiers = value
             
     cashiers = property(get_cashiers, set_cashiers)
@@ -222,7 +244,8 @@ class Vendor(IdentifiedObject):
     def add_cashiers(self, *cashiers):
         for obj in cashiers:
             obj._vendor = self
-            self._cashiers.append(obj)
+            if obj not in self._cashiers:
+                self._cashiers.append(obj)
         
     def remove_cashiers(self, *cashiers):
         for obj in cashiers:
@@ -239,9 +262,9 @@ class Vendor(IdentifiedObject):
 
     def set_bank_statements(self, value):
         for x in self._bank_statements:
-            x._vendor = None
+            x.vendor = None
         for y in value:
-            y._vendor = self
+            y.vendor = self
         self._bank_statements = value
             
     bank_statements = property(get_bank_statements, set_bank_statements)
@@ -249,7 +272,8 @@ class Vendor(IdentifiedObject):
     def add_bank_statements(self, *bank_statements):
         for obj in bank_statements:
             obj._vendor = self
-            self._bank_statements.append(obj)
+            if obj not in self._bank_statements:
+                self._bank_statements.append(obj)
         
     def remove_bank_statements(self, *bank_statements):
         for obj in bank_statements:
@@ -266,9 +290,9 @@ class Vendor(IdentifiedObject):
 
     def set_point_of_sales(self, value):
         for x in self._point_of_sales:
-            x._vendor = None
+            x.vendor = None
         for y in value:
-            y._vendor = self
+            y.vendor = self
         self._point_of_sales = value
             
     point_of_sales = property(get_point_of_sales, set_point_of_sales)
@@ -276,7 +300,8 @@ class Vendor(IdentifiedObject):
     def add_point_of_sales(self, *point_of_sales):
         for obj in point_of_sales:
             obj._vendor = self
-            self._point_of_sales.append(obj)
+            if obj not in self._point_of_sales:
+                self._point_of_sales.append(obj)
         
     def remove_point_of_sales(self, *point_of_sales):
         for obj in point_of_sales:
@@ -293,9 +318,9 @@ class Vendor(IdentifiedObject):
 
     def set_vendor_shifts(self, value):
         for x in self._vendor_shifts:
-            x._vendor = None
+            x.vendor = None
         for y in value:
-            y._vendor = self
+            y.vendor = self
         self._vendor_shifts = value
             
     vendor_shifts = property(get_vendor_shifts, set_vendor_shifts)
@@ -303,7 +328,8 @@ class Vendor(IdentifiedObject):
     def add_vendor_shifts(self, *vendor_shifts):
         for obj in vendor_shifts:
             obj._vendor = self
-            self._vendor_shifts.append(obj)
+            if obj not in self._vendor_shifts:
+                self._vendor_shifts.append(obj)
         
     def remove_vendor_shifts(self, *vendor_shifts):
         for obj in vendor_shifts:
@@ -318,23 +344,23 @@ class Transaction(IdentifiedObject):
     """
     # <<< transaction
     # @generated
-    def __init__(self, service_units_error='', kind='token_sale_payment', donor_reference='', service_units_energy='', diverse_reference='', receiver_reference='', reversed_id='', line=None, cashier_shift=None, vendor_shift=None, auxiliary_account=None, customer_account=None, pricing_structure=None, receipt=None, user_attributes=[], meter_asset=None, **kw_args):
+    def __init__(self, service_units_error=0.0, kind='token_sale_payment', donor_reference='', service_units_energy=0.0, diverse_reference='', receiver_reference='', reversed_id='', line=None, cashier_shift=None, vendor_shift=None, auxiliary_account=None, customer_account=None, pricing_structure=None, receipt=None, user_attributes=None, meter_asset=None, **kw_args):
         """ Initialises a new 'Transaction' instance.
         """
         # Number of service units not reflected in 'serviceUnitsEnergy' due to process rounding or truncating errors. 
-        self.service_units_error = ''
+        self.service_units_error = service_units_error
         # Kind of transaction. Values are: "token_sale_payment", "token_free_issue", "transaction_reversal", "other", "token_exchange", "token_grant", "token_cancellation", "auxiliary_charge_payment", "account_payment", "diverse_payment", "service_charge_payment", "tax_charge_payment", "meter_configuration_token"
-        self.kind = 'token_sale_payment'
+        self.kind = kind
         # Reference to the entity that is the source of 'amount' (for example: customer for token purchase; or supplier for free issue token). 
-        self.donor_reference = ''
+        self.donor_reference = donor_reference
         # Actual amount of service units that is being paid for. 
-        self.service_units_energy = ''
+        self.service_units_energy = service_units_energy
         # Formal reference for use with diverse payment (traffic fine for example). 
-        self.diverse_reference = ''
+        self.diverse_reference = diverse_reference
         # Reference to the entity that is the recipient of 'amount' (for example, supplier for service charge payment; or tax receiver for VAT). 
-        self.receiver_reference = ''
+        self.receiver_reference = receiver_reference
         # (if 'kind' is transactionReversal) Reference to the original transaction that is being reversed by this transaction. 
-        self.reversed_id = ''
+        self.reversed_id = reversed_id
         
         self.line = line
         self._cashier_shift = None
@@ -350,7 +376,10 @@ class Transaction(IdentifiedObject):
         self._receipt = None
         self.receipt = receipt
         self._user_attributes = []
-        self.user_attributes = user_attributes
+        if user_attributes is None:
+            self.user_attributes = []
+        else:
+            self.user_attributes = user_attributes
         self._meter_asset = None
         self.meter_asset = meter_asset
 
@@ -377,7 +406,8 @@ class Transaction(IdentifiedObject):
             
         self._cashier_shift = value
         if self._cashier_shift is not None:
-            self._cashier_shift._transactions.append(self)
+            if self not in self._cashier_shift._transactions:
+                self._cashier_shift._transactions.append(self)
 
     cashier_shift = property(get_cashier_shift, set_cashier_shift)
     # >>> cashier_shift
@@ -396,7 +426,8 @@ class Transaction(IdentifiedObject):
             
         self._vendor_shift = value
         if self._vendor_shift is not None:
-            self._vendor_shift._transactions.append(self)
+            if self not in self._vendor_shift._transactions:
+                self._vendor_shift._transactions.append(self)
 
     vendor_shift = property(get_vendor_shift, set_vendor_shift)
     # >>> vendor_shift
@@ -415,7 +446,8 @@ class Transaction(IdentifiedObject):
             
         self._auxiliary_account = value
         if self._auxiliary_account is not None:
-            self._auxiliary_account._payment_transactions.append(self)
+            if self not in self._auxiliary_account._payment_transactions:
+                self._auxiliary_account._payment_transactions.append(self)
 
     auxiliary_account = property(get_auxiliary_account, set_auxiliary_account)
     # >>> auxiliary_account
@@ -434,7 +466,8 @@ class Transaction(IdentifiedObject):
             
         self._customer_account = value
         if self._customer_account is not None:
-            self._customer_account._payment_transactions.append(self)
+            if self not in self._customer_account._payment_transactions:
+                self._customer_account._payment_transactions.append(self)
 
     customer_account = property(get_customer_account, set_customer_account)
     # >>> customer_account
@@ -453,7 +486,8 @@ class Transaction(IdentifiedObject):
             
         self._pricing_structure = value
         if self._pricing_structure is not None:
-            self._pricing_structure._transactions.append(self)
+            if self not in self._pricing_structure._transactions:
+                self._pricing_structure._transactions.append(self)
 
     pricing_structure = property(get_pricing_structure, set_pricing_structure)
     # >>> pricing_structure
@@ -472,7 +506,8 @@ class Transaction(IdentifiedObject):
             
         self._receipt = value
         if self._receipt is not None:
-            self._receipt._transactions.append(self)
+            if self not in self._receipt._transactions:
+                self._receipt._transactions.append(self)
 
     receipt = property(get_receipt, set_receipt)
     # >>> receipt
@@ -486,9 +521,9 @@ class Transaction(IdentifiedObject):
 
     def set_user_attributes(self, value):
         for x in self._user_attributes:
-            x._transaction = None
+            x.transaction = None
         for y in value:
-            y._transaction = self
+            y.transaction = self
         self._user_attributes = value
             
     user_attributes = property(get_user_attributes, set_user_attributes)
@@ -496,7 +531,8 @@ class Transaction(IdentifiedObject):
     def add_user_attributes(self, *user_attributes):
         for obj in user_attributes:
             obj._transaction = self
-            self._user_attributes.append(obj)
+            if obj not in self._user_attributes:
+                self._user_attributes.append(obj)
         
     def remove_user_attributes(self, *user_attributes):
         for obj in user_attributes:
@@ -518,7 +554,8 @@ class Transaction(IdentifiedObject):
             
         self._meter_asset = value
         if self._meter_asset is not None:
-            self._meter_asset._vending_transactions.append(self)
+            if self not in self._meter_asset._vending_transactions:
+                self._meter_asset._vending_transactions.append(self)
 
     meter_asset = property(get_meter_asset, set_meter_asset)
     # >>> meter_asset
@@ -530,18 +567,24 @@ class ConsumptionTariffInterval(Element):
     """
     # <<< consumption_tariff_interval
     # @generated
-    def __init__(self, start_value='', sequence_number=0, charges=[], tariff_profiles=[], **kw_args):
+    def __init__(self, start_value=0.0, sequence_number=0, charges=None, tariff_profiles=None, **kw_args):
         """ Initialises a new 'ConsumptionTariffInterval' instance.
         """
         # The lowest level of consumption that defines the starting point of this interval. The interval extends to the start of the next interval or until it is reset to the start of the first interval by TariffProfile.tariffCycle. 
-        self.start_value = ''
+        self.start_value = start_value
         # A sequential reference that defines the identity of this interval and its relative position with respect to other intervals in a sequence of intervals. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         
         self._charges = []
-        self.charges = charges
+        if charges is None:
+            self.charges = []
+        else:
+            self.charges = charges
         self._tariff_profiles = []
-        self.tariff_profiles = tariff_profiles
+        if tariff_profiles is None:
+            self.tariff_profiles = []
+        else:
+            self.tariff_profiles = tariff_profiles
 
         super(ConsumptionTariffInterval, self).__init__(**kw_args)
     # >>> consumption_tariff_interval
@@ -619,15 +662,15 @@ class BankAccountDetail(Element):
         """ Initialises a new 'BankAccountDetail' instance.
         """
         # Operational account reference number. 
-        self.account_number = ''
+        self.account_number = account_number
         # Name of bank where account is held. 
-        self.bank_name = ''
+        self.bank_name = bank_name
         # National identity number (or equivalent) of account holder. 
-        self.holder_id = ''
+        self.holder_id = holder_id
         # Branch of bank where account is held. 
-        self.branch_code = ''
+        self.branch_code = branch_code
         # Name of account holder. 
-        self.holder_name = ''
+        self.holder_name = holder_name
         
 
         super(BankAccountDetail, self).__init__(**kw_args)
@@ -640,16 +683,22 @@ class Cashier(IdentifiedObject):
     """
     # <<< cashier
     # @generated
-    def __init__(self, cashier_shifts=[], vendor=None, electronic_addresses=[], **kw_args):
+    def __init__(self, cashier_shifts=None, vendor=None, electronic_addresses=None, **kw_args):
         """ Initialises a new 'Cashier' instance.
         """
         
         self._cashier_shifts = []
-        self.cashier_shifts = cashier_shifts
+        if cashier_shifts is None:
+            self.cashier_shifts = []
+        else:
+            self.cashier_shifts = cashier_shifts
         self._vendor = None
         self.vendor = vendor
         self._electronic_addresses = []
-        self.electronic_addresses = electronic_addresses
+        if electronic_addresses is None:
+            self.electronic_addresses = []
+        else:
+            self.electronic_addresses = electronic_addresses
 
         super(Cashier, self).__init__(**kw_args)
     # >>> cashier
@@ -663,9 +712,9 @@ class Cashier(IdentifiedObject):
 
     def set_cashier_shifts(self, value):
         for x in self._cashier_shifts:
-            x._cashier = None
+            x.cashier = None
         for y in value:
-            y._cashier = self
+            y.cashier = self
         self._cashier_shifts = value
             
     cashier_shifts = property(get_cashier_shifts, set_cashier_shifts)
@@ -673,7 +722,8 @@ class Cashier(IdentifiedObject):
     def add_cashier_shifts(self, *cashier_shifts):
         for obj in cashier_shifts:
             obj._cashier = self
-            self._cashier_shifts.append(obj)
+            if obj not in self._cashier_shifts:
+                self._cashier_shifts.append(obj)
         
     def remove_cashier_shifts(self, *cashier_shifts):
         for obj in cashier_shifts:
@@ -695,7 +745,8 @@ class Cashier(IdentifiedObject):
             
         self._vendor = value
         if self._vendor is not None:
-            self._vendor._cashiers.append(self)
+            if self not in self._vendor._cashiers:
+                self._vendor._cashiers.append(self)
 
     vendor = property(get_vendor, set_vendor)
     # >>> vendor
@@ -709,9 +760,9 @@ class Cashier(IdentifiedObject):
 
     def set_electronic_addresses(self, value):
         for x in self._electronic_addresses:
-            x._cashier = None
+            x.cashier = None
         for y in value:
-            y._cashier = self
+            y.cashier = self
         self._electronic_addresses = value
             
     electronic_addresses = property(get_electronic_addresses, set_electronic_addresses)
@@ -719,7 +770,8 @@ class Cashier(IdentifiedObject):
     def add_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
             obj._cashier = self
-            self._electronic_addresses.append(obj)
+            if obj not in self._electronic_addresses:
+                self._electronic_addresses.append(obj)
         
     def remove_electronic_addresses(self, *electronic_addresses):
         for obj in electronic_addresses:
@@ -734,12 +786,15 @@ class MerchantAgreement(Agreement):
     """
     # <<< merchant_agreement
     # @generated
-    def __init__(self, merchant_accounts=[], **kw_args):
+    def __init__(self, merchant_accounts=None, **kw_args):
         """ Initialises a new 'MerchantAgreement' instance.
         """
         
         self._merchant_accounts = []
-        self.merchant_accounts = merchant_accounts
+        if merchant_accounts is None:
+            self.merchant_accounts = []
+        else:
+            self.merchant_accounts = merchant_accounts
 
         super(MerchantAgreement, self).__init__(**kw_args)
     # >>> merchant_agreement
@@ -753,9 +808,9 @@ class MerchantAgreement(Agreement):
 
     def set_merchant_accounts(self, value):
         for x in self._merchant_accounts:
-            x._merchant_agreement = None
+            x.merchant_agreement = None
         for y in value:
-            y._merchant_agreement = self
+            y.merchant_agreement = self
         self._merchant_accounts = value
             
     merchant_accounts = property(get_merchant_accounts, set_merchant_accounts)
@@ -763,7 +818,8 @@ class MerchantAgreement(Agreement):
     def add_merchant_accounts(self, *merchant_accounts):
         for obj in merchant_accounts:
             obj._merchant_agreement = self
-            self._merchant_accounts.append(obj)
+            if obj not in self._merchant_accounts:
+                self._merchant_accounts.append(obj)
         
     def remove_merchant_accounts(self, *merchant_accounts):
         for obj in merchant_accounts:
@@ -778,18 +834,24 @@ class TimeTariffInterval(Element):
     """
     # <<< time_tariff_interval
     # @generated
-    def __init__(self, start_date_time='', sequence_number=0, charges=[], tariff_profiles=[], **kw_args):
+    def __init__(self, start_date_time='', sequence_number=0, charges=None, tariff_profiles=None, **kw_args):
         """ Initialises a new 'TimeTariffInterval' instance.
         """
         # A reatime marker that defines the starting time (typically it is the time of day) for this interval. The interval extends to the start of the next interval or until it is reset to the start of the first interval by TariffProfile.tariffCycle. 
-        self.start_date_time = ''
+        self.start_date_time = start_date_time
         # A sequential reference that defines the identity of this interval and its relative position with respect to other intervals in a sequence of intervals. 
-        self.sequence_number = 0
+        self.sequence_number = sequence_number
         
         self._charges = []
-        self.charges = charges
+        if charges is None:
+            self.charges = []
+        else:
+            self.charges = charges
         self._tariff_profiles = []
-        self.tariff_profiles = tariff_profiles
+        if tariff_profiles is None:
+            self.tariff_profiles = []
+        else:
+            self.tariff_profiles = tariff_profiles
 
         super(TimeTariffInterval, self).__init__(**kw_args)
     # >>> time_tariff_interval
@@ -863,12 +925,15 @@ class Transactor(IdentifiedObject):
     """
     # <<< transactor
     # @generated
-    def __init__(self, merchant_accounts=[], **kw_args):
+    def __init__(self, merchant_accounts=None, **kw_args):
         """ Initialises a new 'Transactor' instance.
         """
         
         self._merchant_accounts = []
-        self.merchant_accounts = merchant_accounts
+        if merchant_accounts is None:
+            self.merchant_accounts = []
+        else:
+            self.merchant_accounts = merchant_accounts
 
         super(Transactor, self).__init__(**kw_args)
     # >>> transactor
@@ -911,20 +976,29 @@ class ServiceSupplier(Organisation):
     """
     # <<< service_supplier
     # @generated
-    def __init__(self, kind='retailer', issuer_identification_number='', service_delivery_points=[], bank_accounts=[], customer_agreements=[], **kw_args):
+    def __init__(self, kind='retailer', issuer_identification_number='', service_delivery_points=None, bank_accounts=None, customer_agreements=None, **kw_args):
         """ Initialises a new 'ServiceSupplier' instance.
         """
         # Kind of supplier. Values are: "retailer", "other", "utility"
-        self.kind = 'retailer'
+        self.kind = kind
         # Unique transaction reference prefix number issued to an entity by the International Standards Organisation for the purpose of tagging onto electronic financial transactions, as defined in ISO/IEC 7812-1 and ISO/IEC 7812-2. 
-        self.issuer_identification_number = ''
+        self.issuer_identification_number = issuer_identification_number
         
         self._service_delivery_points = []
-        self.service_delivery_points = service_delivery_points
+        if service_delivery_points is None:
+            self.service_delivery_points = []
+        else:
+            self.service_delivery_points = service_delivery_points
         self._bank_accounts = []
-        self.bank_accounts = bank_accounts
+        if bank_accounts is None:
+            self.bank_accounts = []
+        else:
+            self.bank_accounts = bank_accounts
         self._customer_agreements = []
-        self.customer_agreements = customer_agreements
+        if customer_agreements is None:
+            self.customer_agreements = []
+        else:
+            self.customer_agreements = customer_agreements
 
         super(ServiceSupplier, self).__init__(**kw_args)
     # >>> service_supplier
@@ -938,9 +1012,9 @@ class ServiceSupplier(Organisation):
 
     def set_service_delivery_points(self, value):
         for x in self._service_delivery_points:
-            x._service_supplier = None
+            x.service_supplier = None
         for y in value:
-            y._service_supplier = self
+            y.service_supplier = self
         self._service_delivery_points = value
             
     service_delivery_points = property(get_service_delivery_points, set_service_delivery_points)
@@ -948,7 +1022,8 @@ class ServiceSupplier(Organisation):
     def add_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
             obj._service_supplier = self
-            self._service_delivery_points.append(obj)
+            if obj not in self._service_delivery_points:
+                self._service_delivery_points.append(obj)
         
     def remove_service_delivery_points(self, *service_delivery_points):
         for obj in service_delivery_points:
@@ -965,9 +1040,9 @@ class ServiceSupplier(Organisation):
 
     def set_bank_accounts(self, value):
         for x in self._bank_accounts:
-            x._service_supplier = None
+            x.service_supplier = None
         for y in value:
-            y._service_supplier = self
+            y.service_supplier = self
         self._bank_accounts = value
             
     bank_accounts = property(get_bank_accounts, set_bank_accounts)
@@ -975,7 +1050,8 @@ class ServiceSupplier(Organisation):
     def add_bank_accounts(self, *bank_accounts):
         for obj in bank_accounts:
             obj._service_supplier = self
-            self._bank_accounts.append(obj)
+            if obj not in self._bank_accounts:
+                self._bank_accounts.append(obj)
         
     def remove_bank_accounts(self, *bank_accounts):
         for obj in bank_accounts:
@@ -992,9 +1068,9 @@ class ServiceSupplier(Organisation):
 
     def set_customer_agreements(self, value):
         for x in self._customer_agreements:
-            x._service_supplier = None
+            x.service_supplier = None
         for y in value:
-            y._service_supplier = self
+            y.service_supplier = self
         self._customer_agreements = value
             
     customer_agreements = property(get_customer_agreements, set_customer_agreements)
@@ -1002,7 +1078,8 @@ class ServiceSupplier(Organisation):
     def add_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
             obj._service_supplier = self
-            self._customer_agreements.append(obj)
+            if obj not in self._customer_agreements:
+                self._customer_agreements.append(obj)
         
     def remove_customer_agreements(self, *customer_agreements):
         for obj in customer_agreements:
@@ -1017,21 +1094,27 @@ class Receipt(IdentifiedObject):
     """
     # <<< receipt
     # @generated
-    def __init__(self, is_bankable=False, line=None, transactions=[], cashier_shift=None, vendor_shift=None, tenders=[], **kw_args):
+    def __init__(self, is_bankable=False, line=None, transactions=None, cashier_shift=None, vendor_shift=None, tenders=None, **kw_args):
         """ Initialises a new 'Receipt' instance.
         """
         # True if this receipted payment is manually bankable, otherwise it is an electronic funds transfer. 
-        self.is_bankable = False
+        self.is_bankable = is_bankable
         
         self.line = line
         self._transactions = []
-        self.transactions = transactions
+        if transactions is None:
+            self.transactions = []
+        else:
+            self.transactions = transactions
         self._cashier_shift = None
         self.cashier_shift = cashier_shift
         self._vendor_shift = None
         self.vendor_shift = vendor_shift
         self._tenders = []
-        self.tenders = tenders
+        if tenders is None:
+            self.tenders = []
+        else:
+            self.tenders = tenders
 
         super(Receipt, self).__init__(**kw_args)
     # >>> receipt
@@ -1051,9 +1134,9 @@ class Receipt(IdentifiedObject):
 
     def set_transactions(self, value):
         for x in self._transactions:
-            x._receipt = None
+            x.receipt = None
         for y in value:
-            y._receipt = self
+            y.receipt = self
         self._transactions = value
             
     transactions = property(get_transactions, set_transactions)
@@ -1061,7 +1144,8 @@ class Receipt(IdentifiedObject):
     def add_transactions(self, *transactions):
         for obj in transactions:
             obj._receipt = self
-            self._transactions.append(obj)
+            if obj not in self._transactions:
+                self._transactions.append(obj)
         
     def remove_transactions(self, *transactions):
         for obj in transactions:
@@ -1083,7 +1167,8 @@ class Receipt(IdentifiedObject):
             
         self._cashier_shift = value
         if self._cashier_shift is not None:
-            self._cashier_shift._receipts.append(self)
+            if self not in self._cashier_shift._receipts:
+                self._cashier_shift._receipts.append(self)
 
     cashier_shift = property(get_cashier_shift, set_cashier_shift)
     # >>> cashier_shift
@@ -1102,7 +1187,8 @@ class Receipt(IdentifiedObject):
             
         self._vendor_shift = value
         if self._vendor_shift is not None:
-            self._vendor_shift._receipts.append(self)
+            if self not in self._vendor_shift._receipts:
+                self._vendor_shift._receipts.append(self)
 
     vendor_shift = property(get_vendor_shift, set_vendor_shift)
     # >>> vendor_shift
@@ -1116,9 +1202,9 @@ class Receipt(IdentifiedObject):
 
     def set_tenders(self, value):
         for x in self._tenders:
-            x._receipt = None
+            x.receipt = None
         for y in value:
-            y._receipt = self
+            y.receipt = self
         self._tenders = value
             
     tenders = property(get_tenders, set_tenders)
@@ -1126,7 +1212,8 @@ class Receipt(IdentifiedObject):
     def add_tenders(self, *tenders):
         for obj in tenders:
             obj._receipt = self
-            self._tenders.append(obj)
+            if obj not in self._tenders:
+                self._tenders.append(obj)
         
     def remove_tenders(self, *tenders):
         for obj in tenders:
@@ -1141,19 +1228,19 @@ class Due(Element):
     """
     # <<< due
     # @generated
-    def __init__(self, arrears='', current='', principle='', charges='', interest='', **kw_args):
+    def __init__(self, arrears=0.0, current=0.0, principle=0.0, charges=0.0, interest=0.0, **kw_args):
         """ Initialises a new 'Due' instance.
         """
         # Part of 'current' that constitutes the arrears portion. 
-        self.arrears = ''
+        self.arrears = arrears
         # Current total amount now due: current = principle + arrears + interest + charges. Typically the rule for settlement priority is: interest dues, then arrears dues, then current dues, then charge dues. 
-        self.current = ''
+        self.current = current
         # Part of 'current' that constitutes the portion of the principle amount currently due. 
-        self.principle = ''
+        self.principle = principle
         # Part of 'current' that constitutes the charge portion: 'charges' = 'Charge.fixedPortion' + 'Charge.variablePortion'. 
-        self.charges = ''
+        self.charges = charges
         # Part of 'current' that constitutes the interest portion. 
-        self.interest = ''
+        self.interest = interest
         
 
         super(Due, self).__init__(**kw_args)
@@ -1166,25 +1253,37 @@ class Charge(IdentifiedObject):
     """
     # <<< charge
     # @generated
-    def __init__(self, kind='consumption_charge', variable_portion='', fixed_portion=None, time_tariff_intervals=[], parent_charge=None, auxiliary_accounts=[], child_charges=[], consumption_tariff_intervals=[], **kw_args):
+    def __init__(self, kind='consumption_charge', variable_portion=0.0, fixed_portion=None, time_tariff_intervals=None, parent_charge=None, auxiliary_accounts=None, child_charges=None, consumption_tariff_intervals=None, **kw_args):
         """ Initialises a new 'Charge' instance.
         """
         # The kind of charge to be applied. Values are: "consumption_charge", "auxiliary_charge", "other", "tax_charge", "demand_charge"
-        self.kind = 'consumption_charge'
+        self.kind = kind
         # The variable portion of this charge element, calculated as a percentage of the total amount of a parent charge. 
-        self.variable_portion = ''
+        self.variable_portion = variable_portion
         
         self.fixed_portion = fixed_portion
         self._time_tariff_intervals = []
-        self.time_tariff_intervals = time_tariff_intervals
+        if time_tariff_intervals is None:
+            self.time_tariff_intervals = []
+        else:
+            self.time_tariff_intervals = time_tariff_intervals
         self._parent_charge = None
         self.parent_charge = parent_charge
         self._auxiliary_accounts = []
-        self.auxiliary_accounts = auxiliary_accounts
+        if auxiliary_accounts is None:
+            self.auxiliary_accounts = []
+        else:
+            self.auxiliary_accounts = auxiliary_accounts
         self._child_charges = []
-        self.child_charges = child_charges
+        if child_charges is None:
+            self.child_charges = []
+        else:
+            self.child_charges = child_charges
         self._consumption_tariff_intervals = []
-        self.consumption_tariff_intervals = consumption_tariff_intervals
+        if consumption_tariff_intervals is None:
+            self.consumption_tariff_intervals = []
+        else:
+            self.consumption_tariff_intervals = consumption_tariff_intervals
 
         super(Charge, self).__init__(**kw_args)
     # >>> charge
@@ -1240,7 +1339,8 @@ class Charge(IdentifiedObject):
             
         self._parent_charge = value
         if self._parent_charge is not None:
-            self._parent_charge._child_charges.append(self)
+            if self not in self._parent_charge._child_charges:
+                self._parent_charge._child_charges.append(self)
 
     parent_charge = property(get_parent_charge, set_parent_charge)
     # >>> parent_charge
@@ -1285,9 +1385,9 @@ class Charge(IdentifiedObject):
 
     def set_child_charges(self, value):
         for x in self._child_charges:
-            x._parent_charge = None
+            x.parent_charge = None
         for y in value:
-            y._parent_charge = self
+            y.parent_charge = self
         self._child_charges = value
             
     child_charges = property(get_child_charges, set_child_charges)
@@ -1295,7 +1395,8 @@ class Charge(IdentifiedObject):
     def add_child_charges(self, *child_charges):
         for obj in child_charges:
             obj._parent_charge = self
-            self._child_charges.append(obj)
+            if obj not in self._child_charges:
+                self._child_charges.append(obj)
         
     def remove_child_charges(self, *child_charges):
         for obj in child_charges:
@@ -1341,18 +1442,27 @@ class TariffProfile(Document):
     """
     # <<< tariff_profile
     # @generated
-    def __init__(self, tariff_cycle='', tariffs=[], consumption_tariff_intervals=[], time_tariff_intervals=[], **kw_args):
+    def __init__(self, tariff_cycle='', tariffs=None, consumption_tariff_intervals=None, time_tariff_intervals=None, **kw_args):
         """ Initialises a new 'TariffProfile' instance.
         """
         # The frequency at which the tariff charge schedule is repeated Examples are: once off on a specified date and time; hourly; daily; weekly; monthly; 3-monthly; 6-monthly; 12-monthly; etc. At the end of each cycle, the business rules are reset to start from the beginning again. 
-        self.tariff_cycle = ''
+        self.tariff_cycle = tariff_cycle
         
         self._tariffs = []
-        self.tariffs = tariffs
+        if tariffs is None:
+            self.tariffs = []
+        else:
+            self.tariffs = tariffs
         self._consumption_tariff_intervals = []
-        self.consumption_tariff_intervals = consumption_tariff_intervals
+        if consumption_tariff_intervals is None:
+            self.consumption_tariff_intervals = []
+        else:
+            self.consumption_tariff_intervals = consumption_tariff_intervals
         self._time_tariff_intervals = []
-        self.time_tariff_intervals = time_tariff_intervals
+        if time_tariff_intervals is None:
+            self.time_tariff_intervals = []
+        else:
+            self.time_tariff_intervals = time_tariff_intervals
 
         super(TariffProfile, self).__init__(**kw_args)
     # >>> tariff_profile
@@ -1457,24 +1567,36 @@ class MerchantAccount(Document):
     """
     # <<< merchant_account
     # @generated
-    def __init__(self, current_balance='', provisional_balance='', vendors=[], bank_statements=[], vendor_shifts=[], merchant_agreement=None, transactors=[], **kw_args):
+    def __init__(self, current_balance=0.0, provisional_balance=0.0, vendors=None, bank_statements=None, vendor_shifts=None, merchant_agreement=None, transactors=None, **kw_args):
         """ Initialises a new 'MerchantAccount' instance.
         """
         # The current operating balance of this account. 
-        self.current_balance = ''
+        self.current_balance = current_balance
         # The balance of this account after taking into account any pending debits from VendorShift.merchantDebitAmount and pending credits from BankStatement.merchantCreditAmount or credits (see also BankStatement attributes and VendorShift attributes). 
-        self.provisional_balance = ''
+        self.provisional_balance = provisional_balance
         
         self._vendors = []
-        self.vendors = vendors
+        if vendors is None:
+            self.vendors = []
+        else:
+            self.vendors = vendors
         self._bank_statements = []
-        self.bank_statements = bank_statements
+        if bank_statements is None:
+            self.bank_statements = []
+        else:
+            self.bank_statements = bank_statements
         self._vendor_shifts = []
-        self.vendor_shifts = vendor_shifts
+        if vendor_shifts is None:
+            self.vendor_shifts = []
+        else:
+            self.vendor_shifts = vendor_shifts
         self._merchant_agreement = None
         self.merchant_agreement = merchant_agreement
         self._transactors = []
-        self.transactors = transactors
+        if transactors is None:
+            self.transactors = []
+        else:
+            self.transactors = transactors
 
         super(MerchantAccount, self).__init__(**kw_args)
     # >>> merchant_account
@@ -1488,9 +1610,9 @@ class MerchantAccount(Document):
 
     def set_vendors(self, value):
         for x in self._vendors:
-            x._merchant_account = None
+            x.merchant_account = None
         for y in value:
-            y._merchant_account = self
+            y.merchant_account = self
         self._vendors = value
             
     vendors = property(get_vendors, set_vendors)
@@ -1498,7 +1620,8 @@ class MerchantAccount(Document):
     def add_vendors(self, *vendors):
         for obj in vendors:
             obj._merchant_account = self
-            self._vendors.append(obj)
+            if obj not in self._vendors:
+                self._vendors.append(obj)
         
     def remove_vendors(self, *vendors):
         for obj in vendors:
@@ -1515,9 +1638,9 @@ class MerchantAccount(Document):
 
     def set_bank_statements(self, value):
         for x in self._bank_statements:
-            x._merchant_account = None
+            x.merchant_account = None
         for y in value:
-            y._merchant_account = self
+            y.merchant_account = self
         self._bank_statements = value
             
     bank_statements = property(get_bank_statements, set_bank_statements)
@@ -1525,7 +1648,8 @@ class MerchantAccount(Document):
     def add_bank_statements(self, *bank_statements):
         for obj in bank_statements:
             obj._merchant_account = self
-            self._bank_statements.append(obj)
+            if obj not in self._bank_statements:
+                self._bank_statements.append(obj)
         
     def remove_bank_statements(self, *bank_statements):
         for obj in bank_statements:
@@ -1542,9 +1666,9 @@ class MerchantAccount(Document):
 
     def set_vendor_shifts(self, value):
         for x in self._vendor_shifts:
-            x._merchant_account = None
+            x.merchant_account = None
         for y in value:
-            y._merchant_account = self
+            y.merchant_account = self
         self._vendor_shifts = value
             
     vendor_shifts = property(get_vendor_shifts, set_vendor_shifts)
@@ -1552,7 +1676,8 @@ class MerchantAccount(Document):
     def add_vendor_shifts(self, *vendor_shifts):
         for obj in vendor_shifts:
             obj._merchant_account = self
-            self._vendor_shifts.append(obj)
+            if obj not in self._vendor_shifts:
+                self._vendor_shifts.append(obj)
         
     def remove_vendor_shifts(self, *vendor_shifts):
         for obj in vendor_shifts:
@@ -1574,7 +1699,8 @@ class MerchantAccount(Document):
             
         self._merchant_agreement = value
         if self._merchant_agreement is not None:
-            self._merchant_agreement._merchant_accounts.append(self)
+            if self not in self._merchant_agreement._merchant_accounts:
+                self._merchant_agreement._merchant_accounts.append(self)
 
     merchant_agreement = property(get_merchant_agreement, set_merchant_agreement)
     # >>> merchant_agreement
@@ -1621,13 +1747,13 @@ class Card(Element):
         """ Initialises a new 'Card' instance.
         """
         # The date when this card expires. 
-        self.expiry_date = ''
+        self.expiry_date = expiry_date
         # The primary account number. 
-        self.pan = ''
+        self.pan = pan
         # The card verification number. 
-        self.cv_number = ''
+        self.cv_number = cv_number
         # Name of account holder. 
-        self.account_holder_name = ''
+        self.account_holder_name = account_holder_name
         
         self._tender = None
         self.tender = tender
@@ -1660,23 +1786,29 @@ class AuxiliaryAccount(Document):
     """
     # <<< auxiliary_account
     # @generated
-    def __init__(self, principle_amount='', balance='', last_credit=None, due=None, last_debit=None, payment_transactions=[], auxiliary_agreement=None, charges=[], **kw_args):
+    def __init__(self, principle_amount=0.0, balance=0.0, last_credit=None, due=None, last_debit=None, payment_transactions=None, auxiliary_agreement=None, charges=None, **kw_args):
         """ Initialises a new 'AuxiliaryAccount' instance.
         """
         # The initial principle amount, with which this account was instantiated. 
-        self.principle_amount = ''
+        self.principle_amount = principle_amount
         # The total amount currently remaining on this account that is required to be paid in order to settle the account to zero. This excludes any due amounts not yet paid. 
-        self.balance = ''
+        self.balance = balance
         
         self.last_credit = last_credit
         self.due = due
         self.last_debit = last_debit
         self._payment_transactions = []
-        self.payment_transactions = payment_transactions
+        if payment_transactions is None:
+            self.payment_transactions = []
+        else:
+            self.payment_transactions = payment_transactions
         self._auxiliary_agreement = None
         self.auxiliary_agreement = auxiliary_agreement
         self._charges = []
-        self.charges = charges
+        if charges is None:
+            self.charges = []
+        else:
+            self.charges = charges
 
         super(AuxiliaryAccount, self).__init__(**kw_args)
     # >>> auxiliary_account
@@ -1708,9 +1840,9 @@ class AuxiliaryAccount(Document):
 
     def set_payment_transactions(self, value):
         for x in self._payment_transactions:
-            x._auxiliary_account = None
+            x.auxiliary_account = None
         for y in value:
-            y._auxiliary_account = self
+            y.auxiliary_account = self
         self._payment_transactions = value
             
     payment_transactions = property(get_payment_transactions, set_payment_transactions)
@@ -1718,7 +1850,8 @@ class AuxiliaryAccount(Document):
     def add_payment_transactions(self, *payment_transactions):
         for obj in payment_transactions:
             obj._auxiliary_account = self
-            self._payment_transactions.append(obj)
+            if obj not in self._payment_transactions:
+                self._payment_transactions.append(obj)
         
     def remove_payment_transactions(self, *payment_transactions):
         for obj in payment_transactions:
@@ -1740,7 +1873,8 @@ class AuxiliaryAccount(Document):
             
         self._auxiliary_agreement = value
         if self._auxiliary_agreement is not None:
-            self._auxiliary_agreement._auxiliary_accounts.append(self)
+            if self not in self._auxiliary_agreement._auxiliary_accounts:
+                self._auxiliary_agreement._auxiliary_accounts.append(self)
 
     auxiliary_agreement = property(get_auxiliary_agreement, set_auxiliary_agreement)
     # >>> auxiliary_agreement
@@ -1783,17 +1917,17 @@ class AccountingUnit(Element):
     """
     # <<< accounting_unit
     # @generated
-    def __init__(self, value=0.0, multiplier='micro', energy_unit='', monetary_unit='rur', **kw_args):
+    def __init__(self, value=0.0, multiplier='micro', energy_unit=0.0, monetary_unit='rur', **kw_args):
         """ Initialises a new 'AccountingUnit' instance.
         """
         # Value expressed in applicable units. 
-        self.value = 0.0
+        self.value = value
         # Multiplier for the 'energyUnit' or 'monetaryUnit'. Values are: "micro", "none", "c", "n", "m", "t", "g", "m", "p", "k", "d"
-        self.multiplier = 'micro'
+        self.multiplier = multiplier
         # Unit of service. 
-        self.energy_unit = ''
+        self.energy_unit = energy_unit
         # Unit of currency. Values are: "rur", "inr", "cad", "dkk", "cny", "usd", "sek", "aud", "jpy", "gbp", "eur", "nok", "chf", "other"
-        self.monetary_unit = 'rur'
+        self.monetary_unit = monetary_unit
         
 
         super(AccountingUnit, self).__init__(**kw_args)
@@ -1806,15 +1940,15 @@ class AccountMovement(Element):
     """
     # <<< account_movement
     # @generated
-    def __init__(self, reason='', amount='', date_time='', **kw_args):
+    def __init__(self, reason='', amount=0.0, date_time='', **kw_args):
         """ Initialises a new 'AccountMovement' instance.
         """
         # Reason for credit/debit transaction on an account. Example: payment received/arrears interest levied. 
-        self.reason = ''
+        self.reason = reason
         # Amount that was credited to/debited from an account. For example: payment received/interest charge on arrears. 
-        self.amount = ''
+        self.amount = amount
         # Date and time when the credit/debit transaction was performed. 
-        self.date_time = ''
+        self.date_time = date_time
         
 
         super(AccountMovement, self).__init__(**kw_args)
@@ -1827,25 +1961,31 @@ class Shift(IdentifiedObject):
     """
     # <<< shift
     # @generated
-    def __init__(self, transactions_grand_total_rounding='', transactions_grand_total='', receipts_grand_total_bankable='', receipts_grand_total_non_bankable='', receipts_grand_total_rounding='', activity_interval=None, receipt_summaries=[], transaction_summaries=[], **kw_args):
+    def __init__(self, transactions_grand_total_rounding=0.0, transactions_grand_total=0.0, receipts_grand_total_bankable=0.0, receipts_grand_total_non_bankable=0.0, receipts_grand_total_rounding=0.0, activity_interval=None, receipt_summaries=None, transaction_summaries=None, **kw_args):
         """ Initialises a new 'Shift' instance.
         """
         # Cumulative amount in error due to process rounding not reflected in transactionsGandTotal. Values are obtained from Transaction attributes: =sum(Transaction.transactionRounding). 
-        self.transactions_grand_total_rounding = ''
+        self.transactions_grand_total_rounding = transactions_grand_total_rounding
         # Cumulative total of transacted amounts during this shift. Values are obtained from Transaction attributes: =sum(Transaction.transactionAmount). It must also reconcile against TransactionSummary: =sum(TransactionSummary.transactionsTotal). 
-        self.transactions_grand_total = ''
+        self.transactions_grand_total = transactions_grand_total
         # Total of amounts receipted during this shift that can be manually banked (cash and cheques for example). Values are obtained from Receipt attributes: =sum(Receipt.receiptAmount) for all Receipt.bankable = true. 
-        self.receipts_grand_total_bankable = ''
+        self.receipts_grand_total_bankable = receipts_grand_total_bankable
         # Total of amounts receipted during this shift that cannot be manually banked (card payments for example). Values are obtained from Receipt attributes: =sum(Receipt.receiptAmount) for all Receipt.bankable = false. 
-        self.receipts_grand_total_non_bankable = ''
+        self.receipts_grand_total_non_bankable = receipts_grand_total_non_bankable
         # Cumulative amount in error due to process rounding not reflected in receiptsGrandTotal. Values are obtained from Receipt attributes: =sum(Receipt.receiptRounding). 
-        self.receipts_grand_total_rounding = ''
+        self.receipts_grand_total_rounding = receipts_grand_total_rounding
         
         self.activity_interval = activity_interval
         self._receipt_summaries = []
-        self.receipt_summaries = receipt_summaries
+        if receipt_summaries is None:
+            self.receipt_summaries = []
+        else:
+            self.receipt_summaries = receipt_summaries
         self._transaction_summaries = []
-        self.transaction_summaries = transaction_summaries
+        if transaction_summaries is None:
+            self.transaction_summaries = []
+        else:
+            self.transaction_summaries = transaction_summaries
 
         super(Shift, self).__init__(**kw_args)
     # >>> shift
@@ -1865,9 +2005,9 @@ class Shift(IdentifiedObject):
 
     def set_receipt_summaries(self, value):
         for x in self._receipt_summaries:
-            x._shift = None
+            x.shift = None
         for y in value:
-            y._shift = self
+            y.shift = self
         self._receipt_summaries = value
             
     receipt_summaries = property(get_receipt_summaries, set_receipt_summaries)
@@ -1875,7 +2015,8 @@ class Shift(IdentifiedObject):
     def add_receipt_summaries(self, *receipt_summaries):
         for obj in receipt_summaries:
             obj._shift = self
-            self._receipt_summaries.append(obj)
+            if obj not in self._receipt_summaries:
+                self._receipt_summaries.append(obj)
         
     def remove_receipt_summaries(self, *receipt_summaries):
         for obj in receipt_summaries:
@@ -1892,9 +2033,9 @@ class Shift(IdentifiedObject):
 
     def set_transaction_summaries(self, value):
         for x in self._transaction_summaries:
-            x._shift = None
+            x.shift = None
         for y in value:
-            y._shift = self
+            y.shift = self
         self._transaction_summaries = value
             
     transaction_summaries = property(get_transaction_summaries, set_transaction_summaries)
@@ -1902,7 +2043,8 @@ class Shift(IdentifiedObject):
     def add_transaction_summaries(self, *transaction_summaries):
         for obj in transaction_summaries:
             obj._shift = self
-            self._transaction_summaries.append(obj)
+            if obj not in self._transaction_summaries:
+                self._transaction_summaries.append(obj)
         
     def remove_transaction_summaries(self, *transaction_summaries):
         for obj in transaction_summaries:
@@ -1917,17 +2059,17 @@ class LineDetail(Element):
     """
     # <<< line_detail
     # @generated
-    def __init__(self, rounding='', note='', date_time='', amount='', **kw_args):
+    def __init__(self, rounding=0.0, note='', date_time='', amount=0.0, **kw_args):
         """ Initialises a new 'LineDetail' instance.
         """
         # Totalised monetary value of all errors due to process rounding or truncating that is not reflected in 'amount'. 
-        self.rounding = ''
+        self.rounding = rounding
         # Free format note relevant to this line. 
-        self.note = ''
+        self.note = note
         # Date and time when this line was created in the application process. 
-        self.date_time = ''
+        self.date_time = date_time
         # Amount for this line item. 
-        self.amount = ''
+        self.amount = amount
         
 
         super(LineDetail, self).__init__(**kw_args)
@@ -1940,15 +2082,15 @@ class Tender(IdentifiedObject):
     """
     # <<< tender
     # @generated
-    def __init__(self, amount='', change='', kind='cheque', receipt=None, card=None, cheque=None, **kw_args):
+    def __init__(self, amount=0.0, change=0.0, kind='cheque', receipt=None, card=None, cheque=None, **kw_args):
         """ Initialises a new 'Tender' instance.
         """
         # Amount tendered by customer. 
-        self.amount = ''
+        self.amount = amount
         # Difference between amount tendered by customer and the amount charged by point of sale. 
-        self.change = ''
+        self.change = change
         # Kind of tender from customer. Values are: "cheque", "cash", "card", "other", "unspecified"
-        self.kind = 'cheque'
+        self.kind = kind
         
         self._receipt = None
         self.receipt = receipt
@@ -1974,7 +2116,8 @@ class Tender(IdentifiedObject):
             
         self._receipt = value
         if self._receipt is not None:
-            self._receipt._tenders.append(self)
+            if self not in self._receipt._tenders:
+                self._receipt._tenders.append(self)
 
     receipt = property(get_receipt, set_receipt)
     # >>> receipt
@@ -2022,32 +2165,35 @@ class AuxiliaryAgreement(Agreement):
     """
     # <<< auxiliary_agreement
     # @generated
-    def __init__(self, aux_ref='', vend_portion='', vend_portion_arrear='', fixed_amount='', arrears_interest='', min_amount='', aux_cycle='', sub_category='', pay_cycle='', aux_priority_code='', auxiliary_accounts=[], customer_agreement=None, **kw_args):
+    def __init__(self, aux_ref='', vend_portion=0.0, vend_portion_arrear=0.0, fixed_amount=0.0, arrears_interest=0.0, min_amount=0.0, aux_cycle='', sub_category='', pay_cycle='', aux_priority_code='', auxiliary_accounts=None, customer_agreement=None, **kw_args):
         """ Initialises a new 'AuxiliaryAgreement' instance.
         """
         # A local reference to this AuxiliaryAgreement defined in the context of the implementation and not related to IdentifiedObject.mRID. 
-        self.aux_ref = ''
+        self.aux_ref = aux_ref
         # The percentage of the transaction amount that must be collected from each vending transaction towards settlement of this AuxiliaryAgreement when payments are not in arrears. Note that there may be multiple tokens vended per vending transaction, but this is not relevant. 
-        self.vend_portion = ''
+        self.vend_portion = vend_portion
         # The percentage of the transaction amount that must be collected from each vending transaction towards settlement of this AuxiliaryAgreement when payments are in arrears. Note that there may be multiple tokens vended per vending transaction, but this is not relevant. 
-        self.vend_portion_arrear = ''
+        self.vend_portion_arrear = vend_portion_arrear
         # The fixed amount that must be collected from each vending transaction towards settlement of this AuxiliaryAgreement. Note that there may be multiple tokens vended per vending transaction, but this is not relevant. 
-        self.fixed_amount = ''
+        self.fixed_amount = fixed_amount
         # The interest per annum to be charged prorata on AuxiliaryAccount.dueArrears at the end of each payCycle. 
-        self.arrears_interest = ''
+        self.arrears_interest = arrears_interest
         # The minimum amount that must be paid at any transaction towards settling this AuxiliryAgreement or reducing the balance. 
-        self.min_amount = ''
+        self.min_amount = min_amount
         # The frequency for automatically recurring auxiliary charges, where AuxiliaryAccount.initialCharge is recursively added to AuxiliaryAccount.dueCurrent at the start of each auxCycle. For example: on a specified date and time; hourly; daily; weekly; monthly; 3-monthly; 6-monthly; 12-monthly; etc. 
-        self.aux_cycle = ''
+        self.aux_cycle = aux_cycle
         # Sub-category of this AuxiliaryAgreement as sub-classification of the inherited 'category'. 
-        self.sub_category = ''
+        self.sub_category = sub_category
         # The contractually expected payment frequency (by the customer). Examples are: ad-hoc; on specified date; hourly, daily, weekly, monthly. etc. 
-        self.pay_cycle = ''
+        self.pay_cycle = pay_cycle
         # The coded priority indicating the priority that this AuxiliaryAgreement has above other AuxiliaryAgreements (associated with the same customer agreement) when it comes to competing for settlement from a payment transaction or token purchase. 
-        self.aux_priority_code = ''
+        self.aux_priority_code = aux_priority_code
         
         self._auxiliary_accounts = []
-        self.auxiliary_accounts = auxiliary_accounts
+        if auxiliary_accounts is None:
+            self.auxiliary_accounts = []
+        else:
+            self.auxiliary_accounts = auxiliary_accounts
         self._customer_agreement = None
         self.customer_agreement = customer_agreement
 
@@ -2063,9 +2209,9 @@ class AuxiliaryAgreement(Agreement):
 
     def set_auxiliary_accounts(self, value):
         for x in self._auxiliary_accounts:
-            x._auxiliary_agreement = None
+            x.auxiliary_agreement = None
         for y in value:
-            y._auxiliary_agreement = self
+            y.auxiliary_agreement = self
         self._auxiliary_accounts = value
             
     auxiliary_accounts = property(get_auxiliary_accounts, set_auxiliary_accounts)
@@ -2073,7 +2219,8 @@ class AuxiliaryAgreement(Agreement):
     def add_auxiliary_accounts(self, *auxiliary_accounts):
         for obj in auxiliary_accounts:
             obj._auxiliary_agreement = self
-            self._auxiliary_accounts.append(obj)
+            if obj not in self._auxiliary_accounts:
+                self._auxiliary_accounts.append(obj)
         
     def remove_auxiliary_accounts(self, *auxiliary_accounts):
         for obj in auxiliary_accounts:
@@ -2095,7 +2242,8 @@ class AuxiliaryAgreement(Agreement):
             
         self._customer_agreement = value
         if self._customer_agreement is not None:
-            self._customer_agreement._auxiliary_agreements.append(self)
+            if self not in self._customer_agreement._auxiliary_agreements:
+                self._customer_agreement._auxiliary_agreements.append(self)
 
     customer_agreement = property(get_customer_agreement, set_customer_agreement)
     # >>> customer_agreement
@@ -2107,18 +2255,24 @@ class VendorShift(Shift):
     """
     # <<< vendor_shift
     # @generated
-    def __init__(self, merchant_debit_amount='', posted=False, transactions=[], receipts=[], vendor=None, merchant_account=None, **kw_args):
+    def __init__(self, merchant_debit_amount=0.0, posted=False, transactions=None, receipts=None, vendor=None, merchant_account=None, **kw_args):
         """ Initialises a new 'VendorShift' instance.
         """
         # The amount that is to be debited from the merchant account for this vendor shift. This amount reflects the sum(PaymentTransaction.transactionAmount). 
-        self.merchant_debit_amount = ''
+        self.merchant_debit_amount = merchant_debit_amount
         # = true if merchantDebitAmount has been debited from MerchantAccount; typically happens at the end of VendorShift when it closes. 
-        self.posted = False
+        self.posted = posted
         
         self._transactions = []
-        self.transactions = transactions
+        if transactions is None:
+            self.transactions = []
+        else:
+            self.transactions = transactions
         self._receipts = []
-        self.receipts = receipts
+        if receipts is None:
+            self.receipts = []
+        else:
+            self.receipts = receipts
         self._vendor = None
         self.vendor = vendor
         self._merchant_account = None
@@ -2136,9 +2290,9 @@ class VendorShift(Shift):
 
     def set_transactions(self, value):
         for x in self._transactions:
-            x._vendor_shift = None
+            x.vendor_shift = None
         for y in value:
-            y._vendor_shift = self
+            y.vendor_shift = self
         self._transactions = value
             
     transactions = property(get_transactions, set_transactions)
@@ -2146,7 +2300,8 @@ class VendorShift(Shift):
     def add_transactions(self, *transactions):
         for obj in transactions:
             obj._vendor_shift = self
-            self._transactions.append(obj)
+            if obj not in self._transactions:
+                self._transactions.append(obj)
         
     def remove_transactions(self, *transactions):
         for obj in transactions:
@@ -2163,9 +2318,9 @@ class VendorShift(Shift):
 
     def set_receipts(self, value):
         for x in self._receipts:
-            x._vendor_shift = None
+            x.vendor_shift = None
         for y in value:
-            y._vendor_shift = self
+            y.vendor_shift = self
         self._receipts = value
             
     receipts = property(get_receipts, set_receipts)
@@ -2173,7 +2328,8 @@ class VendorShift(Shift):
     def add_receipts(self, *receipts):
         for obj in receipts:
             obj._vendor_shift = self
-            self._receipts.append(obj)
+            if obj not in self._receipts:
+                self._receipts.append(obj)
         
     def remove_receipts(self, *receipts):
         for obj in receipts:
@@ -2195,7 +2351,8 @@ class VendorShift(Shift):
             
         self._vendor = value
         if self._vendor is not None:
-            self._vendor._vendor_shifts.append(self)
+            if self not in self._vendor._vendor_shifts:
+                self._vendor._vendor_shifts.append(self)
 
     vendor = property(get_vendor, set_vendor)
     # >>> vendor
@@ -2214,7 +2371,8 @@ class VendorShift(Shift):
             
         self._merchant_account = value
         if self._merchant_account is not None:
-            self._merchant_account._vendor_shifts.append(self)
+            if self not in self._merchant_account._vendor_shifts:
+                self._merchant_account._vendor_shifts.append(self)
 
     merchant_account = property(get_merchant_account, set_merchant_account)
     # >>> merchant_account
@@ -2226,20 +2384,26 @@ class CashierShift(Shift):
     """
     # <<< cashier_shift
     # @generated
-    def __init__(self, cash_float='', transactions=[], point_of_sale=None, cashier=None, receipts=[], **kw_args):
+    def __init__(self, cash_float=0.0, transactions=None, point_of_sale=None, cashier=None, receipts=None, **kw_args):
         """ Initialises a new 'CashierShift' instance.
         """
         # The amount of cash that the cashier brings with him to start his shift and that he will take away at the end of his shift; i.e. the cash float does not get banked. 
-        self.cash_float = ''
+        self.cash_float = cash_float
         
         self._transactions = []
-        self.transactions = transactions
+        if transactions is None:
+            self.transactions = []
+        else:
+            self.transactions = transactions
         self._point_of_sale = None
         self.point_of_sale = point_of_sale
         self._cashier = None
         self.cashier = cashier
         self._receipts = []
-        self.receipts = receipts
+        if receipts is None:
+            self.receipts = []
+        else:
+            self.receipts = receipts
 
         super(CashierShift, self).__init__(**kw_args)
     # >>> cashier_shift
@@ -2253,9 +2417,9 @@ class CashierShift(Shift):
 
     def set_transactions(self, value):
         for x in self._transactions:
-            x._cashier_shift = None
+            x.cashier_shift = None
         for y in value:
-            y._cashier_shift = self
+            y.cashier_shift = self
         self._transactions = value
             
     transactions = property(get_transactions, set_transactions)
@@ -2263,7 +2427,8 @@ class CashierShift(Shift):
     def add_transactions(self, *transactions):
         for obj in transactions:
             obj._cashier_shift = self
-            self._transactions.append(obj)
+            if obj not in self._transactions:
+                self._transactions.append(obj)
         
     def remove_transactions(self, *transactions):
         for obj in transactions:
@@ -2285,7 +2450,8 @@ class CashierShift(Shift):
             
         self._point_of_sale = value
         if self._point_of_sale is not None:
-            self._point_of_sale._cashier_shifts.append(self)
+            if self not in self._point_of_sale._cashier_shifts:
+                self._point_of_sale._cashier_shifts.append(self)
 
     point_of_sale = property(get_point_of_sale, set_point_of_sale)
     # >>> point_of_sale
@@ -2304,7 +2470,8 @@ class CashierShift(Shift):
             
         self._cashier = value
         if self._cashier is not None:
-            self._cashier._cashier_shifts.append(self)
+            if self not in self._cashier._cashier_shifts:
+                self._cashier._cashier_shifts.append(self)
 
     cashier = property(get_cashier, set_cashier)
     # >>> cashier
@@ -2318,9 +2485,9 @@ class CashierShift(Shift):
 
     def set_receipts(self, value):
         for x in self._receipts:
-            x._cashier_shift = None
+            x.cashier_shift = None
         for y in value:
-            y._cashier_shift = self
+            y.cashier_shift = self
         self._receipts = value
             
     receipts = property(get_receipts, set_receipts)
@@ -2328,7 +2495,8 @@ class CashierShift(Shift):
     def add_receipts(self, *receipts):
         for obj in receipts:
             obj._cashier_shift = self
-            self._receipts.append(obj)
+            if obj not in self._receipts:
+                self._receipts.append(obj)
         
     def remove_receipts(self, *receipts):
         for obj in receipts:
