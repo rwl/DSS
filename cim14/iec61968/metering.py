@@ -169,9 +169,9 @@ class IntervalBlock(Element):
         return self._interval_readings
 
     def set_interval_readings(self, value):
-        for p in self._interval_readings:
+        for p in self.interval_readings:
             filtered = [q for q in p.interval_blocks if q != self]
-            self._interval_readings._interval_blocks = filtered
+            p._interval_blocks = filtered
         for r in value:
             if self not in r._interval_blocks:
                 r._interval_blocks.append(self)
@@ -290,9 +290,9 @@ class EndDeviceGroup(IdentifiedObject):
         return self._end_device_assets
 
     def set_end_device_assets(self, value):
-        for p in self._end_device_assets:
+        for p in self.end_device_assets:
             filtered = [q for q in p.end_device_groups if q != self]
-            self._end_device_assets._end_device_groups = filtered
+            p._end_device_groups = filtered
         for r in value:
             if self not in r._end_device_groups:
                 r._end_device_groups.append(self)
@@ -536,9 +536,9 @@ class ServiceDeliveryPoint(IdentifiedObject):
         return self._sdplocations
 
     def set_sdplocations(self, value):
-        for p in self._sdplocations:
+        for p in self.sdplocations:
             filtered = [q for q in p.service_delivery_points if q != self]
-            self._sdplocations._service_delivery_points = filtered
+            p._service_delivery_points = filtered
         for r in value:
             if self not in r._service_delivery_points:
                 r._service_delivery_points.append(self)
@@ -627,9 +627,9 @@ class ServiceDeliveryPoint(IdentifiedObject):
         return self._pricing_structures
 
     def set_pricing_structures(self, value):
-        for p in self._pricing_structures:
+        for p in self.pricing_structures:
             filtered = [q for q in p.service_delivery_points if q != self]
-            self._pricing_structures._service_delivery_points = filtered
+            p._service_delivery_points = filtered
         for r in value:
             if self not in r._service_delivery_points:
                 r._service_delivery_points.append(self)
@@ -686,9 +686,9 @@ class ServiceDeliveryPoint(IdentifiedObject):
         return self._power_quality_pricings
 
     def set_power_quality_pricings(self, value):
-        for p in self._power_quality_pricings:
+        for p in self.power_quality_pricings:
             filtered = [q for q in p.service_delivery_points if q != self]
-            self._power_quality_pricings._service_delivery_points = filtered
+            p._service_delivery_points = filtered
         for r in value:
             if self not in r._service_delivery_points:
                 r._service_delivery_points.append(self)
@@ -840,9 +840,9 @@ class MeterReading(IdentifiedObject):
         return self._readings
 
     def set_readings(self, value):
-        for p in self._readings:
+        for p in self.readings:
             filtered = [q for q in p.meter_readings if q != self]
-            self._readings._meter_readings = filtered
+            p._meter_readings = filtered
         for r in value:
             if self not in r._meter_readings:
                 r._meter_readings.append(self)
@@ -1293,9 +1293,9 @@ class SDPLocation(Location):
         return self._service_delivery_points
 
     def set_service_delivery_points(self, value):
-        for p in self._service_delivery_points:
+        for p in self.service_delivery_points:
             filtered = [q for q in p.sdplocations if q != self]
-            self._service_delivery_points._sdplocations = filtered
+            p._sdplocations = filtered
         for r in value:
             if self not in r._sdplocations:
                 r._sdplocations.append(self)
@@ -1580,9 +1580,9 @@ class Reading(MeasurementValue):
         return self._meter_readings
 
     def set_meter_readings(self, value):
-        for p in self._meter_readings:
+        for p in self.meter_readings:
             filtered = [q for q in p.readings if q != self]
-            self._meter_readings._readings = filtered
+            p._readings = filtered
         for r in value:
             if self not in r._readings:
                 r._readings.append(self)
@@ -1729,9 +1729,9 @@ class EndDeviceAsset(AssetContainer):
         return self._electrical_infos
 
     def set_electrical_infos(self, value):
-        for p in self._electrical_infos:
+        for p in self.electrical_infos:
             filtered = [q for q in p.end_device_assets if q != self]
-            self._electrical_infos._end_device_assets = filtered
+            p._end_device_assets = filtered
         for r in value:
             if self not in r._end_device_assets:
                 r._end_device_assets.append(self)
@@ -1808,9 +1808,9 @@ class EndDeviceAsset(AssetContainer):
         return self._end_device_groups
 
     def set_end_device_groups(self, value):
-        for p in self._end_device_groups:
+        for p in self.end_device_groups:
             filtered = [q for q in p.end_device_assets if q != self]
-            self._end_device_groups._end_device_assets = filtered
+            p._end_device_assets = filtered
         for r in value:
             if self not in r._end_device_assets:
                 r._end_device_assets.append(self)
@@ -2010,9 +2010,9 @@ class IntervalReading(MeasurementValue):
         return self._interval_blocks
 
     def set_interval_blocks(self, value):
-        for p in self._interval_blocks:
+        for p in self.interval_blocks:
             filtered = [q for q in p.interval_readings if q != self]
-            self._interval_blocks._interval_readings = filtered
+            p._interval_readings = filtered
         for r in value:
             if self not in r._interval_readings:
                 r._interval_readings.append(self)

@@ -57,9 +57,9 @@ class ProcedureDataSet(Document):
         return self._measurement_values
 
     def set_measurement_values(self, value):
-        for p in self._measurement_values:
+        for p in self.measurement_values:
             filtered = [q for q in p.procedure_data_sets if q != self]
-            self._measurement_values._procedure_data_sets = filtered
+            p._procedure_data_sets = filtered
         for r in value:
             if self not in r._procedure_data_sets:
                 r._procedure_data_sets.append(self)
@@ -88,9 +88,9 @@ class ProcedureDataSet(Document):
         return self._transformer_observations
 
     def set_transformer_observations(self, value):
-        for p in self._transformer_observations:
+        for p in self.transformer_observations:
             filtered = [q for q in p.procedure_data_sets if q != self]
-            self._transformer_observations._procedure_data_sets = filtered
+            p._procedure_data_sets = filtered
         for r in value:
             if self not in r._procedure_data_sets:
                 r._procedure_data_sets.append(self)
@@ -139,9 +139,9 @@ class ProcedureDataSet(Document):
         return self._properties
 
     def set_properties(self, value):
-        for p in self._properties:
+        for p in self.properties:
             filtered = [q for q in p.procedure_data_sets if q != self]
-            self._properties._procedure_data_sets = filtered
+            p._procedure_data_sets = filtered
         for r in value:
             if self not in r._procedure_data_sets:
                 r._procedure_data_sets.append(self)
@@ -196,9 +196,9 @@ class PowerRating(IdentifiedObject):
         return self._transformer_assets
 
     def set_transformer_assets(self, value):
-        for p in self._transformer_assets:
+        for p in self.transformer_assets:
             filtered = [q for q in p.power_ratings if q != self]
-            self._transformer_assets._power_ratings = filtered
+            p._power_ratings = filtered
         for r in value:
             if self not in r._power_ratings:
                 r._power_ratings.append(self)
@@ -350,9 +350,9 @@ class Specification(Document):
         return self._qualification_requirements
 
     def set_qualification_requirements(self, value):
-        for p in self._qualification_requirements:
+        for p in self.qualification_requirements:
             filtered = [q for q in p.specifications if q != self]
-            self._qualification_requirements._specifications = filtered
+            p._specifications = filtered
         for r in value:
             if self not in r._specifications:
                 r._specifications.append(self)
@@ -409,9 +409,9 @@ class Specification(Document):
         return self._dimensions_infos
 
     def set_dimensions_infos(self, value):
-        for p in self._dimensions_infos:
+        for p in self.dimensions_infos:
             filtered = [q for q in p.specifications if q != self]
-            self._dimensions_infos._specifications = filtered
+            p._specifications = filtered
         for r in value:
             if self not in r._specifications:
                 r._specifications.append(self)
@@ -635,9 +635,9 @@ class Procedure(Document):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.procedures if q != self]
-            self._compatible_units._procedures = filtered
+            p._procedures = filtered
         for r in value:
             if self not in r._procedures:
                 r._procedures.append(self)
@@ -666,9 +666,9 @@ class Procedure(Document):
         return self._limits
 
     def set_limits(self, value):
-        for p in self._limits:
+        for p in self.limits:
             filtered = [q for q in p.procedures if q != self]
-            self._limits._procedures = filtered
+            p._procedures = filtered
         for r in value:
             if self not in r._procedures:
                 r._procedures.append(self)
@@ -886,9 +886,9 @@ class DimensionsInfo(IdentifiedObject):
         return self._specifications
 
     def set_specifications(self, value):
-        for p in self._specifications:
+        for p in self.specifications:
             filtered = [q for q in p.dimensions_infos if q != self]
-            self._specifications._dimensions_infos = filtered
+            p._dimensions_infos = filtered
         for r in value:
             if self not in r._dimensions_infos:
                 r._dimensions_infos.append(self)
@@ -1213,9 +1213,9 @@ class ElectricalAsset(Asset):
         return self._electrical_infos
 
     def set_electrical_infos(self, value):
-        for p in self._electrical_infos:
+        for p in self.electrical_infos:
             filtered = [q for q in p.electrical_assets if q != self]
-            self._electrical_infos._electrical_assets = filtered
+            p._electrical_assets = filtered
         for r in value:
             if self not in r._electrical_assets:
                 r._electrical_assets.append(self)
@@ -1667,9 +1667,9 @@ class SVCInfo(ElectricalInfo):
         return self._svctype_assets
 
     def set_svctype_assets(self, value):
-        for p in self._svctype_assets:
+        for p in self.svctype_assets:
             filtered = [q for q in p.svc_infos if q != self]
-            self._svctype_assets._svc_infos = filtered
+            p._svc_infos = filtered
         for r in value:
             if self not in r._svc_infos:
                 r._svc_infos.append(self)
@@ -1785,9 +1785,9 @@ class Medium(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.mediums if q != self]
-            self._assets._mediums = filtered
+            p._mediums = filtered
         for r in value:
             if self not in r._mediums:
                 r._mediums.append(self)
@@ -2004,9 +2004,9 @@ class ReliabilityInfo(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.reliability_infos if q != self]
-            self._assets._reliability_infos = filtered
+            p._reliability_infos = filtered
         for r in value:
             if self not in r._reliability_infos:
                 r._reliability_infos.append(self)
@@ -2779,9 +2779,9 @@ class AssetPropertyCurve(Curve):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.asset_property_curves if q != self]
-            self._assets._asset_property_curves = filtered
+            p._asset_property_curves = filtered
         for r in value:
             if self not in r._asset_property_curves:
                 r._asset_property_curves.append(self)
@@ -2983,9 +2983,9 @@ class TransformerObservation(IdentifiedObject):
         return self._procedure_data_sets
 
     def set_procedure_data_sets(self, value):
-        for p in self._procedure_data_sets:
+        for p in self.procedure_data_sets:
             filtered = [q for q in p.transformer_observations if q != self]
-            self._procedure_data_sets._transformer_observations = filtered
+            p._transformer_observations = filtered
         for r in value:
             if self not in r._transformer_observations:
                 r._transformer_observations.append(self)
@@ -3090,9 +3090,9 @@ class TransformerObservation(IdentifiedObject):
         return self._winding_tests
 
     def set_winding_tests(self, value):
-        for p in self._winding_tests:
+        for p in self.winding_tests:
             filtered = [q for q in p.transformer_observations if q != self]
-            self._winding_tests._transformer_observations = filtered
+            p._transformer_observations = filtered
         for r in value:
             if self not in r._transformer_observations:
                 r._transformer_observations.append(self)
@@ -3463,9 +3463,9 @@ class DuctBank(Asset):
         return self._cable_assets
 
     def set_cable_assets(self, value):
-        for p in self._cable_assets:
+        for p in self.cable_assets:
             filtered = [q for q in p.duct_banks if q != self]
-            self._cable_assets._duct_banks = filtered
+            p._duct_banks = filtered
         for r in value:
             if self not in r._duct_banks:
                 r._duct_banks.append(self)
@@ -3965,9 +3965,9 @@ class LinearConductorAsset(ElectricalAsset):
         return self._conductors
 
     def set_conductors(self, value):
-        for p in self._conductors:
+        for p in self.conductors:
             filtered = [q for q in p.linear_conductor_assets if q != self]
-            self._conductors._linear_conductor_assets = filtered
+            p._linear_conductor_assets = filtered
         for r in value:
             if self not in r._linear_conductor_assets:
                 r._linear_conductor_assets.append(self)
@@ -4183,9 +4183,9 @@ class CableAsset(LinearConductorAsset):
         return self._duct_banks
 
     def set_duct_banks(self, value):
-        for p in self._duct_banks:
+        for p in self.duct_banks:
             filtered = [q for q in p.cable_assets if q != self]
-            self._duct_banks._cable_assets = filtered
+            p._cable_assets = filtered
         for r in value:
             if self not in r._cable_assets:
                 r._cable_assets.append(self)
@@ -4428,9 +4428,9 @@ class TransformerAsset(ElectricalAsset):
         return self._power_ratings
 
     def set_power_ratings(self, value):
-        for p in self._power_ratings:
+        for p in self.power_ratings:
             filtered = [q for q in p.transformer_assets if q != self]
-            self._power_ratings._transformer_assets = filtered
+            p._transformer_assets = filtered
         for r in value:
             if self not in r._transformer_assets:
                 r._transformer_assets.append(self)

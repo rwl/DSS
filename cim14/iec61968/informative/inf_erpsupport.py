@@ -69,9 +69,9 @@ class ErpLedgerEntry(IdentifiedObject):
         return self._settlements
 
     def set_settlements(self, value):
-        for p in self._settlements:
+        for p in self.settlements:
             filtered = [q for q in p.erp_ledger_entries if q != self]
-            self._settlements._erp_ledger_entries = filtered
+            p._erp_ledger_entries = filtered
         for r in value:
             if self not in r._erp_ledger_entries:
                 r._erp_ledger_entries.append(self)
@@ -156,9 +156,9 @@ class ErpLedgerEntry(IdentifiedObject):
         return self._user_attributes
 
     def set_user_attributes(self, value):
-        for p in self._user_attributes:
+        for p in self.user_attributes:
             filtered = [q for q in p.erp_ledger_entries if q != self]
-            self._user_attributes._erp_ledger_entries = filtered
+            p._erp_ledger_entries = filtered
         for r in value:
             if self not in r._erp_ledger_entries:
                 r._erp_ledger_entries.append(self)
@@ -290,9 +290,9 @@ class ErpRecLineItem(IdentifiedObject):
         return self._erp_payments
 
     def set_erp_payments(self, value):
-        for p in self._erp_payments:
+        for p in self.erp_payments:
             filtered = [q for q in p.erp_rec_line_items if q != self]
-            self._erp_payments._erp_rec_line_items = filtered
+            p._erp_rec_line_items = filtered
         for r in value:
             if self not in r._erp_rec_line_items:
                 r._erp_rec_line_items.append(self)
@@ -339,9 +339,9 @@ class ErpRecLineItem(IdentifiedObject):
         return self._erp_journal_entries
 
     def set_erp_journal_entries(self, value):
-        for p in self._erp_journal_entries:
+        for p in self.erp_journal_entries:
             filtered = [q for q in p.erp_rec_line_items if q != self]
-            self._erp_journal_entries._erp_rec_line_items = filtered
+            p._erp_rec_line_items = filtered
         for r in value:
             if self not in r._erp_rec_line_items:
                 r._erp_rec_line_items.append(self)
@@ -618,9 +618,9 @@ class ErpPayableLineItem(IdentifiedObject):
         return self._erp_journal_entries
 
     def set_erp_journal_entries(self, value):
-        for p in self._erp_journal_entries:
+        for p in self.erp_journal_entries:
             filtered = [q for q in p.erp_payable_line_items if q != self]
-            self._erp_journal_entries._erp_payable_line_items = filtered
+            p._erp_payable_line_items = filtered
         for r in value:
             if self not in r._erp_payable_line_items:
                 r._erp_payable_line_items.append(self)
@@ -687,9 +687,9 @@ class ErpPayableLineItem(IdentifiedObject):
         return self._erp_payments
 
     def set_erp_payments(self, value):
-        for p in self._erp_payments:
+        for p in self.erp_payments:
             filtered = [q for q in p.erp_payable_line_items if q != self]
-            self._erp_payments._erp_payable_line_items = filtered
+            p._erp_payable_line_items = filtered
         for r in value:
             if self not in r._erp_payable_line_items:
                 r._erp_payable_line_items.append(self)
@@ -1019,9 +1019,9 @@ class ErpPayment(Document):
         return self._erp_rec_line_items
 
     def set_erp_rec_line_items(self, value):
-        for p in self._erp_rec_line_items:
+        for p in self.erp_rec_line_items:
             filtered = [q for q in p.erp_payments if q != self]
-            self._erp_rec_line_items._erp_payments = filtered
+            p._erp_payments = filtered
         for r in value:
             if self not in r._erp_payments:
                 r._erp_payments.append(self)
@@ -1050,9 +1050,9 @@ class ErpPayment(Document):
         return self._erp_invoice_line_items
 
     def set_erp_invoice_line_items(self, value):
-        for p in self._erp_invoice_line_items:
+        for p in self.erp_invoice_line_items:
             filtered = [q for q in p.erp_payments if q != self]
-            self._erp_invoice_line_items._erp_payments = filtered
+            p._erp_payments = filtered
         for r in value:
             if self not in r._erp_payments:
                 r._erp_payments.append(self)
@@ -1081,9 +1081,9 @@ class ErpPayment(Document):
         return self._erp_payable_line_items
 
     def set_erp_payable_line_items(self, value):
-        for p in self._erp_payable_line_items:
+        for p in self.erp_payable_line_items:
             filtered = [q for q in p.erp_payments if q != self]
-            self._erp_payable_line_items._erp_payments = filtered
+            p._erp_payments = filtered
         for r in value:
             if self not in r._erp_payments:
                 r._erp_payments.append(self)
@@ -1734,9 +1734,9 @@ class ErpPayable(Document):
         return self._contractor_items
 
     def set_contractor_items(self, value):
-        for p in self._contractor_items:
+        for p in self.contractor_items:
             filtered = [q for q in p.erp_payables if q != self]
-            self._contractor_items._erp_payables = filtered
+            p._erp_payables = filtered
         for r in value:
             if self not in r._erp_payables:
                 r._erp_payables.append(self)
@@ -1888,9 +1888,9 @@ class ErpPerson(IdentifiedObject):
         return self._crafts
 
     def set_crafts(self, value):
-        for p in self._crafts:
+        for p in self.crafts:
             filtered = [q for q in p.erp_persons if q != self]
-            self._crafts._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -1919,9 +1919,9 @@ class ErpPerson(IdentifiedObject):
         return self._labor_items
 
     def set_labor_items(self, value):
-        for p in self._labor_items:
+        for p in self.labor_items:
             filtered = [q for q in p.erp_persons if q != self]
-            self._labor_items._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -2054,9 +2054,9 @@ class ErpPerson(IdentifiedObject):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.erp_persons if q != self]
-            self._activity_records._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -2141,9 +2141,9 @@ class ErpPerson(IdentifiedObject):
         return self._call_backs
 
     def set_call_backs(self, value):
-        for p in self._call_backs:
+        for p in self.call_backs:
             filtered = [q for q in p.erp_persons if q != self]
-            self._call_backs._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -2248,9 +2248,9 @@ class ErpPerson(IdentifiedObject):
         return self._erp_telephone_numbers
 
     def set_erp_telephone_numbers(self, value):
-        for p in self._erp_telephone_numbers:
+        for p in self.erp_telephone_numbers:
             filtered = [q for q in p.erp_persons if q != self]
-            self._erp_telephone_numbers._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -2327,9 +2327,9 @@ class ErpPerson(IdentifiedObject):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.crew_members if q != self]
-            self._crews._crew_members = filtered
+            p._crew_members = filtered
         for r in value:
             if self not in r._crew_members:
                 r._crew_members.append(self)
@@ -2386,9 +2386,9 @@ class ErpPerson(IdentifiedObject):
         return self._appointments
 
     def set_appointments(self, value):
-        for p in self._appointments:
+        for p in self.appointments:
             filtered = [q for q in p.erp_persons if q != self]
-            self._appointments._erp_persons = filtered
+            p._erp_persons = filtered
         for r in value:
             if self not in r._erp_persons:
                 r._erp_persons.append(self)
@@ -2614,9 +2614,9 @@ class ErpJournalEntry(IdentifiedObject):
         return self._erp_rec_line_items
 
     def set_erp_rec_line_items(self, value):
-        for p in self._erp_rec_line_items:
+        for p in self.erp_rec_line_items:
             filtered = [q for q in p.erp_journal_entries if q != self]
-            self._erp_rec_line_items._erp_journal_entries = filtered
+            p._erp_journal_entries = filtered
         for r in value:
             if self not in r._erp_journal_entries:
                 r._erp_journal_entries.append(self)
@@ -2665,9 +2665,9 @@ class ErpJournalEntry(IdentifiedObject):
         return self._erp_payable_line_items
 
     def set_erp_payable_line_items(self, value):
-        for p in self._erp_payable_line_items:
+        for p in self.erp_payable_line_items:
             filtered = [q for q in p.erp_journal_entries if q != self]
-            self._erp_payable_line_items._erp_journal_entries = filtered
+            p._erp_journal_entries = filtered
         for r in value:
             if self not in r._erp_journal_entries:
                 r._erp_journal_entries.append(self)
@@ -2734,9 +2734,9 @@ class ErpJournalEntry(IdentifiedObject):
         return self._cost_types
 
     def set_cost_types(self, value):
-        for p in self._cost_types:
+        for p in self.cost_types:
             filtered = [q for q in p.erp_journal_entries if q != self]
-            self._cost_types._erp_journal_entries = filtered
+            p._erp_journal_entries = filtered
         for r in value:
             if self not in r._erp_journal_entries:
                 r._erp_journal_entries.append(self)
@@ -3260,9 +3260,9 @@ class ErpOrganisation(Organisation):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.organisations if q != self]
-            self._activity_records._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)
@@ -3291,9 +3291,9 @@ class ErpOrganisation(Organisation):
         return self._int_sched_agreement
 
     def set_int_sched_agreement(self, value):
-        for p in self._int_sched_agreement:
+        for p in self.int_sched_agreement:
             filtered = [q for q in p.organisations if q != self]
-            self._int_sched_agreement._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)
@@ -3406,9 +3406,9 @@ class ErpOrganisation(Organisation):
         return self._violation_limits
 
     def set_violation_limits(self, value):
-        for p in self._violation_limits:
+        for p in self.violation_limits:
             filtered = [q for q in p.organisations if q != self]
-            self._violation_limits._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)
@@ -3465,9 +3465,9 @@ class ErpOrganisation(Organisation):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.organisations if q != self]
-            self._crews._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)
@@ -3647,9 +3647,9 @@ class ErpInvoiceLineItem(Document):
         return self._customer_billing_infos
 
     def set_customer_billing_infos(self, value):
-        for p in self._customer_billing_infos:
+        for p in self.customer_billing_infos:
             filtered = [q for q in p.erp_invoice_line_items if q != self]
-            self._customer_billing_infos._erp_invoice_line_items = filtered
+            p._erp_invoice_line_items = filtered
         for r in value:
             if self not in r._erp_invoice_line_items:
                 r._erp_invoice_line_items.append(self)
@@ -3678,9 +3678,9 @@ class ErpInvoiceLineItem(Document):
         return self._erp_payments
 
     def set_erp_payments(self, value):
-        for p in self._erp_payments:
+        for p in self.erp_payments:
             filtered = [q for q in p.erp_invoice_line_items if q != self]
-            self._erp_payments._erp_invoice_line_items = filtered
+            p._erp_invoice_line_items = filtered
         for r in value:
             if self not in r._erp_invoice_line_items:
                 r._erp_invoice_line_items.append(self)
@@ -3727,9 +3727,9 @@ class ErpInvoiceLineItem(Document):
         return self._market_factors
 
     def set_market_factors(self, value):
-        for p in self._market_factors:
+        for p in self.market_factors:
             filtered = [q for q in p.erp_invoices if q != self]
-            self._market_factors._erp_invoices = filtered
+            p._erp_invoices = filtered
         for r in value:
             if self not in r._erp_invoices:
                 r._erp_invoices.append(self)
@@ -3758,9 +3758,9 @@ class ErpInvoiceLineItem(Document):
         return self._settlements
 
     def set_settlements(self, value):
-        for p in self._settlements:
+        for p in self.settlements:
             filtered = [q for q in p.erp_invoice_line_items if q != self]
-            self._settlements._erp_invoice_line_items = filtered
+            p._erp_invoice_line_items = filtered
         for r in value:
             if self not in r._erp_invoice_line_items:
                 r._erp_invoice_line_items.append(self)
@@ -3827,9 +3827,9 @@ class ErpInvoiceLineItem(Document):
         return self._work_billing_infos
 
     def set_work_billing_infos(self, value):
-        for p in self._work_billing_infos:
+        for p in self.work_billing_infos:
             filtered = [q for q in p.erp_line_items if q != self]
-            self._work_billing_infos._erp_line_items = filtered
+            p._erp_line_items = filtered
         for r in value:
             if self not in r._erp_line_items:
                 r._erp_line_items.append(self)
@@ -3858,9 +3858,9 @@ class ErpInvoiceLineItem(Document):
         return self._user_attributes
 
     def set_user_attributes(self, value):
-        for p in self._user_attributes:
+        for p in self.user_attributes:
             filtered = [q for q in p.erp_invoice_line_items if q != self]
-            self._user_attributes._erp_invoice_line_items = filtered
+            p._erp_invoice_line_items = filtered
         for r in value:
             if self not in r._erp_invoice_line_items:
                 r._erp_invoice_line_items.append(self)
@@ -4199,9 +4199,9 @@ class ErpRecDelvLineItem(IdentifiedObject):
         return self._material_items
 
     def set_material_items(self, value):
-        for p in self._material_items:
+        for p in self.material_items:
             filtered = [q for q in p.erp_rec_delv_line_items if q != self]
-            self._material_items._erp_rec_delv_line_items = filtered
+            p._erp_rec_delv_line_items = filtered
         for r in value:
             if self not in r._erp_rec_delv_line_items:
                 r._erp_rec_delv_line_items.append(self)
@@ -4286,9 +4286,9 @@ class ErpRecDelvLineItem(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.erp_rec_delivery_items if q != self]
-            self._assets._erp_rec_delivery_items = filtered
+            p._erp_rec_delivery_items = filtered
         for r in value:
             if self not in r._erp_rec_delivery_items:
                 r._erp_rec_delivery_items.append(self)
@@ -4367,9 +4367,9 @@ class ErpTelephoneNumber(TelephoneNumber):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.erp_telephone_numbers if q != self]
-            self._erp_persons._erp_telephone_numbers = filtered
+            p._erp_telephone_numbers = filtered
         for r in value:
             if self not in r._erp_telephone_numbers:
                 r._erp_telephone_numbers.append(self)

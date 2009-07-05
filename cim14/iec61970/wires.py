@@ -550,9 +550,9 @@ class Switch(ConductingEquipment):
         return self._connect_disconnect_functions
 
     def set_connect_disconnect_functions(self, value):
-        for p in self._connect_disconnect_functions:
+        for p in self.connect_disconnect_functions:
             filtered = [q for q in p.switches if q != self]
-            self._connect_disconnect_functions._switches = filtered
+            p._switches = filtered
         for r in value:
             if self not in r._switches:
                 r._switches.append(self)
@@ -601,9 +601,9 @@ class Switch(ConductingEquipment):
         return self._load_mgmt_functions
 
     def set_load_mgmt_functions(self, value):
-        for p in self._load_mgmt_functions:
+        for p in self.load_mgmt_functions:
             filtered = [q for q in p.switches if q != self]
-            self._load_mgmt_functions._switches = filtered
+            p._switches = filtered
         for r in value:
             if self not in r._switches:
                 r._switches.append(self)
@@ -632,9 +632,9 @@ class Switch(ConductingEquipment):
         return self._switching_operations
 
     def set_switching_operations(self, value):
-        for p in self._switching_operations:
+        for p in self.switching_operations:
             filtered = [q for q in p.switches if q != self]
-            self._switching_operations._switches = filtered
+            p._switches = filtered
         for r in value:
             if self not in r._switches:
                 r._switches.append(self)
@@ -727,9 +727,9 @@ class Line(EquipmentContainer):
         return self._flowgates
 
     def set_flowgates(self, value):
-        for p in self._flowgates:
+        for p in self.flowgates:
             filtered = [q for q in p.lines if q != self]
-            self._flowgates._lines = filtered
+            p._lines = filtered
         for r in value:
             if self not in r._lines:
                 r._lines.append(self)
@@ -787,9 +787,9 @@ class ReactiveCapabilityCurve(Curve):
         return self._synchronous_machines
 
     def set_synchronous_machines(self, value):
-        for p in self._synchronous_machines:
+        for p in self.synchronous_machines:
             filtered = [q for q in p.reactive_capability_curves if q != self]
-            self._synchronous_machines._reactive_capability_curves = filtered
+            p._reactive_capability_curves = filtered
         for r in value:
             if self not in r._reactive_capability_curves:
                 r._reactive_capability_curves.append(self)
@@ -1290,9 +1290,9 @@ class WindingTest(IdentifiedObject):
         return self._transformer_observations
 
     def set_transformer_observations(self, value):
-        for p in self._transformer_observations:
+        for p in self.transformer_observations:
             filtered = [q for q in p.winding_tests if q != self]
-            self._transformer_observations._winding_tests = filtered
+            p._winding_tests = filtered
         for r in value:
             if self not in r._winding_tests:
                 r._winding_tests.append(self)
@@ -1635,9 +1635,9 @@ class Conductor(ConductingEquipment):
         return self._linear_conductor_type_assets
 
     def set_linear_conductor_type_assets(self, value):
-        for p in self._linear_conductor_type_assets:
+        for p in self.linear_conductor_type_assets:
             filtered = [q for q in p.conductors if q != self]
-            self._linear_conductor_type_assets._conductors = filtered
+            p._conductors = filtered
         for r in value:
             if self not in r._conductors:
                 r._conductors.append(self)
@@ -1686,9 +1686,9 @@ class Conductor(ConductingEquipment):
         return self._linear_conductor_assets
 
     def set_linear_conductor_assets(self, value):
-        for p in self._linear_conductor_assets:
+        for p in self.linear_conductor_assets:
             filtered = [q for q in p.conductors if q != self]
-            self._linear_conductor_assets._conductors = filtered
+            p._conductors = filtered
         for r in value:
             if self not in r._conductors:
                 r._conductors.append(self)
@@ -1862,9 +1862,9 @@ class PowerTransformer(Equipment):
         return self._flowgates
 
     def set_flowgates(self, value):
-        for p in self._flowgates:
+        for p in self.flowgates:
             filtered = [q for q in p.power_transormers if q != self]
-            self._flowgates._power_transormers = filtered
+            p._power_transormers = filtered
         for r in value:
             if self not in r._power_transormers:
                 r._power_transormers.append(self)
@@ -2105,9 +2105,9 @@ class SynchronousMachine(RegulatingCondEq):
         return self._reactive_capability_curves
 
     def set_reactive_capability_curves(self, value):
-        for p in self._reactive_capability_curves:
+        for p in self.reactive_capability_curves:
             filtered = [q for q in p.synchronous_machines if q != self]
-            self._reactive_capability_curves._synchronous_machines = filtered
+            p._synchronous_machines = filtered
         for r in value:
             if self not in r._synchronous_machines:
                 r._synchronous_machines.append(self)
@@ -2156,9 +2156,9 @@ class SynchronousMachine(RegulatingCondEq):
         return self._prime_movers
 
     def set_prime_movers(self, value):
-        for p in self._prime_movers:
+        for p in self.prime_movers:
             filtered = [q for q in p.synchronous_machines if q != self]
-            self._prime_movers._synchronous_machines = filtered
+            p._synchronous_machines = filtered
         for r in value:
             if self not in r._synchronous_machines:
                 r._synchronous_machines.append(self)
@@ -2425,9 +2425,9 @@ class ProtectedSwitch(Switch):
         return self._protection_equipments
 
     def set_protection_equipments(self, value):
-        for p in self._protection_equipments:
+        for p in self.protection_equipments:
             filtered = [q for q in p.protected_switches if q != self]
-            self._protection_equipments._protected_switches = filtered
+            p._protected_switches = filtered
         for r in value:
             if self not in r._protected_switches:
                 r._protected_switches.append(self)

@@ -597,9 +597,9 @@ class ConsumptionTariffInterval(Element):
         return self._charges
 
     def set_charges(self, value):
-        for p in self._charges:
+        for p in self.charges:
             filtered = [q for q in p.consumption_tariff_intervals if q != self]
-            self._charges._consumption_tariff_intervals = filtered
+            p._consumption_tariff_intervals = filtered
         for r in value:
             if self not in r._consumption_tariff_intervals:
                 r._consumption_tariff_intervals.append(self)
@@ -628,9 +628,9 @@ class ConsumptionTariffInterval(Element):
         return self._tariff_profiles
 
     def set_tariff_profiles(self, value):
-        for p in self._tariff_profiles:
+        for p in self.tariff_profiles:
             filtered = [q for q in p.consumption_tariff_intervals if q != self]
-            self._tariff_profiles._consumption_tariff_intervals = filtered
+            p._consumption_tariff_intervals = filtered
         for r in value:
             if self not in r._consumption_tariff_intervals:
                 r._consumption_tariff_intervals.append(self)
@@ -864,9 +864,9 @@ class TimeTariffInterval(Element):
         return self._charges
 
     def set_charges(self, value):
-        for p in self._charges:
+        for p in self.charges:
             filtered = [q for q in p.time_tariff_intervals if q != self]
-            self._charges._time_tariff_intervals = filtered
+            p._time_tariff_intervals = filtered
         for r in value:
             if self not in r._time_tariff_intervals:
                 r._time_tariff_intervals.append(self)
@@ -895,9 +895,9 @@ class TimeTariffInterval(Element):
         return self._tariff_profiles
 
     def set_tariff_profiles(self, value):
-        for p in self._tariff_profiles:
+        for p in self.tariff_profiles:
             filtered = [q for q in p.time_tariff_intervals if q != self]
-            self._tariff_profiles._time_tariff_intervals = filtered
+            p._time_tariff_intervals = filtered
         for r in value:
             if self not in r._time_tariff_intervals:
                 r._time_tariff_intervals.append(self)
@@ -946,9 +946,9 @@ class Transactor(IdentifiedObject):
         return self._merchant_accounts
 
     def set_merchant_accounts(self, value):
-        for p in self._merchant_accounts:
+        for p in self.merchant_accounts:
             filtered = [q for q in p.transactors if q != self]
-            self._merchant_accounts._transactors = filtered
+            p._transactors = filtered
         for r in value:
             if self not in r._transactors:
                 r._transactors.append(self)
@@ -1302,9 +1302,9 @@ class Charge(IdentifiedObject):
         return self._time_tariff_intervals
 
     def set_time_tariff_intervals(self, value):
-        for p in self._time_tariff_intervals:
+        for p in self.time_tariff_intervals:
             filtered = [q for q in p.charges if q != self]
-            self._time_tariff_intervals._charges = filtered
+            p._charges = filtered
         for r in value:
             if self not in r._charges:
                 r._charges.append(self)
@@ -1353,9 +1353,9 @@ class Charge(IdentifiedObject):
         return self._auxiliary_accounts
 
     def set_auxiliary_accounts(self, value):
-        for p in self._auxiliary_accounts:
+        for p in self.auxiliary_accounts:
             filtered = [q for q in p.charges if q != self]
-            self._auxiliary_accounts._charges = filtered
+            p._charges = filtered
         for r in value:
             if self not in r._charges:
                 r._charges.append(self)
@@ -1412,9 +1412,9 @@ class Charge(IdentifiedObject):
         return self._consumption_tariff_intervals
 
     def set_consumption_tariff_intervals(self, value):
-        for p in self._consumption_tariff_intervals:
+        for p in self.consumption_tariff_intervals:
             filtered = [q for q in p.charges if q != self]
-            self._consumption_tariff_intervals._charges = filtered
+            p._charges = filtered
         for r in value:
             if self not in r._charges:
                 r._charges.append(self)
@@ -1475,9 +1475,9 @@ class TariffProfile(Document):
         return self._tariffs
 
     def set_tariffs(self, value):
-        for p in self._tariffs:
+        for p in self.tariffs:
             filtered = [q for q in p.tariff_profiles if q != self]
-            self._tariffs._tariff_profiles = filtered
+            p._tariff_profiles = filtered
         for r in value:
             if self not in r._tariff_profiles:
                 r._tariff_profiles.append(self)
@@ -1506,9 +1506,9 @@ class TariffProfile(Document):
         return self._consumption_tariff_intervals
 
     def set_consumption_tariff_intervals(self, value):
-        for p in self._consumption_tariff_intervals:
+        for p in self.consumption_tariff_intervals:
             filtered = [q for q in p.tariff_profiles if q != self]
-            self._consumption_tariff_intervals._tariff_profiles = filtered
+            p._tariff_profiles = filtered
         for r in value:
             if self not in r._tariff_profiles:
                 r._tariff_profiles.append(self)
@@ -1537,9 +1537,9 @@ class TariffProfile(Document):
         return self._time_tariff_intervals
 
     def set_time_tariff_intervals(self, value):
-        for p in self._time_tariff_intervals:
+        for p in self.time_tariff_intervals:
             filtered = [q for q in p.tariff_profiles if q != self]
-            self._time_tariff_intervals._tariff_profiles = filtered
+            p._tariff_profiles = filtered
         for r in value:
             if self not in r._tariff_profiles:
                 r._tariff_profiles.append(self)
@@ -1713,9 +1713,9 @@ class MerchantAccount(Document):
         return self._transactors
 
     def set_transactors(self, value):
-        for p in self._transactors:
+        for p in self.transactors:
             filtered = [q for q in p.merchant_accounts if q != self]
-            self._transactors._merchant_accounts = filtered
+            p._merchant_accounts = filtered
         for r in value:
             if self not in r._merchant_accounts:
                 r._merchant_accounts.append(self)
@@ -1887,9 +1887,9 @@ class AuxiliaryAccount(Document):
         return self._charges
 
     def set_charges(self, value):
-        for p in self._charges:
+        for p in self.charges:
             filtered = [q for q in p.auxiliary_accounts if q != self]
-            self._charges._auxiliary_accounts = filtered
+            p._auxiliary_accounts = filtered
         for r in value:
             if self not in r._auxiliary_accounts:
                 r._auxiliary_accounts.append(self)

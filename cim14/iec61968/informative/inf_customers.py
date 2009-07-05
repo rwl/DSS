@@ -127,9 +127,9 @@ class CustomerBillingInfo(Document):
         return self._erp_invoice_line_items
 
     def set_erp_invoice_line_items(self, value):
-        for p in self._erp_invoice_line_items:
+        for p in self.erp_invoice_line_items:
             filtered = [q for q in p.customer_billing_infos if q != self]
-            self._erp_invoice_line_items._customer_billing_infos = filtered
+            p._customer_billing_infos = filtered
         for r in value:
             if self not in r._customer_billing_infos:
                 r._customer_billing_infos.append(self)
@@ -340,9 +340,9 @@ class WorkBillingInfo(Document):
         return self._erp_line_items
 
     def set_erp_line_items(self, value):
-        for p in self._erp_line_items:
+        for p in self.erp_line_items:
             filtered = [q for q in p.work_billing_infos if q != self]
-            self._erp_line_items._work_billing_infos = filtered
+            p._work_billing_infos = filtered
         for r in value:
             if self not in r._work_billing_infos:
                 r._work_billing_infos.append(self)
@@ -466,9 +466,9 @@ class PowerQualityPricing(Document):
         return self._service_delivery_points
 
     def set_service_delivery_points(self, value):
-        for p in self._service_delivery_points:
+        for p in self.service_delivery_points:
             filtered = [q for q in p.power_quality_pricings if q != self]
-            self._service_delivery_points._power_quality_pricings = filtered
+            p._power_quality_pricings = filtered
         for r in value:
             if self not in r._power_quality_pricings:
                 r._power_quality_pricings.append(self)

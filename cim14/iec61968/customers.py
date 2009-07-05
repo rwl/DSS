@@ -111,9 +111,9 @@ class Customer(Organisation):
         return self._works
 
     def set_works(self, value):
-        for p in self._works:
+        for p in self.works:
             filtered = [q for q in p.customers if q != self]
-            self._works._customers = filtered
+            p._customers = filtered
         for r in value:
             if self not in r._customers:
                 r._customers.append(self)
@@ -190,9 +190,9 @@ class Customer(Organisation):
         return self._outage_notifications
 
     def set_outage_notifications(self, value):
-        for p in self._outage_notifications:
+        for p in self.outage_notifications:
             filtered = [q for q in p.customer_datas if q != self]
-            self._outage_notifications._customer_datas = filtered
+            p._customer_datas = filtered
         for r in value:
             if self not in r._customer_datas:
                 r._customer_datas.append(self)
@@ -341,9 +341,9 @@ class ServiceLocation(Location):
         return self._customer_agreements
 
     def set_customer_agreements(self, value):
-        for p in self._customer_agreements:
+        for p in self.customer_agreements:
             filtered = [q for q in p.service_locations if q != self]
-            self._customer_agreements._service_locations = filtered
+            p._service_locations = filtered
         for r in value:
             if self not in r._service_locations:
                 r._service_locations.append(self)
@@ -618,9 +618,9 @@ class CustomerAgreement(Agreement):
         return self._equipments
 
     def set_equipments(self, value):
-        for p in self._equipments:
+        for p in self.equipments:
             filtered = [q for q in p.customer_agreements if q != self]
-            self._equipments._customer_agreements = filtered
+            p._customer_agreements = filtered
         for r in value:
             if self not in r._customer_agreements:
                 r._customer_agreements.append(self)
@@ -677,9 +677,9 @@ class CustomerAgreement(Agreement):
         return self._service_locations
 
     def set_service_locations(self, value):
-        for p in self._service_locations:
+        for p in self.service_locations:
             filtered = [q for q in p.customer_agreements if q != self]
-            self._service_locations._customer_agreements = filtered
+            p._customer_agreements = filtered
         for r in value:
             if self not in r._customer_agreements:
                 r._customer_agreements.append(self)
@@ -708,9 +708,9 @@ class CustomerAgreement(Agreement):
         return self._pricing_structures
 
     def set_pricing_structures(self, value):
-        for p in self._pricing_structures:
+        for p in self.pricing_structures:
             filtered = [q for q in p.customer_agreements if q != self]
-            self._pricing_structures._customer_agreements = filtered
+            p._customer_agreements = filtered
         for r in value:
             if self not in r._customer_agreements:
                 r._customer_agreements.append(self)
@@ -1000,9 +1000,9 @@ class Tariff(Document):
         return self._pricing_structures
 
     def set_pricing_structures(self, value):
-        for p in self._pricing_structures:
+        for p in self.pricing_structures:
             filtered = [q for q in p.tariffs if q != self]
-            self._pricing_structures._tariffs = filtered
+            p._tariffs = filtered
         for r in value:
             if self not in r._tariffs:
                 r._tariffs.append(self)
@@ -1031,9 +1031,9 @@ class Tariff(Document):
         return self._tariff_profiles
 
     def set_tariff_profiles(self, value):
-        for p in self._tariff_profiles:
+        for p in self.tariff_profiles:
             filtered = [q for q in p.tariffs if q != self]
-            self._tariff_profiles._tariffs = filtered
+            p._tariffs = filtered
         for r in value:
             if self not in r._tariffs:
                 r._tariffs.append(self)
@@ -1285,9 +1285,9 @@ class PricingStructure(Document):
         return self._service_delivery_points
 
     def set_service_delivery_points(self, value):
-        for p in self._service_delivery_points:
+        for p in self.service_delivery_points:
             filtered = [q for q in p.pricing_structures if q != self]
-            self._service_delivery_points._pricing_structures = filtered
+            p._pricing_structures = filtered
         for r in value:
             if self not in r._pricing_structures:
                 r._pricing_structures.append(self)
@@ -1316,9 +1316,9 @@ class PricingStructure(Document):
         return self._customer_agreements
 
     def set_customer_agreements(self, value):
-        for p in self._customer_agreements:
+        for p in self.customer_agreements:
             filtered = [q for q in p.pricing_structures if q != self]
-            self._customer_agreements._pricing_structures = filtered
+            p._pricing_structures = filtered
         for r in value:
             if self not in r._pricing_structures:
                 r._pricing_structures.append(self)
@@ -1375,9 +1375,9 @@ class PricingStructure(Document):
         return self._tariffs
 
     def set_tariffs(self, value):
-        for p in self._tariffs:
+        for p in self.tariffs:
             filtered = [q for q in p.pricing_structures if q != self]
-            self._tariffs._pricing_structures = filtered
+            p._pricing_structures = filtered
         for r in value:
             if self not in r._pricing_structures:
                 r._pricing_structures.append(self)

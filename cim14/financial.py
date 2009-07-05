@@ -159,9 +159,9 @@ class TransmissionProduct(IdentifiedObject):
         return self._location_for
 
     def set_location_for(self, value):
-        for p in self._location_for:
+        for p in self.location_for:
             filtered = [q for q in p.located_on if q != self]
-            self._location_for._located_on = filtered
+            p._located_on = filtered
         for r in value:
             if self not in r._located_on:
                 r._located_on.append(self)
@@ -190,9 +190,9 @@ class TransmissionProduct(IdentifiedObject):
         return self._offers
 
     def set_offers(self, value):
-        for p in self._offers:
+        for p in self.offers:
             filtered = [q for q in p.offered_as if q != self]
-            self._offers._offered_as = filtered
+            p._offered_as = filtered
         for r in value:
             if self not in r._offered_as:
                 r._offered_as.append(self)
@@ -395,9 +395,9 @@ class ControlAreaOperator(ErpOrganisation):
         return self._tie_lines
 
     def set_tie_lines(self, value):
-        for p in self._tie_lines:
+        for p in self.tie_lines:
             filtered = [q for q in p.control_area_operators if q != self]
-            self._tie_lines._control_area_operators = filtered
+            p._control_area_operators = filtered
         for r in value:
             if self not in r._control_area_operators:
                 r._control_area_operators.append(self)
@@ -446,9 +446,9 @@ class IntSchedAgreement(Agreement):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.int_sched_agreement if q != self]
-            self._organisations._int_sched_agreement = filtered
+            p._int_sched_agreement = filtered
         for r in value:
             if self not in r._int_sched_agreement:
                 r._int_sched_agreement.append(self)
@@ -583,9 +583,9 @@ class Marketer(ErpOrganisation):
         return self._resells_energy_product
 
     def set_resells_energy_product(self, value):
-        for p in self._resells_energy_product:
+        for p in self.resells_energy_product:
             filtered = [q for q in p.resold_by_marketers if q != self]
-            self._resells_energy_product._resold_by_marketers = filtered
+            p._resold_by_marketers = filtered
         for r in value:
             if self not in r._resold_by_marketers:
                 r._resold_by_marketers.append(self)
@@ -818,9 +818,9 @@ class TransmissionProvider(ErpOrganisation):
         return self._flowgate
 
     def set_flowgate(self, value):
-        for p in self._flowgate:
+        for p in self.flowgate:
             filtered = [q for q in p.transmission_provider if q != self]
-            self._flowgate._transmission_provider = filtered
+            p._transmission_provider = filtered
         for r in value:
             if self not in r._transmission_provider:
                 r._transmission_provider.append(self)
@@ -933,9 +933,9 @@ class TransmissionProvider(ErpOrganisation):
         return self._ancillary_services
 
     def set_ancillary_services(self, value):
-        for p in self._ancillary_services:
+        for p in self.ancillary_services:
             filtered = [q for q in p.transmission_providers if q != self]
-            self._ancillary_services._transmission_providers = filtered
+            p._transmission_providers = filtered
         for r in value:
             if self not in r._transmission_providers:
                 r._transmission_providers.append(self)

@@ -53,9 +53,9 @@ class ProtectionEquipment(Equipment):
         return self._conducting_equipments
 
     def set_conducting_equipments(self, value):
-        for p in self._conducting_equipments:
+        for p in self.conducting_equipments:
             filtered = [q for q in p.protection_equipments if q != self]
-            self._conducting_equipments._protection_equipments = filtered
+            p._protection_equipments = filtered
         for r in value:
             if self not in r._protection_equipments:
                 r._protection_equipments.append(self)
@@ -104,9 +104,9 @@ class ProtectionEquipment(Equipment):
         return self._protected_switches
 
     def set_protected_switches(self, value):
-        for p in self._protected_switches:
+        for p in self.protected_switches:
             filtered = [q for q in p.protection_equipments if q != self]
-            self._protected_switches._protection_equipments = filtered
+            p._protection_equipments = filtered
         for r in value:
             if self not in r._protection_equipments:
                 r._protection_equipments.append(self)

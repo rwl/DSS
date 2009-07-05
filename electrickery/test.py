@@ -7,8 +7,8 @@
 import unittest
 import pickle
 from cim14.iec61970.core import BaseVoltage, Terminal, ConductingEquipment
-from cim14.iec61970.wires import Switch, RatioTapChanger, \
-    TransformerWinding, PowerTransformer
+from cim14.iec61970.wires import Switch, RatioTapChanger, SynchronousMachine, \
+    ReactiveCapabilityCurve, TransformerWinding, PowerTransformer
 from conversion import VSource, ISource, Generator, Load
 from circuit import Circuit
 from reader import read_cim
@@ -136,7 +136,7 @@ class CIMTestCase(unittest.TestCase):
         self.assertTrue(tw1 not in pt1.transformer_windings)
         self.assertTrue(tw1.power_transformer == None)
         
-        # Test setting.
+        # Test setter method.
         tw3 = TransformerWinding()
         pt2.transformer_windings = [tw1, tw2, tw3]
         
@@ -148,6 +148,44 @@ class CIMTestCase(unittest.TestCase):
         self.assertTrue(tw2.power_transformer == pt2)
         self.assertTrue(tw3.power_transformer == pt2)
         
+
+    def test_many_to_many_associations(self):
+        """ Test many-to-many associations between model elements.
+        """
+        sm1 = SynchronousMachine()
+        rc1 = ReactiveCapabilityCurve(synchronous_machines=[sm1])
+        
+        # Ensure instance attributes not class attributes.
+        sm2 = SynchronousMachine()
+        self.assertTrue(rc1 not in sm2.reactive_capability_curves)
+        
+        # Test bidirectional properties.
+        self.assertTrue(sm1 in rc1.synchronous_machines)
+        self.assertTrue(rc1 in sm1.reactive_capability_curves)
+        
+        # Test add method.
+        rc2 = ReactiveCapabilityCurve()
+        sm1.add_reactive_capability_curves(rc2)
+        
+        self.assertTrue(rc2 in sm1.reactive_capability_curves)
+        self.assertTrue(sm1 in rc2.synchronous_machines)
+        
+        # Test remove method.
+        sm1.remove_reactive_capability_curves(rc1)
+        
+        self.assertTrue(rc1 not in sm1.reactive_capability_curves)
+        self.assertTrue(sm1 not in rc1.synchronous_machines)
+        
+        # Test setter method.
+        rc3 = ReactiveCapabilityCurve(synchronous_machines=[sm2])
+        sm2.reactive_capability_curves = [rc1, rc2]
+        
+        self.assertTrue(sm2 not in rc3.synchronous_machines)
+        
+        self.assertTrue(rc1 in sm2.reactive_capability_curves)
+        self.assertTrue(rc2 in sm2.reactive_capability_curves)
+        self.assertTrue(sm2 in rc1.synchronous_machines)
+        self.assertTrue(sm2 in rc2.synchronous_machines)
 
 
 #class CircuitTestCase(unittest.TestCase):

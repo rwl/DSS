@@ -352,9 +352,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._activity_records._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -401,9 +401,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._schedule_steps
 
     def set_schedule_steps(self, value):
-        for p in self._schedule_steps:
+        for p in self.schedule_steps:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._schedule_steps._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -432,9 +432,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._reporting_group
 
     def set_reporting_group(self, value):
-        for p in self._reporting_group:
+        for p in self.reporting_group:
             filtered = [q for q in p.power_system_resource if q != self]
-            self._reporting_group._power_system_resource = filtered
+            p._power_system_resource = filtered
         for r in value:
             if self not in r._power_system_resource:
                 r._power_system_resource.append(self)
@@ -463,9 +463,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._circuit_sections
 
     def set_circuit_sections(self, value):
-        for p in self._circuit_sections:
+        for p in self.circuit_sections:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._circuit_sections._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -522,9 +522,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._network_data_sets._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -581,9 +581,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._psr_lists
 
     def set_psr_lists(self, value):
-        for p in self._psr_lists:
+        for p in self.psr_lists:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._psr_lists._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -640,9 +640,9 @@ class PowerSystemResource(IdentifiedObject):
         return self._circuits
 
     def set_circuits(self, value):
-        for p in self._circuits:
+        for p in self.circuits:
             filtered = [q for q in p.power_system_resources if q != self]
-            self._circuits._power_system_resources = filtered
+            p._power_system_resources = filtered
         for r in value:
             if self not in r._power_system_resources:
                 r._power_system_resources.append(self)
@@ -871,9 +871,9 @@ class PsrList(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.psr_lists if q != self]
-            self._power_system_resources._psr_lists = filtered
+            p._psr_lists = filtered
         for r in value:
             if self not in r._psr_lists:
                 r._psr_lists.append(self)
@@ -1448,9 +1448,9 @@ class Equipment(PowerSystemResource):
         return self._customer_agreements
 
     def set_customer_agreements(self, value):
-        for p in self._customer_agreements:
+        for p in self.customer_agreements:
             filtered = [q for q in p.equipments if q != self]
-            self._customer_agreements._equipments = filtered
+            p._equipments = filtered
         for r in value:
             if self not in r._equipments:
                 r._equipments.append(self)
@@ -1635,9 +1635,9 @@ class ReportingGroup(IdentifiedObject):
         return self._power_system_resource
 
     def set_power_system_resource(self, value):
-        for p in self._power_system_resource:
+        for p in self.power_system_resource:
             filtered = [q for q in p.reporting_group if q != self]
-            self._power_system_resource._reporting_group = filtered
+            p._reporting_group = filtered
         for r in value:
             if self not in r._reporting_group:
                 r._reporting_group.append(self)
@@ -2876,9 +2876,9 @@ class ConductingEquipment(Equipment):
         return self._protection_equipments
 
     def set_protection_equipments(self, value):
-        for p in self._protection_equipments:
+        for p in self.protection_equipments:
             filtered = [q for q in p.conducting_equipments if q != self]
-            self._protection_equipments._conducting_equipments = filtered
+            p._conducting_equipments = filtered
         for r in value:
             if self not in r._conducting_equipments:
                 r._conducting_equipments.append(self)

@@ -54,9 +54,9 @@ class GmlSvgParameter(IdentifiedObject):
         return self._gml_stokes
 
     def set_gml_stokes(self, value):
-        for p in self._gml_stokes:
+        for p in self.gml_stokes:
             filtered = [q for q in p.gml_svg_parameters if q != self]
-            self._gml_stokes._gml_svg_parameters = filtered
+            p._gml_svg_parameters = filtered
         for r in value:
             if self not in r._gml_svg_parameters:
                 r._gml_svg_parameters.append(self)
@@ -85,9 +85,9 @@ class GmlSvgParameter(IdentifiedObject):
         return self._gml_fonts
 
     def set_gml_fonts(self, value):
-        for p in self._gml_fonts:
+        for p in self.gml_fonts:
             filtered = [q for q in p.gml_svg_parameters if q != self]
-            self._gml_fonts._gml_svg_parameters = filtered
+            p._gml_svg_parameters = filtered
         for r in value:
             if self not in r._gml_svg_parameters:
                 r._gml_svg_parameters.append(self)
@@ -116,9 +116,9 @@ class GmlSvgParameter(IdentifiedObject):
         return self._gml_fills
 
     def set_gml_fills(self, value):
-        for p in self._gml_fills:
+        for p in self.gml_fills:
             filtered = [q for q in p.gml_svg_parameters if q != self]
-            self._gml_fills._gml_svg_parameters = filtered
+            p._gml_svg_parameters = filtered
         for r in value:
             if self not in r._gml_svg_parameters:
                 r._gml_svg_parameters.append(self)
@@ -373,9 +373,9 @@ class GmlDiagramObject(Location):
         return self._diagrams
 
     def set_diagrams(self, value):
-        for p in self._diagrams:
+        for p in self.diagrams:
             filtered = [q for q in p.gml_diagram_objects if q != self]
-            self._diagrams._gml_diagram_objects = filtered
+            p._gml_diagram_objects = filtered
         for r in value:
             if self not in r._gml_diagram_objects:
                 r._gml_diagram_objects.append(self)
@@ -460,9 +460,9 @@ class GmlDiagramObject(Location):
         return self._gml_coordinate_systems
 
     def set_gml_coordinate_systems(self, value):
-        for p in self._gml_coordinate_systems:
+        for p in self.gml_coordinate_systems:
             filtered = [q for q in p.gml_diagram_objects if q != self]
-            self._gml_coordinate_systems._gml_diagram_objects = filtered
+            p._gml_diagram_objects = filtered
         for r in value:
             if self not in r._gml_diagram_objects:
                 r._gml_diagram_objects.append(self)
@@ -586,9 +586,9 @@ class GmlGraphic(IdentifiedObject):
         return self._gml_marks
 
     def set_gml_marks(self, value):
-        for p in self._gml_marks:
+        for p in self.gml_marks:
             filtered = [q for q in p.gml_graphics if q != self]
-            self._gml_marks._gml_graphics = filtered
+            p._gml_graphics = filtered
         for r in value:
             if self not in r._gml_graphics:
                 r._gml_graphics.append(self)
@@ -704,9 +704,9 @@ class GmlFill(IdentifiedObject):
         return self._gml_marks
 
     def set_gml_marks(self, value):
-        for p in self._gml_marks:
+        for p in self.gml_marks:
             filtered = [q for q in p.gml_fills if q != self]
-            self._gml_marks._gml_fills = filtered
+            p._gml_fills = filtered
         for r in value:
             if self not in r._gml_fills:
                 r._gml_fills.append(self)
@@ -763,9 +763,9 @@ class GmlFill(IdentifiedObject):
         return self._gml_svg_parameters
 
     def set_gml_svg_parameters(self, value):
-        for p in self._gml_svg_parameters:
+        for p in self.gml_svg_parameters:
             filtered = [q for q in p.gml_fills if q != self]
-            self._gml_svg_parameters._gml_fills = filtered
+            p._gml_fills = filtered
         for r in value:
             if self not in r._gml_fills:
                 r._gml_fills.append(self)
@@ -819,9 +819,9 @@ class GmlSelector(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.gml_selectors if q != self]
-            self._locations._gml_selectors = filtered
+            p._gml_selectors = filtered
         for r in value:
             if self not in r._gml_selectors:
                 r._gml_selectors.append(self)
@@ -968,9 +968,9 @@ class GmlSymbol(IdentifiedObject):
         return self._gml_feature_styles
 
     def set_gml_feature_styles(self, value):
-        for p in self._gml_feature_styles:
+        for p in self.gml_feature_styles:
             filtered = [q for q in p.gml_symbols if q != self]
-            self._gml_feature_styles._gml_symbols = filtered
+            p._gml_symbols = filtered
         for r in value:
             if self not in r._gml_symbols:
                 r._gml_symbols.append(self)
@@ -1178,9 +1178,9 @@ class GmlCoordinateSystem(IdentifiedObject):
         return self._gml_diagram_objects
 
     def set_gml_diagram_objects(self, value):
-        for p in self._gml_diagram_objects:
+        for p in self.gml_diagram_objects:
             filtered = [q for q in p.gml_coordinate_systems if q != self]
-            self._gml_diagram_objects._gml_coordinate_systems = filtered
+            p._gml_coordinate_systems = filtered
         for r in value:
             if self not in r._gml_coordinate_systems:
                 r._gml_coordinate_systems.append(self)
@@ -1406,9 +1406,9 @@ class GmlMark(IdentifiedObject):
         return self._gml_graphics
 
     def set_gml_graphics(self, value):
-        for p in self._gml_graphics:
+        for p in self.gml_graphics:
             filtered = [q for q in p.gml_marks if q != self]
-            self._gml_graphics._gml_marks = filtered
+            p._gml_marks = filtered
         for r in value:
             if self not in r._gml_marks:
                 r._gml_marks.append(self)
@@ -1437,9 +1437,9 @@ class GmlMark(IdentifiedObject):
         return self._gml_strokes
 
     def set_gml_strokes(self, value):
-        for p in self._gml_strokes:
+        for p in self.gml_strokes:
             filtered = [q for q in p.gml_marks if q != self]
-            self._gml_strokes._gml_marks = filtered
+            p._gml_marks = filtered
         for r in value:
             if self not in r._gml_marks:
                 r._gml_marks.append(self)
@@ -1468,9 +1468,9 @@ class GmlMark(IdentifiedObject):
         return self._gml_fills
 
     def set_gml_fills(self, value):
-        for p in self._gml_fills:
+        for p in self.gml_fills:
             filtered = [q for q in p.gml_marks if q != self]
-            self._gml_fills._gml_marks = filtered
+            p._gml_marks = filtered
         for r in value:
             if self not in r._gml_marks:
                 r._gml_marks.append(self)
@@ -1645,9 +1645,9 @@ class GmlFont(IdentifiedObject):
         return self._gml_svg_parameters
 
     def set_gml_svg_parameters(self, value):
-        for p in self._gml_svg_parameters:
+        for p in self.gml_svg_parameters:
             filtered = [q for q in p.gml_fonts if q != self]
-            self._gml_svg_parameters._gml_fonts = filtered
+            p._gml_fonts = filtered
         for r in value:
             if self not in r._gml_fonts:
                 r._gml_fonts.append(self)
@@ -1848,9 +1848,9 @@ class GmlFeatureType(IdentifiedObject):
         return self._gml_feature_styles
 
     def set_gml_feature_styles(self, value):
-        for p in self._gml_feature_styles:
+        for p in self.gml_feature_styles:
             filtered = [q for q in p.gml_feature_types if q != self]
-            self._gml_feature_styles._gml_feature_types = filtered
+            p._gml_feature_types = filtered
         for r in value:
             if self not in r._gml_feature_types:
                 r._gml_feature_types.append(self)
@@ -1945,9 +1945,9 @@ class GmlObservation(Element):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.gml_observatins if q != self]
-            self._locations._gml_observatins = filtered
+            p._gml_observatins = filtered
         for r in value:
             if self not in r._gml_observatins:
                 r._gml_observatins.append(self)
@@ -2083,9 +2083,9 @@ class GmlStroke(IdentifiedObject):
         return self._gml_svg_parameters
 
     def set_gml_svg_parameters(self, value):
-        for p in self._gml_svg_parameters:
+        for p in self.gml_svg_parameters:
             filtered = [q for q in p.gml_stokes if q != self]
-            self._gml_svg_parameters._gml_stokes = filtered
+            p._gml_stokes = filtered
         for r in value:
             if self not in r._gml_stokes:
                 r._gml_stokes.append(self)
@@ -2162,9 +2162,9 @@ class GmlStroke(IdentifiedObject):
         return self._gml_marks
 
     def set_gml_marks(self, value):
-        for p in self._gml_marks:
+        for p in self.gml_marks:
             filtered = [q for q in p.gml_strokes if q != self]
-            self._gml_marks._gml_strokes = filtered
+            p._gml_strokes = filtered
         for r in value:
             if self not in r._gml_strokes:
                 r._gml_strokes.append(self)
@@ -2247,9 +2247,9 @@ class GmlFeatureStyle(IdentifiedObject):
         return self._gml_symbols
 
     def set_gml_symbols(self, value):
-        for p in self._gml_symbols:
+        for p in self.gml_symbols:
             filtered = [q for q in p.gml_feature_styles if q != self]
-            self._gml_symbols._gml_feature_styles = filtered
+            p._gml_feature_styles = filtered
         for r in value:
             if self not in r._gml_feature_styles:
                 r._gml_feature_styles.append(self)
@@ -2306,9 +2306,9 @@ class GmlFeatureStyle(IdentifiedObject):
         return self._gml_feature_types
 
     def set_gml_feature_types(self, value):
-        for p in self._gml_feature_types:
+        for p in self.gml_feature_types:
             filtered = [q for q in p.gml_feature_styles if q != self]
-            self._gml_feature_types._gml_feature_styles = filtered
+            p._gml_feature_styles = filtered
         for r in value:
             if self not in r._gml_feature_styles:
                 r._gml_feature_styles.append(self)

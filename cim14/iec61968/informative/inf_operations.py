@@ -185,9 +185,9 @@ class IncidentCode(IdentifiedObject):
         return self._incident_records
 
     def set_incident_records(self, value):
-        for p in self._incident_records:
+        for p in self.incident_records:
             filtered = [q for q in p.incident_codes if q != self]
-            self._incident_records._incident_codes = filtered
+            p._incident_codes = filtered
         for r in value:
             if self not in r._incident_codes:
                 r._incident_codes.append(self)
@@ -262,9 +262,9 @@ class OutageCode(IdentifiedObject):
         return self._outage_records
 
     def set_outage_records(self, value):
-        for p in self._outage_records:
+        for p in self.outage_records:
             filtered = [q for q in p.outage_codes if q != self]
-            self._outage_records._outage_codes = filtered
+            p._outage_codes = filtered
         for r in value:
             if self not in r._outage_codes:
                 r._outage_codes.append(self)
@@ -293,9 +293,9 @@ class OutageCode(IdentifiedObject):
         return self._outage_steps
 
     def set_outage_steps(self, value):
-        for p in self._outage_steps:
+        for p in self.outage_steps:
             filtered = [q for q in p.outage_codes if q != self]
-            self._outage_steps._outage_codes = filtered
+            p._outage_codes = filtered
         for r in value:
             if self not in r._outage_codes:
                 r._outage_codes.append(self)
@@ -382,9 +382,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._land_bases
 
     def set_land_bases(self, value):
-        for p in self._land_bases:
+        for p in self.land_bases:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._land_bases._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -413,9 +413,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._power_system_resources._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -444,9 +444,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._circuits
 
     def set_circuits(self, value):
-        for p in self._circuits:
+        for p in self.circuits:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._circuits._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -475,9 +475,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._documents
 
     def set_documents(self, value):
-        for p in self._documents:
+        for p in self.documents:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._documents._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -506,9 +506,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._change_sets
 
     def set_change_sets(self, value):
-        for p in self._change_sets:
+        for p in self.change_sets:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._change_sets._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -537,9 +537,9 @@ class NetworkDataSet(IdentifiedObject):
         return self._circuit_sections
 
     def set_circuit_sections(self, value):
-        for p in self._circuit_sections:
+        for p in self.circuit_sections:
             filtered = [q for q in p.network_data_sets if q != self]
-            self._circuit_sections._network_data_sets = filtered
+            p._network_data_sets = filtered
         for r in value:
             if self not in r._network_data_sets:
                 r._network_data_sets.append(self)
@@ -621,9 +621,9 @@ class LandBase(Document):
         return self._change_sets
 
     def set_change_sets(self, value):
-        for p in self._change_sets:
+        for p in self.change_sets:
             filtered = [q for q in p.land_bases if q != self]
-            self._change_sets._land_bases = filtered
+            p._land_bases = filtered
         for r in value:
             if self not in r._land_bases:
                 r._land_bases.append(self)
@@ -652,9 +652,9 @@ class LandBase(Document):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.land_bases if q != self]
-            self._network_data_sets._land_bases = filtered
+            p._land_bases = filtered
         for r in value:
             if self not in r._land_bases:
                 r._land_bases.append(self)
@@ -810,9 +810,9 @@ class CircuitSection(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.circuit_sections if q != self]
-            self._power_system_resources._circuit_sections = filtered
+            p._circuit_sections = filtered
         for r in value:
             if self not in r._circuit_sections:
                 r._circuit_sections.append(self)
@@ -917,9 +917,9 @@ class CircuitSection(IdentifiedObject):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.circuit_sections if q != self]
-            self._network_data_sets._circuit_sections = filtered
+            p._circuit_sections = filtered
         for r in value:
             if self not in r._circuit_sections:
                 r._circuit_sections.append(self)
@@ -948,9 +948,9 @@ class CircuitSection(IdentifiedObject):
         return self._circuits
 
     def set_circuits(self, value):
-        for p in self._circuits:
+        for p in self.circuits:
             filtered = [q for q in p.circuit_sections if q != self]
-            self._circuits._circuit_sections = filtered
+            p._circuit_sections = filtered
         for r in value:
             if self not in r._circuit_sections:
                 r._circuit_sections.append(self)
@@ -1025,9 +1025,9 @@ class TroubleTicket(Document):
         return self._call_backs
 
     def set_call_backs(self, value):
-        for p in self._call_backs:
+        for p in self.call_backs:
             filtered = [q for q in p.trouble_tickets if q != self]
-            self._call_backs._trouble_tickets = filtered
+            p._trouble_tickets = filtered
         for r in value:
             if self not in r._trouble_tickets:
                 r._trouble_tickets.append(self)
@@ -1122,9 +1122,9 @@ class OutageNotification(Document):
         return self._customer_datas
 
     def set_customer_datas(self, value):
-        for p in self._customer_datas:
+        for p in self.customer_datas:
             filtered = [q for q in p.outage_notifications if q != self]
-            self._customer_datas._outage_notifications = filtered
+            p._outage_notifications = filtered
         for r in value:
             if self not in r._outage_notifications:
                 r._outage_notifications.append(self)
@@ -1270,9 +1270,9 @@ class OutageStep(IdentifiedObject):
         return self._outage_codes
 
     def set_outage_codes(self, value):
-        for p in self._outage_codes:
+        for p in self.outage_codes:
             filtered = [q for q in p.outage_steps if q != self]
-            self._outage_codes._outage_steps = filtered
+            p._outage_steps = filtered
         for r in value:
             if self not in r._outage_steps:
                 r._outage_steps.append(self)
@@ -1301,9 +1301,9 @@ class OutageStep(IdentifiedObject):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.outage_steps if q != self]
-            self._crews._outage_steps = filtered
+            p._outage_steps = filtered
         for r in value:
             if self not in r._outage_steps:
                 r._outage_steps.append(self)
@@ -1448,9 +1448,9 @@ class IncidentRecord(Document):
         return self._incident_codes
 
     def set_incident_codes(self, value):
-        for p in self._incident_codes:
+        for p in self.incident_codes:
             filtered = [q for q in p.incident_records if q != self]
-            self._incident_codes._incident_records = filtered
+            p._incident_records = filtered
         for r in value:
             if self not in r._incident_records:
                 r._incident_records.append(self)
@@ -1512,9 +1512,9 @@ class SwitchingSchedule(Document):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.switching_schedules if q != self]
-            self._crews._switching_schedules = filtered
+            p._switching_schedules = filtered
         for r in value:
             if self not in r._switching_schedules:
                 r._switching_schedules.append(self)
@@ -1656,9 +1656,9 @@ class OutageRecord(Document):
         return self._outage_codes
 
     def set_outage_codes(self, value):
-        for p in self._outage_codes:
+        for p in self.outage_codes:
             filtered = [q for q in p.outage_records if q != self]
-            self._outage_codes._outage_records = filtered
+            p._outage_records = filtered
         for r in value:
             if self not in r._outage_records:
                 r._outage_records.append(self)
@@ -1739,9 +1739,9 @@ class Circuit(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.circuits if q != self]
-            self._power_system_resources._circuits = filtered
+            p._circuits = filtered
         for r in value:
             if self not in r._circuits:
                 r._circuits.append(self)
@@ -1770,9 +1770,9 @@ class Circuit(IdentifiedObject):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.circuits if q != self]
-            self._network_data_sets._circuits = filtered
+            p._circuits = filtered
         for r in value:
             if self not in r._circuits:
                 r._circuits.append(self)
@@ -1801,9 +1801,9 @@ class Circuit(IdentifiedObject):
         return self._circuit_sections
 
     def set_circuit_sections(self, value):
-        for p in self._circuit_sections:
+        for p in self.circuit_sections:
             filtered = [q for q in p.circuits if q != self]
-            self._circuit_sections._circuits = filtered
+            p._circuits = filtered
         for r in value:
             if self not in r._circuits:
                 r._circuits.append(self)
@@ -1873,9 +1873,9 @@ class ChangeSet(IdentifiedObject):
         return self._land_bases
 
     def set_land_bases(self, value):
-        for p in self._land_bases:
+        for p in self.land_bases:
             filtered = [q for q in p.change_sets if q != self]
-            self._land_bases._change_sets = filtered
+            p._change_sets = filtered
         for r in value:
             if self not in r._change_sets:
                 r._change_sets.append(self)
@@ -1932,9 +1932,9 @@ class ChangeSet(IdentifiedObject):
         return self._documents
 
     def set_documents(self, value):
-        for p in self._documents:
+        for p in self.documents:
             filtered = [q for q in p.change_sets if q != self]
-            self._documents._change_sets = filtered
+            p._change_sets = filtered
         for r in value:
             if self not in r._change_sets:
                 r._change_sets.append(self)
@@ -1963,9 +1963,9 @@ class ChangeSet(IdentifiedObject):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.change_sets if q != self]
-            self._network_data_sets._change_sets = filtered
+            p._change_sets = filtered
         for r in value:
             if self not in r._change_sets:
                 r._change_sets.append(self)
@@ -2127,9 +2127,9 @@ class CallBack(IdentifiedObject):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.call_backs if q != self]
-            self._erp_persons._call_backs = filtered
+            p._call_backs = filtered
         for r in value:
             if self not in r._call_backs:
                 r._call_backs.append(self)
@@ -2158,9 +2158,9 @@ class CallBack(IdentifiedObject):
         return self._trouble_tickets
 
     def set_trouble_tickets(self, value):
-        for p in self._trouble_tickets:
+        for p in self.trouble_tickets:
             filtered = [q for q in p.call_backs if q != self]
-            self._trouble_tickets._call_backs = filtered
+            p._call_backs = filtered
         for r in value:
             if self not in r._call_backs:
                 r._call_backs.append(self)
@@ -2245,9 +2245,9 @@ class SwitchingStep(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.schedule_steps if q != self]
-            self._power_system_resources._schedule_steps = filtered
+            p._schedule_steps = filtered
         for r in value:
             if self not in r._schedule_steps:
                 r._schedule_steps.append(self)
@@ -2371,9 +2371,9 @@ class SafetyDocument(Document):
         return self._clearance_tags
 
     def set_clearance_tags(self, value):
-        for p in self._clearance_tags:
+        for p in self.clearance_tags:
             filtered = [q for q in p.safety_documents if q != self]
-            self._clearance_tags._safety_documents = filtered
+            p._safety_documents = filtered
         for r in value:
             if self not in r._safety_documents:
                 r._safety_documents.append(self)

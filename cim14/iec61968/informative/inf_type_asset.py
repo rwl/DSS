@@ -103,9 +103,9 @@ class Connection(IdentifiedObject):
         return self._structure_type_assets
 
     def set_structure_type_assets(self, value):
-        for p in self._structure_type_assets:
+        for p in self.structure_type_assets:
             filtered = [q for q in p.mount_connections if q != self]
-            self._structure_type_assets._mount_connections = filtered
+            p._mount_connections = filtered
         for r in value:
             if self not in r._mount_connections:
                 r._mount_connections.append(self)
@@ -134,9 +134,9 @@ class Connection(IdentifiedObject):
         return self._mounting_points
 
     def set_mounting_points(self, value):
-        for p in self._mounting_points:
+        for p in self.mounting_points:
             filtered = [q for q in p.connections if q != self]
-            self._mounting_points._connections = filtered
+            p._connections = filtered
         for r in value:
             if self not in r._connections:
                 r._connections.append(self)
@@ -470,9 +470,9 @@ class MountingPoint(IdentifiedObject):
         return self._connections
 
     def set_connections(self, value):
-        for p in self._connections:
+        for p in self.connections:
             filtered = [q for q in p.mounting_points if q != self]
-            self._connections._mounting_points = filtered
+            p._mounting_points = filtered
         for r in value:
             if self not in r._mounting_points:
                 r._mounting_points.append(self)
@@ -1167,9 +1167,9 @@ class StructureTypeAsset(TypeAsset):
         return self._mount_connections
 
     def set_mount_connections(self, value):
-        for p in self._mount_connections:
+        for p in self.mount_connections:
             filtered = [q for q in p.structure_type_assets if q != self]
-            self._mount_connections._structure_type_assets = filtered
+            p._structure_type_assets = filtered
         for r in value:
             if self not in r._structure_type_assets:
                 r._structure_type_assets.append(self)
@@ -2403,9 +2403,9 @@ class SVCTypeAsset(FACTSDeviceTypeAsset):
         return self._svc_infos
 
     def set_svc_infos(self, value):
-        for p in self._svc_infos:
+        for p in self.svc_infos:
             filtered = [q for q in p.svctype_assets if q != self]
-            self._svc_infos._svctype_assets = filtered
+            p._svctype_assets = filtered
         for r in value:
             if self not in r._svctype_assets:
                 r._svctype_assets.append(self)
@@ -2456,9 +2456,9 @@ class StreetlightTypeAsset(ElectricalTypeAsset):
         return self._streetlight_asset_models
 
     def set_streetlight_asset_models(self, value):
-        for p in self._streetlight_asset_models:
+        for p in self.streetlight_asset_models:
             filtered = [q for q in p.streetlight_type_assets if q != self]
-            self._streetlight_asset_models._streetlight_type_assets = filtered
+            p._streetlight_type_assets = filtered
         for r in value:
             if self not in r._streetlight_type_assets:
                 r._streetlight_type_assets.append(self)
@@ -2623,9 +2623,9 @@ class LinearConductorTypeAsset(ElectricalTypeAsset):
         return self._conductors
 
     def set_conductors(self, value):
-        for p in self._conductors:
+        for p in self.conductors:
             filtered = [q for q in p.linear_conductor_type_assets if q != self]
-            self._conductors._linear_conductor_type_assets = filtered
+            p._linear_conductor_type_assets = filtered
         for r in value:
             if self not in r._linear_conductor_type_assets:
                 r._linear_conductor_type_assets.append(self)

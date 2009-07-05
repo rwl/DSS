@@ -272,9 +272,9 @@ class Asset(IdentifiedObject):
         return self._erp_rec_delivery_items
 
     def set_erp_rec_delivery_items(self, value):
-        for p in self._erp_rec_delivery_items:
+        for p in self.erp_rec_delivery_items:
             filtered = [q for q in p.assets if q != self]
-            self._erp_rec_delivery_items._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -397,9 +397,9 @@ class Asset(IdentifiedObject):
         return self._properties
 
     def set_properties(self, value):
-        for p in self._properties:
+        for p in self.properties:
             filtered = [q for q in p.property_assets if q != self]
-            self._properties._property_assets = filtered
+            p._property_assets = filtered
         for r in value:
             if self not in r._property_assets:
                 r._property_assets.append(self)
@@ -446,9 +446,9 @@ class Asset(IdentifiedObject):
         return self._scheduled_events
 
     def set_scheduled_events(self, value):
-        for p in self._scheduled_events:
+        for p in self.scheduled_events:
             filtered = [q for q in p.assets if q != self]
-            self._scheduled_events._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -505,9 +505,9 @@ class Asset(IdentifiedObject):
         return self._ratings
 
     def set_ratings(self, value):
-        for p in self._ratings:
+        for p in self.ratings:
             filtered = [q for q in p.rating_assets if q != self]
-            self._ratings._rating_assets = filtered
+            p._rating_assets = filtered
         for r in value:
             if self not in r._rating_assets:
                 r._rating_assets.append(self)
@@ -650,9 +650,9 @@ class Asset(IdentifiedObject):
         return self._asset_property_curves
 
     def set_asset_property_curves(self, value):
-        for p in self._asset_property_curves:
+        for p in self.asset_property_curves:
             filtered = [q for q in p.assets if q != self]
-            self._asset_property_curves._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -737,9 +737,9 @@ class Asset(IdentifiedObject):
         return self._hazards
 
     def set_hazards(self, value):
-        for p in self._hazards:
+        for p in self.hazards:
             filtered = [q for q in p.assets if q != self]
-            self._hazards._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -768,9 +768,9 @@ class Asset(IdentifiedObject):
         return self._mediums
 
     def set_mediums(self, value):
-        for p in self._mediums:
+        for p in self.mediums:
             filtered = [q for q in p.assets if q != self]
-            self._mediums._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -799,9 +799,9 @@ class Asset(IdentifiedObject):
         return self._reliability_infos
 
     def set_reliability_infos(self, value):
-        for p in self._reliability_infos:
+        for p in self.reliability_infos:
             filtered = [q for q in p.assets if q != self]
-            self._reliability_infos._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -886,9 +886,9 @@ class Asset(IdentifiedObject):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.assets if q != self]
-            self._activity_records._assets = filtered
+            p._assets = filtered
         for r in value:
             if self not in r._assets:
                 r._assets.append(self)
@@ -982,9 +982,9 @@ class ElectricalInfo(IdentifiedObject):
         return self._end_device_assets
 
     def set_end_device_assets(self, value):
-        for p in self._end_device_assets:
+        for p in self.end_device_assets:
             filtered = [q for q in p.electrical_infos if q != self]
-            self._end_device_assets._electrical_infos = filtered
+            p._electrical_infos = filtered
         for r in value:
             if self not in r._electrical_infos:
                 r._electrical_infos.append(self)
@@ -1013,9 +1013,9 @@ class ElectricalInfo(IdentifiedObject):
         return self._electrical_assets
 
     def set_electrical_assets(self, value):
-        for p in self._electrical_assets:
+        for p in self.electrical_assets:
             filtered = [q for q in p.electrical_infos if q != self]
-            self._electrical_assets._electrical_infos = filtered
+            p._electrical_infos = filtered
         for r in value:
             if self not in r._electrical_infos:
                 r._electrical_infos.append(self)
@@ -1158,9 +1158,9 @@ class AssetContainer(Asset):
         return self._land_properties
 
     def set_land_properties(self, value):
-        for p in self._land_properties:
+        for p in self.land_properties:
             filtered = [q for q in p.asset_containers if q != self]
-            self._land_properties._asset_containers = filtered
+            p._asset_containers = filtered
         for r in value:
             if self not in r._asset_containers:
                 r._asset_containers.append(self)

@@ -123,9 +123,9 @@ class Request(Document):
         return self._projects
 
     def set_projects(self, value):
-        for p in self._projects:
+        for p in self.projects:
             filtered = [q for q in p.requests if q != self]
-            self._projects._requests = filtered
+            p._requests = filtered
         for r in value:
             if self not in r._requests:
                 r._requests.append(self)
@@ -281,9 +281,9 @@ class CostType(IdentifiedObject):
         return self._erp_journal_entries
 
     def set_erp_journal_entries(self, value):
-        for p in self._erp_journal_entries:
+        for p in self.erp_journal_entries:
             filtered = [q for q in p.cost_types if q != self]
-            self._erp_journal_entries._cost_types = filtered
+            p._cost_types = filtered
         for r in value:
             if self not in r._cost_types:
                 r._cost_types.append(self)
@@ -464,9 +464,9 @@ class QualificationRequirement(IdentifiedObject):
         return self._culabor_items
 
     def set_culabor_items(self, value):
-        for p in self._culabor_items:
+        for p in self.culabor_items:
             filtered = [q for q in p.qualification_requirements if q != self]
-            self._culabor_items._qualification_requirements = filtered
+            p._qualification_requirements = filtered
         for r in value:
             if self not in r._qualification_requirements:
                 r._qualification_requirements.append(self)
@@ -495,9 +495,9 @@ class QualificationRequirement(IdentifiedObject):
         return self._skills
 
     def set_skills(self, value):
-        for p in self._skills:
+        for p in self.skills:
             filtered = [q for q in p.qualification_requirements if q != self]
-            self._skills._qualification_requirements = filtered
+            p._qualification_requirements = filtered
         for r in value:
             if self not in r._qualification_requirements:
                 r._qualification_requirements.append(self)
@@ -526,9 +526,9 @@ class QualificationRequirement(IdentifiedObject):
         return self._specifications
 
     def set_specifications(self, value):
-        for p in self._specifications:
+        for p in self.specifications:
             filtered = [q for q in p.qualification_requirements if q != self]
-            self._specifications._qualification_requirements = filtered
+            p._qualification_requirements = filtered
         for r in value:
             if self not in r._qualification_requirements:
                 r._qualification_requirements.append(self)
@@ -557,9 +557,9 @@ class QualificationRequirement(IdentifiedObject):
         return self._work_tasks
 
     def set_work_tasks(self, value):
-        for p in self._work_tasks:
+        for p in self.work_tasks:
             filtered = [q for q in p.qualification_requirements if q != self]
-            self._work_tasks._qualification_requirements = filtered
+            p._qualification_requirements = filtered
         for r in value:
             if self not in r._qualification_requirements:
                 r._qualification_requirements.append(self)
@@ -948,9 +948,9 @@ class ShiftPattern(IdentifiedObject):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.shift_patterns if q != self]
-            self._crews._shift_patterns = filtered
+            p._shift_patterns = filtered
         for r in value:
             if self not in r._shift_patterns:
                 r._shift_patterns.append(self)
@@ -1064,9 +1064,9 @@ class Appointment(ScheduledEvent):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.appointments if q != self]
-            self._erp_persons._appointments = filtered
+            p._appointments = filtered
         for r in value:
             if self not in r._appointments:
                 r._appointments.append(self)
@@ -1249,9 +1249,9 @@ class Project(Document):
         return self._requests
 
     def set_requests(self, value):
-        for p in self._requests:
+        for p in self.requests:
             filtered = [q for q in p.projects if q != self]
-            self._requests._projects = filtered
+            p._projects = filtered
         for r in value:
             if self not in r._projects:
                 r._projects.append(self)
@@ -1340,9 +1340,9 @@ class DesignLocationCU(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.design_location_cus if q != self]
-            self._compatible_units._design_location_cus = filtered
+            p._design_location_cus = filtered
         for r in value:
             if self not in r._design_location_cus:
                 r._design_location_cus.append(self)
@@ -1391,9 +1391,9 @@ class DesignLocationCU(IdentifiedObject):
         return self._cugroups
 
     def set_cugroups(self, value):
-        for p in self._cugroups:
+        for p in self.cugroups:
             filtered = [q for q in p.design_location_cus if q != self]
-            self._cugroups._design_location_cus = filtered
+            p._design_location_cus = filtered
         for r in value:
             if self not in r._design_location_cus:
                 r._design_location_cus.append(self)
@@ -1422,9 +1422,9 @@ class DesignLocationCU(IdentifiedObject):
         return self._work_tasks
 
     def set_work_tasks(self, value):
-        for p in self._work_tasks:
+        for p in self.work_tasks:
             filtered = [q for q in p.design_location_cus if q != self]
-            self._work_tasks._design_location_cus = filtered
+            p._design_location_cus = filtered
         for r in value:
             if self not in r._design_location_cus:
                 r._design_location_cus.append(self)
@@ -1453,9 +1453,9 @@ class DesignLocationCU(IdentifiedObject):
         return self._condition_factors
 
     def set_condition_factors(self, value):
-        for p in self._condition_factors:
+        for p in self.condition_factors:
             filtered = [q for q in p.design_location_cus if q != self]
-            self._condition_factors._design_location_cus = filtered
+            p._design_location_cus = filtered
         for r in value:
             if self not in r._design_location_cus:
                 r._design_location_cus.append(self)
@@ -1484,9 +1484,9 @@ class DesignLocationCU(IdentifiedObject):
         return self._designs
 
     def set_designs(self, value):
-        for p in self._designs:
+        for p in self.designs:
             filtered = [q for q in p.design_locations_cus if q != self]
-            self._designs._design_locations_cus = filtered
+            p._design_locations_cus = filtered
         for r in value:
             if self not in r._design_locations_cus:
                 r._design_locations_cus.append(self)
@@ -1539,9 +1539,9 @@ class Assignment(Document):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.assignments if q != self]
-            self._crews._assignments = filtered
+            p._assignments = filtered
         for r in value:
             if self not in r._assignments:
                 r._assignments.append(self)
@@ -1627,9 +1627,9 @@ class CUMaterialItem(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.cumaterial_items if q != self]
-            self._compatible_units._cumaterial_items = filtered
+            p._cumaterial_items = filtered
         for r in value:
             if self not in r._cumaterial_items:
                 r._cumaterial_items.append(self)
@@ -1658,9 +1658,9 @@ class CUMaterialItem(IdentifiedObject):
         return self._property_units
 
     def set_property_units(self, value):
-        for p in self._property_units:
+        for p in self.property_units:
             filtered = [q for q in p.cumaterial_items if q != self]
-            self._property_units._cumaterial_items = filtered
+            p._cumaterial_items = filtered
         for r in value:
             if self not in r._cumaterial_items:
                 r._cumaterial_items.append(self)
@@ -1739,9 +1739,9 @@ class WorkLocation(Location):
         return self._design_locations
 
     def set_design_locations(self, value):
-        for p in self._design_locations:
+        for p in self.design_locations:
             filtered = [q for q in p.work_locations if q != self]
-            self._design_locations._work_locations = filtered
+            p._work_locations = filtered
         for r in value:
             if self not in r._work_locations:
                 r._work_locations.append(self)
@@ -1812,9 +1812,9 @@ class PropertyUnit(IdentifiedObject):
         return self._work_cost_details
 
     def set_work_cost_details(self, value):
-        for p in self._work_cost_details:
+        for p in self.work_cost_details:
             filtered = [q for q in p.property_units if q != self]
-            self._work_cost_details._property_units = filtered
+            p._property_units = filtered
         for r in value:
             if self not in r._property_units:
                 r._property_units.append(self)
@@ -1843,9 +1843,9 @@ class PropertyUnit(IdentifiedObject):
         return self._cumaterial_items
 
     def set_cumaterial_items(self, value):
-        for p in self._cumaterial_items:
+        for p in self.cumaterial_items:
             filtered = [q for q in p.property_units if q != self]
-            self._cumaterial_items._property_units = filtered
+            p._property_units = filtered
         for r in value:
             if self not in r._property_units:
                 r._property_units.append(self)
@@ -1932,9 +1932,9 @@ class CUContractorItem(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.cucontractor_items if q != self]
-            self._compatible_units._cucontractor_items = filtered
+            p._cucontractor_items = filtered
         for r in value:
             if self not in r._cucontractor_items:
                 r._cucontractor_items.append(self)
@@ -2128,9 +2128,9 @@ class Capability(IdentifiedObject):
         return self._crafts
 
     def set_crafts(self, value):
-        for p in self._crafts:
+        for p in self.crafts:
             filtered = [q for q in p.capabilities if q != self]
-            self._crafts._capabilities = filtered
+            p._capabilities = filtered
         for r in value:
             if self not in r._capabilities:
                 r._capabilities.append(self)
@@ -2159,9 +2159,9 @@ class Capability(IdentifiedObject):
         return self._work_tasks
 
     def set_work_tasks(self, value):
-        for p in self._work_tasks:
+        for p in self.work_tasks:
             filtered = [q for q in p.capabilities if q != self]
-            self._work_tasks._capabilities = filtered
+            p._capabilities = filtered
         for r in value:
             if self not in r._capabilities:
                 r._capabilities.append(self)
@@ -2281,9 +2281,9 @@ class CULaborItem(IdentifiedObject):
         return self._qualification_requirements
 
     def set_qualification_requirements(self, value):
-        for p in self._qualification_requirements:
+        for p in self.qualification_requirements:
             filtered = [q for q in p.culabor_items if q != self]
-            self._qualification_requirements._culabor_items = filtered
+            p._culabor_items = filtered
         for r in value:
             if self not in r._culabor_items:
                 r._culabor_items.append(self)
@@ -2312,9 +2312,9 @@ class CULaborItem(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.culabor_items if q != self]
-            self._compatible_units._culabor_items = filtered
+            p._culabor_items = filtered
         for r in value:
             if self not in r._culabor_items:
                 r._culabor_items.append(self)
@@ -2425,9 +2425,9 @@ class CompatibleUnit(Document):
         return self._cuwork_equipment_items
 
     def set_cuwork_equipment_items(self, value):
-        for p in self._cuwork_equipment_items:
+        for p in self.cuwork_equipment_items:
             filtered = [q for q in p.compatible_units if q != self]
-            self._cuwork_equipment_items._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2456,9 +2456,9 @@ class CompatibleUnit(Document):
         return self._procedures
 
     def set_procedures(self, value):
-        for p in self._procedures:
+        for p in self.procedures:
             filtered = [q for q in p.compatible_units if q != self]
-            self._procedures._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2507,9 +2507,9 @@ class CompatibleUnit(Document):
         return self._cuassets
 
     def set_cuassets(self, value):
-        for p in self._cuassets:
+        for p in self.cuassets:
             filtered = [q for q in p.compatible_units if q != self]
-            self._cuassets._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2558,9 +2558,9 @@ class CompatibleUnit(Document):
         return self._cucontractor_items
 
     def set_cucontractor_items(self, value):
-        for p in self._cucontractor_items:
+        for p in self.cucontractor_items:
             filtered = [q for q in p.compatible_units if q != self]
-            self._cucontractor_items._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2589,9 +2589,9 @@ class CompatibleUnit(Document):
         return self._culabor_items
 
     def set_culabor_items(self, value):
-        for p in self._culabor_items:
+        for p in self.culabor_items:
             filtered = [q for q in p.compatible_units if q != self]
-            self._culabor_items._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2660,9 +2660,9 @@ class CompatibleUnit(Document):
         return self._design_location_cus
 
     def set_design_location_cus(self, value):
-        for p in self._design_location_cus:
+        for p in self.design_location_cus:
             filtered = [q for q in p.compatible_units if q != self]
-            self._design_location_cus._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2691,9 +2691,9 @@ class CompatibleUnit(Document):
         return self._cumaterial_items
 
     def set_cumaterial_items(self, value):
-        for p in self._cumaterial_items:
+        for p in self.cumaterial_items:
             filtered = [q for q in p.compatible_units if q != self]
-            self._cumaterial_items._compatible_units = filtered
+            p._compatible_units = filtered
         for r in value:
             if self not in r._compatible_units:
                 r._compatible_units.append(self)
@@ -2901,9 +2901,9 @@ class MaterialItem(IdentifiedObject):
         return self._erp_rec_delv_line_items
 
     def set_erp_rec_delv_line_items(self, value):
-        for p in self._erp_rec_delv_line_items:
+        for p in self.erp_rec_delv_line_items:
             filtered = [q for q in p.material_items if q != self]
-            self._erp_rec_delv_line_items._material_items = filtered
+            p._material_items = filtered
         for r in value:
             if self not in r._material_items:
                 r._material_items.append(self)
@@ -3262,9 +3262,9 @@ class Crew(IdentifiedObject):
         return self._work_tasks
 
     def set_work_tasks(self, value):
-        for p in self._work_tasks:
+        for p in self.work_tasks:
             filtered = [q for q in p.crews if q != self]
-            self._work_tasks._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3397,9 +3397,9 @@ class Crew(IdentifiedObject):
         return self._shift_patterns
 
     def set_shift_patterns(self, value):
-        for p in self._shift_patterns:
+        for p in self.shift_patterns:
             filtered = [q for q in p.crews if q != self]
-            self._shift_patterns._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3428,9 +3428,9 @@ class Crew(IdentifiedObject):
         return self._switching_schedules
 
     def set_switching_schedules(self, value):
-        for p in self._switching_schedules:
+        for p in self.switching_schedules:
             filtered = [q for q in p.crews if q != self]
-            self._switching_schedules._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3487,9 +3487,9 @@ class Crew(IdentifiedObject):
         return self._outage_steps
 
     def set_outage_steps(self, value):
-        for p in self._outage_steps:
+        for p in self.outage_steps:
             filtered = [q for q in p.crews if q != self]
-            self._outage_steps._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3518,9 +3518,9 @@ class Crew(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.crews if q != self]
-            self._locations._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3549,9 +3549,9 @@ class Crew(IdentifiedObject):
         return self._crew_members
 
     def set_crew_members(self, value):
-        for p in self._crew_members:
+        for p in self.crew_members:
             filtered = [q for q in p.crews if q != self]
-            self._crew_members._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3580,9 +3580,9 @@ class Crew(IdentifiedObject):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.crews if q != self]
-            self._organisations._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3611,9 +3611,9 @@ class Crew(IdentifiedObject):
         return self._assignments
 
     def set_assignments(self, value):
-        for p in self._assignments:
+        for p in self.assignments:
             filtered = [q for q in p.crews if q != self]
-            self._assignments._crews = filtered
+            p._crews = filtered
         for r in value:
             if self not in r._crews:
                 r._crews.append(self)
@@ -3846,9 +3846,9 @@ class WorkCostDetail(Document):
         return self._works
 
     def set_works(self, value):
-        for p in self._works:
+        for p in self.works:
             filtered = [q for q in p.work_cost_details if q != self]
-            self._works._work_cost_details = filtered
+            p._work_cost_details = filtered
         for r in value:
             if self not in r._work_cost_details:
                 r._work_cost_details.append(self)
@@ -4001,9 +4001,9 @@ class WorkCostDetail(Document):
         return self._property_units
 
     def set_property_units(self, value):
-        for p in self._property_units:
+        for p in self.property_units:
             filtered = [q for q in p.work_cost_details if q != self]
-            self._property_units._work_cost_details = filtered
+            p._work_cost_details = filtered
         for r in value:
             if self not in r._work_cost_details:
                 r._work_cost_details.append(self)
@@ -4207,9 +4207,9 @@ class LaborItem(IdentifiedObject):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.labor_items if q != self]
-            self._erp_persons._labor_items = filtered
+            p._labor_items = filtered
         for r in value:
             if self not in r._labor_items:
                 r._labor_items.append(self)
@@ -4379,9 +4379,9 @@ class Design(Document):
         return self._design_locations
 
     def set_design_locations(self, value):
-        for p in self._design_locations:
+        for p in self.design_locations:
             filtered = [q for q in p.designs if q != self]
-            self._design_locations._designs = filtered
+            p._designs = filtered
         for r in value:
             if self not in r._designs:
                 r._designs.append(self)
@@ -4430,9 +4430,9 @@ class Design(Document):
         return self._condition_factors
 
     def set_condition_factors(self, value):
-        for p in self._condition_factors:
+        for p in self.condition_factors:
             filtered = [q for q in p.designs if q != self]
-            self._condition_factors._designs = filtered
+            p._designs = filtered
         for r in value:
             if self not in r._designs:
                 r._designs.append(self)
@@ -4517,9 +4517,9 @@ class Design(Document):
         return self._design_locations_cus
 
     def set_design_locations_cus(self, value):
-        for p in self._design_locations_cus:
+        for p in self.design_locations_cus:
             filtered = [q for q in p.designs if q != self]
-            self._design_locations_cus._designs = filtered
+            p._designs = filtered
         for r in value:
             if self not in r._designs:
                 r._designs.append(self)
@@ -4640,9 +4640,9 @@ class WorkTask(Document):
         return self._qualification_requirements
 
     def set_qualification_requirements(self, value):
-        for p in self._qualification_requirements:
+        for p in self.qualification_requirements:
             filtered = [q for q in p.work_tasks if q != self]
-            self._qualification_requirements._work_tasks = filtered
+            p._work_tasks = filtered
         for r in value:
             if self not in r._work_tasks:
                 r._work_tasks.append(self)
@@ -4691,9 +4691,9 @@ class WorkTask(Document):
         return self._design_location_cus
 
     def set_design_location_cus(self, value):
-        for p in self._design_location_cus:
+        for p in self.design_location_cus:
             filtered = [q for q in p.work_tasks if q != self]
-            self._design_location_cus._work_tasks = filtered
+            p._work_tasks = filtered
         for r in value:
             if self not in r._work_tasks:
                 r._work_tasks.append(self)
@@ -4778,9 +4778,9 @@ class WorkTask(Document):
         return self._capabilities
 
     def set_capabilities(self, value):
-        for p in self._capabilities:
+        for p in self.capabilities:
             filtered = [q for q in p.work_tasks if q != self]
-            self._capabilities._work_tasks = filtered
+            p._work_tasks = filtered
         for r in value:
             if self not in r._work_tasks:
                 r._work_tasks.append(self)
@@ -4933,9 +4933,9 @@ class WorkTask(Document):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.work_tasks if q != self]
-            self._crews._work_tasks = filtered
+            p._work_tasks = filtered
         for r in value:
             if self not in r._work_tasks:
                 r._work_tasks.append(self)
@@ -5155,9 +5155,9 @@ class ConditionFactor(IdentifiedObject):
         return self._designs
 
     def set_designs(self, value):
-        for p in self._designs:
+        for p in self.designs:
             filtered = [q for q in p.condition_factors if q != self]
-            self._designs._condition_factors = filtered
+            p._condition_factors = filtered
         for r in value:
             if self not in r._condition_factors:
                 r._condition_factors.append(self)
@@ -5186,9 +5186,9 @@ class ConditionFactor(IdentifiedObject):
         return self._design_location_cus
 
     def set_design_location_cus(self, value):
-        for p in self._design_location_cus:
+        for p in self.design_location_cus:
             filtered = [q for q in p.condition_factors if q != self]
-            self._design_location_cus._condition_factors = filtered
+            p._condition_factors = filtered
         for r in value:
             if self not in r._condition_factors:
                 r._condition_factors.append(self)
@@ -5217,9 +5217,9 @@ class ConditionFactor(IdentifiedObject):
         return self._design_locations
 
     def set_design_locations(self, value):
-        for p in self._design_locations:
+        for p in self.design_locations:
             filtered = [q for q in p.condition_factors if q != self]
-            self._design_locations._condition_factors = filtered
+            p._condition_factors = filtered
         for r in value:
             if self not in r._condition_factors:
                 r._condition_factors.append(self)
@@ -5317,9 +5317,9 @@ class CUGroup(IdentifiedObject):
         return self._design_location_cus
 
     def set_design_location_cus(self, value):
-        for p in self._design_location_cus:
+        for p in self.design_location_cus:
             filtered = [q for q in p.cugroups if q != self]
-            self._design_location_cus._cugroups = filtered
+            p._cugroups = filtered
         for r in value:
             if self not in r._cugroups:
                 r._cugroups.append(self)
@@ -5348,9 +5348,9 @@ class CUGroup(IdentifiedObject):
         return self._child_cugroups
 
     def set_child_cugroups(self, value):
-        for p in self._child_cugroups:
+        for p in self.child_cugroups:
             filtered = [q for q in p.parent_cugroups if q != self]
-            self._child_cugroups._parent_cugroups = filtered
+            p._parent_cugroups = filtered
         for r in value:
             if self not in r._parent_cugroups:
                 r._parent_cugroups.append(self)
@@ -5379,9 +5379,9 @@ class CUGroup(IdentifiedObject):
         return self._parent_cugroups
 
     def set_parent_cugroups(self, value):
-        for p in self._parent_cugroups:
+        for p in self.parent_cugroups:
             filtered = [q for q in p.child_cugroups if q != self]
-            self._parent_cugroups._child_cugroups = filtered
+            p._child_cugroups = filtered
         for r in value:
             if self not in r._child_cugroups:
                 r._child_cugroups.append(self)
@@ -5446,9 +5446,9 @@ class ContractorItem(IdentifiedObject):
         return self._erp_payables
 
     def set_erp_payables(self, value):
-        for p in self._erp_payables:
+        for p in self.erp_payables:
             filtered = [q for q in p.contractor_items if q != self]
-            self._erp_payables._contractor_items = filtered
+            p._contractor_items = filtered
         for r in value:
             if self not in r._contractor_items:
                 r._contractor_items.append(self)
@@ -5567,9 +5567,9 @@ class CUAsset(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.cuassets if q != self]
-            self._compatible_units._cuassets = filtered
+            p._cuassets = filtered
         for r in value:
             if self not in r._cuassets:
                 r._cuassets.append(self)
@@ -5661,9 +5661,9 @@ class DesignLocation(IdentifiedObject):
         return self._diagrams
 
     def set_diagrams(self, value):
-        for p in self._diagrams:
+        for p in self.diagrams:
             filtered = [q for q in p.design_locations if q != self]
-            self._diagrams._design_locations = filtered
+            p._design_locations = filtered
         for r in value:
             if self not in r._design_locations:
                 r._design_locations.append(self)
@@ -5804,9 +5804,9 @@ class DesignLocation(IdentifiedObject):
         return self._condition_factors
 
     def set_condition_factors(self, value):
-        for p in self._condition_factors:
+        for p in self.condition_factors:
             filtered = [q for q in p.design_locations if q != self]
-            self._condition_factors._design_locations = filtered
+            p._design_locations = filtered
         for r in value:
             if self not in r._design_locations:
                 r._design_locations.append(self)
@@ -5835,9 +5835,9 @@ class DesignLocation(IdentifiedObject):
         return self._work_locations
 
     def set_work_locations(self, value):
-        for p in self._work_locations:
+        for p in self.work_locations:
             filtered = [q for q in p.design_locations if q != self]
-            self._work_locations._design_locations = filtered
+            p._design_locations = filtered
         for r in value:
             if self not in r._design_locations:
                 r._design_locations.append(self)
@@ -5866,9 +5866,9 @@ class DesignLocation(IdentifiedObject):
         return self._designs
 
     def set_designs(self, value):
-        for p in self._designs:
+        for p in self.designs:
             filtered = [q for q in p.design_locations if q != self]
-            self._designs._design_locations = filtered
+            p._design_locations = filtered
         for r in value:
             if self not in r._design_locations:
                 r._design_locations.append(self)
@@ -6066,9 +6066,9 @@ class CUWorkEquipmentItem(IdentifiedObject):
         return self._compatible_units
 
     def set_compatible_units(self, value):
-        for p in self._compatible_units:
+        for p in self.compatible_units:
             filtered = [q for q in p.cuwork_equipment_items if q != self]
-            self._compatible_units._cuwork_equipment_items = filtered
+            p._cuwork_equipment_items = filtered
         for r in value:
             if self not in r._cuwork_equipment_items:
                 r._cuwork_equipment_items.append(self)

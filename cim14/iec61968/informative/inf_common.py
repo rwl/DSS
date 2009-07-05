@@ -95,9 +95,9 @@ class ScheduledEvent(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.scheduled_events if q != self]
-            self._assets._scheduled_events = filtered
+            p._scheduled_events = filtered
         for r in value:
             if self not in r._scheduled_events:
                 r._scheduled_events.append(self)
@@ -494,9 +494,9 @@ class Craft(IdentifiedObject):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.crafts if q != self]
-            self._erp_persons._crafts = filtered
+            p._crafts = filtered
         for r in value:
             if self not in r._crafts:
                 r._crafts.append(self)
@@ -525,9 +525,9 @@ class Craft(IdentifiedObject):
         return self._capabilities
 
     def set_capabilities(self, value):
-        for p in self._capabilities:
+        for p in self.capabilities:
             filtered = [q for q in p.crafts if q != self]
-            self._capabilities._crafts = filtered
+            p._crafts = filtered
         for r in value:
             if self not in r._crafts:
                 r._crafts.append(self)
@@ -556,9 +556,9 @@ class Craft(IdentifiedObject):
         return self._skills
 
     def set_skills(self, value):
-        for p in self._skills:
+        for p in self.skills:
             filtered = [q for q in p.crafts if q != self]
-            self._skills._crafts = filtered
+            p._crafts = filtered
         for r in value:
             if self not in r._crafts:
                 r._crafts.append(self)
@@ -677,9 +677,9 @@ class ScheduleParameterInfo(IdentifiedObject):
         return self._documents
 
     def set_documents(self, value):
-        for p in self._documents:
+        for p in self.documents:
             filtered = [q for q in p.schedule_parameter_infos if q != self]
-            self._documents._schedule_parameter_infos = filtered
+            p._schedule_parameter_infos = filtered
         for r in value:
             if self not in r._schedule_parameter_infos:
                 r._schedule_parameter_infos.append(self)
@@ -757,9 +757,9 @@ class Diagram(Document):
         return self._gml_diagram_objects
 
     def set_gml_diagram_objects(self, value):
-        for p in self._gml_diagram_objects:
+        for p in self.gml_diagram_objects:
             filtered = [q for q in p.diagrams if q != self]
-            self._gml_diagram_objects._diagrams = filtered
+            p._diagrams = filtered
         for r in value:
             if self not in r._diagrams:
                 r._diagrams.append(self)
@@ -788,9 +788,9 @@ class Diagram(Document):
         return self._design_locations
 
     def set_design_locations(self, value):
-        for p in self._design_locations:
+        for p in self.design_locations:
             filtered = [q for q in p.diagrams if q != self]
-            self._design_locations._diagrams = filtered
+            p._diagrams = filtered
         for r in value:
             if self not in r._diagrams:
                 r._diagrams.append(self)
@@ -941,9 +941,9 @@ class BusinessRole(IdentifiedObject):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.business_roles if q != self]
-            self._organisations._business_roles = filtered
+            p._business_roles = filtered
         for r in value:
             if self not in r._business_roles:
                 r._business_roles.append(self)
@@ -1007,9 +1007,9 @@ class Skill(Document):
         return self._crafts
 
     def set_crafts(self, value):
-        for p in self._crafts:
+        for p in self.crafts:
             filtered = [q for q in p.skills if q != self]
-            self._crafts._skills = filtered
+            p._skills = filtered
         for r in value:
             if self not in r._skills:
                 r._skills.append(self)
@@ -1038,9 +1038,9 @@ class Skill(Document):
         return self._qualification_requirements
 
     def set_qualification_requirements(self, value):
-        for p in self._qualification_requirements:
+        for p in self.qualification_requirements:
             filtered = [q for q in p.skills if q != self]
-            self._qualification_requirements._skills = filtered
+            p._skills = filtered
         for r in value:
             if self not in r._skills:
                 r._skills.append(self)
@@ -1133,9 +1133,9 @@ class MarketRole(IdentifiedObject):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.market_roles if q != self]
-            self._organisations._market_roles = filtered
+            p._market_roles = filtered
         for r in value:
             if self not in r._market_roles:
                 r._market_roles.append(self)

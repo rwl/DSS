@@ -40,9 +40,9 @@ class SteamSupply(PowerSystemResource):
         return self._steam_turbines
 
     def set_steam_turbines(self, value):
-        for p in self._steam_turbines:
+        for p in self.steam_turbines:
             filtered = [q for q in p.steam_supplys if q != self]
-            self._steam_turbines._steam_supplys = filtered
+            p._steam_supplys = filtered
         for r in value:
             if self not in r._steam_supplys:
                 r._steam_supplys.append(self)
@@ -93,9 +93,9 @@ class PrimeMover(PowerSystemResource):
         return self._synchronous_machines
 
     def set_synchronous_machines(self, value):
-        for p in self._synchronous_machines:
+        for p in self.synchronous_machines:
             filtered = [q for q in p.prime_movers if q != self]
-            self._synchronous_machines._prime_movers = filtered
+            p._prime_movers = filtered
         for r in value:
             if self not in r._prime_movers:
                 r._prime_movers.append(self)
@@ -528,9 +528,9 @@ class SteamTurbine(PrimeMover):
         return self._steam_supplys
 
     def set_steam_supplys(self, value):
-        for p in self._steam_supplys:
+        for p in self.steam_supplys:
             filtered = [q for q in p.steam_turbines if q != self]
-            self._steam_supplys._steam_turbines = filtered
+            p._steam_turbines = filtered
         for r in value:
             if self not in r._steam_turbines:
                 r._steam_turbines.append(self)

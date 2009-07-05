@@ -101,9 +101,9 @@ class OrgPropertyRole(Role):
         return self._land_property
 
     def set_land_property(self, value):
-        for p in self._land_property:
+        for p in self.land_property:
             filtered = [q for q in p.erp_organisation_roles if q != self]
-            self._land_property._erp_organisation_roles = filtered
+            p._erp_organisation_roles = filtered
         for r in value:
             if self not in r._erp_organisation_roles:
                 r._erp_organisation_roles.append(self)
@@ -213,9 +213,9 @@ class RightOfWay(Agreement):
         return self._land_properties
 
     def set_land_properties(self, value):
-        for p in self._land_properties:
+        for p in self.land_properties:
             filtered = [q for q in p.right_of_ways if q != self]
-            self._land_properties._right_of_ways = filtered
+            p._right_of_ways = filtered
         for r in value:
             if self not in r._right_of_ways:
                 r._right_of_ways.append(self)
@@ -329,9 +329,9 @@ class RedLine(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.red_lines if q != self]
-            self._locations._red_lines = filtered
+            p._red_lines = filtered
         for r in value:
             if self not in r._red_lines:
                 r._red_lines.append(self)
@@ -393,9 +393,9 @@ class Hazard(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.hazards if q != self]
-            self._assets._hazards = filtered
+            p._hazards = filtered
         for r in value:
             if self not in r._hazards:
                 r._hazards.append(self)
@@ -424,9 +424,9 @@ class Hazard(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.hazards if q != self]
-            self._locations._hazards = filtered
+            p._hazards = filtered
         for r in value:
             if self not in r._hazards:
                 r._hazards.append(self)
@@ -634,9 +634,9 @@ class Route(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.routes if q != self]
-            self._locations._routes = filtered
+            p._routes = filtered
         for r in value:
             if self not in r._routes:
                 r._routes.append(self)
@@ -831,9 +831,9 @@ class LandProperty(IdentifiedObject):
         return self._asset_containers
 
     def set_asset_containers(self, value):
-        for p in self._asset_containers:
+        for p in self.asset_containers:
             filtered = [q for q in p.land_properties if q != self]
-            self._asset_containers._land_properties = filtered
+            p._land_properties = filtered
         for r in value:
             if self not in r._land_properties:
                 r._land_properties.append(self)
@@ -862,9 +862,9 @@ class LandProperty(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.land_properties if q != self]
-            self._locations._land_properties = filtered
+            p._land_properties = filtered
         for r in value:
             if self not in r._land_properties:
                 r._land_properties.append(self)
@@ -893,9 +893,9 @@ class LandProperty(IdentifiedObject):
         return self._erp_organisation_roles
 
     def set_erp_organisation_roles(self, value):
-        for p in self._erp_organisation_roles:
+        for p in self.erp_organisation_roles:
             filtered = [q for q in p.land_property if q != self]
-            self._erp_organisation_roles._land_property = filtered
+            p._land_property = filtered
         for r in value:
             if self not in r._land_property:
                 r._land_property.append(self)
@@ -952,9 +952,9 @@ class LandProperty(IdentifiedObject):
         return self._right_of_ways
 
     def set_right_of_ways(self, value):
-        for p in self._right_of_ways:
+        for p in self.right_of_ways:
             filtered = [q for q in p.land_properties if q != self]
-            self._right_of_ways._land_properties = filtered
+            p._land_properties = filtered
         for r in value:
             if self not in r._land_properties:
                 r._land_properties.append(self)

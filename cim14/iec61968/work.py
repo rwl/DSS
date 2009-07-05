@@ -141,9 +141,9 @@ class Work(Document):
         return self._customers
 
     def set_customers(self, value):
-        for p in self._customers:
+        for p in self.customers:
             filtered = [q for q in p.works if q != self]
-            self._customers._works = filtered
+            p._works = filtered
         for r in value:
             if self not in r._works:
                 r._works.append(self)
@@ -220,9 +220,9 @@ class Work(Document):
         return self._work_cost_details
 
     def set_work_cost_details(self, value):
-        for p in self._work_cost_details:
+        for p in self.work_cost_details:
             filtered = [q for q in p.works if q != self]
-            self._work_cost_details._works = filtered
+            p._works = filtered
         for r in value:
             if self not in r._works:
                 r._works.append(self)

@@ -59,9 +59,9 @@ class ConnectDisconnectFunction(DeviceFunction):
         return self._switches
 
     def set_switches(self, value):
-        for p in self._switches:
+        for p in self.switches:
             filtered = [q for q in p.connect_disconnect_functions if q != self]
-            self._switches._connect_disconnect_functions = filtered
+            p._connect_disconnect_functions = filtered
         for r in value:
             if self not in r._connect_disconnect_functions:
                 r._connect_disconnect_functions.append(self)

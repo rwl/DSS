@@ -55,9 +55,9 @@ class LoadMgmtFunction(DeviceFunction):
         return self._switches
 
     def set_switches(self, value):
-        for p in self._switches:
+        for p in self.switches:
             filtered = [q for q in p.load_mgmt_functions if q != self]
-            self._switches._load_mgmt_functions = filtered
+            p._load_mgmt_functions = filtered
         for r in value:
             if self not in r._load_mgmt_functions:
                 r._load_mgmt_functions.append(self)

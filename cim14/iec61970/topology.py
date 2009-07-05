@@ -544,9 +544,9 @@ class ConnectivityNode(IdentifiedObject):
         return self._loss_penalty_factors
 
     def set_loss_penalty_factors(self, value):
-        for p in self._loss_penalty_factors:
+        for p in self.loss_penalty_factors:
             filtered = [q for q in p.connectivity_nodes if q != self]
-            self._loss_penalty_factors._connectivity_nodes = filtered
+            p._connectivity_nodes = filtered
         for r in value:
             if self not in r._connectivity_nodes:
                 r._connectivity_nodes.append(self)

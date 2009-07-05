@@ -235,9 +235,9 @@ class Location(IdentifiedObject):
         return self._gml_selectors
 
     def set_gml_selectors(self, value):
-        for p in self._gml_selectors:
+        for p in self.gml_selectors:
             filtered = [q for q in p.locations if q != self]
-            self._gml_selectors._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -378,9 +378,9 @@ class Location(IdentifiedObject):
         return self._land_properties
 
     def set_land_properties(self, value):
-        for p in self._land_properties:
+        for p in self.land_properties:
             filtered = [q for q in p.locations if q != self]
-            self._land_properties._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -409,9 +409,9 @@ class Location(IdentifiedObject):
         return self._red_lines
 
     def set_red_lines(self, value):
-        for p in self._red_lines:
+        for p in self.red_lines:
             filtered = [q for q in p.locations if q != self]
-            self._red_lines._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -468,9 +468,9 @@ class Location(IdentifiedObject):
         return self._hazards
 
     def set_hazards(self, value):
-        for p in self._hazards:
+        for p in self.hazards:
             filtered = [q for q in p.locations if q != self]
-            self._hazards._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -527,9 +527,9 @@ class Location(IdentifiedObject):
         return self._measurements
 
     def set_measurements(self, value):
-        for p in self._measurements:
+        for p in self.measurements:
             filtered = [q for q in p.locations if q != self]
-            self._measurements._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -642,9 +642,9 @@ class Location(IdentifiedObject):
         return self._electronic_addresses
 
     def set_electronic_addresses(self, value):
-        for p in self._electronic_addresses:
+        for p in self.electronic_addresses:
             filtered = [q for q in p.locations if q != self]
-            self._electronic_addresses._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -721,9 +721,9 @@ class Location(IdentifiedObject):
         return self._routes
 
     def set_routes(self, value):
-        for p in self._routes:
+        for p in self.routes:
             filtered = [q for q in p.locations if q != self]
-            self._routes._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -752,9 +752,9 @@ class Location(IdentifiedObject):
         return self._gml_observatins
 
     def set_gml_observatins(self, value):
-        for p in self._gml_observatins:
+        for p in self.gml_observatins:
             filtered = [q for q in p.locations if q != self]
-            self._gml_observatins._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -783,9 +783,9 @@ class Location(IdentifiedObject):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.locations if q != self]
-            self._activity_records._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -814,9 +814,9 @@ class Location(IdentifiedObject):
         return self._crews
 
     def set_crews(self, value):
-        for p in self._crews:
+        for p in self.crews:
             filtered = [q for q in p.locations if q != self]
-            self._crews._locations = filtered
+            p._locations = filtered
         for r in value:
             if self not in r._locations:
                 r._locations.append(self)
@@ -912,9 +912,9 @@ class ActivityRecord(IdentifiedObject):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.activity_records if q != self]
-            self._organisations._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -943,9 +943,9 @@ class ActivityRecord(IdentifiedObject):
         return self._market_factors
 
     def set_market_factors(self, value):
-        for p in self._market_factors:
+        for p in self.market_factors:
             filtered = [q for q in p.activity_records if q != self]
-            self._market_factors._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -974,9 +974,9 @@ class ActivityRecord(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.activity_records if q != self]
-            self._locations._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -1005,9 +1005,9 @@ class ActivityRecord(IdentifiedObject):
         return self._assets
 
     def set_assets(self, value):
-        for p in self._assets:
+        for p in self.assets:
             filtered = [q for q in p.activity_records if q != self]
-            self._assets._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -1036,9 +1036,9 @@ class ActivityRecord(IdentifiedObject):
         return self._power_system_resources
 
     def set_power_system_resources(self, value):
-        for p in self._power_system_resources:
+        for p in self.power_system_resources:
             filtered = [q for q in p.activity_records if q != self]
-            self._power_system_resources._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -1067,9 +1067,9 @@ class ActivityRecord(IdentifiedObject):
         return self._documents
 
     def set_documents(self, value):
-        for p in self._documents:
+        for p in self.documents:
             filtered = [q for q in p.activity_records if q != self]
-            self._documents._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -1116,9 +1116,9 @@ class ActivityRecord(IdentifiedObject):
         return self._erp_persons
 
     def set_erp_persons(self, value):
-        for p in self._erp_persons:
+        for p in self.erp_persons:
             filtered = [q for q in p.activity_records if q != self]
-            self._erp_persons._activity_records = filtered
+            p._activity_records = filtered
         for r in value:
             if self not in r._activity_records:
                 r._activity_records.append(self)
@@ -1342,9 +1342,9 @@ class UserAttribute(Element):
         return self._procedure_data_sets
 
     def set_procedure_data_sets(self, value):
-        for p in self._procedure_data_sets:
+        for p in self.procedure_data_sets:
             filtered = [q for q in p.properties if q != self]
-            self._procedure_data_sets._properties = filtered
+            p._properties = filtered
         for r in value:
             if self not in r._properties:
                 r._properties.append(self)
@@ -1373,9 +1373,9 @@ class UserAttribute(Element):
         return self._property_assets
 
     def set_property_assets(self, value):
-        for p in self._property_assets:
+        for p in self.property_assets:
             filtered = [q for q in p.properties if q != self]
-            self._property_assets._properties = filtered
+            p._properties = filtered
         for r in value:
             if self not in r._properties:
                 r._properties.append(self)
@@ -1404,9 +1404,9 @@ class UserAttribute(Element):
         return self._erp_ledger_entries
 
     def set_erp_ledger_entries(self, value):
-        for p in self._erp_ledger_entries:
+        for p in self.erp_ledger_entries:
             filtered = [q for q in p.user_attributes if q != self]
-            self._erp_ledger_entries._user_attributes = filtered
+            p._user_attributes = filtered
         for r in value:
             if self not in r._user_attributes:
                 r._user_attributes.append(self)
@@ -1435,9 +1435,9 @@ class UserAttribute(Element):
         return self._erp_statement_line_items
 
     def set_erp_statement_line_items(self, value):
-        for p in self._erp_statement_line_items:
+        for p in self.erp_statement_line_items:
             filtered = [q for q in p.user_attributes if q != self]
-            self._erp_statement_line_items._user_attributes = filtered
+            p._user_attributes = filtered
         for r in value:
             if self not in r._user_attributes:
                 r._user_attributes.append(self)
@@ -1466,9 +1466,9 @@ class UserAttribute(Element):
         return self._bill_determinants
 
     def set_bill_determinants(self, value):
-        for p in self._bill_determinants:
+        for p in self.bill_determinants:
             filtered = [q for q in p.user_attributes if q != self]
-            self._bill_determinants._user_attributes = filtered
+            p._user_attributes = filtered
         for r in value:
             if self not in r._user_attributes:
                 r._user_attributes.append(self)
@@ -1497,9 +1497,9 @@ class UserAttribute(Element):
         return self._pass_through_bills
 
     def set_pass_through_bills(self, value):
-        for p in self._pass_through_bills:
+        for p in self.pass_through_bills:
             filtered = [q for q in p.user_attributes if q != self]
-            self._pass_through_bills._user_attributes = filtered
+            p._user_attributes = filtered
         for r in value:
             if self not in r._user_attributes:
                 r._user_attributes.append(self)
@@ -1568,9 +1568,9 @@ class UserAttribute(Element):
         return self._erp_invoice_line_items
 
     def set_erp_invoice_line_items(self, value):
-        for p in self._erp_invoice_line_items:
+        for p in self.erp_invoice_line_items:
             filtered = [q for q in p.user_attributes if q != self]
-            self._erp_invoice_line_items._user_attributes = filtered
+            p._user_attributes = filtered
         for r in value:
             if self not in r._user_attributes:
                 r._user_attributes.append(self)
@@ -1599,9 +1599,9 @@ class UserAttribute(Element):
         return self._rating_assets
 
     def set_rating_assets(self, value):
-        for p in self._rating_assets:
+        for p in self.rating_assets:
             filtered = [q for q in p.ratings if q != self]
-            self._rating_assets._ratings = filtered
+            p._ratings = filtered
         for r in value:
             if self not in r._ratings:
                 r._ratings.append(self)
@@ -1791,9 +1791,9 @@ class Document(IdentifiedObject):
         return self._schedule_parameter_infos
 
     def set_schedule_parameter_infos(self, value):
-        for p in self._schedule_parameter_infos:
+        for p in self.schedule_parameter_infos:
             filtered = [q for q in p.documents if q != self]
-            self._schedule_parameter_infos._documents = filtered
+            p._documents = filtered
         for r in value:
             if self not in r._documents:
                 r._documents.append(self)
@@ -1850,9 +1850,9 @@ class Document(IdentifiedObject):
         return self._network_data_sets
 
     def set_network_data_sets(self, value):
-        for p in self._network_data_sets:
+        for p in self.network_data_sets:
             filtered = [q for q in p.documents if q != self]
-            self._network_data_sets._documents = filtered
+            p._documents = filtered
         for r in value:
             if self not in r._documents:
                 r._documents.append(self)
@@ -1881,9 +1881,9 @@ class Document(IdentifiedObject):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.documents if q != self]
-            self._activity_records._documents = filtered
+            p._documents = filtered
         for r in value:
             if self not in r._documents:
                 r._documents.append(self)
@@ -1968,9 +1968,9 @@ class Document(IdentifiedObject):
         return self._change_sets
 
     def set_change_sets(self, value):
-        for p in self._change_sets:
+        for p in self.change_sets:
             filtered = [q for q in p.documents if q != self]
-            self._change_sets._documents = filtered
+            p._documents = filtered
         for r in value:
             if self not in r._documents:
                 r._documents.append(self)
@@ -2101,9 +2101,9 @@ class Document(IdentifiedObject):
         return self._measurements
 
     def set_measurements(self, value):
-        for p in self._measurements:
+        for p in self.measurements:
             filtered = [q for q in p.documents if q != self]
-            self._measurements._documents = filtered
+            p._documents = filtered
         for r in value:
             if self not in r._documents:
                 r._documents.append(self)
@@ -2262,9 +2262,9 @@ class ElectronicAddress(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.electronic_addresses if q != self]
-            self._locations._electronic_addresses = filtered
+            p._electronic_addresses = filtered
         for r in value:
             if self not in r._electronic_addresses:
                 r._electronic_addresses.append(self)
@@ -2523,9 +2523,9 @@ class Organisation(IdentifiedObject):
         return self._business_roles
 
     def set_business_roles(self, value):
-        for p in self._business_roles:
+        for p in self.business_roles:
             filtered = [q for q in p.organisations if q != self]
-            self._business_roles._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)
@@ -2582,9 +2582,9 @@ class Organisation(IdentifiedObject):
         return self._market_roles
 
     def set_market_roles(self, value):
-        for p in self._market_roles:
+        for p in self.market_roles:
             filtered = [q for q in p.organisations if q != self]
-            self._market_roles._organisations = filtered
+            p._organisations = filtered
         for r in value:
             if self not in r._organisations:
                 r._organisations.append(self)

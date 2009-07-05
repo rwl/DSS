@@ -64,9 +64,9 @@ class SwitchingOperation(IdentifiedObject):
         return self._switches
 
     def set_switches(self, value):
-        for p in self._switches:
+        for p in self.switches:
             filtered = [q for q in p.switching_operations if q != self]
-            self._switches._switching_operations = filtered
+            p._switching_operations = filtered
         for r in value:
             if self not in r._switching_operations:
                 r._switching_operations.append(self)
@@ -245,9 +245,9 @@ class ClearanceTag(IdentifiedObject):
         return self._safety_documents
 
     def set_safety_documents(self, value):
-        for p in self._safety_documents:
+        for p in self.safety_documents:
             filtered = [q for q in p.clearance_tags if q != self]
-            self._safety_documents._clearance_tags = filtered
+            p._clearance_tags = filtered
         for r in value:
             if self not in r._clearance_tags:
                 r._clearance_tags.append(self)

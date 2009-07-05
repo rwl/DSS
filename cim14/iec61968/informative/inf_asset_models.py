@@ -1037,9 +1037,9 @@ class StreetlightAssetModel(ElectricalAssetModel):
         return self._streetlight_type_assets
 
     def set_streetlight_type_assets(self, value):
-        for p in self._streetlight_type_assets:
+        for p in self.streetlight_type_assets:
             filtered = [q for q in p.streetlight_asset_models if q != self]
-            self._streetlight_type_assets._streetlight_asset_models = filtered
+            p._streetlight_asset_models = filtered
         for r in value:
             if self not in r._streetlight_asset_models:
                 r._streetlight_asset_models.append(self)

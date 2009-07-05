@@ -246,9 +246,9 @@ class Measurement(IdentifiedObject):
         return self._documents
 
     def set_documents(self, value):
-        for p in self._documents:
+        for p in self.documents:
             filtered = [q for q in p.measurements if q != self]
-            self._documents._measurements = filtered
+            p._measurements = filtered
         for r in value:
             if self not in r._measurements:
                 r._measurements.append(self)
@@ -317,9 +317,9 @@ class Measurement(IdentifiedObject):
         return self._locations
 
     def set_locations(self, value):
-        for p in self._locations:
+        for p in self.locations:
             filtered = [q for q in p.measurements if q != self]
-            self._locations._measurements = filtered
+            p._measurements = filtered
         for r in value:
             if self not in r._measurements:
                 r._measurements.append(self)
@@ -876,9 +876,9 @@ class MeasurementValue(IdentifiedObject):
         return self._procedure_data_sets
 
     def set_procedure_data_sets(self, value):
-        for p in self._procedure_data_sets:
+        for p in self.procedure_data_sets:
             filtered = [q for q in p.measurement_values if q != self]
-            self._procedure_data_sets._measurement_values = filtered
+            p._measurement_values = filtered
         for r in value:
             if self not in r._measurement_values:
                 r._measurement_values.append(self)
@@ -1095,9 +1095,9 @@ class Limit(IdentifiedObject):
         return self._procedures
 
     def set_procedures(self, value):
-        for p in self._procedures:
+        for p in self.procedures:
             filtered = [q for q in p.limits if q != self]
-            self._procedures._limits = filtered
+            p._limits = filtered
         for r in value:
             if self not in r._limits:
                 r._limits.append(self)
@@ -1190,9 +1190,9 @@ class AccumulatorLimitSet(LimitSet):
         return self._measurements
 
     def set_measurements(self, value):
-        for p in self._measurements:
+        for p in self.measurements:
             filtered = [q for q in p.limit_sets if q != self]
-            self._measurements._limit_sets = filtered
+            p._limit_sets = filtered
         for r in value:
             if self not in r._limit_sets:
                 r._limit_sets.append(self)
@@ -1530,9 +1530,9 @@ class Accumulator(Measurement):
         return self._limit_sets
 
     def set_limit_sets(self, value):
-        for p in self._limit_sets:
+        for p in self.limit_sets:
             filtered = [q for q in p.measurements if q != self]
-            self._limit_sets._measurements = filtered
+            p._measurements = filtered
         for r in value:
             if self not in r._measurements:
                 r._measurements.append(self)
@@ -1586,9 +1586,9 @@ class AnalogLimitSet(LimitSet):
         return self._measurements
 
     def set_measurements(self, value):
-        for p in self._measurements:
+        for p in self.measurements:
             filtered = [q for q in p.limit_sets if q != self]
-            self._measurements._limit_sets = filtered
+            p._limit_sets = filtered
         for r in value:
             if self not in r._limit_sets:
                 r._limit_sets.append(self)
@@ -1998,9 +1998,9 @@ class Analog(Measurement):
         return self._limit_sets
 
     def set_limit_sets(self, value):
-        for p in self._limit_sets:
+        for p in self.limit_sets:
             filtered = [q for q in p.measurements if q != self]
-            self._limit_sets._measurements = filtered
+            p._measurements = filtered
         for r in value:
             if self not in r._measurements:
                 r._measurements.append(self)

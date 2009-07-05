@@ -74,9 +74,9 @@ class TieLine(Element):
         return self._control_area_operators
 
     def set_control_area_operators(self, value):
-        for p in self._control_area_operators:
+        for p in self.control_area_operators:
             filtered = [q for q in p.tie_lines if q != self]
-            self._control_area_operators._tie_lines = filtered
+            p._tie_lines = filtered
         for r in value:
             if self not in r._tie_lines:
                 r._tie_lines.append(self)
@@ -982,9 +982,9 @@ class EnergyProduct(Agreement):
         return self._resold_by_marketers
 
     def set_resold_by_marketers(self, value):
-        for p in self._resold_by_marketers:
+        for p in self.resold_by_marketers:
             filtered = [q for q in p.resells_energy_product if q != self]
-            self._resold_by_marketers._resells_energy_product = filtered
+            p._resells_energy_product = filtered
         for r in value:
             if self not in r._resells_energy_product:
                 r._resells_energy_product.append(self)
@@ -1013,9 +1013,9 @@ class EnergyProduct(Agreement):
         return self._service_point
 
     def set_service_point(self, value):
-        for p in self._service_point:
+        for p in self.service_point:
             filtered = [q for q in p.energy_products if q != self]
-            self._service_point._energy_products = filtered
+            p._energy_products = filtered
         for r in value:
             if self not in r._energy_products:
                 r._energy_products.append(self)
@@ -1094,9 +1094,9 @@ class ProfileData(Element):
         return self._profile
 
     def set_profile(self, value):
-        for p in self._profile:
+        for p in self.profile:
             filtered = [q for q in p.profile_datas if q != self]
-            self._profile._profile_datas = filtered
+            p._profile_datas = filtered
         for r in value:
             if self not in r._profile_datas:
                 r._profile_datas.append(self)
@@ -1230,9 +1230,9 @@ class AvailableTransmissionCapacity(Curve):
         return self._schedule_for
 
     def set_schedule_for(self, value):
-        for p in self._schedule_for:
+        for p in self.schedule_for:
             filtered = [q for q in p.scheduled_by if q != self]
-            self._schedule_for._scheduled_by = filtered
+            p._scheduled_by = filtered
         for r in value:
             if self not in r._scheduled_by:
                 r._scheduled_by.append(self)
@@ -1610,9 +1610,9 @@ class EnergyTransaction(Document):
         return self._energy_price_curves
 
     def set_energy_price_curves(self, value):
-        for p in self._energy_price_curves:
+        for p in self.energy_price_curves:
             filtered = [q for q in p.energy_transactions if q != self]
-            self._energy_price_curves._energy_transactions = filtered
+            p._energy_transactions = filtered
         for r in value:
             if self not in r._energy_transactions:
                 r._energy_transactions.append(self)
@@ -1661,9 +1661,9 @@ class Profile(IdentifiedObject):
         return self._profile_datas
 
     def set_profile_datas(self, value):
-        for p in self._profile_datas:
+        for p in self.profile_datas:
             filtered = [q for q in p.profile if q != self]
-            self._profile_datas._profile = filtered
+            p._profile = filtered
         for r in value:
             if self not in r._profile:
                 r._profile.append(self)

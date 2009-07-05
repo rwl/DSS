@@ -55,9 +55,9 @@ class TransmissionPath(Element):
         return self._offered_on
 
     def set_offered_on(self, value):
-        for p in self._offered_on:
+        for p in self.offered_on:
             filtered = [q for q in p.offering if q != self]
-            self._offered_on._offering = filtered
+            p._offering = filtered
         for r in value:
             if self not in r._offering:
                 r._offering.append(self)
@@ -126,9 +126,9 @@ class TransmissionPath(Element):
         return self._located_on
 
     def set_located_on(self, value):
-        for p in self._located_on:
+        for p in self.located_on:
             filtered = [q for q in p.location_for if q != self]
-            self._located_on._location_for = filtered
+            p._location_for = filtered
         for r in value:
             if self not in r._location_for:
                 r._location_for.append(self)
@@ -366,9 +366,9 @@ class AncillaryService(IdentifiedObject):
         return self._transmission_providers
 
     def set_transmission_providers(self, value):
-        for p in self._transmission_providers:
+        for p in self.transmission_providers:
             filtered = [q for q in p.ancillary_services if q != self]
-            self._transmission_providers._ancillary_services = filtered
+            p._ancillary_services = filtered
         for r in value:
             if self not in r._ancillary_services:
                 r._ancillary_services.append(self)
@@ -456,9 +456,9 @@ class ServiceReservation(Element):
         return self._reserves_transmission_service
 
     def set_reserves_transmission_service(self, value):
-        for p in self._reserves_transmission_service:
+        for p in self.reserves_transmission_service:
             filtered = [q for q in p.reserved_by_service_reservation if q != self]
-            self._reserves_transmission_service._reserved_by_service_reservation = filtered
+            p._reserved_by_service_reservation = filtered
         for r in value:
             if self not in r._reserved_by_service_reservation:
                 r._reserved_by_service_reservation.append(self)
@@ -739,9 +739,9 @@ class ServicePoint(IdentifiedObject):
         return self._energy_products
 
     def set_energy_products(self, value):
-        for p in self._energy_products:
+        for p in self.energy_products:
             filtered = [q for q in p.service_point if q != self]
-            self._energy_products._service_point = filtered
+            p._service_point = filtered
         for r in value:
             if self not in r._service_point:
                 r._service_point.append(self)
@@ -809,9 +809,9 @@ class TransmissionService(IdentifiedObject):
         return self._reserved_by_service_reservation
 
     def set_reserved_by_service_reservation(self, value):
-        for p in self._reserved_by_service_reservation:
+        for p in self.reserved_by_service_reservation:
             filtered = [q for q in p.reserves_transmission_service if q != self]
-            self._reserved_by_service_reservation._reserves_transmission_service = filtered
+            p._reserves_transmission_service = filtered
         for r in value:
             if self not in r._reserves_transmission_service:
                 r._reserves_transmission_service.append(self)
@@ -840,9 +840,9 @@ class TransmissionService(IdentifiedObject):
         return self._offering
 
     def set_offering(self, value):
-        for p in self._offering:
+        for p in self.offering:
             filtered = [q for q in p.offered_on if q != self]
-            self._offering._offered_on = filtered
+            p._offered_on = filtered
         for r in value:
             if self not in r._offered_on:
                 r._offered_on.append(self)
@@ -891,9 +891,9 @@ class TransmissionService(IdentifiedObject):
         return self._scheduled_by
 
     def set_scheduled_by(self, value):
-        for p in self._scheduled_by:
+        for p in self.scheduled_by:
             filtered = [q for q in p.schedule_for if q != self]
-            self._scheduled_by._schedule_for = filtered
+            p._schedule_for = filtered
         for r in value:
             if self not in r._schedule_for:
                 r._schedule_for.append(self)
@@ -942,9 +942,9 @@ class TransmissionService(IdentifiedObject):
         return self._offered_as
 
     def set_offered_as(self, value):
-        for p in self._offered_as:
+        for p in self.offered_as:
             filtered = [q for q in p.offers if q != self]
-            self._offered_as._offers = filtered
+            p._offers = filtered
         for r in value:
             if self not in r._offers:
                 r._offers.append(self)

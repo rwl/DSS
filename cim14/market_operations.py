@@ -67,9 +67,9 @@ class RegisteredResource(IdentifiedObject):
         return self._resource_groups
 
     def set_resource_groups(self, value):
-        for p in self._resource_groups:
+        for p in self.resource_groups:
             filtered = [q for q in p.registered_resources if q != self]
-            self._resource_groups._registered_resources = filtered
+            p._registered_resources = filtered
         for r in value:
             if self not in r._registered_resources:
                 r._registered_resources.append(self)
@@ -166,9 +166,9 @@ class RegisteredResource(IdentifiedObject):
         return self._market_products
 
     def set_market_products(self, value):
-        for p in self._market_products:
+        for p in self.market_products:
             filtered = [q for q in p.registered_resources if q != self]
-            self._market_products._registered_resources = filtered
+            p._registered_resources = filtered
         for r in value:
             if self not in r._registered_resources:
                 r._registered_resources.append(self)
@@ -197,9 +197,9 @@ class RegisteredResource(IdentifiedObject):
         return self._markets
 
     def set_markets(self, value):
-        for p in self._markets:
+        for p in self.markets:
             filtered = [q for q in p.registered_resources if q != self]
-            self._markets._registered_resources = filtered
+            p._registered_resources = filtered
         for r in value:
             if self not in r._registered_resources:
                 r._registered_resources.append(self)
@@ -296,9 +296,9 @@ class RTO(ErpOrganisation):
         return self._resource_group_reqs
 
     def set_resource_group_reqs(self, value):
-        for p in self._resource_group_reqs:
+        for p in self.resource_group_reqs:
             filtered = [q for q in p.rtos if q != self]
-            self._resource_group_reqs._rtos = filtered
+            p._rtos = filtered
         for r in value:
             if self not in r._rtos:
                 r._rtos.append(self)
@@ -629,9 +629,9 @@ class FTR(Agreement):
         return self._pnodes
 
     def set_pnodes(self, value):
-        for p in self._pnodes:
+        for p in self.pnodes:
             filtered = [q for q in p.ftrs if q != self]
-            self._pnodes._ftrs = filtered
+            p._ftrs = filtered
         for r in value:
             if self not in r._ftrs:
                 r._ftrs.append(self)
@@ -1012,9 +1012,9 @@ class Pnode(IdentifiedObject):
         return self._ftrs
 
     def set_ftrs(self, value):
-        for p in self._ftrs:
+        for p in self.ftrs:
             filtered = [q for q in p.pnodes if q != self]
-            self._ftrs._pnodes = filtered
+            p._pnodes = filtered
         for r in value:
             if self not in r._pnodes:
                 r._pnodes.append(self)
@@ -1141,9 +1141,9 @@ class CapacityBenefitMargin(Profile):
         return self._flowgate
 
     def set_flowgate(self, value):
-        for p in self._flowgate:
+        for p in self.flowgate:
             filtered = [q for q in p.capacity_benefit_margin if q != self]
-            self._flowgate._capacity_benefit_margin = filtered
+            p._capacity_benefit_margin = filtered
         for r in value:
             if self not in r._capacity_benefit_margin:
                 r._capacity_benefit_margin.append(self)
@@ -1225,9 +1225,9 @@ class EnergyPriceCurve(Curve):
         return self._energy_transactions
 
     def set_energy_transactions(self, value):
-        for p in self._energy_transactions:
+        for p in self.energy_transactions:
             filtered = [q for q in p.energy_price_curves if q != self]
-            self._energy_transactions._energy_price_curves = filtered
+            p._energy_price_curves = filtered
         for r in value:
             if self not in r._energy_price_curves:
                 r._energy_price_curves.append(self)
@@ -1344,9 +1344,9 @@ class MarketProduct(IdentifiedObject):
         return self._registered_resources
 
     def set_registered_resources(self, value):
-        for p in self._registered_resources:
+        for p in self.registered_resources:
             filtered = [q for q in p.market_products if q != self]
-            self._registered_resources._market_products = filtered
+            p._market_products = filtered
         for r in value:
             if self not in r._market_products:
                 r._market_products.append(self)
@@ -1543,9 +1543,9 @@ class PassThroughBill(Document):
         return self._user_attributes
 
     def set_user_attributes(self, value):
-        for p in self._user_attributes:
+        for p in self.user_attributes:
             filtered = [q for q in p.pass_through_bills if q != self]
-            self._user_attributes._pass_through_bills = filtered
+            p._pass_through_bills = filtered
         for r in value:
             if self not in r._pass_through_bills:
                 r._pass_through_bills.append(self)
@@ -1596,9 +1596,9 @@ class RampRateCurve(Curve):
         return self._generating_unit
 
     def set_generating_unit(self, value):
-        for p in self._generating_unit:
+        for p in self.generating_unit:
             filtered = [q for q in p.ramp_rate_curves if q != self]
-            self._generating_unit._ramp_rate_curves = filtered
+            p._ramp_rate_curves = filtered
         for r in value:
             if self not in r._ramp_rate_curves:
                 r._ramp_rate_curves.append(self)
@@ -1843,9 +1843,9 @@ class ResourceGroupReq(IdentifiedObject):
         return self._rtos
 
     def set_rtos(self, value):
-        for p in self._rtos:
+        for p in self.rtos:
             filtered = [q for q in p.resource_group_reqs if q != self]
-            self._rtos._resource_group_reqs = filtered
+            p._resource_group_reqs = filtered
         for r in value:
             if self not in r._resource_group_reqs:
                 r._resource_group_reqs.append(self)
@@ -1984,9 +1984,9 @@ class Market(IdentifiedObject):
         return self._registered_resources
 
     def set_registered_resources(self, value):
-        for p in self._registered_resources:
+        for p in self.registered_resources:
             filtered = [q for q in p.markets if q != self]
-            self._registered_resources._markets = filtered
+            p._markets = filtered
         for r in value:
             if self not in r._markets:
                 r._markets.append(self)
@@ -2255,9 +2255,9 @@ class MarketStatementLineItem(IdentifiedObject):
         return self._user_attributes
 
     def set_user_attributes(self, value):
-        for p in self._user_attributes:
+        for p in self.user_attributes:
             filtered = [q for q in p.erp_statement_line_items if q != self]
-            self._user_attributes._erp_statement_line_items = filtered
+            p._erp_statement_line_items = filtered
         for r in value:
             if self not in r._erp_statement_line_items:
                 r._erp_statement_line_items.append(self)
@@ -2667,9 +2667,9 @@ class Settlement(Document):
         return self._erp_invoice_line_items
 
     def set_erp_invoice_line_items(self, value):
-        for p in self._erp_invoice_line_items:
+        for p in self.erp_invoice_line_items:
             filtered = [q for q in p.settlements if q != self]
-            self._erp_invoice_line_items._settlements = filtered
+            p._settlements = filtered
         for r in value:
             if self not in r._settlements:
                 r._settlements.append(self)
@@ -2698,9 +2698,9 @@ class Settlement(Document):
         return self._erp_ledger_entries
 
     def set_erp_ledger_entries(self, value):
-        for p in self._erp_ledger_entries:
+        for p in self.erp_ledger_entries:
             filtered = [q for q in p.settlements if q != self]
-            self._erp_ledger_entries._settlements = filtered
+            p._settlements = filtered
         for r in value:
             if self not in r._settlements:
                 r._settlements.append(self)
@@ -2810,9 +2810,9 @@ class BillDeterminant(Document):
         return self._user_attributes
 
     def set_user_attributes(self, value):
-        for p in self._user_attributes:
+        for p in self.user_attributes:
             filtered = [q for q in p.bill_determinants if q != self]
-            self._user_attributes._bill_determinants = filtered
+            p._bill_determinants = filtered
         for r in value:
             if self not in r._bill_determinants:
                 r._bill_determinants.append(self)
@@ -2890,9 +2890,9 @@ class MarketFactors(Document):
         return self._erp_invoices
 
     def set_erp_invoices(self, value):
-        for p in self._erp_invoices:
+        for p in self.erp_invoices:
             filtered = [q for q in p.market_factors if q != self]
-            self._erp_invoices._market_factors = filtered
+            p._market_factors = filtered
         for r in value:
             if self not in r._market_factors:
                 r._market_factors.append(self)
@@ -2921,9 +2921,9 @@ class MarketFactors(Document):
         return self._activity_records
 
     def set_activity_records(self, value):
-        for p in self._activity_records:
+        for p in self.activity_records:
             filtered = [q for q in p.market_factors if q != self]
-            self._activity_records._market_factors = filtered
+            p._market_factors = filtered
         for r in value:
             if self not in r._market_factors:
                 r._market_factors.append(self)
@@ -3213,9 +3213,9 @@ class Flowgate(PowerSystemResource):
         return self._transmission_provider
 
     def set_transmission_provider(self, value):
-        for p in self._transmission_provider:
+        for p in self.transmission_provider:
             filtered = [q for q in p.flowgate if q != self]
-            self._transmission_provider._flowgate = filtered
+            p._flowgate = filtered
         for r in value:
             if self not in r._flowgate:
                 r._flowgate.append(self)
@@ -3292,9 +3292,9 @@ class Flowgate(PowerSystemResource):
         return self._lines
 
     def set_lines(self, value):
-        for p in self._lines:
+        for p in self.lines:
             filtered = [q for q in p.flowgates if q != self]
-            self._lines._flowgates = filtered
+            p._flowgates = filtered
         for r in value:
             if self not in r._flowgates:
                 r._flowgates.append(self)
@@ -3323,9 +3323,9 @@ class Flowgate(PowerSystemResource):
         return self._capacity_benefit_margin
 
     def set_capacity_benefit_margin(self, value):
-        for p in self._capacity_benefit_margin:
+        for p in self.capacity_benefit_margin:
             filtered = [q for q in p.flowgate if q != self]
-            self._capacity_benefit_margin._flowgate = filtered
+            p._flowgate = filtered
         for r in value:
             if self not in r._flowgate:
                 r._flowgate.append(self)
@@ -3402,9 +3402,9 @@ class Flowgate(PowerSystemResource):
         return self._power_transormers
 
     def set_power_transormers(self, value):
-        for p in self._power_transormers:
+        for p in self.power_transormers:
             filtered = [q for q in p.flowgates if q != self]
-            self._power_transormers._flowgates = filtered
+            p._flowgates = filtered
         for r in value:
             if self not in r._flowgates:
                 r._flowgates.append(self)
@@ -3617,9 +3617,9 @@ class ResourceGroup(IdentifiedObject):
         return self._registered_resources
 
     def set_registered_resources(self, value):
-        for p in self._registered_resources:
+        for p in self.registered_resources:
             filtered = [q for q in p.resource_groups if q != self]
-            self._registered_resources._resource_groups = filtered
+            p._resource_groups = filtered
         for r in value:
             if self not in r._resource_groups:
                 r._resource_groups.append(self)
@@ -3736,9 +3736,9 @@ class StartUpCostCurve(Curve):
         return self._registered_generators
 
     def set_registered_generators(self, value):
-        for p in self._registered_generators:
+        for p in self.registered_generators:
             filtered = [q for q in p.start_up_cost_curves if q != self]
-            self._registered_generators._start_up_cost_curves = filtered
+            p._start_up_cost_curves = filtered
         for r in value:
             if self not in r._start_up_cost_curves:
                 r._start_up_cost_curves.append(self)
@@ -3815,9 +3815,9 @@ class ViolationLimit(Limit):
         return self._organisations
 
     def set_organisations(self, value):
-        for p in self._organisations:
+        for p in self.organisations:
             filtered = [q for q in p.violation_limits if q != self]
-            self._organisations._violation_limits = filtered
+            p._violation_limits = filtered
         for r in value:
             if self not in r._violation_limits:
                 r._violation_limits.append(self)
@@ -3906,9 +3906,9 @@ class LossPenaltyFactor(MarketFactors):
         return self._connectivity_nodes
 
     def set_connectivity_nodes(self, value):
-        for p in self._connectivity_nodes:
+        for p in self.connectivity_nodes:
             filtered = [q for q in p.loss_penalty_factors if q != self]
-            self._connectivity_nodes._loss_penalty_factors = filtered
+            p._loss_penalty_factors = filtered
         for r in value:
             if self not in r._loss_penalty_factors:
                 r._loss_penalty_factors.append(self)
@@ -4152,9 +4152,9 @@ class RegisteredGenerator(RegisteredResource):
         return self._start_up_cost_curves
 
     def set_start_up_cost_curves(self, value):
-        for p in self._start_up_cost_curves:
+        for p in self.start_up_cost_curves:
             filtered = [q for q in p.registered_generators if q != self]
-            self._start_up_cost_curves._registered_generators = filtered
+            p._registered_generators = filtered
         for r in value:
             if self not in r._registered_generators:
                 r._registered_generators.append(self)
@@ -4239,9 +4239,9 @@ class RegisteredGenerator(RegisteredResource):
         return self._ramp_rate_curves
 
     def set_ramp_rate_curves(self, value):
-        for p in self._ramp_rate_curves:
+        for p in self.ramp_rate_curves:
             filtered = [q for q in p.generating_unit if q != self]
-            self._ramp_rate_curves._generating_unit = filtered
+            p._generating_unit = filtered
         for r in value:
             if self not in r._generating_unit:
                 r._generating_unit.append(self)

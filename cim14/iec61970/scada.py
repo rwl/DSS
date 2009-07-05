@@ -38,9 +38,9 @@ class CommunicationLink(PowerSystemResource):
         return self._remote_units
 
     def set_remote_units(self, value):
-        for p in self._remote_units:
+        for p in self.remote_units:
             filtered = [q for q in p.communication_links if q != self]
-            self._remote_units._communication_links = filtered
+            p._communication_links = filtered
         for r in value:
             if self not in r._communication_links:
                 r._communication_links.append(self)
@@ -133,9 +133,9 @@ class RemoteUnit(PowerSystemResource):
         return self._communication_links
 
     def set_communication_links(self, value):
-        for p in self._communication_links:
+        for p in self.communication_links:
             filtered = [q for q in p.remote_units if q != self]
-            self._communication_links._remote_units = filtered
+            p._remote_units = filtered
         for r in value:
             if self not in r._remote_units:
                 r._remote_units.append(self)
