@@ -7,7 +7,7 @@
 import uuid
 from cim14 import Model
 from cim14.iec61970.topology import ConnectivityNode, TopologicalNode
-from reader import read_cim
+from reader import CIMReader
 
 class Circuit(Model):
     """ Simulates power flow in a CIM.
@@ -72,7 +72,9 @@ class Circuit(Model):
         """ Loads model elements from a CIM RDF/XML file and replaces the
             existing elements.
         """
-        self.elements = read_cim(file_name)
+        reader = CIMReader()
+        uri_element_map = reader(file_name)
+        self.elements = uri_element_map.values()
 
 
     def add_elements(self, file_name):

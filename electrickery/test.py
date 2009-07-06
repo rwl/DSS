@@ -6,21 +6,33 @@
 
 import unittest
 import pickle
+from os.path import dirname, join
 from cim14.iec61970.core import BaseVoltage, Terminal, ConductingEquipment
 from cim14.iec61970.wires import Switch, RatioTapChanger, SynchronousMachine, \
     ReactiveCapabilityCurve, TransformerWinding, PowerTransformer
 from conversion import VSource, ISource, Generator, Load
 from circuit import Circuit
-from reader import read_cim
+from reader import CIMReader
 from cim2dot import cim2dot
-
-#INSTANCE_FILE = "./data/EDF_AIGUE_v1.xml"
-#INSTANCE_FILE = "./data/EDF_RURAL_4PS_V1.xml"
-INSTANCE_FILE = "./data/10_Bus.xml"
-
-#NS_CIM = "http://iec.ch/TC57/2009/CIM-schema-cim14#"
 from cim14 import ns_uri as NS_CIM
-PICKLE_FILE = "./data/cdpsm.pkl"
+
+DATA_DIR = join(dirname(__file__), "data")
+
+INSTANCE_FILE = join(DATA_DIR, "10_Bus.xml")
+#INSTANCE_FILE = join(DATA_DIR, "EDF_AIGUE_v1.xml")
+#INSTANCE_FILE = join(DATA_DIR, "EDF_RURAL_4PS_V1.xml")
+
+PICKLE_FILE = join(DATA_DIR, "tmp.pkl")
+
+
+class ReaderTestCase(unittest.TestCase):
+    """ Defines a test case for the CIM RDF/XML parser.
+    """
+    def test_attributes(self):
+        """ Test parsing CIM RDF/XML attributes.
+        """
+        reader = CIMReader()
+        uri_element_map = reader(INSTANCE_FILE)
 
 
 class CIMTestCase(unittest.TestCase):
@@ -304,4 +316,8 @@ class CIMTestCase(unittest.TestCase):
 
 
 if __name__ == "__main__":
+    import logging, sys
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(levelname)s: %(message)s")
+    
     unittest.main()
