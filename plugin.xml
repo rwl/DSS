@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss"
+            class="dss.DSSPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/common"
+            class="dss.common.CommonPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/control"
+            class="dss.control.ControlPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/conversion"
+            class="dss.conversion.ConversionPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/delivery"
+            class="dss.delivery.DeliveryPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/executive"
+            class="dss.executive.ExecutivePackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/general"
+            class="dss.general.GeneralPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://www.openpowersystem.com/dss/meter"
+            class="dss.meter.MeterPackage"
+            genModel="model/DSS.genmodel"/>
+   </extension>
+
+</plugin>
