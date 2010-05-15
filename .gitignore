@@ -1,9 +1,2 @@
-*.pyc
-.project
-.pydevproject
 *~
-build/
-dist/
-*.egg-info
 
-pylon/test/data/ipsa.raw
