@@ -45,112 +45,112 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  */
 public class ExecutiveImpl extends EObjectImpl implements Executive {
     /**
-     * The default value of the '{@link #getCommand() <em>Command</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getCommand() <em>Command</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getCommand()
-     * @generated
-     * @ordered
-     */
+	 * @see #getCommand()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String COMMAND_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getCommand() <em>Command</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCommand() <em>Command</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getCommand()
-     * @generated
-     * @ordered
-     */
+	 * @see #getCommand()
+	 * @generated
+	 * @ordered
+	 */
     protected String command = COMMAND_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getExecCommands() <em>Exec Commands</em>}' reference.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getExecCommands() <em>Exec Commands</em>}' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getExecCommands()
-     * @generated
-     * @ordered
-     */
+	 * @see #getExecCommands()
+	 * @generated
+	 * @ordered
+	 */
     protected ExecCommands execCommands;
 
                 /**
-     * The cached value of the '{@link #getExecOptions() <em>Exec Options</em>}' reference.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getExecOptions() <em>Exec Options</em>}' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getExecOptions()
-     * @generated
-     * @ordered
-     */
+	 * @see #getExecOptions()
+	 * @generated
+	 * @ordered
+	 */
     protected ExecOptions execOptions;
 
                                                                 /**
-     * The cached value of the '{@link #getActiveCircuit() <em>Active Circuit</em>}' reference.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getActiveCircuit() <em>Active Circuit</em>}' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getActiveCircuit()
-     * @generated
-     * @ordered
-     */
+	 * @see #getActiveCircuit()
+	 * @generated
+	 * @ordered
+	 */
     protected Circuit activeCircuit;
 
                                                                 /**
-     * The cached value of the '{@link #getCircuits() <em>Circuits</em>}' reference list.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCircuits() <em>Circuits</em>}' reference list.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getCircuits()
-     * @generated
-     * @ordered
-     */
+	 * @see #getCircuits()
+	 * @generated
+	 * @ordered
+	 */
     protected EList<Circuit> circuits;
 
                                                                 /**
-     * The default value of the '{@link #getMaxCircuits() <em>Max Circuits</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getMaxCircuits() <em>Max Circuits</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getMaxCircuits()
-     * @generated
-     * @ordered
-     */
+	 * @see #getMaxCircuits()
+	 * @generated
+	 * @ordered
+	 */
     protected static final int MAX_CIRCUITS_EDEFAULT = 1;
 
                                                                 /**
-     * The cached value of the '{@link #getMaxCircuits() <em>Max Circuits</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getMaxCircuits() <em>Max Circuits</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getMaxCircuits()
-     * @generated
-     * @ordered
-     */
+	 * @see #getMaxCircuits()
+	 * @generated
+	 * @ordered
+	 */
     protected int maxCircuits = MAX_CIRCUITS_EDEFAULT;
 
                                                                                                                                                                                                                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected ExecutiveImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ExecutivePackage.Literals.EXECUTIVE;
-    }
+		return ExecutivePackage.Literals.EXECUTIVE;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getCommand() {
-        return command;
-    }
+		return command;
+	}
 
     /**
      * <!-- begin-user-doc -->
@@ -167,151 +167,151 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
     }
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public ExecCommands getExecCommands() {
-        if (execCommands != null && execCommands.eIsProxy()) {
-            InternalEObject oldExecCommands = (InternalEObject)execCommands;
-            execCommands = (ExecCommands)eResolveProxy(oldExecCommands);
-            if (execCommands != oldExecCommands) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, oldExecCommands, execCommands));
-            }
-        }
-        return execCommands;
-    }
+		if (execCommands != null && execCommands.eIsProxy()) {
+			InternalEObject oldExecCommands = (InternalEObject)execCommands;
+			execCommands = (ExecCommands)eResolveProxy(oldExecCommands);
+			if (execCommands != oldExecCommands) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, oldExecCommands, execCommands));
+			}
+		}
+		return execCommands;
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public ExecCommands basicGetExecCommands() {
-        return execCommands;
-    }
+		return execCommands;
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setExecCommands(ExecCommands newExecCommands) {
-        ExecCommands oldExecCommands = execCommands;
-        execCommands = newExecCommands;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, oldExecCommands, execCommands));
-    }
+		ExecCommands oldExecCommands = execCommands;
+		execCommands = newExecCommands;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, oldExecCommands, execCommands));
+	}
 
                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public ExecOptions getExecOptions() {
-        if (execOptions != null && execOptions.eIsProxy()) {
-            InternalEObject oldExecOptions = (InternalEObject)execOptions;
-            execOptions = (ExecOptions)eResolveProxy(oldExecOptions);
-            if (execOptions != oldExecOptions) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, oldExecOptions, execOptions));
-            }
-        }
-        return execOptions;
-    }
+		if (execOptions != null && execOptions.eIsProxy()) {
+			InternalEObject oldExecOptions = (InternalEObject)execOptions;
+			execOptions = (ExecOptions)eResolveProxy(oldExecOptions);
+			if (execOptions != oldExecOptions) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, oldExecOptions, execOptions));
+			}
+		}
+		return execOptions;
+	}
 
                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public ExecOptions basicGetExecOptions() {
-        return execOptions;
-    }
+		return execOptions;
+	}
 
                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setExecOptions(ExecOptions newExecOptions) {
-        ExecOptions oldExecOptions = execOptions;
-        execOptions = newExecOptions;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, oldExecOptions, execOptions));
-    }
+		ExecOptions oldExecOptions = execOptions;
+		execOptions = newExecOptions;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, oldExecOptions, execOptions));
+	}
 
                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public Circuit getActiveCircuit() {
-        if (activeCircuit != null && activeCircuit.eIsProxy()) {
-            InternalEObject oldActiveCircuit = (InternalEObject)activeCircuit;
-            activeCircuit = (Circuit)eResolveProxy(oldActiveCircuit);
-            if (activeCircuit != oldActiveCircuit) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT, oldActiveCircuit, activeCircuit));
-            }
-        }
-        return activeCircuit;
-    }
+		if (activeCircuit != null && activeCircuit.eIsProxy()) {
+			InternalEObject oldActiveCircuit = (InternalEObject)activeCircuit;
+			activeCircuit = (Circuit)eResolveProxy(oldActiveCircuit);
+			if (activeCircuit != oldActiveCircuit) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT, oldActiveCircuit, activeCircuit));
+			}
+		}
+		return activeCircuit;
+	}
 
                                                                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public Circuit basicGetActiveCircuit() {
-        return activeCircuit;
-    }
+		return activeCircuit;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setActiveCircuit(Circuit newActiveCircuit) {
-        Circuit oldActiveCircuit = activeCircuit;
-        activeCircuit = newActiveCircuit;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT, oldActiveCircuit, activeCircuit));
-    }
+		Circuit oldActiveCircuit = activeCircuit;
+		activeCircuit = newActiveCircuit;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT, oldActiveCircuit, activeCircuit));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public EList<Circuit> getCircuits() {
-        if (circuits == null) {
-            circuits = new EObjectResolvingEList<Circuit>(Circuit.class, this, ExecutivePackage.EXECUTIVE__CIRCUITS);
-        }
-        return circuits;
-    }
+		if (circuits == null) {
+			circuits = new EObjectResolvingEList<Circuit>(Circuit.class, this, ExecutivePackage.EXECUTIVE__CIRCUITS);
+		}
+		return circuits;
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getMaxCircuits() {
-        return maxCircuits;
-    }
+		return maxCircuits;
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setMaxCircuits(int newMaxCircuits) {
-        int oldMaxCircuits = maxCircuits;
-        maxCircuits = newMaxCircuits;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__MAX_CIRCUITS, oldMaxCircuits, maxCircuits));
-    }
+		int oldMaxCircuits = maxCircuits;
+		maxCircuits = newMaxCircuits;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__MAX_CIRCUITS, oldMaxCircuits, maxCircuits));
+	}
 
                 /**
      * <!-- begin-user-doc -->
@@ -368,134 +368,134 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
     }
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ExecutivePackage.EXECUTIVE__COMMAND:
-                return getCommand();
-            case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-                if (resolve) return getExecCommands();
-                return basicGetExecCommands();
-            case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-                if (resolve) return getExecOptions();
-                return basicGetExecOptions();
-            case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
-                if (resolve) return getActiveCircuit();
-                return basicGetActiveCircuit();
-            case ExecutivePackage.EXECUTIVE__CIRCUITS:
-                return getCircuits();
-            case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
-                return getMaxCircuits();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ExecutivePackage.EXECUTIVE__COMMAND:
+				return getCommand();
+			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
+				if (resolve) return getExecCommands();
+				return basicGetExecCommands();
+			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
+				if (resolve) return getExecOptions();
+				return basicGetExecOptions();
+			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
+				if (resolve) return getActiveCircuit();
+				return basicGetActiveCircuit();
+			case ExecutivePackage.EXECUTIVE__CIRCUITS:
+				return getCircuits();
+			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
+				return getMaxCircuits();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @SuppressWarnings("unchecked")
                 @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ExecutivePackage.EXECUTIVE__COMMAND:
-                setCommand((String)newValue);
-                return;
-            case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-                setExecCommands((ExecCommands)newValue);
-                return;
-            case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-                setExecOptions((ExecOptions)newValue);
-                return;
-            case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
-                setActiveCircuit((Circuit)newValue);
-                return;
-            case ExecutivePackage.EXECUTIVE__CIRCUITS:
-                getCircuits().clear();
-                getCircuits().addAll((Collection<? extends Circuit>)newValue);
-                return;
-            case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
-                setMaxCircuits((Integer)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ExecutivePackage.EXECUTIVE__COMMAND:
+				setCommand((String)newValue);
+				return;
+			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
+				setExecCommands((ExecCommands)newValue);
+				return;
+			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
+				setExecOptions((ExecOptions)newValue);
+				return;
+			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
+				setActiveCircuit((Circuit)newValue);
+				return;
+			case ExecutivePackage.EXECUTIVE__CIRCUITS:
+				getCircuits().clear();
+				getCircuits().addAll((Collection<? extends Circuit>)newValue);
+				return;
+			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
+				setMaxCircuits((Integer)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ExecutivePackage.EXECUTIVE__COMMAND:
-                setCommand(COMMAND_EDEFAULT);
-                return;
-            case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-                setExecCommands((ExecCommands)null);
-                return;
-            case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-                setExecOptions((ExecOptions)null);
-                return;
-            case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
-                setActiveCircuit((Circuit)null);
-                return;
-            case ExecutivePackage.EXECUTIVE__CIRCUITS:
-                getCircuits().clear();
-                return;
-            case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
-                setMaxCircuits(MAX_CIRCUITS_EDEFAULT);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ExecutivePackage.EXECUTIVE__COMMAND:
+				setCommand(COMMAND_EDEFAULT);
+				return;
+			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
+				setExecCommands((ExecCommands)null);
+				return;
+			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
+				setExecOptions((ExecOptions)null);
+				return;
+			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
+				setActiveCircuit((Circuit)null);
+				return;
+			case ExecutivePackage.EXECUTIVE__CIRCUITS:
+				getCircuits().clear();
+				return;
+			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
+				setMaxCircuits(MAX_CIRCUITS_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ExecutivePackage.EXECUTIVE__COMMAND:
-                return COMMAND_EDEFAULT == null ? command != null : !COMMAND_EDEFAULT.equals(command);
-            case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-                return execCommands != null;
-            case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-                return execOptions != null;
-            case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
-                return activeCircuit != null;
-            case ExecutivePackage.EXECUTIVE__CIRCUITS:
-                return circuits != null && !circuits.isEmpty();
-            case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
-                return maxCircuits != MAX_CIRCUITS_EDEFAULT;
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ExecutivePackage.EXECUTIVE__COMMAND:
+				return COMMAND_EDEFAULT == null ? command != null : !COMMAND_EDEFAULT.equals(command);
+			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
+				return execCommands != null;
+			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
+				return execOptions != null;
+			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
+				return activeCircuit != null;
+			case ExecutivePackage.EXECUTIVE__CIRCUITS:
+				return circuits != null && !circuits.isEmpty();
+			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
+				return maxCircuits != MAX_CIRCUITS_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (command: ");
-        result.append(command);
-        result.append(", maxCircuits: ");
-        result.append(maxCircuits);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (command: ");
+		result.append(command);
+		result.append(", maxCircuits: ");
+		result.append(maxCircuits);
+		result.append(')');
+		return result.toString();
+	}
 
 } //ExecutiveImpl

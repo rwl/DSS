@@ -39,280 +39,280 @@ import cern.colt.matrix.tdcomplex.DComplexFactory2D;
  */
 public class CurrentSourceImpl extends PowerConversionElementImpl implements CurrentSource {
     /**
-     * The default value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getBus1()
-     * @generated
-     * @ordered
-     */
+	 * @see #getBus1()
+	 * @generated
+	 * @ordered
+	 */
     protected static final String BUS1_EDEFAULT = null;
 
     /**
-     * The cached value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getBus1()
-     * @generated
-     * @ordered
-     */
+	 * @see #getBus1()
+	 * @generated
+	 * @ordered
+	 */
     protected String bus1 = BUS1_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getAmps() <em>Amps</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getAmps() <em>Amps</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getAmps()
-     * @generated
-     * @ordered
-     */
+	 * @see #getAmps()
+	 * @generated
+	 * @ordered
+	 */
     protected static final double AMPS_EDEFAULT = 0.0;
 
     /**
-     * The cached value of the '{@link #getAmps() <em>Amps</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getAmps() <em>Amps</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getAmps()
-     * @generated
-     * @ordered
-     */
+	 * @see #getAmps()
+	 * @generated
+	 * @ordered
+	 */
     protected double amps = AMPS_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getAngle() <em>Angle</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getAngle() <em>Angle</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getAngle()
-     * @generated
-     * @ordered
-     */
+	 * @see #getAngle()
+	 * @generated
+	 * @ordered
+	 */
     protected static final double ANGLE_EDEFAULT = 0.0;
 
     /**
-     * The cached value of the '{@link #getAngle() <em>Angle</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getAngle() <em>Angle</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getAngle()
-     * @generated
-     * @ordered
-     */
+	 * @see #getAngle()
+	 * @generated
+	 * @ordered
+	 */
     protected double angle = ANGLE_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getFrequency()
-     * @generated
-     * @ordered
-     */
+	 * @see #getFrequency()
+	 * @generated
+	 * @ordered
+	 */
     protected static final double FREQUENCY_EDEFAULT = 60.0;
 
     /**
-     * The cached value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getFrequency()
-     * @generated
-     * @ordered
-     */
+	 * @see #getFrequency()
+	 * @generated
+	 * @ordered
+	 */
     protected double frequency = FREQUENCY_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getPhases() <em>Phases</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getPhases() <em>Phases</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getPhases()
-     * @generated
-     * @ordered
-     */
+	 * @see #getPhases()
+	 * @generated
+	 * @ordered
+	 */
     protected static final int PHASES_EDEFAULT = 0;
 
     /**
-     * The cached value of the '{@link #getPhases() <em>Phases</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getPhases() <em>Phases</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getPhases()
-     * @generated
-     * @ordered
-     */
+	 * @see #getPhases()
+	 * @generated
+	 * @ordered
+	 */
     protected int phases = PHASES_EDEFAULT;
 
     /**
-     * The default value of the '{@link #getScanType() <em>Scan Type</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The default value of the '{@link #getScanType() <em>Scan Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getScanType()
-     * @generated
-     * @ordered
-     */
+	 * @see #getScanType()
+	 * @generated
+	 * @ordered
+	 */
     protected static final sequenceType SCAN_TYPE_EDEFAULT = sequenceType.POSITIVE;
 
     /**
-     * The cached value of the '{@link #getScanType() <em>Scan Type</em>}' attribute.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getScanType() <em>Scan Type</em>}' attribute.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getScanType()
-     * @generated
-     * @ordered
-     */
+	 * @see #getScanType()
+	 * @generated
+	 * @ordered
+	 */
     protected sequenceType scanType = SCAN_TYPE_EDEFAULT;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected CurrentSourceImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return ConversionPackage.Literals.CURRENT_SOURCE;
-    }
+		return ConversionPackage.Literals.CURRENT_SOURCE;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public String getBus1() {
-        return bus1;
-    }
+		return bus1;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setBus1(String newBus1) {
-        String oldBus1 = bus1;
-        bus1 = newBus1;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__BUS1, oldBus1, bus1));
-    }
+		String oldBus1 = bus1;
+		bus1 = newBus1;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__BUS1, oldBus1, bus1));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public double getAmps() {
-        return amps;
-    }
+		return amps;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setAmps(double newAmps) {
-        double oldAmps = amps;
-        amps = newAmps;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__AMPS, oldAmps, amps));
-    }
+		double oldAmps = amps;
+		amps = newAmps;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__AMPS, oldAmps, amps));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public double getAngle() {
-        return angle;
-    }
+		return angle;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setAngle(double newAngle) {
-        double oldAngle = angle;
-        angle = newAngle;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__ANGLE, oldAngle, angle));
-    }
+		double oldAngle = angle;
+		angle = newAngle;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__ANGLE, oldAngle, angle));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public double getFrequency() {
-        return frequency;
-    }
+		return frequency;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setFrequency(double newFrequency) {
-        double oldFrequency = frequency;
-        frequency = newFrequency;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__FREQUENCY, oldFrequency, frequency));
-    }
+		double oldFrequency = frequency;
+		frequency = newFrequency;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__FREQUENCY, oldFrequency, frequency));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public int getPhases() {
-        return phases;
-    }
+		return phases;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setPhases(int newPhases) {
-        int oldPhases = phases;
-        phases = newPhases;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__PHASES, oldPhases, phases));
-    }
+		int oldPhases = phases;
+		phases = newPhases;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__PHASES, oldPhases, phases));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public sequenceType getScanType() {
-        return scanType;
-    }
+		return scanType;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setScanType(sequenceType newScanType) {
-        sequenceType oldScanType = scanType;
-        scanType = newScanType == null ? SCAN_TYPE_EDEFAULT : newScanType;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__SCAN_TYPE, oldScanType, scanType));
-    }
+		sequenceType oldScanType = scanType;
+		scanType = newScanType == null ? SCAN_TYPE_EDEFAULT : newScanType;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.CURRENT_SOURCE__SCAN_TYPE, oldScanType, scanType));
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public EList<Double> getBaseCurrent() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
-    }
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
 
                 /**
      *
@@ -357,137 +357,137 @@ public class CurrentSourceImpl extends PowerConversionElementImpl implements Cur
     }
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case ConversionPackage.CURRENT_SOURCE__BUS1:
-                return getBus1();
-            case ConversionPackage.CURRENT_SOURCE__AMPS:
-                return getAmps();
-            case ConversionPackage.CURRENT_SOURCE__ANGLE:
-                return getAngle();
-            case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
-                return getFrequency();
-            case ConversionPackage.CURRENT_SOURCE__PHASES:
-                return getPhases();
-            case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
-                return getScanType();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case ConversionPackage.CURRENT_SOURCE__BUS1:
+				return getBus1();
+			case ConversionPackage.CURRENT_SOURCE__AMPS:
+				return getAmps();
+			case ConversionPackage.CURRENT_SOURCE__ANGLE:
+				return getAngle();
+			case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
+				return getFrequency();
+			case ConversionPackage.CURRENT_SOURCE__PHASES:
+				return getPhases();
+			case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
+				return getScanType();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case ConversionPackage.CURRENT_SOURCE__BUS1:
-                setBus1((String)newValue);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__AMPS:
-                setAmps((Double)newValue);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__ANGLE:
-                setAngle((Double)newValue);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
-                setFrequency((Double)newValue);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__PHASES:
-                setPhases((Integer)newValue);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
-                setScanType((sequenceType)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case ConversionPackage.CURRENT_SOURCE__BUS1:
+				setBus1((String)newValue);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__AMPS:
+				setAmps((Double)newValue);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__ANGLE:
+				setAngle((Double)newValue);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
+				setFrequency((Double)newValue);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__PHASES:
+				setPhases((Integer)newValue);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
+				setScanType((sequenceType)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case ConversionPackage.CURRENT_SOURCE__BUS1:
-                setBus1(BUS1_EDEFAULT);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__AMPS:
-                setAmps(AMPS_EDEFAULT);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__ANGLE:
-                setAngle(ANGLE_EDEFAULT);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
-                setFrequency(FREQUENCY_EDEFAULT);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__PHASES:
-                setPhases(PHASES_EDEFAULT);
-                return;
-            case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
-                setScanType(SCAN_TYPE_EDEFAULT);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case ConversionPackage.CURRENT_SOURCE__BUS1:
+				setBus1(BUS1_EDEFAULT);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__AMPS:
+				setAmps(AMPS_EDEFAULT);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__ANGLE:
+				setAngle(ANGLE_EDEFAULT);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
+				setFrequency(FREQUENCY_EDEFAULT);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__PHASES:
+				setPhases(PHASES_EDEFAULT);
+				return;
+			case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
+				setScanType(SCAN_TYPE_EDEFAULT);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case ConversionPackage.CURRENT_SOURCE__BUS1:
-                return BUS1_EDEFAULT == null ? bus1 != null : !BUS1_EDEFAULT.equals(bus1);
-            case ConversionPackage.CURRENT_SOURCE__AMPS:
-                return amps != AMPS_EDEFAULT;
-            case ConversionPackage.CURRENT_SOURCE__ANGLE:
-                return angle != ANGLE_EDEFAULT;
-            case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
-                return frequency != FREQUENCY_EDEFAULT;
-            case ConversionPackage.CURRENT_SOURCE__PHASES:
-                return phases != PHASES_EDEFAULT;
-            case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
-                return scanType != SCAN_TYPE_EDEFAULT;
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case ConversionPackage.CURRENT_SOURCE__BUS1:
+				return BUS1_EDEFAULT == null ? bus1 != null : !BUS1_EDEFAULT.equals(bus1);
+			case ConversionPackage.CURRENT_SOURCE__AMPS:
+				return amps != AMPS_EDEFAULT;
+			case ConversionPackage.CURRENT_SOURCE__ANGLE:
+				return angle != ANGLE_EDEFAULT;
+			case ConversionPackage.CURRENT_SOURCE__FREQUENCY:
+				return frequency != FREQUENCY_EDEFAULT;
+			case ConversionPackage.CURRENT_SOURCE__PHASES:
+				return phases != PHASES_EDEFAULT;
+			case ConversionPackage.CURRENT_SOURCE__SCAN_TYPE:
+				return scanType != SCAN_TYPE_EDEFAULT;
+		}
+		return super.eIsSet(featureID);
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public String toString() {
-        if (eIsProxy()) return super.toString();
+		if (eIsProxy()) return super.toString();
 
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (bus1: ");
-        result.append(bus1);
-        result.append(", amps: ");
-        result.append(amps);
-        result.append(", angle: ");
-        result.append(angle);
-        result.append(", frequency: ");
-        result.append(frequency);
-        result.append(", phases: ");
-        result.append(phases);
-        result.append(", scanType: ");
-        result.append(scanType);
-        result.append(')');
-        return result.toString();
-    }
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (bus1: ");
+		result.append(bus1);
+		result.append(", amps: ");
+		result.append(amps);
+		result.append(", angle: ");
+		result.append(angle);
+		result.append(", frequency: ");
+		result.append(frequency);
+		result.append(", phases: ");
+		result.append(phases);
+		result.append(", scanType: ");
+		result.append(scanType);
+		result.append(')');
+		return result.toString();
+	}
 
 } //CurrentSourceImpl

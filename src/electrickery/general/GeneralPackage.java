@@ -243,13 +243,22 @@ public interface GeneralPackage extends EPackage {
 	int LINE_CODE__X1 = 2;
 
 	/**
+	 * The feature id for the '<em><b>R0</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_CODE__R0 = 3;
+
+	/**
 	 * The feature id for the '<em><b>X0</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__X0 = 3;
+	int LINE_CODE__X0 = 4;
 
 	/**
 	 * The feature id for the '<em><b>C1</b></em>' attribute.
@@ -258,7 +267,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__C1 = 4;
+	int LINE_CODE__C1 = 5;
 
 	/**
 	 * The feature id for the '<em><b>C0</b></em>' attribute.
@@ -267,7 +276,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__C0 = 5;
+	int LINE_CODE__C0 = 6;
 
 	/**
 	 * The feature id for the '<em><b>Units</b></em>' attribute.
@@ -276,7 +285,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__UNITS = 6;
+	int LINE_CODE__UNITS = 7;
 
 	/**
 	 * The feature id for the '<em><b>RMatrix</b></em>' reference.
@@ -285,7 +294,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__RMATRIX = 7;
+	int LINE_CODE__RMATRIX = 8;
 
 	/**
 	 * The feature id for the '<em><b>XMatrix</b></em>' reference.
@@ -294,7 +303,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__XMATRIX = 8;
+	int LINE_CODE__XMATRIX = 9;
 
 	/**
 	 * The feature id for the '<em><b>CMatrix</b></em>' reference.
@@ -303,7 +312,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__CMATRIX = 9;
+	int LINE_CODE__CMATRIX = 10;
 
 	/**
 	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
@@ -312,7 +321,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__BASE_FREQ = 10;
+	int LINE_CODE__BASE_FREQ = 11;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -321,7 +330,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__NORM_AMPS = 11;
+	int LINE_CODE__NORM_AMPS = 12;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Amps</b></em>' attribute.
@@ -330,7 +339,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__EMERG_AMPS = 12;
+	int LINE_CODE__EMERG_AMPS = 13;
 
 	/**
 	 * The feature id for the '<em><b>Fault Rate</b></em>' attribute.
@@ -339,7 +348,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__FAULT_RATE = 13;
+	int LINE_CODE__FAULT_RATE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Pct Perm</b></em>' attribute.
@@ -348,7 +357,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__PCT_PERM = 14;
+	int LINE_CODE__PCT_PERM = 15;
 
 	/**
 	 * The feature id for the '<em><b>Repair</b></em>' attribute.
@@ -357,7 +366,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__REPAIR = 15;
+	int LINE_CODE__REPAIR = 16;
 
 	/**
 	 * The feature id for the '<em><b>Kron</b></em>' attribute.
@@ -366,7 +375,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__KRON = 16;
+	int LINE_CODE__KRON = 17;
 
 	/**
 	 * The feature id for the '<em><b>Rg</b></em>' attribute.
@@ -375,7 +384,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__RG = 17;
+	int LINE_CODE__RG = 18;
 
 	/**
 	 * The feature id for the '<em><b>Xg</b></em>' attribute.
@@ -384,7 +393,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__XG = 18;
+	int LINE_CODE__XG = 19;
 
 	/**
 	 * The feature id for the '<em><b>Rho</b></em>' attribute.
@@ -393,7 +402,16 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE__RHO = 19;
+	int LINE_CODE__RHO = 20;
+
+	/**
+	 * The feature id for the '<em><b>Neutral</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_CODE__NEUTRAL = 21;
 
 	/**
 	 * The number of structural features of the '<em>Line Code</em>' class.
@@ -402,7 +420,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE_FEATURE_COUNT = 20;
+	int LINE_CODE_FEATURE_COUNT = 22;
 
 	/**
 	 * The meta object id for the '{@link electrickery.general.impl.LineGeometryImpl <em>Line Geometry</em>}' class.
@@ -1038,6 +1056,17 @@ public interface GeneralPackage extends EPackage {
 	EAttribute getLineCode_X1();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.LineCode#getR0 <em>R0</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>R0</em>'.
+	 * @see electrickery.general.LineCode#getR0()
+	 * @see #getLineCode()
+	 * @generated
+	 */
+	EAttribute getLineCode_R0();
+
+	/**
 	 * Returns the meta object for the attribute '{@link electrickery.general.LineCode#getX0 <em>X0</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1223,6 +1252,17 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getLineCode_Rho();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.LineCode#getNeutral <em>Neutral</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Neutral</em>'.
+	 * @see electrickery.general.LineCode#getNeutral()
+	 * @see #getLineCode()
+	 * @generated
+	 */
+	EAttribute getLineCode_Neutral();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.general.LineGeometry <em>Line Geometry</em>}'.
@@ -1865,6 +1905,14 @@ public interface GeneralPackage extends EPackage {
 		EAttribute LINE_CODE__X1 = eINSTANCE.getLineCode_X1();
 
 		/**
+		 * The meta object literal for the '<em><b>R0</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_CODE__R0 = eINSTANCE.getLineCode_R0();
+
+		/**
 		 * The meta object literal for the '<em><b>X0</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -1999,6 +2047,14 @@ public interface GeneralPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LINE_CODE__RHO = eINSTANCE.getLineCode_Rho();
+
+		/**
+		 * The meta object literal for the '<em><b>Neutral</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_CODE__NEUTRAL = eINSTANCE.getLineCode_Neutral();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.general.impl.LineGeometryImpl <em>Line Geometry</em>}' class.

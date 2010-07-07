@@ -3240,10 +3240,15 @@
           <details key="documentation" value="Positive-sequence Reactance, ohms per unit length.  See also xMatrix."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="x0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="r0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="0.4047">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Zero-sequence Resistance, ohms per unit length."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="x0" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Zero-sequence Reactance, ohms per unit length."/>
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="c1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
@@ -3335,6 +3340,11 @@
           defaultValueLiteral="100.0">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Earth resitivity (meter ohms used to compute earth correction factor)."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="neutral" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Designates which conductor is the &quot;neutral&quot; conductor that will be eliminated by Kron reduction.&#xD;&#xA;Default is the last conductor (nphases value). After Kron reduction is set to 0. Subsequent issuing of Kron=Yes&#xD;&#xA;will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix."/>
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
