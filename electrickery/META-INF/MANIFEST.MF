@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: %pluginName
-Bundle-SymbolicName: DSS;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Name: Electrickery
+Bundle-SymbolicName: electrickery;singleton:=true
+Bundle-Version: 0.1.1.qualifier
 Bundle-ClassPath: .
-Bundle-Vendor: %providerName
+Bundle-Vendor: Richard Lincoln
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: electrickery,
