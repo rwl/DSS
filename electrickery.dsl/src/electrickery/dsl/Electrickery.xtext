@@ -1,0 +1,51 @@
+grammar electrickery.dsl.ElectrickeryDSL with org.eclipse.xtext.common.Terminals
+
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+import "http://www.openpowersystem.com/dss/common" as common
+import "http://www.openpowersystem.com/dss/general" as general
+import "http://www.openpowersystem.com/dss/delivery" as delivery
+
+Circuit returns common::Circuit:
+  {common::Circuit}
+  NEW ('object=')?('Circuit'|'circuit')('.'name=[ecore::EString])?
+  (lines+=[delivery::Line]*)?;
+
+WireData returns general::WireData:
+  {general::WireData}
+  NEW ('object=')?('WireData'|'wiredata')
+    ('Rac=' rAC=[ecore::EDouble])?;
+
+Line returns delivery::Line:
+  {delivery::Line}
+  NEW ('object=')?('Line'|'line')('.'name=[ecore::EString])?
+    ("name" name=[ecore::EString])?
+    ('baseFreq' baseFreq=[ecore::EDouble])?
+    ('nTerms' nTerms=[ecore::EInt])?
+    ('nConds' nConds=[ecore::EInt])?
+    ('nPhases' nPhases=[ecore::EInt])?
+    ('yPrimFreq' yPrimFreq=[ecore::EDouble])?
+    ('normAmps' normAmps=[ecore::EDouble])?
+    ('emergAmps' emergAmps=[ecore::EDouble])?
+    ('faultRate' faultRate=[ecore::EDouble])?
+    ('pctPerm' pctPerm=[ecore::EDouble])?
+    ('repair' repair=[ecore::EInt])?
+    ('bus1' bus1=[ecore::EString])?
+    ('bus2' bus2=[ecore::EString])?
+    ('lineCode' lineCode=[ecore::EString])?
+    ('length' length=[ecore::EDouble])?
+    ('r1' r1=[ecore::EDouble])?
+    ('x1' x1=[ecore::EDouble])?
+    ('r0' r0=[ecore::EDouble])?
+    ('x0' x0=[ecore::EDouble])?
+    ('c1' c1=[ecore::EDouble])?
+    ('c0' c0=[ecore::EDouble])?
+    ('rg' rg=[ecore::EDouble])?
+    ('xg' xg=[ecore::EDouble])?
+    ('rho' rho=[ecore::EDouble])?
+    ('units' units=LENGTHUNIT)?;
+
+terminal NEW:
+	('New'|'new');
+
+terminal LENGTHUNIT returns common::lengthUnit:
+	('mi'|'km'|'kft'|'m'|'me'|'ft'|'in'|'cm');

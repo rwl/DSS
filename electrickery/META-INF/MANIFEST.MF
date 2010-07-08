@@ -29,7 +29,8 @@ Export-Package: electrickery,
  electrickery.impl,
  electrickery.meter,
  electrickery.meter.impl,
- electrickery.meter.util
+ electrickery.meter.util,
+ electrickery.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
  parallelcolt;bundle-version="0.9.4"

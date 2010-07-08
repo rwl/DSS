@@ -12,7 +12,7 @@
       abstract="true" interface="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="DoubleMatrix2D" instanceClassName="cern.colt.matrix.tdouble.DoubleMatrix2D"
       abstract="true" interface="true"/>
-  <eSubpackages name="common" nsURI="http://www.openpowersystem.com/dss/common" nsPrefix="common">
+  <eSubpackages name="common" nsURI="http://www.electrickery.com/common" nsPrefix="common">
     <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
       <details key="documentation" value="Defines objects common to all circuits in the DSS."/>
     </eAnnotations>
@@ -402,8 +402,7 @@
       <eLiterals name="NewtonSolve" value="1"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="control" nsURI="http://www.openpowersystem.com/dss/control"
-      nsPrefix="cont">
+  <eSubpackages name="control" nsURI="http://www.electrickery.com/control" nsPrefix="cont">
     <eClassifiers xsi:type="ecore:EClass" name="ControlElement" abstract="true" eSuperTypes="#//common/CircuitElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Base for control classes."/>
@@ -964,8 +963,7 @@
       <eLiterals name="Generic" value="2"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="conversion" nsURI="http://www.openpowersystem.com/dss/conversion"
-      nsPrefix="conv">
+  <eSubpackages name="conversion" nsURI="http://www.electrickery.com/conversion" nsPrefix="conv">
     <eClassifiers xsi:type="ecore:EClass" name="PowerConversionElement" abstract="true"
         eSuperTypes="#//common/CircuitElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1652,8 +1650,7 @@
       <eLiterals name="Z1Z0" value="3"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="delivery" nsURI="http://www.openpowersystem.com/dss/delivery"
-      nsPrefix="delivery">
+  <eSubpackages name="delivery" nsURI="http://www.electrickery.com/delivery" nsPrefix="delivery">
     <eClassifiers xsi:type="ecore:EClass" name="PowerDeliveryElement" abstract="true"
         eSuperTypes="#//common/CircuitElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -2230,8 +2227,7 @@
       </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="executive" nsURI="http://www.openpowersystem.com/dss/executive"
-      nsPrefix="exe">
+  <eSubpackages name="executive" nsURI="http://www.electrickery.com/executive" nsPrefix="exe">
     <eClassifiers xsi:type="ecore:EClass" name="ExecOptions">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Defines options for an executive."/>
@@ -3156,8 +3152,7 @@
       <eLiterals name="Skip" value="3"/>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="general" nsURI="http://www.openpowersystem.com/dss/general"
-      nsPrefix="gen">
+  <eSubpackages name="general" nsURI="http://www.electrickery.com/general" nsPrefix="gen">
     <eClassifiers xsi:type="ecore:EClass" name="DSSObject">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="DSSObjType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3580,7 +3575,7 @@
       </eStructuralFeatures>
     </eClassifiers>
   </eSubpackages>
-  <eSubpackages name="meter" nsURI="http://www.openpowersystem.com/dss/meter" nsPrefix="meter">
+  <eSubpackages name="meter" nsURI="http://www.electrickery.com/meter" nsPrefix="meter">
     <eClassifiers xsi:type="ecore:EClass" name="MeterElement" abstract="true" eSuperTypes="#//common/CircuitElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Base for all meters."/>
