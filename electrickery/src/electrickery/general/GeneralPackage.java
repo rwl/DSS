@@ -6,6 +6,7 @@
  */
 package electrickery.general;
 
+import electrickery.common.CommonPackage;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
@@ -41,7 +42,7 @@ public interface GeneralPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/general";
+	String eNS_URI = "http://www.electrickery.com/general";
 
 	/**
 	 * The package namespace name.
@@ -433,13 +434,22 @@ public interface GeneralPackage extends EPackage {
 	int LINE_GEOMETRY = 3;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_GEOMETRY__NAME = CommonPackage.NAMED__NAME;
+
+	/**
 	 * The feature id for the '<em><b>NConds</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__NCONDS = 0;
+	int LINE_GEOMETRY__NCONDS = CommonPackage.NAMED_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
@@ -448,7 +458,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__NPHASES = 1;
+	int LINE_GEOMETRY__NPHASES = CommonPackage.NAMED_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>Cond</b></em>' attribute.
@@ -457,7 +467,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__COND = 2;
+	int LINE_GEOMETRY__COND = CommonPackage.NAMED_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Wire</b></em>' reference.
@@ -466,7 +476,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__WIRE = 3;
+	int LINE_GEOMETRY__WIRE = CommonPackage.NAMED_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>X</b></em>' attribute.
@@ -475,7 +485,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__X = 4;
+	int LINE_GEOMETRY__X = CommonPackage.NAMED_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>H</b></em>' attribute.
@@ -484,7 +494,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__H = 5;
+	int LINE_GEOMETRY__H = CommonPackage.NAMED_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Units</b></em>' attribute.
@@ -493,7 +503,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__UNITS = 6;
+	int LINE_GEOMETRY__UNITS = CommonPackage.NAMED_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -502,7 +512,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__NORM_AMPS = 7;
+	int LINE_GEOMETRY__NORM_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Amps</b></em>' attribute.
@@ -511,7 +521,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__EMERG_AMPS = 8;
+	int LINE_GEOMETRY__EMERG_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Reduce</b></em>' attribute.
@@ -520,7 +530,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__REDUCE = 9;
+	int LINE_GEOMETRY__REDUCE = CommonPackage.NAMED_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Line Geometry</em>' class.
@@ -529,7 +539,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY_FEATURE_COUNT = 10;
+	int LINE_GEOMETRY_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 10;
 
 	/**
 	 * The meta object id for the '{@link electrickery.general.impl.LoadShapeImpl <em>Load Shape</em>}' class.
@@ -761,13 +771,22 @@ public interface GeneralPackage extends EPackage {
 	int WIRE_DATA = 7;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int WIRE_DATA__NAME = CommonPackage.NAMED__NAME;
+
+	/**
 	 * The feature id for the '<em><b>RDC</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__RDC = 0;
+	int WIRE_DATA__RDC = CommonPackage.NAMED_FEATURE_COUNT + 0;
 
 	/**
 	 * The feature id for the '<em><b>RAC</b></em>' attribute.
@@ -776,7 +795,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__RAC = 1;
+	int WIRE_DATA__RAC = CommonPackage.NAMED_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>RUnits</b></em>' attribute.
@@ -785,7 +804,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__RUNITS = 2;
+	int WIRE_DATA__RUNITS = CommonPackage.NAMED_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>Gmr AC</b></em>' attribute.
@@ -794,7 +813,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__GMR_AC = 3;
+	int WIRE_DATA__GMR_AC = CommonPackage.NAMED_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Gmr Units</b></em>' attribute.
@@ -803,7 +822,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__GMR_UNITS = 4;
+	int WIRE_DATA__GMR_UNITS = CommonPackage.NAMED_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>Radius</b></em>' attribute.
@@ -812,7 +831,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__RADIUS = 5;
+	int WIRE_DATA__RADIUS = CommonPackage.NAMED_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Rad Units</b></em>' attribute.
@@ -821,7 +840,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__RAD_UNITS = 6;
+	int WIRE_DATA__RAD_UNITS = CommonPackage.NAMED_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -830,7 +849,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__NORM_AMPS = 7;
+	int WIRE_DATA__NORM_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Amps</b></em>' attribute.
@@ -839,7 +858,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__EMERG_AMPS = 8;
+	int WIRE_DATA__EMERG_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Diameter</b></em>' attribute.
@@ -848,7 +867,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA__DIAMETER = 9;
+	int WIRE_DATA__DIAMETER = CommonPackage.NAMED_FEATURE_COUNT + 9;
 
 	/**
 	 * The number of structural features of the '<em>Wire Data</em>' class.
@@ -857,7 +876,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int WIRE_DATA_FEATURE_COUNT = 10;
+	int WIRE_DATA_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 10;
 
 
 	/**

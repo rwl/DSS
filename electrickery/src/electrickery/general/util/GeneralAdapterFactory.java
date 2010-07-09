@@ -6,6 +6,7 @@
  */
 package electrickery.general.util;
 
+import electrickery.common.Named;
 import electrickery.general.*;
 
 import org.eclipse.emf.common.notify.Adapter;
@@ -102,6 +103,10 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseWireData(WireData object) {
 				return createWireDataAdapter();
+			}
+			@Override
+			public Adapter caseNamed(Named object) {
+				return createNamedAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -232,6 +237,20 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createWireDataAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.common.Named <em>Named</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.common.Named
+	 * @generated
+	 */
+	public Adapter createNamedAdapter() {
 		return null;
 	}
 

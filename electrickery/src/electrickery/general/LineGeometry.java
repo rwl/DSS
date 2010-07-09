@@ -6,6 +6,7 @@
  */
 package electrickery.general;
 
+import electrickery.common.Named;
 import electrickery.common.lengthUnit;
 
 import org.eclipse.emf.ecore.EObject;
@@ -42,7 +43,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface LineGeometry extends EObject {
+public interface LineGeometry extends Named {
 	/**
 	 * Returns the value of the '<em><b>NConds</b></em>' attribute.
 	 * The default value is <code>"3"</code>.

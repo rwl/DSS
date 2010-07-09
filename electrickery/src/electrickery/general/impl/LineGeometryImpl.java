@@ -7,6 +7,7 @@
 package electrickery.general.impl;
 
 
+import electrickery.common.impl.NamedImpl;
 import electrickery.common.lengthUnit;
 import electrickery.general.GeneralPackage;
 import electrickery.general.LineGeometry;
@@ -42,7 +43,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class LineGeometryImpl extends EObjectImpl implements LineGeometry {
+public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 	/**
 	 * The default value of the '{@link #getNConds() <em>NConds</em>}' attribute.
 	 * <!-- begin-user-doc -->

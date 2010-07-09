@@ -6,6 +6,7 @@
  */
 package electrickery.general;
 
+import electrickery.common.Named;
 import electrickery.common.lengthUnit;
 
 import org.eclipse.emf.ecore.EObject;
@@ -49,7 +50,7 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface WireData extends EObject {
+public interface WireData extends Named {
 	/**
 	 * Returns the value of the '<em><b>RDC</b></em>' attribute.
 	 * <!-- begin-user-doc -->

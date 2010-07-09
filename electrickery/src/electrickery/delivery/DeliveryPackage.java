@@ -43,7 +43,7 @@ public interface DeliveryPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/delivery";
+	String eNS_URI = "http://www.electrickery.com/delivery";
 
 	/**
 	 * The package namespace name.

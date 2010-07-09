@@ -1055,6 +1055,8 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		lineGeometryEClass.getESuperTypes().add(theCommonPackage.getNamed());
+		wireDataEClass.getESuperTypes().add(theCommonPackage.getNamed());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(dssObjectEClass, DSSObject.class, "DSSObject", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);

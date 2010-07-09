@@ -12,58 +12,58 @@
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss"
-            class="electrickery.DSSPackage"
-            genModel="model/DSS.genmodel"/>
+            uri="http://www.electrickery.com/"
+            class="electrickery.ElectrickeryPackage"
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/common"
+            uri="http://www.electrickery.com/common"
             class="electrickery.common.CommonPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/control"
+            uri="http://www.electrickery.com/control"
             class="electrickery.control.ControlPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/conversion"
+            uri="http://www.electrickery.com/conversion"
             class="electrickery.conversion.ConversionPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/delivery"
+            uri="http://www.electrickery.com/delivery"
             class="electrickery.delivery.DeliveryPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/executive"
+            uri="http://www.electrickery.com/executive"
             class="electrickery.executive.ExecutivePackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/general"
+            uri="http://www.electrickery.com/general"
             class="electrickery.general.GeneralPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
    <extension point="org.eclipse.emf.ecore.generated_package">
       <package
-            uri="http://www.openpowersystem.com/dss/meter"
+            uri="http://www.electrickery.com/meter"
             class="electrickery.meter.MeterPackage"
-            genModel="model/DSS.genmodel"/>
+            genModel="model/Electrickery.genmodel"/>
    </extension>
 
 </plugin>

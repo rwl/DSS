@@ -32,7 +32,7 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	 */
 	public static ConversionFactory init() {
 		try {
-			ConversionFactory theConversionFactory = (ConversionFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/conversion"); 
+			ConversionFactory theConversionFactory = (ConversionFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/conversion"); 
 			if (theConversionFactory != null) {
 				return theConversionFactory;
 			}

@@ -45,7 +45,7 @@ public interface CommonPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/common";
+	String eNS_URI = "http://www.electrickery.com/common";
 
 	/**
 	 * The package namespace name.
@@ -1252,6 +1252,80 @@ public interface CommonPackage extends EPackage {
 	int CONTROL_QUEUE_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.NamedImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
+	 * @generated
+	 */
+	int NAMED = 9;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NAMED__NAME = 0;
+
+	/**
+	 * The number of structural features of the '<em>Named</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NAMED_FEATURE_COUNT = 1;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.ElectrickeryImpl <em>Electrickery</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.ElectrickeryImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getElectrickery()
+	 * @generated
+	 */
+	int ELECTRICKERY = 10;
+
+	/**
+	 * The feature id for the '<em><b>Wire Data</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__WIRE_DATA = 0;
+
+	/**
+	 * The feature id for the '<em><b>Line Geometries</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__LINE_GEOMETRIES = 1;
+
+	/**
+	 * The feature id for the '<em><b>Executives</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__EXECUTIVES = 2;
+
+	/**
+	 * The number of structural features of the '<em>Electrickery</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY_FEATURE_COUNT = 3;
+
+	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1259,7 +1333,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 9;
+	int CONNECTION_TYPE = 11;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -1269,7 +1343,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 10;
+	int LENGTH_UNIT = 12;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -1279,7 +1353,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 11;
+	int TRIP_ACTION = 13;
 
 
 	/**
@@ -1290,7 +1364,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 12;
+	int YBUILD_OPTION = 14;
 
 
 	/**
@@ -1301,7 +1375,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 13;
+	int CONTROL_MODE_TYPE = 15;
 
 
 	/**
@@ -1312,7 +1386,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 14;
+	int ALGORITHM_TYPE = 16;
 
 
 	/**
@@ -2649,6 +2723,70 @@ public interface CommonPackage extends EPackage {
 	EAttribute getControlQueue_Empty();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.common.Named <em>Named</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Named</em>'.
+	 * @see electrickery.common.Named
+	 * @generated
+	 */
+	EClass getNamed();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Named#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see electrickery.common.Named#getName()
+	 * @see #getNamed()
+	 * @generated
+	 */
+	EAttribute getNamed_Name();
+
+	/**
+	 * Returns the meta object for class '{@link electrickery.common.Electrickery <em>Electrickery</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Electrickery</em>'.
+	 * @see electrickery.common.Electrickery
+	 * @generated
+	 */
+	EClass getElectrickery();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getWireData <em>Wire Data</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Wire Data</em>'.
+	 * @see electrickery.common.Electrickery#getWireData()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_WireData();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getLineGeometries <em>Line Geometries</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Line Geometries</em>'.
+	 * @see electrickery.common.Electrickery#getLineGeometries()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_LineGeometries();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getExecutives <em>Executives</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Executives</em>'.
+	 * @see electrickery.common.Electrickery#getExecutives()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_Executives();
+
+	/**
 	 * Returns the meta object for enum '{@link electrickery.common.connectionType <em>connection Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3723,6 +3861,58 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONTROL_QUEUE__EMPTY = eINSTANCE.getControlQueue_Empty();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.NamedImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
+		 * @generated
+		 */
+		EClass NAMED = eINSTANCE.getNamed();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute NAMED__NAME = eINSTANCE.getNamed_Name();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.ElectrickeryImpl <em>Electrickery</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.ElectrickeryImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getElectrickery()
+		 * @generated
+		 */
+		EClass ELECTRICKERY = eINSTANCE.getElectrickery();
+
+		/**
+		 * The meta object literal for the '<em><b>Wire Data</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__WIRE_DATA = eINSTANCE.getElectrickery_WireData();
+
+		/**
+		 * The meta object literal for the '<em><b>Line Geometries</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__LINE_GEOMETRIES = eINSTANCE.getElectrickery_LineGeometries();
+
+		/**
+		 * The meta object literal for the '<em><b>Executives</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__EXECUTIVES = eINSTANCE.getElectrickery_Executives();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.

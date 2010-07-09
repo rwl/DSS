@@ -42,7 +42,7 @@ public interface ExecutivePackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/executive";
+	String eNS_URI = "http://www.electrickery.com/executive";
 
 	/**
 	 * The package namespace name.

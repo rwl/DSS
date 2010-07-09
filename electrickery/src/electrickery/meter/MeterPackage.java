@@ -44,7 +44,7 @@ public interface MeterPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/meter";
+	String eNS_URI = "http://www.electrickery.com/meter";
 
 	/**
 	 * The package namespace name.

@@ -32,7 +32,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 */
 	public static CommonFactory init() {
 		try {
-			CommonFactory theCommonFactory = (CommonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/common"); 
+			CommonFactory theCommonFactory = (CommonFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/common"); 
 			if (theCommonFactory != null) {
 				return theCommonFactory;
 			}
@@ -67,6 +67,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 			case CommonPackage.SOLUTION: return createSolution();
 			case CommonPackage.TERMINAL: return createTerminal();
 			case CommonPackage.CONTROL_QUEUE: return createControlQueue();
+			case CommonPackage.ELECTRICKERY: return createElectrickery();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -180,6 +181,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public ControlQueue createControlQueue() {
 		ControlQueueImpl controlQueue = new ControlQueueImpl();
 		return controlQueue;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Electrickery createElectrickery() {
+		ElectrickeryImpl electrickery = new ElectrickeryImpl();
+		return electrickery;
 	}
 
 	/**

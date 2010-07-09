@@ -32,7 +32,7 @@ public class ExecutiveFactoryImpl extends EFactoryImpl implements ExecutiveFacto
 	 */
 	public static ExecutiveFactory init() {
 		try {
-			ExecutiveFactory theExecutiveFactory = (ExecutiveFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/executive"); 
+			ExecutiveFactory theExecutiveFactory = (ExecutiveFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/executive"); 
 			if (theExecutiveFactory != null) {
 				return theExecutiveFactory;
 			}

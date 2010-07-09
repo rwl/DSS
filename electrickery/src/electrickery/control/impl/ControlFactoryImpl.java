@@ -32,7 +32,7 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 	 */
 	public static ControlFactory init() {
 		try {
-			ControlFactory theControlFactory = (ControlFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/control"); 
+			ControlFactory theControlFactory = (ControlFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/control"); 
 			if (theControlFactory != null) {
 				return theControlFactory;
 			}

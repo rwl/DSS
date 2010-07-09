@@ -4,7 +4,7 @@ import org.eclipse.emf.mwe.utils.*
 import org.eclipse.xtext.generator.*
 import org.eclipse.xtext.ui.generator.*
 
-var grammarURI = "classpath:/electrickery/dsl/ElectrickeryDSL.xtext"
+var grammarURI = "classpath:/electrickery/dsl/Electrickery.xtext"
 var file.extensions = "dss"
 var projectName = "electrickery.dsl"
 var runtimeProject = "../${projectName}"
@@ -50,7 +50,7 @@ Workflow {
 			// the serialization component
 			fragment = parseTreeConstructor.ParseTreeConstructorFragment {}
 
-			// a custom ResourceFactory for use with EMF 
+			// a custom ResourceFactory for use with EMF
 			fragment = resourceFactory.ResourceFactoryFragment {
 				fileExtensions = file.extensions
 			}
@@ -65,7 +65,7 @@ Workflow {
 			// the Ecore2Xtext specific terminal converter
 			fragment = ecore2xtext.Ecore2XtextValueConverterServiceFragment {}
 
-			// java-based API for validation 
+			// java-based API for validation
 			fragment = validation.JavaValidatorFragment {
 			// composedCheck = "org.eclipse.xtext.validation.ImportUriValidator"
 			// composedCheck = "org.eclipse.xtext.validation.NamesAreUniqueValidator"
@@ -76,26 +76,26 @@ Workflow {
 			fragment = scoping.ImportURIScopingFragment {}
 			fragment = exporting.SimpleNamesFragment {}
 
-			// scoping and exporting API 
+			// scoping and exporting API
 
 			// fragment = scoping.ImportNamespacesScopingFragment {}
 			// fragment = exporting.QualifiedNamesFragment {}
 
 
-			// formatter API 
+			// formatter API
 			fragment = ecore2xtext.FormatterFragment {}
 
-			// labeling API 
+			// labeling API
 			fragment = labeling.LabelProviderFragment {}
 
-			// outline API 
+			// outline API
 			fragment = outline.TransformerFragment {}
 			fragment = outline.OutlineNodeAdapterFactoryFragment {}
 
-			// java-based API for content assistance 
+			// java-based API for content assistance
 			fragment = contentAssist.JavaBasedContentAssistFragment {}
 
-			// antlr parser generator tailored for content assist 
+			// antlr parser generator tailored for content assist
 			fragment = parser.antlr.XtextAntlrUiGeneratorFragment {
 				options = {
 					classSplitting = true
@@ -104,14 +104,14 @@ Workflow {
 
 			fragment = builder.BuilderIntegrationFragment {}
 
-			// project wizard (optional) 
+			// project wizard (optional)
 
 			// fragment = projectWizard.SimpleProjectWizardFragment {
-			//		generatorProjectName = "${projectName}.generator" 
+			//		generatorProjectName = "${projectName}.generator"
 			//		modelFileExtension = file.extensions
 			// }
 
-			// quickfix API 
+			// quickfix API
 			fragment = quickfix.QuickfixProviderFragment {}
 		}
 	}

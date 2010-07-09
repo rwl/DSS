@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: electrickery.dsl
-Bundle-Vendor: My Company
+Bundle-Vendor: Richard Lincoln
 Bundle-Version: 1.0.0
 Bundle-SymbolicName: electrickery.dsl; singleton:=true
 Bundle-ActivationPolicy: lazy
@@ -14,12 +14,14 @@ Require-Bundle: org.eclipse.xtext,
  com.ibm.icu;resolution:=optional,
  org.eclipse.xtext.xtend;resolution:=optional,
  electrickery,
- electrickery,
- electrickery,
- electrickery,
- electrickery,
- electrickery,
- electrickery,
- electrickery
+ parallelcolt;bundle-version="0.9.4",
+ org.eclipse.xtext.util,
+ org.antlr.runtime
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: electrickery.dsl,
+ electrickery.dsl.services,
+ electrickery.dsl.parseTreeConstruction,
+ electrickery.dsl.parser.antlr,
+ electrickery.dsl.parser.antlr.internal,
+ electrickery.dsl.validation

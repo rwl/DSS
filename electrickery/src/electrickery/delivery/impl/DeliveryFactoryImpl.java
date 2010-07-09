@@ -31,7 +31,7 @@ public class DeliveryFactoryImpl extends EFactoryImpl implements DeliveryFactory
 	 */
 	public static DeliveryFactory init() {
 		try {
-			DeliveryFactory theDeliveryFactory = (DeliveryFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/delivery"); 
+			DeliveryFactory theDeliveryFactory = (DeliveryFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/delivery"); 
 			if (theDeliveryFactory != null) {
 				return theDeliveryFactory;
 			}

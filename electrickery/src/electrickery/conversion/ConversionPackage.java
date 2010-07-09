@@ -44,7 +44,7 @@ public interface ConversionPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/conversion";
+	String eNS_URI = "http://www.electrickery.com/conversion";
 
 	/**
 	 * The package namespace name.

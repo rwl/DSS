@@ -6,6 +6,7 @@
  */
 package electrickery.general.util;
 
+import electrickery.common.Named;
 import electrickery.general.*;
 
 import java.util.List;
@@ -108,6 +109,7 @@ public class GeneralSwitch<T> {
 			case GeneralPackage.LINE_GEOMETRY: {
 				LineGeometry lineGeometry = (LineGeometry)theEObject;
 				T result = caseLineGeometry(lineGeometry);
+				if (result == null) result = caseNamed(lineGeometry);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -132,6 +134,7 @@ public class GeneralSwitch<T> {
 			case GeneralPackage.WIRE_DATA: {
 				WireData wireData = (WireData)theEObject;
 				T result = caseWireData(wireData);
+				if (result == null) result = caseNamed(wireData);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -256,6 +259,21 @@ public class GeneralSwitch<T> {
 	 * @generated
 	 */
 	public T caseWireData(WireData object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Named</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Named</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseNamed(Named object) {
 		return null;
 	}
 

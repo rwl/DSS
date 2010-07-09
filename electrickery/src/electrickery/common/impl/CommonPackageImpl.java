@@ -15,7 +15,9 @@ import electrickery.common.CommonFactory;
 import electrickery.common.CommonPackage;
 import electrickery.common.Conductor;
 import electrickery.common.ControlQueue;
+import electrickery.common.Electrickery;
 import electrickery.common.Feeder;
+import electrickery.common.Named;
 import electrickery.common.Solution;
 import electrickery.common.Terminal;
 import electrickery.common.algorithmType;
@@ -118,6 +120,20 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
     private EClass controlQueueEClass = null;
 
                 /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass namedEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass electrickeryEClass = null;
+
+																/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1343,6 +1359,60 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
                 /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getNamed() {
+		return namedEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getNamed_Name() {
+		return (EAttribute)namedEClass.getEStructuralFeatures().get(0);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getElectrickery() {
+		return electrickeryEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getElectrickery_WireData() {
+		return (EReference)electrickeryEClass.getEStructuralFeatures().get(0);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getElectrickery_LineGeometries() {
+		return (EReference)electrickeryEClass.getEStructuralFeatures().get(1);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getElectrickery_Executives() {
+		return (EReference)electrickeryEClass.getEStructuralFeatures().get(2);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1553,6 +1623,14 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		controlQueueEClass = createEClass(CONTROL_QUEUE);
 		createEAttribute(controlQueueEClass, CONTROL_QUEUE__EMPTY);
+
+		namedEClass = createEClass(NAMED);
+		createEAttribute(namedEClass, NAMED__NAME);
+
+		electrickeryEClass = createEClass(ELECTRICKERY);
+		createEReference(electrickeryEClass, ELECTRICKERY__WIRE_DATA);
+		createEReference(electrickeryEClass, ELECTRICKERY__LINE_GEOMETRIES);
+		createEReference(electrickeryEClass, ELECTRICKERY__EXECUTIVES);
 
 		// Create enums
 		connectionTypeEEnum = createEEnum(CONNECTION_TYPE);
@@ -1819,6 +1897,14 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		initEClass(controlQueueEClass, ControlQueue.class, "ControlQueue", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getControlQueue_Empty(), ecorePackage.getEBoolean(), "empty", null, 0, 1, ControlQueue.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(namedEClass, Named.class, "Named", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getNamed_Name(), ecorePackage.getEString(), "name", null, 0, 1, Named.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(electrickeryEClass, Electrickery.class, "Electrickery", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getElectrickery_WireData(), theGeneralPackage.getWireData(), null, "wireData", null, 0, -1, Electrickery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getElectrickery_LineGeometries(), theGeneralPackage.getLineGeometry(), null, "lineGeometries", null, 0, -1, Electrickery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getElectrickery_Executives(), theExecutivePackage.getExecutive(), null, "executives", null, 0, -1, Electrickery.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(connectionTypeEEnum, connectionType.class, "connectionType");

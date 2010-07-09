@@ -7,6 +7,7 @@
 package electrickery.general.impl;
 
 
+import electrickery.common.impl.NamedImpl;
 import electrickery.common.lengthUnit;
 import electrickery.general.GeneralPackage;
 import electrickery.general.WireData;
@@ -40,7 +41,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class WireDataImpl extends EObjectImpl implements WireData {
+public class WireDataImpl extends NamedImpl implements WireData {
 	/**
 	 * The default value of the '{@link #getRDC() <em>RDC</em>}' attribute.
 	 * <!-- begin-user-doc -->

@@ -44,7 +44,7 @@ public interface ControlPackage extends EPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	String eNS_URI = "http://www.openpowersystem.com/dss/control";
+	String eNS_URI = "http://www.electrickery.com/control";
 
 	/**
 	 * The package namespace name.

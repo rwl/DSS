@@ -8,6 +8,12 @@ Bundle-ActivationPolicy: lazy
 Require-Bundle: electrickery.dsl;visibility:=reexport,
  org.eclipse.xtext.ui,
  org.eclipse.ui.editors;bundle-version="3.5.0",
- org.eclipse.ui.ide;bundle-version="3.5.0"
+ org.eclipse.ui.ide;bundle-version="3.5.0",
+ org.eclipse.xtext.ui.shared,
+ org.eclipse.ui,
+ org.antlr.runtime,
+ org.eclipse.xtext.builder
 Import-Package: org.apache.log4j
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: electrickery.dsl.ui.contentassist.antlr
+Bundle-Activator: electrickery.dsl.ui.internal.ElectrickeryDSLActivator

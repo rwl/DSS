@@ -401,6 +401,17 @@
       <eLiterals name="NormalSolve"/>
       <eLiterals name="NewtonSolve" value="1"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Named" abstract="true">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Electrickery">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="wireData" upperBound="-1"
+          eType="#//general/WireData"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="lineGeometries" upperBound="-1"
+          eType="#//general/LineGeometry"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="executives" upperBound="-1"
+          eType="#//executive/Executive"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="control" nsURI="http://www.electrickery.com/control" nsPrefix="cont">
     <eClassifiers xsi:type="ecore:EClass" name="ControlElement" abstract="true" eSuperTypes="#//common/CircuitElement">
@@ -3343,7 +3354,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="LineGeometry">
+    <eClassifiers xsi:type="ecore:EClass" name="LineGeometry" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The LineGeometry object is a general DSS object used by all circuits&#xA;as a reference for obtaining line impedances.&#xA;&#xA;Defines the positions of the conductors."/>
       </eAnnotations>
@@ -3519,7 +3530,7 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="WireData">
+    <eClassifiers xsi:type="ecore:EClass" name="WireData" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="The WireData object is a general DSS object used by all circuits&#xA;as a reference for obtaining line impedances.&#xA;&#xA;This class of data defines the raw conductor data that is used to compute&#xA;the impedance for a line geometry.&#xA;&#xA;Note that you can use whatever units you want for any of the dimensional&#xA;data - be sure to declare the units. Otherwise, the units are all assumed&#xA;to match, which would be very rare for conductor data.  Conductor data is&#xA;usually supplied in a hodge-podge of units. Everything is converted to&#xA;meters internally to the DSS."/>
       </eAnnotations>

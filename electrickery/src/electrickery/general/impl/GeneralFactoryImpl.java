@@ -31,7 +31,7 @@ public class GeneralFactoryImpl extends EFactoryImpl implements GeneralFactory {
 	 */
 	public static GeneralFactory init() {
 		try {
-			GeneralFactory theGeneralFactory = (GeneralFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/general"); 
+			GeneralFactory theGeneralFactory = (GeneralFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/general"); 
 			if (theGeneralFactory != null) {
 				return theGeneralFactory;
 			}

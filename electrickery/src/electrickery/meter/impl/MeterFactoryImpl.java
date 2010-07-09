@@ -32,7 +32,7 @@ public class MeterFactoryImpl extends EFactoryImpl implements MeterFactory {
 	 */
 	public static MeterFactory init() {
 		try {
-			MeterFactory theMeterFactory = (MeterFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.openpowersystem.com/dss/meter"); 
+			MeterFactory theMeterFactory = (MeterFactory)EPackage.Registry.INSTANCE.getEFactory("http://www.electrickery.com/meter"); 
 			if (theMeterFactory != null) {
 				return theMeterFactory;
 			}

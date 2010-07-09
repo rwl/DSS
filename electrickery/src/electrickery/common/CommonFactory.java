@@ -80,6 +80,15 @@ public interface CommonFactory extends EFactory {
 	ControlQueue createControlQueue();
 
 	/**
+	 * Returns a new object of class '<em>Electrickery</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Electrickery</em>'.
+	 * @generated
+	 */
+	Electrickery createElectrickery();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
