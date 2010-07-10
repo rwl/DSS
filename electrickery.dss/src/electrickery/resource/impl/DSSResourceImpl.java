@@ -19,14 +19,14 @@ import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
 import electrickery.common.Circuit;
 import electrickery.common.CircuitElement;
-import electrickery.resource.ElectrickeryResource;
+import electrickery.resource.DSSResource;
 
 /**
  * @author rwl
  *
  */
-public class ElectrickeryResourceImpl extends ResourceImpl implements
-        ElectrickeryResource {
+public class DSSResourceImpl extends ResourceImpl implements
+        DSSResource {
 
     protected EList<Circuit> circuits = new BasicEList<Circuit>(1);
     protected EObject activeObject;
@@ -35,13 +35,13 @@ public class ElectrickeryResourceImpl extends ResourceImpl implements
     /**
      *
      */
-    public ElectrickeryResourceImpl() {
+    public DSSResourceImpl() {
     }
 
     /**
      * @param uri
      */
-    public ElectrickeryResourceImpl(URI uri) {
+    public DSSResourceImpl(URI uri) {
         super(uri);
     }
 
@@ -123,7 +123,7 @@ public class ElectrickeryResourceImpl extends ResourceImpl implements
             EStructuralFeature feature;
             String value;
             if (parts.length == 1) {
-                feature = ElectrickeryResource.LINECODE_FEATURES[0];
+                feature = DSSResource.LINECODE_FEATURES[0];
                 value = parts[0];
                 if (value.equals("\n") && scanner.next("~") == null)
                     break;

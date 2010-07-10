@@ -6,15 +6,13 @@ package electrickery.resource;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
 
-import electrickery.ElectrickeryPackage;
 import electrickery.general.GeneralPackage;
-import electrickery.general.LineCode;
 
 /**
  * @author rwl
  *
  */
-public interface ElectrickeryResource extends Resource {
+public interface DSSResource extends Resource {
 
     public static final EStructuralFeature[] LINECODE_FEATURES = {
         GeneralPackage.Literals.LINE_CODE__NPHASES,
