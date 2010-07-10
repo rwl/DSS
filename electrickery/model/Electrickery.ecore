@@ -41,8 +41,8 @@
       <eOperations name="getDSSControls" upperBound="-1" eType="#//control/ControlElement"/>
       <eOperations name="getMeterElements" upperBound="-1" eType="#//meter/MeterElement"/>
       <eOperations name="getSubstations" upperBound="-1" eType="#//delivery/Transformer"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="solution" lowerBound="1"
-          eType="#//common/Solution" eOpposite="#//common/Solution/circuit"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="solution" eType="#//common/Solution"
+          eOpposite="#//common/Solution/circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="controlQueue" eType="#//common/ControlQueue"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="busList" upperBound="-1"
           eType="#//common/Bus" containment="true"/>

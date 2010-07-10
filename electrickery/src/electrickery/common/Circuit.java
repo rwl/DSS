@@ -89,7 +89,7 @@ public interface Circuit extends EObject {
 	 * @see #setSolution(Solution)
 	 * @see electrickery.common.CommonPackage#getCircuit_Solution()
 	 * @see electrickery.common.Solution#getCircuit
-	 * @model opposite="circuit" required="true"
+	 * @model opposite="circuit"
 	 * @generated
 	 */
 	Solution getSolution();
