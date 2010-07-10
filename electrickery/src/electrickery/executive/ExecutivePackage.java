@@ -712,7 +712,7 @@ public interface ExecutivePackage extends EPackage {
 	int EXECUTIVE__COMMAND = 0;
 
 	/**
-	 * The feature id for the '<em><b>Exec Commands</b></em>' reference.
+	 * The feature id for the '<em><b>Exec Commands</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -721,7 +721,7 @@ public interface ExecutivePackage extends EPackage {
 	int EXECUTIVE__EXEC_COMMANDS = 1;
 
 	/**
-	 * The feature id for the '<em><b>Exec Options</b></em>' reference.
+	 * The feature id for the '<em><b>Exec Options</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -739,7 +739,7 @@ public interface ExecutivePackage extends EPackage {
 	int EXECUTIVE__ACTIVE_CIRCUIT = 3;
 
 	/**
-	 * The feature id for the '<em><b>Circuits</b></em>' reference list.
+	 * The feature id for the '<em><b>Circuits</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1664,10 +1664,10 @@ public interface ExecutivePackage extends EPackage {
 	EAttribute getExecutive_Command();
 
 	/**
-	 * Returns the meta object for the reference '{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}'.
+	 * Returns the meta object for the containment reference '{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Exec Commands</em>'.
+	 * @return the meta object for the containment reference '<em>Exec Commands</em>'.
 	 * @see electrickery.executive.Executive#getExecCommands()
 	 * @see #getExecutive()
 	 * @generated
@@ -1675,10 +1675,10 @@ public interface ExecutivePackage extends EPackage {
 	EReference getExecutive_ExecCommands();
 
 	/**
-	 * Returns the meta object for the reference '{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}'.
+	 * Returns the meta object for the containment reference '{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Exec Options</em>'.
+	 * @return the meta object for the containment reference '<em>Exec Options</em>'.
 	 * @see electrickery.executive.Executive#getExecOptions()
 	 * @see #getExecutive()
 	 * @generated
@@ -1697,10 +1697,10 @@ public interface ExecutivePackage extends EPackage {
 	EReference getExecutive_ActiveCircuit();
 
 	/**
-	 * Returns the meta object for the reference list '{@link electrickery.executive.Executive#getCircuits <em>Circuits</em>}'.
+	 * Returns the meta object for the containment reference list '{@link electrickery.executive.Executive#getCircuits <em>Circuits</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Circuits</em>'.
+	 * @return the meta object for the containment reference list '<em>Circuits</em>'.
 	 * @see electrickery.executive.Executive#getCircuits()
 	 * @see #getExecutive()
 	 * @generated
@@ -2437,7 +2437,7 @@ public interface ExecutivePackage extends EPackage {
 		EAttribute EXECUTIVE__COMMAND = eINSTANCE.getExecutive_Command();
 
 		/**
-		 * The meta object literal for the '<em><b>Exec Commands</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Exec Commands</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -2445,7 +2445,7 @@ public interface ExecutivePackage extends EPackage {
 		EReference EXECUTIVE__EXEC_COMMANDS = eINSTANCE.getExecutive_ExecCommands();
 
 		/**
-		 * The meta object literal for the '<em><b>Exec Options</b></em>' reference feature.
+		 * The meta object literal for the '<em><b>Exec Options</b></em>' containment reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -2461,7 +2461,7 @@ public interface ExecutivePackage extends EPackage {
 		EReference EXECUTIVE__ACTIVE_CIRCUIT = eINSTANCE.getExecutive_ActiveCircuit();
 
 		/**
-		 * The meta object literal for the '<em><b>Circuits</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Circuits</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

@@ -59,52 +59,52 @@ public interface Executive extends EObject {
 	void setCommand(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Exec Commands</b></em>' reference.
+	 * Returns the value of the '<em><b>Exec Commands</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Exec Commands</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Exec Commands</em>' reference.
+	 * @return the value of the '<em>Exec Commands</em>' containment reference.
 	 * @see #setExecCommands(ExecCommands)
 	 * @see electrickery.executive.ExecutivePackage#getExecutive_ExecCommands()
-	 * @model required="true"
+	 * @model containment="true"
 	 * @generated
 	 */
 	ExecCommands getExecCommands();
 
 	/**
-	 * Sets the value of the '{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}' reference.
+	 * Sets the value of the '{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Exec Commands</em>' reference.
+	 * @param value the new value of the '<em>Exec Commands</em>' containment reference.
 	 * @see #getExecCommands()
 	 * @generated
 	 */
 	void setExecCommands(ExecCommands value);
 
 	/**
-	 * Returns the value of the '<em><b>Exec Options</b></em>' reference.
+	 * Returns the value of the '<em><b>Exec Options</b></em>' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Exec Options</em>' reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Exec Options</em>' reference.
+	 * @return the value of the '<em>Exec Options</em>' containment reference.
 	 * @see #setExecOptions(ExecOptions)
 	 * @see electrickery.executive.ExecutivePackage#getExecutive_ExecOptions()
-	 * @model required="true"
+	 * @model containment="true"
 	 * @generated
 	 */
 	ExecOptions getExecOptions();
 
 	/**
-	 * Sets the value of the '{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}' reference.
+	 * Sets the value of the '{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}' containment reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Exec Options</em>' reference.
+	 * @param value the new value of the '<em>Exec Options</em>' containment reference.
 	 * @see #getExecOptions()
 	 * @generated
 	 */
@@ -137,7 +137,7 @@ public interface Executive extends EObject {
 	void setActiveCircuit(Circuit value);
 
 	/**
-	 * Returns the value of the '<em><b>Circuits</b></em>' reference list.
+	 * Returns the value of the '<em><b>Circuits</b></em>' containment reference list.
 	 * The list contents are of type {@link electrickery.common.Circuit}.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -145,9 +145,9 @@ public interface Executive extends EObject {
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Circuits</em>' reference list.
+	 * @return the value of the '<em>Circuits</em>' containment reference list.
 	 * @see electrickery.executive.ExecutivePackage#getExecutive_Circuits()
-	 * @model
+	 * @model containment="true"
 	 * @generated
 	 */
 	EList<Circuit> getCircuits();

@@ -43,8 +43,7 @@
       <eOperations name="getSubstations" upperBound="-1" eType="#//delivery/Transformer"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="solution" lowerBound="1"
           eType="#//common/Solution" eOpposite="#//common/Solution/circuit"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="controlQueue" lowerBound="1"
-          eType="#//common/ControlQueue"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="controlQueue" eType="#//common/ControlQueue"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="busList" upperBound="-1"
           eType="#//common/Bus" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="faults" upperBound="-1"
@@ -406,11 +405,19 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Electrickery">
       <eStructuralFeatures xsi:type="ecore:EReference" name="wireData" upperBound="-1"
-          eType="#//general/WireData"/>
+          eType="#//general/WireData" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="lineGeometries" upperBound="-1"
-          eType="#//general/LineGeometry"/>
+          eType="#//general/LineGeometry" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="growthShapes" upperBound="-1"
+          eType="#//general/GrowthShape" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="lineCodes" upperBound="-1"
+          eType="#//general/LineCode" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="loadShapes" upperBound="-1"
+          eType="#//general/LoadShape" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="spectrums" upperBound="-1"
+          eType="#//general/Spectrum" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executives" upperBound="-1"
-          eType="#//executive/Executive"/>
+          eType="#//executive/Executive" containment="true"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="control" nsURI="http://www.electrickery.com/control" nsPrefix="cont">
@@ -3003,13 +3010,13 @@
         <eParameters name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="command" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="execCommands" lowerBound="1"
-          eType="#//executive/ExecCommands"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="execOptions" lowerBound="1"
-          eType="#//executive/ExecOptions"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="execCommands" eType="#//executive/ExecCommands"
+          containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="execOptions" eType="#//executive/ExecOptions"
+          containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="activeCircuit" eType="#//common/Circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuits" upperBound="-1"
-          eType="#//common/Circuit"/>
+          eType="#//common/Circuit" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxCircuits" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
           defaultValueLiteral="1"/>
     </eClassifiers>

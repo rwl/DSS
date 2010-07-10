@@ -3,6 +3,7 @@
  */
 package electrickery.general.tests;
 
+import electrickery.common.tests.NamedTest;
 import electrickery.general.GeneralFactory;
 import electrickery.general.WireData;
 
@@ -16,15 +17,7 @@ import junit.textui.TestRunner;
  * <!-- end-user-doc -->
  * @generated
  */
-public class WireDataTest extends TestCase {
-
-	/**
-	 * The fixture for this Wire Data test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected WireData fixture = null;
+public class WireDataTest extends NamedTest {
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -46,23 +39,14 @@ public class WireDataTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Wire Data test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void setFixture(WireData fixture) {
-		this.fixture = fixture;
-	}
-
-	/**
 	 * Returns the fixture for this Wire Data test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	protected WireData getFixture() {
-		return fixture;
+		return (WireData)fixture;
 	}
 
 	/**

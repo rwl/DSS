@@ -115,7 +115,7 @@ public interface Circuit extends EObject {
 	 * @return the value of the '<em>Control Queue</em>' reference.
 	 * @see #setControlQueue(ControlQueue)
 	 * @see electrickery.common.CommonPackage#getCircuit_ControlQueue()
-	 * @model required="true"
+	 * @model
 	 * @generated
 	 */
 	ControlQueue getControlQueue();

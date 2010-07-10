@@ -3,6 +3,7 @@
  */
 package electrickery.general.tests;
 
+import electrickery.common.tests.NamedTest;
 import electrickery.general.GeneralFactory;
 import electrickery.general.LineGeometry;
 
@@ -16,15 +17,7 @@ import junit.textui.TestRunner;
  * <!-- end-user-doc -->
  * @generated
  */
-public class LineGeometryTest extends TestCase {
-
-	/**
-	 * The fixture for this Line Geometry test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected LineGeometry fixture = null;
+public class LineGeometryTest extends NamedTest {
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -46,23 +39,14 @@ public class LineGeometryTest extends TestCase {
 	}
 
 	/**
-	 * Sets the fixture for this Line Geometry test case.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void setFixture(LineGeometry fixture) {
-		this.fixture = fixture;
-	}
-
-	/**
 	 * Returns the fixture for this Line Geometry test case.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@Override
 	protected LineGeometry getFixture() {
-		return fixture;
+		return (LineGeometry)fixture;
 	}
 
 	/**

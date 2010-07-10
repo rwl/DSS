@@ -1290,7 +1290,7 @@ public interface CommonPackage extends EPackage {
 	int ELECTRICKERY = 10;
 
 	/**
-	 * The feature id for the '<em><b>Wire Data</b></em>' reference list.
+	 * The feature id for the '<em><b>Wire Data</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1299,7 +1299,7 @@ public interface CommonPackage extends EPackage {
 	int ELECTRICKERY__WIRE_DATA = 0;
 
 	/**
-	 * The feature id for the '<em><b>Line Geometries</b></em>' reference list.
+	 * The feature id for the '<em><b>Line Geometries</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1308,13 +1308,49 @@ public interface CommonPackage extends EPackage {
 	int ELECTRICKERY__LINE_GEOMETRIES = 1;
 
 	/**
-	 * The feature id for the '<em><b>Executives</b></em>' reference list.
+	 * The feature id for the '<em><b>Growth Shapes</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELECTRICKERY__EXECUTIVES = 2;
+	int ELECTRICKERY__GROWTH_SHAPES = 2;
+
+	/**
+	 * The feature id for the '<em><b>Line Codes</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__LINE_CODES = 3;
+
+	/**
+	 * The feature id for the '<em><b>Load Shapes</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__LOAD_SHAPES = 4;
+
+	/**
+	 * The feature id for the '<em><b>Spectrums</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__SPECTRUMS = 5;
+
+	/**
+	 * The feature id for the '<em><b>Executives</b></em>' containment reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ELECTRICKERY__EXECUTIVES = 6;
 
 	/**
 	 * The number of structural features of the '<em>Electrickery</em>' class.
@@ -1323,7 +1359,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ELECTRICKERY_FEATURE_COUNT = 3;
+	int ELECTRICKERY_FEATURE_COUNT = 7;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
@@ -2754,10 +2790,10 @@ public interface CommonPackage extends EPackage {
 	EClass getElectrickery();
 
 	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getWireData <em>Wire Data</em>}'.
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getWireData <em>Wire Data</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Wire Data</em>'.
+	 * @return the meta object for the containment reference list '<em>Wire Data</em>'.
 	 * @see electrickery.common.Electrickery#getWireData()
 	 * @see #getElectrickery()
 	 * @generated
@@ -2765,10 +2801,10 @@ public interface CommonPackage extends EPackage {
 	EReference getElectrickery_WireData();
 
 	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getLineGeometries <em>Line Geometries</em>}'.
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLineGeometries <em>Line Geometries</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Line Geometries</em>'.
+	 * @return the meta object for the containment reference list '<em>Line Geometries</em>'.
 	 * @see electrickery.common.Electrickery#getLineGeometries()
 	 * @see #getElectrickery()
 	 * @generated
@@ -2776,10 +2812,54 @@ public interface CommonPackage extends EPackage {
 	EReference getElectrickery_LineGeometries();
 
 	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Electrickery#getExecutives <em>Executives</em>}'.
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getGrowthShapes <em>Growth Shapes</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Executives</em>'.
+	 * @return the meta object for the containment reference list '<em>Growth Shapes</em>'.
+	 * @see electrickery.common.Electrickery#getGrowthShapes()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_GrowthShapes();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLineCodes <em>Line Codes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Line Codes</em>'.
+	 * @see electrickery.common.Electrickery#getLineCodes()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_LineCodes();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLoadShapes <em>Load Shapes</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Load Shapes</em>'.
+	 * @see electrickery.common.Electrickery#getLoadShapes()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_LoadShapes();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getSpectrums <em>Spectrums</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Spectrums</em>'.
+	 * @see electrickery.common.Electrickery#getSpectrums()
+	 * @see #getElectrickery()
+	 * @generated
+	 */
+	EReference getElectrickery_Spectrums();
+
+	/**
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getExecutives <em>Executives</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the containment reference list '<em>Executives</em>'.
 	 * @see electrickery.common.Electrickery#getExecutives()
 	 * @see #getElectrickery()
 	 * @generated
@@ -3891,7 +3971,7 @@ public interface CommonPackage extends EPackage {
 		EClass ELECTRICKERY = eINSTANCE.getElectrickery();
 
 		/**
-		 * The meta object literal for the '<em><b>Wire Data</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Wire Data</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -3899,7 +3979,7 @@ public interface CommonPackage extends EPackage {
 		EReference ELECTRICKERY__WIRE_DATA = eINSTANCE.getElectrickery_WireData();
 
 		/**
-		 * The meta object literal for the '<em><b>Line Geometries</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Line Geometries</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -3907,7 +3987,39 @@ public interface CommonPackage extends EPackage {
 		EReference ELECTRICKERY__LINE_GEOMETRIES = eINSTANCE.getElectrickery_LineGeometries();
 
 		/**
-		 * The meta object literal for the '<em><b>Executives</b></em>' reference list feature.
+		 * The meta object literal for the '<em><b>Growth Shapes</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__GROWTH_SHAPES = eINSTANCE.getElectrickery_GrowthShapes();
+
+		/**
+		 * The meta object literal for the '<em><b>Line Codes</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__LINE_CODES = eINSTANCE.getElectrickery_LineCodes();
+
+		/**
+		 * The meta object literal for the '<em><b>Load Shapes</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__LOAD_SHAPES = eINSTANCE.getElectrickery_LoadShapes();
+
+		/**
+		 * The meta object literal for the '<em><b>Spectrums</b></em>' containment reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ELECTRICKERY__SPECTRUMS = eINSTANCE.getElectrickery_Spectrums();
+
+		/**
+		 * The meta object literal for the '<em><b>Executives</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
