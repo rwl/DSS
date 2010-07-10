@@ -21,16 +21,14 @@ import "http://www.electrickery.com/control" as control
 
 Electrickery returns common::Electrickery:
 	{common::Electrickery}
-	'Electrickery'
-	'{'
-		('wireData' '{' wireData+=WireData ( "," wireData+=WireData)* '}' )?
-		('lineGeometries' '{' lineGeometries+=LineGeometry ( "," lineGeometries+=LineGeometry)* '}' )?
-		('growthShapes' '{' growthShapes+=GrowthShape ( "," growthShapes+=GrowthShape)* '}' )?
-		('lineCodes' '{' lineCodes+=LineCode ( "," lineCodes+=LineCode)* '}' )?
-		('loadShapes' '{' loadShapes+=LoadShape ( "," loadShapes+=LoadShape)* '}' )?
-		('spectrums' '{' spectrums+=Spectrum ( "," spectrums+=Spectrum)* '}' )?
-		('executives' '{' executives+=Executive ( "," executives+=Executive)* '}' )?
-    '}';
+		(('new' ('object' '=')? wireData+=WireData '\n' )|
+		('new' ('object' '=')? lineGeometries+=LineGeometry '\n' )|
+		('new' ('object' '=')? growthShapes+=GrowthShape '\n' )|
+		('new' ('object' '=')? lineCodes+=LineCode '\n' )|
+		('new' ('object' '=')? loadShapes+=LoadShape '\n' )|
+		('new' ('object' '=')? spectrums+=Spectrum '\n' )|
+		(executives+=Executive '\n' ))*
+    ;
 
 
 EStructuralFeature returns ecore::EStructuralFeature:
@@ -140,15 +138,56 @@ Spectrum returns general::Spectrum:
 
 Executive returns executive::Executive:
 	{executive::Executive}
-	'Executive'
-	'{'
-		('command' command=EString)?
-		('maxCircuits' maxCircuits=EInt)?
+	'clear\n'
+	circuits+=Circuit+;
+//	'Executive'
+//	'{'
+//		('command' command=EString)?
+//		('maxCircuits' maxCircuits=EInt)?
 //		('activeCircuit' activeCircuit=[common::Circuit|EString])?
 //		('execCommands' execCommands=ExecCommands)?
 //		('execOptions' execOptions=ExecOptions)?
 //		('circuits' '{' circuits+=Circuit ( "," circuits+=Circuit)* '}' )?
+//    '}';
+
+Circuit returns common::Circuit:
+	(solved?='solved')?
+	(control_busNameRedefined?='control_busNameRedefined')?
+	'Circuit'
+	name=EString
+	'{'
+		('numNodes' numNodes=EInt)?
+		('generatorDispatchReference' generatorDispatchReference=EDouble)?
+		('genMultiplier' genMultiplier=EDouble)?
+		('busNameRedefined' busNameRedefined=EBoolean)?
+		('loadMultiplier' loadMultiplier=EDouble)?
+		('defaultGrowthFactor' defaultGrowthFactor=EDouble)?
+		('defaultHourMult' defaultHourMult=EDouble)?
+		('priceSignal' priceSignal=EDouble)?
+//		'solution' solution=[common::Solution|EString]
+		('controlQueue' controlQueue=[common::ControlQueue|EString])?
+		('lines' '(' lines+=[delivery::Line|EString] ( "," lines+=[delivery::Line|EString])* ')' )?
+		('loads' '(' loads+=[conversion::Load|EString] ( "," loads+=[conversion::Load|EString])* ')' )?
+		('shuntCapacitors' '(' shuntCapacitors+=[delivery::Capacitor|EString] ( "," shuntCapacitors+=[delivery::Capacitor|EString])* ')' )?
+		('feeder' '(' feeder+=[common::Feeder|EString] ( "," feeder+=[common::Feeder|EString])* ')' )?
+//		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
+//		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
+//		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
+//		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
+//		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
+//		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
+//		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
+//		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
+//		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
+//		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
+//		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
     '}';
+
+terminal NEW:
+  ('New'|'new');
+
+//terminal EQ:
+//  ('=');
 
 EString returns ecore::EString:
 	STRING | ID;
