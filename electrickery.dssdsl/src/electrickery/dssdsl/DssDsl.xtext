@@ -27,15 +27,119 @@ Electrickery returns common::Electrickery:
 		('new' ('object' '=')? lineCodes+=LineCode '\n' )|
 		('new' ('object' '=')? loadShapes+=LoadShape '\n' )|
 		('new' ('object' '=')? spectrums+=Spectrum '\n' )|
-		(executives+=Executive '\n' ))*
+		(executives+=Executive))*
     ;
 
+Executive returns executive::Executive:
+	{executive::Executive}
+	'clear'
+	'new' ('object' '=')? circuits+=Circuit+;
+//	'Executive'
+//	'{'
+//		('command' command=EString)?
+//		('maxCircuits' maxCircuits=EInt)?
+//		('activeCircuit' activeCircuit=[common::Circuit|EString])?
+//		('execCommands' execCommands=ExecCommands)?
+//		('execOptions' execOptions=ExecOptions)?
+//		('circuits' '{' circuits+=Circuit ( "," circuits+=Circuit)* '}' )?
+//    '}';
 
-EStructuralFeature returns ecore::EStructuralFeature:
-	EAttribute | EReference;
+Circuit returns common::Circuit:
+	{common::Circuit}
+	('Circuit'|'circuit')('.'name=EString)?
+	//(voltageSources+=DefaultVoltageSource)
+//		(('numNodes' '=')? numNodes=EInt)?
+//		('generatorDispatchReference' generatorDispatchReference=EDouble)?
+//		('genMultiplier' genMultiplier=EDouble)?
+//		('busNameRedefined' busNameRedefined=EBoolean)?
+//		('loadMultiplier' loadMultiplier=EDouble)?
+//		('defaultGrowthFactor' defaultGrowthFactor=EDouble)?
+//		('defaultHourMult' defaultHourMult=EDouble)?
+//		('priceSignal' priceSignal=EDouble)?
+//		'solution' solution=[common::Solution|EString]
+//		('controlQueue' controlQueue=[common::ControlQueue|EString])?
+//		('lines' '(' lines+=[delivery::Line|EString] ( "," lines+=[delivery::Line|EString])* ')' )?
+//		('loads' '(' loads+=[conversion::Load|EString] ( "," loads+=[conversion::Load|EString])* ')' )?
+//		('shuntCapacitors' '(' shuntCapacitors+=[delivery::Capacitor|EString] ( "," shuntCapacitors+=[delivery::Capacitor|EString])* ')' )?
+//		('feeder' '(' feeder+=[common::Feeder|EString] ( "," feeder+=[common::Feeder|EString])* ')' )?
+//		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
+//		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
+//		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
+//		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
+//		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
+//		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
+//		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
+//		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
+//		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
+//		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
+//		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
+    ;
 
-EClassifier returns ecore::EClassifier:
-	EClass | EDataType_Impl | EEnum;
+Solution returns common::Solution:
+	{common::Solution}
+	'solve';
+
+DefaultVoltageSource returns conversion::VoltageSource:
+	{conversion::VoltageSource}
+		(
+			('phases' '=' nPhases=EInt)?
+			('mvasc3' '=' mvaSC3=EDouble)?
+			('mvasc1' '=' mvaSC1=EDouble)?
+			('basekV' '=' baseKV=EDouble)?
+			('pu' '=' perUnit=EDouble)?
+		);
+
+VoltageSource returns conversion::VoltageSource:
+	{conversion::VoltageSource}
+	(enabled?='enabled')?
+	(yPrimInvalid?='yPrimInvalid')?
+	(checked?='checked')?
+	(hasMeter?='hasMeter')?
+	(isolated?='isolated')?
+	(hasControl?='hasControl')?
+	(partOfFeeder?='partOfFeeder')?
+	'VoltageSource'
+	name=EString
+	'{'
+		('baseFreq' baseFreq=EDouble)?
+		('nodeRef' '{' nodeRef+=EInt ( "," nodeRef+=EInt)* '}' )?
+		('yOrder' yOrder=EInt)?
+		('lastTerminalChecked' lastTerminalChecked=EInt)?
+		('nTerms' nTerms=EInt)?
+		('nConds' nConds=EInt)?
+		('nPhases' nPhases=EInt)?
+		('busIndex' busIndex=EInt)?
+		('yPrimFreq' yPrimFreq=EDouble)?
+		('spectrum' spectrum=EString)?
+		('injCurrent' injCurrent=EDouble)?
+		('bus1' bus1=EString)?
+		('baseKV' baseKV=EDouble)?
+		('perUnit' perUnit=EDouble)?
+		('angle' angle=EDouble)?
+		('frequency' frequency=EDouble)?
+		('mvaSC3' mvaSC3=EDouble)?
+		('mvaSC1' mvaSC1=EDouble)?
+		('x1R1' x1R1=EDouble)?
+		('x0R0' x0R0=EDouble)?
+		('iSC3' iSC3=EDouble)?
+		('iSC1' iSC1=EDouble)?
+		('r1' r1=EDouble)?
+		('x1' x1=EDouble)?
+		('r0' r0=EDouble)?
+		('x0' x0=EDouble)?
+//		('scanType' scanType=sequenceType)?
+//		('zSpecType' zSpecType=specType)?
+		('vMag' vMag=EDouble)?
+		('controlElement' controlElement=[ecore::EClass|EString])?
+		('terminals' '(' terminals+=[common::Terminal|EString] ( "," terminals+=[common::Terminal|EString])* ')' )?
+		('activeTerminal' activeTerminal=[ecore::EClass|EString])?
+		('yPrimSeries' yPrimSeries=[DComplexMatrix2D|EString])?
+		('yPrimShunt' yPrimShunt=[DComplexMatrix2D|EString])?
+		('yPrim' yPrim=[DComplexMatrix2D|EString])?
+		('spectrumObj' spectrumObj=[general::Spectrum|EString])?
+		('z' z=[DComplexMatrix2D|EString])?
+		('zInv' zInv=[DComplexMatrix2D|EString])?
+    '}';
 
 WireData returns general::WireData:
 	{general::WireData}
@@ -136,52 +240,14 @@ Spectrum returns general::Spectrum:
 		('csvFile' csvFile=EString)?
     '}';
 
-Executive returns executive::Executive:
-	{executive::Executive}
-	'clear\n'
-	circuits+=Circuit+;
-//	'Executive'
-//	'{'
-//		('command' command=EString)?
-//		('maxCircuits' maxCircuits=EInt)?
-//		('activeCircuit' activeCircuit=[common::Circuit|EString])?
-//		('execCommands' execCommands=ExecCommands)?
-//		('execOptions' execOptions=ExecOptions)?
-//		('circuits' '{' circuits+=Circuit ( "," circuits+=Circuit)* '}' )?
-//    '}';
+terminal LINE_CONTINUATION:
+    '\n~';
 
-Circuit returns common::Circuit:
-	(solved?='solved')?
-	(control_busNameRedefined?='control_busNameRedefined')?
-	'Circuit'
-	name=EString
-	'{'
-		('numNodes' numNodes=EInt)?
-		('generatorDispatchReference' generatorDispatchReference=EDouble)?
-		('genMultiplier' genMultiplier=EDouble)?
-		('busNameRedefined' busNameRedefined=EBoolean)?
-		('loadMultiplier' loadMultiplier=EDouble)?
-		('defaultGrowthFactor' defaultGrowthFactor=EDouble)?
-		('defaultHourMult' defaultHourMult=EDouble)?
-		('priceSignal' priceSignal=EDouble)?
-//		'solution' solution=[common::Solution|EString]
-		('controlQueue' controlQueue=[common::ControlQueue|EString])?
-		('lines' '(' lines+=[delivery::Line|EString] ( "," lines+=[delivery::Line|EString])* ')' )?
-		('loads' '(' loads+=[conversion::Load|EString] ( "," loads+=[conversion::Load|EString])* ')' )?
-		('shuntCapacitors' '(' shuntCapacitors+=[delivery::Capacitor|EString] ( "," shuntCapacitors+=[delivery::Capacitor|EString])* ')' )?
-		('feeder' '(' feeder+=[common::Feeder|EString] ( "," feeder+=[common::Feeder|EString])* ')' )?
-//		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
-//		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
-//		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
-//		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
-//		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
-//		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
-//		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
-//		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
-//		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
-//		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
-//		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
-    '}';
+terminal INLINE_COMMENT:
+	'!' !('\n'|'\r')* ('\r'? '\n')?;
+
+//terminal COMMENT_LINE:
+//	'//' !('\n'|'\r')* ('\r'? '\n')?;
 
 terminal NEW:
   ('New'|'new');
@@ -189,14 +255,20 @@ terminal NEW:
 //terminal EQ:
 //  ('=');
 
+enum lengthUnit returns common::lengthUnit:
+	none = 'none' | mi = 'mi' | km = 'km' | kft = 'kft' | m = 'm' | me = 'me' | ft = 'ft' | in = 'in' | cm = 'cm';
+
+EStructuralFeature returns ecore::EStructuralFeature:
+	EAttribute | EReference;
+
+EClassifier returns ecore::EClassifier:
+	EClass | EDataType_Impl | EEnum;
+
 EString returns ecore::EString:
 	STRING | ID;
 
 EDouble returns ecore::EDouble:
 	'-'? INT? '.' INT (('E'|'e') '-'? INT)?;
-
-enum lengthUnit returns common::lengthUnit:
-	none = 'none' | mi = 'mi' | km = 'km' | kft = 'kft' | m = 'm' | me = 'me' | ft = 'ft' | in = 'in' | cm = 'cm';
 
 EInt returns ecore::EInt:
 	'-'? INT;

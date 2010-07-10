@@ -32,29 +32,32 @@ protected class ThisRootNode extends RootToken {
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
 			case 0: return new Electrickery_Group(this, this, 0, inst);
-			case 1: return new EStructuralFeature_Alternatives(this, this, 1, inst);
-			case 2: return new EClassifier_Alternatives(this, this, 2, inst);
-			case 3: return new WireData_Group(this, this, 3, inst);
-			case 4: return new LineGeometry_Group(this, this, 4, inst);
-			case 5: return new GrowthShape_Group(this, this, 5, inst);
-			case 6: return new LineCode_Group(this, this, 6, inst);
-			case 7: return new LoadShape_Group(this, this, 7, inst);
-			case 8: return new Spectrum_Group(this, this, 8, inst);
-			case 9: return new Executive_Group(this, this, 9, inst);
-			case 10: return new Circuit_Group(this, this, 10, inst);
-			case 11: return new EAnnotation_Group(this, this, 11, inst);
-			case 12: return new ETypeParameter_Group(this, this, 12, inst);
-			case 13: return new EOperation_Group(this, this, 13, inst);
-			case 14: return new EGenericType_Group(this, this, 14, inst);
-			case 15: return new EStringToStringMapEntry_Group(this, this, 15, inst);
-			case 16: return new EClass_Group(this, this, 16, inst);
-			case 17: return new EObject_Group(this, this, 17, inst);
-			case 18: return new EParameter_Group(this, this, 18, inst);
-			case 19: return new EDataType_Impl_Group(this, this, 19, inst);
-			case 20: return new EEnum_Group(this, this, 20, inst);
-			case 21: return new EEnumLiteral_Group(this, this, 21, inst);
-			case 22: return new EAttribute_Group(this, this, 22, inst);
-			case 23: return new EReference_Group(this, this, 23, inst);
+			case 1: return new Executive_Group(this, this, 1, inst);
+			case 2: return new Circuit_Group(this, this, 2, inst);
+			case 3: return new Solution_Group(this, this, 3, inst);
+			case 4: return new DefaultVoltageSource_Group(this, this, 4, inst);
+			case 5: return new VoltageSource_Group(this, this, 5, inst);
+			case 6: return new WireData_Group(this, this, 6, inst);
+			case 7: return new LineGeometry_Group(this, this, 7, inst);
+			case 8: return new GrowthShape_Group(this, this, 8, inst);
+			case 9: return new LineCode_Group(this, this, 9, inst);
+			case 10: return new LoadShape_Group(this, this, 10, inst);
+			case 11: return new Spectrum_Group(this, this, 11, inst);
+			case 12: return new EStructuralFeature_Alternatives(this, this, 12, inst);
+			case 13: return new EClassifier_Alternatives(this, this, 13, inst);
+			case 14: return new EAnnotation_Group(this, this, 14, inst);
+			case 15: return new ETypeParameter_Group(this, this, 15, inst);
+			case 16: return new EOperation_Group(this, this, 16, inst);
+			case 17: return new EGenericType_Group(this, this, 17, inst);
+			case 18: return new EStringToStringMapEntry_Group(this, this, 18, inst);
+			case 19: return new EClass_Group(this, this, 19, inst);
+			case 20: return new EObject_Group(this, this, 20, inst);
+			case 21: return new EParameter_Group(this, this, 21, inst);
+			case 22: return new EDataType_Impl_Group(this, this, 22, inst);
+			case 23: return new EEnum_Group(this, this, 23, inst);
+			case 24: return new EEnumLiteral_Group(this, this, 24, inst);
+			case 25: return new EAttribute_Group(this, this, 25, inst);
+			case 26: return new EReference_Group(this, this, 26, inst);
 			default: return null;
 		}	
 	}	
@@ -67,14 +70,14 @@ protected class ThisRootNode extends RootToken {
  * 	{common::Electrickery} ("new" ("object" "=")? wireData+=WireData "\n" | "new" ("object" "=")?
  * 	lineGeometries+=LineGeometry "\n" | "new" ("object" "=")? growthShapes+=GrowthShape "\n" | "new" ("object" "=")?
  * 	lineCodes+=LineCode "\n" | "new" ("object" "=")? loadShapes+=LoadShape "\n" | "new" ("object" "=")?
- * 	spectrums+=Spectrum "\n" | executives+=Executive "\n")*;
+ * 	spectrums+=Spectrum "\n" | executives+=Executive)*;
  *
  **/
 
 // {common::Electrickery} ("new" ("object" "=")? wireData+=WireData "\n" | "new" ("object" "=")?
 // lineGeometries+=LineGeometry "\n" | "new" ("object" "=")? growthShapes+=GrowthShape "\n" | "new" ("object" "=")?
 // lineCodes+=LineCode "\n" | "new" ("object" "=")? loadShapes+=LoadShape "\n" | "new" ("object" "=")? spectrums+=Spectrum
-// "\n" | executives+=Executive "\n")*
+// "\n" | executives+=Executive)*
 protected class Electrickery_Group extends GroupToken {
 	
 	public Electrickery_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -132,7 +135,7 @@ protected class Electrickery_ElectrickeryAction_0 extends ActionToken  {
 
 // ("new" ("object" "=")? wireData+=WireData "\n" | "new" ("object" "=")? lineGeometries+=LineGeometry "\n" | "new"
 // ("object" "=")? growthShapes+=GrowthShape "\n" | "new" ("object" "=")? lineCodes+=LineCode "\n" | "new" ("object" "=")?
-// loadShapes+=LoadShape "\n" | "new" ("object" "=")? spectrums+=Spectrum "\n" | executives+=Executive "\n")*
+// loadShapes+=LoadShape "\n" | "new" ("object" "=")? spectrums+=Spectrum "\n" | executives+=Executive)*
 protected class Electrickery_Alternatives_1 extends AlternativesToken {
 
 	public Electrickery_Alternatives_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
@@ -153,7 +156,7 @@ protected class Electrickery_Alternatives_1 extends AlternativesToken {
 			case 3: return new Electrickery_Group_1_3(lastRuleCallOrigin, this, 3, inst);
 			case 4: return new Electrickery_Group_1_4(lastRuleCallOrigin, this, 4, inst);
 			case 5: return new Electrickery_Group_1_5(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Electrickery_Group_1_6(lastRuleCallOrigin, this, 6, inst);
+			case 6: return new Electrickery_ExecutivesAssignment_1_6(lastRuleCallOrigin, this, 6, inst);
 			default: return null;
 		}	
 	}
@@ -844,38 +847,16 @@ protected class Electrickery_LineFeedLfKeyword_1_5_3 extends KeywordToken  {
 }
 
 
-// executives+=Executive "\n"
-protected class Electrickery_Group_1_6 extends GroupToken {
-	
-	public Electrickery_Group_1_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getElectrickeryAccess().getGroup_1_6();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Electrickery_LineFeedLfKeyword_1_6_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
 // executives+=Executive
-protected class Electrickery_ExecutivesAssignment_1_6_0 extends AssignmentToken  {
+protected class Electrickery_ExecutivesAssignment_1_6 extends AssignmentToken  {
 	
-	public Electrickery_ExecutivesAssignment_1_6_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public Electrickery_ExecutivesAssignment_1_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Assignment getGrammarElement() {
-		return grammarAccess.getElectrickeryAccess().getExecutivesAssignment_1_6_0();
+		return grammarAccess.getElectrickeryAccess().getExecutivesAssignment_1_6();
 	}
 
     @Override
@@ -894,7 +875,7 @@ protected class Electrickery_ExecutivesAssignment_1_6_0 extends AssignmentToken 
 			IEObjectConsumer param = createEObjectConsumer((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getExecutiveRule().getType().getClassifier())) {
 				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getElectrickeryAccess().getExecutivesExecutiveParserRuleCall_1_6_0_0(); 
+				element = grammarAccess.getElectrickeryAccess().getExecutivesExecutiveParserRuleCall_1_6_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -913,298 +894,5367 @@ protected class Electrickery_ExecutivesAssignment_1_6_0 extends AssignmentToken 
 	}	
 }
 
-// "\n"
-protected class Electrickery_LineFeedLfKeyword_1_6_1 extends KeywordToken  {
-	
-	public Electrickery_LineFeedLfKeyword_1_6_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getElectrickeryAccess().getLineFeedLfKeyword_1_6_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Electrickery_ExecutivesAssignment_1_6_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
 
 
 /************ end Rule Electrickery ****************/
 
 
-/************ begin Rule EStructuralFeature ****************
+/************ begin Rule Executive ****************
  *
- * EStructuralFeature returns ecore::EStructuralFeature:
- * 	EAttribute | EReference;
+ * Executive returns executive::Executive:
+ * 	{executive::Executive} "clear" circuits+=Circuit+;
  *
  **/
 
-// EAttribute | EReference
-protected class EStructuralFeature_Alternatives extends AlternativesToken {
+// {executive::Executive} "clear" circuits+=Circuit+
+protected class Executive_Group extends GroupToken {
+	
+	public Executive_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getExecutiveAccess().getGroup();
+	}
 
-	public EStructuralFeature_Alternatives(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Executive_CircuitsAssignment_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(getEObject().eClass() != grammarAccess.getExecutiveAccess().getExecutiveAction_0().getType().getClassifier())
+			return null;
+		return eObjectConsumer;
+	}
+
+}
+
+// {executive::Executive}
+protected class Executive_ExecutiveAction_0 extends ActionToken  {
+
+	public Executive_ExecutiveAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Action getGrammarElement() {
+		return grammarAccess.getExecutiveAccess().getExecutiveAction_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(!eObjectConsumer.isConsumed()) return null;
+		return eObjectConsumer;
+	}
+}
+
+// "clear"
+protected class Executive_ClearKeyword_1 extends KeywordToken  {
+	
+	public Executive_ClearKeyword_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getExecutiveAccess().getClearKeyword_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Executive_ExecutiveAction_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// circuits+=Circuit+
+protected class Executive_CircuitsAssignment_2 extends AssignmentToken  {
+	
+	public Executive_CircuitsAssignment_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getExecutiveAccess().getCircuitsAssignment_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Circuit_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("circuits",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("circuits");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getCircuitRule().getType().getClassifier())) {
+				type = AssignmentType.PARSER_RULE_CALL;
+				element = grammarAccess.getExecutiveAccess().getCircuitsCircuitParserRuleCall_2_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+    @Override
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		if(value == inst.getEObject() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new Executive_CircuitsAssignment_2(lastRuleCallOrigin, next, actIndex, consumed);
+			case 1: return new Executive_ClearKeyword_1(lastRuleCallOrigin, next, actIndex, consumed);
+			default: return null;
+		}	
+	}	
+}
+
+
+/************ end Rule Executive ****************/
+
+
+/************ begin Rule Circuit ****************
+ *
+ * //	'Executive'
+ * //	'{'
+ * //		('command' command=EString)?
+ * //		('maxCircuits' maxCircuits=EInt)?
+ * //		('activeCircuit' activeCircuit=[common::Circuit|EString])?
+ * //		('execCommands' execCommands=ExecCommands)?
+ * //		('execOptions' execOptions=ExecOptions)?
+ * //		('circuits' '{' circuits+=Circuit ( "," circuits+=Circuit)* '}' )?
+ * //    '}';
+ * //		(('numNodes' '=')? numNodes=EInt)?
+ * //		('generatorDispatchReference' generatorDispatchReference=EDouble)?
+ * //		('genMultiplier' genMultiplier=EDouble)?
+ * //		('busNameRedefined' busNameRedefined=EBoolean)?
+ * //		('loadMultiplier' loadMultiplier=EDouble)?
+ * //		('defaultGrowthFactor' defaultGrowthFactor=EDouble)?
+ * //		('defaultHourMult' defaultHourMult=EDouble)?
+ * //		('priceSignal' priceSignal=EDouble)?
+ * //		'solution' solution=[common::Solution|EString]
+ * //		('controlQueue' controlQueue=[common::ControlQueue|EString])?
+ * //		('lines' '(' lines+=[delivery::Line|EString] ( "," lines+=[delivery::Line|EString])* ')' )?
+ * //		('loads' '(' loads+=[conversion::Load|EString] ( "," loads+=[conversion::Load|EString])* ')' )?
+ * //		('shuntCapacitors' '(' shuntCapacitors+=[delivery::Capacitor|EString] ( "," shuntCapacitors+=[delivery::Capacitor|EString])* ')' )?
+ * //		('feeder' '(' feeder+=[common::Feeder|EString] ( "," feeder+=[common::Feeder|EString])* ')' )?
+ * //		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
+ * //		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
+ * //		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
+ * //		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
+ * //		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
+ * //		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
+ * //		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
+ * //		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
+ * //		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
+ * //		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
+ * //		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
+ * Circuit returns common::Circuit:
+ * 	{common::Circuit} ("Circuit" | "circuit") ("." name=EString)? voltageSources+=DefaultVoltageSource;
+ *
+ **/
+
+// {common::Circuit} ("Circuit" | "circuit") ("." name=EString)? voltageSources+=DefaultVoltageSource
+protected class Circuit_Group extends GroupToken {
+	
+	public Circuit_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getGroup();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Circuit_VoltageSourcesAssignment_3(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(getEObject().eClass() != grammarAccess.getCircuitAccess().getCircuitAction_0().getType().getClassifier())
+			return null;
+		return eObjectConsumer;
+	}
+
+}
+
+// {common::Circuit}
+protected class Circuit_CircuitAction_0 extends ActionToken  {
+
+	public Circuit_CircuitAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Action getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getCircuitAction_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(!eObjectConsumer.isConsumed()) return null;
+		return eObjectConsumer;
+	}
+}
+
+// "Circuit" | "circuit"
+protected class Circuit_Alternatives_1 extends AlternativesToken {
+
+	public Circuit_Alternatives_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
 	public Alternatives getGrammarElement() {
-		return grammarAccess.getEStructuralFeatureAccess().getAlternatives();
+		return grammarAccess.getCircuitAccess().getAlternatives_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EStructuralFeature_EAttributeParserRuleCall_0(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new EStructuralFeature_EReferenceParserRuleCall_1(lastRuleCallOrigin, this, 1, inst);
+			case 0: return new Circuit_CircuitKeyword_1_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
-    @Override
-	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEAttributeAccess().getEAttributeAction_0().getType().getClassifier() && 
-		   getEObject().eClass() != grammarAccess.getEReferenceAccess().getEReferenceAction_0().getType().getClassifier())
-			return null;
-		return eObjectConsumer;
-	}
-
 }
 
-// EAttribute
-protected class EStructuralFeature_EAttributeParserRuleCall_0 extends RuleCallToken {
+// "Circuit"
+protected class Circuit_CircuitKeyword_1_0 extends KeywordToken  {
 	
-	public EStructuralFeature_EAttributeParserRuleCall_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public Circuit_CircuitKeyword_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public RuleCall getGrammarElement() {
-		return grammarAccess.getEStructuralFeatureAccess().getEAttributeParserRuleCall_0();
+	public Keyword getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getCircuitKeyword_1_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EAttribute_Group(this, this, 0, inst);
+			case 0: return new Circuit_CircuitAction_0(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
-    @Override
-	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEAttributeAccess().getEAttributeAction_0().getType().getClassifier())
-			return null;
-		if(checkForRecursion(EAttribute_Group.class, eObjectConsumer)) return null;
-		return eObjectConsumer;
-	}
-	
-    @Override
-	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
-		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
-		}	
-	}	
 }
 
-// EReference
-protected class EStructuralFeature_EReferenceParserRuleCall_1 extends RuleCallToken {
+
+// ("." name=EString)?
+protected class Circuit_Group_2 extends GroupToken {
 	
-	public EStructuralFeature_EReferenceParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public Circuit_Group_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public RuleCall getGrammarElement() {
-		return grammarAccess.getEStructuralFeatureAccess().getEReferenceParserRuleCall_1();
+	public Group getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getGroup_2();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EReference_Group(this, this, 0, inst);
+			case 0: return new Circuit_NameAssignment_2_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
-    @Override
-	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEReferenceAccess().getEReferenceAction_0().getType().getClassifier())
-			return null;
-		if(checkForRecursion(EReference_Group.class, eObjectConsumer)) return null;
-		return eObjectConsumer;
+}
+
+// "."
+protected class Circuit_FullStopKeyword_2_0 extends KeywordToken  {
+	
+	public Circuit_FullStopKeyword_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getFullStopKeyword_2_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Circuit_Alternatives_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// name=EString
+protected class Circuit_NameAssignment_2_1 extends AssignmentToken  {
+	
+	public Circuit_NameAssignment_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getNameAssignment_2_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Circuit_FullStopKeyword_2_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("name",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getNameEStringParserRuleCall_2_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getCircuitAccess().getNameEStringParserRuleCall_2_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// voltageSources+=DefaultVoltageSource
+protected class Circuit_VoltageSourcesAssignment_3 extends AssignmentToken  {
+	
+	public Circuit_VoltageSourcesAssignment_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getCircuitAccess().getVoltageSourcesAssignment_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("voltageSources",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("voltageSources");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getDefaultVoltageSourceRule().getType().getClassifier())) {
+				type = AssignmentType.PARSER_RULE_CALL;
+				element = grammarAccess.getCircuitAccess().getVoltageSourcesDefaultVoltageSourceParserRuleCall_3_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
     @Override
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
+			case 0: return new Circuit_Group_2(lastRuleCallOrigin, next, actIndex, consumed);
+			case 1: return new Circuit_Alternatives_1(lastRuleCallOrigin, next, actIndex, consumed);
+			default: return null;
 		}	
 	}	
 }
 
 
-/************ end Rule EStructuralFeature ****************/
+/************ end Rule Circuit ****************/
 
 
-/************ begin Rule EClassifier ****************
+/************ begin Rule Solution ****************
  *
- * EClassifier returns ecore::EClassifier:
- * 	EClass | EDataType_Impl | EEnum;
+ * Solution returns common::Solution:
+ * 	{common::Solution} "solve";
  *
  **/
 
-// EClass | EDataType_Impl | EEnum
-protected class EClassifier_Alternatives extends AlternativesToken {
-
-	public EClassifier_Alternatives(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// {common::Solution} "solve"
+protected class Solution_Group extends GroupToken {
+	
+	public Solution_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Alternatives getGrammarElement() {
-		return grammarAccess.getEClassifierAccess().getAlternatives();
+	public Group getGrammarElement() {
+		return grammarAccess.getSolutionAccess().getGroup();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EClassifier_EClassParserRuleCall_0(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new EClassifier_EDataType_ImplParserRuleCall_1(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new EClassifier_EEnumParserRuleCall_2(lastRuleCallOrigin, this, 2, inst);
+			case 0: return new Solution_SolveKeyword_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEClassAccess().getEClassAction_0().getType().getClassifier() && 
-		   getEObject().eClass() != grammarAccess.getEDataType_ImplAccess().getEDataTypeAction_0().getType().getClassifier() && 
-		   getEObject().eClass() != grammarAccess.getEEnumAccess().getEEnumAction_0().getType().getClassifier())
+		if(getEObject().eClass() != grammarAccess.getSolutionAccess().getSolutionAction_0().getType().getClassifier())
 			return null;
 		return eObjectConsumer;
 	}
 
 }
 
-// EClass
-protected class EClassifier_EClassParserRuleCall_0 extends RuleCallToken {
-	
-	public EClassifier_EClassParserRuleCall_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// {common::Solution}
+protected class Solution_SolutionAction_0 extends ActionToken  {
+
+	public Solution_SolutionAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public RuleCall getGrammarElement() {
-		return grammarAccess.getEClassifierAccess().getEClassParserRuleCall_0();
+	public Action getGrammarElement() {
+		return grammarAccess.getSolutionAccess().getSolutionAction_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EClass_Group(this, this, 0, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(!eObjectConsumer.isConsumed()) return null;
+		return eObjectConsumer;
+	}
+}
+
+// "solve"
+protected class Solution_SolveKeyword_1 extends KeywordToken  {
+	
+	public Solution_SolveKeyword_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getSolutionAccess().getSolveKeyword_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new Solution_SolutionAction_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+
+/************ end Rule Solution ****************/
+
+
+/************ begin Rule DefaultVoltageSource ****************
+ *
+ * DefaultVoltageSource returns conversion::VoltageSource:
+ * 	{conversion::VoltageSource} (("phases" "=" nPhases=EInt)? ("mvasc3" "=" mvaSC3=EDouble)? ("mvasc1" "="
+ * 	mvaSC1=EDouble)? ("basekV" "=" baseKV=EDouble)? ("pu" "=" perUnit=EDouble)?);
+ *
+ **/
+
+// {conversion::VoltageSource} (("phases" "=" nPhases=EInt)? ("mvasc3" "=" mvaSC3=EDouble)? ("mvasc1" "=" mvaSC1=EDouble)?
+// ("basekV" "=" baseKV=EDouble)? ("pu" "=" perUnit=EDouble)?)
+protected class DefaultVoltageSource_Group extends GroupToken {
+	
+	public DefaultVoltageSource_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEClassAccess().getEClassAction_0().getType().getClassifier())
+		if(getEObject().eClass() != grammarAccess.getDefaultVoltageSourceAccess().getVoltageSourceAction_0().getType().getClassifier())
 			return null;
-		if(checkForRecursion(EClass_Group.class, eObjectConsumer)) return null;
 		return eObjectConsumer;
 	}
-	
-    @Override
-	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
-		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
-		}	
-	}	
+
 }
 
-// EDataType_Impl
-protected class EClassifier_EDataType_ImplParserRuleCall_1 extends RuleCallToken {
-	
-	public EClassifier_EDataType_ImplParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// {conversion::VoltageSource}
+protected class DefaultVoltageSource_VoltageSourceAction_0 extends ActionToken  {
+
+	public DefaultVoltageSource_VoltageSourceAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public RuleCall getGrammarElement() {
-		return grammarAccess.getEClassifierAccess().getEDataType_ImplParserRuleCall_1();
+	public Action getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getVoltageSourceAction_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EDataType_Impl_Group(this, this, 0, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(!eObjectConsumer.isConsumed()) return null;
+		return eObjectConsumer;
+	}
+}
+
+// ("phases" "=" nPhases=EInt)? ("mvasc3" "=" mvaSC3=EDouble)? ("mvasc1" "=" mvaSC1=EDouble)? ("basekV" "="
+// baseKV=EDouble)? ("pu" "=" perUnit=EDouble)?
+protected class DefaultVoltageSource_Group_1 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1_4(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new DefaultVoltageSource_Group_1_3(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new DefaultVoltageSource_Group_1_2(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new DefaultVoltageSource_Group_1_1(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new DefaultVoltageSource_Group_1_0(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 5, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// ("phases" "=" nPhases=EInt)?
+protected class DefaultVoltageSource_Group_1_0 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_NPhasesAssignment_1_0_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "phases"
+protected class DefaultVoltageSource_PhasesKeyword_1_0_0 extends KeywordToken  {
+	
+	public DefaultVoltageSource_PhasesKeyword_1_0_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getPhasesKeyword_1_0_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "="
+protected class DefaultVoltageSource_EqualsSignKeyword_1_0_1 extends KeywordToken  {
+	
+	public DefaultVoltageSource_EqualsSignKeyword_1_0_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getEqualsSignKeyword_1_0_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_PhasesKeyword_1_0_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nPhases=EInt
+protected class DefaultVoltageSource_NPhasesAssignment_1_0_2 extends AssignmentToken  {
+	
+	public DefaultVoltageSource_NPhasesAssignment_1_0_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getNPhasesAssignment_1_0_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_EqualsSignKeyword_1_0_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nPhases",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nPhases");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDefaultVoltageSourceAccess().getNPhasesEIntParserRuleCall_1_0_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDefaultVoltageSourceAccess().getNPhasesEIntParserRuleCall_1_0_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("mvasc3" "=" mvaSC3=EDouble)?
+protected class DefaultVoltageSource_Group_1_1 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_MvaSC3Assignment_1_1_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "mvasc3"
+protected class DefaultVoltageSource_Mvasc3Keyword_1_1_0 extends KeywordToken  {
+	
+	public DefaultVoltageSource_Mvasc3Keyword_1_1_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getMvasc3Keyword_1_1_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1_0(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "="
+protected class DefaultVoltageSource_EqualsSignKeyword_1_1_1 extends KeywordToken  {
+	
+	public DefaultVoltageSource_EqualsSignKeyword_1_1_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getEqualsSignKeyword_1_1_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Mvasc3Keyword_1_1_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// mvaSC3=EDouble
+protected class DefaultVoltageSource_MvaSC3Assignment_1_1_2 extends AssignmentToken  {
+	
+	public DefaultVoltageSource_MvaSC3Assignment_1_1_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getMvaSC3Assignment_1_1_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_EqualsSignKeyword_1_1_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("mvaSC3",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("mvaSC3");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDefaultVoltageSourceAccess().getMvaSC3EDoubleParserRuleCall_1_1_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDefaultVoltageSourceAccess().getMvaSC3EDoubleParserRuleCall_1_1_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("mvasc1" "=" mvaSC1=EDouble)?
+protected class DefaultVoltageSource_Group_1_2 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_MvaSC1Assignment_1_2_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "mvasc1"
+protected class DefaultVoltageSource_Mvasc1Keyword_1_2_0 extends KeywordToken  {
+	
+	public DefaultVoltageSource_Mvasc1Keyword_1_2_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getMvasc1Keyword_1_2_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1_1(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new DefaultVoltageSource_Group_1_0(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 2, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "="
+protected class DefaultVoltageSource_EqualsSignKeyword_1_2_1 extends KeywordToken  {
+	
+	public DefaultVoltageSource_EqualsSignKeyword_1_2_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getEqualsSignKeyword_1_2_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Mvasc1Keyword_1_2_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// mvaSC1=EDouble
+protected class DefaultVoltageSource_MvaSC1Assignment_1_2_2 extends AssignmentToken  {
+	
+	public DefaultVoltageSource_MvaSC1Assignment_1_2_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getMvaSC1Assignment_1_2_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_EqualsSignKeyword_1_2_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("mvaSC1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("mvaSC1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDefaultVoltageSourceAccess().getMvaSC1EDoubleParserRuleCall_1_2_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDefaultVoltageSourceAccess().getMvaSC1EDoubleParserRuleCall_1_2_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("basekV" "=" baseKV=EDouble)?
+protected class DefaultVoltageSource_Group_1_3 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_BaseKVAssignment_1_3_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "basekV"
+protected class DefaultVoltageSource_BasekVKeyword_1_3_0 extends KeywordToken  {
+	
+	public DefaultVoltageSource_BasekVKeyword_1_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getBasekVKeyword_1_3_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new DefaultVoltageSource_Group_1_1(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new DefaultVoltageSource_Group_1_0(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 3, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "="
+protected class DefaultVoltageSource_EqualsSignKeyword_1_3_1 extends KeywordToken  {
+	
+	public DefaultVoltageSource_EqualsSignKeyword_1_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getEqualsSignKeyword_1_3_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_BasekVKeyword_1_3_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// baseKV=EDouble
+protected class DefaultVoltageSource_BaseKVAssignment_1_3_2 extends AssignmentToken  {
+	
+	public DefaultVoltageSource_BaseKVAssignment_1_3_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getBaseKVAssignment_1_3_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_EqualsSignKeyword_1_3_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("baseKV",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("baseKV");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDefaultVoltageSourceAccess().getBaseKVEDoubleParserRuleCall_1_3_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDefaultVoltageSourceAccess().getBaseKVEDoubleParserRuleCall_1_3_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("pu" "=" perUnit=EDouble)?
+protected class DefaultVoltageSource_Group_1_4 extends GroupToken {
+	
+	public DefaultVoltageSource_Group_1_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getGroup_1_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_PerUnitAssignment_1_4_2(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "pu"
+protected class DefaultVoltageSource_PuKeyword_1_4_0 extends KeywordToken  {
+	
+	public DefaultVoltageSource_PuKeyword_1_4_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getPuKeyword_1_4_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_Group_1_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new DefaultVoltageSource_Group_1_2(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new DefaultVoltageSource_Group_1_1(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new DefaultVoltageSource_Group_1_0(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new DefaultVoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 4, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "="
+protected class DefaultVoltageSource_EqualsSignKeyword_1_4_1 extends KeywordToken  {
+	
+	public DefaultVoltageSource_EqualsSignKeyword_1_4_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getEqualsSignKeyword_1_4_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_PuKeyword_1_4_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// perUnit=EDouble
+protected class DefaultVoltageSource_PerUnitAssignment_1_4_2 extends AssignmentToken  {
+	
+	public DefaultVoltageSource_PerUnitAssignment_1_4_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getDefaultVoltageSourceAccess().getPerUnitAssignment_1_4_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new DefaultVoltageSource_EqualsSignKeyword_1_4_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("perUnit",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("perUnit");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getDefaultVoltageSourceAccess().getPerUnitEDoubleParserRuleCall_1_4_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getDefaultVoltageSourceAccess().getPerUnitEDoubleParserRuleCall_1_4_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+
+
+/************ end Rule DefaultVoltageSource ****************/
+
+
+/************ begin Rule VoltageSource ****************
+ *
+ * VoltageSource returns conversion::VoltageSource:
+ * 	{conversion::VoltageSource} enabled?="enabled"? yPrimInvalid?="yPrimInvalid"? checked?="checked"?
+ * 	hasMeter?="hasMeter"? isolated?="isolated"? hasControl?="hasControl"? partOfFeeder?="partOfFeeder"? "VoltageSource"
+ * 	name=EString "{" ("baseFreq" baseFreq=EDouble)? ("nodeRef" "{" nodeRef+=EInt ("," nodeRef+=EInt)* "}")? ("yOrder"
+ * 	yOrder=EInt)? ("lastTerminalChecked" lastTerminalChecked=EInt)? ("nTerms" nTerms=EInt)? ("nConds" nConds=EInt)?
+ * 	("nPhases" nPhases=EInt)? ("busIndex" busIndex=EInt)? ("yPrimFreq" yPrimFreq=EDouble)? ("spectrum" spectrum=EString)?
+ * 	("injCurrent" injCurrent=EDouble)? ("bus1" bus1=EString)? ("baseKV" baseKV=EDouble)? ("perUnit" perUnit=EDouble)?
+ * 	("angle" angle=EDouble)? ("frequency" frequency=EDouble)? ("mvaSC3" mvaSC3=EDouble)? ("mvaSC1" mvaSC1=EDouble)?
+ * 	("x1R1" x1R1=EDouble)? ("x0R0" x0R0=EDouble)? ("iSC3" iSC3=EDouble)? ("iSC1" iSC1=EDouble)? ("r1" r1=EDouble)? ("x1"
+ * 	x1=EDouble)? ("r0" r0=EDouble)? ("x0" x0=EDouble)? //		('scanType' scanType=sequenceType)?
+ * 	//		('zSpecType' zSpecType=specType)?
+ * 	("vMag" vMag=EDouble)? ("controlElement" controlElement=[ecore::EClass|EString])? ("terminals" "("
+ * 	terminals+=[common::Terminal|EString] ("," terminals+=[common::Terminal|EString])* ")")? ("activeTerminal"
+ * 	activeTerminal=[ecore::EClass|EString])? ("yPrimSeries" yPrimSeries=[DComplexMatrix2D|EString])? ("yPrimShunt"
+ * 	yPrimShunt=[DComplexMatrix2D|EString])? ("yPrim" yPrim=[DComplexMatrix2D|EString])? ("spectrumObj"
+ * 	spectrumObj=[general::Spectrum|EString])? ("z" z=[DComplexMatrix2D|EString])? ("zInv"
+ * 	zInv=[DComplexMatrix2D|EString])? "}";
+ *
+ **/
+
+// {conversion::VoltageSource} enabled?="enabled"? yPrimInvalid?="yPrimInvalid"? checked?="checked"? hasMeter?="hasMeter"?
+// isolated?="isolated"? hasControl?="hasControl"? partOfFeeder?="partOfFeeder"? "VoltageSource" name=EString "{"
+// ("baseFreq" baseFreq=EDouble)? ("nodeRef" "{" nodeRef+=EInt ("," nodeRef+=EInt)* "}")? ("yOrder" yOrder=EInt)?
+// ("lastTerminalChecked" lastTerminalChecked=EInt)? ("nTerms" nTerms=EInt)? ("nConds" nConds=EInt)? ("nPhases"
+// nPhases=EInt)? ("busIndex" busIndex=EInt)? ("yPrimFreq" yPrimFreq=EDouble)? ("spectrum" spectrum=EString)?
+// ("injCurrent" injCurrent=EDouble)? ("bus1" bus1=EString)? ("baseKV" baseKV=EDouble)? ("perUnit" perUnit=EDouble)?
+// ("angle" angle=EDouble)? ("frequency" frequency=EDouble)? ("mvaSC3" mvaSC3=EDouble)? ("mvaSC1" mvaSC1=EDouble)? ("x1R1"
+// x1R1=EDouble)? ("x0R0" x0R0=EDouble)? ("iSC3" iSC3=EDouble)? ("iSC1" iSC1=EDouble)? ("r1" r1=EDouble)? ("x1"
+// x1=EDouble)? ("r0" r0=EDouble)? ("x0" x0=EDouble)? //		('scanType' scanType=sequenceType)?
+// //		('zSpecType' zSpecType=specType)?
+// ("vMag" vMag=EDouble)? ("controlElement" controlElement=[ecore::EClass|EString])? ("terminals" "("
+// terminals+=[common::Terminal|EString] ("," terminals+=[common::Terminal|EString])* ")")? ("activeTerminal"
+// activeTerminal=[ecore::EClass|EString])? ("yPrimSeries" yPrimSeries=[DComplexMatrix2D|EString])? ("yPrimShunt"
+// yPrimShunt=[DComplexMatrix2D|EString])? ("yPrim" yPrim=[DComplexMatrix2D|EString])? ("spectrumObj"
+// spectrumObj=[general::Spectrum|EString])? ("z" z=[DComplexMatrix2D|EString])? ("zInv" zInv=[DComplexMatrix2D|EString])?
+// "}"
+protected class VoltageSource_Group extends GroupToken {
+	
+	public VoltageSource_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_RightCurlyBracketKeyword_47(lastRuleCallOrigin, this, 0, inst);
 			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEDataType_ImplAccess().getEDataTypeAction_0().getType().getClassifier())
+		if(getEObject().eClass() != grammarAccess.getVoltageSourceAccess().getVoltageSourceAction_0().getType().getClassifier())
 			return null;
-		if(checkForRecursion(EDataType_Impl_Group.class, eObjectConsumer)) return null;
 		return eObjectConsumer;
 	}
-	
-    @Override
-	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
-		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
-		}	
-	}	
+
 }
 
-// EEnum
-protected class EClassifier_EEnumParserRuleCall_2 extends RuleCallToken {
-	
-	public EClassifier_EEnumParserRuleCall_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// {conversion::VoltageSource}
+protected class VoltageSource_VoltageSourceAction_0 extends ActionToken  {
+
+	public VoltageSource_VoltageSourceAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public RuleCall getGrammarElement() {
-		return grammarAccess.getEClassifierAccess().getEEnumParserRuleCall_2();
+	public Action getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getVoltageSourceAction_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new EEnum_Group(this, this, 0, inst);
-			default: return null;
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getEEnumAccess().getEEnumAction_0().getType().getClassifier())
-			return null;
-		if(checkForRecursion(EEnum_Group.class, eObjectConsumer)) return null;
+		if(!eObjectConsumer.isConsumed()) return null;
 		return eObjectConsumer;
 	}
+}
+
+// enabled?="enabled"?
+protected class VoltageSource_EnabledAssignment_1 extends AssignmentToken  {
 	
+	public VoltageSource_EnabledAssignment_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getEnabledAssignment_1();
+	}
+
     @Override
-	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
+			case 0: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
 		}	
-	}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("enabled",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("enabled");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getEnabledEnabledKeyword_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// yPrimInvalid?="yPrimInvalid"?
+protected class VoltageSource_YPrimInvalidAssignment_2 extends AssignmentToken  {
+	
+	public VoltageSource_YPrimInvalidAssignment_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimInvalidAssignment_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yPrimInvalid",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yPrimInvalid");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getYPrimInvalidYPrimInvalidKeyword_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// checked?="checked"?
+protected class VoltageSource_CheckedAssignment_3 extends AssignmentToken  {
+	
+	public VoltageSource_CheckedAssignment_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getCheckedAssignment_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 2, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("checked",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("checked");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getCheckedCheckedKeyword_3_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// hasMeter?="hasMeter"?
+protected class VoltageSource_HasMeterAssignment_4 extends AssignmentToken  {
+	
+	public VoltageSource_HasMeterAssignment_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getHasMeterAssignment_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_CheckedAssignment_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 3, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("hasMeter",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("hasMeter");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getHasMeterHasMeterKeyword_4_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// isolated?="isolated"?
+protected class VoltageSource_IsolatedAssignment_5 extends AssignmentToken  {
+	
+	public VoltageSource_IsolatedAssignment_5(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getIsolatedAssignment_5();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_HasMeterAssignment_4(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_CheckedAssignment_3(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 4, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("isolated",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("isolated");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getIsolatedIsolatedKeyword_5_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// hasControl?="hasControl"?
+protected class VoltageSource_HasControlAssignment_6 extends AssignmentToken  {
+	
+	public VoltageSource_HasControlAssignment_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getHasControlAssignment_6();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_IsolatedAssignment_5(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_HasMeterAssignment_4(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_CheckedAssignment_3(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 5, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("hasControl",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("hasControl");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getHasControlHasControlKeyword_6_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// partOfFeeder?="partOfFeeder"?
+protected class VoltageSource_PartOfFeederAssignment_7 extends AssignmentToken  {
+	
+	public VoltageSource_PartOfFeederAssignment_7(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getPartOfFeederAssignment_7();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_HasControlAssignment_6(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_IsolatedAssignment_5(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_HasMeterAssignment_4(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_CheckedAssignment_3(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 6, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("partOfFeeder",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("partOfFeeder");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KEYWORD;
+			element = grammarAccess.getVoltageSourceAccess().getPartOfFeederPartOfFeederKeyword_7_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// "VoltageSource"
+protected class VoltageSource_VoltageSourceKeyword_8 extends KeywordToken  {
+	
+	public VoltageSource_VoltageSourceKeyword_8(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getVoltageSourceKeyword_8();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_PartOfFeederAssignment_7(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_HasControlAssignment_6(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_IsolatedAssignment_5(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_HasMeterAssignment_4(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_CheckedAssignment_3(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_YPrimInvalidAssignment_2(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_EnabledAssignment_1(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_VoltageSourceAction_0(lastRuleCallOrigin, this, 7, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// name=EString
+protected class VoltageSource_NameAssignment_9 extends AssignmentToken  {
+	
+	public VoltageSource_NameAssignment_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNameAssignment_9();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_VoltageSourceKeyword_8(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNameEStringParserRuleCall_9_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNameEStringParserRuleCall_9_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// "{"
+protected class VoltageSource_LeftCurlyBracketKeyword_10 extends KeywordToken  {
+	
+	public VoltageSource_LeftCurlyBracketKeyword_10(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getLeftCurlyBracketKeyword_10();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NameAssignment_9(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// ("baseFreq" baseFreq=EDouble)?
+protected class VoltageSource_Group_11 extends GroupToken {
+	
+	public VoltageSource_Group_11(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_11();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BaseFreqAssignment_11_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "baseFreq"
+protected class VoltageSource_BaseFreqKeyword_11_0 extends KeywordToken  {
+	
+	public VoltageSource_BaseFreqKeyword_11_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBaseFreqKeyword_11_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// baseFreq=EDouble
+protected class VoltageSource_BaseFreqAssignment_11_1 extends AssignmentToken  {
+	
+	public VoltageSource_BaseFreqAssignment_11_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBaseFreqAssignment_11_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BaseFreqKeyword_11_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("baseFreq",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("baseFreq");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getBaseFreqEDoubleParserRuleCall_11_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getBaseFreqEDoubleParserRuleCall_11_1_0();
+			return obj;
+		}
+		return null;
+	}
+
 }
 
 
-/************ end Rule EClassifier ****************/
+// ("nodeRef" "{" nodeRef+=EInt ("," nodeRef+=EInt)* "}")?
+protected class VoltageSource_Group_12 extends GroupToken {
+	
+	public VoltageSource_Group_12(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_12();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_RightCurlyBracketKeyword_12_4(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "nodeRef"
+protected class VoltageSource_NodeRefKeyword_12_0 extends KeywordToken  {
+	
+	public VoltageSource_NodeRefKeyword_12_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNodeRefKeyword_12_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "{"
+protected class VoltageSource_LeftCurlyBracketKeyword_12_1 extends KeywordToken  {
+	
+	public VoltageSource_LeftCurlyBracketKeyword_12_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getLeftCurlyBracketKeyword_12_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NodeRefKeyword_12_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nodeRef+=EInt
+protected class VoltageSource_NodeRefAssignment_12_2 extends AssignmentToken  {
+	
+	public VoltageSource_NodeRefAssignment_12_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNodeRefAssignment_12_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_LeftCurlyBracketKeyword_12_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nodeRef",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nodeRef");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNodeRefEIntParserRuleCall_12_2_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNodeRefEIntParserRuleCall_12_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// ("," nodeRef+=EInt)*
+protected class VoltageSource_Group_12_3 extends GroupToken {
+	
+	public VoltageSource_Group_12_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_12_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NodeRefAssignment_12_3_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// ","
+protected class VoltageSource_CommaKeyword_12_3_0 extends KeywordToken  {
+	
+	public VoltageSource_CommaKeyword_12_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getCommaKeyword_12_3_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_12_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_NodeRefAssignment_12_2(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nodeRef+=EInt
+protected class VoltageSource_NodeRefAssignment_12_3_1 extends AssignmentToken  {
+	
+	public VoltageSource_NodeRefAssignment_12_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNodeRefAssignment_12_3_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_CommaKeyword_12_3_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nodeRef",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nodeRef");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNodeRefEIntParserRuleCall_12_3_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNodeRefEIntParserRuleCall_12_3_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// "}"
+protected class VoltageSource_RightCurlyBracketKeyword_12_4 extends KeywordToken  {
+	
+	public VoltageSource_RightCurlyBracketKeyword_12_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getRightCurlyBracketKeyword_12_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_12_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_NodeRefAssignment_12_2(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+
+// ("yOrder" yOrder=EInt)?
+protected class VoltageSource_Group_13 extends GroupToken {
+	
+	public VoltageSource_Group_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_13();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YOrderAssignment_13_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "yOrder"
+protected class VoltageSource_YOrderKeyword_13_0 extends KeywordToken  {
+	
+	public VoltageSource_YOrderKeyword_13_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYOrderKeyword_13_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 2, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// yOrder=EInt
+protected class VoltageSource_YOrderAssignment_13_1 extends AssignmentToken  {
+	
+	public VoltageSource_YOrderAssignment_13_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYOrderAssignment_13_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YOrderKeyword_13_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yOrder",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yOrder");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getYOrderEIntParserRuleCall_13_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getYOrderEIntParserRuleCall_13_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("lastTerminalChecked" lastTerminalChecked=EInt)?
+protected class VoltageSource_Group_14 extends GroupToken {
+	
+	public VoltageSource_Group_14(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_14();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_LastTerminalCheckedAssignment_14_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "lastTerminalChecked"
+protected class VoltageSource_LastTerminalCheckedKeyword_14_0 extends KeywordToken  {
+	
+	public VoltageSource_LastTerminalCheckedKeyword_14_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getLastTerminalCheckedKeyword_14_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 3, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// lastTerminalChecked=EInt
+protected class VoltageSource_LastTerminalCheckedAssignment_14_1 extends AssignmentToken  {
+	
+	public VoltageSource_LastTerminalCheckedAssignment_14_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getLastTerminalCheckedAssignment_14_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_LastTerminalCheckedKeyword_14_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("lastTerminalChecked",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("lastTerminalChecked");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getLastTerminalCheckedEIntParserRuleCall_14_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getLastTerminalCheckedEIntParserRuleCall_14_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("nTerms" nTerms=EInt)?
+protected class VoltageSource_Group_15 extends GroupToken {
+	
+	public VoltageSource_Group_15(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_15();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NTermsAssignment_15_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "nTerms"
+protected class VoltageSource_NTermsKeyword_15_0 extends KeywordToken  {
+	
+	public VoltageSource_NTermsKeyword_15_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNTermsKeyword_15_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 4, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nTerms=EInt
+protected class VoltageSource_NTermsAssignment_15_1 extends AssignmentToken  {
+	
+	public VoltageSource_NTermsAssignment_15_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNTermsAssignment_15_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NTermsKeyword_15_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nTerms",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nTerms");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNTermsEIntParserRuleCall_15_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNTermsEIntParserRuleCall_15_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("nConds" nConds=EInt)?
+protected class VoltageSource_Group_16 extends GroupToken {
+	
+	public VoltageSource_Group_16(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_16();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NCondsAssignment_16_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "nConds"
+protected class VoltageSource_NCondsKeyword_16_0 extends KeywordToken  {
+	
+	public VoltageSource_NCondsKeyword_16_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNCondsKeyword_16_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 5, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nConds=EInt
+protected class VoltageSource_NCondsAssignment_16_1 extends AssignmentToken  {
+	
+	public VoltageSource_NCondsAssignment_16_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNCondsAssignment_16_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NCondsKeyword_16_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nConds",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nConds");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNCondsEIntParserRuleCall_16_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNCondsEIntParserRuleCall_16_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("nPhases" nPhases=EInt)?
+protected class VoltageSource_Group_17 extends GroupToken {
+	
+	public VoltageSource_Group_17(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_17();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NPhasesAssignment_17_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "nPhases"
+protected class VoltageSource_NPhasesKeyword_17_0 extends KeywordToken  {
+	
+	public VoltageSource_NPhasesKeyword_17_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNPhasesKeyword_17_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 6, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// nPhases=EInt
+protected class VoltageSource_NPhasesAssignment_17_1 extends AssignmentToken  {
+	
+	public VoltageSource_NPhasesAssignment_17_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getNPhasesAssignment_17_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_NPhasesKeyword_17_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("nPhases",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("nPhases");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getNPhasesEIntParserRuleCall_17_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getNPhasesEIntParserRuleCall_17_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("busIndex" busIndex=EInt)?
+protected class VoltageSource_Group_18 extends GroupToken {
+	
+	public VoltageSource_Group_18(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_18();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BusIndexAssignment_18_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "busIndex"
+protected class VoltageSource_BusIndexKeyword_18_0 extends KeywordToken  {
+	
+	public VoltageSource_BusIndexKeyword_18_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBusIndexKeyword_18_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 7, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// busIndex=EInt
+protected class VoltageSource_BusIndexAssignment_18_1 extends AssignmentToken  {
+	
+	public VoltageSource_BusIndexAssignment_18_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBusIndexAssignment_18_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BusIndexKeyword_18_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("busIndex",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("busIndex");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getBusIndexEIntParserRuleCall_18_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getBusIndexEIntParserRuleCall_18_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("yPrimFreq" yPrimFreq=EDouble)?
+protected class VoltageSource_Group_19 extends GroupToken {
+	
+	public VoltageSource_Group_19(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_19();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimFreqAssignment_19_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "yPrimFreq"
+protected class VoltageSource_YPrimFreqKeyword_19_0 extends KeywordToken  {
+	
+	public VoltageSource_YPrimFreqKeyword_19_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimFreqKeyword_19_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 8, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// yPrimFreq=EDouble
+protected class VoltageSource_YPrimFreqAssignment_19_1 extends AssignmentToken  {
+	
+	public VoltageSource_YPrimFreqAssignment_19_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimFreqAssignment_19_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimFreqKeyword_19_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yPrimFreq",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yPrimFreq");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getYPrimFreqEDoubleParserRuleCall_19_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getYPrimFreqEDoubleParserRuleCall_19_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("spectrum" spectrum=EString)?
+protected class VoltageSource_Group_20 extends GroupToken {
+	
+	public VoltageSource_Group_20(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_20();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_SpectrumAssignment_20_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "spectrum"
+protected class VoltageSource_SpectrumKeyword_20_0 extends KeywordToken  {
+	
+	public VoltageSource_SpectrumKeyword_20_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getSpectrumKeyword_20_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 9, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// spectrum=EString
+protected class VoltageSource_SpectrumAssignment_20_1 extends AssignmentToken  {
+	
+	public VoltageSource_SpectrumAssignment_20_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getSpectrumAssignment_20_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_SpectrumKeyword_20_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("spectrum",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("spectrum");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getSpectrumEStringParserRuleCall_20_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getSpectrumEStringParserRuleCall_20_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("injCurrent" injCurrent=EDouble)?
+protected class VoltageSource_Group_21 extends GroupToken {
+	
+	public VoltageSource_Group_21(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_21();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_InjCurrentAssignment_21_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "injCurrent"
+protected class VoltageSource_InjCurrentKeyword_21_0 extends KeywordToken  {
+	
+	public VoltageSource_InjCurrentKeyword_21_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getInjCurrentKeyword_21_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 10, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// injCurrent=EDouble
+protected class VoltageSource_InjCurrentAssignment_21_1 extends AssignmentToken  {
+	
+	public VoltageSource_InjCurrentAssignment_21_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getInjCurrentAssignment_21_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_InjCurrentKeyword_21_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("injCurrent",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("injCurrent");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getInjCurrentEDoubleParserRuleCall_21_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getInjCurrentEDoubleParserRuleCall_21_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("bus1" bus1=EString)?
+protected class VoltageSource_Group_22 extends GroupToken {
+	
+	public VoltageSource_Group_22(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_22();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Bus1Assignment_22_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "bus1"
+protected class VoltageSource_Bus1Keyword_22_0 extends KeywordToken  {
+	
+	public VoltageSource_Bus1Keyword_22_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBus1Keyword_22_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 11, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// bus1=EString
+protected class VoltageSource_Bus1Assignment_22_1 extends AssignmentToken  {
+	
+	public VoltageSource_Bus1Assignment_22_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBus1Assignment_22_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Bus1Keyword_22_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("bus1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("bus1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getBus1EStringParserRuleCall_22_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getBus1EStringParserRuleCall_22_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("baseKV" baseKV=EDouble)?
+protected class VoltageSource_Group_23 extends GroupToken {
+	
+	public VoltageSource_Group_23(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_23();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BaseKVAssignment_23_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "baseKV"
+protected class VoltageSource_BaseKVKeyword_23_0 extends KeywordToken  {
+	
+	public VoltageSource_BaseKVKeyword_23_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBaseKVKeyword_23_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 12, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// baseKV=EDouble
+protected class VoltageSource_BaseKVAssignment_23_1 extends AssignmentToken  {
+	
+	public VoltageSource_BaseKVAssignment_23_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getBaseKVAssignment_23_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_BaseKVKeyword_23_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("baseKV",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("baseKV");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getBaseKVEDoubleParserRuleCall_23_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getBaseKVEDoubleParserRuleCall_23_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("perUnit" perUnit=EDouble)?
+protected class VoltageSource_Group_24 extends GroupToken {
+	
+	public VoltageSource_Group_24(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_24();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_PerUnitAssignment_24_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "perUnit"
+protected class VoltageSource_PerUnitKeyword_24_0 extends KeywordToken  {
+	
+	public VoltageSource_PerUnitKeyword_24_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getPerUnitKeyword_24_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 13, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// perUnit=EDouble
+protected class VoltageSource_PerUnitAssignment_24_1 extends AssignmentToken  {
+	
+	public VoltageSource_PerUnitAssignment_24_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getPerUnitAssignment_24_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_PerUnitKeyword_24_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("perUnit",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("perUnit");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getPerUnitEDoubleParserRuleCall_24_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getPerUnitEDoubleParserRuleCall_24_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("angle" angle=EDouble)?
+protected class VoltageSource_Group_25 extends GroupToken {
+	
+	public VoltageSource_Group_25(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_25();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_AngleAssignment_25_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "angle"
+protected class VoltageSource_AngleKeyword_25_0 extends KeywordToken  {
+	
+	public VoltageSource_AngleKeyword_25_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getAngleKeyword_25_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 14, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// angle=EDouble
+protected class VoltageSource_AngleAssignment_25_1 extends AssignmentToken  {
+	
+	public VoltageSource_AngleAssignment_25_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getAngleAssignment_25_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_AngleKeyword_25_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("angle",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("angle");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getAngleEDoubleParserRuleCall_25_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getAngleEDoubleParserRuleCall_25_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("frequency" frequency=EDouble)?
+protected class VoltageSource_Group_26 extends GroupToken {
+	
+	public VoltageSource_Group_26(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_26();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_FrequencyAssignment_26_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "frequency"
+protected class VoltageSource_FrequencyKeyword_26_0 extends KeywordToken  {
+	
+	public VoltageSource_FrequencyKeyword_26_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getFrequencyKeyword_26_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 15, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// frequency=EDouble
+protected class VoltageSource_FrequencyAssignment_26_1 extends AssignmentToken  {
+	
+	public VoltageSource_FrequencyAssignment_26_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getFrequencyAssignment_26_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_FrequencyKeyword_26_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("frequency",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("frequency");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getFrequencyEDoubleParserRuleCall_26_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getFrequencyEDoubleParserRuleCall_26_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("mvaSC3" mvaSC3=EDouble)?
+protected class VoltageSource_Group_27 extends GroupToken {
+	
+	public VoltageSource_Group_27(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_27();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_MvaSC3Assignment_27_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "mvaSC3"
+protected class VoltageSource_MvaSC3Keyword_27_0 extends KeywordToken  {
+	
+	public VoltageSource_MvaSC3Keyword_27_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getMvaSC3Keyword_27_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 16, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// mvaSC3=EDouble
+protected class VoltageSource_MvaSC3Assignment_27_1 extends AssignmentToken  {
+	
+	public VoltageSource_MvaSC3Assignment_27_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getMvaSC3Assignment_27_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_MvaSC3Keyword_27_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("mvaSC3",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("mvaSC3");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getMvaSC3EDoubleParserRuleCall_27_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getMvaSC3EDoubleParserRuleCall_27_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("mvaSC1" mvaSC1=EDouble)?
+protected class VoltageSource_Group_28 extends GroupToken {
+	
+	public VoltageSource_Group_28(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_28();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_MvaSC1Assignment_28_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "mvaSC1"
+protected class VoltageSource_MvaSC1Keyword_28_0 extends KeywordToken  {
+	
+	public VoltageSource_MvaSC1Keyword_28_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getMvaSC1Keyword_28_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 17, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// mvaSC1=EDouble
+protected class VoltageSource_MvaSC1Assignment_28_1 extends AssignmentToken  {
+	
+	public VoltageSource_MvaSC1Assignment_28_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getMvaSC1Assignment_28_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_MvaSC1Keyword_28_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("mvaSC1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("mvaSC1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getMvaSC1EDoubleParserRuleCall_28_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getMvaSC1EDoubleParserRuleCall_28_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("x1R1" x1R1=EDouble)?
+protected class VoltageSource_Group_29 extends GroupToken {
+	
+	public VoltageSource_Group_29(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_29();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X1R1Assignment_29_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "x1R1"
+protected class VoltageSource_X1R1Keyword_29_0 extends KeywordToken  {
+	
+	public VoltageSource_X1R1Keyword_29_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX1R1Keyword_29_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 18, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// x1R1=EDouble
+protected class VoltageSource_X1R1Assignment_29_1 extends AssignmentToken  {
+	
+	public VoltageSource_X1R1Assignment_29_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX1R1Assignment_29_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X1R1Keyword_29_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("x1R1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("x1R1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getX1R1EDoubleParserRuleCall_29_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getX1R1EDoubleParserRuleCall_29_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("x0R0" x0R0=EDouble)?
+protected class VoltageSource_Group_30 extends GroupToken {
+	
+	public VoltageSource_Group_30(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_30();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X0R0Assignment_30_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "x0R0"
+protected class VoltageSource_X0R0Keyword_30_0 extends KeywordToken  {
+	
+	public VoltageSource_X0R0Keyword_30_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX0R0Keyword_30_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 19, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// x0R0=EDouble
+protected class VoltageSource_X0R0Assignment_30_1 extends AssignmentToken  {
+	
+	public VoltageSource_X0R0Assignment_30_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX0R0Assignment_30_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X0R0Keyword_30_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("x0R0",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("x0R0");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getX0R0EDoubleParserRuleCall_30_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getX0R0EDoubleParserRuleCall_30_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("iSC3" iSC3=EDouble)?
+protected class VoltageSource_Group_31 extends GroupToken {
+	
+	public VoltageSource_Group_31(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_31();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ISC3Assignment_31_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "iSC3"
+protected class VoltageSource_ISC3Keyword_31_0 extends KeywordToken  {
+	
+	public VoltageSource_ISC3Keyword_31_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getISC3Keyword_31_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 20, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// iSC3=EDouble
+protected class VoltageSource_ISC3Assignment_31_1 extends AssignmentToken  {
+	
+	public VoltageSource_ISC3Assignment_31_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getISC3Assignment_31_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ISC3Keyword_31_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("iSC3",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("iSC3");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getISC3EDoubleParserRuleCall_31_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getISC3EDoubleParserRuleCall_31_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("iSC1" iSC1=EDouble)?
+protected class VoltageSource_Group_32 extends GroupToken {
+	
+	public VoltageSource_Group_32(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_32();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ISC1Assignment_32_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "iSC1"
+protected class VoltageSource_ISC1Keyword_32_0 extends KeywordToken  {
+	
+	public VoltageSource_ISC1Keyword_32_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getISC1Keyword_32_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 21, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// iSC1=EDouble
+protected class VoltageSource_ISC1Assignment_32_1 extends AssignmentToken  {
+	
+	public VoltageSource_ISC1Assignment_32_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getISC1Assignment_32_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ISC1Keyword_32_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("iSC1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("iSC1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getISC1EDoubleParserRuleCall_32_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getISC1EDoubleParserRuleCall_32_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("r1" r1=EDouble)?
+protected class VoltageSource_Group_33 extends GroupToken {
+	
+	public VoltageSource_Group_33(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_33();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_R1Assignment_33_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "r1"
+protected class VoltageSource_R1Keyword_33_0 extends KeywordToken  {
+	
+	public VoltageSource_R1Keyword_33_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getR1Keyword_33_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 22, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// r1=EDouble
+protected class VoltageSource_R1Assignment_33_1 extends AssignmentToken  {
+	
+	public VoltageSource_R1Assignment_33_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getR1Assignment_33_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_R1Keyword_33_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("r1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("r1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getR1EDoubleParserRuleCall_33_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getR1EDoubleParserRuleCall_33_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("x1" x1=EDouble)?
+protected class VoltageSource_Group_34 extends GroupToken {
+	
+	public VoltageSource_Group_34(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_34();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X1Assignment_34_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "x1"
+protected class VoltageSource_X1Keyword_34_0 extends KeywordToken  {
+	
+	public VoltageSource_X1Keyword_34_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX1Keyword_34_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 23, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// x1=EDouble
+protected class VoltageSource_X1Assignment_34_1 extends AssignmentToken  {
+	
+	public VoltageSource_X1Assignment_34_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX1Assignment_34_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X1Keyword_34_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("x1",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("x1");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getX1EDoubleParserRuleCall_34_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getX1EDoubleParserRuleCall_34_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("r0" r0=EDouble)?
+protected class VoltageSource_Group_35 extends GroupToken {
+	
+	public VoltageSource_Group_35(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_35();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_R0Assignment_35_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "r0"
+protected class VoltageSource_R0Keyword_35_0 extends KeywordToken  {
+	
+	public VoltageSource_R0Keyword_35_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getR0Keyword_35_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 24, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// r0=EDouble
+protected class VoltageSource_R0Assignment_35_1 extends AssignmentToken  {
+	
+	public VoltageSource_R0Assignment_35_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getR0Assignment_35_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_R0Keyword_35_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("r0",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("r0");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getR0EDoubleParserRuleCall_35_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getR0EDoubleParserRuleCall_35_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("x0" x0=EDouble)?
+protected class VoltageSource_Group_36 extends GroupToken {
+	
+	public VoltageSource_Group_36(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_36();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X0Assignment_36_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "x0"
+protected class VoltageSource_X0Keyword_36_0 extends KeywordToken  {
+	
+	public VoltageSource_X0Keyword_36_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX0Keyword_36_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 25, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// x0=EDouble
+protected class VoltageSource_X0Assignment_36_1 extends AssignmentToken  {
+	
+	public VoltageSource_X0Assignment_36_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getX0Assignment_36_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_X0Keyword_36_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("x0",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("x0");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getX0EDoubleParserRuleCall_36_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getX0EDoubleParserRuleCall_36_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("vMag" vMag=EDouble)?
+protected class VoltageSource_Group_37 extends GroupToken {
+	
+	public VoltageSource_Group_37(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_37();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_VMagAssignment_37_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "vMag"
+protected class VoltageSource_VMagKeyword_37_0 extends KeywordToken  {
+	
+	public VoltageSource_VMagKeyword_37_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getVMagKeyword_37_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 26, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// vMag=EDouble
+protected class VoltageSource_VMagAssignment_37_1 extends AssignmentToken  {
+	
+	public VoltageSource_VMagAssignment_37_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getVMagAssignment_37_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_VMagKeyword_37_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("vMag",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("vMag");
+		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getVoltageSourceAccess().getVMagEDoubleParserRuleCall_37_1_0(), value, null)) {
+			type = AssignmentType.DATATYPE_RULE_CALL;
+			element = grammarAccess.getVoltageSourceAccess().getVMagEDoubleParserRuleCall_37_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+// ("controlElement" controlElement=[ecore::EClass|EString])?
+protected class VoltageSource_Group_38 extends GroupToken {
+	
+	public VoltageSource_Group_38(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_38();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ControlElementAssignment_38_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "controlElement"
+protected class VoltageSource_ControlElementKeyword_38_0 extends KeywordToken  {
+	
+	public VoltageSource_ControlElementKeyword_38_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getControlElementKeyword_38_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 27, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// controlElement=[ecore::EClass|EString]
+protected class VoltageSource_ControlElementAssignment_38_1 extends AssignmentToken  {
+	
+	public VoltageSource_ControlElementAssignment_38_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getControlElementAssignment_38_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ControlElementKeyword_38_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("controlElement",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("controlElement");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getControlElementEClassCrossReference_38_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getControlElementEClassCrossReference_38_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("terminals" "(" terminals+=[common::Terminal|EString] ("," terminals+=[common::Terminal|EString])* ")")?
+protected class VoltageSource_Group_39 extends GroupToken {
+	
+	public VoltageSource_Group_39(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_39();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_RightParenthesisKeyword_39_4(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "terminals"
+protected class VoltageSource_TerminalsKeyword_39_0 extends KeywordToken  {
+	
+	public VoltageSource_TerminalsKeyword_39_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getTerminalsKeyword_39_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 28, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "("
+protected class VoltageSource_LeftParenthesisKeyword_39_1 extends KeywordToken  {
+	
+	public VoltageSource_LeftParenthesisKeyword_39_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getLeftParenthesisKeyword_39_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_TerminalsKeyword_39_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// terminals+=[common::Terminal|EString]
+protected class VoltageSource_TerminalsAssignment_39_2 extends AssignmentToken  {
+	
+	public VoltageSource_TerminalsAssignment_39_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getTerminalsAssignment_39_2();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_LeftParenthesisKeyword_39_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("terminals",true)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("terminals");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getTerminalsTerminalCrossReference_39_2_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getTerminalsTerminalCrossReference_39_2_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+// ("," terminals+=[common::Terminal|EString])*
+protected class VoltageSource_Group_39_3 extends GroupToken {
+	
+	public VoltageSource_Group_39_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_39_3();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_TerminalsAssignment_39_3_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// ","
+protected class VoltageSource_CommaKeyword_39_3_0 extends KeywordToken  {
+	
+	public VoltageSource_CommaKeyword_39_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getCommaKeyword_39_3_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_39_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_TerminalsAssignment_39_2(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// terminals+=[common::Terminal|EString]
+protected class VoltageSource_TerminalsAssignment_39_3_1 extends AssignmentToken  {
+	
+	public VoltageSource_TerminalsAssignment_39_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getTerminalsAssignment_39_3_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_CommaKeyword_39_3_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("terminals",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("terminals");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getTerminalsTerminalCrossReference_39_3_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getTerminalsTerminalCrossReference_39_3_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ")"
+protected class VoltageSource_RightParenthesisKeyword_39_4 extends KeywordToken  {
+	
+	public VoltageSource_RightParenthesisKeyword_39_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getRightParenthesisKeyword_39_4();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_39_3(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_TerminalsAssignment_39_2(lastRuleCallOrigin, this, 1, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+
+// ("activeTerminal" activeTerminal=[ecore::EClass|EString])?
+protected class VoltageSource_Group_40 extends GroupToken {
+	
+	public VoltageSource_Group_40(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_40();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ActiveTerminalAssignment_40_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "activeTerminal"
+protected class VoltageSource_ActiveTerminalKeyword_40_0 extends KeywordToken  {
+	
+	public VoltageSource_ActiveTerminalKeyword_40_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getActiveTerminalKeyword_40_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 29, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// activeTerminal=[ecore::EClass|EString]
+protected class VoltageSource_ActiveTerminalAssignment_40_1 extends AssignmentToken  {
+	
+	public VoltageSource_ActiveTerminalAssignment_40_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getActiveTerminalAssignment_40_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ActiveTerminalKeyword_40_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("activeTerminal",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("activeTerminal");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getActiveTerminalEClassCrossReference_40_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getActiveTerminalEClassCrossReference_40_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("yPrimSeries" yPrimSeries=[DComplexMatrix2D|EString])?
+protected class VoltageSource_Group_41 extends GroupToken {
+	
+	public VoltageSource_Group_41(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_41();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimSeriesAssignment_41_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "yPrimSeries"
+protected class VoltageSource_YPrimSeriesKeyword_41_0 extends KeywordToken  {
+	
+	public VoltageSource_YPrimSeriesKeyword_41_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimSeriesKeyword_41_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 30, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// yPrimSeries=[DComplexMatrix2D|EString]
+protected class VoltageSource_YPrimSeriesAssignment_41_1 extends AssignmentToken  {
+	
+	public VoltageSource_YPrimSeriesAssignment_41_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimSeriesAssignment_41_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimSeriesKeyword_41_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yPrimSeries",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yPrimSeries");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getYPrimSeriesDComplexMatrix2DCrossReference_41_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getYPrimSeriesDComplexMatrix2DCrossReference_41_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("yPrimShunt" yPrimShunt=[DComplexMatrix2D|EString])?
+protected class VoltageSource_Group_42 extends GroupToken {
+	
+	public VoltageSource_Group_42(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_42();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimShuntAssignment_42_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "yPrimShunt"
+protected class VoltageSource_YPrimShuntKeyword_42_0 extends KeywordToken  {
+	
+	public VoltageSource_YPrimShuntKeyword_42_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimShuntKeyword_42_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 31, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// yPrimShunt=[DComplexMatrix2D|EString]
+protected class VoltageSource_YPrimShuntAssignment_42_1 extends AssignmentToken  {
+	
+	public VoltageSource_YPrimShuntAssignment_42_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimShuntAssignment_42_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimShuntKeyword_42_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yPrimShunt",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yPrimShunt");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getYPrimShuntDComplexMatrix2DCrossReference_42_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getYPrimShuntDComplexMatrix2DCrossReference_42_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("yPrim" yPrim=[DComplexMatrix2D|EString])?
+protected class VoltageSource_Group_43 extends GroupToken {
+	
+	public VoltageSource_Group_43(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_43();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimAssignment_43_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "yPrim"
+protected class VoltageSource_YPrimKeyword_43_0 extends KeywordToken  {
+	
+	public VoltageSource_YPrimKeyword_43_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimKeyword_43_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_42(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 31, inst);
+			case 32: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 32, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// yPrim=[DComplexMatrix2D|EString]
+protected class VoltageSource_YPrimAssignment_43_1 extends AssignmentToken  {
+	
+	public VoltageSource_YPrimAssignment_43_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getYPrimAssignment_43_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_YPrimKeyword_43_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("yPrim",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("yPrim");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getYPrimDComplexMatrix2DCrossReference_43_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getYPrimDComplexMatrix2DCrossReference_43_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("spectrumObj" spectrumObj=[general::Spectrum|EString])?
+protected class VoltageSource_Group_44 extends GroupToken {
+	
+	public VoltageSource_Group_44(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_44();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_SpectrumObjAssignment_44_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "spectrumObj"
+protected class VoltageSource_SpectrumObjKeyword_44_0 extends KeywordToken  {
+	
+	public VoltageSource_SpectrumObjKeyword_44_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getSpectrumObjKeyword_44_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_43(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_42(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 31, inst);
+			case 32: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 32, inst);
+			case 33: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 33, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// spectrumObj=[general::Spectrum|EString]
+protected class VoltageSource_SpectrumObjAssignment_44_1 extends AssignmentToken  {
+	
+	public VoltageSource_SpectrumObjAssignment_44_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getSpectrumObjAssignment_44_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_SpectrumObjKeyword_44_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("spectrumObj",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("spectrumObj");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getSpectrumObjSpectrumCrossReference_44_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getSpectrumObjSpectrumCrossReference_44_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("z" z=[DComplexMatrix2D|EString])?
+protected class VoltageSource_Group_45 extends GroupToken {
+	
+	public VoltageSource_Group_45(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_45();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ZAssignment_45_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "z"
+protected class VoltageSource_ZKeyword_45_0 extends KeywordToken  {
+	
+	public VoltageSource_ZKeyword_45_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getZKeyword_45_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_44(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_43(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_42(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 31, inst);
+			case 32: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 32, inst);
+			case 33: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 33, inst);
+			case 34: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 34, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// z=[DComplexMatrix2D|EString]
+protected class VoltageSource_ZAssignment_45_1 extends AssignmentToken  {
+	
+	public VoltageSource_ZAssignment_45_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getZAssignment_45_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ZKeyword_45_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("z",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("z");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getZDComplexMatrix2DCrossReference_45_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getZDComplexMatrix2DCrossReference_45_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// ("zInv" zInv=[DComplexMatrix2D|EString])?
+protected class VoltageSource_Group_46 extends GroupToken {
+	
+	public VoltageSource_Group_46(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Group getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getGroup_46();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ZInvAssignment_46_1(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// "zInv"
+protected class VoltageSource_ZInvKeyword_46_0 extends KeywordToken  {
+	
+	public VoltageSource_ZInvKeyword_46_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getZInvKeyword_46_0();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_45(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_44(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_43(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_42(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 31, inst);
+			case 32: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 32, inst);
+			case 33: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 33, inst);
+			case 34: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 34, inst);
+			case 35: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 35, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+// zInv=[DComplexMatrix2D|EString]
+protected class VoltageSource_ZInvAssignment_46_1 extends AssignmentToken  {
+	
+	public VoltageSource_ZInvAssignment_46_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Assignment getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getZInvAssignment_46_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_ZInvKeyword_46_0(lastRuleCallOrigin, this, 0, inst);
+			default: return null;
+		}	
+	}
+
+    @Override	
+	public IEObjectConsumer tryConsume() {
+		if((value = eObjectConsumer.getConsumable("zInv",false)) == null) return null;
+		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("zInv");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IEObjectConsumer param = createEObjectConsumer((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getVoltageSourceAccess().getZInvDComplexMatrix2DCrossReference_46_1_0().getType().getClassifier())) {
+				type = AssignmentType.CROSS_REFERENCE;
+				element = grammarAccess.getVoltageSourceAccess().getZInvDComplexMatrix2DCrossReference_46_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+// "}"
+protected class VoltageSource_RightCurlyBracketKeyword_47 extends KeywordToken  {
+	
+	public VoltageSource_RightCurlyBracketKeyword_47(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public Keyword getGrammarElement() {
+		return grammarAccess.getVoltageSourceAccess().getRightCurlyBracketKeyword_47();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new VoltageSource_Group_46(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new VoltageSource_Group_45(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new VoltageSource_Group_44(lastRuleCallOrigin, this, 2, inst);
+			case 3: return new VoltageSource_Group_43(lastRuleCallOrigin, this, 3, inst);
+			case 4: return new VoltageSource_Group_42(lastRuleCallOrigin, this, 4, inst);
+			case 5: return new VoltageSource_Group_41(lastRuleCallOrigin, this, 5, inst);
+			case 6: return new VoltageSource_Group_40(lastRuleCallOrigin, this, 6, inst);
+			case 7: return new VoltageSource_Group_39(lastRuleCallOrigin, this, 7, inst);
+			case 8: return new VoltageSource_Group_38(lastRuleCallOrigin, this, 8, inst);
+			case 9: return new VoltageSource_Group_37(lastRuleCallOrigin, this, 9, inst);
+			case 10: return new VoltageSource_Group_36(lastRuleCallOrigin, this, 10, inst);
+			case 11: return new VoltageSource_Group_35(lastRuleCallOrigin, this, 11, inst);
+			case 12: return new VoltageSource_Group_34(lastRuleCallOrigin, this, 12, inst);
+			case 13: return new VoltageSource_Group_33(lastRuleCallOrigin, this, 13, inst);
+			case 14: return new VoltageSource_Group_32(lastRuleCallOrigin, this, 14, inst);
+			case 15: return new VoltageSource_Group_31(lastRuleCallOrigin, this, 15, inst);
+			case 16: return new VoltageSource_Group_30(lastRuleCallOrigin, this, 16, inst);
+			case 17: return new VoltageSource_Group_29(lastRuleCallOrigin, this, 17, inst);
+			case 18: return new VoltageSource_Group_28(lastRuleCallOrigin, this, 18, inst);
+			case 19: return new VoltageSource_Group_27(lastRuleCallOrigin, this, 19, inst);
+			case 20: return new VoltageSource_Group_26(lastRuleCallOrigin, this, 20, inst);
+			case 21: return new VoltageSource_Group_25(lastRuleCallOrigin, this, 21, inst);
+			case 22: return new VoltageSource_Group_24(lastRuleCallOrigin, this, 22, inst);
+			case 23: return new VoltageSource_Group_23(lastRuleCallOrigin, this, 23, inst);
+			case 24: return new VoltageSource_Group_22(lastRuleCallOrigin, this, 24, inst);
+			case 25: return new VoltageSource_Group_21(lastRuleCallOrigin, this, 25, inst);
+			case 26: return new VoltageSource_Group_20(lastRuleCallOrigin, this, 26, inst);
+			case 27: return new VoltageSource_Group_19(lastRuleCallOrigin, this, 27, inst);
+			case 28: return new VoltageSource_Group_18(lastRuleCallOrigin, this, 28, inst);
+			case 29: return new VoltageSource_Group_17(lastRuleCallOrigin, this, 29, inst);
+			case 30: return new VoltageSource_Group_16(lastRuleCallOrigin, this, 30, inst);
+			case 31: return new VoltageSource_Group_15(lastRuleCallOrigin, this, 31, inst);
+			case 32: return new VoltageSource_Group_14(lastRuleCallOrigin, this, 32, inst);
+			case 33: return new VoltageSource_Group_13(lastRuleCallOrigin, this, 33, inst);
+			case 34: return new VoltageSource_Group_12(lastRuleCallOrigin, this, 34, inst);
+			case 35: return new VoltageSource_Group_11(lastRuleCallOrigin, this, 35, inst);
+			case 36: return new VoltageSource_LeftCurlyBracketKeyword_10(lastRuleCallOrigin, this, 36, inst);
+			default: return null;
+		}	
+	}
+
+}
+
+
+/************ end Rule VoltageSource ****************/
 
 
 /************ begin Rule WireData ****************
@@ -8026,2053 +13076,270 @@ protected class Spectrum_RightCurlyBracketKeyword_8 extends KeywordToken  {
 /************ end Rule Spectrum ****************/
 
 
-/************ begin Rule Executive ****************
+/************ begin Rule EStructuralFeature ****************
  *
- * Executive returns executive::Executive:
- * 	{executive::Executive} "clear\n" circuits+=Circuit+;
+ * EStructuralFeature returns ecore::EStructuralFeature:
+ * 	EAttribute | EReference;
  *
  **/
 
-// {executive::Executive} "clear\n" circuits+=Circuit+
-protected class Executive_Group extends GroupToken {
-	
-	public Executive_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// EAttribute | EReference
+protected class EStructuralFeature_Alternatives extends AlternativesToken {
+
+	public EStructuralFeature_Alternatives(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getExecutiveAccess().getGroup();
+	public Alternatives getGrammarElement() {
+		return grammarAccess.getEStructuralFeatureAccess().getAlternatives();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Executive_CircuitsAssignment_2(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new EStructuralFeature_EAttributeParserRuleCall_0(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new EStructuralFeature_EReferenceParserRuleCall_1(lastRuleCallOrigin, this, 1, inst);
 			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getExecutiveAccess().getExecutiveAction_0().getType().getClassifier())
+		if(getEObject().eClass() != grammarAccess.getEAttributeAccess().getEAttributeAction_0().getType().getClassifier() && 
+		   getEObject().eClass() != grammarAccess.getEReferenceAccess().getEReferenceAction_0().getType().getClassifier())
 			return null;
 		return eObjectConsumer;
 	}
 
 }
 
-// {executive::Executive}
-protected class Executive_ExecutiveAction_0 extends ActionToken  {
-
-	public Executive_ExecutiveAction_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// EAttribute
+protected class EStructuralFeature_EAttributeParserRuleCall_0 extends RuleCallToken {
+	
+	public EStructuralFeature_EAttributeParserRuleCall_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Action getGrammarElement() {
-		return grammarAccess.getExecutiveAccess().getExecutiveAction_0();
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getEStructuralFeatureAccess().getEAttributeParserRuleCall_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+			case 0: return new EAttribute_Group(this, this, 0, inst);
+			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(!eObjectConsumer.isConsumed()) return null;
+		if(getEObject().eClass() != grammarAccess.getEAttributeAccess().getEAttributeAction_0().getType().getClassifier())
+			return null;
+		if(checkForRecursion(EAttribute_Group.class, eObjectConsumer)) return null;
 		return eObjectConsumer;
 	}
-}
-
-// "clear\n"
-protected class Executive_ClearKeyword_1 extends KeywordToken  {
 	
-	public Executive_ClearKeyword_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getExecutiveAccess().getClearKeyword_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Executive_ExecutiveAction_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// circuits+=Circuit+
-protected class Executive_CircuitsAssignment_2 extends AssignmentToken  {
-	
-	public Executive_CircuitsAssignment_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getExecutiveAccess().getCircuitsAssignment_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group(this, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("circuits",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("circuits");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitRule().getType().getClassifier())) {
-				type = AssignmentType.PARSER_RULE_CALL;
-				element = grammarAccess.getExecutiveAccess().getCircuitsCircuitParserRuleCall_2_0(); 
-				consumed = obj;
-				return param;
-			}
-		}
-		return null;
-	}
-
     @Override
 	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
-		if(value == inst.getEObject() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new Executive_CircuitsAssignment_2(lastRuleCallOrigin, next, actIndex, consumed);
-			case 1: return new Executive_ClearKeyword_1(lastRuleCallOrigin, next, actIndex, consumed);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+// EReference
+protected class EStructuralFeature_EReferenceParserRuleCall_1 extends RuleCallToken {
+	
+	public EStructuralFeature_EReferenceParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+	}
+	
+	@Override
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getEStructuralFeatureAccess().getEReferenceParserRuleCall_1();
+	}
+
+    @Override
+	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+		switch(index) {
+			case 0: return new EReference_Group(this, this, 0, inst);
 			default: return null;
+		}	
+	}
+
+    @Override
+	public IEObjectConsumer tryConsume() {
+		if(getEObject().eClass() != grammarAccess.getEReferenceAccess().getEReferenceAction_0().getType().getClassifier())
+			return null;
+		if(checkForRecursion(EReference_Group.class, eObjectConsumer)) return null;
+		return eObjectConsumer;
+	}
+	
+    @Override
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
 		}	
 	}	
 }
 
 
-/************ end Rule Executive ****************/
+/************ end Rule EStructuralFeature ****************/
 
 
-/************ begin Rule Circuit ****************
+/************ begin Rule EClassifier ****************
  *
- * //	'Executive'
- * //	'{'
- * //		('command' command=EString)?
- * //		('maxCircuits' maxCircuits=EInt)?
- * //		('activeCircuit' activeCircuit=[common::Circuit|EString])?
- * //		('execCommands' execCommands=ExecCommands)?
- * //		('execOptions' execOptions=ExecOptions)?
- * //		('circuits' '{' circuits+=Circuit ( "," circuits+=Circuit)* '}' )?
- * //    '}';
- * Circuit returns common::Circuit:
- * 	solved?="solved"? control_busNameRedefined?="control_busNameRedefined"? "Circuit" name=EString "{" ("numNodes"
- * 	numNodes=EInt)? ("generatorDispatchReference" generatorDispatchReference=EDouble)? ("genMultiplier"
- * 	genMultiplier=EDouble)? ("busNameRedefined" busNameRedefined=EBoolean)? ("loadMultiplier" loadMultiplier=EDouble)?
- * 	("defaultGrowthFactor" defaultGrowthFactor=EDouble)? ("defaultHourMult" defaultHourMult=EDouble)? ("priceSignal"
- * 	priceSignal=EDouble)? //		'solution' solution=[common::Solution|EString]
- * 	("controlQueue" controlQueue=[common::ControlQueue|EString])? ("lines" "(" lines+=[delivery::Line|EString] (","
- * 	lines+=[delivery::Line|EString])* ")")? ("loads" "(" loads+=[conversion::Load|EString] (","
- * 	loads+=[conversion::Load|EString])* ")")? ("shuntCapacitors" "(" shuntCapacitors+=[delivery::Capacitor|EString] (","
- * 	shuntCapacitors+=[delivery::Capacitor|EString])* ")")? ("feeder" "(" feeder+=[common::Feeder|EString] (","
- * 	feeder+=[common::Feeder|EString])* ")")? //		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
- * 	//		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
- * 	//		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
- * 	//		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
- * 	//		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
- * 	//		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
- * 	//		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
- * 	//		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
- * 	//		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
- * 	//		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
- * 	//		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
- * 	"}";
+ * EClassifier returns ecore::EClassifier:
+ * 	EClass | EDataType_Impl | EEnum;
  *
  **/
 
-// solved?="solved"? control_busNameRedefined?="control_busNameRedefined"? "Circuit" name=EString "{" ("numNodes"
-// numNodes=EInt)? ("generatorDispatchReference" generatorDispatchReference=EDouble)? ("genMultiplier"
-// genMultiplier=EDouble)? ("busNameRedefined" busNameRedefined=EBoolean)? ("loadMultiplier" loadMultiplier=EDouble)?
-// ("defaultGrowthFactor" defaultGrowthFactor=EDouble)? ("defaultHourMult" defaultHourMult=EDouble)? ("priceSignal"
-// priceSignal=EDouble)? //		'solution' solution=[common::Solution|EString]
-// ("controlQueue" controlQueue=[common::ControlQueue|EString])? ("lines" "(" lines+=[delivery::Line|EString] (","
-// lines+=[delivery::Line|EString])* ")")? ("loads" "(" loads+=[conversion::Load|EString] (","
-// loads+=[conversion::Load|EString])* ")")? ("shuntCapacitors" "(" shuntCapacitors+=[delivery::Capacitor|EString] (","
-// shuntCapacitors+=[delivery::Capacitor|EString])* ")")? ("feeder" "(" feeder+=[common::Feeder|EString] (","
-// feeder+=[common::Feeder|EString])* ")")? //		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
-// //		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
-// //		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
-// //		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
-// //		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
-// //		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
-// //		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
-// //		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
-// //		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
-// //		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
-// //		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
-// "}"
-protected class Circuit_Group extends GroupToken {
-	
-	public Circuit_Group(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+// EClass | EDataType_Impl | EEnum
+protected class EClassifier_Alternatives extends AlternativesToken {
+
+	public EClassifier_Alternatives(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup();
+	public Alternatives getGrammarElement() {
+		return grammarAccess.getEClassifierAccess().getAlternatives();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Circuit_RightCurlyBracketKeyword_18(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new EClassifier_EClassParserRuleCall_0(lastRuleCallOrigin, this, 0, inst);
+			case 1: return new EClassifier_EDataType_ImplParserRuleCall_1(lastRuleCallOrigin, this, 1, inst);
+			case 2: return new EClassifier_EEnumParserRuleCall_2(lastRuleCallOrigin, this, 2, inst);
 			default: return null;
 		}	
 	}
 
     @Override
 	public IEObjectConsumer tryConsume() {
-		if(getEObject().eClass() != grammarAccess.getCircuitRule().getType().getClassifier())
+		if(getEObject().eClass() != grammarAccess.getEClassAccess().getEClassAction_0().getType().getClassifier() && 
+		   getEObject().eClass() != grammarAccess.getEDataType_ImplAccess().getEDataTypeAction_0().getType().getClassifier() && 
+		   getEObject().eClass() != grammarAccess.getEEnumAccess().getEEnumAction_0().getType().getClassifier())
 			return null;
 		return eObjectConsumer;
 	}
 
 }
 
-// solved?="solved"?
-protected class Circuit_SolvedAssignment_0 extends AssignmentToken  {
+// EClass
+protected class EClassifier_EClassParserRuleCall_0 extends RuleCallToken {
 	
-	public Circuit_SolvedAssignment_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public EClassifier_EClassParserRuleCall_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getSolvedAssignment_0();
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getEClassifierAccess().getEClassParserRuleCall_0();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index, inst);
+			case 0: return new EClass_Group(this, this, 0, inst);
+			default: return null;
 		}	
 	}
 
-    @Override	
+    @Override
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("solved",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("solved");
-		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KEYWORD;
-			element = grammarAccess.getCircuitAccess().getSolvedSolvedKeyword_0_0();
-			return obj;
-		}
-		return null;
+		if(getEObject().eClass() != grammarAccess.getEClassAccess().getEClassAction_0().getType().getClassifier())
+			return null;
+		if(checkForRecursion(EClass_Group.class, eObjectConsumer)) return null;
+		return eObjectConsumer;
 	}
-
+	
+    @Override
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
+		switch(index) {
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
+		}	
+	}	
 }
 
-// control_busNameRedefined?="control_busNameRedefined"?
-protected class Circuit_Control_busNameRedefinedAssignment_1 extends AssignmentToken  {
+// EDataType_Impl
+protected class EClassifier_EDataType_ImplParserRuleCall_1 extends RuleCallToken {
 	
-	public Circuit_Control_busNameRedefinedAssignment_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public EClassifier_EDataType_ImplParserRuleCall_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getControl_busNameRedefinedAssignment_1();
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getEClassifierAccess().getEDataType_ImplParserRuleCall_1();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Circuit_SolvedAssignment_0(lastRuleCallOrigin, this, 0, inst);
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 1, inst);
+			case 0: return new EDataType_Impl_Group(this, this, 0, inst);
+			default: return null;
 		}	
 	}
 
-    @Override	
+    @Override
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("control_busNameRedefined",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("control_busNameRedefined");
-		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KEYWORD;
-			element = grammarAccess.getCircuitAccess().getControl_busNameRedefinedControl_busNameRedefinedKeyword_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-// "Circuit"
-protected class Circuit_CircuitKeyword_2 extends KeywordToken  {
-	
-	public Circuit_CircuitKeyword_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+		if(getEObject().eClass() != grammarAccess.getEDataType_ImplAccess().getEDataTypeAction_0().getType().getClassifier())
+			return null;
+		if(checkForRecursion(EDataType_Impl_Group.class, eObjectConsumer)) return null;
+		return eObjectConsumer;
 	}
 	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getCircuitKeyword_2();
-	}
-
     @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Circuit_Control_busNameRedefinedAssignment_1(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_SolvedAssignment_0(lastRuleCallOrigin, this, 1, inst);
-			default: return lastRuleCallOrigin.createFollowerAfterReturn(this, index, index - 2, inst);
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
 		}	
-	}
-
+	}	
 }
 
-// name=EString
-protected class Circuit_NameAssignment_3 extends AssignmentToken  {
+// EEnum
+protected class EClassifier_EEnumParserRuleCall_2 extends RuleCallToken {
 	
-	public Circuit_NameAssignment_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
+	public EClassifier_EEnumParserRuleCall_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
 		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
 	}
 	
 	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getNameAssignment_3();
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getEClassifierAccess().getEEnumParserRuleCall_2();
 	}
 
     @Override
 	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Circuit_CircuitKeyword_2(lastRuleCallOrigin, this, 0, inst);
+			case 0: return new EEnum_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}
 
-    @Override	
+    @Override
 	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("name",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("name");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getNameEStringParserRuleCall_3_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getNameEStringParserRuleCall_3_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-// "{"
-protected class Circuit_LeftCurlyBracketKeyword_4 extends KeywordToken  {
-	
-	public Circuit_LeftCurlyBracketKeyword_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
+		if(getEObject().eClass() != grammarAccess.getEEnumAccess().getEEnumAction_0().getType().getClassifier())
+			return null;
+		if(checkForRecursion(EEnum_Group.class, eObjectConsumer)) return null;
+		return eObjectConsumer;
 	}
 	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLeftCurlyBracketKeyword_4();
-	}
-
     @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
+	public AbstractToken createFollowerAfterReturn(AbstractToken next,	int actIndex, int index, IEObjectConsumer inst) {
 		switch(index) {
-			case 0: return new Circuit_NameAssignment_3(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
+			default: return lastRuleCallOrigin.createFollowerAfterReturn(next, actIndex , index, inst);
 		}	
-	}
-
-}
-
-// ("numNodes" numNodes=EInt)?
-protected class Circuit_Group_5 extends GroupToken {
-	
-	public Circuit_Group_5(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_5();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_NumNodesAssignment_5_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "numNodes"
-protected class Circuit_NumNodesKeyword_5_0 extends KeywordToken  {
-	
-	public Circuit_NumNodesKeyword_5_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getNumNodesKeyword_5_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// numNodes=EInt
-protected class Circuit_NumNodesAssignment_5_1 extends AssignmentToken  {
-	
-	public Circuit_NumNodesAssignment_5_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getNumNodesAssignment_5_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_NumNodesKeyword_5_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("numNodes",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("numNodes");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getNumNodesEIntParserRuleCall_5_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getNumNodesEIntParserRuleCall_5_1_0();
-			return obj;
-		}
-		return null;
-	}
-
+	}	
 }
 
 
-// ("generatorDispatchReference" generatorDispatchReference=EDouble)?
-protected class Circuit_Group_6 extends GroupToken {
-	
-	public Circuit_Group_6(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_6();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_GeneratorDispatchReferenceAssignment_6_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "generatorDispatchReference"
-protected class Circuit_GeneratorDispatchReferenceKeyword_6_0 extends KeywordToken  {
-	
-	public Circuit_GeneratorDispatchReferenceKeyword_6_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGeneratorDispatchReferenceKeyword_6_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_5(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// generatorDispatchReference=EDouble
-protected class Circuit_GeneratorDispatchReferenceAssignment_6_1 extends AssignmentToken  {
-	
-	public Circuit_GeneratorDispatchReferenceAssignment_6_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGeneratorDispatchReferenceAssignment_6_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_GeneratorDispatchReferenceKeyword_6_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("generatorDispatchReference",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("generatorDispatchReference");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getGeneratorDispatchReferenceEDoubleParserRuleCall_6_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getGeneratorDispatchReferenceEDoubleParserRuleCall_6_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("genMultiplier" genMultiplier=EDouble)?
-protected class Circuit_Group_7 extends GroupToken {
-	
-	public Circuit_Group_7(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_7();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_GenMultiplierAssignment_7_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "genMultiplier"
-protected class Circuit_GenMultiplierKeyword_7_0 extends KeywordToken  {
-	
-	public Circuit_GenMultiplierKeyword_7_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGenMultiplierKeyword_7_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_6(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_5(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 2, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// genMultiplier=EDouble
-protected class Circuit_GenMultiplierAssignment_7_1 extends AssignmentToken  {
-	
-	public Circuit_GenMultiplierAssignment_7_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGenMultiplierAssignment_7_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_GenMultiplierKeyword_7_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("genMultiplier",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("genMultiplier");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getGenMultiplierEDoubleParserRuleCall_7_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getGenMultiplierEDoubleParserRuleCall_7_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("busNameRedefined" busNameRedefined=EBoolean)?
-protected class Circuit_Group_8 extends GroupToken {
-	
-	public Circuit_Group_8(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_8();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_BusNameRedefinedAssignment_8_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "busNameRedefined"
-protected class Circuit_BusNameRedefinedKeyword_8_0 extends KeywordToken  {
-	
-	public Circuit_BusNameRedefinedKeyword_8_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getBusNameRedefinedKeyword_8_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_7(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_6(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_5(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 3, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// busNameRedefined=EBoolean
-protected class Circuit_BusNameRedefinedAssignment_8_1 extends AssignmentToken  {
-	
-	public Circuit_BusNameRedefinedAssignment_8_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getBusNameRedefinedAssignment_8_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_BusNameRedefinedKeyword_8_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("busNameRedefined",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("busNameRedefined");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getBusNameRedefinedEBooleanParserRuleCall_8_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getBusNameRedefinedEBooleanParserRuleCall_8_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("loadMultiplier" loadMultiplier=EDouble)?
-protected class Circuit_Group_9 extends GroupToken {
-	
-	public Circuit_Group_9(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_9();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LoadMultiplierAssignment_9_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "loadMultiplier"
-protected class Circuit_LoadMultiplierKeyword_9_0 extends KeywordToken  {
-	
-	public Circuit_LoadMultiplierKeyword_9_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLoadMultiplierKeyword_9_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_8(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_7(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_6(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_5(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 4, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// loadMultiplier=EDouble
-protected class Circuit_LoadMultiplierAssignment_9_1 extends AssignmentToken  {
-	
-	public Circuit_LoadMultiplierAssignment_9_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLoadMultiplierAssignment_9_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LoadMultiplierKeyword_9_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("loadMultiplier",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("loadMultiplier");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getLoadMultiplierEDoubleParserRuleCall_9_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getLoadMultiplierEDoubleParserRuleCall_9_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("defaultGrowthFactor" defaultGrowthFactor=EDouble)?
-protected class Circuit_Group_10 extends GroupToken {
-	
-	public Circuit_Group_10(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_10();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_DefaultGrowthFactorAssignment_10_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "defaultGrowthFactor"
-protected class Circuit_DefaultGrowthFactorKeyword_10_0 extends KeywordToken  {
-	
-	public Circuit_DefaultGrowthFactorKeyword_10_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getDefaultGrowthFactorKeyword_10_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_9(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_8(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_7(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_6(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_5(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 5, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// defaultGrowthFactor=EDouble
-protected class Circuit_DefaultGrowthFactorAssignment_10_1 extends AssignmentToken  {
-	
-	public Circuit_DefaultGrowthFactorAssignment_10_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getDefaultGrowthFactorAssignment_10_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_DefaultGrowthFactorKeyword_10_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("defaultGrowthFactor",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("defaultGrowthFactor");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getDefaultGrowthFactorEDoubleParserRuleCall_10_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getDefaultGrowthFactorEDoubleParserRuleCall_10_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("defaultHourMult" defaultHourMult=EDouble)?
-protected class Circuit_Group_11 extends GroupToken {
-	
-	public Circuit_Group_11(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_11();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_DefaultHourMultAssignment_11_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "defaultHourMult"
-protected class Circuit_DefaultHourMultKeyword_11_0 extends KeywordToken  {
-	
-	public Circuit_DefaultHourMultKeyword_11_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getDefaultHourMultKeyword_11_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_10(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_9(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_8(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_7(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_6(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_5(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 6, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// defaultHourMult=EDouble
-protected class Circuit_DefaultHourMultAssignment_11_1 extends AssignmentToken  {
-	
-	public Circuit_DefaultHourMultAssignment_11_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getDefaultHourMultAssignment_11_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_DefaultHourMultKeyword_11_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("defaultHourMult",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("defaultHourMult");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getDefaultHourMultEDoubleParserRuleCall_11_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getDefaultHourMultEDoubleParserRuleCall_11_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("priceSignal" priceSignal=EDouble)?
-protected class Circuit_Group_12 extends GroupToken {
-	
-	public Circuit_Group_12(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_12();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_PriceSignalAssignment_12_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "priceSignal"
-protected class Circuit_PriceSignalKeyword_12_0 extends KeywordToken  {
-	
-	public Circuit_PriceSignalKeyword_12_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getPriceSignalKeyword_12_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_11(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_10(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_9(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_8(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_7(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_6(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_5(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 7, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// priceSignal=EDouble
-protected class Circuit_PriceSignalAssignment_12_1 extends AssignmentToken  {
-	
-	public Circuit_PriceSignalAssignment_12_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getPriceSignalAssignment_12_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_PriceSignalKeyword_12_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("priceSignal",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("priceSignal");
-		if(valueSerializer.isValid(obj.getEObject(), grammarAccess.getCircuitAccess().getPriceSignalEDoubleParserRuleCall_12_1_0(), value, null)) {
-			type = AssignmentType.DATATYPE_RULE_CALL;
-			element = grammarAccess.getCircuitAccess().getPriceSignalEDoubleParserRuleCall_12_1_0();
-			return obj;
-		}
-		return null;
-	}
-
-}
-
-
-// ("controlQueue" controlQueue=[common::ControlQueue|EString])?
-protected class Circuit_Group_13 extends GroupToken {
-	
-	public Circuit_Group_13(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_13();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_ControlQueueAssignment_13_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "controlQueue"
-protected class Circuit_ControlQueueKeyword_13_0 extends KeywordToken  {
-	
-	public Circuit_ControlQueueKeyword_13_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getControlQueueKeyword_13_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_12(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_11(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_10(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_9(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_8(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_7(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_6(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_5(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 8, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// controlQueue=[common::ControlQueue|EString]
-protected class Circuit_ControlQueueAssignment_13_1 extends AssignmentToken  {
-	
-	public Circuit_ControlQueueAssignment_13_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getControlQueueAssignment_13_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_ControlQueueKeyword_13_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("controlQueue",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("controlQueue");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getControlQueueControlQueueCrossReference_13_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getControlQueueControlQueueCrossReference_13_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// ("lines" "(" lines+=[delivery::Line|EString] ("," lines+=[delivery::Line|EString])* ")")?
-protected class Circuit_Group_14 extends GroupToken {
-	
-	public Circuit_Group_14(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_14();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_RightParenthesisKeyword_14_4(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "lines"
-protected class Circuit_LinesKeyword_14_0 extends KeywordToken  {
-	
-	public Circuit_LinesKeyword_14_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLinesKeyword_14_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_13(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_12(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_11(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_10(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_9(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_8(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_7(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_6(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_Group_5(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 9, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "("
-protected class Circuit_LeftParenthesisKeyword_14_1 extends KeywordToken  {
-	
-	public Circuit_LeftParenthesisKeyword_14_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLeftParenthesisKeyword_14_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LinesKeyword_14_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// lines+=[delivery::Line|EString]
-protected class Circuit_LinesAssignment_14_2 extends AssignmentToken  {
-	
-	public Circuit_LinesAssignment_14_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLinesAssignment_14_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LeftParenthesisKeyword_14_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("lines",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("lines");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getLinesLineCrossReference_14_2_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getLinesLineCrossReference_14_2_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-// ("," lines+=[delivery::Line|EString])*
-protected class Circuit_Group_14_3 extends GroupToken {
-	
-	public Circuit_Group_14_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_14_3();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LinesAssignment_14_3_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// ","
-protected class Circuit_CommaKeyword_14_3_0 extends KeywordToken  {
-	
-	public Circuit_CommaKeyword_14_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getCommaKeyword_14_3_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_14_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_LinesAssignment_14_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// lines+=[delivery::Line|EString]
-protected class Circuit_LinesAssignment_14_3_1 extends AssignmentToken  {
-	
-	public Circuit_LinesAssignment_14_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLinesAssignment_14_3_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_CommaKeyword_14_3_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("lines",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("lines");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getLinesLineCrossReference_14_3_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getLinesLineCrossReference_14_3_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// ")"
-protected class Circuit_RightParenthesisKeyword_14_4 extends KeywordToken  {
-	
-	public Circuit_RightParenthesisKeyword_14_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getRightParenthesisKeyword_14_4();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_14_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_LinesAssignment_14_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
-// ("loads" "(" loads+=[conversion::Load|EString] ("," loads+=[conversion::Load|EString])* ")")?
-protected class Circuit_Group_15 extends GroupToken {
-	
-	public Circuit_Group_15(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_15();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_RightParenthesisKeyword_15_4(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "loads"
-protected class Circuit_LoadsKeyword_15_0 extends KeywordToken  {
-	
-	public Circuit_LoadsKeyword_15_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLoadsKeyword_15_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_14(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_13(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_12(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_11(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_10(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_9(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_8(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_7(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_Group_6(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new Circuit_Group_5(lastRuleCallOrigin, this, 9, inst);
-			case 10: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 10, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "("
-protected class Circuit_LeftParenthesisKeyword_15_1 extends KeywordToken  {
-	
-	public Circuit_LeftParenthesisKeyword_15_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLeftParenthesisKeyword_15_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LoadsKeyword_15_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// loads+=[conversion::Load|EString]
-protected class Circuit_LoadsAssignment_15_2 extends AssignmentToken  {
-	
-	public Circuit_LoadsAssignment_15_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLoadsAssignment_15_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LeftParenthesisKeyword_15_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("loads",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("loads");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getLoadsLoadCrossReference_15_2_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getLoadsLoadCrossReference_15_2_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-// ("," loads+=[conversion::Load|EString])*
-protected class Circuit_Group_15_3 extends GroupToken {
-	
-	public Circuit_Group_15_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_15_3();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LoadsAssignment_15_3_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// ","
-protected class Circuit_CommaKeyword_15_3_0 extends KeywordToken  {
-	
-	public Circuit_CommaKeyword_15_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getCommaKeyword_15_3_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_15_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_LoadsAssignment_15_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// loads+=[conversion::Load|EString]
-protected class Circuit_LoadsAssignment_15_3_1 extends AssignmentToken  {
-	
-	public Circuit_LoadsAssignment_15_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLoadsAssignment_15_3_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_CommaKeyword_15_3_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("loads",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("loads");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getLoadsLoadCrossReference_15_3_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getLoadsLoadCrossReference_15_3_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// ")"
-protected class Circuit_RightParenthesisKeyword_15_4 extends KeywordToken  {
-	
-	public Circuit_RightParenthesisKeyword_15_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getRightParenthesisKeyword_15_4();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_15_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_LoadsAssignment_15_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
-// ("shuntCapacitors" "(" shuntCapacitors+=[delivery::Capacitor|EString] (","
-// shuntCapacitors+=[delivery::Capacitor|EString])* ")")?
-protected class Circuit_Group_16 extends GroupToken {
-	
-	public Circuit_Group_16(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_16();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_RightParenthesisKeyword_16_4(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "shuntCapacitors"
-protected class Circuit_ShuntCapacitorsKeyword_16_0 extends KeywordToken  {
-	
-	public Circuit_ShuntCapacitorsKeyword_16_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getShuntCapacitorsKeyword_16_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_15(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_14(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_13(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_12(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_11(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_10(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_9(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_8(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_Group_7(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new Circuit_Group_6(lastRuleCallOrigin, this, 9, inst);
-			case 10: return new Circuit_Group_5(lastRuleCallOrigin, this, 10, inst);
-			case 11: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 11, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "("
-protected class Circuit_LeftParenthesisKeyword_16_1 extends KeywordToken  {
-	
-	public Circuit_LeftParenthesisKeyword_16_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLeftParenthesisKeyword_16_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_ShuntCapacitorsKeyword_16_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// shuntCapacitors+=[delivery::Capacitor|EString]
-protected class Circuit_ShuntCapacitorsAssignment_16_2 extends AssignmentToken  {
-	
-	public Circuit_ShuntCapacitorsAssignment_16_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getShuntCapacitorsAssignment_16_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LeftParenthesisKeyword_16_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("shuntCapacitors",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("shuntCapacitors");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getShuntCapacitorsCapacitorCrossReference_16_2_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getShuntCapacitorsCapacitorCrossReference_16_2_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-// ("," shuntCapacitors+=[delivery::Capacitor|EString])*
-protected class Circuit_Group_16_3 extends GroupToken {
-	
-	public Circuit_Group_16_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_16_3();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_ShuntCapacitorsAssignment_16_3_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// ","
-protected class Circuit_CommaKeyword_16_3_0 extends KeywordToken  {
-	
-	public Circuit_CommaKeyword_16_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getCommaKeyword_16_3_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_16_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_ShuntCapacitorsAssignment_16_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// shuntCapacitors+=[delivery::Capacitor|EString]
-protected class Circuit_ShuntCapacitorsAssignment_16_3_1 extends AssignmentToken  {
-	
-	public Circuit_ShuntCapacitorsAssignment_16_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getShuntCapacitorsAssignment_16_3_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_CommaKeyword_16_3_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("shuntCapacitors",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("shuntCapacitors");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getShuntCapacitorsCapacitorCrossReference_16_3_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getShuntCapacitorsCapacitorCrossReference_16_3_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// ")"
-protected class Circuit_RightParenthesisKeyword_16_4 extends KeywordToken  {
-	
-	public Circuit_RightParenthesisKeyword_16_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getRightParenthesisKeyword_16_4();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_16_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_ShuntCapacitorsAssignment_16_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
-// ("feeder" "(" feeder+=[common::Feeder|EString] ("," feeder+=[common::Feeder|EString])* ")")?
-protected class Circuit_Group_17 extends GroupToken {
-	
-	public Circuit_Group_17(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_17();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_RightParenthesisKeyword_17_4(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "feeder"
-protected class Circuit_FeederKeyword_17_0 extends KeywordToken  {
-	
-	public Circuit_FeederKeyword_17_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getFeederKeyword_17_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_16(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_15(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_14(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_13(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_12(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_11(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_10(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_9(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_Group_8(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new Circuit_Group_7(lastRuleCallOrigin, this, 9, inst);
-			case 10: return new Circuit_Group_6(lastRuleCallOrigin, this, 10, inst);
-			case 11: return new Circuit_Group_5(lastRuleCallOrigin, this, 11, inst);
-			case 12: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 12, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// "("
-protected class Circuit_LeftParenthesisKeyword_17_1 extends KeywordToken  {
-	
-	public Circuit_LeftParenthesisKeyword_17_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getLeftParenthesisKeyword_17_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_FeederKeyword_17_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// feeder+=[common::Feeder|EString]
-protected class Circuit_FeederAssignment_17_2 extends AssignmentToken  {
-	
-	public Circuit_FeederAssignment_17_2(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getFeederAssignment_17_2();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_LeftParenthesisKeyword_17_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("feeder",true)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("feeder");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getFeederFeederCrossReference_17_2_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getFeederFeederCrossReference_17_2_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-// ("," feeder+=[common::Feeder|EString])*
-protected class Circuit_Group_17_3 extends GroupToken {
-	
-	public Circuit_Group_17_3(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Group getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getGroup_17_3();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_FeederAssignment_17_3_1(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// ","
-protected class Circuit_CommaKeyword_17_3_0 extends KeywordToken  {
-	
-	public Circuit_CommaKeyword_17_3_0(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getCommaKeyword_17_3_0();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_17_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_FeederAssignment_17_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-// feeder+=[common::Feeder|EString]
-protected class Circuit_FeederAssignment_17_3_1 extends AssignmentToken  {
-	
-	public Circuit_FeederAssignment_17_3_1(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Assignment getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getFeederAssignment_17_3_1();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_CommaKeyword_17_3_0(lastRuleCallOrigin, this, 0, inst);
-			default: return null;
-		}	
-	}
-
-    @Override	
-	public IEObjectConsumer tryConsume() {
-		if((value = eObjectConsumer.getConsumable("feeder",false)) == null) return null;
-		IEObjectConsumer obj = eObjectConsumer.cloneAndConsume("feeder");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IEObjectConsumer param = createEObjectConsumer((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getCircuitAccess().getFeederFeederCrossReference_17_3_1_0().getType().getClassifier())) {
-				type = AssignmentType.CROSS_REFERENCE;
-				element = grammarAccess.getCircuitAccess().getFeederFeederCrossReference_17_3_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// ")"
-protected class Circuit_RightParenthesisKeyword_17_4 extends KeywordToken  {
-	
-	public Circuit_RightParenthesisKeyword_17_4(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getRightParenthesisKeyword_17_4();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_17_3(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_FeederAssignment_17_2(lastRuleCallOrigin, this, 1, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
-// //		('busList' '{' busList+=Bus ( "," busList+=Bus)* '}' )?
-// //		('faults' '{' faults+=Fault ( "," faults+=Fault)* '}' )?
-// //		('voltageSources' '{' voltageSources+=VoltageSource ( "," voltageSources+=VoltageSource)* '}' )?
-// //		('currentSources' '{' currentSources+=CurrentSource ( "," currentSources+=CurrentSource)* '}' )?
-// //		('sensors' '{' sensors+=Sensor ( "," sensors+=Sensor)* '}' )?
-// //		('monitors' '{' monitors+=Monitor ( "," monitors+=Monitor)* '}' )?
-// //		('energyMeters' '{' energyMeters+=EnergyMeter ( "," energyMeters+=EnergyMeter)* '}' )?
-// //		('generators' '{' generators+=Generator ( "," generators+=Generator)* '}' )?
-// //		('transformers' '{' transformers+=Transformer ( "," transformers+=Transformer)* '}' )?
-// //		('capControls' '{' capControls+=CapacitorControl ( "," capControls+=CapacitorControl)* '}' )?
-// //		('regControls' '{' regControls+=RegulatorControl ( "," regControls+=RegulatorControl)* '}' )?
-// "}"
-protected class Circuit_RightCurlyBracketKeyword_18 extends KeywordToken  {
-	
-	public Circuit_RightCurlyBracketKeyword_18(AbstractToken lastRuleCallOrigin, AbstractToken next, int transitionIndex, IEObjectConsumer eObjectConsumer) {
-		super(lastRuleCallOrigin, next, transitionIndex, eObjectConsumer);
-	}
-	
-	@Override
-	public Keyword getGrammarElement() {
-		return grammarAccess.getCircuitAccess().getRightCurlyBracketKeyword_18();
-	}
-
-    @Override
-	public AbstractToken createFollower(int index, IEObjectConsumer inst) {
-		switch(index) {
-			case 0: return new Circuit_Group_17(lastRuleCallOrigin, this, 0, inst);
-			case 1: return new Circuit_Group_16(lastRuleCallOrigin, this, 1, inst);
-			case 2: return new Circuit_Group_15(lastRuleCallOrigin, this, 2, inst);
-			case 3: return new Circuit_Group_14(lastRuleCallOrigin, this, 3, inst);
-			case 4: return new Circuit_Group_13(lastRuleCallOrigin, this, 4, inst);
-			case 5: return new Circuit_Group_12(lastRuleCallOrigin, this, 5, inst);
-			case 6: return new Circuit_Group_11(lastRuleCallOrigin, this, 6, inst);
-			case 7: return new Circuit_Group_10(lastRuleCallOrigin, this, 7, inst);
-			case 8: return new Circuit_Group_9(lastRuleCallOrigin, this, 8, inst);
-			case 9: return new Circuit_Group_8(lastRuleCallOrigin, this, 9, inst);
-			case 10: return new Circuit_Group_7(lastRuleCallOrigin, this, 10, inst);
-			case 11: return new Circuit_Group_6(lastRuleCallOrigin, this, 11, inst);
-			case 12: return new Circuit_Group_5(lastRuleCallOrigin, this, 12, inst);
-			case 13: return new Circuit_LeftCurlyBracketKeyword_4(lastRuleCallOrigin, this, 13, inst);
-			default: return null;
-		}	
-	}
-
-}
-
-
-/************ end Rule Circuit ****************/
+/************ end Rule EClassifier ****************/
 
 
 
