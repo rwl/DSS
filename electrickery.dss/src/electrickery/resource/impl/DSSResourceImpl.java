@@ -7,18 +7,29 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 
+import electrickery.ElectrickeryPackage;
 import electrickery.common.Circuit;
 import electrickery.common.CircuitElement;
+import electrickery.common.CommonPackage;
+import electrickery.common.impl.CommonPackageImpl;
+import electrickery.control.ControlPackage;
+import electrickery.conversion.ConversionPackage;
 import electrickery.resource.DSSResource;
 
 /**
@@ -29,13 +40,31 @@ public class DSSResourceImpl extends ResourceImpl implements
         DSSResource {
 
     protected EList<Circuit> circuits = new BasicEList<Circuit>(1);
+
+    /**
+     * The last new object.
+     */
     protected EObject activeObject;
+
+    /**
+     * Arguments may be delimited by commas or whitespace (spaces or tabs).
+     */
     protected static final String DELIM = "[,\\s]+";
+
+    /**
+     * The map from name to EClass.
+     */
+    protected Map<String, EClass> eNameToEClassMap;
+
+    protected EList<EPackage> electrickeryPackages;
 
     /**
      *
      */
     public DSSResourceImpl() {
+        eNameToEClassMap = new HashMap<String, EClass>(32);
+        for (EPackage ePackage : ElectrickeryPackage.eINSTANCE.getESubpackages())
+            mapEClassNames(ePackage);
     }
 
     /**
@@ -160,7 +189,6 @@ public class DSSResourceImpl extends ResourceImpl implements
 
     }
 
-
     /**
      * Opens a specified terminal conductor switch.
      *
@@ -170,6 +198,11 @@ public class DSSResourceImpl extends ResourceImpl implements
 
     }
 
+    /**
+     *
+     * @param scanner
+     * @return
+     */
     protected String[] parseParam(Scanner scanner) {
         String param = scanner.next();
         if (param.startsWith("\"") || param.startsWith("\'")) {
@@ -186,6 +219,11 @@ public class DSSResourceImpl extends ResourceImpl implements
         return parts;
     }
 
+    /**
+     *
+     * @param cls
+     * @return
+     */
     protected String[] parseClassAndName(String cls) {
         String[] parts = cls.split("."); // TODO: Check Regex.
         if (parts.length < 1 || parts.length > 2)
@@ -194,8 +232,32 @@ public class DSSResourceImpl extends ResourceImpl implements
         return parts;
     }
 
+    /**
+     *
+     * @param name
+     */
     protected void createFromName(String name) {
-        this.activeObject = null;
+        EClass cls = eNameToEClassMap.get(name);
+        EObject eObject = cls.getEPackage().getEFactoryInstance().create(cls);
+        activeObject = eObject;
+    }
+
+    /**
+     *
+     * @param ePackage
+     * @param name
+     * @return
+     */
+    public void mapEClassNames(EPackage ePackage) {
+        List<EClassifier> eClassifiers = ePackage.getEClassifiers();
+        for (EClassifier eClassifier : eClassifiers) {
+            if (eClassifier instanceof EClass) {
+                if (!((EClass) eClassifier).isAbstract())
+                    // Ignore case.
+                    eNameToEClassMap.put(eClassifier.getName().toLowerCase(),
+                            (EClass) eClassifier);
+            }
+        }
     }
 
 }
