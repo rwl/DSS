@@ -82,6 +82,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.general.LineCode#getXg <em>Xg</em>}</li>
  *   <li>{@link electrickery.general.LineCode#getRho <em>Rho</em>}</li>
  *   <li>{@link electrickery.general.LineCode#getNeutral <em>Neutral</em>}</li>
+ *   <li>{@link electrickery.general.LineCode#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -659,5 +660,31 @@ public interface LineCode extends EObject {
 	 * @generated
 	 */
 	void setNeutral(int value);
+
+				/**
+	 * Returns the value of the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Like</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Like</em>' reference.
+	 * @see #setLike(LineCode)
+	 * @see electrickery.general.GeneralPackage#getLineCode_Like()
+	 * @model
+	 * @generated
+	 */
+	LineCode getLike();
+
+				/**
+	 * Sets the value of the '{@link electrickery.general.LineCode#getLike <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Like</em>' reference.
+	 * @see #getLike()
+	 * @generated
+	 */
+	void setLike(LineCode value);
 
 } // LineCode

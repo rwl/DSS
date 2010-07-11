@@ -23,6 +23,7 @@ import electrickery.general.GeneralPackage;
 import electrickery.general.GrowthShape;
 import electrickery.general.LineCode;
 import electrickery.general.LineGeometry;
+import electrickery.general.LineSpacing;
 import electrickery.general.LoadShape;
 import electrickery.general.Spectrum;
 import electrickery.general.TimeCurrentCurve;
@@ -75,6 +76,13 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
     private EClass lineGeometryEClass = null;
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass lineSpacingEClass = null;
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -521,6 +529,15 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 
 				/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLineCode_Like() {
+		return (EReference)lineCodeEClass.getEStructuralFeatures().get(22);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -557,28 +574,37 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 
     /**
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EReference getLineGeometry_Wire() {
+	public EReference getLineGeometry_Wire() {
 		return (EReference)lineGeometryEClass.getEStructuralFeatures().get(3);
 	}
 
-    /**
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLineGeometry_Wires() {
+		return (EReference)lineGeometryEClass.getEStructuralFeatures().get(11);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLineGeometry_Spacing() {
+		return (EReference)lineGeometryEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EAttribute getLineGeometry_X() {
-		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(4);
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getLineGeometry_H() {
 		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(5);
 	}
 
@@ -587,7 +613,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getLineGeometry_Units() {
+    public EAttribute getLineGeometry_H() {
 		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -596,7 +622,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getLineGeometry_NormAmps() {
+    public EAttribute getLineGeometry_Units() {
 		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -605,7 +631,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getLineGeometry_EmergAmps() {
+    public EAttribute getLineGeometry_NormAmps() {
 		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(8);
 	}
 
@@ -614,11 +640,83 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getLineGeometry_Reduce() {
+    public EAttribute getLineGeometry_EmergAmps() {
 		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(9);
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getLineGeometry_Reduce() {
+		return (EAttribute)lineGeometryEClass.getEStructuralFeatures().get(10);
+	}
+
+    /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getLineSpacing() {
+		return lineSpacingEClass;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLineSpacing_NConds() {
+		return (EAttribute)lineSpacingEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLineSpacing_NPhases() {
+		return (EAttribute)lineSpacingEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLineSpacing_X() {
+		return (EAttribute)lineSpacingEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLineSpacing_H() {
+		return (EAttribute)lineSpacingEClass.getEStructuralFeatures().get(3);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getLineSpacing_Units() {
+		return (EAttribute)lineSpacingEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLineSpacing_Like() {
+		return (EReference)lineSpacingEClass.getEStructuralFeatures().get(5);
+	}
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -973,18 +1071,29 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		createEAttribute(lineCodeEClass, LINE_CODE__XG);
 		createEAttribute(lineCodeEClass, LINE_CODE__RHO);
 		createEAttribute(lineCodeEClass, LINE_CODE__NEUTRAL);
+		createEReference(lineCodeEClass, LINE_CODE__LIKE);
 
 		lineGeometryEClass = createEClass(LINE_GEOMETRY);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__NCONDS);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__NPHASES);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__COND);
 		createEReference(lineGeometryEClass, LINE_GEOMETRY__WIRE);
+		createEReference(lineGeometryEClass, LINE_GEOMETRY__SPACING);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__X);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__H);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__UNITS);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__NORM_AMPS);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__EMERG_AMPS);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__REDUCE);
+		createEReference(lineGeometryEClass, LINE_GEOMETRY__WIRES);
+
+		lineSpacingEClass = createEClass(LINE_SPACING);
+		createEAttribute(lineSpacingEClass, LINE_SPACING__NCONDS);
+		createEAttribute(lineSpacingEClass, LINE_SPACING__NPHASES);
+		createEAttribute(lineSpacingEClass, LINE_SPACING__X);
+		createEAttribute(lineSpacingEClass, LINE_SPACING__H);
+		createEAttribute(lineSpacingEClass, LINE_SPACING__UNITS);
+		createEReference(lineSpacingEClass, LINE_SPACING__LIKE);
 
 		loadShapeEClass = createEClass(LOAD_SHAPE);
 		createEAttribute(loadShapeEClass, LOAD_SHAPE__NPTS);
@@ -1101,18 +1210,29 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		initEAttribute(getLineCode_Xg(), ecorePackage.getEDouble(), "xg", null, 0, 1, LineCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineCode_Rho(), ecorePackage.getEDouble(), "rho", "100.0", 0, 1, LineCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineCode_Neutral(), ecorePackage.getEInt(), "neutral", null, 0, 1, LineCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLineCode_Like(), this.getLineCode(), null, "like", null, 0, 1, LineCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lineGeometryEClass, LineGeometry.class, "LineGeometry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLineGeometry_NConds(), ecorePackage.getEInt(), "nConds", "3", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_NPhases(), ecorePackage.getEInt(), "nPhases", "3", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_Cond(), ecorePackage.getEInt(), "cond", "1", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getLineGeometry_Wire(), this.getWireData(), null, "wire", null, 1, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLineGeometry_Spacing(), this.getLineSpacing(), null, "spacing", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_X(), ecorePackage.getEDouble(), "x", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_H(), ecorePackage.getEDouble(), "h", "32.0", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_Units(), theCommonPackage.getlengthUnit(), "units", "ft", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_NormAmps(), ecorePackage.getEDouble(), "normAmps", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_EmergAmps(), ecorePackage.getEDouble(), "emergAmps", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_Reduce(), ecorePackage.getEBoolean(), "reduce", "false", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLineGeometry_Wires(), this.getWireData(), null, "wires", null, 0, -1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(lineSpacingEClass, LineSpacing.class, "LineSpacing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getLineSpacing_NConds(), ecorePackage.getEInt(), "nConds", null, 0, 1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLineSpacing_NPhases(), ecorePackage.getEInt(), "nPhases", null, 0, 1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLineSpacing_X(), ecorePackage.getEDouble(), "x", null, 0, -1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLineSpacing_H(), ecorePackage.getEDouble(), "h", null, 0, -1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getLineSpacing_Units(), theCommonPackage.getlengthUnit(), "units", null, 0, 1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLineSpacing_Like(), this.getLineSpacing(), null, "like", null, 0, 1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(loadShapeEClass, LoadShape.class, "LoadShape", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLoadShape_NPts(), ecorePackage.getEInt(), "nPts", null, 0, 1, LoadShape.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1164,7 +1284,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 	 * @generated
 	 */
     protected void createNullAnnotations() {
-		String source = null;																																																																
+		String source = null;																																																																					
 		addAnnotation
 		  (getTimeCurrentCurve_NPts(), 
 		   source, 

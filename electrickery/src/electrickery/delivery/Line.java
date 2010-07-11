@@ -9,6 +9,9 @@ package electrickery.delivery;
 import cern.colt.matrix.tdouble.DoubleMatrix2D;
 
 import electrickery.common.lengthUnit;
+import electrickery.general.LineSpacing;
+import electrickery.general.WireData;
+import org.eclipse.emf.common.util.EList;
 
 /**
  * <!-- begin-user-doc -->
@@ -81,6 +84,8 @@ import electrickery.common.lengthUnit;
  *   <li>{@link electrickery.delivery.Line#getRho <em>Rho</em>}</li>
  *   <li>{@link electrickery.delivery.Line#getGeometry <em>Geometry</em>}</li>
  *   <li>{@link electrickery.delivery.Line#getUnits <em>Units</em>}</li>
+ *   <li>{@link electrickery.delivery.Line#getSpacing <em>Spacing</em>}</li>
+ *   <li>{@link electrickery.delivery.Line#getWires <em>Wires</em>}</li>
  * </ul>
  * </p>
  *
@@ -572,5 +577,47 @@ public interface Line extends PowerDeliveryElement {
 	 * @generated
 	 */
     void setUnits(lengthUnit value);
+
+				/**
+	 * Returns the value of the '<em><b>Spacing</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Spacing</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Spacing</em>' reference.
+	 * @see #setSpacing(LineSpacing)
+	 * @see electrickery.delivery.DeliveryPackage#getLine_Spacing()
+	 * @model
+	 * @generated
+	 */
+	LineSpacing getSpacing();
+
+				/**
+	 * Sets the value of the '{@link electrickery.delivery.Line#getSpacing <em>Spacing</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Spacing</em>' reference.
+	 * @see #getSpacing()
+	 * @generated
+	 */
+	void setSpacing(LineSpacing value);
+
+				/**
+	 * Returns the value of the '<em><b>Wires</b></em>' reference list.
+	 * The list contents are of type {@link electrickery.general.WireData}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Wires</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Wires</em>' reference list.
+	 * @see electrickery.delivery.DeliveryPackage#getLine_Wires()
+	 * @model
+	 * @generated
+	 */
+	EList<WireData> getWires();
 
 } // Line

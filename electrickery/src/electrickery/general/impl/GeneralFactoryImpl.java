@@ -64,6 +64,7 @@ public class GeneralFactoryImpl extends EFactoryImpl implements GeneralFactory {
 			case GeneralPackage.GROWTH_SHAPE: return createGrowthShape();
 			case GeneralPackage.LINE_CODE: return createLineCode();
 			case GeneralPackage.LINE_GEOMETRY: return createLineGeometry();
+			case GeneralPackage.LINE_SPACING: return createLineSpacing();
 			case GeneralPackage.LOAD_SHAPE: return createLoadShape();
 			case GeneralPackage.SPECTRUM: return createSpectrum();
 			case GeneralPackage.TIME_CURRENT_CURVE: return createTimeCurrentCurve();
@@ -111,6 +112,16 @@ public class GeneralFactoryImpl extends EFactoryImpl implements GeneralFactory {
 	public LineGeometry createLineGeometry() {
 		LineGeometryImpl lineGeometry = new LineGeometryImpl();
 		return lineGeometry;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineSpacing createLineSpacing() {
+		LineSpacingImpl lineSpacing = new LineSpacingImpl();
+		return lineSpacing;
 	}
 
 	/**

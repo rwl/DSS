@@ -9,6 +9,7 @@ package electrickery.general;
 import electrickery.common.Named;
 import electrickery.common.lengthUnit;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 /**
@@ -30,12 +31,14 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.general.LineGeometry#getNPhases <em>NPhases</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getCond <em>Cond</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getWire <em>Wire</em>}</li>
+ *   <li>{@link electrickery.general.LineGeometry#getSpacing <em>Spacing</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getX <em>X</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getH <em>H</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getUnits <em>Units</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getNormAmps <em>Norm Amps</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getEmergAmps <em>Emerg Amps</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#isReduce <em>Reduce</em>}</li>
+ *   <li>{@link electrickery.general.LineGeometry#getWires <em>Wires</em>}</li>
  * </ul>
  * </p>
  *
@@ -147,6 +150,48 @@ public interface LineGeometry extends Named {
 	 * @generated
 	 */
 	void setWire(WireData value);
+
+	/**
+	 * Returns the value of the '<em><b>Wires</b></em>' reference list.
+	 * The list contents are of type {@link electrickery.general.WireData}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Wires</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Wires</em>' reference list.
+	 * @see electrickery.general.GeneralPackage#getLineGeometry_Wires()
+	 * @model
+	 * @generated
+	 */
+	EList<WireData> getWires();
+
+	/**
+	 * Returns the value of the '<em><b>Spacing</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Spacing</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Spacing</em>' reference.
+	 * @see #setSpacing(LineSpacing)
+	 * @see electrickery.general.GeneralPackage#getLineGeometry_Spacing()
+	 * @model
+	 * @generated
+	 */
+	LineSpacing getSpacing();
+
+	/**
+	 * Sets the value of the '{@link electrickery.general.LineGeometry#getSpacing <em>Spacing</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Spacing</em>' reference.
+	 * @see #getSpacing()
+	 * @generated
+	 */
+	void setSpacing(LineSpacing value);
 
 	/**
 	 * Returns the value of the '<em><b>X</b></em>' attribute.

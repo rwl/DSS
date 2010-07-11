@@ -692,6 +692,24 @@ public class DeliveryPackageImpl extends EPackageImpl implements DeliveryPackage
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLine_Spacing() {
+		return (EReference)lineEClass.getEStructuralFeatures().get(19);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getLine_Wires() {
+		return (EReference)lineEClass.getEStructuralFeatures().get(20);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1211,6 +1229,8 @@ public class DeliveryPackageImpl extends EPackageImpl implements DeliveryPackage
 		createEAttribute(lineEClass, LINE__RHO);
 		createEAttribute(lineEClass, LINE__GEOMETRY);
 		createEAttribute(lineEClass, LINE__UNITS);
+		createEReference(lineEClass, LINE__SPACING);
+		createEReference(lineEClass, LINE__WIRES);
 
 		reactorEClass = createEClass(REACTOR);
 		createEAttribute(reactorEClass, REACTOR__BUS1);
@@ -1289,6 +1309,7 @@ public class DeliveryPackageImpl extends EPackageImpl implements DeliveryPackage
 		// Obtain other dependent packages
 		CommonPackage theCommonPackage = (CommonPackage)EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI);
 		ElectrickeryPackage theElectrickeryPackage = (ElectrickeryPackage)EPackage.Registry.INSTANCE.getEPackage(ElectrickeryPackage.eNS_URI);
+		GeneralPackage theGeneralPackage = (GeneralPackage)EPackage.Registry.INSTANCE.getEPackage(GeneralPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1365,6 +1386,8 @@ public class DeliveryPackageImpl extends EPackageImpl implements DeliveryPackage
 		initEAttribute(getLine_Rho(), ecorePackage.getEDouble(), "rho", "100.0", 0, 1, Line.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLine_Geometry(), ecorePackage.getEString(), "geometry", null, 0, 1, Line.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLine_Units(), theCommonPackage.getlengthUnit(), "units", null, 0, 1, Line.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLine_Spacing(), theGeneralPackage.getLineSpacing(), null, "spacing", null, 0, 1, Line.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLine_Wires(), theGeneralPackage.getWireData(), null, "wires", null, 0, -1, Line.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(reactorEClass, Reactor.class, "Reactor", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getReactor_Bus1(), ecorePackage.getEString(), "bus1", null, 0, 1, Reactor.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

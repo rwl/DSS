@@ -1008,6 +1008,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getFeeder_Like() {
+		return (EReference)feederEClass.getEStructuralFeatures().get(3);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1626,6 +1635,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEReference(feederEClass, FEEDER__SPECTRUM);
 		createEAttribute(feederEClass, FEEDER__BASE_FREQ);
 		createEAttribute(feederEClass, FEEDER__ENABLED);
+		createEReference(feederEClass, FEEDER__LIKE);
 
 		solutionEClass = createEClass(SOLUTION);
 		createEAttribute(solutionEClass, SOLUTION__YEAR);
@@ -1853,6 +1863,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEReference(getFeeder_Spectrum(), theGeneralPackage.getSpectrum(), null, "spectrum", null, 0, 1, Feeder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFeeder_BaseFreq(), ecorePackage.getEDouble(), "baseFreq", "60.0", 0, 1, Feeder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getFeeder_Enabled(), ecorePackage.getEBoolean(), "enabled", "true", 0, 1, Feeder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getFeeder_Like(), this.getFeeder(), null, "like", null, 0, 1, Feeder.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(solutionEClass, Solution.class, "Solution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getSolution_Year(), ecorePackage.getEInt(), "year", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

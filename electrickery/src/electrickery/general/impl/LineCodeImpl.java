@@ -50,6 +50,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link electrickery.general.impl.LineCodeImpl#getXg <em>Xg</em>}</li>
  *   <li>{@link electrickery.general.impl.LineCodeImpl#getRho <em>Rho</em>}</li>
  *   <li>{@link electrickery.general.impl.LineCodeImpl#getNeutral <em>Neutral</em>}</li>
+ *   <li>{@link electrickery.general.impl.LineCodeImpl#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -465,6 +466,16 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 	 * @ordered
 	 */
 	protected int neutral = NEUTRAL_EDEFAULT;
+
+				/**
+	 * The cached value of the '{@link #getLike() <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLike()
+	 * @generated
+	 * @ordered
+	 */
+	protected LineCode like;
 
 				/**
 	 * <!-- begin-user-doc -->
@@ -1000,6 +1011,44 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 
 				/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineCode getLike() {
+		if (like != null && like.eIsProxy()) {
+			InternalEObject oldLike = (InternalEObject)like;
+			like = (LineCode)eResolveProxy(oldLike);
+			if (like != oldLike) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, GeneralPackage.LINE_CODE__LIKE, oldLike, like));
+			}
+		}
+		return like;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineCode basicGetLike() {
+		return like;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLike(LineCode newLike) {
+		LineCode oldLike = like;
+		like = newLike;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, GeneralPackage.LINE_CODE__LIKE, oldLike, like));
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1053,6 +1102,9 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 				return getRho();
 			case GeneralPackage.LINE_CODE__NEUTRAL:
 				return getNeutral();
+			case GeneralPackage.LINE_CODE__LIKE:
+				if (resolve) return getLike();
+				return basicGetLike();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1130,6 +1182,9 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 				return;
 			case GeneralPackage.LINE_CODE__NEUTRAL:
 				setNeutral((Integer)newValue);
+				return;
+			case GeneralPackage.LINE_CODE__LIKE:
+				setLike((LineCode)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1209,6 +1264,9 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 			case GeneralPackage.LINE_CODE__NEUTRAL:
 				setNeutral(NEUTRAL_EDEFAULT);
 				return;
+			case GeneralPackage.LINE_CODE__LIKE:
+				setLike((LineCode)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1265,6 +1323,8 @@ public class LineCodeImpl extends EObjectImpl implements LineCode {
 				return rho != RHO_EDEFAULT;
 			case GeneralPackage.LINE_CODE__NEUTRAL:
 				return neutral != NEUTRAL_EDEFAULT;
+			case GeneralPackage.LINE_CODE__LIKE:
+				return like != null;
 		}
 		return super.eIsSet(featureID);
 	}

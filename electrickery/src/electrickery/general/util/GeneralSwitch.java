@@ -113,6 +113,12 @@ public class GeneralSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case GeneralPackage.LINE_SPACING: {
+				LineSpacing lineSpacing = (LineSpacing)theEObject;
+				T result = caseLineSpacing(lineSpacing);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case GeneralPackage.LOAD_SHAPE: {
 				LoadShape loadShape = (LoadShape)theEObject;
 				T result = caseLoadShape(loadShape);
@@ -199,6 +205,21 @@ public class GeneralSwitch<T> {
 	 * @generated
 	 */
 	public T caseLineGeometry(LineGeometry object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Line Spacing</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Line Spacing</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseLineSpacing(LineSpacing object) {
 		return null;
 	}
 

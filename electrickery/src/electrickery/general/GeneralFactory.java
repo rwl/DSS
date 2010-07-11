@@ -62,6 +62,15 @@ public interface GeneralFactory extends EFactory {
 	LineGeometry createLineGeometry();
 
 	/**
+	 * Returns a new object of class '<em>Line Spacing</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Line Spacing</em>'.
+	 * @generated
+	 */
+	LineSpacing createLineSpacing();
+
+	/**
 	 * Returns a new object of class '<em>Load Shape</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

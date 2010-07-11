@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.common.Feeder#getSpectrum <em>Spectrum</em>}</li>
  *   <li>{@link electrickery.common.Feeder#getBaseFreq <em>Base Freq</em>}</li>
  *   <li>{@link electrickery.common.Feeder#isEnabled <em>Enabled</em>}</li>
+ *   <li>{@link electrickery.common.Feeder#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -122,5 +123,31 @@ public interface Feeder extends EObject {
 	 * @generated
 	 */
 	void setEnabled(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Like</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Like</em>' reference.
+	 * @see #setLike(Feeder)
+	 * @see electrickery.common.CommonPackage#getFeeder_Like()
+	 * @model
+	 * @generated
+	 */
+	Feeder getLike();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Feeder#getLike <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Like</em>' reference.
+	 * @see #getLike()
+	 * @generated
+	 */
+	void setLike(Feeder value);
 
 } // Feeder

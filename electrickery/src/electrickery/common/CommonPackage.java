@@ -862,13 +862,22 @@ public interface CommonPackage extends EPackage {
 	int FEEDER__ENABLED = 2;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FEEDER__LIKE = 3;
+
+	/**
 	 * The number of structural features of the '<em>Feeder</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int FEEDER_FEATURE_COUNT = 3;
+	int FEEDER_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
@@ -2342,6 +2351,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getFeeder_Enabled();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Feeder#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.common.Feeder#getLike()
+	 * @see #getFeeder()
+	 * @generated
+	 */
+	EReference getFeeder_Like();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.common.Solution <em>Solution</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3643,6 +3663,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute FEEDER__ENABLED = eINSTANCE.getFeeder_Enabled();
+
+		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference FEEDER__LIKE = eINSTANCE.getFeeder_Like();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.

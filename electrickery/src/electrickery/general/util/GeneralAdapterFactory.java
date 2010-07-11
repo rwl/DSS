@@ -89,6 +89,10 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 				return createLineGeometryAdapter();
 			}
 			@Override
+			public Adapter caseLineSpacing(LineSpacing object) {
+				return createLineSpacingAdapter();
+			}
+			@Override
 			public Adapter caseLoadShape(LoadShape object) {
 				return createLoadShapeAdapter();
 			}
@@ -181,6 +185,20 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createLineGeometryAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.general.LineSpacing <em>Line Spacing</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.general.LineSpacing
+	 * @generated
+	 */
+	public Adapter createLineSpacingAdapter() {
 		return null;
 	}
 

@@ -11,14 +11,18 @@ import electrickery.common.impl.NamedImpl;
 import electrickery.common.lengthUnit;
 import electrickery.general.GeneralPackage;
 import electrickery.general.LineGeometry;
+import electrickery.general.LineSpacing;
 import electrickery.general.WireData;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -32,12 +36,14 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getNPhases <em>NPhases</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getCond <em>Cond</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getWire <em>Wire</em>}</li>
+ *   <li>{@link electrickery.general.impl.LineGeometryImpl#getSpacing <em>Spacing</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getX <em>X</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getH <em>H</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getUnits <em>Units</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getNormAmps <em>Norm Amps</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getEmergAmps <em>Emerg Amps</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#isReduce <em>Reduce</em>}</li>
+ *   <li>{@link electrickery.general.impl.LineGeometryImpl#getWires <em>Wires</em>}</li>
  * </ul>
  * </p>
  *
@@ -113,6 +119,16 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 	 * @ordered
 	 */
 	protected WireData wire;
+
+	/**
+	 * The cached value of the '{@link #getSpacing() <em>Spacing</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSpacing()
+	 * @generated
+	 * @ordered
+	 */
+	protected LineSpacing spacing;
 
 	/**
 	 * The default value of the '{@link #getX() <em>X</em>}' attribute.
@@ -235,6 +251,16 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 	protected boolean reduce = REDUCE_EDEFAULT;
 
 	/**
+	 * The cached value of the '{@link #getWires() <em>Wires</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getWires()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<WireData> wires;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -352,6 +378,56 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 		wire = newWire;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, GeneralPackage.LINE_GEOMETRY__WIRE, oldWire, wire));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<WireData> getWires() {
+		if (wires == null) {
+			wires = new EObjectResolvingEList<WireData>(WireData.class, this, GeneralPackage.LINE_GEOMETRY__WIRES);
+		}
+		return wires;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineSpacing getSpacing() {
+		if (spacing != null && spacing.eIsProxy()) {
+			InternalEObject oldSpacing = (InternalEObject)spacing;
+			spacing = (LineSpacing)eResolveProxy(oldSpacing);
+			if (spacing != oldSpacing) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, GeneralPackage.LINE_GEOMETRY__SPACING, oldSpacing, spacing));
+			}
+		}
+		return spacing;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineSpacing basicGetSpacing() {
+		return spacing;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSpacing(LineSpacing newSpacing) {
+		LineSpacing oldSpacing = spacing;
+		spacing = newSpacing;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, GeneralPackage.LINE_GEOMETRY__SPACING, oldSpacing, spacing));
 	}
 
 	/**
@@ -497,6 +573,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 			case GeneralPackage.LINE_GEOMETRY__WIRE:
 				if (resolve) return getWire();
 				return basicGetWire();
+			case GeneralPackage.LINE_GEOMETRY__SPACING:
+				if (resolve) return getSpacing();
+				return basicGetSpacing();
 			case GeneralPackage.LINE_GEOMETRY__X:
 				return getX();
 			case GeneralPackage.LINE_GEOMETRY__H:
@@ -509,6 +588,8 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return getEmergAmps();
 			case GeneralPackage.LINE_GEOMETRY__REDUCE:
 				return isReduce();
+			case GeneralPackage.LINE_GEOMETRY__WIRES:
+				return getWires();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -518,6 +599,7 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -532,6 +614,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return;
 			case GeneralPackage.LINE_GEOMETRY__WIRE:
 				setWire((WireData)newValue);
+				return;
+			case GeneralPackage.LINE_GEOMETRY__SPACING:
+				setSpacing((LineSpacing)newValue);
 				return;
 			case GeneralPackage.LINE_GEOMETRY__X:
 				setX((Double)newValue);
@@ -550,6 +635,10 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return;
 			case GeneralPackage.LINE_GEOMETRY__REDUCE:
 				setReduce((Boolean)newValue);
+				return;
+			case GeneralPackage.LINE_GEOMETRY__WIRES:
+				getWires().clear();
+				getWires().addAll((Collection<? extends WireData>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -575,6 +664,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 			case GeneralPackage.LINE_GEOMETRY__WIRE:
 				setWire((WireData)null);
 				return;
+			case GeneralPackage.LINE_GEOMETRY__SPACING:
+				setSpacing((LineSpacing)null);
+				return;
 			case GeneralPackage.LINE_GEOMETRY__X:
 				setX(X_EDEFAULT);
 				return;
@@ -592,6 +684,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return;
 			case GeneralPackage.LINE_GEOMETRY__REDUCE:
 				setReduce(REDUCE_EDEFAULT);
+				return;
+			case GeneralPackage.LINE_GEOMETRY__WIRES:
+				getWires().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -613,6 +708,8 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return cond != COND_EDEFAULT;
 			case GeneralPackage.LINE_GEOMETRY__WIRE:
 				return wire != null;
+			case GeneralPackage.LINE_GEOMETRY__SPACING:
+				return spacing != null;
 			case GeneralPackage.LINE_GEOMETRY__X:
 				return x != X_EDEFAULT;
 			case GeneralPackage.LINE_GEOMETRY__H:
@@ -625,6 +722,8 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return emergAmps != EMERG_AMPS_EDEFAULT;
 			case GeneralPackage.LINE_GEOMETRY__REDUCE:
 				return reduce != REDUCE_EDEFAULT;
+			case GeneralPackage.LINE_GEOMETRY__WIRES:
+				return wires != null && !wires.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

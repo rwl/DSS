@@ -1876,13 +1876,31 @@ public interface DeliveryPackage extends EPackage {
 	int LINE__UNITS = POWER_DELIVERY_ELEMENT_FEATURE_COUNT + 18;
 
 	/**
+	 * The feature id for the '<em><b>Spacing</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE__SPACING = POWER_DELIVERY_ELEMENT_FEATURE_COUNT + 19;
+
+	/**
+	 * The feature id for the '<em><b>Wires</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE__WIRES = POWER_DELIVERY_ELEMENT_FEATURE_COUNT + 20;
+
+	/**
 	 * The number of structural features of the '<em>Line</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_FEATURE_COUNT = POWER_DELIVERY_ELEMENT_FEATURE_COUNT + 19;
+	int LINE_FEATURE_COUNT = POWER_DELIVERY_ELEMENT_FEATURE_COUNT + 21;
 
 	/**
 	 * The meta object id for the '{@link electrickery.delivery.impl.ReactorImpl <em>Reactor</em>}' class.
@@ -3482,6 +3500,28 @@ public interface DeliveryPackage extends EPackage {
 	EAttribute getLine_Units();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.delivery.Line#getSpacing <em>Spacing</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Spacing</em>'.
+	 * @see electrickery.delivery.Line#getSpacing()
+	 * @see #getLine()
+	 * @generated
+	 */
+	EReference getLine_Spacing();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.delivery.Line#getWires <em>Wires</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Wires</em>'.
+	 * @see electrickery.delivery.Line#getWires()
+	 * @see #getLine()
+	 * @generated
+	 */
+	EReference getLine_Wires();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.delivery.Reactor <em>Reactor</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4494,6 +4534,22 @@ public interface DeliveryPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LINE__UNITS = eINSTANCE.getLine_Units();
+
+		/**
+		 * The meta object literal for the '<em><b>Spacing</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE__SPACING = eINSTANCE.getLine_Spacing();
+
+		/**
+		 * The meta object literal for the '<em><b>Wires</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE__WIRES = eINSTANCE.getLine_Wires();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.delivery.impl.ReactorImpl <em>Reactor</em>}' class.

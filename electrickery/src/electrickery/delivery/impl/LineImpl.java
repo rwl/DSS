@@ -12,13 +12,18 @@ import electrickery.common.lengthUnit;
 import electrickery.delivery.DeliveryPackage;
 import electrickery.delivery.Line;
 
+import electrickery.general.LineSpacing;
+import electrickery.general.WireData;
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 
 /**
  * <!-- begin-user-doc -->
@@ -46,6 +51,8 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link electrickery.delivery.impl.LineImpl#getRho <em>Rho</em>}</li>
  *   <li>{@link electrickery.delivery.impl.LineImpl#getGeometry <em>Geometry</em>}</li>
  *   <li>{@link electrickery.delivery.impl.LineImpl#getUnits <em>Units</em>}</li>
+ *   <li>{@link electrickery.delivery.impl.LineImpl#getSpacing <em>Spacing</em>}</li>
+ *   <li>{@link electrickery.delivery.impl.LineImpl#getWires <em>Wires</em>}</li>
  * </ul>
  * </p>
  *
@@ -403,6 +410,26 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
     protected lengthUnit units = UNITS_EDEFAULT;
 
     /**
+	 * The cached value of the '{@link #getSpacing() <em>Spacing</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getSpacing()
+	 * @generated
+	 * @ordered
+	 */
+	protected LineSpacing spacing;
+
+				/**
+	 * The cached value of the '{@link #getWires() <em>Wires</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getWires()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<WireData> wires;
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -873,6 +900,56 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineSpacing getSpacing() {
+		if (spacing != null && spacing.eIsProxy()) {
+			InternalEObject oldSpacing = (InternalEObject)spacing;
+			spacing = (LineSpacing)eResolveProxy(oldSpacing);
+			if (spacing != oldSpacing) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, DeliveryPackage.LINE__SPACING, oldSpacing, spacing));
+			}
+		}
+		return spacing;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineSpacing basicGetSpacing() {
+		return spacing;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setSpacing(LineSpacing newSpacing) {
+		LineSpacing oldSpacing = spacing;
+		spacing = newSpacing;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, DeliveryPackage.LINE__SPACING, oldSpacing, spacing));
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<WireData> getWires() {
+		if (wires == null) {
+			wires = new EObjectResolvingEList<WireData>(WireData.class, this, DeliveryPackage.LINE__WIRES);
+		}
+		return wires;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -920,6 +997,11 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
 				return getGeometry();
 			case DeliveryPackage.LINE__UNITS:
 				return getUnits();
+			case DeliveryPackage.LINE__SPACING:
+				if (resolve) return getSpacing();
+				return basicGetSpacing();
+			case DeliveryPackage.LINE__WIRES:
+				return getWires();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -929,7 +1011,8 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    @Override
+    @SuppressWarnings("unchecked")
+				@Override
     public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case DeliveryPackage.LINE__BUS1:
@@ -988,6 +1071,13 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
 				return;
 			case DeliveryPackage.LINE__UNITS:
 				setUnits((lengthUnit)newValue);
+				return;
+			case DeliveryPackage.LINE__SPACING:
+				setSpacing((LineSpacing)newValue);
+				return;
+			case DeliveryPackage.LINE__WIRES:
+				getWires().clear();
+				getWires().addAll((Collection<? extends WireData>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1058,6 +1148,12 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
 			case DeliveryPackage.LINE__UNITS:
 				setUnits(UNITS_EDEFAULT);
 				return;
+			case DeliveryPackage.LINE__SPACING:
+				setSpacing((LineSpacing)null);
+				return;
+			case DeliveryPackage.LINE__WIRES:
+				getWires().clear();
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1108,6 +1204,10 @@ public class LineImpl extends PowerDeliveryElementImpl implements Line {
 				return GEOMETRY_EDEFAULT == null ? geometry != null : !GEOMETRY_EDEFAULT.equals(geometry);
 			case DeliveryPackage.LINE__UNITS:
 				return units != UNITS_EDEFAULT;
+			case DeliveryPackage.LINE__SPACING:
+				return spacing != null;
+			case DeliveryPackage.LINE__WIRES:
+				return wires != null && !wires.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

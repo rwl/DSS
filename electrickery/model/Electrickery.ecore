@@ -264,6 +264,7 @@
           <details key="documentation" value="Indicates whether this element is enabled."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="like" eType="#//common/Feeder"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Solution">
       <eOperations name="updateVBus">
@@ -1978,6 +1979,9 @@
           <details key="documentation" value="Default is None - assumes length units match impedance units."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="spacing" eType="#//general/LineSpacing"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="wires" upperBound="-1"
+          eType="#//general/WireData"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Reactor" eSuperTypes="#//delivery/PowerDeliveryElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3361,6 +3365,7 @@
           <details key="documentation" value="Designates which conductor is the &quot;neutral&quot; conductor that will be eliminated by Kron reduction.&#xD;&#xA;Default is the last conductor (nphases value). After Kron reduction is set to 0. Subsequent issuing of Kron=Yes&#xD;&#xA;will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="like" eType="#//general/LineCode"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LineGeometry" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -3386,6 +3391,7 @@
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="wire" lowerBound="1"
           eType="#//general/WireData"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="spacing" eType="#//general/LineSpacing"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="x coordinate."/>
@@ -3419,6 +3425,37 @@
           <details key="documentation" value="Reduce to n_phases (Kron Reduction). Reduce out neutrals."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="wires" upperBound="-1"
+          eType="#//general/WireData"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="like" eType="#//general/LineGeometry"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="LineSpacing">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nConds" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Number of wires in this geometry. Default is 3."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nPhases" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Number of retained phase conductors. If less than the number of wires, list the retained phase coordinates first."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="x" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Array of wire X coordinates."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="h" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Array of wire Heights."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="units" eType="#//common/lengthUnit">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Units for x and h."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="like" eType="#//general/LineSpacing"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="LoadShape">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -415,13 +415,22 @@ public interface GeneralPackage extends EPackage {
 	int LINE_CODE__NEUTRAL = 21;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_CODE__LIKE = 22;
+
+	/**
 	 * The number of structural features of the '<em>Line Code</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_CODE_FEATURE_COUNT = 22;
+	int LINE_CODE_FEATURE_COUNT = 23;
 
 	/**
 	 * The meta object id for the '{@link electrickery.general.impl.LineGeometryImpl <em>Line Geometry</em>}' class.
@@ -479,13 +488,22 @@ public interface GeneralPackage extends EPackage {
 	int LINE_GEOMETRY__WIRE = CommonPackage.NAMED_FEATURE_COUNT + 3;
 
 	/**
+	 * The feature id for the '<em><b>Spacing</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_GEOMETRY__SPACING = CommonPackage.NAMED_FEATURE_COUNT + 4;
+
+	/**
 	 * The feature id for the '<em><b>X</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__X = CommonPackage.NAMED_FEATURE_COUNT + 4;
+	int LINE_GEOMETRY__X = CommonPackage.NAMED_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>H</b></em>' attribute.
@@ -494,7 +512,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__H = CommonPackage.NAMED_FEATURE_COUNT + 5;
+	int LINE_GEOMETRY__H = CommonPackage.NAMED_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Units</b></em>' attribute.
@@ -503,7 +521,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__UNITS = CommonPackage.NAMED_FEATURE_COUNT + 6;
+	int LINE_GEOMETRY__UNITS = CommonPackage.NAMED_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -512,7 +530,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__NORM_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 7;
+	int LINE_GEOMETRY__NORM_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Amps</b></em>' attribute.
@@ -521,7 +539,7 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__EMERG_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 8;
+	int LINE_GEOMETRY__EMERG_AMPS = CommonPackage.NAMED_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Reduce</b></em>' attribute.
@@ -530,7 +548,16 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY__REDUCE = CommonPackage.NAMED_FEATURE_COUNT + 9;
+	int LINE_GEOMETRY__REDUCE = CommonPackage.NAMED_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Wires</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_GEOMETRY__WIRES = CommonPackage.NAMED_FEATURE_COUNT + 11;
 
 	/**
 	 * The number of structural features of the '<em>Line Geometry</em>' class.
@@ -539,7 +566,80 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 10;
+	int LINE_GEOMETRY_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 12;
+
+	/**
+	 * The meta object id for the '{@link electrickery.general.impl.LineSpacingImpl <em>Line Spacing</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.general.impl.LineSpacingImpl
+	 * @see electrickery.general.impl.GeneralPackageImpl#getLineSpacing()
+	 * @generated
+	 */
+	int LINE_SPACING = 4;
+
+	/**
+	 * The feature id for the '<em><b>NConds</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__NCONDS = 0;
+
+	/**
+	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__NPHASES = 1;
+
+	/**
+	 * The feature id for the '<em><b>X</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__X = 2;
+
+	/**
+	 * The feature id for the '<em><b>H</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__H = 3;
+
+	/**
+	 * The feature id for the '<em><b>Units</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__UNITS = 4;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING__LIKE = 5;
+
+	/**
+	 * The number of structural features of the '<em>Line Spacing</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_SPACING_FEATURE_COUNT = 6;
 
 	/**
 	 * The meta object id for the '{@link electrickery.general.impl.LoadShapeImpl <em>Load Shape</em>}' class.
@@ -549,7 +649,7 @@ public interface GeneralPackage extends EPackage {
 	 * @see electrickery.general.impl.GeneralPackageImpl#getLoadShape()
 	 * @generated
 	 */
-	int LOAD_SHAPE = 4;
+	int LOAD_SHAPE = 5;
 
 	/**
 	 * The feature id for the '<em><b>NPts</b></em>' attribute.
@@ -658,7 +758,7 @@ public interface GeneralPackage extends EPackage {
 	 * @see electrickery.general.impl.GeneralPackageImpl#getSpectrum()
 	 * @generated
 	 */
-	int SPECTRUM = 5;
+	int SPECTRUM = 6;
 
 	/**
 	 * The feature id for the '<em><b>NHarm</b></em>' attribute.
@@ -722,7 +822,7 @@ public interface GeneralPackage extends EPackage {
 	 * @see electrickery.general.impl.GeneralPackageImpl#getTimeCurrentCurve()
 	 * @generated
 	 */
-	int TIME_CURRENT_CURVE = 6;
+	int TIME_CURRENT_CURVE = 7;
 
 	/**
 	 * The feature id for the '<em><b>NPts</b></em>' attribute.
@@ -768,7 +868,7 @@ public interface GeneralPackage extends EPackage {
 	 * @see electrickery.general.impl.GeneralPackageImpl#getWireData()
 	 * @generated
 	 */
-	int WIRE_DATA = 7;
+	int WIRE_DATA = 8;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1284,6 +1384,17 @@ public interface GeneralPackage extends EPackage {
 	EAttribute getLineCode_Neutral();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.general.LineCode#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.general.LineCode#getLike()
+	 * @see #getLineCode()
+	 * @generated
+	 */
+	EReference getLineCode_Like();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.general.LineGeometry <em>Line Geometry</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1336,6 +1447,28 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getLineGeometry_Wire();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.general.LineGeometry#getWires <em>Wires</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Wires</em>'.
+	 * @see electrickery.general.LineGeometry#getWires()
+	 * @see #getLineGeometry()
+	 * @generated
+	 */
+	EReference getLineGeometry_Wires();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.general.LineGeometry#getSpacing <em>Spacing</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Spacing</em>'.
+	 * @see electrickery.general.LineGeometry#getSpacing()
+	 * @see #getLineGeometry()
+	 * @generated
+	 */
+	EReference getLineGeometry_Spacing();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.general.LineGeometry#getX <em>X</em>}'.
@@ -1402,6 +1535,82 @@ public interface GeneralPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getLineGeometry_Reduce();
+
+	/**
+	 * Returns the meta object for class '{@link electrickery.general.LineSpacing <em>Line Spacing</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Line Spacing</em>'.
+	 * @see electrickery.general.LineSpacing
+	 * @generated
+	 */
+	EClass getLineSpacing();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.LineSpacing#getNConds <em>NConds</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>NConds</em>'.
+	 * @see electrickery.general.LineSpacing#getNConds()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EAttribute getLineSpacing_NConds();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.LineSpacing#getNPhases <em>NPhases</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>NPhases</em>'.
+	 * @see electrickery.general.LineSpacing#getNPhases()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EAttribute getLineSpacing_NPhases();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.LineSpacing#getX <em>X</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>X</em>'.
+	 * @see electrickery.general.LineSpacing#getX()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EAttribute getLineSpacing_X();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.LineSpacing#getH <em>H</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>H</em>'.
+	 * @see electrickery.general.LineSpacing#getH()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EAttribute getLineSpacing_H();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.LineSpacing#getUnits <em>Units</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Units</em>'.
+	 * @see electrickery.general.LineSpacing#getUnits()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EAttribute getLineSpacing_Units();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.general.LineSpacing#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.general.LineSpacing#getLike()
+	 * @see #getLineSpacing()
+	 * @generated
+	 */
+	EReference getLineSpacing_Like();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.general.LoadShape <em>Load Shape</em>}'.
@@ -2076,6 +2285,14 @@ public interface GeneralPackage extends EPackage {
 		EAttribute LINE_CODE__NEUTRAL = eINSTANCE.getLineCode_Neutral();
 
 		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE_CODE__LIKE = eINSTANCE.getLineCode_Like();
+
+		/**
 		 * The meta object literal for the '{@link electrickery.general.impl.LineGeometryImpl <em>Line Geometry</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2116,6 +2333,22 @@ public interface GeneralPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LINE_GEOMETRY__WIRE = eINSTANCE.getLineGeometry_Wire();
+
+		/**
+		 * The meta object literal for the '<em><b>Wires</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE_GEOMETRY__WIRES = eINSTANCE.getLineGeometry_Wires();
+
+		/**
+		 * The meta object literal for the '<em><b>Spacing</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE_GEOMETRY__SPACING = eINSTANCE.getLineGeometry_Spacing();
 
 		/**
 		 * The meta object literal for the '<em><b>X</b></em>' attribute feature.
@@ -2164,6 +2397,64 @@ public interface GeneralPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute LINE_GEOMETRY__REDUCE = eINSTANCE.getLineGeometry_Reduce();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.general.impl.LineSpacingImpl <em>Line Spacing</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.general.impl.LineSpacingImpl
+		 * @see electrickery.general.impl.GeneralPackageImpl#getLineSpacing()
+		 * @generated
+		 */
+		EClass LINE_SPACING = eINSTANCE.getLineSpacing();
+
+		/**
+		 * The meta object literal for the '<em><b>NConds</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_SPACING__NCONDS = eINSTANCE.getLineSpacing_NConds();
+
+		/**
+		 * The meta object literal for the '<em><b>NPhases</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_SPACING__NPHASES = eINSTANCE.getLineSpacing_NPhases();
+
+		/**
+		 * The meta object literal for the '<em><b>X</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_SPACING__X = eINSTANCE.getLineSpacing_X();
+
+		/**
+		 * The meta object literal for the '<em><b>H</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_SPACING__H = eINSTANCE.getLineSpacing_H();
+
+		/**
+		 * The meta object literal for the '<em><b>Units</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute LINE_SPACING__UNITS = eINSTANCE.getLineSpacing_Units();
+
+		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE_SPACING__LIKE = eINSTANCE.getLineSpacing_Like();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.general.impl.LoadShapeImpl <em>Load Shape</em>}' class.

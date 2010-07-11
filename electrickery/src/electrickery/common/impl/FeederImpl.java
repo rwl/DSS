@@ -29,6 +29,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link electrickery.common.impl.FeederImpl#getSpectrum <em>Spectrum</em>}</li>
  *   <li>{@link electrickery.common.impl.FeederImpl#getBaseFreq <em>Base Freq</em>}</li>
  *   <li>{@link electrickery.common.impl.FeederImpl#isEnabled <em>Enabled</em>}</li>
+ *   <li>{@link electrickery.common.impl.FeederImpl#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -84,6 +85,16 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 	 * @ordered
 	 */
 	protected boolean enabled = ENABLED_EDEFAULT;
+
+	/**
+	 * The cached value of the '{@link #getLike() <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLike()
+	 * @generated
+	 * @ordered
+	 */
+	protected Feeder like;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -189,6 +200,44 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public Feeder getLike() {
+		if (like != null && like.eIsProxy()) {
+			InternalEObject oldLike = (InternalEObject)like;
+			like = (Feeder)eResolveProxy(oldLike);
+			if (like != oldLike) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.FEEDER__LIKE, oldLike, like));
+			}
+		}
+		return like;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Feeder basicGetLike() {
+		return like;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLike(Feeder newLike) {
+		Feeder oldLike = like;
+		like = newLike;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.FEEDER__LIKE, oldLike, like));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -199,6 +248,9 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 				return getBaseFreq();
 			case CommonPackage.FEEDER__ENABLED:
 				return isEnabled();
+			case CommonPackage.FEEDER__LIKE:
+				if (resolve) return getLike();
+				return basicGetLike();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -219,6 +271,9 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 				return;
 			case CommonPackage.FEEDER__ENABLED:
 				setEnabled((Boolean)newValue);
+				return;
+			case CommonPackage.FEEDER__LIKE:
+				setLike((Feeder)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -241,6 +296,9 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 			case CommonPackage.FEEDER__ENABLED:
 				setEnabled(ENABLED_EDEFAULT);
 				return;
+			case CommonPackage.FEEDER__LIKE:
+				setLike((Feeder)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -259,6 +317,8 @@ public class FeederImpl extends EObjectImpl implements Feeder {
 				return baseFreq != BASE_FREQ_EDEFAULT;
 			case CommonPackage.FEEDER__ENABLED:
 				return enabled != ENABLED_EDEFAULT;
+			case CommonPackage.FEEDER__LIKE:
+				return like != null;
 		}
 		return super.eIsSet(featureID);
 	}
