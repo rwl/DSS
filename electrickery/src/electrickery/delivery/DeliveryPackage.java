@@ -279,6 +279,15 @@ public interface DeliveryPackage extends EPackage {
 	int POWER_DELIVERY_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int POWER_DELIVERY_ELEMENT__LIKE = CommonPackage.CIRCUIT_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -548,6 +557,15 @@ public interface DeliveryPackage extends EPackage {
 	 * @ordered
 	 */
 	int CAPACITOR__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CAPACITOR__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -929,6 +947,15 @@ public interface DeliveryPackage extends EPackage {
 	int FAULT__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FAULT__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1272,6 +1299,15 @@ public interface DeliveryPackage extends EPackage {
 	int FUSE__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int FUSE__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1613,6 +1649,15 @@ public interface DeliveryPackage extends EPackage {
 	 * @ordered
 	 */
 	int LINE__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
@@ -2057,6 +2102,15 @@ public interface DeliveryPackage extends EPackage {
 	int REACTOR__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REACTOR__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2425,6 +2479,15 @@ public interface DeliveryPackage extends EPackage {
 	 * @ordered
 	 */
 	int TRANSFORMER__YPRIM_FREQ = POWER_DELIVERY_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER__LIKE = POWER_DELIVERY_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Norm Amps</b></em>' attribute.

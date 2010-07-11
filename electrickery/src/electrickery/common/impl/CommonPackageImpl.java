@@ -855,6 +855,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCircuitElement_Like() {
+		return (EReference)circuitElementEClass.getEStructuralFeatures().get(23);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1597,6 +1606,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEReference(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM_SHUNT);
 		createEReference(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM);
 		createEAttribute(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM_FREQ);
+		createEReference(circuitElementEClass, CIRCUIT_ELEMENT__LIKE);
 
 		collectionEClass = createEClass(COLLECTION);
 		createEAttribute(collectionEClass, COLLECTION__NPROPERTIES);
@@ -1812,6 +1822,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEReference(getCircuitElement_YPrimShunt(), theElectrickeryPackage.getDComplexMatrix2D(), null, "yPrimShunt", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuitElement_YPrim(), theElectrickeryPackage.getDComplexMatrix2D(), null, "yPrim", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuitElement_YPrimFreq(), ecorePackage.getEDouble(), "yPrimFreq", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCircuitElement_Like(), this.getCircuitElement(), null, "like", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(circuitElementEClass, null, "calcYPrim", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEDouble(), "yPrimFreq", 0, 1, IS_UNIQUE, IS_ORDERED);

@@ -61,6 +61,7 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrim <em>YPrim</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrimFreq <em>YPrim Freq</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitElementImpl#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -458,6 +459,16 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
     protected double yPrimFreq = YPRIM_FREQ_EDEFAULT;
 
     /**
+	 * The cached value of the '{@link #getLike() <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLike()
+	 * @generated
+	 * @ordered
+	 */
+	protected CircuitElement like;
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1027,6 +1038,44 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CircuitElement getLike() {
+		if (like != null && like.eIsProxy()) {
+			InternalEObject oldLike = (InternalEObject)like;
+			like = (CircuitElement)eResolveProxy(oldLike);
+			if (like != oldLike) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.CIRCUIT_ELEMENT__LIKE, oldLike, like));
+			}
+		}
+		return like;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public CircuitElement basicGetLike() {
+		return like;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLike(CircuitElement newLike) {
+		CircuitElement oldLike = like;
+		like = newLike;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT_ELEMENT__LIKE, oldLike, like));
+	}
+
+				/**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -1169,6 +1218,9 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 				return basicGetYPrim();
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				return getYPrimFreq();
+			case CommonPackage.CIRCUIT_ELEMENT__LIKE:
+				if (resolve) return getLike();
+				return basicGetLike();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1253,6 +1305,9 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				setYPrimFreq((Double)newValue);
 				return;
+			case CommonPackage.CIRCUIT_ELEMENT__LIKE:
+				setLike((CircuitElement)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -1334,6 +1389,9 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				setYPrimFreq(YPRIM_FREQ_EDEFAULT);
 				return;
+			case CommonPackage.CIRCUIT_ELEMENT__LIKE:
+				setLike((CircuitElement)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1392,6 +1450,8 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 				return yPrim != null;
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				return yPrimFreq != YPRIM_FREQ_EDEFAULT;
+			case CommonPackage.CIRCUIT_ELEMENT__LIKE:
+				return like != null;
 		}
 		return super.eIsSet(featureID);
 	}

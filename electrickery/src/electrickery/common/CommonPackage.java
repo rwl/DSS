@@ -679,13 +679,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT__YPRIM_FREQ = 22;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT_ELEMENT__LIKE = 23;
+
+	/**
 	 * The number of structural features of the '<em>Circuit Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT_FEATURE_COUNT = 23;
+	int CIRCUIT_ELEMENT_FEATURE_COUNT = 24;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.
@@ -2149,6 +2158,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuitElement_YPrimFreq();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.CircuitElement#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.common.CircuitElement#getLike()
+	 * @see #getCircuitElement()
+	 * @generated
+	 */
+	EReference getCircuitElement_Like();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.common.Collection <em>Collection</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3481,6 +3501,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT_ELEMENT__YPRIM_FREQ = eINSTANCE.getCircuitElement_YPrimFreq();
+
+		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT_ELEMENT__LIKE = eINSTANCE.getCircuitElement_Like();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.

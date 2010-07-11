@@ -367,11 +367,20 @@ public class MeterPackageImpl extends EPackageImpl implements MeterPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getEnergyMeter_ThreePhaseLosses() {
+		return (EAttribute)energyMeterEClass.getEStructuralFeatures().get(14);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EAttribute getEnergyMeter_VBaseLosses() {
-		return (EAttribute)energyMeterEClass.getEStructuralFeatures().get(14);
+		return (EAttribute)energyMeterEClass.getEStructuralFeatures().get(15);
 	}
 
     /**
@@ -380,7 +389,7 @@ public class MeterPackageImpl extends EPackageImpl implements MeterPackage {
 	 * @generated
 	 */
     public EAttribute getEnergyMeter_OverloadReport() {
-		return (EAttribute)energyMeterEClass.getEStructuralFeatures().get(15);
+		return (EAttribute)energyMeterEClass.getEStructuralFeatures().get(16);
 	}
 
     /**
@@ -656,6 +665,7 @@ public class MeterPackageImpl extends EPackageImpl implements MeterPackage {
 		createEAttribute(energyMeterEClass, ENERGY_METER__LINE_LOSSES);
 		createEAttribute(energyMeterEClass, ENERGY_METER__XFMR_LOSSES);
 		createEAttribute(energyMeterEClass, ENERGY_METER__SEQ_LOSSES);
+		createEAttribute(energyMeterEClass, ENERGY_METER__THREE_PHASE_LOSSES);
 		createEAttribute(energyMeterEClass, ENERGY_METER__VBASE_LOSSES);
 		createEAttribute(energyMeterEClass, ENERGY_METER__OVERLOAD_REPORT);
 
@@ -746,6 +756,7 @@ public class MeterPackageImpl extends EPackageImpl implements MeterPackage {
 		initEAttribute(getEnergyMeter_LineLosses(), ecorePackage.getEBoolean(), "lineLosses", "true", 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEnergyMeter_XfmrLosses(), ecorePackage.getEBoolean(), "xfmrLosses", "true", 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEnergyMeter_SeqLosses(), ecorePackage.getEBoolean(), "seqLosses", "true", 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getEnergyMeter_ThreePhaseLosses(), ecorePackage.getEBoolean(), "threePhaseLosses", null, 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEnergyMeter_VBaseLosses(), ecorePackage.getEBoolean(), "vBaseLosses", "true", 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getEnergyMeter_OverloadReport(), ecorePackage.getEBoolean(), "overloadReport", "true", 0, 1, EnergyMeter.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

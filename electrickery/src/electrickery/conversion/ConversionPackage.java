@@ -280,6 +280,15 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int POWER_CONVERSION_ELEMENT__LIKE = CommonPackage.CIRCUIT_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -531,6 +540,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int CURRENT_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CURRENT_SOURCE__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
@@ -838,6 +856,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int EQUIVALENT__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EQUIVALENT__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
@@ -1181,6 +1208,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int GENERATOR__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GENERATOR__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
@@ -1922,6 +1958,15 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOAD__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2434,6 +2479,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VOLTAGE_SOURCE__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.

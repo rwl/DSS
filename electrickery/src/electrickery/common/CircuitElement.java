@@ -48,6 +48,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.common.CircuitElement#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrim <em>YPrim</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimFreq <em>YPrim Freq</em>}</li>
+ *   <li>{@link electrickery.common.CircuitElement#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -626,6 +627,32 @@ public interface CircuitElement extends EObject {
     void setYPrimFreq(double value);
 
     /**
+	 * Returns the value of the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Like</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Like</em>' reference.
+	 * @see #setLike(CircuitElement)
+	 * @see electrickery.common.CommonPackage#getCircuitElement_Like()
+	 * @model
+	 * @generated
+	 */
+	CircuitElement getLike();
+
+				/**
+	 * Sets the value of the '{@link electrickery.common.CircuitElement#getLike <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Like</em>' reference.
+	 * @see #getLike()
+	 * @generated
+	 */
+	void setLike(CircuitElement value);
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @model

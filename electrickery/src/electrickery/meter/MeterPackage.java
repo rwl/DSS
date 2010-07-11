@@ -280,6 +280,15 @@ public interface MeterPackage extends EPackage {
 	int METER_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int METER_ELEMENT__LIKE = CommonPackage.CIRCUIT_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -533,6 +542,15 @@ public interface MeterPackage extends EPackage {
 	int ENERGY_METER__YPRIM_FREQ = METER_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENERGY_METER__LIKE = METER_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -686,13 +704,22 @@ public interface MeterPackage extends EPackage {
 	int ENERGY_METER__SEQ_LOSSES = METER_ELEMENT_FEATURE_COUNT + 13;
 
 	/**
+	 * The feature id for the '<em><b>Three Phase Losses</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ENERGY_METER__THREE_PHASE_LOSSES = METER_ELEMENT_FEATURE_COUNT + 14;
+
+	/**
 	 * The feature id for the '<em><b>VBase Losses</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ENERGY_METER__VBASE_LOSSES = METER_ELEMENT_FEATURE_COUNT + 14;
+	int ENERGY_METER__VBASE_LOSSES = METER_ELEMENT_FEATURE_COUNT + 15;
 
 	/**
 	 * The feature id for the '<em><b>Overload Report</b></em>' attribute.
@@ -701,7 +728,7 @@ public interface MeterPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENERGY_METER__OVERLOAD_REPORT = METER_ELEMENT_FEATURE_COUNT + 15;
+	int ENERGY_METER__OVERLOAD_REPORT = METER_ELEMENT_FEATURE_COUNT + 16;
 
 	/**
 	 * The number of structural features of the '<em>Energy Meter</em>' class.
@@ -710,7 +737,7 @@ public interface MeterPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int ENERGY_METER_FEATURE_COUNT = METER_ELEMENT_FEATURE_COUNT + 16;
+	int ENERGY_METER_FEATURE_COUNT = METER_ELEMENT_FEATURE_COUNT + 17;
 
 	/**
 	 * The meta object id for the '{@link electrickery.meter.impl.MonitorImpl <em>Monitor</em>}' class.
@@ -928,6 +955,15 @@ public interface MeterPackage extends EPackage {
 	 * @ordered
 	 */
 	int MONITOR__YPRIM_FREQ = METER_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MONITOR__LIKE = METER_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
@@ -1244,6 +1280,15 @@ public interface MeterPackage extends EPackage {
 	 * @ordered
 	 */
 	int SENSOR__YPRIM_FREQ = METER_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SENSOR__LIKE = METER_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
@@ -1637,6 +1682,17 @@ public interface MeterPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getEnergyMeter_SeqLosses();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.meter.EnergyMeter#isThreePhaseLosses <em>Three Phase Losses</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Three Phase Losses</em>'.
+	 * @see electrickery.meter.EnergyMeter#isThreePhaseLosses()
+	 * @see #getEnergyMeter()
+	 * @generated
+	 */
+	EAttribute getEnergyMeter_ThreePhaseLosses();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.meter.EnergyMeter#isVBaseLosses <em>VBase Losses</em>}'.
@@ -2105,6 +2161,14 @@ public interface MeterPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute ENERGY_METER__SEQ_LOSSES = eINSTANCE.getEnergyMeter_SeqLosses();
+
+		/**
+		 * The meta object literal for the '<em><b>Three Phase Losses</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute ENERGY_METER__THREE_PHASE_LOSSES = eINSTANCE.getEnergyMeter_ThreePhaseLosses();
 
 		/**
 		 * The meta object literal for the '<em><b>VBase Losses</b></em>' attribute feature.

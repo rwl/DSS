@@ -280,6 +280,15 @@ public interface ControlPackage extends EPackage {
 	int CONTROL_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CONTROL_ELEMENT__LIKE = CommonPackage.CIRCUIT_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -576,6 +585,15 @@ public interface ControlPackage extends EPackage {
 	 * @ordered
 	 */
 	int CAPACITOR_CONTROL__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CAPACITOR_CONTROL__LIKE = CONTROL_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
@@ -1002,6 +1020,15 @@ public interface ControlPackage extends EPackage {
 	int GENERATOR_DISPATCHER__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GENERATOR_DISPATCHER__LIKE = CONTROL_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1361,6 +1388,15 @@ public interface ControlPackage extends EPackage {
 	 * @ordered
 	 */
 	int RECLOSER__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RECLOSER__LIKE = CONTROL_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
@@ -1859,6 +1895,15 @@ public interface ControlPackage extends EPackage {
 	int REGULATOR_CONTROL__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REGULATOR_CONTROL__LIKE = CONTROL_ELEMENT__LIKE;
+
+	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2335,6 +2380,15 @@ public interface ControlPackage extends EPackage {
 	 * @ordered
 	 */
 	int RELAY__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int RELAY__LIKE = CONTROL_ELEMENT__LIKE;
 
 	/**
 	 * The feature id for the '<em><b>Element Name</b></em>' attribute.

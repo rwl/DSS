@@ -137,6 +137,7 @@ import org.eclipse.emf.common.util.EList;
  *   <li>{@link electrickery.meter.EnergyMeter#isLineLosses <em>Line Losses</em>}</li>
  *   <li>{@link electrickery.meter.EnergyMeter#isXfmrLosses <em>Xfmr Losses</em>}</li>
  *   <li>{@link electrickery.meter.EnergyMeter#isSeqLosses <em>Seq Losses</em>}</li>
+ *   <li>{@link electrickery.meter.EnergyMeter#isThreePhaseLosses <em>Three Phase Losses</em>}</li>
  *   <li>{@link electrickery.meter.EnergyMeter#isVBaseLosses <em>VBase Losses</em>}</li>
  *   <li>{@link electrickery.meter.EnergyMeter#isOverloadReport <em>Overload Report</em>}</li>
  * </ul>
@@ -480,6 +481,31 @@ public interface EnergyMeter extends MeterElement {
 	 * @generated
 	 */
 	void setSeqLosses(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Three Phase Losses</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Compute Line losses and segregate by 3-phase and other (1- and 2-phase) line losses.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Three Phase Losses</em>' attribute.
+	 * @see #setThreePhaseLosses(boolean)
+	 * @see electrickery.meter.MeterPackage#getEnergyMeter_ThreePhaseLosses()
+	 * @model
+	 * @generated
+	 */
+	boolean isThreePhaseLosses();
+
+	/**
+	 * Sets the value of the '{@link electrickery.meter.EnergyMeter#isThreePhaseLosses <em>Three Phase Losses</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Three Phase Losses</em>' attribute.
+	 * @see #isThreePhaseLosses()
+	 * @generated
+	 */
+	void setThreePhaseLosses(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>VBase Losses</b></em>' attribute.

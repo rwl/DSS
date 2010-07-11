@@ -43,6 +43,7 @@ import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
  *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isLineLosses <em>Line Losses</em>}</li>
  *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isXfmrLosses <em>Xfmr Losses</em>}</li>
  *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isSeqLosses <em>Seq Losses</em>}</li>
+ *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isThreePhaseLosses <em>Three Phase Losses</em>}</li>
  *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isVBaseLosses <em>VBase Losses</em>}</li>
  *   <li>{@link electrickery.meter.impl.EnergyMeterImpl#isOverloadReport <em>Overload Report</em>}</li>
  * </ul>
@@ -290,6 +291,26 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 	 * @ordered
 	 */
 	protected boolean seqLosses = SEQ_LOSSES_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #isThreePhaseLosses() <em>Three Phase Losses</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isThreePhaseLosses()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean THREE_PHASE_LOSSES_EDEFAULT = false;
+
+	/**
+	 * The cached value of the '{@link #isThreePhaseLosses() <em>Three Phase Losses</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isThreePhaseLosses()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean threePhaseLosses = THREE_PHASE_LOSSES_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #isVBaseLosses() <em>VBase Losses</em>}' attribute.
@@ -613,6 +634,27 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public boolean isThreePhaseLosses() {
+		return threePhaseLosses;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setThreePhaseLosses(boolean newThreePhaseLosses) {
+		boolean oldThreePhaseLosses = threePhaseLosses;
+		threePhaseLosses = newThreePhaseLosses;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MeterPackage.ENERGY_METER__THREE_PHASE_LOSSES, oldThreePhaseLosses, threePhaseLosses));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public boolean isVBaseLosses() {
 		return vBaseLosses;
 	}
@@ -686,6 +728,8 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 				return isXfmrLosses();
 			case MeterPackage.ENERGY_METER__SEQ_LOSSES:
 				return isSeqLosses();
+			case MeterPackage.ENERGY_METER__THREE_PHASE_LOSSES:
+				return isThreePhaseLosses();
 			case MeterPackage.ENERGY_METER__VBASE_LOSSES:
 				return isVBaseLosses();
 			case MeterPackage.ENERGY_METER__OVERLOAD_REPORT:
@@ -749,6 +793,9 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 			case MeterPackage.ENERGY_METER__SEQ_LOSSES:
 				setSeqLosses((Boolean)newValue);
 				return;
+			case MeterPackage.ENERGY_METER__THREE_PHASE_LOSSES:
+				setThreePhaseLosses((Boolean)newValue);
+				return;
 			case MeterPackage.ENERGY_METER__VBASE_LOSSES:
 				setVBaseLosses((Boolean)newValue);
 				return;
@@ -809,6 +856,9 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 			case MeterPackage.ENERGY_METER__SEQ_LOSSES:
 				setSeqLosses(SEQ_LOSSES_EDEFAULT);
 				return;
+			case MeterPackage.ENERGY_METER__THREE_PHASE_LOSSES:
+				setThreePhaseLosses(THREE_PHASE_LOSSES_EDEFAULT);
+				return;
 			case MeterPackage.ENERGY_METER__VBASE_LOSSES:
 				setVBaseLosses(VBASE_LOSSES_EDEFAULT);
 				return;
@@ -855,6 +905,8 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 				return xfmrLosses != XFMR_LOSSES_EDEFAULT;
 			case MeterPackage.ENERGY_METER__SEQ_LOSSES:
 				return seqLosses != SEQ_LOSSES_EDEFAULT;
+			case MeterPackage.ENERGY_METER__THREE_PHASE_LOSSES:
+				return threePhaseLosses != THREE_PHASE_LOSSES_EDEFAULT;
 			case MeterPackage.ENERGY_METER__VBASE_LOSSES:
 				return vBaseLosses != VBASE_LOSSES_EDEFAULT;
 			case MeterPackage.ENERGY_METER__OVERLOAD_REPORT:
@@ -901,6 +953,8 @@ public class EnergyMeterImpl extends MeterElementImpl implements EnergyMeter {
 		result.append(xfmrLosses);
 		result.append(", seqLosses: ");
 		result.append(seqLosses);
+		result.append(", threePhaseLosses: ");
+		result.append(threePhaseLosses);
 		result.append(", vBaseLosses: ");
 		result.append(vBaseLosses);
 		result.append(", overloadReport: ");
