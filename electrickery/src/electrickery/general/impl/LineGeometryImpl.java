@@ -44,6 +44,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getEmergAmps <em>Emerg Amps</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#isReduce <em>Reduce</em>}</li>
  *   <li>{@link electrickery.general.impl.LineGeometryImpl#getWires <em>Wires</em>}</li>
+ *   <li>{@link electrickery.general.impl.LineGeometryImpl#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -261,6 +262,16 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 	protected EList<WireData> wires;
 
 	/**
+	 * The cached value of the '{@link #getLike() <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLike()
+	 * @generated
+	 * @ordered
+	 */
+	protected LineGeometry like;
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -390,6 +401,44 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 			wires = new EObjectResolvingEList<WireData>(WireData.class, this, GeneralPackage.LINE_GEOMETRY__WIRES);
 		}
 		return wires;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineGeometry getLike() {
+		if (like != null && like.eIsProxy()) {
+			InternalEObject oldLike = (InternalEObject)like;
+			like = (LineGeometry)eResolveProxy(oldLike);
+			if (like != oldLike) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, GeneralPackage.LINE_GEOMETRY__LIKE, oldLike, like));
+			}
+		}
+		return like;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public LineGeometry basicGetLike() {
+		return like;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLike(LineGeometry newLike) {
+		LineGeometry oldLike = like;
+		like = newLike;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, GeneralPackage.LINE_GEOMETRY__LIKE, oldLike, like));
 	}
 
 	/**
@@ -590,6 +639,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return isReduce();
 			case GeneralPackage.LINE_GEOMETRY__WIRES:
 				return getWires();
+			case GeneralPackage.LINE_GEOMETRY__LIKE:
+				if (resolve) return getLike();
+				return basicGetLike();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -640,6 +692,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				getWires().clear();
 				getWires().addAll((Collection<? extends WireData>)newValue);
 				return;
+			case GeneralPackage.LINE_GEOMETRY__LIKE:
+				setLike((LineGeometry)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -688,6 +743,9 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 			case GeneralPackage.LINE_GEOMETRY__WIRES:
 				getWires().clear();
 				return;
+			case GeneralPackage.LINE_GEOMETRY__LIKE:
+				setLike((LineGeometry)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -724,6 +782,8 @@ public class LineGeometryImpl extends NamedImpl implements LineGeometry {
 				return reduce != REDUCE_EDEFAULT;
 			case GeneralPackage.LINE_GEOMETRY__WIRES:
 				return wires != null && !wires.isEmpty();
+			case GeneralPackage.LINE_GEOMETRY__LIKE:
+				return like != null;
 		}
 		return super.eIsSet(featureID);
 	}

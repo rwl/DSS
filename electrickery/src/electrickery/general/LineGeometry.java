@@ -39,6 +39,7 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.general.LineGeometry#getEmergAmps <em>Emerg Amps</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#isReduce <em>Reduce</em>}</li>
  *   <li>{@link electrickery.general.LineGeometry#getWires <em>Wires</em>}</li>
+ *   <li>{@link electrickery.general.LineGeometry#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -166,6 +167,32 @@ public interface LineGeometry extends Named {
 	 * @generated
 	 */
 	EList<WireData> getWires();
+
+	/**
+	 * Returns the value of the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Like</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Like</em>' reference.
+	 * @see #setLike(LineGeometry)
+	 * @see electrickery.general.GeneralPackage#getLineGeometry_Like()
+	 * @model
+	 * @generated
+	 */
+	LineGeometry getLike();
+
+	/**
+	 * Sets the value of the '{@link electrickery.general.LineGeometry#getLike <em>Like</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Like</em>' reference.
+	 * @see #getLike()
+	 * @generated
+	 */
+	void setLike(LineGeometry value);
 
 	/**
 	 * Returns the value of the '<em><b>Spacing</b></em>' reference.

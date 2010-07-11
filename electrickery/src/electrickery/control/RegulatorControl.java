@@ -40,6 +40,7 @@ package electrickery.control;
  *   <li>{@link electrickery.control.RegulatorControl#getMaxTapChange <em>Max Tap Change</em>}</li>
  *   <li>{@link electrickery.control.RegulatorControl#isInverseTime <em>Inverse Time</em>}</li>
  *   <li>{@link electrickery.control.RegulatorControl#getTapWinding <em>Tap Winding</em>}</li>
+ *   <li>{@link electrickery.control.RegulatorControl#getVLimit <em>VLimit</em>}</li>
  * </ul>
  * </p>
  *
@@ -561,5 +562,31 @@ public interface RegulatorControl extends ControlElement {
 	 * @generated
 	 */
 	void setTapWinding(int value);
+
+	/**
+	 * Returns the value of the '<em><b>VLimit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Voltage Limit for bus to which regulated winding is connected (e.g. first customer).
+	 * Default is 0.0. Set to a value greater then zero to activate this function.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>VLimit</em>' attribute.
+	 * @see #setVLimit(double)
+	 * @see electrickery.control.ControlPackage#getRegulatorControl_VLimit()
+	 * @model
+	 * @generated
+	 */
+	double getVLimit();
+
+	/**
+	 * Sets the value of the '{@link electrickery.control.RegulatorControl#getVLimit <em>VLimit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>VLimit</em>' attribute.
+	 * @see #getVLimit()
+	 * @generated
+	 */
+	void setVLimit(double value);
 
 } // RegulatorControl

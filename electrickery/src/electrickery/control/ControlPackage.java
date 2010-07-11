@@ -2156,13 +2156,22 @@ public interface ControlPackage extends EPackage {
 	int REGULATOR_CONTROL__TAP_WINDING = CONTROL_ELEMENT_FEATURE_COUNT + 19;
 
 	/**
+	 * The feature id for the '<em><b>VLimit</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int REGULATOR_CONTROL__VLIMIT = CONTROL_ELEMENT_FEATURE_COUNT + 20;
+
+	/**
 	 * The number of structural features of the '<em>Regulator Control</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int REGULATOR_CONTROL_FEATURE_COUNT = CONTROL_ELEMENT_FEATURE_COUNT + 20;
+	int REGULATOR_CONTROL_FEATURE_COUNT = CONTROL_ELEMENT_FEATURE_COUNT + 21;
 
 	/**
 	 * The meta object id for the '{@link electrickery.control.impl.RelayImpl <em>Relay</em>}' class.
@@ -3585,6 +3594,17 @@ public interface ControlPackage extends EPackage {
 	EAttribute getRegulatorControl_TapWinding();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.RegulatorControl#getVLimit <em>VLimit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>VLimit</em>'.
+	 * @see electrickery.control.RegulatorControl#getVLimit()
+	 * @see #getRegulatorControl()
+	 * @generated
+	 */
+	EAttribute getRegulatorControl_VLimit();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.control.Relay <em>Relay</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4572,6 +4592,14 @@ public interface ControlPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute REGULATOR_CONTROL__TAP_WINDING = eINSTANCE.getRegulatorControl_TapWinding();
+
+		/**
+		 * The meta object literal for the '<em><b>VLimit</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute REGULATOR_CONTROL__VLIMIT = eINSTANCE.getRegulatorControl_VLimit();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.control.impl.RelayImpl <em>Relay</em>}' class.

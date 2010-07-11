@@ -66,6 +66,7 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 			case ConversionPackage.GENERATOR: return createGenerator();
 			case ConversionPackage.LOAD: return createLoad();
 			case ConversionPackage.VOLTAGE_SOURCE: return createVoltageSource();
+			case ConversionPackage.STORAGE: return createStorage();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -95,6 +96,8 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 				return createloadSpecTypeFromString(eDataType, initialValue);
 			case ConversionPackage.SPEC_TYPE:
 				return createspecTypeFromString(eDataType, initialValue);
+			case ConversionPackage.STORAGE_STATE:
+				return createstorageStateFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -124,6 +127,8 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 				return convertloadSpecTypeToString(eDataType, instanceValue);
 			case ConversionPackage.SPEC_TYPE:
 				return convertspecTypeToString(eDataType, instanceValue);
+			case ConversionPackage.STORAGE_STATE:
+				return convertstorageStateToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -177,6 +182,16 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	public VoltageSource createVoltageSource() {
 		VoltageSourceImpl voltageSource = new VoltageSourceImpl();
 		return voltageSource;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Storage createStorage() {
+		StorageImpl storage = new StorageImpl();
+		return storage;
 	}
 
 	/**
@@ -336,6 +351,26 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	 * @generated
 	 */
 	public String convertspecTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public storageState createstorageStateFromString(EDataType eDataType, String initialValue) {
+		storageState result = storageState.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertstorageStateToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 

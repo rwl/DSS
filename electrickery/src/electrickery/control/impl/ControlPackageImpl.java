@@ -872,6 +872,15 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getRegulatorControl_VLimit() {
+		return (EAttribute)regulatorControlEClass.getEStructuralFeatures().get(20);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1266,6 +1275,7 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		createEAttribute(regulatorControlEClass, REGULATOR_CONTROL__MAX_TAP_CHANGE);
 		createEAttribute(regulatorControlEClass, REGULATOR_CONTROL__INVERSE_TIME);
 		createEAttribute(regulatorControlEClass, REGULATOR_CONTROL__TAP_WINDING);
+		createEAttribute(regulatorControlEClass, REGULATOR_CONTROL__VLIMIT);
 
 		relayEClass = createEClass(RELAY);
 		createEAttribute(relayEClass, RELAY__MONITORED_OBJ);
@@ -1424,6 +1434,7 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		initEAttribute(getRegulatorControl_MaxTapChange(), ecorePackage.getEInt(), "maxTapChange", "16", 0, 1, RegulatorControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRegulatorControl_InverseTime(), ecorePackage.getEBoolean(), "inverseTime", "false", 0, 1, RegulatorControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRegulatorControl_TapWinding(), ecorePackage.getEInt(), "tapWinding", "1", 0, 1, RegulatorControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getRegulatorControl_VLimit(), ecorePackage.getEDouble(), "vLimit", null, 0, 1, RegulatorControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(relayEClass, Relay.class, "Relay", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getRelay_MonitoredObj(), ecorePackage.getEString(), "monitoredObj", null, 0, 1, Relay.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

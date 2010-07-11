@@ -595,6 +595,15 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getLineGeometry_Like() {
+		return (EReference)lineGeometryEClass.getEStructuralFeatures().get(12);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EReference getLineGeometry_Spacing() {
 		return (EReference)lineGeometryEClass.getEStructuralFeatures().get(4);
 	}
@@ -1086,6 +1095,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__EMERG_AMPS);
 		createEAttribute(lineGeometryEClass, LINE_GEOMETRY__REDUCE);
 		createEReference(lineGeometryEClass, LINE_GEOMETRY__WIRES);
+		createEReference(lineGeometryEClass, LINE_GEOMETRY__LIKE);
 
 		lineSpacingEClass = createEClass(LINE_SPACING);
 		createEAttribute(lineSpacingEClass, LINE_SPACING__NCONDS);
@@ -1225,6 +1235,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		initEAttribute(getLineGeometry_EmergAmps(), ecorePackage.getEDouble(), "emergAmps", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLineGeometry_Reduce(), ecorePackage.getEBoolean(), "reduce", "false", 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getLineGeometry_Wires(), this.getWireData(), null, "wires", null, 0, -1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getLineGeometry_Like(), this.getLineGeometry(), null, "like", null, 0, 1, LineGeometry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(lineSpacingEClass, LineSpacing.class, "LineSpacing", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getLineSpacing_NConds(), ecorePackage.getEInt(), "nConds", null, 0, 1, LineSpacing.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

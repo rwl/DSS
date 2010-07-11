@@ -98,6 +98,10 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 				return createVoltageSourceAdapter();
 			}
 			@Override
+			public Adapter caseStorage(Storage object) {
+				return createStorageAdapter();
+			}
+			@Override
 			public Adapter caseCircuitElement(CircuitElement object) {
 				return createCircuitElementAdapter();
 			}
@@ -202,6 +206,20 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createVoltageSourceAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.conversion.Storage <em>Storage</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.conversion.Storage
+	 * @generated
+	 */
+	public Adapter createStorageAdapter() {
 		return null;
 	}
 

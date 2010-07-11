@@ -18,6 +18,7 @@ import electrickery.conversion.Equivalent;
 import electrickery.conversion.Generator;
 import electrickery.conversion.Load;
 import electrickery.conversion.PowerConversionElement;
+import electrickery.conversion.Storage;
 import electrickery.conversion.VoltageSource;
 import electrickery.conversion.dispatchType;
 import electrickery.conversion.generatorModel;
@@ -27,6 +28,7 @@ import electrickery.conversion.loadSpecType;
 import electrickery.conversion.loadStatus;
 import electrickery.conversion.sequenceType;
 import electrickery.conversion.specType;
+import electrickery.conversion.storageState;
 import electrickery.delivery.DeliveryPackage;
 import electrickery.delivery.impl.DeliveryPackageImpl;
 import electrickery.executive.ExecutivePackage;
@@ -97,6 +99,13 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass storageEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -152,6 +161,13 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
     private EEnum specTypeEEnum = null;
 
                 /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum storageStateEEnum = null;
+
+																/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -1389,6 +1405,330 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 
                 /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getStorage() {
+		return storageEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorage_Bus1() {
+		return (EReference)storageEClass.getEStructuralFeatures().get(0);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KV() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(1);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KW() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(2);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PF() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(3);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_Conn() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(4);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KVAR() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(5);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KVA() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(6);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KWRated() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(7);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KWhRated() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(8);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_KWhStored() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(9);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctStored() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(10);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctReserve() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(11);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_State() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(12);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctDischarge() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(13);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctCharge() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(14);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctEffCharge() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(15);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctEffDischarge() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(16);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctIdlingKW() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(17);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctIdlingKVAr() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(18);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctR() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(19);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_PctX() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(20);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_Model() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(21);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_VMinPU() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(22);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_VMaxPU() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(23);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorage_Yearly() {
+		return (EReference)storageEClass.getEStructuralFeatures().get(24);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorage_Daily() {
+		return (EReference)storageEClass.getEStructuralFeatures().get(25);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorage_Duty() {
+		return (EReference)storageEClass.getEStructuralFeatures().get(26);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_DispMode() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(27);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_DischargeTrigger() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(28);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_ChargeTrigger() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(29);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_TimeChargeTrig() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(30);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_Class() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(31);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_UserModel() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(32);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_UserData() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(33);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorage_DebugTrace() {
+		return (EAttribute)storageEClass.getEStructuralFeatures().get(34);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1460,6 +1800,15 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 	}
 
                 /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getstorageState() {
+		return storageStateEEnum;
+	}
+
+																/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1621,6 +1970,43 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 		createEAttribute(voltageSourceEClass, VOLTAGE_SOURCE__ZSPEC_TYPE);
 		createEAttribute(voltageSourceEClass, VOLTAGE_SOURCE__VMAG);
 
+		storageEClass = createEClass(STORAGE);
+		createEReference(storageEClass, STORAGE__BUS1);
+		createEAttribute(storageEClass, STORAGE__KV);
+		createEAttribute(storageEClass, STORAGE__KW);
+		createEAttribute(storageEClass, STORAGE__PF);
+		createEAttribute(storageEClass, STORAGE__CONN);
+		createEAttribute(storageEClass, STORAGE__KVAR);
+		createEAttribute(storageEClass, STORAGE__KVA);
+		createEAttribute(storageEClass, STORAGE__KW_RATED);
+		createEAttribute(storageEClass, STORAGE__KWH_RATED);
+		createEAttribute(storageEClass, STORAGE__KWH_STORED);
+		createEAttribute(storageEClass, STORAGE__PCT_STORED);
+		createEAttribute(storageEClass, STORAGE__PCT_RESERVE);
+		createEAttribute(storageEClass, STORAGE__STATE);
+		createEAttribute(storageEClass, STORAGE__PCT_DISCHARGE);
+		createEAttribute(storageEClass, STORAGE__PCT_CHARGE);
+		createEAttribute(storageEClass, STORAGE__PCT_EFF_CHARGE);
+		createEAttribute(storageEClass, STORAGE__PCT_EFF_DISCHARGE);
+		createEAttribute(storageEClass, STORAGE__PCT_IDLING_KW);
+		createEAttribute(storageEClass, STORAGE__PCT_IDLING_KV_AR);
+		createEAttribute(storageEClass, STORAGE__PCT_R);
+		createEAttribute(storageEClass, STORAGE__PCT_X);
+		createEAttribute(storageEClass, STORAGE__MODEL);
+		createEAttribute(storageEClass, STORAGE__VMIN_PU);
+		createEAttribute(storageEClass, STORAGE__VMAX_PU);
+		createEReference(storageEClass, STORAGE__YEARLY);
+		createEReference(storageEClass, STORAGE__DAILY);
+		createEReference(storageEClass, STORAGE__DUTY);
+		createEAttribute(storageEClass, STORAGE__DISP_MODE);
+		createEAttribute(storageEClass, STORAGE__DISCHARGE_TRIGGER);
+		createEAttribute(storageEClass, STORAGE__CHARGE_TRIGGER);
+		createEAttribute(storageEClass, STORAGE__TIME_CHARGE_TRIG);
+		createEAttribute(storageEClass, STORAGE__CLASS);
+		createEAttribute(storageEClass, STORAGE__USER_MODEL);
+		createEAttribute(storageEClass, STORAGE__USER_DATA);
+		createEAttribute(storageEClass, STORAGE__DEBUG_TRACE);
+
 		// Create enums
 		sequenceTypeEEnum = createEEnum(SEQUENCE_TYPE);
 		generatorModelEEnum = createEEnum(GENERATOR_MODEL);
@@ -1630,6 +2016,7 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 		loadStatusEEnum = createEEnum(LOAD_STATUS);
 		loadSpecTypeEEnum = createEEnum(LOAD_SPEC_TYPE);
 		specTypeEEnum = createEEnum(SPEC_TYPE);
+		storageStateEEnum = createEEnum(STORAGE_STATE);
 	}
 
     /**
@@ -1671,6 +2058,7 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 		generatorEClass.getESuperTypes().add(this.getPowerConversionElement());
 		loadEClass.getESuperTypes().add(this.getPowerConversionElement());
 		voltageSourceEClass.getESuperTypes().add(this.getPowerConversionElement());
+		storageEClass.getESuperTypes().add(this.getPowerConversionElement());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(powerConversionElementEClass, PowerConversionElement.class, "PowerConversionElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1821,6 +2209,43 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 		initEAttribute(getVoltageSource_ZSpecType(), this.getspecType(), "zSpecType", "MVAsc", 0, 1, VoltageSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getVoltageSource_VMag(), ecorePackage.getEDouble(), "vMag", null, 0, 1, VoltageSource.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(storageEClass, Storage.class, "Storage", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getStorage_Bus1(), theCommonPackage.getBus(), null, "bus1", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KV(), ecorePackage.getEDouble(), "kV", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KW(), ecorePackage.getEDouble(), "kW", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PF(), ecorePackage.getEDouble(), "pF", "1.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_Conn(), theCommonPackage.getconnectionType(), "conn", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KVAR(), ecorePackage.getEDouble(), "kVAR", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KVA(), ecorePackage.getEDouble(), "kVA", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KWRated(), ecorePackage.getEDouble(), "kWRated", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KWhRated(), ecorePackage.getEDouble(), "kWhRated", "50.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_KWhStored(), ecorePackage.getEDouble(), "kWhStored", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctStored(), ecorePackage.getEDouble(), "pctStored", "100.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctReserve(), ecorePackage.getEDouble(), "pctReserve", "20.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_State(), this.getstorageState(), "state", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctDischarge(), ecorePackage.getEDouble(), "pctDischarge", "100.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctCharge(), ecorePackage.getEDouble(), "pctCharge", "100.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctEffCharge(), ecorePackage.getEDouble(), "pctEffCharge", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctEffDischarge(), ecorePackage.getEDouble(), "pctEffDischarge", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctIdlingKW(), ecorePackage.getEDouble(), "pctIdlingKW", "1.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctIdlingKVAr(), ecorePackage.getEDouble(), "pctIdlingKVAr", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctR(), ecorePackage.getEDouble(), "pctR", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_PctX(), ecorePackage.getEDouble(), "pctX", "50.0", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_Model(), ecorePackage.getEInt(), "model", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_VMinPU(), ecorePackage.getEDouble(), "vMinPU", "0.9", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_VMaxPU(), ecorePackage.getEDouble(), "vMaxPU", "1.1", 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorage_Yearly(), theGeneralPackage.getLoadShape(), null, "yearly", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorage_Daily(), theGeneralPackage.getLoadShape(), null, "daily", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorage_Duty(), theGeneralPackage.getLoadShape(), null, "duty", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_DispMode(), this.getdispatchType(), "dispMode", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_DischargeTrigger(), ecorePackage.getEDouble(), "dischargeTrigger", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_ChargeTrigger(), ecorePackage.getEDouble(), "chargeTrigger", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_TimeChargeTrig(), ecorePackage.getEDouble(), "timeChargeTrig", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_Class(), ecorePackage.getEInt(), "class", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_UserModel(), ecorePackage.getEString(), "userModel", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_UserData(), ecorePackage.getEString(), "userData", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorage_DebugTrace(), ecorePackage.getEBoolean(), "debugTrace", null, 0, 1, Storage.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(sequenceTypeEEnum, sequenceType.class, "sequenceType");
 		addEEnumLiteral(sequenceTypeEEnum, sequenceType.POSITIVE);
@@ -1867,6 +2292,11 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 		addEEnumLiteral(specTypeEEnum, specType.MVA_SC);
 		addEEnumLiteral(specTypeEEnum, specType.ISC);
 		addEEnumLiteral(specTypeEEnum, specType.Z1Z0);
+
+		initEEnum(storageStateEEnum, storageState.class, "storageState");
+		addEEnumLiteral(storageStateEEnum, storageState.IDLING);
+		addEEnumLiteral(storageStateEEnum, storageState.CHARGING);
+		addEEnumLiteral(storageStateEEnum, storageState.DISCHARGING);
 	}
 
 } //ConversionPackageImpl

@@ -560,13 +560,22 @@ public interface GeneralPackage extends EPackage {
 	int LINE_GEOMETRY__WIRES = CommonPackage.NAMED_FEATURE_COUNT + 11;
 
 	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LINE_GEOMETRY__LIKE = CommonPackage.NAMED_FEATURE_COUNT + 12;
+
+	/**
 	 * The number of structural features of the '<em>Line Geometry</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LINE_GEOMETRY_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 12;
+	int LINE_GEOMETRY_FEATURE_COUNT = CommonPackage.NAMED_FEATURE_COUNT + 13;
 
 	/**
 	 * The meta object id for the '{@link electrickery.general.impl.LineSpacingImpl <em>Line Spacing</em>}' class.
@@ -1460,6 +1469,17 @@ public interface GeneralPackage extends EPackage {
 	EReference getLineGeometry_Wires();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.general.LineGeometry#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.general.LineGeometry#getLike()
+	 * @see #getLineGeometry()
+	 * @generated
+	 */
+	EReference getLineGeometry_Like();
+
+	/**
 	 * Returns the meta object for the reference '{@link electrickery.general.LineGeometry#getSpacing <em>Spacing</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2341,6 +2361,14 @@ public interface GeneralPackage extends EPackage {
 		 * @generated
 		 */
 		EReference LINE_GEOMETRY__WIRES = eINSTANCE.getLineGeometry_Wires();
+
+		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference LINE_GEOMETRY__LIKE = eINSTANCE.getLineGeometry_Like();
 
 		/**
 		 * The meta object literal for the '<em><b>Spacing</b></em>' reference feature.

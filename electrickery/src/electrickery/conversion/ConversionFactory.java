@@ -71,6 +71,15 @@ public interface ConversionFactory extends EFactory {
 	VoltageSource createVoltageSource();
 
 	/**
+	 * Returns a new object of class '<em>Storage</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Storage</em>'.
+	 * @generated
+	 */
+	Storage createStorage();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

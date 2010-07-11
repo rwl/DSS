@@ -1629,43 +1629,190 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Storage" eSuperTypes="#//conversion/PowerConversionElement">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="bus1" eType="#//common/Bus"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kV" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="The storage element is essentially a generator that can be dispatched&#xD;&#xA;to either produce power or consume power commensurate with rating and&#xD;&#xA;amount of stored energy.&#xD;&#xA;&#xD;&#xA;The storage element can also produce or absorb vars within the kVA rating of the inverter.&#xD;&#xA;That is, a StorageController object requests kvar and the storage element provides them if&#xD;&#xA;it has any capacity left. The storage element can produce/absorb kvar while idling."/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="bus1" eType="#//common/Bus">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Bus to which the Storage element is connected."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kV" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Nominal rated (1.0 per unit) voltage, kV, for Storage element. For 2- and 3-phase&#xA;Storage elements, specify phase-phase kV. Otherwise, specify actual kV across&#xA;each branch of the Storage element. If wye (star), specify phase-neutral kV. If&#xA;delta or phase-phase connected, specify phase-phase kV."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The present kW value.  A positive value denotes power coming OUT of the&#xA;element, which is the opposite of a Load element. A negative value indicates&#xA;the Storage element is in Charging state. This value is modified internally&#xA;depending on the dispatch mode."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Nominally, the power factor for discharging (acting as a generator). Default&#xA;is 1.0. Setting this property will also set the kvar property. Enter negative&#xA;for leading powerfactor (when kW and kvar have opposite signs.) A positive&#xA;power factor for a generator signifies that the Storage element produces&#xA;vars as is typical for a generator."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="conn" eType="#//common/connectionType"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVAR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctReserve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//conversion/storageState"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVAR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="The present kVAr value.  Alternative to specifying the power factor.  Side effect: &#xA;the power factor value is altered to agree based on present value of kW."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kVA rating of power output. Defaults to rated kW. Used as the base for Dynamics&#xA;mode and Harmonics mode values."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kW rating of power output. Side effect: Sets the KVA property."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="50.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Rated storage capacity in kWh. Default is 50."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Present amount of energy stored, kWh. Default is same as kWh rated."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="100.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Present amount of energy stored, % of rated kWh. Default is 100%."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctReserve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="20.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Percent of rated kWh storage capacity to be held in reserve for normal operation.&#xA;Default = 20. This is treated as the minimum energy discharge level unless there&#xA;is an emergency. For emergency operation set this property lower. Cannot be less&#xA;than zero."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//conversion/storageState">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Present operational state. In DISCHARGING mode, the Storage element&#xA;acts as a generator and the kW property is positive. The element continues&#xA;discharging at the scheduled output power level until the storage reaches&#xA;the reserve value. Then the state reverts to IDLING. In the CHARGING&#xA;state, the Storage element behaves like a Load and the kW property is&#xA;negative. The element continues to charge until the max storage kWh is&#xA;reached and Then switches to IDLING state. In IDLING state, the kW&#xA;property shows zero. However, the resistive and reactive loss elements&#xA;remain in the circuit and the power flow report will show power being&#xA;consumed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctDischarge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
-          defaultValueLiteral="100.0"/>
+          defaultValueLiteral="100.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Discharge rate (output power) in Percent of rated kW. Default = 100."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
-          defaultValueLiteral="100.0"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffDischarge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKVAr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMinPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMaxPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="yearly" eType="#//general/LoadShape"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="daily" eType="#//general/LoadShape"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="duty" eType="#//general/LoadShape"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dispMode" eType="#//conversion/dispatchType"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dischargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="chargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeChargeTrig" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userModel" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userData" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="debugTrace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+          defaultValueLiteral="100.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Charging rate (input power) in Percent of rated kW. Default = 100."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Percent efficiency for CHARGING the storage element. Default = 90."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffDischarge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Percent efficiency for DISCHARGING the storage element. Default = 90. Idling&#xA;losses are handled by %IdlingkW property and are in addition to the charging&#xA;and discharging efficiency losses in the power conversion process inside the&#xA;unit."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Percent of rated kW consumed while idling. Default = 1."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKVAr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Percent of rated kW consumed as reactive power (kvar) while idling. Default = 0."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Equivalent percent internal resistance, ohms. Default is 0. Placed in series&#xA;with internal voltage source for harmonics and dynamics modes. Use a&#xA;combination of pctIdlekW and pctEffCharge and pctEffDischarge to account&#xA;for losses in power flow modes."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="50.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Equivalent percent internal reactance, ohms. Default is 50%. Placed in&#xA;series with internal voltage source for harmonics and dynamics modes.&#xA;(Limits fault current to 2 pu.) Use pctIdlekVAr and kvar properties to&#xA;account for any reactive power during power flow solutions."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Integer code for the model to use for powet output variation with voltage.&#xA;Valid values are:&#xA;  1: Storage element injects a CONSTANT kW at specified power factor.&#xA;  2:Storage element is modeled as a CONSTANT ADMITTANCE.&#xA;  3:Compute load injection from User-written Model."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMinPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.9">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Minimum per unit voltage for which the Model is assumed to apply. Below&#xA;this value, the load model reverts to a constant impedance model."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMaxPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.1">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Maximum per unit voltage for which the Model is assumed to apply. Above&#xA;this value, the load model reverts to a constant impedance model."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="yearly" eType="#//general/LoadShape">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Dispatch shape to use for yearly simulations.  Must be previously defined as&#xA;a Loadshape object.  If this is not specified, the Daily dispatch shape, If any,&#xA;is repeated during Yearly solution modes. In the default dispatch mode, the&#xA;Storage element uses this loadshape to trigger State changes."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="daily" eType="#//general/LoadShape">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Dispatch shape to use for daily simulations.  Must be previously defined as&#xA;a Loadshape object of 24 hrs, typically.  In the default dispatch mode, the&#xA;Storage element uses this loadshape to trigger State changes."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="duty" eType="#//general/LoadShape">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Load shape to use for duty cycle dispatch simulations such as for solar ramp&#xA;rate studies. Must be previously defined as a Loadshape object. Typically would&#xA;have time intervals of 1-5 seconds. If there are fewer points in the actual shape,&#xA;the shape is assumed to repeat."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dispMode" eType="#//conversion/dispatchType">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="In DEFAULT mode, Storage element state is triggered by the loadshape curve&#xA;corresponding to the solution mode. In EXTERNAL mode, Storage element&#xA;state is controlled by an external Storage controller. This mode is automatically&#xA;set if this Storage element is included in the element list of a StorageController&#xA;element. For the other two dispatch modes, the Storage element state is&#xA;controlled by either the global default Loadlevel value or the price level."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dischargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Dispatch trigger value for discharging the storage. If = 0.0 the Storage element&#xA;state is changed by the State command or by a StorageController object. If &lt;> 0&#xA;the Storage element state is set to DISCHARGING when this trigger level is&#xA;EXCEEDED by either the specified Loadshape curve value or the price signal or&#xA;global Loadlevel value, depending on dispatch mode."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="chargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Dispatch trigger value for charging the storage. If = 0.0 the Storage element&#xA;state is changed by the State command or StorageController object.  If &lt;> 0&#xA;the Storage element state is set to CHARGING when this trigger level is GREATER&#xA;than either the specified Loadshape curve value or the price signal or global&#xA;Loadlevel value, depending on dispatch mode. See State property."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeChargeTrig" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Time of day in fractional hours (0230 = 2.5) at which storage element will automatically&#xA;go into charge state. Default is 2.0.  Enter a negative time value to disable this feature."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="An arbitrary integer number representing the class of Storage element so that Storage&#xA;values may be segregated by class."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userModel" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Name of DLL containing user-written model, which computes the terminal&#xA;currents for Dynamics studies, overriding the default model.  Set to &quot;none&quot;&#xA;to negate previous setting."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userData" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="String (in quotes or parentheses) that gets passed to user-written model&#xA;for defining the data required for that model."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="debugTrace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Turn this on to capture the progress of the Storage model for each iteration.  Creates&#xA;a separate file for each Storage element named &quot;STORAGE_name.CSV&quot;."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="sequenceType">
       <eLiterals name="Positive"/>

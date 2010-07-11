@@ -42,6 +42,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  *   <li>{@link electrickery.control.impl.RegulatorControlImpl#getMaxTapChange <em>Max Tap Change</em>}</li>
  *   <li>{@link electrickery.control.impl.RegulatorControlImpl#isInverseTime <em>Inverse Time</em>}</li>
  *   <li>{@link electrickery.control.impl.RegulatorControlImpl#getTapWinding <em>Tap Winding</em>}</li>
+ *   <li>{@link electrickery.control.impl.RegulatorControlImpl#getVLimit <em>VLimit</em>}</li>
  * </ul>
  * </p>
  *
@@ -447,6 +448,26 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 	 * @ordered
 	 */
 	protected int tapWinding = TAP_WINDING_EDEFAULT;
+
+	/**
+	 * The default value of the '{@link #getVLimit() <em>VLimit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVLimit()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final double VLIMIT_EDEFAULT = 0.0;
+
+	/**
+	 * The cached value of the '{@link #getVLimit() <em>VLimit</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getVLimit()
+	 * @generated
+	 * @ordered
+	 */
+	protected double vLimit = VLIMIT_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -892,6 +913,27 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public double getVLimit() {
+		return vLimit;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setVLimit(double newVLimit) {
+		double oldVLimit = vLimit;
+		vLimit = newVLimit;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ControlPackage.REGULATOR_CONTROL__VLIMIT, oldVLimit, vLimit));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
@@ -935,6 +977,8 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 				return isInverseTime();
 			case ControlPackage.REGULATOR_CONTROL__TAP_WINDING:
 				return getTapWinding();
+			case ControlPackage.REGULATOR_CONTROL__VLIMIT:
+				return getVLimit();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1006,6 +1050,9 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 				return;
 			case ControlPackage.REGULATOR_CONTROL__TAP_WINDING:
 				setTapWinding((Integer)newValue);
+				return;
+			case ControlPackage.REGULATOR_CONTROL__VLIMIT:
+				setVLimit((Double)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -1079,6 +1126,9 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 			case ControlPackage.REGULATOR_CONTROL__TAP_WINDING:
 				setTapWinding(TAP_WINDING_EDEFAULT);
 				return;
+			case ControlPackage.REGULATOR_CONTROL__VLIMIT:
+				setVLimit(VLIMIT_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1131,6 +1181,8 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 				return inverseTime != INVERSE_TIME_EDEFAULT;
 			case ControlPackage.REGULATOR_CONTROL__TAP_WINDING:
 				return tapWinding != TAP_WINDING_EDEFAULT;
+			case ControlPackage.REGULATOR_CONTROL__VLIMIT:
+				return vLimit != VLIMIT_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1185,6 +1237,8 @@ public class RegulatorControlImpl extends ControlElementImpl implements Regulato
 		result.append(inverseTime);
 		result.append(", tapWinding: ");
 		result.append(tapWinding);
+		result.append(", vLimit: ");
+		result.append(vLimit);
 		result.append(')');
 		return result.toString();
 	}
