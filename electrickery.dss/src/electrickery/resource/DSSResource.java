@@ -582,4 +582,64 @@ public interface DSSResource extends Resource {
         CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
         CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
     };
+
+    public static final EStructuralFeature[] TIMECURRENTCURVE_FEATURES = {
+        GeneralPackage.Literals.TIME_CURRENT_CURVE__NPTS,
+        GeneralPackage.Literals.TIME_CURRENT_CURVE__CARRAY,
+        GeneralPackage.Literals.TIME_CURRENT_CURVE__TARRAY,
+//    	GeneralPackage.Literals.TIME_CURRENT_CURVE__LIKE
+    };
+
+    public static final EStructuralFeature[] TRANSFORMER_FEATURES = {
+        CommonPackage.Literals.CIRCUIT_ELEMENT__NPHASES,
+        DeliveryPackage.Literals.TRANSFORMER__WINDINGS,
+        DeliveryPackage.Literals.TRANSFORMER__WDG,
+        DeliveryPackage.Literals.TRANSFORMER__BUS,
+        DeliveryPackage.Literals.TRANSFORMER__CONN,
+        DeliveryPackage.Literals.TRANSFORMER__KV,
+        DeliveryPackage.Literals.TRANSFORMER__KVA,
+        DeliveryPackage.Literals.TRANSFORMER__TAP,
+        DeliveryPackage.Literals.TRANSFORMER__RPCT,
+        DeliveryPackage.Literals.TRANSFORMER__RNEUT,
+        DeliveryPackage.Literals.TRANSFORMER__XNEUT,
+        DeliveryPackage.Literals.TRANSFORMER__BUSES,
+        DeliveryPackage.Literals.TRANSFORMER__CONNS,
+        DeliveryPackage.Literals.TRANSFORMER__KVS,
+        DeliveryPackage.Literals.TRANSFORMER__KV_AS,
+        DeliveryPackage.Literals.TRANSFORMER__TAPS,
+        DeliveryPackage.Literals.TRANSFORMER__XHL,
+        DeliveryPackage.Literals.TRANSFORMER__XHT,
+        DeliveryPackage.Literals.TRANSFORMER__XLT,
+        DeliveryPackage.Literals.TRANSFORMER__XSC_ARRAY,
+        DeliveryPackage.Literals.TRANSFORMER__THERMAL,
+        DeliveryPackage.Literals.TRANSFORMER__N,
+        DeliveryPackage.Literals.TRANSFORMER__M,
+        DeliveryPackage.Literals.TRANSFORMER__FL_RISE,
+        DeliveryPackage.Literals.TRANSFORMER__HS_RISE,
+        DeliveryPackage.Literals.TRANSFORMER__PCT_LOAD_LOSS,
+        DeliveryPackage.Literals.TRANSFORMER__PCT_NO_LOAD_LOSS,
+        DeliveryPackage.Literals.TRANSFORMER__NORM_HK_VA,
+        DeliveryPackage.Literals.TRANSFORMER__EMERG_HK_VA,
+        DeliveryPackage.Literals.TRANSFORMER__SUBSTATION,
+        DeliveryPackage.Literals.TRANSFORMER__MAX_TAP,
+        DeliveryPackage.Literals.TRANSFORMER__NUM_TAPS,
+        DeliveryPackage.Literals.TRANSFORMER__SUB_NAME,
+        DeliveryPackage.Literals.TRANSFORMER__PCT_IMAGE,
+        DeliveryPackage.Literals.TRANSFORMER__PPM_ANTI_FLOAT,
+//    	DeliveryPackage.Literals.TRANSFORMER__PCT_RS,
+//    	DeliveryPackage.Literals.TRANSFORMER__BANK,
+//    	DeliveryPackage.Literals.TRANSFORMER__XFMR_CODE,
+        DeliveryPackage.Literals.POWER_DELIVERY_ELEMENT__NORM_AMPS,
+        DeliveryPackage.Literals.POWER_DELIVERY_ELEMENT__EMERG_AMPS,
+        DeliveryPackage.Literals.POWER_DELIVERY_ELEMENT__FAULT_RATE,
+        DeliveryPackage.Literals.POWER_DELIVERY_ELEMENT__PCT_PERM,
+        DeliveryPackage.Literals.POWER_DELIVERY_ELEMENT__REPAIR,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
+
+    public static final EStructuralFeature[] VOLTAGESOURCE_FEATURES = {
+
+    };
 }
