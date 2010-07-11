@@ -812,6 +812,11 @@
           <details key="documentation" value="Winding containing the actual taps, if different than the WINDING property. Defaults to the same winding as specified by the WINDING property."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vLimit" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Voltage Limit for bus to which regulated winding is connected (e.g. first customer).&#xA;Default is 0.0. Set to a value greater then zero to activate this function."/>
+        </eAnnotations>
+      </eStructuralFeatures>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Relay" eSuperTypes="#//control/ControlElement">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -1623,6 +1628,45 @@
           defaultValueLiteral="MVAsc"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMag" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Storage" eSuperTypes="#//conversion/PowerConversionElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="bus1" eType="#//common/Bus"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kV" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pF" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="conn" eType="#//common/connectionType"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVAR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kVA" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhRated" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctStored" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctReserve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//conversion/storageState"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctDischarge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="100.0"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="100.0"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctEffDischarge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctIdlingKVAr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctR" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctX" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="model" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMinPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="vMaxPU" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="yearly" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="daily" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="duty" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dispMode" eType="#//conversion/dispatchType"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="dischargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="chargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeChargeTrig" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="class" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userModel" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="userData" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="debugTrace" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="sequenceType">
       <eLiterals name="Positive"/>
       <eLiterals name="Zero" value="1"/>
@@ -1668,6 +1712,11 @@
       <eLiterals name="MVASc" value="1" literal="MVASc"/>
       <eLiterals name="ISc" value="2" literal="ISc"/>
       <eLiterals name="Z1Z0" value="3"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="storageState">
+      <eLiterals name="Idling"/>
+      <eLiterals name="Charging" value="1"/>
+      <eLiterals name="Discharging" value="2"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="delivery" nsURI="http://www.electrickery.com/delivery" nsPrefix="delivery">

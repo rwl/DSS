@@ -376,4 +376,126 @@ public interface DSSResource extends Resource {
         CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
         CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
     };
+
+    public static final EStructuralFeature[] RECLOSER_FEATURES = {
+        ControlPackage.Literals.RECLOSER__MONITORED_OBJ,
+        ControlPackage.Literals.RECLOSER__MONITORED_TERM,
+        ControlPackage.Literals.RECLOSER__SWITCHED_OBJ,
+        ControlPackage.Literals.RECLOSER__SWITCHED_TERM,
+        ControlPackage.Literals.RECLOSER__NFAST,
+        ControlPackage.Literals.RECLOSER__PHASE_FAST,
+        ControlPackage.Literals.RECLOSER__PHASE_DELAYED,
+        ControlPackage.Literals.RECLOSER__GROUND_FAST,
+        ControlPackage.Literals.RECLOSER__GROUND_DELAYED,
+        ControlPackage.Literals.RECLOSER__PHASE_TRIP,
+        ControlPackage.Literals.RECLOSER__GROUND_TRIP,
+        ControlPackage.Literals.RECLOSER__PHASE_INST,
+        ControlPackage.Literals.RECLOSER__GROUND_INST,
+        ControlPackage.Literals.RECLOSER__RESET,
+        ControlPackage.Literals.RECLOSER__SHOTS,
+        ControlPackage.Literals.RECLOSER__RECLOSE_INTERVALS,
+        ControlPackage.Literals.RECLOSER__DELAY,
+        ControlPackage.Literals.RECLOSER__ACTION,
+        ControlPackage.Literals.RECLOSER__TD_PH_FAST,
+        ControlPackage.Literals.RECLOSER__TD_PH_DELAYED,
+        ControlPackage.Literals.RECLOSER__TD_GR_FAST,
+        ControlPackage.Literals.RECLOSER__TD_GR_DELAYED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
+
+    public static final EStructuralFeature[] REGULATORCONTROL_FEATURES = {
+        ControlPackage.Literals.REGULATOR_CONTROL__TRANSFORMER,
+        ControlPackage.Literals.REGULATOR_CONTROL__WINDING,
+        ControlPackage.Literals.REGULATOR_CONTROL__VREG,
+        ControlPackage.Literals.REGULATOR_CONTROL__BAND,
+        ControlPackage.Literals.REGULATOR_CONTROL__PT_RATIO,
+        ControlPackage.Literals.REGULATOR_CONTROL__CT_PRIM,
+        ControlPackage.Literals.REGULATOR_CONTROL__R,
+        ControlPackage.Literals.REGULATOR_CONTROL__X,
+        ControlPackage.Literals.REGULATOR_CONTROL__BUS,
+        ControlPackage.Literals.REGULATOR_CONTROL__DELAY,
+        ControlPackage.Literals.REGULATOR_CONTROL__REVERSIBLE,
+        ControlPackage.Literals.REGULATOR_CONTROL__REV_VREG,
+        ControlPackage.Literals.REGULATOR_CONTROL__REV_BAND,
+        ControlPackage.Literals.REGULATOR_CONTROL__REV_R,
+        ControlPackage.Literals.REGULATOR_CONTROL__REV_X,
+        ControlPackage.Literals.REGULATOR_CONTROL__TAP_DELAY,
+        ControlPackage.Literals.REGULATOR_CONTROL__DEBUG_TRACE,
+        ControlPackage.Literals.REGULATOR_CONTROL__MAX_TAP_CHANGE,
+        ControlPackage.Literals.REGULATOR_CONTROL__INVERSE_TIME,
+        ControlPackage.Literals.REGULATOR_CONTROL__TAP_WINDING,
+//    	ControlPackage.Literals.REGULATOR_CONTROL__V_LIMIT,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
+
+    public static final EStructuralFeature[] RELAY_FEATURES = {
+        ControlPackage.Literals.RELAY__MONITORED_OBJ,
+        ControlPackage.Literals.RELAY__MONITORED_TERM,
+        ControlPackage.Literals.RELAY__SWITCHED_OBJ,
+        ControlPackage.Literals.RELAY__SWITCHED_TERM,
+        ControlPackage.Literals.RELAY__TYPE,
+        ControlPackage.Literals.RELAY__PHASE_CURVE,
+        ControlPackage.Literals.RELAY__GROUND_CURVE,
+        ControlPackage.Literals.RELAY__PHASE_TRIP,
+        ControlPackage.Literals.RELAY__GROUND_TRIP,
+        ControlPackage.Literals.RELAY__TD_PHASE,
+        ControlPackage.Literals.RELAY__TD_GROUND,
+        ControlPackage.Literals.RELAY__PHASE_INST,
+        ControlPackage.Literals.RELAY__GROUND_INST,
+        ControlPackage.Literals.RELAY__RESET,
+        ControlPackage.Literals.RELAY__SHOTS,
+        ControlPackage.Literals.RELAY__RECLOSE_INTERVALS,
+        ControlPackage.Literals.RELAY__DELAY,
+        ControlPackage.Literals.RELAY__OVERVOLT_CURVE,
+        ControlPackage.Literals.RELAY__UNDERVOLT_CURVE,
+        ControlPackage.Literals.RELAY__KV_BASE,
+        ControlPackage.Literals.RELAY__PCT_PICKUP47,
+//    	ControlPackage.Literals.RELAY__BASE_AMPS46,
+        ControlPackage.Literals.RELAY__PCT_PICKUP46,
+        ControlPackage.Literals.RELAY__ISQT46,
+        ControlPackage.Literals.RELAY__VARIABLE,
+        ControlPackage.Literals.RELAY__OVERTRIP,
+        ControlPackage.Literals.RELAY__UNDERTRIP,
+        ControlPackage.Literals.RELAY__BREAKER_TIME,
+        ControlPackage.Literals.RELAY__ACTION,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
+
+    public static final EStructuralFeature[] SENSOR_FEATURES = {
+        MeterPackage.Literals.METER_ELEMENT__METERED_ELEMENT,
+        MeterPackage.Literals.METER_ELEMENT__METERED_TERMINAL,
+//    	MeterPackage.Literals.SENSOR__KV_BASE,
+//        MeterPackage.Literals.SENSOR__CLEAR,
+//        MeterPackage.Literals.SENSOR__KVS,
+//        MeterPackage.Literals.SENSOR__CURRENTS,
+//        MeterPackage.Literals.SENSOR__KWS,
+//        MeterPackage.Literals.SENSOR__KVARS,
+        MeterPackage.Literals.SENSOR__CONN,
+//        MeterPackage.Literals.SENSOR__DELTA_DIRECTION,
+        MeterPackage.Literals.SENSOR__PCT_ERROR,
+//        MeterPackage.Literals.SENSOR__WEIGHT,
+        MeterPackage.Literals.SENSOR__ACTION,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
+
+    public static final EStructuralFeature[] SPECTRUM_FEATURES = {
+        GeneralPackage.Literals.SPECTRUM__NHARM,
+        GeneralPackage.Literals.SPECTRUM__HARMONIC,
+        GeneralPackage.Literals.SPECTRUM__PCT_MAG,
+        GeneralPackage.Literals.SPECTRUM__ANGLE,
+        GeneralPackage.Literals.SPECTRUM__CSV_FILE,
+//    	GeneralPackage.Literals.SPECTRUM__LIKE
+    };
+
+    public static final EStructuralFeature[] STORAGE_FEATURES = {
+
+    };
 }
