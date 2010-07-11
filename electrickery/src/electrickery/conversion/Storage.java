@@ -13,6 +13,16 @@ import electrickery.general.LoadShape;
  * A representation of the model object '<em><b>Storage</b></em>'.
  * <!-- end-user-doc -->
  *
+ * <!-- begin-model-doc -->
+ * The storage element is essentially a generator that can be dispatched
+ * to either produce power or consume power commensurate with rating and
+ * amount of stored energy.
+ * 
+ * The storage element can also produce or absorb vars within the kVA rating of the inverter.
+ * That is, a StorageController object requests kvar and the storage element provides them if
+ * it has any capacity left. The storage element can produce/absorb kvar while idling.
+ * <!-- end-model-doc -->
+ *
  * <p>
  * The following features are supported:
  * <ul>

@@ -71,6 +71,24 @@ public interface ControlFactory extends EFactory {
 	Relay createRelay();
 
 	/**
+	 * Returns a new object of class '<em>Storage Controller</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Storage Controller</em>'.
+	 * @generated
+	 */
+	StorageController createStorageController();
+
+	/**
+	 * Returns a new object of class '<em>Switch Control</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Switch Control</em>'.
+	 * @generated
+	 */
+	SwitchControl createSwitchControl();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

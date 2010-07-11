@@ -976,6 +976,160 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="StorageController" eSuperTypes="#//control/ControlElement">
+      <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+        <details key="documentation" value="A StorageController is a control element that is connected to a terminal of&#xA;another circuit element and sends dispatch  signals to a fleet of energy&#xA;storage elements it controls"/>
+      </eAnnotations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWTarget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="kW target for Discharging. The storage element fleet is dispatched to try to&#xA;hold the power in band at least until the storage is depleted."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctKWBand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Bandwidth (% of Target kW) of the dead band around the kW target value. Default&#xA;is 2% (+/-1%).No dispatch changes are attempted If the power in the monitored&#xA;terminal stays within this band."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pFTarget" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.96">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Power Factor target for dispatching the reactive power. Default is 0.96. The&#xA;reactive power of the storage element fleet is dispatched to try to hold the&#xA;power factor in band. It is assumed that the storage element inverter can&#xA;produce kvar up to its kVA limit regardless of storage level."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pFBand" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.04">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Bandwidth of the Target power factor of the monitored element. Of the dead band&#xA;around the kvar target value. Default is 0.04 (+/- 0.02).No dispatch changes of the&#xA;kvar are attempted If the power factor of the monitored terminal stays within this&#xA;band."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="elements" upperBound="-1"
+          eType="#//conversion/Storage">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Storage elements to be controlled.  If not specified, all storage elements in&#xA;the circuit are assumed dispatched by this controller."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="weights" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Proportional weights corresponding to each storage element in 'elements'.&#xA;The needed kW or kvar to get back to center band is dispatched to each&#xA;storage element according to these weights. Default is to set all weights&#xA;to 1.0."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="modeDischarge" eType="#//control/dischargeMode">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mode of operation for the DISCHARGE FUNCTION of this controller. In PeakShave&#xA;mode (Default), the control attempts to discharge storage to keep power in the&#xA;monitored element below the kWTarget. In Follow mode, the control is triggered&#xA;by time and resets the kWTarget value to the present monitored element&#xA;power. It then attempts to discharge storage to keep power in the monitored&#xA;element below the new kWTarget. See TimeDischargeTrigger.In Support mode,&#xA;the control operates oppositely of PeakShave mode: storage is discharged to&#xA;keep kW power output up near the target. In Loadshape mode, both charging and&#xA;discharging precisely follows the per unit loadshape. Storage is discharged when&#xA;the loadshape value is positive. In Time mode, the storage discharge is turned on&#xA;at the specified pctRatekW and pctRatekvar at the specified discharge trigger&#xA;time in fractional hours."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="modeCharge" eType="#//control/chargeMode">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Mode of operation for the CHARGE FUNCTION of this controller. In Loadshape&#xA;mode, both charging and discharging precisely follows the per unit loadshape.&#xA;Storage is charged when the loadshape value is negative. In Time mode, the&#xA;storage charging FUNCTION is triggered at the specified pctRateCharge at&#xA;the specified sharge trigger time in fractional hours."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeDischargeTrigger"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Default time of day (hr) for initiating Discharging of the fleet. During Follow&#xA;or Time mode discharging is triggered at a fixed time each day at this hour.&#xA;If Follow mode, storage will be discharged to attempt to hold the load at or&#xA;below the power level at the time of triggering. In Time mode, the discharge&#xA;is based on the pctRatekW property value. Set this to a negative value to&#xA;ignore. Default is 12.0 for Follow mode; otherwise it is -1 (ignored)."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="timeChargeTrigger" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Default time of day (hr) for initiating charging in Time control mode. Set this&#xA;to a negative value to ignore. Default is 2.0.  (0200).When this value is >0 the&#xA;storage fleet is set to charging at this time regardless of other control criteria&#xA;to make sure storage is topped off for the next discharge cycle."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctRateKW" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Sets the kW discharge rate in % of rated capacity for each element of the&#xA;fleet. Applies to TIME control mode or anytime discharging is triggered by&#xA;time."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctRateKVAr" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Sets the kvar discharge rate in % of rated capacity for each element of the&#xA;fleet. Applies to TIME control mode or anytime discharging is triggered by&#xA;time."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctRateCharge" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Sets the kW charging rate in % of rated capacity for each element of the fleet.&#xA;Applies to TIME control mode and anytime charging mode is entered due to a&#xA;time trigger."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctReserve" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Use this property to change the % reserve for each storage element under&#xA;control of this controller. This might be used, for example, to allow deeper&#xA;discharges of storage or in case of emergency operation to use the remainder&#xA;of the storage element."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhTotal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          unsettable="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Total rated kWh energy storage capacity of storage elements controlled by&#xA;this controller."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWTotal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          unsettable="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Total rated kW power capacity of storage elements controlled by this&#xA;controller."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWhActual" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          unsettable="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Actual kWh output of all controlled storage elements."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWActual" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          unsettable="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Actual kW output of all controlled storage elements."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="kWNeed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          unsettable="true">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="KW needed to meet target."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="pctParticipation" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="100.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Participation factor, %."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="yearly" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="daily" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="duty" eType="#//general/LoadShape"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="eventLog" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Log control actions to Eventlog."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="varDispatch" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Flag to indicate whether or not to disatch vars as well as watts."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="inhibitTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+          defaultValueLiteral="5">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Hours (integer) to inhibit Discharging after going into Charge mode."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SwitchControl" eSuperTypes="#//control/ControlElement">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="action" eType="#//control/switchAction">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Simulates manual operation of the controlled switch to open or close, after&#xA;a time delay."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="lock" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Controlled switch is locked in its present open / close state. Switch will not&#xA;respond to either manual or automatic control until this Lock is removed."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="delay" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="120.0">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Operating time delay (sec) of the switch."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+    </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="controlType">
       <eLiterals name="Current"/>
       <eLiterals name="Voltage" value="1"/>
@@ -986,6 +1140,21 @@
       <eLiterals name="Current"/>
       <eLiterals name="Fortyseven" value="1" literal="Fortyseven"/>
       <eLiterals name="Generic" value="2"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="dischargeMode">
+      <eLiterals name="peakShave"/>
+      <eLiterals name="follow" value="1"/>
+      <eLiterals name="support" value="2"/>
+      <eLiterals name="loadShape" value="3"/>
+      <eLiterals name="time" value="4"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="chargeMode">
+      <eLiterals name="loadShape"/>
+      <eLiterals name="time" value="1"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EEnum" name="switchAction">
+      <eLiterals name="open"/>
+      <eLiterals name="close" value="1"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="conversion" nsURI="http://www.electrickery.com/conversion" nsPrefix="conv">

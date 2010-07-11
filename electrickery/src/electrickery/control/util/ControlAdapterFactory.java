@@ -98,6 +98,14 @@ public class ControlAdapterFactory extends AdapterFactoryImpl {
 				return createRelayAdapter();
 			}
 			@Override
+			public Adapter caseStorageController(StorageController object) {
+				return createStorageControllerAdapter();
+			}
+			@Override
+			public Adapter caseSwitchControl(SwitchControl object) {
+				return createSwitchControlAdapter();
+			}
+			@Override
 			public Adapter caseCircuitElement(CircuitElement object) {
 				return createCircuitElementAdapter();
 			}
@@ -202,6 +210,34 @@ public class ControlAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createRelayAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.control.StorageController <em>Storage Controller</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.control.StorageController
+	 * @generated
+	 */
+	public Adapter createStorageControllerAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.control.SwitchControl <em>Switch Control</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.control.SwitchControl
+	 * @generated
+	 */
+	public Adapter createSwitchControlAdapter() {
 		return null;
 	}
 

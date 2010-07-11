@@ -17,8 +17,13 @@ import electrickery.control.GeneratorDispatcher;
 import electrickery.control.Recloser;
 import electrickery.control.RegulatorControl;
 import electrickery.control.Relay;
+import electrickery.control.StorageController;
+import electrickery.control.SwitchControl;
+import electrickery.control.chargeMode;
 import electrickery.control.controlType;
+import electrickery.control.dischargeMode;
 import electrickery.control.relayType;
+import electrickery.control.switchAction;
 import electrickery.conversion.ConversionPackage;
 import electrickery.conversion.impl.ConversionPackageImpl;
 import electrickery.delivery.DeliveryPackage;
@@ -90,6 +95,20 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass storageControllerEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass switchControlEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -103,6 +122,27 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
     private EEnum relayTypeEEnum = null;
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum dischargeModeEEnum = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum chargeModeEEnum = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EEnum switchActionEEnum = null;
+
+				/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -1151,6 +1191,285 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getStorageController() {
+		return storageControllerEClass;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWTarget() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctKWBand() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PFTarget() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PFBand() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(3);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorageController_Elements() {
+		return (EReference)storageControllerEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_Weights() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(5);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_ModeDischarge() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(6);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_ModeCharge() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(7);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_TimeDischargeTrigger() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(8);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_TimeChargeTrigger() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(9);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctRateKW() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(10);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctRateKVAr() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(11);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctRateCharge() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(12);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctReserve() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(13);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWhTotal() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(14);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWTotal() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(15);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWhActual() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(16);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWActual() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(17);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_KWNeed() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(18);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_PctParticipation() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(19);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorageController_Yearly() {
+		return (EReference)storageControllerEClass.getEStructuralFeatures().get(20);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorageController_Daily() {
+		return (EReference)storageControllerEClass.getEStructuralFeatures().get(21);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getStorageController_Duty() {
+		return (EReference)storageControllerEClass.getEStructuralFeatures().get(22);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_EventLog() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(23);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_VarDispatch() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(24);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getStorageController_InhibitTime() {
+		return (EAttribute)storageControllerEClass.getEStructuralFeatures().get(25);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getSwitchControl() {
+		return switchControlEClass;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSwitchControl_Action() {
+		return (EAttribute)switchControlEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSwitchControl_Lock() {
+		return (EAttribute)switchControlEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSwitchControl_Delay() {
+		return (EAttribute)switchControlEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1168,6 +1487,33 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getdischargeMode() {
+		return dischargeModeEEnum;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getchargeMode() {
+		return chargeModeEEnum;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EEnum getswitchAction() {
+		return switchActionEEnum;
+	}
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1308,9 +1654,45 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		createEAttribute(relayEClass, RELAY__BREAKER_TIME);
 		createEAttribute(relayEClass, RELAY__ACTION);
 
+		storageControllerEClass = createEClass(STORAGE_CONTROLLER);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KW_TARGET);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_KW_BAND);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PF_TARGET);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PF_BAND);
+		createEReference(storageControllerEClass, STORAGE_CONTROLLER__ELEMENTS);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__WEIGHTS);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__MODE_DISCHARGE);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__MODE_CHARGE);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__TIME_DISCHARGE_TRIGGER);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__TIME_CHARGE_TRIGGER);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_RATE_KW);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_RATE_KV_AR);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_RATE_CHARGE);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_RESERVE);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KWH_TOTAL);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KW_TOTAL);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KWH_ACTUAL);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KW_ACTUAL);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__KW_NEED);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__PCT_PARTICIPATION);
+		createEReference(storageControllerEClass, STORAGE_CONTROLLER__YEARLY);
+		createEReference(storageControllerEClass, STORAGE_CONTROLLER__DAILY);
+		createEReference(storageControllerEClass, STORAGE_CONTROLLER__DUTY);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__EVENT_LOG);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__VAR_DISPATCH);
+		createEAttribute(storageControllerEClass, STORAGE_CONTROLLER__INHIBIT_TIME);
+
+		switchControlEClass = createEClass(SWITCH_CONTROL);
+		createEAttribute(switchControlEClass, SWITCH_CONTROL__ACTION);
+		createEAttribute(switchControlEClass, SWITCH_CONTROL__LOCK);
+		createEAttribute(switchControlEClass, SWITCH_CONTROL__DELAY);
+
 		// Create enums
 		controlTypeEEnum = createEEnum(CONTROL_TYPE);
 		relayTypeEEnum = createEEnum(RELAY_TYPE);
+		dischargeModeEEnum = createEEnum(DISCHARGE_MODE);
+		chargeModeEEnum = createEEnum(CHARGE_MODE);
+		switchActionEEnum = createEEnum(SWITCH_ACTION);
 	}
 
     /**
@@ -1352,6 +1734,8 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		recloserEClass.getESuperTypes().add(this.getControlElement());
 		regulatorControlEClass.getESuperTypes().add(this.getControlElement());
 		relayEClass.getESuperTypes().add(this.getControlElement());
+		storageControllerEClass.getESuperTypes().add(this.getControlElement());
+		switchControlEClass.getESuperTypes().add(this.getControlElement());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(controlElementEClass, ControlElement.class, "ControlElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1467,6 +1851,39 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		initEAttribute(getRelay_BreakerTime(), ecorePackage.getEDouble(), "breakerTime", null, 0, 1, Relay.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getRelay_Action(), theCommonPackage.gettripAction(), "action", null, 0, 1, Relay.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(storageControllerEClass, StorageController.class, "StorageController", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getStorageController_KWTarget(), ecorePackage.getEDouble(), "kWTarget", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctKWBand(), ecorePackage.getEDouble(), "pctKWBand", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PFTarget(), ecorePackage.getEDouble(), "pFTarget", "0.96", 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PFBand(), ecorePackage.getEDouble(), "pFBand", "0.04", 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorageController_Elements(), theConversionPackage.getStorage(), null, "elements", null, 0, -1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_Weights(), ecorePackage.getEDouble(), "weights", "1.0", 0, -1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_ModeDischarge(), this.getdischargeMode(), "modeDischarge", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_ModeCharge(), this.getchargeMode(), "modeCharge", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_TimeDischargeTrigger(), ecorePackage.getEDouble(), "timeDischargeTrigger", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_TimeChargeTrigger(), ecorePackage.getEDouble(), "timeChargeTrigger", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctRateKW(), ecorePackage.getEDouble(), "pctRateKW", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctRateKVAr(), ecorePackage.getEDouble(), "pctRateKVAr", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctRateCharge(), ecorePackage.getEDouble(), "pctRateCharge", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctReserve(), ecorePackage.getEDouble(), "pctReserve", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_KWhTotal(), ecorePackage.getEDouble(), "kWhTotal", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_KWTotal(), ecorePackage.getEDouble(), "kWTotal", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_KWhActual(), ecorePackage.getEDouble(), "kWhActual", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_KWActual(), ecorePackage.getEDouble(), "kWActual", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_KWNeed(), ecorePackage.getEDouble(), "kWNeed", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_PctParticipation(), ecorePackage.getEDouble(), "pctParticipation", "100.0", 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorageController_Yearly(), theGeneralPackage.getLoadShape(), null, "yearly", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorageController_Daily(), theGeneralPackage.getLoadShape(), null, "daily", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getStorageController_Duty(), theGeneralPackage.getLoadShape(), null, "duty", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_EventLog(), ecorePackage.getEBoolean(), "eventLog", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_VarDispatch(), ecorePackage.getEBoolean(), "varDispatch", null, 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getStorageController_InhibitTime(), ecorePackage.getEInt(), "inhibitTime", "5", 0, 1, StorageController.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(switchControlEClass, SwitchControl.class, "SwitchControl", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getSwitchControl_Action(), this.getswitchAction(), "action", null, 0, 1, SwitchControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSwitchControl_Lock(), ecorePackage.getEBoolean(), "lock", null, 0, 1, SwitchControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSwitchControl_Delay(), ecorePackage.getEDouble(), "delay", "120.0", 0, 1, SwitchControl.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Initialize enums and add enum literals
 		initEEnum(controlTypeEEnum, controlType.class, "controlType");
 		addEEnumLiteral(controlTypeEEnum, controlType.CURRENT);
@@ -1478,6 +1895,21 @@ public class ControlPackageImpl extends EPackageImpl implements ControlPackage {
 		addEEnumLiteral(relayTypeEEnum, relayType.CURRENT);
 		addEEnumLiteral(relayTypeEEnum, relayType.FORTYSEVEN);
 		addEEnumLiteral(relayTypeEEnum, relayType.GENERIC);
+
+		initEEnum(dischargeModeEEnum, dischargeMode.class, "dischargeMode");
+		addEEnumLiteral(dischargeModeEEnum, dischargeMode.PEAK_SHAVE);
+		addEEnumLiteral(dischargeModeEEnum, dischargeMode.FOLLOW);
+		addEEnumLiteral(dischargeModeEEnum, dischargeMode.SUPPORT);
+		addEEnumLiteral(dischargeModeEEnum, dischargeMode.LOAD_SHAPE);
+		addEEnumLiteral(dischargeModeEEnum, dischargeMode.TIME);
+
+		initEEnum(chargeModeEEnum, chargeMode.class, "chargeMode");
+		addEEnumLiteral(chargeModeEEnum, chargeMode.LOAD_SHAPE);
+		addEEnumLiteral(chargeModeEEnum, chargeMode.TIME);
+
+		initEEnum(switchActionEEnum, switchAction.class, "switchAction");
+		addEEnumLiteral(switchActionEEnum, switchAction.OPEN);
+		addEEnumLiteral(switchActionEEnum, switchAction.CLOSE);
 	}
 
 } //ControlPackageImpl

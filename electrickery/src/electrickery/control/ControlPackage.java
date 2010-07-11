@@ -2742,6 +2742,881 @@ public interface ControlPackage extends EPackage {
 	int RELAY_FEATURE_COUNT = CONTROL_ELEMENT_FEATURE_COUNT + 29;
 
 	/**
+	 * The meta object id for the '{@link electrickery.control.impl.StorageControllerImpl <em>Storage Controller</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.control.impl.StorageControllerImpl
+	 * @see electrickery.control.impl.ControlPackageImpl#getStorageController()
+	 * @generated
+	 */
+	int STORAGE_CONTROLLER = 6;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__NAME = CONTROL_ELEMENT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ENABLED = CONTROL_ELEMENT__ENABLED;
+
+	/**
+	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__BASE_FREQ = CONTROL_ELEMENT__BASE_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__NODE_REF = CONTROL_ELEMENT__NODE_REF;
+
+	/**
+	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YORDER = CONTROL_ELEMENT__YORDER;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Invalid</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YPRIM_INVALID = CONTROL_ELEMENT__YPRIM_INVALID;
+
+	/**
+	 * The feature id for the '<em><b>Last Terminal Checked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__LAST_TERMINAL_CHECKED = CONTROL_ELEMENT__LAST_TERMINAL_CHECKED;
+
+	/**
+	 * The feature id for the '<em><b>Checked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__CHECKED = CONTROL_ELEMENT__CHECKED;
+
+	/**
+	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__HAS_METER = CONTROL_ELEMENT__HAS_METER;
+
+	/**
+	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ISOLATED = CONTROL_ELEMENT__ISOLATED;
+
+	/**
+	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__HAS_CONTROL = CONTROL_ELEMENT__HAS_CONTROL;
+
+	/**
+	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PART_OF_FEEDER = CONTROL_ELEMENT__PART_OF_FEEDER;
+
+	/**
+	 * The feature id for the '<em><b>Control Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__CONTROL_ELEMENT = CONTROL_ELEMENT__CONTROL_ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__TERMINALS = CONTROL_ELEMENT__TERMINALS;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ACTIVE_TERMINAL = CONTROL_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__NTERMS = CONTROL_ELEMENT__NTERMS;
+
+	/**
+	 * The feature id for the '<em><b>NConds</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__NCONDS = CONTROL_ELEMENT__NCONDS;
+
+	/**
+	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__NPHASES = CONTROL_ELEMENT__NPHASES;
+
+	/**
+	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__BUS_INDEX = CONTROL_ELEMENT__BUS_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YPRIM_SERIES = CONTROL_ELEMENT__YPRIM_SERIES;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YPRIM_SHUNT = CONTROL_ELEMENT__YPRIM_SHUNT;
+
+	/**
+	 * The feature id for the '<em><b>YPrim</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YPRIM = CONTROL_ELEMENT__YPRIM;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__LIKE = CONTROL_ELEMENT__LIKE;
+
+	/**
+	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ELEMENT_NAME = CONTROL_ELEMENT__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Element Terminal</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ELEMENT_TERMINAL = CONTROL_ELEMENT__ELEMENT_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Controlled Bus Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__CONTROLLED_BUS_NAME = CONTROL_ELEMENT__CONTROLLED_BUS_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Controlled Bus</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__CONTROLLED_BUS = CONTROL_ELEMENT__CONTROLLED_BUS;
+
+	/**
+	 * The feature id for the '<em><b>Monitored Variable</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__MONITORED_VARIABLE = CONTROL_ELEMENT__MONITORED_VARIABLE;
+
+	/**
+	 * The feature id for the '<em><b>Monitored Var Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__MONITORED_VAR_INDEX = CONTROL_ELEMENT__MONITORED_VAR_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>Time Delay</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__TIME_DELAY = CONTROL_ELEMENT__TIME_DELAY;
+
+	/**
+	 * The feature id for the '<em><b>Dbl Trace Param</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__DBL_TRACE_PARAM = CONTROL_ELEMENT__DBL_TRACE_PARAM;
+
+	/**
+	 * The feature id for the '<em><b>KW Target</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KW_TARGET = CONTROL_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Pct KW Band</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_KW_BAND = CONTROL_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>PF Target</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PF_TARGET = CONTROL_ELEMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>PF Band</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PF_BAND = CONTROL_ELEMENT_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>Elements</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__ELEMENTS = CONTROL_ELEMENT_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>Weights</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__WEIGHTS = CONTROL_ELEMENT_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Mode Discharge</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__MODE_DISCHARGE = CONTROL_ELEMENT_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Mode Charge</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__MODE_CHARGE = CONTROL_ELEMENT_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Time Discharge Trigger</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__TIME_DISCHARGE_TRIGGER = CONTROL_ELEMENT_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>Time Charge Trigger</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__TIME_CHARGE_TRIGGER = CONTROL_ELEMENT_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Pct Rate KW</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_RATE_KW = CONTROL_ELEMENT_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Pct Rate KV Ar</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_RATE_KV_AR = CONTROL_ELEMENT_FEATURE_COUNT + 11;
+
+	/**
+	 * The feature id for the '<em><b>Pct Rate Charge</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_RATE_CHARGE = CONTROL_ELEMENT_FEATURE_COUNT + 12;
+
+	/**
+	 * The feature id for the '<em><b>Pct Reserve</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_RESERVE = CONTROL_ELEMENT_FEATURE_COUNT + 13;
+
+	/**
+	 * The feature id for the '<em><b>KWh Total</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KWH_TOTAL = CONTROL_ELEMENT_FEATURE_COUNT + 14;
+
+	/**
+	 * The feature id for the '<em><b>KW Total</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KW_TOTAL = CONTROL_ELEMENT_FEATURE_COUNT + 15;
+
+	/**
+	 * The feature id for the '<em><b>KWh Actual</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KWH_ACTUAL = CONTROL_ELEMENT_FEATURE_COUNT + 16;
+
+	/**
+	 * The feature id for the '<em><b>KW Actual</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KW_ACTUAL = CONTROL_ELEMENT_FEATURE_COUNT + 17;
+
+	/**
+	 * The feature id for the '<em><b>KW Need</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__KW_NEED = CONTROL_ELEMENT_FEATURE_COUNT + 18;
+
+	/**
+	 * The feature id for the '<em><b>Pct Participation</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__PCT_PARTICIPATION = CONTROL_ELEMENT_FEATURE_COUNT + 19;
+
+	/**
+	 * The feature id for the '<em><b>Yearly</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__YEARLY = CONTROL_ELEMENT_FEATURE_COUNT + 20;
+
+	/**
+	 * The feature id for the '<em><b>Daily</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__DAILY = CONTROL_ELEMENT_FEATURE_COUNT + 21;
+
+	/**
+	 * The feature id for the '<em><b>Duty</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__DUTY = CONTROL_ELEMENT_FEATURE_COUNT + 22;
+
+	/**
+	 * The feature id for the '<em><b>Event Log</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__EVENT_LOG = CONTROL_ELEMENT_FEATURE_COUNT + 23;
+
+	/**
+	 * The feature id for the '<em><b>Var Dispatch</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__VAR_DISPATCH = CONTROL_ELEMENT_FEATURE_COUNT + 24;
+
+	/**
+	 * The feature id for the '<em><b>Inhibit Time</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER__INHIBIT_TIME = CONTROL_ELEMENT_FEATURE_COUNT + 25;
+
+	/**
+	 * The number of structural features of the '<em>Storage Controller</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int STORAGE_CONTROLLER_FEATURE_COUNT = CONTROL_ELEMENT_FEATURE_COUNT + 26;
+
+	/**
+	 * The meta object id for the '{@link electrickery.control.impl.SwitchControlImpl <em>Switch Control</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.control.impl.SwitchControlImpl
+	 * @see electrickery.control.impl.ControlPackageImpl#getSwitchControl()
+	 * @generated
+	 */
+	int SWITCH_CONTROL = 7;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__NAME = CONTROL_ELEMENT__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Enabled</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ENABLED = CONTROL_ELEMENT__ENABLED;
+
+	/**
+	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__BASE_FREQ = CONTROL_ELEMENT__BASE_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__NODE_REF = CONTROL_ELEMENT__NODE_REF;
+
+	/**
+	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YORDER = CONTROL_ELEMENT__YORDER;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Invalid</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YPRIM_INVALID = CONTROL_ELEMENT__YPRIM_INVALID;
+
+	/**
+	 * The feature id for the '<em><b>Last Terminal Checked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__LAST_TERMINAL_CHECKED = CONTROL_ELEMENT__LAST_TERMINAL_CHECKED;
+
+	/**
+	 * The feature id for the '<em><b>Checked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__CHECKED = CONTROL_ELEMENT__CHECKED;
+
+	/**
+	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__HAS_METER = CONTROL_ELEMENT__HAS_METER;
+
+	/**
+	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ISOLATED = CONTROL_ELEMENT__ISOLATED;
+
+	/**
+	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__HAS_CONTROL = CONTROL_ELEMENT__HAS_CONTROL;
+
+	/**
+	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__PART_OF_FEEDER = CONTROL_ELEMENT__PART_OF_FEEDER;
+
+	/**
+	 * The feature id for the '<em><b>Control Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__CONTROL_ELEMENT = CONTROL_ELEMENT__CONTROL_ELEMENT;
+
+	/**
+	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__TERMINALS = CONTROL_ELEMENT__TERMINALS;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ACTIVE_TERMINAL = CONTROL_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__NTERMS = CONTROL_ELEMENT__NTERMS;
+
+	/**
+	 * The feature id for the '<em><b>NConds</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__NCONDS = CONTROL_ELEMENT__NCONDS;
+
+	/**
+	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__NPHASES = CONTROL_ELEMENT__NPHASES;
+
+	/**
+	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__BUS_INDEX = CONTROL_ELEMENT__BUS_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YPRIM_SERIES = CONTROL_ELEMENT__YPRIM_SERIES;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YPRIM_SHUNT = CONTROL_ELEMENT__YPRIM_SHUNT;
+
+	/**
+	 * The feature id for the '<em><b>YPrim</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YPRIM = CONTROL_ELEMENT__YPRIM;
+
+	/**
+	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__YPRIM_FREQ = CONTROL_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__LIKE = CONTROL_ELEMENT__LIKE;
+
+	/**
+	 * The feature id for the '<em><b>Element Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ELEMENT_NAME = CONTROL_ELEMENT__ELEMENT_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Element Terminal</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ELEMENT_TERMINAL = CONTROL_ELEMENT__ELEMENT_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Controlled Bus Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__CONTROLLED_BUS_NAME = CONTROL_ELEMENT__CONTROLLED_BUS_NAME;
+
+	/**
+	 * The feature id for the '<em><b>Controlled Bus</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__CONTROLLED_BUS = CONTROL_ELEMENT__CONTROLLED_BUS;
+
+	/**
+	 * The feature id for the '<em><b>Monitored Variable</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__MONITORED_VARIABLE = CONTROL_ELEMENT__MONITORED_VARIABLE;
+
+	/**
+	 * The feature id for the '<em><b>Monitored Var Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__MONITORED_VAR_INDEX = CONTROL_ELEMENT__MONITORED_VAR_INDEX;
+
+	/**
+	 * The feature id for the '<em><b>Time Delay</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__TIME_DELAY = CONTROL_ELEMENT__TIME_DELAY;
+
+	/**
+	 * The feature id for the '<em><b>Dbl Trace Param</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__DBL_TRACE_PARAM = CONTROL_ELEMENT__DBL_TRACE_PARAM;
+
+	/**
+	 * The feature id for the '<em><b>Action</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__ACTION = CONTROL_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Lock</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__LOCK = CONTROL_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Delay</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL__DELAY = CONTROL_ELEMENT_FEATURE_COUNT + 2;
+
+	/**
+	 * The number of structural features of the '<em>Switch Control</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SWITCH_CONTROL_FEATURE_COUNT = CONTROL_ELEMENT_FEATURE_COUNT + 3;
+
+	/**
 	 * The meta object id for the '{@link electrickery.control.controlType <em>control Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2749,7 +3624,7 @@ public interface ControlPackage extends EPackage {
 	 * @see electrickery.control.impl.ControlPackageImpl#getcontrolType()
 	 * @generated
 	 */
-	int CONTROL_TYPE = 6;
+	int CONTROL_TYPE = 8;
 
 	/**
 	 * The meta object id for the '{@link electrickery.control.relayType <em>relay Type</em>}' enum.
@@ -2759,7 +3634,39 @@ public interface ControlPackage extends EPackage {
 	 * @see electrickery.control.impl.ControlPackageImpl#getrelayType()
 	 * @generated
 	 */
-	int RELAY_TYPE = 7;
+	int RELAY_TYPE = 9;
+
+
+	/**
+	 * The meta object id for the '{@link electrickery.control.dischargeMode <em>discharge Mode</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.control.dischargeMode
+	 * @see electrickery.control.impl.ControlPackageImpl#getdischargeMode()
+	 * @generated
+	 */
+	int DISCHARGE_MODE = 10;
+
+	/**
+	 * The meta object id for the '{@link electrickery.control.chargeMode <em>charge Mode</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.control.chargeMode
+	 * @see electrickery.control.impl.ControlPackageImpl#getchargeMode()
+	 * @generated
+	 */
+	int CHARGE_MODE = 11;
+
+
+	/**
+	 * The meta object id for the '{@link electrickery.control.switchAction <em>switch Action</em>}' enum.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.control.switchAction
+	 * @see electrickery.control.impl.ControlPackageImpl#getswitchAction()
+	 * @generated
+	 */
+	int SWITCH_ACTION = 12;
 
 
 	/**
@@ -3934,6 +4841,345 @@ public interface ControlPackage extends EPackage {
 	EAttribute getRelay_Action();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.control.StorageController <em>Storage Controller</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Storage Controller</em>'.
+	 * @see electrickery.control.StorageController
+	 * @generated
+	 */
+	EClass getStorageController();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWTarget <em>KW Target</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KW Target</em>'.
+	 * @see electrickery.control.StorageController#getKWTarget()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWTarget();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctKWBand <em>Pct KW Band</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct KW Band</em>'.
+	 * @see electrickery.control.StorageController#getPctKWBand()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctKWBand();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPFTarget <em>PF Target</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>PF Target</em>'.
+	 * @see electrickery.control.StorageController#getPFTarget()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PFTarget();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPFBand <em>PF Band</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>PF Band</em>'.
+	 * @see electrickery.control.StorageController#getPFBand()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PFBand();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.control.StorageController#getElements <em>Elements</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Elements</em>'.
+	 * @see electrickery.control.StorageController#getElements()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EReference getStorageController_Elements();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.control.StorageController#getWeights <em>Weights</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Weights</em>'.
+	 * @see electrickery.control.StorageController#getWeights()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_Weights();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getModeDischarge <em>Mode Discharge</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Mode Discharge</em>'.
+	 * @see electrickery.control.StorageController#getModeDischarge()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_ModeDischarge();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getModeCharge <em>Mode Charge</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Mode Charge</em>'.
+	 * @see electrickery.control.StorageController#getModeCharge()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_ModeCharge();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getTimeDischargeTrigger <em>Time Discharge Trigger</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Discharge Trigger</em>'.
+	 * @see electrickery.control.StorageController#getTimeDischargeTrigger()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_TimeDischargeTrigger();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getTimeChargeTrigger <em>Time Charge Trigger</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Time Charge Trigger</em>'.
+	 * @see electrickery.control.StorageController#getTimeChargeTrigger()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_TimeChargeTrigger();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctRateKW <em>Pct Rate KW</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Rate KW</em>'.
+	 * @see electrickery.control.StorageController#getPctRateKW()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctRateKW();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctRateKVAr <em>Pct Rate KV Ar</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Rate KV Ar</em>'.
+	 * @see electrickery.control.StorageController#getPctRateKVAr()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctRateKVAr();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctRateCharge <em>Pct Rate Charge</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Rate Charge</em>'.
+	 * @see electrickery.control.StorageController#getPctRateCharge()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctRateCharge();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctReserve <em>Pct Reserve</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Reserve</em>'.
+	 * @see electrickery.control.StorageController#getPctReserve()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctReserve();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWhTotal <em>KWh Total</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KWh Total</em>'.
+	 * @see electrickery.control.StorageController#getKWhTotal()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWhTotal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWTotal <em>KW Total</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KW Total</em>'.
+	 * @see electrickery.control.StorageController#getKWTotal()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWTotal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWhActual <em>KWh Actual</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KWh Actual</em>'.
+	 * @see electrickery.control.StorageController#getKWhActual()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWhActual();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWActual <em>KW Actual</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KW Actual</em>'.
+	 * @see electrickery.control.StorageController#getKWActual()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWActual();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getKWNeed <em>KW Need</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KW Need</em>'.
+	 * @see electrickery.control.StorageController#getKWNeed()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_KWNeed();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getPctParticipation <em>Pct Participation</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Participation</em>'.
+	 * @see electrickery.control.StorageController#getPctParticipation()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_PctParticipation();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.control.StorageController#getYearly <em>Yearly</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Yearly</em>'.
+	 * @see electrickery.control.StorageController#getYearly()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EReference getStorageController_Yearly();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.control.StorageController#getDaily <em>Daily</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Daily</em>'.
+	 * @see electrickery.control.StorageController#getDaily()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EReference getStorageController_Daily();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.control.StorageController#getDuty <em>Duty</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Duty</em>'.
+	 * @see electrickery.control.StorageController#getDuty()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EReference getStorageController_Duty();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#isEventLog <em>Event Log</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Event Log</em>'.
+	 * @see electrickery.control.StorageController#isEventLog()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_EventLog();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#isVarDispatch <em>Var Dispatch</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Var Dispatch</em>'.
+	 * @see electrickery.control.StorageController#isVarDispatch()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_VarDispatch();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.StorageController#getInhibitTime <em>Inhibit Time</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Inhibit Time</em>'.
+	 * @see electrickery.control.StorageController#getInhibitTime()
+	 * @see #getStorageController()
+	 * @generated
+	 */
+	EAttribute getStorageController_InhibitTime();
+
+	/**
+	 * Returns the meta object for class '{@link electrickery.control.SwitchControl <em>Switch Control</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Switch Control</em>'.
+	 * @see electrickery.control.SwitchControl
+	 * @generated
+	 */
+	EClass getSwitchControl();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.SwitchControl#getAction <em>Action</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Action</em>'.
+	 * @see electrickery.control.SwitchControl#getAction()
+	 * @see #getSwitchControl()
+	 * @generated
+	 */
+	EAttribute getSwitchControl_Action();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.SwitchControl#isLock <em>Lock</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Lock</em>'.
+	 * @see electrickery.control.SwitchControl#isLock()
+	 * @see #getSwitchControl()
+	 * @generated
+	 */
+	EAttribute getSwitchControl_Lock();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.control.SwitchControl#getDelay <em>Delay</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Delay</em>'.
+	 * @see electrickery.control.SwitchControl#getDelay()
+	 * @see #getSwitchControl()
+	 * @generated
+	 */
+	EAttribute getSwitchControl_Delay();
+
+	/**
 	 * Returns the meta object for enum '{@link electrickery.control.controlType <em>control Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3952,6 +5198,36 @@ public interface ControlPackage extends EPackage {
 	 * @generated
 	 */
 	EEnum getrelayType();
+
+	/**
+	 * Returns the meta object for enum '{@link electrickery.control.dischargeMode <em>discharge Mode</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>discharge Mode</em>'.
+	 * @see electrickery.control.dischargeMode
+	 * @generated
+	 */
+	EEnum getdischargeMode();
+
+	/**
+	 * Returns the meta object for enum '{@link electrickery.control.chargeMode <em>charge Mode</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>charge Mode</em>'.
+	 * @see electrickery.control.chargeMode
+	 * @generated
+	 */
+	EEnum getchargeMode();
+
+	/**
+	 * Returns the meta object for enum '{@link electrickery.control.switchAction <em>switch Action</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for enum '<em>switch Action</em>'.
+	 * @see electrickery.control.switchAction
+	 * @generated
+	 */
+	EEnum getswitchAction();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -4844,6 +6120,258 @@ public interface ControlPackage extends EPackage {
 		EAttribute RELAY__ACTION = eINSTANCE.getRelay_Action();
 
 		/**
+		 * The meta object literal for the '{@link electrickery.control.impl.StorageControllerImpl <em>Storage Controller</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.control.impl.StorageControllerImpl
+		 * @see electrickery.control.impl.ControlPackageImpl#getStorageController()
+		 * @generated
+		 */
+		EClass STORAGE_CONTROLLER = eINSTANCE.getStorageController();
+
+		/**
+		 * The meta object literal for the '<em><b>KW Target</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KW_TARGET = eINSTANCE.getStorageController_KWTarget();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct KW Band</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_KW_BAND = eINSTANCE.getStorageController_PctKWBand();
+
+		/**
+		 * The meta object literal for the '<em><b>PF Target</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PF_TARGET = eINSTANCE.getStorageController_PFTarget();
+
+		/**
+		 * The meta object literal for the '<em><b>PF Band</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PF_BAND = eINSTANCE.getStorageController_PFBand();
+
+		/**
+		 * The meta object literal for the '<em><b>Elements</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference STORAGE_CONTROLLER__ELEMENTS = eINSTANCE.getStorageController_Elements();
+
+		/**
+		 * The meta object literal for the '<em><b>Weights</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__WEIGHTS = eINSTANCE.getStorageController_Weights();
+
+		/**
+		 * The meta object literal for the '<em><b>Mode Discharge</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__MODE_DISCHARGE = eINSTANCE.getStorageController_ModeDischarge();
+
+		/**
+		 * The meta object literal for the '<em><b>Mode Charge</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__MODE_CHARGE = eINSTANCE.getStorageController_ModeCharge();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Discharge Trigger</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__TIME_DISCHARGE_TRIGGER = eINSTANCE.getStorageController_TimeDischargeTrigger();
+
+		/**
+		 * The meta object literal for the '<em><b>Time Charge Trigger</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__TIME_CHARGE_TRIGGER = eINSTANCE.getStorageController_TimeChargeTrigger();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Rate KW</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_RATE_KW = eINSTANCE.getStorageController_PctRateKW();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Rate KV Ar</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_RATE_KV_AR = eINSTANCE.getStorageController_PctRateKVAr();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Rate Charge</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_RATE_CHARGE = eINSTANCE.getStorageController_PctRateCharge();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Reserve</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_RESERVE = eINSTANCE.getStorageController_PctReserve();
+
+		/**
+		 * The meta object literal for the '<em><b>KWh Total</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KWH_TOTAL = eINSTANCE.getStorageController_KWhTotal();
+
+		/**
+		 * The meta object literal for the '<em><b>KW Total</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KW_TOTAL = eINSTANCE.getStorageController_KWTotal();
+
+		/**
+		 * The meta object literal for the '<em><b>KWh Actual</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KWH_ACTUAL = eINSTANCE.getStorageController_KWhActual();
+
+		/**
+		 * The meta object literal for the '<em><b>KW Actual</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KW_ACTUAL = eINSTANCE.getStorageController_KWActual();
+
+		/**
+		 * The meta object literal for the '<em><b>KW Need</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__KW_NEED = eINSTANCE.getStorageController_KWNeed();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Participation</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__PCT_PARTICIPATION = eINSTANCE.getStorageController_PctParticipation();
+
+		/**
+		 * The meta object literal for the '<em><b>Yearly</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference STORAGE_CONTROLLER__YEARLY = eINSTANCE.getStorageController_Yearly();
+
+		/**
+		 * The meta object literal for the '<em><b>Daily</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference STORAGE_CONTROLLER__DAILY = eINSTANCE.getStorageController_Daily();
+
+		/**
+		 * The meta object literal for the '<em><b>Duty</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference STORAGE_CONTROLLER__DUTY = eINSTANCE.getStorageController_Duty();
+
+		/**
+		 * The meta object literal for the '<em><b>Event Log</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__EVENT_LOG = eINSTANCE.getStorageController_EventLog();
+
+		/**
+		 * The meta object literal for the '<em><b>Var Dispatch</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__VAR_DISPATCH = eINSTANCE.getStorageController_VarDispatch();
+
+		/**
+		 * The meta object literal for the '<em><b>Inhibit Time</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute STORAGE_CONTROLLER__INHIBIT_TIME = eINSTANCE.getStorageController_InhibitTime();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.control.impl.SwitchControlImpl <em>Switch Control</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.control.impl.SwitchControlImpl
+		 * @see electrickery.control.impl.ControlPackageImpl#getSwitchControl()
+		 * @generated
+		 */
+		EClass SWITCH_CONTROL = eINSTANCE.getSwitchControl();
+
+		/**
+		 * The meta object literal for the '<em><b>Action</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SWITCH_CONTROL__ACTION = eINSTANCE.getSwitchControl_Action();
+
+		/**
+		 * The meta object literal for the '<em><b>Lock</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SWITCH_CONTROL__LOCK = eINSTANCE.getSwitchControl_Lock();
+
+		/**
+		 * The meta object literal for the '<em><b>Delay</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SWITCH_CONTROL__DELAY = eINSTANCE.getSwitchControl_Delay();
+
+		/**
 		 * The meta object literal for the '{@link electrickery.control.controlType <em>control Type</em>}' enum.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -4862,6 +6390,36 @@ public interface ControlPackage extends EPackage {
 		 * @generated
 		 */
 		EEnum RELAY_TYPE = eINSTANCE.getrelayType();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.control.dischargeMode <em>discharge Mode</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.control.dischargeMode
+		 * @see electrickery.control.impl.ControlPackageImpl#getdischargeMode()
+		 * @generated
+		 */
+		EEnum DISCHARGE_MODE = eINSTANCE.getdischargeMode();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.control.chargeMode <em>charge Mode</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.control.chargeMode
+		 * @see electrickery.control.impl.ControlPackageImpl#getchargeMode()
+		 * @generated
+		 */
+		EEnum CHARGE_MODE = eINSTANCE.getchargeMode();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.control.switchAction <em>switch Action</em>}' enum.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.control.switchAction
+		 * @see electrickery.control.impl.ControlPackageImpl#getswitchAction()
+		 * @generated
+		 */
+		EEnum SWITCH_ACTION = eINSTANCE.getswitchAction();
 
 	}
 

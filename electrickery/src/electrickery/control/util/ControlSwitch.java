@@ -136,6 +136,22 @@ public class ControlSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case ControlPackage.STORAGE_CONTROLLER: {
+				StorageController storageController = (StorageController)theEObject;
+				T result = caseStorageController(storageController);
+				if (result == null) result = caseControlElement(storageController);
+				if (result == null) result = caseCircuitElement(storageController);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
+			case ControlPackage.SWITCH_CONTROL: {
+				SwitchControl switchControl = (SwitchControl)theEObject;
+				T result = caseSwitchControl(switchControl);
+				if (result == null) result = caseControlElement(switchControl);
+				if (result == null) result = caseCircuitElement(switchControl);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -227,6 +243,36 @@ public class ControlSwitch<T> {
 	 * @generated
 	 */
 	public T caseRelay(Relay object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Storage Controller</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Storage Controller</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseStorageController(StorageController object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Switch Control</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Switch Control</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSwitchControl(SwitchControl object) {
 		return null;
 	}
 

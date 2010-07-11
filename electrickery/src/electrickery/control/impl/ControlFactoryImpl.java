@@ -66,6 +66,8 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 			case ControlPackage.RECLOSER: return createRecloser();
 			case ControlPackage.REGULATOR_CONTROL: return createRegulatorControl();
 			case ControlPackage.RELAY: return createRelay();
+			case ControlPackage.STORAGE_CONTROLLER: return createStorageController();
+			case ControlPackage.SWITCH_CONTROL: return createSwitchControl();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -83,6 +85,12 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 				return createcontrolTypeFromString(eDataType, initialValue);
 			case ControlPackage.RELAY_TYPE:
 				return createrelayTypeFromString(eDataType, initialValue);
+			case ControlPackage.DISCHARGE_MODE:
+				return createdischargeModeFromString(eDataType, initialValue);
+			case ControlPackage.CHARGE_MODE:
+				return createchargeModeFromString(eDataType, initialValue);
+			case ControlPackage.SWITCH_ACTION:
+				return createswitchActionFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -100,6 +108,12 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 				return convertcontrolTypeToString(eDataType, instanceValue);
 			case ControlPackage.RELAY_TYPE:
 				return convertrelayTypeToString(eDataType, instanceValue);
+			case ControlPackage.DISCHARGE_MODE:
+				return convertdischargeModeToString(eDataType, instanceValue);
+			case ControlPackage.CHARGE_MODE:
+				return convertchargeModeToString(eDataType, instanceValue);
+			case ControlPackage.SWITCH_ACTION:
+				return convertswitchActionToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -160,6 +174,26 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public StorageController createStorageController() {
+		StorageControllerImpl storageController = new StorageControllerImpl();
+		return storageController;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SwitchControl createSwitchControl() {
+		SwitchControlImpl switchControl = new SwitchControlImpl();
+		return switchControl;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public controlType createcontrolTypeFromString(EDataType eDataType, String initialValue) {
 		controlType result = controlType.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
@@ -192,6 +226,66 @@ public class ControlFactoryImpl extends EFactoryImpl implements ControlFactory {
 	 * @generated
 	 */
 	public String convertrelayTypeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public dischargeMode createdischargeModeFromString(EDataType eDataType, String initialValue) {
+		dischargeMode result = dischargeMode.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertdischargeModeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public chargeMode createchargeModeFromString(EDataType eDataType, String initialValue) {
+		chargeMode result = chargeMode.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertchargeModeToString(EDataType eDataType, Object instanceValue) {
+		return instanceValue == null ? null : instanceValue.toString();
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public switchAction createswitchActionFromString(EDataType eDataType, String initialValue) {
+		switchAction result = switchAction.get(initialValue);
+		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
+		return result;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertswitchActionToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
