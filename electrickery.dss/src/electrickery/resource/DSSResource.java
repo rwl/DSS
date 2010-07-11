@@ -640,6 +640,78 @@ public interface DSSResource extends Resource {
     };
 
     public static final EStructuralFeature[] VOLTAGESOURCE_FEATURES = {
+        ConversionPackage.Literals.VOLTAGE_SOURCE__BUS1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__BASE_KV,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__PER_UNIT,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__ANGLE,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__FREQUENCY,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__NPHASES,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__MVA_SC3,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__MVA_SC1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__X1_R1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__X0_R0,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__ISC3,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__ISC1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__R1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__X1,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__R0,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__X0,
+        ConversionPackage.Literals.VOLTAGE_SOURCE__SCAN_TYPE,
+//        ConversionPackage.Literals.VOLTAGE_SOURCE__BUS2,
+        ConversionPackage.Literals.POWER_CONVERSION_ELEMENT__SPECTRUM,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__BASE_FREQ,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__ENABLED,
+        CommonPackage.Literals.CIRCUIT_ELEMENT__LIKE
+    };
 
+    public static final EStructuralFeature[] WIREDATA_FEATURES = {
+        GeneralPackage.Literals.WIRE_DATA__RDC,
+        GeneralPackage.Literals.WIRE_DATA__RAC,
+        GeneralPackage.Literals.WIRE_DATA__RUNITS,
+        GeneralPackage.Literals.WIRE_DATA__GMR_AC,
+        GeneralPackage.Literals.WIRE_DATA__GMR_UNITS,
+        GeneralPackage.Literals.WIRE_DATA__RADIUS,
+        GeneralPackage.Literals.WIRE_DATA__RAD_UNITS,
+        GeneralPackage.Literals.WIRE_DATA__NORM_AMPS,
+        GeneralPackage.Literals.WIRE_DATA__EMERG_AMPS,
+        GeneralPackage.Literals.WIRE_DATA__DIAMETER,
+//        GeneralPackage.Literals.WIRE_DATA__LIKE
+    };
+
+    public static final EStructuralFeature[] TRANSFORMERCODE_FEATURES = {
+        GeneralPackage.Literals.TRANSFORMER_CODE__PHASES,
+        GeneralPackage.Literals.TRANSFORMER_CODE__WINDINGS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__WDG,
+        GeneralPackage.Literals.TRANSFORMER_CODE__CONN,
+        GeneralPackage.Literals.TRANSFORMER_CODE__KV,
+        GeneralPackage.Literals.TRANSFORMER_CODE__KVA,
+        GeneralPackage.Literals.TRANSFORMER_CODE__TAP,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PCT_R,
+        GeneralPackage.Literals.TRANSFORMER_CODE__RNEUT,
+        GeneralPackage.Literals.TRANSFORMER_CODE__XNEUT,
+        GeneralPackage.Literals.TRANSFORMER_CODE__CONNS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__KVS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__KV_AS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__TAPS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__XHL,
+        GeneralPackage.Literals.TRANSFORMER_CODE__XHT,
+        GeneralPackage.Literals.TRANSFORMER_CODE__XLT,
+        GeneralPackage.Literals.TRANSFORMER_CODE__XSC_ARRAY,
+        GeneralPackage.Literals.TRANSFORMER_CODE__THERMAL,
+        GeneralPackage.Literals.TRANSFORMER_CODE__N,
+        GeneralPackage.Literals.TRANSFORMER_CODE__M,
+        GeneralPackage.Literals.TRANSFORMER_CODE__FL_RISE,
+        GeneralPackage.Literals.TRANSFORMER_CODE__HS_RISE,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PCT_LOAD_LOSS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PCT_NO_LOAD_LOSS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__NORM_HKVA,
+        GeneralPackage.Literals.TRANSFORMER_CODE__EMERG_HKVA,
+        GeneralPackage.Literals.TRANSFORMER_CODE__MAX_TAP,
+        GeneralPackage.Literals.TRANSFORMER_CODE__MIN_TAP,
+        GeneralPackage.Literals.TRANSFORMER_CODE__NUM_TAPS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PCT_IMAG,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PPM_ANTI_FLOAT,
+        GeneralPackage.Literals.TRANSFORMER_CODE__PCT_RS,
+        GeneralPackage.Literals.TRANSFORMER_CODE__LIKE
     };
 }

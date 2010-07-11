@@ -107,6 +107,15 @@ public interface GeneralFactory extends EFactory {
 	WireData createWireData();
 
 	/**
+	 * Returns a new object of class '<em>Transformer Code</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Transformer Code</em>'.
+	 * @generated
+	 */
+	TransformerCode createTransformerCode();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

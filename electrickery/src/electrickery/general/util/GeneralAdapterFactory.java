@@ -109,6 +109,10 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 				return createWireDataAdapter();
 			}
 			@Override
+			public Adapter caseTransformerCode(TransformerCode object) {
+				return createTransformerCodeAdapter();
+			}
+			@Override
 			public Adapter caseNamed(Named object) {
 				return createNamedAdapter();
 			}
@@ -255,6 +259,20 @@ public class GeneralAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createWireDataAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.general.TransformerCode <em>Transformer Code</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.general.TransformerCode
+	 * @generated
+	 */
+	public Adapter createTransformerCodeAdapter() {
 		return null;
 	}
 

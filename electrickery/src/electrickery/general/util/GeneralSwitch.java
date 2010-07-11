@@ -144,6 +144,12 @@ public class GeneralSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case GeneralPackage.TRANSFORMER_CODE: {
+				TransformerCode transformerCode = (TransformerCode)theEObject;
+				T result = caseTransformerCode(transformerCode);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -280,6 +286,21 @@ public class GeneralSwitch<T> {
 	 * @generated
 	 */
 	public T caseWireData(WireData object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Transformer Code</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Transformer Code</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseTransformerCode(TransformerCode object) {
 		return null;
 	}
 

@@ -69,6 +69,7 @@ public class GeneralFactoryImpl extends EFactoryImpl implements GeneralFactory {
 			case GeneralPackage.SPECTRUM: return createSpectrum();
 			case GeneralPackage.TIME_CURRENT_CURVE: return createTimeCurrentCurve();
 			case GeneralPackage.WIRE_DATA: return createWireData();
+			case GeneralPackage.TRANSFORMER_CODE: return createTransformerCode();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -162,6 +163,16 @@ public class GeneralFactoryImpl extends EFactoryImpl implements GeneralFactory {
 	public WireData createWireData() {
 		WireDataImpl wireData = new WireDataImpl();
 		return wireData;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public TransformerCode createTransformerCode() {
+		TransformerCodeImpl transformerCode = new TransformerCodeImpl();
+		return transformerCode;
 	}
 
 	/**

@@ -989,6 +989,332 @@ public interface GeneralPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '{@link electrickery.general.impl.TransformerCodeImpl <em>Transformer Code</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.general.impl.TransformerCodeImpl
+	 * @see electrickery.general.impl.GeneralPackageImpl#getTransformerCode()
+	 * @generated
+	 */
+	int TRANSFORMER_CODE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Phases</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PHASES = 0;
+
+	/**
+	 * The feature id for the '<em><b>Windings</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__WINDINGS = 1;
+
+	/**
+	 * The feature id for the '<em><b>Wdg</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__WDG = 2;
+
+	/**
+	 * The feature id for the '<em><b>Conn</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__CONN = 3;
+
+	/**
+	 * The feature id for the '<em><b>KV</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__KV = 4;
+
+	/**
+	 * The feature id for the '<em><b>KVA</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__KVA = 5;
+
+	/**
+	 * The feature id for the '<em><b>Tap</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__TAP = 6;
+
+	/**
+	 * The feature id for the '<em><b>Pct R</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PCT_R = 7;
+
+	/**
+	 * The feature id for the '<em><b>RNeut</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__RNEUT = 8;
+
+	/**
+	 * The feature id for the '<em><b>XNeut</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__XNEUT = 9;
+
+	/**
+	 * The feature id for the '<em><b>Conns</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__CONNS = 10;
+
+	/**
+	 * The feature id for the '<em><b>KVs</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__KVS = 11;
+
+	/**
+	 * The feature id for the '<em><b>KV As</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__KV_AS = 12;
+
+	/**
+	 * The feature id for the '<em><b>Taps</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__TAPS = 13;
+
+	/**
+	 * The feature id for the '<em><b>Xhl</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__XHL = 14;
+
+	/**
+	 * The feature id for the '<em><b>Xht</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__XHT = 15;
+
+	/**
+	 * The feature id for the '<em><b>Xlt</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__XLT = 16;
+
+	/**
+	 * The feature id for the '<em><b>Xsc Array</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__XSC_ARRAY = 17;
+
+	/**
+	 * The feature id for the '<em><b>Thermal</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__THERMAL = 18;
+
+	/**
+	 * The feature id for the '<em><b>N</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__N = 19;
+
+	/**
+	 * The feature id for the '<em><b>M</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__M = 20;
+
+	/**
+	 * The feature id for the '<em><b>FL Rise</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__FL_RISE = 21;
+
+	/**
+	 * The feature id for the '<em><b>HS Rise</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__HS_RISE = 22;
+
+	/**
+	 * The feature id for the '<em><b>Pct Load Loss</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PCT_LOAD_LOSS = 23;
+
+	/**
+	 * The feature id for the '<em><b>Pct No Load Loss</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PCT_NO_LOAD_LOSS = 24;
+
+	/**
+	 * The feature id for the '<em><b>Norm HKVA</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__NORM_HKVA = 25;
+
+	/**
+	 * The feature id for the '<em><b>Emerg HKVA</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__EMERG_HKVA = 26;
+
+	/**
+	 * The feature id for the '<em><b>Max Tap</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__MAX_TAP = 27;
+
+	/**
+	 * The feature id for the '<em><b>Min Tap</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__MIN_TAP = 28;
+
+	/**
+	 * The feature id for the '<em><b>Num Taps</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__NUM_TAPS = 29;
+
+	/**
+	 * The feature id for the '<em><b>Pct IMag</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PCT_IMAG = 30;
+
+	/**
+	 * The feature id for the '<em><b>Ppm Anti Float</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PPM_ANTI_FLOAT = 31;
+
+	/**
+	 * The feature id for the '<em><b>Pct RS</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__PCT_RS = 32;
+
+	/**
+	 * The feature id for the '<em><b>Like</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE__LIKE = 33;
+
+	/**
+	 * The number of structural features of the '<em>Transformer Code</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int TRANSFORMER_CODE_FEATURE_COUNT = 34;
+
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.general.DSSObject <em>DSS Object</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1981,6 +2307,390 @@ public interface GeneralPackage extends EPackage {
 	EAttribute getWireData_Diameter();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.general.TransformerCode <em>Transformer Code</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Transformer Code</em>'.
+	 * @see electrickery.general.TransformerCode
+	 * @generated
+	 */
+	EClass getTransformerCode();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPhases <em>Phases</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Phases</em>'.
+	 * @see electrickery.general.TransformerCode#getPhases()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Phases();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getWindings <em>Windings</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Windings</em>'.
+	 * @see electrickery.general.TransformerCode#getWindings()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Windings();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getWdg <em>Wdg</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Wdg</em>'.
+	 * @see electrickery.general.TransformerCode#getWdg()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Wdg();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getConn <em>Conn</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Conn</em>'.
+	 * @see electrickery.general.TransformerCode#getConn()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Conn();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getKV <em>KV</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KV</em>'.
+	 * @see electrickery.general.TransformerCode#getKV()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_KV();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getKVA <em>KVA</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KVA</em>'.
+	 * @see electrickery.general.TransformerCode#getKVA()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_KVA();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getTap <em>Tap</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Tap</em>'.
+	 * @see electrickery.general.TransformerCode#getTap()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Tap();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPctR <em>Pct R</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct R</em>'.
+	 * @see electrickery.general.TransformerCode#getPctR()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PctR();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getRNeut <em>RNeut</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>RNeut</em>'.
+	 * @see electrickery.general.TransformerCode#getRNeut()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_RNeut();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getXNeut <em>XNeut</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>XNeut</em>'.
+	 * @see electrickery.general.TransformerCode#getXNeut()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_XNeut();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.TransformerCode#getConns <em>Conns</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Conns</em>'.
+	 * @see electrickery.general.TransformerCode#getConns()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Conns();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.TransformerCode#getKVs <em>KVs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>KVs</em>'.
+	 * @see electrickery.general.TransformerCode#getKVs()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_KVs();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.TransformerCode#getKVAs <em>KV As</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>KV As</em>'.
+	 * @see electrickery.general.TransformerCode#getKVAs()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_KVAs();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.TransformerCode#getTaps <em>Taps</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Taps</em>'.
+	 * @see electrickery.general.TransformerCode#getTaps()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Taps();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getXhl <em>Xhl</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Xhl</em>'.
+	 * @see electrickery.general.TransformerCode#getXhl()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Xhl();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getXht <em>Xht</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Xht</em>'.
+	 * @see electrickery.general.TransformerCode#getXht()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Xht();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getXlt <em>Xlt</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Xlt</em>'.
+	 * @see electrickery.general.TransformerCode#getXlt()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Xlt();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.general.TransformerCode#getXscArray <em>Xsc Array</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Xsc Array</em>'.
+	 * @see electrickery.general.TransformerCode#getXscArray()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_XscArray();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getThermal <em>Thermal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Thermal</em>'.
+	 * @see electrickery.general.TransformerCode#getThermal()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_Thermal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getN <em>N</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>N</em>'.
+	 * @see electrickery.general.TransformerCode#getN()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_N();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getM <em>M</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>M</em>'.
+	 * @see electrickery.general.TransformerCode#getM()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_M();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getFLRise <em>FL Rise</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>FL Rise</em>'.
+	 * @see electrickery.general.TransformerCode#getFLRise()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_FLRise();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getHSRise <em>HS Rise</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>HS Rise</em>'.
+	 * @see electrickery.general.TransformerCode#getHSRise()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_HSRise();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPctLoadLoss <em>Pct Load Loss</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct Load Loss</em>'.
+	 * @see electrickery.general.TransformerCode#getPctLoadLoss()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PctLoadLoss();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPctNoLoadLoss <em>Pct No Load Loss</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct No Load Loss</em>'.
+	 * @see electrickery.general.TransformerCode#getPctNoLoadLoss()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PctNoLoadLoss();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getNormHKVA <em>Norm HKVA</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Norm HKVA</em>'.
+	 * @see electrickery.general.TransformerCode#getNormHKVA()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_NormHKVA();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getEmergHKVA <em>Emerg HKVA</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Emerg HKVA</em>'.
+	 * @see electrickery.general.TransformerCode#getEmergHKVA()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_EmergHKVA();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getMaxTap <em>Max Tap</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Max Tap</em>'.
+	 * @see electrickery.general.TransformerCode#getMaxTap()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_MaxTap();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getMinTap <em>Min Tap</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Min Tap</em>'.
+	 * @see electrickery.general.TransformerCode#getMinTap()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_MinTap();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getNumTaps <em>Num Taps</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Num Taps</em>'.
+	 * @see electrickery.general.TransformerCode#getNumTaps()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_NumTaps();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPctIMag <em>Pct IMag</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct IMag</em>'.
+	 * @see electrickery.general.TransformerCode#getPctIMag()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PctIMag();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPpmAntiFloat <em>Ppm Anti Float</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Ppm Anti Float</em>'.
+	 * @see electrickery.general.TransformerCode#getPpmAntiFloat()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PpmAntiFloat();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.general.TransformerCode#getPctRS <em>Pct RS</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Pct RS</em>'.
+	 * @see electrickery.general.TransformerCode#getPctRS()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EAttribute getTransformerCode_PctRS();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.general.TransformerCode#getLike <em>Like</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Like</em>'.
+	 * @see electrickery.general.TransformerCode#getLike()
+	 * @see #getTransformerCode()
+	 * @generated
+	 */
+	EReference getTransformerCode_Like();
+
+	/**
 	 * Returns the factory that creates the instances of the model.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2747,6 +3457,288 @@ public interface GeneralPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute WIRE_DATA__DIAMETER = eINSTANCE.getWireData_Diameter();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.general.impl.TransformerCodeImpl <em>Transformer Code</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.general.impl.TransformerCodeImpl
+		 * @see electrickery.general.impl.GeneralPackageImpl#getTransformerCode()
+		 * @generated
+		 */
+		EClass TRANSFORMER_CODE = eINSTANCE.getTransformerCode();
+
+		/**
+		 * The meta object literal for the '<em><b>Phases</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PHASES = eINSTANCE.getTransformerCode_Phases();
+
+		/**
+		 * The meta object literal for the '<em><b>Windings</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__WINDINGS = eINSTANCE.getTransformerCode_Windings();
+
+		/**
+		 * The meta object literal for the '<em><b>Wdg</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__WDG = eINSTANCE.getTransformerCode_Wdg();
+
+		/**
+		 * The meta object literal for the '<em><b>Conn</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__CONN = eINSTANCE.getTransformerCode_Conn();
+
+		/**
+		 * The meta object literal for the '<em><b>KV</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__KV = eINSTANCE.getTransformerCode_KV();
+
+		/**
+		 * The meta object literal for the '<em><b>KVA</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__KVA = eINSTANCE.getTransformerCode_KVA();
+
+		/**
+		 * The meta object literal for the '<em><b>Tap</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__TAP = eINSTANCE.getTransformerCode_Tap();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct R</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PCT_R = eINSTANCE.getTransformerCode_PctR();
+
+		/**
+		 * The meta object literal for the '<em><b>RNeut</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__RNEUT = eINSTANCE.getTransformerCode_RNeut();
+
+		/**
+		 * The meta object literal for the '<em><b>XNeut</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__XNEUT = eINSTANCE.getTransformerCode_XNeut();
+
+		/**
+		 * The meta object literal for the '<em><b>Conns</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__CONNS = eINSTANCE.getTransformerCode_Conns();
+
+		/**
+		 * The meta object literal for the '<em><b>KVs</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__KVS = eINSTANCE.getTransformerCode_KVs();
+
+		/**
+		 * The meta object literal for the '<em><b>KV As</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__KV_AS = eINSTANCE.getTransformerCode_KVAs();
+
+		/**
+		 * The meta object literal for the '<em><b>Taps</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__TAPS = eINSTANCE.getTransformerCode_Taps();
+
+		/**
+		 * The meta object literal for the '<em><b>Xhl</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__XHL = eINSTANCE.getTransformerCode_Xhl();
+
+		/**
+		 * The meta object literal for the '<em><b>Xht</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__XHT = eINSTANCE.getTransformerCode_Xht();
+
+		/**
+		 * The meta object literal for the '<em><b>Xlt</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__XLT = eINSTANCE.getTransformerCode_Xlt();
+
+		/**
+		 * The meta object literal for the '<em><b>Xsc Array</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__XSC_ARRAY = eINSTANCE.getTransformerCode_XscArray();
+
+		/**
+		 * The meta object literal for the '<em><b>Thermal</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__THERMAL = eINSTANCE.getTransformerCode_Thermal();
+
+		/**
+		 * The meta object literal for the '<em><b>N</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__N = eINSTANCE.getTransformerCode_N();
+
+		/**
+		 * The meta object literal for the '<em><b>M</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__M = eINSTANCE.getTransformerCode_M();
+
+		/**
+		 * The meta object literal for the '<em><b>FL Rise</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__FL_RISE = eINSTANCE.getTransformerCode_FLRise();
+
+		/**
+		 * The meta object literal for the '<em><b>HS Rise</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__HS_RISE = eINSTANCE.getTransformerCode_HSRise();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct Load Loss</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PCT_LOAD_LOSS = eINSTANCE.getTransformerCode_PctLoadLoss();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct No Load Loss</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PCT_NO_LOAD_LOSS = eINSTANCE.getTransformerCode_PctNoLoadLoss();
+
+		/**
+		 * The meta object literal for the '<em><b>Norm HKVA</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__NORM_HKVA = eINSTANCE.getTransformerCode_NormHKVA();
+
+		/**
+		 * The meta object literal for the '<em><b>Emerg HKVA</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__EMERG_HKVA = eINSTANCE.getTransformerCode_EmergHKVA();
+
+		/**
+		 * The meta object literal for the '<em><b>Max Tap</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__MAX_TAP = eINSTANCE.getTransformerCode_MaxTap();
+
+		/**
+		 * The meta object literal for the '<em><b>Min Tap</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__MIN_TAP = eINSTANCE.getTransformerCode_MinTap();
+
+		/**
+		 * The meta object literal for the '<em><b>Num Taps</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__NUM_TAPS = eINSTANCE.getTransformerCode_NumTaps();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct IMag</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PCT_IMAG = eINSTANCE.getTransformerCode_PctIMag();
+
+		/**
+		 * The meta object literal for the '<em><b>Ppm Anti Float</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PPM_ANTI_FLOAT = eINSTANCE.getTransformerCode_PpmAntiFloat();
+
+		/**
+		 * The meta object literal for the '<em><b>Pct RS</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute TRANSFORMER_CODE__PCT_RS = eINSTANCE.getTransformerCode_PctRS();
+
+		/**
+		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference TRANSFORMER_CODE__LIKE = eINSTANCE.getTransformerCode_Like();
 
 	}
 

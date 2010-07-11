@@ -27,6 +27,7 @@ import electrickery.general.LineSpacing;
 import electrickery.general.LoadShape;
 import electrickery.general.Spectrum;
 import electrickery.general.TimeCurrentCurve;
+import electrickery.general.TransformerCode;
 import electrickery.general.WireData;
 import electrickery.impl.ElectrickeryPackageImpl;
 import electrickery.meter.MeterPackage;
@@ -111,6 +112,13 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
     private EClass wireDataEClass = null;
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass transformerCodeEClass = null;
+
+				/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -1015,6 +1023,321 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getTransformerCode() {
+		return transformerCodeEClass;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Phases() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Windings() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Wdg() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Conn() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(3);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_KV() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_KVA() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(5);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Tap() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(6);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PctR() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(7);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_RNeut() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(8);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_XNeut() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(9);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Conns() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(10);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_KVs() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(11);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_KVAs() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(12);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Taps() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(13);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Xhl() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(14);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Xht() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(15);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Xlt() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(16);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_XscArray() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(17);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_Thermal() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(18);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_N() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(19);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_M() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(20);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_FLRise() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(21);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_HSRise() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(22);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PctLoadLoss() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(23);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PctNoLoadLoss() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(24);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_NormHKVA() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(25);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_EmergHKVA() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(26);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_MaxTap() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(27);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_MinTap() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(28);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_NumTaps() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(29);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PctIMag() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(30);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PpmAntiFloat() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(31);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getTransformerCode_PctRS() {
+		return (EAttribute)transformerCodeEClass.getEStructuralFeatures().get(32);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getTransformerCode_Like() {
+		return (EReference)transformerCodeEClass.getEStructuralFeatures().get(33);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1140,6 +1463,42 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		createEAttribute(wireDataEClass, WIRE_DATA__NORM_AMPS);
 		createEAttribute(wireDataEClass, WIRE_DATA__EMERG_AMPS);
 		createEAttribute(wireDataEClass, WIRE_DATA__DIAMETER);
+
+		transformerCodeEClass = createEClass(TRANSFORMER_CODE);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PHASES);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__WINDINGS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__WDG);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__CONN);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__KV);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__KVA);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__TAP);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PCT_R);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__RNEUT);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__XNEUT);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__CONNS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__KVS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__KV_AS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__TAPS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__XHL);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__XHT);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__XLT);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__XSC_ARRAY);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__THERMAL);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__N);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__M);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__FL_RISE);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__HS_RISE);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PCT_LOAD_LOSS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PCT_NO_LOAD_LOSS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__NORM_HKVA);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__EMERG_HKVA);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__MAX_TAP);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__MIN_TAP);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__NUM_TAPS);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PCT_IMAG);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PPM_ANTI_FLOAT);
+		createEAttribute(transformerCodeEClass, TRANSFORMER_CODE__PCT_RS);
+		createEReference(transformerCodeEClass, TRANSFORMER_CODE__LIKE);
 	}
 
     /**
@@ -1283,6 +1642,42 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		initEAttribute(getWireData_EmergAmps(), ecorePackage.getEDouble(), "emergAmps", null, 0, 1, WireData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getWireData_Diameter(), ecorePackage.getEDouble(), "diameter", null, 0, 1, WireData.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
+		initEClass(transformerCodeEClass, TransformerCode.class, "TransformerCode", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getTransformerCode_Phases(), ecorePackage.getEInt(), "phases", "3", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Windings(), ecorePackage.getEInt(), "windings", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Wdg(), ecorePackage.getEInt(), "wdg", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Conn(), theCommonPackage.getconnectionType(), "conn", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_KV(), ecorePackage.getEDouble(), "kV", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_KVA(), ecorePackage.getEDouble(), "kVA", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Tap(), ecorePackage.getEDouble(), "tap", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PctR(), ecorePackage.getEDouble(), "pctR", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_RNeut(), ecorePackage.getEDouble(), "rNeut", "-1.0", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_XNeut(), ecorePackage.getEDouble(), "xNeut", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Conns(), theCommonPackage.getconnectionType(), "conns", null, 0, -1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_KVs(), ecorePackage.getEDouble(), "kVs", null, 0, -1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_KVAs(), ecorePackage.getEDouble(), "kVAs", null, 0, -1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Taps(), ecorePackage.getEDouble(), "taps", null, 0, -1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Xhl(), ecorePackage.getEDouble(), "xhl", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Xht(), ecorePackage.getEDouble(), "xht", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Xlt(), ecorePackage.getEDouble(), "xlt", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_XscArray(), ecorePackage.getEDouble(), "xscArray", null, 0, -1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_Thermal(), ecorePackage.getEDouble(), "thermal", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_N(), ecorePackage.getEDouble(), "n", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_M(), ecorePackage.getEDouble(), "m", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_FLRise(), ecorePackage.getEDouble(), "fLRise", "65.0", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_HSRise(), ecorePackage.getEDouble(), "hSRise", "15.0", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PctLoadLoss(), ecorePackage.getEDouble(), "pctLoadLoss", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PctNoLoadLoss(), ecorePackage.getEDouble(), "pctNoLoadLoss", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_NormHKVA(), ecorePackage.getEDouble(), "normHKVA", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_EmergHKVA(), ecorePackage.getEDouble(), "emergHKVA", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_MaxTap(), ecorePackage.getEDouble(), "maxTap", "1.1", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_MinTap(), ecorePackage.getEDouble(), "minTap", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_NumTaps(), ecorePackage.getEInt(), "numTaps", "32", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PctIMag(), ecorePackage.getEDouble(), "pctIMag", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PpmAntiFloat(), ecorePackage.getEDouble(), "ppmAntiFloat", "1.0", 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getTransformerCode_PctRS(), ecorePackage.getEDouble(), "pctRS", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getTransformerCode_Like(), this.getTransformerCode(), null, "like", null, 0, 1, TransformerCode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
 		// Create annotations
 		// null
 		createNullAnnotations();
@@ -1313,7 +1708,7 @@ public class GeneralPackageImpl extends EPackageImpl implements GeneralPackage {
 		   source, 
 		   new String[] {
 			 "documentation", "Array of time values in sec. Typical array syntax:\n    t_array = (1, 2, 3, 4, ...)\nCan also substitute a file designation:\n    t_array =  (file=filename)\nThe specified file has one value per line."
-		   });											
+		   });																																												
 	}
 
 } //GeneralPackageImpl
