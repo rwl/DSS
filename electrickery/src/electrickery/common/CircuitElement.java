@@ -684,4 +684,15 @@ public interface CircuitElement extends EObject {
 	 */
     void makePosSequence();
 
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Set NodeRef Array for fast solution with intrinsics.
+	 * <!-- end-model-doc -->
+	 * @model nodeRefArrayMany="true"
+	 * @generated
+	 */
+	void setNodeRef(int iTerm, EList<Integer> nodeRefArray);
+
 } // CircuitElement

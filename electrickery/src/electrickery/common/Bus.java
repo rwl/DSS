@@ -40,7 +40,7 @@ import org.eclipse.emf.ecore.EObject;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link electrickery.common.Bus#getName <em>Name</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.Bus#getVBus <em>VBus</em>}</li>
  *   <li>{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}</li>
  *   <li>{@link electrickery.common.Bus#getZSC <em>ZSC</em>}</li>
@@ -59,32 +59,34 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Bus extends EObject {
+public interface Bus extends Named {
 	/**
-	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * Returns the value of the '<em><b>Circuit</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Circuit</em>' container reference isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Name</em>' attribute.
-	 * @see #setName(String)
-	 * @see electrickery.common.CommonPackage#getBus_Name()
-	 * @model
+	 * @return the value of the '<em>Circuit</em>' container reference.
+	 * @see #setCircuit(Circuit)
+	 * @see electrickery.common.CommonPackage#getBus_Circuit()
+	 * @see electrickery.common.Circuit#getBusList
+	 * @model opposite="busList" transient="false"
 	 * @generated
 	 */
-	String getName();
+	Circuit getCircuit();
 
 	/**
-	 * Sets the value of the '{@link electrickery.common.Bus#getName <em>Name</em>}' attribute.
+	 * Sets the value of the '{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}' container reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Name</em>' attribute.
-	 * @see #getName()
+	 * @param value the new value of the '<em>Circuit</em>' container reference.
+	 * @see #getCircuit()
 	 * @generated
 	 */
-	void setName(String value);
+	void setCircuit(Circuit value);
 
 	/**
 	 * Returns the value of the '<em><b>VBus</b></em>' attribute.
@@ -367,5 +369,57 @@ public interface Bus extends EObject {
 	 * @generated
 	 */
 	void setRadialBus(boolean value);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	int add(int nodeNum);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Returns reference num for node by node number.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	int find(int nodeNum);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Returns index of node by node number.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	int findIdx(int nodeNum);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Returns reference Num for node by node index.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	int getRef(int nodeIndex);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Returns ith node number designation.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	int getNum(int nodeIndex);
 
 } // Bus

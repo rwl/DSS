@@ -45,7 +45,7 @@
           eOpposite="#//common/Solution/circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="controlQueue" eType="#//common/ControlQueue"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="busList" upperBound="-1"
-          eType="#//common/Bus" containment="true"/>
+          eType="#//common/Bus" containment="true" eOpposite="#//common/Bus/circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="faults" upperBound="-1"
           eType="#//delivery/Fault" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="voltageSources" upperBound="-1"
@@ -107,11 +107,39 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultHourMult" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="priceSignal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EClass" name="Bus">
+    <eClassifiers xsi:type="ecore:EClass" name="Bus" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="A bus is a circuit element having [1..N] nodes. Buses are the&#xA;connection point for all other circuit elements. The main electrical&#xA;property of a Bus is voltage.  Each node has a voltage with respect to the&#xA;zero voltage reference (remote ground).  There is a nodal admittance&#xA;equation written for every node (i.e., the current is summed at each node).&#xA;&#xA;A bus may have any number of nodes (places to connect device terminal&#xA;conductors).  The nodes may be arbitrarily numbered, except that the first&#xA;N are reserved for the N phases.  Thus, if a bus has 3-phase devices&#xA;connected to it, connections would be expected to nodes 1, 2, and 3.  So&#xA;the DSS would use these voltages to compute the sequence voltages, for&#xA;example.   Phase 1 would nominally represent the same phase throughout the&#xA;circuit, although that would not be mandatory.  It is up to the user to&#xA;maintain a consistent definition.  If only the default connections are&#xA;used, the consistency is maintained automatically. Any other nodes would&#xA;simply be points of connection with no special meaning.&#xA;&#xA;Each Bus object keeps track of the allocation and designation of its nodes.&#xA;&#xA;Node 0 of a bus is always the voltage reference (a.k.a, ground, or earth).&#xA;That is, it always has a voltage of exactly zero volts."/>
       </eAnnotations>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eOperations name="add" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eParameters name="nodeNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eOperations name="find" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Returns reference num for node by node number."/>
+        </eAnnotations>
+        <eParameters name="nodeNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eOperations name="findIdx" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Returns index of node by node number."/>
+        </eAnnotations>
+        <eParameters name="nodeNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eOperations name="getRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Returns reference Num for node by node index."/>
+        </eAnnotations>
+        <eParameters name="nodeIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eOperations name="getNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Returns ith node number designation."/>
+        </eAnnotations>
+        <eParameters name="nodeIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"
+          eOpposite="#//common/Circuit/busList"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="115.0"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="busCurrent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
@@ -159,6 +187,13 @@
         <eParameters name="opt" eType="#//common/yBuildOption"/>
       </eOperations>
       <eOperations name="makePosSequence"/>
+      <eOperations name="setNodeRef">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Set NodeRef Array for fast solution with intrinsics."/>
+        </eAnnotations>
+        <eParameters name="iTerm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        <eParameters name="nodeRefArray" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="enabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

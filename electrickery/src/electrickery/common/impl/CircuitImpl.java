@@ -608,7 +608,7 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
      */
     public EList<Bus> getBusList() {
         if (busList == null) {
-            busList = new EObjectContainmentEList<Bus>(Bus.class, this, CommonPackage.CIRCUIT__BUS_LIST);
+            busList = new EObjectContainmentWithInverseEList<Bus>(Bus.class, this, CommonPackage.CIRCUIT__BUS_LIST, CommonPackage.BUS__CIRCUIT);
         }
         return busList;
     }
@@ -1097,7 +1097,7 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
             getSolution().updateVBus();
 
         if (isBusNameRedefined())
-            reProcessBusDefs();
+            reProcessBusDefs(); // This changes the node references into the system Y matrix.
 
         if (getSolution().isFrequencyChanged()) {
             reCalcAllYPrims();
@@ -1165,9 +1165,25 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
 //        CircuitElement cktElementSave = getActiveCircuitElement();
         for (int i = 0; i < getCircuitElements().size(); i++) {
             CircuitElement cktElement = getCircuitElements().get(i);
-//            setActiveCircuitElement(cktElement);
-            processBusDefs();
+                if (cktElement.isEnabled()) {
+        //            setActiveCircuitElement(cktElement);
+                  processBusDefs();
+      //            if (abortBusProcess)
+      //                return;
+                }
         }
+
+//        setActiveCircuitElement(cktElementSave); // restore active circuit element
+
+//        for (Bus bus : getBusList()) {
+//            bus.allocateBusVoltages();
+//            bus.allocateBusCurrents();
+//        }
+
+        restoreBusInfo();
+//        doResetMeterZones();
+
+        busNameRedefined = false;
     }
 
     /**
@@ -1183,6 +1199,13 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
             savedBusNames.add(bus.getName());
         }
         int savedNumBuses = nb;
+    }
+
+    /**
+     * Restores kV bases, other values to buses still in the list.
+     */
+    protected void restoreBusInfo() {
+
     }
 
     protected void processBusDefs() {
@@ -1224,6 +1247,9 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
             // Node-terminal connnections.
 //            ce.setActiveTerminalIndex(iTerm);
 //            ce.getActiveTerminal().setBusRef(addBus(busName, nCond));
+//            ce.setNodeRef(iTerm, nodeBuffer);
+
+//            busName = ce.nextBus();
         }
     }
 
@@ -1250,7 +1276,10 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
             int nodeRef = 0;//bus.add(nodeBuffer[i]);
             if (nodeRef == nNodes) {
                 // This was a new node so Add a NodeToBus element.
+//            	mapNodeToBus.get(numNodes).setBusRef(result);
+//            	mapNodeToBus.get(numNodes).setNodeNum(nodeBuffer[i])
             }
+//            nodeBuffer[i] = nodeRef; // Swap out in preparation to setNodeRef call.
         }
 
         return getBusList().size() - 1;
@@ -1294,6 +1323,8 @@ protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
                 if (solution != null)
                     msgs = ((InternalEObject)solution).eInverseRemove(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
                 return basicSetSolution((Solution)otherEnd, msgs);
+            case CommonPackage.CIRCUIT__BUS_LIST:
+                return ((InternalEList<InternalEObject>)(InternalEList<?>)getBusList()).basicAdd(otherEnd, msgs);
             case CommonPackage.CIRCUIT__GENERATORS:
                 return ((InternalEList<InternalEObject>)(InternalEList<?>)getGenerators()).basicAdd(otherEnd, msgs);
         }

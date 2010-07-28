@@ -345,123 +345,6 @@ public interface CommonPackage extends EPackage {
 	int BUS = 1;
 
 	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__NAME = 0;
-
-	/**
-	 * The feature id for the '<em><b>VBus</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__VBUS = 1;
-
-	/**
-	 * The feature id for the '<em><b>Bus Current</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__BUS_CURRENT = 2;
-
-	/**
-	 * The feature id for the '<em><b>ZSC</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__ZSC = 3;
-
-	/**
-	 * The feature id for the '<em><b>YSC</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__YSC = 4;
-
-	/**
-	 * The feature id for the '<em><b>X</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__X = 5;
-
-	/**
-	 * The feature id for the '<em><b>Y</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__Y = 6;
-
-	/**
-	 * The feature id for the '<em><b>KV Base</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__KV_BASE = 7;
-
-	/**
-	 * The feature id for the '<em><b>Coords Defined</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__COORDS_DEFINED = 8;
-
-	/**
-	 * The feature id for the '<em><b>Bus Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__BUS_CHECKED = 9;
-
-	/**
-	 * The feature id for the '<em><b>Keep</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__KEEP = 10;
-
-	/**
-	 * The feature id for the '<em><b>Radial Bus</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__RADIAL_BUS = 11;
-
-	/**
-	 * The number of structural features of the '<em>Bus</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS_FEATURE_COUNT = 12;
-
-	/**
 	 * The meta object id for the '{@link electrickery.common.impl.CircuitElementImpl <em>Circuit Element</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -470,6 +353,220 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	int CIRCUIT_ELEMENT = 2;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.CollectionImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getCollection()
+	 * @generated
+	 */
+	int COLLECTION = 3;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.ConductorImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getConductor()
+	 * @generated
+	 */
+	int CONDUCTOR = 4;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.FeederImpl <em>Feeder</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.FeederImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getFeeder()
+	 * @generated
+	 */
+	int FEEDER = 5;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.SolutionImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getSolution()
+	 * @generated
+	 */
+	int SOLUTION = 6;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.TerminalImpl <em>Terminal</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.TerminalImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getTerminal()
+	 * @generated
+	 */
+	int TERMINAL = 7;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.ControlQueueImpl <em>Control Queue</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.ControlQueueImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getControlQueue()
+	 * @generated
+	 */
+	int CONTROL_QUEUE = 8;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.NamedImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
+	 * @generated
+	 */
+	int NAMED = 9;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NAMED__NAME = 0;
+
+	/**
+	 * The number of structural features of the '<em>Named</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int NAMED_FEATURE_COUNT = 1;
+
+	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__NAME = NAMED__NAME;
+
+	/**
+	 * The feature id for the '<em><b>Circuit</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__CIRCUIT = NAMED_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>VBus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__VBUS = NAMED_FEATURE_COUNT + 1;
+
+	/**
+	 * The feature id for the '<em><b>Bus Current</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__BUS_CURRENT = NAMED_FEATURE_COUNT + 2;
+
+	/**
+	 * The feature id for the '<em><b>ZSC</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__ZSC = NAMED_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>YSC</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__YSC = NAMED_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>X</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__X = NAMED_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Y</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__Y = NAMED_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>KV Base</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__KV_BASE = NAMED_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Coords Defined</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__COORDS_DEFINED = NAMED_FEATURE_COUNT + 8;
+
+	/**
+	 * The feature id for the '<em><b>Bus Checked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__BUS_CHECKED = NAMED_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Keep</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__KEEP = NAMED_FEATURE_COUNT + 10;
+
+	/**
+	 * The feature id for the '<em><b>Radial Bus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__RADIAL_BUS = NAMED_FEATURE_COUNT + 11;
+
+	/**
+	 * The number of structural features of the '<em>Bus</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -697,16 +794,6 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT_FEATURE_COUNT = 24;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.CollectionImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getCollection()
-	 * @generated
-	 */
-	int COLLECTION = 3;
-
-	/**
 	 * The feature id for the '<em><b>NProperties</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -770,16 +857,6 @@ public interface CommonPackage extends EPackage {
 	int COLLECTION_FEATURE_COUNT = 6;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.ConductorImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getConductor()
-	 * @generated
-	 */
-	int CONDUCTOR = 4;
-
-	/**
 	 * The feature id for the '<em><b>Closed</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -825,16 +902,6 @@ public interface CommonPackage extends EPackage {
 	int CONDUCTOR_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.FeederImpl <em>Feeder</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.FeederImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getFeeder()
-	 * @generated
-	 */
-	int FEEDER = 5;
-
-	/**
 	 * The feature id for the '<em><b>Spectrum</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -878,16 +945,6 @@ public interface CommonPackage extends EPackage {
 	 * @ordered
 	 */
 	int FEEDER_FEATURE_COUNT = 4;
-
-	/**
-	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.SolutionImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getSolution()
-	 * @generated
-	 */
-	int SOLUTION = 6;
 
 	/**
 	 * The feature id for the '<em><b>Year</b></em>' attribute.
@@ -1169,16 +1226,6 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION_FEATURE_COUNT = 30;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.TerminalImpl <em>Terminal</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.TerminalImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getTerminal()
-	 * @generated
-	 */
-	int TERMINAL = 7;
-
-	/**
 	 * The feature id for the '<em><b>Bus Ref</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1242,16 +1289,6 @@ public interface CommonPackage extends EPackage {
 	int TERMINAL_FEATURE_COUNT = 6;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.ControlQueueImpl <em>Control Queue</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.ControlQueueImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getControlQueue()
-	 * @generated
-	 */
-	int CONTROL_QUEUE = 8;
-
-	/**
 	 * The feature id for the '<em><b>Empty</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1268,34 +1305,6 @@ public interface CommonPackage extends EPackage {
 	 * @ordered
 	 */
 	int CONTROL_QUEUE_FEATURE_COUNT = 1;
-
-	/**
-	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.NamedImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
-	 * @generated
-	 */
-	int NAMED = 9;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NAMED__NAME = 0;
-
-	/**
-	 * The number of structural features of the '<em>Named</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int NAMED_FEATURE_COUNT = 1;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.ElectrickeryImpl <em>Electrickery</em>}' class.
@@ -1772,15 +1781,15 @@ public interface CommonPackage extends EPackage {
 	EClass getBus();
 
 	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getName <em>Name</em>}'.
+	 * Returns the meta object for the container reference '{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Name</em>'.
-	 * @see electrickery.common.Bus#getName()
+	 * @return the meta object for the container reference '<em>Circuit</em>'.
+	 * @see electrickery.common.Bus#getCircuit()
 	 * @see #getBus()
 	 * @generated
 	 */
-	EAttribute getBus_Name();
+	EReference getBus_Circuit();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getVBus <em>VBus</em>}'.
@@ -3233,12 +3242,12 @@ public interface CommonPackage extends EPackage {
 		EClass BUS = eINSTANCE.getBus();
 
 		/**
-		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Circuit</b></em>' container reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUS__NAME = eINSTANCE.getBus_Name();
+		EReference BUS__CIRCUIT = eINSTANCE.getBus_Circuit();
 
 		/**
 		 * The meta object literal for the '<em><b>VBus</b></em>' attribute feature.

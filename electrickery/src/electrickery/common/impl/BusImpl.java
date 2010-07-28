@@ -7,13 +7,17 @@
 package electrickery.common.impl;
 
 import electrickery.common.Bus;
+import electrickery.common.Circuit;
 import electrickery.common.CommonPackage;
 
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
 /**
@@ -23,7 +27,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link electrickery.common.impl.BusImpl#getName <em>Name</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#getVBus <em>VBus</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#getBusCurrent <em>Bus Current</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#getZSC <em>ZSC</em>}</li>
@@ -40,528 +44,650 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
  *
  * @generated
  */
-public class BusImpl extends EObjectImpl implements Bus {
-	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected static final String NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getName()
-	 * @generated
-	 * @ordered
-	 */
-	protected String name = NAME_EDEFAULT;
-
-	/**
+public class BusImpl extends NamedImpl implements Bus {
+    /**
 	 * The default value of the '{@link #getVBus() <em>VBus</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getVBus()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double VBUS_EDEFAULT = 115.0;
+    protected static final double VBUS_EDEFAULT = 115.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getVBus() <em>VBus</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getVBus()
 	 * @generated
 	 * @ordered
 	 */
-	protected double vBus = VBUS_EDEFAULT;
+    protected double vBus = VBUS_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getBusCurrent() <em>Bus Current</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getBusCurrent()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double BUS_CURRENT_EDEFAULT = 0.0;
+    protected static final double BUS_CURRENT_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getBusCurrent() <em>Bus Current</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getBusCurrent()
 	 * @generated
 	 * @ordered
 	 */
-	protected double busCurrent = BUS_CURRENT_EDEFAULT;
+    protected double busCurrent = BUS_CURRENT_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getZSC() <em>ZSC</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getZSC()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double ZSC_EDEFAULT = 0.0;
+    protected static final double ZSC_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getZSC() <em>ZSC</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getZSC()
 	 * @generated
 	 * @ordered
 	 */
-	protected double zSC = ZSC_EDEFAULT;
+    protected double zSC = ZSC_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getYSC() <em>YSC</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getYSC()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double YSC_EDEFAULT = 0.0;
+    protected static final double YSC_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getYSC() <em>YSC</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getYSC()
 	 * @generated
 	 * @ordered
 	 */
-	protected double ySC = YSC_EDEFAULT;
+    protected double ySC = YSC_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getX() <em>X</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getX()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double X_EDEFAULT = 0.0;
+    protected static final double X_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getX() <em>X</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getX()
 	 * @generated
 	 * @ordered
 	 */
-	protected double x = X_EDEFAULT;
+    protected double x = X_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getY() <em>Y</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getY()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double Y_EDEFAULT = 0.0;
+    protected static final double Y_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getY() <em>Y</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getY()
 	 * @generated
 	 * @ordered
 	 */
-	protected double y = Y_EDEFAULT;
+    protected double y = Y_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getKVBase() <em>KV Base</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getKVBase()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double KV_BASE_EDEFAULT = 0.0;
+    protected static final double KV_BASE_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getKVBase() <em>KV Base</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getKVBase()
 	 * @generated
 	 * @ordered
 	 */
-	protected double kVBase = KV_BASE_EDEFAULT;
+    protected double kVBase = KV_BASE_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isCoordsDefined() <em>Coords Defined</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isCoordsDefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean COORDS_DEFINED_EDEFAULT = false;
+    protected static final boolean COORDS_DEFINED_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isCoordsDefined() <em>Coords Defined</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isCoordsDefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean coordsDefined = COORDS_DEFINED_EDEFAULT;
+    protected boolean coordsDefined = COORDS_DEFINED_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isBusChecked() <em>Bus Checked</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isBusChecked()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean BUS_CHECKED_EDEFAULT = false;
+    protected static final boolean BUS_CHECKED_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isBusChecked() <em>Bus Checked</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isBusChecked()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean busChecked = BUS_CHECKED_EDEFAULT;
+    protected boolean busChecked = BUS_CHECKED_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isKeep() <em>Keep</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isKeep()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean KEEP_EDEFAULT = false;
+    protected static final boolean KEEP_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isKeep() <em>Keep</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isKeep()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean keep = KEEP_EDEFAULT;
+    protected boolean keep = KEEP_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isRadialBus() <em>Radial Bus</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isRadialBus()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean RADIAL_BUS_EDEFAULT = false;
+    protected static final boolean RADIAL_BUS_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isRadialBus() <em>Radial Bus</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isRadialBus()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean radialBus = RADIAL_BUS_EDEFAULT;
+    protected boolean radialBus = RADIAL_BUS_EDEFAULT;
 
-	/**
+    private int[] nodes, refNo;
+    private int numNodesThisBus, allocation;
+
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected BusImpl() {
+    protected BusImpl() {
 		super();
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+    @Override
+    protected EClass eStaticClass() {
 		return CommonPackage.Literals.BUS;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
-		return name;
+    public Circuit getCircuit() {
+		if (eContainerFeatureID() != CommonPackage.BUS__CIRCUIT) return null;
+		return (Circuit)eContainer();
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
-		String oldName = name;
-		name = newName;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__NAME, oldName, name));
+    public NotificationChain basicSetCircuit(Circuit newCircuit, NotificationChain msgs) {
+		msgs = eBasicSetContainer((InternalEObject)newCircuit, CommonPackage.BUS__CIRCUIT, msgs);
+		return msgs;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getVBus() {
+    public void setCircuit(Circuit newCircuit) {
+		if (newCircuit != eInternalContainer() || (eContainerFeatureID() != CommonPackage.BUS__CIRCUIT && newCircuit != null)) {
+			if (EcoreUtil.isAncestor(this, newCircuit))
+				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
+			NotificationChain msgs = null;
+			if (eInternalContainer() != null)
+				msgs = eBasicRemoveFromContainer(msgs);
+			if (newCircuit != null)
+				msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__BUS_LIST, Circuit.class, msgs);
+			msgs = basicSetCircuit(newCircuit, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__CIRCUIT, newCircuit, newCircuit));
+	}
+
+    /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public double getVBus() {
 		return vBus;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setVBus(double newVBus) {
+    public void setVBus(double newVBus) {
 		double oldVBus = vBus;
 		vBus = newVBus;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__VBUS, oldVBus, vBus));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getBusCurrent() {
+    public double getBusCurrent() {
 		return busCurrent;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setBusCurrent(double newBusCurrent) {
+    public void setBusCurrent(double newBusCurrent) {
 		double oldBusCurrent = busCurrent;
 		busCurrent = newBusCurrent;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__BUS_CURRENT, oldBusCurrent, busCurrent));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getZSC() {
+    public double getZSC() {
 		return zSC;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setZSC(double newZSC) {
+    public void setZSC(double newZSC) {
 		double oldZSC = zSC;
 		zSC = newZSC;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__ZSC, oldZSC, zSC));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getYSC() {
+    public double getYSC() {
 		return ySC;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setYSC(double newYSC) {
+    public void setYSC(double newYSC) {
 		double oldYSC = ySC;
 		ySC = newYSC;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__YSC, oldYSC, ySC));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getX() {
+    public double getX() {
 		return x;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setX(double newX) {
+    public void setX(double newX) {
 		double oldX = x;
 		x = newX;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__X, oldX, x));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getY() {
+    public double getY() {
 		return y;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setY(double newY) {
+    public void setY(double newY) {
 		double oldY = y;
 		y = newY;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__Y, oldY, y));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getKVBase() {
+    public double getKVBase() {
 		return kVBase;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setKVBase(double newKVBase) {
+    public void setKVBase(double newKVBase) {
 		double oldKVBase = kVBase;
 		kVBase = newKVBase;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__KV_BASE, oldKVBase, kVBase));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isCoordsDefined() {
+    public boolean isCoordsDefined() {
 		return coordsDefined;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setCoordsDefined(boolean newCoordsDefined) {
+    public void setCoordsDefined(boolean newCoordsDefined) {
 		boolean oldCoordsDefined = coordsDefined;
 		coordsDefined = newCoordsDefined;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__COORDS_DEFINED, oldCoordsDefined, coordsDefined));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isBusChecked() {
+    public boolean isBusChecked() {
 		return busChecked;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setBusChecked(boolean newBusChecked) {
+    public void setBusChecked(boolean newBusChecked) {
 		boolean oldBusChecked = busChecked;
 		busChecked = newBusChecked;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__BUS_CHECKED, oldBusChecked, busChecked));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isKeep() {
+    public boolean isKeep() {
 		return keep;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setKeep(boolean newKeep) {
+    public void setKeep(boolean newKeep) {
 		boolean oldKeep = keep;
 		keep = newKeep;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__KEEP, oldKeep, keep));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isRadialBus() {
+    public boolean isRadialBus() {
 		return radialBus;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setRadialBus(boolean newRadialBus) {
+    public void setRadialBus(boolean newRadialBus) {
 		boolean oldRadialBus = radialBus;
 		radialBus = newRadialBus;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__RADIAL_BUS, oldRadialBus, radialBus));
 	}
 
-	/**
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public int add(int nodeNum) {
+        int result;
+        if (nodeNum == 0) {
+            result = 0;
+        } else {
+            result = find(nodeNum);
+            if (result == 0) {
+                nodes[numNodesThisBus] = nodeNum;
+                getCircuit().setNumNodes(getCircuit().getNumNodes() + 1);
+                refNo[numNodesThisBus] = getCircuit().getNumNodes();
+                // Return global node number.
+                result = getCircuit().getNumNodes();
+            }
+        }
+        return result;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public int find(int nodeNum) {
+        for (int i = 0; i < numNodesThisBus; i++) {
+            if (nodes[i] == nodeNum)
+                return refNo[i];
+        }
+        return 0;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public int findIdx(int nodeNum) {
+        for (int i = 0; i < numNodesThisBus; i++) {
+            if (nodes[i] == nodeNum) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public int getRef(int nodeIndex) {
+        if (nodeIndex > 0 && nodeIndex <= numNodesThisBus) {
+            return refNo[nodeIndex];
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public int getNum(int nodeIndex) {
+        if (nodeIndex > 0 && nodeIndex <= numNodesThisBus) {
+            return nodes[nodeIndex];
+        } else {
+            return 0;
+        }
+    }
+
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+    @Override
+    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case CommonPackage.BUS__NAME:
-				return getName();
+			case CommonPackage.BUS__CIRCUIT:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetCircuit((Circuit)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+    /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case CommonPackage.BUS__CIRCUIT:
+				return basicSetCircuit(null, msgs);
+		}
+		return super.eInverseRemove(otherEnd, featureID, msgs);
+	}
+
+    /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    @Override
+    public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+		switch (eContainerFeatureID()) {
+			case CommonPackage.BUS__CIRCUIT:
+				return eInternalContainer().eInverseRemove(this, CommonPackage.CIRCUIT__BUS_LIST, Circuit.class, msgs);
+		}
+		return super.eBasicRemoveFromContainerFeature(msgs);
+	}
+
+    /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
+		switch (featureID) {
+			case CommonPackage.BUS__CIRCUIT:
+				return getCircuit();
 			case CommonPackage.BUS__VBUS:
 				return getVBus();
 			case CommonPackage.BUS__BUS_CURRENT:
@@ -588,16 +714,16 @@ public class BusImpl extends EObjectImpl implements Bus {
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eSet(int featureID, Object newValue) {
+    @Override
+    public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case CommonPackage.BUS__NAME:
-				setName((String)newValue);
+			case CommonPackage.BUS__CIRCUIT:
+				setCircuit((Circuit)newValue);
 				return;
 			case CommonPackage.BUS__VBUS:
 				setVBus((Double)newValue);
@@ -636,16 +762,16 @@ public class BusImpl extends EObjectImpl implements Bus {
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+    @Override
+    public void eUnset(int featureID) {
 		switch (featureID) {
-			case CommonPackage.BUS__NAME:
-				setName(NAME_EDEFAULT);
+			case CommonPackage.BUS__CIRCUIT:
+				setCircuit((Circuit)null);
 				return;
 			case CommonPackage.BUS__VBUS:
 				setVBus(VBUS_EDEFAULT);
@@ -684,16 +810,16 @@ public class BusImpl extends EObjectImpl implements Bus {
 		super.eUnset(featureID);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+    @Override
+    public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case CommonPackage.BUS__NAME:
-				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case CommonPackage.BUS__CIRCUIT:
+				return getCircuit() != null;
 			case CommonPackage.BUS__VBUS:
 				return vBus != VBUS_EDEFAULT;
 			case CommonPackage.BUS__BUS_CURRENT:
@@ -720,19 +846,17 @@ public class BusImpl extends EObjectImpl implements Bus {
 		return super.eIsSet(featureID);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (name: ");
-		result.append(name);
-		result.append(", vBus: ");
+		result.append(" (vBus: ");
 		result.append(vBus);
 		result.append(", busCurrent: ");
 		result.append(busCurrent);

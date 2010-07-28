@@ -133,6 +133,7 @@ public interface Circuit extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Bus List</b></em>' containment reference list.
 	 * The list contents are of type {@link electrickery.common.Bus}.
+	 * It is bidirectional and its opposite is '{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Bus List</em>' containment reference list isn't clear,
@@ -141,7 +142,8 @@ public interface Circuit extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Bus List</em>' containment reference list.
 	 * @see electrickery.common.CommonPackage#getCircuit_BusList()
-	 * @model containment="true"
+	 * @see electrickery.common.Bus#getCircuit
+	 * @model opposite="circuit" containment="true"
 	 * @generated
 	 */
 	EList<Bus> getBusList();

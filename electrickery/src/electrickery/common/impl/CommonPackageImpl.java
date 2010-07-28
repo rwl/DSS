@@ -531,14 +531,14 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getBus_Name() {
-		return (EAttribute)busEClass.getEStructuralFeatures().get(0);
+	public EReference getBus_Circuit() {
+		return (EReference)busEClass.getEStructuralFeatures().get(0);
 	}
 
-    /**
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1578,7 +1578,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(circuitEClass, CIRCUIT__PRICE_SIGNAL);
 
 		busEClass = createEClass(BUS);
-		createEAttribute(busEClass, BUS__NAME);
+		createEReference(busEClass, BUS__CIRCUIT);
 		createEAttribute(busEClass, BUS__VBUS);
 		createEAttribute(busEClass, BUS__BUS_CURRENT);
 		createEAttribute(busEClass, BUS__ZSC);
@@ -1738,12 +1738,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		// Set bounds for type parameters
 
 		// Add supertypes to classes
+		busEClass.getESuperTypes().add(this.getNamed());
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(circuitEClass, Circuit.class, "Circuit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getCircuit_Solution(), this.getSolution(), this.getSolution_Circuit(), "solution", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_ControlQueue(), this.getControlQueue(), null, "controlQueue", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCircuit_BusList(), this.getBus(), null, "busList", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCircuit_BusList(), this.getBus(), this.getBus_Circuit(), "busList", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_Faults(), theDeliveryPackage.getFault(), null, "faults", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_VoltageSources(), theConversionPackage.getVoltageSource(), null, "voltageSources", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_CurrentSources(), theConversionPackage.getCurrentSource(), null, "currentSources", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1795,7 +1796,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEOperation(circuitEClass, theDeliveryPackage.getTransformer(), "getSubstations", 0, -1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(busEClass, Bus.class, "Bus", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getBus_Name(), ecorePackage.getEString(), "name", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBus_Circuit(), this.getCircuit(), this.getCircuit_BusList(), "circuit", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_VBus(), ecorePackage.getEDouble(), "vBus", "115.0", 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_BusCurrent(), ecorePackage.getEDouble(), "busCurrent", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_ZSC(), ecorePackage.getEDouble(), "zSC", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1807,6 +1808,21 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getBus_BusChecked(), ecorePackage.getEBoolean(), "busChecked", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_Keep(), ecorePackage.getEBoolean(), "keep", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_RadialBus(), ecorePackage.getEBoolean(), "radialBus", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		op = addEOperation(busEClass, ecorePackage.getEInt(), "add", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeNum", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(busEClass, ecorePackage.getEInt(), "find", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeNum", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(busEClass, ecorePackage.getEInt(), "findIdx", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeNum", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(busEClass, ecorePackage.getEInt(), "getRef", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeIndex", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(busEClass, ecorePackage.getEInt(), "getNum", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeIndex", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(circuitElementEClass, CircuitElement.class, "CircuitElement", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCircuitElement_Name(), ecorePackage.getEString(), "name", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1844,6 +1860,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEParameter(op, this.getyBuildOption(), "opt", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(circuitElementEClass, null, "makePosSequence", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(circuitElementEClass, null, "setNodeRef", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "iTerm", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nodeRefArray", 0, -1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(collectionEClass, Collection.class, "Collection", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getCollection_NProperties(), ecorePackage.getEInt(), "nProperties", null, 0, 1, Collection.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

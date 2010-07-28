@@ -96,6 +96,7 @@ public class CommonSwitch<T> {
 			case CommonPackage.BUS: {
 				Bus bus = (Bus)theEObject;
 				T result = caseBus(bus);
+				if (result == null) result = caseNamed(bus);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
