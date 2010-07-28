@@ -302,6 +302,7 @@ public interface Solution extends EObject {
 
 	/**
 	 * Returns the value of the '<em><b>System YChanged</b></em>' attribute.
+	 * The default value is <code>"true"</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>System YChanged</em>' attribute isn't clear,
@@ -311,7 +312,7 @@ public interface Solution extends EObject {
 	 * @return the value of the '<em>System YChanged</em>' attribute.
 	 * @see #setSystemYChanged(boolean)
 	 * @see electrickery.common.CommonPackage#getSolution_SystemYChanged()
-	 * @model
+	 * @model default="true"
 	 * @generated
 	 */
 	boolean isSystemYChanged();
