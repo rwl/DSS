@@ -36,10 +36,14 @@
       <eOperations name="reCalcInvalidYPrims"/>
       <eOperations name="initialiseNodeVBase"/>
       <eOperations name="getCircuitElements" upperBound="-1" eType="#//common/CircuitElement"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="executive" eType="#//executive/Executive"
+          eOpposite="#//executive/Executive/circuits"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="solution" eType="#//common/Solution"
           eOpposite="#//common/Solution/circuit"/>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="busList" upperBound="-1"
+      <eStructuralFeatures xsi:type="ecore:EReference" name="buses" upperBound="-1"
           eType="#//common/Bus" containment="true" eOpposite="#//common/Bus/circuit"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="busList" upperBound="-1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="voltageSources" upperBound="-1"
           eType="#//conversion/VoltageSource" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -117,7 +121,7 @@
         <eParameters name="nodeIndex" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"
-          eOpposite="#//common/Circuit/busList"/>
+          eOpposite="#//common/Circuit/buses"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="vBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="115.0"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="busCurrent" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
@@ -334,6 +338,12 @@
     <eClassifiers xsi:type="ecore:EEnum" name="algorithmType">
       <eLiterals name="NormalSolve"/>
       <eLiterals name="NewtonSolve" value="1"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Globals">
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="solutionAbort" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
+          defaultValueLiteral="false"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="executives" eType="#//executive/Executive"
+          eOpposite="#//executive/Executive/globals"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="conversion" nsURI="http://www.electrickery.com/conversion" nsPrefix="conv">
@@ -967,9 +977,11 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="command" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="activeCircuit" eType="#//common/Circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuits" upperBound="-1"
-          eType="#//common/Circuit" containment="true"/>
+          eType="#//common/Circuit" containment="true" eOpposite="#//common/Circuit/executive"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxCircuits" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
           defaultValueLiteral="1"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="globals" eType="#//common/Globals"
+          eOpposite="#//common/Globals/executives"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="solutionMode">
       <eLiterals name="Snapshot"/>

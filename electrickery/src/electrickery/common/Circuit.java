@@ -10,6 +10,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import electrickery.conversion.VoltageSource;
+import electrickery.executive.Executive;
 
 /**
  * <!-- begin-user-doc -->
@@ -23,7 +24,9 @@ import electrickery.conversion.VoltageSource;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link electrickery.common.Circuit#getExecutive <em>Executive</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getSolution <em>Solution</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getBuses <em>Buses</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getVoltageSources <em>Voltage Sources</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getName <em>Name</em>}</li>
@@ -50,6 +53,34 @@ import electrickery.conversion.VoltageSource;
  * @generated
  */
 public interface Circuit extends EObject {
+
+	/**
+	 * Returns the value of the '<em><b>Executive</b></em>' container reference.
+	 * It is bidirectional and its opposite is '{@link electrickery.executive.Executive#getCircuits <em>Circuits</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Executive</em>' container reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Executive</em>' container reference.
+	 * @see #setExecutive(Executive)
+	 * @see electrickery.common.CommonPackage#getCircuit_Executive()
+	 * @see electrickery.executive.Executive#getCircuits
+	 * @model opposite="circuits" transient="false"
+	 * @generated
+	 */
+	Executive getExecutive();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getExecutive <em>Executive</em>}' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Executive</em>' container reference.
+	 * @see #getExecutive()
+	 * @generated
+	 */
+	void setExecutive(Executive value);
 
 	/**
 	 * Returns the value of the '<em><b>Solution</b></em>' reference.
@@ -80,22 +111,38 @@ public interface Circuit extends EObject {
 	void setSolution(Solution value);
 
 	/**
-	 * Returns the value of the '<em><b>Bus List</b></em>' containment reference list.
+	 * Returns the value of the '<em><b>Buses</b></em>' containment reference list.
 	 * The list contents are of type {@link electrickery.common.Bus}.
 	 * It is bidirectional and its opposite is '{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Buses</em>' containment reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Buses</em>' containment reference list.
+	 * @see electrickery.common.CommonPackage#getCircuit_Buses()
+	 * @see electrickery.common.Bus#getCircuit
+	 * @model opposite="circuit" containment="true"
+	 * @generated
+	 */
+	EList<Bus> getBuses();
+
+	/**
+	 * Returns the value of the '<em><b>Bus List</b></em>' attribute list.
+	 * The list contents are of type {@link java.lang.String}.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Bus List</em>' containment reference list isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Bus List</em>' containment reference list.
+	 * @return the value of the '<em>Bus List</em>' attribute list.
 	 * @see electrickery.common.CommonPackage#getCircuit_BusList()
-	 * @see electrickery.common.Bus#getCircuit
-	 * @model opposite="circuit" containment="true"
+	 * @model
 	 * @generated
 	 */
-	EList<Bus> getBusList();
+	EList<String> getBusList();
 
 	/**
 	 * Returns the value of the '<em><b>Bus Name Redefined</b></em>' attribute.

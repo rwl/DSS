@@ -21,6 +21,7 @@ import electrickery.common.CircuitElement;
 import electrickery.common.CommonFactory;
 import electrickery.common.CommonPackage;
 import electrickery.common.Conductor;
+import electrickery.common.Globals;
 import electrickery.common.Named;
 import electrickery.common.Solution;
 import electrickery.common.SolutionAlgs;
@@ -99,6 +100,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	private EClass namedEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass globalsEClass = null;
 
 				/**
 	 * <!-- begin-user-doc -->
@@ -225,163 +233,37 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getCircuit_Executive() {
+		return (EReference)circuitEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EReference getCircuit_Solution() {
-		return (EReference)circuitEClass.getEStructuralFeatures().get(0);
+		return (EReference)circuitEClass.getEStructuralFeatures().get(1);
 	}
 
     /**
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EReference getCircuit_BusList() {
-		return (EReference)circuitEClass.getEStructuralFeatures().get(1);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getCircuit_BusNameRedefined() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(5);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getCircuit_Solved() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(6);
+	public EReference getCircuit_Buses() {
+		return (EReference)circuitEClass.getEStructuralFeatures().get(2);
 	}
 
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_LoadMultiplier() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(7);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_DefaultGrowthFactor() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(8);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_DefaultGrowthRate() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(9);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_GeneratorDispatchReference() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(10);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_GenMultiplier() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(11);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_DefaultHourMult() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(12);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_Control_busNameRedefined() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(13);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_PriceSignal() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(14);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_EmergMinVolts() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(15);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_EmergMaxVolts() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(16);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_NormalMinVolts() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(17);
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EAttribute getCircuit_NormalMaxVolts() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(18);
-	}
-
-																/**
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getCircuit_NumNodes() {
-		return (EAttribute)circuitEClass.getEStructuralFeatures().get(4);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getCircuit_Name() {
+    public EAttribute getCircuit_BusList() {
 		return (EAttribute)circuitEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -390,8 +272,152 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
+    public EAttribute getCircuit_BusNameRedefined() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(7);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_Solved() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(8);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_LoadMultiplier() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(9);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_DefaultGrowthFactor() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(10);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_DefaultGrowthRate() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(11);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_GeneratorDispatchReference() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(12);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_GenMultiplier() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(13);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_DefaultHourMult() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(14);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_Control_busNameRedefined() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(15);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_PriceSignal() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(16);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_EmergMinVolts() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(17);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_EmergMaxVolts() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(18);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_NormalMinVolts() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(19);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_NormalMaxVolts() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(20);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getCircuit_NumNodes() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(6);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getCircuit_Name() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(5);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
     public EReference getCircuit_VoltageSources() {
-		return (EReference)circuitEClass.getEStructuralFeatures().get(2);
+		return (EReference)circuitEClass.getEStructuralFeatures().get(4);
 	}
 
                 /**
@@ -705,7 +731,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SolutionAbort() {
+    public EAttribute getSolution_SolutionInitialised() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -714,7 +740,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SolutionInitialised() {
+    public EAttribute getSolution_SeriesYInvalid() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -723,7 +749,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SeriesYInvalid() {
+    public EAttribute getSolution_SystemYChanged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(8);
 	}
 
@@ -732,7 +758,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SystemYChanged() {
+    public EAttribute getSolution_LoadModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(9);
 	}
 
@@ -741,7 +767,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LoadModel() {
+    public EAttribute getSolution_VoltageBaseChanged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(10);
 	}
 
@@ -750,7 +776,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_VoltageBaseChanged() {
+    public EAttribute getSolution_HarmonicModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(11);
 	}
 
@@ -759,7 +785,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_HarmonicModel() {
+    public EAttribute getSolution_DynamicModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(12);
 	}
 
@@ -768,7 +794,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_DynamicModel() {
+    public EAttribute getSolution_UseAuxillaryCurrents() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(13);
 	}
 
@@ -777,7 +803,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_UseAuxillaryCurrents() {
+    public EAttribute getSolution_LoadsNeedUpdating() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(14);
 	}
 
@@ -786,7 +812,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LoadsNeedUpdating() {
+    public EAttribute getSolution_Iteration() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(15);
 	}
 
@@ -795,7 +821,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Iteration() {
+    public EAttribute getSolution_MaxIterations() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(16);
 	}
 
@@ -804,7 +830,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxIterations() {
+    public EAttribute getSolution_MaxError() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(17);
 	}
 
@@ -813,7 +839,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxError() {
+    public EAttribute getSolution_ConvergenceTolerance() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(18);
 	}
 
@@ -822,7 +848,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ConvergenceTolerance() {
+    public EAttribute getSolution_Converged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(19);
 	}
 
@@ -831,7 +857,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Converged() {
+    public EAttribute getSolution_ControlIteration() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(20);
 	}
 
@@ -840,7 +866,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlIteration() {
+    public EAttribute getSolution_MaxControlIterations() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(21);
 	}
 
@@ -849,7 +875,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxControlIterations() {
+    public EAttribute getSolution_ControlMode() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(22);
 	}
 
@@ -858,7 +884,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlMode() {
+    public EAttribute getSolution_ControlActionsDone() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(23);
 	}
 
@@ -867,7 +893,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlActionsDone() {
+    public EAttribute getSolution_MostIterationsDone() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(24);
 	}
 
@@ -876,7 +902,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MostIterationsDone() {
+    public EAttribute getSolution_Algorithm() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(25);
 	}
 
@@ -885,7 +911,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Algorithm() {
+    public EAttribute getSolution_LastSolutionWasDirect() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(26);
 	}
 
@@ -894,17 +920,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LastSolutionWasDirect() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(27);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
     public EReference getSolution_NodeV() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(28);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(27);
 	}
 
                 /**
@@ -913,7 +930,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
     public EReference getSolution_Currents() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(28);
 	}
 
                 /**
@@ -922,7 +939,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_Algorithms() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(30);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
 	}
 
 																/**
@@ -1017,6 +1034,33 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 																/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getGlobals() {
+		return globalsEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getGlobals_SolutionAbort() {
+		return (EAttribute)globalsEClass.getEStructuralFeatures().get(0);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getGlobals_Executives() {
+		return (EReference)globalsEClass.getEStructuralFeatures().get(1);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1098,8 +1142,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		// Create classes and their features
 		circuitEClass = createEClass(CIRCUIT);
+		createEReference(circuitEClass, CIRCUIT__EXECUTIVE);
 		createEReference(circuitEClass, CIRCUIT__SOLUTION);
-		createEReference(circuitEClass, CIRCUIT__BUS_LIST);
+		createEReference(circuitEClass, CIRCUIT__BUSES);
+		createEAttribute(circuitEClass, CIRCUIT__BUS_LIST);
 		createEReference(circuitEClass, CIRCUIT__VOLTAGE_SOURCES);
 		createEAttribute(circuitEClass, CIRCUIT__NAME);
 		createEAttribute(circuitEClass, CIRCUIT__NUM_NODES);
@@ -1149,7 +1195,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(solutionEClass, SOLUTION__FREQUENCY);
 		createEAttribute(solutionEClass, SOLUTION__MODE);
 		createEReference(solutionEClass, SOLUTION__CIRCUIT);
-		createEAttribute(solutionEClass, SOLUTION__SOLUTION_ABORT);
 		createEAttribute(solutionEClass, SOLUTION__SOLUTION_INITIALISED);
 		createEAttribute(solutionEClass, SOLUTION__SERIES_YINVALID);
 		createEAttribute(solutionEClass, SOLUTION__SYSTEM_YCHANGED);
@@ -1194,6 +1239,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		namedEClass = createEClass(NAMED);
 		createEAttribute(namedEClass, NAMED__NAME);
 
+		globalsEClass = createEClass(GLOBALS);
+		createEAttribute(globalsEClass, GLOBALS__SOLUTION_ABORT);
+		createEReference(globalsEClass, GLOBALS__EXECUTIVES);
+
 		// Create enums
 		connectionTypeEEnum = createEEnum(CONNECTION_TYPE);
 		lengthUnitEEnum = createEEnum(LENGTH_UNIT);
@@ -1227,9 +1276,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		setNsURI(eNS_URI);
 
 		// Obtain other dependent packages
+		ExecutivePackage theExecutivePackage = (ExecutivePackage)EPackage.Registry.INSTANCE.getEPackage(ExecutivePackage.eNS_URI);
 		ConversionPackage theConversionPackage = (ConversionPackage)EPackage.Registry.INSTANCE.getEPackage(ConversionPackage.eNS_URI);
 		ElectrickeryPackage theElectrickeryPackage = (ElectrickeryPackage)EPackage.Registry.INSTANCE.getEPackage(ElectrickeryPackage.eNS_URI);
-		ExecutivePackage theExecutivePackage = (ExecutivePackage)EPackage.Registry.INSTANCE.getEPackage(ExecutivePackage.eNS_URI);
 
 		// Create type parameters
 
@@ -1240,8 +1289,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(circuitEClass, Circuit.class, "Circuit", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getCircuit_Executive(), theExecutivePackage.getExecutive(), theExecutivePackage.getExecutive_Circuits(), "executive", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_Solution(), this.getSolution(), this.getSolution_Circuit(), "solution", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getCircuit_BusList(), this.getBus(), this.getBus_Circuit(), "busList", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getCircuit_Buses(), this.getBus(), this.getBus_Circuit(), "buses", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCircuit_BusList(), ecorePackage.getEString(), "busList", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuit_VoltageSources(), theConversionPackage.getVoltageSource(), null, "voltageSources", null, 0, -1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_Name(), ecorePackage.getEString(), "name", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_NumNodes(), ecorePackage.getEInt(), "numNodes", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1275,7 +1326,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEOperation(circuitEClass, this.getCircuitElement(), "getCircuitElements", 0, -1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(busEClass, Bus.class, "Bus", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEReference(getBus_Circuit(), this.getCircuit(), this.getCircuit_BusList(), "circuit", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getBus_Circuit(), this.getCircuit(), this.getCircuit_Buses(), "circuit", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_VBus(), ecorePackage.getEDouble(), "vBus", "115.0", 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getBus_BusCurrent(), ecorePackage.getEDouble(), "busCurrent", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
@@ -1333,7 +1384,6 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getSolution_Frequency(), ecorePackage.getEDouble(), "frequency", "60.0", 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_Mode(), theExecutivePackage.getsolutionMode(), "mode", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_Circuit(), this.getCircuit(), this.getCircuit_Solution(), "circuit", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getSolution_SolutionAbort(), ecorePackage.getEBoolean(), "solutionAbort", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_SolutionInitialised(), ecorePackage.getEBoolean(), "solutionInitialised", "false", 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_SeriesYInvalid(), ecorePackage.getEBoolean(), "seriesYInvalid", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_SystemYChanged(), ecorePackage.getEBoolean(), "systemYChanged", "true", 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1436,6 +1486,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		initEClass(namedEClass, Named.class, "Named", IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getNamed_Name(), ecorePackage.getEString(), "name", null, 0, 1, Named.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		initEClass(globalsEClass, Globals.class, "Globals", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEAttribute(getGlobals_SolutionAbort(), ecorePackage.getEBoolean(), "solutionAbort", "false", 0, 1, Globals.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getGlobals_Executives(), theExecutivePackage.getExecutive(), theExecutivePackage.getExecutive_Globals(), "executives", null, 0, 1, Globals.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(connectionTypeEEnum, connectionType.class, "connectionType");

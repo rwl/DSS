@@ -71,6 +71,15 @@ public interface CommonFactory extends EFactory {
 	Terminal createTerminal();
 
 	/**
+	 * Returns a new object of class '<em>Globals</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Globals</em>'.
+	 * @generated
+	 */
+	Globals createGlobals();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

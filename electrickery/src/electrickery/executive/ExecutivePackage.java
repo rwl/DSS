@@ -107,13 +107,22 @@ public interface ExecutivePackage extends EPackage {
 	int EXECUTIVE__MAX_CIRCUITS = 3;
 
 	/**
+	 * The feature id for the '<em><b>Globals</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int EXECUTIVE__GLOBALS = 4;
+
+	/**
 	 * The number of structural features of the '<em>Executive</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int EXECUTIVE_FEATURE_COUNT = 4;
+	int EXECUTIVE_FEATURE_COUNT = 5;
 
 	/**
 	 * The meta object id for the '{@link electrickery.executive.solutionMode <em>solution Mode</em>}' enum.
@@ -299,6 +308,17 @@ public interface ExecutivePackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getExecutive_MaxCircuits();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.executive.Executive#getGlobals <em>Globals</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Globals</em>'.
+	 * @see electrickery.executive.Executive#getGlobals()
+	 * @see #getExecutive()
+	 * @generated
+	 */
+	EReference getExecutive_Globals();
 
 	/**
 	 * Returns the meta object for enum '{@link electrickery.executive.solutionMode <em>solution Mode</em>}'.
@@ -493,6 +513,14 @@ public interface ExecutivePackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute EXECUTIVE__MAX_CIRCUITS = eINSTANCE.getExecutive_MaxCircuits();
+
+		/**
+		 * The meta object literal for the '<em><b>Globals</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference EXECUTIVE__GLOBALS = eINSTANCE.getExecutive_Globals();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.executive.solutionMode <em>solution Mode</em>}' enum.

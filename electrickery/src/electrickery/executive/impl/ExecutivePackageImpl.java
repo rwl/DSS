@@ -261,6 +261,15 @@ public class ExecutivePackageImpl extends EPackageImpl implements ExecutivePacka
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getExecutive_Globals() {
+		return (EReference)executiveEClass.getEStructuralFeatures().get(4);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -409,6 +418,7 @@ public class ExecutivePackageImpl extends EPackageImpl implements ExecutivePacka
 		createEReference(executiveEClass, EXECUTIVE__ACTIVE_CIRCUIT);
 		createEReference(executiveEClass, EXECUTIVE__CIRCUITS);
 		createEAttribute(executiveEClass, EXECUTIVE__MAX_CIRCUITS);
+		createEReference(executiveEClass, EXECUTIVE__GLOBALS);
 
 		// Create enums
 		solutionModeEEnum = createEEnum(SOLUTION_MODE);
@@ -462,8 +472,9 @@ public class ExecutivePackageImpl extends EPackageImpl implements ExecutivePacka
 		initEClass(executiveEClass, Executive.class, "Executive", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getExecutive_Command(), ecorePackage.getEString(), "command", null, 0, 1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getExecutive_ActiveCircuit(), theCommonPackage.getCircuit(), null, "activeCircuit", null, 0, 1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getExecutive_Circuits(), theCommonPackage.getCircuit(), null, "circuits", null, 0, -1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getExecutive_Circuits(), theCommonPackage.getCircuit(), theCommonPackage.getCircuit_Executive(), "circuits", null, 0, -1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getExecutive_MaxCircuits(), ecorePackage.getEInt(), "maxCircuits", "1", 0, 1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getExecutive_Globals(), theCommonPackage.getGlobals(), theCommonPackage.getGlobals_Executives(), "globals", null, 0, 1, Executive.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = addEOperation(executiveEClass, null, "processCommand", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "cmdLine", 0, 1, IS_UNIQUE, IS_ORDERED);

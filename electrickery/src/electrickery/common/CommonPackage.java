@@ -74,22 +74,40 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT = 0;
 
 	/**
+	 * The feature id for the '<em><b>Executive</b></em>' container reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__EXECUTIVE = 0;
+
+	/**
 	 * The feature id for the '<em><b>Solution</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLUTION = 0;
+	int CIRCUIT__SOLUTION = 1;
 
 	/**
-	 * The feature id for the '<em><b>Bus List</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Buses</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_LIST = 1;
+	int CIRCUIT__BUSES = 2;
+
+	/**
+	 * The feature id for the '<em><b>Bus List</b></em>' attribute list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__BUS_LIST = 3;
 
 	/**
 	 * The feature id for the '<em><b>Voltage Sources</b></em>' containment reference list.
@@ -98,7 +116,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__VOLTAGE_SOURCES = 2;
+	int CIRCUIT__VOLTAGE_SOURCES = 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -107,7 +125,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NAME = 3;
+	int CIRCUIT__NAME = 5;
 
 	/**
 	 * The feature id for the '<em><b>Num Nodes</b></em>' attribute.
@@ -116,7 +134,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_NODES = 4;
+	int CIRCUIT__NUM_NODES = 6;
 
 	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
@@ -125,7 +143,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 5;
+	int CIRCUIT__BUS_NAME_REDEFINED = 7;
 
 	/**
 	 * The feature id for the '<em><b>Solved</b></em>' attribute.
@@ -134,7 +152,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLVED = 6;
+	int CIRCUIT__SOLVED = 8;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -143,7 +161,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 7;
+	int CIRCUIT__LOAD_MULTIPLIER = 9;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -152,7 +170,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 8;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 10;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
@@ -161,7 +179,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_RATE = 9;
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 11;
 
 	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
@@ -170,7 +188,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 10;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 12;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -179,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 11;
+	int CIRCUIT__GEN_MULTIPLIER = 13;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -188,7 +206,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 12;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 14;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -197,7 +215,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 13;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 15;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -206,7 +224,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 14;
+	int CIRCUIT__PRICE_SIGNAL = 16;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
@@ -215,7 +233,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MIN_VOLTS = 15;
+	int CIRCUIT__EMERG_MIN_VOLTS = 17;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
@@ -224,7 +242,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MAX_VOLTS = 16;
+	int CIRCUIT__EMERG_MAX_VOLTS = 18;
 
 	/**
 	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
@@ -233,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MIN_VOLTS = 17;
+	int CIRCUIT__NORMAL_MIN_VOLTS = 19;
 
 	/**
 	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
@@ -242,7 +260,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MAX_VOLTS = 18;
+	int CIRCUIT__NORMAL_MAX_VOLTS = 20;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -251,7 +269,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 19;
+	int CIRCUIT_FEATURE_COUNT = 21;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -593,22 +611,13 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION__CIRCUIT = 5;
 
 	/**
-	 * The feature id for the '<em><b>Solution Abort</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int SOLUTION__SOLUTION_ABORT = 6;
-
-	/**
 	 * The feature id for the '<em><b>Solution Initialised</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SOLUTION_INITIALISED = 7;
+	int SOLUTION__SOLUTION_INITIALISED = 6;
 
 	/**
 	 * The feature id for the '<em><b>Series YInvalid</b></em>' attribute.
@@ -617,7 +626,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SERIES_YINVALID = 8;
+	int SOLUTION__SERIES_YINVALID = 7;
 
 	/**
 	 * The feature id for the '<em><b>System YChanged</b></em>' attribute.
@@ -626,7 +635,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SYSTEM_YCHANGED = 9;
+	int SOLUTION__SYSTEM_YCHANGED = 8;
 
 	/**
 	 * The feature id for the '<em><b>Load Model</b></em>' attribute.
@@ -635,7 +644,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LOAD_MODEL = 10;
+	int SOLUTION__LOAD_MODEL = 9;
 
 	/**
 	 * The feature id for the '<em><b>Voltage Base Changed</b></em>' attribute.
@@ -644,7 +653,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__VOLTAGE_BASE_CHANGED = 11;
+	int SOLUTION__VOLTAGE_BASE_CHANGED = 10;
 
 	/**
 	 * The feature id for the '<em><b>Harmonic Model</b></em>' attribute.
@@ -653,7 +662,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__HARMONIC_MODEL = 12;
+	int SOLUTION__HARMONIC_MODEL = 11;
 
 	/**
 	 * The feature id for the '<em><b>Dynamic Model</b></em>' attribute.
@@ -662,7 +671,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__DYNAMIC_MODEL = 13;
+	int SOLUTION__DYNAMIC_MODEL = 12;
 
 	/**
 	 * The feature id for the '<em><b>Use Auxillary Currents</b></em>' attribute.
@@ -671,7 +680,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__USE_AUXILLARY_CURRENTS = 14;
+	int SOLUTION__USE_AUXILLARY_CURRENTS = 13;
 
 	/**
 	 * The feature id for the '<em><b>Loads Need Updating</b></em>' attribute.
@@ -680,7 +689,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LOADS_NEED_UPDATING = 15;
+	int SOLUTION__LOADS_NEED_UPDATING = 14;
 
 	/**
 	 * The feature id for the '<em><b>Iteration</b></em>' attribute.
@@ -689,7 +698,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ITERATION = 16;
+	int SOLUTION__ITERATION = 15;
 
 	/**
 	 * The feature id for the '<em><b>Max Iterations</b></em>' attribute.
@@ -698,7 +707,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_ITERATIONS = 17;
+	int SOLUTION__MAX_ITERATIONS = 16;
 
 	/**
 	 * The feature id for the '<em><b>Max Error</b></em>' attribute.
@@ -707,7 +716,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_ERROR = 18;
+	int SOLUTION__MAX_ERROR = 17;
 
 	/**
 	 * The feature id for the '<em><b>Convergence Tolerance</b></em>' attribute.
@@ -716,7 +725,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONVERGENCE_TOLERANCE = 19;
+	int SOLUTION__CONVERGENCE_TOLERANCE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Converged</b></em>' attribute.
@@ -725,7 +734,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONVERGED = 20;
+	int SOLUTION__CONVERGED = 19;
 
 	/**
 	 * The feature id for the '<em><b>Control Iteration</b></em>' attribute.
@@ -734,7 +743,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_ITERATION = 21;
+	int SOLUTION__CONTROL_ITERATION = 20;
 
 	/**
 	 * The feature id for the '<em><b>Max Control Iterations</b></em>' attribute.
@@ -743,7 +752,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_CONTROL_ITERATIONS = 22;
+	int SOLUTION__MAX_CONTROL_ITERATIONS = 21;
 
 	/**
 	 * The feature id for the '<em><b>Control Mode</b></em>' attribute.
@@ -752,7 +761,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_MODE = 23;
+	int SOLUTION__CONTROL_MODE = 22;
 
 	/**
 	 * The feature id for the '<em><b>Control Actions Done</b></em>' attribute.
@@ -761,7 +770,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_ACTIONS_DONE = 24;
+	int SOLUTION__CONTROL_ACTIONS_DONE = 23;
 
 	/**
 	 * The feature id for the '<em><b>Most Iterations Done</b></em>' attribute.
@@ -770,7 +779,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MOST_ITERATIONS_DONE = 25;
+	int SOLUTION__MOST_ITERATIONS_DONE = 24;
 
 	/**
 	 * The feature id for the '<em><b>Algorithm</b></em>' attribute.
@@ -779,7 +788,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHM = 26;
+	int SOLUTION__ALGORITHM = 25;
 
 	/**
 	 * The feature id for the '<em><b>Last Solution Was Direct</b></em>' attribute.
@@ -788,7 +797,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LAST_SOLUTION_WAS_DIRECT = 27;
+	int SOLUTION__LAST_SOLUTION_WAS_DIRECT = 26;
 
 	/**
 	 * The feature id for the '<em><b>Node V</b></em>' reference.
@@ -797,7 +806,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__NODE_V = 28;
+	int SOLUTION__NODE_V = 27;
 
 	/**
 	 * The feature id for the '<em><b>Currents</b></em>' reference.
@@ -806,7 +815,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CURRENTS = 29;
+	int SOLUTION__CURRENTS = 28;
 
 	/**
 	 * The feature id for the '<em><b>Algorithms</b></em>' reference.
@@ -815,7 +824,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHMS = 30;
+	int SOLUTION__ALGORITHMS = 29;
 
 	/**
 	 * The number of structural features of the '<em>Solution</em>' class.
@@ -824,7 +833,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION_FEATURE_COUNT = 31;
+	int SOLUTION_FEATURE_COUNT = 30;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
@@ -954,6 +963,43 @@ public interface CommonPackage extends EPackage {
 	int CONDUCTOR_FEATURE_COUNT = 4;
 
 	/**
+	 * The meta object id for the '{@link electrickery.common.impl.GlobalsImpl <em>Globals</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.GlobalsImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getGlobals()
+	 * @generated
+	 */
+	int GLOBALS = 8;
+
+	/**
+	 * The feature id for the '<em><b>Solution Abort</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GLOBALS__SOLUTION_ABORT = 0;
+
+	/**
+	 * The feature id for the '<em><b>Executives</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GLOBALS__EXECUTIVES = 1;
+
+	/**
+	 * The number of structural features of the '<em>Globals</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GLOBALS_FEATURE_COUNT = 2;
+
+	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -961,7 +1007,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 8;
+	int CONNECTION_TYPE = 9;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -971,7 +1017,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 9;
+	int LENGTH_UNIT = 10;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -981,7 +1027,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 10;
+	int TRIP_ACTION = 11;
 
 
 	/**
@@ -992,7 +1038,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 11;
+	int YBUILD_OPTION = 12;
 
 
 	/**
@@ -1003,7 +1049,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 12;
+	int CONTROL_MODE_TYPE = 13;
 
 
 	/**
@@ -1014,7 +1060,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 13;
+	int ALGORITHM_TYPE = 14;
 
 
 	/**
@@ -1028,6 +1074,17 @@ public interface CommonPackage extends EPackage {
 	EClass getCircuit();
 
 	/**
+	 * Returns the meta object for the container reference '{@link electrickery.common.Circuit#getExecutive <em>Executive</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the container reference '<em>Executive</em>'.
+	 * @see electrickery.common.Circuit#getExecutive()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_Executive();
+
+	/**
 	 * Returns the meta object for the reference '{@link electrickery.common.Circuit#getSolution <em>Solution</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1039,15 +1096,26 @@ public interface CommonPackage extends EPackage {
 	EReference getCircuit_Solution();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
+	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getBuses <em>Buses</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Bus List</em>'.
+	 * @return the meta object for the containment reference list '<em>Buses</em>'.
+	 * @see electrickery.common.Circuit#getBuses()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_Buses();
+
+	/**
+	 * Returns the meta object for the attribute list '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute list '<em>Bus List</em>'.
 	 * @see electrickery.common.Circuit#getBusList()
 	 * @see #getCircuit()
 	 * @generated
 	 */
-	EReference getCircuit_BusList();
+	EAttribute getCircuit_BusList();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isBusNameRedefined <em>Bus Name Redefined</em>}'.
@@ -1607,17 +1675,6 @@ public interface CommonPackage extends EPackage {
 	EReference getSolution_Circuit();
 
 	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Solution#isSolutionAbort <em>Solution Abort</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Solution Abort</em>'.
-	 * @see electrickery.common.Solution#isSolutionAbort()
-	 * @see #getSolution()
-	 * @generated
-	 */
-	EAttribute getSolution_SolutionAbort();
-
-	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Solution#isSolutionInitialised <em>Solution Initialised</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1989,6 +2046,38 @@ public interface CommonPackage extends EPackage {
 	EAttribute getNamed_Name();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.common.Globals <em>Globals</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Globals</em>'.
+	 * @see electrickery.common.Globals
+	 * @generated
+	 */
+	EClass getGlobals();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Globals#isSolutionAbort <em>Solution Abort</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Solution Abort</em>'.
+	 * @see electrickery.common.Globals#isSolutionAbort()
+	 * @see #getGlobals()
+	 * @generated
+	 */
+	EAttribute getGlobals_SolutionAbort();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Globals#getExecutives <em>Executives</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Executives</em>'.
+	 * @see electrickery.common.Globals#getExecutives()
+	 * @see #getGlobals()
+	 * @generated
+	 */
+	EReference getGlobals_Executives();
+
+	/**
 	 * Returns the meta object for enum '{@link electrickery.common.connectionType <em>connection Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2081,6 +2170,14 @@ public interface CommonPackage extends EPackage {
 		EClass CIRCUIT = eINSTANCE.getCircuit();
 
 		/**
+		 * The meta object literal for the '<em><b>Executive</b></em>' container reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT__EXECUTIVE = eINSTANCE.getCircuit_Executive();
+
+		/**
 		 * The meta object literal for the '<em><b>Solution</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2089,12 +2186,20 @@ public interface CommonPackage extends EPackage {
 		EReference CIRCUIT__SOLUTION = eINSTANCE.getCircuit_Solution();
 
 		/**
-		 * The meta object literal for the '<em><b>Bus List</b></em>' containment reference list feature.
+		 * The meta object literal for the '<em><b>Buses</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EReference CIRCUIT__BUS_LIST = eINSTANCE.getCircuit_BusList();
+		EReference CIRCUIT__BUSES = eINSTANCE.getCircuit_Buses();
+
+		/**
+		 * The meta object literal for the '<em><b>Bus List</b></em>' attribute list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__BUS_LIST = eINSTANCE.getCircuit_BusList();
 
 		/**
 		 * The meta object literal for the '<em><b>Bus Name Redefined</b></em>' attribute feature.
@@ -2513,14 +2618,6 @@ public interface CommonPackage extends EPackage {
 		EReference SOLUTION__CIRCUIT = eINSTANCE.getSolution_Circuit();
 
 		/**
-		 * The meta object literal for the '<em><b>Solution Abort</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute SOLUTION__SOLUTION_ABORT = eINSTANCE.getSolution_SolutionAbort();
-
-		/**
 		 * The meta object literal for the '<em><b>Solution Initialised</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2797,6 +2894,32 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute NAMED__NAME = eINSTANCE.getNamed_Name();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.GlobalsImpl <em>Globals</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.GlobalsImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getGlobals()
+		 * @generated
+		 */
+		EClass GLOBALS = eINSTANCE.getGlobals();
+
+		/**
+		 * The meta object literal for the '<em><b>Solution Abort</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GLOBALS__SOLUTION_ABORT = eINSTANCE.getGlobals_SolutionAbort();
+
+		/**
+		 * The meta object literal for the '<em><b>Executives</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference GLOBALS__EXECUTIVES = eINSTANCE.getGlobals_Executives();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.

@@ -76,6 +76,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 			case CommonPackage.SOLUTION: return createSolution();
 			case CommonPackage.SOLUTION_ALGS: return createSolutionAlgs();
 			case CommonPackage.TERMINAL: return createTerminal();
+			case CommonPackage.GLOBALS: return createGlobals();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -179,6 +180,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public Terminal createTerminal() {
 		TerminalImpl terminal = new TerminalImpl();
 		return terminal;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Globals createGlobals() {
+		GlobalsImpl globals = new GlobalsImpl();
+		return globals;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
 import electrickery.common.Circuit;
+import electrickery.common.Globals;
 
 /**
  * <!-- begin-user-doc -->
@@ -22,6 +23,7 @@ import electrickery.common.Circuit;
  *   <li>{@link electrickery.executive.Executive#getActiveCircuit <em>Active Circuit</em>}</li>
  *   <li>{@link electrickery.executive.Executive#getCircuits <em>Circuits</em>}</li>
  *   <li>{@link electrickery.executive.Executive#getMaxCircuits <em>Max Circuits</em>}</li>
+ *   <li>{@link electrickery.executive.Executive#getGlobals <em>Globals</em>}</li>
  * </ul>
  * </p>
  *
@@ -85,6 +87,7 @@ public interface Executive extends EObject {
 	/**
 	 * Returns the value of the '<em><b>Circuits</b></em>' containment reference list.
 	 * The list contents are of type {@link electrickery.common.Circuit}.
+	 * It is bidirectional and its opposite is '{@link electrickery.common.Circuit#getExecutive <em>Executive</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Circuits</em>' reference list isn't clear,
@@ -93,7 +96,8 @@ public interface Executive extends EObject {
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Circuits</em>' containment reference list.
 	 * @see electrickery.executive.ExecutivePackage#getExecutive_Circuits()
-	 * @model containment="true"
+	 * @see electrickery.common.Circuit#getExecutive
+	 * @model opposite="executive" containment="true"
 	 * @generated
 	 */
 	EList<Circuit> getCircuits();
@@ -124,6 +128,34 @@ public interface Executive extends EObject {
 	 * @generated
 	 */
 	void setMaxCircuits(int value);
+
+	/**
+	 * Returns the value of the '<em><b>Globals</b></em>' reference.
+	 * It is bidirectional and its opposite is '{@link electrickery.common.Globals#getExecutives <em>Executives</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Globals</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Globals</em>' reference.
+	 * @see #setGlobals(Globals)
+	 * @see electrickery.executive.ExecutivePackage#getExecutive_Globals()
+	 * @see electrickery.common.Globals#getExecutives
+	 * @model opposite="executives"
+	 * @generated
+	 */
+	Globals getGlobals();
+
+	/**
+	 * Sets the value of the '{@link electrickery.executive.Executive#getGlobals <em>Globals</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Globals</em>' reference.
+	 * @see #getGlobals()
+	 * @generated
+	 */
+	void setGlobals(Globals value);
 
 	/**
 	 * <!-- begin-user-doc -->

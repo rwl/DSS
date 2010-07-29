@@ -25,7 +25,6 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.Solution#getFrequency <em>Frequency</em>}</li>
  *   <li>{@link electrickery.common.Solution#getMode <em>Mode</em>}</li>
  *   <li>{@link electrickery.common.Solution#getCircuit <em>Circuit</em>}</li>
- *   <li>{@link electrickery.common.Solution#isSolutionAbort <em>Solution Abort</em>}</li>
  *   <li>{@link electrickery.common.Solution#isSolutionInitialised <em>Solution Initialised</em>}</li>
  *   <li>{@link electrickery.common.Solution#isSeriesYInvalid <em>Series YInvalid</em>}</li>
  *   <li>{@link electrickery.common.Solution#isSystemYChanged <em>System YChanged</em>}</li>
@@ -220,32 +219,6 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void setCircuit(Circuit value);
-
-	/**
-	 * Returns the value of the '<em><b>Solution Abort</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Solution Abort</em>' attribute isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Solution Abort</em>' attribute.
-	 * @see #setSolutionAbort(boolean)
-	 * @see electrickery.common.CommonPackage#getSolution_SolutionAbort()
-	 * @model
-	 * @generated
-	 */
-	boolean isSolutionAbort();
-
-	/**
-	 * Sets the value of the '{@link electrickery.common.Solution#isSolutionAbort <em>Solution Abort</em>}' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Solution Abort</em>' attribute.
-	 * @see #isSolutionAbort()
-	 * @generated
-	 */
-	void setSolutionAbort(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Solution Initialised</b></em>' attribute.

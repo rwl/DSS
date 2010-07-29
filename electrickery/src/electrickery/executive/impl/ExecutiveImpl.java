@@ -14,10 +14,13 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
+import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
 import electrickery.common.Circuit;
+import electrickery.common.CommonPackage;
+import electrickery.common.Globals;
 import electrickery.common.CommonFactory;
 import electrickery.conversion.ConversionFactory;
 import electrickery.conversion.VoltageSource;
@@ -35,6 +38,7 @@ import electrickery.executive.ExecutivePackage;
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getActiveCircuit <em>Active Circuit</em>}</li>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getCircuits <em>Circuits</em>}</li>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getMaxCircuits <em>Max Circuits</em>}</li>
+ *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getGlobals <em>Globals</em>}</li>
  * </ul>
  * </p>
  *
@@ -102,6 +106,16 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
     protected int maxCircuits = MAX_CIRCUITS_EDEFAULT;
 
                                                                                                                                                                                                                                                                 /**
+	 * The cached value of the '{@link #getGlobals() <em>Globals</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGlobals()
+	 * @generated
+	 * @ordered
+	 */
+	protected Globals globals;
+
+																																																																																																																																																																																																																																																																/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -188,7 +202,7 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 	 */
     public EList<Circuit> getCircuits() {
 		if (circuits == null) {
-			circuits = new EObjectContainmentEList<Circuit>(Circuit.class, this, ExecutivePackage.EXECUTIVE__CIRCUITS);
+			circuits = new EObjectContainmentWithInverseEList<Circuit>(Circuit.class, this, ExecutivePackage.EXECUTIVE__CIRCUITS, CommonPackage.CIRCUIT__EXECUTIVE);
 		}
 		return circuits;
 	}
@@ -215,6 +229,66 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 	}
 
                 /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Globals getGlobals() {
+		if (globals != null && globals.eIsProxy()) {
+			InternalEObject oldGlobals = (InternalEObject)globals;
+			globals = (Globals)eResolveProxy(oldGlobals);
+			if (globals != oldGlobals) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ExecutivePackage.EXECUTIVE__GLOBALS, oldGlobals, globals));
+			}
+		}
+		return globals;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Globals basicGetGlobals() {
+		return globals;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public NotificationChain basicSetGlobals(Globals newGlobals, NotificationChain msgs) {
+		Globals oldGlobals = globals;
+		globals = newGlobals;
+		if (eNotificationRequired()) {
+			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__GLOBALS, oldGlobals, newGlobals);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
+		}
+		return msgs;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setGlobals(Globals newGlobals) {
+		if (newGlobals != globals) {
+			NotificationChain msgs = null;
+			if (globals != null)
+				msgs = ((InternalEObject)globals).eInverseRemove(this, CommonPackage.GLOBALS__EXECUTIVES, Globals.class, msgs);
+			if (newGlobals != null)
+				msgs = ((InternalEObject)newGlobals).eInverseAdd(this, CommonPackage.GLOBALS__EXECUTIVES, Globals.class, msgs);
+			msgs = basicSetGlobals(newGlobals, msgs);
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__GLOBALS, newGlobals, newGlobals));
+	}
+
+																/**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -273,11 +347,32 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+		switch (featureID) {
+			case ExecutivePackage.EXECUTIVE__CIRCUITS:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCircuits()).basicAdd(otherEnd, msgs);
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				if (globals != null)
+					msgs = ((InternalEObject)globals).eInverseRemove(this, CommonPackage.GLOBALS__EXECUTIVES, Globals.class, msgs);
+				return basicSetGlobals((Globals)otherEnd, msgs);
+		}
+		return super.eInverseAdd(otherEnd, featureID, msgs);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__CIRCUITS:
 				return ((InternalEList<?>)getCircuits()).basicRemove(otherEnd, msgs);
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				return basicSetGlobals(null, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -299,6 +394,9 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 				return getCircuits();
 			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
 				return getMaxCircuits();
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				if (resolve) return getGlobals();
+				return basicGetGlobals();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -325,6 +423,9 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
 				setMaxCircuits((Integer)newValue);
 				return;
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				setGlobals((Globals)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -349,6 +450,9 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
 				setMaxCircuits(MAX_CIRCUITS_EDEFAULT);
 				return;
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				setGlobals((Globals)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -369,6 +473,8 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 				return circuits != null && !circuits.isEmpty();
 			case ExecutivePackage.EXECUTIVE__MAX_CIRCUITS:
 				return maxCircuits != MAX_CIRCUITS_EDEFAULT;
+			case ExecutivePackage.EXECUTIVE__GLOBALS:
+				return globals != null;
 		}
 		return super.eIsSet(featureID);
 	}
