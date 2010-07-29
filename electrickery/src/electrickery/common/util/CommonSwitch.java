@@ -120,6 +120,12 @@ public class CommonSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case CommonPackage.SOLUTION_ALGS: {
+				SolutionAlgs solutionAlgs = (SolutionAlgs)theEObject;
+				T result = caseSolutionAlgs(solutionAlgs);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case CommonPackage.TERMINAL: {
 				Terminal terminal = (Terminal)theEObject;
 				T result = caseTerminal(terminal);
@@ -214,6 +220,21 @@ public class CommonSwitch<T> {
 	 * @generated
 	 */
 	public T caseSolution(Solution object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>Solution Algs</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>Solution Algs</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseSolutionAlgs(SolutionAlgs object) {
 		return null;
 	}
 

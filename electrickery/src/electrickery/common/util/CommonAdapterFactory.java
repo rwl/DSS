@@ -94,6 +94,10 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 				return createSolutionAdapter();
 			}
 			@Override
+			public Adapter caseSolutionAlgs(SolutionAlgs object) {
+				return createSolutionAlgsAdapter();
+			}
+			@Override
 			public Adapter caseTerminal(Terminal object) {
 				return createTerminalAdapter();
 			}
@@ -192,6 +196,20 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createSolutionAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.common.SolutionAlgs <em>Solution Algs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.common.SolutionAlgs
+	 * @generated
+	 */
+	public Adapter createSolutionAlgsAdapter() {
 		return null;
 	}
 

@@ -49,6 +49,7 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.Solution#isLastSolutionWasDirect <em>Last Solution Was Direct</em>}</li>
  *   <li>{@link electrickery.common.Solution#getNodeV <em>Node V</em>}</li>
  *   <li>{@link electrickery.common.Solution#getCurrents <em>Currents</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getAlgorithms <em>Algorithms</em>}</li>
  * </ul>
  * </p>
  *
@@ -889,6 +890,32 @@ public interface Solution extends EObject {
 	void setCurrents(DComplexMatrix1D value);
 
 	/**
+	 * Returns the value of the '<em><b>Algorithms</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Algorithms</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Algorithms</em>' reference.
+	 * @see #setAlgorithms(SolutionAlgs)
+	 * @see electrickery.common.CommonPackage#getSolution_Algorithms()
+	 * @model
+	 * @generated
+	 */
+	SolutionAlgs getAlgorithms();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getAlgorithms <em>Algorithms</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Algorithms</em>' reference.
+	 * @see #getAlgorithms()
+	 * @generated
+	 */
+	void setAlgorithms(SolutionAlgs value);
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @model
@@ -1010,5 +1037,16 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void checkFaultStatus();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Updates voltages for each bus from nodeV.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void updateVBus();
 
 } // Solution

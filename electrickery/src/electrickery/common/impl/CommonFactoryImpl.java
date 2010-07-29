@@ -74,6 +74,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 			case CommonPackage.CIRCUIT: return createCircuit();
 			case CommonPackage.BUS: return createBus();
 			case CommonPackage.SOLUTION: return createSolution();
+			case CommonPackage.SOLUTION_ALGS: return createSolutionAlgs();
 			case CommonPackage.TERMINAL: return createTerminal();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -158,6 +159,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public Solution createSolution() {
 		SolutionImpl solution = new SolutionImpl();
 		return solution;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public SolutionAlgs createSolutionAlgs() {
+		SolutionAlgsImpl solutionAlgs = new SolutionAlgsImpl();
+		return solutionAlgs;
 	}
 
 	/**

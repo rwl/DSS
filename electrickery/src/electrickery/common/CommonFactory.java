@@ -53,6 +53,15 @@ public interface CommonFactory extends EFactory {
 	Solution createSolution();
 
 	/**
+	 * Returns a new object of class '<em>Solution Algs</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Solution Algs</em>'.
+	 * @generated
+	 */
+	SolutionAlgs createSolutionAlgs();
+
+	/**
 	 * Returns a new object of class '<em>Terminal</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

@@ -155,13 +155,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 8;
 
 	/**
+	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 9;
+
+	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 9;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 10;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -170,7 +179,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 10;
+	int CIRCUIT__GEN_MULTIPLIER = 11;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -179,7 +188,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 11;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 12;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -188,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 12;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 13;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -197,7 +206,43 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 13;
+	int CIRCUIT__PRICE_SIGNAL = 14;
+
+	/**
+	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__EMERG_MIN_VOLTS = 15;
+
+	/**
+	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__EMERG_MAX_VOLTS = 16;
+
+	/**
+	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__NORMAL_MIN_VOLTS = 17;
+
+	/**
+	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__NORMAL_MAX_VOLTS = 18;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -206,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 14;
+	int CIRCUIT_FEATURE_COUNT = 19;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -236,7 +281,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getConductor()
 	 * @generated
 	 */
-	int CONDUCTOR = 5;
+	int CONDUCTOR = 6;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
@@ -256,7 +301,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getTerminal()
 	 * @generated
 	 */
-	int TERMINAL = 4;
+	int TERMINAL = 5;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
@@ -266,7 +311,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
 	 * @generated
 	 */
-	int NAMED = 6;
+	int NAMED = 7;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -764,13 +809,41 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION__CURRENTS = 29;
 
 	/**
+	 * The feature id for the '<em><b>Algorithms</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__ALGORITHMS = 30;
+
+	/**
 	 * The number of structural features of the '<em>Solution</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION_FEATURE_COUNT = 30;
+	int SOLUTION_FEATURE_COUNT = 31;
+
+	/**
+	 * The meta object id for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.SolutionAlgsImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getSolutionAlgs()
+	 * @generated
+	 */
+	int SOLUTION_ALGS = 4;
+
+	/**
+	 * The number of structural features of the '<em>Solution Algs</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION_ALGS_FEATURE_COUNT = 0;
 
 	/**
 	 * The feature id for the '<em><b>Bus Ref</b></em>' attribute.
@@ -888,7 +961,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 7;
+	int CONNECTION_TYPE = 8;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -898,7 +971,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 8;
+	int LENGTH_UNIT = 9;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -908,7 +981,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 9;
+	int TRIP_ACTION = 10;
 
 
 	/**
@@ -919,7 +992,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 10;
+	int YBUILD_OPTION = 11;
 
 
 	/**
@@ -930,7 +1003,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 11;
+	int CONTROL_MODE_TYPE = 12;
 
 
 	/**
@@ -941,7 +1014,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 12;
+	int ALGORITHM_TYPE = 13;
 
 
 	/**
@@ -1021,6 +1094,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuit_DefaultGrowthFactor();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getDefaultGrowthRate <em>Default Growth Rate</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Default Growth Rate</em>'.
+	 * @see electrickery.common.Circuit#getDefaultGrowthRate()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_DefaultGrowthRate();
+
+	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1074,6 +1158,50 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuit_PriceSignal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getEmergMinVolts <em>Emerg Min Volts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Emerg Min Volts</em>'.
+	 * @see electrickery.common.Circuit#getEmergMinVolts()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_EmergMinVolts();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getEmergMaxVolts <em>Emerg Max Volts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Emerg Max Volts</em>'.
+	 * @see electrickery.common.Circuit#getEmergMaxVolts()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_EmergMaxVolts();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNormalMinVolts <em>Normal Min Volts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Normal Min Volts</em>'.
+	 * @see electrickery.common.Circuit#getNormalMinVolts()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_NormalMinVolts();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNormalMaxVolts <em>Normal Max Volts</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Normal Max Volts</em>'.
+	 * @see electrickery.common.Circuit#getNormalMaxVolts()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_NormalMaxVolts();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}'.
@@ -1743,6 +1871,27 @@ public interface CommonPackage extends EPackage {
 	EReference getSolution_Currents();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getAlgorithms <em>Algorithms</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Algorithms</em>'.
+	 * @see electrickery.common.Solution#getAlgorithms()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EReference getSolution_Algorithms();
+
+	/**
+	 * Returns the meta object for class '{@link electrickery.common.SolutionAlgs <em>Solution Algs</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Solution Algs</em>'.
+	 * @see electrickery.common.SolutionAlgs
+	 * @generated
+	 */
+	EClass getSolutionAlgs();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.common.Terminal <em>Terminal</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1980,6 +2129,14 @@ public interface CommonPackage extends EPackage {
 		EAttribute CIRCUIT__DEFAULT_GROWTH_FACTOR = eINSTANCE.getCircuit_DefaultGrowthFactor();
 
 		/**
+		 * The meta object literal for the '<em><b>Default Growth Rate</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__DEFAULT_GROWTH_RATE = eINSTANCE.getCircuit_DefaultGrowthRate();
+
+		/**
 		 * The meta object literal for the '<em><b>Generator Dispatch Reference</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2018,6 +2175,38 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT__PRICE_SIGNAL = eINSTANCE.getCircuit_PriceSignal();
+
+		/**
+		 * The meta object literal for the '<em><b>Emerg Min Volts</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__EMERG_MIN_VOLTS = eINSTANCE.getCircuit_EmergMinVolts();
+
+		/**
+		 * The meta object literal for the '<em><b>Emerg Max Volts</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__EMERG_MAX_VOLTS = eINSTANCE.getCircuit_EmergMaxVolts();
+
+		/**
+		 * The meta object literal for the '<em><b>Normal Min Volts</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__NORMAL_MIN_VOLTS = eINSTANCE.getCircuit_NormalMinVolts();
+
+		/**
+		 * The meta object literal for the '<em><b>Normal Max Volts</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__NORMAL_MAX_VOLTS = eINSTANCE.getCircuit_NormalMaxVolts();
 
 		/**
 		 * The meta object literal for the '<em><b>Num Nodes</b></em>' attribute feature.
@@ -2514,6 +2703,24 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference SOLUTION__CURRENTS = eINSTANCE.getSolution_Currents();
+
+		/**
+		 * The meta object literal for the '<em><b>Algorithms</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SOLUTION__ALGORITHMS = eINSTANCE.getSolution_Algorithms();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.SolutionAlgsImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getSolutionAlgs()
+		 * @generated
+		 */
+		EClass SOLUTION_ALGS = eINSTANCE.getSolutionAlgs();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.TerminalImpl <em>Terminal</em>}' class.

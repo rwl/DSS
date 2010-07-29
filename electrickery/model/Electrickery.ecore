@@ -57,6 +57,8 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultGrowthFactor"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1.0"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultGrowthRate" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.025"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="generatorDispatchReference"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1000.0"/>
@@ -74,6 +76,14 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="priceSignal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="emergMinVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.90"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="emergMaxVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.08"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalMinVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="0.95"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalMaxVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
+          defaultValueLiteral="1.05"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Bus" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -195,6 +205,11 @@
       <eOperations name="sampleControlDevices"/>
       <eOperations name="doControlActions"/>
       <eOperations name="checkFaultStatus"/>
+      <eOperations name="updateVBus">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Updates voltages for each bus from nodeV."/>
+        </eAnnotations>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="year" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="preserveNodeVoltages"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -205,7 +220,6 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="mode" eType="#//executive/solutionMode"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"
           eOpposite="#//common/Circuit/solution"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="solutionAbort" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="solutionInitialised"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="false"/>
@@ -242,6 +256,22 @@
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="nodeV" eType="#//DComplexMatrix1D"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="currents" eType="#//DComplexMatrix1D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="algorithms" eType="#//common/SolutionAlgs"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="SolutionAlgs">
+      <eOperations name="solveMonte1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveMonte2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveMonte3" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveMonteFault" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveFaultStudy" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveDaily" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solvePeakDay" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveYearly" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveDuty" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveDynamic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveLD1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveLD2" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eOperations name="solveHarmonic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Terminal">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

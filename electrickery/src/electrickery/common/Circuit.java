@@ -32,11 +32,16 @@ import electrickery.conversion.VoltageSource;
  *   <li>{@link electrickery.common.Circuit#isSolved <em>Solved</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getLoadMultiplier <em>Load Multiplier</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getDefaultGrowthFactor <em>Default Growth Factor</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getDefaultGrowthRate <em>Default Growth Rate</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getGenMultiplier <em>Gen Multiplier</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getDefaultHourMult <em>Default Hour Mult</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isControl_busNameRedefined <em>Control bus Name Redefined</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getPriceSignal <em>Price Signal</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getEmergMinVolts <em>Emerg Min Volts</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getEmergMaxVolts <em>Emerg Max Volts</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getNormalMinVolts <em>Normal Min Volts</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
  * </ul>
  * </p>
  *
@@ -200,6 +205,33 @@ public interface Circuit extends EObject {
 	void setDefaultGrowthFactor(double value);
 
 	/**
+	 * Returns the value of the '<em><b>Default Growth Rate</b></em>' attribute.
+	 * The default value is <code>"1.025"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Default Growth Rate</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Default Growth Rate</em>' attribute.
+	 * @see #setDefaultGrowthRate(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_DefaultGrowthRate()
+	 * @model default="1.025"
+	 * @generated
+	 */
+	double getDefaultGrowthRate();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getDefaultGrowthRate <em>Default Growth Rate</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Default Growth Rate</em>' attribute.
+	 * @see #getDefaultGrowthRate()
+	 * @generated
+	 */
+	void setDefaultGrowthRate(double value);
+
+	/**
 	 * Returns the value of the '<em><b>Generator Dispatch Reference</b></em>' attribute.
 	 * The default value is <code>"1000.0"</code>.
 	 * <!-- begin-user-doc -->
@@ -328,6 +360,114 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	void setPriceSignal(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Emerg Min Volts</b></em>' attribute.
+	 * The default value is <code>"0.90"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Emerg Min Volts</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Emerg Min Volts</em>' attribute.
+	 * @see #setEmergMinVolts(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_EmergMinVolts()
+	 * @model default="0.90"
+	 * @generated
+	 */
+	double getEmergMinVolts();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getEmergMinVolts <em>Emerg Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Emerg Min Volts</em>' attribute.
+	 * @see #getEmergMinVolts()
+	 * @generated
+	 */
+	void setEmergMinVolts(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Emerg Max Volts</b></em>' attribute.
+	 * The default value is <code>"1.08"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Emerg Max Volts</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Emerg Max Volts</em>' attribute.
+	 * @see #setEmergMaxVolts(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_EmergMaxVolts()
+	 * @model default="1.08"
+	 * @generated
+	 */
+	double getEmergMaxVolts();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getEmergMaxVolts <em>Emerg Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Emerg Max Volts</em>' attribute.
+	 * @see #getEmergMaxVolts()
+	 * @generated
+	 */
+	void setEmergMaxVolts(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Normal Min Volts</b></em>' attribute.
+	 * The default value is <code>"0.95"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Normal Min Volts</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Normal Min Volts</em>' attribute.
+	 * @see #setNormalMinVolts(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_NormalMinVolts()
+	 * @model default="0.95"
+	 * @generated
+	 */
+	double getNormalMinVolts();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getNormalMinVolts <em>Normal Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Normal Min Volts</em>' attribute.
+	 * @see #getNormalMinVolts()
+	 * @generated
+	 */
+	void setNormalMinVolts(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Normal Max Volts</b></em>' attribute.
+	 * The default value is <code>"1.05"</code>.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Normal Max Volts</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Normal Max Volts</em>' attribute.
+	 * @see #setNormalMaxVolts(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_NormalMaxVolts()
+	 * @model default="1.05"
+	 * @generated
+	 */
+	double getNormalMaxVolts();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getNormalMaxVolts <em>Normal Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Normal Max Volts</em>' attribute.
+	 * @see #getNormalMaxVolts()
+	 * @generated
+	 */
+	void setNormalMaxVolts(double value);
 
 	/**
 	 * Returns the value of the '<em><b>Num Nodes</b></em>' attribute.
