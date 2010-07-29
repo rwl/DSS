@@ -35,6 +35,8 @@ import electrickery.common.CommonPackage;
  *   <li>{@link electrickery.common.impl.BusImpl#getY <em>Y</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#isCoordDefined <em>Coord Defined</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#isKeep <em>Keep</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getBusRef <em>Bus Ref</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getNodeNum <em>Node Num</em>}</li>
  * </ul>
  * </p>
  *
@@ -189,6 +191,46 @@ public class BusImpl extends NamedImpl implements Bus {
 	 * @ordered
 	 */
 	protected boolean keep = KEEP_EDEFAULT;
+
+				/**
+	 * The default value of the '{@link #getBusRef() <em>Bus Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getBusRef()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int BUS_REF_EDEFAULT = 0;
+
+																/**
+	 * The cached value of the '{@link #getBusRef() <em>Bus Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getBusRef()
+	 * @generated
+	 * @ordered
+	 */
+	protected int busRef = BUS_REF_EDEFAULT;
+
+																/**
+	 * The default value of the '{@link #getNodeNum() <em>Node Num</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNodeNum()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final int NODE_NUM_EDEFAULT = 0;
+
+																/**
+	 * The cached value of the '{@link #getNodeNum() <em>Node Num</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNodeNum()
+	 * @generated
+	 * @ordered
+	 */
+	protected int nodeNum = NODE_NUM_EDEFAULT;
 
 				private int[] nodes, refNo;
     private int allocation;
@@ -481,6 +523,48 @@ public class BusImpl extends NamedImpl implements Bus {
 	}
 
 																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int getBusRef() {
+		return busRef;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setBusRef(int newBusRef) {
+		int oldBusRef = busRef;
+		busRef = newBusRef;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__BUS_REF, oldBusRef, busRef));
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int getNodeNum() {
+		return nodeNum;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setNodeNum(int newNodeNum) {
+		int oldNodeNum = nodeNum;
+		nodeNum = newNodeNum;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__NODE_NUM, oldNodeNum, nodeNum));
+	}
+
+																/**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -649,6 +733,10 @@ public class BusImpl extends NamedImpl implements Bus {
 				return isCoordDefined();
 			case CommonPackage.BUS__KEEP:
 				return isKeep();
+			case CommonPackage.BUS__BUS_REF:
+				return getBusRef();
+			case CommonPackage.BUS__NODE_NUM:
+				return getNodeNum();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -687,6 +775,12 @@ public class BusImpl extends NamedImpl implements Bus {
 				return;
 			case CommonPackage.BUS__KEEP:
 				setKeep((Boolean)newValue);
+				return;
+			case CommonPackage.BUS__BUS_REF:
+				setBusRef((Integer)newValue);
+				return;
+			case CommonPackage.BUS__NODE_NUM:
+				setNodeNum((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -727,6 +821,12 @@ public class BusImpl extends NamedImpl implements Bus {
 			case CommonPackage.BUS__KEEP:
 				setKeep(KEEP_EDEFAULT);
 				return;
+			case CommonPackage.BUS__BUS_REF:
+				setBusRef(BUS_REF_EDEFAULT);
+				return;
+			case CommonPackage.BUS__NODE_NUM:
+				setNodeNum(NODE_NUM_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -757,6 +857,10 @@ public class BusImpl extends NamedImpl implements Bus {
 				return coordDefined != COORD_DEFINED_EDEFAULT;
 			case CommonPackage.BUS__KEEP:
 				return keep != KEEP_EDEFAULT;
+			case CommonPackage.BUS__BUS_REF:
+				return busRef != BUS_REF_EDEFAULT;
+			case CommonPackage.BUS__NODE_NUM:
+				return nodeNum != NODE_NUM_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -783,6 +887,10 @@ public class BusImpl extends NamedImpl implements Bus {
 		result.append(coordDefined);
 		result.append(", keep: ");
 		result.append(keep);
+		result.append(", busRef: ");
+		result.append(busRef);
+		result.append(", nodeNum: ");
+		result.append(nodeNum);
 		result.append(')');
 		return result.toString();
 	}

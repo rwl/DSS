@@ -145,6 +145,16 @@ public interface ElectrickeryPackage extends EPackage {
 
 
 	/**
+	 * The meta object id for the '<em>EInt Array</em>' data type.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.impl.ElectrickeryPackageImpl#getEIntArray()
+	 * @generated
+	 */
+	int EINT_ARRAY = 5;
+
+
+	/**
 	 * Returns the meta object for class '{@link cern.colt.matrix.tdouble.DoubleMatrix1D <em>Double Matrix1 D</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -197,6 +207,16 @@ public interface ElectrickeryPackage extends EPackage {
 	 * @generated
 	 */
 	EDataType getComplex();
+
+	/**
+	 * Returns the meta object for data type '<em>EInt Array</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for data type '<em>EInt Array</em>'.
+	 * @model instanceClass="int[]"
+	 * @generated
+	 */
+	EDataType getEIntArray();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -268,6 +288,15 @@ public interface ElectrickeryPackage extends EPackage {
 		 * @generated
 		 */
 		EDataType COMPLEX = eINSTANCE.getComplex();
+
+		/**
+		 * The meta object literal for the '<em>EInt Array</em>' data type.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.impl.ElectrickeryPackageImpl#getEIntArray()
+		 * @generated
+		 */
+		EDataType EINT_ARRAY = eINSTANCE.getEIntArray();
 
 	}
 

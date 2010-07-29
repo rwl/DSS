@@ -76,6 +76,8 @@ public class ElectrickeryFactoryImpl extends EFactoryImpl implements Electricker
 		switch (eDataType.getClassifierID()) {
 			case ElectrickeryPackage.COMPLEX:
 				return createComplexFromString(eDataType, initialValue);
+			case ElectrickeryPackage.EINT_ARRAY:
+				return createEIntArrayFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -91,6 +93,8 @@ public class ElectrickeryFactoryImpl extends EFactoryImpl implements Electricker
 		switch (eDataType.getClassifierID()) {
 			case ElectrickeryPackage.COMPLEX:
 				return convertComplexToString(eDataType, instanceValue);
+			case ElectrickeryPackage.EINT_ARRAY:
+				return convertEIntArrayToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -111,6 +115,24 @@ public class ElectrickeryFactoryImpl extends EFactoryImpl implements Electricker
 	 * @generated
 	 */
 	public String convertComplexToString(EDataType eDataType, Object instanceValue) {
+		return super.convertToString(instanceValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int[] createEIntArrayFromString(EDataType eDataType, String initialValue) {
+		return (int[])super.createFromString(initialValue);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public String convertEIntArrayToString(EDataType eDataType, Object instanceValue) {
 		return super.convertToString(instanceValue);
 	}
 

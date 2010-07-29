@@ -4,6 +4,7 @@
     xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="electrickery"
     nsURI="http://www.electrickery.com/" nsPrefix="electrickery">
   <eClassifiers xsi:type="ecore:EDataType" name="Complex" instanceClassName="double[]"/>
+  <eClassifiers xsi:type="ecore:EDataType" name="EIntArray" instanceClassName="int[]"/>
   <eClassifiers xsi:type="ecore:EClass" name="DoubleMatrix1D" instanceClassName="cern.colt.matrix.tdouble.DoubleMatrix1D"
       abstract="true" interface="true"/>
   <eClassifiers xsi:type="ecore:EClass" name="DComplexMatrix1D" instanceClassName="cern.colt.matrix.tdcomplex.DComplexMatrix1D"
@@ -42,6 +43,12 @@
           eOpposite="#//common/Solution/circuit"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="buses" upperBound="-1"
           eType="#//common/Bus" containment="true" eOpposite="#//common/Bus/circuit"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="mapNodeToBus" transient="true">
+        <eGenericType eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EMap">
+          <eTypeArguments eClassifier="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EIntegerObject"/>
+          <eTypeArguments eClassifier="#//common/Bus"/>
+        </eGenericType>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="busList" upperBound="-1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="voltageSources" upperBound="-1"
@@ -152,6 +159,12 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="keep" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="busRef" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Reference to Bus in circuit's busList."/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nodeNum" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="CircuitElement" abstract="true">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -171,7 +184,7 @@
           <details key="documentation" value="Set NodeRef Array for fast solution with intrinsics."/>
         </eAnnotations>
         <eParameters name="iTerm" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-        <eParameters name="nodeRefArray" upperBound="-1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        <eParameters name="nodeRefArray" eType="#//EIntArray"/>
       </eOperations>
       <eOperations name="getFirstBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eOperations name="getNextBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -187,8 +200,6 @@
           <details key="documentation" value="Base frequency for ratings."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nodeRef" upperBound="-1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="yOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="yPrimInvalid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastTerminalChecked"
@@ -200,6 +211,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="terminals" upperBound="-1"
           eType="#//common/Terminal"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="activeTerminal" eType="#//common/Terminal"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="activeTerminalIndex"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="nTerms" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="nConds" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -372,6 +385,13 @@
           defaultValueLiteral="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executives" eType="#//executive/Executive"
           eOpposite="#//executive/Executive/globals"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Parser">
+      <eOperations name="parseAsBusName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eParameters name="numNodes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        <eParameters name="nodeArray" eType="#//EIntArray"/>
+      </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="conversion" nsURI="http://www.electrickery.com/conversion" nsPrefix="conv">

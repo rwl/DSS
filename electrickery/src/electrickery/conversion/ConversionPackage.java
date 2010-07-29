@@ -100,15 +100,6 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__BASE_FREQ = CommonPackage.CIRCUIT_ELEMENT__BASE_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__NODE_REF = CommonPackage.CIRCUIT_ELEMENT__NODE_REF;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -152,6 +143,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL = CommonPackage.CIRCUIT_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL_INDEX = CommonPackage.CIRCUIT_ELEMENT__ACTIVE_TERMINAL_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -272,15 +272,6 @@ public interface ConversionPackage extends EPackage {
 	int CURRENT_SOURCE__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -324,6 +315,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int CURRENT_SOURCE__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CURRENT_SOURCE__ACTIVE_TERMINAL_INDEX = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -498,15 +498,6 @@ public interface ConversionPackage extends EPackage {
 	int GENERATOR__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -550,6 +541,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int GENERATOR__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GENERATOR__ACTIVE_TERMINAL_INDEX = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -1156,15 +1156,6 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1208,6 +1199,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int LOAD__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOAD__ACTIVE_TERMINAL_INDEX = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -1580,15 +1580,6 @@ public interface ConversionPackage extends EPackage {
 	int VOLTAGE_SOURCE__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1632,6 +1623,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VOLTAGE_SOURCE__ACTIVE_TERMINAL_INDEX = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.

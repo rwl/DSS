@@ -11,6 +11,7 @@ import org.eclipse.emf.ecore.EObject;
 
 import electrickery.conversion.VoltageSource;
 import electrickery.executive.Executive;
+import java.util.Map;
 
 /**
  * <!-- begin-user-doc -->
@@ -27,6 +28,7 @@ import electrickery.executive.Executive;
  *   <li>{@link electrickery.common.Circuit#getExecutive <em>Executive</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getSolution <em>Solution</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getBuses <em>Buses</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getMapNodeToBus <em>Map Node To Bus</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getVoltageSources <em>Voltage Sources</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
@@ -129,6 +131,32 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	EList<Bus> getBuses();
+
+	/**
+	 * Returns the value of the '<em><b>Map Node To Bus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Map Node To Bus</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Map Node To Bus</em>' attribute.
+	 * @see #setMapNodeToBus(Map)
+	 * @see electrickery.common.CommonPackage#getCircuit_MapNodeToBus()
+	 * @model transient="true"
+	 * @generated
+	 */
+	Map<Integer, Bus> getMapNodeToBus();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getMapNodeToBus <em>Map Node To Bus</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Map Node To Bus</em>' attribute.
+	 * @see #getMapNodeToBus()
+	 * @generated
+	 */
+	void setMapNodeToBus(Map<Integer, Bus> value);
 
 	/**
 	 * Returns the value of the '<em><b>Bus List</b></em>' attribute list.

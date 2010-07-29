@@ -80,6 +80,15 @@ public interface CommonFactory extends EFactory {
 	Globals createGlobals();
 
 	/**
+	 * Returns a new object of class '<em>Parser</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Parser</em>'.
+	 * @generated
+	 */
+	Parser createParser();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

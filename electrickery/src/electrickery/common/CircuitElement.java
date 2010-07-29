@@ -26,12 +26,12 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
  *   <li>{@link electrickery.common.CircuitElement#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#isEnabled <em>Enabled</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getBaseFreq <em>Base Freq</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#getNodeRef <em>Node Ref</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYOrder <em>YOrder</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#isYPrimInvalid <em>YPrim Invalid</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getLastTerminalChecked <em>Last Terminal Checked</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getTerminals <em>Terminals</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getActiveTerminal <em>Active Terminal</em>}</li>
+ *   <li>{@link electrickery.common.CircuitElement#getActiveTerminalIndex <em>Active Terminal Index</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNTerms <em>NTerms</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNConds <em>NConds</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNPhases <em>NPhases</em>}</li>
@@ -125,22 +125,6 @@ public interface CircuitElement extends EObject {
 	void setBaseFreq(double value);
 
 				/**
-	 * Returns the value of the '<em><b>Node Ref</b></em>' attribute list.
-	 * The list contents are of type {@link java.lang.Integer}.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Node Ref</em>' attribute list isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Node Ref</em>' attribute list.
-	 * @see electrickery.common.CommonPackage#getCircuitElement_NodeRef()
-	 * @model
-	 * @generated
-	 */
-    EList<Integer> getNodeRef();
-
-    /**
 	 * Returns the value of the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
      * <p>
@@ -258,6 +242,32 @@ public interface CircuitElement extends EObject {
 	 * @generated
 	 */
 	void setActiveTerminal(Terminal value);
+
+				/**
+	 * Returns the value of the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Active Terminal Index</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Active Terminal Index</em>' attribute.
+	 * @see #setActiveTerminalIndex(int)
+	 * @see electrickery.common.CommonPackage#getCircuitElement_ActiveTerminalIndex()
+	 * @model
+	 * @generated
+	 */
+	int getActiveTerminalIndex();
+
+				/**
+	 * Sets the value of the '{@link electrickery.common.CircuitElement#getActiveTerminalIndex <em>Active Terminal Index</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Active Terminal Index</em>' attribute.
+	 * @see #getActiveTerminalIndex()
+	 * @generated
+	 */
+	void setActiveTerminalIndex(int value);
 
 				/**
 	 * Returns the value of the '<em><b>NTerms</b></em>' attribute.
@@ -465,10 +475,10 @@ public interface CircuitElement extends EObject {
 	 * <!-- begin-model-doc -->
 	 * Set NodeRef Array for fast solution with intrinsics.
 	 * <!-- end-model-doc -->
-	 * @model nodeRefArrayMany="true"
+	 * @model nodeRefArrayDataType="electrickery.EIntArray"
 	 * @generated
 	 */
-	void setNodeRef(int iTerm, EList<Integer> nodeRefArray);
+	void setNodeRef(int iTerm, int[] nodeRefArray);
 
 				/**
 	 * <!-- begin-user-doc -->

@@ -50,6 +50,8 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
  *   <li>{@link electrickery.common.Bus#getY <em>Y</em>}</li>
  *   <li>{@link electrickery.common.Bus#isCoordDefined <em>Coord Defined</em>}</li>
  *   <li>{@link electrickery.common.Bus#isKeep <em>Keep</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getBusRef <em>Bus Ref</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getNodeNum <em>Node Num</em>}</li>
  * </ul>
  * </p>
  *
@@ -316,6 +318,57 @@ public interface Bus extends Named {
 	 * @generated
 	 */
 	void setKeep(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Bus Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Reference to Bus in circuit's busList.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Bus Ref</em>' attribute.
+	 * @see #setBusRef(int)
+	 * @see electrickery.common.CommonPackage#getBus_BusRef()
+	 * @model
+	 * @generated
+	 */
+	int getBusRef();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getBusRef <em>Bus Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Bus Ref</em>' attribute.
+	 * @see #getBusRef()
+	 * @generated
+	 */
+	void setBusRef(int value);
+
+	/**
+	 * Returns the value of the '<em><b>Node Num</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Node Num</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Node Num</em>' attribute.
+	 * @see #setNodeNum(int)
+	 * @see electrickery.common.CommonPackage#getBus_NodeNum()
+	 * @model
+	 * @generated
+	 */
+	int getNodeNum();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getNodeNum <em>Node Num</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Node Num</em>' attribute.
+	 * @see #getNodeNum()
+	 * @generated
+	 */
+	void setNodeNum(int value);
 
 	/**
 	 * <!-- begin-user-doc -->

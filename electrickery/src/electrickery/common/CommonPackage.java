@@ -101,13 +101,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__BUSES = 2;
 
 	/**
+	 * The feature id for the '<em><b>Map Node To Bus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__MAP_NODE_TO_BUS = 3;
+
+	/**
 	 * The feature id for the '<em><b>Bus List</b></em>' attribute list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_LIST = 3;
+	int CIRCUIT__BUS_LIST = 4;
 
 	/**
 	 * The feature id for the '<em><b>Voltage Sources</b></em>' containment reference list.
@@ -116,7 +125,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__VOLTAGE_SOURCES = 4;
+	int CIRCUIT__VOLTAGE_SOURCES = 5;
 
 	/**
 	 * The feature id for the '<em><b>Active Circuit Element</b></em>' reference.
@@ -125,7 +134,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = 5;
+	int CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = 6;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -134,7 +143,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NAME = 6;
+	int CIRCUIT__NAME = 7;
 
 	/**
 	 * The feature id for the '<em><b>Num Nodes</b></em>' attribute.
@@ -143,7 +152,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_NODES = 7;
+	int CIRCUIT__NUM_NODES = 8;
 
 	/**
 	 * The feature id for the '<em><b>Num Buses</b></em>' attribute.
@@ -152,7 +161,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_BUSES = 8;
+	int CIRCUIT__NUM_BUSES = 9;
 
 	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
@@ -161,7 +170,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 9;
+	int CIRCUIT__BUS_NAME_REDEFINED = 10;
 
 	/**
 	 * The feature id for the '<em><b>Solved</b></em>' attribute.
@@ -170,7 +179,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLVED = 10;
+	int CIRCUIT__SOLVED = 11;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -179,7 +188,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 11;
+	int CIRCUIT__LOAD_MULTIPLIER = 12;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -188,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 12;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 13;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
@@ -197,7 +206,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_RATE = 13;
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
@@ -206,7 +215,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 14;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 15;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -215,7 +224,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 15;
+	int CIRCUIT__GEN_MULTIPLIER = 16;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -224,7 +233,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 16;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 17;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -233,7 +242,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 17;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 18;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -242,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 18;
+	int CIRCUIT__PRICE_SIGNAL = 19;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
@@ -251,7 +260,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MIN_VOLTS = 19;
+	int CIRCUIT__EMERG_MIN_VOLTS = 20;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
@@ -260,7 +269,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MAX_VOLTS = 20;
+	int CIRCUIT__EMERG_MAX_VOLTS = 21;
 
 	/**
 	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
@@ -269,7 +278,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MIN_VOLTS = 21;
+	int CIRCUIT__NORMAL_MIN_VOLTS = 22;
 
 	/**
 	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
@@ -278,7 +287,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MAX_VOLTS = 22;
+	int CIRCUIT__NORMAL_MAX_VOLTS = 23;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -287,7 +296,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 23;
+	int CIRCUIT_FEATURE_COUNT = 24;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -458,13 +467,31 @@ public interface CommonPackage extends EPackage {
 	int BUS__KEEP = NAMED_FEATURE_COUNT + 8;
 
 	/**
+	 * The feature id for the '<em><b>Bus Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__BUS_REF = NAMED_FEATURE_COUNT + 9;
+
+	/**
+	 * The feature id for the '<em><b>Node Num</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__NODE_NUM = NAMED_FEATURE_COUNT + 10;
+
+	/**
 	 * The number of structural features of the '<em>Bus</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 9;
+	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -494,22 +521,13 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT__BASE_FREQ = 2;
 
 	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__NODE_REF = 3;
-
-	/**
 	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YORDER = 4;
+	int CIRCUIT_ELEMENT__YORDER = 3;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Invalid</b></em>' attribute.
@@ -518,7 +536,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_INVALID = 5;
+	int CIRCUIT_ELEMENT__YPRIM_INVALID = 4;
 
 	/**
 	 * The feature id for the '<em><b>Last Terminal Checked</b></em>' attribute.
@@ -527,7 +545,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__LAST_TERMINAL_CHECKED = 6;
+	int CIRCUIT_ELEMENT__LAST_TERMINAL_CHECKED = 5;
 
 	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
@@ -536,7 +554,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__TERMINALS = 7;
+	int CIRCUIT_ELEMENT__TERMINALS = 6;
 
 	/**
 	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
@@ -545,7 +563,16 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__ACTIVE_TERMINAL = 8;
+	int CIRCUIT_ELEMENT__ACTIVE_TERMINAL = 7;
+
+	/**
+	 * The feature id for the '<em><b>Active Terminal Index</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT_ELEMENT__ACTIVE_TERMINAL_INDEX = 8;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -1063,6 +1090,34 @@ public interface CommonPackage extends EPackage {
 	int GLOBALS_FEATURE_COUNT = 2;
 
 	/**
+	 * The meta object id for the '{@link electrickery.common.impl.ParserImpl <em>Parser</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.ParserImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getParser()
+	 * @generated
+	 */
+	int PARSER = 9;
+
+	/**
+	 * The feature id for the '<em><b>Token</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARSER__TOKEN = 0;
+
+	/**
+	 * The number of structural features of the '<em>Parser</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int PARSER_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1070,7 +1125,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 9;
+	int CONNECTION_TYPE = 10;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -1080,7 +1135,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 10;
+	int LENGTH_UNIT = 11;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -1090,7 +1145,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 11;
+	int TRIP_ACTION = 12;
 
 
 	/**
@@ -1101,7 +1156,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 12;
+	int YBUILD_OPTION = 13;
 
 
 	/**
@@ -1112,7 +1167,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 13;
+	int CONTROL_MODE_TYPE = 14;
 
 
 	/**
@@ -1123,7 +1178,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 14;
+	int ALGORITHM_TYPE = 15;
 
 
 	/**
@@ -1168,6 +1223,17 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCircuit_Buses();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getMapNodeToBus <em>Map Node To Bus</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Map Node To Bus</em>'.
+	 * @see electrickery.common.Circuit#getMapNodeToBus()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_MapNodeToBus();
 
 	/**
 	 * Returns the meta object for the attribute list '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
@@ -1499,6 +1565,28 @@ public interface CommonPackage extends EPackage {
 	EAttribute getBus_Keep();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getBusRef <em>Bus Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Bus Ref</em>'.
+	 * @see electrickery.common.Bus#getBusRef()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_BusRef();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getNodeNum <em>Node Num</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Node Num</em>'.
+	 * @see electrickery.common.Bus#getNodeNum()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_NodeNum();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.common.CircuitElement <em>Circuit Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1540,17 +1628,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuitElement_BaseFreq();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link electrickery.common.CircuitElement#getNodeRef <em>Node Ref</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Node Ref</em>'.
-	 * @see electrickery.common.CircuitElement#getNodeRef()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_NodeRef();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#getYOrder <em>YOrder</em>}'.
@@ -1606,6 +1683,17 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCircuitElement_ActiveTerminal();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#getActiveTerminalIndex <em>Active Terminal Index</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Active Terminal Index</em>'.
+	 * @see electrickery.common.CircuitElement#getActiveTerminalIndex()
+	 * @see #getCircuitElement()
+	 * @generated
+	 */
+	EAttribute getCircuitElement_ActiveTerminalIndex();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#getNTerms <em>NTerms</em>}'.
@@ -2218,6 +2306,27 @@ public interface CommonPackage extends EPackage {
 	EReference getGlobals_Executives();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.common.Parser <em>Parser</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Parser</em>'.
+	 * @see electrickery.common.Parser
+	 * @generated
+	 */
+	EClass getParser();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Parser#getToken <em>Token</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Token</em>'.
+	 * @see electrickery.common.Parser#getToken()
+	 * @see #getParser()
+	 * @generated
+	 */
+	EAttribute getParser_Token();
+
+	/**
 	 * Returns the meta object for enum '{@link electrickery.common.connectionType <em>connection Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2332,6 +2441,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CIRCUIT__BUSES = eINSTANCE.getCircuit_Buses();
+
+		/**
+		 * The meta object literal for the '<em><b>Map Node To Bus</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__MAP_NODE_TO_BUS = eINSTANCE.getCircuit_MapNodeToBus();
 
 		/**
 		 * The meta object literal for the '<em><b>Bus List</b></em>' attribute list feature.
@@ -2576,6 +2693,22 @@ public interface CommonPackage extends EPackage {
 		EAttribute BUS__KEEP = eINSTANCE.getBus_Keep();
 
 		/**
+		 * The meta object literal for the '<em><b>Bus Ref</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__BUS_REF = eINSTANCE.getBus_BusRef();
+
+		/**
+		 * The meta object literal for the '<em><b>Node Num</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__NODE_NUM = eINSTANCE.getBus_NodeNum();
+
+		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.CircuitElementImpl <em>Circuit Element</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2608,14 +2741,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT_ELEMENT__BASE_FREQ = eINSTANCE.getCircuitElement_BaseFreq();
-
-		/**
-		 * The meta object literal for the '<em><b>Node Ref</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__NODE_REF = eINSTANCE.getCircuitElement_NodeRef();
 
 		/**
 		 * The meta object literal for the '<em><b>YOrder</b></em>' attribute feature.
@@ -2656,6 +2781,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CIRCUIT_ELEMENT__ACTIVE_TERMINAL = eINSTANCE.getCircuitElement_ActiveTerminal();
+
+		/**
+		 * The meta object literal for the '<em><b>Active Terminal Index</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT_ELEMENT__ACTIVE_TERMINAL_INDEX = eINSTANCE.getCircuitElement_ActiveTerminalIndex();
 
 		/**
 		 * The meta object literal for the '<em><b>NTerms</b></em>' attribute feature.
@@ -3116,6 +3249,24 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference GLOBALS__EXECUTIVES = eINSTANCE.getGlobals_Executives();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.ParserImpl <em>Parser</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.ParserImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getParser()
+		 * @generated
+		 */
+		EClass PARSER = eINSTANCE.getParser();
+
+		/**
+		 * The meta object literal for the '<em><b>Token</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute PARSER__TOKEN = eINSTANCE.getParser_Token();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.

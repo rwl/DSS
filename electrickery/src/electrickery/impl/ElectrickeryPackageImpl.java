@@ -67,6 +67,13 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 	private EDataType complexEDataType = null;
 
 	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EDataType eIntArrayEDataType = null;
+
+	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
 	 * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
 	 * package URI value.
@@ -188,6 +195,15 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EDataType getEIntArray() {
+		return eIntArrayEDataType;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public ElectrickeryFactory getElectrickeryFactory() {
 		return (ElectrickeryFactory)getEFactoryInstance();
 	}
@@ -221,6 +237,7 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 
 		// Create data types
 		complexEDataType = createEDataType(COMPLEX);
+		eIntArrayEDataType = createEDataType(EINT_ARRAY);
 	}
 
 	/**
@@ -273,6 +290,7 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 
 		// Initialize data types
 		initEDataType(complexEDataType, double[].class, "Complex", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
+		initEDataType(eIntArrayEDataType, int[].class, "EIntArray", IS_SERIALIZABLE, !IS_GENERATED_INSTANCE_CLASS);
 
 		// Create resource
 		createResource(eNS_URI);
