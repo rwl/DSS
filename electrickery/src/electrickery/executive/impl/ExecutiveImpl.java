@@ -108,14 +108,14 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
                                                                                                                                                                                                                                                                 /**
 	 * The cached value of the '{@link #getGlobals() <em>Globals</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getGlobals()
 	 * @generated
 	 * @ordered
 	 */
-	protected Globals globals;
+    protected Globals globals;
 
-																																																																																																																																																																																																																																																																/**
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -230,10 +230,10 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 
                 /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Globals getGlobals() {
+    public Globals getGlobals() {
 		if (globals != null && globals.eIsProxy()) {
 			InternalEObject oldGlobals = (InternalEObject)globals;
 			globals = (Globals)eResolveProxy(oldGlobals);
@@ -245,21 +245,21 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		return globals;
 	}
 
-																/**
+                                                                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Globals basicGetGlobals() {
+    public Globals basicGetGlobals() {
 		return globals;
 	}
 
-																/**
+                                                                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetGlobals(Globals newGlobals, NotificationChain msgs) {
+    public NotificationChain basicSetGlobals(Globals newGlobals, NotificationChain msgs) {
 		Globals oldGlobals = globals;
 		globals = newGlobals;
 		if (eNotificationRequired()) {
@@ -269,12 +269,12 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		return msgs;
 	}
 
-																/**
+                                                                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setGlobals(Globals newGlobals) {
+    public void setGlobals(Globals newGlobals) {
 		if (newGlobals != globals) {
 			NotificationChain msgs = null;
 			if (globals != null)
@@ -288,7 +288,7 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__GLOBALS, newGlobals, newGlobals));
 	}
 
-																/**
+                                                                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -333,7 +333,7 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
             getActiveCircuit().setName(name);
             getCircuits().add(getActiveCircuit());
             // Create a default circuit.
-            getActiveCircuit().getSolution().setSolutionAbort(false);
+            getGlobals().setSolutionAbort(false);
             // Voltage source named "source" connected to SourceBus.
             VoltageSource source = ConversionFactory.eINSTANCE.createVoltageSource();
             source.setName("source");
@@ -344,12 +344,12 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__CIRCUITS:
 				return ((InternalEList<InternalEObject>)(InternalEList<?>)getCircuits()).basicAdd(otherEnd, msgs);
@@ -361,13 +361,13 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__CIRCUITS:
 				return ((InternalEList<?>)getCircuits()).basicRemove(otherEnd, msgs);
@@ -377,7 +377,7 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated

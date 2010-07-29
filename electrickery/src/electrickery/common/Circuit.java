@@ -29,8 +29,10 @@ import electrickery.executive.Executive;
  *   <li>{@link electrickery.common.Circuit#getBuses <em>Buses</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getVoltageSources <em>Voltage Sources</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getNumBuses <em>Num Buses</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isBusNameRedefined <em>Bus Name Redefined</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isSolved <em>Solved</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getLoadMultiplier <em>Load Multiplier</em>}</li>
@@ -543,6 +545,32 @@ public interface Circuit extends EObject {
 	void setNumNodes(int value);
 
 	/**
+	 * Returns the value of the '<em><b>Num Buses</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Num Buses</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Num Buses</em>' attribute.
+	 * @see #setNumBuses(int)
+	 * @see electrickery.common.CommonPackage#getCircuit_NumBuses()
+	 * @model
+	 * @generated
+	 */
+	int getNumBuses();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getNumBuses <em>Num Buses</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Num Buses</em>' attribute.
+	 * @see #getNumBuses()
+	 * @generated
+	 */
+	void setNumBuses(int value);
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Circuit Elements</em>' reference list isn't clear,
@@ -603,6 +631,32 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	EList<VoltageSource> getVoltageSources();
+
+	/**
+	 * Returns the value of the '<em><b>Active Circuit Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Active Circuit Element</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Active Circuit Element</em>' reference.
+	 * @see #setActiveCircuitElement(CircuitElement)
+	 * @see electrickery.common.CommonPackage#getCircuit_ActiveCircuitElement()
+	 * @model
+	 * @generated
+	 */
+	CircuitElement getActiveCircuitElement();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Active Circuit Element</em>' reference.
+	 * @see #getActiveCircuitElement()
+	 * @generated
+	 */
+	void setActiveCircuitElement(CircuitElement value);
 
 	/**
 	 * <!-- begin-user-doc -->

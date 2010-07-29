@@ -119,13 +119,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__VOLTAGE_SOURCES = 4;
 
 	/**
+	 * The feature id for the '<em><b>Active Circuit Element</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = 5;
+
+	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NAME = 5;
+	int CIRCUIT__NAME = 6;
 
 	/**
 	 * The feature id for the '<em><b>Num Nodes</b></em>' attribute.
@@ -134,7 +143,16 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_NODES = 6;
+	int CIRCUIT__NUM_NODES = 7;
+
+	/**
+	 * The feature id for the '<em><b>Num Buses</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__NUM_BUSES = 8;
 
 	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
@@ -143,7 +161,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 7;
+	int CIRCUIT__BUS_NAME_REDEFINED = 9;
 
 	/**
 	 * The feature id for the '<em><b>Solved</b></em>' attribute.
@@ -152,7 +170,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLVED = 8;
+	int CIRCUIT__SOLVED = 10;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -161,7 +179,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 9;
+	int CIRCUIT__LOAD_MULTIPLIER = 11;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -170,7 +188,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 10;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 12;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
@@ -179,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_RATE = 11;
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 13;
 
 	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
@@ -188,7 +206,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 12;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 14;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -197,7 +215,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 13;
+	int CIRCUIT__GEN_MULTIPLIER = 15;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -206,7 +224,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 14;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 16;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -215,7 +233,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 15;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 17;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -224,7 +242,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 16;
+	int CIRCUIT__PRICE_SIGNAL = 18;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
@@ -233,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MIN_VOLTS = 17;
+	int CIRCUIT__EMERG_MIN_VOLTS = 19;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
@@ -242,7 +260,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MAX_VOLTS = 18;
+	int CIRCUIT__EMERG_MAX_VOLTS = 20;
 
 	/**
 	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
@@ -251,7 +269,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MIN_VOLTS = 19;
+	int CIRCUIT__NORMAL_MIN_VOLTS = 21;
 
 	/**
 	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
@@ -260,7 +278,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MAX_VOLTS = 20;
+	int CIRCUIT__NORMAL_MAX_VOLTS = 22;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -269,7 +287,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 21;
+	int CIRCUIT_FEATURE_COUNT = 23;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -368,7 +386,7 @@ public interface CommonPackage extends EPackage {
 	int BUS__CIRCUIT = NAMED_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>VBus</b></em>' attribute.
+	 * The feature id for the '<em><b>VBus</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -377,7 +395,7 @@ public interface CommonPackage extends EPackage {
 	int BUS__VBUS = NAMED_FEATURE_COUNT + 1;
 
 	/**
-	 * The feature id for the '<em><b>Bus Current</b></em>' attribute.
+	 * The feature id for the '<em><b>Bus Current</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -386,13 +404,67 @@ public interface CommonPackage extends EPackage {
 	int BUS__BUS_CURRENT = NAMED_FEATURE_COUNT + 2;
 
 	/**
+	 * The feature id for the '<em><b>Num Nodes This Bus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__NUM_NODES_THIS_BUS = NAMED_FEATURE_COUNT + 3;
+
+	/**
+	 * The feature id for the '<em><b>KV Base</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__KV_BASE = NAMED_FEATURE_COUNT + 4;
+
+	/**
+	 * The feature id for the '<em><b>X</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__X = NAMED_FEATURE_COUNT + 5;
+
+	/**
+	 * The feature id for the '<em><b>Y</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__Y = NAMED_FEATURE_COUNT + 6;
+
+	/**
+	 * The feature id for the '<em><b>Coord Defined</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__COORD_DEFINED = NAMED_FEATURE_COUNT + 7;
+
+	/**
+	 * The feature id for the '<em><b>Keep</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int BUS__KEEP = NAMED_FEATURE_COUNT + 8;
+
+	/**
 	 * The number of structural features of the '<em>Bus</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 3;
+	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -503,22 +575,13 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT__NPHASES = 11;
 
 	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__BUS_INDEX = 12;
-
-	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_SERIES = 13;
+	int CIRCUIT_ELEMENT__YPRIM_SERIES = 12;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
@@ -527,7 +590,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_SHUNT = 14;
+	int CIRCUIT_ELEMENT__YPRIM_SHUNT = 13;
 
 	/**
 	 * The feature id for the '<em><b>YPrim</b></em>' reference.
@@ -536,7 +599,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM = 15;
+	int CIRCUIT_ELEMENT__YPRIM = 14;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
@@ -545,7 +608,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_FREQ = 16;
+	int CIRCUIT_ELEMENT__YPRIM_FREQ = 15;
 
 	/**
 	 * The number of structural features of the '<em>Circuit Element</em>' class.
@@ -554,7 +617,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT_FEATURE_COUNT = 17;
+	int CIRCUIT_ELEMENT_FEATURE_COUNT = 16;
 
 	/**
 	 * The feature id for the '<em><b>Year</b></em>' attribute.
@@ -1283,6 +1346,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuit_NumNodes();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNumBuses <em>Num Buses</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Num Buses</em>'.
+	 * @see electrickery.common.Circuit#getNumBuses()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_NumBuses();
+
+	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1303,6 +1377,17 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCircuit_VoltageSources();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Active Circuit Element</em>'.
+	 * @see electrickery.common.Circuit#getActiveCircuitElement()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_ActiveCircuitElement();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.Bus <em>Bus</em>}'.
@@ -1326,26 +1411,92 @@ public interface CommonPackage extends EPackage {
 	EReference getBus_Circuit();
 
 	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getVBus <em>VBus</em>}'.
+	 * Returns the meta object for the reference '{@link electrickery.common.Bus#getVBus <em>VBus</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>VBus</em>'.
+	 * @return the meta object for the reference '<em>VBus</em>'.
 	 * @see electrickery.common.Bus#getVBus()
 	 * @see #getBus()
 	 * @generated
 	 */
-	EAttribute getBus_VBus();
+	EReference getBus_VBus();
 
 	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}'.
+	 * Returns the meta object for the reference '{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Bus Current</em>'.
+	 * @return the meta object for the reference '<em>Bus Current</em>'.
 	 * @see electrickery.common.Bus#getBusCurrent()
 	 * @see #getBus()
 	 * @generated
 	 */
-	EAttribute getBus_BusCurrent();
+	EReference getBus_BusCurrent();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getNumNodesThisBus <em>Num Nodes This Bus</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Num Nodes This Bus</em>'.
+	 * @see electrickery.common.Bus#getNumNodesThisBus()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_NumNodesThisBus();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getKVBase <em>KV Base</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>KV Base</em>'.
+	 * @see electrickery.common.Bus#getKVBase()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_KVBase();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getX <em>X</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>X</em>'.
+	 * @see electrickery.common.Bus#getX()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_X();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getY <em>Y</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Y</em>'.
+	 * @see electrickery.common.Bus#getY()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_Y();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isCoordDefined <em>Coord Defined</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Coord Defined</em>'.
+	 * @see electrickery.common.Bus#isCoordDefined()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_CoordDefined();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isKeep <em>Keep</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Keep</em>'.
+	 * @see electrickery.common.Bus#isKeep()
+	 * @see #getBus()
+	 * @generated
+	 */
+	EAttribute getBus_Keep();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.CircuitElement <em>Circuit Element</em>}'.
@@ -1488,17 +1639,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuitElement_NPhases();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#getBusIndex <em>Bus Index</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Bus Index</em>'.
-	 * @see electrickery.common.CircuitElement#getBusIndex()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_BusIndex();
 
 	/**
 	 * Returns the meta object for the reference '{@link electrickery.common.CircuitElement#getYPrimSeries <em>YPrim Series</em>}'.
@@ -2322,6 +2462,14 @@ public interface CommonPackage extends EPackage {
 		EAttribute CIRCUIT__NUM_NODES = eINSTANCE.getCircuit_NumNodes();
 
 		/**
+		 * The meta object literal for the '<em><b>Num Buses</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__NUM_BUSES = eINSTANCE.getCircuit_NumBuses();
+
+		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -2336,6 +2484,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CIRCUIT__VOLTAGE_SOURCES = eINSTANCE.getCircuit_VoltageSources();
+
+		/**
+		 * The meta object literal for the '<em><b>Active Circuit Element</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = eINSTANCE.getCircuit_ActiveCircuitElement();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -2356,20 +2512,68 @@ public interface CommonPackage extends EPackage {
 		EReference BUS__CIRCUIT = eINSTANCE.getBus_Circuit();
 
 		/**
-		 * The meta object literal for the '<em><b>VBus</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>VBus</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUS__VBUS = eINSTANCE.getBus_VBus();
+		EReference BUS__VBUS = eINSTANCE.getBus_VBus();
 
 		/**
-		 * The meta object literal for the '<em><b>Bus Current</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Bus Current</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute BUS__BUS_CURRENT = eINSTANCE.getBus_BusCurrent();
+		EReference BUS__BUS_CURRENT = eINSTANCE.getBus_BusCurrent();
+
+		/**
+		 * The meta object literal for the '<em><b>Num Nodes This Bus</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__NUM_NODES_THIS_BUS = eINSTANCE.getBus_NumNodesThisBus();
+
+		/**
+		 * The meta object literal for the '<em><b>KV Base</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__KV_BASE = eINSTANCE.getBus_KVBase();
+
+		/**
+		 * The meta object literal for the '<em><b>X</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__X = eINSTANCE.getBus_X();
+
+		/**
+		 * The meta object literal for the '<em><b>Y</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__Y = eINSTANCE.getBus_Y();
+
+		/**
+		 * The meta object literal for the '<em><b>Coord Defined</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__COORD_DEFINED = eINSTANCE.getBus_CoordDefined();
+
+		/**
+		 * The meta object literal for the '<em><b>Keep</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute BUS__KEEP = eINSTANCE.getBus_Keep();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.CircuitElementImpl <em>Circuit Element</em>}' class.
@@ -2476,14 +2680,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT_ELEMENT__NPHASES = eINSTANCE.getCircuitElement_NPhases();
-
-		/**
-		 * The meta object literal for the '<em><b>Bus Index</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__BUS_INDEX = eINSTANCE.getCircuitElement_BusIndex();
 
 		/**
 		 * The meta object literal for the '<em><b>YPrim Series</b></em>' reference feature.

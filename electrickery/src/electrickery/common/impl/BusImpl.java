@@ -6,9 +6,11 @@
  */
 package electrickery.common.impl;
 
+import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -27,6 +29,12 @@ import electrickery.common.CommonPackage;
  *   <li>{@link electrickery.common.impl.BusImpl#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#getVBus <em>VBus</em>}</li>
  *   <li>{@link electrickery.common.impl.BusImpl#getBusCurrent <em>Bus Current</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getNumNodesThisBus <em>Num Nodes This Bus</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getKVBase <em>KV Base</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getX <em>X</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#getY <em>Y</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#isCoordDefined <em>Coord Defined</em>}</li>
+ *   <li>{@link electrickery.common.impl.BusImpl#isKeep <em>Keep</em>}</li>
  * </ul>
  * </p>
  *
@@ -34,47 +42,156 @@ import electrickery.common.CommonPackage;
  */
 public class BusImpl extends NamedImpl implements Bus {
     /**
-	 * The default value of the '{@link #getVBus() <em>VBus</em>}' attribute.
+	 * The cached value of the '{@link #getVBus() <em>VBus</em>}' reference.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @see #getVBus()
 	 * @generated
 	 * @ordered
 	 */
-    protected static final double VBUS_EDEFAULT = 115.0;
+    protected DComplexMatrix1D vBus;
 
     /**
-	 * The cached value of the '{@link #getVBus() <em>VBus</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getVBus()
-	 * @generated
-	 * @ordered
-	 */
-    protected double vBus = VBUS_EDEFAULT;
-
-    /**
-	 * The default value of the '{@link #getBusCurrent() <em>Bus Current</em>}' attribute.
+	 * The cached value of the '{@link #getBusCurrent() <em>Bus Current</em>}' reference.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @see #getBusCurrent()
 	 * @generated
 	 * @ordered
 	 */
-    protected static final double BUS_CURRENT_EDEFAULT = 0.0;
+    protected DComplexMatrix1D busCurrent;
 
     /**
-	 * The cached value of the '{@link #getBusCurrent() <em>Bus Current</em>}' attribute.
+	 * The default value of the '{@link #getNumNodesThisBus() <em>Num Nodes This Bus</em>}' attribute.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getBusCurrent()
+	 * @see #getNumNodesThisBus()
 	 * @generated
 	 * @ordered
 	 */
-    protected double busCurrent = BUS_CURRENT_EDEFAULT;
+    protected static final int NUM_NODES_THIS_BUS_EDEFAULT = 0;
 
-    private int[] nodes, refNo;
-    private int numNodesThisBus, allocation;
+                /**
+	 * The cached value of the '{@link #getNumNodesThisBus() <em>Num Nodes This Bus</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getNumNodesThisBus()
+	 * @generated
+	 * @ordered
+	 */
+	protected int numNodesThisBus = NUM_NODES_THIS_BUS_EDEFAULT;
+
+																/**
+	 * This is true if the Num Nodes This Bus attribute has been set.
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+    protected boolean numNodesThisBusESet;
+
+    /**
+	 * The default value of the '{@link #getKVBase() <em>KV Base</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getKVBase()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final double KV_BASE_EDEFAULT = 0.0;
+
+																/**
+	 * The cached value of the '{@link #getKVBase() <em>KV Base</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getKVBase()
+	 * @generated
+	 * @ordered
+	 */
+	protected double kVBase = KV_BASE_EDEFAULT;
+
+																/**
+	 * The default value of the '{@link #getX() <em>X</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getX()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final double X_EDEFAULT = 0.0;
+
+																/**
+	 * The cached value of the '{@link #getX() <em>X</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getX()
+	 * @generated
+	 * @ordered
+	 */
+	protected double x = X_EDEFAULT;
+
+																/**
+	 * The default value of the '{@link #getY() <em>Y</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getY()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final double Y_EDEFAULT = 0.0;
+
+																/**
+	 * The cached value of the '{@link #getY() <em>Y</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getY()
+	 * @generated
+	 * @ordered
+	 */
+	protected double y = Y_EDEFAULT;
+
+																/**
+	 * The default value of the '{@link #isCoordDefined() <em>Coord Defined</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isCoordDefined()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean COORD_DEFINED_EDEFAULT = false;
+
+																/**
+	 * The cached value of the '{@link #isCoordDefined() <em>Coord Defined</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isCoordDefined()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean coordDefined = COORD_DEFINED_EDEFAULT;
+
+																/**
+	 * The default value of the '{@link #isKeep() <em>Keep</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isKeep()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean KEEP_EDEFAULT = false;
+
+																/**
+	 * The cached value of the '{@link #isKeep() <em>Keep</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isKeep()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean keep = KEEP_EDEFAULT;
+
+				private int[] nodes, refNo;
+    private int allocation;
 
     /**
 	 * <!-- begin-user-doc -->
@@ -128,7 +245,7 @@ public class BusImpl extends NamedImpl implements Bus {
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newCircuit != null)
-				msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__BUS_LIST, Circuit.class, msgs);
+				msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__BUSES, Circuit.class, msgs);
 			msgs = basicSetCircuit(newCircuit, msgs);
 			if (msgs != null) msgs.dispatch();
 		}
@@ -141,7 +258,15 @@ public class BusImpl extends NamedImpl implements Bus {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public double getVBus() {
+    public DComplexMatrix1D getVBus() {
+		if (vBus != null && ((EObject)vBus).eIsProxy()) {
+			InternalEObject oldVBus = (InternalEObject)vBus;
+			vBus = (DComplexMatrix1D)eResolveProxy(oldVBus);
+			if (vBus != oldVBus) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.BUS__VBUS, oldVBus, vBus));
+			}
+		}
 		return vBus;
 	}
 
@@ -150,19 +275,36 @@ public class BusImpl extends NamedImpl implements Bus {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public void setVBus(double newVBus) {
-		double oldVBus = vBus;
+    public DComplexMatrix1D basicGetVBus() {
+		return vBus;
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public void setVBus(DComplexMatrix1D newVBus) {
+		DComplexMatrix1D oldVBus = vBus;
 		vBus = newVBus;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__VBUS, oldVBus, vBus));
 	}
 
-    /**
+                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public double getBusCurrent() {
+    public DComplexMatrix1D getBusCurrent() {
+		if (busCurrent != null && ((EObject)busCurrent).eIsProxy()) {
+			InternalEObject oldBusCurrent = (InternalEObject)busCurrent;
+			busCurrent = (DComplexMatrix1D)eResolveProxy(oldBusCurrent);
+			if (busCurrent != oldBusCurrent) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.BUS__BUS_CURRENT, oldBusCurrent, busCurrent));
+			}
+		}
 		return busCurrent;
 	}
 
@@ -171,14 +313,174 @@ public class BusImpl extends NamedImpl implements Bus {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public void setBusCurrent(double newBusCurrent) {
-		double oldBusCurrent = busCurrent;
+    public DComplexMatrix1D basicGetBusCurrent() {
+		return busCurrent;
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public void setBusCurrent(DComplexMatrix1D newBusCurrent) {
+		DComplexMatrix1D oldBusCurrent = busCurrent;
 		busCurrent = newBusCurrent;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__BUS_CURRENT, oldBusCurrent, busCurrent));
 	}
 
-    /**
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public int getNumNodesThisBus() {
+		return numNodesThisBus;
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public void setNumNodesThisBus(int newNumNodesThisBus) {
+		int oldNumNodesThisBus = numNodesThisBus;
+		numNodesThisBus = newNumNodesThisBus;
+		boolean oldNumNodesThisBusESet = numNodesThisBusESet;
+		numNodesThisBusESet = true;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__NUM_NODES_THIS_BUS, oldNumNodesThisBus, numNodesThisBus, !oldNumNodesThisBusESet));
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public void unsetNumNodesThisBus() {
+		int oldNumNodesThisBus = numNodesThisBus;
+		boolean oldNumNodesThisBusESet = numNodesThisBusESet;
+		numNodesThisBus = NUM_NODES_THIS_BUS_EDEFAULT;
+		numNodesThisBusESet = false;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.BUS__NUM_NODES_THIS_BUS, oldNumNodesThisBus, NUM_NODES_THIS_BUS_EDEFAULT, oldNumNodesThisBusESet));
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public boolean isSetNumNodesThisBus() {
+		return numNodesThisBusESet;
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public double getKVBase() {
+		return kVBase;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setKVBase(double newKVBase) {
+		double oldKVBase = kVBase;
+		kVBase = newKVBase;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__KV_BASE, oldKVBase, kVBase));
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public double getX() {
+		return x;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setX(double newX) {
+		double oldX = x;
+		x = newX;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__X, oldX, x));
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public double getY() {
+		return y;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setY(double newY) {
+		double oldY = y;
+		y = newY;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__Y, oldY, y));
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isCoordDefined() {
+		return coordDefined;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setCoordDefined(boolean newCoordDefined) {
+		boolean oldCoordDefined = coordDefined;
+		coordDefined = newCoordDefined;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__COORD_DEFINED, oldCoordDefined, coordDefined));
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isKeep() {
+		return keep;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setKeep(boolean newKeep) {
+		boolean oldKeep = keep;
+		keep = newKeep;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.BUS__KEEP, oldKeep, keep));
+	}
+
+																/**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -255,6 +557,28 @@ public class BusImpl extends NamedImpl implements Bus {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void allocateBusVoltages() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void allocateBusCurrents() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -292,7 +616,7 @@ public class BusImpl extends NamedImpl implements Bus {
     public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case CommonPackage.BUS__CIRCUIT:
-				return eInternalContainer().eInverseRemove(this, CommonPackage.CIRCUIT__BUS_LIST, Circuit.class, msgs);
+				return eInternalContainer().eInverseRemove(this, CommonPackage.CIRCUIT__BUSES, Circuit.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
@@ -308,9 +632,23 @@ public class BusImpl extends NamedImpl implements Bus {
 			case CommonPackage.BUS__CIRCUIT:
 				return getCircuit();
 			case CommonPackage.BUS__VBUS:
-				return getVBus();
+				if (resolve) return getVBus();
+				return basicGetVBus();
 			case CommonPackage.BUS__BUS_CURRENT:
-				return getBusCurrent();
+				if (resolve) return getBusCurrent();
+				return basicGetBusCurrent();
+			case CommonPackage.BUS__NUM_NODES_THIS_BUS:
+				return getNumNodesThisBus();
+			case CommonPackage.BUS__KV_BASE:
+				return getKVBase();
+			case CommonPackage.BUS__X:
+				return getX();
+			case CommonPackage.BUS__Y:
+				return getY();
+			case CommonPackage.BUS__COORD_DEFINED:
+				return isCoordDefined();
+			case CommonPackage.BUS__KEEP:
+				return isKeep();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -327,10 +665,28 @@ public class BusImpl extends NamedImpl implements Bus {
 				setCircuit((Circuit)newValue);
 				return;
 			case CommonPackage.BUS__VBUS:
-				setVBus((Double)newValue);
+				setVBus((DComplexMatrix1D)newValue);
 				return;
 			case CommonPackage.BUS__BUS_CURRENT:
-				setBusCurrent((Double)newValue);
+				setBusCurrent((DComplexMatrix1D)newValue);
+				return;
+			case CommonPackage.BUS__NUM_NODES_THIS_BUS:
+				setNumNodesThisBus((Integer)newValue);
+				return;
+			case CommonPackage.BUS__KV_BASE:
+				setKVBase((Double)newValue);
+				return;
+			case CommonPackage.BUS__X:
+				setX((Double)newValue);
+				return;
+			case CommonPackage.BUS__Y:
+				setY((Double)newValue);
+				return;
+			case CommonPackage.BUS__COORD_DEFINED:
+				setCoordDefined((Boolean)newValue);
+				return;
+			case CommonPackage.BUS__KEEP:
+				setKeep((Boolean)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -348,10 +704,28 @@ public class BusImpl extends NamedImpl implements Bus {
 				setCircuit((Circuit)null);
 				return;
 			case CommonPackage.BUS__VBUS:
-				setVBus(VBUS_EDEFAULT);
+				setVBus((DComplexMatrix1D)null);
 				return;
 			case CommonPackage.BUS__BUS_CURRENT:
-				setBusCurrent(BUS_CURRENT_EDEFAULT);
+				setBusCurrent((DComplexMatrix1D)null);
+				return;
+			case CommonPackage.BUS__NUM_NODES_THIS_BUS:
+				unsetNumNodesThisBus();
+				return;
+			case CommonPackage.BUS__KV_BASE:
+				setKVBase(KV_BASE_EDEFAULT);
+				return;
+			case CommonPackage.BUS__X:
+				setX(X_EDEFAULT);
+				return;
+			case CommonPackage.BUS__Y:
+				setY(Y_EDEFAULT);
+				return;
+			case CommonPackage.BUS__COORD_DEFINED:
+				setCoordDefined(COORD_DEFINED_EDEFAULT);
+				return;
+			case CommonPackage.BUS__KEEP:
+				setKeep(KEEP_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -368,14 +742,26 @@ public class BusImpl extends NamedImpl implements Bus {
 			case CommonPackage.BUS__CIRCUIT:
 				return getCircuit() != null;
 			case CommonPackage.BUS__VBUS:
-				return vBus != VBUS_EDEFAULT;
+				return vBus != null;
 			case CommonPackage.BUS__BUS_CURRENT:
-				return busCurrent != BUS_CURRENT_EDEFAULT;
+				return busCurrent != null;
+			case CommonPackage.BUS__NUM_NODES_THIS_BUS:
+				return isSetNumNodesThisBus();
+			case CommonPackage.BUS__KV_BASE:
+				return kVBase != KV_BASE_EDEFAULT;
+			case CommonPackage.BUS__X:
+				return x != X_EDEFAULT;
+			case CommonPackage.BUS__Y:
+				return y != Y_EDEFAULT;
+			case CommonPackage.BUS__COORD_DEFINED:
+				return coordDefined != COORD_DEFINED_EDEFAULT;
+			case CommonPackage.BUS__KEEP:
+				return keep != KEEP_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
 
-    /**
+                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -385,10 +771,18 @@ public class BusImpl extends NamedImpl implements Bus {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (vBus: ");
-		result.append(vBus);
-		result.append(", busCurrent: ");
-		result.append(busCurrent);
+		result.append(" (numNodesThisBus: ");
+		if (numNodesThisBusESet) result.append(numNodesThisBus); else result.append("<unset>");
+		result.append(", kVBase: ");
+		result.append(kVBase);
+		result.append(", x: ");
+		result.append(x);
+		result.append(", y: ");
+		result.append(y);
+		result.append(", coordDefined: ");
+		result.append(coordDefined);
+		result.append(", keep: ");
+		result.append(keep);
 		result.append(')');
 		return result.toString();
 	}

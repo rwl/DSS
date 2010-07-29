@@ -181,15 +181,6 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__NPHASES = CommonPackage.CIRCUIT_ELEMENT__NPHASES;
 
 	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__BUS_INDEX = CommonPackage.CIRCUIT_ELEMENT__BUS_INDEX;
-
-	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -360,15 +351,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int CURRENT_SOURCE__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
-
-	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
@@ -595,15 +577,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int GENERATOR__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
-
-	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
@@ -1264,15 +1237,6 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
 
 	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
-
-	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1695,15 +1659,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
-
-	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.

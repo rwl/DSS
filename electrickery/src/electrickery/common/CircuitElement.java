@@ -35,7 +35,6 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
  *   <li>{@link electrickery.common.CircuitElement#getNTerms <em>NTerms</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNConds <em>NConds</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNPhases <em>NPhases</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#getBusIndex <em>Bus Index</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimSeries <em>YPrim Series</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrim <em>YPrim</em>}</li>
@@ -338,32 +337,6 @@ public interface CircuitElement extends EObject {
     void setNPhases(int value);
 
     /**
-	 * Returns the value of the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Bus Index</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Bus Index</em>' attribute.
-	 * @see #setBusIndex(int)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_BusIndex()
-	 * @model
-	 * @generated
-	 */
-    int getBusIndex();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#getBusIndex <em>Bus Index</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Bus Index</em>' attribute.
-	 * @see #getBusIndex()
-	 * @generated
-	 */
-    void setBusIndex(int value);
-
-    /**
 	 * Returns the value of the '<em><b>YPrim Series</b></em>' reference.
 	 * <!-- begin-user-doc -->
      * <p>
@@ -496,5 +469,21 @@ public interface CircuitElement extends EObject {
 	 * @generated
 	 */
 	void setNodeRef(int iTerm, EList<Integer> nodeRefArray);
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	String getFirstBus();
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	String getNextBus();
 
 } // CircuitElement

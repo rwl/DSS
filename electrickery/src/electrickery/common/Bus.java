@@ -6,6 +6,8 @@
  */
 package electrickery.common;
 
+import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+
 
 /**
  * <!-- begin-user-doc -->
@@ -42,6 +44,12 @@ package electrickery.common;
  *   <li>{@link electrickery.common.Bus#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.Bus#getVBus <em>VBus</em>}</li>
  *   <li>{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getNumNodesThisBus <em>Num Nodes This Bus</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getKVBase <em>KV Base</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getX <em>X</em>}</li>
+ *   <li>{@link electrickery.common.Bus#getY <em>Y</em>}</li>
+ *   <li>{@link electrickery.common.Bus#isCoordDefined <em>Coord Defined</em>}</li>
+ *   <li>{@link electrickery.common.Bus#isKeep <em>Keep</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,7 +60,7 @@ package electrickery.common;
 public interface Bus extends Named {
 	/**
 	 * Returns the value of the '<em><b>Circuit</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
+	 * It is bidirectional and its opposite is '{@link electrickery.common.Circuit#getBuses <em>Buses</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Circuit</em>' container reference isn't clear,
@@ -62,8 +70,8 @@ public interface Bus extends Named {
 	 * @return the value of the '<em>Circuit</em>' container reference.
 	 * @see #setCircuit(Circuit)
 	 * @see electrickery.common.CommonPackage#getBus_Circuit()
-	 * @see electrickery.common.Circuit#getBusList
-	 * @model opposite="busList" transient="false"
+	 * @see electrickery.common.Circuit#getBuses
+	 * @model opposite="buses" transient="false"
 	 * @generated
 	 */
 	Circuit getCircuit();
@@ -79,57 +87,235 @@ public interface Bus extends Named {
 	void setCircuit(Circuit value);
 
 	/**
-	 * Returns the value of the '<em><b>VBus</b></em>' attribute.
-	 * The default value is <code>"115.0"</code>.
+	 * Returns the value of the '<em><b>VBus</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>VBus</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>VBus</em>' attribute.
-	 * @see #setVBus(double)
+	 * @return the value of the '<em>VBus</em>' reference.
+	 * @see #setVBus(DComplexMatrix1D)
 	 * @see electrickery.common.CommonPackage#getBus_VBus()
-	 * @model default="115.0"
+	 * @model type="electrickery.DComplexMatrix1D"
 	 * @generated
 	 */
-	double getVBus();
+	DComplexMatrix1D getVBus();
 
 	/**
-	 * Sets the value of the '{@link electrickery.common.Bus#getVBus <em>VBus</em>}' attribute.
+	 * Sets the value of the '{@link electrickery.common.Bus#getVBus <em>VBus</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>VBus</em>' attribute.
+	 * @param value the new value of the '<em>VBus</em>' reference.
 	 * @see #getVBus()
 	 * @generated
 	 */
-	void setVBus(double value);
+	void setVBus(DComplexMatrix1D value);
 
 	/**
-	 * Returns the value of the '<em><b>Bus Current</b></em>' attribute.
+	 * Returns the value of the '<em><b>Bus Current</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Bus Current</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Bus Current</em>' attribute.
-	 * @see #setBusCurrent(double)
+	 * @return the value of the '<em>Bus Current</em>' reference.
+	 * @see #setBusCurrent(DComplexMatrix1D)
 	 * @see electrickery.common.CommonPackage#getBus_BusCurrent()
-	 * @model
+	 * @model type="electrickery.DComplexMatrix1D"
 	 * @generated
 	 */
-	double getBusCurrent();
+	DComplexMatrix1D getBusCurrent();
 
 	/**
-	 * Sets the value of the '{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}' attribute.
+	 * Sets the value of the '{@link electrickery.common.Bus#getBusCurrent <em>Bus Current</em>}' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Bus Current</em>' attribute.
+	 * @param value the new value of the '<em>Bus Current</em>' reference.
 	 * @see #getBusCurrent()
 	 * @generated
 	 */
-	void setBusCurrent(double value);
+	void setBusCurrent(DComplexMatrix1D value);
+
+	/**
+	 * Returns the value of the '<em><b>Num Nodes This Bus</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Num Nodes This Bus</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Num Nodes This Bus</em>' attribute.
+	 * @see #isSetNumNodesThisBus()
+	 * @see #unsetNumNodesThisBus()
+	 * @see #setNumNodesThisBus(int)
+	 * @see electrickery.common.CommonPackage#getBus_NumNodesThisBus()
+	 * @model unsettable="true"
+	 * @generated
+	 */
+	int getNumNodesThisBus();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getNumNodesThisBus <em>Num Nodes This Bus</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Num Nodes This Bus</em>' attribute.
+	 * @see #isSetNumNodesThisBus()
+	 * @see #unsetNumNodesThisBus()
+	 * @see #getNumNodesThisBus()
+	 * @generated
+	 */
+	void setNumNodesThisBus(int value);
+
+	/**
+	 * Unsets the value of the '{@link electrickery.common.Bus#getNumNodesThisBus <em>Num Nodes This Bus</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isSetNumNodesThisBus()
+	 * @see #getNumNodesThisBus()
+	 * @see #setNumNodesThisBus(int)
+	 * @generated
+	 */
+	void unsetNumNodesThisBus();
+
+	/**
+	 * Returns whether the value of the '{@link electrickery.common.Bus#getNumNodesThisBus <em>Num Nodes This Bus</em>}' attribute is set.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return whether the value of the '<em>Num Nodes This Bus</em>' attribute is set.
+	 * @see #unsetNumNodesThisBus()
+	 * @see #getNumNodesThisBus()
+	 * @see #setNumNodesThisBus(int)
+	 * @generated
+	 */
+	boolean isSetNumNodesThisBus();
+
+	/**
+	 * Returns the value of the '<em><b>KV Base</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Base kV for each node to ground.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>KV Base</em>' attribute.
+	 * @see #setKVBase(double)
+	 * @see electrickery.common.CommonPackage#getBus_KVBase()
+	 * @model
+	 * @generated
+	 */
+	double getKVBase();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getKVBase <em>KV Base</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>KV Base</em>' attribute.
+	 * @see #getKVBase()
+	 * @generated
+	 */
+	void setKVBase(double value);
+
+	/**
+	 * Returns the value of the '<em><b>X</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * X coordinate.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>X</em>' attribute.
+	 * @see #setX(double)
+	 * @see electrickery.common.CommonPackage#getBus_X()
+	 * @model
+	 * @generated
+	 */
+	double getX();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getX <em>X</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>X</em>' attribute.
+	 * @see #getX()
+	 * @generated
+	 */
+	void setX(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Y</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Y coordinate.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Y</em>' attribute.
+	 * @see #setY(double)
+	 * @see electrickery.common.CommonPackage#getBus_Y()
+	 * @model
+	 * @generated
+	 */
+	double getY();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#getY <em>Y</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Y</em>' attribute.
+	 * @see #getY()
+	 * @generated
+	 */
+	void setY(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Coord Defined</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Are the coordinates defined?
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Coord Defined</em>' attribute.
+	 * @see #setCoordDefined(boolean)
+	 * @see electrickery.common.CommonPackage#getBus_CoordDefined()
+	 * @model
+	 * @generated
+	 */
+	boolean isCoordDefined();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#isCoordDefined <em>Coord Defined</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Coord Defined</em>' attribute.
+	 * @see #isCoordDefined()
+	 * @generated
+	 */
+	void setCoordDefined(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Keep</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Keep</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Keep</em>' attribute.
+	 * @see #setKeep(boolean)
+	 * @see electrickery.common.CommonPackage#getBus_Keep()
+	 * @model
+	 * @generated
+	 */
+	boolean isKeep();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Bus#isKeep <em>Keep</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Keep</em>' attribute.
+	 * @see #isKeep()
+	 * @generated
+	 */
+	void setKeep(boolean value);
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -182,5 +368,21 @@ public interface Bus extends Named {
 	 * @generated
 	 */
 	int getNum(int nodeIndex);
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void allocateBusVoltages();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void allocateBusCurrents();
 
 } // Bus
