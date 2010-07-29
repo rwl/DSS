@@ -5,28 +5,24 @@
  */
 package electrickery.executive.impl;
 
-import electrickery.common.Circuit;
-import electrickery.common.CommonFactory;
-import electrickery.conversion.ConversionFactory;
-import electrickery.conversion.VoltageSource;
-import electrickery.executive.ExecCommands;
-import electrickery.executive.ExecOptions;
-import electrickery.executive.Executive;
-import electrickery.executive.ExecutivePackage;
-
 import java.util.Collection;
-import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
-import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+
+import electrickery.common.Circuit;
+import electrickery.common.CommonFactory;
+import electrickery.conversion.ConversionFactory;
+import electrickery.conversion.VoltageSource;
+import electrickery.executive.Executive;
+import electrickery.executive.ExecutivePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -36,8 +32,6 @@ import org.eclipse.emf.ecore.util.EObjectResolvingEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getCommand <em>Command</em>}</li>
- *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getExecCommands <em>Exec Commands</em>}</li>
- *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getExecOptions <em>Exec Options</em>}</li>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getActiveCircuit <em>Active Circuit</em>}</li>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getCircuits <em>Circuits</em>}</li>
  *   <li>{@link electrickery.executive.impl.ExecutiveImpl#getMaxCircuits <em>Max Circuits</em>}</li>
@@ -68,26 +62,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
     protected String command = COMMAND_EDEFAULT;
 
     /**
-	 * The cached value of the '{@link #getExecCommands() <em>Exec Commands</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getExecCommands()
-	 * @generated
-	 * @ordered
-	 */
-    protected ExecCommands execCommands;
-
-                /**
-	 * The cached value of the '{@link #getExecOptions() <em>Exec Options</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getExecOptions()
-	 * @generated
-	 * @ordered
-	 */
-    protected ExecOptions execOptions;
-
-                                                                /**
 	 * The cached value of the '{@link #getActiveCircuit() <em>Active Circuit</em>}' reference.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -170,92 +144,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
     }
 
     /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public ExecCommands getExecCommands() {
-		return execCommands;
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetExecCommands(ExecCommands newExecCommands, NotificationChain msgs) {
-		ExecCommands oldExecCommands = execCommands;
-		execCommands = newExecCommands;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, oldExecCommands, newExecCommands);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-																/**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public void setExecCommands(ExecCommands newExecCommands) {
-		if (newExecCommands != execCommands) {
-			NotificationChain msgs = null;
-			if (execCommands != null)
-				msgs = ((InternalEObject)execCommands).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, null, msgs);
-			if (newExecCommands != null)
-				msgs = ((InternalEObject)newExecCommands).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, null, msgs);
-			msgs = basicSetExecCommands(newExecCommands, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_COMMANDS, newExecCommands, newExecCommands));
-	}
-
-                                                                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public ExecOptions getExecOptions() {
-		return execOptions;
-	}
-
-                                                                /**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetExecOptions(ExecOptions newExecOptions, NotificationChain msgs) {
-		ExecOptions oldExecOptions = execOptions;
-		execOptions = newExecOptions;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, oldExecOptions, newExecOptions);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-																																																																/**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public void setExecOptions(ExecOptions newExecOptions) {
-		if (newExecOptions != execOptions) {
-			NotificationChain msgs = null;
-			if (execOptions != null)
-				msgs = ((InternalEObject)execOptions).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, null, msgs);
-			if (newExecOptions != null)
-				msgs = ((InternalEObject)newExecOptions).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, null, msgs);
-			msgs = basicSetExecOptions(newExecOptions, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ExecutivePackage.EXECUTIVE__EXEC_OPTIONS, newExecOptions, newExecOptions));
-	}
-
-                                                                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -388,10 +276,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-				return basicSetExecCommands(null, msgs);
-			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-				return basicSetExecOptions(null, msgs);
 			case ExecutivePackage.EXECUTIVE__CIRCUITS:
 				return ((InternalEList<?>)getCircuits()).basicRemove(otherEnd, msgs);
 		}
@@ -408,10 +292,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__COMMAND:
 				return getCommand();
-			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-				return getExecCommands();
-			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-				return getExecOptions();
 			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
 				if (resolve) return getActiveCircuit();
 				return basicGetActiveCircuit();
@@ -434,12 +314,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__COMMAND:
 				setCommand((String)newValue);
-				return;
-			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-				setExecCommands((ExecCommands)newValue);
-				return;
-			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-				setExecOptions((ExecOptions)newValue);
 				return;
 			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
 				setActiveCircuit((Circuit)newValue);
@@ -466,12 +340,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 			case ExecutivePackage.EXECUTIVE__COMMAND:
 				setCommand(COMMAND_EDEFAULT);
 				return;
-			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-				setExecCommands((ExecCommands)null);
-				return;
-			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-				setExecOptions((ExecOptions)null);
-				return;
 			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
 				setActiveCircuit((Circuit)null);
 				return;
@@ -495,10 +363,6 @@ public class ExecutiveImpl extends EObjectImpl implements Executive {
 		switch (featureID) {
 			case ExecutivePackage.EXECUTIVE__COMMAND:
 				return COMMAND_EDEFAULT == null ? command != null : !COMMAND_EDEFAULT.equals(command);
-			case ExecutivePackage.EXECUTIVE__EXEC_COMMANDS:
-				return execCommands != null;
-			case ExecutivePackage.EXECUTIVE__EXEC_OPTIONS:
-				return execOptions != null;
 			case ExecutivePackage.EXECUTIVE__ACTIVE_CIRCUIT:
 				return activeCircuit != null;
 			case ExecutivePackage.EXECUTIVE__CIRCUITS:

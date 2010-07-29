@@ -6,48 +6,23 @@
  */
 package electrickery.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
-import cern.colt.matrix.tdouble.DoubleMatrix1D;
-import cern.colt.matrix.tdouble.DoubleMatrix2D;
-
-import electrickery.ElectrickeryFactory;
-import electrickery.ElectrickeryPackage;
-
-import electrickery.common.CommonPackage;
-
-import electrickery.common.impl.CommonPackageImpl;
-
-import electrickery.control.ControlPackage;
-
-import electrickery.control.impl.ControlPackageImpl;
-
-import electrickery.conversion.ConversionPackage;
-
-import electrickery.conversion.impl.ConversionPackageImpl;
-
-import electrickery.delivery.DeliveryPackage;
-
-import electrickery.delivery.impl.DeliveryPackageImpl;
-
-import electrickery.executive.ExecutivePackage;
-
-import electrickery.executive.impl.ExecutivePackageImpl;
-
-import electrickery.general.GeneralPackage;
-
-import electrickery.general.impl.GeneralPackageImpl;
-
-import electrickery.meter.MeterPackage;
-
-import electrickery.meter.impl.MeterPackageImpl;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EPackageImpl;
+
+import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import cern.colt.matrix.tdouble.DoubleMatrix1D;
+import cern.colt.matrix.tdouble.DoubleMatrix2D;
+import electrickery.ElectrickeryFactory;
+import electrickery.ElectrickeryPackage;
+import electrickery.common.CommonPackage;
+import electrickery.common.impl.CommonPackageImpl;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.impl.ConversionPackageImpl;
+import electrickery.executive.ExecutivePackage;
+import electrickery.executive.impl.ExecutivePackageImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -139,32 +114,20 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 
 		// Obtain or create and register interdependencies
 		CommonPackageImpl theCommonPackage = (CommonPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI) instanceof CommonPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI) : CommonPackage.eINSTANCE);
-		ControlPackageImpl theControlPackage = (ControlPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ControlPackage.eNS_URI) instanceof ControlPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ControlPackage.eNS_URI) : ControlPackage.eINSTANCE);
 		ConversionPackageImpl theConversionPackage = (ConversionPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ConversionPackage.eNS_URI) instanceof ConversionPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ConversionPackage.eNS_URI) : ConversionPackage.eINSTANCE);
-		DeliveryPackageImpl theDeliveryPackage = (DeliveryPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(DeliveryPackage.eNS_URI) instanceof DeliveryPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(DeliveryPackage.eNS_URI) : DeliveryPackage.eINSTANCE);
 		ExecutivePackageImpl theExecutivePackage = (ExecutivePackageImpl)(EPackage.Registry.INSTANCE.getEPackage(ExecutivePackage.eNS_URI) instanceof ExecutivePackageImpl ? EPackage.Registry.INSTANCE.getEPackage(ExecutivePackage.eNS_URI) : ExecutivePackage.eINSTANCE);
-		GeneralPackageImpl theGeneralPackage = (GeneralPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(GeneralPackage.eNS_URI) instanceof GeneralPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(GeneralPackage.eNS_URI) : GeneralPackage.eINSTANCE);
-		MeterPackageImpl theMeterPackage = (MeterPackageImpl)(EPackage.Registry.INSTANCE.getEPackage(MeterPackage.eNS_URI) instanceof MeterPackageImpl ? EPackage.Registry.INSTANCE.getEPackage(MeterPackage.eNS_URI) : MeterPackage.eINSTANCE);
 
 		// Create package meta-data objects
 		theElectrickeryPackage.createPackageContents();
 		theCommonPackage.createPackageContents();
-		theControlPackage.createPackageContents();
 		theConversionPackage.createPackageContents();
-		theDeliveryPackage.createPackageContents();
 		theExecutivePackage.createPackageContents();
-		theGeneralPackage.createPackageContents();
-		theMeterPackage.createPackageContents();
 
 		// Initialize created meta-data
 		theElectrickeryPackage.initializePackageContents();
 		theCommonPackage.initializePackageContents();
-		theControlPackage.initializePackageContents();
 		theConversionPackage.initializePackageContents();
-		theDeliveryPackage.initializePackageContents();
 		theExecutivePackage.initializePackageContents();
-		theGeneralPackage.initializePackageContents();
-		theMeterPackage.initializePackageContents();
 
 		// Mark meta-data to indicate it can't be changed
 		theElectrickeryPackage.freeze();
@@ -285,21 +248,13 @@ public class ElectrickeryPackageImpl extends EPackageImpl implements Electricker
 
 		// Obtain other dependent packages
 		CommonPackage theCommonPackage = (CommonPackage)EPackage.Registry.INSTANCE.getEPackage(CommonPackage.eNS_URI);
-		ControlPackage theControlPackage = (ControlPackage)EPackage.Registry.INSTANCE.getEPackage(ControlPackage.eNS_URI);
 		ConversionPackage theConversionPackage = (ConversionPackage)EPackage.Registry.INSTANCE.getEPackage(ConversionPackage.eNS_URI);
-		DeliveryPackage theDeliveryPackage = (DeliveryPackage)EPackage.Registry.INSTANCE.getEPackage(DeliveryPackage.eNS_URI);
 		ExecutivePackage theExecutivePackage = (ExecutivePackage)EPackage.Registry.INSTANCE.getEPackage(ExecutivePackage.eNS_URI);
-		GeneralPackage theGeneralPackage = (GeneralPackage)EPackage.Registry.INSTANCE.getEPackage(GeneralPackage.eNS_URI);
-		MeterPackage theMeterPackage = (MeterPackage)EPackage.Registry.INSTANCE.getEPackage(MeterPackage.eNS_URI);
 
 		// Add subpackages
 		getESubpackages().add(theCommonPackage);
-		getESubpackages().add(theControlPackage);
 		getESubpackages().add(theConversionPackage);
-		getESubpackages().add(theDeliveryPackage);
 		getESubpackages().add(theExecutivePackage);
-		getESubpackages().add(theGeneralPackage);
-		getESubpackages().add(theMeterPackage);
 
 		// Create type parameters
 

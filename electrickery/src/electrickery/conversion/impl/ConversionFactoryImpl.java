@@ -7,15 +7,28 @@
 package electrickery.conversion.impl;
 
 import electrickery.conversion.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
+import electrickery.conversion.ConversionFactory;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
+import electrickery.conversion.VoltageSource;
+import electrickery.conversion.dispatchType;
+import electrickery.conversion.generatorModel;
+import electrickery.conversion.generatorStatus;
+import electrickery.conversion.loadModel;
+import electrickery.conversion.loadSpecType;
+import electrickery.conversion.loadStatus;
+import electrickery.conversion.sequenceType;
+import electrickery.conversion.specType;
+import electrickery.conversion.storageState;
 
 /**
  * <!-- begin-user-doc -->
@@ -62,11 +75,9 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case ConversionPackage.CURRENT_SOURCE: return createCurrentSource();
-			case ConversionPackage.EQUIVALENT: return createEquivalent();
 			case ConversionPackage.GENERATOR: return createGenerator();
 			case ConversionPackage.LOAD: return createLoad();
 			case ConversionPackage.VOLTAGE_SOURCE: return createVoltageSource();
-			case ConversionPackage.STORAGE: return createStorage();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -149,16 +160,6 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Equivalent createEquivalent() {
-		EquivalentImpl equivalent = new EquivalentImpl();
-		return equivalent;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Generator createGenerator() {
 		GeneratorImpl generator = new GeneratorImpl();
 		return generator;
@@ -182,16 +183,6 @@ public class ConversionFactoryImpl extends EFactoryImpl implements ConversionFac
 	public VoltageSource createVoltageSource() {
 		VoltageSourceImpl voltageSource = new VoltageSourceImpl();
 		return voltageSource;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Storage createStorage() {
-		StorageImpl storage = new StorageImpl();
-		return storage;
 	}
 
 	/**

@@ -6,18 +6,17 @@
  */
 package electrickery.util;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
-import cern.colt.matrix.tdouble.DoubleMatrix1D;
-import cern.colt.matrix.tdouble.DoubleMatrix2D;
-
-import electrickery.*;
-
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import cern.colt.matrix.tdouble.DoubleMatrix1D;
+import cern.colt.matrix.tdouble.DoubleMatrix2D;
+import electrickery.*;
+import electrickery.ElectrickeryPackage;
 
 /**
  * <!-- begin-user-doc -->

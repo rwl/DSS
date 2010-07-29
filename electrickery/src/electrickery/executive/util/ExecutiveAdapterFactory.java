@@ -7,13 +7,13 @@
 package electrickery.executive.util;
 
 import electrickery.executive.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.executive.Executive;
+import electrickery.executive.ExecutivePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -72,14 +72,6 @@ public class ExecutiveAdapterFactory extends AdapterFactoryImpl {
 	protected ExecutiveSwitch<Adapter> modelSwitch =
 		new ExecutiveSwitch<Adapter>() {
 			@Override
-			public Adapter caseExecOptions(ExecOptions object) {
-				return createExecOptionsAdapter();
-			}
-			@Override
-			public Adapter caseExecCommands(ExecCommands object) {
-				return createExecCommandsAdapter();
-			}
-			@Override
 			public Adapter caseExecutive(Executive object) {
 				return createExecutiveAdapter();
 			}
@@ -102,34 +94,6 @@ public class ExecutiveAdapterFactory extends AdapterFactoryImpl {
 		return modelSwitch.doSwitch((EObject)target);
 	}
 
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.executive.ExecOptions <em>Exec Options</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.executive.ExecOptions
-	 * @generated
-	 */
-	public Adapter createExecOptionsAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.executive.ExecCommands <em>Exec Commands</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.executive.ExecCommands
-	 * @generated
-	 */
-	public Adapter createExecCommandsAdapter() {
-		return null;
-	}
 
 	/**
 	 * Creates a new adapter for an object of class '{@link electrickery.executive.Executive <em>Executive</em>}'.

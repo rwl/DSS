@@ -7,13 +7,19 @@
 package electrickery.conversion.util;
 
 
-import electrickery.common.CircuitElement;
-import electrickery.conversion.*;
-
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.common.CircuitElement;
+import electrickery.conversion.*;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
+import electrickery.conversion.PowerConversionElement;
+import electrickery.conversion.VoltageSource;
 
 /**
  * <!-- begin-user-doc -->
@@ -104,14 +110,6 @@ public class ConversionSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConversionPackage.EQUIVALENT: {
-				Equivalent equivalent = (Equivalent)theEObject;
-				T result = caseEquivalent(equivalent);
-				if (result == null) result = casePowerConversionElement(equivalent);
-				if (result == null) result = caseCircuitElement(equivalent);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ConversionPackage.GENERATOR: {
 				Generator generator = (Generator)theEObject;
 				T result = caseGenerator(generator);
@@ -136,14 +134,6 @@ public class ConversionSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case ConversionPackage.STORAGE: {
-				Storage storage = (Storage)theEObject;
-				T result = caseStorage(storage);
-				if (result == null) result = casePowerConversionElement(storage);
-				if (result == null) result = caseCircuitElement(storage);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			default: return defaultCase(theEObject);
 		}
 	}
@@ -160,21 +150,6 @@ public class ConversionSwitch<T> {
 	 * @generated
 	 */
 	public T caseCurrentSource(CurrentSource object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Equivalent</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Equivalent</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseEquivalent(Equivalent object) {
 		return null;
 	}
 
@@ -235,21 +210,6 @@ public class ConversionSwitch<T> {
 	 * @generated
 	 */
 	public T caseVoltageSource(VoltageSource object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Storage</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Storage</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseStorage(Storage object) {
 		return null;
 	}
 

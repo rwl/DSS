@@ -23,11 +23,6 @@ import junit.textui.TestRunner;
  *   <li>{@link electrickery.common.Circuit#reCalcInvalidYPrims() <em>Re Calc Invalid YPrims</em>}</li>
  *   <li>{@link electrickery.common.Circuit#initialiseNodeVBase() <em>Initialise Node VBase</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getCircuitElements() <em>Get Circuit Elements</em>}</li>
- *   <li>{@link electrickery.common.Circuit#getPDElements() <em>Get PD Elements</em>}</li>
- *   <li>{@link electrickery.common.Circuit#getPCElements() <em>Get PC Elements</em>}</li>
- *   <li>{@link electrickery.common.Circuit#getDSSControls() <em>Get DSS Controls</em>}</li>
- *   <li>{@link electrickery.common.Circuit#getMeterElements() <em>Get Meter Elements</em>}</li>
- *   <li>{@link electrickery.common.Circuit#getSubstations() <em>Get Substations</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -176,71 +171,6 @@ public class CircuitTest extends TestCase {
 	 * @generated
 	 */
 	public void testGetCircuitElements() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Circuit#getPDElements() <em>Get PD Elements</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Circuit#getPDElements()
-	 * @generated
-	 */
-	public void testGetPDElements() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Circuit#getPCElements() <em>Get PC Elements</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Circuit#getPCElements()
-	 * @generated
-	 */
-	public void testGetPCElements() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Circuit#getDSSControls() <em>Get DSS Controls</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Circuit#getDSSControls()
-	 * @generated
-	 */
-	public void testGetDSSControls() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Circuit#getMeterElements() <em>Get Meter Elements</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Circuit#getMeterElements()
-	 * @generated
-	 */
-	public void testGetMeterElements() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Circuit#getSubstations() <em>Get Substations</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Circuit#getSubstations()
-	 * @generated
-	 */
-	public void testGetSubstations() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

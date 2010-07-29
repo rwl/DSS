@@ -6,12 +6,10 @@
  */
 package electrickery.common;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
 import org.eclipse.emf.common.util.EList;
-
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 /**
  * <!-- begin-user-doc -->
@@ -32,12 +30,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.common.CircuitElement#getYOrder <em>YOrder</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#isYPrimInvalid <em>YPrim Invalid</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getLastTerminalChecked <em>Last Terminal Checked</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#isChecked <em>Checked</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#isHasMeter <em>Has Meter</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#isIsolated <em>Isolated</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#isHasControl <em>Has Control</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#isPartOfFeeder <em>Part Of Feeder</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#getControlElement <em>Control Element</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getTerminals <em>Terminals</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getActiveTerminal <em>Active Terminal</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getNTerms <em>NTerms</em>}</li>
@@ -48,7 +40,6 @@ import org.eclipse.emf.ecore.EObject;
  *   <li>{@link electrickery.common.CircuitElement#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrim <em>YPrim</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimFreq <em>YPrim Freq</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#getLike <em>Like</em>}</li>
  * </ul>
  * </p>
  *
@@ -112,7 +103,7 @@ public interface CircuitElement extends EObject {
 	 * Returns the value of the '<em><b>Base Freq</b></em>' attribute.
 	 * The default value is <code>"60.0"</code>.
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
 	 * Base frequency for ratings.
 	 * <!-- end-model-doc -->
@@ -122,19 +113,19 @@ public interface CircuitElement extends EObject {
 	 * @model default="60.0"
 	 * @generated
 	 */
-    double getBaseFreq();
+	double getBaseFreq();
 
-    /**
+				/**
 	 * Sets the value of the '{@link electrickery.common.CircuitElement#getBaseFreq <em>Base Freq</em>}' attribute.
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Base Freq</em>' attribute.
 	 * @see #getBaseFreq()
 	 * @generated
 	 */
-    void setBaseFreq(double value);
+	void setBaseFreq(double value);
 
-    /**
+				/**
 	 * Returns the value of the '<em><b>Node Ref</b></em>' attribute list.
 	 * The list contents are of type {@link java.lang.Integer}.
 	 * <!-- begin-user-doc -->
@@ -228,161 +219,6 @@ public interface CircuitElement extends EObject {
     void setLastTerminalChecked(int value);
 
     /**
-	 * Returns the value of the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Flag used in tree searches etc.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Checked</em>' attribute.
-	 * @see #setChecked(boolean)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_Checked()
-	 * @model
-	 * @generated
-	 */
-    boolean isChecked();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#isChecked <em>Checked</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Checked</em>' attribute.
-	 * @see #isChecked()
-	 * @generated
-	 */
-    void setChecked(boolean value);
-
-    /**
-	 * Returns the value of the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Has Meter</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Has Meter</em>' attribute.
-	 * @see #setHasMeter(boolean)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_HasMeter()
-	 * @model
-	 * @generated
-	 */
-    boolean isHasMeter();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#isHasMeter <em>Has Meter</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Has Meter</em>' attribute.
-	 * @see #isHasMeter()
-	 * @generated
-	 */
-    void setHasMeter(boolean value);
-
-    /**
-	 * Returns the value of the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Isolated</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Isolated</em>' attribute.
-	 * @see #setIsolated(boolean)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_Isolated()
-	 * @model
-	 * @generated
-	 */
-    boolean isIsolated();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#isIsolated <em>Isolated</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Isolated</em>' attribute.
-	 * @see #isIsolated()
-	 * @generated
-	 */
-    void setIsolated(boolean value);
-
-    /**
-	 * Returns the value of the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Has Control</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Has Control</em>' attribute.
-	 * @see #setHasControl(boolean)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_HasControl()
-	 * @model
-	 * @generated
-	 */
-    boolean isHasControl();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#isHasControl <em>Has Control</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Has Control</em>' attribute.
-	 * @see #isHasControl()
-	 * @generated
-	 */
-    void setHasControl(boolean value);
-
-    /**
-	 * Returns the value of the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Part Of Feeder</em>' attribute isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Part Of Feeder</em>' attribute.
-	 * @see #setPartOfFeeder(boolean)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_PartOfFeeder()
-	 * @model
-	 * @generated
-	 */
-    boolean isPartOfFeeder();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#isPartOfFeeder <em>Part Of Feeder</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Part Of Feeder</em>' attribute.
-	 * @see #isPartOfFeeder()
-	 * @generated
-	 */
-    void setPartOfFeeder(boolean value);
-
-    /**
-	 * Returns the value of the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Control Element</em>' reference isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-	 * @return the value of the '<em>Control Element</em>' reference.
-	 * @see #setControlElement(EClass)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_ControlElement()
-	 * @model
-	 * @generated
-	 */
-    EClass getControlElement();
-
-    /**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#getControlElement <em>Control Element</em>}' reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Control Element</em>' reference.
-	 * @see #getControlElement()
-	 * @generated
-	 */
-    void setControlElement(EClass value);
-
-    /**
 	 * Returns the value of the '<em><b>Terminals</b></em>' reference list.
 	 * The list contents are of type {@link electrickery.common.Terminal}.
 	 * <!-- begin-user-doc -->
@@ -407,24 +243,24 @@ public interface CircuitElement extends EObject {
      * </p>
      * <!-- end-user-doc -->
 	 * @return the value of the '<em>Active Terminal</em>' reference.
-	 * @see #setActiveTerminal(EClass)
+	 * @see #setActiveTerminal(Terminal)
 	 * @see electrickery.common.CommonPackage#getCircuitElement_ActiveTerminal()
 	 * @model
 	 * @generated
 	 */
-    EClass getActiveTerminal();
+    Terminal getActiveTerminal();
 
     /**
 	 * Sets the value of the '{@link electrickery.common.CircuitElement#getActiveTerminal <em>Active Terminal</em>}' reference.
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @param value the new value of the '<em>Active Terminal</em>' reference.
 	 * @see #getActiveTerminal()
 	 * @generated
 	 */
-    void setActiveTerminal(EClass value);
+	void setActiveTerminal(Terminal value);
 
-    /**
+				/**
 	 * Returns the value of the '<em><b>NTerms</b></em>' attribute.
 	 * <!-- begin-user-doc -->
      * <p>
@@ -627,32 +463,6 @@ public interface CircuitElement extends EObject {
     void setYPrimFreq(double value);
 
     /**
-	 * Returns the value of the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Like</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Like</em>' reference.
-	 * @see #setLike(CircuitElement)
-	 * @see electrickery.common.CommonPackage#getCircuitElement_Like()
-	 * @model
-	 * @generated
-	 */
-	CircuitElement getLike();
-
-				/**
-	 * Sets the value of the '{@link electrickery.common.CircuitElement#getLike <em>Like</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Like</em>' reference.
-	 * @see #getLike()
-	 * @generated
-	 */
-	void setLike(CircuitElement value);
-
-				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @model
@@ -677,14 +487,6 @@ public interface CircuitElement extends EObject {
     DComplexMatrix2D getYPrimValues(yBuildOption opt);
 
     /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-    void makePosSequence();
-
-				/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->

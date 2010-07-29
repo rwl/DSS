@@ -35,15 +35,6 @@ public interface ConversionFactory extends EFactory {
 	CurrentSource createCurrentSource();
 
 	/**
-	 * Returns a new object of class '<em>Equivalent</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Equivalent</em>'.
-	 * @generated
-	 */
-	Equivalent createEquivalent();
-
-	/**
 	 * Returns a new object of class '<em>Generator</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -69,15 +60,6 @@ public interface ConversionFactory extends EFactory {
 	 * @generated
 	 */
 	VoltageSource createVoltageSource();
-
-	/**
-	 * Returns a new object of class '<em>Storage</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Storage</em>'.
-	 * @generated
-	 */
-	Storage createStorage();
 
 	/**
 	 * Returns the package supported by this factory.

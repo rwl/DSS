@@ -83,31 +83,13 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__SOLUTION = 0;
 
 	/**
-	 * The feature id for the '<em><b>Control Queue</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__CONTROL_QUEUE = 1;
-
-	/**
 	 * The feature id for the '<em><b>Bus List</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_LIST = 2;
-
-	/**
-	 * The feature id for the '<em><b>Faults</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__FAULTS = 3;
+	int CIRCUIT__BUS_LIST = 1;
 
 	/**
 	 * The feature id for the '<em><b>Voltage Sources</b></em>' containment reference list.
@@ -116,115 +98,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__VOLTAGE_SOURCES = 4;
-
-	/**
-	 * The feature id for the '<em><b>Current Sources</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__CURRENT_SOURCES = 5;
-
-	/**
-	 * The feature id for the '<em><b>Sensors</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__SENSORS = 6;
-
-	/**
-	 * The feature id for the '<em><b>Monitors</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__MONITORS = 7;
-
-	/**
-	 * The feature id for the '<em><b>Energy Meters</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__ENERGY_METERS = 8;
-
-	/**
-	 * The feature id for the '<em><b>Generators</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__GENERATORS = 9;
-
-	/**
-	 * The feature id for the '<em><b>Transformers</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__TRANSFORMERS = 10;
-
-	/**
-	 * The feature id for the '<em><b>Cap Controls</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__CAP_CONTROLS = 11;
-
-	/**
-	 * The feature id for the '<em><b>Reg Controls</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__REG_CONTROLS = 12;
-
-	/**
-	 * The feature id for the '<em><b>Lines</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__LINES = 13;
-
-	/**
-	 * The feature id for the '<em><b>Loads</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__LOADS = 14;
-
-	/**
-	 * The feature id for the '<em><b>Shunt Capacitors</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__SHUNT_CAPACITORS = 15;
-
-	/**
-	 * The feature id for the '<em><b>Feeder</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__FEEDER = 16;
+	int CIRCUIT__VOLTAGE_SOURCES = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -233,7 +107,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NAME = 17;
+	int CIRCUIT__NAME = 3;
 
 	/**
 	 * The feature id for the '<em><b>Num Nodes</b></em>' attribute.
@@ -242,34 +116,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_NODES = 18;
-
-	/**
-	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 19;
-
-	/**
-	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__GEN_MULTIPLIER = 20;
-
-	/**
-	 * The feature id for the '<em><b>Solved</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT__SOLVED = 21;
+	int CIRCUIT__NUM_NODES = 4;
 
 	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
@@ -278,16 +125,16 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 22;
+	int CIRCUIT__BUS_NAME_REDEFINED = 5;
 
 	/**
-	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
+	 * The feature id for the '<em><b>Solved</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 23;
+	int CIRCUIT__SOLVED = 6;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -296,7 +143,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 24;
+	int CIRCUIT__LOAD_MULTIPLIER = 7;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -305,7 +152,25 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 25;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 8;
+
+	/**
+	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 9;
+
+	/**
+	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__GEN_MULTIPLIER = 10;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -314,7 +179,16 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 26;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 11;
+
+	/**
+	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 12;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -323,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 27;
+	int CIRCUIT__PRICE_SIGNAL = 13;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -332,7 +206,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 28;
+	int CIRCUIT_FEATURE_COUNT = 14;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -355,16 +229,6 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT = 2;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.CollectionImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getCollection()
-	 * @generated
-	 */
-	int COLLECTION = 3;
-
-	/**
 	 * The meta object id for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -372,17 +236,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getConductor()
 	 * @generated
 	 */
-	int CONDUCTOR = 4;
-
-	/**
-	 * The meta object id for the '{@link electrickery.common.impl.FeederImpl <em>Feeder</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.FeederImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getFeeder()
-	 * @generated
-	 */
-	int FEEDER = 5;
+	int CONDUCTOR = 5;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
@@ -392,7 +246,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getSolution()
 	 * @generated
 	 */
-	int SOLUTION = 6;
+	int SOLUTION = 3;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.TerminalImpl <em>Terminal</em>}' class.
@@ -402,17 +256,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getTerminal()
 	 * @generated
 	 */
-	int TERMINAL = 7;
-
-	/**
-	 * The meta object id for the '{@link electrickery.common.impl.ControlQueueImpl <em>Control Queue</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.ControlQueueImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getControlQueue()
-	 * @generated
-	 */
-	int CONTROL_QUEUE = 8;
+	int TERMINAL = 4;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
@@ -422,7 +266,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
 	 * @generated
 	 */
-	int NAMED = 9;
+	int NAMED = 6;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -479,94 +323,13 @@ public interface CommonPackage extends EPackage {
 	int BUS__BUS_CURRENT = NAMED_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>ZSC</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__ZSC = NAMED_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>YSC</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__YSC = NAMED_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>X</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__X = NAMED_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>Y</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__Y = NAMED_FEATURE_COUNT + 6;
-
-	/**
-	 * The feature id for the '<em><b>KV Base</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__KV_BASE = NAMED_FEATURE_COUNT + 7;
-
-	/**
-	 * The feature id for the '<em><b>Coords Defined</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__COORDS_DEFINED = NAMED_FEATURE_COUNT + 8;
-
-	/**
-	 * The feature id for the '<em><b>Bus Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__BUS_CHECKED = NAMED_FEATURE_COUNT + 9;
-
-	/**
-	 * The feature id for the '<em><b>Keep</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__KEEP = NAMED_FEATURE_COUNT + 10;
-
-	/**
-	 * The feature id for the '<em><b>Radial Bus</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int BUS__RADIAL_BUS = NAMED_FEATURE_COUNT + 11;
-
-	/**
 	 * The number of structural features of the '<em>Bus</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 12;
+	int BUS_FEATURE_COUNT = NAMED_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -632,67 +395,13 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT__LAST_TERMINAL_CHECKED = 6;
 
 	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__CHECKED = 7;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__HAS_METER = 8;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__ISOLATED = 9;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__HAS_CONTROL = 10;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__PART_OF_FEEDER = 11;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__CONTROL_ELEMENT = 12;
-
-	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__TERMINALS = 13;
+	int CIRCUIT_ELEMENT__TERMINALS = 7;
 
 	/**
 	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
@@ -701,7 +410,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__ACTIVE_TERMINAL = 14;
+	int CIRCUIT_ELEMENT__ACTIVE_TERMINAL = 8;
 
 	/**
 	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
@@ -710,7 +419,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__NTERMS = 15;
+	int CIRCUIT_ELEMENT__NTERMS = 9;
 
 	/**
 	 * The feature id for the '<em><b>NConds</b></em>' attribute.
@@ -719,7 +428,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__NCONDS = 16;
+	int CIRCUIT_ELEMENT__NCONDS = 10;
 
 	/**
 	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
@@ -728,7 +437,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__NPHASES = 17;
+	int CIRCUIT_ELEMENT__NPHASES = 11;
 
 	/**
 	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
@@ -737,7 +446,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__BUS_INDEX = 18;
+	int CIRCUIT_ELEMENT__BUS_INDEX = 12;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
@@ -746,7 +455,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_SERIES = 19;
+	int CIRCUIT_ELEMENT__YPRIM_SERIES = 13;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
@@ -755,7 +464,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_SHUNT = 20;
+	int CIRCUIT_ELEMENT__YPRIM_SHUNT = 14;
 
 	/**
 	 * The feature id for the '<em><b>YPrim</b></em>' reference.
@@ -764,7 +473,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM = 21;
+	int CIRCUIT_ELEMENT__YPRIM = 15;
 
 	/**
 	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
@@ -773,16 +482,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT__YPRIM_FREQ = 22;
-
-	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CIRCUIT_ELEMENT__LIKE = 23;
+	int CIRCUIT_ELEMENT__YPRIM_FREQ = 16;
 
 	/**
 	 * The number of structural features of the '<em>Circuit Element</em>' class.
@@ -791,160 +491,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT_FEATURE_COUNT = 24;
-
-	/**
-	 * The feature id for the '<em><b>NProperties</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__NPROPERTIES = 0;
-
-	/**
-	 * The feature id for the '<em><b>Property Name</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__PROPERTY_NAME = 1;
-
-	/**
-	 * The feature id for the '<em><b>Property Help</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__PROPERTY_HELP = 2;
-
-	/**
-	 * The feature id for the '<em><b>Property Idx Map</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__PROPERTY_IDX_MAP = 3;
-
-	/**
-	 * The feature id for the '<em><b>Element List</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__ELEMENT_LIST = 4;
-
-	/**
-	 * The feature id for the '<em><b>Saved</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION__SAVED = 5;
-
-	/**
-	 * The number of structural features of the '<em>Collection</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int COLLECTION_FEATURE_COUNT = 6;
-
-	/**
-	 * The feature id for the '<em><b>Closed</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONDUCTOR__CLOSED = 0;
-
-	/**
-	 * The feature id for the '<em><b>Fuse Blown</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONDUCTOR__FUSE_BLOWN = 1;
-
-	/**
-	 * The feature id for the '<em><b>Accum ISq T</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONDUCTOR__ACCUM_ISQ_T = 2;
-
-	/**
-	 * The feature id for the '<em><b>Tcc Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONDUCTOR__TCC_NAME = 3;
-
-	/**
-	 * The number of structural features of the '<em>Conductor</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CONDUCTOR_FEATURE_COUNT = 4;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEEDER__SPECTRUM = 0;
-
-	/**
-	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEEDER__BASE_FREQ = 1;
-
-	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEEDER__ENABLED = 2;
-
-	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEEDER__LIKE = 3;
-
-	/**
-	 * The number of structural features of the '<em>Feeder</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int FEEDER_FEATURE_COUNT = 4;
+	int CIRCUIT_ELEMENT_FEATURE_COUNT = 17;
 
 	/**
 	 * The feature id for the '<em><b>Year</b></em>' attribute.
@@ -1289,104 +836,49 @@ public interface CommonPackage extends EPackage {
 	int TERMINAL_FEATURE_COUNT = 6;
 
 	/**
-	 * The feature id for the '<em><b>Empty</b></em>' attribute.
+	 * The feature id for the '<em><b>Closed</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTROL_QUEUE__EMPTY = 0;
+	int CONDUCTOR__CLOSED = 0;
 
 	/**
-	 * The number of structural features of the '<em>Control Queue</em>' class.
+	 * The feature id for the '<em><b>Fuse Blown</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CONTROL_QUEUE_FEATURE_COUNT = 1;
+	int CONDUCTOR__FUSE_BLOWN = 1;
 
 	/**
-	 * The meta object id for the '{@link electrickery.common.impl.ElectrickeryImpl <em>Electrickery</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.impl.ElectrickeryImpl
-	 * @see electrickery.common.impl.CommonPackageImpl#getElectrickery()
-	 * @generated
-	 */
-	int ELECTRICKERY = 10;
-
-	/**
-	 * The feature id for the '<em><b>Wire Data</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Accum ISq T</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELECTRICKERY__WIRE_DATA = 0;
+	int CONDUCTOR__ACCUM_ISQ_T = 2;
 
 	/**
-	 * The feature id for the '<em><b>Line Geometries</b></em>' containment reference list.
+	 * The feature id for the '<em><b>Tcc Name</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELECTRICKERY__LINE_GEOMETRIES = 1;
+	int CONDUCTOR__TCC_NAME = 3;
 
 	/**
-	 * The feature id for the '<em><b>Growth Shapes</b></em>' containment reference list.
+	 * The number of structural features of the '<em>Conductor</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ELECTRICKERY__GROWTH_SHAPES = 2;
-
-	/**
-	 * The feature id for the '<em><b>Line Codes</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELECTRICKERY__LINE_CODES = 3;
-
-	/**
-	 * The feature id for the '<em><b>Load Shapes</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELECTRICKERY__LOAD_SHAPES = 4;
-
-	/**
-	 * The feature id for the '<em><b>Spectrums</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELECTRICKERY__SPECTRUMS = 5;
-
-	/**
-	 * The feature id for the '<em><b>Executives</b></em>' containment reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELECTRICKERY__EXECUTIVES = 6;
-
-	/**
-	 * The number of structural features of the '<em>Electrickery</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int ELECTRICKERY_FEATURE_COUNT = 7;
+	int CONDUCTOR_FEATURE_COUNT = 4;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
@@ -1396,7 +888,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 11;
+	int CONNECTION_TYPE = 7;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -1406,7 +898,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 12;
+	int LENGTH_UNIT = 8;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -1416,7 +908,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 13;
+	int TRIP_ACTION = 9;
 
 
 	/**
@@ -1427,7 +919,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 14;
+	int YBUILD_OPTION = 10;
 
 
 	/**
@@ -1438,7 +930,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 15;
+	int CONTROL_MODE_TYPE = 11;
 
 
 	/**
@@ -1449,7 +941,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 16;
+	int ALGORITHM_TYPE = 12;
 
 
 	/**
@@ -1474,17 +966,6 @@ public interface CommonPackage extends EPackage {
 	EReference getCircuit_Solution();
 
 	/**
-	 * Returns the meta object for the reference '{@link electrickery.common.Circuit#getControlQueue <em>Control Queue</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Control Queue</em>'.
-	 * @see electrickery.common.Circuit#getControlQueue()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_ControlQueue();
-
-	/**
 	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1496,17 +977,6 @@ public interface CommonPackage extends EPackage {
 	EReference getCircuit_BusList();
 
 	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getFaults <em>Faults</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Faults</em>'.
-	 * @see electrickery.common.Circuit#getFaults()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Faults();
-
-	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isBusNameRedefined <em>Bus Name Redefined</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1516,6 +986,94 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuit_BusNameRedefined();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isSolved <em>Solved</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Solved</em>'.
+	 * @see electrickery.common.Circuit#isSolved()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_Solved();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getLoadMultiplier <em>Load Multiplier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Load Multiplier</em>'.
+	 * @see electrickery.common.Circuit#getLoadMultiplier()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_LoadMultiplier();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getDefaultGrowthFactor <em>Default Growth Factor</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Default Growth Factor</em>'.
+	 * @see electrickery.common.Circuit#getDefaultGrowthFactor()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_DefaultGrowthFactor();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Generator Dispatch Reference</em>'.
+	 * @see electrickery.common.Circuit#getGeneratorDispatchReference()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_GeneratorDispatchReference();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getGenMultiplier <em>Gen Multiplier</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Gen Multiplier</em>'.
+	 * @see electrickery.common.Circuit#getGenMultiplier()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_GenMultiplier();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getDefaultHourMult <em>Default Hour Mult</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Default Hour Mult</em>'.
+	 * @see electrickery.common.Circuit#getDefaultHourMult()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_DefaultHourMult();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isControl_busNameRedefined <em>Control bus Name Redefined</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Control bus Name Redefined</em>'.
+	 * @see electrickery.common.Circuit#isControl_busNameRedefined()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_Control_busNameRedefined();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getPriceSignal <em>Price Signal</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Price Signal</em>'.
+	 * @see electrickery.common.Circuit#getPriceSignal()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_PriceSignal();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}'.
@@ -1549,226 +1107,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getCircuit_VoltageSources();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getCurrentSources <em>Current Sources</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Current Sources</em>'.
-	 * @see electrickery.common.Circuit#getCurrentSources()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_CurrentSources();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getSensors <em>Sensors</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Sensors</em>'.
-	 * @see electrickery.common.Circuit#getSensors()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Sensors();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getMonitors <em>Monitors</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Monitors</em>'.
-	 * @see electrickery.common.Circuit#getMonitors()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Monitors();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getEnergyMeters <em>Energy Meters</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Energy Meters</em>'.
-	 * @see electrickery.common.Circuit#getEnergyMeters()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_EnergyMeters();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getGenerators <em>Generators</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Generators</em>'.
-	 * @see electrickery.common.Circuit#getGenerators()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Generators();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getTransformers <em>Transformers</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Transformers</em>'.
-	 * @see electrickery.common.Circuit#getTransformers()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Transformers();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getCapControls <em>Cap Controls</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Cap Controls</em>'.
-	 * @see electrickery.common.Circuit#getCapControls()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_CapControls();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Circuit#getRegControls <em>Reg Controls</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Reg Controls</em>'.
-	 * @see electrickery.common.Circuit#getRegControls()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_RegControls();
-
-	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getLines <em>Lines</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Lines</em>'.
-	 * @see electrickery.common.Circuit#getLines()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Lines();
-
-	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getLoads <em>Loads</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Loads</em>'.
-	 * @see electrickery.common.Circuit#getLoads()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Loads();
-
-	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getShuntCapacitors <em>Shunt Capacitors</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Shunt Capacitors</em>'.
-	 * @see electrickery.common.Circuit#getShuntCapacitors()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_ShuntCapacitors();
-
-	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getFeeder <em>Feeder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Feeder</em>'.
-	 * @see electrickery.common.Circuit#getFeeder()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EReference getCircuit_Feeder();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Generator Dispatch Reference</em>'.
-	 * @see electrickery.common.Circuit#getGeneratorDispatchReference()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_GeneratorDispatchReference();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getGenMultiplier <em>Gen Multiplier</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Gen Multiplier</em>'.
-	 * @see electrickery.common.Circuit#getGenMultiplier()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_GenMultiplier();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isSolved <em>Solved</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Solved</em>'.
-	 * @see electrickery.common.Circuit#isSolved()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_Solved();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isControl_busNameRedefined <em>Control bus Name Redefined</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Control bus Name Redefined</em>'.
-	 * @see electrickery.common.Circuit#isControl_busNameRedefined()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_Control_busNameRedefined();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getLoadMultiplier <em>Load Multiplier</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Load Multiplier</em>'.
-	 * @see electrickery.common.Circuit#getLoadMultiplier()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_LoadMultiplier();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getDefaultGrowthFactor <em>Default Growth Factor</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Default Growth Factor</em>'.
-	 * @see electrickery.common.Circuit#getDefaultGrowthFactor()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_DefaultGrowthFactor();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getDefaultHourMult <em>Default Hour Mult</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Default Hour Mult</em>'.
-	 * @see electrickery.common.Circuit#getDefaultHourMult()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_DefaultHourMult();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getPriceSignal <em>Price Signal</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Price Signal</em>'.
-	 * @see electrickery.common.Circuit#getPriceSignal()
-	 * @see #getCircuit()
-	 * @generated
-	 */
-	EAttribute getCircuit_PriceSignal();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.Bus <em>Bus</em>}'.
@@ -1812,105 +1150,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getBus_BusCurrent();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getZSC <em>ZSC</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>ZSC</em>'.
-	 * @see electrickery.common.Bus#getZSC()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_ZSC();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getYSC <em>YSC</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>YSC</em>'.
-	 * @see electrickery.common.Bus#getYSC()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_YSC();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getX <em>X</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>X</em>'.
-	 * @see electrickery.common.Bus#getX()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_X();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getY <em>Y</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Y</em>'.
-	 * @see electrickery.common.Bus#getY()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_Y();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#getKVBase <em>KV Base</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KV Base</em>'.
-	 * @see electrickery.common.Bus#getKVBase()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_KVBase();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isCoordsDefined <em>Coords Defined</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Coords Defined</em>'.
-	 * @see electrickery.common.Bus#isCoordsDefined()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_CoordsDefined();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isBusChecked <em>Bus Checked</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Bus Checked</em>'.
-	 * @see electrickery.common.Bus#isBusChecked()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_BusChecked();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isKeep <em>Keep</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Keep</em>'.
-	 * @see electrickery.common.Bus#isKeep()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_Keep();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Bus#isRadialBus <em>Radial Bus</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Radial Bus</em>'.
-	 * @see electrickery.common.Bus#isRadialBus()
-	 * @see #getBus()
-	 * @generated
-	 */
-	EAttribute getBus_RadialBus();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.CircuitElement <em>Circuit Element</em>}'.
@@ -1998,72 +1237,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuitElement_LastTerminalChecked();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#isChecked <em>Checked</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Checked</em>'.
-	 * @see electrickery.common.CircuitElement#isChecked()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_Checked();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#isHasMeter <em>Has Meter</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Has Meter</em>'.
-	 * @see electrickery.common.CircuitElement#isHasMeter()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_HasMeter();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#isIsolated <em>Isolated</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Isolated</em>'.
-	 * @see electrickery.common.CircuitElement#isIsolated()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_Isolated();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#isHasControl <em>Has Control</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Has Control</em>'.
-	 * @see electrickery.common.CircuitElement#isHasControl()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_HasControl();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#isPartOfFeeder <em>Part Of Feeder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Part Of Feeder</em>'.
-	 * @see electrickery.common.CircuitElement#isPartOfFeeder()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EAttribute getCircuitElement_PartOfFeeder();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.common.CircuitElement#getControlElement <em>Control Element</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Control Element</em>'.
-	 * @see electrickery.common.CircuitElement#getControlElement()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EReference getCircuitElement_ControlElement();
 
 	/**
 	 * Returns the meta object for the reference list '{@link electrickery.common.CircuitElement#getTerminals <em>Terminals</em>}'.
@@ -2176,93 +1349,6 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuitElement_YPrimFreq();
 
 	/**
-	 * Returns the meta object for the reference '{@link electrickery.common.CircuitElement#getLike <em>Like</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Like</em>'.
-	 * @see electrickery.common.CircuitElement#getLike()
-	 * @see #getCircuitElement()
-	 * @generated
-	 */
-	EReference getCircuitElement_Like();
-
-	/**
-	 * Returns the meta object for class '{@link electrickery.common.Collection <em>Collection</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Collection</em>'.
-	 * @see electrickery.common.Collection
-	 * @generated
-	 */
-	EClass getCollection();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Collection#getNProperties <em>NProperties</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>NProperties</em>'.
-	 * @see electrickery.common.Collection#getNProperties()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EAttribute getCollection_NProperties();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link electrickery.common.Collection#getPropertyName <em>Property Name</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Property Name</em>'.
-	 * @see electrickery.common.Collection#getPropertyName()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EAttribute getCollection_PropertyName();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link electrickery.common.Collection#getPropertyHelp <em>Property Help</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Property Help</em>'.
-	 * @see electrickery.common.Collection#getPropertyHelp()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EAttribute getCollection_PropertyHelp();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link electrickery.common.Collection#getPropertyIdxMap <em>Property Idx Map</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Property Idx Map</em>'.
-	 * @see electrickery.common.Collection#getPropertyIdxMap()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EAttribute getCollection_PropertyIdxMap();
-
-	/**
-	 * Returns the meta object for the reference list '{@link electrickery.common.Collection#getElementList <em>Element List</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference list '<em>Element List</em>'.
-	 * @see electrickery.common.Collection#getElementList()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EReference getCollection_ElementList();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Collection#isSaved <em>Saved</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Saved</em>'.
-	 * @see electrickery.common.Collection#isSaved()
-	 * @see #getCollection()
-	 * @generated
-	 */
-	EAttribute getCollection_Saved();
-
-	/**
 	 * Returns the meta object for class '{@link electrickery.common.Conductor <em>Conductor</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2315,60 +1401,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getConductor_TccName();
-
-	/**
-	 * Returns the meta object for class '{@link electrickery.common.Feeder <em>Feeder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Feeder</em>'.
-	 * @see electrickery.common.Feeder
-	 * @generated
-	 */
-	EClass getFeeder();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.common.Feeder#getSpectrum <em>Spectrum</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Spectrum</em>'.
-	 * @see electrickery.common.Feeder#getSpectrum()
-	 * @see #getFeeder()
-	 * @generated
-	 */
-	EReference getFeeder_Spectrum();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Feeder#getBaseFreq <em>Base Freq</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Base Freq</em>'.
-	 * @see electrickery.common.Feeder#getBaseFreq()
-	 * @see #getFeeder()
-	 * @generated
-	 */
-	EAttribute getFeeder_BaseFreq();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.Feeder#isEnabled <em>Enabled</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Enabled</em>'.
-	 * @see electrickery.common.Feeder#isEnabled()
-	 * @see #getFeeder()
-	 * @generated
-	 */
-	EAttribute getFeeder_Enabled();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.common.Feeder#getLike <em>Like</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Like</em>'.
-	 * @see electrickery.common.Feeder#getLike()
-	 * @see #getFeeder()
-	 * @generated
-	 */
-	EReference getFeeder_Like();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.Solution <em>Solution</em>}'.
@@ -2787,27 +1819,6 @@ public interface CommonPackage extends EPackage {
 	EAttribute getTerminal_ActiveConductor();
 
 	/**
-	 * Returns the meta object for class '{@link electrickery.common.ControlQueue <em>Control Queue</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Control Queue</em>'.
-	 * @see electrickery.common.ControlQueue
-	 * @generated
-	 */
-	EClass getControlQueue();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.common.ControlQueue#isEmpty <em>Empty</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Empty</em>'.
-	 * @see electrickery.common.ControlQueue#isEmpty()
-	 * @see #getControlQueue()
-	 * @generated
-	 */
-	EAttribute getControlQueue_Empty();
-
-	/**
 	 * Returns the meta object for class '{@link electrickery.common.Named <em>Named</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2827,93 +1838,6 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getNamed_Name();
-
-	/**
-	 * Returns the meta object for class '{@link electrickery.common.Electrickery <em>Electrickery</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Electrickery</em>'.
-	 * @see electrickery.common.Electrickery
-	 * @generated
-	 */
-	EClass getElectrickery();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getWireData <em>Wire Data</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Wire Data</em>'.
-	 * @see electrickery.common.Electrickery#getWireData()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_WireData();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLineGeometries <em>Line Geometries</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Line Geometries</em>'.
-	 * @see electrickery.common.Electrickery#getLineGeometries()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_LineGeometries();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getGrowthShapes <em>Growth Shapes</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Growth Shapes</em>'.
-	 * @see electrickery.common.Electrickery#getGrowthShapes()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_GrowthShapes();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLineCodes <em>Line Codes</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Line Codes</em>'.
-	 * @see electrickery.common.Electrickery#getLineCodes()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_LineCodes();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getLoadShapes <em>Load Shapes</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Load Shapes</em>'.
-	 * @see electrickery.common.Electrickery#getLoadShapes()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_LoadShapes();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getSpectrums <em>Spectrums</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Spectrums</em>'.
-	 * @see electrickery.common.Electrickery#getSpectrums()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_Spectrums();
-
-	/**
-	 * Returns the meta object for the containment reference list '{@link electrickery.common.Electrickery#getExecutives <em>Executives</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference list '<em>Executives</em>'.
-	 * @see electrickery.common.Electrickery#getExecutives()
-	 * @see #getElectrickery()
-	 * @generated
-	 */
-	EReference getElectrickery_Executives();
 
 	/**
 	 * Returns the meta object for enum '{@link electrickery.common.connectionType <em>connection Type</em>}'.
@@ -3016,14 +1940,6 @@ public interface CommonPackage extends EPackage {
 		EReference CIRCUIT__SOLUTION = eINSTANCE.getCircuit_Solution();
 
 		/**
-		 * The meta object literal for the '<em><b>Control Queue</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__CONTROL_QUEUE = eINSTANCE.getCircuit_ControlQueue();
-
-		/**
 		 * The meta object literal for the '<em><b>Bus List</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3032,20 +1948,76 @@ public interface CommonPackage extends EPackage {
 		EReference CIRCUIT__BUS_LIST = eINSTANCE.getCircuit_BusList();
 
 		/**
-		 * The meta object literal for the '<em><b>Faults</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__FAULTS = eINSTANCE.getCircuit_Faults();
-
-		/**
 		 * The meta object literal for the '<em><b>Bus Name Redefined</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
 		EAttribute CIRCUIT__BUS_NAME_REDEFINED = eINSTANCE.getCircuit_BusNameRedefined();
+
+		/**
+		 * The meta object literal for the '<em><b>Solved</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__SOLVED = eINSTANCE.getCircuit_Solved();
+
+		/**
+		 * The meta object literal for the '<em><b>Load Multiplier</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__LOAD_MULTIPLIER = eINSTANCE.getCircuit_LoadMultiplier();
+
+		/**
+		 * The meta object literal for the '<em><b>Default Growth Factor</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__DEFAULT_GROWTH_FACTOR = eINSTANCE.getCircuit_DefaultGrowthFactor();
+
+		/**
+		 * The meta object literal for the '<em><b>Generator Dispatch Reference</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__GENERATOR_DISPATCH_REFERENCE = eINSTANCE.getCircuit_GeneratorDispatchReference();
+
+		/**
+		 * The meta object literal for the '<em><b>Gen Multiplier</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__GEN_MULTIPLIER = eINSTANCE.getCircuit_GenMultiplier();
+
+		/**
+		 * The meta object literal for the '<em><b>Default Hour Mult</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__DEFAULT_HOUR_MULT = eINSTANCE.getCircuit_DefaultHourMult();
+
+		/**
+		 * The meta object literal for the '<em><b>Control bus Name Redefined</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__CONTROL_BUS_NAME_REDEFINED = eINSTANCE.getCircuit_Control_busNameRedefined();
+
+		/**
+		 * The meta object literal for the '<em><b>Price Signal</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__PRICE_SIGNAL = eINSTANCE.getCircuit_PriceSignal();
 
 		/**
 		 * The meta object literal for the '<em><b>Num Nodes</b></em>' attribute feature.
@@ -3070,166 +2042,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CIRCUIT__VOLTAGE_SOURCES = eINSTANCE.getCircuit_VoltageSources();
-
-		/**
-		 * The meta object literal for the '<em><b>Current Sources</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__CURRENT_SOURCES = eINSTANCE.getCircuit_CurrentSources();
-
-		/**
-		 * The meta object literal for the '<em><b>Sensors</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__SENSORS = eINSTANCE.getCircuit_Sensors();
-
-		/**
-		 * The meta object literal for the '<em><b>Monitors</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__MONITORS = eINSTANCE.getCircuit_Monitors();
-
-		/**
-		 * The meta object literal for the '<em><b>Energy Meters</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__ENERGY_METERS = eINSTANCE.getCircuit_EnergyMeters();
-
-		/**
-		 * The meta object literal for the '<em><b>Generators</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__GENERATORS = eINSTANCE.getCircuit_Generators();
-
-		/**
-		 * The meta object literal for the '<em><b>Transformers</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__TRANSFORMERS = eINSTANCE.getCircuit_Transformers();
-
-		/**
-		 * The meta object literal for the '<em><b>Cap Controls</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__CAP_CONTROLS = eINSTANCE.getCircuit_CapControls();
-
-		/**
-		 * The meta object literal for the '<em><b>Reg Controls</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__REG_CONTROLS = eINSTANCE.getCircuit_RegControls();
-
-		/**
-		 * The meta object literal for the '<em><b>Lines</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__LINES = eINSTANCE.getCircuit_Lines();
-
-		/**
-		 * The meta object literal for the '<em><b>Loads</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__LOADS = eINSTANCE.getCircuit_Loads();
-
-		/**
-		 * The meta object literal for the '<em><b>Shunt Capacitors</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__SHUNT_CAPACITORS = eINSTANCE.getCircuit_ShuntCapacitors();
-
-		/**
-		 * The meta object literal for the '<em><b>Feeder</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT__FEEDER = eINSTANCE.getCircuit_Feeder();
-
-		/**
-		 * The meta object literal for the '<em><b>Generator Dispatch Reference</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__GENERATOR_DISPATCH_REFERENCE = eINSTANCE.getCircuit_GeneratorDispatchReference();
-
-		/**
-		 * The meta object literal for the '<em><b>Gen Multiplier</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__GEN_MULTIPLIER = eINSTANCE.getCircuit_GenMultiplier();
-
-		/**
-		 * The meta object literal for the '<em><b>Solved</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__SOLVED = eINSTANCE.getCircuit_Solved();
-
-		/**
-		 * The meta object literal for the '<em><b>Control bus Name Redefined</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__CONTROL_BUS_NAME_REDEFINED = eINSTANCE.getCircuit_Control_busNameRedefined();
-
-		/**
-		 * The meta object literal for the '<em><b>Load Multiplier</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__LOAD_MULTIPLIER = eINSTANCE.getCircuit_LoadMultiplier();
-
-		/**
-		 * The meta object literal for the '<em><b>Default Growth Factor</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__DEFAULT_GROWTH_FACTOR = eINSTANCE.getCircuit_DefaultGrowthFactor();
-
-		/**
-		 * The meta object literal for the '<em><b>Default Hour Mult</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__DEFAULT_HOUR_MULT = eINSTANCE.getCircuit_DefaultHourMult();
-
-		/**
-		 * The meta object literal for the '<em><b>Price Signal</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT__PRICE_SIGNAL = eINSTANCE.getCircuit_PriceSignal();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
@@ -3264,78 +2076,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute BUS__BUS_CURRENT = eINSTANCE.getBus_BusCurrent();
-
-		/**
-		 * The meta object literal for the '<em><b>ZSC</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__ZSC = eINSTANCE.getBus_ZSC();
-
-		/**
-		 * The meta object literal for the '<em><b>YSC</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__YSC = eINSTANCE.getBus_YSC();
-
-		/**
-		 * The meta object literal for the '<em><b>X</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__X = eINSTANCE.getBus_X();
-
-		/**
-		 * The meta object literal for the '<em><b>Y</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__Y = eINSTANCE.getBus_Y();
-
-		/**
-		 * The meta object literal for the '<em><b>KV Base</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__KV_BASE = eINSTANCE.getBus_KVBase();
-
-		/**
-		 * The meta object literal for the '<em><b>Coords Defined</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__COORDS_DEFINED = eINSTANCE.getBus_CoordsDefined();
-
-		/**
-		 * The meta object literal for the '<em><b>Bus Checked</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__BUS_CHECKED = eINSTANCE.getBus_BusChecked();
-
-		/**
-		 * The meta object literal for the '<em><b>Keep</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__KEEP = eINSTANCE.getBus_Keep();
-
-		/**
-		 * The meta object literal for the '<em><b>Radial Bus</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute BUS__RADIAL_BUS = eINSTANCE.getBus_RadialBus();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.CircuitElementImpl <em>Circuit Element</em>}' class.
@@ -3402,54 +2142,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT_ELEMENT__LAST_TERMINAL_CHECKED = eINSTANCE.getCircuitElement_LastTerminalChecked();
-
-		/**
-		 * The meta object literal for the '<em><b>Checked</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__CHECKED = eINSTANCE.getCircuitElement_Checked();
-
-		/**
-		 * The meta object literal for the '<em><b>Has Meter</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__HAS_METER = eINSTANCE.getCircuitElement_HasMeter();
-
-		/**
-		 * The meta object literal for the '<em><b>Isolated</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__ISOLATED = eINSTANCE.getCircuitElement_Isolated();
-
-		/**
-		 * The meta object literal for the '<em><b>Has Control</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__HAS_CONTROL = eINSTANCE.getCircuitElement_HasControl();
-
-		/**
-		 * The meta object literal for the '<em><b>Part Of Feeder</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CIRCUIT_ELEMENT__PART_OF_FEEDER = eINSTANCE.getCircuitElement_PartOfFeeder();
-
-		/**
-		 * The meta object literal for the '<em><b>Control Element</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT_ELEMENT__CONTROL_ELEMENT = eINSTANCE.getCircuitElement_ControlElement();
 
 		/**
 		 * The meta object literal for the '<em><b>Terminals</b></em>' reference list feature.
@@ -3532,72 +2224,6 @@ public interface CommonPackage extends EPackage {
 		EAttribute CIRCUIT_ELEMENT__YPRIM_FREQ = eINSTANCE.getCircuitElement_YPrimFreq();
 
 		/**
-		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference CIRCUIT_ELEMENT__LIKE = eINSTANCE.getCircuitElement_Like();
-
-		/**
-		 * The meta object literal for the '{@link electrickery.common.impl.CollectionImpl <em>Collection</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.common.impl.CollectionImpl
-		 * @see electrickery.common.impl.CommonPackageImpl#getCollection()
-		 * @generated
-		 */
-		EClass COLLECTION = eINSTANCE.getCollection();
-
-		/**
-		 * The meta object literal for the '<em><b>NProperties</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COLLECTION__NPROPERTIES = eINSTANCE.getCollection_NProperties();
-
-		/**
-		 * The meta object literal for the '<em><b>Property Name</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COLLECTION__PROPERTY_NAME = eINSTANCE.getCollection_PropertyName();
-
-		/**
-		 * The meta object literal for the '<em><b>Property Help</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COLLECTION__PROPERTY_HELP = eINSTANCE.getCollection_PropertyHelp();
-
-		/**
-		 * The meta object literal for the '<em><b>Property Idx Map</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COLLECTION__PROPERTY_IDX_MAP = eINSTANCE.getCollection_PropertyIdxMap();
-
-		/**
-		 * The meta object literal for the '<em><b>Element List</b></em>' reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference COLLECTION__ELEMENT_LIST = eINSTANCE.getCollection_ElementList();
-
-		/**
-		 * The meta object literal for the '<em><b>Saved</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute COLLECTION__SAVED = eINSTANCE.getCollection_Saved();
-
-		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3638,48 +2264,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CONDUCTOR__TCC_NAME = eINSTANCE.getConductor_TccName();
-
-		/**
-		 * The meta object literal for the '{@link electrickery.common.impl.FeederImpl <em>Feeder</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.common.impl.FeederImpl
-		 * @see electrickery.common.impl.CommonPackageImpl#getFeeder()
-		 * @generated
-		 */
-		EClass FEEDER = eINSTANCE.getFeeder();
-
-		/**
-		 * The meta object literal for the '<em><b>Spectrum</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FEEDER__SPECTRUM = eINSTANCE.getFeeder_Spectrum();
-
-		/**
-		 * The meta object literal for the '<em><b>Base Freq</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FEEDER__BASE_FREQ = eINSTANCE.getFeeder_BaseFreq();
-
-		/**
-		 * The meta object literal for the '<em><b>Enabled</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute FEEDER__ENABLED = eINSTANCE.getFeeder_Enabled();
-
-		/**
-		 * The meta object literal for the '<em><b>Like</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference FEEDER__LIKE = eINSTANCE.getFeeder_Like();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
@@ -3990,24 +2574,6 @@ public interface CommonPackage extends EPackage {
 		EAttribute TERMINAL__ACTIVE_CONDUCTOR = eINSTANCE.getTerminal_ActiveConductor();
 
 		/**
-		 * The meta object literal for the '{@link electrickery.common.impl.ControlQueueImpl <em>Control Queue</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.common.impl.ControlQueueImpl
-		 * @see electrickery.common.impl.CommonPackageImpl#getControlQueue()
-		 * @generated
-		 */
-		EClass CONTROL_QUEUE = eINSTANCE.getControlQueue();
-
-		/**
-		 * The meta object literal for the '<em><b>Empty</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute CONTROL_QUEUE__EMPTY = eINSTANCE.getControlQueue_Empty();
-
-		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -4024,72 +2590,6 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute NAMED__NAME = eINSTANCE.getNamed_Name();
-
-		/**
-		 * The meta object literal for the '{@link electrickery.common.impl.ElectrickeryImpl <em>Electrickery</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.common.impl.ElectrickeryImpl
-		 * @see electrickery.common.impl.CommonPackageImpl#getElectrickery()
-		 * @generated
-		 */
-		EClass ELECTRICKERY = eINSTANCE.getElectrickery();
-
-		/**
-		 * The meta object literal for the '<em><b>Wire Data</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__WIRE_DATA = eINSTANCE.getElectrickery_WireData();
-
-		/**
-		 * The meta object literal for the '<em><b>Line Geometries</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__LINE_GEOMETRIES = eINSTANCE.getElectrickery_LineGeometries();
-
-		/**
-		 * The meta object literal for the '<em><b>Growth Shapes</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__GROWTH_SHAPES = eINSTANCE.getElectrickery_GrowthShapes();
-
-		/**
-		 * The meta object literal for the '<em><b>Line Codes</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__LINE_CODES = eINSTANCE.getElectrickery_LineCodes();
-
-		/**
-		 * The meta object literal for the '<em><b>Load Shapes</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__LOAD_SHAPES = eINSTANCE.getElectrickery_LoadShapes();
-
-		/**
-		 * The meta object literal for the '<em><b>Spectrums</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__SPECTRUMS = eINSTANCE.getElectrickery_Spectrums();
-
-		/**
-		 * The meta object literal for the '<em><b>Executives</b></em>' containment reference list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference ELECTRICKERY__EXECUTIVES = eINSTANCE.getElectrickery_Executives();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.

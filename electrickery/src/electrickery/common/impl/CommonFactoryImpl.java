@@ -7,15 +7,25 @@
 package electrickery.common.impl;
 
 import electrickery.common.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
+import electrickery.common.Bus;
+import electrickery.common.Circuit;
+import electrickery.common.CommonFactory;
+import electrickery.common.CommonPackage;
+import electrickery.common.Solution;
+import electrickery.common.Terminal;
+import electrickery.common.algorithmType;
+import electrickery.common.connectionType;
+import electrickery.common.controlModeType;
+import electrickery.common.lengthUnit;
+import electrickery.common.tripAction;
+import electrickery.common.yBuildOption;
 
 /**
  * <!-- begin-user-doc -->
@@ -63,11 +73,8 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 		switch (eClass.getClassifierID()) {
 			case CommonPackage.CIRCUIT: return createCircuit();
 			case CommonPackage.BUS: return createBus();
-			case CommonPackage.FEEDER: return createFeeder();
 			case CommonPackage.SOLUTION: return createSolution();
 			case CommonPackage.TERMINAL: return createTerminal();
-			case CommonPackage.CONTROL_QUEUE: return createControlQueue();
-			case CommonPackage.ELECTRICKERY: return createElectrickery();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -148,16 +155,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Feeder createFeeder() {
-		FeederImpl feeder = new FeederImpl();
-		return feeder;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public Solution createSolution() {
 		SolutionImpl solution = new SolutionImpl();
 		return solution;
@@ -171,26 +168,6 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public Terminal createTerminal() {
 		TerminalImpl terminal = new TerminalImpl();
 		return terminal;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ControlQueue createControlQueue() {
-		ControlQueueImpl controlQueue = new ControlQueueImpl();
-		return controlQueue;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public Electrickery createElectrickery() {
-		ElectrickeryImpl electrickery = new ElectrickeryImpl();
-		return electrickery;
 	}
 
 	/**

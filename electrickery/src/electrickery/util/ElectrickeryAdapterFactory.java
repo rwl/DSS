@@ -6,20 +6,17 @@
  */
 package electrickery.util;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
-import cern.colt.matrix.tdouble.DoubleMatrix1D;
-import cern.colt.matrix.tdouble.DoubleMatrix2D;
-
-import electrickery.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
+import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import cern.colt.matrix.tdouble.DoubleMatrix1D;
+import cern.colt.matrix.tdouble.DoubleMatrix2D;
+import electrickery.*;
+import electrickery.ElectrickeryPackage;
 
 /**
  * <!-- begin-user-doc -->

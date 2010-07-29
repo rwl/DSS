@@ -6,23 +6,19 @@
  */
 package electrickery.common.impl;
 
-import electrickery.common.CommonPackage;
-import electrickery.common.Conductor;
-import electrickery.common.Terminal;
-
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
-
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectResolvingEList;
+
+import electrickery.common.CommonPackage;
+import electrickery.common.Conductor;
+import electrickery.common.Terminal;
 
 /**
  * <!-- begin-user-doc -->

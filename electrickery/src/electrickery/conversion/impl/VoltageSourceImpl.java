@@ -6,22 +6,19 @@
  */
 package electrickery.conversion.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-import electrickery.conversion.ConversionPackage;
-import electrickery.conversion.VoltageSource;
-import electrickery.conversion.sequenceType;
-import electrickery.conversion.specType;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import cern.colt.matrix.tdcomplex.DComplexFactory2D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 import cern.jet.math.tdcomplex.DComplexFunctions;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.VoltageSource;
+import electrickery.conversion.sequenceType;
+import electrickery.conversion.specType;
 
 /**
  * <!-- begin-user-doc -->
@@ -1019,9 +1016,9 @@ public class VoltageSourceImpl extends PowerConversionElementImpl implements Vol
         }
 
         // TODO: Implement find spectrum or change to reference.
-        if (getSpectrum() == "") {
-            System.out.println("Spectrum '" + getSpectrum() + "' for VSource '" + getName() + "' not found.");
-        }
+//        if (getSpectrum() == "") {
+//            System.out.println("Spectrum '" + getSpectrum() + "' for VSource '" + getName() + "' not found.");
+//        }
     }
 
     /**

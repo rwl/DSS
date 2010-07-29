@@ -26,24 +26,6 @@ public interface ExecutiveFactory extends EFactory {
 	ExecutiveFactory eINSTANCE = electrickery.executive.impl.ExecutiveFactoryImpl.init();
 
 	/**
-	 * Returns a new object of class '<em>Exec Options</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Exec Options</em>'.
-	 * @generated
-	 */
-	ExecOptions createExecOptions();
-
-	/**
-	 * Returns a new object of class '<em>Exec Commands</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Exec Commands</em>'.
-	 * @generated
-	 */
-	ExecCommands createExecCommands();
-
-	/**
 	 * Returns a new object of class '<em>Executive</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

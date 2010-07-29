@@ -5,10 +5,10 @@
  */
 package electrickery.executive;
 
-import electrickery.common.Circuit;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.common.Circuit;
 
 /**
  * <!-- begin-user-doc -->
@@ -19,8 +19,6 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link electrickery.executive.Executive#getCommand <em>Command</em>}</li>
- *   <li>{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}</li>
- *   <li>{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}</li>
  *   <li>{@link electrickery.executive.Executive#getActiveCircuit <em>Active Circuit</em>}</li>
  *   <li>{@link electrickery.executive.Executive#getCircuits <em>Circuits</em>}</li>
  *   <li>{@link electrickery.executive.Executive#getMaxCircuits <em>Max Circuits</em>}</li>
@@ -57,58 +55,6 @@ public interface Executive extends EObject {
 	 * @generated
 	 */
 	void setCommand(String value);
-
-	/**
-	 * Returns the value of the '<em><b>Exec Commands</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Exec Commands</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Exec Commands</em>' containment reference.
-	 * @see #setExecCommands(ExecCommands)
-	 * @see electrickery.executive.ExecutivePackage#getExecutive_ExecCommands()
-	 * @model containment="true"
-	 * @generated
-	 */
-	ExecCommands getExecCommands();
-
-	/**
-	 * Sets the value of the '{@link electrickery.executive.Executive#getExecCommands <em>Exec Commands</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Exec Commands</em>' containment reference.
-	 * @see #getExecCommands()
-	 * @generated
-	 */
-	void setExecCommands(ExecCommands value);
-
-	/**
-	 * Returns the value of the '<em><b>Exec Options</b></em>' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Exec Options</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Exec Options</em>' containment reference.
-	 * @see #setExecOptions(ExecOptions)
-	 * @see electrickery.executive.ExecutivePackage#getExecutive_ExecOptions()
-	 * @model containment="true"
-	 * @generated
-	 */
-	ExecOptions getExecOptions();
-
-	/**
-	 * Sets the value of the '{@link electrickery.executive.Executive#getExecOptions <em>Exec Options</em>}' containment reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Exec Options</em>' containment reference.
-	 * @see #getExecOptions()
-	 * @generated
-	 */
-	void setExecOptions(ExecOptions value);
 
 	/**
 	 * Returns the value of the '<em><b>Active Circuit</b></em>' reference.

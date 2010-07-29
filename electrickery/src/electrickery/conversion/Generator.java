@@ -127,28 +127,26 @@ import electrickery.common.connectionType;
  */
 public interface Generator extends PowerConversionElement {
     /**
-	 * Returns the value of the '<em><b>Circuit</b></em>' container reference.
-	 * It is bidirectional and its opposite is '{@link electrickery.common.Circuit#getGenerators <em>Generators</em>}'.
+	 * Returns the value of the '<em><b>Circuit</b></em>' reference.
 	 * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Circuit</em>' container reference isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-	 * @return the value of the '<em>Circuit</em>' container reference.
+	 * @return the value of the '<em>Circuit</em>' reference.
 	 * @see #setCircuit(Circuit)
 	 * @see electrickery.conversion.ConversionPackage#getGenerator_Circuit()
-	 * @see electrickery.common.Circuit#getGenerators
-	 * @model opposite="generators" transient="false"
+	 * @model
 	 * @generated
 	 */
     Circuit getCircuit();
 
     /**
-	 * Sets the value of the '{@link electrickery.conversion.Generator#getCircuit <em>Circuit</em>}' container reference.
+	 * Sets the value of the '{@link electrickery.conversion.Generator#getCircuit <em>Circuit</em>}' reference.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Circuit</em>' container reference.
+	 * @param value the new value of the '<em>Circuit</em>' reference.
 	 * @see #getCircuit()
 	 * @generated
 	 */

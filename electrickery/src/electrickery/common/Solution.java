@@ -5,12 +5,11 @@
  */
 package electrickery.common;
 
+import org.eclipse.emf.ecore.EObject;
+
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.impl.DenseDComplexMatrix1D;
 import electrickery.executive.loadModelType;
 import electrickery.executive.solutionMode;
-
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -892,17 +891,6 @@ public interface Solution extends EObject {
 	/**
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Updates voltages for each bus from nodeV.
-	 * <!-- end-model-doc -->
-	 * @model
-	 * @generated
-	 */
-	void updateVBus();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
 	 * @model
 	 * @generated
 	 */
@@ -923,14 +911,6 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void solve();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void restoreNodeVFromVBus();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -973,63 +953,7 @@ public interface Solution extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void zeroInjectionCurrent();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model kind="operation"
-	 * @generated
-	 */
-	void getSourceInjCurrents();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model kind="operation"
-	 * @generated
-	 */
-	void getMachineInjCurrents();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model kind="operation"
-	 * @generated
-	 */
-	void getPCInjCurrents();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void setGenerator_dQdV();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
 	void setGeneratorDispRef();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void doNormalSolution();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void doNewtonSolution();
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -1086,13 +1010,5 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void checkFaultStatus();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void addInAuxCurrents(algorithmType algorithm);
 
 } // Solution

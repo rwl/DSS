@@ -7,15 +7,19 @@
 package electrickery.conversion.util;
 
 
-import electrickery.common.CircuitElement;
-import electrickery.conversion.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.common.CircuitElement;
+import electrickery.conversion.*;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
+import electrickery.conversion.PowerConversionElement;
+import electrickery.conversion.VoltageSource;
 
 /**
  * <!-- begin-user-doc -->
@@ -82,10 +86,6 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 				return createCurrentSourceAdapter();
 			}
 			@Override
-			public Adapter caseEquivalent(Equivalent object) {
-				return createEquivalentAdapter();
-			}
-			@Override
 			public Adapter caseGenerator(Generator object) {
 				return createGeneratorAdapter();
 			}
@@ -96,10 +96,6 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 			@Override
 			public Adapter caseVoltageSource(VoltageSource object) {
 				return createVoltageSourceAdapter();
-			}
-			@Override
-			public Adapter caseStorage(Storage object) {
-				return createStorageAdapter();
 			}
 			@Override
 			public Adapter caseCircuitElement(CircuitElement object) {
@@ -136,20 +132,6 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createCurrentSourceAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.conversion.Equivalent <em>Equivalent</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.conversion.Equivalent
-	 * @generated
-	 */
-	public Adapter createEquivalentAdapter() {
 		return null;
 	}
 
@@ -206,20 +188,6 @@ public class ConversionAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createVoltageSourceAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.conversion.Storage <em>Storage</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.conversion.Storage
-	 * @generated
-	 */
-	public Adapter createStorageAdapter() {
 		return null;
 	}
 

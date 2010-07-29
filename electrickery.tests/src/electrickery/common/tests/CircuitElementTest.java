@@ -17,7 +17,7 @@ import junit.framework.TestCase;
  *   <li>{@link electrickery.common.CircuitElement#calcYPrim(double) <em>Calc YPrim</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#doYPrimCalcs(cern.colt.matrix.tdcomplex.DComplexMatrix2D) <em>Do YPrim Calcs</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimValues(electrickery.common.yBuildOption) <em>Get YPrim Values</em>}</li>
- *   <li>{@link electrickery.common.CircuitElement#makePosSequence() <em>Make Pos Sequence</em>}</li>
+ *   <li>{@link electrickery.common.CircuitElement#setNodeRef(int, org.eclipse.emf.common.util.EList) <em>Set Node Ref</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -102,13 +102,13 @@ public abstract class CircuitElementTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link electrickery.common.CircuitElement#makePosSequence() <em>Make Pos Sequence</em>}' operation.
+	 * Tests the '{@link electrickery.common.CircuitElement#setNodeRef(int, org.eclipse.emf.common.util.EList) <em>Set Node Ref</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see electrickery.common.CircuitElement#makePosSequence()
+	 * @see electrickery.common.CircuitElement#setNodeRef(int, org.eclipse.emf.common.util.EList)
 	 * @generated
 	 */
-	public void testMakePosSequence() {
+	public void testSetNodeRef__int_EList() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

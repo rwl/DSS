@@ -17,7 +17,6 @@ import junit.textui.TestRunner;
  * <p>
  * The following operations are tested:
  * <ul>
- *   <li>{@link electrickery.common.Solution#updateVBus() <em>Update VBus</em>}</li>
  *   <li>{@link electrickery.common.Solution#solve() <em>Solve</em>}</li>
  *   <li>{@link electrickery.common.Solution#solveSnap() <em>Solve Snap</em>}</li>
  *   <li>{@link electrickery.common.Solution#solveCircuit() <em>Solve Circuit</em>}</li>
@@ -25,15 +24,7 @@ import junit.textui.TestRunner;
  *   <li>{@link electrickery.common.Solution#solveYDirect() <em>Solve YDirect</em>}</li>
  *   <li>{@link electrickery.common.Solution#solveSystem(cern.colt.matrix.tdcomplex.DComplexMatrix1D) <em>Solve System</em>}</li>
  *   <li>{@link electrickery.common.Solution#doPowerFlowSolution() <em>Do Power Flow Solution</em>}</li>
- *   <li>{@link electrickery.common.Solution#doNormalSolution() <em>Do Normal Solution</em>}</li>
- *   <li>{@link electrickery.common.Solution#doNewtonSolution() <em>Do Newton Solution</em>}</li>
  *   <li>{@link electrickery.common.Solution#snapShotInit() <em>Snap Shot Init</em>}</li>
- *   <li>{@link electrickery.common.Solution#restoreNodeVFromVBus() <em>Restore Node VFrom VBus</em>}</li>
- *   <li>{@link electrickery.common.Solution#zeroInjectionCurrent() <em>Zero Injection Current</em>}</li>
- *   <li>{@link electrickery.common.Solution#getSourceInjCurrents() <em>Get Source Inj Currents</em>}</li>
- *   <li>{@link electrickery.common.Solution#getMachineInjCurrents() <em>Get Machine Inj Currents</em>}</li>
- *   <li>{@link electrickery.common.Solution#getPCInjCurrents() <em>Get PC Inj Currents</em>}</li>
- *   <li>{@link electrickery.common.Solution#setGenerator_dQdV() <em>Set Generator dQd V</em>}</li>
  *   <li>{@link electrickery.common.Solution#setGeneratorDispRef() <em>Set Generator Disp Ref</em>}</li>
  *   <li>{@link electrickery.common.Solution#checkControls() <em>Check Controls</em>}</li>
  *   <li>{@link electrickery.common.Solution#convergenceCheck() <em>Convergence Check</em>}</li>
@@ -41,7 +32,6 @@ import junit.textui.TestRunner;
  *   <li>{@link electrickery.common.Solution#sampleControlDevices() <em>Sample Control Devices</em>}</li>
  *   <li>{@link electrickery.common.Solution#doControlActions() <em>Do Control Actions</em>}</li>
  *   <li>{@link electrickery.common.Solution#checkFaultStatus() <em>Check Fault Status</em>}</li>
- *   <li>{@link electrickery.common.Solution#addInAuxCurrents(electrickery.common.algorithmType) <em>Add In Aux Currents</em>}</li>
  * </ul>
  * </p>
  * @generated
@@ -115,19 +105,6 @@ public class SolutionTest extends TestCase {
 	@Override
 	protected void tearDown() throws Exception {
 		setFixture(null);
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#updateVBus() <em>Update VBus</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#updateVBus()
-	 * @generated
-	 */
-	public void testUpdateVBus() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
 	}
 
 	/**
@@ -222,32 +199,6 @@ public class SolutionTest extends TestCase {
 	}
 
 	/**
-	 * Tests the '{@link electrickery.common.Solution#doNormalSolution() <em>Do Normal Solution</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#doNormalSolution()
-	 * @generated
-	 */
-	public void testDoNormalSolution() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#doNewtonSolution() <em>Do Newton Solution</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#doNewtonSolution()
-	 * @generated
-	 */
-	public void testDoNewtonSolution() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
 	 * Tests the '{@link electrickery.common.Solution#snapShotInit() <em>Snap Shot Init</em>}' operation.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -255,84 +206,6 @@ public class SolutionTest extends TestCase {
 	 * @generated
 	 */
 	public void testSnapShotInit() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#restoreNodeVFromVBus() <em>Restore Node VFrom VBus</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#restoreNodeVFromVBus()
-	 * @generated
-	 */
-	public void testRestoreNodeVFromVBus() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#zeroInjectionCurrent() <em>Zero Injection Current</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#zeroInjectionCurrent()
-	 * @generated
-	 */
-	public void testZeroInjectionCurrent() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#getSourceInjCurrents() <em>Get Source Inj Currents</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#getSourceInjCurrents()
-	 * @generated
-	 */
-	public void testGetSourceInjCurrents() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#getMachineInjCurrents() <em>Get Machine Inj Currents</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#getMachineInjCurrents()
-	 * @generated
-	 */
-	public void testGetMachineInjCurrents() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#getPCInjCurrents() <em>Get PC Inj Currents</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#getPCInjCurrents()
-	 * @generated
-	 */
-	public void testGetPCInjCurrents() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#setGenerator_dQdV() <em>Set Generator dQd V</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#setGenerator_dQdV()
-	 * @generated
-	 */
-	public void testSetGenerator_dQdV() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();
@@ -424,19 +297,6 @@ public class SolutionTest extends TestCase {
 	 * @generated
 	 */
 	public void testCheckFaultStatus() {
-		// TODO: implement this operation test method
-		// Ensure that you remove @generated or mark it @generated NOT
-		fail();
-	}
-
-	/**
-	 * Tests the '{@link electrickery.common.Solution#addInAuxCurrents(electrickery.common.algorithmType) <em>Add In Aux Currents</em>}' operation.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.common.Solution#addInAuxCurrents(electrickery.common.algorithmType)
-	 * @generated
-	 */
-	public void testAddInAuxCurrents__algorithmType() {
 		// TODO: implement this operation test method
 		// Ensure that you remove @generated or mark it @generated NOT
 		fail();

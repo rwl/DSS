@@ -8,6 +8,12 @@ package electrickery.conversion.impl;
 
 
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import cern.jet.math.tdcomplex.DComplexFunctions;
 import electrickery.common.Circuit;
 import electrickery.common.connectionType;
 import electrickery.conversion.ConversionPackage;
@@ -15,16 +21,6 @@ import electrickery.conversion.Load;
 import electrickery.conversion.loadModel;
 import electrickery.conversion.loadSpecType;
 import electrickery.conversion.loadStatus;
-import electrickery.general.GrowthShape;
-
-import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-
-import cern.jet.math.tdcomplex.DComplexFunctions;
 
 /**
  * <!-- begin-user-doc -->
@@ -34,7 +30,6 @@ import cern.jet.math.tdcomplex.DComplexFunctions;
  * The following features are implemented:
  * <ul>
  *   <li>{@link electrickery.conversion.impl.LoadImpl#getCircuit <em>Circuit</em>}</li>
- *   <li>{@link electrickery.conversion.impl.LoadImpl#getGrowthShapeObj <em>Growth Shape Obj</em>}</li>
  *   <li>{@link electrickery.conversion.impl.LoadImpl#getBus1 <em>Bus1</em>}</li>
  *   <li>{@link electrickery.conversion.impl.LoadImpl#getKV <em>KV</em>}</li>
  *   <li>{@link electrickery.conversion.impl.LoadImpl#getKW <em>KW</em>}</li>
@@ -79,16 +74,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
     protected Circuit circuit;
 
                 /**
-	 * The cached value of the '{@link #getGrowthShapeObj() <em>Growth Shape Obj</em>}' reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getGrowthShapeObj()
-	 * @generated
-	 * @ordered
-	 */
-    protected GrowthShape growthShapeObj;
-
-                                                                /**
 	 * The default value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -806,11 +791,11 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
             // Default all to 1 in year 0; use base values.
             lastGrowthFactor = 1.0;
         } else {
-            if (getGrowthShapeObj() == null) {
-                lastGrowthFactor = getCircuit().getDefaultGrowthFactor();
-            } else if (year != lastYear) {
-                lastGrowthFactor = getGrowthShapeObj().getMult(year);
-            }
+//            if (getGrowthShapeObj() == null) {
+//                lastGrowthFactor = getCircuit().getDefaultGrowthFactor();
+//            } else if (year != lastYear) {
+//                lastGrowthFactor = getGrowthShapeObj().getMult(year);
+//            }
         }
         return lastGrowthFactor;
     }
@@ -854,44 +839,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
 	}
 
     /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public GrowthShape getGrowthShapeObj() {
-		if (growthShapeObj != null && growthShapeObj.eIsProxy()) {
-			InternalEObject oldGrowthShapeObj = (InternalEObject)growthShapeObj;
-			growthShapeObj = (GrowthShape)eResolveProxy(oldGrowthShapeObj);
-			if (growthShapeObj != oldGrowthShapeObj) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ConversionPackage.LOAD__GROWTH_SHAPE_OBJ, oldGrowthShapeObj, growthShapeObj));
-			}
-		}
-		return growthShapeObj;
-	}
-
-                                                                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public GrowthShape basicGetGrowthShapeObj() {
-		return growthShapeObj;
-	}
-
-                                                                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public void setGrowthShapeObj(GrowthShape newGrowthShapeObj) {
-		GrowthShape oldGrowthShapeObj = growthShapeObj;
-		growthShapeObj = newGrowthShapeObj;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.LOAD__GROWTH_SHAPE_OBJ, oldGrowthShapeObj, growthShapeObj));
-	}
-
-                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -1469,9 +1416,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
 			case ConversionPackage.LOAD__CIRCUIT:
 				if (resolve) return getCircuit();
 				return basicGetCircuit();
-			case ConversionPackage.LOAD__GROWTH_SHAPE_OBJ:
-				if (resolve) return getGrowthShapeObj();
-				return basicGetGrowthShapeObj();
 			case ConversionPackage.LOAD__BUS1:
 				return getBus1();
 			case ConversionPackage.LOAD__KV:
@@ -1540,9 +1484,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
 		switch (featureID) {
 			case ConversionPackage.LOAD__CIRCUIT:
 				setCircuit((Circuit)newValue);
-				return;
-			case ConversionPackage.LOAD__GROWTH_SHAPE_OBJ:
-				setGrowthShapeObj((GrowthShape)newValue);
 				return;
 			case ConversionPackage.LOAD__BUS1:
 				setBus1((String)newValue);
@@ -1640,9 +1581,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
 			case ConversionPackage.LOAD__CIRCUIT:
 				setCircuit((Circuit)null);
 				return;
-			case ConversionPackage.LOAD__GROWTH_SHAPE_OBJ:
-				setGrowthShapeObj((GrowthShape)null);
-				return;
 			case ConversionPackage.LOAD__BUS1:
 				setBus1(BUS1_EDEFAULT);
 				return;
@@ -1738,8 +1676,6 @@ public class LoadImpl extends PowerConversionElementImpl implements Load {
 		switch (featureID) {
 			case ConversionPackage.LOAD__CIRCUIT:
 				return circuit != null;
-			case ConversionPackage.LOAD__GROWTH_SHAPE_OBJ:
-				return growthShapeObj != null;
 			case ConversionPackage.LOAD__BUS1:
 				return BUS1_EDEFAULT == null ? bus1 != null : !BUS1_EDEFAULT.equals(bus1);
 			case ConversionPackage.LOAD__KV:

@@ -7,13 +7,19 @@
 package electrickery.common.util;
 
 import electrickery.common.*;
-
 import org.eclipse.emf.common.notify.Adapter;
 import org.eclipse.emf.common.notify.Notifier;
-
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
-
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.common.Bus;
+import electrickery.common.Circuit;
+import electrickery.common.CircuitElement;
+import electrickery.common.CommonPackage;
+import electrickery.common.Conductor;
+import electrickery.common.Named;
+import electrickery.common.Solution;
+import electrickery.common.Terminal;
 
 /**
  * <!-- begin-user-doc -->
@@ -84,18 +90,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 				return createCircuitElementAdapter();
 			}
 			@Override
-			public Adapter caseCollection(Collection object) {
-				return createCollectionAdapter();
-			}
-			@Override
-			public Adapter caseConductor(Conductor object) {
-				return createConductorAdapter();
-			}
-			@Override
-			public Adapter caseFeeder(Feeder object) {
-				return createFeederAdapter();
-			}
-			@Override
 			public Adapter caseSolution(Solution object) {
 				return createSolutionAdapter();
 			}
@@ -104,16 +98,12 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 				return createTerminalAdapter();
 			}
 			@Override
-			public Adapter caseControlQueue(ControlQueue object) {
-				return createControlQueueAdapter();
+			public Adapter caseConductor(Conductor object) {
+				return createConductorAdapter();
 			}
 			@Override
 			public Adapter caseNamed(Named object) {
 				return createNamedAdapter();
-			}
-			@Override
-			public Adapter caseElectrickery(Electrickery object) {
-				return createElectrickeryAdapter();
 			}
 			@Override
 			public Adapter defaultCase(EObject object) {
@@ -178,20 +168,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.common.Collection <em>Collection</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.common.Collection
-	 * @generated
-	 */
-	public Adapter createCollectionAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link electrickery.common.Conductor <em>Conductor</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -202,20 +178,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createConductorAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.common.Feeder <em>Feeder</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.common.Feeder
-	 * @generated
-	 */
-	public Adapter createFeederAdapter() {
 		return null;
 	}
 
@@ -248,20 +210,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	}
 
 	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.common.ControlQueue <em>Control Queue</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.common.ControlQueue
-	 * @generated
-	 */
-	public Adapter createControlQueueAdapter() {
-		return null;
-	}
-
-	/**
 	 * Creates a new adapter for an object of class '{@link electrickery.common.Named <em>Named</em>}'.
 	 * <!-- begin-user-doc -->
 	 * This default implementation returns null so that we can easily ignore cases;
@@ -272,20 +220,6 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createNamedAdapter() {
-		return null;
-	}
-
-	/**
-	 * Creates a new adapter for an object of class '{@link electrickery.common.Electrickery <em>Electrickery</em>}'.
-	 * <!-- begin-user-doc -->
-	 * This default implementation returns null so that we can easily ignore cases;
-	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
-	 * <!-- end-user-doc -->
-	 * @return the new adapter.
-	 * @see electrickery.common.Electrickery
-	 * @generated
-	 */
-	public Adapter createElectrickeryAdapter() {
 		return null;
 	}
 

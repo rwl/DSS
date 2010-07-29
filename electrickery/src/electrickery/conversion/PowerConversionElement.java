@@ -7,9 +7,7 @@
 package electrickery.conversion;
 
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-
 import electrickery.common.CircuitElement;
-import electrickery.general.Spectrum;
 
 /**
  * <!-- begin-user-doc -->
@@ -43,8 +41,6 @@ import electrickery.general.Spectrum;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link electrickery.conversion.PowerConversionElement#getSpectrum <em>Spectrum</em>}</li>
- *   <li>{@link electrickery.conversion.PowerConversionElement#getSpectrumObj <em>Spectrum Obj</em>}</li>
  *   <li>{@link electrickery.conversion.PowerConversionElement#getInjCurrent <em>Inj Current</em>}</li>
  * </ul>
  * </p>
@@ -54,56 +50,6 @@ import electrickery.general.Spectrum;
  * @generated
  */
 public interface PowerConversionElement extends CircuitElement {
-    /**
-	 * Returns the value of the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * Name of harmonic spectrum for this device.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Spectrum</em>' attribute.
-	 * @see #setSpectrum(String)
-	 * @see electrickery.conversion.ConversionPackage#getPowerConversionElement_Spectrum()
-	 * @model
-	 * @generated
-	 */
-    String getSpectrum();
-
-    /**
-	 * Sets the value of the '{@link electrickery.conversion.PowerConversionElement#getSpectrum <em>Spectrum</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Spectrum</em>' attribute.
-	 * @see #getSpectrum()
-	 * @generated
-	 */
-    void setSpectrum(String value);
-
-    /**
-	 * Returns the value of the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
-	 * The harmonic spectrum for this device.
-	 * <!-- end-model-doc -->
-	 * @return the value of the '<em>Spectrum Obj</em>' reference.
-	 * @see #setSpectrumObj(Spectrum)
-	 * @see electrickery.conversion.ConversionPackage#getPowerConversionElement_SpectrumObj()
-	 * @model
-	 * @generated
-	 */
-    Spectrum getSpectrumObj();
-
-    /**
-	 * Sets the value of the '{@link electrickery.conversion.PowerConversionElement#getSpectrumObj <em>Spectrum Obj</em>}' reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Spectrum Obj</em>' reference.
-	 * @see #getSpectrumObj()
-	 * @generated
-	 */
-    void setSpectrumObj(Spectrum value);
-
     /**
 	 * Returns the value of the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->

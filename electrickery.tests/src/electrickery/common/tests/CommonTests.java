@@ -33,6 +33,7 @@ public class CommonTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new CommonTests("common Tests");
 		suite.addTestSuite(CircuitTest.class);
+		suite.addTestSuite(BusTest.class);
 		suite.addTestSuite(SolutionTest.class);
 		return suite;
 	}

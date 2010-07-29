@@ -44,15 +44,6 @@ public interface CommonFactory extends EFactory {
 	Bus createBus();
 
 	/**
-	 * Returns a new object of class '<em>Feeder</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Feeder</em>'.
-	 * @generated
-	 */
-	Feeder createFeeder();
-
-	/**
 	 * Returns a new object of class '<em>Solution</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -69,24 +60,6 @@ public interface CommonFactory extends EFactory {
 	 * @generated
 	 */
 	Terminal createTerminal();
-
-	/**
-	 * Returns a new object of class '<em>Control Queue</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Control Queue</em>'.
-	 * @generated
-	 */
-	ControlQueue createControlQueue();
-
-	/**
-	 * Returns a new object of class '<em>Electrickery</em>'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return a new object of class '<em>Electrickery</em>'.
-	 * @generated
-	 */
-	Electrickery createElectrickery();
 
 	/**
 	 * Returns the package supported by this factory.

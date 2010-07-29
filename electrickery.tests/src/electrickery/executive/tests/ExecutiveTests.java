@@ -32,7 +32,6 @@ public class ExecutiveTests extends TestSuite {
 	 */
 	public static Test suite() {
 		TestSuite suite = new ExecutiveTests("executive Tests");
-		suite.addTestSuite(ExecCommandsTest.class);
 		suite.addTestSuite(ExecutiveTest.class);
 		return suite;
 	}

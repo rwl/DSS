@@ -33,7 +33,6 @@ public class ConversionTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new ConversionTests("conversion Tests");
 		suite.addTestSuite(CurrentSourceTest.class);
-		suite.addTestSuite(EquivalentTest.class);
 		suite.addTestSuite(GeneratorTest.class);
 		suite.addTestSuite(LoadTest.class);
 		suite.addTestSuite(VoltageSourceTest.class);

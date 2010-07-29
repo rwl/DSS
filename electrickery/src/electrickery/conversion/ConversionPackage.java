@@ -6,13 +6,13 @@
  */
 package electrickery.conversion;
 
-import electrickery.common.CommonPackage;
-
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
+
+import electrickery.common.CommonPackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -136,60 +136,6 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED = CommonPackage.CIRCUIT_ELEMENT__LAST_TERMINAL_CHECKED;
 
 	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__CHECKED = CommonPackage.CIRCUIT_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__HAS_METER = CommonPackage.CIRCUIT_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__ISOLATED = CommonPackage.CIRCUIT_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__HAS_CONTROL = CommonPackage.CIRCUIT_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__PART_OF_FEEDER = CommonPackage.CIRCUIT_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT = CommonPackage.CIRCUIT_ELEMENT__CONTROL_ELEMENT;
-
-	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -280,40 +226,13 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__LIKE = CommonPackage.CIRCUIT_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__SPECTRUM = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int POWER_CONVERSION_ELEMENT__INJ_CURRENT = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 2;
+	int POWER_CONVERSION_ELEMENT__INJ_CURRENT = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
 	 * The number of structural features of the '<em>Power Conversion Element</em>' class.
@@ -322,7 +241,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int POWER_CONVERSION_ELEMENT_FEATURE_COUNT = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 3;
+	int POWER_CONVERSION_ELEMENT_FEATURE_COUNT = CommonPackage.CIRCUIT_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.impl.CurrentSourceImpl <em>Current Source</em>}' class.
@@ -396,60 +315,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int CURRENT_SOURCE__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
 
 	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
@@ -542,33 +407,6 @@ public interface ConversionPackage extends EPackage {
 	int CURRENT_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int CURRENT_SOURCE__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
-
-	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -641,358 +479,6 @@ public interface ConversionPackage extends EPackage {
 	int CURRENT_SOURCE_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 6;
 
 	/**
-	 * The meta object id for the '{@link electrickery.conversion.impl.EquivalentImpl <em>Equivalent</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.conversion.impl.EquivalentImpl
-	 * @see electrickery.conversion.impl.ConversionPackageImpl#getEquivalent()
-	 * @generated
-	 */
-	int EQUIVALENT = 2;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__NAME = POWER_CONVERSION_ELEMENT__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__ENABLED = POWER_CONVERSION_ELEMENT__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
-
-	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
-	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YORDER = POWER_CONVERSION_ELEMENT__YORDER;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Invalid</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YPRIM_INVALID = POWER_CONVERSION_ELEMENT__YPRIM_INVALID;
-
-	/**
-	 * The feature id for the '<em><b>Last Terminal Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
-
-	/**
-	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__TERMINALS = POWER_CONVERSION_ELEMENT__TERMINALS;
-
-	/**
-	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
-
-	/**
-	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__NTERMS = POWER_CONVERSION_ELEMENT__NTERMS;
-
-	/**
-	 * The feature id for the '<em><b>NConds</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__NCONDS = POWER_CONVERSION_ELEMENT__NCONDS;
-
-	/**
-	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
-
-	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YPRIM_SERIES = POWER_CONVERSION_ELEMENT__YPRIM_SERIES;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YPRIM_SHUNT = POWER_CONVERSION_ELEMENT__YPRIM_SHUNT;
-
-	/**
-	 * The feature id for the '<em><b>YPrim</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YPRIM = POWER_CONVERSION_ELEMENT__YPRIM;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
-
-	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
-
-	/**
-	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__INJ_CURRENT = POWER_CONVERSION_ELEMENT__INJ_CURRENT;
-
-	/**
-	 * The feature id for the '<em><b>Buses</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__BUSES = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>Base KV</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__BASE_KV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>Pu</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>Angle</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__ANGLE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Frequency</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__FREQUENCY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>Phases</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__PHASES = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>R1</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__R1 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 6;
-
-	/**
-	 * The feature id for the '<em><b>X1</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__X1 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 7;
-
-	/**
-	 * The feature id for the '<em><b>R0</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__R0 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 8;
-
-	/**
-	 * The feature id for the '<em><b>X0</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT__X0 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 9;
-
-	/**
-	 * The number of structural features of the '<em>Equivalent</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int EQUIVALENT_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 10;
-
-	/**
 	 * The meta object id for the '{@link electrickery.conversion.impl.GeneratorImpl <em>Generator</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1000,7 +486,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getGenerator()
 	 * @generated
 	 */
-	int GENERATOR = 3;
+	int GENERATOR = 2;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1064,60 +550,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int GENERATOR__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
 
 	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
@@ -1210,33 +642,6 @@ public interface ConversionPackage extends EPackage {
 	int GENERATOR__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int GENERATOR__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
-
-	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1246,7 +651,7 @@ public interface ConversionPackage extends EPackage {
 	int GENERATOR__INJ_CURRENT = POWER_CONVERSION_ELEMENT__INJ_CURRENT;
 
 	/**
-	 * The feature id for the '<em><b>Circuit</b></em>' container reference.
+	 * The feature id for the '<em><b>Circuit</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -1748,7 +1153,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getLoad()
 	 * @generated
 	 */
-	int LOAD = 4;
+	int LOAD = 3;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1812,60 +1217,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int LOAD__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
 
 	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
@@ -1958,33 +1309,6 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
 
 	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
-
-	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2003,22 +1327,13 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__CIRCUIT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 0;
 
 	/**
-	 * The feature id for the '<em><b>Growth Shape Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int LOAD__GROWTH_SHAPE_OBJ = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
 	 * The feature id for the '<em><b>Bus1</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__BUS1 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 2;
+	int LOAD__BUS1 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 1;
 
 	/**
 	 * The feature id for the '<em><b>KV</b></em>' attribute.
@@ -2027,7 +1342,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__KV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 3;
+	int LOAD__KV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 2;
 
 	/**
 	 * The feature id for the '<em><b>KW</b></em>' attribute.
@@ -2036,7 +1351,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__KW = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 4;
+	int LOAD__KW = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 3;
 
 	/**
 	 * The feature id for the '<em><b>KV Ar</b></em>' attribute.
@@ -2045,7 +1360,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__KV_AR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 5;
+	int LOAD__KV_AR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 4;
 
 	/**
 	 * The feature id for the '<em><b>PF</b></em>' attribute.
@@ -2054,7 +1369,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__PF = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 6;
+	int LOAD__PF = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 5;
 
 	/**
 	 * The feature id for the '<em><b>Model</b></em>' attribute.
@@ -2063,7 +1378,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__MODEL = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 7;
+	int LOAD__MODEL = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 6;
 
 	/**
 	 * The feature id for the '<em><b>Load Spec</b></em>' attribute.
@@ -2072,7 +1387,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__LOAD_SPEC = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 8;
+	int LOAD__LOAD_SPEC = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 7;
 
 	/**
 	 * The feature id for the '<em><b>Yearly</b></em>' attribute.
@@ -2081,7 +1396,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__YEARLY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 9;
+	int LOAD__YEARLY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 8;
 
 	/**
 	 * The feature id for the '<em><b>Daily</b></em>' attribute.
@@ -2090,7 +1405,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__DAILY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 10;
+	int LOAD__DAILY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 9;
 
 	/**
 	 * The feature id for the '<em><b>Duty</b></em>' attribute.
@@ -2099,7 +1414,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__DUTY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 11;
+	int LOAD__DUTY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 10;
 
 	/**
 	 * The feature id for the '<em><b>Growth</b></em>' attribute.
@@ -2108,7 +1423,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__GROWTH = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 12;
+	int LOAD__GROWTH = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 11;
 
 	/**
 	 * The feature id for the '<em><b>Conn</b></em>' attribute.
@@ -2117,7 +1432,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__CONN = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 13;
+	int LOAD__CONN = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 12;
 
 	/**
 	 * The feature id for the '<em><b>RNeut</b></em>' attribute.
@@ -2126,7 +1441,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__RNEUT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 14;
+	int LOAD__RNEUT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 13;
 
 	/**
 	 * The feature id for the '<em><b>XNeut</b></em>' attribute.
@@ -2135,7 +1450,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__XNEUT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 15;
+	int LOAD__XNEUT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 14;
 
 	/**
 	 * The feature id for the '<em><b>Status</b></em>' attribute.
@@ -2144,7 +1459,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__STATUS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 16;
+	int LOAD__STATUS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 15;
 
 	/**
 	 * The feature id for the '<em><b>Class</b></em>' attribute.
@@ -2153,7 +1468,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__CLASS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 17;
+	int LOAD__CLASS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 16;
 
 	/**
 	 * The feature id for the '<em><b>VMin PU</b></em>' attribute.
@@ -2162,7 +1477,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__VMIN_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 18;
+	int LOAD__VMIN_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 17;
 
 	/**
 	 * The feature id for the '<em><b>VMax PU</b></em>' attribute.
@@ -2171,7 +1486,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__VMAX_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 19;
+	int LOAD__VMAX_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 18;
 
 	/**
 	 * The feature id for the '<em><b>VMin Norm</b></em>' attribute.
@@ -2180,7 +1495,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__VMIN_NORM = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 20;
+	int LOAD__VMIN_NORM = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 19;
 
 	/**
 	 * The feature id for the '<em><b>VMin Emerg</b></em>' attribute.
@@ -2189,7 +1504,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__VMIN_EMERG = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 21;
+	int LOAD__VMIN_EMERG = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 20;
 
 	/**
 	 * The feature id for the '<em><b>Xf KVA</b></em>' attribute.
@@ -2198,7 +1513,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__XF_KVA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 22;
+	int LOAD__XF_KVA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 21;
 
 	/**
 	 * The feature id for the '<em><b>Allocation Factor</b></em>' attribute.
@@ -2207,7 +1522,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__ALLOCATION_FACTOR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 23;
+	int LOAD__ALLOCATION_FACTOR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 22;
 
 	/**
 	 * The feature id for the '<em><b>KVA</b></em>' attribute.
@@ -2216,7 +1531,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__KVA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 24;
+	int LOAD__KVA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 23;
 
 	/**
 	 * The feature id for the '<em><b>Pct Mean</b></em>' attribute.
@@ -2225,7 +1540,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__PCT_MEAN = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 25;
+	int LOAD__PCT_MEAN = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 24;
 
 	/**
 	 * The feature id for the '<em><b>Pct Std Dev</b></em>' attribute.
@@ -2234,7 +1549,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__PCT_STD_DEV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 26;
+	int LOAD__PCT_STD_DEV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 25;
 
 	/**
 	 * The feature id for the '<em><b>Cvr Watts</b></em>' attribute.
@@ -2243,7 +1558,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__CVR_WATTS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 27;
+	int LOAD__CVR_WATTS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 26;
 
 	/**
 	 * The feature id for the '<em><b>Cvr Vars</b></em>' attribute.
@@ -2252,7 +1567,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD__CVR_VARS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 28;
+	int LOAD__CVR_VARS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 27;
 
 	/**
 	 * The number of structural features of the '<em>Load</em>' class.
@@ -2261,7 +1576,7 @@ public interface ConversionPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int LOAD_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 29;
+	int LOAD_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 28;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.impl.VoltageSourceImpl <em>Voltage Source</em>}' class.
@@ -2271,7 +1586,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getVoltageSource()
 	 * @generated
 	 */
-	int VOLTAGE_SOURCE = 5;
+	int VOLTAGE_SOURCE = 4;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -2335,60 +1650,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
 
 	/**
 	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
@@ -2479,33 +1740,6 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
-
-	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int VOLTAGE_SOURCE__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
 
 	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
@@ -2706,583 +1940,6 @@ public interface ConversionPackage extends EPackage {
 	int VOLTAGE_SOURCE_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 20;
 
 	/**
-	 * The meta object id for the '{@link electrickery.conversion.impl.StorageImpl <em>Storage</em>}' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see electrickery.conversion.impl.StorageImpl
-	 * @see electrickery.conversion.impl.ConversionPackageImpl#getStorage()
-	 * @generated
-	 */
-	int STORAGE = 6;
-
-	/**
-	 * The feature id for the '<em><b>Name</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__NAME = POWER_CONVERSION_ELEMENT__NAME;
-
-	/**
-	 * The feature id for the '<em><b>Enabled</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__ENABLED = POWER_CONVERSION_ELEMENT__ENABLED;
-
-	/**
-	 * The feature id for the '<em><b>Base Freq</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__BASE_FREQ = POWER_CONVERSION_ELEMENT__BASE_FREQ;
-
-	/**
-	 * The feature id for the '<em><b>Node Ref</b></em>' attribute list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
-
-	/**
-	 * The feature id for the '<em><b>YOrder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YORDER = POWER_CONVERSION_ELEMENT__YORDER;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Invalid</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YPRIM_INVALID = POWER_CONVERSION_ELEMENT__YPRIM_INVALID;
-
-	/**
-	 * The feature id for the '<em><b>Last Terminal Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__LAST_TERMINAL_CHECKED = POWER_CONVERSION_ELEMENT__LAST_TERMINAL_CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Checked</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__CHECKED = POWER_CONVERSION_ELEMENT__CHECKED;
-
-	/**
-	 * The feature id for the '<em><b>Has Meter</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__HAS_METER = POWER_CONVERSION_ELEMENT__HAS_METER;
-
-	/**
-	 * The feature id for the '<em><b>Isolated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__ISOLATED = POWER_CONVERSION_ELEMENT__ISOLATED;
-
-	/**
-	 * The feature id for the '<em><b>Has Control</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__HAS_CONTROL = POWER_CONVERSION_ELEMENT__HAS_CONTROL;
-
-	/**
-	 * The feature id for the '<em><b>Part Of Feeder</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PART_OF_FEEDER = POWER_CONVERSION_ELEMENT__PART_OF_FEEDER;
-
-	/**
-	 * The feature id for the '<em><b>Control Element</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__CONTROL_ELEMENT = POWER_CONVERSION_ELEMENT__CONTROL_ELEMENT;
-
-	/**
-	 * The feature id for the '<em><b>Terminals</b></em>' reference list.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__TERMINALS = POWER_CONVERSION_ELEMENT__TERMINALS;
-
-	/**
-	 * The feature id for the '<em><b>Active Terminal</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__ACTIVE_TERMINAL = POWER_CONVERSION_ELEMENT__ACTIVE_TERMINAL;
-
-	/**
-	 * The feature id for the '<em><b>NTerms</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__NTERMS = POWER_CONVERSION_ELEMENT__NTERMS;
-
-	/**
-	 * The feature id for the '<em><b>NConds</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__NCONDS = POWER_CONVERSION_ELEMENT__NCONDS;
-
-	/**
-	 * The feature id for the '<em><b>NPhases</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__NPHASES = POWER_CONVERSION_ELEMENT__NPHASES;
-
-	/**
-	 * The feature id for the '<em><b>Bus Index</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__BUS_INDEX = POWER_CONVERSION_ELEMENT__BUS_INDEX;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Series</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YPRIM_SERIES = POWER_CONVERSION_ELEMENT__YPRIM_SERIES;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Shunt</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YPRIM_SHUNT = POWER_CONVERSION_ELEMENT__YPRIM_SHUNT;
-
-	/**
-	 * The feature id for the '<em><b>YPrim</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YPRIM = POWER_CONVERSION_ELEMENT__YPRIM;
-
-	/**
-	 * The feature id for the '<em><b>YPrim Freq</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
-
-	/**
-	 * The feature id for the '<em><b>Like</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__LIKE = POWER_CONVERSION_ELEMENT__LIKE;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__SPECTRUM = POWER_CONVERSION_ELEMENT__SPECTRUM;
-
-	/**
-	 * The feature id for the '<em><b>Spectrum Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__SPECTRUM_OBJ = POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ;
-
-	/**
-	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__INJ_CURRENT = POWER_CONVERSION_ELEMENT__INJ_CURRENT;
-
-	/**
-	 * The feature id for the '<em><b>Bus1</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__BUS1 = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 0;
-
-	/**
-	 * The feature id for the '<em><b>KV</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KV = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 1;
-
-	/**
-	 * The feature id for the '<em><b>KW</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KW = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 2;
-
-	/**
-	 * The feature id for the '<em><b>PF</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PF = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 3;
-
-	/**
-	 * The feature id for the '<em><b>Conn</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__CONN = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 4;
-
-	/**
-	 * The feature id for the '<em><b>KVAR</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KVAR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 5;
-
-	/**
-	 * The feature id for the '<em><b>KVA</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KVA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 6;
-
-	/**
-	 * The feature id for the '<em><b>KW Rated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KW_RATED = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 7;
-
-	/**
-	 * The feature id for the '<em><b>KWh Rated</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KWH_RATED = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 8;
-
-	/**
-	 * The feature id for the '<em><b>KWh Stored</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__KWH_STORED = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 9;
-
-	/**
-	 * The feature id for the '<em><b>Pct Stored</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_STORED = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 10;
-
-	/**
-	 * The feature id for the '<em><b>Pct Reserve</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_RESERVE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 11;
-
-	/**
-	 * The feature id for the '<em><b>State</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__STATE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 12;
-
-	/**
-	 * The feature id for the '<em><b>Pct Discharge</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_DISCHARGE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 13;
-
-	/**
-	 * The feature id for the '<em><b>Pct Charge</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_CHARGE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 14;
-
-	/**
-	 * The feature id for the '<em><b>Pct Eff Charge</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_EFF_CHARGE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 15;
-
-	/**
-	 * The feature id for the '<em><b>Pct Eff Discharge</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_EFF_DISCHARGE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 16;
-
-	/**
-	 * The feature id for the '<em><b>Pct Idling KW</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_IDLING_KW = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 17;
-
-	/**
-	 * The feature id for the '<em><b>Pct Idling KV Ar</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_IDLING_KV_AR = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 18;
-
-	/**
-	 * The feature id for the '<em><b>Pct R</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_R = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 19;
-
-	/**
-	 * The feature id for the '<em><b>Pct X</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__PCT_X = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 20;
-
-	/**
-	 * The feature id for the '<em><b>Model</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__MODEL = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 21;
-
-	/**
-	 * The feature id for the '<em><b>VMin PU</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__VMIN_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 22;
-
-	/**
-	 * The feature id for the '<em><b>VMax PU</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__VMAX_PU = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 23;
-
-	/**
-	 * The feature id for the '<em><b>Yearly</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__YEARLY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 24;
-
-	/**
-	 * The feature id for the '<em><b>Daily</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__DAILY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 25;
-
-	/**
-	 * The feature id for the '<em><b>Duty</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__DUTY = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 26;
-
-	/**
-	 * The feature id for the '<em><b>Disp Mode</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__DISP_MODE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 27;
-
-	/**
-	 * The feature id for the '<em><b>Discharge Trigger</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__DISCHARGE_TRIGGER = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 28;
-
-	/**
-	 * The feature id for the '<em><b>Charge Trigger</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__CHARGE_TRIGGER = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 29;
-
-	/**
-	 * The feature id for the '<em><b>Time Charge Trig</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__TIME_CHARGE_TRIG = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 30;
-
-	/**
-	 * The feature id for the '<em><b>Class</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__CLASS = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 31;
-
-	/**
-	 * The feature id for the '<em><b>User Model</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__USER_MODEL = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 32;
-
-	/**
-	 * The feature id for the '<em><b>User Data</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__USER_DATA = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 33;
-
-	/**
-	 * The feature id for the '<em><b>Debug Trace</b></em>' attribute.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE__DEBUG_TRACE = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 34;
-
-	/**
-	 * The number of structural features of the '<em>Storage</em>' class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int STORAGE_FEATURE_COUNT = POWER_CONVERSION_ELEMENT_FEATURE_COUNT + 35;
-
-	/**
 	 * The meta object id for the '{@link electrickery.conversion.sequenceType <em>sequence Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3290,7 +1947,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getsequenceType()
 	 * @generated
 	 */
-	int SEQUENCE_TYPE = 7;
+	int SEQUENCE_TYPE = 5;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.generatorModel <em>generator Model</em>}' enum.
@@ -3300,7 +1957,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getgeneratorModel()
 	 * @generated
 	 */
-	int GENERATOR_MODEL = 8;
+	int GENERATOR_MODEL = 6;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.dispatchType <em>dispatch Type</em>}' enum.
@@ -3310,7 +1967,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getdispatchType()
 	 * @generated
 	 */
-	int DISPATCH_TYPE = 9;
+	int DISPATCH_TYPE = 7;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.generatorStatus <em>generator Status</em>}' enum.
@@ -3320,7 +1977,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getgeneratorStatus()
 	 * @generated
 	 */
-	int GENERATOR_STATUS = 10;
+	int GENERATOR_STATUS = 8;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.loadModel <em>load Model</em>}' enum.
@@ -3330,7 +1987,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getloadModel()
 	 * @generated
 	 */
-	int LOAD_MODEL = 11;
+	int LOAD_MODEL = 9;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.loadStatus <em>load Status</em>}' enum.
@@ -3340,7 +1997,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getloadStatus()
 	 * @generated
 	 */
-	int LOAD_STATUS = 12;
+	int LOAD_STATUS = 10;
 
 
 	/**
@@ -3351,7 +2008,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getloadSpecType()
 	 * @generated
 	 */
-	int LOAD_SPEC_TYPE = 13;
+	int LOAD_SPEC_TYPE = 11;
 
 	/**
 	 * The meta object id for the '{@link electrickery.conversion.specType <em>spec Type</em>}' enum.
@@ -3361,7 +2018,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getspecType()
 	 * @generated
 	 */
-	int SPEC_TYPE = 14;
+	int SPEC_TYPE = 12;
 
 
 	/**
@@ -3372,7 +2029,7 @@ public interface ConversionPackage extends EPackage {
 	 * @see electrickery.conversion.impl.ConversionPackageImpl#getstorageState()
 	 * @generated
 	 */
-	int STORAGE_STATE = 15;
+	int STORAGE_STATE = 13;
 
 
 	/**
@@ -3452,126 +2109,6 @@ public interface ConversionPackage extends EPackage {
 	EAttribute getCurrentSource_ScanType();
 
 	/**
-	 * Returns the meta object for class '{@link electrickery.conversion.Equivalent <em>Equivalent</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Equivalent</em>'.
-	 * @see electrickery.conversion.Equivalent
-	 * @generated
-	 */
-	EClass getEquivalent();
-
-	/**
-	 * Returns the meta object for the attribute list '{@link electrickery.conversion.Equivalent#getBuses <em>Buses</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute list '<em>Buses</em>'.
-	 * @see electrickery.conversion.Equivalent#getBuses()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_Buses();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getBaseKV <em>Base KV</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Base KV</em>'.
-	 * @see electrickery.conversion.Equivalent#getBaseKV()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_BaseKV();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getPu <em>Pu</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pu</em>'.
-	 * @see electrickery.conversion.Equivalent#getPu()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_Pu();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getAngle <em>Angle</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Angle</em>'.
-	 * @see electrickery.conversion.Equivalent#getAngle()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_Angle();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getFrequency <em>Frequency</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Frequency</em>'.
-	 * @see electrickery.conversion.Equivalent#getFrequency()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_Frequency();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getPhases <em>Phases</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Phases</em>'.
-	 * @see electrickery.conversion.Equivalent#getPhases()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_Phases();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getR1 <em>R1</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>R1</em>'.
-	 * @see electrickery.conversion.Equivalent#getR1()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_R1();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getX1 <em>X1</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>X1</em>'.
-	 * @see electrickery.conversion.Equivalent#getX1()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_X1();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getR0 <em>R0</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>R0</em>'.
-	 * @see electrickery.conversion.Equivalent#getR0()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_R0();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Equivalent#getX0 <em>X0</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>X0</em>'.
-	 * @see electrickery.conversion.Equivalent#getX0()
-	 * @see #getEquivalent()
-	 * @generated
-	 */
-	EAttribute getEquivalent_X0();
-
-	/**
 	 * Returns the meta object for class '{@link electrickery.conversion.Generator <em>Generator</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3582,10 +2119,10 @@ public interface ConversionPackage extends EPackage {
 	EClass getGenerator();
 
 	/**
-	 * Returns the meta object for the container reference '{@link electrickery.conversion.Generator#getCircuit <em>Circuit</em>}'.
+	 * Returns the meta object for the reference '{@link electrickery.conversion.Generator#getCircuit <em>Circuit</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the container reference '<em>Circuit</em>'.
+	 * @return the meta object for the reference '<em>Circuit</em>'.
 	 * @see electrickery.conversion.Generator#getCircuit()
 	 * @see #getGenerator()
 	 * @generated
@@ -4197,17 +2734,6 @@ public interface ConversionPackage extends EPackage {
 	EReference getLoad_Circuit();
 
 	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.Load#getGrowthShapeObj <em>Growth Shape Obj</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Growth Shape Obj</em>'.
-	 * @see electrickery.conversion.Load#getGrowthShapeObj()
-	 * @see #getLoad()
-	 * @generated
-	 */
-	EReference getLoad_GrowthShapeObj();
-
-	/**
 	 * Returns the meta object for the attribute '{@link electrickery.conversion.Load#getBus1 <em>Bus1</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4515,28 +3041,6 @@ public interface ConversionPackage extends EPackage {
 	EClass getPowerConversionElement();
 
 	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.PowerConversionElement#getSpectrum <em>Spectrum</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Spectrum</em>'.
-	 * @see electrickery.conversion.PowerConversionElement#getSpectrum()
-	 * @see #getPowerConversionElement()
-	 * @generated
-	 */
-	EAttribute getPowerConversionElement_Spectrum();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.PowerConversionElement#getSpectrumObj <em>Spectrum Obj</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Spectrum Obj</em>'.
-	 * @see electrickery.conversion.PowerConversionElement#getSpectrumObj()
-	 * @see #getPowerConversionElement()
-	 * @generated
-	 */
-	EReference getPowerConversionElement_SpectrumObj();
-
-	/**
 	 * Returns the meta object for the attribute '{@link electrickery.conversion.PowerConversionElement#getInjCurrent <em>Inj Current</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -4778,401 +3282,6 @@ public interface ConversionPackage extends EPackage {
 	EAttribute getVoltageSource_VMag();
 
 	/**
-	 * Returns the meta object for class '{@link electrickery.conversion.Storage <em>Storage</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for class '<em>Storage</em>'.
-	 * @see electrickery.conversion.Storage
-	 * @generated
-	 */
-	EClass getStorage();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.Storage#getBus1 <em>Bus1</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Bus1</em>'.
-	 * @see electrickery.conversion.Storage#getBus1()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EReference getStorage_Bus1();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKV <em>KV</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KV</em>'.
-	 * @see electrickery.conversion.Storage#getKV()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KV();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKW <em>KW</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KW</em>'.
-	 * @see electrickery.conversion.Storage#getKW()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KW();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPF <em>PF</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>PF</em>'.
-	 * @see electrickery.conversion.Storage#getPF()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PF();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getConn <em>Conn</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Conn</em>'.
-	 * @see electrickery.conversion.Storage#getConn()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_Conn();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKVAR <em>KVAR</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KVAR</em>'.
-	 * @see electrickery.conversion.Storage#getKVAR()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KVAR();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKVA <em>KVA</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KVA</em>'.
-	 * @see electrickery.conversion.Storage#getKVA()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KVA();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKWRated <em>KW Rated</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KW Rated</em>'.
-	 * @see electrickery.conversion.Storage#getKWRated()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KWRated();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKWhRated <em>KWh Rated</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KWh Rated</em>'.
-	 * @see electrickery.conversion.Storage#getKWhRated()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KWhRated();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getKWhStored <em>KWh Stored</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>KWh Stored</em>'.
-	 * @see electrickery.conversion.Storage#getKWhStored()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_KWhStored();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctStored <em>Pct Stored</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Stored</em>'.
-	 * @see electrickery.conversion.Storage#getPctStored()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctStored();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctReserve <em>Pct Reserve</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Reserve</em>'.
-	 * @see electrickery.conversion.Storage#getPctReserve()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctReserve();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getState <em>State</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>State</em>'.
-	 * @see electrickery.conversion.Storage#getState()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_State();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctDischarge <em>Pct Discharge</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Discharge</em>'.
-	 * @see electrickery.conversion.Storage#getPctDischarge()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctDischarge();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctCharge <em>Pct Charge</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Charge</em>'.
-	 * @see electrickery.conversion.Storage#getPctCharge()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctCharge();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctEffCharge <em>Pct Eff Charge</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Eff Charge</em>'.
-	 * @see electrickery.conversion.Storage#getPctEffCharge()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctEffCharge();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctEffDischarge <em>Pct Eff Discharge</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Eff Discharge</em>'.
-	 * @see electrickery.conversion.Storage#getPctEffDischarge()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctEffDischarge();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctIdlingKW <em>Pct Idling KW</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Idling KW</em>'.
-	 * @see electrickery.conversion.Storage#getPctIdlingKW()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctIdlingKW();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctIdlingKVAr <em>Pct Idling KV Ar</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct Idling KV Ar</em>'.
-	 * @see electrickery.conversion.Storage#getPctIdlingKVAr()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctIdlingKVAr();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctR <em>Pct R</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct R</em>'.
-	 * @see electrickery.conversion.Storage#getPctR()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctR();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getPctX <em>Pct X</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Pct X</em>'.
-	 * @see electrickery.conversion.Storage#getPctX()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_PctX();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getModel <em>Model</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Model</em>'.
-	 * @see electrickery.conversion.Storage#getModel()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_Model();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getVMinPU <em>VMin PU</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>VMin PU</em>'.
-	 * @see electrickery.conversion.Storage#getVMinPU()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_VMinPU();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getVMaxPU <em>VMax PU</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>VMax PU</em>'.
-	 * @see electrickery.conversion.Storage#getVMaxPU()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_VMaxPU();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.Storage#getYearly <em>Yearly</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Yearly</em>'.
-	 * @see electrickery.conversion.Storage#getYearly()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EReference getStorage_Yearly();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.Storage#getDaily <em>Daily</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Daily</em>'.
-	 * @see electrickery.conversion.Storage#getDaily()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EReference getStorage_Daily();
-
-	/**
-	 * Returns the meta object for the reference '{@link electrickery.conversion.Storage#getDuty <em>Duty</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Duty</em>'.
-	 * @see electrickery.conversion.Storage#getDuty()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EReference getStorage_Duty();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getDispMode <em>Disp Mode</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Disp Mode</em>'.
-	 * @see electrickery.conversion.Storage#getDispMode()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_DispMode();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getDischargeTrigger <em>Discharge Trigger</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Discharge Trigger</em>'.
-	 * @see electrickery.conversion.Storage#getDischargeTrigger()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_DischargeTrigger();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getChargeTrigger <em>Charge Trigger</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Charge Trigger</em>'.
-	 * @see electrickery.conversion.Storage#getChargeTrigger()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_ChargeTrigger();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getTimeChargeTrig <em>Time Charge Trig</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Time Charge Trig</em>'.
-	 * @see electrickery.conversion.Storage#getTimeChargeTrig()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_TimeChargeTrig();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getClass_ <em>Class</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Class</em>'.
-	 * @see electrickery.conversion.Storage#getClass_()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_Class();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getUserModel <em>User Model</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>User Model</em>'.
-	 * @see electrickery.conversion.Storage#getUserModel()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_UserModel();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#getUserData <em>User Data</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>User Data</em>'.
-	 * @see electrickery.conversion.Storage#getUserData()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_UserData();
-
-	/**
-	 * Returns the meta object for the attribute '{@link electrickery.conversion.Storage#isDebugTrace <em>Debug Trace</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Debug Trace</em>'.
-	 * @see electrickery.conversion.Storage#isDebugTrace()
-	 * @see #getStorage()
-	 * @generated
-	 */
-	EAttribute getStorage_DebugTrace();
-
-	/**
 	 * Returns the meta object for enum '{@link electrickery.conversion.sequenceType <em>sequence Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -5343,96 +3452,6 @@ public interface ConversionPackage extends EPackage {
 		EAttribute CURRENT_SOURCE__SCAN_TYPE = eINSTANCE.getCurrentSource_ScanType();
 
 		/**
-		 * The meta object literal for the '{@link electrickery.conversion.impl.EquivalentImpl <em>Equivalent</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.conversion.impl.EquivalentImpl
-		 * @see electrickery.conversion.impl.ConversionPackageImpl#getEquivalent()
-		 * @generated
-		 */
-		EClass EQUIVALENT = eINSTANCE.getEquivalent();
-
-		/**
-		 * The meta object literal for the '<em><b>Buses</b></em>' attribute list feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__BUSES = eINSTANCE.getEquivalent_Buses();
-
-		/**
-		 * The meta object literal for the '<em><b>Base KV</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__BASE_KV = eINSTANCE.getEquivalent_BaseKV();
-
-		/**
-		 * The meta object literal for the '<em><b>Pu</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__PU = eINSTANCE.getEquivalent_Pu();
-
-		/**
-		 * The meta object literal for the '<em><b>Angle</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__ANGLE = eINSTANCE.getEquivalent_Angle();
-
-		/**
-		 * The meta object literal for the '<em><b>Frequency</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__FREQUENCY = eINSTANCE.getEquivalent_Frequency();
-
-		/**
-		 * The meta object literal for the '<em><b>Phases</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__PHASES = eINSTANCE.getEquivalent_Phases();
-
-		/**
-		 * The meta object literal for the '<em><b>R1</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__R1 = eINSTANCE.getEquivalent_R1();
-
-		/**
-		 * The meta object literal for the '<em><b>X1</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__X1 = eINSTANCE.getEquivalent_X1();
-
-		/**
-		 * The meta object literal for the '<em><b>R0</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__R0 = eINSTANCE.getEquivalent_R0();
-
-		/**
-		 * The meta object literal for the '<em><b>X0</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute EQUIVALENT__X0 = eINSTANCE.getEquivalent_X0();
-
-		/**
 		 * The meta object literal for the '{@link electrickery.conversion.impl.GeneratorImpl <em>Generator</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -5443,7 +3462,7 @@ public interface ConversionPackage extends EPackage {
 		EClass GENERATOR = eINSTANCE.getGenerator();
 
 		/**
-		 * The meta object literal for the '<em><b>Circuit</b></em>' container reference feature.
+		 * The meta object literal for the '<em><b>Circuit</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
@@ -5893,14 +3912,6 @@ public interface ConversionPackage extends EPackage {
 		EReference LOAD__CIRCUIT = eINSTANCE.getLoad_Circuit();
 
 		/**
-		 * The meta object literal for the '<em><b>Growth Shape Obj</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference LOAD__GROWTH_SHAPE_OBJ = eINSTANCE.getLoad_GrowthShapeObj();
-
-		/**
 		 * The meta object literal for the '<em><b>Bus1</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6127,22 +4138,6 @@ public interface ConversionPackage extends EPackage {
 		EClass POWER_CONVERSION_ELEMENT = eINSTANCE.getPowerConversionElement();
 
 		/**
-		 * The meta object literal for the '<em><b>Spectrum</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute POWER_CONVERSION_ELEMENT__SPECTRUM = eINSTANCE.getPowerConversionElement_Spectrum();
-
-		/**
-		 * The meta object literal for the '<em><b>Spectrum Obj</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ = eINSTANCE.getPowerConversionElement_SpectrumObj();
-
-		/**
 		 * The meta object literal for the '<em><b>Inj Current</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -6319,296 +4314,6 @@ public interface ConversionPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute VOLTAGE_SOURCE__VMAG = eINSTANCE.getVoltageSource_VMag();
-
-		/**
-		 * The meta object literal for the '{@link electrickery.conversion.impl.StorageImpl <em>Storage</em>}' class.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @see electrickery.conversion.impl.StorageImpl
-		 * @see electrickery.conversion.impl.ConversionPackageImpl#getStorage()
-		 * @generated
-		 */
-		EClass STORAGE = eINSTANCE.getStorage();
-
-		/**
-		 * The meta object literal for the '<em><b>Bus1</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference STORAGE__BUS1 = eINSTANCE.getStorage_Bus1();
-
-		/**
-		 * The meta object literal for the '<em><b>KV</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KV = eINSTANCE.getStorage_KV();
-
-		/**
-		 * The meta object literal for the '<em><b>KW</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KW = eINSTANCE.getStorage_KW();
-
-		/**
-		 * The meta object literal for the '<em><b>PF</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PF = eINSTANCE.getStorage_PF();
-
-		/**
-		 * The meta object literal for the '<em><b>Conn</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__CONN = eINSTANCE.getStorage_Conn();
-
-		/**
-		 * The meta object literal for the '<em><b>KVAR</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KVAR = eINSTANCE.getStorage_KVAR();
-
-		/**
-		 * The meta object literal for the '<em><b>KVA</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KVA = eINSTANCE.getStorage_KVA();
-
-		/**
-		 * The meta object literal for the '<em><b>KW Rated</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KW_RATED = eINSTANCE.getStorage_KWRated();
-
-		/**
-		 * The meta object literal for the '<em><b>KWh Rated</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KWH_RATED = eINSTANCE.getStorage_KWhRated();
-
-		/**
-		 * The meta object literal for the '<em><b>KWh Stored</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__KWH_STORED = eINSTANCE.getStorage_KWhStored();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Stored</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_STORED = eINSTANCE.getStorage_PctStored();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Reserve</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_RESERVE = eINSTANCE.getStorage_PctReserve();
-
-		/**
-		 * The meta object literal for the '<em><b>State</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__STATE = eINSTANCE.getStorage_State();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Discharge</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_DISCHARGE = eINSTANCE.getStorage_PctDischarge();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Charge</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_CHARGE = eINSTANCE.getStorage_PctCharge();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Eff Charge</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_EFF_CHARGE = eINSTANCE.getStorage_PctEffCharge();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Eff Discharge</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_EFF_DISCHARGE = eINSTANCE.getStorage_PctEffDischarge();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Idling KW</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_IDLING_KW = eINSTANCE.getStorage_PctIdlingKW();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct Idling KV Ar</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_IDLING_KV_AR = eINSTANCE.getStorage_PctIdlingKVAr();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct R</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_R = eINSTANCE.getStorage_PctR();
-
-		/**
-		 * The meta object literal for the '<em><b>Pct X</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__PCT_X = eINSTANCE.getStorage_PctX();
-
-		/**
-		 * The meta object literal for the '<em><b>Model</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__MODEL = eINSTANCE.getStorage_Model();
-
-		/**
-		 * The meta object literal for the '<em><b>VMin PU</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__VMIN_PU = eINSTANCE.getStorage_VMinPU();
-
-		/**
-		 * The meta object literal for the '<em><b>VMax PU</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__VMAX_PU = eINSTANCE.getStorage_VMaxPU();
-
-		/**
-		 * The meta object literal for the '<em><b>Yearly</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference STORAGE__YEARLY = eINSTANCE.getStorage_Yearly();
-
-		/**
-		 * The meta object literal for the '<em><b>Daily</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference STORAGE__DAILY = eINSTANCE.getStorage_Daily();
-
-		/**
-		 * The meta object literal for the '<em><b>Duty</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference STORAGE__DUTY = eINSTANCE.getStorage_Duty();
-
-		/**
-		 * The meta object literal for the '<em><b>Disp Mode</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__DISP_MODE = eINSTANCE.getStorage_DispMode();
-
-		/**
-		 * The meta object literal for the '<em><b>Discharge Trigger</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__DISCHARGE_TRIGGER = eINSTANCE.getStorage_DischargeTrigger();
-
-		/**
-		 * The meta object literal for the '<em><b>Charge Trigger</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__CHARGE_TRIGGER = eINSTANCE.getStorage_ChargeTrigger();
-
-		/**
-		 * The meta object literal for the '<em><b>Time Charge Trig</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__TIME_CHARGE_TRIG = eINSTANCE.getStorage_TimeChargeTrig();
-
-		/**
-		 * The meta object literal for the '<em><b>Class</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__CLASS = eINSTANCE.getStorage_Class();
-
-		/**
-		 * The meta object literal for the '<em><b>User Model</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__USER_MODEL = eINSTANCE.getStorage_UserModel();
-
-		/**
-		 * The meta object literal for the '<em><b>User Data</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__USER_DATA = eINSTANCE.getStorage_UserData();
-
-		/**
-		 * The meta object literal for the '<em><b>Debug Trace</b></em>' attribute feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EAttribute STORAGE__DEBUG_TRACE = eINSTANCE.getStorage_DebugTrace();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.conversion.sequenceType <em>sequence Type</em>}' enum.

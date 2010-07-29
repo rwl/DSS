@@ -7,15 +7,29 @@
 package electrickery.executive.impl;
 
 import electrickery.executive.*;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EDataType;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-
 import org.eclipse.emf.ecore.impl.EFactoryImpl;
-
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
+
+import electrickery.executive.Executive;
+import electrickery.executive.ExecutiveFactory;
+import electrickery.executive.ExecutivePackage;
+import electrickery.executive.algorithmType;
+import electrickery.executive.autoAddType;
+import electrickery.executive.circuitModelType;
+import electrickery.executive.controlModeType;
+import electrickery.executive.distributionType;
+import electrickery.executive.exportType;
+import electrickery.executive.loadModelType;
+import electrickery.executive.nextType;
+import electrickery.executive.randomType;
+import electrickery.executive.reduceType;
+import electrickery.executive.reductionStrategy;
+import electrickery.executive.resetType;
+import electrickery.executive.solutionMode;
 
 /**
  * <!-- begin-user-doc -->
@@ -61,8 +75,6 @@ public class ExecutiveFactoryImpl extends EFactoryImpl implements ExecutiveFacto
 	@Override
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
-			case ExecutivePackage.EXEC_OPTIONS: return createExecOptions();
-			case ExecutivePackage.EXEC_COMMANDS: return createExecCommands();
 			case ExecutivePackage.EXECUTIVE: return createExecutive();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -145,26 +157,6 @@ public class ExecutiveFactoryImpl extends EFactoryImpl implements ExecutiveFacto
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ExecOptions createExecOptions() {
-		ExecOptionsImpl execOptions = new ExecOptionsImpl();
-		return execOptions;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ExecCommands createExecCommands() {
-		ExecCommandsImpl execCommands = new ExecCommandsImpl();
-		return execCommands;
 	}
 
 	/**

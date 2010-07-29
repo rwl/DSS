@@ -28,7 +28,6 @@ import electrickery.common.Circuit;
 import electrickery.common.CircuitElement;
 import electrickery.common.CommonPackage;
 import electrickery.common.impl.CommonPackageImpl;
-import electrickery.control.ControlPackage;
 import electrickery.conversion.ConversionPackage;
 import electrickery.resource.DSSResource;
 
@@ -152,7 +151,7 @@ public class DSSResourceImpl extends ResourceImpl implements
             EStructuralFeature feature;
             String value;
             if (parts.length == 1) {
-                feature = DSSResource.LINECODE_FEATURES[0];
+                feature = null;//DSSResource.LINECODE_FEATURES[0];
                 value = parts[0];
                 if (value.equals("\n") && scanner.next("~") == null)
                     break;

@@ -8,12 +8,8 @@ Bundle-Vendor: %providerName
 Bundle-Localization: plugin
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: electrickery.common.tests,
- electrickery.control.tests,
  electrickery.conversion.tests,
- electrickery.delivery.tests,
  electrickery.executive.tests,
- electrickery.general.tests,
- electrickery.meter.tests,
  electrickery.tests
 Require-Bundle: org.eclipse.core.runtime,
  electrickery;visibility:=reexport,

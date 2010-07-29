@@ -5,17 +5,9 @@ package electrickery.tests;
 
 import electrickery.common.tests.CommonTests;
 
-import electrickery.control.tests.ControlTests;
-
 import electrickery.conversion.tests.ConversionTests;
 
-import electrickery.delivery.tests.DeliveryTests;
-
 import electrickery.executive.tests.ExecutiveTests;
-
-import electrickery.general.tests.GeneralTests;
-
-import electrickery.meter.tests.MeterTests;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -47,12 +39,8 @@ public class ElectrickeryAllTests extends TestSuite {
 	public static Test suite() {
 		TestSuite suite = new ElectrickeryAllTests("Electrickery Tests");
 		suite.addTest(CommonTests.suite());
-		suite.addTest(ControlTests.suite());
 		suite.addTest(ConversionTests.suite());
-		suite.addTest(DeliveryTests.suite());
 		suite.addTest(ExecutiveTests.suite());
-		suite.addTest(GeneralTests.suite());
-		suite.addTest(MeterTests.suite());
 		return suite;
 	}
 

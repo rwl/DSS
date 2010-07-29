@@ -7,11 +7,13 @@
 package electrickery.executive.util;
 
 import electrickery.executive.*;
-
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.executive.Executive;
+import electrickery.executive.ExecutivePackage;
 
 /**
  * <!-- begin-user-doc -->
@@ -87,18 +89,6 @@ public class ExecutiveSwitch<T> {
 	 */
 	protected T doSwitch(int classifierID, EObject theEObject) {
 		switch (classifierID) {
-			case ExecutivePackage.EXEC_OPTIONS: {
-				ExecOptions execOptions = (ExecOptions)theEObject;
-				T result = caseExecOptions(execOptions);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case ExecutivePackage.EXEC_COMMANDS: {
-				ExecCommands execCommands = (ExecCommands)theEObject;
-				T result = caseExecCommands(execCommands);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case ExecutivePackage.EXECUTIVE: {
 				Executive executive = (Executive)theEObject;
 				T result = caseExecutive(executive);
@@ -107,36 +97,6 @@ public class ExecutiveSwitch<T> {
 			}
 			default: return defaultCase(theEObject);
 		}
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Exec Options</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Exec Options</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseExecOptions(ExecOptions object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Exec Commands</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Exec Commands</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseExecCommands(ExecCommands object) {
-		return null;
 	}
 
 	/**

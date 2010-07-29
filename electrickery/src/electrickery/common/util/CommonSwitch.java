@@ -7,11 +7,19 @@
 package electrickery.common.util;
 
 import electrickery.common.*;
-
 import java.util.List;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
+
+import electrickery.common.Bus;
+import electrickery.common.Circuit;
+import electrickery.common.CircuitElement;
+import electrickery.common.CommonPackage;
+import electrickery.common.Conductor;
+import electrickery.common.Named;
+import electrickery.common.Solution;
+import electrickery.common.Terminal;
 
 /**
  * <!-- begin-user-doc -->
@@ -106,24 +114,6 @@ public class CommonSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CommonPackage.COLLECTION: {
-				Collection collection = (Collection)theEObject;
-				T result = caseCollection(collection);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.CONDUCTOR: {
-				Conductor conductor = (Conductor)theEObject;
-				T result = caseConductor(conductor);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.FEEDER: {
-				Feeder feeder = (Feeder)theEObject;
-				T result = caseFeeder(feeder);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
 			case CommonPackage.SOLUTION: {
 				Solution solution = (Solution)theEObject;
 				T result = caseSolution(solution);
@@ -136,21 +126,15 @@ public class CommonSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
-			case CommonPackage.CONTROL_QUEUE: {
-				ControlQueue controlQueue = (ControlQueue)theEObject;
-				T result = caseControlQueue(controlQueue);
+			case CommonPackage.CONDUCTOR: {
+				Conductor conductor = (Conductor)theEObject;
+				T result = caseConductor(conductor);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
 			case CommonPackage.NAMED: {
 				Named named = (Named)theEObject;
 				T result = caseNamed(named);
-				if (result == null) result = defaultCase(theEObject);
-				return result;
-			}
-			case CommonPackage.ELECTRICKERY: {
-				Electrickery electrickery = (Electrickery)theEObject;
-				T result = caseElectrickery(electrickery);
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
@@ -204,21 +188,6 @@ public class CommonSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Collection</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Collection</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseCollection(Collection object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Conductor</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -230,21 +199,6 @@ public class CommonSwitch<T> {
 	 * @generated
 	 */
 	public T caseConductor(Conductor object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Feeder</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Feeder</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseFeeder(Feeder object) {
 		return null;
 	}
 
@@ -279,21 +233,6 @@ public class CommonSwitch<T> {
 	}
 
 	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Control Queue</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Control Queue</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseControlQueue(ControlQueue object) {
-		return null;
-	}
-
-	/**
 	 * Returns the result of interpreting the object as an instance of '<em>Named</em>'.
 	 * <!-- begin-user-doc -->
 	 * This implementation returns null;
@@ -305,21 +244,6 @@ public class CommonSwitch<T> {
 	 * @generated
 	 */
 	public T caseNamed(Named object) {
-		return null;
-	}
-
-	/**
-	 * Returns the result of interpreting the object as an instance of '<em>Electrickery</em>'.
-	 * <!-- begin-user-doc -->
-	 * This implementation returns null;
-	 * returning a non-null result will terminate the switch.
-	 * <!-- end-user-doc -->
-	 * @param object the target of the switch.
-	 * @return the result of interpreting the object as an instance of '<em>Electrickery</em>'.
-	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
-	 * @generated
-	 */
-	public T caseElectrickery(Electrickery object) {
 		return null;
 	}
 

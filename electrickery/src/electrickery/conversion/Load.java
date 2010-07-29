@@ -8,7 +8,6 @@ package electrickery.conversion;
 
 import electrickery.common.Circuit;
 import electrickery.common.connectionType;
-import electrickery.general.GrowthShape;
 
 /**
  * <!-- begin-user-doc -->
@@ -58,7 +57,6 @@ import electrickery.general.GrowthShape;
  * The following features are supported:
  * <ul>
  *   <li>{@link electrickery.conversion.Load#getCircuit <em>Circuit</em>}</li>
- *   <li>{@link electrickery.conversion.Load#getGrowthShapeObj <em>Growth Shape Obj</em>}</li>
  *   <li>{@link electrickery.conversion.Load#getBus1 <em>Bus1</em>}</li>
  *   <li>{@link electrickery.conversion.Load#getKV <em>KV</em>}</li>
  *   <li>{@link electrickery.conversion.Load#getKW <em>KW</em>}</li>
@@ -119,32 +117,6 @@ public interface Load extends PowerConversionElement {
 	 * @generated
 	 */
 	void setCircuit(Circuit value);
-
-	/**
-	 * Returns the value of the '<em><b>Growth Shape Obj</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Growth Shape Obj</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Growth Shape Obj</em>' reference.
-	 * @see #setGrowthShapeObj(GrowthShape)
-	 * @see electrickery.conversion.ConversionPackage#getLoad_GrowthShapeObj()
-	 * @model
-	 * @generated
-	 */
-	GrowthShape getGrowthShapeObj();
-
-	/**
-	 * Sets the value of the '{@link electrickery.conversion.Load#getGrowthShapeObj <em>Growth Shape Obj</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Growth Shape Obj</em>' reference.
-	 * @see #getGrowthShapeObj()
-	 * @generated
-	 */
-	void setGrowthShapeObj(GrowthShape value);
 
 	/**
 	 * Returns the value of the '<em><b>Bus1</b></em>' attribute.

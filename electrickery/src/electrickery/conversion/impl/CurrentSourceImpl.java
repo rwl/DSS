@@ -6,18 +6,15 @@
  */
 package electrickery.conversion.impl;
 
-import electrickery.conversion.ConversionPackage;
-import electrickery.conversion.CurrentSource;
-import electrickery.conversion.sequenceType;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import cern.colt.matrix.tdcomplex.DComplexFactory2D;
+import electrickery.conversion.ConversionPackage;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.sequenceType;
 
 /**
  * <!-- begin-user-doc -->

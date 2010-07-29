@@ -3,6 +3,7 @@
  */
 package electrickery.executive.tests;
 
+import electrickery.executive.Executive;
 import electrickery.executive.ExecOptions;
 import electrickery.executive.ExecutiveFactory;
 import electrickery.executive.ExecutivePackage;
@@ -61,7 +62,7 @@ public class ExecutiveExample {
 			System.out.println("Enter a list of file paths or URIs that have content like this:");
 			try {
 				Resource resource = resourceSet.createResource(URI.createURI("http:///My.executive"));
-				ExecOptions root = ExecutiveFactory.eINSTANCE.createExecOptions();
+				Executive root = ExecutiveFactory.eINSTANCE.createExecutive();
 				resource.getContents().add(root);
 				resource.save(System.out, null);
 			}

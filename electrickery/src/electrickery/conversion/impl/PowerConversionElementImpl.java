@@ -6,20 +6,14 @@
  */
 package electrickery.conversion.impl;
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-
-
 import electrickery.common.impl.CircuitElementImpl;
 import electrickery.conversion.ConversionPackage;
 import electrickery.conversion.PowerConversionElement;
-import electrickery.general.Spectrum;
-
-import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.InternalEObject;
-
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 /**
  * <!-- begin-user-doc -->
@@ -28,8 +22,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link electrickery.conversion.impl.PowerConversionElementImpl#getSpectrum <em>Spectrum</em>}</li>
- *   <li>{@link electrickery.conversion.impl.PowerConversionElementImpl#getSpectrumObj <em>Spectrum Obj</em>}</li>
  *   <li>{@link electrickery.conversion.impl.PowerConversionElementImpl#getInjCurrent <em>Inj Current</em>}</li>
  * </ul>
  * </p>
@@ -37,36 +29,6 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
  * @generated
  */
 public abstract class PowerConversionElementImpl extends CircuitElementImpl implements PowerConversionElement {
-    /**
-	 * The default value of the '{@link #getSpectrum() <em>Spectrum</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getSpectrum()
-	 * @generated
-	 * @ordered
-	 */
-    protected static final String SPECTRUM_EDEFAULT = null;
-
-    /**
-	 * The cached value of the '{@link #getSpectrum() <em>Spectrum</em>}' attribute.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getSpectrum()
-	 * @generated
-	 * @ordered
-	 */
-    protected String spectrum = SPECTRUM_EDEFAULT;
-
-    /**
-	 * The cached value of the '{@link #getSpectrumObj() <em>Spectrum Obj</em>}' reference.
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @see #getSpectrumObj()
-	 * @generated
-	 * @ordered
-	 */
-    protected Spectrum spectrumObj;
-
     /**
 	 * The default value of the '{@link #getInjCurrent() <em>Inj Current</em>}' attribute.
 	 * <!-- begin-user-doc -->
@@ -104,65 +66,6 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
     @Override
     protected EClass eStaticClass() {
 		return ConversionPackage.Literals.POWER_CONVERSION_ELEMENT;
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public String getSpectrum() {
-		return spectrum;
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public void setSpectrum(String newSpectrum) {
-		String oldSpectrum = spectrum;
-		spectrum = newSpectrum;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM, oldSpectrum, spectrum));
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public Spectrum getSpectrumObj() {
-		if (spectrumObj != null && spectrumObj.eIsProxy()) {
-			InternalEObject oldSpectrumObj = (InternalEObject)spectrumObj;
-			spectrumObj = (Spectrum)eResolveProxy(oldSpectrumObj);
-			if (spectrumObj != oldSpectrumObj) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ, oldSpectrumObj, spectrumObj));
-			}
-		}
-		return spectrumObj;
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public Spectrum basicGetSpectrumObj() {
-		return spectrumObj;
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public void setSpectrumObj(Spectrum newSpectrumObj) {
-		Spectrum oldSpectrumObj = spectrumObj;
-		spectrumObj = newSpectrumObj;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ, oldSpectrumObj, spectrumObj));
 	}
 
     /**
@@ -238,11 +141,6 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM:
-				return getSpectrum();
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ:
-				if (resolve) return getSpectrumObj();
-				return basicGetSpectrumObj();
 			case ConversionPackage.POWER_CONVERSION_ELEMENT__INJ_CURRENT:
 				return getInjCurrent();
 		}
@@ -257,12 +155,6 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
     @Override
     public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM:
-				setSpectrum((String)newValue);
-				return;
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ:
-				setSpectrumObj((Spectrum)newValue);
-				return;
 			case ConversionPackage.POWER_CONVERSION_ELEMENT__INJ_CURRENT:
 				setInjCurrent((Double)newValue);
 				return;
@@ -278,12 +170,6 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
     @Override
     public void eUnset(int featureID) {
 		switch (featureID) {
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM:
-				setSpectrum(SPECTRUM_EDEFAULT);
-				return;
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ:
-				setSpectrumObj((Spectrum)null);
-				return;
 			case ConversionPackage.POWER_CONVERSION_ELEMENT__INJ_CURRENT:
 				setInjCurrent(INJ_CURRENT_EDEFAULT);
 				return;
@@ -299,10 +185,6 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
     @Override
     public boolean eIsSet(int featureID) {
 		switch (featureID) {
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM:
-				return SPECTRUM_EDEFAULT == null ? spectrum != null : !SPECTRUM_EDEFAULT.equals(spectrum);
-			case ConversionPackage.POWER_CONVERSION_ELEMENT__SPECTRUM_OBJ:
-				return spectrumObj != null;
 			case ConversionPackage.POWER_CONVERSION_ELEMENT__INJ_CURRENT:
 				return injCurrent != INJ_CURRENT_EDEFAULT;
 		}
@@ -319,9 +201,7 @@ public abstract class PowerConversionElementImpl extends CircuitElementImpl impl
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (spectrum: ");
-		result.append(spectrum);
-		result.append(", injCurrent: ");
+		result.append(" (injCurrent: ");
 		result.append(injCurrent);
 		result.append(')');
 		return result.toString();

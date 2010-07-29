@@ -7,8 +7,15 @@
 package electrickery.conversion.impl;
 
 
+import org.eclipse.emf.common.notify.Notification;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
+
+import cern.colt.matrix.tdcomplex.DComplexFactory2D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import cern.jet.math.tdcomplex.DComplexFunctions;
 import electrickery.common.Circuit;
-import electrickery.common.CommonPackage;
 import electrickery.common.connectionType;
 import electrickery.conversion.ConversionPackage;
 import electrickery.conversion.Generator;
@@ -16,19 +23,6 @@ import electrickery.conversion.dispatchType;
 import electrickery.conversion.generatorModel;
 import electrickery.conversion.generatorStatus;
 import electrickery.executive.loadModelType;
-
-import org.eclipse.emf.common.notify.Notification;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.ecore.EClass;
-
-import org.eclipse.emf.ecore.InternalEObject;
-import org.eclipse.emf.ecore.impl.ENotificationImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-
-import cern.colt.matrix.tdcomplex.DComplexFactory2D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-import cern.jet.math.tdcomplex.DComplexFunctions;
 
 /**
  * <!-- begin-user-doc -->
@@ -98,6 +92,16 @@ import cern.jet.math.tdcomplex.DComplexFunctions;
  */
 public class GeneratorImpl extends PowerConversionElementImpl implements Generator {
     /**
+	 * The cached value of the '{@link #getCircuit() <em>Circuit</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCircuit()
+	 * @generated
+	 * @ordered
+	 */
+	protected Circuit circuit;
+
+				/**
 	 * The default value of the '{@link #getBus1() <em>Bus1</em>}' attribute.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1182,39 +1186,36 @@ public class GeneratorImpl extends PowerConversionElementImpl implements Generat
 	 * @generated
 	 */
     public Circuit getCircuit() {
-		if (eContainerFeatureID() != ConversionPackage.GENERATOR__CIRCUIT) return null;
-		return (Circuit)eContainer();
+		if (circuit != null && circuit.eIsProxy()) {
+			InternalEObject oldCircuit = (InternalEObject)circuit;
+			circuit = (Circuit)eResolveProxy(oldCircuit);
+			if (circuit != oldCircuit) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, ConversionPackage.GENERATOR__CIRCUIT, oldCircuit, circuit));
+			}
+		}
+		return circuit;
 	}
 
                 /**
 	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
+	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public NotificationChain basicSetCircuit(Circuit newCircuit, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject)newCircuit, ConversionPackage.GENERATOR__CIRCUIT, msgs);
-		return msgs;
+	public Circuit basicGetCircuit() {
+		return circuit;
 	}
 
-                /**
+																/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public void setCircuit(Circuit newCircuit) {
-		if (newCircuit != eInternalContainer() || (eContainerFeatureID() != ConversionPackage.GENERATOR__CIRCUIT && newCircuit != null)) {
-			if (EcoreUtil.isAncestor(this, newCircuit))
-				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
-			NotificationChain msgs = null;
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			if (newCircuit != null)
-				msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__GENERATORS, Circuit.class, msgs);
-			msgs = basicSetCircuit(newCircuit, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.GENERATOR__CIRCUIT, newCircuit, newCircuit));
+		Circuit oldCircuit = circuit;
+		circuit = newCircuit;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, ConversionPackage.GENERATOR__CIRCUIT, oldCircuit, circuit));
 	}
 
                 /**
@@ -2547,54 +2548,11 @@ public class GeneratorImpl extends PowerConversionElementImpl implements Generat
 	 * @generated
 	 */
     @Override
-    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case ConversionPackage.GENERATOR__CIRCUIT:
-				if (eInternalContainer() != null)
-					msgs = eBasicRemoveFromContainer(msgs);
-				return basicSetCircuit((Circuit)otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    @Override
-    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case ConversionPackage.GENERATOR__CIRCUIT:
-				return basicSetCircuit(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
-
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    @Override
-    public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
-		switch (eContainerFeatureID()) {
-			case ConversionPackage.GENERATOR__CIRCUIT:
-				return eInternalContainer().eInverseRemove(this, CommonPackage.CIRCUIT__GENERATORS, Circuit.class, msgs);
-		}
-		return super.eBasicRemoveFromContainerFeature(msgs);
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case ConversionPackage.GENERATOR__CIRCUIT:
-				return getCircuit();
+				if (resolve) return getCircuit();
+				return basicGetCircuit();
 			case ConversionPackage.GENERATOR__BUS1:
 				return getBus1();
 			case ConversionPackage.GENERATOR__KV:
@@ -3062,7 +3020,7 @@ public class GeneratorImpl extends PowerConversionElementImpl implements Generat
     public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case ConversionPackage.GENERATOR__CIRCUIT:
-				return getCircuit() != null;
+				return circuit != null;
 			case ConversionPackage.GENERATOR__BUS1:
 				return BUS1_EDEFAULT == null ? bus1 != null : !BUS1_EDEFAULT.equals(bus1);
 			case ConversionPackage.GENERATOR__KV:
