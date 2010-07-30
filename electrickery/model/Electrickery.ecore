@@ -29,6 +29,7 @@
       <eOperations name="initialiseNodeVBase"/>
       <eOperations name="getCircuitElements" upperBound="-1" eType="#//common/CircuitElement"/>
       <eOperations name="doResetMeterZones"/>
+      <eOperations name="getPCElements" upperBound="-1" eType="#//conversion/PowerConversionElement"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executive" eType="#//executive/Executive"
           eOpposite="#//executive/Executive/circuits"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="solution" eType="#//common/Solution"
@@ -56,6 +57,11 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="numNodes" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="numBuses" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="fundamental" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Fundamental and default base frequency."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="busNameRedefined" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
           defaultValueLiteral="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="solved" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"
@@ -201,6 +207,7 @@
       </eOperations>
       <eOperations name="getFirstBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eOperations name="getNextBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eOperations name="sumCurrents"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="enabled" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -281,6 +288,7 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequencyChanged" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="frequency" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="60.0"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="harmonic" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="mode" eType="#//executive/solutionMode"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"
           eOpposite="#//common/Circuit/solution"/>

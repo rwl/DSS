@@ -34,6 +34,7 @@ import electrickery.common.yBuildOption;
 import electrickery.conversion.CurrentSource;
 import electrickery.conversion.Generator;
 import electrickery.conversion.Load;
+import electrickery.conversion.PowerConversionElement;
 import electrickery.conversion.VoltageSource;
 import electrickery.conversion.generatorModel;
 import electrickery.executive.loadModelType;
@@ -51,6 +52,7 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.impl.SolutionImpl#isPreserveNodeVoltages <em>Preserve Node Voltages</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#isFrequencyChanged <em>Frequency Changed</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#getFrequency <em>Frequency</em>}</li>
+ *   <li>{@link electrickery.common.impl.SolutionImpl#getHarmonic <em>Harmonic</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#getMode <em>Mode</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#isSolutionInitialised <em>Solution Initialised</em>}</li>
@@ -88,595 +90,615 @@ import electrickery.executive.solutionMode;
  */
 public class SolutionImpl extends EObjectImpl implements Solution {
     /**
-	 * The cached value of the '{@link #getY() <em>Y</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getY() <em>Y</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getY()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getY()
+     * @generated
+     * @ordered
+     */
     protected DComplexMatrix2D y;
 
     /**
-	 * The cached value of the '{@link #getYSystem() <em>YSystem</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getYSystem() <em>YSystem</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getYSystem()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getYSystem()
+     * @generated
+     * @ordered
+     */
     protected DComplexMatrix2D ySystem;
 
     /**
-	 * The cached value of the '{@link #getYSeries() <em>YSeries</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getYSeries() <em>YSeries</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getYSeries()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getYSeries()
+     * @generated
+     * @ordered
+     */
     protected DComplexMatrix2D ySeries;
 
                 /**
-	 * The default value of the '{@link #getYear() <em>Year</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getYear()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getYear() <em>Year</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getYear()
+     * @generated
+     * @ordered
+     */
     protected static final int YEAR_EDEFAULT = 0;
 
     /**
-	 * The cached value of the '{@link #getYear() <em>Year</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getYear()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getYear() <em>Year</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getYear()
+     * @generated
+     * @ordered
+     */
     protected int year = YEAR_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isPreserveNodeVoltages() <em>Preserve Node Voltages</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isPreserveNodeVoltages()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isPreserveNodeVoltages() <em>Preserve Node Voltages</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isPreserveNodeVoltages()
+     * @generated
+     * @ordered
+     */
     protected static final boolean PRESERVE_NODE_VOLTAGES_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isPreserveNodeVoltages() <em>Preserve Node Voltages</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isPreserveNodeVoltages()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isPreserveNodeVoltages() <em>Preserve Node Voltages</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isPreserveNodeVoltages()
+     * @generated
+     * @ordered
+     */
     protected boolean preserveNodeVoltages = PRESERVE_NODE_VOLTAGES_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isFrequencyChanged() <em>Frequency Changed</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isFrequencyChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isFrequencyChanged() <em>Frequency Changed</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isFrequencyChanged()
+     * @generated
+     * @ordered
+     */
     protected static final boolean FREQUENCY_CHANGED_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isFrequencyChanged() <em>Frequency Changed</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isFrequencyChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isFrequencyChanged() <em>Frequency Changed</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isFrequencyChanged()
+     * @generated
+     * @ordered
+     */
     protected boolean frequencyChanged = FREQUENCY_CHANGED_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getFrequency()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getFrequency()
+     * @generated
+     * @ordered
+     */
     protected static final double FREQUENCY_EDEFAULT = 60.0;
 
     /**
-	 * The cached value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getFrequency()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getFrequency() <em>Frequency</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getFrequency()
+     * @generated
+     * @ordered
+     */
     protected double frequency = FREQUENCY_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getMode() <em>Mode</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMode()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getHarmonic() <em>Harmonic</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getHarmonic()
+     * @generated
+     * @ordered
+     */
+    protected static final double HARMONIC_EDEFAULT = 0.0;
+
+                /**
+     * The cached value of the '{@link #getHarmonic() <em>Harmonic</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getHarmonic()
+     * @generated
+     * @ordered
+     */
+    protected double harmonic = HARMONIC_EDEFAULT;
+
+                /**
+     * The default value of the '{@link #getMode() <em>Mode</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMode()
+     * @generated
+     * @ordered
+     */
     protected static final solutionMode MODE_EDEFAULT = solutionMode.SNAPSHOT;
 
     /**
-	 * The cached value of the '{@link #getMode() <em>Mode</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMode()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getMode() <em>Mode</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMode()
+     * @generated
+     * @ordered
+     */
     protected solutionMode mode = MODE_EDEFAULT;
 
     /**
-	 * The cached value of the '{@link #getCircuit() <em>Circuit</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getCircuit()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getCircuit() <em>Circuit</em>}' reference.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getCircuit()
+     * @generated
+     * @ordered
+     */
     protected Circuit circuit;
 
     /**
-	 * The default value of the '{@link #isSolutionInitialised() <em>Solution Initialised</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSolutionInitialised()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isSolutionInitialised() <em>Solution Initialised</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSolutionInitialised()
+     * @generated
+     * @ordered
+     */
     protected static final boolean SOLUTION_INITIALISED_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isSolutionInitialised() <em>Solution Initialised</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSolutionInitialised()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isSolutionInitialised() <em>Solution Initialised</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSolutionInitialised()
+     * @generated
+     * @ordered
+     */
     protected boolean solutionInitialised = SOLUTION_INITIALISED_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isSeriesYInvalid() <em>Series YInvalid</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSeriesYInvalid()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isSeriesYInvalid() <em>Series YInvalid</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSeriesYInvalid()
+     * @generated
+     * @ordered
+     */
     protected static final boolean SERIES_YINVALID_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isSeriesYInvalid() <em>Series YInvalid</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSeriesYInvalid()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isSeriesYInvalid() <em>Series YInvalid</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSeriesYInvalid()
+     * @generated
+     * @ordered
+     */
     protected boolean seriesYInvalid = SERIES_YINVALID_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isSystemYChanged() <em>System YChanged</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSystemYChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isSystemYChanged() <em>System YChanged</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSystemYChanged()
+     * @generated
+     * @ordered
+     */
     protected static final boolean SYSTEM_YCHANGED_EDEFAULT = true;
 
     /**
-	 * The cached value of the '{@link #isSystemYChanged() <em>System YChanged</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isSystemYChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isSystemYChanged() <em>System YChanged</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isSystemYChanged()
+     * @generated
+     * @ordered
+     */
     protected boolean systemYChanged = SYSTEM_YCHANGED_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getLoadModel() <em>Load Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getLoadModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getLoadModel() <em>Load Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getLoadModel()
+     * @generated
+     * @ordered
+     */
     protected static final loadModelType LOAD_MODEL_EDEFAULT = loadModelType.POWERFLOW;
 
     /**
-	 * The cached value of the '{@link #getLoadModel() <em>Load Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getLoadModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getLoadModel() <em>Load Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getLoadModel()
+     * @generated
+     * @ordered
+     */
     protected loadModelType loadModel = LOAD_MODEL_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isVoltageBaseChanged() <em>Voltage Base Changed</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isVoltageBaseChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isVoltageBaseChanged() <em>Voltage Base Changed</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isVoltageBaseChanged()
+     * @generated
+     * @ordered
+     */
     protected static final boolean VOLTAGE_BASE_CHANGED_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isVoltageBaseChanged() <em>Voltage Base Changed</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isVoltageBaseChanged()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isVoltageBaseChanged() <em>Voltage Base Changed</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isVoltageBaseChanged()
+     * @generated
+     * @ordered
+     */
     protected boolean voltageBaseChanged = VOLTAGE_BASE_CHANGED_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isHarmonicModel() <em>Harmonic Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isHarmonicModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isHarmonicModel() <em>Harmonic Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isHarmonicModel()
+     * @generated
+     * @ordered
+     */
     protected static final boolean HARMONIC_MODEL_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isHarmonicModel() <em>Harmonic Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isHarmonicModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isHarmonicModel() <em>Harmonic Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isHarmonicModel()
+     * @generated
+     * @ordered
+     */
     protected boolean harmonicModel = HARMONIC_MODEL_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isDynamicModel() <em>Dynamic Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isDynamicModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isDynamicModel() <em>Dynamic Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isDynamicModel()
+     * @generated
+     * @ordered
+     */
     protected static final boolean DYNAMIC_MODEL_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isDynamicModel() <em>Dynamic Model</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isDynamicModel()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isDynamicModel() <em>Dynamic Model</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isDynamicModel()
+     * @generated
+     * @ordered
+     */
     protected boolean dynamicModel = DYNAMIC_MODEL_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isUseAuxillaryCurrents() <em>Use Auxillary Currents</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isUseAuxillaryCurrents()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isUseAuxillaryCurrents() <em>Use Auxillary Currents</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isUseAuxillaryCurrents()
+     * @generated
+     * @ordered
+     */
     protected static final boolean USE_AUXILLARY_CURRENTS_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isUseAuxillaryCurrents() <em>Use Auxillary Currents</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isUseAuxillaryCurrents()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isUseAuxillaryCurrents() <em>Use Auxillary Currents</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isUseAuxillaryCurrents()
+     * @generated
+     * @ordered
+     */
     protected boolean useAuxillaryCurrents = USE_AUXILLARY_CURRENTS_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isLoadsNeedUpdating() <em>Loads Need Updating</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isLoadsNeedUpdating()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isLoadsNeedUpdating() <em>Loads Need Updating</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isLoadsNeedUpdating()
+     * @generated
+     * @ordered
+     */
     protected static final boolean LOADS_NEED_UPDATING_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isLoadsNeedUpdating() <em>Loads Need Updating</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isLoadsNeedUpdating()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isLoadsNeedUpdating() <em>Loads Need Updating</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isLoadsNeedUpdating()
+     * @generated
+     * @ordered
+     */
     protected boolean loadsNeedUpdating = LOADS_NEED_UPDATING_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getIteration() <em>Iteration</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getIteration()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getIteration() <em>Iteration</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getIteration()
+     * @generated
+     * @ordered
+     */
     protected static final int ITERATION_EDEFAULT = 0;
 
     /**
-	 * The cached value of the '{@link #getIteration() <em>Iteration</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getIteration()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getIteration() <em>Iteration</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getIteration()
+     * @generated
+     * @ordered
+     */
     protected int iteration = ITERATION_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getMaxIterations() <em>Max Iterations</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxIterations()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getMaxIterations() <em>Max Iterations</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxIterations()
+     * @generated
+     * @ordered
+     */
     protected static final int MAX_ITERATIONS_EDEFAULT = 0;
 
     /**
-	 * The cached value of the '{@link #getMaxIterations() <em>Max Iterations</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxIterations()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getMaxIterations() <em>Max Iterations</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxIterations()
+     * @generated
+     * @ordered
+     */
     protected int maxIterations = MAX_ITERATIONS_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getMaxError() <em>Max Error</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxError()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getMaxError() <em>Max Error</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxError()
+     * @generated
+     * @ordered
+     */
     protected static final double MAX_ERROR_EDEFAULT = 0.0;
 
     /**
-	 * The cached value of the '{@link #getMaxError() <em>Max Error</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxError()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getMaxError() <em>Max Error</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxError()
+     * @generated
+     * @ordered
+     */
     protected double maxError = MAX_ERROR_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getConvergenceTolerance() <em>Convergence Tolerance</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getConvergenceTolerance()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getConvergenceTolerance() <em>Convergence Tolerance</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getConvergenceTolerance()
+     * @generated
+     * @ordered
+     */
     protected static final double CONVERGENCE_TOLERANCE_EDEFAULT = 0.0;
 
     /**
-	 * The cached value of the '{@link #getConvergenceTolerance() <em>Convergence Tolerance</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getConvergenceTolerance()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getConvergenceTolerance() <em>Convergence Tolerance</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getConvergenceTolerance()
+     * @generated
+     * @ordered
+     */
     protected double convergenceTolerance = CONVERGENCE_TOLERANCE_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isConverged() <em>Converged</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isConverged()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isConverged() <em>Converged</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isConverged()
+     * @generated
+     * @ordered
+     */
     protected static final boolean CONVERGED_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isConverged() <em>Converged</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isConverged()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isConverged() <em>Converged</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isConverged()
+     * @generated
+     * @ordered
+     */
     protected boolean converged = CONVERGED_EDEFAULT;
 
     /**
-	 * This is true if the Converged attribute has been set.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
+     * This is true if the Converged attribute has been set.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
     protected boolean convergedESet;
 
     /**
-	 * The default value of the '{@link #getControlIteration() <em>Control Iteration</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getControlIteration()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getControlIteration() <em>Control Iteration</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getControlIteration()
+     * @generated
+     * @ordered
+     */
     protected static final int CONTROL_ITERATION_EDEFAULT = 0;
 
     /**
-	 * The cached value of the '{@link #getControlIteration() <em>Control Iteration</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getControlIteration()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getControlIteration() <em>Control Iteration</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getControlIteration()
+     * @generated
+     * @ordered
+     */
     protected int controlIteration = CONTROL_ITERATION_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getMaxControlIterations() <em>Max Control Iterations</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxControlIterations()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getMaxControlIterations() <em>Max Control Iterations</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxControlIterations()
+     * @generated
+     * @ordered
+     */
     protected static final int MAX_CONTROL_ITERATIONS_EDEFAULT = 10;
 
     /**
-	 * The cached value of the '{@link #getMaxControlIterations() <em>Max Control Iterations</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMaxControlIterations()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getMaxControlIterations() <em>Max Control Iterations</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMaxControlIterations()
+     * @generated
+     * @ordered
+     */
     protected int maxControlIterations = MAX_CONTROL_ITERATIONS_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getControlMode() <em>Control Mode</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getControlMode()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getControlMode() <em>Control Mode</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getControlMode()
+     * @generated
+     * @ordered
+     */
     protected static final controlModeType CONTROL_MODE_EDEFAULT = controlModeType.EVENT_DRIVEN;
 
     /**
-	 * The cached value of the '{@link #getControlMode() <em>Control Mode</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getControlMode()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getControlMode() <em>Control Mode</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getControlMode()
+     * @generated
+     * @ordered
+     */
     protected controlModeType controlMode = CONTROL_MODE_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isControlActionsDone() <em>Control Actions Done</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isControlActionsDone()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isControlActionsDone() <em>Control Actions Done</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isControlActionsDone()
+     * @generated
+     * @ordered
+     */
     protected static final boolean CONTROL_ACTIONS_DONE_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isControlActionsDone() <em>Control Actions Done</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isControlActionsDone()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isControlActionsDone() <em>Control Actions Done</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isControlActionsDone()
+     * @generated
+     * @ordered
+     */
     protected boolean controlActionsDone = CONTROL_ACTIONS_DONE_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getMostIterationsDone() <em>Most Iterations Done</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMostIterationsDone()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getMostIterationsDone() <em>Most Iterations Done</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMostIterationsDone()
+     * @generated
+     * @ordered
+     */
     protected static final int MOST_ITERATIONS_DONE_EDEFAULT = 0;
 
     /**
-	 * The cached value of the '{@link #getMostIterationsDone() <em>Most Iterations Done</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getMostIterationsDone()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getMostIterationsDone() <em>Most Iterations Done</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getMostIterationsDone()
+     * @generated
+     * @ordered
+     */
     protected int mostIterationsDone = MOST_ITERATIONS_DONE_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getAlgorithm() <em>Algorithm</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getAlgorithm()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #getAlgorithm() <em>Algorithm</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getAlgorithm()
+     * @generated
+     * @ordered
+     */
     protected static final algorithmType ALGORITHM_EDEFAULT = algorithmType.NORMAL_SOLVE;
 
     /**
-	 * The cached value of the '{@link #getAlgorithm() <em>Algorithm</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getAlgorithm()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getAlgorithm() <em>Algorithm</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getAlgorithm()
+     * @generated
+     * @ordered
+     */
     protected algorithmType algorithm = ALGORITHM_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #isLastSolutionWasDirect() <em>Last Solution Was Direct</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isLastSolutionWasDirect()
-	 * @generated
-	 * @ordered
-	 */
+     * The default value of the '{@link #isLastSolutionWasDirect() <em>Last Solution Was Direct</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isLastSolutionWasDirect()
+     * @generated
+     * @ordered
+     */
     protected static final boolean LAST_SOLUTION_WAS_DIRECT_EDEFAULT = false;
 
     /**
-	 * The cached value of the '{@link #isLastSolutionWasDirect() <em>Last Solution Was Direct</em>}' attribute.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #isLastSolutionWasDirect()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #isLastSolutionWasDirect() <em>Last Solution Was Direct</em>}' attribute.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #isLastSolutionWasDirect()
+     * @generated
+     * @ordered
+     */
     protected boolean lastSolutionWasDirect = LAST_SOLUTION_WAS_DIRECT_EDEFAULT;
 
     /**
-	 * The default value of the '{@link #getSolutionCount() <em>Solution Count</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * The default value of the '{@link #getSolutionCount() <em>Solution Count</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getSolutionCount()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getSolutionCount()
+     * @generated
+     * @ordered
+     */
     protected static final int SOLUTION_COUNT_EDEFAULT = 0;
 
                 /**
-	 * The cached value of the '{@link #getSolutionCount() <em>Solution Count</em>}' attribute.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getSolutionCount() <em>Solution Count</em>}' attribute.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getSolutionCount()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getSolutionCount()
+     * @generated
+     * @ordered
+     */
     protected int solutionCount = SOLUTION_COUNT_EDEFAULT;
 
                 /**
-	 * The cached value of the '{@link #getNodeV() <em>Node V</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getNodeV()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getNodeV() <em>Node V</em>}' reference.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getNodeV()
+     * @generated
+     * @ordered
+     */
     protected DComplexMatrix1D nodeV;
 
     /**
-	 * The cached value of the '{@link #getNodeVBase() <em>Node VBase</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getNodeVBase() <em>Node VBase</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getNodeVBase()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getNodeVBase()
+     * @generated
+     * @ordered
+     */
     protected DoubleMatrix1D nodeVBase;
 
                                                                 /**
-	 * The cached value of the '{@link #getErrorSaved() <em>Error Saved</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getErrorSaved() <em>Error Saved</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getErrorSaved()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getErrorSaved()
+     * @generated
+     * @ordered
+     */
     protected DoubleMatrix1D errorSaved;
 
                                                                 /**
-	 * The cached value of the '{@link #getVMagSaved() <em>VMag Saved</em>}' reference.
-	 * <!-- begin-user-doc -->
+     * The cached value of the '{@link #getVMagSaved() <em>VMag Saved</em>}' reference.
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @see #getVMagSaved()
-	 * @generated
-	 * @ordered
-	 */
+     * @see #getVMagSaved()
+     * @generated
+     * @ordered
+     */
     protected DoubleMatrix1D vMagSaved;
 
                 /**
-	 * The cached value of the '{@link #getCurrents() <em>Currents</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getCurrents()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getCurrents() <em>Currents</em>}' reference.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getCurrents()
+     * @generated
+     * @ordered
+     */
     protected DComplexMatrix1D currents;
 
     /**
-	 * The cached value of the '{@link #getAlgorithms() <em>Algorithms</em>}' reference.
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @see #getAlgorithms()
-	 * @generated
-	 * @ordered
-	 */
+     * The cached value of the '{@link #getAlgorithms() <em>Algorithms</em>}' reference.
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @see #getAlgorithms()
+     * @generated
+     * @ordered
+     */
     protected SolutionAlgs algorithms;
 
     /*
@@ -685,948 +707,985 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     private DComplexMatrix1D dV;
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     protected SolutionImpl() {
-		super();
-	}
+        super();
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     protected EClass eStaticClass() {
-		return CommonPackage.Literals.SOLUTION;
-	}
+        return CommonPackage.Literals.SOLUTION;
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D getY() {
-		if (y != null && ((EObject)y).eIsProxy()) {
-			InternalEObject oldY = (InternalEObject)y;
-			y = (DComplexMatrix2D)eResolveProxy(oldY);
-			if (y != oldY) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__Y, oldY, y));
-			}
-		}
-		return y;
-	}
+        if (y != null && ((EObject)y).eIsProxy()) {
+            InternalEObject oldY = (InternalEObject)y;
+            y = (DComplexMatrix2D)eResolveProxy(oldY);
+            if (y != oldY) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__Y, oldY, y));
+            }
+        }
+        return y;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D basicGetY() {
-		return y;
-	}
+        return y;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setY(DComplexMatrix2D newY) {
-		DComplexMatrix2D oldY = y;
-		y = newY;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__Y, oldY, y));
-	}
+        DComplexMatrix2D oldY = y;
+        y = newY;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__Y, oldY, y));
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D getYSystem() {
-		if (ySystem != null && ((EObject)ySystem).eIsProxy()) {
-			InternalEObject oldYSystem = (InternalEObject)ySystem;
-			ySystem = (DComplexMatrix2D)eResolveProxy(oldYSystem);
-			if (ySystem != oldYSystem) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
-			}
-		}
-		return ySystem;
-	}
+        if (ySystem != null && ((EObject)ySystem).eIsProxy()) {
+            InternalEObject oldYSystem = (InternalEObject)ySystem;
+            ySystem = (DComplexMatrix2D)eResolveProxy(oldYSystem);
+            if (ySystem != oldYSystem) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
+            }
+        }
+        return ySystem;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D basicGetYSystem() {
-		return ySystem;
-	}
+        return ySystem;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setYSystem(DComplexMatrix2D newYSystem) {
-		DComplexMatrix2D oldYSystem = ySystem;
-		ySystem = newYSystem;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
-	}
+        DComplexMatrix2D oldYSystem = ySystem;
+        ySystem = newYSystem;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D getYSeries() {
-		if (ySeries != null && ((EObject)ySeries).eIsProxy()) {
-			InternalEObject oldYSeries = (InternalEObject)ySeries;
-			ySeries = (DComplexMatrix2D)eResolveProxy(oldYSeries);
-			if (ySeries != oldYSeries) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
-			}
-		}
-		return ySeries;
-	}
+        if (ySeries != null && ((EObject)ySeries).eIsProxy()) {
+            InternalEObject oldYSeries = (InternalEObject)ySeries;
+            ySeries = (DComplexMatrix2D)eResolveProxy(oldYSeries);
+            if (ySeries != oldYSeries) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
+            }
+        }
+        return ySeries;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DComplexMatrix2D basicGetYSeries() {
-		return ySeries;
-	}
+        return ySeries;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setYSeries(DComplexMatrix2D newYSeries) {
-		DComplexMatrix2D oldYSeries = ySeries;
-		ySeries = newYSeries;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
-	}
+        DComplexMatrix2D oldYSeries = ySeries;
+        ySeries = newYSeries;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
+    }
 
                 /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getYear() {
-		return year;
-	}
+        return year;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated NOT
+     */
     public void setYear(int newYear) {
-		int oldYear = year;
-		year = newYear;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YEAR, oldYear, year));
-	}
+//        setIntHour(0); // Change year, start over.
+//        getDynaVars().setT(0.0);
+//        updateDblHour();
+//        EnergyMeterClass.resetAll(); // force any previous year data to complete
+
+        int oldYear = year;
+        year = newYear;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YEAR, oldYear, year));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isPreserveNodeVoltages() {
-		return preserveNodeVoltages;
-	}
+        return preserveNodeVoltages;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setPreserveNodeVoltages(boolean newPreserveNodeVoltages) {
-		boolean oldPreserveNodeVoltages = preserveNodeVoltages;
-		preserveNodeVoltages = newPreserveNodeVoltages;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES, oldPreserveNodeVoltages, preserveNodeVoltages));
-	}
+        boolean oldPreserveNodeVoltages = preserveNodeVoltages;
+        preserveNodeVoltages = newPreserveNodeVoltages;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES, oldPreserveNodeVoltages, preserveNodeVoltages));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isFrequencyChanged() {
-		return frequencyChanged;
-	}
+        return frequencyChanged;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setFrequencyChanged(boolean newFrequencyChanged) {
-		boolean oldFrequencyChanged = frequencyChanged;
-		frequencyChanged = newFrequencyChanged;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__FREQUENCY_CHANGED, oldFrequencyChanged, frequencyChanged));
-	}
+        boolean oldFrequencyChanged = frequencyChanged;
+        frequencyChanged = newFrequencyChanged;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__FREQUENCY_CHANGED, oldFrequencyChanged, frequencyChanged));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public double getFrequency() {
-		return frequency;
-	}
+        return frequency;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated NOT
+     */
     public void setFrequency(double newFrequency) {
-		double oldFrequency = frequency;
-		frequency = newFrequency;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__FREQUENCY, oldFrequency, frequency));
-	}
+        double oldFrequency = frequency;
+
+        if (newFrequency != oldFrequency) {
+            setFrequencyChanged(true); // Force Rebuild of all Y Primitives.
+            setSystemYChanged(true); // Force rebuild of System Y.
+        }
+
+        if (getCircuit() != null)
+            setHarmonic(newFrequency / getCircuit().getFundamental()); // Make Sure Harmonic stays in synch.
+
+        frequency = newFrequency;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__FREQUENCY, oldFrequency, frequency));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public double getHarmonic() {
+        return harmonic;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setHarmonic(double newHarmonic) {
+        double oldHarmonic = harmonic;
+        harmonic = newHarmonic;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__HARMONIC, oldHarmonic, harmonic));
+    }
+
+                /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public solutionMode getMode() {
-		return mode;
-	}
+        return mode;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated NOT
+     */
     public void setMode(solutionMode newMode) {
-		solutionMode oldMode = mode;
-		mode = newMode == null ? MODE_EDEFAULT : newMode;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MODE, oldMode, mode));
-	}
+        // TODO: Implement solution mode setter.
+
+        solutionMode oldMode = mode;
+        mode = newMode == null ? MODE_EDEFAULT : newMode;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MODE, oldMode, mode));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public Circuit getCircuit() {
-		if (circuit != null && circuit.eIsProxy()) {
-			InternalEObject oldCircuit = (InternalEObject)circuit;
-			circuit = (Circuit)eResolveProxy(oldCircuit);
-			if (circuit != oldCircuit) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__CIRCUIT, oldCircuit, circuit));
-			}
-		}
-		return circuit;
-	}
+        if (circuit != null && circuit.eIsProxy()) {
+            InternalEObject oldCircuit = (InternalEObject)circuit;
+            circuit = (Circuit)eResolveProxy(oldCircuit);
+            if (circuit != oldCircuit) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__CIRCUIT, oldCircuit, circuit));
+            }
+        }
+        return circuit;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public Circuit basicGetCircuit() {
-		return circuit;
-	}
+        return circuit;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public NotificationChain basicSetCircuit(Circuit newCircuit, NotificationChain msgs) {
-		Circuit oldCircuit = circuit;
-		circuit = newCircuit;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CIRCUIT, oldCircuit, newCircuit);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
+        Circuit oldCircuit = circuit;
+        circuit = newCircuit;
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CIRCUIT, oldCircuit, newCircuit);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
+        }
+        return msgs;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setCircuit(Circuit newCircuit) {
-		if (newCircuit != circuit) {
-			NotificationChain msgs = null;
-			if (circuit != null)
-				msgs = ((InternalEObject)circuit).eInverseRemove(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
-			if (newCircuit != null)
-				msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
-			msgs = basicSetCircuit(newCircuit, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CIRCUIT, newCircuit, newCircuit));
-	}
+        if (newCircuit != circuit) {
+            NotificationChain msgs = null;
+            if (circuit != null)
+                msgs = ((InternalEObject)circuit).eInverseRemove(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
+            if (newCircuit != null)
+                msgs = ((InternalEObject)newCircuit).eInverseAdd(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
+            msgs = basicSetCircuit(newCircuit, msgs);
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CIRCUIT, newCircuit, newCircuit));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isSolutionInitialised() {
-		return solutionInitialised;
-	}
+        return solutionInitialised;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setSolutionInitialised(boolean newSolutionInitialised) {
-		boolean oldSolutionInitialised = solutionInitialised;
-		solutionInitialised = newSolutionInitialised;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SOLUTION_INITIALISED, oldSolutionInitialised, solutionInitialised));
-	}
+        boolean oldSolutionInitialised = solutionInitialised;
+        solutionInitialised = newSolutionInitialised;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SOLUTION_INITIALISED, oldSolutionInitialised, solutionInitialised));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isSeriesYInvalid() {
-		return seriesYInvalid;
-	}
+        return seriesYInvalid;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setSeriesYInvalid(boolean newSeriesYInvalid) {
-		boolean oldSeriesYInvalid = seriesYInvalid;
-		seriesYInvalid = newSeriesYInvalid;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SERIES_YINVALID, oldSeriesYInvalid, seriesYInvalid));
-	}
+        boolean oldSeriesYInvalid = seriesYInvalid;
+        seriesYInvalid = newSeriesYInvalid;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SERIES_YINVALID, oldSeriesYInvalid, seriesYInvalid));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isSystemYChanged() {
-		return systemYChanged;
-	}
+        return systemYChanged;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setSystemYChanged(boolean newSystemYChanged) {
-		boolean oldSystemYChanged = systemYChanged;
-		systemYChanged = newSystemYChanged;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SYSTEM_YCHANGED, oldSystemYChanged, systemYChanged));
-	}
+        boolean oldSystemYChanged = systemYChanged;
+        systemYChanged = newSystemYChanged;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SYSTEM_YCHANGED, oldSystemYChanged, systemYChanged));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public loadModelType getLoadModel() {
-		return loadModel;
-	}
+        return loadModel;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setLoadModel(loadModelType newLoadModel) {
-		loadModelType oldLoadModel = loadModel;
-		loadModel = newLoadModel == null ? LOAD_MODEL_EDEFAULT : newLoadModel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LOAD_MODEL, oldLoadModel, loadModel));
-	}
+        loadModelType oldLoadModel = loadModel;
+        loadModel = newLoadModel == null ? LOAD_MODEL_EDEFAULT : newLoadModel;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LOAD_MODEL, oldLoadModel, loadModel));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isVoltageBaseChanged() {
-		return voltageBaseChanged;
-	}
+        return voltageBaseChanged;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setVoltageBaseChanged(boolean newVoltageBaseChanged) {
-		boolean oldVoltageBaseChanged = voltageBaseChanged;
-		voltageBaseChanged = newVoltageBaseChanged;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED, oldVoltageBaseChanged, voltageBaseChanged));
-	}
+        boolean oldVoltageBaseChanged = voltageBaseChanged;
+        voltageBaseChanged = newVoltageBaseChanged;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED, oldVoltageBaseChanged, voltageBaseChanged));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isHarmonicModel() {
-		return harmonicModel;
-	}
+        return harmonicModel;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setHarmonicModel(boolean newHarmonicModel) {
-		boolean oldHarmonicModel = harmonicModel;
-		harmonicModel = newHarmonicModel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__HARMONIC_MODEL, oldHarmonicModel, harmonicModel));
-	}
+        boolean oldHarmonicModel = harmonicModel;
+        harmonicModel = newHarmonicModel;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__HARMONIC_MODEL, oldHarmonicModel, harmonicModel));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isDynamicModel() {
-		return dynamicModel;
-	}
+        return dynamicModel;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setDynamicModel(boolean newDynamicModel) {
-		boolean oldDynamicModel = dynamicModel;
-		dynamicModel = newDynamicModel;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__DYNAMIC_MODEL, oldDynamicModel, dynamicModel));
-	}
+        boolean oldDynamicModel = dynamicModel;
+        dynamicModel = newDynamicModel;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__DYNAMIC_MODEL, oldDynamicModel, dynamicModel));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isUseAuxillaryCurrents() {
-		return useAuxillaryCurrents;
-	}
+        return useAuxillaryCurrents;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setUseAuxillaryCurrents(boolean newUseAuxillaryCurrents) {
-		boolean oldUseAuxillaryCurrents = useAuxillaryCurrents;
-		useAuxillaryCurrents = newUseAuxillaryCurrents;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS, oldUseAuxillaryCurrents, useAuxillaryCurrents));
-	}
+        boolean oldUseAuxillaryCurrents = useAuxillaryCurrents;
+        useAuxillaryCurrents = newUseAuxillaryCurrents;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS, oldUseAuxillaryCurrents, useAuxillaryCurrents));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isLoadsNeedUpdating() {
-		return loadsNeedUpdating;
-	}
+        return loadsNeedUpdating;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setLoadsNeedUpdating(boolean newLoadsNeedUpdating) {
-		boolean oldLoadsNeedUpdating = loadsNeedUpdating;
-		loadsNeedUpdating = newLoadsNeedUpdating;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LOADS_NEED_UPDATING, oldLoadsNeedUpdating, loadsNeedUpdating));
-	}
+        boolean oldLoadsNeedUpdating = loadsNeedUpdating;
+        loadsNeedUpdating = newLoadsNeedUpdating;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LOADS_NEED_UPDATING, oldLoadsNeedUpdating, loadsNeedUpdating));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getIteration() {
-		return iteration;
-	}
+        return iteration;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setIteration(int newIteration) {
-		int oldIteration = iteration;
-		iteration = newIteration;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ITERATION, oldIteration, iteration));
-	}
+        int oldIteration = iteration;
+        iteration = newIteration;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ITERATION, oldIteration, iteration));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getMaxIterations() {
-		return maxIterations;
-	}
+        return maxIterations;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setMaxIterations(int newMaxIterations) {
-		int oldMaxIterations = maxIterations;
-		maxIterations = newMaxIterations;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_ITERATIONS, oldMaxIterations, maxIterations));
-	}
+        int oldMaxIterations = maxIterations;
+        maxIterations = newMaxIterations;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_ITERATIONS, oldMaxIterations, maxIterations));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public double getMaxError() {
-		return maxError;
-	}
+        return maxError;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setMaxError(double newMaxError) {
-		double oldMaxError = maxError;
-		maxError = newMaxError;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_ERROR, oldMaxError, maxError));
-	}
+        double oldMaxError = maxError;
+        maxError = newMaxError;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_ERROR, oldMaxError, maxError));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public double getConvergenceTolerance() {
-		return convergenceTolerance;
-	}
+        return convergenceTolerance;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setConvergenceTolerance(double newConvergenceTolerance) {
-		double oldConvergenceTolerance = convergenceTolerance;
-		convergenceTolerance = newConvergenceTolerance;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE, oldConvergenceTolerance, convergenceTolerance));
-	}
+        double oldConvergenceTolerance = convergenceTolerance;
+        convergenceTolerance = newConvergenceTolerance;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE, oldConvergenceTolerance, convergenceTolerance));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isConverged() {
-		return converged;
-	}
+        return converged;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setConverged(boolean newConverged) {
-		boolean oldConverged = converged;
-		converged = newConverged;
-		boolean oldConvergedESet = convergedESet;
-		convergedESet = true;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONVERGED, oldConverged, converged, !oldConvergedESet));
-	}
+        boolean oldConverged = converged;
+        converged = newConverged;
+        boolean oldConvergedESet = convergedESet;
+        convergedESet = true;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONVERGED, oldConverged, converged, !oldConvergedESet));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void unsetConverged() {
-		boolean oldConverged = converged;
-		boolean oldConvergedESet = convergedESet;
-		converged = CONVERGED_EDEFAULT;
-		convergedESet = false;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.SOLUTION__CONVERGED, oldConverged, CONVERGED_EDEFAULT, oldConvergedESet));
-	}
+        boolean oldConverged = converged;
+        boolean oldConvergedESet = convergedESet;
+        converged = CONVERGED_EDEFAULT;
+        convergedESet = false;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.UNSET, CommonPackage.SOLUTION__CONVERGED, oldConverged, CONVERGED_EDEFAULT, oldConvergedESet));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isSetConverged() {
-		return convergedESet;
-	}
+        return convergedESet;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getControlIteration() {
-		return controlIteration;
-	}
+        return controlIteration;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setControlIteration(int newControlIteration) {
-		int oldControlIteration = controlIteration;
-		controlIteration = newControlIteration;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_ITERATION, oldControlIteration, controlIteration));
-	}
+        int oldControlIteration = controlIteration;
+        controlIteration = newControlIteration;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_ITERATION, oldControlIteration, controlIteration));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getMaxControlIterations() {
-		return maxControlIterations;
-	}
+        return maxControlIterations;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setMaxControlIterations(int newMaxControlIterations) {
-		int oldMaxControlIterations = maxControlIterations;
-		maxControlIterations = newMaxControlIterations;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS, oldMaxControlIterations, maxControlIterations));
-	}
+        int oldMaxControlIterations = maxControlIterations;
+        maxControlIterations = newMaxControlIterations;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS, oldMaxControlIterations, maxControlIterations));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public controlModeType getControlMode() {
-		return controlMode;
-	}
+        return controlMode;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setControlMode(controlModeType newControlMode) {
-		controlModeType oldControlMode = controlMode;
-		controlMode = newControlMode == null ? CONTROL_MODE_EDEFAULT : newControlMode;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_MODE, oldControlMode, controlMode));
-	}
+        controlModeType oldControlMode = controlMode;
+        controlMode = newControlMode == null ? CONTROL_MODE_EDEFAULT : newControlMode;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_MODE, oldControlMode, controlMode));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isControlActionsDone() {
-		return controlActionsDone;
-	}
+        return controlActionsDone;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setControlActionsDone(boolean newControlActionsDone) {
-		boolean oldControlActionsDone = controlActionsDone;
-		controlActionsDone = newControlActionsDone;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE, oldControlActionsDone, controlActionsDone));
-	}
+        boolean oldControlActionsDone = controlActionsDone;
+        controlActionsDone = newControlActionsDone;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE, oldControlActionsDone, controlActionsDone));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public int getMostIterationsDone() {
-		return mostIterationsDone;
-	}
+        return mostIterationsDone;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setMostIterationsDone(int newMostIterationsDone) {
-		int oldMostIterationsDone = mostIterationsDone;
-		mostIterationsDone = newMostIterationsDone;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MOST_ITERATIONS_DONE, oldMostIterationsDone, mostIterationsDone));
-	}
+        int oldMostIterationsDone = mostIterationsDone;
+        mostIterationsDone = newMostIterationsDone;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__MOST_ITERATIONS_DONE, oldMostIterationsDone, mostIterationsDone));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public algorithmType getAlgorithm() {
-		return algorithm;
-	}
+        return algorithm;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setAlgorithm(algorithmType newAlgorithm) {
-		algorithmType oldAlgorithm = algorithm;
-		algorithm = newAlgorithm == null ? ALGORITHM_EDEFAULT : newAlgorithm;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ALGORITHM, oldAlgorithm, algorithm));
-	}
+        algorithmType oldAlgorithm = algorithm;
+        algorithm = newAlgorithm == null ? ALGORITHM_EDEFAULT : newAlgorithm;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ALGORITHM, oldAlgorithm, algorithm));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public boolean isLastSolutionWasDirect() {
-		return lastSolutionWasDirect;
-	}
+        return lastSolutionWasDirect;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setLastSolutionWasDirect(boolean newLastSolutionWasDirect) {
-		boolean oldLastSolutionWasDirect = lastSolutionWasDirect;
-		lastSolutionWasDirect = newLastSolutionWasDirect;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT, oldLastSolutionWasDirect, lastSolutionWasDirect));
-	}
+        boolean oldLastSolutionWasDirect = lastSolutionWasDirect;
+        lastSolutionWasDirect = newLastSolutionWasDirect;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT, oldLastSolutionWasDirect, lastSolutionWasDirect));
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public int getSolutionCount() {
-		return solutionCount;
-	}
+        return solutionCount;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setSolutionCount(int newSolutionCount) {
-		int oldSolutionCount = solutionCount;
-		solutionCount = newSolutionCount;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SOLUTION_COUNT, oldSolutionCount, solutionCount));
-	}
+        int oldSolutionCount = solutionCount;
+        solutionCount = newSolutionCount;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__SOLUTION_COUNT, oldSolutionCount, solutionCount));
+    }
 
                 /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public DComplexMatrix1D getNodeV() {
-		if (nodeV != null && ((EObject)nodeV).eIsProxy()) {
-			InternalEObject oldNodeV = (InternalEObject)nodeV;
-			nodeV = (DComplexMatrix1D)eResolveProxy(oldNodeV);
-			if (nodeV != oldNodeV) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__NODE_V, oldNodeV, nodeV));
-			}
-		}
-		return nodeV;
-	}
+        if (nodeV != null && ((EObject)nodeV).eIsProxy()) {
+            InternalEObject oldNodeV = (InternalEObject)nodeV;
+            nodeV = (DComplexMatrix1D)eResolveProxy(oldNodeV);
+            if (nodeV != oldNodeV) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__NODE_V, oldNodeV, nodeV));
+            }
+        }
+        return nodeV;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public DComplexMatrix1D basicGetNodeV() {
-		return nodeV;
-	}
+        return nodeV;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setNodeV(DComplexMatrix1D newNodeV) {
-		DComplexMatrix1D oldNodeV = nodeV;
-		nodeV = newNodeV;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__NODE_V, oldNodeV, nodeV));
-	}
+        DComplexMatrix1D oldNodeV = nodeV;
+        nodeV = newNodeV;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__NODE_V, oldNodeV, nodeV));
+    }
 
     /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D getNodeVBase() {
-		if (nodeVBase != null && ((EObject)nodeVBase).eIsProxy()) {
-			InternalEObject oldNodeVBase = (InternalEObject)nodeVBase;
-			nodeVBase = (DoubleMatrix1D)eResolveProxy(oldNodeVBase);
-			if (nodeVBase != oldNodeVBase) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__NODE_VBASE, oldNodeVBase, nodeVBase));
-			}
-		}
-		return nodeVBase;
-	}
+        if (nodeVBase != null && ((EObject)nodeVBase).eIsProxy()) {
+            InternalEObject oldNodeVBase = (InternalEObject)nodeVBase;
+            nodeVBase = (DoubleMatrix1D)eResolveProxy(oldNodeVBase);
+            if (nodeVBase != oldNodeVBase) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__NODE_VBASE, oldNodeVBase, nodeVBase));
+            }
+        }
+        return nodeVBase;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D basicGetNodeVBase() {
-		return nodeVBase;
-	}
+        return nodeVBase;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setNodeVBase(DoubleMatrix1D newNodeVBase) {
-		DoubleMatrix1D oldNodeVBase = nodeVBase;
-		nodeVBase = newNodeVBase;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__NODE_VBASE, oldNodeVBase, nodeVBase));
-	}
+        DoubleMatrix1D oldNodeVBase = nodeVBase;
+        nodeVBase = newNodeVBase;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__NODE_VBASE, oldNodeVBase, nodeVBase));
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D getErrorSaved() {
-		if (errorSaved != null && ((EObject)errorSaved).eIsProxy()) {
-			InternalEObject oldErrorSaved = (InternalEObject)errorSaved;
-			errorSaved = (DoubleMatrix1D)eResolveProxy(oldErrorSaved);
-			if (errorSaved != oldErrorSaved) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__ERROR_SAVED, oldErrorSaved, errorSaved));
-			}
-		}
-		return errorSaved;
-	}
+        if (errorSaved != null && ((EObject)errorSaved).eIsProxy()) {
+            InternalEObject oldErrorSaved = (InternalEObject)errorSaved;
+            errorSaved = (DoubleMatrix1D)eResolveProxy(oldErrorSaved);
+            if (errorSaved != oldErrorSaved) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__ERROR_SAVED, oldErrorSaved, errorSaved));
+            }
+        }
+        return errorSaved;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D basicGetErrorSaved() {
-		return errorSaved;
-	}
+        return errorSaved;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setErrorSaved(DoubleMatrix1D newErrorSaved) {
-		DoubleMatrix1D oldErrorSaved = errorSaved;
-		errorSaved = newErrorSaved;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ERROR_SAVED, oldErrorSaved, errorSaved));
-	}
+        DoubleMatrix1D oldErrorSaved = errorSaved;
+        errorSaved = newErrorSaved;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ERROR_SAVED, oldErrorSaved, errorSaved));
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D getVMagSaved() {
-		if (vMagSaved != null && ((EObject)vMagSaved).eIsProxy()) {
-			InternalEObject oldVMagSaved = (InternalEObject)vMagSaved;
-			vMagSaved = (DoubleMatrix1D)eResolveProxy(oldVMagSaved);
-			if (vMagSaved != oldVMagSaved) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__VMAG_SAVED, oldVMagSaved, vMagSaved));
-			}
-		}
-		return vMagSaved;
-	}
+        if (vMagSaved != null && ((EObject)vMagSaved).eIsProxy()) {
+            InternalEObject oldVMagSaved = (InternalEObject)vMagSaved;
+            vMagSaved = (DoubleMatrix1D)eResolveProxy(oldVMagSaved);
+            if (vMagSaved != oldVMagSaved) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__VMAG_SAVED, oldVMagSaved, vMagSaved));
+            }
+        }
+        return vMagSaved;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public DoubleMatrix1D basicGetVMagSaved() {
-		return vMagSaved;
-	}
+        return vMagSaved;
+    }
 
                 /**
-	 * <!-- begin-user-doc -->
+     * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-	 * @generated
-	 */
+     * @generated
+     */
     public void setVMagSaved(DoubleMatrix1D newVMagSaved) {
-		DoubleMatrix1D oldVMagSaved = vMagSaved;
-		vMagSaved = newVMagSaved;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__VMAG_SAVED, oldVMagSaved, vMagSaved));
-	}
+        DoubleMatrix1D oldVMagSaved = vMagSaved;
+        vMagSaved = newVMagSaved;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__VMAG_SAVED, oldVMagSaved, vMagSaved));
+    }
 
                 /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public DComplexMatrix1D getCurrents() {
-		if (currents != null && ((EObject)currents).eIsProxy()) {
-			InternalEObject oldCurrents = (InternalEObject)currents;
-			currents = (DComplexMatrix1D)eResolveProxy(oldCurrents);
-			if (currents != oldCurrents) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__CURRENTS, oldCurrents, currents));
-			}
-		}
-		return currents;
-	}
+        if (currents != null && ((EObject)currents).eIsProxy()) {
+            InternalEObject oldCurrents = (InternalEObject)currents;
+            currents = (DComplexMatrix1D)eResolveProxy(oldCurrents);
+            if (currents != oldCurrents) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__CURRENTS, oldCurrents, currents));
+            }
+        }
+        return currents;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public DComplexMatrix1D basicGetCurrents() {
-		return currents;
-	}
+        return currents;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setCurrents(DComplexMatrix1D newCurrents) {
-		DComplexMatrix1D oldCurrents = currents;
-		currents = newCurrents;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CURRENTS, oldCurrents, currents));
-	}
+        DComplexMatrix1D oldCurrents = currents;
+        currents = newCurrents;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__CURRENTS, oldCurrents, currents));
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public SolutionAlgs getAlgorithms() {
-		if (algorithms != null && algorithms.eIsProxy()) {
-			InternalEObject oldAlgorithms = (InternalEObject)algorithms;
-			algorithms = (SolutionAlgs)eResolveProxy(oldAlgorithms);
-			if (algorithms != oldAlgorithms) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__ALGORITHMS, oldAlgorithms, algorithms));
-			}
-		}
-		return algorithms;
-	}
+        if (algorithms != null && algorithms.eIsProxy()) {
+            InternalEObject oldAlgorithms = (InternalEObject)algorithms;
+            algorithms = (SolutionAlgs)eResolveProxy(oldAlgorithms);
+            if (algorithms != oldAlgorithms) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__ALGORITHMS, oldAlgorithms, algorithms));
+            }
+        }
+        return algorithms;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public SolutionAlgs basicGetAlgorithms() {
-		return algorithms;
-	}
+        return algorithms;
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     public void setAlgorithms(SolutionAlgs newAlgorithms) {
-		SolutionAlgs oldAlgorithms = algorithms;
-		algorithms = newAlgorithms;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ALGORITHMS, oldAlgorithms, algorithms));
-	}
+        SolutionAlgs oldAlgorithms = algorithms;
+        algorithms = newAlgorithms;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ALGORITHMS, oldAlgorithms, algorithms));
+    }
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -1937,14 +1996,33 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated NOT
+     */
     public int solveSystem(DComplexMatrix1D v) {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
-	}
+        double dRes;
+        long iRes;
+        int retCode = 0;
+        YMatrix y;
+
+        try {
+//            retCode = y.solveSparseSet(getY(), getV(), getCurrents()); // Solve for present InjCurr
+//            // Information functions.
+//            y.getFlops(getY(), dRes);
+//            y.getRGrowth(getY(), dRes);
+//            y.getRCond(getY(), dRes);
+//            y.getCondEst(getY(), dRes); // this can be expensive
+//            y.getSize(getY(), iRes);
+//            y.getNNZ(getY(), iRes);
+//            y.getSparseNNZ(getY(), iRes);
+//            y.getSingularCol(getY(), iRes);
+
+        } catch (Exception e) {
+            System.err.println("Error Solving System Y Matrix.  Sparse matrix solver reports numerical error: " + e.getMessage());
+        }
+
+        return retCode;
+    }
 
     /**
      * <!-- begin-user-doc -->
@@ -2063,22 +2141,43 @@ public class SolutionImpl extends EObjectImpl implements Solution {
      * @generated NOT
      */
     public void sampleControlDevices() {
-        // ControlElement controlDevice = null;
-        // TODO: Sample all controls and set action times in control queue.
+//        try {
+//            // Sample all controls and set action times in control Queue
+//            for (ControlElement ctrl : getCircuit().getControls())
+//                if (ctrl.isEnabled())
+//                    ctrl.sample();
+//        } catch (Exception e) {
+//            System.err.println("Error Sampling Control Device");
+//            throw new ControlException("Solution aborted.");
+//        }
     }
 
     /**
-     * <!-- begin-user-doc --> <!-- end-user-doc -->
-     *
+     * <!-- begin-user-doc -->
+     * Execute the nearest set of control actions time-wise.
+     * <!-- end-user-doc -->
      * @generated NOT
      */
     public void doControlActions() {
-        // TODO: Execute the nearest set of control actions time-wise.
-        switch (getControlMode()) {
-        // case STATIC:
-        case EVENT_DRIVEN:
-        case TIME_DRIVEN:
-        }
+//        int xHour;
+//        double xSec;
+//
+//        ControlQueue queue = getCircuit().getControlQueue();
+//
+//        switch (getControlMode()) {
+//        case STATIC:
+//            if (queue.isEmpty()) {
+//                setControlActionsDone(true);
+//            } else {
+//                queue.doNearestActions(xHour, xSec); // Ignore time advancement.
+//            }
+//        case EVENT_DRIVEN:
+//            if (!queue.doNearestActions(getIntHour(), getDynaVars().getT()))
+//                setControlActionsDone(true);
+//        case TIME_DRIVEN:
+//            if (!queue.doActions(getIntHour(), getDynaVars().getT()))
+//                setControlActionsDone(true);
+//        }
     }
 
     /**
@@ -2108,7 +2207,7 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         }
     }
 
-    /**
+    /*
      * Normal fixed point solution.
      *
      * Vn+1 = [Y]-1 Injcurr
@@ -2148,7 +2247,7 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         }
     }
 
-    /**
+    /*
      * Newton Iteration
      *
      * Vn+1 =  Vn - [Y]-1 Termcurr
@@ -2201,12 +2300,20 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         }
     }
 
+    /*
+     * Sum terminal currents into system Currents array.
+     */
     private void sumAllCurrents() {
-
+        for (PowerConversionElement pElem : getCircuit().getPCElements())
+            pElem.sumCurrents();
     }
 
+    /*
+     * For now, onlu AutoAdd Obj uses this.
+     */
     private void addInAuxCurrents(algorithmType solveType) {
-
+//        if (getMode() == solutionMode.AUTO_ADD)
+//            getCircuit().getAutoAddObj().addCurrents(solveType);
     }
 
     private void setGenerator_dQdV() {
@@ -2266,10 +2373,10 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     }
 
     private void zeroInjectionCurrent() {
-
+        setCurrents(DComplexFactory1D.dense.make(getCircuit().getNumNodes()));
     }
 
-    /**
+    /*
      * Add in the contributions of all source type elements to the global solution vector InjCurr.
      */
     private void getSourceInjCurrents() {
@@ -2287,531 +2394,557 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         }
     }
 
+    /*
+     * This procedure is called for Solve Direct and any other solution method that does
+     * not get the injection currents for PC elements normally. In Dynamics mode,
+     * Generators are voltage sources.
+     */
     private void getMachineInjCurrents() {
-
+        if (isDynamicModel()) { // Do machines in Dynamics Mode.
+            for (Generator generator : getCircuit().getGenerators())
+                generator.injCurrents(); // Uses NodeRef to add current into InjCurr array.
+        }
     }
 
+    /*
+     * Get inj currents from all enabled PC devices
+     */
     private void getPCInjCurrents() {
-
+        for (PowerConversionElement pElem : getCircuit().getPCElements()) {
+            if (pElem.isEnabled())
+                pElem.injCurrents(); // Uses NodeRef to add current into InjCurr array.
+        }
     }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__CIRCUIT:
-				if (circuit != null)
-					msgs = ((InternalEObject)circuit).eInverseRemove(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
-				return basicSetCircuit((Circuit)otherEnd, msgs);
-		}
-		return super.eInverseAdd(otherEnd, featureID, msgs);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__CIRCUIT:
+                if (circuit != null)
+                    msgs = ((InternalEObject)circuit).eInverseRemove(this, CommonPackage.CIRCUIT__SOLUTION, Circuit.class, msgs);
+                return basicSetCircuit((Circuit)otherEnd, msgs);
+        }
+        return super.eInverseAdd(otherEnd, featureID, msgs);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__CIRCUIT:
-				return basicSetCircuit(null, msgs);
-		}
-		return super.eInverseRemove(otherEnd, featureID, msgs);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__CIRCUIT:
+                return basicSetCircuit(null, msgs);
+        }
+        return super.eInverseRemove(otherEnd, featureID, msgs);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__Y:
-				if (resolve) return getY();
-				return basicGetY();
-			case CommonPackage.SOLUTION__YSYSTEM:
-				if (resolve) return getYSystem();
-				return basicGetYSystem();
-			case CommonPackage.SOLUTION__YSERIES:
-				if (resolve) return getYSeries();
-				return basicGetYSeries();
-			case CommonPackage.SOLUTION__YEAR:
-				return getYear();
-			case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
-				return isPreserveNodeVoltages();
-			case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
-				return isFrequencyChanged();
-			case CommonPackage.SOLUTION__FREQUENCY:
-				return getFrequency();
-			case CommonPackage.SOLUTION__MODE:
-				return getMode();
-			case CommonPackage.SOLUTION__CIRCUIT:
-				if (resolve) return getCircuit();
-				return basicGetCircuit();
-			case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
-				return isSolutionInitialised();
-			case CommonPackage.SOLUTION__SERIES_YINVALID:
-				return isSeriesYInvalid();
-			case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
-				return isSystemYChanged();
-			case CommonPackage.SOLUTION__LOAD_MODEL:
-				return getLoadModel();
-			case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
-				return isVoltageBaseChanged();
-			case CommonPackage.SOLUTION__HARMONIC_MODEL:
-				return isHarmonicModel();
-			case CommonPackage.SOLUTION__DYNAMIC_MODEL:
-				return isDynamicModel();
-			case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
-				return isUseAuxillaryCurrents();
-			case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
-				return isLoadsNeedUpdating();
-			case CommonPackage.SOLUTION__ITERATION:
-				return getIteration();
-			case CommonPackage.SOLUTION__MAX_ITERATIONS:
-				return getMaxIterations();
-			case CommonPackage.SOLUTION__MAX_ERROR:
-				return getMaxError();
-			case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
-				return getConvergenceTolerance();
-			case CommonPackage.SOLUTION__CONVERGED:
-				return isConverged();
-			case CommonPackage.SOLUTION__CONTROL_ITERATION:
-				return getControlIteration();
-			case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
-				return getMaxControlIterations();
-			case CommonPackage.SOLUTION__CONTROL_MODE:
-				return getControlMode();
-			case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
-				return isControlActionsDone();
-			case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
-				return getMostIterationsDone();
-			case CommonPackage.SOLUTION__ALGORITHM:
-				return getAlgorithm();
-			case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
-				return isLastSolutionWasDirect();
-			case CommonPackage.SOLUTION__SOLUTION_COUNT:
-				return getSolutionCount();
-			case CommonPackage.SOLUTION__NODE_V:
-				if (resolve) return getNodeV();
-				return basicGetNodeV();
-			case CommonPackage.SOLUTION__NODE_VBASE:
-				if (resolve) return getNodeVBase();
-				return basicGetNodeVBase();
-			case CommonPackage.SOLUTION__ERROR_SAVED:
-				if (resolve) return getErrorSaved();
-				return basicGetErrorSaved();
-			case CommonPackage.SOLUTION__VMAG_SAVED:
-				if (resolve) return getVMagSaved();
-				return basicGetVMagSaved();
-			case CommonPackage.SOLUTION__CURRENTS:
-				if (resolve) return getCurrents();
-				return basicGetCurrents();
-			case CommonPackage.SOLUTION__ALGORITHMS:
-				if (resolve) return getAlgorithms();
-				return basicGetAlgorithms();
-		}
-		return super.eGet(featureID, resolve, coreType);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                if (resolve) return getY();
+                return basicGetY();
+            case CommonPackage.SOLUTION__YSYSTEM:
+                if (resolve) return getYSystem();
+                return basicGetYSystem();
+            case CommonPackage.SOLUTION__YSERIES:
+                if (resolve) return getYSeries();
+                return basicGetYSeries();
+            case CommonPackage.SOLUTION__YEAR:
+                return getYear();
+            case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
+                return isPreserveNodeVoltages();
+            case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
+                return isFrequencyChanged();
+            case CommonPackage.SOLUTION__FREQUENCY:
+                return getFrequency();
+            case CommonPackage.SOLUTION__HARMONIC:
+                return getHarmonic();
+            case CommonPackage.SOLUTION__MODE:
+                return getMode();
+            case CommonPackage.SOLUTION__CIRCUIT:
+                if (resolve) return getCircuit();
+                return basicGetCircuit();
+            case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
+                return isSolutionInitialised();
+            case CommonPackage.SOLUTION__SERIES_YINVALID:
+                return isSeriesYInvalid();
+            case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
+                return isSystemYChanged();
+            case CommonPackage.SOLUTION__LOAD_MODEL:
+                return getLoadModel();
+            case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
+                return isVoltageBaseChanged();
+            case CommonPackage.SOLUTION__HARMONIC_MODEL:
+                return isHarmonicModel();
+            case CommonPackage.SOLUTION__DYNAMIC_MODEL:
+                return isDynamicModel();
+            case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
+                return isUseAuxillaryCurrents();
+            case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
+                return isLoadsNeedUpdating();
+            case CommonPackage.SOLUTION__ITERATION:
+                return getIteration();
+            case CommonPackage.SOLUTION__MAX_ITERATIONS:
+                return getMaxIterations();
+            case CommonPackage.SOLUTION__MAX_ERROR:
+                return getMaxError();
+            case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
+                return getConvergenceTolerance();
+            case CommonPackage.SOLUTION__CONVERGED:
+                return isConverged();
+            case CommonPackage.SOLUTION__CONTROL_ITERATION:
+                return getControlIteration();
+            case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
+                return getMaxControlIterations();
+            case CommonPackage.SOLUTION__CONTROL_MODE:
+                return getControlMode();
+            case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
+                return isControlActionsDone();
+            case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
+                return getMostIterationsDone();
+            case CommonPackage.SOLUTION__ALGORITHM:
+                return getAlgorithm();
+            case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
+                return isLastSolutionWasDirect();
+            case CommonPackage.SOLUTION__SOLUTION_COUNT:
+                return getSolutionCount();
+            case CommonPackage.SOLUTION__NODE_V:
+                if (resolve) return getNodeV();
+                return basicGetNodeV();
+            case CommonPackage.SOLUTION__NODE_VBASE:
+                if (resolve) return getNodeVBase();
+                return basicGetNodeVBase();
+            case CommonPackage.SOLUTION__ERROR_SAVED:
+                if (resolve) return getErrorSaved();
+                return basicGetErrorSaved();
+            case CommonPackage.SOLUTION__VMAG_SAVED:
+                if (resolve) return getVMagSaved();
+                return basicGetVMagSaved();
+            case CommonPackage.SOLUTION__CURRENTS:
+                if (resolve) return getCurrents();
+                return basicGetCurrents();
+            case CommonPackage.SOLUTION__ALGORITHMS:
+                if (resolve) return getAlgorithms();
+                return basicGetAlgorithms();
+        }
+        return super.eGet(featureID, resolve, coreType);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public void eSet(int featureID, Object newValue) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__Y:
-				setY((DComplexMatrix2D)newValue);
-				return;
-			case CommonPackage.SOLUTION__YSYSTEM:
-				setYSystem((DComplexMatrix2D)newValue);
-				return;
-			case CommonPackage.SOLUTION__YSERIES:
-				setYSeries((DComplexMatrix2D)newValue);
-				return;
-			case CommonPackage.SOLUTION__YEAR:
-				setYear((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
-				setPreserveNodeVoltages((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
-				setFrequencyChanged((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__FREQUENCY:
-				setFrequency((Double)newValue);
-				return;
-			case CommonPackage.SOLUTION__MODE:
-				setMode((solutionMode)newValue);
-				return;
-			case CommonPackage.SOLUTION__CIRCUIT:
-				setCircuit((Circuit)newValue);
-				return;
-			case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
-				setSolutionInitialised((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__SERIES_YINVALID:
-				setSeriesYInvalid((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
-				setSystemYChanged((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__LOAD_MODEL:
-				setLoadModel((loadModelType)newValue);
-				return;
-			case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
-				setVoltageBaseChanged((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__HARMONIC_MODEL:
-				setHarmonicModel((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__DYNAMIC_MODEL:
-				setDynamicModel((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
-				setUseAuxillaryCurrents((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
-				setLoadsNeedUpdating((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__ITERATION:
-				setIteration((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__MAX_ITERATIONS:
-				setMaxIterations((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__MAX_ERROR:
-				setMaxError((Double)newValue);
-				return;
-			case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
-				setConvergenceTolerance((Double)newValue);
-				return;
-			case CommonPackage.SOLUTION__CONVERGED:
-				setConverged((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__CONTROL_ITERATION:
-				setControlIteration((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
-				setMaxControlIterations((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__CONTROL_MODE:
-				setControlMode((controlModeType)newValue);
-				return;
-			case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
-				setControlActionsDone((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
-				setMostIterationsDone((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__ALGORITHM:
-				setAlgorithm((algorithmType)newValue);
-				return;
-			case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
-				setLastSolutionWasDirect((Boolean)newValue);
-				return;
-			case CommonPackage.SOLUTION__SOLUTION_COUNT:
-				setSolutionCount((Integer)newValue);
-				return;
-			case CommonPackage.SOLUTION__NODE_V:
-				setNodeV((DComplexMatrix1D)newValue);
-				return;
-			case CommonPackage.SOLUTION__NODE_VBASE:
-				setNodeVBase((DoubleMatrix1D)newValue);
-				return;
-			case CommonPackage.SOLUTION__ERROR_SAVED:
-				setErrorSaved((DoubleMatrix1D)newValue);
-				return;
-			case CommonPackage.SOLUTION__VMAG_SAVED:
-				setVMagSaved((DoubleMatrix1D)newValue);
-				return;
-			case CommonPackage.SOLUTION__CURRENTS:
-				setCurrents((DComplexMatrix1D)newValue);
-				return;
-			case CommonPackage.SOLUTION__ALGORITHMS:
-				setAlgorithms((SolutionAlgs)newValue);
-				return;
-		}
-		super.eSet(featureID, newValue);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                setY((DComplexMatrix2D)newValue);
+                return;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                setYSystem((DComplexMatrix2D)newValue);
+                return;
+            case CommonPackage.SOLUTION__YSERIES:
+                setYSeries((DComplexMatrix2D)newValue);
+                return;
+            case CommonPackage.SOLUTION__YEAR:
+                setYear((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
+                setPreserveNodeVoltages((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
+                setFrequencyChanged((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__FREQUENCY:
+                setFrequency((Double)newValue);
+                return;
+            case CommonPackage.SOLUTION__HARMONIC:
+                setHarmonic((Double)newValue);
+                return;
+            case CommonPackage.SOLUTION__MODE:
+                setMode((solutionMode)newValue);
+                return;
+            case CommonPackage.SOLUTION__CIRCUIT:
+                setCircuit((Circuit)newValue);
+                return;
+            case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
+                setSolutionInitialised((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__SERIES_YINVALID:
+                setSeriesYInvalid((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
+                setSystemYChanged((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__LOAD_MODEL:
+                setLoadModel((loadModelType)newValue);
+                return;
+            case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
+                setVoltageBaseChanged((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__HARMONIC_MODEL:
+                setHarmonicModel((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__DYNAMIC_MODEL:
+                setDynamicModel((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
+                setUseAuxillaryCurrents((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
+                setLoadsNeedUpdating((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__ITERATION:
+                setIteration((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__MAX_ITERATIONS:
+                setMaxIterations((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__MAX_ERROR:
+                setMaxError((Double)newValue);
+                return;
+            case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
+                setConvergenceTolerance((Double)newValue);
+                return;
+            case CommonPackage.SOLUTION__CONVERGED:
+                setConverged((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__CONTROL_ITERATION:
+                setControlIteration((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
+                setMaxControlIterations((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__CONTROL_MODE:
+                setControlMode((controlModeType)newValue);
+                return;
+            case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
+                setControlActionsDone((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
+                setMostIterationsDone((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__ALGORITHM:
+                setAlgorithm((algorithmType)newValue);
+                return;
+            case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
+                setLastSolutionWasDirect((Boolean)newValue);
+                return;
+            case CommonPackage.SOLUTION__SOLUTION_COUNT:
+                setSolutionCount((Integer)newValue);
+                return;
+            case CommonPackage.SOLUTION__NODE_V:
+                setNodeV((DComplexMatrix1D)newValue);
+                return;
+            case CommonPackage.SOLUTION__NODE_VBASE:
+                setNodeVBase((DoubleMatrix1D)newValue);
+                return;
+            case CommonPackage.SOLUTION__ERROR_SAVED:
+                setErrorSaved((DoubleMatrix1D)newValue);
+                return;
+            case CommonPackage.SOLUTION__VMAG_SAVED:
+                setVMagSaved((DoubleMatrix1D)newValue);
+                return;
+            case CommonPackage.SOLUTION__CURRENTS:
+                setCurrents((DComplexMatrix1D)newValue);
+                return;
+            case CommonPackage.SOLUTION__ALGORITHMS:
+                setAlgorithms((SolutionAlgs)newValue);
+                return;
+        }
+        super.eSet(featureID, newValue);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public void eUnset(int featureID) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__Y:
-				setY((DComplexMatrix2D)null);
-				return;
-			case CommonPackage.SOLUTION__YSYSTEM:
-				setYSystem((DComplexMatrix2D)null);
-				return;
-			case CommonPackage.SOLUTION__YSERIES:
-				setYSeries((DComplexMatrix2D)null);
-				return;
-			case CommonPackage.SOLUTION__YEAR:
-				setYear(YEAR_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
-				setPreserveNodeVoltages(PRESERVE_NODE_VOLTAGES_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
-				setFrequencyChanged(FREQUENCY_CHANGED_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__FREQUENCY:
-				setFrequency(FREQUENCY_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__MODE:
-				setMode(MODE_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__CIRCUIT:
-				setCircuit((Circuit)null);
-				return;
-			case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
-				setSolutionInitialised(SOLUTION_INITIALISED_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__SERIES_YINVALID:
-				setSeriesYInvalid(SERIES_YINVALID_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
-				setSystemYChanged(SYSTEM_YCHANGED_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__LOAD_MODEL:
-				setLoadModel(LOAD_MODEL_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
-				setVoltageBaseChanged(VOLTAGE_BASE_CHANGED_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__HARMONIC_MODEL:
-				setHarmonicModel(HARMONIC_MODEL_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__DYNAMIC_MODEL:
-				setDynamicModel(DYNAMIC_MODEL_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
-				setUseAuxillaryCurrents(USE_AUXILLARY_CURRENTS_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
-				setLoadsNeedUpdating(LOADS_NEED_UPDATING_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__ITERATION:
-				setIteration(ITERATION_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__MAX_ITERATIONS:
-				setMaxIterations(MAX_ITERATIONS_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__MAX_ERROR:
-				setMaxError(MAX_ERROR_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
-				setConvergenceTolerance(CONVERGENCE_TOLERANCE_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__CONVERGED:
-				unsetConverged();
-				return;
-			case CommonPackage.SOLUTION__CONTROL_ITERATION:
-				setControlIteration(CONTROL_ITERATION_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
-				setMaxControlIterations(MAX_CONTROL_ITERATIONS_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__CONTROL_MODE:
-				setControlMode(CONTROL_MODE_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
-				setControlActionsDone(CONTROL_ACTIONS_DONE_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
-				setMostIterationsDone(MOST_ITERATIONS_DONE_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__ALGORITHM:
-				setAlgorithm(ALGORITHM_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
-				setLastSolutionWasDirect(LAST_SOLUTION_WAS_DIRECT_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__SOLUTION_COUNT:
-				setSolutionCount(SOLUTION_COUNT_EDEFAULT);
-				return;
-			case CommonPackage.SOLUTION__NODE_V:
-				setNodeV((DComplexMatrix1D)null);
-				return;
-			case CommonPackage.SOLUTION__NODE_VBASE:
-				setNodeVBase((DoubleMatrix1D)null);
-				return;
-			case CommonPackage.SOLUTION__ERROR_SAVED:
-				setErrorSaved((DoubleMatrix1D)null);
-				return;
-			case CommonPackage.SOLUTION__VMAG_SAVED:
-				setVMagSaved((DoubleMatrix1D)null);
-				return;
-			case CommonPackage.SOLUTION__CURRENTS:
-				setCurrents((DComplexMatrix1D)null);
-				return;
-			case CommonPackage.SOLUTION__ALGORITHMS:
-				setAlgorithms((SolutionAlgs)null);
-				return;
-		}
-		super.eUnset(featureID);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                setY((DComplexMatrix2D)null);
+                return;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                setYSystem((DComplexMatrix2D)null);
+                return;
+            case CommonPackage.SOLUTION__YSERIES:
+                setYSeries((DComplexMatrix2D)null);
+                return;
+            case CommonPackage.SOLUTION__YEAR:
+                setYear(YEAR_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
+                setPreserveNodeVoltages(PRESERVE_NODE_VOLTAGES_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
+                setFrequencyChanged(FREQUENCY_CHANGED_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__FREQUENCY:
+                setFrequency(FREQUENCY_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__HARMONIC:
+                setHarmonic(HARMONIC_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__MODE:
+                setMode(MODE_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__CIRCUIT:
+                setCircuit((Circuit)null);
+                return;
+            case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
+                setSolutionInitialised(SOLUTION_INITIALISED_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__SERIES_YINVALID:
+                setSeriesYInvalid(SERIES_YINVALID_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
+                setSystemYChanged(SYSTEM_YCHANGED_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__LOAD_MODEL:
+                setLoadModel(LOAD_MODEL_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
+                setVoltageBaseChanged(VOLTAGE_BASE_CHANGED_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__HARMONIC_MODEL:
+                setHarmonicModel(HARMONIC_MODEL_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__DYNAMIC_MODEL:
+                setDynamicModel(DYNAMIC_MODEL_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
+                setUseAuxillaryCurrents(USE_AUXILLARY_CURRENTS_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
+                setLoadsNeedUpdating(LOADS_NEED_UPDATING_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__ITERATION:
+                setIteration(ITERATION_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__MAX_ITERATIONS:
+                setMaxIterations(MAX_ITERATIONS_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__MAX_ERROR:
+                setMaxError(MAX_ERROR_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
+                setConvergenceTolerance(CONVERGENCE_TOLERANCE_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__CONVERGED:
+                unsetConverged();
+                return;
+            case CommonPackage.SOLUTION__CONTROL_ITERATION:
+                setControlIteration(CONTROL_ITERATION_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
+                setMaxControlIterations(MAX_CONTROL_ITERATIONS_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__CONTROL_MODE:
+                setControlMode(CONTROL_MODE_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
+                setControlActionsDone(CONTROL_ACTIONS_DONE_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
+                setMostIterationsDone(MOST_ITERATIONS_DONE_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__ALGORITHM:
+                setAlgorithm(ALGORITHM_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
+                setLastSolutionWasDirect(LAST_SOLUTION_WAS_DIRECT_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__SOLUTION_COUNT:
+                setSolutionCount(SOLUTION_COUNT_EDEFAULT);
+                return;
+            case CommonPackage.SOLUTION__NODE_V:
+                setNodeV((DComplexMatrix1D)null);
+                return;
+            case CommonPackage.SOLUTION__NODE_VBASE:
+                setNodeVBase((DoubleMatrix1D)null);
+                return;
+            case CommonPackage.SOLUTION__ERROR_SAVED:
+                setErrorSaved((DoubleMatrix1D)null);
+                return;
+            case CommonPackage.SOLUTION__VMAG_SAVED:
+                setVMagSaved((DoubleMatrix1D)null);
+                return;
+            case CommonPackage.SOLUTION__CURRENTS:
+                setCurrents((DComplexMatrix1D)null);
+                return;
+            case CommonPackage.SOLUTION__ALGORITHMS:
+                setAlgorithms((SolutionAlgs)null);
+                return;
+        }
+        super.eUnset(featureID);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public boolean eIsSet(int featureID) {
-		switch (featureID) {
-			case CommonPackage.SOLUTION__Y:
-				return y != null;
-			case CommonPackage.SOLUTION__YSYSTEM:
-				return ySystem != null;
-			case CommonPackage.SOLUTION__YSERIES:
-				return ySeries != null;
-			case CommonPackage.SOLUTION__YEAR:
-				return year != YEAR_EDEFAULT;
-			case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
-				return preserveNodeVoltages != PRESERVE_NODE_VOLTAGES_EDEFAULT;
-			case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
-				return frequencyChanged != FREQUENCY_CHANGED_EDEFAULT;
-			case CommonPackage.SOLUTION__FREQUENCY:
-				return frequency != FREQUENCY_EDEFAULT;
-			case CommonPackage.SOLUTION__MODE:
-				return mode != MODE_EDEFAULT;
-			case CommonPackage.SOLUTION__CIRCUIT:
-				return circuit != null;
-			case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
-				return solutionInitialised != SOLUTION_INITIALISED_EDEFAULT;
-			case CommonPackage.SOLUTION__SERIES_YINVALID:
-				return seriesYInvalid != SERIES_YINVALID_EDEFAULT;
-			case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
-				return systemYChanged != SYSTEM_YCHANGED_EDEFAULT;
-			case CommonPackage.SOLUTION__LOAD_MODEL:
-				return loadModel != LOAD_MODEL_EDEFAULT;
-			case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
-				return voltageBaseChanged != VOLTAGE_BASE_CHANGED_EDEFAULT;
-			case CommonPackage.SOLUTION__HARMONIC_MODEL:
-				return harmonicModel != HARMONIC_MODEL_EDEFAULT;
-			case CommonPackage.SOLUTION__DYNAMIC_MODEL:
-				return dynamicModel != DYNAMIC_MODEL_EDEFAULT;
-			case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
-				return useAuxillaryCurrents != USE_AUXILLARY_CURRENTS_EDEFAULT;
-			case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
-				return loadsNeedUpdating != LOADS_NEED_UPDATING_EDEFAULT;
-			case CommonPackage.SOLUTION__ITERATION:
-				return iteration != ITERATION_EDEFAULT;
-			case CommonPackage.SOLUTION__MAX_ITERATIONS:
-				return maxIterations != MAX_ITERATIONS_EDEFAULT;
-			case CommonPackage.SOLUTION__MAX_ERROR:
-				return maxError != MAX_ERROR_EDEFAULT;
-			case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
-				return convergenceTolerance != CONVERGENCE_TOLERANCE_EDEFAULT;
-			case CommonPackage.SOLUTION__CONVERGED:
-				return isSetConverged();
-			case CommonPackage.SOLUTION__CONTROL_ITERATION:
-				return controlIteration != CONTROL_ITERATION_EDEFAULT;
-			case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
-				return maxControlIterations != MAX_CONTROL_ITERATIONS_EDEFAULT;
-			case CommonPackage.SOLUTION__CONTROL_MODE:
-				return controlMode != CONTROL_MODE_EDEFAULT;
-			case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
-				return controlActionsDone != CONTROL_ACTIONS_DONE_EDEFAULT;
-			case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
-				return mostIterationsDone != MOST_ITERATIONS_DONE_EDEFAULT;
-			case CommonPackage.SOLUTION__ALGORITHM:
-				return algorithm != ALGORITHM_EDEFAULT;
-			case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
-				return lastSolutionWasDirect != LAST_SOLUTION_WAS_DIRECT_EDEFAULT;
-			case CommonPackage.SOLUTION__SOLUTION_COUNT:
-				return solutionCount != SOLUTION_COUNT_EDEFAULT;
-			case CommonPackage.SOLUTION__NODE_V:
-				return nodeV != null;
-			case CommonPackage.SOLUTION__NODE_VBASE:
-				return nodeVBase != null;
-			case CommonPackage.SOLUTION__ERROR_SAVED:
-				return errorSaved != null;
-			case CommonPackage.SOLUTION__VMAG_SAVED:
-				return vMagSaved != null;
-			case CommonPackage.SOLUTION__CURRENTS:
-				return currents != null;
-			case CommonPackage.SOLUTION__ALGORITHMS:
-				return algorithms != null;
-		}
-		return super.eIsSet(featureID);
-	}
+        switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                return y != null;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                return ySystem != null;
+            case CommonPackage.SOLUTION__YSERIES:
+                return ySeries != null;
+            case CommonPackage.SOLUTION__YEAR:
+                return year != YEAR_EDEFAULT;
+            case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
+                return preserveNodeVoltages != PRESERVE_NODE_VOLTAGES_EDEFAULT;
+            case CommonPackage.SOLUTION__FREQUENCY_CHANGED:
+                return frequencyChanged != FREQUENCY_CHANGED_EDEFAULT;
+            case CommonPackage.SOLUTION__FREQUENCY:
+                return frequency != FREQUENCY_EDEFAULT;
+            case CommonPackage.SOLUTION__HARMONIC:
+                return harmonic != HARMONIC_EDEFAULT;
+            case CommonPackage.SOLUTION__MODE:
+                return mode != MODE_EDEFAULT;
+            case CommonPackage.SOLUTION__CIRCUIT:
+                return circuit != null;
+            case CommonPackage.SOLUTION__SOLUTION_INITIALISED:
+                return solutionInitialised != SOLUTION_INITIALISED_EDEFAULT;
+            case CommonPackage.SOLUTION__SERIES_YINVALID:
+                return seriesYInvalid != SERIES_YINVALID_EDEFAULT;
+            case CommonPackage.SOLUTION__SYSTEM_YCHANGED:
+                return systemYChanged != SYSTEM_YCHANGED_EDEFAULT;
+            case CommonPackage.SOLUTION__LOAD_MODEL:
+                return loadModel != LOAD_MODEL_EDEFAULT;
+            case CommonPackage.SOLUTION__VOLTAGE_BASE_CHANGED:
+                return voltageBaseChanged != VOLTAGE_BASE_CHANGED_EDEFAULT;
+            case CommonPackage.SOLUTION__HARMONIC_MODEL:
+                return harmonicModel != HARMONIC_MODEL_EDEFAULT;
+            case CommonPackage.SOLUTION__DYNAMIC_MODEL:
+                return dynamicModel != DYNAMIC_MODEL_EDEFAULT;
+            case CommonPackage.SOLUTION__USE_AUXILLARY_CURRENTS:
+                return useAuxillaryCurrents != USE_AUXILLARY_CURRENTS_EDEFAULT;
+            case CommonPackage.SOLUTION__LOADS_NEED_UPDATING:
+                return loadsNeedUpdating != LOADS_NEED_UPDATING_EDEFAULT;
+            case CommonPackage.SOLUTION__ITERATION:
+                return iteration != ITERATION_EDEFAULT;
+            case CommonPackage.SOLUTION__MAX_ITERATIONS:
+                return maxIterations != MAX_ITERATIONS_EDEFAULT;
+            case CommonPackage.SOLUTION__MAX_ERROR:
+                return maxError != MAX_ERROR_EDEFAULT;
+            case CommonPackage.SOLUTION__CONVERGENCE_TOLERANCE:
+                return convergenceTolerance != CONVERGENCE_TOLERANCE_EDEFAULT;
+            case CommonPackage.SOLUTION__CONVERGED:
+                return isSetConverged();
+            case CommonPackage.SOLUTION__CONTROL_ITERATION:
+                return controlIteration != CONTROL_ITERATION_EDEFAULT;
+            case CommonPackage.SOLUTION__MAX_CONTROL_ITERATIONS:
+                return maxControlIterations != MAX_CONTROL_ITERATIONS_EDEFAULT;
+            case CommonPackage.SOLUTION__CONTROL_MODE:
+                return controlMode != CONTROL_MODE_EDEFAULT;
+            case CommonPackage.SOLUTION__CONTROL_ACTIONS_DONE:
+                return controlActionsDone != CONTROL_ACTIONS_DONE_EDEFAULT;
+            case CommonPackage.SOLUTION__MOST_ITERATIONS_DONE:
+                return mostIterationsDone != MOST_ITERATIONS_DONE_EDEFAULT;
+            case CommonPackage.SOLUTION__ALGORITHM:
+                return algorithm != ALGORITHM_EDEFAULT;
+            case CommonPackage.SOLUTION__LAST_SOLUTION_WAS_DIRECT:
+                return lastSolutionWasDirect != LAST_SOLUTION_WAS_DIRECT_EDEFAULT;
+            case CommonPackage.SOLUTION__SOLUTION_COUNT:
+                return solutionCount != SOLUTION_COUNT_EDEFAULT;
+            case CommonPackage.SOLUTION__NODE_V:
+                return nodeV != null;
+            case CommonPackage.SOLUTION__NODE_VBASE:
+                return nodeVBase != null;
+            case CommonPackage.SOLUTION__ERROR_SAVED:
+                return errorSaved != null;
+            case CommonPackage.SOLUTION__VMAG_SAVED:
+                return vMagSaved != null;
+            case CommonPackage.SOLUTION__CURRENTS:
+                return currents != null;
+            case CommonPackage.SOLUTION__ALGORITHMS:
+                return algorithms != null;
+        }
+        return super.eIsSet(featureID);
+    }
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public String toString() {
-		if (eIsProxy()) return super.toString();
+        if (eIsProxy()) return super.toString();
 
-		StringBuffer result = new StringBuffer(super.toString());
-		result.append(" (year: ");
-		result.append(year);
-		result.append(", preserveNodeVoltages: ");
-		result.append(preserveNodeVoltages);
-		result.append(", frequencyChanged: ");
-		result.append(frequencyChanged);
-		result.append(", frequency: ");
-		result.append(frequency);
-		result.append(", mode: ");
-		result.append(mode);
-		result.append(", solutionInitialised: ");
-		result.append(solutionInitialised);
-		result.append(", seriesYInvalid: ");
-		result.append(seriesYInvalid);
-		result.append(", systemYChanged: ");
-		result.append(systemYChanged);
-		result.append(", loadModel: ");
-		result.append(loadModel);
-		result.append(", voltageBaseChanged: ");
-		result.append(voltageBaseChanged);
-		result.append(", harmonicModel: ");
-		result.append(harmonicModel);
-		result.append(", dynamicModel: ");
-		result.append(dynamicModel);
-		result.append(", useAuxillaryCurrents: ");
-		result.append(useAuxillaryCurrents);
-		result.append(", loadsNeedUpdating: ");
-		result.append(loadsNeedUpdating);
-		result.append(", iteration: ");
-		result.append(iteration);
-		result.append(", maxIterations: ");
-		result.append(maxIterations);
-		result.append(", maxError: ");
-		result.append(maxError);
-		result.append(", convergenceTolerance: ");
-		result.append(convergenceTolerance);
-		result.append(", converged: ");
-		if (convergedESet) result.append(converged); else result.append("<unset>");
-		result.append(", controlIteration: ");
-		result.append(controlIteration);
-		result.append(", maxControlIterations: ");
-		result.append(maxControlIterations);
-		result.append(", controlMode: ");
-		result.append(controlMode);
-		result.append(", controlActionsDone: ");
-		result.append(controlActionsDone);
-		result.append(", mostIterationsDone: ");
-		result.append(mostIterationsDone);
-		result.append(", algorithm: ");
-		result.append(algorithm);
-		result.append(", lastSolutionWasDirect: ");
-		result.append(lastSolutionWasDirect);
-		result.append(", solutionCount: ");
-		result.append(solutionCount);
-		result.append(')');
-		return result.toString();
-	}
+        StringBuffer result = new StringBuffer(super.toString());
+        result.append(" (year: ");
+        result.append(year);
+        result.append(", preserveNodeVoltages: ");
+        result.append(preserveNodeVoltages);
+        result.append(", frequencyChanged: ");
+        result.append(frequencyChanged);
+        result.append(", frequency: ");
+        result.append(frequency);
+        result.append(", harmonic: ");
+        result.append(harmonic);
+        result.append(", mode: ");
+        result.append(mode);
+        result.append(", solutionInitialised: ");
+        result.append(solutionInitialised);
+        result.append(", seriesYInvalid: ");
+        result.append(seriesYInvalid);
+        result.append(", systemYChanged: ");
+        result.append(systemYChanged);
+        result.append(", loadModel: ");
+        result.append(loadModel);
+        result.append(", voltageBaseChanged: ");
+        result.append(voltageBaseChanged);
+        result.append(", harmonicModel: ");
+        result.append(harmonicModel);
+        result.append(", dynamicModel: ");
+        result.append(dynamicModel);
+        result.append(", useAuxillaryCurrents: ");
+        result.append(useAuxillaryCurrents);
+        result.append(", loadsNeedUpdating: ");
+        result.append(loadsNeedUpdating);
+        result.append(", iteration: ");
+        result.append(iteration);
+        result.append(", maxIterations: ");
+        result.append(maxIterations);
+        result.append(", maxError: ");
+        result.append(maxError);
+        result.append(", convergenceTolerance: ");
+        result.append(convergenceTolerance);
+        result.append(", converged: ");
+        if (convergedESet) result.append(converged); else result.append("<unset>");
+        result.append(", controlIteration: ");
+        result.append(controlIteration);
+        result.append(", maxControlIterations: ");
+        result.append(maxControlIterations);
+        result.append(", controlMode: ");
+        result.append(controlMode);
+        result.append(", controlActionsDone: ");
+        result.append(controlActionsDone);
+        result.append(", mostIterationsDone: ");
+        result.append(mostIterationsDone);
+        result.append(", algorithm: ");
+        result.append(algorithm);
+        result.append(", lastSolutionWasDirect: ");
+        result.append(lastSolutionWasDirect);
+        result.append(", solutionCount: ");
+        result.append(solutionCount);
+        result.append(')');
+        return result.toString();
+    }
 
 } // SolutionImpl

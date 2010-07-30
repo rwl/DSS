@@ -523,4 +523,12 @@ public interface CircuitElement extends EObject {
 	 */
 	String getNextBus();
 
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void sumCurrents();
+
 } // CircuitElement

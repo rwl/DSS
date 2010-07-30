@@ -28,6 +28,7 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.Solution#isPreserveNodeVoltages <em>Preserve Node Voltages</em>}</li>
  *   <li>{@link electrickery.common.Solution#isFrequencyChanged <em>Frequency Changed</em>}</li>
  *   <li>{@link electrickery.common.Solution#getFrequency <em>Frequency</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getHarmonic <em>Harmonic</em>}</li>
  *   <li>{@link electrickery.common.Solution#getMode <em>Mode</em>}</li>
  *   <li>{@link electrickery.common.Solution#getCircuit <em>Circuit</em>}</li>
  *   <li>{@link electrickery.common.Solution#isSolutionInitialised <em>Solution Initialised</em>}</li>
@@ -249,6 +250,32 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void setFrequency(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Harmonic</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Harmonic</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Harmonic</em>' attribute.
+	 * @see #setHarmonic(double)
+	 * @see electrickery.common.CommonPackage#getSolution_Harmonic()
+	 * @model
+	 * @generated
+	 */
+	double getHarmonic();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getHarmonic <em>Harmonic</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Harmonic</em>' attribute.
+	 * @see #getHarmonic()
+	 * @generated
+	 */
+	void setHarmonic(double value);
 
 	/**
 	 * Returns the value of the '<em><b>Mode</b></em>' attribute.

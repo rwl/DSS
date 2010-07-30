@@ -35,6 +35,7 @@ import electrickery.common.Solution;
 import electrickery.conversion.CurrentSource;
 import electrickery.conversion.Generator;
 import electrickery.conversion.Load;
+import electrickery.conversion.PowerConversionElement;
 import electrickery.common.yBuildOption;
 import electrickery.conversion.VoltageSource;
 import electrickery.executive.Executive;
@@ -58,6 +59,7 @@ import electrickery.executive.ExecutivePackage;
  *   <li>{@link electrickery.common.impl.CircuitImpl#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNumNodes <em>Num Nodes</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNumBuses <em>Num Buses</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getFundamental <em>Fundamental</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#isBusNameRedefined <em>Bus Name Redefined</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#isSolved <em>Solved</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getLoadMultiplier <em>Load Multiplier</em>}</li>
@@ -220,6 +222,26 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     protected int numBuses = NUM_BUSES_EDEFAULT;
 
     /**
+	 * The default value of the '{@link #getFundamental() <em>Fundamental</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFundamental()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final double FUNDAMENTAL_EDEFAULT = 0.0;
+
+				/**
+	 * The cached value of the '{@link #getFundamental() <em>Fundamental</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getFundamental()
+	 * @generated
+	 * @ordered
+	 */
+	protected double fundamental = FUNDAMENTAL_EDEFAULT;
+
+				/**
 	 * The default value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
@@ -1065,6 +1087,27 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public double getFundamental() {
+		return fundamental;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setFundamental(double newFundamental) {
+		double oldFundamental = fundamental;
+		fundamental = newFundamental;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__FUNDAMENTAL, oldFundamental, fundamental));
+	}
+
+				/**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated NOT
@@ -1079,6 +1122,17 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	 * @generated
 	 */
 	public void doResetMeterZones() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<PowerConversionElement> getPCElements() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
@@ -1448,6 +1502,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return getNumNodes();
 			case CommonPackage.CIRCUIT__NUM_BUSES:
 				return getNumBuses();
+			case CommonPackage.CIRCUIT__FUNDAMENTAL:
+				return getFundamental();
 			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
 				return isBusNameRedefined();
 			case CommonPackage.CIRCUIT__SOLVED:
@@ -1538,6 +1594,9 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return;
 			case CommonPackage.CIRCUIT__NUM_BUSES:
 				setNumBuses((Integer)newValue);
+				return;
+			case CommonPackage.CIRCUIT__FUNDAMENTAL:
+				setFundamental((Double)newValue);
 				return;
 			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
 				setBusNameRedefined((Boolean)newValue);
@@ -1640,6 +1699,9 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__NUM_BUSES:
 				setNumBuses(NUM_BUSES_EDEFAULT);
 				return;
+			case CommonPackage.CIRCUIT__FUNDAMENTAL:
+				setFundamental(FUNDAMENTAL_EDEFAULT);
+				return;
 			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
 				setBusNameRedefined(BUS_NAME_REDEFINED_EDEFAULT);
 				return;
@@ -1728,6 +1790,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return numNodes != NUM_NODES_EDEFAULT;
 			case CommonPackage.CIRCUIT__NUM_BUSES:
 				return numBuses != NUM_BUSES_EDEFAULT;
+			case CommonPackage.CIRCUIT__FUNDAMENTAL:
+				return fundamental != FUNDAMENTAL_EDEFAULT;
 			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
 				return busNameRedefined != BUS_NAME_REDEFINED_EDEFAULT;
 			case CommonPackage.CIRCUIT__SOLVED:
@@ -1785,6 +1849,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		result.append(numNodes);
 		result.append(", numBuses: ");
 		result.append(numBuses);
+		result.append(", fundamental: ");
+		result.append(fundamental);
 		result.append(", busNameRedefined: ");
 		result.append(busNameRedefined);
 		result.append(", solved: ");

@@ -191,13 +191,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__NUM_BUSES = 12;
 
 	/**
+	 * The feature id for the '<em><b>Fundamental</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__FUNDAMENTAL = 13;
+
+	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 13;
+	int CIRCUIT__BUS_NAME_REDEFINED = 14;
 
 	/**
 	 * The feature id for the '<em><b>Solved</b></em>' attribute.
@@ -206,7 +215,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLVED = 14;
+	int CIRCUIT__SOLVED = 15;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -215,7 +224,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 15;
+	int CIRCUIT__LOAD_MULTIPLIER = 16;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -224,7 +233,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 16;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 17;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
@@ -233,7 +242,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_RATE = 17;
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
@@ -242,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 18;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 19;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -251,7 +260,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 19;
+	int CIRCUIT__GEN_MULTIPLIER = 20;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -260,7 +269,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 20;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 21;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -269,7 +278,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 21;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 22;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -278,7 +287,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 22;
+	int CIRCUIT__PRICE_SIGNAL = 23;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
@@ -287,7 +296,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MIN_VOLTS = 23;
+	int CIRCUIT__EMERG_MIN_VOLTS = 24;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
@@ -296,7 +305,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MAX_VOLTS = 24;
+	int CIRCUIT__EMERG_MAX_VOLTS = 25;
 
 	/**
 	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
@@ -305,7 +314,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MIN_VOLTS = 25;
+	int CIRCUIT__NORMAL_MIN_VOLTS = 26;
 
 	/**
 	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
@@ -314,7 +323,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MAX_VOLTS = 26;
+	int CIRCUIT__NORMAL_MAX_VOLTS = 27;
 
 	/**
 	 * The feature id for the '<em><b>Log Events</b></em>' attribute.
@@ -323,7 +332,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOG_EVENTS = 27;
+	int CIRCUIT__LOG_EVENTS = 28;
 
 	/**
 	 * The feature id for the '<em><b>Meter Zones Computed</b></em>' attribute.
@@ -332,7 +341,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__METER_ZONES_COMPUTED = 28;
+	int CIRCUIT__METER_ZONES_COMPUTED = 29;
 
 	/**
 	 * The feature id for the '<em><b>Zones Locked</b></em>' attribute.
@@ -341,7 +350,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__ZONES_LOCKED = 29;
+	int CIRCUIT__ZONES_LOCKED = 30;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -350,7 +359,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 30;
+	int CIRCUIT_FEATURE_COUNT = 31;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.
@@ -801,13 +810,22 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION__FREQUENCY = 6;
 
 	/**
+	 * The feature id for the '<em><b>Harmonic</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__HARMONIC = 7;
+
+	/**
 	 * The feature id for the '<em><b>Mode</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MODE = 7;
+	int SOLUTION__MODE = 8;
 
 	/**
 	 * The feature id for the '<em><b>Circuit</b></em>' reference.
@@ -816,7 +834,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CIRCUIT = 8;
+	int SOLUTION__CIRCUIT = 9;
 
 	/**
 	 * The feature id for the '<em><b>Solution Initialised</b></em>' attribute.
@@ -825,7 +843,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SOLUTION_INITIALISED = 9;
+	int SOLUTION__SOLUTION_INITIALISED = 10;
 
 	/**
 	 * The feature id for the '<em><b>Series YInvalid</b></em>' attribute.
@@ -834,7 +852,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SERIES_YINVALID = 10;
+	int SOLUTION__SERIES_YINVALID = 11;
 
 	/**
 	 * The feature id for the '<em><b>System YChanged</b></em>' attribute.
@@ -843,7 +861,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SYSTEM_YCHANGED = 11;
+	int SOLUTION__SYSTEM_YCHANGED = 12;
 
 	/**
 	 * The feature id for the '<em><b>Load Model</b></em>' attribute.
@@ -852,7 +870,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LOAD_MODEL = 12;
+	int SOLUTION__LOAD_MODEL = 13;
 
 	/**
 	 * The feature id for the '<em><b>Voltage Base Changed</b></em>' attribute.
@@ -861,7 +879,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__VOLTAGE_BASE_CHANGED = 13;
+	int SOLUTION__VOLTAGE_BASE_CHANGED = 14;
 
 	/**
 	 * The feature id for the '<em><b>Harmonic Model</b></em>' attribute.
@@ -870,7 +888,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__HARMONIC_MODEL = 14;
+	int SOLUTION__HARMONIC_MODEL = 15;
 
 	/**
 	 * The feature id for the '<em><b>Dynamic Model</b></em>' attribute.
@@ -879,7 +897,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__DYNAMIC_MODEL = 15;
+	int SOLUTION__DYNAMIC_MODEL = 16;
 
 	/**
 	 * The feature id for the '<em><b>Use Auxillary Currents</b></em>' attribute.
@@ -888,7 +906,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__USE_AUXILLARY_CURRENTS = 16;
+	int SOLUTION__USE_AUXILLARY_CURRENTS = 17;
 
 	/**
 	 * The feature id for the '<em><b>Loads Need Updating</b></em>' attribute.
@@ -897,7 +915,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LOADS_NEED_UPDATING = 17;
+	int SOLUTION__LOADS_NEED_UPDATING = 18;
 
 	/**
 	 * The feature id for the '<em><b>Iteration</b></em>' attribute.
@@ -906,7 +924,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ITERATION = 18;
+	int SOLUTION__ITERATION = 19;
 
 	/**
 	 * The feature id for the '<em><b>Max Iterations</b></em>' attribute.
@@ -915,7 +933,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_ITERATIONS = 19;
+	int SOLUTION__MAX_ITERATIONS = 20;
 
 	/**
 	 * The feature id for the '<em><b>Max Error</b></em>' attribute.
@@ -924,7 +942,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_ERROR = 20;
+	int SOLUTION__MAX_ERROR = 21;
 
 	/**
 	 * The feature id for the '<em><b>Convergence Tolerance</b></em>' attribute.
@@ -933,7 +951,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONVERGENCE_TOLERANCE = 21;
+	int SOLUTION__CONVERGENCE_TOLERANCE = 22;
 
 	/**
 	 * The feature id for the '<em><b>Converged</b></em>' attribute.
@@ -942,7 +960,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONVERGED = 22;
+	int SOLUTION__CONVERGED = 23;
 
 	/**
 	 * The feature id for the '<em><b>Control Iteration</b></em>' attribute.
@@ -951,7 +969,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_ITERATION = 23;
+	int SOLUTION__CONTROL_ITERATION = 24;
 
 	/**
 	 * The feature id for the '<em><b>Max Control Iterations</b></em>' attribute.
@@ -960,7 +978,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MAX_CONTROL_ITERATIONS = 24;
+	int SOLUTION__MAX_CONTROL_ITERATIONS = 25;
 
 	/**
 	 * The feature id for the '<em><b>Control Mode</b></em>' attribute.
@@ -969,7 +987,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_MODE = 25;
+	int SOLUTION__CONTROL_MODE = 26;
 
 	/**
 	 * The feature id for the '<em><b>Control Actions Done</b></em>' attribute.
@@ -978,7 +996,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CONTROL_ACTIONS_DONE = 26;
+	int SOLUTION__CONTROL_ACTIONS_DONE = 27;
 
 	/**
 	 * The feature id for the '<em><b>Most Iterations Done</b></em>' attribute.
@@ -987,7 +1005,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__MOST_ITERATIONS_DONE = 27;
+	int SOLUTION__MOST_ITERATIONS_DONE = 28;
 
 	/**
 	 * The feature id for the '<em><b>Algorithm</b></em>' attribute.
@@ -996,7 +1014,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHM = 28;
+	int SOLUTION__ALGORITHM = 29;
 
 	/**
 	 * The feature id for the '<em><b>Last Solution Was Direct</b></em>' attribute.
@@ -1005,7 +1023,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__LAST_SOLUTION_WAS_DIRECT = 29;
+	int SOLUTION__LAST_SOLUTION_WAS_DIRECT = 30;
 
 	/**
 	 * The feature id for the '<em><b>Solution Count</b></em>' attribute.
@@ -1014,7 +1032,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__SOLUTION_COUNT = 30;
+	int SOLUTION__SOLUTION_COUNT = 31;
 
 	/**
 	 * The feature id for the '<em><b>Node V</b></em>' reference.
@@ -1023,7 +1041,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__NODE_V = 31;
+	int SOLUTION__NODE_V = 32;
 
 	/**
 	 * The feature id for the '<em><b>Node VBase</b></em>' reference.
@@ -1032,7 +1050,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__NODE_VBASE = 32;
+	int SOLUTION__NODE_VBASE = 33;
 
 	/**
 	 * The feature id for the '<em><b>Error Saved</b></em>' reference.
@@ -1041,7 +1059,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ERROR_SAVED = 33;
+	int SOLUTION__ERROR_SAVED = 34;
 
 	/**
 	 * The feature id for the '<em><b>VMag Saved</b></em>' reference.
@@ -1050,7 +1068,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__VMAG_SAVED = 34;
+	int SOLUTION__VMAG_SAVED = 35;
 
 	/**
 	 * The feature id for the '<em><b>Currents</b></em>' reference.
@@ -1059,7 +1077,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CURRENTS = 35;
+	int SOLUTION__CURRENTS = 36;
 
 	/**
 	 * The feature id for the '<em><b>Algorithms</b></em>' reference.
@@ -1068,7 +1086,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHMS = 36;
+	int SOLUTION__ALGORITHMS = 37;
 
 	/**
 	 * The number of structural features of the '<em>Solution</em>' class.
@@ -1077,7 +1095,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION_FEATURE_COUNT = 37;
+	int SOLUTION_FEATURE_COUNT = 38;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
@@ -1640,6 +1658,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuit_NumBuses();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getFundamental <em>Fundamental</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Fundamental</em>'.
+	 * @see electrickery.common.Circuit#getFundamental()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_Fundamental();
+
+	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getName <em>Name</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2173,6 +2202,17 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getSolution_Frequency();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Solution#getHarmonic <em>Harmonic</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Harmonic</em>'.
+	 * @see electrickery.common.Solution#getHarmonic()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EAttribute getSolution_Harmonic();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Solution#getMode <em>Mode</em>}'.
@@ -2978,6 +3018,14 @@ public interface CommonPackage extends EPackage {
 		EAttribute CIRCUIT__NUM_BUSES = eINSTANCE.getCircuit_NumBuses();
 
 		/**
+		 * The meta object literal for the '<em><b>Fundamental</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__FUNDAMENTAL = eINSTANCE.getCircuit_Fundamental();
+
+		/**
 		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3376,6 +3424,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute SOLUTION__FREQUENCY = eINSTANCE.getSolution_Frequency();
+
+		/**
+		 * The meta object literal for the '<em><b>Harmonic</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SOLUTION__HARMONIC = eINSTANCE.getSolution_Harmonic();
 
 		/**
 		 * The meta object literal for the '<em><b>Mode</b></em>' attribute feature.

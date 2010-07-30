@@ -9,6 +9,7 @@ package electrickery.common;
 import electrickery.conversion.CurrentSource;
 import electrickery.conversion.Generator;
 import electrickery.conversion.Load;
+import electrickery.conversion.PowerConversionElement;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
@@ -41,6 +42,7 @@ import java.util.Map;
  *   <li>{@link electrickery.common.Circuit#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNumBuses <em>Num Buses</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getFundamental <em>Fundamental</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isBusNameRedefined <em>Bus Name Redefined</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isSolved <em>Solved</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getLoadMultiplier <em>Load Multiplier</em>}</li>
@@ -686,6 +688,31 @@ public interface Circuit extends EObject {
 	void setNumBuses(int value);
 
 	/**
+	 * Returns the value of the '<em><b>Fundamental</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Fundamental and default base frequency.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Fundamental</em>' attribute.
+	 * @see #setFundamental(double)
+	 * @see electrickery.common.CommonPackage#getCircuit_Fundamental()
+	 * @model
+	 * @generated
+	 */
+	double getFundamental();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#getFundamental <em>Fundamental</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Fundamental</em>' attribute.
+	 * @see #getFundamental()
+	 * @generated
+	 */
+	void setFundamental(double value);
+
+	/**
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Circuit Elements</em>' reference list isn't clear,
@@ -704,6 +731,14 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	void doResetMeterZones();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model kind="operation"
+	 * @generated
+	 */
+	EList<PowerConversionElement> getPCElements();
 
 	/**
 	 * <!-- begin-user-doc -->
