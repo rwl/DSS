@@ -44,6 +44,12 @@
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="voltageSources" upperBound="-1"
           eType="#//conversion/VoltageSource" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="currentSources" upperBound="-1"
+          eType="#//conversion/CurrentSource"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="generators" upperBound="-1"
+          eType="#//conversion/Generator"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="loads" upperBound="-1"
+          eType="#//conversion/Load"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="activeCircuitElement"
           eType="#//common/CircuitElement"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

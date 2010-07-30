@@ -20,6 +20,7 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import org.eclipse.emf.ecore.util.EDataTypeUniqueEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.EObjectContainmentWithInverseEList;
+import org.eclipse.emf.ecore.util.EObjectResolvingEList;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -31,6 +32,9 @@ import electrickery.common.CommonFactory;
 import electrickery.common.CommonPackage;
 import electrickery.common.Parser;
 import electrickery.common.Solution;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
 import electrickery.common.yBuildOption;
 import electrickery.conversion.VoltageSource;
 import electrickery.executive.Executive;
@@ -47,6 +51,9 @@ import electrickery.executive.ExecutivePackage;
  *   <li>{@link electrickery.common.impl.CircuitImpl#getMapNodeToBus <em>Map Node To Bus</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getBusList <em>Bus List</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getVoltageSources <em>Voltage Sources</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getCurrentSources <em>Current Sources</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getGenerators <em>Generators</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getLoads <em>Loads</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNumNodes <em>Num Nodes</em>}</li>
@@ -117,6 +124,36 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     protected EList<VoltageSource> voltageSources;
 
     /**
+	 * The cached value of the '{@link #getCurrentSources() <em>Current Sources</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getCurrentSources()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<CurrentSource> currentSources;
+
+				/**
+	 * The cached value of the '{@link #getGenerators() <em>Generators</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getGenerators()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Generator> generators;
+
+				/**
+	 * The cached value of the '{@link #getLoads() <em>Loads</em>}' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getLoads()
+	 * @generated
+	 * @ordered
+	 */
+	protected EList<Load> loads;
+
+				/**
 	 * The cached value of the '{@link #getActiveCircuitElement() <em>Active Circuit Element</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getActiveCircuitElement()
@@ -951,6 +988,42 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<CurrentSource> getCurrentSources() {
+		if (currentSources == null) {
+			currentSources = new EObjectResolvingEList<CurrentSource>(CurrentSource.class, this, CommonPackage.CIRCUIT__CURRENT_SOURCES);
+		}
+		return currentSources;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<Generator> getGenerators() {
+		if (generators == null) {
+			generators = new EObjectResolvingEList<Generator>(Generator.class, this, CommonPackage.CIRCUIT__GENERATORS);
+		}
+		return generators;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EList<Load> getLoads() {
+		if (loads == null) {
+			loads = new EObjectResolvingEList<Load>(Load.class, this, CommonPackage.CIRCUIT__LOADS);
+		}
+		return loads;
+	}
+
+				/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1223,6 +1296,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return getBusList();
 			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
 				return getVoltageSources();
+			case CommonPackage.CIRCUIT__CURRENT_SOURCES:
+				return getCurrentSources();
+			case CommonPackage.CIRCUIT__GENERATORS:
+				return getGenerators();
+			case CommonPackage.CIRCUIT__LOADS:
+				return getLoads();
 			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
 				if (resolve) return getActiveCircuitElement();
 				return basicGetActiveCircuitElement();
@@ -1292,6 +1371,18 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
 				getVoltageSources().clear();
 				getVoltageSources().addAll((Collection<? extends VoltageSource>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__CURRENT_SOURCES:
+				getCurrentSources().clear();
+				getCurrentSources().addAll((Collection<? extends CurrentSource>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__GENERATORS:
+				getGenerators().clear();
+				getGenerators().addAll((Collection<? extends Generator>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__LOADS:
+				getLoads().clear();
+				getLoads().addAll((Collection<? extends Load>)newValue);
 				return;
 			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
 				setActiveCircuitElement((CircuitElement)newValue);
@@ -1376,6 +1467,15 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
 				getVoltageSources().clear();
 				return;
+			case CommonPackage.CIRCUIT__CURRENT_SOURCES:
+				getCurrentSources().clear();
+				return;
+			case CommonPackage.CIRCUIT__GENERATORS:
+				getGenerators().clear();
+				return;
+			case CommonPackage.CIRCUIT__LOADS:
+				getLoads().clear();
+				return;
 			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
 				setActiveCircuitElement((CircuitElement)null);
 				return;
@@ -1453,6 +1553,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return busList != null && !busList.isEmpty();
 			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
 				return voltageSources != null && !voltageSources.isEmpty();
+			case CommonPackage.CIRCUIT__CURRENT_SOURCES:
+				return currentSources != null && !currentSources.isEmpty();
+			case CommonPackage.CIRCUIT__GENERATORS:
+				return generators != null && !generators.isEmpty();
+			case CommonPackage.CIRCUIT__LOADS:
+				return loads != null && !loads.isEmpty();
 			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
 				return activeCircuitElement != null;
 			case CommonPackage.CIRCUIT__NAME:

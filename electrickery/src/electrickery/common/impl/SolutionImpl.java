@@ -29,6 +29,10 @@ import electrickery.common.YMatrix;
 import electrickery.common.algorithmType;
 import electrickery.common.controlModeType;
 import electrickery.common.yBuildOption;
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
+import electrickery.conversion.VoltageSource;
 import electrickery.executive.loadModelType;
 import electrickery.executive.solutionMode;
 
@@ -594,34 +598,34 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     /**
 	 * The cached value of the '{@link #getNodeVBase() <em>Node VBase</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getNodeVBase()
 	 * @generated
 	 * @ordered
 	 */
-	protected DoubleMatrix1D nodeVBase;
+    protected DoubleMatrix1D nodeVBase;
 
-																/**
+                                                                /**
 	 * The cached value of the '{@link #getErrorSaved() <em>Error Saved</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getErrorSaved()
 	 * @generated
 	 * @ordered
 	 */
-	protected DoubleMatrix1D errorSaved;
+    protected DoubleMatrix1D errorSaved;
 
-																/**
+                                                                /**
 	 * The cached value of the '{@link #getVMagSaved() <em>VMag Saved</em>}' reference.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getVMagSaved()
 	 * @generated
 	 * @ordered
 	 */
-	protected DoubleMatrix1D vMagSaved;
+    protected DoubleMatrix1D vMagSaved;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getCurrents() <em>Currents</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getCurrents()
@@ -1287,10 +1291,10 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D getNodeVBase() {
+    public DoubleMatrix1D getNodeVBase() {
 		if (nodeVBase != null && ((EObject)nodeVBase).eIsProxy()) {
 			InternalEObject oldNodeVBase = (InternalEObject)nodeVBase;
 			nodeVBase = (DoubleMatrix1D)eResolveProxy(oldNodeVBase);
@@ -1302,33 +1306,33 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 		return nodeVBase;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D basicGetNodeVBase() {
+    public DoubleMatrix1D basicGetNodeVBase() {
 		return nodeVBase;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNodeVBase(DoubleMatrix1D newNodeVBase) {
+    public void setNodeVBase(DoubleMatrix1D newNodeVBase) {
 		DoubleMatrix1D oldNodeVBase = nodeVBase;
 		nodeVBase = newNodeVBase;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__NODE_VBASE, oldNodeVBase, nodeVBase));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D getErrorSaved() {
+    public DoubleMatrix1D getErrorSaved() {
 		if (errorSaved != null && ((EObject)errorSaved).eIsProxy()) {
 			InternalEObject oldErrorSaved = (InternalEObject)errorSaved;
 			errorSaved = (DoubleMatrix1D)eResolveProxy(oldErrorSaved);
@@ -1340,33 +1344,33 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 		return errorSaved;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D basicGetErrorSaved() {
+    public DoubleMatrix1D basicGetErrorSaved() {
 		return errorSaved;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setErrorSaved(DoubleMatrix1D newErrorSaved) {
+    public void setErrorSaved(DoubleMatrix1D newErrorSaved) {
 		DoubleMatrix1D oldErrorSaved = errorSaved;
 		errorSaved = newErrorSaved;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__ERROR_SAVED, oldErrorSaved, errorSaved));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D getVMagSaved() {
+    public DoubleMatrix1D getVMagSaved() {
 		if (vMagSaved != null && ((EObject)vMagSaved).eIsProxy()) {
 			InternalEObject oldVMagSaved = (InternalEObject)vMagSaved;
 			vMagSaved = (DoubleMatrix1D)eResolveProxy(oldVMagSaved);
@@ -1378,28 +1382,28 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 		return vMagSaved;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public DoubleMatrix1D basicGetVMagSaved() {
+    public DoubleMatrix1D basicGetVMagSaved() {
 		return vMagSaved;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setVMagSaved(DoubleMatrix1D newVMagSaved) {
+    public void setVMagSaved(DoubleMatrix1D newVMagSaved) {
 		DoubleMatrix1D oldVMagSaved = vMagSaved;
 		vMagSaved = newVMagSaved;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__VMAG_SAVED, oldVMagSaved, vMagSaved));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1933,8 +1937,22 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 
     }
 
+    /**
+     * Add in the contributions of all source type elements to the global solution vector InjCurr.
+     */
     private void getSourceInjCurrents() {
+        // Use NodeRef to add current into InjCurr array.
+        for (VoltageSource vsource : getCircuit().getVoltageSources())
+            vsource.injCurrents();
+        for (CurrentSource isource : getCircuit().getCurrentSources())
+            isource.injCurrents();
 
+        if (isHarmonicModel()) { // Pick up generators and Loads, too.
+            for (Generator generator : getCircuit().getGenerators())
+                generator.injCurrents();
+            for (Load load : getCircuit().getLoads())
+                load.injCurrents();
+        }
     }
 
     private void getMachineInjCurrents() {

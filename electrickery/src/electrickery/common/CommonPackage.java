@@ -128,13 +128,40 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__VOLTAGE_SOURCES = 5;
 
 	/**
+	 * The feature id for the '<em><b>Current Sources</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__CURRENT_SOURCES = 6;
+
+	/**
+	 * The feature id for the '<em><b>Generators</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__GENERATORS = 7;
+
+	/**
+	 * The feature id for the '<em><b>Loads</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__LOADS = 8;
+
+	/**
 	 * The feature id for the '<em><b>Active Circuit Element</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = 6;
+	int CIRCUIT__ACTIVE_CIRCUIT_ELEMENT = 9;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -143,7 +170,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NAME = 7;
+	int CIRCUIT__NAME = 10;
 
 	/**
 	 * The feature id for the '<em><b>Num Nodes</b></em>' attribute.
@@ -152,7 +179,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_NODES = 8;
+	int CIRCUIT__NUM_NODES = 11;
 
 	/**
 	 * The feature id for the '<em><b>Num Buses</b></em>' attribute.
@@ -161,7 +188,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NUM_BUSES = 9;
+	int CIRCUIT__NUM_BUSES = 12;
 
 	/**
 	 * The feature id for the '<em><b>Bus Name Redefined</b></em>' attribute.
@@ -170,7 +197,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__BUS_NAME_REDEFINED = 10;
+	int CIRCUIT__BUS_NAME_REDEFINED = 13;
 
 	/**
 	 * The feature id for the '<em><b>Solved</b></em>' attribute.
@@ -179,7 +206,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__SOLVED = 11;
+	int CIRCUIT__SOLVED = 14;
 
 	/**
 	 * The feature id for the '<em><b>Load Multiplier</b></em>' attribute.
@@ -188,7 +215,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__LOAD_MULTIPLIER = 12;
+	int CIRCUIT__LOAD_MULTIPLIER = 15;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Factor</b></em>' attribute.
@@ -197,7 +224,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 13;
+	int CIRCUIT__DEFAULT_GROWTH_FACTOR = 16;
 
 	/**
 	 * The feature id for the '<em><b>Default Growth Rate</b></em>' attribute.
@@ -206,7 +233,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_GROWTH_RATE = 14;
+	int CIRCUIT__DEFAULT_GROWTH_RATE = 17;
 
 	/**
 	 * The feature id for the '<em><b>Generator Dispatch Reference</b></em>' attribute.
@@ -215,7 +242,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 15;
+	int CIRCUIT__GENERATOR_DISPATCH_REFERENCE = 18;
 
 	/**
 	 * The feature id for the '<em><b>Gen Multiplier</b></em>' attribute.
@@ -224,7 +251,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__GEN_MULTIPLIER = 16;
+	int CIRCUIT__GEN_MULTIPLIER = 19;
 
 	/**
 	 * The feature id for the '<em><b>Default Hour Mult</b></em>' attribute.
@@ -233,7 +260,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__DEFAULT_HOUR_MULT = 17;
+	int CIRCUIT__DEFAULT_HOUR_MULT = 20;
 
 	/**
 	 * The feature id for the '<em><b>Control bus Name Redefined</b></em>' attribute.
@@ -242,7 +269,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 18;
+	int CIRCUIT__CONTROL_BUS_NAME_REDEFINED = 21;
 
 	/**
 	 * The feature id for the '<em><b>Price Signal</b></em>' attribute.
@@ -251,7 +278,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__PRICE_SIGNAL = 19;
+	int CIRCUIT__PRICE_SIGNAL = 22;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Min Volts</b></em>' attribute.
@@ -260,7 +287,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MIN_VOLTS = 20;
+	int CIRCUIT__EMERG_MIN_VOLTS = 23;
 
 	/**
 	 * The feature id for the '<em><b>Emerg Max Volts</b></em>' attribute.
@@ -269,7 +296,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__EMERG_MAX_VOLTS = 21;
+	int CIRCUIT__EMERG_MAX_VOLTS = 24;
 
 	/**
 	 * The feature id for the '<em><b>Normal Min Volts</b></em>' attribute.
@@ -278,7 +305,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MIN_VOLTS = 22;
+	int CIRCUIT__NORMAL_MIN_VOLTS = 25;
 
 	/**
 	 * The feature id for the '<em><b>Normal Max Volts</b></em>' attribute.
@@ -287,7 +314,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT__NORMAL_MAX_VOLTS = 23;
+	int CIRCUIT__NORMAL_MAX_VOLTS = 26;
 
 	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
@@ -296,7 +323,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 24;
+	int CIRCUIT_FEATURE_COUNT = 27;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.
@@ -1548,6 +1575,39 @@ public interface CommonPackage extends EPackage {
 	EReference getCircuit_VoltageSources();
 
 	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getCurrentSources <em>Current Sources</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Current Sources</em>'.
+	 * @see electrickery.common.Circuit#getCurrentSources()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_CurrentSources();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getGenerators <em>Generators</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Generators</em>'.
+	 * @see electrickery.common.Circuit#getGenerators()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_Generators();
+
+	/**
+	 * Returns the meta object for the reference list '{@link electrickery.common.Circuit#getLoads <em>Loads</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Loads</em>'.
+	 * @see electrickery.common.Circuit#getLoads()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EReference getCircuit_Loads();
+
+	/**
 	 * Returns the meta object for the reference '{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2788,6 +2848,30 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference CIRCUIT__VOLTAGE_SOURCES = eINSTANCE.getCircuit_VoltageSources();
+
+		/**
+		 * The meta object literal for the '<em><b>Current Sources</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT__CURRENT_SOURCES = eINSTANCE.getCircuit_CurrentSources();
+
+		/**
+		 * The meta object literal for the '<em><b>Generators</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT__GENERATORS = eINSTANCE.getCircuit_Generators();
+
+		/**
+		 * The meta object literal for the '<em><b>Loads</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference CIRCUIT__LOADS = eINSTANCE.getCircuit_Loads();
 
 		/**
 		 * The meta object literal for the '<em><b>Active Circuit Element</b></em>' reference feature.

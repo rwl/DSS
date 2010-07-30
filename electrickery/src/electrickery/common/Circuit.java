@@ -6,6 +6,9 @@
  */
 package electrickery.common;
 
+import electrickery.conversion.CurrentSource;
+import electrickery.conversion.Generator;
+import electrickery.conversion.Load;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EObject;
 
@@ -31,6 +34,9 @@ import java.util.Map;
  *   <li>{@link electrickery.common.Circuit#getMapNodeToBus <em>Map Node To Bus</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getBusList <em>Bus List</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getVoltageSources <em>Voltage Sources</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getCurrentSources <em>Current Sources</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getGenerators <em>Generators</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#getLoads <em>Loads</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getName <em>Name</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}</li>
@@ -659,6 +665,54 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	EList<VoltageSource> getVoltageSources();
+
+	/**
+	 * Returns the value of the '<em><b>Current Sources</b></em>' reference list.
+	 * The list contents are of type {@link electrickery.conversion.CurrentSource}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Current Sources</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Current Sources</em>' reference list.
+	 * @see electrickery.common.CommonPackage#getCircuit_CurrentSources()
+	 * @model
+	 * @generated
+	 */
+	EList<CurrentSource> getCurrentSources();
+
+	/**
+	 * Returns the value of the '<em><b>Generators</b></em>' reference list.
+	 * The list contents are of type {@link electrickery.conversion.Generator}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Generators</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Generators</em>' reference list.
+	 * @see electrickery.common.CommonPackage#getCircuit_Generators()
+	 * @model
+	 * @generated
+	 */
+	EList<Generator> getGenerators();
+
+	/**
+	 * Returns the value of the '<em><b>Loads</b></em>' reference list.
+	 * The list contents are of type {@link electrickery.conversion.Load}.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Loads</em>' reference list isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Loads</em>' reference list.
+	 * @see electrickery.common.CommonPackage#getCircuit_Loads()
+	 * @model
+	 * @generated
+	 */
+	EList<Load> getLoads();
 
 	/**
 	 * Returns the value of the '<em><b>Active Circuit Element</b></em>' reference.
