@@ -326,13 +326,31 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT__LOG_EVENTS = 27;
 
 	/**
+	 * The feature id for the '<em><b>Meter Zones Computed</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__METER_ZONES_COMPUTED = 28;
+
+	/**
+	 * The feature id for the '<em><b>Zones Locked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT__ZONES_LOCKED = 29;
+
+	/**
 	 * The number of structural features of the '<em>Circuit</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_FEATURE_COUNT = 28;
+	int CIRCUIT_FEATURE_COUNT = 30;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.
@@ -1555,6 +1573,28 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuit_LogEvents();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isMeterZonesComputed <em>Meter Zones Computed</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Meter Zones Computed</em>'.
+	 * @see electrickery.common.Circuit#isMeterZonesComputed()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_MeterZonesComputed();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#isZonesLocked <em>Zones Locked</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Zones Locked</em>'.
+	 * @see electrickery.common.Circuit#isZonesLocked()
+	 * @see #getCircuit()
+	 * @generated
+	 */
+	EAttribute getCircuit_ZonesLocked();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.YMatrix <em>YMatrix</em>}'.
@@ -2886,6 +2926,22 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT__LOG_EVENTS = eINSTANCE.getCircuit_LogEvents();
+
+		/**
+		 * The meta object literal for the '<em><b>Meter Zones Computed</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__METER_ZONES_COMPUTED = eINSTANCE.getCircuit_MeterZonesComputed();
+
+		/**
+		 * The meta object literal for the '<em><b>Zones Locked</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT__ZONES_LOCKED = eINSTANCE.getCircuit_ZonesLocked();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.

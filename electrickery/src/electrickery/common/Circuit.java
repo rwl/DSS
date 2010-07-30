@@ -56,6 +56,8 @@ import java.util.Map;
  *   <li>{@link electrickery.common.Circuit#getNormalMinVolts <em>Normal Min Volts</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
  *   <li>{@link electrickery.common.Circuit#isLogEvents <em>Log Events</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#isMeterZonesComputed <em>Meter Zones Computed</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#isZonesLocked <em>Zones Locked</em>}</li>
  * </ul>
  * </p>
  *
@@ -580,6 +582,58 @@ public interface Circuit extends EObject {
 	void setLogEvents(boolean value);
 
 	/**
+	 * Returns the value of the '<em><b>Meter Zones Computed</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Meter Zones Computed</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Meter Zones Computed</em>' attribute.
+	 * @see #setMeterZonesComputed(boolean)
+	 * @see electrickery.common.CommonPackage#getCircuit_MeterZonesComputed()
+	 * @model
+	 * @generated
+	 */
+	boolean isMeterZonesComputed();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#isMeterZonesComputed <em>Meter Zones Computed</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Meter Zones Computed</em>' attribute.
+	 * @see #isMeterZonesComputed()
+	 * @generated
+	 */
+	void setMeterZonesComputed(boolean value);
+
+	/**
+	 * Returns the value of the '<em><b>Zones Locked</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Zones Locked</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Zones Locked</em>' attribute.
+	 * @see #setZonesLocked(boolean)
+	 * @see electrickery.common.CommonPackage#getCircuit_ZonesLocked()
+	 * @model
+	 * @generated
+	 */
+	boolean isZonesLocked();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#isZonesLocked <em>Zones Locked</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Zones Locked</em>' attribute.
+	 * @see #isZonesLocked()
+	 * @generated
+	 */
+	void setZonesLocked(boolean value);
+
+	/**
 	 * Returns the value of the '<em><b>Num Nodes</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -642,6 +696,14 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	EList<CircuitElement> getCircuitElements();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void doResetMeterZones();
 
 	/**
 	 * <!-- begin-user-doc -->

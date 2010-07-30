@@ -1159,6 +1159,14 @@ public interface Solution extends EObject {
 	 * @model
 	 * @generated
 	 */
+	void setVoltageBases();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
 	void snapShotInit();
 
 	/**

@@ -73,6 +73,8 @@ import electrickery.executive.ExecutivePackage;
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMinVolts <em>Normal Min Volts</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#isLogEvents <em>Log Events</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isMeterZonesComputed <em>Meter Zones Computed</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isZonesLocked <em>Zones Locked</em>}</li>
  * </ul>
  * </p>
  *
@@ -488,6 +490,46 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	 * @ordered
 	 */
 	protected boolean logEvents = LOG_EVENTS_EDEFAULT;
+
+				/**
+	 * The default value of the '{@link #isMeterZonesComputed() <em>Meter Zones Computed</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isMeterZonesComputed()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean METER_ZONES_COMPUTED_EDEFAULT = false;
+
+				/**
+	 * The cached value of the '{@link #isMeterZonesComputed() <em>Meter Zones Computed</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isMeterZonesComputed()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean meterZonesComputed = METER_ZONES_COMPUTED_EDEFAULT;
+
+				/**
+	 * The default value of the '{@link #isZonesLocked() <em>Zones Locked</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isZonesLocked()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean ZONES_LOCKED_EDEFAULT = false;
+
+				/**
+	 * The cached value of the '{@link #isZonesLocked() <em>Zones Locked</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isZonesLocked()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean zonesLocked = ZONES_LOCKED_EDEFAULT;
 
 				/**
      * A place to hold the nodes.
@@ -943,6 +985,48 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	}
 
 				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isMeterZonesComputed() {
+		return meterZonesComputed;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setMeterZonesComputed(boolean newMeterZonesComputed) {
+		boolean oldMeterZonesComputed = meterZonesComputed;
+		meterZonesComputed = newMeterZonesComputed;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__METER_ZONES_COMPUTED, oldMeterZonesComputed, meterZonesComputed));
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isZonesLocked() {
+		return zonesLocked;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setZonesLocked(boolean newZonesLocked) {
+		boolean oldZonesLocked = zonesLocked;
+		zonesLocked = newZonesLocked;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__ZONES_LOCKED, oldZonesLocked, zonesLocked));
+	}
+
+				/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -990,6 +1074,17 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     }
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void doResetMeterZones() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+				/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1383,6 +1478,10 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return getNormalMaxVolts();
 			case CommonPackage.CIRCUIT__LOG_EVENTS:
 				return isLogEvents();
+			case CommonPackage.CIRCUIT__METER_ZONES_COMPUTED:
+				return isMeterZonesComputed();
+			case CommonPackage.CIRCUIT__ZONES_LOCKED:
+				return isZonesLocked();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1485,6 +1584,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__LOG_EVENTS:
 				setLogEvents((Boolean)newValue);
 				return;
+			case CommonPackage.CIRCUIT__METER_ZONES_COMPUTED:
+				setMeterZonesComputed((Boolean)newValue);
+				return;
+			case CommonPackage.CIRCUIT__ZONES_LOCKED:
+				setZonesLocked((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -1580,6 +1685,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__LOG_EVENTS:
 				setLogEvents(LOG_EVENTS_EDEFAULT);
 				return;
+			case CommonPackage.CIRCUIT__METER_ZONES_COMPUTED:
+				setMeterZonesComputed(METER_ZONES_COMPUTED_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__ZONES_LOCKED:
+				setZonesLocked(ZONES_LOCKED_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1647,6 +1758,10 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return normalMaxVolts != NORMAL_MAX_VOLTS_EDEFAULT;
 			case CommonPackage.CIRCUIT__LOG_EVENTS:
 				return logEvents != LOG_EVENTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__METER_ZONES_COMPUTED:
+				return meterZonesComputed != METER_ZONES_COMPUTED_EDEFAULT;
+			case CommonPackage.CIRCUIT__ZONES_LOCKED:
+				return zonesLocked != ZONES_LOCKED_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1700,6 +1815,10 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		result.append(normalMaxVolts);
 		result.append(", logEvents: ");
 		result.append(logEvents);
+		result.append(", meterZonesComputed: ");
+		result.append(meterZonesComputed);
+		result.append(", zonesLocked: ");
+		result.append(zonesLocked);
 		result.append(')');
 		return result.toString();
 	}

@@ -433,6 +433,24 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getCircuit_MeterZonesComputed() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(28);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuit_ZonesLocked() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(29);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getYMatrix() {
 		return yMatrixEClass;
 	}
@@ -1430,6 +1448,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MIN_VOLTS);
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MAX_VOLTS);
 		createEAttribute(circuitEClass, CIRCUIT__LOG_EVENTS);
+		createEAttribute(circuitEClass, CIRCUIT__METER_ZONES_COMPUTED);
+		createEAttribute(circuitEClass, CIRCUIT__ZONES_LOCKED);
 
 		yMatrixEClass = createEClass(YMATRIX);
 		createEReference(yMatrixEClass, YMATRIX__CIRCUIT);
@@ -1611,12 +1631,16 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getCircuit_NormalMinVolts(), ecorePackage.getEDouble(), "normalMinVolts", "0.95", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_NormalMaxVolts(), ecorePackage.getEDouble(), "normalMaxVolts", "1.05", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_LogEvents(), ecorePackage.getEBoolean(), "logEvents", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCircuit_MeterZonesComputed(), ecorePackage.getEBoolean(), "meterZonesComputed", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCircuit_ZonesLocked(), ecorePackage.getEBoolean(), "zonesLocked", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(circuitEClass, null, "reProcessBusDefs", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(circuitEClass, null, "initialiseNodeVBase", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(circuitEClass, this.getCircuitElement(), "getCircuitElements", 0, -1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(circuitEClass, null, "doResetMeterZones", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(yMatrixEClass, YMatrix.class, "YMatrix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getYMatrix_Circuit(), this.getCircuit(), null, "circuit", null, 0, 1, YMatrix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1756,6 +1780,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEOperation(solutionEClass, null, "snapShotInit", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(solutionEClass, null, "setGeneratorDispRef", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(solutionEClass, null, "setVoltageBases", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(solutionEClass, null, "checkControls", 0, 1, IS_UNIQUE, IS_ORDERED);
 

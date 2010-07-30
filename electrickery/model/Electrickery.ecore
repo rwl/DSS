@@ -28,6 +28,7 @@
       </eOperations>
       <eOperations name="initialiseNodeVBase"/>
       <eOperations name="getCircuitElements" upperBound="-1" eType="#//common/CircuitElement"/>
+      <eOperations name="doResetMeterZones"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executive" eType="#//executive/Executive"
           eOpposite="#//executive/Executive/circuits"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="solution" eType="#//common/Solution"
@@ -96,6 +97,8 @@
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalMaxVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1.05"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="logEvents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="meterZonesComputed" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="zonesLocked" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="YMatrix">
       <eOperations name="buildYMatrix">
@@ -256,6 +259,7 @@
       <eOperations name="doPowerFlowSolution"/>
       <eOperations name="snapShotInit"/>
       <eOperations name="setGeneratorDispRef"/>
+      <eOperations name="setVoltageBases"/>
       <eOperations name="checkControls"/>
       <eOperations name="convergenceCheck" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
       <eOperations name="sample_doControlActions"/>
