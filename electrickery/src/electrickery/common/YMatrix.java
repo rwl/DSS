@@ -75,4 +75,20 @@ public interface YMatrix extends EObject {
 	 */
 	void reCalcInvalidYPrims();
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void initializeNodeVBase();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	String checkYMatrixforZeroes();
+
 } // YMatrix

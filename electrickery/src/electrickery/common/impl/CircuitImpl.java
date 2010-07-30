@@ -131,34 +131,34 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     /**
 	 * The cached value of the '{@link #getCurrentSources() <em>Current Sources</em>}' reference list.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getCurrentSources()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<CurrentSource> currentSources;
+    protected EList<CurrentSource> currentSources;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getGenerators() <em>Generators</em>}' reference list.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getGenerators()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Generator> generators;
+    protected EList<Generator> generators;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getLoads() <em>Loads</em>}' reference list.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getLoads()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Load> loads;
+    protected EList<Load> loads;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getActiveCircuitElement() <em>Active Circuit Element</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getActiveCircuitElement()
@@ -224,24 +224,24 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     /**
 	 * The default value of the '{@link #getFundamental() <em>Fundamental</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getFundamental()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double FUNDAMENTAL_EDEFAULT = 0.0;
+    protected static final double FUNDAMENTAL_EDEFAULT = 0.0;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getFundamental() <em>Fundamental</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getFundamental()
 	 * @generated
 	 * @ordered
 	 */
-	protected double fundamental = FUNDAMENTAL_EDEFAULT;
+    protected double fundamental = FUNDAMENTAL_EDEFAULT;
 
-				/**
+                /**
 	 * The default value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
@@ -496,64 +496,64 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     /**
 	 * The default value of the '{@link #isLogEvents() <em>Log Events</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isLogEvents()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean LOG_EVENTS_EDEFAULT = false;
+    protected static final boolean LOG_EVENTS_EDEFAULT = false;
 
-				/**
+                /**
 	 * The cached value of the '{@link #isLogEvents() <em>Log Events</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isLogEvents()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean logEvents = LOG_EVENTS_EDEFAULT;
+    protected boolean logEvents = LOG_EVENTS_EDEFAULT;
 
-				/**
+                /**
 	 * The default value of the '{@link #isMeterZonesComputed() <em>Meter Zones Computed</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isMeterZonesComputed()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean METER_ZONES_COMPUTED_EDEFAULT = false;
+    protected static final boolean METER_ZONES_COMPUTED_EDEFAULT = false;
 
-				/**
+                /**
 	 * The cached value of the '{@link #isMeterZonesComputed() <em>Meter Zones Computed</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isMeterZonesComputed()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean meterZonesComputed = METER_ZONES_COMPUTED_EDEFAULT;
+    protected boolean meterZonesComputed = METER_ZONES_COMPUTED_EDEFAULT;
 
-				/**
+                /**
 	 * The default value of the '{@link #isZonesLocked() <em>Zones Locked</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isZonesLocked()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean ZONES_LOCKED_EDEFAULT = false;
+    protected static final boolean ZONES_LOCKED_EDEFAULT = false;
 
-				/**
+                /**
 	 * The cached value of the '{@link #isZonesLocked() <em>Zones Locked</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #isZonesLocked()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean zonesLocked = ZONES_LOCKED_EDEFAULT;
+    protected boolean zonesLocked = ZONES_LOCKED_EDEFAULT;
 
-				/**
+                /**
      * A place to hold the nodes.
      */
     private int[] nodeBuffer = new int[20];
@@ -728,15 +728,20 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	}
 
     /**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     * @generated NOT
+     */
     public void setBusNameRedefined(boolean newBusNameRedefined) {
-		boolean oldBusNameRedefined = busNameRedefined;
-		busNameRedefined = newBusNameRedefined;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__BUS_NAME_REDEFINED, oldBusNameRedefined, busNameRedefined));
-	}
+        // TODO: Use notification system.
+        if (newBusNameRedefined) {
+            getSolution().setSystemYChanged(true); // Force Rebuilding of SystemY if bus def has changed.
+//			setControl_BusNameRedefined(true); // So controls will know buses redefined.
+        }
+        boolean oldBusNameRedefined = busNameRedefined;
+        busNameRedefined = newBusNameRedefined;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__BUS_NAME_REDEFINED, oldBusNameRedefined, busNameRedefined));
+    }
 
     /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -987,68 +992,68 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isLogEvents() {
+    public boolean isLogEvents() {
 		return logEvents;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLogEvents(boolean newLogEvents) {
+    public void setLogEvents(boolean newLogEvents) {
 		boolean oldLogEvents = logEvents;
 		logEvents = newLogEvents;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__LOG_EVENTS, oldLogEvents, logEvents));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isMeterZonesComputed() {
+    public boolean isMeterZonesComputed() {
 		return meterZonesComputed;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setMeterZonesComputed(boolean newMeterZonesComputed) {
+    public void setMeterZonesComputed(boolean newMeterZonesComputed) {
 		boolean oldMeterZonesComputed = meterZonesComputed;
 		meterZonesComputed = newMeterZonesComputed;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__METER_ZONES_COMPUTED, oldMeterZonesComputed, meterZonesComputed));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isZonesLocked() {
+    public boolean isZonesLocked() {
 		return zonesLocked;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setZonesLocked(boolean newZonesLocked) {
+    public void setZonesLocked(boolean newZonesLocked) {
 		boolean oldZonesLocked = zonesLocked;
 		zonesLocked = newZonesLocked;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__ZONES_LOCKED, oldZonesLocked, zonesLocked));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1088,26 +1093,26 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getFundamental() {
+    public double getFundamental() {
 		return fundamental;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setFundamental(double newFundamental) {
+    public void setFundamental(double newFundamental) {
 		double oldFundamental = fundamental;
 		fundamental = newFundamental;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__FUNDAMENTAL, oldFundamental, fundamental));
 	}
 
-				/**
+                /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated NOT
@@ -1118,27 +1123,27 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void doResetMeterZones() {
+    public void doResetMeterZones() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<PowerConversionElement> getPCElements() {
+    public EList<PowerConversionElement> getPCElements() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1180,41 +1185,41 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<CurrentSource> getCurrentSources() {
+    public EList<CurrentSource> getCurrentSources() {
 		if (currentSources == null) {
 			currentSources = new EObjectResolvingEList<CurrentSource>(CurrentSource.class, this, CommonPackage.CIRCUIT__CURRENT_SOURCES);
 		}
 		return currentSources;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Generator> getGenerators() {
+    public EList<Generator> getGenerators() {
 		if (generators == null) {
 			generators = new EObjectResolvingEList<Generator>(Generator.class, this, CommonPackage.CIRCUIT__GENERATORS);
 		}
 		return generators;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Load> getLoads() {
+    public EList<Load> getLoads() {
 		if (loads == null) {
 			loads = new EObjectResolvingEList<Load>(Load.class, this, CommonPackage.CIRCUIT__LOADS);
 		}
 		return loads;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */

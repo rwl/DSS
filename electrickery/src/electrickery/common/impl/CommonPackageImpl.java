@@ -1676,6 +1676,10 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		addEOperation(yMatrixEClass, null, "reCalcInvalidYPrims", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		addEOperation(yMatrixEClass, null, "initializeNodeVBase", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(yMatrixEClass, ecorePackage.getEString(), "checkYMatrixforZeroes", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(busEClass, Bus.class, "Bus", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBus_Circuit(), this.getCircuit(), this.getCircuit_Buses(), "circuit", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getBus_VBus(), theElectrickeryPackage.getDComplexMatrix1D(), null, "vBus", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
