@@ -217,6 +217,15 @@ public interface ConversionPackage extends EPackage {
 	int POWER_CONVERSION_ELEMENT__YPRIM_FREQ = CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int POWER_CONVERSION_ELEMENT__NODE_REF = CommonPackage.CIRCUIT_ELEMENT__NODE_REF;
+
+	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -387,6 +396,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int CURRENT_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CURRENT_SOURCE__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
 
 	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
@@ -613,6 +631,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int GENERATOR__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GENERATOR__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
 
 	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
@@ -1273,6 +1300,15 @@ public interface ConversionPackage extends EPackage {
 	int LOAD__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
 
 	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int LOAD__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
+
+	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1695,6 +1731,15 @@ public interface ConversionPackage extends EPackage {
 	 * @ordered
 	 */
 	int VOLTAGE_SOURCE__YPRIM_FREQ = POWER_CONVERSION_ELEMENT__YPRIM_FREQ;
+
+	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int VOLTAGE_SOURCE__NODE_REF = POWER_CONVERSION_ELEMENT__NODE_REF;
 
 	/**
 	 * The feature id for the '<em><b>Inj Current</b></em>' attribute.

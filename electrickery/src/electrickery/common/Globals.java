@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link electrickery.common.Globals#isSolutionAbort <em>Solution Abort</em>}</li>
  *   <li>{@link electrickery.common.Globals#getExecutives <em>Executives</em>}</li>
+ *   <li>{@link electrickery.common.Globals#isSolutionWasAttempted <em>Solution Was Attempted</em>}</li>
  * </ul>
  * </p>
  *
@@ -79,5 +80,31 @@ public interface Globals extends EObject {
 	 * @generated
 	 */
 	void setExecutives(Executive value);
+
+	/**
+	 * Returns the value of the '<em><b>Solution Was Attempted</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Solution Was Attempted</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Solution Was Attempted</em>' attribute.
+	 * @see #setSolutionWasAttempted(boolean)
+	 * @see electrickery.common.CommonPackage#getGlobals_SolutionWasAttempted()
+	 * @model
+	 * @generated
+	 */
+	boolean isSolutionWasAttempted();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Globals#isSolutionWasAttempted <em>Solution Was Attempted</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Solution Was Attempted</em>' attribute.
+	 * @see #isSolutionWasAttempted()
+	 * @generated
+	 */
+	void setSolutionWasAttempted(boolean value);
 
 } // Globals

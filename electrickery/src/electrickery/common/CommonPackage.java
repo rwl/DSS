@@ -638,13 +638,22 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_ELEMENT__YPRIM_FREQ = 15;
 
 	/**
+	 * The feature id for the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int CIRCUIT_ELEMENT__NODE_REF = 16;
+
+	/**
 	 * The number of structural features of the '<em>Circuit Element</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int CIRCUIT_ELEMENT_FEATURE_COUNT = 16;
+	int CIRCUIT_ELEMENT_FEATURE_COUNT = 17;
 
 	/**
 	 * The feature id for the '<em><b>Year</b></em>' attribute.
@@ -890,13 +899,22 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION__LAST_SOLUTION_WAS_DIRECT = 26;
 
 	/**
+	 * The feature id for the '<em><b>Solution Count</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__SOLUTION_COUNT = 27;
+
+	/**
 	 * The feature id for the '<em><b>Node V</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__NODE_V = 27;
+	int SOLUTION__NODE_V = 28;
 
 	/**
 	 * The feature id for the '<em><b>Currents</b></em>' reference.
@@ -905,7 +923,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CURRENTS = 28;
+	int SOLUTION__CURRENTS = 29;
 
 	/**
 	 * The feature id for the '<em><b>Algorithms</b></em>' reference.
@@ -914,7 +932,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHMS = 29;
+	int SOLUTION__ALGORITHMS = 30;
 
 	/**
 	 * The number of structural features of the '<em>Solution</em>' class.
@@ -923,7 +941,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION_FEATURE_COUNT = 30;
+	int SOLUTION_FEATURE_COUNT = 31;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
@@ -1081,13 +1099,22 @@ public interface CommonPackage extends EPackage {
 	int GLOBALS__EXECUTIVES = 1;
 
 	/**
+	 * The feature id for the '<em><b>Solution Was Attempted</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int GLOBALS__SOLUTION_WAS_ATTEMPTED = 2;
+
+	/**
 	 * The number of structural features of the '<em>Globals</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int GLOBALS_FEATURE_COUNT = 2;
+	int GLOBALS_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.ParserImpl <em>Parser</em>}' class.
@@ -1773,6 +1800,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getCircuitElement_YPrimFreq();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.CircuitElement#getNodeRef <em>Node Ref</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Node Ref</em>'.
+	 * @see electrickery.common.CircuitElement#getNodeRef()
+	 * @see #getCircuitElement()
+	 * @generated
+	 */
+	EAttribute getCircuitElement_NodeRef();
+
+	/**
 	 * Returns the meta object for class '{@link electrickery.common.Conductor <em>Conductor</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2134,6 +2172,17 @@ public interface CommonPackage extends EPackage {
 	EAttribute getSolution_LastSolutionWasDirect();
 
 	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Solution#getSolutionCount <em>Solution Count</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Solution Count</em>'.
+	 * @see electrickery.common.Solution#getSolutionCount()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EAttribute getSolution_SolutionCount();
+
+	/**
 	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getNodeV <em>Node V</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -2304,6 +2353,17 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EReference getGlobals_Executives();
+
+	/**
+	 * Returns the meta object for the attribute '{@link electrickery.common.Globals#isSolutionWasAttempted <em>Solution Was Attempted</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Solution Was Attempted</em>'.
+	 * @see electrickery.common.Globals#isSolutionWasAttempted()
+	 * @see #getGlobals()
+	 * @generated
+	 */
+	EAttribute getGlobals_SolutionWasAttempted();
 
 	/**
 	 * Returns the meta object for class '{@link electrickery.common.Parser <em>Parser</em>}'.
@@ -2847,6 +2907,14 @@ public interface CommonPackage extends EPackage {
 		EAttribute CIRCUIT_ELEMENT__YPRIM_FREQ = eINSTANCE.getCircuitElement_YPrimFreq();
 
 		/**
+		 * The meta object literal for the '<em><b>Node Ref</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute CIRCUIT_ELEMENT__NODE_REF = eINSTANCE.getCircuitElement_NodeRef();
+
+		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3115,6 +3183,14 @@ public interface CommonPackage extends EPackage {
 		EAttribute SOLUTION__LAST_SOLUTION_WAS_DIRECT = eINSTANCE.getSolution_LastSolutionWasDirect();
 
 		/**
+		 * The meta object literal for the '<em><b>Solution Count</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute SOLUTION__SOLUTION_COUNT = eINSTANCE.getSolution_SolutionCount();
+
+		/**
 		 * The meta object literal for the '<em><b>Node V</b></em>' reference feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -3249,6 +3325,14 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference GLOBALS__EXECUTIVES = eINSTANCE.getGlobals_Executives();
+
+		/**
+		 * The meta object literal for the '<em><b>Solution Was Attempted</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute GLOBALS__SOLUTION_WAS_ATTEMPTED = eINSTANCE.getGlobals_SolutionWasAttempted();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.impl.ParserImpl <em>Parser</em>}' class.

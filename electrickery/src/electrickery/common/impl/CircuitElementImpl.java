@@ -48,6 +48,7 @@ import electrickery.common.yBuildOption;
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrim <em>YPrim</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitElementImpl#getYPrimFreq <em>YPrim Freq</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitElementImpl#getNodeRef <em>Node Ref</em>}</li>
  * </ul>
  * </p>
  *
@@ -197,24 +198,24 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
     /**
 	 * The default value of the '{@link #getActiveTerminalIndex() <em>Active Terminal Index</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getActiveTerminalIndex()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int ACTIVE_TERMINAL_INDEX_EDEFAULT = 0;
+    protected static final int ACTIVE_TERMINAL_INDEX_EDEFAULT = 0;
 
-				/**
+                /**
 	 * The cached value of the '{@link #getActiveTerminalIndex() <em>Active Terminal Index</em>}' attribute.
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @see #getActiveTerminalIndex()
 	 * @generated
 	 * @ordered
 	 */
-	protected int activeTerminalIndex = ACTIVE_TERMINAL_INDEX_EDEFAULT;
+    protected int activeTerminalIndex = ACTIVE_TERMINAL_INDEX_EDEFAULT;
 
-				/**
+                /**
 	 * The default value of the '{@link #getNTerms() <em>NTerms</em>}' attribute.
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -324,7 +325,27 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 	 */
     protected double yPrimFreq = YPRIM_FREQ_EDEFAULT;
 
-    /*
+    /**
+	 * The default value of the '{@link #getNodeRef() <em>Node Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @see #getNodeRef()
+	 * @generated
+	 * @ordered
+	 */
+    protected static final int[] NODE_REF_EDEFAULT = null;
+
+                /**
+	 * The cached value of the '{@link #getNodeRef() <em>Node Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @see #getNodeRef()
+	 * @generated
+	 * @ordered
+	 */
+    protected int[] nodeRef = NODE_REF_EDEFAULT;
+
+                /*
      *
      */
     private String[] busNames;
@@ -510,47 +531,47 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 
     /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Terminal basicGetActiveTerminal() {
+    public Terminal basicGetActiveTerminal() {
 		return activeTerminal;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setActiveTerminal(Terminal newActiveTerminal) {
+    public void setActiveTerminal(Terminal newActiveTerminal) {
 		Terminal oldActiveTerminal = activeTerminal;
 		activeTerminal = newActiveTerminal;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT_ELEMENT__ACTIVE_TERMINAL, oldActiveTerminal, activeTerminal));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getActiveTerminalIndex() {
+    public int getActiveTerminalIndex() {
 		return activeTerminalIndex;
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setActiveTerminalIndex(int newActiveTerminalIndex) {
+    public void setActiveTerminalIndex(int newActiveTerminalIndex) {
 		int oldActiveTerminalIndex = activeTerminalIndex;
 		activeTerminalIndex = newActiveTerminalIndex;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT_ELEMENT__ACTIVE_TERMINAL_INDEX, oldActiveTerminalIndex, activeTerminalIndex));
 	}
 
-				/**
+                /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -749,6 +770,27 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public int[] getNodeRef() {
+		return nodeRef;
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public void setNodeRef(int[] newNodeRef) {
+		int[] oldNodeRef = nodeRef;
+		nodeRef = newNodeRef;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT_ELEMENT__NODE_REF, oldNodeRef, nodeRef));
+	}
+
+                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -823,16 +865,16 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 
                 /**
 	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
+     * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNodeRef(int iTerm, int[] nodeRefArray) {
+    public void setNodeRef(int iTerm, int[] nodeRefArray) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
 
-																/**
+                                                                /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated NOT
@@ -842,7 +884,7 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 //        int size2 = nodeRefArray.size() * getNConds(); // Size for one terminal.
 
         for (int i = 0; i < nodeRefArray.size(); i++) {
-            nodeRef.set((iTerm -1) * getNConds() + 1, nodeRefArray.get(i));
+            nodeRef[(iTerm -1) * getNConds() + 1] = nodeRefArray.get(i);
         }
         getTerminals().get(iTerm).setBusRef(nodeRefArray.get(0));
     }
@@ -922,6 +964,8 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 				return basicGetYPrim();
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				return getYPrimFreq();
+			case CommonPackage.CIRCUIT_ELEMENT__NODE_REF:
+				return getNodeRef();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -984,6 +1028,9 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				setYPrimFreq((Double)newValue);
 				return;
+			case CommonPackage.CIRCUIT_ELEMENT__NODE_REF:
+				setNodeRef((int[])newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -1044,6 +1091,9 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				setYPrimFreq(YPRIM_FREQ_EDEFAULT);
 				return;
+			case CommonPackage.CIRCUIT_ELEMENT__NODE_REF:
+				setNodeRef(NODE_REF_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1088,6 +1138,8 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 				return yPrim != null;
 			case CommonPackage.CIRCUIT_ELEMENT__YPRIM_FREQ:
 				return yPrimFreq != YPRIM_FREQ_EDEFAULT;
+			case CommonPackage.CIRCUIT_ELEMENT__NODE_REF:
+				return NODE_REF_EDEFAULT == null ? nodeRef != null : !NODE_REF_EDEFAULT.equals(nodeRef);
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1124,6 +1176,8 @@ public abstract class CircuitElementImpl extends EObjectImpl implements CircuitE
 		result.append(nPhases);
 		result.append(", yPrimFreq: ");
 		result.append(yPrimFreq);
+		result.append(", nodeRef: ");
+		result.append(nodeRef);
 		result.append(')');
 		return result.toString();
 	}

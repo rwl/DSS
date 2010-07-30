@@ -41,39 +41,39 @@ import electrickery.executive.ExecutivePackage;
  * <p>
  * The following features are implemented:
  * <ul>
- * <li>{@link electrickery.common.impl.CircuitImpl#getExecutive <em>Executive</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getSolution <em>Solution</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getBuses <em>Buses</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getMapNodeToBus <em>Map Node To Bus</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getBusList <em>Bus List</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getVoltageSources <em>Voltage Sources</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getName <em>Name</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getNumNodes <em>Num Nodes</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getNumBuses <em>Num Buses</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#isBusNameRedefined <em>Bus Name Redefined</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#isSolved <em>Solved</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getLoadMultiplier <em>Load Multiplier</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getDefaultGrowthFactor <em>Default Growth Factor</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getDefaultGrowthRate <em>Default Growth Rate</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getGenMultiplier <em>Gen Multiplier</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getDefaultHourMult <em>Default Hour Mult</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#isControl_busNameRedefined <em>Control bus Name Redefined</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getPriceSignal <em>Price Signal</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getEmergMinVolts <em>Emerg Min Volts</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getEmergMaxVolts <em>Emerg Max Volts</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getNormalMinVolts <em>Normal Min Volts</em>}</li>
- * <li>{@link electrickery.common.impl.CircuitImpl#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getExecutive <em>Executive</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getSolution <em>Solution</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getBuses <em>Buses</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getMapNodeToBus <em>Map Node To Bus</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getBusList <em>Bus List</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getVoltageSources <em>Voltage Sources</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getActiveCircuitElement <em>Active Circuit Element</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getName <em>Name</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getNumNodes <em>Num Nodes</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getNumBuses <em>Num Buses</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isBusNameRedefined <em>Bus Name Redefined</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isSolved <em>Solved</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getLoadMultiplier <em>Load Multiplier</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getDefaultGrowthFactor <em>Default Growth Factor</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getDefaultGrowthRate <em>Default Growth Rate</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getGeneratorDispatchReference <em>Generator Dispatch Reference</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getGenMultiplier <em>Gen Multiplier</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getDefaultHourMult <em>Default Hour Mult</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isControl_busNameRedefined <em>Control bus Name Redefined</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getPriceSignal <em>Price Signal</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getEmergMinVolts <em>Emerg Min Volts</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getEmergMaxVolts <em>Emerg Max Volts</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMinVolts <em>Normal Min Volts</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
  * </ul>
  * </p>
- * 
+ *
  * @generated
  */
 public class CircuitImpl extends EObjectImpl implements Circuit {
 	/**
-	 * The cached value of the '{@link #getSolution() <em>Solution</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getSolution() <em>Solution</em>}' reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getSolution()
 	 * @generated
 	 * @ordered
@@ -81,8 +81,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected Solution solution;
 
 	/**
-	 * The cached value of the '{@link #getBuses() <em>Buses</em>}' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getBuses() <em>Buses</em>}' containment reference list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getBuses()
 	 * @generated
 	 * @ordered
@@ -90,8 +90,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected EList<Bus> buses;
 
 	/**
-	 * The cached value of the '{@link #getMapNodeToBus() <em>Map Node To Bus</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getMapNodeToBus() <em>Map Node To Bus</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getMapNodeToBus()
 	 * @generated
 	 * @ordered
@@ -99,8 +99,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected Map<Integer, Bus> mapNodeToBus;
 
 	/**
-	 * The cached value of the '{@link #getBusList() <em>Bus List</em>}' attribute list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getBusList() <em>Bus List</em>}' attribute list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getBusList()
 	 * @generated
 	 * @ordered
@@ -108,8 +108,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected EList<String> busList;
 
 	/**
-	 * The cached value of the '{@link #getVoltageSources() <em>Voltage Sources</em>}' containment reference list. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getVoltageSources() <em>Voltage Sources</em>}' containment reference list.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getVoltageSources()
 	 * @generated
 	 * @ordered
@@ -117,8 +117,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected EList<VoltageSource> voltageSources;
 
 	/**
-	 * The cached value of the '{@link #getActiveCircuitElement() <em>Active Circuit Element</em>}' reference. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getActiveCircuitElement() <em>Active Circuit Element</em>}' reference.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getActiveCircuitElement()
 	 * @generated
 	 * @ordered
@@ -126,8 +126,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected CircuitElement activeCircuitElement;
 
 	/**
-	 * The default value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -135,8 +135,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final String NAME_EDEFAULT = null;
 
 	/**
-	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
@@ -144,8 +144,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected String name = NAME_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumNodes()
 	 * @generated
 	 * @ordered
@@ -153,8 +153,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final int NUM_NODES_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumNodes()
 	 * @generated
 	 * @ordered
@@ -162,8 +162,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected int numNodes = NUM_NODES_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumBuses()
 	 * @generated
 	 * @ordered
@@ -171,8 +171,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final int NUM_BUSES_EDEFAULT = 0;
 
 	/**
-	 * The cached value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumBuses()
 	 * @generated
 	 * @ordered
@@ -180,8 +180,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected int numBuses = NUM_BUSES_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
 	 * @generated
 	 * @ordered
@@ -189,8 +189,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final boolean BUS_NAME_REDEFINED_EDEFAULT = true;
 
 	/**
-	 * The cached value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
 	 * @generated
 	 * @ordered
@@ -198,8 +198,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isSolved() <em>Solved</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #isSolved() <em>Solved</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isSolved()
 	 * @generated
 	 * @ordered
@@ -207,8 +207,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final boolean SOLVED_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isSolved() <em>Solved</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #isSolved() <em>Solved</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isSolved()
 	 * @generated
 	 * @ordered
@@ -216,8 +216,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected boolean solved = SOLVED_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getLoadMultiplier()
 	 * @generated
 	 * @ordered
@@ -225,8 +225,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double LOAD_MULTIPLIER_EDEFAULT = 1.0;
 
 	/**
-	 * The cached value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getLoadMultiplier()
 	 * @generated
 	 * @ordered
@@ -234,8 +234,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double loadMultiplier = LOAD_MULTIPLIER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthFactor()
 	 * @generated
 	 * @ordered
@@ -243,8 +243,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double DEFAULT_GROWTH_FACTOR_EDEFAULT = 1.0;
 
 	/**
-	 * The cached value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthFactor()
 	 * @generated
 	 * @ordered
@@ -252,8 +252,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double defaultGrowthFactor = DEFAULT_GROWTH_FACTOR_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthRate()
 	 * @generated
 	 * @ordered
@@ -261,8 +261,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double DEFAULT_GROWTH_RATE_EDEFAULT = 1.025;
 
 	/**
-	 * The cached value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthRate()
 	 * @generated
 	 * @ordered
@@ -270,8 +270,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double defaultGrowthRate = DEFAULT_GROWTH_RATE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGeneratorDispatchReference()
 	 * @generated
 	 * @ordered
@@ -279,8 +279,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double GENERATOR_DISPATCH_REFERENCE_EDEFAULT = 1000.0;
 
 	/**
-	 * The cached value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGeneratorDispatchReference()
 	 * @generated
 	 * @ordered
@@ -288,8 +288,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double generatorDispatchReference = GENERATOR_DISPATCH_REFERENCE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGenMultiplier()
 	 * @generated
 	 * @ordered
@@ -297,8 +297,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double GEN_MULTIPLIER_EDEFAULT = 1.0;
 
 	/**
-	 * The cached value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGenMultiplier()
 	 * @generated
 	 * @ordered
@@ -306,8 +306,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double genMultiplier = GEN_MULTIPLIER_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultHourMult()
 	 * @generated
 	 * @ordered
@@ -315,8 +315,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double DEFAULT_HOUR_MULT_EDEFAULT = 0.0;
 
 	/**
-	 * The cached value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultHourMult()
 	 * @generated
 	 * @ordered
@@ -324,8 +324,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double defaultHourMult = DEFAULT_HOUR_MULT_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isControl_busNameRedefined()
 	 * @generated
 	 * @ordered
@@ -333,8 +333,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final boolean CONTROL_BUS_NAME_REDEFINED_EDEFAULT = false;
 
 	/**
-	 * The cached value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isControl_busNameRedefined()
 	 * @generated
 	 * @ordered
@@ -342,8 +342,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected boolean control_busNameRedefined = CONTROL_BUS_NAME_REDEFINED_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPriceSignal()
 	 * @generated
 	 * @ordered
@@ -351,8 +351,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double PRICE_SIGNAL_EDEFAULT = 0.0;
 
 	/**
-	 * The cached value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPriceSignal()
 	 * @generated
 	 * @ordered
@@ -360,8 +360,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double priceSignal = PRICE_SIGNAL_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMinVolts()
 	 * @generated
 	 * @ordered
@@ -369,8 +369,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double EMERG_MIN_VOLTS_EDEFAULT = 0.9;
 
 	/**
-	 * The cached value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMinVolts()
 	 * @generated
 	 * @ordered
@@ -378,8 +378,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double emergMinVolts = EMERG_MIN_VOLTS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMaxVolts()
 	 * @generated
 	 * @ordered
@@ -387,8 +387,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double EMERG_MAX_VOLTS_EDEFAULT = 1.08;
 
 	/**
-	 * The cached value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMaxVolts()
 	 * @generated
 	 * @ordered
@@ -396,8 +396,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double emergMaxVolts = EMERG_MAX_VOLTS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMinVolts()
 	 * @generated
 	 * @ordered
@@ -405,8 +405,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double NORMAL_MIN_VOLTS_EDEFAULT = 0.95;
 
 	/**
-	 * The cached value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMinVolts()
 	 * @generated
 	 * @ordered
@@ -414,8 +414,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected double normalMinVolts = NORMAL_MIN_VOLTS_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The default value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMaxVolts()
 	 * @generated
 	 * @ordered
@@ -423,8 +423,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	protected static final double NORMAL_MAX_VOLTS_EDEFAULT = 1.05;
 
 	/**
-	 * The cached value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute. <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
+	 * The cached value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute.
+	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMaxVolts()
 	 * @generated
 	 * @ordered
@@ -447,7 +447,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	protected CircuitImpl() {
@@ -456,7 +455,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
@@ -466,28 +464,24 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Executive getExecutive() {
-		if (eContainerFeatureID() != CommonPackage.CIRCUIT__EXECUTIVE)
-			return null;
-		return (Executive) eContainer();
+		if (eContainerFeatureID() != CommonPackage.CIRCUIT__EXECUTIVE) return null;
+		return (Executive)eContainer();
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetExecutive(Executive newExecutive, NotificationChain msgs) {
-		msgs = eBasicSetContainer((InternalEObject) newExecutive, CommonPackage.CIRCUIT__EXECUTIVE, msgs);
+		msgs = eBasicSetContainer((InternalEObject)newExecutive, CommonPackage.CIRCUIT__EXECUTIVE, msgs);
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setExecutive(Executive newExecutive) {
@@ -498,23 +492,22 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			if (eInternalContainer() != null)
 				msgs = eBasicRemoveFromContainer(msgs);
 			if (newExecutive != null)
-				msgs = ((InternalEObject) newExecutive).eInverseAdd(this, ExecutivePackage.EXECUTIVE__CIRCUITS, Executive.class, msgs);
+				msgs = ((InternalEObject)newExecutive).eInverseAdd(this, ExecutivePackage.EXECUTIVE__CIRCUITS, Executive.class, msgs);
 			msgs = basicSetExecutive(newExecutive, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__EXECUTIVE, newExecutive, newExecutive));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Solution getSolution() {
 		if (solution != null && solution.eIsProxy()) {
-			InternalEObject oldSolution = (InternalEObject) solution;
-			solution = (Solution) eResolveProxy(oldSolution);
+			InternalEObject oldSolution = (InternalEObject)solution;
+			solution = (Solution)eResolveProxy(oldSolution);
 			if (solution != oldSolution) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.CIRCUIT__SOLUTION, oldSolution, solution));
@@ -525,7 +518,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Solution basicGetSolution() {
@@ -534,7 +526,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public NotificationChain basicSetSolution(Solution newSolution, NotificationChain msgs) {
@@ -542,36 +533,31 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		solution = newSolution;
 		if (eNotificationRequired()) {
 			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__SOLUTION, oldSolution, newSolution);
-			if (msgs == null)
-				msgs = notification;
-			else
-				msgs.add(notification);
+			if (msgs == null) msgs = notification; else msgs.add(notification);
 		}
 		return msgs;
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setSolution(Solution newSolution) {
 		if (newSolution != solution) {
 			NotificationChain msgs = null;
 			if (solution != null)
-				msgs = ((InternalEObject) solution).eInverseRemove(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
+				msgs = ((InternalEObject)solution).eInverseRemove(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
 			if (newSolution != null)
-				msgs = ((InternalEObject) newSolution).eInverseAdd(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
+				msgs = ((InternalEObject)newSolution).eInverseAdd(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
 			msgs = basicSetSolution(newSolution, msgs);
-			if (msgs != null)
-				msgs.dispatch();
-		} else if (eNotificationRequired())
+			if (msgs != null) msgs.dispatch();
+		}
+		else if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__SOLUTION, newSolution, newSolution));
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<Bus> getBuses() {
@@ -583,7 +569,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public Map<Integer, Bus> getMapNodeToBus() {
@@ -592,7 +577,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setMapNodeToBus(Map<Integer, Bus> newMapNodeToBus) {
@@ -604,7 +588,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<String> getBusList() {
@@ -616,7 +599,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isBusNameRedefined() {
@@ -625,7 +607,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setBusNameRedefined(boolean newBusNameRedefined) {
@@ -637,7 +618,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isSolved() {
@@ -646,7 +626,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setSolved(boolean newSolved) {
@@ -658,7 +637,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getLoadMultiplier() {
@@ -667,7 +645,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setLoadMultiplier(double newLoadMultiplier) {
@@ -679,7 +656,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getDefaultGrowthFactor() {
@@ -688,7 +664,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setDefaultGrowthFactor(double newDefaultGrowthFactor) {
@@ -700,7 +675,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getDefaultGrowthRate() {
@@ -709,7 +683,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setDefaultGrowthRate(double newDefaultGrowthRate) {
@@ -721,7 +694,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getGeneratorDispatchReference() {
@@ -730,7 +702,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setGeneratorDispatchReference(double newGeneratorDispatchReference) {
@@ -742,7 +713,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getGenMultiplier() {
@@ -751,7 +721,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setGenMultiplier(double newGenMultiplier) {
@@ -763,7 +732,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getDefaultHourMult() {
@@ -772,7 +740,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setDefaultHourMult(double newDefaultHourMult) {
@@ -784,7 +751,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public boolean isControl_busNameRedefined() {
@@ -793,7 +759,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setControl_busNameRedefined(boolean newControl_busNameRedefined) {
@@ -805,7 +770,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getPriceSignal() {
@@ -814,7 +778,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setPriceSignal(double newPriceSignal) {
@@ -826,7 +789,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getEmergMinVolts() {
@@ -835,7 +797,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setEmergMinVolts(double newEmergMinVolts) {
@@ -847,7 +808,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getEmergMaxVolts() {
@@ -856,7 +816,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setEmergMaxVolts(double newEmergMaxVolts) {
@@ -868,7 +827,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getNormalMinVolts() {
@@ -877,7 +835,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setNormalMinVolts(double newNormalMinVolts) {
@@ -889,7 +846,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public double getNormalMaxVolts() {
@@ -898,7 +854,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setNormalMaxVolts(double newNormalMaxVolts) {
@@ -910,7 +865,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public int getNumNodes() {
@@ -919,7 +873,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setNumNodes(int newNumNodes) {
@@ -931,7 +884,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public int getNumBuses() {
@@ -940,7 +892,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setNumBuses(int newNumBuses) {
@@ -961,7 +912,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void initialiseNodeVBase() {
@@ -972,7 +922,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public String getName() {
@@ -981,7 +930,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setName(String newName) {
@@ -993,7 +941,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public EList<VoltageSource> getVoltageSources() {
@@ -1005,13 +952,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public CircuitElement getActiveCircuitElement() {
 		if (activeCircuitElement != null && activeCircuitElement.eIsProxy()) {
-			InternalEObject oldActiveCircuitElement = (InternalEObject) activeCircuitElement;
-			activeCircuitElement = (CircuitElement) eResolveProxy(oldActiveCircuitElement);
+			InternalEObject oldActiveCircuitElement = (InternalEObject)activeCircuitElement;
+			activeCircuitElement = (CircuitElement)eResolveProxy(oldActiveCircuitElement);
 			if (activeCircuitElement != oldActiveCircuitElement) {
 				if (eNotificationRequired())
 					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT, oldActiveCircuitElement, activeCircuitElement));
@@ -1022,7 +968,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public CircuitElement basicGetActiveCircuitElement() {
@@ -1031,7 +976,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void setActiveCircuitElement(CircuitElement newActiveCircuitElement) {
@@ -1279,7 +1223,6 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	public void reCalcInvalidYPrims() {
@@ -1290,366 +1233,355 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			if (eInternalContainer() != null)
-				msgs = eBasicRemoveFromContainer(msgs);
-			return basicSetExecutive((Executive) otherEnd, msgs);
-		case CommonPackage.CIRCUIT__SOLUTION:
-			if (solution != null)
-				msgs = ((InternalEObject) solution).eInverseRemove(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
-			return basicSetSolution((Solution) otherEnd, msgs);
-		case CommonPackage.CIRCUIT__BUSES:
-			return ((InternalEList<InternalEObject>) (InternalEList<?>) getBuses()).basicAdd(otherEnd, msgs);
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				if (eInternalContainer() != null)
+					msgs = eBasicRemoveFromContainer(msgs);
+				return basicSetExecutive((Executive)otherEnd, msgs);
+			case CommonPackage.CIRCUIT__SOLUTION:
+				if (solution != null)
+					msgs = ((InternalEObject)solution).eInverseRemove(this, CommonPackage.SOLUTION__CIRCUIT, Solution.class, msgs);
+				return basicSetSolution((Solution)otherEnd, msgs);
+			case CommonPackage.CIRCUIT__BUSES:
+				return ((InternalEList<InternalEObject>)(InternalEList<?>)getBuses()).basicAdd(otherEnd, msgs);
 		}
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			return basicSetExecutive(null, msgs);
-		case CommonPackage.CIRCUIT__SOLUTION:
-			return basicSetSolution(null, msgs);
-		case CommonPackage.CIRCUIT__BUSES:
-			return ((InternalEList<?>) getBuses()).basicRemove(otherEnd, msgs);
-		case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
-			return ((InternalEList<?>) getVoltageSources()).basicRemove(otherEnd, msgs);
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				return basicSetExecutive(null, msgs);
+			case CommonPackage.CIRCUIT__SOLUTION:
+				return basicSetSolution(null, msgs);
+			case CommonPackage.CIRCUIT__BUSES:
+				return ((InternalEList<?>)getBuses()).basicRemove(otherEnd, msgs);
+			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
+				return ((InternalEList<?>)getVoltageSources()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			return eInternalContainer().eInverseRemove(this, ExecutivePackage.EXECUTIVE__CIRCUITS, Executive.class, msgs);
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				return eInternalContainer().eInverseRemove(this, ExecutivePackage.EXECUTIVE__CIRCUITS, Executive.class, msgs);
 		}
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			return getExecutive();
-		case CommonPackage.CIRCUIT__SOLUTION:
-			if (resolve)
-				return getSolution();
-			return basicGetSolution();
-		case CommonPackage.CIRCUIT__BUSES:
-			return getBuses();
-		case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
-			return getMapNodeToBus();
-		case CommonPackage.CIRCUIT__BUS_LIST:
-			return getBusList();
-		case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
-			return getVoltageSources();
-		case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
-			if (resolve)
-				return getActiveCircuitElement();
-			return basicGetActiveCircuitElement();
-		case CommonPackage.CIRCUIT__NAME:
-			return getName();
-		case CommonPackage.CIRCUIT__NUM_NODES:
-			return getNumNodes();
-		case CommonPackage.CIRCUIT__NUM_BUSES:
-			return getNumBuses();
-		case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
-			return isBusNameRedefined();
-		case CommonPackage.CIRCUIT__SOLVED:
-			return isSolved();
-		case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
-			return getLoadMultiplier();
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
-			return getDefaultGrowthFactor();
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
-			return getDefaultGrowthRate();
-		case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
-			return getGeneratorDispatchReference();
-		case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
-			return getGenMultiplier();
-		case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
-			return getDefaultHourMult();
-		case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
-			return isControl_busNameRedefined();
-		case CommonPackage.CIRCUIT__PRICE_SIGNAL:
-			return getPriceSignal();
-		case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
-			return getEmergMinVolts();
-		case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
-			return getEmergMaxVolts();
-		case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
-			return getNormalMinVolts();
-		case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
-			return getNormalMaxVolts();
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				return getExecutive();
+			case CommonPackage.CIRCUIT__SOLUTION:
+				if (resolve) return getSolution();
+				return basicGetSolution();
+			case CommonPackage.CIRCUIT__BUSES:
+				return getBuses();
+			case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
+				return getMapNodeToBus();
+			case CommonPackage.CIRCUIT__BUS_LIST:
+				return getBusList();
+			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
+				return getVoltageSources();
+			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
+				if (resolve) return getActiveCircuitElement();
+				return basicGetActiveCircuitElement();
+			case CommonPackage.CIRCUIT__NAME:
+				return getName();
+			case CommonPackage.CIRCUIT__NUM_NODES:
+				return getNumNodes();
+			case CommonPackage.CIRCUIT__NUM_BUSES:
+				return getNumBuses();
+			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
+				return isBusNameRedefined();
+			case CommonPackage.CIRCUIT__SOLVED:
+				return isSolved();
+			case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
+				return getLoadMultiplier();
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
+				return getDefaultGrowthFactor();
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
+				return getDefaultGrowthRate();
+			case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
+				return getGeneratorDispatchReference();
+			case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
+				return getGenMultiplier();
+			case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
+				return getDefaultHourMult();
+			case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
+				return isControl_busNameRedefined();
+			case CommonPackage.CIRCUIT__PRICE_SIGNAL:
+				return getPriceSignal();
+			case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
+				return getEmergMinVolts();
+			case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
+				return getEmergMaxVolts();
+			case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
+				return getNormalMinVolts();
+			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
+				return getNormalMaxVolts();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			setExecutive((Executive) newValue);
-			return;
-		case CommonPackage.CIRCUIT__SOLUTION:
-			setSolution((Solution) newValue);
-			return;
-		case CommonPackage.CIRCUIT__BUSES:
-			getBuses().clear();
-			getBuses().addAll((Collection<? extends Bus>) newValue);
-			return;
-		case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
-			setMapNodeToBus((Map<Integer, Bus>) newValue);
-			return;
-		case CommonPackage.CIRCUIT__BUS_LIST:
-			getBusList().clear();
-			getBusList().addAll((Collection<? extends String>) newValue);
-			return;
-		case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
-			getVoltageSources().clear();
-			getVoltageSources().addAll((Collection<? extends VoltageSource>) newValue);
-			return;
-		case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
-			setActiveCircuitElement((CircuitElement) newValue);
-			return;
-		case CommonPackage.CIRCUIT__NAME:
-			setName((String) newValue);
-			return;
-		case CommonPackage.CIRCUIT__NUM_NODES:
-			setNumNodes((Integer) newValue);
-			return;
-		case CommonPackage.CIRCUIT__NUM_BUSES:
-			setNumBuses((Integer) newValue);
-			return;
-		case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
-			setBusNameRedefined((Boolean) newValue);
-			return;
-		case CommonPackage.CIRCUIT__SOLVED:
-			setSolved((Boolean) newValue);
-			return;
-		case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
-			setLoadMultiplier((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
-			setDefaultGrowthFactor((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
-			setDefaultGrowthRate((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
-			setGeneratorDispatchReference((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
-			setGenMultiplier((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
-			setDefaultHourMult((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
-			setControl_busNameRedefined((Boolean) newValue);
-			return;
-		case CommonPackage.CIRCUIT__PRICE_SIGNAL:
-			setPriceSignal((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
-			setEmergMinVolts((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
-			setEmergMaxVolts((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
-			setNormalMinVolts((Double) newValue);
-			return;
-		case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
-			setNormalMaxVolts((Double) newValue);
-			return;
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				setExecutive((Executive)newValue);
+				return;
+			case CommonPackage.CIRCUIT__SOLUTION:
+				setSolution((Solution)newValue);
+				return;
+			case CommonPackage.CIRCUIT__BUSES:
+				getBuses().clear();
+				getBuses().addAll((Collection<? extends Bus>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
+				setMapNodeToBus((Map<Integer, Bus>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__BUS_LIST:
+				getBusList().clear();
+				getBusList().addAll((Collection<? extends String>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
+				getVoltageSources().clear();
+				getVoltageSources().addAll((Collection<? extends VoltageSource>)newValue);
+				return;
+			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
+				setActiveCircuitElement((CircuitElement)newValue);
+				return;
+			case CommonPackage.CIRCUIT__NAME:
+				setName((String)newValue);
+				return;
+			case CommonPackage.CIRCUIT__NUM_NODES:
+				setNumNodes((Integer)newValue);
+				return;
+			case CommonPackage.CIRCUIT__NUM_BUSES:
+				setNumBuses((Integer)newValue);
+				return;
+			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
+				setBusNameRedefined((Boolean)newValue);
+				return;
+			case CommonPackage.CIRCUIT__SOLVED:
+				setSolved((Boolean)newValue);
+				return;
+			case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
+				setLoadMultiplier((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
+				setDefaultGrowthFactor((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
+				setDefaultGrowthRate((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
+				setGeneratorDispatchReference((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
+				setGenMultiplier((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
+				setDefaultHourMult((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
+				setControl_busNameRedefined((Boolean)newValue);
+				return;
+			case CommonPackage.CIRCUIT__PRICE_SIGNAL:
+				setPriceSignal((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
+				setEmergMinVolts((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
+				setEmergMaxVolts((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
+				setNormalMinVolts((Double)newValue);
+				return;
+			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
+				setNormalMaxVolts((Double)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public void eUnset(int featureID) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			setExecutive((Executive) null);
-			return;
-		case CommonPackage.CIRCUIT__SOLUTION:
-			setSolution((Solution) null);
-			return;
-		case CommonPackage.CIRCUIT__BUSES:
-			getBuses().clear();
-			return;
-		case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
-			setMapNodeToBus((Map<Integer, Bus>) null);
-			return;
-		case CommonPackage.CIRCUIT__BUS_LIST:
-			getBusList().clear();
-			return;
-		case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
-			getVoltageSources().clear();
-			return;
-		case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
-			setActiveCircuitElement((CircuitElement) null);
-			return;
-		case CommonPackage.CIRCUIT__NAME:
-			setName(NAME_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__NUM_NODES:
-			setNumNodes(NUM_NODES_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__NUM_BUSES:
-			setNumBuses(NUM_BUSES_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
-			setBusNameRedefined(BUS_NAME_REDEFINED_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__SOLVED:
-			setSolved(SOLVED_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
-			setLoadMultiplier(LOAD_MULTIPLIER_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
-			setDefaultGrowthFactor(DEFAULT_GROWTH_FACTOR_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
-			setDefaultGrowthRate(DEFAULT_GROWTH_RATE_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
-			setGeneratorDispatchReference(GENERATOR_DISPATCH_REFERENCE_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
-			setGenMultiplier(GEN_MULTIPLIER_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
-			setDefaultHourMult(DEFAULT_HOUR_MULT_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
-			setControl_busNameRedefined(CONTROL_BUS_NAME_REDEFINED_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__PRICE_SIGNAL:
-			setPriceSignal(PRICE_SIGNAL_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
-			setEmergMinVolts(EMERG_MIN_VOLTS_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
-			setEmergMaxVolts(EMERG_MAX_VOLTS_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
-			setNormalMinVolts(NORMAL_MIN_VOLTS_EDEFAULT);
-			return;
-		case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
-			setNormalMaxVolts(NORMAL_MAX_VOLTS_EDEFAULT);
-			return;
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				setExecutive((Executive)null);
+				return;
+			case CommonPackage.CIRCUIT__SOLUTION:
+				setSolution((Solution)null);
+				return;
+			case CommonPackage.CIRCUIT__BUSES:
+				getBuses().clear();
+				return;
+			case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
+				setMapNodeToBus((Map<Integer, Bus>)null);
+				return;
+			case CommonPackage.CIRCUIT__BUS_LIST:
+				getBusList().clear();
+				return;
+			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
+				getVoltageSources().clear();
+				return;
+			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
+				setActiveCircuitElement((CircuitElement)null);
+				return;
+			case CommonPackage.CIRCUIT__NAME:
+				setName(NAME_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__NUM_NODES:
+				setNumNodes(NUM_NODES_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__NUM_BUSES:
+				setNumBuses(NUM_BUSES_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
+				setBusNameRedefined(BUS_NAME_REDEFINED_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__SOLVED:
+				setSolved(SOLVED_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
+				setLoadMultiplier(LOAD_MULTIPLIER_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
+				setDefaultGrowthFactor(DEFAULT_GROWTH_FACTOR_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
+				setDefaultGrowthRate(DEFAULT_GROWTH_RATE_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
+				setGeneratorDispatchReference(GENERATOR_DISPATCH_REFERENCE_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
+				setGenMultiplier(GEN_MULTIPLIER_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
+				setDefaultHourMult(DEFAULT_HOUR_MULT_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
+				setControl_busNameRedefined(CONTROL_BUS_NAME_REDEFINED_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__PRICE_SIGNAL:
+				setPriceSignal(PRICE_SIGNAL_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
+				setEmergMinVolts(EMERG_MIN_VOLTS_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
+				setEmergMaxVolts(EMERG_MAX_VOLTS_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
+				setNormalMinVolts(NORMAL_MIN_VOLTS_EDEFAULT);
+				return;
+			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
+				setNormalMaxVolts(NORMAL_MAX_VOLTS_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public boolean eIsSet(int featureID) {
 		switch (featureID) {
-		case CommonPackage.CIRCUIT__EXECUTIVE:
-			return getExecutive() != null;
-		case CommonPackage.CIRCUIT__SOLUTION:
-			return solution != null;
-		case CommonPackage.CIRCUIT__BUSES:
-			return buses != null && !buses.isEmpty();
-		case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
-			return mapNodeToBus != null;
-		case CommonPackage.CIRCUIT__BUS_LIST:
-			return busList != null && !busList.isEmpty();
-		case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
-			return voltageSources != null && !voltageSources.isEmpty();
-		case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
-			return activeCircuitElement != null;
-		case CommonPackage.CIRCUIT__NAME:
-			return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-		case CommonPackage.CIRCUIT__NUM_NODES:
-			return numNodes != NUM_NODES_EDEFAULT;
-		case CommonPackage.CIRCUIT__NUM_BUSES:
-			return numBuses != NUM_BUSES_EDEFAULT;
-		case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
-			return busNameRedefined != BUS_NAME_REDEFINED_EDEFAULT;
-		case CommonPackage.CIRCUIT__SOLVED:
-			return solved != SOLVED_EDEFAULT;
-		case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
-			return loadMultiplier != LOAD_MULTIPLIER_EDEFAULT;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
-			return defaultGrowthFactor != DEFAULT_GROWTH_FACTOR_EDEFAULT;
-		case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
-			return defaultGrowthRate != DEFAULT_GROWTH_RATE_EDEFAULT;
-		case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
-			return generatorDispatchReference != GENERATOR_DISPATCH_REFERENCE_EDEFAULT;
-		case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
-			return genMultiplier != GEN_MULTIPLIER_EDEFAULT;
-		case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
-			return defaultHourMult != DEFAULT_HOUR_MULT_EDEFAULT;
-		case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
-			return control_busNameRedefined != CONTROL_BUS_NAME_REDEFINED_EDEFAULT;
-		case CommonPackage.CIRCUIT__PRICE_SIGNAL:
-			return priceSignal != PRICE_SIGNAL_EDEFAULT;
-		case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
-			return emergMinVolts != EMERG_MIN_VOLTS_EDEFAULT;
-		case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
-			return emergMaxVolts != EMERG_MAX_VOLTS_EDEFAULT;
-		case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
-			return normalMinVolts != NORMAL_MIN_VOLTS_EDEFAULT;
-		case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
-			return normalMaxVolts != NORMAL_MAX_VOLTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__EXECUTIVE:
+				return getExecutive() != null;
+			case CommonPackage.CIRCUIT__SOLUTION:
+				return solution != null;
+			case CommonPackage.CIRCUIT__BUSES:
+				return buses != null && !buses.isEmpty();
+			case CommonPackage.CIRCUIT__MAP_NODE_TO_BUS:
+				return mapNodeToBus != null;
+			case CommonPackage.CIRCUIT__BUS_LIST:
+				return busList != null && !busList.isEmpty();
+			case CommonPackage.CIRCUIT__VOLTAGE_SOURCES:
+				return voltageSources != null && !voltageSources.isEmpty();
+			case CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT:
+				return activeCircuitElement != null;
+			case CommonPackage.CIRCUIT__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+			case CommonPackage.CIRCUIT__NUM_NODES:
+				return numNodes != NUM_NODES_EDEFAULT;
+			case CommonPackage.CIRCUIT__NUM_BUSES:
+				return numBuses != NUM_BUSES_EDEFAULT;
+			case CommonPackage.CIRCUIT__BUS_NAME_REDEFINED:
+				return busNameRedefined != BUS_NAME_REDEFINED_EDEFAULT;
+			case CommonPackage.CIRCUIT__SOLVED:
+				return solved != SOLVED_EDEFAULT;
+			case CommonPackage.CIRCUIT__LOAD_MULTIPLIER:
+				return loadMultiplier != LOAD_MULTIPLIER_EDEFAULT;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR:
+				return defaultGrowthFactor != DEFAULT_GROWTH_FACTOR_EDEFAULT;
+			case CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE:
+				return defaultGrowthRate != DEFAULT_GROWTH_RATE_EDEFAULT;
+			case CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE:
+				return generatorDispatchReference != GENERATOR_DISPATCH_REFERENCE_EDEFAULT;
+			case CommonPackage.CIRCUIT__GEN_MULTIPLIER:
+				return genMultiplier != GEN_MULTIPLIER_EDEFAULT;
+			case CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT:
+				return defaultHourMult != DEFAULT_HOUR_MULT_EDEFAULT;
+			case CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED:
+				return control_busNameRedefined != CONTROL_BUS_NAME_REDEFINED_EDEFAULT;
+			case CommonPackage.CIRCUIT__PRICE_SIGNAL:
+				return priceSignal != PRICE_SIGNAL_EDEFAULT;
+			case CommonPackage.CIRCUIT__EMERG_MIN_VOLTS:
+				return emergMinVolts != EMERG_MIN_VOLTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__EMERG_MAX_VOLTS:
+				return emergMaxVolts != EMERG_MAX_VOLTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS:
+				return normalMinVolts != NORMAL_MIN_VOLTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
+				return normalMaxVolts != NORMAL_MAX_VOLTS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
 
 	/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
 	 * @generated
 	 */
 	@Override
 	public String toString() {
-		if (eIsProxy())
-			return super.toString();
+		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());
 		result.append(" (mapNodeToBus: ");

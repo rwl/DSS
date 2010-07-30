@@ -228,12 +228,13 @@
           <details key="documentation" value="Frequency at which YPrim has been computed."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="nodeRef" eType="#//EIntArray"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Solution">
       <eOperations name="solve"/>
       <eOperations name="solveSnap" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eOperations name="solveCircuit" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
-      <eOperations name="solveDirect"/>
+      <eOperations name="solveDirect" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eOperations name="solveYDirect" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eOperations name="solveSystem" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
@@ -299,6 +300,11 @@
           defaultValueLiteral="NormalSolve"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="lastSolutionWasDirect"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="solutionCount" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Counter incremented for each solution."/>
+        </eAnnotations>
+      </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="nodeV" eType="#//DComplexMatrix1D"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="currents" eType="#//DComplexMatrix1D"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="algorithms" eType="#//common/SolutionAlgs"/>
@@ -385,6 +391,8 @@
           defaultValueLiteral="false"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executives" eType="#//executive/Executive"
           eOpposite="#//executive/Executive/globals"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="solutionWasAttempted"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Parser">
       <eOperations name="parseAsBusName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">

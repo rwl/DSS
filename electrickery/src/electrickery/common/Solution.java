@@ -46,6 +46,7 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.Solution#getMostIterationsDone <em>Most Iterations Done</em>}</li>
  *   <li>{@link electrickery.common.Solution#getAlgorithm <em>Algorithm</em>}</li>
  *   <li>{@link electrickery.common.Solution#isLastSolutionWasDirect <em>Last Solution Was Direct</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getSolutionCount <em>Solution Count</em>}</li>
  *   <li>{@link electrickery.common.Solution#getNodeV <em>Node V</em>}</li>
  *   <li>{@link electrickery.common.Solution#getCurrents <em>Currents</em>}</li>
  *   <li>{@link electrickery.common.Solution#getAlgorithms <em>Algorithms</em>}</li>
@@ -811,6 +812,31 @@ public interface Solution extends EObject {
 	void setLastSolutionWasDirect(boolean value);
 
 	/**
+	 * Returns the value of the '<em><b>Solution Count</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Counter incremented for each solution.
+	 * <!-- end-model-doc -->
+	 * @return the value of the '<em>Solution Count</em>' attribute.
+	 * @see #setSolutionCount(int)
+	 * @see electrickery.common.CommonPackage#getSolution_SolutionCount()
+	 * @model
+	 * @generated
+	 */
+	int getSolutionCount();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getSolutionCount <em>Solution Count</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Solution Count</em>' attribute.
+	 * @see #getSolutionCount()
+	 * @generated
+	 */
+	void setSolutionCount(int value);
+
+	/**
 	 * Returns the value of the '<em><b>Node V</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <p>
@@ -918,7 +944,7 @@ public interface Solution extends EObject {
 	 * @model
 	 * @generated
 	 */
-	void solveDirect();
+	int solveDirect();
 
 	/**
 	 * <!-- begin-user-doc -->

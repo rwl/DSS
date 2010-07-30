@@ -719,6 +719,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getCircuitElement_NodeRef() {
+		return (EAttribute)circuitElementEClass.getEStructuralFeatures().get(16);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1016,11 +1025,20 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
                 /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getSolution_SolutionCount() {
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(27);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EReference getSolution_NodeV() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(27);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(28);
 	}
 
                 /**
@@ -1029,7 +1047,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
     public EReference getSolution_Currents() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(28);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
 	}
 
                 /**
@@ -1038,7 +1056,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_Algorithms() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(30);
 	}
 
 																/**
@@ -1156,6 +1174,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 */
 	public EReference getGlobals_Executives() {
 		return (EReference)globalsEClass.getEStructuralFeatures().get(1);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EAttribute getGlobals_SolutionWasAttempted() {
+		return (EAttribute)globalsEClass.getEStructuralFeatures().get(2);
 	}
 
 																/**
@@ -1314,6 +1341,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEReference(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM_SHUNT);
 		createEReference(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM);
 		createEAttribute(circuitElementEClass, CIRCUIT_ELEMENT__YPRIM_FREQ);
+		createEAttribute(circuitElementEClass, CIRCUIT_ELEMENT__NODE_REF);
 
 		solutionEClass = createEClass(SOLUTION);
 		createEAttribute(solutionEClass, SOLUTION__YEAR);
@@ -1343,6 +1371,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(solutionEClass, SOLUTION__MOST_ITERATIONS_DONE);
 		createEAttribute(solutionEClass, SOLUTION__ALGORITHM);
 		createEAttribute(solutionEClass, SOLUTION__LAST_SOLUTION_WAS_DIRECT);
+		createEAttribute(solutionEClass, SOLUTION__SOLUTION_COUNT);
 		createEReference(solutionEClass, SOLUTION__NODE_V);
 		createEReference(solutionEClass, SOLUTION__CURRENTS);
 		createEReference(solutionEClass, SOLUTION__ALGORITHMS);
@@ -1369,6 +1398,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		globalsEClass = createEClass(GLOBALS);
 		createEAttribute(globalsEClass, GLOBALS__SOLUTION_ABORT);
 		createEReference(globalsEClass, GLOBALS__EXECUTIVES);
+		createEAttribute(globalsEClass, GLOBALS__SOLUTION_WAS_ATTEMPTED);
 
 		parserEClass = createEClass(PARSER);
 		createEAttribute(parserEClass, PARSER__TOKEN);
@@ -1512,6 +1542,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEReference(getCircuitElement_YPrimShunt(), theElectrickeryPackage.getDComplexMatrix2D(), null, "yPrimShunt", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getCircuitElement_YPrim(), theElectrickeryPackage.getDComplexMatrix2D(), null, "yPrim", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuitElement_YPrimFreq(), ecorePackage.getEDouble(), "yPrimFreq", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCircuitElement_NodeRef(), theElectrickeryPackage.getEIntArray(), "nodeRef", null, 0, 1, CircuitElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		op = addEOperation(circuitElementEClass, null, "calcYPrim", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEDouble(), "yPrimFreq", 0, 1, IS_UNIQUE, IS_ORDERED);
@@ -1558,6 +1589,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getSolution_MostIterationsDone(), ecorePackage.getEInt(), "mostIterationsDone", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_Algorithm(), this.getalgorithmType(), "algorithm", "NormalSolve", 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_LastSolutionWasDirect(), ecorePackage.getEBoolean(), "lastSolutionWasDirect", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getSolution_SolutionCount(), ecorePackage.getEInt(), "solutionCount", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_NodeV(), theElectrickeryPackage.getDComplexMatrix1D(), null, "nodeV", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_Currents(), theElectrickeryPackage.getDComplexMatrix1D(), null, "currents", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_Algorithms(), this.getSolutionAlgs(), null, "algorithms", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1568,7 +1600,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		addEOperation(solutionEClass, ecorePackage.getEInt(), "solveCircuit", 0, 1, IS_UNIQUE, IS_ORDERED);
 
-		addEOperation(solutionEClass, null, "solveDirect", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEOperation(solutionEClass, ecorePackage.getEInt(), "solveDirect", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(solutionEClass, ecorePackage.getEInt(), "solveYDirect", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1643,6 +1675,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEClass(globalsEClass, Globals.class, "Globals", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getGlobals_SolutionAbort(), ecorePackage.getEBoolean(), "solutionAbort", "false", 0, 1, Globals.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getGlobals_Executives(), theExecutivePackage.getExecutive(), theExecutivePackage.getExecutive_Globals(), "executives", null, 0, 1, Globals.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getGlobals_SolutionWasAttempted(), ecorePackage.getEBoolean(), "solutionWasAttempted", null, 0, 1, Globals.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(parserEClass, Parser.class, "Parser", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getParser_Token(), ecorePackage.getEString(), "token", null, 0, 1, Parser.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

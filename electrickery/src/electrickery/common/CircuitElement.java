@@ -39,6 +39,7 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
  *   <li>{@link electrickery.common.CircuitElement#getYPrimShunt <em>YPrim Shunt</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrim <em>YPrim</em>}</li>
  *   <li>{@link electrickery.common.CircuitElement#getYPrimFreq <em>YPrim Freq</em>}</li>
+ *   <li>{@link electrickery.common.CircuitElement#getNodeRef <em>Node Ref</em>}</li>
  * </ul>
  * </p>
  *
@@ -446,6 +447,32 @@ public interface CircuitElement extends EObject {
     void setYPrimFreq(double value);
 
     /**
+	 * Returns the value of the '<em><b>Node Ref</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Node Ref</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Node Ref</em>' attribute.
+	 * @see #setNodeRef(int[])
+	 * @see electrickery.common.CommonPackage#getCircuitElement_NodeRef()
+	 * @model dataType="electrickery.EIntArray"
+	 * @generated
+	 */
+	int[] getNodeRef();
+
+				/**
+	 * Sets the value of the '{@link electrickery.common.CircuitElement#getNodeRef <em>Node Ref</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Node Ref</em>' attribute.
+	 * @see #getNodeRef()
+	 * @generated
+	 */
+	void setNodeRef(int[] value);
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @model
