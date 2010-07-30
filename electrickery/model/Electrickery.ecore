@@ -95,6 +95,7 @@
           defaultValueLiteral="0.95"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalMaxVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1.05"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="logEvents" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="YMatrix">
       <eOperations name="buildYMatrix">
@@ -266,6 +267,9 @@
           <details key="documentation" value="Updates voltages for each bus from nodeV."/>
         </eAnnotations>
       </eOperations>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="y" eType="#//DComplexMatrix2D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ySystem" eType="#//DComplexMatrix2D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="ySeries" eType="#//DComplexMatrix2D"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="year" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="preserveNodeVoltages"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"

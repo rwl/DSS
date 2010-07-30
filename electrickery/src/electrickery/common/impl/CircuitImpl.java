@@ -72,6 +72,7 @@ import electrickery.executive.ExecutivePackage;
  *   <li>{@link electrickery.common.impl.CircuitImpl#getEmergMaxVolts <em>Emerg Max Volts</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMinVolts <em>Normal Min Volts</em>}</li>
  *   <li>{@link electrickery.common.impl.CircuitImpl#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
+ *   <li>{@link electrickery.common.impl.CircuitImpl#isLogEvents <em>Log Events</em>}</li>
  * </ul>
  * </p>
  *
@@ -469,6 +470,26 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
     protected double normalMaxVolts = NORMAL_MAX_VOLTS_EDEFAULT;
 
     /**
+	 * The default value of the '{@link #isLogEvents() <em>Log Events</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLogEvents()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final boolean LOG_EVENTS_EDEFAULT = false;
+
+				/**
+	 * The cached value of the '{@link #isLogEvents() <em>Log Events</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #isLogEvents()
+	 * @generated
+	 * @ordered
+	 */
+	protected boolean logEvents = LOG_EVENTS_EDEFAULT;
+
+				/**
      * A place to hold the nodes.
      */
     private int[] nodeBuffer = new int[20];
@@ -901,6 +922,27 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public boolean isLogEvents() {
+		return logEvents;
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setLogEvents(boolean newLogEvents) {
+		boolean oldLogEvents = logEvents;
+		logEvents = newLogEvents;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__LOG_EVENTS, oldLogEvents, logEvents));
+	}
+
+				/**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1339,6 +1381,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return getNormalMinVolts();
 			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
 				return getNormalMaxVolts();
+			case CommonPackage.CIRCUIT__LOG_EVENTS:
+				return isLogEvents();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -1438,6 +1482,9 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
 				setNormalMaxVolts((Double)newValue);
 				return;
+			case CommonPackage.CIRCUIT__LOG_EVENTS:
+				setLogEvents((Boolean)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -1530,6 +1577,9 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
 				setNormalMaxVolts(NORMAL_MAX_VOLTS_EDEFAULT);
 				return;
+			case CommonPackage.CIRCUIT__LOG_EVENTS:
+				setLogEvents(LOG_EVENTS_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -1595,6 +1645,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 				return normalMinVolts != NORMAL_MIN_VOLTS_EDEFAULT;
 			case CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS:
 				return normalMaxVolts != NORMAL_MAX_VOLTS_EDEFAULT;
+			case CommonPackage.CIRCUIT__LOG_EVENTS:
+				return logEvents != LOG_EVENTS_EDEFAULT;
 		}
 		return super.eIsSet(featureID);
 	}
@@ -1646,6 +1698,8 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		result.append(normalMinVolts);
 		result.append(", normalMaxVolts: ");
 		result.append(normalMaxVolts);
+		result.append(", logEvents: ");
+		result.append(logEvents);
 		result.append(')');
 		return result.toString();
 	}

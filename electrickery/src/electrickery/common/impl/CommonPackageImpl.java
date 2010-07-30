@@ -424,6 +424,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getCircuit_LogEvents() {
+		return (EAttribute)circuitEClass.getEStructuralFeatures().get(27);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getYMatrix() {
 		return yMatrixEClass;
 	}
@@ -835,37 +844,37 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
     /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_Y() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(0);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_YSystem() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(1);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_YSeries() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(2);
+	}
+
+				/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EAttribute getSolution_Year() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(0);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getSolution_PreserveNodeVoltages() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(1);
-	}
-
-    /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getSolution_FrequencyChanged() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(2);
-	}
-
-                /**
-	 * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-	 * @generated
-	 */
-    public EAttribute getSolution_Frequency() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(3);
 	}
 
@@ -874,17 +883,17 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Mode() {
+    public EAttribute getSolution_PreserveNodeVoltages() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(4);
 	}
 
-                /**
+    /**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EReference getSolution_Circuit() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(5);
+    public EAttribute getSolution_FrequencyChanged() {
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(5);
 	}
 
                 /**
@@ -892,7 +901,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SolutionInitialised() {
+    public EAttribute getSolution_Frequency() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(6);
 	}
 
@@ -901,7 +910,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SeriesYInvalid() {
+    public EAttribute getSolution_Mode() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(7);
 	}
 
@@ -910,8 +919,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_SystemYChanged() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(8);
+    public EReference getSolution_Circuit() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(8);
 	}
 
                 /**
@@ -919,7 +928,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LoadModel() {
+    public EAttribute getSolution_SolutionInitialised() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(9);
 	}
 
@@ -928,7 +937,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_VoltageBaseChanged() {
+    public EAttribute getSolution_SeriesYInvalid() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(10);
 	}
 
@@ -937,7 +946,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_HarmonicModel() {
+    public EAttribute getSolution_SystemYChanged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(11);
 	}
 
@@ -946,7 +955,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_DynamicModel() {
+    public EAttribute getSolution_LoadModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(12);
 	}
 
@@ -955,7 +964,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_UseAuxillaryCurrents() {
+    public EAttribute getSolution_VoltageBaseChanged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(13);
 	}
 
@@ -964,7 +973,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LoadsNeedUpdating() {
+    public EAttribute getSolution_HarmonicModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(14);
 	}
 
@@ -973,7 +982,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Iteration() {
+    public EAttribute getSolution_DynamicModel() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(15);
 	}
 
@@ -982,7 +991,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxIterations() {
+    public EAttribute getSolution_UseAuxillaryCurrents() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(16);
 	}
 
@@ -991,7 +1000,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxError() {
+    public EAttribute getSolution_LoadsNeedUpdating() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(17);
 	}
 
@@ -1000,7 +1009,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ConvergenceTolerance() {
+    public EAttribute getSolution_Iteration() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(18);
 	}
 
@@ -1009,7 +1018,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Converged() {
+    public EAttribute getSolution_MaxIterations() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(19);
 	}
 
@@ -1018,7 +1027,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlIteration() {
+    public EAttribute getSolution_MaxError() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(20);
 	}
 
@@ -1027,7 +1036,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MaxControlIterations() {
+    public EAttribute getSolution_ConvergenceTolerance() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(21);
 	}
 
@@ -1036,7 +1045,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlMode() {
+    public EAttribute getSolution_Converged() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(22);
 	}
 
@@ -1045,7 +1054,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_ControlActionsDone() {
+    public EAttribute getSolution_ControlIteration() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(23);
 	}
 
@@ -1054,7 +1063,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_MostIterationsDone() {
+    public EAttribute getSolution_MaxControlIterations() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(24);
 	}
 
@@ -1063,7 +1072,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_Algorithm() {
+    public EAttribute getSolution_ControlMode() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(25);
 	}
 
@@ -1072,8 +1081,35 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
      * <!-- end-user-doc -->
 	 * @generated
 	 */
-    public EAttribute getSolution_LastSolutionWasDirect() {
+    public EAttribute getSolution_ControlActionsDone() {
 		return (EAttribute)solutionEClass.getEStructuralFeatures().get(26);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getSolution_MostIterationsDone() {
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(27);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getSolution_Algorithm() {
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(28);
+	}
+
+                /**
+	 * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+	 * @generated
+	 */
+    public EAttribute getSolution_LastSolutionWasDirect() {
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(29);
 	}
 
                 /**
@@ -1082,7 +1118,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EAttribute getSolution_SolutionCount() {
-		return (EAttribute)solutionEClass.getEStructuralFeatures().get(27);
+		return (EAttribute)solutionEClass.getEStructuralFeatures().get(30);
 	}
 
 																/**
@@ -1091,7 +1127,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
     public EReference getSolution_NodeV() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(28);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(31);
 	}
 
                 /**
@@ -1100,7 +1136,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_NodeVBase() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(32);
 	}
 
 																/**
@@ -1109,7 +1145,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_ErrorSaved() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(30);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(33);
 	}
 
 																/**
@@ -1118,7 +1154,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_VMagSaved() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(31);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(34);
 	}
 
 																/**
@@ -1127,7 +1163,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
     public EReference getSolution_Currents() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(32);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(35);
 	}
 
                 /**
@@ -1136,7 +1172,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_Algorithms() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(33);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(36);
 	}
 
 																/**
@@ -1393,6 +1429,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(circuitEClass, CIRCUIT__EMERG_MAX_VOLTS);
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MIN_VOLTS);
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MAX_VOLTS);
+		createEAttribute(circuitEClass, CIRCUIT__LOG_EVENTS);
 
 		yMatrixEClass = createEClass(YMATRIX);
 		createEReference(yMatrixEClass, YMATRIX__CIRCUIT);
@@ -1430,6 +1467,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(circuitElementEClass, CIRCUIT_ELEMENT__NODE_REF);
 
 		solutionEClass = createEClass(SOLUTION);
+		createEReference(solutionEClass, SOLUTION__Y);
+		createEReference(solutionEClass, SOLUTION__YSYSTEM);
+		createEReference(solutionEClass, SOLUTION__YSERIES);
 		createEAttribute(solutionEClass, SOLUTION__YEAR);
 		createEAttribute(solutionEClass, SOLUTION__PRESERVE_NODE_VOLTAGES);
 		createEAttribute(solutionEClass, SOLUTION__FREQUENCY_CHANGED);
@@ -1570,6 +1610,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getCircuit_EmergMaxVolts(), ecorePackage.getEDouble(), "emergMaxVolts", "1.08", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_NormalMinVolts(), ecorePackage.getEDouble(), "normalMinVolts", "0.95", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_NormalMaxVolts(), ecorePackage.getEDouble(), "normalMaxVolts", "1.05", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getCircuit_LogEvents(), ecorePackage.getEBoolean(), "logEvents", null, 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		addEOperation(circuitEClass, null, "reProcessBusDefs", 0, 1, IS_UNIQUE, IS_ORDERED);
 
@@ -1657,6 +1698,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		addEOperation(circuitElementEClass, ecorePackage.getEString(), "getNextBus", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(solutionEClass, Solution.class, "Solution", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getSolution_Y(), theElectrickeryPackage.getDComplexMatrix2D(), null, "y", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSolution_YSystem(), theElectrickeryPackage.getDComplexMatrix2D(), null, "ySystem", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSolution_YSeries(), theElectrickeryPackage.getDComplexMatrix2D(), null, "ySeries", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_Year(), ecorePackage.getEInt(), "year", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_PreserveNodeVoltages(), ecorePackage.getEBoolean(), "preserveNodeVoltages", "false", 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_FrequencyChanged(), ecorePackage.getEBoolean(), "frequencyChanged", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

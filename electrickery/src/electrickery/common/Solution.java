@@ -8,6 +8,7 @@ package electrickery.common;
 import org.eclipse.emf.ecore.EObject;
 
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import electrickery.executive.loadModelType;
 import electrickery.executive.solutionMode;
@@ -20,6 +21,9 @@ import electrickery.executive.solutionMode;
  * <p>
  * The following features are supported:
  * <ul>
+ *   <li>{@link electrickery.common.Solution#getY <em>Y</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getYSystem <em>YSystem</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getYSeries <em>YSeries</em>}</li>
  *   <li>{@link electrickery.common.Solution#getYear <em>Year</em>}</li>
  *   <li>{@link electrickery.common.Solution#isPreserveNodeVoltages <em>Preserve Node Voltages</em>}</li>
  *   <li>{@link electrickery.common.Solution#isFrequencyChanged <em>Frequency Changed</em>}</li>
@@ -62,6 +66,84 @@ import electrickery.executive.solutionMode;
  * @generated
  */
 public interface Solution extends EObject {
+	/**
+	 * Returns the value of the '<em><b>Y</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Y</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Y</em>' reference.
+	 * @see #setY(DComplexMatrix2D)
+	 * @see electrickery.common.CommonPackage#getSolution_Y()
+	 * @model type="electrickery.DComplexMatrix2D"
+	 * @generated
+	 */
+	DComplexMatrix2D getY();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getY <em>Y</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Y</em>' reference.
+	 * @see #getY()
+	 * @generated
+	 */
+	void setY(DComplexMatrix2D value);
+
+	/**
+	 * Returns the value of the '<em><b>YSystem</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>YSystem</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>YSystem</em>' reference.
+	 * @see #setYSystem(DComplexMatrix2D)
+	 * @see electrickery.common.CommonPackage#getSolution_YSystem()
+	 * @model type="electrickery.DComplexMatrix2D"
+	 * @generated
+	 */
+	DComplexMatrix2D getYSystem();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getYSystem <em>YSystem</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>YSystem</em>' reference.
+	 * @see #getYSystem()
+	 * @generated
+	 */
+	void setYSystem(DComplexMatrix2D value);
+
+	/**
+	 * Returns the value of the '<em><b>YSeries</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>YSeries</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>YSeries</em>' reference.
+	 * @see #setYSeries(DComplexMatrix2D)
+	 * @see electrickery.common.CommonPackage#getSolution_YSeries()
+	 * @model type="electrickery.DComplexMatrix2D"
+	 * @generated
+	 */
+	DComplexMatrix2D getYSeries();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getYSeries <em>YSeries</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>YSeries</em>' reference.
+	 * @see #getYSeries()
+	 * @generated
+	 */
+	void setYSeries(DComplexMatrix2D value);
+
 	/**
 	 * Returns the value of the '<em><b>Year</b></em>' attribute.
 	 * <!-- begin-user-doc -->

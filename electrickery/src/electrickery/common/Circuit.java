@@ -55,6 +55,7 @@ import java.util.Map;
  *   <li>{@link electrickery.common.Circuit#getEmergMaxVolts <em>Emerg Max Volts</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNormalMinVolts <em>Normal Min Volts</em>}</li>
  *   <li>{@link electrickery.common.Circuit#getNormalMaxVolts <em>Normal Max Volts</em>}</li>
+ *   <li>{@link electrickery.common.Circuit#isLogEvents <em>Log Events</em>}</li>
  * </ul>
  * </p>
  *
@@ -551,6 +552,32 @@ public interface Circuit extends EObject {
 	 * @generated
 	 */
 	void setNormalMaxVolts(double value);
+
+	/**
+	 * Returns the value of the '<em><b>Log Events</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Log Events</em>' attribute isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Log Events</em>' attribute.
+	 * @see #setLogEvents(boolean)
+	 * @see electrickery.common.CommonPackage#getCircuit_LogEvents()
+	 * @model
+	 * @generated
+	 */
+	boolean isLogEvents();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Circuit#isLogEvents <em>Log Events</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Log Events</em>' attribute.
+	 * @see #isLogEvents()
+	 * @generated
+	 */
+	void setLogEvents(boolean value);
 
 	/**
 	 * Returns the value of the '<em><b>Num Nodes</b></em>' attribute.

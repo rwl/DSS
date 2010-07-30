@@ -17,6 +17,7 @@ import cern.colt.function.tdcomplex.DComplexDComplexFunction;
 import cern.colt.function.tdcomplex.DComplexRealFunction;
 import cern.colt.matrix.tdcomplex.DComplexFactory1D;
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import cern.jet.math.tdcomplex.DComplexFunctions;
 import electrickery.common.Bus;
@@ -43,6 +44,9 @@ import electrickery.executive.solutionMode;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link electrickery.common.impl.SolutionImpl#getY <em>Y</em>}</li>
+ *   <li>{@link electrickery.common.impl.SolutionImpl#getYSystem <em>YSystem</em>}</li>
+ *   <li>{@link electrickery.common.impl.SolutionImpl#getYSeries <em>YSeries</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#getYear <em>Year</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#isPreserveNodeVoltages <em>Preserve Node Voltages</em>}</li>
  *   <li>{@link electrickery.common.impl.SolutionImpl#isFrequencyChanged <em>Frequency Changed</em>}</li>
@@ -84,6 +88,36 @@ import electrickery.executive.solutionMode;
  */
 public class SolutionImpl extends EObjectImpl implements Solution {
     /**
+     * The cached value of the '{@link #getY() <em>Y</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getY()
+     * @generated
+     * @ordered
+     */
+    protected DComplexMatrix2D y;
+
+    /**
+     * The cached value of the '{@link #getYSystem() <em>YSystem</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getYSystem()
+     * @generated
+     * @ordered
+     */
+    protected DComplexMatrix2D ySystem;
+
+    /**
+     * The cached value of the '{@link #getYSeries() <em>YSeries</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getYSeries()
+     * @generated
+     * @ordered
+     */
+    protected DComplexMatrix2D ySeries;
+
+                /**
      * The default value of the '{@link #getYear() <em>Year</em>}' attribute.
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @see #getYear()
@@ -668,6 +702,120 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     }
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D getY() {
+        if (y != null && ((EObject)y).eIsProxy()) {
+            InternalEObject oldY = (InternalEObject)y;
+            y = (DComplexMatrix2D)eResolveProxy(oldY);
+            if (y != oldY) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__Y, oldY, y));
+            }
+        }
+        return y;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D basicGetY() {
+        return y;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setY(DComplexMatrix2D newY) {
+        DComplexMatrix2D oldY = y;
+        y = newY;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__Y, oldY, y));
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D getYSystem() {
+        if (ySystem != null && ((EObject)ySystem).eIsProxy()) {
+            InternalEObject oldYSystem = (InternalEObject)ySystem;
+            ySystem = (DComplexMatrix2D)eResolveProxy(oldYSystem);
+            if (ySystem != oldYSystem) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
+            }
+        }
+        return ySystem;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D basicGetYSystem() {
+        return ySystem;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setYSystem(DComplexMatrix2D newYSystem) {
+        DComplexMatrix2D oldYSystem = ySystem;
+        ySystem = newYSystem;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSYSTEM, oldYSystem, ySystem));
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D getYSeries() {
+        if (ySeries != null && ((EObject)ySeries).eIsProxy()) {
+            InternalEObject oldYSeries = (InternalEObject)ySeries;
+            ySeries = (DComplexMatrix2D)eResolveProxy(oldYSeries);
+            if (ySeries != oldYSeries) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
+            }
+        }
+        return ySeries;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public DComplexMatrix2D basicGetYSeries() {
+        return ySeries;
+    }
+
+                /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setYSeries(DComplexMatrix2D newYSeries) {
+        DComplexMatrix2D oldYSeries = ySeries;
+        ySeries = newYSeries;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.SOLUTION__YSERIES, oldYSeries, ySeries));
+    }
+
+                /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      * @generated
      */
@@ -1768,16 +1916,41 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 
     /**
      * <!-- begin-user-doc -->
+     * Solve without load for initialization purposes.
      * <!-- end-user-doc -->
-     * @generated
+     * @generated NOT
      */
     public int solveZeroLoadSnapShot() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
+        if (isSystemYChanged() || isSeriesYInvalid()) {
+            YMatrix y = CommonFactory.eINSTANCE.createYMatrix();
+            y.setCircuit(getCircuit());
+            y.buildYMatrix(yBuildOption.SERIES_ONLY, true); // Side Effect: Allocates V
+        }
+
+        setSolutionCount(getSolutionCount() + 1); // Unique number for this solution.
+
+        zeroInjectionCurrent(); // Side Effect: Allocates InjCurr
+        getSourceInjCurrents(); // Vsource and Isource only.
+
+        // Make the series Y matrix the active matrix.
+        if (getYSeries() == null)
+            System.err.println("Series Y matrix not built yet in SolveZeroLoadSnapshot.");
+
+        setY(getYSeries());
+
+//        if (getCircuit().isLogEvents())
+//            log("Solve Sparse Set ZeroLoadSnapshot");
+
+        solveSystem(getNodeV()); // Also sets voltages in radial part of the circuit if radial solution.
+
+        // Reset the main system Y as the solution matrix.
+        if (getYSystem() != null && !getCircuit().getExecutive().getGlobals().isSolutionAbort())
+            setY(getYSystem());
+
+        return 0;
     }
 
-                /**
+    /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated NOT
@@ -2125,6 +2298,15 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                if (resolve) return getY();
+                return basicGetY();
+            case CommonPackage.SOLUTION__YSYSTEM:
+                if (resolve) return getYSystem();
+                return basicGetYSystem();
+            case CommonPackage.SOLUTION__YSERIES:
+                if (resolve) return getYSeries();
+                return basicGetYSeries();
             case CommonPackage.SOLUTION__YEAR:
                 return getYear();
             case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
@@ -2211,6 +2393,15 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                setY((DComplexMatrix2D)newValue);
+                return;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                setYSystem((DComplexMatrix2D)newValue);
+                return;
+            case CommonPackage.SOLUTION__YSERIES:
+                setYSeries((DComplexMatrix2D)newValue);
+                return;
             case CommonPackage.SOLUTION__YEAR:
                 setYear((Integer)newValue);
                 return;
@@ -2324,6 +2515,15 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                setY((DComplexMatrix2D)null);
+                return;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                setYSystem((DComplexMatrix2D)null);
+                return;
+            case CommonPackage.SOLUTION__YSERIES:
+                setYSeries((DComplexMatrix2D)null);
+                return;
             case CommonPackage.SOLUTION__YEAR:
                 setYear(YEAR_EDEFAULT);
                 return;
@@ -2437,6 +2637,12 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
+            case CommonPackage.SOLUTION__Y:
+                return y != null;
+            case CommonPackage.SOLUTION__YSYSTEM:
+                return ySystem != null;
+            case CommonPackage.SOLUTION__YSERIES:
+                return ySeries != null;
             case CommonPackage.SOLUTION__YEAR:
                 return year != YEAR_EDEFAULT;
             case CommonPackage.SOLUTION__PRESERVE_NODE_VOLTAGES:
