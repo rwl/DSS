@@ -1600,6 +1600,16 @@ public class ConversionPackageImpl extends EPackageImpl implements ConversionPac
 
 		addEOperation(generatorEClass, null, "setNominalGeneration", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		addEOperation(generatorEClass, null, "initDQDVCalc", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(generatorEClass, null, "rememberQV", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(generatorEClass, null, "bumpUpQ", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(generatorEClass, null, "calc_dQdV", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(generatorEClass, null, "resetStartPoint", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		initEClass(loadEClass, Load.class, "Load", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getLoad_Circuit(), theCommonPackage.getCircuit(), null, "circuit", null, 0, 1, Load.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getLoad_Bus1(), ecorePackage.getEString(), "bus1", null, 0, 1, Load.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

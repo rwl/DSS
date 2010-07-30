@@ -1061,6 +1061,14 @@ public interface Solution extends EObject {
 	 * @model
 	 * @generated
 	 */
+	int solveZeroLoadSnapShot();
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
 	void setGeneratorDispRef();
 
 	/**

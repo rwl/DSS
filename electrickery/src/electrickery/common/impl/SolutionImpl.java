@@ -33,6 +33,7 @@ import electrickery.conversion.CurrentSource;
 import electrickery.conversion.Generator;
 import electrickery.conversion.Load;
 import electrickery.conversion.VoltageSource;
+import electrickery.conversion.generatorModel;
 import electrickery.executive.loadModelType;
 import electrickery.executive.solutionMode;
 
@@ -1760,6 +1761,17 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 	}
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public int solveZeroLoadSnapShot() {
+		// TODO: implement this method
+		// Ensure that you remove @generated or mark it @generated NOT
+		throw new UnsupportedOperationException();
+	}
+
+				/**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
      *
      * @generated NOT
@@ -1930,7 +1942,59 @@ public class SolutionImpl extends EObjectImpl implements Solution {
     }
 
     private void setGenerator_dQdV() {
+        boolean didOne = false;
 
+        // Save the generator dispatch level and set on high enough to turn all generators on.
+        double genDispSave = getCircuit().getGeneratorDispatchReference();
+        getCircuit().setGeneratorDispatchReference(1000.0);
+
+        for (Generator generator : getCircuit().getGenerators()) {
+
+            if (generator.isEnabled()) {
+                // For PV generator models only.
+                if (generator.getModel() == generatorModel.CONSTANT_KW_AND_KV) {
+                    generator.initDQDVCalc();
+
+                    // Solve at base var setting.
+                    setIteration(0);
+                    while (!convergenceCheck() || getIteration() >= getMaxIterations()) {
+                        setIteration(getIteration() + 1);
+                        zeroInjectionCurrent();
+                        getSourceInjCurrents();
+                        generator.injCurrents(); // Get generator currents with nominal vars.
+                        solveSystem(getNodeV());
+                    }
+
+                    generator.rememberQV(); // Remember Q and V.
+                    generator.bumpUpQ();
+
+                    // Solve after changing vars.
+                    setIteration(0);
+                    while (!convergenceCheck() || getIteration() >= getMaxIterations()) {
+                        setIteration(getIteration() + 1);
+                        zeroInjectionCurrent();
+                        getSourceInjCurrents();
+                        generator.injCurrents(); // Get generator currents with nominal vars.
+                        solveSystem(getNodeV());
+                    }
+
+                    generator.calc_dQdV(); // Based on remembered Q and V and present values of same.
+                    generator.resetStartPoint();
+
+                    didOne = true;
+                }
+            }
+        }
+
+        // Restore generator dispatch reference.
+        getCircuit().setGeneratorDispatchReference(genDispSave);
+
+        try {
+            if (didOne) // Reset initial solution.
+                solveZeroLoadSnapShot();
+        } catch (Exception e) {
+//            throw new SolveException("Aborting.");
+        }
     }
 
     private void zeroInjectionCurrent() {

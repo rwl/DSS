@@ -1705,6 +1705,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		op = addEOperation(solutionEClass, ecorePackage.getEInt(), "solveSystem", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theElectrickeryPackage.getDComplexMatrix1D(), "v", 0, 1, IS_UNIQUE, IS_ORDERED);
 
+		addEOperation(solutionEClass, ecorePackage.getEInt(), "solveZeroLoadSnapShot", 0, 1, IS_UNIQUE, IS_ORDERED);
+
 		addEOperation(solutionEClass, null, "doPowerFlowSolution", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(solutionEClass, null, "snapShotInit", 0, 1, IS_UNIQUE, IS_ORDERED);

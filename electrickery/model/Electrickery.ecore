@@ -251,6 +251,7 @@
         </eAnnotations>
         <eParameters name="v" eType="#//DComplexMatrix1D"/>
       </eOperations>
+      <eOperations name="solveZeroLoadSnapShot" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
       <eOperations name="doPowerFlowSolution"/>
       <eOperations name="snapShotInit"/>
       <eOperations name="setGeneratorDispRef"/>
@@ -472,6 +473,15 @@
         <details key="documentation" value="The generator is essentially a negative load that can be dispatched.&#xA;&#xA;If the dispatch value (DispValue) is 0, the generator always follows the&#xA;appropriate dispatch curve, which are simply load curves. If DispValue>0&#xA;then the generator only comes on when the global circuit load multiplier&#xA;exceeds DispValue.  When the generator is on, it always follows the&#xA;dispatch curve appropriate for the type of solution being performed.&#xA;&#xA;If you want to model a generator that is fully on whenever it is dispatched&#xA;on, simply designate &quot;Status=Fixed&quot;.  The default is &quot;Status=Variable&quot;&#xA;(i.e., it follows a dispatch curve.  You could also define a dispatch curve&#xA;that is always 1.0.&#xA;&#xA;Generators have their own energy meters that record:&#xA;    1. Total kwh&#xA;    2. Total kvarh&#xA;    3. Max kW&#xA;    4. Max kVA&#xA;    5. Hours in operation&#xA;    6. Price * kwH&#xA;&#xA;Generator meters reset with the circuit energy meters and take a sample&#xA;with the circuit energy meters as well. The Energy meters also used&#xA;trapezoidal integration so that they are compatible with Load-Duration&#xA;simulations.&#xA;&#xA;Generator models are:&#xA;    1. Constant P, Q  (* dispatch curve, if appropriate).&#xA;    2. Constant Z  (For simple solution)&#xA;    3. Constant P, |V|  like a standard power flow  [not implemented]&#xA;    4. Constant P, Fixed Q  (vars)&#xA;    5. Constant P, Fixed Q  (reactance)&#xA;&#xA;Most of the time you will use #1 for planning studies.&#xA;&#xA;The default is for the generator to be a current injection source.  Thus,&#xA;its primitive Y matrix contains only the impedance that might exist from&#xA;the neutral of a wye-connected generator to ground.  However, if the&#xA;generator model is switched to Admittance from PowerFlow (see Set Mode&#xA;command), the generator is converted to an admittance and included in the&#xA;system Y matrix.&#xA;&#xA;Generators are assumed balanced for the number of phases specified.  If you&#xA;would like unbalanced generators, enter separate single-phase generators."/>
       </eAnnotations>
       <eOperations name="setNominalGeneration"/>
+      <eOperations name="initDQDVCalc"/>
+      <eOperations name="rememberQV"/>
+      <eOperations name="bumpUpQ">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Bump up vars by 10% of range for next calc."/>
+        </eAnnotations>
+      </eOperations>
+      <eOperations name="calc_dQdV"/>
+      <eOperations name="resetStartPoint"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="bus1" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

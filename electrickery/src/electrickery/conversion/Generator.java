@@ -1532,4 +1532,47 @@ public interface Generator extends PowerConversionElement {
 	 */
     void setNominalGeneration();
 
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void initDQDVCalc();
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void rememberQV();
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * <!-- begin-model-doc -->
+	 * Bump up vars by 10% of range for next calc.
+	 * <!-- end-model-doc -->
+	 * @model
+	 * @generated
+	 */
+	void bumpUpQ();
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void calc_dQdV();
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	void resetStartPoint();
+
 } // Generator
