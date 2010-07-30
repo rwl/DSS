@@ -21,20 +21,11 @@
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
         <details key="documentation" value="Defines a container of circuit elements."/>
       </eAnnotations>
-      <eOperations name="buildYMatrix">
-        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
-          <details key="documentation" value="Builds designated Y matrix for system and allocates solution arrays."/>
-        </eAnnotations>
-        <eParameters name="buildOption" eType="#//common/yBuildOption"/>
-        <eParameters name="allocateVI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
-      </eOperations>
       <eOperations name="reProcessBusDefs">
         <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
           <details key="documentation" value="Redo all Buslists, nodelists."/>
         </eAnnotations>
       </eOperations>
-      <eOperations name="reCalcAllYPrims"/>
-      <eOperations name="reCalcInvalidYPrims"/>
       <eOperations name="initialiseNodeVBase"/>
       <eOperations name="getCircuitElements" upperBound="-1" eType="#//common/CircuitElement"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="executive" eType="#//executive/Executive"
@@ -98,6 +89,18 @@
           defaultValueLiteral="0.95"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="normalMaxVolts" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDouble"
           defaultValueLiteral="1.05"/>
+    </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="YMatrix">
+      <eOperations name="buildYMatrix">
+        <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">
+          <details key="documentation" value="Builds designated Y matrix for system and allocates solution arrays."/>
+        </eAnnotations>
+        <eParameters name="buildOption" eType="#//common/yBuildOption"/>
+        <eParameters name="allocateVI" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+      </eOperations>
+      <eOperations name="reCalcAllYPrims"/>
+      <eOperations name="reCalcInvalidYPrims"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="circuit" eType="#//common/Circuit"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="Bus" eSuperTypes="#//common/Named">
       <eAnnotations source="http://www.eclipse.org/emf/2002/GenModel">

@@ -101,6 +101,12 @@ public class CommonSwitch<T> {
 				if (result == null) result = defaultCase(theEObject);
 				return result;
 			}
+			case CommonPackage.YMATRIX: {
+				YMatrix yMatrix = (YMatrix)theEObject;
+				T result = caseYMatrix(yMatrix);
+				if (result == null) result = defaultCase(theEObject);
+				return result;
+			}
 			case CommonPackage.BUS: {
 				Bus bus = (Bus)theEObject;
 				T result = caseBus(bus);
@@ -172,6 +178,21 @@ public class CommonSwitch<T> {
 	 * @generated
 	 */
 	public T caseCircuit(Circuit object) {
+		return null;
+	}
+
+	/**
+	 * Returns the result of interpreting the object as an instance of '<em>YMatrix</em>'.
+	 * <!-- begin-user-doc -->
+	 * This implementation returns null;
+	 * returning a non-null result will terminate the switch.
+	 * <!-- end-user-doc -->
+	 * @param object the target of the switch.
+	 * @return the result of interpreting the object as an instance of '<em>YMatrix</em>'.
+	 * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+	 * @generated
+	 */
+	public T caseYMatrix(YMatrix object) {
 		return null;
 	}
 

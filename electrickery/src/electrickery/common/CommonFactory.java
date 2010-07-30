@@ -35,6 +35,15 @@ public interface CommonFactory extends EFactory {
 	Circuit createCircuit();
 
 	/**
+	 * Returns a new object of class '<em>YMatrix</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>YMatrix</em>'.
+	 * @generated
+	 */
+	YMatrix createYMatrix();
+
+	/**
 	 * Returns a new object of class '<em>Bus</em>'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

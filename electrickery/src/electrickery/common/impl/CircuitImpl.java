@@ -71,420 +71,420 @@ import electrickery.executive.ExecutivePackage;
  * @generated
  */
 public class CircuitImpl extends EObjectImpl implements Circuit {
-	/**
+    /**
 	 * The cached value of the '{@link #getSolution() <em>Solution</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getSolution()
 	 * @generated
 	 * @ordered
 	 */
-	protected Solution solution;
+    protected Solution solution;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getBuses() <em>Buses</em>}' containment reference list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getBuses()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<Bus> buses;
+    protected EList<Bus> buses;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getMapNodeToBus() <em>Map Node To Bus</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getMapNodeToBus()
 	 * @generated
 	 * @ordered
 	 */
-	protected Map<Integer, Bus> mapNodeToBus;
+    protected Map<Integer, Bus> mapNodeToBus;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getBusList() <em>Bus List</em>}' attribute list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getBusList()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<String> busList;
+    protected EList<String> busList;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getVoltageSources() <em>Voltage Sources</em>}' containment reference list.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getVoltageSources()
 	 * @generated
 	 * @ordered
 	 */
-	protected EList<VoltageSource> voltageSources;
+    protected EList<VoltageSource> voltageSources;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getActiveCircuitElement() <em>Active Circuit Element</em>}' reference.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getActiveCircuitElement()
 	 * @generated
 	 * @ordered
 	 */
-	protected CircuitElement activeCircuitElement;
+    protected CircuitElement activeCircuitElement;
 
-	/**
+    /**
 	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final String NAME_EDEFAULT = null;
+    protected static final String NAME_EDEFAULT = null;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getName()
 	 * @generated
 	 * @ordered
 	 */
-	protected String name = NAME_EDEFAULT;
+    protected String name = NAME_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumNodes()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int NUM_NODES_EDEFAULT = 0;
+    protected static final int NUM_NODES_EDEFAULT = 0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getNumNodes() <em>Num Nodes</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumNodes()
 	 * @generated
 	 * @ordered
 	 */
-	protected int numNodes = NUM_NODES_EDEFAULT;
+    protected int numNodes = NUM_NODES_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumBuses()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final int NUM_BUSES_EDEFAULT = 0;
+    protected static final int NUM_BUSES_EDEFAULT = 0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getNumBuses() <em>Num Buses</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNumBuses()
 	 * @generated
 	 * @ordered
 	 */
-	protected int numBuses = NUM_BUSES_EDEFAULT;
+    protected int numBuses = NUM_BUSES_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean BUS_NAME_REDEFINED_EDEFAULT = true;
+    protected static final boolean BUS_NAME_REDEFINED_EDEFAULT = true;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isBusNameRedefined() <em>Bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isBusNameRedefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
+    protected boolean busNameRedefined = BUS_NAME_REDEFINED_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isSolved() <em>Solved</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isSolved()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean SOLVED_EDEFAULT = false;
+    protected static final boolean SOLVED_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isSolved() <em>Solved</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isSolved()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean solved = SOLVED_EDEFAULT;
+    protected boolean solved = SOLVED_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getLoadMultiplier()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double LOAD_MULTIPLIER_EDEFAULT = 1.0;
+    protected static final double LOAD_MULTIPLIER_EDEFAULT = 1.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getLoadMultiplier() <em>Load Multiplier</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getLoadMultiplier()
 	 * @generated
 	 * @ordered
 	 */
-	protected double loadMultiplier = LOAD_MULTIPLIER_EDEFAULT;
+    protected double loadMultiplier = LOAD_MULTIPLIER_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthFactor()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double DEFAULT_GROWTH_FACTOR_EDEFAULT = 1.0;
+    protected static final double DEFAULT_GROWTH_FACTOR_EDEFAULT = 1.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getDefaultGrowthFactor() <em>Default Growth Factor</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthFactor()
 	 * @generated
 	 * @ordered
 	 */
-	protected double defaultGrowthFactor = DEFAULT_GROWTH_FACTOR_EDEFAULT;
+    protected double defaultGrowthFactor = DEFAULT_GROWTH_FACTOR_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthRate()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double DEFAULT_GROWTH_RATE_EDEFAULT = 1.025;
+    protected static final double DEFAULT_GROWTH_RATE_EDEFAULT = 1.025;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getDefaultGrowthRate() <em>Default Growth Rate</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultGrowthRate()
 	 * @generated
 	 * @ordered
 	 */
-	protected double defaultGrowthRate = DEFAULT_GROWTH_RATE_EDEFAULT;
+    protected double defaultGrowthRate = DEFAULT_GROWTH_RATE_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGeneratorDispatchReference()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double GENERATOR_DISPATCH_REFERENCE_EDEFAULT = 1000.0;
+    protected static final double GENERATOR_DISPATCH_REFERENCE_EDEFAULT = 1000.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getGeneratorDispatchReference() <em>Generator Dispatch Reference</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGeneratorDispatchReference()
 	 * @generated
 	 * @ordered
 	 */
-	protected double generatorDispatchReference = GENERATOR_DISPATCH_REFERENCE_EDEFAULT;
+    protected double generatorDispatchReference = GENERATOR_DISPATCH_REFERENCE_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGenMultiplier()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double GEN_MULTIPLIER_EDEFAULT = 1.0;
+    protected static final double GEN_MULTIPLIER_EDEFAULT = 1.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getGenMultiplier() <em>Gen Multiplier</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getGenMultiplier()
 	 * @generated
 	 * @ordered
 	 */
-	protected double genMultiplier = GEN_MULTIPLIER_EDEFAULT;
+    protected double genMultiplier = GEN_MULTIPLIER_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultHourMult()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double DEFAULT_HOUR_MULT_EDEFAULT = 0.0;
+    protected static final double DEFAULT_HOUR_MULT_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getDefaultHourMult() <em>Default Hour Mult</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getDefaultHourMult()
 	 * @generated
 	 * @ordered
 	 */
-	protected double defaultHourMult = DEFAULT_HOUR_MULT_EDEFAULT;
+    protected double defaultHourMult = DEFAULT_HOUR_MULT_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isControl_busNameRedefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final boolean CONTROL_BUS_NAME_REDEFINED_EDEFAULT = false;
+    protected static final boolean CONTROL_BUS_NAME_REDEFINED_EDEFAULT = false;
 
-	/**
+    /**
 	 * The cached value of the '{@link #isControl_busNameRedefined() <em>Control bus Name Redefined</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #isControl_busNameRedefined()
 	 * @generated
 	 * @ordered
 	 */
-	protected boolean control_busNameRedefined = CONTROL_BUS_NAME_REDEFINED_EDEFAULT;
+    protected boolean control_busNameRedefined = CONTROL_BUS_NAME_REDEFINED_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPriceSignal()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double PRICE_SIGNAL_EDEFAULT = 0.0;
+    protected static final double PRICE_SIGNAL_EDEFAULT = 0.0;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getPriceSignal() <em>Price Signal</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getPriceSignal()
 	 * @generated
 	 * @ordered
 	 */
-	protected double priceSignal = PRICE_SIGNAL_EDEFAULT;
+    protected double priceSignal = PRICE_SIGNAL_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMinVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double EMERG_MIN_VOLTS_EDEFAULT = 0.9;
+    protected static final double EMERG_MIN_VOLTS_EDEFAULT = 0.9;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getEmergMinVolts() <em>Emerg Min Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMinVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected double emergMinVolts = EMERG_MIN_VOLTS_EDEFAULT;
+    protected double emergMinVolts = EMERG_MIN_VOLTS_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMaxVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double EMERG_MAX_VOLTS_EDEFAULT = 1.08;
+    protected static final double EMERG_MAX_VOLTS_EDEFAULT = 1.08;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getEmergMaxVolts() <em>Emerg Max Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getEmergMaxVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected double emergMaxVolts = EMERG_MAX_VOLTS_EDEFAULT;
+    protected double emergMaxVolts = EMERG_MAX_VOLTS_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMinVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double NORMAL_MIN_VOLTS_EDEFAULT = 0.95;
+    protected static final double NORMAL_MIN_VOLTS_EDEFAULT = 0.95;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getNormalMinVolts() <em>Normal Min Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMinVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected double normalMinVolts = NORMAL_MIN_VOLTS_EDEFAULT;
+    protected double normalMinVolts = NORMAL_MIN_VOLTS_EDEFAULT;
 
-	/**
+    /**
 	 * The default value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMaxVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final double NORMAL_MAX_VOLTS_EDEFAULT = 1.05;
+    protected static final double NORMAL_MAX_VOLTS_EDEFAULT = 1.05;
 
-	/**
+    /**
 	 * The cached value of the '{@link #getNormalMaxVolts() <em>Normal Max Volts</em>}' attribute.
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @see #getNormalMaxVolts()
 	 * @generated
 	 * @ordered
 	 */
-	protected double normalMaxVolts = NORMAL_MAX_VOLTS_EDEFAULT;
+    protected double normalMaxVolts = NORMAL_MAX_VOLTS_EDEFAULT;
 
-	/**
-	 * A place to hold the nodes.
-	 */
-	private int[] nodeBuffer = new int[20];
+    /**
+     * A place to hold the nodes.
+     */
+    private int[] nodeBuffer = new int[20];
 
-	/**
-	 * Temp arrays for when the bus swap takes place.
-	 */
-	private EList<Bus> savedBuses;
-	private EList<String> savedBusNames;
-	private int savedNumBuses;
+    /**
+     * Temp arrays for when the bus swap takes place.
+     */
+    private EList<Bus> savedBuses;
+    private EList<String> savedBusNames;
+    private int savedNumBuses;
 
-	private boolean abortBusProcess;
+    private boolean abortBusProcess;
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	protected CircuitImpl() {
+    protected CircuitImpl() {
 		super();
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	protected EClass eStaticClass() {
+    @Override
+    protected EClass eStaticClass() {
 		return CommonPackage.Literals.CIRCUIT;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Executive getExecutive() {
+    public Executive getExecutive() {
 		if (eContainerFeatureID() != CommonPackage.CIRCUIT__EXECUTIVE) return null;
 		return (Executive)eContainer();
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetExecutive(Executive newExecutive, NotificationChain msgs) {
+    public NotificationChain basicSetExecutive(Executive newExecutive, NotificationChain msgs) {
 		msgs = eBasicSetContainer((InternalEObject)newExecutive, CommonPackage.CIRCUIT__EXECUTIVE, msgs);
 		return msgs;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setExecutive(Executive newExecutive) {
+    public void setExecutive(Executive newExecutive) {
 		if (newExecutive != eInternalContainer() || (eContainerFeatureID() != CommonPackage.CIRCUIT__EXECUTIVE && newExecutive != null)) {
 			if (EcoreUtil.isAncestor(this, newExecutive))
 				throw new IllegalArgumentException("Recursive containment not allowed for " + toString());
@@ -500,11 +500,11 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__EXECUTIVE, newExecutive, newExecutive));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Solution getSolution() {
+    public Solution getSolution() {
 		if (solution != null && solution.eIsProxy()) {
 			InternalEObject oldSolution = (InternalEObject)solution;
 			solution = (Solution)eResolveProxy(oldSolution);
@@ -516,19 +516,19 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return solution;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Solution basicGetSolution() {
+    public Solution basicGetSolution() {
 		return solution;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public NotificationChain basicSetSolution(Solution newSolution, NotificationChain msgs) {
+    public NotificationChain basicSetSolution(Solution newSolution, NotificationChain msgs) {
 		Solution oldSolution = solution;
 		solution = newSolution;
 		if (eNotificationRequired()) {
@@ -538,11 +538,11 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return msgs;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSolution(Solution newSolution) {
+    public void setSolution(Solution newSolution) {
 		if (newSolution != solution) {
 			NotificationChain msgs = null;
 			if (solution != null)
@@ -556,405 +556,405 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__SOLUTION, newSolution, newSolution));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<Bus> getBuses() {
+    public EList<Bus> getBuses() {
 		if (buses == null) {
 			buses = new EObjectContainmentWithInverseEList<Bus>(Bus.class, this, CommonPackage.CIRCUIT__BUSES, CommonPackage.BUS__CIRCUIT);
 		}
 		return buses;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Map<Integer, Bus> getMapNodeToBus() {
+    public Map<Integer, Bus> getMapNodeToBus() {
 		return mapNodeToBus;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setMapNodeToBus(Map<Integer, Bus> newMapNodeToBus) {
+    public void setMapNodeToBus(Map<Integer, Bus> newMapNodeToBus) {
 		Map<Integer, Bus> oldMapNodeToBus = mapNodeToBus;
 		mapNodeToBus = newMapNodeToBus;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__MAP_NODE_TO_BUS, oldMapNodeToBus, mapNodeToBus));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<String> getBusList() {
+    public EList<String> getBusList() {
 		if (busList == null) {
 			busList = new EDataTypeUniqueEList<String>(String.class, this, CommonPackage.CIRCUIT__BUS_LIST);
 		}
 		return busList;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isBusNameRedefined() {
+    public boolean isBusNameRedefined() {
 		return busNameRedefined;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setBusNameRedefined(boolean newBusNameRedefined) {
+    public void setBusNameRedefined(boolean newBusNameRedefined) {
 		boolean oldBusNameRedefined = busNameRedefined;
 		busNameRedefined = newBusNameRedefined;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__BUS_NAME_REDEFINED, oldBusNameRedefined, busNameRedefined));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isSolved() {
+    public boolean isSolved() {
 		return solved;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setSolved(boolean newSolved) {
+    public void setSolved(boolean newSolved) {
 		boolean oldSolved = solved;
 		solved = newSolved;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__SOLVED, oldSolved, solved));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getLoadMultiplier() {
+    public double getLoadMultiplier() {
 		return loadMultiplier;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setLoadMultiplier(double newLoadMultiplier) {
+    public void setLoadMultiplier(double newLoadMultiplier) {
 		double oldLoadMultiplier = loadMultiplier;
 		loadMultiplier = newLoadMultiplier;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__LOAD_MULTIPLIER, oldLoadMultiplier, loadMultiplier));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getDefaultGrowthFactor() {
+    public double getDefaultGrowthFactor() {
 		return defaultGrowthFactor;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDefaultGrowthFactor(double newDefaultGrowthFactor) {
+    public void setDefaultGrowthFactor(double newDefaultGrowthFactor) {
 		double oldDefaultGrowthFactor = defaultGrowthFactor;
 		defaultGrowthFactor = newDefaultGrowthFactor;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__DEFAULT_GROWTH_FACTOR, oldDefaultGrowthFactor, defaultGrowthFactor));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getDefaultGrowthRate() {
+    public double getDefaultGrowthRate() {
 		return defaultGrowthRate;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDefaultGrowthRate(double newDefaultGrowthRate) {
+    public void setDefaultGrowthRate(double newDefaultGrowthRate) {
 		double oldDefaultGrowthRate = defaultGrowthRate;
 		defaultGrowthRate = newDefaultGrowthRate;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__DEFAULT_GROWTH_RATE, oldDefaultGrowthRate, defaultGrowthRate));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getGeneratorDispatchReference() {
+    public double getGeneratorDispatchReference() {
 		return generatorDispatchReference;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setGeneratorDispatchReference(double newGeneratorDispatchReference) {
+    public void setGeneratorDispatchReference(double newGeneratorDispatchReference) {
 		double oldGeneratorDispatchReference = generatorDispatchReference;
 		generatorDispatchReference = newGeneratorDispatchReference;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__GENERATOR_DISPATCH_REFERENCE, oldGeneratorDispatchReference, generatorDispatchReference));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getGenMultiplier() {
+    public double getGenMultiplier() {
 		return genMultiplier;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setGenMultiplier(double newGenMultiplier) {
+    public void setGenMultiplier(double newGenMultiplier) {
 		double oldGenMultiplier = genMultiplier;
 		genMultiplier = newGenMultiplier;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__GEN_MULTIPLIER, oldGenMultiplier, genMultiplier));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getDefaultHourMult() {
+    public double getDefaultHourMult() {
 		return defaultHourMult;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDefaultHourMult(double newDefaultHourMult) {
+    public void setDefaultHourMult(double newDefaultHourMult) {
 		double oldDefaultHourMult = defaultHourMult;
 		defaultHourMult = newDefaultHourMult;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__DEFAULT_HOUR_MULT, oldDefaultHourMult, defaultHourMult));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public boolean isControl_busNameRedefined() {
+    public boolean isControl_busNameRedefined() {
 		return control_busNameRedefined;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setControl_busNameRedefined(boolean newControl_busNameRedefined) {
+    public void setControl_busNameRedefined(boolean newControl_busNameRedefined) {
 		boolean oldControl_busNameRedefined = control_busNameRedefined;
 		control_busNameRedefined = newControl_busNameRedefined;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__CONTROL_BUS_NAME_REDEFINED, oldControl_busNameRedefined, control_busNameRedefined));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getPriceSignal() {
+    public double getPriceSignal() {
 		return priceSignal;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setPriceSignal(double newPriceSignal) {
+    public void setPriceSignal(double newPriceSignal) {
 		double oldPriceSignal = priceSignal;
 		priceSignal = newPriceSignal;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__PRICE_SIGNAL, oldPriceSignal, priceSignal));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getEmergMinVolts() {
+    public double getEmergMinVolts() {
 		return emergMinVolts;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setEmergMinVolts(double newEmergMinVolts) {
+    public void setEmergMinVolts(double newEmergMinVolts) {
 		double oldEmergMinVolts = emergMinVolts;
 		emergMinVolts = newEmergMinVolts;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__EMERG_MIN_VOLTS, oldEmergMinVolts, emergMinVolts));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getEmergMaxVolts() {
+    public double getEmergMaxVolts() {
 		return emergMaxVolts;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setEmergMaxVolts(double newEmergMaxVolts) {
+    public void setEmergMaxVolts(double newEmergMaxVolts) {
 		double oldEmergMaxVolts = emergMaxVolts;
 		emergMaxVolts = newEmergMaxVolts;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__EMERG_MAX_VOLTS, oldEmergMaxVolts, emergMaxVolts));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getNormalMinVolts() {
+    public double getNormalMinVolts() {
 		return normalMinVolts;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNormalMinVolts(double newNormalMinVolts) {
+    public void setNormalMinVolts(double newNormalMinVolts) {
 		double oldNormalMinVolts = normalMinVolts;
 		normalMinVolts = newNormalMinVolts;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__NORMAL_MIN_VOLTS, oldNormalMinVolts, normalMinVolts));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public double getNormalMaxVolts() {
+    public double getNormalMaxVolts() {
 		return normalMaxVolts;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNormalMaxVolts(double newNormalMaxVolts) {
+    public void setNormalMaxVolts(double newNormalMaxVolts) {
 		double oldNormalMaxVolts = normalMaxVolts;
 		normalMaxVolts = newNormalMaxVolts;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__NORMAL_MAX_VOLTS, oldNormalMaxVolts, normalMaxVolts));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getNumNodes() {
+    public int getNumNodes() {
 		return numNodes;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNumNodes(int newNumNodes) {
+    public void setNumNodes(int newNumNodes) {
 		int oldNumNodes = numNodes;
 		numNodes = newNumNodes;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__NUM_NODES, oldNumNodes, numNodes));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public int getNumBuses() {
+    public int getNumBuses() {
 		return numBuses;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNumBuses(int newNumBuses) {
+    public void setNumBuses(int newNumBuses) {
 		int oldNumBuses = numBuses;
 		numBuses = newNumBuses;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__NUM_BUSES, oldNumBuses, numBuses));
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public EList<CircuitElement> getCircuitElements() {
-		return null;// getVoltageSources();
-	}
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    public EList<CircuitElement> getCircuitElements() {
+        return null;// getVoltageSources();
+    }
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void initialiseNodeVBase() {
+    public void initialiseNodeVBase() {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String getName() {
+    public String getName() {
 		return name;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setName(String newName) {
+    public void setName(String newName) {
 		String oldName = name;
 		name = newName;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__NAME, oldName, name));
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EList<VoltageSource> getVoltageSources() {
+    public EList<VoltageSource> getVoltageSources() {
 		if (voltageSources == null) {
 			voltageSources = new EObjectContainmentEList<VoltageSource>(VoltageSource.class, this, CommonPackage.CIRCUIT__VOLTAGE_SOURCES);
 		}
 		return voltageSources;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public CircuitElement getActiveCircuitElement() {
+    public CircuitElement getActiveCircuitElement() {
 		if (activeCircuitElement != null && activeCircuitElement.eIsProxy()) {
 			InternalEObject oldActiveCircuitElement = (InternalEObject)activeCircuitElement;
 			activeCircuitElement = (CircuitElement)eResolveProxy(oldActiveCircuitElement);
@@ -966,278 +966,196 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return activeCircuitElement;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public CircuitElement basicGetActiveCircuitElement() {
+    public CircuitElement basicGetActiveCircuitElement() {
 		return activeCircuitElement;
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setActiveCircuitElement(CircuitElement newActiveCircuitElement) {
+    public void setActiveCircuitElement(CircuitElement newActiveCircuitElement) {
 		CircuitElement oldActiveCircuitElement = activeCircuitElement;
 		activeCircuitElement = newActiveCircuitElement;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.CIRCUIT__ACTIVE_CIRCUIT_ELEMENT, oldActiveCircuitElement, activeCircuitElement));
 	}
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public void buildYMatrix(yBuildOption buildOption, boolean allocateVI) {
-		if (getSolution().isPreserveNodeVoltages())
-			getSolution().updateVBus();
+    /**
+     * <!-- begin-user-doc --> <!-- end-user-doc -->
+     *
+     * @generated NOT
+     */
+    public void reProcessBusDefs() {
+        // Keeps present definitions of bus objects until new ones created.
+        saveBusInfo();
 
-		if (isBusNameRedefined())
-			reProcessBusDefs(); // This changes the node references into the system Y matrix.
+        // Clear hash list of Bus names for adding more.
+        getBusList().clear();
 
-		if (getSolution().isFrequencyChanged()) {
-			reCalcAllYPrims();
-		} else {
-			reCalcInvalidYPrims();
-		}
+        // Leave allocations same, but start count over.
+        setNumBuses(0);
+        setNumNodes(0);
 
-		if (getExecutive().getGlobals().isSolutionAbort())
-			System.out.println("Y matrix build aborted due to error in primitive Y calculations.");
+        // Redo all enabled circuit elements.
+        CircuitElement cktElementSave = getActiveCircuitElement();
+        for (int i = 0; i < getCircuitElements().size(); i++) {
+            CircuitElement cktElement = getCircuitElements().get(i);
+            if (cktElement.isEnabled()) {
+                setActiveCircuitElement(cktElement);
+                processBusDefs();
+                if (abortBusProcess)
+                    return;
+            }
+        }
 
-		getSolution().setFrequencyChanged(false);
+        setActiveCircuitElement(cktElementSave); // restore active circuit element
 
-		if (buildOption == yBuildOption.WHOLE_MATRIX) {
-			System.out.println("Building whole Y matrix.");
-		} else if (buildOption == yBuildOption.SERIES_ONLY) {
-			System.out.println("Building series Y matrix.");
-		}
+        for (Bus bus : getBuses()) {
+            bus.allocateBusVoltages();
+            bus.allocateBusCurrents();
+        }
 
-		// Add in all YPrims for all devices.
-		for (int i = 0; i < getCircuitElements().size(); i++) {
-			CircuitElement element = getCircuitElements().get(i);
-			if (element.isEnabled()) {
-				DComplexMatrix2D yPrimValues = element.getYPrimValues(buildOption);
-				// Add primitive Y to Y matrix.
-				// AddPrimitiveMatrix(element.getYOrder(), yPrimValues);
-			}
-		}
+        restoreBusInfo();
+        // doResetMeterZones();
 
-		// Allocate voltage and current vectors if requested.
-		if (allocateVI) {
-			// TODO: Allocate voltage and current vectors.
-		}
+        busNameRedefined = false;
+    }
 
-		if (buildOption == yBuildOption.WHOLE_MATRIX) {
-			// Indicate that the series matrix may not match.
-			getSolution().setSeriesYInvalid(true);
-			getSolution().setSystemYChanged(false);
-		} else if (buildOption == yBuildOption.SERIES_ONLY) {
-			getSolution().setSeriesYInvalid(false);
-			// systemYChanged unchanged.
-		}
+    /**
+     * Saves existing bus definitions and names for info that needs to be restored.
+     */
+    protected void saveBusInfo() {
+        int nb = getBusList().size();
+        savedBuses = new BasicEList<Bus>(nb);
+        savedBusNames = new BasicEList<String>(nb);
+        for (int i = 0; i < nb; i++) {
+            Bus bus = getBuses().get(i);
+            savedBuses.add(bus);
+            savedBusNames.add(bus.getName());
+        }
+        savedNumBuses = nb;
+    }
 
-		if (getSolution().isPreserveNodeVoltages()) {
-			// getSolution().restoreNodeVFromVBus();
-		}
-	}
+    /**
+     * Restores kV bases, other values to buses still in the list.
+     */
+    protected void restoreBusInfo() {
+        for (int i = 0; i < savedNumBuses; i++) {
+            // TODO: Implement bus list hash map.
+            String name = savedBusNames.get(i);
+            int idx;
+            for (idx = 0; idx < getBuses().size(); idx++) {
+                if (getBuses().get(idx).getName() == name)
+                    break;
+            }
+            Bus bus = getBuses().get(idx);
+            Bus pBus = savedBuses.get(i);
+            bus.setKVBase(pBus.getKVBase());
+            bus.setX(pBus.getX());
+            bus.setY(pBus.getY());
+            bus.setCoordDefined(pBus.isCoordDefined());
+            bus.setKeep(pBus.isKeep());
+            // Restore voltages in new bus def that existed in old bus def.
+            if (pBus.getVBus() != null) {
+                for (int j = 0; j < pBus.getNumNodesThisBus(); j++) {
+                    int jdx = bus.findIdx(pBus.getNum(j));
+                    if (jdx > 0)
+                        bus.getVBus().set(jdx, pBus.getVBus().get(j));
+                }
+            }
+            savedBusNames.remove(i);
+        }
+        savedBuses.clear();
+        savedBusNames.clear();
+    }
 
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public void reProcessBusDefs() {
-		// Keeps present definitions of bus objects until new ones created.
-		saveBusInfo();
+    protected void processBusDefs() {
+        int nNodes = 0, np, nCond, iTerm, retVal;
+        boolean nodesOK;
 
-		// Clear hash list of Bus names for adding more.
-		getBusList().clear();
+        CircuitElement ce = getActiveCircuitElement();
+        np = ce.getNPhases();
+        nCond = ce.getNConds();
 
-		// Leave allocations same, but start count over.
-		setNumBuses(0);
-		setNumNodes(0);
+        Parser parser = CommonFactory.eINSTANCE.createParser();
+        parser.setToken(ce.getFirstBus());
 
-		// Redo all enabled circuit elements.
-		CircuitElement cktElementSave = getActiveCircuitElement();
-		for (int i = 0; i < getCircuitElements().size(); i++) {
-			CircuitElement cktElement = getCircuitElements().get(i);
-			if (cktElement.isEnabled()) {
-				setActiveCircuitElement(cktElement);
-				processBusDefs();
-				if (abortBusProcess)
-					return;
-			}
-		}
+        for (iTerm = 0; iTerm < ce.getNTerms(); iTerm++) {
+            nodesOK = true;
+            // Assume normal phase rotation for default.
+            for (int i = 0; i < np; i++)
+                nodeBuffer[i] = i; // set up buffer with defaults
 
-		setActiveCircuitElement(cktElementSave); // restore active circuit element
+            // Default all other conductors to a ground connection
+            // If user wants them ungrounded, must be specified explicitly!
+            for (int i = np + 1; i < nCond; i++)
+                nodeBuffer[i] = 0;
 
-		for (Bus bus : getBuses()) {
-			bus.allocateBusVoltages();
-			bus.allocateBusCurrents();
-		}
+            String busName = parser.parseAsBusName(nNodes, nodeBuffer);
 
-		restoreBusInfo();
-		// doResetMeterZones();
+            // Check for error in node specification.
+            for (int i = 0; i < nodeBuffer.length; i++) {
+                if (nodeBuffer[i] < 0) {
+                    nodesOK = false;
+                    abortBusProcess = true;
+                    throw new UnsupportedOperationException();
+                }
+            }
 
-		busNameRedefined = false;
-	}
+            // Node-terminal connnections.
+            ce.setActiveTerminalIndex(iTerm);
+            ce.getActiveTerminal().setBusRef(addBus(busName, nCond));
+            ce.setNodeRef(iTerm, nodeBuffer);
 
-	/**
-	 * Saves existing bus definitions and names for info that needs to be restored.
-	 */
-	protected void saveBusInfo() {
-		int nb = getBusList().size();
-		savedBuses = new BasicEList<Bus>(nb);
-		savedBusNames = new BasicEList<String>(nb);
-		for (int i = 0; i < nb; i++) {
-			Bus bus = getBuses().get(i);
-			savedBuses.add(bus);
-			savedBusNames.add(bus.getName());
-		}
-		savedNumBuses = nb;
-	}
+            parser.setToken(ce.getNextBus());
+        }
+    }
 
-	/**
-	 * Restores kV bases, other values to buses still in the list.
-	 */
-	protected void restoreBusInfo() {
-		for (int i = 0; i < savedNumBuses; i++) {
-			// TODO: Implement bus list hash map.
-			String name = savedBusNames.get(i);
-			int idx;
-			for (idx = 0; idx < getBuses().size(); idx++) {
-				if (getBuses().get(idx).getName() == name)
-					break;
-			}
-			Bus bus = getBuses().get(idx);
-			Bus pBus = savedBuses.get(i);
-			bus.setKVBase(pBus.getKVBase());
-			bus.setX(pBus.getX());
-			bus.setY(pBus.getY());
-			bus.setCoordDefined(pBus.isCoordDefined());
-			bus.setKeep(pBus.isKeep());
-			// Restore voltages in new bus def that existed in old bus def.
-			if (pBus.getVBus() != null) {
-				for (int j = 0; j < pBus.getNumNodesThisBus(); j++) {
-					int jdx = bus.findIdx(pBus.getNum(j));
-					if (jdx > 0)
-						bus.getVBus().set(jdx, pBus.getVBus().get(j));
-				}
-			}
-			savedBusNames.remove(i);
-		}
-		savedBuses.clear();
-		savedBusNames.clear();
-	}
+    protected int addBus(String busName, int nNodes) {
+        if (busName.length() == 0) {
+            System.err.println("Invalid bus name.");
+            for (int i = 0; i < getActiveCircuitElement().getNConds(); i++)
+                nodeBuffer[i] = 0;
+            return -1;
+        }
 
-	protected void processBusDefs() {
-		int nNodes = 0, np, nCond, iTerm, retVal;
-		boolean nodesOK;
+        int idx;
+        for (idx = 0; idx < getBusList().size(); idx++) {
+            Bus bus = getBuses().get(idx);
+            if (bus.getName() == busName)
+                break;
+        }
+        Bus bus = CommonFactory.eINSTANCE.createBus();
+        bus.setName(busName);
+        getBuses().add(bus);
 
-		CircuitElement ce = getActiveCircuitElement();
-		np = ce.getNPhases();
-		nCond = ce.getNConds();
+        // Define nodes belonging to the bus.
+        // Replace nodeBuffer values with global reference number.
+        for (int i = 0; i < nNodes; i++) {
+            int nodeRef = bus.add(nodeBuffer[i]);
+            if (nodeRef == nNodes) {
+                // This was a new node so Add a NodeToBus element.
+                getMapNodeToBus().get(numNodes).setBusRef(idx);
+                getMapNodeToBus().get(numNodes).setNodeNum(nodeBuffer[idx]);
+            }
+            nodeBuffer[i] = nodeRef; // Swap out in preparation to setNodeRef call.
+        }
 
-		Parser parser = CommonFactory.eINSTANCE.createParser();
-		parser.setToken(ce.getFirstBus());
+        return getBusList().size() - 1;
+    }
 
-		for (iTerm = 0; iTerm < ce.getNTerms(); iTerm++) {
-			nodesOK = true;
-			// Assume normal phase rotation for default.
-			for (int i = 0; i < np; i++)
-				nodeBuffer[i] = i; // set up buffer with defaults
-
-			// Default all other conductors to a ground connection
-			// If user wants them ungrounded, must be specified explicitly!
-			for (int i = np + 1; i < nCond; i++)
-				nodeBuffer[i] = 0;
-
-			String busName = parser.parseAsBusName(nNodes, nodeBuffer);
-
-			// Check for error in node specification.
-			for (int i = 0; i < nodeBuffer.length; i++) {
-				if (nodeBuffer[i] < 0) {
-					nodesOK = false;
-					abortBusProcess = true;
-					throw new UnsupportedOperationException();
-				}
-			}
-
-			// Node-terminal connnections.
-			ce.setActiveTerminalIndex(iTerm);
-			ce.getActiveTerminal().setBusRef(addBus(busName, nCond));
-			ce.setNodeRef(iTerm, nodeBuffer);
-
-			parser.setToken(ce.getNextBus());
-		}
-	}
-
-	protected int addBus(String busName, int nNodes) {
-		if (busName.length() == 0) {
-			System.err.println("Invalid bus name.");
-			for (int i = 0; i < getActiveCircuitElement().getNConds(); i++)
-				nodeBuffer[i] = 0;
-			return -1;
-		}
-
-		int idx;
-		for (idx = 0; idx < getBusList().size(); idx++) {
-			Bus bus = getBuses().get(idx);
-			if (bus.getName() == busName)
-				break;
-		}
-		Bus bus = CommonFactory.eINSTANCE.createBus();
-		bus.setName(busName);
-		getBuses().add(bus);
-
-		// Define nodes belonging to the bus.
-		// Replace nodeBuffer values with global reference number.
-		for (int i = 0; i < nNodes; i++) {
-			int nodeRef = bus.add(nodeBuffer[i]);
-			if (nodeRef == nNodes) {
-				// This was a new node so Add a NodeToBus element.
-				getMapNodeToBus().get(numNodes).setBusRef(idx);
-				getMapNodeToBus().get(numNodes).setNodeNum(nodeBuffer[idx]);
-			}
-			nodeBuffer[i] = nodeRef; // Swap out in preparation to setNodeRef call.
-		}
-
-		return getBusList().size() - 1;
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * 
-	 * @generated NOT
-	 */
-	public void reCalcAllYPrims() {
-		System.out.println("Recalc All Yprims");
-
-		for (int i = 0; i < getCircuitElements().size(); i++) {
-			CircuitElement element = getCircuitElements().get(i);
-			element.calcYPrim(getSolution().getFrequency());
-		}
-	}
-
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void reCalcInvalidYPrims() {
-		// TODO: implement this method
-		// Ensure that you remove @generated or mark it @generated NOT
-		throw new UnsupportedOperationException();
-	}
-
-	/**
-	 * <!-- begin-user-doc --> <!-- end-user-doc -->
-	 * @generated
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public NotificationChain eInverseAdd(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				if (eInternalContainer() != null)
@@ -1253,12 +1171,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return super.eInverseAdd(otherEnd, featureID, msgs);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
+    @Override
+    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				return basicSetExecutive(null, msgs);
@@ -1272,12 +1190,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
+    @Override
+    public NotificationChain eBasicRemoveFromContainerFeature(NotificationChain msgs) {
 		switch (eContainerFeatureID()) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				return eInternalContainer().eInverseRemove(this, ExecutivePackage.EXECUTIVE__CIRCUITS, Executive.class, msgs);
@@ -1285,12 +1203,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return super.eBasicRemoveFromContainerFeature(msgs);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public Object eGet(int featureID, boolean resolve, boolean coreType) {
+    @Override
+    public Object eGet(int featureID, boolean resolve, boolean coreType) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				return getExecutive();
@@ -1346,13 +1264,13 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return super.eGet(featureID, resolve, coreType);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void eSet(int featureID, Object newValue) {
+    @SuppressWarnings("unchecked")
+    @Override
+    public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				setExecutive((Executive)newValue);
@@ -1433,12 +1351,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		super.eSet(featureID, newValue);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public void eUnset(int featureID) {
+    @Override
+    public void eUnset(int featureID) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				setExecutive((Executive)null);
@@ -1516,12 +1434,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		super.eUnset(featureID);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public boolean eIsSet(int featureID) {
+    @Override
+    public boolean eIsSet(int featureID) {
 		switch (featureID) {
 			case CommonPackage.CIRCUIT__EXECUTIVE:
 				return getExecutive() != null;
@@ -1575,12 +1493,12 @@ public class CircuitImpl extends EObjectImpl implements Circuit {
 		return super.eIsSet(featureID);
 	}
 
-	/**
+    /**
 	 * <!-- begin-user-doc --> <!-- end-user-doc -->
 	 * @generated
 	 */
-	@Override
-	public String toString() {
+    @Override
+    public String toString() {
 		if (eIsProxy()) return super.toString();
 
 		StringBuffer result = new StringBuffer(super.toString());

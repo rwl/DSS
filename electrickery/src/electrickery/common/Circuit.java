@@ -690,37 +690,10 @@ public interface Circuit extends EObject {
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * <!-- begin-model-doc -->
-	 * Builds designated Y matrix for system and allocates solution arrays.
-	 * <!-- end-model-doc -->
-	 * @model
-	 * @generated
-	 */
-	void buildYMatrix(yBuildOption buildOption, boolean allocateVI);
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * <!-- begin-model-doc -->
 	 * Redo all Buslists, nodelists.
 	 * <!-- end-model-doc -->
 	 * @model
 	 * @generated
 	 */
 	void reProcessBusDefs();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void reCalcAllYPrims();
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @model
-	 * @generated
-	 */
-	void reCalcInvalidYPrims();
 } // Circuit

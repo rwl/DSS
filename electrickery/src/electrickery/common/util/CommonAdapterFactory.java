@@ -82,6 +82,10 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 				return createCircuitAdapter();
 			}
 			@Override
+			public Adapter caseYMatrix(YMatrix object) {
+				return createYMatrixAdapter();
+			}
+			@Override
 			public Adapter caseBus(Bus object) {
 				return createBusAdapter();
 			}
@@ -148,6 +152,20 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createCircuitAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.common.YMatrix <em>YMatrix</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.common.YMatrix
+	 * @generated
+	 */
+	public Adapter createYMatrixAdapter() {
 		return null;
 	}
 

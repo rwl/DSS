@@ -299,6 +299,34 @@ public interface CommonPackage extends EPackage {
 	int CIRCUIT_FEATURE_COUNT = 24;
 
 	/**
+	 * The meta object id for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.YMatrixImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getYMatrix()
+	 * @generated
+	 */
+	int YMATRIX = 1;
+
+	/**
+	 * The feature id for the '<em><b>Circuit</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int YMATRIX__CIRCUIT = 0;
+
+	/**
+	 * The number of structural features of the '<em>YMatrix</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int YMATRIX_FEATURE_COUNT = 1;
+
+	/**
 	 * The meta object id for the '{@link electrickery.common.impl.BusImpl <em>Bus</em>}' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -306,7 +334,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getBus()
 	 * @generated
 	 */
-	int BUS = 1;
+	int BUS = 2;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.CircuitElementImpl <em>Circuit Element</em>}' class.
@@ -316,7 +344,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getCircuitElement()
 	 * @generated
 	 */
-	int CIRCUIT_ELEMENT = 2;
+	int CIRCUIT_ELEMENT = 3;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.ConductorImpl <em>Conductor</em>}' class.
@@ -326,7 +354,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getConductor()
 	 * @generated
 	 */
-	int CONDUCTOR = 6;
+	int CONDUCTOR = 7;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionImpl <em>Solution</em>}' class.
@@ -336,7 +364,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getSolution()
 	 * @generated
 	 */
-	int SOLUTION = 3;
+	int SOLUTION = 4;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.TerminalImpl <em>Terminal</em>}' class.
@@ -346,7 +374,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getTerminal()
 	 * @generated
 	 */
-	int TERMINAL = 5;
+	int TERMINAL = 6;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.NamedImpl <em>Named</em>}' class.
@@ -356,7 +384,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getNamed()
 	 * @generated
 	 */
-	int NAMED = 7;
+	int NAMED = 8;
 
 	/**
 	 * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -951,7 +979,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getSolutionAlgs()
 	 * @generated
 	 */
-	int SOLUTION_ALGS = 4;
+	int SOLUTION_ALGS = 5;
 
 	/**
 	 * The number of structural features of the '<em>Solution Algs</em>' class.
@@ -1078,7 +1106,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getGlobals()
 	 * @generated
 	 */
-	int GLOBALS = 8;
+	int GLOBALS = 9;
 
 	/**
 	 * The feature id for the '<em><b>Solution Abort</b></em>' attribute.
@@ -1124,7 +1152,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getParser()
 	 * @generated
 	 */
-	int PARSER = 9;
+	int PARSER = 10;
 
 	/**
 	 * The feature id for the '<em><b>Token</b></em>' attribute.
@@ -1152,7 +1180,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 10;
+	int CONNECTION_TYPE = 11;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -1162,7 +1190,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 11;
+	int LENGTH_UNIT = 12;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -1172,7 +1200,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 12;
+	int TRIP_ACTION = 13;
 
 
 	/**
@@ -1183,7 +1211,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 13;
+	int YBUILD_OPTION = 14;
 
 
 	/**
@@ -1194,7 +1222,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 14;
+	int CONTROL_MODE_TYPE = 15;
 
 
 	/**
@@ -1205,7 +1233,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 15;
+	int ALGORITHM_TYPE = 16;
 
 
 	/**
@@ -1426,6 +1454,27 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getCircuit_NormalMaxVolts();
+
+	/**
+	 * Returns the meta object for class '{@link electrickery.common.YMatrix <em>YMatrix</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>YMatrix</em>'.
+	 * @see electrickery.common.YMatrix
+	 * @generated
+	 */
+	EClass getYMatrix();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.YMatrix#getCircuit <em>Circuit</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Circuit</em>'.
+	 * @see electrickery.common.YMatrix#getCircuit()
+	 * @see #getYMatrix()
+	 * @generated
+	 */
+	EReference getYMatrix_Circuit();
 
 	/**
 	 * Returns the meta object for the attribute '{@link electrickery.common.Circuit#getNumNodes <em>Num Nodes</em>}'.
@@ -2629,6 +2678,24 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute CIRCUIT__NORMAL_MAX_VOLTS = eINSTANCE.getCircuit_NormalMaxVolts();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.YMatrixImpl <em>YMatrix</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.YMatrixImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getYMatrix()
+		 * @generated
+		 */
+		EClass YMATRIX = eINSTANCE.getYMatrix();
+
+		/**
+		 * The meta object literal for the '<em><b>Circuit</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference YMATRIX__CIRCUIT = eINSTANCE.getYMatrix_Circuit();
 
 		/**
 		 * The meta object literal for the '<em><b>Num Nodes</b></em>' attribute feature.

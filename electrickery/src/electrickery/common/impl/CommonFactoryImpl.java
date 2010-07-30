@@ -72,6 +72,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public EObject create(EClass eClass) {
 		switch (eClass.getClassifierID()) {
 			case CommonPackage.CIRCUIT: return createCircuit();
+			case CommonPackage.YMATRIX: return createYMatrix();
 			case CommonPackage.BUS: return createBus();
 			case CommonPackage.SOLUTION: return createSolution();
 			case CommonPackage.SOLUTION_ALGS: return createSolutionAlgs();
@@ -141,6 +142,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public Circuit createCircuit() {
 		CircuitImpl circuit = new CircuitImpl();
 		return circuit;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public YMatrix createYMatrix() {
+		YMatrixImpl yMatrix = new YMatrixImpl();
+		return yMatrix;
 	}
 
 	/**

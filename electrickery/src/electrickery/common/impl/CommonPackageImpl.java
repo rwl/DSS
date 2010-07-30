@@ -28,6 +28,7 @@ import electrickery.common.Parser;
 import electrickery.common.Solution;
 import electrickery.common.SolutionAlgs;
 import electrickery.common.Terminal;
+import electrickery.common.YMatrix;
 import electrickery.common.algorithmType;
 import electrickery.common.connectionType;
 import electrickery.common.controlModeType;
@@ -55,6 +56,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
     private EClass circuitEClass = null;
 
     /**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass yMatrixEClass = null;
+
+				/**
 	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
@@ -409,6 +417,24 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 */
 	public EAttribute getCircuit_NormalMaxVolts() {
 		return (EAttribute)circuitEClass.getEStructuralFeatures().get(23);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getYMatrix() {
+		return yMatrixEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getYMatrix_Circuit() {
+		return (EReference)yMatrixEClass.getEStructuralFeatures().get(0);
 	}
 
 																/**
@@ -1311,6 +1337,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MIN_VOLTS);
 		createEAttribute(circuitEClass, CIRCUIT__NORMAL_MAX_VOLTS);
 
+		yMatrixEClass = createEClass(YMATRIX);
+		createEReference(yMatrixEClass, YMATRIX__CIRCUIT);
+
 		busEClass = createEClass(BUS);
 		createEReference(busEClass, BUS__CIRCUIT);
 		createEReference(busEClass, BUS__VBUS);
@@ -1479,19 +1508,22 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getCircuit_NormalMinVolts(), ecorePackage.getEDouble(), "normalMinVolts", "0.95", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getCircuit_NormalMaxVolts(), ecorePackage.getEDouble(), "normalMaxVolts", "1.05", 0, 1, Circuit.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
-		EOperation op = addEOperation(circuitEClass, null, "buildYMatrix", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, this.getyBuildOption(), "buildOption", 0, 1, IS_UNIQUE, IS_ORDERED);
-		addEParameter(op, ecorePackage.getEBoolean(), "allocateVI", 0, 1, IS_UNIQUE, IS_ORDERED);
-
 		addEOperation(circuitEClass, null, "reProcessBusDefs", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		addEOperation(circuitEClass, null, "reCalcAllYPrims", 0, 1, IS_UNIQUE, IS_ORDERED);
-
-		addEOperation(circuitEClass, null, "reCalcInvalidYPrims", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(circuitEClass, null, "initialiseNodeVBase", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		addEOperation(circuitEClass, this.getCircuitElement(), "getCircuitElements", 0, -1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(yMatrixEClass, YMatrix.class, "YMatrix", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getYMatrix_Circuit(), this.getCircuit(), null, "circuit", null, 0, 1, YMatrix.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+		EOperation op = addEOperation(yMatrixEClass, null, "buildYMatrix", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, this.getyBuildOption(), "buildOption", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEBoolean(), "allocateVI", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(yMatrixEClass, null, "reCalcAllYPrims", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		addEOperation(yMatrixEClass, null, "reCalcInvalidYPrims", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		initEClass(busEClass, Bus.class, "Bus", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getBus_Circuit(), this.getCircuit(), this.getCircuit_Buses(), "circuit", null, 0, 1, Bus.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

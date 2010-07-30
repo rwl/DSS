@@ -16,10 +16,12 @@ import org.eclipse.emf.ecore.impl.EObjectImpl;
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import electrickery.common.Bus;
 import electrickery.common.Circuit;
+import electrickery.common.CommonFactory;
 import electrickery.common.CommonPackage;
 import electrickery.common.Globals;
 import electrickery.common.Solution;
 import electrickery.common.SolutionAlgs;
+import electrickery.common.YMatrix;
 import electrickery.common.algorithmType;
 import electrickery.common.controlModeType;
 import electrickery.common.yBuildOption;
@@ -1495,8 +1497,11 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         if (getLoadModel() == loadModelType.ADMITTANCE) {
             solveDirect();
         } else {
-            if (isSystemYChanged())
-                getCircuit().buildYMatrix(yBuildOption.WHOLE_MATRIX, true);
+            if (isSystemYChanged()) {
+                YMatrix y = CommonFactory.eINSTANCE.createYMatrix();
+                y.setCircuit(getCircuit());
+                y.buildYMatrix(yBuildOption.WHOLE_MATRIX, true);
+            }
             doPowerFlowSolution();
         }
         return 0;
@@ -1512,8 +1517,11 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         // Force possible update of loads and generators.
         setLoadsNeedUpdating(true);
 
-        if (isSystemYChanged())
-            getCircuit().buildYMatrix(yBuildOption.WHOLE_MATRIX, true); // Side Effect: Allocates V
+        if (isSystemYChanged()) {
+            YMatrix y = CommonFactory.eINSTANCE.createYMatrix();
+            y.setCircuit(getCircuit());
+            y.buildYMatrix(yBuildOption.WHOLE_MATRIX, true); // Side Effect: Allocates V
+        }
 
         setSolutionCount(getSolutionCount() + 1); // Unique number for this solution.
 
@@ -1564,7 +1572,6 @@ public class SolutionImpl extends EObjectImpl implements Solution {
         case NEWTON_SOLVE:
             doNewtonSolution();
         }
-        ;
 
         getCircuit().setSolved(isConverged());
         setLastSolutionWasDirect(false);
@@ -1615,7 +1622,9 @@ public class SolutionImpl extends EObjectImpl implements Solution {
 
         if (isSystemYChanged()) {
             // Rebuild Y matrix, but V stays the same.
-            getCircuit().buildYMatrix(yBuildOption.WHOLE_MATRIX, false);
+            YMatrix y = CommonFactory.eINSTANCE.createYMatrix();
+            y.setCircuit(getCircuit());
+            y.buildYMatrix(yBuildOption.WHOLE_MATRIX, false);
         }
     }
 
@@ -1721,9 +1730,12 @@ public class SolutionImpl extends EObjectImpl implements Solution {
             getPCInjCurrents();
 
             // The above call could change the primitive Y matrix, so have to check.
-            if (isSystemYChanged())
+            if (isSystemYChanged()) {
                 // Do not realloc V, I.
-                getCircuit().buildYMatrix(yBuildOption.WHOLE_MATRIX, false);
+                YMatrix y = CommonFactory.eINSTANCE.createYMatrix();
+                y.setCircuit(getCircuit());
+                y.buildYMatrix(yBuildOption.WHOLE_MATRIX, false);
+            }
 
             if (isUseAuxillaryCurrents())
                 addInAuxCurrents(algorithmType.NORMAL_SOLVE);
