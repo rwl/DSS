@@ -8,6 +8,7 @@ package electrickery.common;
 import org.eclipse.emf.ecore.EObject;
 
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import cern.colt.matrix.tdouble.DoubleMatrix1D;
 import electrickery.executive.loadModelType;
 import electrickery.executive.solutionMode;
 
@@ -48,6 +49,9 @@ import electrickery.executive.solutionMode;
  *   <li>{@link electrickery.common.Solution#isLastSolutionWasDirect <em>Last Solution Was Direct</em>}</li>
  *   <li>{@link electrickery.common.Solution#getSolutionCount <em>Solution Count</em>}</li>
  *   <li>{@link electrickery.common.Solution#getNodeV <em>Node V</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getNodeVBase <em>Node VBase</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getErrorSaved <em>Error Saved</em>}</li>
+ *   <li>{@link electrickery.common.Solution#getVMagSaved <em>VMag Saved</em>}</li>
  *   <li>{@link electrickery.common.Solution#getCurrents <em>Currents</em>}</li>
  *   <li>{@link electrickery.common.Solution#getAlgorithms <em>Algorithms</em>}</li>
  * </ul>
@@ -861,6 +865,84 @@ public interface Solution extends EObject {
 	 * @generated
 	 */
 	void setNodeV(DComplexMatrix1D value);
+
+	/**
+	 * Returns the value of the '<em><b>Node VBase</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Node VBase</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Node VBase</em>' reference.
+	 * @see #setNodeVBase(DoubleMatrix1D)
+	 * @see electrickery.common.CommonPackage#getSolution_NodeVBase()
+	 * @model type="electrickery.DoubleMatrix1D"
+	 * @generated
+	 */
+	DoubleMatrix1D getNodeVBase();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getNodeVBase <em>Node VBase</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Node VBase</em>' reference.
+	 * @see #getNodeVBase()
+	 * @generated
+	 */
+	void setNodeVBase(DoubleMatrix1D value);
+
+	/**
+	 * Returns the value of the '<em><b>Error Saved</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Error Saved</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Error Saved</em>' reference.
+	 * @see #setErrorSaved(DoubleMatrix1D)
+	 * @see electrickery.common.CommonPackage#getSolution_ErrorSaved()
+	 * @model type="electrickery.DoubleMatrix1D"
+	 * @generated
+	 */
+	DoubleMatrix1D getErrorSaved();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getErrorSaved <em>Error Saved</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Error Saved</em>' reference.
+	 * @see #getErrorSaved()
+	 * @generated
+	 */
+	void setErrorSaved(DoubleMatrix1D value);
+
+	/**
+	 * Returns the value of the '<em><b>VMag Saved</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>VMag Saved</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>VMag Saved</em>' reference.
+	 * @see #setVMagSaved(DoubleMatrix1D)
+	 * @see electrickery.common.CommonPackage#getSolution_VMagSaved()
+	 * @model type="electrickery.DoubleMatrix1D"
+	 * @generated
+	 */
+	DoubleMatrix1D getVMagSaved();
+
+	/**
+	 * Sets the value of the '{@link electrickery.common.Solution#getVMagSaved <em>VMag Saved</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>VMag Saved</em>' reference.
+	 * @see #getVMagSaved()
+	 * @generated
+	 */
+	void setVMagSaved(DoubleMatrix1D value);
 
 	/**
 	 * Returns the value of the '<em><b>Currents</b></em>' reference.

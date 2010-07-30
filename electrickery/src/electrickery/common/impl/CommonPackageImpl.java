@@ -1069,11 +1069,38 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
                 /**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_NodeVBase() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_ErrorSaved() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(30);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getSolution_VMagSaved() {
+		return (EReference)solutionEClass.getEStructuralFeatures().get(31);
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
     public EReference getSolution_Currents() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(29);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(32);
 	}
 
                 /**
@@ -1082,7 +1109,7 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	public EReference getSolution_Algorithms() {
-		return (EReference)solutionEClass.getEStructuralFeatures().get(30);
+		return (EReference)solutionEClass.getEStructuralFeatures().get(33);
 	}
 
 																/**
@@ -1402,6 +1429,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		createEAttribute(solutionEClass, SOLUTION__LAST_SOLUTION_WAS_DIRECT);
 		createEAttribute(solutionEClass, SOLUTION__SOLUTION_COUNT);
 		createEReference(solutionEClass, SOLUTION__NODE_V);
+		createEReference(solutionEClass, SOLUTION__NODE_VBASE);
+		createEReference(solutionEClass, SOLUTION__ERROR_SAVED);
+		createEReference(solutionEClass, SOLUTION__VMAG_SAVED);
 		createEReference(solutionEClass, SOLUTION__CURRENTS);
 		createEReference(solutionEClass, SOLUTION__ALGORITHMS);
 
@@ -1623,6 +1653,9 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		initEAttribute(getSolution_LastSolutionWasDirect(), ecorePackage.getEBoolean(), "lastSolutionWasDirect", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getSolution_SolutionCount(), ecorePackage.getEInt(), "solutionCount", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_NodeV(), theElectrickeryPackage.getDComplexMatrix1D(), null, "nodeV", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSolution_NodeVBase(), theElectrickeryPackage.getDoubleMatrix1D(), null, "nodeVBase", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSolution_ErrorSaved(), theElectrickeryPackage.getDoubleMatrix1D(), null, "errorSaved", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getSolution_VMagSaved(), theElectrickeryPackage.getDoubleMatrix1D(), null, "vMagSaved", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_Currents(), theElectrickeryPackage.getDComplexMatrix1D(), null, "currents", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getSolution_Algorithms(), this.getSolutionAlgs(), null, "algorithms", null, 0, 1, Solution.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 

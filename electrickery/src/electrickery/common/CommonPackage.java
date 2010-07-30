@@ -945,13 +945,40 @@ public interface CommonPackage extends EPackage {
 	int SOLUTION__NODE_V = 28;
 
 	/**
+	 * The feature id for the '<em><b>Node VBase</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__NODE_VBASE = 29;
+
+	/**
+	 * The feature id for the '<em><b>Error Saved</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__ERROR_SAVED = 30;
+
+	/**
+	 * The feature id for the '<em><b>VMag Saved</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLUTION__VMAG_SAVED = 31;
+
+	/**
 	 * The feature id for the '<em><b>Currents</b></em>' reference.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__CURRENTS = 29;
+	int SOLUTION__CURRENTS = 32;
 
 	/**
 	 * The feature id for the '<em><b>Algorithms</b></em>' reference.
@@ -960,7 +987,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION__ALGORITHMS = 30;
+	int SOLUTION__ALGORITHMS = 33;
 
 	/**
 	 * The number of structural features of the '<em>Solution</em>' class.
@@ -969,7 +996,7 @@ public interface CommonPackage extends EPackage {
 	 * @generated
 	 * @ordered
 	 */
-	int SOLUTION_FEATURE_COUNT = 31;
+	int SOLUTION_FEATURE_COUNT = 34;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.impl.SolutionAlgsImpl <em>Solution Algs</em>}' class.
@@ -2243,6 +2270,39 @@ public interface CommonPackage extends EPackage {
 	EReference getSolution_NodeV();
 
 	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getNodeVBase <em>Node VBase</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Node VBase</em>'.
+	 * @see electrickery.common.Solution#getNodeVBase()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EReference getSolution_NodeVBase();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getErrorSaved <em>Error Saved</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>Error Saved</em>'.
+	 * @see electrickery.common.Solution#getErrorSaved()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EReference getSolution_ErrorSaved();
+
+	/**
+	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getVMagSaved <em>VMag Saved</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference '<em>VMag Saved</em>'.
+	 * @see electrickery.common.Solution#getVMagSaved()
+	 * @see #getSolution()
+	 * @generated
+	 */
+	EReference getSolution_VMagSaved();
+
+	/**
 	 * Returns the meta object for the reference '{@link electrickery.common.Solution#getCurrents <em>Currents</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3264,6 +3324,30 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EReference SOLUTION__NODE_V = eINSTANCE.getSolution_NodeV();
+
+		/**
+		 * The meta object literal for the '<em><b>Node VBase</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SOLUTION__NODE_VBASE = eINSTANCE.getSolution_NodeVBase();
+
+		/**
+		 * The meta object literal for the '<em><b>Error Saved</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SOLUTION__ERROR_SAVED = eINSTANCE.getSolution_ErrorSaved();
+
+		/**
+		 * The meta object literal for the '<em><b>VMag Saved</b></em>' reference feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference SOLUTION__VMAG_SAVED = eINSTANCE.getSolution_VMagSaved();
 
 		/**
 		 * The meta object literal for the '<em><b>Currents</b></em>' reference feature.

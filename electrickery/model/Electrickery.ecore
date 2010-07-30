@@ -309,6 +309,9 @@
         </eAnnotations>
       </eStructuralFeatures>
       <eStructuralFeatures xsi:type="ecore:EReference" name="nodeV" eType="#//DComplexMatrix1D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="nodeVBase" eType="#//DoubleMatrix1D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="errorSaved" eType="#//DoubleMatrix1D"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="vMagSaved" eType="#//DoubleMatrix1D"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="currents" eType="#//DComplexMatrix1D"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="algorithms" eType="#//common/SolutionAlgs"/>
     </eClassifiers>
