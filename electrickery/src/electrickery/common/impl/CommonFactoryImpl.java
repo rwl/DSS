@@ -79,6 +79,7 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 			case CommonPackage.TERMINAL: return createTerminal();
 			case CommonPackage.GLOBALS: return createGlobals();
 			case CommonPackage.PARSER: return createParser();
+			case CommonPackage.SOLVER: return createSolver();
 			default:
 				throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
 		}
@@ -212,6 +213,16 @@ public class CommonFactoryImpl extends EFactoryImpl implements CommonFactory {
 	public Parser createParser() {
 		ParserImpl parser = new ParserImpl();
 		return parser;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public Solver createSolver() {
+		SolverImpl solver = new SolverImpl();
+		return solver;
 	}
 
 	/**

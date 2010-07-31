@@ -27,6 +27,7 @@ import electrickery.common.Named;
 import electrickery.common.Parser;
 import electrickery.common.Solution;
 import electrickery.common.SolutionAlgs;
+import electrickery.common.Solver;
 import electrickery.common.Terminal;
 import electrickery.common.YMatrix;
 import electrickery.common.algorithmType;
@@ -124,6 +125,13 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 	 * @generated
 	 */
 	private EClass parserEClass = null;
+
+				/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	private EClass solverEClass = null;
 
 				/**
 	 * <!-- begin-user-doc -->
@@ -1357,6 +1365,15 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 																/**
 	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EClass getSolver() {
+		return solverEClass;
+	}
+
+																/**
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
 	 * @generated
 	 */
@@ -1571,6 +1588,8 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 
 		parserEClass = createEClass(PARSER);
 		createEAttribute(parserEClass, PARSER__TOKEN);
+
+		solverEClass = createEClass(SOLVER);
 
 		// Create enums
 		connectionTypeEEnum = createEEnum(CONNECTION_TYPE);
@@ -1883,6 +1902,27 @@ public class CommonPackageImpl extends EPackageImpl implements CommonPackage {
 		op = addEOperation(parserEClass, ecorePackage.getEString(), "parseAsBusName", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEInt(), "numNodes", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, theElectrickeryPackage.getEIntArray(), "nodeArray", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		initEClass(solverEClass, Solver.class, "Solver", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+		op = addEOperation(solverEClass, ecorePackage.getEInt(), "newSparseSet", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nBus", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(solverEClass, ecorePackage.getEInt(), "solveSparseSet", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix2D(), "Y", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix1D(), "V", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix1D(), "I", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(solverEClass, ecorePackage.getEInt(), "addPrimitiveMatrix", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix2D(), "Y", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nOrder", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getEIntArray(), "pNodes", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix1D(), "Yprim", 0, 1, IS_UNIQUE, IS_ORDERED);
+
+		op = addEOperation(solverEClass, ecorePackage.getEInt(), "findIslands", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getDComplexMatrix2D(), "Y", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, ecorePackage.getEInt(), "nOrder", 0, 1, IS_UNIQUE, IS_ORDERED);
+		addEParameter(op, theElectrickeryPackage.getEIntArray(), "pNodes", 0, 1, IS_UNIQUE, IS_ORDERED);
 
 		// Initialize enums and add enum literals
 		initEEnum(connectionTypeEEnum, connectionType.class, "connectionType");

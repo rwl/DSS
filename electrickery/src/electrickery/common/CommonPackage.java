@@ -1299,6 +1299,25 @@ public interface CommonPackage extends EPackage {
 	int PARSER_FEATURE_COUNT = 1;
 
 	/**
+	 * The meta object id for the '{@link electrickery.common.impl.SolverImpl <em>Solver</em>}' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see electrickery.common.impl.SolverImpl
+	 * @see electrickery.common.impl.CommonPackageImpl#getSolver()
+	 * @generated
+	 */
+	int SOLVER = 11;
+
+	/**
+	 * The number of structural features of the '<em>Solver</em>' class.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int SOLVER_FEATURE_COUNT = 0;
+
+	/**
 	 * The meta object id for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -1306,7 +1325,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getconnectionType()
 	 * @generated
 	 */
-	int CONNECTION_TYPE = 11;
+	int CONNECTION_TYPE = 12;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.lengthUnit <em>length Unit</em>}' enum.
@@ -1316,7 +1335,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getlengthUnit()
 	 * @generated
 	 */
-	int LENGTH_UNIT = 12;
+	int LENGTH_UNIT = 13;
 
 	/**
 	 * The meta object id for the '{@link electrickery.common.tripAction <em>trip Action</em>}' enum.
@@ -1326,7 +1345,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#gettripAction()
 	 * @generated
 	 */
-	int TRIP_ACTION = 13;
+	int TRIP_ACTION = 14;
 
 
 	/**
@@ -1337,7 +1356,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getyBuildOption()
 	 * @generated
 	 */
-	int YBUILD_OPTION = 14;
+	int YBUILD_OPTION = 15;
 
 
 	/**
@@ -1348,7 +1367,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getcontrolModeType()
 	 * @generated
 	 */
-	int CONTROL_MODE_TYPE = 15;
+	int CONTROL_MODE_TYPE = 16;
 
 
 	/**
@@ -1359,7 +1378,7 @@ public interface CommonPackage extends EPackage {
 	 * @see electrickery.common.impl.CommonPackageImpl#getalgorithmType()
 	 * @generated
 	 */
-	int ALGORITHM_TYPE = 16;
+	int ALGORITHM_TYPE = 17;
 
 
 	/**
@@ -2716,6 +2735,16 @@ public interface CommonPackage extends EPackage {
 	EAttribute getParser_Token();
 
 	/**
+	 * Returns the meta object for class '{@link electrickery.common.Solver <em>Solver</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for class '<em>Solver</em>'.
+	 * @see electrickery.common.Solver
+	 * @generated
+	 */
+	EClass getSolver();
+
+	/**
 	 * Returns the meta object for enum '{@link electrickery.common.connectionType <em>connection Type</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -3810,6 +3839,16 @@ public interface CommonPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PARSER__TOKEN = eINSTANCE.getParser_Token();
+
+		/**
+		 * The meta object literal for the '{@link electrickery.common.impl.SolverImpl <em>Solver</em>}' class.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @see electrickery.common.impl.SolverImpl
+		 * @see electrickery.common.impl.CommonPackageImpl#getSolver()
+		 * @generated
+		 */
+		EClass SOLVER = eINSTANCE.getSolver();
 
 		/**
 		 * The meta object literal for the '{@link electrickery.common.connectionType <em>connection Type</em>}' enum.

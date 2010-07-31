@@ -122,6 +122,10 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 				return createParserAdapter();
 			}
 			@Override
+			public Adapter caseSolver(Solver object) {
+				return createSolverAdapter();
+			}
+			@Override
 			public Adapter defaultCase(EObject object) {
 				return createEObjectAdapter();
 			}
@@ -292,6 +296,20 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	 * @generated
 	 */
 	public Adapter createParserAdapter() {
+		return null;
+	}
+
+	/**
+	 * Creates a new adapter for an object of class '{@link electrickery.common.Solver <em>Solver</em>}'.
+	 * <!-- begin-user-doc -->
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
+	 * <!-- end-user-doc -->
+	 * @return the new adapter.
+	 * @see electrickery.common.Solver
+	 * @generated
+	 */
+	public Adapter createSolverAdapter() {
 		return null;
 	}
 

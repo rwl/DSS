@@ -36,71 +36,71 @@ import cern.jet.math.tdcomplex.DComplexFunctions;
  */
 public class YMatrixImpl extends EObjectImpl implements YMatrix {
     /**
-     * The cached value of the '{@link #getCircuit() <em>Circuit</em>}' reference.
-     * <!-- begin-user-doc -->
+	 * The cached value of the '{@link #getCircuit() <em>Circuit</em>}' reference.
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getCircuit()
-     * @generated
-     * @ordered
-     */
+	 * @see #getCircuit()
+	 * @generated
+	 * @ordered
+	 */
     protected Circuit circuit;
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     protected YMatrixImpl() {
-        super();
-    }
+		super();
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     protected EClass eStaticClass() {
-        return CommonPackage.Literals.YMATRIX;
-    }
+		return CommonPackage.Literals.YMATRIX;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public Circuit getCircuit() {
-        if (circuit != null && circuit.eIsProxy()) {
-            InternalEObject oldCircuit = (InternalEObject)circuit;
-            circuit = (Circuit)eResolveProxy(oldCircuit);
-            if (circuit != oldCircuit) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.YMATRIX__CIRCUIT, oldCircuit, circuit));
-            }
-        }
-        return circuit;
-    }
+		if (circuit != null && circuit.eIsProxy()) {
+			InternalEObject oldCircuit = (InternalEObject)circuit;
+			circuit = (Circuit)eResolveProxy(oldCircuit);
+			if (circuit != oldCircuit) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, CommonPackage.YMATRIX__CIRCUIT, oldCircuit, circuit));
+			}
+		}
+		return circuit;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public Circuit basicGetCircuit() {
-        return circuit;
-    }
+		return circuit;
+	}
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     public void setCircuit(Circuit newCircuit) {
-        Circuit oldCircuit = circuit;
-        circuit = newCircuit;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.YMATRIX__CIRCUIT, oldCircuit, circuit));
-    }
+		Circuit oldCircuit = circuit;
+		circuit = newCircuit;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, CommonPackage.YMATRIX__CIRCUIT, oldCircuit, circuit));
+	}
 
     /**
      * <!-- begin-user-doc -->
@@ -226,62 +226,62 @@ public class YMatrixImpl extends EObjectImpl implements YMatrix {
     }
 
     /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
-        switch (featureID) {
-            case CommonPackage.YMATRIX__CIRCUIT:
-                if (resolve) return getCircuit();
-                return basicGetCircuit();
-        }
-        return super.eGet(featureID, resolve, coreType);
-    }
+		switch (featureID) {
+			case CommonPackage.YMATRIX__CIRCUIT:
+				if (resolve) return getCircuit();
+				return basicGetCircuit();
+		}
+		return super.eGet(featureID, resolve, coreType);
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eSet(int featureID, Object newValue) {
-        switch (featureID) {
-            case CommonPackage.YMATRIX__CIRCUIT:
-                setCircuit((Circuit)newValue);
-                return;
-        }
-        super.eSet(featureID, newValue);
-    }
+		switch (featureID) {
+			case CommonPackage.YMATRIX__CIRCUIT:
+				setCircuit((Circuit)newValue);
+				return;
+		}
+		super.eSet(featureID, newValue);
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public void eUnset(int featureID) {
-        switch (featureID) {
-            case CommonPackage.YMATRIX__CIRCUIT:
-                setCircuit((Circuit)null);
-                return;
-        }
-        super.eUnset(featureID);
-    }
+		switch (featureID) {
+			case CommonPackage.YMATRIX__CIRCUIT:
+				setCircuit((Circuit)null);
+				return;
+		}
+		super.eUnset(featureID);
+	}
 
                 /**
-     * <!-- begin-user-doc -->
+	 * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated
-     */
+	 * @generated
+	 */
     @Override
     public boolean eIsSet(int featureID) {
-        switch (featureID) {
-            case CommonPackage.YMATRIX__CIRCUIT:
-                return circuit != null;
-        }
-        return super.eIsSet(featureID);
-    }
+		switch (featureID) {
+			case CommonPackage.YMATRIX__CIRCUIT:
+				return circuit != null;
+		}
+		return super.eIsSet(featureID);
+	}
 
 } //YMatrixImpl

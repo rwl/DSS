@@ -98,6 +98,15 @@ public interface CommonFactory extends EFactory {
 	Parser createParser();
 
 	/**
+	 * Returns a new object of class '<em>Solver</em>'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return a new object of class '<em>Solver</em>'.
+	 * @generated
+	 */
+	Solver createSolver();
+
+	/**
 	 * Returns the package supported by this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

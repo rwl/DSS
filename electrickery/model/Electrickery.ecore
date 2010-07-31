@@ -432,6 +432,27 @@
       </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="token" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
+    <eClassifiers xsi:type="ecore:EClass" name="Solver">
+      <eOperations name="newSparseSet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eParameters name="nBus" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+      </eOperations>
+      <eOperations name="solveSparseSet" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eParameters name="Y" eType="#//DComplexMatrix2D"/>
+        <eParameters name="V" eType="#//DComplexMatrix1D"/>
+        <eParameters name="I" eType="#//DComplexMatrix1D"/>
+      </eOperations>
+      <eOperations name="addPrimitiveMatrix" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eParameters name="Y" eType="#//DComplexMatrix2D"/>
+        <eParameters name="nOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        <eParameters name="pNodes" eType="#//EIntArray"/>
+        <eParameters name="Yprim" eType="#//DComplexMatrix1D"/>
+      </eOperations>
+      <eOperations name="findIslands" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt">
+        <eParameters name="Y" eType="#//DComplexMatrix2D"/>
+        <eParameters name="nOrder" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+        <eParameters name="pNodes" eType="#//EIntArray"/>
+      </eOperations>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="conversion" nsURI="http://www.electrickery.com/conversion" nsPrefix="conv">
     <eClassifiers xsi:type="ecore:EClass" name="PowerConversionElement" abstract="true"
