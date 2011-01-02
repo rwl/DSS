@@ -14,13 +14,24 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-from pydss.general.DSSObject import DSSObject
-from pydss.general.GrowthShape import GrowthShape
-from pydss.general.LineCode import LineCode
-from pydss.general.LineGeometry import LineGeometry
-from pydss.general.LineSpacing import LineSpacing
-from pydss.general.LoadShape import LoadShape
-from pydss.general.Spectrum import Spectrum
-from pydss.general.TimeCurrentCurve import TimeCurrentCurve
-from pydss.general.WireData import WireData
-from pydss.general.TransformerCode import TransformerCode
+class LineSpacing(object):
+
+    def __init__(self, nConds=0, nPhases=0, x=0.0, h=0.0, units="none"):
+        """Initialises a new 'LineSpacing' instance.
+        """
+        #: Number of wires in this geometry. Default is 3.
+        self.nConds = nConds
+
+        #: Number of retained phase conductors. If less than the number of
+        #  wires, list the retained phase coordinates first.
+        self.nPhases = nPhases
+
+        #: Array of wire X coordinates.
+        self.x = x
+
+        #: Array of wire Heights.
+        self.h = h
+
+        #: Units for x and h. Values are: "none", "mi", "km", "kft", "m", "me",
+        #  "ft", "in", "cm"
+        self.units = units

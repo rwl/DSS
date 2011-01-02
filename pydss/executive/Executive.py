@@ -14,13 +14,20 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-from pydss.general.DSSObject import DSSObject
-from pydss.general.GrowthShape import GrowthShape
-from pydss.general.LineCode import LineCode
-from pydss.general.LineGeometry import LineGeometry
-from pydss.general.LineSpacing import LineSpacing
-from pydss.general.LoadShape import LoadShape
-from pydss.general.Spectrum import Spectrum
-from pydss.general.TimeCurrentCurve import TimeCurrentCurve
-from pydss.general.WireData import WireData
-from pydss.general.TransformerCode import TransformerCode
+class Executive(object):
+
+    def __init__(self, command='', maxCircuits=0, execCommands=None,
+            execOptions=None, activeCircuit=None, circuits=None):
+        """Initialises a new 'Executive' instance.
+        """
+        self.command = command
+
+        self.maxCircuits = maxCircuits
+
+        self.execCommands = execCommands
+
+        self.execOptions = execOptions
+
+        self.activeCircuit = activeCircuit
+
+        self.circuits = [] if circuits is None else circuits

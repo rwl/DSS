@@ -14,13 +14,18 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-from pydss.general.DSSObject import DSSObject
-from pydss.general.GrowthShape import GrowthShape
-from pydss.general.LineCode import LineCode
-from pydss.general.LineGeometry import LineGeometry
-from pydss.general.LineSpacing import LineSpacing
-from pydss.general.LoadShape import LoadShape
-from pydss.general.Spectrum import Spectrum
-from pydss.general.TimeCurrentCurve import TimeCurrentCurve
-from pydss.general.WireData import WireData
-from pydss.general.TransformerCode import TransformerCode
+from pydss.common.CircuitElement import CircuitElement
+
+class MeterElement(CircuitElement):
+    """Base for all meters.
+    """
+
+    def __init__(self, elementName='', meteredTerminal=0, meteredElement=None,
+            *args, **kw_args):
+        self.elementName = elementName
+
+        self.meteredTerminal = meteredTerminal
+
+        self.meteredElement = meteredElement
+
+        super(MeterElement, self).__init__(*args, **kw_args)

@@ -14,13 +14,25 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-from pydss.general.DSSObject import DSSObject
-from pydss.general.GrowthShape import GrowthShape
-from pydss.general.LineCode import LineCode
-from pydss.general.LineGeometry import LineGeometry
-from pydss.general.LineSpacing import LineSpacing
-from pydss.general.LoadShape import LoadShape
-from pydss.general.Spectrum import Spectrum
-from pydss.general.TimeCurrentCurve import TimeCurrentCurve
-from pydss.general.WireData import WireData
-from pydss.general.TransformerCode import TransformerCode
+class DSSObject(object):
+
+    def __init__(self, DSSObjType=0, DSSClassName='', classIndex=0,
+            dirty=False, flag=False, propSequence=0.0, parentClass=None):
+        """Initialises a new 'DSSObject' instance.
+        """
+        #: PD, PC, Monitor, CondCode, etc.
+        self.DSSObjType = DSSObjType
+
+        self.DSSClassName = DSSClassName
+
+        #: Index into the class collection list.
+        self.classIndex = classIndex
+
+        self.dirty = dirty
+
+        #: General purpose Flag for each object - don't assume inited.
+        self.flag = flag
+
+        self.propSequence = propSequence
+
+        self.parentClass = [] if parentClass is None else parentClass

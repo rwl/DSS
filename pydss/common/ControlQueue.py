@@ -14,13 +14,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-from pydss.general.DSSObject import DSSObject
-from pydss.general.GrowthShape import GrowthShape
-from pydss.general.LineCode import LineCode
-from pydss.general.LineGeometry import LineGeometry
-from pydss.general.LineSpacing import LineSpacing
-from pydss.general.LoadShape import LoadShape
-from pydss.general.Spectrum import Spectrum
-from pydss.general.TimeCurrentCurve import TimeCurrentCurve
-from pydss.general.WireData import WireData
-from pydss.general.TransformerCode import TransformerCode
+
+class ControlQueue(object):
+
+    def __init__(self, empty=False):
+        """Initialises a new 'ControlQueue' instance.
+        """
+
+        self.empty = empty
+
+

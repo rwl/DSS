@@ -15,35 +15,20 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
 from pydss.control.ControlElement import ControlElement
-from pydss.control.CapacitorControl import CapacitorControl
-from pydss.control.GeneratorDispatcher import GeneratorDispatcher
-from pydss.control.Recloser import Recloser
-from pydss.control.RegulatorControl import RegulatorControl
-from pydss.control.Relay import Relay
-from pydss.control.StorageController import StorageController
-from pydss.control.SwitchControl import SwitchControl
 
-class controlType(str):
-    """Values are: Current, Voltage, kVAr, Time
-    """
-    pass
+class SwitchControl(ControlElement):
 
-class relayType(str):
-    """Values are: Current, Fortyseven, Generic
-    """
-    pass
+    def __init__(self, action="open", lock=False, delay=0.0, *args, **kw_args):
+        """Initialises a new 'SwitchControl' instance.
+        """
+        #: Simulates manual operation of the controlled switch to open or close, after a time delay. Values are: "open", "close"
+        self.action = action
 
-class dischargeMode(str):
-    """Values are: peakShave, follow, support, loadShape, time
-    """
-    pass
+        #: Controlled switch is locked in its present open / close state. Switch will not respond to either manual or automatic control until this Lock is removed.
+        self.lock = lock
 
-class chargeMode(str):
-    """Values are: loadShape, time
-    """
-    pass
+        #: Operating time delay (sec) of the switch.
+        self.delay = delay
 
-class switchAction(str):
-    """Values are: open, close
-    """
-    pass
+        super(SwitchControl, self).__init__(*args, **kw_args)
+
