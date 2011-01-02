@@ -14,13 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class Named(object):
 
     def __init__(self, name=''):
-        """Initialises a new 'Named' instance.
-        """
-
         self.name = name
-
-

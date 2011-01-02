@@ -14,37 +14,29 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class Terminal(object):
-    """Each electrical element in the power system has one or more terminals. Each terminal has one or more conductors.  Each conductor contains a disconnect switch and a TCC (fuse) curve[Fuse has been disabled and is being redesigned; a Relay object can be used if needed to control the switches].  The conductors are numbered [1,2,3,...].  If the terminal is connected to an N-phase device, the first N conductors are assumed to correspond to the phases, in order.  The remaining conductors may be neutrals or whatever.
+    """Each electrical element in the power system has one or more terminals.
+    Each terminal has one or more conductors.  Each conductor contains a
+    disconnect switch and a TCC (fuse) curve[Fuse has been disabled and is
+    being redesigned; a Relay object can be used if needed to control the
+    switches].  The conductors are numbered [1,2,3,...].  If the terminal is
+    connected to an N-phase device, the first N conductors are assumed to
+    correspond to the phases, in order.  The remaining conductors may be
+    neutrals or whatever.
     """
 
-    def __init__(self, busRef=0, termNodeRef=0, checked=False, nCond=0, activeConductor=0, conductors=None):
+    def __init__(self, busRef=0, termNodeRef=0, checked=False, nCond=0,
+            activeConductor=0, conductors=None):
         """Initialises a new 'Terminal' instance.
         """
-
         self.busRef = busRef
-
 
         self.termNodeRef = termNodeRef
 
-
         self.checked = checked
 
-
         self.nCond = nCond
-
 
         self.activeConductor = activeConductor
 
         self.conductors = [] if conductors is None else conductors
-
-
-    def add_conductors(self, *conductors):
-        for obj in conductors:
-            self.conductors.append(obj)
-
-    def remove_conductors(self, *conductors):
-        for obj in conductors:
-            self.conductors.remove(obj)
-

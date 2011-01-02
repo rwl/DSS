@@ -14,13 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class ControlQueue(object):
 
     def __init__(self, empty=False):
-        """Initialises a new 'ControlQueue' instance.
-        """
-
         self.empty = empty
-
-

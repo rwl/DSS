@@ -14,90 +14,80 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class Solution(object):
 
-    def __init__(self, year=0, preserveNodeVoltages=False, frequencyChanged=False, frequency=0.0, mode="Snapshot", solutionAbort=False, solutionInitialised=False, seriesYInvalid=False, systemYChanged=False, loadModel="Powerflow", voltageBaseChanged=False, harmonicModel=False, dynamicModel=False, useAuxillaryCurrents=False, loadsNeedUpdating=False, iteration=0, maxIterations=0, maxError=0.0, convergenceTolerance=0.0, converged=False, controlIteration=0, maxControlIterations=0, controlMode="EventDriven", controlActionsDone=False, mostIterationsDone=0, algorithm="NormalSolve", lastSolutionWasDirect=False, circuit=None, nodeV=None, currents=None):
+    def __init__(self, year=0, preserveNodeVoltages=False,
+            frequencyChanged=False, frequency=0.0, mode="Snapshot",
+            solutionAbort=False, solutionInitialised=False,
+            seriesYInvalid=False, systemYChanged=False, loadModel="Powerflow",
+            voltageBaseChanged=False, harmonicModel=False, dynamicModel=False,
+            useAuxillaryCurrents=False, loadsNeedUpdating=False, iteration=0,
+            maxIterations=0, maxError=0.0, convergenceTolerance=0.0,
+            converged=False, controlIteration=0, maxControlIterations=0,
+            controlMode="EventDriven", controlActionsDone=False,
+            mostIterationsDone=0, algorithm="NormalSolve",
+            lastSolutionWasDirect=False, circuit=None, nodeV=None,
+            currents=None):
         """Initialises a new 'Solution' instance.
         """
-
         self.year = year
-
 
         self.preserveNodeVoltages = preserveNodeVoltages
 
-
         self.frequencyChanged = frequencyChanged
-
 
         self.frequency = frequency
 
-        #: Values are: "Snapshot", "Daily", "Direct", "Dutycycle", "Dynamic", "Harmonic", "MonteCarlo1", "MonteCarlo2", "MonteCarlo3", "FaultStudy", "Yearly", "MonteFault", "Peakday", "LoadDuration1", "LoadDuration2", "AutoAdd"
+        #: Values are: "Snapshot", "Daily", "Direct", "Dutycycle", "Dynamic",
+        #  "Harmonic", "MonteCarlo1", "MonteCarlo2", "MonteCarlo3",
+        #  "FaultStudy", "Yearly", "MonteFault", "Peakday", "LoadDuration1",
+        #  "LoadDuration2", "AutoAdd"
         self.mode = mode
-
 
         self.solutionAbort = solutionAbort
 
-
         self.solutionInitialised = solutionInitialised
 
-
         self.seriesYInvalid = seriesYInvalid
-
 
         self.systemYChanged = systemYChanged
 
         #: Values are: "Powerflow", "Admittance"
         self.loadModel = loadModel
 
-
         self.voltageBaseChanged = voltageBaseChanged
-
 
         self.harmonicModel = harmonicModel
 
-
         self.dynamicModel = dynamicModel
-
 
         self.useAuxillaryCurrents = useAuxillaryCurrents
 
-
         self.loadsNeedUpdating = loadsNeedUpdating
-
 
         self.iteration = iteration
 
-
         self.maxIterations = maxIterations
-
 
         self.maxError = maxError
 
-
         self.convergenceTolerance = convergenceTolerance
-
 
         self.converged = converged
 
-
         self.controlIteration = controlIteration
-
 
         self.maxControlIterations = maxControlIterations
 
         #: Values are: "EventDriven", "TimeDriven", "Static"
         self.controlMode = controlMode
 
-
         self.controlActionsDone = controlActionsDone
-
 
         self.mostIterationsDone = mostIterationsDone
 
         #: Values are: "NormalSolve", "NewtonSolve"
         self.algorithm = algorithm
-
 
         self.lastSolutionWasDirect = lastSolutionWasDirect
 
@@ -110,7 +100,7 @@ class Solution(object):
 
 
     def getcircuit(self):
-        
+
         return self._circuit
 
     def setcircuit(self, value):
@@ -123,10 +113,6 @@ class Solution(object):
             self._circuit._solution = self
 
     circuit = property(getcircuit, setcircuit)
-
-    nodeV = None
-
-    currents = None
 
     def solve(self):
         pass

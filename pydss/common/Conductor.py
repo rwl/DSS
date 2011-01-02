@@ -14,24 +14,16 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class Conductor(object):
     """A power conductor.
     """
 
-    def __init__(self, closed=False, fuseBlown=False, accumISqT=0.0, tccName=''):
-        """Initialises a new 'Conductor' instance.
-        """
-
+    def __init__(self, closed=False, fuseBlown=False, accumISqT=0.0,
+            tccName=''):
         self.closed = closed
-
 
         self.fuseBlown = fuseBlown
 
-
         self.accumISqT = accumISqT
 
-
         self.tccName = tccName
-
-

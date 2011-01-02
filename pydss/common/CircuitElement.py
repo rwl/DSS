@@ -14,15 +14,19 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class CircuitElement(object):
     """Base class for all elements of a circuit.
     """
 
-    def __init__(self, name='', enabled=False, baseFreq=0.0, nodeRef=0, yOrder=0, yPrimInvalid=False, lastTerminalChecked=0, checked=False, hasMeter=False, isolated=False, hasControl=False, partOfFeeder=False, nTerms=0, nConds=0, nPhases=0, busIndex=0, yPrimFreq=0.0, controlElement=None, terminals=None, activeTerminal=None, yPrimSeries=None, yPrimShunt=None, yPrim=None, like=None):
+    def __init__(self, name='', enabled=False, baseFreq=0.0, nodeRef=0,
+            yOrder=0, yPrimInvalid=False, lastTerminalChecked=0,
+            checked=False, hasMeter=False, isolated=False, hasControl=False,
+            partOfFeeder=False, nTerms=0, nConds=0, nPhases=0, busIndex=0,
+            yPrimFreq=0.0, controlElement=None, terminals=None,
+            activeTerminal=None, yPrimSeries=None, yPrimShunt=None, yPrim=None,
+            like=None):
         """Initialises a new 'CircuitElement' instance.
         """
-
         self.name = name
 
         #: Indicates whether this element is enabled.
@@ -31,12 +35,9 @@ class CircuitElement(object):
         #: Base frequency for ratings.
         self.baseFreq = baseFreq
 
-
         self.nodeRef = nodeRef
 
-
         self.yOrder = yOrder
-
 
         self.yPrimInvalid = yPrimInvalid
 
@@ -46,27 +47,20 @@ class CircuitElement(object):
         #: Flag used in tree searches etc.
         self.checked = checked
 
-
         self.hasMeter = hasMeter
-
 
         self.isolated = isolated
 
-
         self.hasControl = hasControl
 
-
         self.partOfFeeder = partOfFeeder
-
 
         self.nTerms = nTerms
 
         #: No. conductors per terminal.
         self.nConds = nConds
 
-
         self.nPhases = nPhases
-
 
         self.busIndex = busIndex
 
@@ -86,27 +80,6 @@ class CircuitElement(object):
         self.yPrim = yPrim
 
         self.like = like
-
-
-    controlElement = None
-
-    def add_terminals(self, *terminals):
-        for obj in terminals:
-            self.terminals.append(obj)
-
-    def remove_terminals(self, *terminals):
-        for obj in terminals:
-            self.terminals.remove(obj)
-
-    activeTerminal = None
-
-    yPrimSeries = None
-
-    yPrimShunt = None
-
-    yPrim = None
-
-    like = None
 
     def doYPrimCalcs(self, yMatrix):
         pass

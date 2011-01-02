@@ -17,19 +17,24 @@
 from pydss.conversion.PowerConversionElement import PowerConversionElement
 
 class Equivalent(PowerConversionElement):
-    """Multi terminal, multi-phase Short Circuit (Thevinen) Equivalent  Enter positive and zero short circuit impedance matrices and Voltage behind the equivalent.
+    """Multi terminal, multi-phase Short Circuit (Thevinen) Equivalent  Enter
+    positive and zero short circuit impedance matrices and Voltage behind the
+    equivalent.
     """
 
-    def __init__(self, buses='', baseKV=0.0, pu=0.0, angle=0.0, frequency=0.0, phases=0, r1=0.0, x1=0.0, r0=0.0, x0=0.0, *args, **kw_args):
+    def __init__(self, buses='', baseKV=0.0, pu=0.0, angle=0.0, frequency=0.0,
+            phases=0, r1=0.0, x1=0.0, r0=0.0, x0=0.0, *args, **kw_args):
         """Initialises a new 'Equivalent' instance.
         """
         #: Array of Bus Names to which equivalent source is connected.
         self.buses = buses
 
-        #: Base Source kV, usually L-L unless you are making a positive-sequence model in which case, it will be L-N.
+        #: Base Source kV, usually L-L unless you are making a
+        #  positive-sequence model in which case, it will be L-N.
         self.baseKV = baseKV
 
-        #: Per unit of the base voltage that the source is actually operating at.
+        #: Per unit of the base voltage that the source is actually operating
+        #  at.
         self.pu = pu
 
         #: Phase angle in degrees of first phase.
@@ -54,4 +59,3 @@ class Equivalent(PowerConversionElement):
         self.x0 = x0
 
         super(Equivalent, self).__init__(*args, **kw_args)
-

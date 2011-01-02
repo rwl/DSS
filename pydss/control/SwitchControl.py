@@ -21,14 +21,16 @@ class SwitchControl(ControlElement):
     def __init__(self, action="open", lock=False, delay=0.0, *args, **kw_args):
         """Initialises a new 'SwitchControl' instance.
         """
-        #: Simulates manual operation of the controlled switch to open or close, after a time delay. Values are: "open", "close"
+        #: Simulates manual operation of the controlled switch to open or
+        #  close, after a time delay. Values are: "open", "close"
         self.action = action
 
-        #: Controlled switch is locked in its present open / close state. Switch will not respond to either manual or automatic control until this Lock is removed.
+        #: Controlled switch is locked in its present open / close state.
+        #  Switch will not respond to either manual or automatic control until
+        #  this Lock is removed.
         self.lock = lock
 
         #: Operating time delay (sec) of the switch.
         self.delay = delay
 
         super(SwitchControl, self).__init__(*args, **kw_args)
-

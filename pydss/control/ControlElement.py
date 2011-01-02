@@ -20,33 +20,25 @@ class ControlElement(CircuitElement):
     """Base for control classes.
     """
 
-    def __init__(self, elementName='', elementTerminal=0, controlledBusName='', monitoredVariable='', monitoredVarIndex=0, timeDelay=0.0, dblTraceParam=0.0, controlledBus=None, *args, **kw_args):
+    def __init__(self, elementName='', elementTerminal=0, controlledBusName='',
+            monitoredVariable='', monitoredVarIndex=0, timeDelay=0.0,
+            dblTraceParam=0.0, controlledBus=None, *args, **kw_args):
         """Initialises a new 'ControlElement' instance.
         """
-
         self.elementName = elementName
-
 
         self.elementTerminal = elementTerminal
 
-
         self.controlledBusName = controlledBusName
-
 
         self.monitoredVariable = monitoredVariable
 
-
         self.monitoredVarIndex = monitoredVarIndex
 
-
         self.timeDelay = timeDelay
-
 
         self.dblTraceParam = dblTraceParam
 
         self.controlledBus = controlledBus
 
         super(ControlElement, self).__init__(*args, **kw_args)
-
-    controlledBus = None
-

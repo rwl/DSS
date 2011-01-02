@@ -22,28 +22,3 @@ from pydss.control.RegulatorControl import RegulatorControl
 from pydss.control.Relay import Relay
 from pydss.control.StorageController import StorageController
 from pydss.control.SwitchControl import SwitchControl
-
-class controlType(str):
-    """Values are: Current, Voltage, kVAr, Time
-    """
-    pass
-
-class relayType(str):
-    """Values are: Current, Fortyseven, Generic
-    """
-    pass
-
-class dischargeMode(str):
-    """Values are: peakShave, follow, support, loadShape, time
-    """
-    pass
-
-class chargeMode(str):
-    """Values are: loadShape, time
-    """
-    pass
-
-class switchAction(str):
-    """Values are: open, close
-    """
-    pass

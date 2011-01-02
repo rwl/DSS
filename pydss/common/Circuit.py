@@ -14,29 +14,31 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-
 class Circuit(object):
     """Defines a container of circuit elements.
     """
 
-    def __init__(self, name='', numNodes=0, generatorDispatchReference=0.0, genMultiplier=0.0, solved=False, busNameRedefined=False, control_busNameRedefined=False, loadMultiplier=0.0, defaultGrowthFactor=0.0, defaultHourMult=0.0, priceSignal=0.0, solution=None, controlQueue=None, busList=None, faults=None, voltageSources=None, currentSources=None, sensors=None, monitors=None, energyMeters=None, generators=None, transformers=None, capControls=None, regControls=None, lines=None, loads=None, shuntCapacitors=None, feeder=None):
+    def __init__(self, name='', numNodes=0, generatorDispatchReference=0.0,
+            genMultiplier=0.0, solved=False, busNameRedefined=False,
+            control_busNameRedefined=False, loadMultiplier=0.0,
+            defaultGrowthFactor=0.0, defaultHourMult=0.0, priceSignal=0.0,
+            solution=None, controlQueue=None, busList=None, faults=None,
+            voltageSources=None, currentSources=None, sensors=None,
+            monitors=None, energyMeters=None, generators=None,
+            transformers=None, capControls=None, regControls=None, lines=None,
+            loads=None, shuntCapacitors=None, feeder=None):
         """Initialises a new 'Circuit' instance.
         """
-
         self.name = name
 
-
         self.numNodes = numNodes
-
 
         self.generatorDispatchReference = generatorDispatchReference
 
         #: Global multiplier for every generator.
         self.genMultiplier = genMultiplier
 
-
         self.solved = solved
-
 
         self.busNameRedefined = busNameRedefined
 
@@ -46,12 +48,9 @@ class Circuit(object):
         #: Global multiplier for every load.
         self.loadMultiplier = loadMultiplier
 
-
         self.defaultGrowthFactor = defaultGrowthFactor
 
-
         self.defaultHourMult = defaultHourMult
-
 
         self.priceSignal = priceSignal
 
@@ -94,7 +93,6 @@ class Circuit(object):
 
 
     def getsolution(self):
-        
         return self._solution
 
     def setsolution(self, value):
@@ -111,7 +109,6 @@ class Circuit(object):
     controlQueue = None
 
     def getbusList(self):
-        
         return self._busList
 
     def setbusList(self, value):
@@ -131,56 +128,8 @@ class Circuit(object):
         for obj in busList:
             obj.circuit = None
 
-    def add_faults(self, *faults):
-        for obj in faults:
-            self.faults.append(obj)
-
-    def remove_faults(self, *faults):
-        for obj in faults:
-            self.faults.remove(obj)
-
-    def add_voltageSources(self, *voltageSources):
-        for obj in voltageSources:
-            self.voltageSources.append(obj)
-
-    def remove_voltageSources(self, *voltageSources):
-        for obj in voltageSources:
-            self.voltageSources.remove(obj)
-
-    def add_currentSources(self, *currentSources):
-        for obj in currentSources:
-            self.currentSources.append(obj)
-
-    def remove_currentSources(self, *currentSources):
-        for obj in currentSources:
-            self.currentSources.remove(obj)
-
-    def add_sensors(self, *sensors):
-        for obj in sensors:
-            self.sensors.append(obj)
-
-    def remove_sensors(self, *sensors):
-        for obj in sensors:
-            self.sensors.remove(obj)
-
-    def add_monitors(self, *monitors):
-        for obj in monitors:
-            self.monitors.append(obj)
-
-    def remove_monitors(self, *monitors):
-        for obj in monitors:
-            self.monitors.remove(obj)
-
-    def add_energyMeters(self, *energyMeters):
-        for obj in energyMeters:
-            self.energyMeters.append(obj)
-
-    def remove_energyMeters(self, *energyMeters):
-        for obj in energyMeters:
-            self.energyMeters.remove(obj)
-
     def getgenerators(self):
-        
+
         return self._generators
 
     def setgenerators(self, value):
@@ -199,62 +148,6 @@ class Circuit(object):
     def removegenerators(self, *generators):
         for obj in generators:
             obj.circuit = None
-
-    def add_transformers(self, *transformers):
-        for obj in transformers:
-            self.transformers.append(obj)
-
-    def remove_transformers(self, *transformers):
-        for obj in transformers:
-            self.transformers.remove(obj)
-
-    def add_capControls(self, *capControls):
-        for obj in capControls:
-            self.capControls.append(obj)
-
-    def remove_capControls(self, *capControls):
-        for obj in capControls:
-            self.capControls.remove(obj)
-
-    def add_regControls(self, *regControls):
-        for obj in regControls:
-            self.regControls.append(obj)
-
-    def remove_regControls(self, *regControls):
-        for obj in regControls:
-            self.regControls.remove(obj)
-
-    def add_lines(self, *lines):
-        for obj in lines:
-            self.lines.append(obj)
-
-    def remove_lines(self, *lines):
-        for obj in lines:
-            self.lines.remove(obj)
-
-    def add_loads(self, *loads):
-        for obj in loads:
-            self.loads.append(obj)
-
-    def remove_loads(self, *loads):
-        for obj in loads:
-            self.loads.remove(obj)
-
-    def add_shuntCapacitors(self, *shuntCapacitors):
-        for obj in shuntCapacitors:
-            self.shuntCapacitors.append(obj)
-
-    def remove_shuntCapacitors(self, *shuntCapacitors):
-        for obj in shuntCapacitors:
-            self.shuntCapacitors.remove(obj)
-
-    def add_feeder(self, *feeder):
-        for obj in feeder:
-            self.feeder.append(obj)
-
-    def remove_feeder(self, *feeder):
-        for obj in feeder:
-            self.feeder.remove(obj)
 
     def reProcessBusDefs(self):
         pass
