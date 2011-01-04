@@ -19,8 +19,8 @@ from numpy import zeros, diag, array, ndarray
 def triarray(lower):
     """Returns a symmetric array given only the lower triangular form. For
     example:
-        >>> a = triarray([[1.2], [.3, 1.2], [.3, .3, 1.2]])
-        >>> a[0, 3]
+        >>> a = triarray([[1.2], [3.0, 1.2], [3.0, 3.0, 1.2]])
+        >>> a[0, 2]
         3.0
     """
     c = 1
@@ -30,11 +30,14 @@ def triarray(lower):
 
     n = len(lower[-1])
 
-    a = zeros(n)
+    a = zeros((n, n))
 
     for i, row in enumerate(lower):
         j = len(row)
-        a[i, :j] = row
+        if j == n:
+            a[i, :] = row
+        else:
+            a[i, :j] = row
 
     return symmetrize(a)
 
