@@ -1,4 +1,4 @@
-from pydss import *
+from dss import *
 
 executive = Executive()
 del executive.circuits[:]
