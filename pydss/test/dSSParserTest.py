@@ -27,6 +27,7 @@ class DSSParserTest(unittest.TestCase):
     def testNewCommand(self):
         cmd = "new circuit.cktA"
         self.executive.command = cmd
+        self.assertEqual(len(self.executive.circuits), 1)
 
 
 if __name__ == "__main__":
