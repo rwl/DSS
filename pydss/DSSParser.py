@@ -17,7 +17,7 @@
 import os
 import logging
 
-from pydss.parsing_util import \
+from pydss.util import \
     integer, boolean, real, tilde, lbrack, rbrack, equals, dot, comma
 
 from pyparsing import \

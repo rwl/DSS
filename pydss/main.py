@@ -66,9 +66,7 @@ def dss(prompt="dss> "):
         except KeyboardInterrupt:
             print '\nKeyboardInterrupt'
 
-        if s:
-            print s
-            executive.command = s
+        executive.command = s
 
 if __name__ == '__main__':
     dss()
