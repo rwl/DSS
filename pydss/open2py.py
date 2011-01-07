@@ -152,6 +152,8 @@ executive = Executive()
         parts = line[1:].split()
         c = 0
         for part in parts:
+
+            print "PART:", part
             if "=" in part:
                 key, value = part.split("=")
             else:

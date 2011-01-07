@@ -17,6 +17,8 @@
 class ExecCommands(object):
     """Defines commands for the executive.
     """
+    def __init__(self, executive):
+        self.executive = executive
     def edit(self):
         pass
     def select(self, elementName, terminalNumber):

@@ -18,7 +18,7 @@ class ExecOptions(object):
     """Defines options for an executive.
     """
 
-    def __init__(self, type='', element='', hour=0, sec=0L, year=0,
+    def __init__(self, executive, type='', element='', hour=0, sec=0L, year=0,
             frequency=0.0, stepSize=0.0, mode="Snapshot", random="Uniform",
             number=0, time=0, circuit='', editor='', tolerance=0.0, maxIter=0,
             loadModel="Powerflow", loadMult=0.0, normVMinPU=0.0,
@@ -38,6 +38,8 @@ class ExecOptions(object):
             terminal=None, bus=None, keepList=None):
         """Initialises a new 'ExecOptions' instance.
         """
+        self.executive = executive
+
         #: Active DSS class type.
         self.type = type
 
