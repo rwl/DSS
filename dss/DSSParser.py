@@ -23,7 +23,8 @@ from dss.util import \
 from pyparsing import \
     Literal, Word, ZeroOrMore, Optional, Or, OneOrMore, delimitedList, \
     CaselessLiteral, Combine, restOfLine, quotedString, CaselessKeyword, \
-    oneOf, ParseException, alphas, Keyword
+    oneOf, ParseException, alphas, Keyword, printables, alphanums, Group, \
+    MatchFirst, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -53,6 +54,7 @@ class DSSParser(object):
     def parseString(self, data):
         try:
             tokens = self._dssparser.parseString(data)
+            print "TOKS:", tokens
             return tokens
         except ParseException, err:
             print err.line
@@ -78,7 +80,7 @@ class DSSParser(object):
 #        abbreviation = Or(cmd_keyword, name)
 #        abbreviation.setParseAction(self._push_abbreviation)
 
-        arg = Word(alphas)
+        arg = Word(alphanums)
 
         about = CaselessKeyword("About")
         allocate_loads = CaselessKeyword("AllocateLoads")
@@ -130,7 +132,7 @@ class DSSParser(object):
         losses = CaselessKeyword("Losses")
         more = Or([CaselessKeyword("More"), CaselessKeyword("M"), tilde])
         more.setParseAction(self._pushMoreCommand)
-        new = CaselessKeyword("New") + arg + arg
+        new = CaselessKeyword("New")# + arg + arg
 #        obj_prop_name + equals + value
         opencmd = CaselessKeyword("Open") + arg + arg + arg
         phase_losses = CaselessKeyword("PhaseLosses")
@@ -194,7 +196,8 @@ class DSSParser(object):
 #        cmd_verb = oneOf([clear, more])
 
 
-        command = arg#cmd_keyword
+#        command = oneOf(["new", "clear"], caseless=True)#.setResultsName("cmd")
+        command = MatchFirst([new, clear]).setResultsName("command")
 
         array_str_delim = Literal("[]{}()\"'").suppress()
         row_delim = Literal("|")
@@ -213,12 +216,19 @@ class DSSParser(object):
         symmetrical_matrix = matrix
 
         name = arg
-        key = arg
-        value = Or(array )
-        positional = value
-        named = key + equals.suppress() + value
+        key = arg.setResultsName("key")
+        value = Word(alphanums, alphanums+"_"+".") #Or(array )
+        positional = Group(value)# + comma
+        named = Group(key + equals.suppress() + value)# + Optional(comma)
 #        default_order = OneOrMore(positional)
-        param = OneOrMore(Or(positional, named))
+
+#        args_kwargs = ZeroOrMore(positional) + ZeroOrMore(named)
+#        args = ZeroOrMore(positional)
+#        kwargs = ZeroOrMore(named).setResultsName("kwargs")
+
+#        params = ZeroOrMore(positional) + ZeroOrMore(named)
+        params = Group(ZeroOrMore(named | positional)).setResultsName("params")
+        params.setParseAction(self._pushParameters)
 
         clsname = arg
         element_name = arg
@@ -232,7 +242,7 @@ class DSSParser(object):
         prop_query = Keyword("?") + obj_prop_name
 
 
-        command_syntax = command + OneOrMore(param)
+        command_syntax = command + params
         command_syntax.setParseAction(self._pushCommandSyntax)
 
         sequence = ZeroOrMore(command_syntax)
@@ -241,7 +251,29 @@ class DSSParser(object):
 
 
     def _pushCommandSyntax(self, tokens):
-        tokens["title"]
+        print "CMD:", tokens, tokens.keys()#
+
+        print tokens["params"]
+##        tokens["args"] = args
+##        tokens["kwargs"] = kwargs
+#
+#        d = {
+#             "args": args, "kwargs": kwargs}
+#
+#        return d
+
+
+    def _pushParameters(self, tokens):
+        print "PARAM:", tokens, tokens.keys()#, tokens["params"]
+
+        args = [p[0] for p in tokens["params"].asList() if len(p) == 1]
+        kwargs = dict([p for p in tokens["params"].asList() if len(p) == 2])
+
+        print args, kwargs
+
+        return [[args, kwargs]]
+#
+
 
     def _pushMoreCommand(self, tokens):
         tokens["command"]
