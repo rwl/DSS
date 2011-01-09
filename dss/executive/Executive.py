@@ -22,7 +22,9 @@ class ExecParser(DSSParser):
 
     def __init__(self, executive):
         super(ExecParser, self).__init__()
+
         self.executive = executive
+
 
     def onNewCommand(self, toks):
         toks = super(ExecParser, self).onNewCommand(toks)
@@ -54,6 +56,8 @@ class Executive(object):
 
         self.activeCircuit = None
 
+        self.activeObject = None
+
         self.circuits = []
 
     def _getCommand(self):
@@ -72,3 +76,4 @@ class Executive(object):
 
         self.circuits.append(new)
         self.activeCircuit = new
+        self.activeObject = new

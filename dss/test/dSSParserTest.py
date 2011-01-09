@@ -34,14 +34,14 @@ class NewCommandTest(unittest.TestCase):
 
 
     def testPositional(self):
-        cmd = "new circuit.cktA 6.0"
+        cmd = "new circuit.cktA 6.0 4.0"
 
         self.executive.command = cmd
 
         self.assertEqual(len(self.executive.circuits), 1)
         ckt = self.executive.activeCircuit
         self.assertEqual(ckt.name, "cktA")
-#        self.assertEqual(ckt.generatorDispatchReference, 6.0)
+        self.assertEqual(ckt.generatorDispatchReference, 6.0)
 
 
 #    def testNamed(self):

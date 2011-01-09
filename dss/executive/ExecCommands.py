@@ -40,6 +40,8 @@ class ExecCommands(object):
         else:
             self.executive.activeCircuit.add(new)
 
+        return new
+
 
     def edit(self):
         pass

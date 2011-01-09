@@ -28,7 +28,7 @@ from pyparsing import \
     Literal, Word, ZeroOrMore, Optional, Or, OneOrMore, delimitedList, \
     CaselessLiteral, Combine, restOfLine, quotedString, CaselessKeyword, \
     oneOf, ParseException, alphas, Keyword, printables, alphanums, Group, \
-    MatchFirst, Dict
+    MatchFirst, Dict, dblQuotedString
 
 
 from dss.common.Circuit import Circuit
@@ -176,8 +176,6 @@ class DSSParser(object):
         cls_obj_bus_node_delim = dot
         key_val_sep = equals
         continuation = tilde
-        comment_line = Literal("\\") + restOfLine
-        inline_comment = Literal("!") + restOfLine
 
 
 
@@ -210,14 +208,69 @@ class DSSParser(object):
         sequence = ZeroOrMore(commands)
 
         # )
-        params.setParseAction(self.pushParameters)
+#        params.setParseAction(self.pushParameters)
 #        command_syntax.setParseAction(self.pushCommandSyntax)
 
         return sequence
 
 
+    def quantityConstruct(self):
+        quantity = Or([CaselessLiteral("Currents"),
+                      CaselessLiteral("Monitor") + Word(alphanums),
+                      CaselessLiteral("Faults"),
+                      CaselessLiteral("Elements"),
+                      CaselessLiteral("Buses"),
+                      CaselessLiteral("Panel"),
+                      CaselessLiteral("Meter"),
+                      CaselessLiteral("Generators"),
+                      CaselessLiteral("Losses"),
+#                      CaselessLiteral("Powers") + [MVA|kVA*] [Seq* | Elements],
+#                      CaselessLiteral("Voltages") + [LL |LN*] [Seq* | Nodes | Elements],
+                      CaselessLiteral("Zone"),
+                      CaselessLiteral("AutoAdded"),
+                      CaselessLiteral("Taps"),
+                      CaselessLiteral("Overloads"),
+                      CaselessLiteral("Unserved"),
+                      CaselessLiteral("EVentlog"),
+                      CaselessLiteral("Variables"),
+                      CaselessLiteral("Isolated"),
+                      CaselessLiteral("Ratings"),
+                      CaselessLiteral("Loops"),
+                      CaselessLiteral("Yprim"),
+                      CaselessLiteral("Y"),
+#                      CaselessLiteral("BusFlow") + arg + [MVA|kVA*] [Seq* | Elements]
+        ])
+
+        return quantity
+
+
+    def exportQuantityConstruct(self):
+        arg = Word(alphanums)
+
+        export_quantity = Or([CaselessKeyword("Voltages"),
+                             CaselessKeyword("SeqVoltages"),
+                             CaselessKeyword("Currents"),
+                             CaselessKeyword("Overloads"),
+                             CaselessKeyword("SeqCurrents"),
+                             CaselessKeyword("Powers"),
+                             CaselessKeyword("Faultstudy"),
+                             CaselessKeyword("Loads"),
+                             CaselessKeyword("Monitors") + arg,
+                             CaselessKeyword("Voltages"),
+                             CaselessKeyword("Meters") + arg,
+                             CaselessKeyword("Generators") + arg,
+                             CaselessKeyword("YPrims") + arg,
+                             CaselessKeyword("Y") + arg,
+                             CaselessKeyword("SeqZ") + arg])
+
+        return export_quantity
+
+
     def commandConstruct(self):
         arg = Word(alphanums)
+
+        comment_line = Literal("\\") + restOfLine
+        inline_comment = Literal("!") + restOfLine
 
         # Object parameter
         clsname = oneOf(" ".join(CLSMAP.keys()), caseless=True)
@@ -228,7 +281,13 @@ class DSSParser(object):
 
         # Parameters
         key = arg.setResultsName("key")
-        value = Word(alphanums, alphanums+"_"+".") #Or(array )
+        value = MatchFirst([integer, real,
+                            #array,
+                            dblQuotedString,
+                            Word(alphas, alphanums+"_")
+                            ])
+        value = Word(alphanums, alphanums+"_"+".")
+
         positional = Group(value)# + comma
         named = Group(key + equals.suppress() + value)# + Optional(comma)
         params = Group(ZeroOrMore(named | positional)).setResultsName("params")
@@ -258,22 +317,7 @@ class DSSParser(object):
         enable = CaselessKeyword("Enable") + arg.setResultsName("obj")
         estimate = CaselessKeyword("Estimate")
 
-        export_quantity = Or([CaselessKeyword("Voltages"),
-                             CaselessKeyword("SeqVoltages"),
-                             CaselessKeyword("Currents"),
-                             CaselessKeyword("Overloads"),
-                             CaselessKeyword("SeqCurrents"),
-                             CaselessKeyword("Powers"),
-                             CaselessKeyword("Faultstudy"),
-                             CaselessKeyword("Loads"),
-                             CaselessKeyword("Monitors") + arg,
-                             CaselessKeyword("Voltages"),
-                             CaselessKeyword("Meters") + arg,
-                             CaselessKeyword("Generators") + arg,
-                             CaselessKeyword("YPrims") + arg,
-                             CaselessKeyword("Y") + arg,
-                             CaselessKeyword("SeqZ") + arg])
-
+        export_quantity = self.exportQuantityConstruct()
         export = CaselessKeyword("Export") + export_quantity + \
             arg.setResultsName("filename_or_switch")
         fileedit = CaselessKeyword("Fileedit") + arg
@@ -296,34 +340,10 @@ class DSSParser(object):
         seq_currents = CaselessKeyword("SeqCurrents")
         seq_powers = CaselessKeyword("SeqPowers")
         seq_voltages = CaselessKeyword("SeqVoltages")
-#        set_ = CaselessKeyword("Set") + named + options
+        set_ = CaselessKeyword("Set")# + named + options
         setkv_base = CaselessKeyword("SetkVBase")
 
-        quantity = Or([CaselessLiteral("Currents"),
-                      CaselessLiteral("Monitor") + arg,
-                      CaselessLiteral("Faults"),
-                      CaselessLiteral("Elements"),
-                      CaselessLiteral("Buses"),
-                      CaselessLiteral("Panel"),
-                      CaselessLiteral("Meter"),
-                      CaselessLiteral("Generators"),
-                      CaselessLiteral("Losses"),
-#                      CaselessLiteral("Powers") + [MVA|kVA*] [Seq* | Elements],
-#                      CaselessLiteral("Voltages") + [LL |LN*] [Seq* | Nodes | Elements],
-                      CaselessLiteral("Zone"),
-                      CaselessLiteral("AutoAdded"),
-                      CaselessLiteral("Taps"),
-                      CaselessLiteral("Overloads"),
-                      CaselessLiteral("Unserved"),
-                      CaselessLiteral("EVentlog"),
-                      CaselessLiteral("Variables"),
-                      CaselessLiteral("Isolated"),
-                      CaselessLiteral("Ratings"),
-                      CaselessLiteral("Loops"),
-                      CaselessLiteral("Yprim"),
-                      CaselessLiteral("Y"),
-#                      CaselessLiteral("BusFlow") + arg + [MVA|kVA*] [Seq* | Elements]
-        ])
+        quantity = self.quantityConstruct()
         show = CaselessKeyword("Show") + quantity
 
         solve = CaselessKeyword("Solve")
@@ -339,16 +359,16 @@ class DSSParser(object):
         z_sc10 = CaselessKeyword("Zsc10")
         z_sc_refresh = CaselessKeyword("ZscRefresh")
 
-        commands = MatchFirst([about, allocate_loads, build_y, calc_volt_bases,
-            cd, ckt_losses, clear, close, close_di, #compare_cases,
-            compile,
-            redirect, currents, di_plot, disable, doscmd, dump, edit, enable,
-            estimate, export, fileedit, get, help, init, interpolate, losses,
-            more, new, opencmd, phase_losses, plot, powers, #reconductor,
-            reset,
-            rotate, seq_currents, seq_powers, seq_voltages, #set_,
+        commands = MatchFirst([comment_line, inline_comment,
+            new, more, clear, redirect, compile, set_, solve, plot, help,
+            about, edit, reset, calc_volt_bases, build_y, allocate_loads,
+            cd, ckt_losses, close, close_di, #compare_cases,
+            currents, di_plot, disable, doscmd, dump, enable,
+            estimate, export, fileedit, get, init, interpolate, losses,
+            opencmd, phase_losses, powers, #reconductor,
+            rotate, seq_currents, seq_powers, seq_voltages,
             setkv_base,
-            show, solve, totals, varnames, var_values, vdiff,# visualize,
+            show, totals, varnames, var_values, vdiff,# visualize,
             voltages, #yearly_curves,
             y_sc, z_sc, z_sc10, z_sc_refresh])
 
@@ -379,10 +399,10 @@ class DSSParser(object):
 #        return d
 
 
-    def pushCommandSyntax(self, tokens):
-        print "CMD:", tokens, tokens.keys()#
-
-        print tokens["params"]
+#    def pushCommandSyntax(self, tokens):
+#        print "CMD:", tokens, tokens.keys()#
+#
+#        print tokens["params"]
 ##        tokens["args"] = args
 ##        tokens["kwargs"] = kwargs
 #
@@ -392,19 +412,17 @@ class DSSParser(object):
 #        return d
 
 
-    def pushParameters(self, tokens):
-        print "PARAM:", tokens, tokens.keys()#, tokens["params"]
-
-        args = [p[0] for p in tokens["params"].asList() if len(p) == 1]
-        kwargs = dict([p for p in tokens["params"].asList() if len(p) == 2])
-
-        print args, kwargs
-
-        return [[args, kwargs]]
+#    def pushParameters(self, tokens):
+#        print "PARAM:", tokens, tokens.keys()#, tokens["params"]
+#
+#        args = [p[0] for p in tokens["params"].asList() if len(p) == 1]
+#        kwargs = dict([p for p in tokens["params"].asList() if len(p) == 2])
+#
+#        return [[args, kwargs]]
 #
 
     def onNewCommand(self, tokens):
-        print "NEW:", tokens
+        print "NEW:", tokens[3].asList()
 
         d = {"command": tokens[0],
              "object": tokens[1],
