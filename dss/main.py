@@ -32,9 +32,9 @@ class DSS(object):
 Welcome to DSS. For assistance press TAB or type "help" then hit ENTER.""" % \
     (VERSION, REV)
 
-    DARK_BACKGROUND_COLORS = [Style.BRIGHT + Fore.CYAN,
+    DARK_BACKGROUND_COLORS = [Fore.YELLOW,
                               Fore.GREEN,
-                              Fore.YELLOW]
+                              Fore.CYAN]
 
     LIGHT_BACKGROUND_COLORS = [Fore.BLUE,
                                Fore.MAGENTA]
@@ -50,8 +50,6 @@ Welcome to DSS. For assistance press TAB or type "help" then hit ENTER.""" % \
     def run(self):
         t0 = time()
 
-        prompt = self.COLORS[0] + self.prompt + Style.RESET_ALL
-
         print self.COLORS[1] + self.SPASH_TEXT + Style.RESET_ALL
 
         readline.parse_and_bind('tab: complete')
@@ -61,16 +59,20 @@ Welcome to DSS. For assistance press TAB or type "help" then hit ENTER.""" % \
             try:
                 s = raw_input(self._prompt())
             except EOFError:
-                really = raw_input("\nDo you really want to exit ([y]/n)? ")
-                if (len(really) == 0) or (really.lower() == "y"):
-                    print "Total execution time %d seconds." % (time() - t0)
-                    sys.exit()
+                if self._really():
+                    break
                 else:
                     print ''
             except KeyboardInterrupt:
-                print '\nKeyboardInterrupt'
+                if self._really():
+                    break
+                else:
+                    print ''
 
             self.executive.command = s
+
+        print "Total execution time %d seconds." % (time() - t0)
+        return 0
 
 
     def _prompt(self):
@@ -79,9 +81,22 @@ Welcome to DSS. For assistance press TAB or type "help" then hit ENTER.""" % \
         if active is None:
             return prompt
         else:
-            prefix = active.__class__.__name__ + "." + active.name
+            prefix = active.__class__.__name__.lower() + "." + active.name
             return self.COLORS[2] + prefix + " " + prompt
 
 
+    def _really(self):
+        really = raw_input("\nDo you really want to exit ([y]/n)? ")
+        if (len(really) == 0) or (really.lower() == "y"):
+            return True
+        else:
+            return False
+
+
+def main():
+    exit_code = DSS().run()
+    sys.exit(exit_code)
+
+
 if __name__ == '__main__':
-    DSS().run()
+    main()
