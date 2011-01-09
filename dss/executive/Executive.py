@@ -24,13 +24,22 @@ class ExecParser(DSSParser):
         super(ExecParser, self).__init__()
         self.executive = executive
 
-    def onNew(self, tokens):
-        self.executive.commands.new(tokens)
+    def onNewCommand(self, toks):
+        toks = super(ExecParser, self).onNewCommand(toks)
+
+        print "TOKS:", toks
+
+        self.executive.commands.new(toks["object"], toks["name"],
+                                    toks["args"], toks["kwargs"])
+
+
+    def onMoreCommand(self, tokens):
+        pass
 
 
 class Executive(object):
 
-    def __init__(self, maxCircuits=0):
+    def __init__(self, maxCircuits=1):
         """Initialises a new 'Executive' instance.
         """
         self._command = None
@@ -55,3 +64,11 @@ class Executive(object):
         self.parser.parseString(cmd)
 
     command = property(_getCommand, _setCommand)
+
+
+    def addCircuit(self, new):
+        if len(self.circuits) > self.maxCircuits:
+            raise ValueError
+
+        self.circuits.append(new)
+        self.activeCircuit = new

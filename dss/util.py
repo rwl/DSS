@@ -24,7 +24,6 @@ from pyparsing import \
     TokenConverter, oneOf, string, Literal, Group, Word, Optional, Combine, \
     sglQuotedString, dblQuotedString, restOfLine, nums
 
-
 def triarray(lower):
     """Returns a symmetric array given only the lower triangular form. For
     example:
@@ -203,6 +202,7 @@ def make_unique_name(base, existing=[], format="%s_%s"):
         count += 1
 
     return name
+
 
 if __name__ == "__main__":
     import doctest

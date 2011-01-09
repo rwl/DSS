@@ -14,11 +14,33 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+from dss.DSSParser import CLSMAP
+
+from dss.common.Circuit import Circuit
+
+
 class ExecCommands(object):
     """Defines commands for the executive.
     """
     def __init__(self, executive):
         self.executive = executive
+
+
+    def new(self, object, name, *args, **kwargs):
+        if not object:
+            object = self.executive.activeElement
+        else:
+            self.executive.activeElement = object
+
+        klass = CLSMAP[object.lower()]
+        new = klass(name, *args, **kwargs)
+
+        if isinstance(new, Circuit):
+            self.executive.addCircuit(new)
+        else:
+            self.executive.activeCircuit.add(new)
+
+
     def edit(self):
         pass
     def select(self, elementName, terminalNumber):

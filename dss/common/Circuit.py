@@ -18,7 +18,7 @@ class Circuit(object):
     """Defines a container of circuit elements.
     """
 
-    def __init__(self, name='', numNodes=0, generatorDispatchReference=0.0,
+    def __init__(self, name, generatorDispatchReference=0.0,
             genMultiplier=0.0, solved=False, busNameRedefined=False,
             control_busNameRedefined=False, loadMultiplier=0.0,
             defaultGrowthFactor=0.0, defaultHourMult=0.0, priceSignal=0.0,
@@ -31,7 +31,7 @@ class Circuit(object):
         """
         self.name = name
 
-        self.numNodes = numNodes
+        self.numNodes = 0
 
         self.generatorDispatchReference = generatorDispatchReference
 

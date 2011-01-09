@@ -18,17 +18,41 @@ import unittest
 
 from dss.executive.Executive import Executive
 
-class DSSParserTest(unittest.TestCase):
+class NewCommandTest(unittest.TestCase):
 
     def setUp(self):
         self.executive = Executive()
 
 
-    def testNewCommand(self):
-        cmd = "new object=circuit.cktA loadMultiplier=1.1"
-        cmd = "new circuit.cktA foo loadMultiplier=1.1 genMultiplier=0.9"
+    def testSimple(self):
+        cmd = "new object=circuit.cktA"
+
         self.executive.command = cmd
+
+        self.assertEqual(len(self.executive.circuits), 1)
+        self.assertEqual(self.executive.activeCircuit.name, "cktA")
+
+
+    def testPositional(self):
+        cmd = "new circuit.cktA 6.0"
+
+        self.executive.command = cmd
+
+        self.assertEqual(len(self.executive.circuits), 1)
+        ckt = self.executive.activeCircuit
+        self.assertEqual(ckt.name, "cktA")
+#        self.assertEqual(ckt.generatorDispatchReference, 6.0)
+
+
+#    def testNamed(self):
+#        cmd = "new circuit.cktA loadMultiplier=1.1 genMultiplier=0.9"
+#
+#        self.executive.command = cmd
+#
 #        self.assertEqual(len(self.executive.circuits), 1)
+#        self.assertEqual(self.executive.activeCircuit.name, "cktA")
+#        self.assertEqual(self.executive.activeCircuit.loadMultiplier, 1.1)
+#        self.assertEqual(self.executive.activeCircuit.genMultiplier, 0.9)
 
 
 if __name__ == "__main__":

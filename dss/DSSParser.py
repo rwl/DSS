@@ -20,13 +20,91 @@ import logging
 from dss.util import \
     integer, boolean, real, tilde, lbrack, rbrack, equals, dot, comma
 
+dot = dot.suppress()
+comma = comma.suppress()
+equals = equals.suppress()
+
 from pyparsing import \
     Literal, Word, ZeroOrMore, Optional, Or, OneOrMore, delimitedList, \
     CaselessLiteral, Combine, restOfLine, quotedString, CaselessKeyword, \
     oneOf, ParseException, alphas, Keyword, printables, alphanums, Group, \
     MatchFirst, Dict
 
+
+from dss.common.Circuit import Circuit
+from dss.control.CapacitorControl import CapacitorControl
+from dss.control.GeneratorDispatcher import  GeneratorDispatcher
+from dss.control.Recloser import Recloser
+from dss.control.RegulatorControl import RegulatorControl
+from dss.control.Relay import Relay
+from dss.control.StorageController import StorageController
+from dss.control.SwitchControl import SwitchControl
+
+from dss.conversion.CurrentSource import CurrentSource
+from dss.conversion.Equivalent import Equivalent
+from dss.conversion.Generator import Generator
+from dss.conversion.Load import Load
+from dss.conversion.VoltageSource import VoltageSource
+from dss.conversion.Storage import Storage
+
+from dss.delivery.Capacitor import Capacitor
+from dss.delivery.Fault import Fault
+from dss.delivery.Fuse import Fuse
+from dss.delivery.Line import Line
+from dss.delivery.Reactor import Reactor
+from dss.delivery.Transformer import Transformer
+
+from dss.general.LineCode import LineCode
+from dss.general.LineGeometry import LineGeometry
+from dss.general.LineSpacing import LineSpacing
+from dss.general.LoadShape import LoadShape
+from dss.general.Spectrum import Spectrum
+from dss.general.TimeCurrentCurve import TimeCurrentCurve
+from dss.general.WireData import WireData
+from dss.general.TransformerCode import TransformerCode
+
+from dss.meter.EnergyMeter import EnergyMeter
+from dss.meter.Monitor import Monitor
+from dss.meter.Sensor import Sensor
+
 logger = logging.getLogger(__name__)
+
+
+CLSMAP = {
+    "circuit": Circuit,
+    "capacitorcontrol": CapacitorControl,
+    "generatordispatcher": GeneratorDispatcher,
+    "recloser": Recloser,
+    "regulatorcontrol": RegulatorControl,
+    "regcontrol": RegulatorControl,
+    "relay": Relay,
+    "storagecontroller": StorageController,
+    "switchcontrol": SwitchControl,
+    "currentsource": CurrentSource,
+    "equivalent": Equivalent,
+    "generator": Generator,
+    "load": Load,
+    "voltagesource": VoltageSource,
+    "storage": Storage,
+    "capacitor": Capacitor,
+    "fault": Fault,
+    "fuse": Fuse,
+    "line": Line,
+    "reactor": Reactor,
+    "transformer": Transformer,
+#    "growthshape": GrowthShape,
+    "linecode": LineCode,
+    "linegeometry": LineGeometry,
+    "linespacing": LineSpacing,
+    "loadshape": LoadShape,
+    "spectrum": Spectrum,
+    "timecurrentcurve": TimeCurrentCurve,
+    "wiredata": WireData,
+    "transformercode": TransformerCode,
+    "energymeter": EnergyMeter,
+    "monitor": Monitor,
+    "sensor": Sensor
+}
 
 
 class DSSParser(object):
@@ -54,7 +132,7 @@ class DSSParser(object):
     def parseString(self, data):
         try:
             tokens = self._dssparser.parseString(data)
-            print "TOKS:", tokens
+#            print "TOKENS:", tokens
             return tokens
         except ParseException, err:
             print err.line
@@ -82,6 +160,80 @@ class DSSParser(object):
 
         arg = Word(alphanums)
 
+        clear = CaselessKeyword("Clear")
+
+
+#        cmd_verb = oneOf([clear, more])
+
+
+#        command = oneOf(["new", "clear"], caseless=True)#.setResultsName("cmd")
+
+#        command = MatchFirst([new, clear]).setResultsName("command")
+
+        array_str_delim = Literal("[]{}()\"'").suppress()
+        row_delim = Literal("|")
+        value_delim = comma | Literal(" ")
+        cls_obj_bus_node_delim = dot
+        key_val_sep = equals
+        continuation = tilde
+        comment_line = Literal("\\") + restOfLine
+        inline_comment = Literal("!") + restOfLine
+
+
+
+        array = array_str_delim + delimitedList(real) + array_str_delim
+        matrix = array_str_delim + delimitedList(
+            delimitedList(real), delim="|") + array_str_delim
+        symmetrical_matrix = matrix
+
+        name = arg
+        key = arg.setResultsName("key")
+        value = Word(alphanums, alphanums+"_"+".") #Or(array )
+        positional = Group(value)# + comma
+        named = Group(key + equals.suppress() + value)# + Optional(comma)
+#        default_order = OneOrMore(positional)
+
+#        args_kwargs = ZeroOrMore(positional) + ZeroOrMore(named)
+#        args = ZeroOrMore(positional)
+#        kwargs = ZeroOrMore(named).setResultsName("kwargs")
+
+#        params = ZeroOrMore(positional) + ZeroOrMore(named)
+        params = ZeroOrMore(named | positional).setResultsName("params")
+
+
+#        obj_prop_name = clsname + dot + element_name + dot + key
+#        prop_query = Keyword("?") + obj_prop_name
+
+        commands = self.commandConstruct()
+#        command_syntax = command + params
+
+        sequence = ZeroOrMore(commands)
+
+        # )
+        params.setParseAction(self.pushParameters)
+#        command_syntax.setParseAction(self.pushCommandSyntax)
+
+        return sequence
+
+
+    def commandConstruct(self):
+        arg = Word(alphanums)
+
+        # Object parameter
+        clsname = oneOf(" ".join(CLSMAP.keys()), caseless=True)
+        element_name = arg
+        obj = CaselessKeyword("Object").suppress()
+        clsname_prefix = Group(Optional(clsname + dot) + element_name)
+        obj_param = (obj + equals + clsname_prefix) | clsname_prefix
+
+        # Parameters
+        key = arg.setResultsName("key")
+        value = Word(alphanums, alphanums+"_"+".") #Or(array )
+        positional = Group(value)# + comma
+        named = Group(key + equals.suppress() + value)# + Optional(comma)
+        params = Group(ZeroOrMore(named | positional)).setResultsName("params")
+
+        # Commands
         about = CaselessKeyword("About")
         allocate_loads = CaselessKeyword("AllocateLoads")
         build_y = CaselessKeyword("BuildY")
@@ -131,8 +283,7 @@ class DSSParser(object):
         interpolate = CaselessKeyword("Interpolate") + Word("All")
         losses = CaselessKeyword("Losses")
         more = Or([CaselessKeyword("More"), CaselessKeyword("M"), tilde])
-        more.setParseAction(self._pushMoreCommand)
-        new = CaselessKeyword("New")# + arg + arg
+        new = CaselessKeyword("New") + obj_param + params
 #        obj_prop_name + equals + value
         opencmd = CaselessKeyword("Open") + arg + arg + arg
         phase_losses = CaselessKeyword("PhaseLosses")
@@ -145,7 +296,7 @@ class DSSParser(object):
         seq_currents = CaselessKeyword("SeqCurrents")
         seq_powers = CaselessKeyword("SeqPowers")
         seq_voltages = CaselessKeyword("SeqVoltages")
-#        set = CaselessKeyword("Set") + named + options
+#        set_ = CaselessKeyword("Set") + named + options
         setkv_base = CaselessKeyword("SetkVBase")
 
         quantity = Or([CaselessLiteral("Currents"),
@@ -188,69 +339,47 @@ class DSSParser(object):
         z_sc10 = CaselessKeyword("Zsc10")
         z_sc_refresh = CaselessKeyword("ZscRefresh")
 
-        obj = CaselessKeyword("Object")
+        commands = MatchFirst([about, allocate_loads, build_y, calc_volt_bases,
+            cd, ckt_losses, clear, close, close_di, #compare_cases,
+            compile,
+            redirect, currents, di_plot, disable, doscmd, dump, edit, enable,
+            estimate, export, fileedit, get, help, init, interpolate, losses,
+            more, new, opencmd, phase_losses, plot, powers, #reconductor,
+            reset,
+            rotate, seq_currents, seq_powers, seq_voltages, #set_,
+            setkv_base,
+            show, solve, totals, varnames, var_values, vdiff,# visualize,
+            voltages, #yearly_curves,
+            y_sc, z_sc, z_sc10, z_sc_refresh])
 
-        clear = CaselessKeyword("Clear")
+        # Actions
+        new.setParseAction(self.onNewCommand)
+        more.setParseAction(self.onMoreCommand)
+        obj_param.setParseAction(self.pushObjectParam)
 
-
-#        cmd_verb = oneOf([clear, more])
-
-
-#        command = oneOf(["new", "clear"], caseless=True)#.setResultsName("cmd")
-        command = MatchFirst([new, clear]).setResultsName("command")
-
-        array_str_delim = Literal("[]{}()\"'").suppress()
-        row_delim = Literal("|")
-        value_delim = comma | Literal(" ")
-        cls_obj_bus_node_delim = dot
-        key_val_sep = equals
-        continuation = tilde
-        comment_line = Literal("\\") + restOfLine
-        inline_comment = Literal("!") + restOfLine
-
-
-
-        array = array_str_delim + delimitedList(real) + array_str_delim
-        matrix = array_str_delim + delimitedList(
-            delimitedList(real), delim="|") + array_str_delim
-        symmetrical_matrix = matrix
-
-        name = arg
-        key = arg.setResultsName("key")
-        value = Word(alphanums, alphanums+"_"+".") #Or(array )
-        positional = Group(value)# + comma
-        named = Group(key + equals.suppress() + value)# + Optional(comma)
-#        default_order = OneOrMore(positional)
-
-#        args_kwargs = ZeroOrMore(positional) + ZeroOrMore(named)
-#        args = ZeroOrMore(positional)
-#        kwargs = ZeroOrMore(named).setResultsName("kwargs")
-
-#        params = ZeroOrMore(positional) + ZeroOrMore(named)
-        params = Group(ZeroOrMore(named | positional)).setResultsName("params")
-        params.setParseAction(self._pushParameters)
-
-        clsname = arg
-        element_name = arg
-
-        clsname_prefix = Optional(clsname + dot) + element_name
-        obj_param = Or(value, Combine(obj + equals + value))
+        return commands
 
 
+    def pushObjectParam(self, tokens):
+        print "OBJ:", tokens[0].asList()
+        params = tokens[0].asList()
 
-        obj_prop_name = clsname + dot + element_name + dot + key
-        prop_query = Keyword("?") + obj_prop_name
+        d = {}
+        if len(params) == 1:
+#            d["object"] = None
+#            d["name"] = params[0]
+            return [None, params[0]]
+        elif len(params) == 2:
+#            d["object"] = params[0]
+#            d["name"] = params[1]
+            return [params[0], params[1]]
+        else:
+            raise ParseException
+
+#        return d
 
 
-        command_syntax = command + params
-        command_syntax.setParseAction(self._pushCommandSyntax)
-
-        sequence = ZeroOrMore(command_syntax)
-
-        return sequence
-
-
-    def _pushCommandSyntax(self, tokens):
+    def pushCommandSyntax(self, tokens):
         print "CMD:", tokens, tokens.keys()#
 
         print tokens["params"]
@@ -263,7 +392,7 @@ class DSSParser(object):
 #        return d
 
 
-    def _pushParameters(self, tokens):
+    def pushParameters(self, tokens):
         print "PARAM:", tokens, tokens.keys()#, tokens["params"]
 
         args = [p[0] for p in tokens["params"].asList() if len(p) == 1]
@@ -274,6 +403,18 @@ class DSSParser(object):
         return [[args, kwargs]]
 #
 
+    def onNewCommand(self, tokens):
+        print "NEW:", tokens
 
-    def _pushMoreCommand(self, tokens):
-        tokens["command"]
+        d = {"command": tokens[0],
+             "object": tokens[1],
+             "name": tokens[2],
+             "args": [p[0] for p in tokens[3].asList() if len(p) == 1],
+             "kwargs": dict([p for p in tokens[3].asList() if len(p) == 2])
+             }
+
+        return d
+
+
+    def onMoreCommand(self, tokens):
+        pass
