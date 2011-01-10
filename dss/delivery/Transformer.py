@@ -18,9 +18,12 @@ from dss.delivery.PowerDeliveryElement import PowerDeliveryElement
 
 class Transformer(PowerDeliveryElement):
     """The Transfomer model is implemented as a multi-terminal (two or more)
-    power delivery element.  A transfomer consists of two or more Windings,
-    connected in somewhat arbitray fashion (with the standard Wye-Delta
-    defaults, of course).  You can specify the parameters of a winding one
+    power delivery element.
+
+    A transfomer consists of two or more Windings, connected in somewhat
+    arbitray fashion (with the standard Wye-Delta defaults, of course).
+
+    You can specify the parameters of a winding one
     winding at a time or use arrays to set all the values.  Use the 'wdg=...'
     parameter to select a winding.  Transformers have one or more phases.  The
     number of conductors per terminal is always one more than the number of
@@ -181,3 +184,206 @@ class Transformer(PowerDeliveryElement):
         self.ppmAntiFloat = ppmAntiFloat
 
         super(Transformer, self).__init__(*args, **kw_args)
+
+
+    def recalcElementData(self):
+
+        # Determine delta direction.
+        # If high voltage is delta, delta leads y.
+        # If high voltage is wye, delta lags wye.
+        primary   = self.contains_transformer_windings[0]
+        secondary = self.contains_transformer_windings[1]
+
+        if primary.connection_type == secondary.connection_type:
+            delta_direction = 1
+        else:
+            if primary.base_voltage.nominal_voltage > \
+                secondary.base_voltage.nominal_voltage:
+                idx_high_volt = 1
+            else:
+                idx_high_volt = 2
+
+            if self.contains_transformer_windings[idx_high_volt] == "d":
+                delta_direction = 1
+            elif self.contains_transformer_windings[idx_high_volt] == "y":
+                delta_direction = -1
+            else:
+                delta_direction = 0
+
+        # Re-establish term_ref if num windings or connection changed.
+        self._set_term_ref()
+
+        for i in range(n_windings):
+            winding = self.contains_transformer_windings[i]
+            if len(winding.tap_changers) > 0:
+#                tap_increment = winding.max_tap - winding.min_tap / n_taps
+                tap_increment = winding.tap_changers[0].normal_step
+            else:
+                tap_increment = 0.0
+
+        # Set winding voltage bases (in volts)
+        for i in range(n_windings):
+            winding = self.contains_transformer_windings[i]
+            # Get the actual turns voltage base for each winding.
+            if winding.connection_type == "y":
+                if n_phases == 2 or n_phases == 3:
+                    # Assume 3-phase for 2-phase designation.
+                    v_base = kv_ll * 577.35
+                else:
+                    v_base = kv_ll * 1000.0
+            else:
+                v_base = kv_ll * 1000.0 # delta
+
+        # Base rating for winding 1.
+        va_base = self.contains_transformer_windings[0].base_voltage * 1000.0
+
+        # Normal and Emergency terminal current rating for UE check.
+        v_factor = 1.0
+        if primary.connection_type == "y":
+            v_factor = primary.base_voltage * 0.001
+        elif primary.connection_type == "d":
+            if n_phases == 1:
+                v_factor = primary.base_voltage * 0.001
+            elif n_phases == 2 or n_phases == 3:
+                v_factor = primary.base_voltage * 0.001 / SQRT3
+            else:
+                v_factor = primary.base_voltage * 0.001 * 0.5/sin(pi/n_phases)
+        else:
+            raise NotImplementedError
+
+        # Divide per phase kva by voltage to neutral.
+        norm_amps  = norm_max_high_kva / n_phases / v_factor
+        emerg_amps = emerg_max_high_kva / n_phases / v_factor
+
+        # Calc y_terminal at base frequency.
+        self.calc_y_terminal(1.0)
+
+
+    def calcYTerminal(self, freq_mult):
+        # Construct zb_matrix.
+        zb[:] = 0.0
+        z_base = 1.0 / (va_base / n_phases) # Base ohms on 1.0 volt basis.
+
+        for i in range(n_windings - 1):
+            # Convert pu to ohms on one volt base as we go...
+            zb[i, i] = mul(complex((primary.r_pu + winding[i + 1].r_pu),
+                                   freq_mult * xsc[i]), z_base)
+
+            # Off diagonals.
+            k = n_windings
+            for i in range(n_windings - 1):
+                for j in range(n_windings - 1):
+                    value = mul( (zb[i, i] + zb[j, j]) - mul(
+                        complex((windings[i + 1].r_pu + winding[j + 1].r_pu),
+                        freq_mult * xsc[k]), z_base), 0.5)
+
+                    zb[i, j] = value
+                    k += 1
+
+
+    def _setTermRef(self):
+        """Sets an array which maps the two conductors of each winding to the
+        phase and neutral conductors of the transformer according to the
+        winding connection.
+        """
+        n_windings = len(self.contains_transformer_windings)
+        n_phases = self.n_phases
+        n_conds  = self.n_conds
+
+        k = 0
+
+        if n_phases == 1:
+            for j in range(n_windings):
+                k += 1
+                term_ref[k] = (j - 1) * n_conds + 1
+                k += 1
+                term_ref[k] = j * n_conds
+        else:
+            for i in range(n_phases):
+                for j in range(n_windings):
+                    k += 1
+                    winding = self.contains_transformer_windings[j]
+
+                    if winding.connection_type == "y": # Wye
+                        term_ref[k] = (j - 1) * n_conds + i
+                        k += 1
+                        term_ref[k] = j * n_conds
+
+                    elif winding.connection_type == "d": # Delta
+                        # TODO: Check with 2-phase open delta.
+                        term_ref[k] = (j - 1) * n_conds + i
+                        k += 1
+                        # Connect to next phase in sequence.
+                        term_ref[k] = (j - 1) * n_conds + self.rotate_phases(i)
+
+
+    def rotatePhases(self, idx_phase):
+        """For Delta connections or Line-Line voltages begin.
+        """
+        result = idx_phase + self.delta_direction;
+
+        # Make sure result is within limits.
+        if n_phases > 2:
+            # Assumes 2 phase delta is open delta.
+            if result > n_phases:
+                result = 1
+            elif result < 1:
+                result = n_phases
+        else:
+            if result < 1:
+                # For 2-phase delta, next phase will be 3rd phase.
+                result = 3
+
+
+    def calcYPrim(self):
+        """Returns the primitive Y (admittance) matrix for this element alone.
+        """
+        if self.y_prim_invalid:
+            y_prim_series = sparse((y_order, y_order))
+            y_prim_shunt  = sparse((y_order, y_order))
+            y_prim        = sparse((y_order, y_order))
+
+        else: # Same size as last time; just zero out to start over.
+            y_prim_series[:] = 0.0 # Zero out y_prim.
+            y_prim_shunt[:]  = 0.0 # Zero out y_prim.
+            y_prim[:]        = 0.0
+
+        # Set frequency multipliers for this calculation.
+        y_prim_freq = self.parent.frequency #TODO: Implement circuit frequency.
+        if self.frequency != 0.0:
+            freq_multiplier = y_prim_freq / self.frequency
+        else:
+            freq_multiplier = 1.0
+
+        # Check for rebuilding Y_Terminal; Only rebuild if freq is different
+        # than last time.
+        if freq_multiplier != y_term_freqmult:
+            self.calc_y_terminal(freq_multiplier)
+
+        self.build_y_prim_component(y_prim_series, y_term)
+        self.build_y_prim_component(y_prim_shunt, y_term_nl)
+
+        self.add_neutral_to_y(freq_multiplier)
+
+        # Combine the two y_prim components into y_prim.
+        y_prim += y_prim_series
+        y_prim += y_prim_shunt
+
+        #TODO: Zero out rows and columns for open conductors.
+
+        self.y_prim_invalid = False
+
+
+    def buildYPrimComponent(self, y_prim_component, y_terminal):
+
+        # Now, Put in y_prim matrix.
+        # Have to add every element of y_terminal into y_prim somewhere.
+        n_windings2 = 2 * self.n_windings
+
+        for i in range(n_windings2):
+            for j in range(i):
+                 value = y_terminal[i, j]
+                 # This value goes in y_prim n_phases times.
+                 for k in range(n_phases):
+                     y_prim_component[term_ref[i + k * n_windings2],
+                                      term_ref[j + k * n_windings2]] = value

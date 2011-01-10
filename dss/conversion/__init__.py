@@ -14,6 +14,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+"""Power conversion elements convert power from electrical form to some
+other form, or vice-versa.  Most will have only one connection to the power
+system and, therefore, only one multiphase terminal.
+"""
+
 from dss.conversion.PowerConversionElement import PowerConversionElement
 from dss.conversion.CurrentSource import CurrentSource
 from dss.conversion.Equivalent import Equivalent

@@ -14,6 +14,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+from scipy.sparse import csr_matrix as sparse
+
 from dss.conversion.PowerConversionElement import PowerConversionElement
 
 class Load(PowerConversionElement):
@@ -223,3 +225,273 @@ class Load(PowerConversionElement):
         self.growthShapeObj = growthShapeObj
 
         super(Load, self).__init__(*args, **kw_args)
+
+
+    @property
+    def n_phases(self):
+        """ Number of phases. For 3 or less, phase shift is 120 degrees.
+            Valid 'phase' values are: "BCN", "ACN", "AB", "A", "B", "ABCN",
+            "AC", "N", "AN", "C", "ABN", "BN", "ABC", "BC", "CN"
+        """
+        phases = self.phases
+        if phases in ["ABCN", "ABC"]:
+            n_phases = 3
+        elif phases in ["BCN", "ACN", "ABN", "AB", "BC"]:
+            n_phases = 2
+        elif phases in ["AN", "BN", "CN", "A", "B", "C"]:
+            n_phases = 1
+        else:
+            n_phases = 0
+
+        return n_phases
+
+    # Nominal rated (1.0 per unit) voltage, kV, for load. For 2- and 3-phase
+    # loads, specify phase-phase kV.  Otherwise, specify actual kV across each
+    # branch of the load.  If wye (star), specify phase-neutral kV.  If delta
+    # or phase-phase connected, specify phase-phase kV.
+#    nominal_voltage = 12.47
+
+    # Total base kW for the load.  Normally, you would enter the maximum kW for
+    # the load for the first year and allow it to be adjusted by the load
+    # shapes, growth shapes, and global load multiplier.
+    # Legal ways to define base load:
+    #    kW, PF
+    #    kW, kvar
+    #    kVA, PF
+    pfixed = 10.0
+
+    def interpretConnection(self, s):
+        kv_load_base = self.base_voltage.nominal_voltage
+
+        if s.lower() in ["wye"]:
+            if self.n_phases == 2 or self.n_phases == 3:
+                self.v_base = v_base = kv_load_base * 577.35
+            else:
+                self.v_base = v_base = kv_load_base * 1000.0
+
+        elif s.lower() in ['delta']:
+            self.v_base = v_base = kv_load_base * 1000.0
+
+        else:
+            raise ValueError, "Unrecognised connection string."
+
+        v_min_pu = self.base_voltage.voltage_level.low_voltage_limit
+        v_max_pu = self.base_voltage.voltage_level.high_voltage_limit
+
+        self.v_base_95  = v_min_pu * v_base
+        self.v_base_105 = v_max_pu * v_base
+
+        self.y_order = self.n_conds * len(self.terminals)
+        self.y_prim_invalid = True
+
+
+    def setNominalLoad(self):
+        """Sets the nominal rating for the load.
+        """
+        if self.fixed:
+            # For fixed loads, consider only growth factor.
+            factor = self._growth_factor(year)
+        else:
+            if self.mode in ["Snapshot", "Harmonic", "Dynamic"]:
+                if self.exempt_from_ld_curve:
+                    factor = self._growth_factor(year)
+
+                else:
+                    load_multiplier = self.parent.load_multiplier
+                    factor = load_multiplier * self._growth_factor(year)
+
+            elif self.mode in ["Daily"]:
+                if self.exempt_from_ld_curve:
+                    factor = self._growth_factor(year)
+                    self.calc_daily_mult(dbl_hour)
+
+                else:
+                    load_multiplier = self.parent.load_multiplier
+                    factor = load_multiplier * self._growth_factor(year)
+
+                    self._calc_daily_mult(dbl_hour)
+
+            elif self.mode in ["Yearly"]:
+                load_multiplier = self.parent.load_multiplier
+                factor = load_multiplier * self._growth_factor(year)
+
+                self._calc_yearly_mult(hour)
+
+            else:
+                # Defaults to Base kW * growth.
+                factor = self._growth_factor(year)
+
+        w_nominal   = 1e3 * kw_base * factor * real(shape_factor) / n_phases
+        var_nominal = 1e3 * kvar_base * factor * imag(shape_factor) / n_phases
+
+        self.y_eq = y_eq = div(complex(w_nominal, -var_nominal), v_base**2)
+
+        # At 95% voltage.
+        if v_min_pu != 0.0:
+            y_eq_95 = div(y_eq, v_min_pu**2)
+        else:
+            y_eq_95 = 0.0 + 0.0j # CZERO
+
+        # At 105% voltage.
+        if v_max_pu != 0.0:
+            y_eq_105 = div(y_eq, v_max_pu**2)
+        else:
+            y_eq_105 = y_eq
+
+
+    def _calcDailyMult(self, hour):
+        """Returns the daily multiplier for the specified hour.
+        """
+        if self.daily_shape is not None:
+            shape_factor = self.daily_shape.get_mult(hour)
+        else:
+            # Default to no daily variation.
+            shape_factor = 1.0 + 1.0j
+
+        return shape_factor
+
+
+    def _calcYearlyMult(self, hour):
+        """Yearly curve is assumed to be hourly only.
+        """
+        if self.yearly_shape is not None:
+            shape_factor = self.yearly_shape.get_mult(hour)
+        else:
+            # Default to no yearly variation.
+            shape_factor = 1.0 + 1.0j
+
+        return shape_factor
+
+
+    def _growth_Factor(self, year):
+        """Returns the growth factor for the specified year.
+        """
+        if year == 0:
+            # Default all to 1 in year 0; use base values.
+            last_growth_factor = 1.0
+        else:
+            if self.load_response is None:
+                # TODO: Implement circuit 'default_growth_factor'.
+                last_growth_factor = self.parent.default_growth_factor
+            elif year != self.last_year:
+                load_growth_factor = self.load_response.get_mult(year)
+
+        return load_growth_factor
+
+
+    def recalcElementData(self):
+        """Computes the attributes of the load.
+        """
+        n_phases = self.n_phases
+
+        v_min_pu = self.base_voltage.voltage_level.low_voltage_limit
+        v_max_pu = self.base_voltage.voltage_level.high_voltage_limit
+
+        self.v_base_95  = v_min_pu * v_base
+        self.v_base_105 = v_max_pu * v_base
+
+        # Set kW and kvar from root values of kVA and PF.
+
+        if self.spec_type == "kW, PF":
+            kvar_base = kw_base * sqrt(1.0 / self.pf_nominal**2 - 1.0)
+            if self.pf_nominal < 0.0:
+                kvar_base = -kvar_base
+
+        elif self.spec_type == "kW, kVAr": # Need to set 'pf_nominal'.
+            kva_base = sqrt(kw_base**2 + kvar_base**2)
+            if kva_base > 0.0:
+                pf_nominal = kw_base / kva_base
+
+                if kvar_base != 0.0:
+                    # cmp(x, 0) returns -1 if x < 0 ...
+                    pf_nominal = pf_nominal * float(cmp(kw_base * kvar_base, 0))
+
+        elif self.spec_type == "kVA, PF":
+            kw_base = kva_base * abs(pf_nominal)
+            kvar_base = kw_base * sqrt(1.0 / pf_nominal**2 - 1.0)
+            if pf_nominal < 0.0:
+                kvar_base = -kvar_base
+        elif self.spec_type == "Compute allocated load":
+            # TODO: Do automatically in property set.
+            pass
+        else:
+            raise
+
+        var_base = 1000.0 * kvar_base / n_phases;
+        y_qfixed = -var_base / v_base**2
+
+
+    def calc_y_prim_matrix(self, y_matrix):
+
+        y_prim_freq = self.parent.frequency #TODO: Implement circuit frequency.
+        freq_multiplier = y_prim_freq / self.frequency
+
+        y = self.y_eq
+        y = complex(real(y), imag(y) / freq_multiplier)
+        y_ij = -y
+
+        if s.lower() in ["wye"]:
+            for i in range(n_phases):
+                y_matrix[i, i] = y
+                y_matrix[n_conds, n_conds] = y
+                y_matrix[i, n_conds] = y_ij
+                y_matrix[n_conds, i] = y_ij
+
+            y_matrix[n_conds, n_conds, self.y_neut] # neutral
+
+            # If neutral is floating, make sure there is some small connection
+            # to ground  by increasing the last diagonal slightly.
+            if self.r_neut < 0.0:
+#                neut = mul(y_matrix[n_conds, n_conds], 1.000001)
+                y_matrix[n_conds, n_conds] *= 1.000001
+
+        elif s.lower() in ['delta']:
+            for i in range(n_phases):
+                j = i + 1
+                if j > n_conds:
+                    # Wrap around for closed connections.
+                    j = 1
+
+                y_matrix[i, i] = y
+                y_matrix[j, j] = y
+                y_matrix[i, j] = y_ij
+                y_matrix[j, i] = y_ij # Set both off-diagonal elements.
+
+        else:
+            raise
+
+
+    def calc_y_prim(self):
+        """ Returns the primitive Y (admittance) matrix for this element alone.
+        """
+        y_order = self.y_order
+
+        # Build only y_prim shunt for a Load then copy to y_prim.
+        # Build a dummy y_prim series so that calc_v does not fail.
+        if self.y_prim_invalid:
+            y_prim_series = matrix(0.0, (y_order, y_order))
+            y_prim_shunt  = matrix(0.0, (y_order, y_order))
+            y_prim        = matrix(0.0, (y_order, y_order))
+
+        else:
+            y_prim_series[:] = 0.0
+            y_prim_shunt[:]  = 0.0
+            y_prim[:]        = 0.0
+
+        if self.parent.solution.load_model == "power flow":
+            self.set_nominal_load() # Same as admittance model.
+            self.calc_y_prim_matrix(y_prim_shunt)
+        else:
+            # Admittance model wanted.
+            self.set_nominal_load()
+            self.calc_y_prim_matrix(y_prim_shunt)
+
+        # Set y_prim_series based on diagonals of y_prim_shunt so that
+        # calc_voltages() doesn't fail.
+        for i in range(y_order):
+#            value = mul(y_prim_shunt[i, i], 1.0e-10)
+            y_prim_series[i, i] *= 1.0e-10
+
+        self.y_prim = matrix(y_prim_shunt)
+
+        # TODO: Account for open conductors.

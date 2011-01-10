@@ -14,10 +14,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+from scipy.sparse import csr_matrix as sparse
+
 from dss.conversion.PowerConversionElement import PowerConversionElement
 
 class Generator(PowerConversionElement):
     """The generator is essentially a negative load that can be dispatched.
+
     If the dispatch value (DispValue) is 0, the generator always follows the
     appropriate dispatch curve, which are simply load curves. If DispValue>0
     then the generator only comes on when the global circuit load multiplier
@@ -42,12 +45,15 @@ class Generator(PowerConversionElement):
         3. Constant P, |V|  like a standard power flow  [not implemented]
         4. Constant P, Fixed Q  (vars)
         5. Constant P, Fixed Q  (reactance)
-    Most of the time you will use #1 for planning studies.  The default is for
+    Most of the time you will use #1 for planning studies.
+
+    The default is for
     the generator to be a current injection source.  Thus, its primitive Y
     matrix contains only the impedance that might exist from the neutral of a
     wye-connected generator to ground.  However, if the generator model is
     switched to Admittance from PowerFlow (see Set Mode command), the generator
     is converted to an admittance and included in the system Y matrix.
+
     Generators are assumed balanced for the number of phases specified.
     If you would like unbalanced generators, enter separate single-phase
     generators.
@@ -306,11 +312,11 @@ class Generator(PowerConversionElement):
 
         super(Generator, self).__init__(*args, **kw_args)
 
-    def getcircuit(self):
+    def getCircuit(self):
 
         return self._circuit
 
-    def setcircuit(self, value):
+    def setCircuit(self, value):
         if self._circuit is not None:
             filtered = [x for x in self.circuit.generators if x != self]
             self._circuit._generators = filtered
@@ -320,5 +326,206 @@ class Generator(PowerConversionElement):
             if self not in self._circuit._generators:
                 self._circuit._generators.append(self)
 
-    circuit = property(getcircuit, setcircuit)
+    circuit = property(getCircuit, setCircuit)
 
+
+    def setNCondsForConnection(self):
+        """Sets the number of conductors according to the specified
+        connection.
+        """
+        n_phases = self.n_phases
+
+        if self.connection in ["wye"]:
+            self.n_conds = n_phases + 1
+
+        elif self.connection in ["delta"]:
+            if n_phases == 1 or n_phases == 2:
+                self.n_conds = n_phases + 1
+            else:
+                self.n_conds = n_phases
+
+        else:
+            raise
+
+
+    def interpretConnection(self, s):
+        """Interprets the specified connection string.
+        """
+        kv_generator_base = self.base_voltage.nominal_voltage
+
+        if s.lower() in ["wye"]:
+            self.connection = "wye"
+
+            if self.n_phases == 2 or self.n_phases == 3:
+                self.v_base = v_base = kv_generator_base * 577.35 # L-N Volts
+
+            else:
+                self.v_base = v_base = kv_load_base * 1000.0
+
+        elif s.lower() in ['delta']:
+            self.connection = "delta"
+            self.v_base = v_base = kv_load_base * 1000.0
+
+        else:
+            raise ValueError, "Unrecognised connection string."
+
+        self.set_n_conds_for_connection()
+
+        # v_base is always L-N voltage unless 1-phase device or more than
+        # 3 phases.
+
+        v_min_pu = self.base_voltage.voltage_level.low_voltage_limit
+        v_max_pu = self.base_voltage.voltage_level.high_voltage_limit
+
+        self.v_base_95  = v_min_pu * v_base
+        self.v_base_105 = v_max_pu * v_base
+
+        self.y_order = self.n_conds * len(self.terminals)
+        self.y_prim_invalid = True
+
+
+    def setNominalGeneration(self):
+        gen_on_saved = self.gen_on #normally_in_service
+        shape_factor = 1 + 1j
+
+        self.gen_on == True # Initialise on then check if it should be off.
+        dispatch_value = self.dispatch_value
+
+        if self.dispatch_mode == 'load':
+            reference = self.generator_dispatch_reference
+
+            if (dispatch_value > 0.0) and (reference < dispatch_value):
+                self.gen_on = False
+
+        elif self.dispatch_mode == "price":
+            price_signal = self.price_signal
+
+            if (dispatch_value > 0.0) and (price_signal < dispatch_value):
+                self.gen_on = False
+
+        else:
+            raise
+
+        if not self.gen_on:
+            # If Generator is OFF enter as tiny resistive load (.0001 pu) so we
+            # don't get divide by zero in matrix.
+            p_nominal_per_phase = -0.1 * kw_base / n_phases
+            q_nominal_per_phase = 0.0
+        else:
+            # Compute generator nominal Watts and VArs.
+            if self.fixed:
+                # For fixed generators, set constant.
+                factor = 1.0
+
+            else:
+                if mode in ["snapshot"]:
+                    # TODO: Implement global generator multiplier.
+                    factor = self.parent.gen_multiplier * 1.0
+
+                elif mode in ["daily"]:
+                    factor = self.parent.gen_multiplier
+                    self._calc_daily_mult(dbl_hour)
+
+                elif mode in ["yearly"]:
+                    factor = self.parent.gen_multiplier
+                    self._calc_yearly_mult(dbl_hour)
+
+                else:
+                    raise
+
+        # If generator state changes, force re-calc of Y matrix.
+        if self.gen_on != gen_on_saved:
+            self.y_prim_invalid = True
+
+
+    def recalcElementData(self):
+        """Computes attributes for the generator.
+        """
+        n_phases = self.n_phases
+
+        v_min_pu = self.base_voltage.voltage_level.low_voltage_limit
+        v_max_pu = self.base_voltage.voltage_level.high_voltage_limit
+
+        self.v_base_95  = v_min_pu * v_base
+        self.v_base_105 = v_max_pu * v_base
+
+        var_base = 1000.0 * kvar_base / n_phases;
+        var_min  = 1000.0 * kvar_min  / n_phases;
+        var_max  = 1000.0 * kvar_max  / n_phases;
+
+        self.set_nominal_generation()
+
+        y_qfixed = -var_base / v_base**2
+        v_target = v_pu * 1000.0 * kv_generator_base / SQRT3
+
+
+    def calcYPrimMatrix(self, y_matrix):
+
+        y_order = self.y_order
+
+        y_prim_freq = self.parent.frequency
+        freq_multiplier = y_prim_freq / self.frequency
+
+        # Regular power flow generator model.
+        # y_eq is always expected as the equivalent line-neutral admittance.
+        y = -y_eq # Negate for generation.  y_eq is L-N quantity.
+        y = complex(y.real, y.imag / freq_multiplier)
+
+        if self.connection in ["wye"]:
+            y_ij = -y
+
+            for i in range(n_phases):
+                y_matrix[i, i] = y
+                y_matrix[n_conds, n_conds] = y
+                y_matrix[i, j] = y_ij
+                y_matrix[j, i] = y_ij
+
+        elif self.connection in ["delta", "L-L"]:
+            y = div(y, 3.0) # Convert to delta impedance.
+            y_ij = -y
+
+            for i in range(n_phases):
+                j = i + 1
+                if j > n_conds:
+                    j = 1 # Wrap around for closed connections.
+
+                y_matrix[i, i] = y
+                y_matrix[j, j] = y
+                y_matrix[i, j] = y_ij
+                y_matrix[j, i] = y_ij
+
+
+    def calcYPrim(self):
+        """ Returns the primitive Y (admittance) matrix for this element alone.
+        """
+        y_order = self.y_order
+
+        # Build only y_prim shunt for a Load then copy to y_prim.
+        # Build a dummy y_prim series so that calc_v does not fail.
+        if self.y_prim_invalid:
+            y_prim_series = sparse((y_order, y_order))
+            y_prim_shunt  = sparse((y_order, y_order))
+            y_prim        = sparse((y_order, y_order))
+
+        else:
+            y_prim_series[:] = 0.0
+            y_prim_shunt[:]  = 0.0
+            y_prim[:]        = 0.0
+
+        if self.parent.solution.load_model == "power flow":
+            self.set_nominal_load() # Same as admittance model.
+            self.calc_y_prim_matrix(y_prim_shunt)
+        else:
+            # Admittance model wanted.
+            self.set_nominal_load()
+            self.calc_y_prim_matrix(y_prim_shunt)
+
+        # Set y_prim_series based on diagonals of y_prim_shunt so that
+        # calc_voltages() doesn't fail.
+        for i in range(y_order):
+#            value = mul(y_prim_shunt[i, i], 1.0e-10)
+            y_prim_series[i, i] *= 1.0e-10
+
+        self.y_prim = sparse(y_prim_shunt)
+
+        # TODO: Account for open conductors.

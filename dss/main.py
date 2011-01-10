@@ -240,8 +240,8 @@ class ARLCompleter(object):
 
 
 def main():
-#    readline.set_completer(DSSCompleter().complete)
-    readline.set_completer(ARLCompleter().complete)
+    readline.set_completer(DSSCompleter().complete)
+#    readline.set_completer(ARLCompleter().complete)
     readline.parse_and_bind('tab: complete')
 
     exit_code = DSS().run()

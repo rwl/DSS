@@ -14,6 +14,15 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+"""Power delivery elements usually consist of two or more multiphase
+terminals. Their basic function is to transport energy from one point
+to another.  On the power system, the most common power delivery elements
+are lines and transformers.
+
+Power delivery elements are standard electrical elements generally
+completely defined in the rms steady state by their impedances.
+"""
+
 from dss.delivery.PowerDeliveryElement import PowerDeliveryElement
 from dss.delivery.Capacitor import Capacitor
 from dss.delivery.Fault import Fault
