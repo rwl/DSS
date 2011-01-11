@@ -109,6 +109,8 @@ class EnergyMeter(MeterElement):
     fixed after initial determination.
     """
 
+    NumEMRegisters = 0
+
     def __init__(self, element='', terminal=0, action="Clear", option='',
             kVANorm=0.0, kVAEmerg=0.0, peakCurrent=0.0, zoneList='',
             localOnly=False, mask=0.0, losses=False, lineLosses=False,
@@ -204,3 +206,7 @@ class EnergyMeter(MeterElement):
 
         super(EnergyMeter, self).__init__(*args, **kw_args)
 
+
+    @classmethod
+    def ResetMeterZonesAll(cls):
+        pass

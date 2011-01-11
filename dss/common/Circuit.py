@@ -14,6 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+import os
 import sys
 
 import logging
@@ -24,7 +25,9 @@ from dss.common.Solution import Solution
 from dss.common.Named import Named
 from dss.common.ControlQueue import ControlQueue
 from dss.common.Bus import Bus
-from dss.common.Utilities import ParseObjectClassandName
+from dss.common.Utilities import \
+    ParseObjectClassandName, LogThisEvent, WriteVsourceClassFile, \
+    WriteClassFile
 from dss.general.LoadShape import LoadShape
 from dss.delivery.PowerDeliveryElement import PowerDeliveryElement
 from dss.delivery.PowerConversionElement import PowerConversionElement
@@ -48,7 +51,8 @@ from dss.common.Feeder import Feeder
 from dss.conversion.Storage import Storage
 
 global DefaultBaseFreq, USENONE, AppendGlobalresult, LastClassReferenced, \
-    ClassNames, DSSClassList, ActiveDSSClass, CmdResult, ActiveDSSObject
+    ClassNames, DSSClassList, ActiveDSSClass, CmdResult, ActiveDSSObject, \
+    EnergyMeterClass, SavedFileList, FeederClass
 
 logger = logging.getLogger(__name__)
 
@@ -255,7 +259,7 @@ class Circuit(Named):
                 self._NodeBuffer[i] = i # set up buffer with defaults
 
             # Default all other conductors to a ground connection
-            # If user wants them ungrounded, must be specified explicitly!
+            # if user wants them ungrounded, must be specified explicitly!
             for i in range(np + 1, NCond):
                 self._NodeBuffer[i] = 0
 
@@ -363,8 +367,8 @@ class Circuit(Named):
                 ActiveDSSClass = DSSClassList[DevClassIndex]
                 LastClassReferenced = DevClassIndex
                 Result = self.DeviceRef[DevIndex].devHandle
-#                ActiveDSSClass.Active := Result;
-#                ActiveCktElement := ActiveDSSClass.GetActiveObj;
+#                ActiveDSSClass.Active = Result;
+#                ActiveCktElement = ActiveDSSClass.GetActiveObj;
                 self.ActiveCktElement = self.CktElements[Result]
                 break
             DevIndex = self.DeviceList.next()   # Could be duplicates
@@ -372,7 +376,6 @@ class Circuit(Named):
         CmdResult = Result
 
         return Result
-
 
 
     def AddCktElement(self, Handle=0):
@@ -443,22 +446,282 @@ class Circuit(Named):
         self.ActiveCktElement.Handle = self.CktElements.ListSize
 
 
+    def DoResetMeterZones(self):
+        # Do this only if meterzones unlocked .  Normally, Zones will remain
+        # unlocked so that all changes to the circuit will result in rebuilding
+        # the lists.
+        if not self.MeterZonesComputed or not self.ZonesLocked:
+            if self.LogEvents:
+                LogThisEvent('Resetting Meter Zones')
+            EnergyMeter.ResetMeterZonesAll()
+            self.MeterZonesComputed = True
+            if self.LogEvents:
+                LogThisEvent('Done Resetting Meter Zones')
+
+        self.FreeTopology()
+
+
+    def _SaveBusInfo(self):
+        i = 0
+        # Save existing bus definitions and names for info that needs
+        # to be restored.
+        self.SavedBuses = []
+        self.SavedBusNames = []
+
+        for i in range(self.NumBuses):
+            self.SavedBuses[i] = self.Buses[i]
+            self.SavedBusNames[i] = self.BusList[i]
+        self.SavedNumBuses = self.NumBuses
+
+
+    def _RestoreBusInfo(self):
+        i, j, idx, jdx = 0
+        pBus = None
+        # Restore  kV bases, other values to buses still in the list
+        for i in range(self.SavedNumBuses):
+            idx = self.BusList.index(self.SavedBusNames[i])
+            if idx != 0:
+                bus = self.Buses[idx]
+                pBus = self.SavedBuses[i]
+                kvBase = pBus.kVBase
+                x = pBus.x
+                Y = pBus.y
+                CoordDefined = pBus.CoordDefined
+                Keep = pBus.Keep
+                # Restore Voltages in new bus def that existed
+                # in old bus def
+                if pBus.VBus != None:
+                    for j in range(pBus.NumNodesThisBus):
+                        # Find index in new bus for j-th node  in old bus
+                        jdx = bus.FindIdx(pBus.GetNum(j))
+                        if jdx > 0:
+                            bus.Vbus[jdx] = pBus.VBus[j]
+            self.SavedBusNames[i] = ''  # De-allocate string
+
+        if self.SavedBuses != None:
+            for i in range(self.SavedNumBuses):
+                self.SavedBuses[i].Free  # gets rid of old bus voltages, too
+
+#        ReallocMem(SavedBuses, 0);
+#        ReallocMem(SavedBusNames, 0)
+
+
+    def ReProcessBusDefs(self):
+        """Redo all Buslists, nodelists."""
+        CktElementSave = None
+        i = 0
+
+        if self.LogEvents:
+            LogThisEvent('Reprocessing Bus Definitions')
+
+        self.AbortBusProcess = False
+        self.SaveBusInfo()  # So we don't have to keep re-doing this
+        # Keeps present definitions of bus objects until new ones created
+
+        # get rid of old bus lists
+        del self.BusList[:]  # Clears hash list of Bus names for adding more
+        self.BusList = {}  # won't have many more buses than this
+
+        NumBuses = 0  # Leave allocations same, but start count over
+        NumNodes = 0
+
+        # Now redo all enabled circuit elements
+        self.CktElementSave = self.ActiveCktElement
+        ActiveCktElement = self.CktElements.next()
+        while ActiveCktElement != None:
+            if ActiveCktElement.Enabled:
+                self.ProcessBusDefs
+            if self.AbortBusProcess:
+                sys.exit()
+            ActiveCktElement = self.CktElements.next()
+
+        # restore active circuit element
+        self.ActiveCktElement = self.CktElementSave
+
+        for i in range(NumBuses):
+            self.Buses[i].AllocateBusVoltages
+        for i in range(NumBuses):
+            self.Buses[i].AllocateBusCurrents
+
+        self.RestoreBusInfo()     # frees old bus info, too
+        self.DoResetMeterZones()  # Fix up meter zones to correspond
+
+        self.BusNameRedefined = False  # Get ready for next time
+
+
+    def DebugDump(self, F):
+        F.write('NumBuses= ', self.NumBuses)
+        F.write('NumNodes= ', self.NumNodes)
+        F.write('NumDevices= ', self.NumDevices)
+        F.write('BusList:')
+        for i in range(self.NumBuses):
+            F.write('  %12s', self.BusList[i])
+            F.write(' (', self.Buses[i].NumNodesThisBus, ' Nodes)')
+            for j in range(self.Buses[i].NumNodesThisBus):
+                F.write(' ', self.Buses[i].Getnum(j))
+            F.write("\n")
+
+        F.write('DeviceList:')
+        for i in range(self.NumDevices):
+            F.write('  %12s', self.DeviceList[i])
+            self.ActiveCktElement = self.CktElements[i]
+            if not self.ActiveCktElement.Enabled:
+                F.write('  DISABLED')
+            F.write("\n")
+        F.write('NodeToBus Array:')
+        for i in range(self.NumNodes):
+            j =  self.MapNodeToBus[i].BusRef
+#            F.write('  ', i:2, ' ', j:2, ' (=', self.BusList[j], '.',
+#                    self.MapNodeToBus[i].NodeNum:0,')')
+            F.write("\n")
+
+
+    def InvalidateAllPCElements(self):
+        for p in self.CktElements:
+            p.YprimInvalid = True
+
+        # Force rebuild of matrix on next solution
+        self.Solution.SystemYChanged = True
+
+
     def TotalizeMeters(self):
-        pass
+        """Totalize all energymeters in the problem."""
+        i = 0
+        for i in range(EnergyMeter.NumEMRegisters):
+            self.RegisterTotals[i] = 0.0
+
+        for pem in self.EnergyMeters:
+            for i in range(EnergyMeter.NumEMRegisters):
+                self.RegisterTotals[i] += pem.Registers[i] * pem.TotalsMask[i]
+
+
     def ComputeCapacity(self):
-        return False
+        CapacityFound = False
+
+        def SumSelectedRegisters(mtrRegisters=[], Regs=[1], count=0):
+            Result = 0.0
+            for i in range(count):
+                Result += mtrRegisters[Regs[i]]
+            return Result
+
+        Result = False
+        if len(self.EnergyMeters) == 0:
+            logger.error('Cannot compute system capacity with EnergyMeter '
+                         'objects!')
+            sys.exit()
+
+        if self.NumUeRegs == 0:
+            logger.error('Cannot compute system capacity with no UE resisters '
+                         'defined.  Use SET UEREGS=(...) command.')
+            sys.exit()
+
+        self.Solution.Mode = 'SNAPSHOT'
+        self.LoadMultiplier = self.CapacityStart
+        self.CapacityFound = False
+
+        while (self.LoadMultiplier < 1.0) or not CapacityFound:
+            EnergyMeterClass.ResetAll()
+            self.Solution.Solve()
+            EnergyMeterClass.SampleAll()
+            self.TotalizeMeters()
+
+            # Check for non-zero in UEregs
+            if SumSelectedRegisters(self.RegisterTotals, self.UEregs,
+                                    self.NumUEregs) != 0.0:
+                CapacityFound = True
+            # LoadMultiplier is a property ...
+            if not CapacityFound:
+                self.LoadMultiplier = \
+                    self.LoadMultiplier + self.CapacityIncrement
+        if self.LoadMultiplier > 1.0:
+            self.LoadMultiplier = 1.0
+
+        Result = True
+
+        return Result
+
 
     def Save(self, Dir=""):
-        return False
-    def reProcessBusDefs(self):
-        pass
-    def DoResetMeterZones(self):
-        pass
-    def InvalidateAllPCElements(self):
-        pass
+        """Save the present circuit - Enabled devices only"""
+        i = 0
+        Success = False
+        CurrDir = ""
+        SaveDir = ""
 
-    def DebugDump(self, F=file):
-        pass
+        Result = False
+        # Make a new subfolder in the present folder based on the circuit
+        # name and a unique sequence number
+#        SaveDir = os.path.pwd()  # remember where to come back to
+        Success = False
+        if len(Dir) == 0:
+            dir = self.Name
+
+        CurrDir = Dir
+        for i in range(999):  # Find a unique dir name
+            if not os.path.isdir(CurrDir):
+                if os.mkdir(CurrDir):
+                    os.chdir(CurrDir)
+                    Success = True
+                    break
+            CurrDir = Dir + '%.3d' % [i]
+        else:
+            if not os.path.isdir(Dir):
+                CurrDir = Dir
+                if os.mkdir(CurrDir):
+                    os.chdir(CurrDir);
+                    Success = True
+
+            else:  # Exists - overwrite
+                CurrDir = Dir
+                os.chdir(CurrDir)
+                Success = True
+
+        if not Success:
+            logger.error('Could not create a folder "' +
+                         Dir + '" for saving the circuit.')
+            sys.exit()
+
+        del SavedFileList[:]  # This list keeps track of all files saved
+
+        # Initialize so we will know when we have saved the circuit elements
+        for cktElem in self.CktElements:
+            cktElem[i].HasBeenSaved = False
+
+        # Initialize so we don't save a class twice
+        for cls in DSSClassList:
+            cls.Saved = False
+
+        # Ignore Feeder Class -- gets saved with Energymeters
+        FeederClass.Saved = True  # will think this class is already saved
+
+        # Define voltage sources first
+        Success =  WriteVsourceClassFile('vsource', True)
+        # Write library files so that they will be available to lines, loads, etc
+        # Use default filename=classname
+        if Success: Success =  WriteClassFile('wiredata','', False)
+        if Success: Success =  WriteClassFile('linegeometry', '', False)
+        if Success: Success =  WriteClassFile('linecode', '', False)
+        if Success: Success =  WriteClassFile('linespacing', '', False)
+        if Success: Success =  WriteClassFile('linecode', '', False)
+        if Success: Success =  WriteClassFile('xfmrcode', '', False)
+        if Success: Success =  WriteClassFile('growthshape', '', False)
+        if Success: Success =  WriteClassFile('TCC_Curve', '', False)
+        if Success: Success =  WriteClassFile('Spectrum', '', False)
+        if Success: Success = self.SaveFeeders()  # Save feeders first
+        if Success: Success = self.SaveDSSObjects()  # Save rest ot the objects
+        if Success: Success = self.SaveBusCoords()
+        if Success: Success = self.SaveMasterFile()
+
+        if Success:
+            logger.info('Circuit saved in directory: %s' % os.getcwd())
+        else:
+            logger.error('Error attempting to save circuit in %s' %
+                         os.getcwd())
+
+        # Return to Original directory
+        os.chdir(SaveDir)
+
+        return True
 
 
     def GetTopology(self):
@@ -492,19 +755,38 @@ class Circuit(Named):
     def Get_Losses(self):
         """Total Circuit PD Element losses.
         """
-        return complex(0.0, 0.0)
+        pdElem = self.PDElements.next()
+        Result = complex(0.0, 0.0)
+        while pdElem != None:
+            if pdElem.enabled:
+                # Ignore Shunt Elements
+                if not pdElem.IsShunt:
+                    Result += pdElem.losses
+            pdElem = self.PDElements.next()
+        return Result
     Losses = property(Get_Losses)
 
     def Get_BusNameRedefined(self):
         return self._BusNameRedefined
     def Set_BusNameRedefined(self, value):
         self._BusNameRedefined = value
+        if value:
+            # Force Rebuilding of SystemY if bus def has changed
+            Solution.SystemYChanged = True
+            # So controls will know buses redefined
+            self.Control_BusNameRedefined = True
     BusNameRedefined = property(Get_BusNameRedefined, Set_BusNameRedefined)
 
     def Get_LoadMultiplier(self):
         return self._LoadMultiplier
-    def Set_LoadMultiplier(self, value):
-        self._LoadMultiplier = value
+    def Set_LoadMultiplier(self, Value):
+        if (Value != self._LoadMultiplier):
+            # We may have to change the Y matrix if the load multiplier
+            # has changed
+            if self.Solution.LoadModel == "ADMITTANCE":
+                self.InvalidateAllPCElements()
+
+        self._LoadMultiplier = Value
     LoadMultiplier = property(Get_LoadMultiplier, Set_LoadMultiplier)
 
 
@@ -517,10 +799,6 @@ class Circuit(Named):
         """
         return complex
     def _Set_LoadMultiplier(self, Value=0.0):
-        pass
-    def _SaveBusInfo(self):
-        pass
-    def _RestoreBusInfo(self):
         pass
     def _SaveMasterFile(self):
         return False
