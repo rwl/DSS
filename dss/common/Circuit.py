@@ -16,14 +16,21 @@
 
 import sys
 
+import logging
+
 from numpy import array, zeros
 
 from dss.common.Solution import Solution
 from dss.common.Named import Named
 from dss.common.ControlQueue import ControlQueue
+from dss.common.Bus import Bus
+from dss.common.Utilities import ParseObjectClassandName
 from dss.general.LoadShape import LoadShape
 
-global DefaultBaseFreq, USENONE, AppendGlobalresult
+global DefaultBaseFreq, USENONE, AppendGlobalresult, LastClassReferenced, \
+    ClassNames, DSSClassList, ActiveDSSClass, CmdResult
+
+logger = logging.getLogger(__name__)
 
 class Circuit(Named):
     """Defines a container of circuit elements.
@@ -261,6 +268,93 @@ class Circuit(Named):
         return
 
 
+    def _AddABus(self):
+        """Allocates more memory if necessary."""
+        if self.NumBuses > self.MaxBuses:
+            self.MaxBuses += self.IncBuses
+
+
+    def _AddANodeBus(self):
+        if self.NumNodes > self.MaxNodes:
+            self.MaxNodes += self.IncNodes
+
+
+    def _AddBus(self, BusName="", NNodes=0):
+        NodeRef, i = 0
+
+        # Trap error in bus name
+        if not BusName:
+            # Error in busname
+            logger.error('Circuit.AddBus: BusName for Object "' +
+                         self.ActiveCktElement.Name + '" is null.' +
+                         'Error in definition of object.')
+            for i in range(self.ActiveCktElement.NConds):
+                self._NodeBuffer[i] = 0
+
+            sys.exit()
+            return 0
+
+        Result = self.BusList.Find(BusName)
+        if Result == 0:
+            self.NumBuses += 1
+            self._AddABus() # Allocates more memory if necessary
+            self.Buses[self.NumBuses] = Bus()
+
+        # Define nodes belonging to the bus}
+        # Replace Nodebuffer values with global reference number
+        Bus = self.Buses[Result]
+        for i in range(NNodes):
+            NodeRef = Bus.add(self._NodeBuffer[i])
+            if NodeRef == self.NumNodes:
+                # This was a new node so Add a NodeToBus element ????
+                self.AddANodeBus() # Allocates more memory if necessary
+                self.MapNodeToBus[self.NumNodes].BusRef = Result
+                self.MapNodeToBus[self.NumNodes].NodeNum = self._NodeBuffer[i]
+            # Swap out in preparation to setnoderef call
+            self._NodeBuffer[i] = NodeRef
+
+        return Result
+
+
+    def _AddDeviceHandle(self, Handle=0):
+        if self.NumDevices > self.MaxDevices:
+            self.MaxDevices = self.MaxDevices + self.IncDevices
+
+        # Index into CktElements
+        self.DeviceRef[self.NumDevices].devHandle = Handle
+        self.DeviceRef[self.NumDevices].CktElementClass = LastClassReferenced
+
+
+    def SetElementActive(self, FullObjectName=""):
+        """Fast way to set a cktelement active."""
+        DevType = ""
+        DevName = ""
+
+        Result = 0
+
+        ParseObjectClassandName(FullObjectName, DevType, DevName)
+        DevClassIndex = ClassNames.index(DevType)
+        if DevClassIndex == 0:
+            DevClassIndex = LastClassReferenced
+        DevIndex = self.DeviceList.index(DevName)
+        while DevIndex > 0:
+            if self.DeviceRef[DevIndex].CktElementClass == DevClassIndex:
+                # we got a match
+                ActiveDSSClass = DSSClassList[DevClassIndex]
+                LastClassReferenced = DevClassIndex
+                Result = self.DeviceRef[DevIndex].devHandle
+#                ActiveDSSClass.Active := Result;
+#                ActiveCktElement := ActiveDSSClass.GetActiveObj;
+                self.ActiveCktElement = self.CktElements[Result]
+                break
+            DevIndex = self.DeviceList.next()   # Could be duplicates
+
+        CmdResult = Result
+
+        return Result
+
+
+
     def AddCktElement(self, Handle=0):
         """Adds last DSS object created to circuit.
         """
@@ -277,8 +371,6 @@ class Circuit(Named):
         pass
     def DoResetMeterZones(self):
         pass
-    def SetElementActive(self, FullObjectName=""):
-        return 0
     def InvalidateAllPCElements(self):
         pass
 
@@ -332,14 +424,6 @@ class Circuit(Named):
     LoadMultiplier = property(Get_LoadMultiplier, Set_LoadMultiplier)
 
 
-    def _AddDeviceHandle(self, Handle=0):
-        pass
-    def _AddABus(self):
-        pass
-    def _AddANodeBus(self):
-        pass
-    def _AddBus(self, BusName="", NNodes=0):
-        return 0
     def _Set_ActiveCktElement(self, Value=None):
         pass
     def _Set_BusNameRedefined(self, Value=False):
