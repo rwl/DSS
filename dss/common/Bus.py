@@ -14,7 +14,11 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
+from numpy import zeros
+
 from dss.common.Named import Named
+
+global ActiveCircuit
 
 class Bus(Named):
     """A bus is a circuit element having [1..N] nodes. Buses are the connection
@@ -37,18 +41,18 @@ class Bus(Named):
     voltage of exactly zero volts.
     """
 
-    def __init__(self, vBus=0.0, busCurrent=0.0, zSC=0.0, ySC=0.0, x=0.0,
-            y=0.0, kVBase=0.0, coordsDefined=False, busChecked=False,
-            keep=False, radialBus=False, circuit=None, *args, **kw_args):
+    def __init__(self, VBus=None, BusCurrent=None, Zsc=None, Ysc=None, x=0.0,
+            y=0.0, kVBase=0.0, CoordDefined=False, BusChecked=False,
+            Keep=False, IsRadialBus=False, Circuit=None, *args, **kw_args):
         """Initialises a new 'Bus' instance.
         """
-        self.vBus = vBus
+        self.VBus = VBus
 
-        self.busCurrent = busCurrent
+        self.BusCurrent = BusCurrent
 
-        self.zSC = zSC
+        self.Zsc = Zsc
 
-        self.ySC = ySC
+        self.Ysc = Ysc
 
         #: X coordinate.
         self.x = x
@@ -57,39 +61,136 @@ class Bus(Named):
         self.y = y
 
         #: Base kV for each node to ground.
+        #  Default: 0.0 (Signify that it has not been set)
         self.kVBase = kVBase
 
         #: Are the coordinates defined?
-        self.coordsDefined = coordsDefined
+        self.CoordDefined = CoordDefined
 
-        self.busChecked = busChecked
+        self.BusChecked = BusChecked
 
-        self.keep = keep
+        self.Keep = Keep
 
         #: Flag for general use in bus searches.
-        self.radialBus = radialBus
+        self.IsRadialBus = IsRadialBus
 
-        self._circuit = None
-        self.circuit = circuit
+        ## Bus Collection
+        self.BusArray = []
 
-        super(Bus, self).__init__(*args, **kw_args)
+        NodeBus = {'BusRef': 0,  # Ref to Bus in circuit's BusList
+                   'NodeNum': 0}
+        self.NodeBusArray = []
 
-    def getcircuit(self):
-        return self._circuit
+#        self._circuit = None
+#        self.Circuit = Circuit
 
-    def setcircuit(self, value):
-        if self._circuit is not None:
-            filtered = [x for x in self.circuit.busList if x != self]
-            self._circuit._busList = filtered
+        self._NumNodesThisBus = 0
+        self._Nodes = []
+        self._Allocation = 3
+        self._RefNo = []
 
-        self._circuit = value
-        if self._circuit is not None:
-            if self not in self._circuit._busList:
-                self._circuit._busList.append(self)
+        super(Bus, self).__init__('Bus', *args, **kw_args)
 
-    circuit = property(getcircuit, setcircuit)
 
-    def find(self, nodeNum):
-        pass
-    def getRef(self, nodeIndex):
-        pass
+    def _AddANode(self):
+        self.NumNodesThisBus += 1
+        if self.NumNodesThisBus > self._Allocation:
+            self._Allocation += 1
+#            ReallocMem(self._Nodes, Sizeof(Nodes^[1])*Allocation)
+#            ReallocMem(self._RefNo, Sizeof(RefNo^[1])*Allocation)
+
+
+    def Add(self, NodeNum=0):
+        if NodeNum == 0:
+            Result = 0
+        else:
+            Result = self.Find(NodeNum)
+            if Result == 0:
+                # Add a node to the bus
+                self.AddANode()
+                self._Nodes[self._NumNodesThisBus] = NodeNum
+
+                ac = ActiveCircuit
+                ac.NumNodes += 1  # Global node number for circuit
+                self.RefNo[self._NumNodesThisBus] = ac.NumNodes
+                Result = ac.NumNodes  # Return global node number
+        return 0
+
+
+    def Find(self, NodeNum=0):
+        """Returns reference num for node by node number."""
+        for i in range(self._NumNodesThisBus):
+            if self._Nodes[i] == NodeNum:
+                return self._RefNo[i]
+        return 0
+
+
+    def GetRef(self, NodeIndex=0):
+        """Returns reference Num for node by node index."""
+        Result = 0
+        if (NodeIndex > 0) and (NodeIndex <= self._NumNodesThisBus):
+            Result = self._RefNo[NodeIndex]
+        return Result
+
+
+    def GetNum(self, NodeIndex=0):
+        """Returns ith node number designation."""
+        Result = 0
+        if (NodeIndex > 0) and (NodeIndex <= self._NumNodesThisBus):
+            Result = self._Nodes[NodeIndex]
+        return Result
+
+
+    def AllocateBusQuantities(self):
+        # Have to perform a short circuit study to get this allocated
+        if self.Ysc is not None:
+            self.Ysc = None
+        if self.Zsc is not None:
+            self.Zsc = None
+        self.Ysc = zeros(self._NumNodesThisBus)
+        self.Zsc = zeros(self._NumNodesThisBus)
+        self.AllocateBusVoltages()
+        self.AllocateBusCurrents()
+
+
+    def _Get_Zsc0(self):
+        """= Zs + 2 Zm"""
+        if self.Zsc is not None:
+            Result = self.Zsc.AvgDiagonal# + CmulReal(self.Zsc.AvgOffDiagonal, 2.0)
+        else:
+            Result = complex(0, 0)
+        return Result
+
+    Zsc0 = property(_Get_Zsc0)
+
+
+    def _Get_Zsc1(self):
+        """= Zs-Zm"""
+        if self.Zsc is not None:
+            Result = self.Zsc.AvgDiagonal - self.Zsc.AvgOffDiagonal
+        else:
+            Result = complex(0, 0)
+        return Result
+
+    Zsc1 = property(_Get_Zsc1)
+
+
+    def FindIdx(self, NodeNum=0):
+        """Returns index of node by node number."""
+        for i in range(self._NumNodesThisBus):
+            if self._Nodes[i] == NodeNum:
+                return i
+        return 0
+
+
+    def AllocateBusVoltages(self):
+        self.VBus = [complex(0.0, 0.0)] * self._NumNodesThisBus
+
+
+    def AllocateBusCurrents(self):
+        self.BusCurrent = [complex(0.0, 0.0)] * self._NumNodesThisBus
+
+
+    @property
+    def NumNodesThisBus(self):
+        return self._NumNodesThisBus
