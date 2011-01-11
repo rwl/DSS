@@ -26,9 +26,29 @@ from dss.common.ControlQueue import ControlQueue
 from dss.common.Bus import Bus
 from dss.common.Utilities import ParseObjectClassandName
 from dss.general.LoadShape import LoadShape
+from dss.delivery.PowerDeliveryElement import PowerDeliveryElement
+from dss.delivery.PowerConversionElement import PowerConversionElement
+from dss.control.ControlElement import ControlElement
+from dss.meter.MeterElement import MeterElement
+from dss.meter.Monitor import Monitor
+from dss.meter.EnergyMeter import EnergyMeter
+from dss.meter.Sensor import Sensor
+from dss.conversion.Generator import Generator
+from dss.conversion.CurrentSource import CurrentSource
+from dss.conversion.VoltageSource import VoltageSource
+from dss.control.CapacitorControl import CapacitorControl
+#from dss.control.SWTControl import SWTControl
+from dss.control.RegulatorControl import RegulatorControl
+from dss.conversion.Load import Load
+from dss.delivery.Capacitor import Capacitor
+from dss.delivery.Transformer import Transformer
+from dss.delivery.Line import Line
+from dss.delivery.Fault import Fault
+from dss.common.Feeder import Feeder
+from dss.conversion.Storage import Storage
 
 global DefaultBaseFreq, USENONE, AppendGlobalresult, LastClassReferenced, \
-    ClassNames, DSSClassList, ActiveDSSClass, CmdResult
+    ClassNames, DSSClassList, ActiveDSSClass, CmdResult, ActiveDSSObject
 
 logger = logging.getLogger(__name__)
 
@@ -358,7 +378,70 @@ class Circuit(Named):
     def AddCktElement(self, Handle=0):
         """Adds last DSS object created to circuit.
         """
-        pass
+        # Update lists that keep track of individual circuit elements
+        self.NumDevices += 1
+
+        # Resize DeviceList if no. of devices greatly exceeds allocation
+#        if Cardinal(self.NumDevices) > 2 * self.DeviceList.InitialAllocation:
+        if self.NumDevices > 2 * self.DeviceList.InitialAllocation:
+            self.ReAllocDeviceList()
+        self.DeviceList.append(self.ActiveCktElement.Name)
+        self.CktElements.append(self.ActiveCktElement)
+
+        # Build Lists of PC and PD elements
+        ace = self.ActiveCktElement
+        if isinstance(ace, PowerDeliveryElement):
+            self.PDElements.append(ace)
+        elif isinstance(ace, PowerConversionElement):
+            self.PCElements.append(ace)
+        elif isinstance(ace, ControlElement):
+            self.DSSControls.append(ace)
+        elif isinstance(ace, MeterElement):
+            self.MeterElements.append(ace)
+        else:
+            pass
+
+        # Build lists of Special elements and generic types
+        if isinstance(ace, Monitor):
+            self.Monitors.append(ace)
+        elif isinstance(ace, EnergyMeter):
+            self.EnergyMeters.append(ace)
+        elif isinstance(ace, Sensor):
+            self.Sensors.append(ace)
+        elif isinstance(ace, Generator):
+            self.Generators.append(ace)
+        elif isinstance(ace, CurrentSource) or isinstance(ace, VoltageSource):
+            self.Sources.append(ace)
+        elif isinstance(ace, CapacitorControl):
+            self.CapControls.append(ace)
+#        elif isinstance(ace, SWTControl):
+#            self.SwtControls.append(ace)
+        elif isinstance(ace, RegulatorControl):
+            self.RegControls.append(ace)
+        elif isinstance(ace, Load):
+            self.Loads.append(ace)
+        elif isinstance(ace, Capacitor):
+            self.ShuntCapacitors.append(ace)
+        # Keep Lines, Transformer, and Lines and Faults in PDElements and
+        # separate lists so we can find them quickly.
+        elif isinstance(ace, Transformer):
+            self.Transformers.append(ace)
+        elif isinstance(ace, Line):
+            self.Lines.append(ace)
+        elif isinstance(ace, Fault):
+            self.Faults.append(ace)
+        elif isinstance(ace, Feeder):
+            self.Feeders.append(ace)
+        elif isinstance(ace, Storage):
+            self.StorageElements.append(ace)
+        else:
+            pass
+
+        # AddDeviceHandle(Handle) # Keep Track of this device result is handle
+        # Handle is global index into CktElements
+        self.AddDeviceHandle(self.CktElements.ListSize)
+        self.ActiveCktElement.Handle = self.CktElements.ListSize
+
 
     def TotalizeMeters(self):
         pass
@@ -403,6 +486,7 @@ class Circuit(Named):
         return self._ActiveCktElement
     def Set_ActiveCktElement(self, value):
         self._ActiveCktElement = value
+        ActiveDSSObject = value
     ActiveCktElement = property(Get_ActiveCktElement, Set_ActiveCktElement)
 
     def Get_Losses(self):
