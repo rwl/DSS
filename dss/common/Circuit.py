@@ -27,7 +27,8 @@ from dss.common.ControlQueue import ControlQueue
 from dss.common.Bus import Bus
 from dss.common.Utilities import \
     ParseObjectClassandName, LogThisEvent, WriteVsourceClassFile, \
-    WriteClassFile
+    WriteClassFile, CheckForBlanks
+from dss.common.CircuitElement import CircuitElement
 from dss.general.LoadShape import LoadShape
 from dss.delivery.PowerDeliveryElement import PowerDeliveryElement
 from dss.delivery.PowerConversionElement import PowerConversionElement
@@ -52,7 +53,8 @@ from dss.conversion.Storage import Storage
 
 global DefaultBaseFreq, USENONE, AppendGlobalresult, LastClassReferenced, \
     ClassNames, DSSClassList, ActiveDSSClass, CmdResult, ActiveDSSObject, \
-    EnergyMeterClass, SavedFileList, FeederClass
+    EnergyMeterClass, SavedFileList, FeederClass, SolutionClass, \
+    CircuitName_
 
 logger = logging.getLogger(__name__)
 
@@ -724,37 +726,184 @@ class Circuit(Named):
         return True
 
 
-    def GetTopology(self):
-        """Access to topology from the first source.
-        """
-        return None
-    def FreeTopology(self):
-        pass
-    def GetBusAdjacentPDLists(self):
-        return array([])
-    def GetBusAdjacentPCLists(self):
-        return array([])
+    def _SaveDSSObjects(self):
+        DSS_Class = None
+        i = 0
 
-    def Get_Name(self):
-        return ""
-    Name = property(Get_Name)
+        # Write Files for all populated DSS Classes  Except Solution Class
+        for i in range(DSSClassList.ListSize):
+            DSS_Class = DSSClassList[i]
+            if (DSS_Class == SolutionClass) or DSS_Class.Saved:
+                continue  # Cycle to next
+            # use default filename=classname
+            if not WriteClassFile(DSS_Class, '',
+                                  isinstance(DSS_Class, CircuitElement)):
+                sys.exit()  # bail on error
+        DSS_Class.Saved = True
+
+        return True
+
+
+    def _SaveMasterFile(self):
+        F = None
+        i = 0
+
+        Result = False
+        try:
+            F = open('Master.DSS', "wb")
+            F.write('Clear' + '\n')
+            F.write('New Circuit.' + self.Name + '\n')
+            F.write('\n')
+            if self.PositiveSequence:
+                F.write('Set Cktmodel=Positive' + '\n')
+            if self.DuplicatesAllowed:
+                F.write('set allowdup=yes' + '\n')
+            F.write('\n')
+
+            # Write Redirect for all populated DSS Classes
+            # Except Solution Class
+            for i in range(len(SavedFileList.Count)):
+                F.write('Redirect ', SavedFileList.Strings[i - 1])
+
+            if os.path.exists('buscoords.dss'):
+                F.write('MakeBusList')
+                F.write('Buscoords buscoords.dss')
+
+            F.close()
+            Result = True
+        except Exception, E:
+            logger.error('Error Saving Master File: ' + E.message)
+
+        return Result
+
+
+    def _SaveFeeders(self):
+        Result = True
+        # Write out all energy meter  zones to separate subdirectories
+        SaveDir = os.getcwd()
+        for Meter in self.EnergyMeters:
+            CurrDir = Meter.Name
+            if os.mkdir(CurrDir):
+                os.chdir(CurrDir)
+                Meter.SaveZone(CurrDir)
+                os.chdir(SaveDir)
+            else:
+                logger.error('Cannot create directory: ' + CurrDir)
+                Result = False
+                os.chdir(SaveDir)  # back to whence we came
+                break
+
+        return Result
+
+
+    def _SaveBusCoords(self):
+        Result = False
+
+        try:
+            F = open('BusCoords.dss', "wb")
+
+            for i in range(self.NumBuses):
+                if self.Buses[i].CoordDefined:
+                    F.write(CheckForBlanks(self.BusList[i]), ', %-g, %-g' %
+                            (self.Buses[i].X, self.Buses[i].Y))
+
+            F.close()
+
+            Result = True
+
+        except Exception, E:
+            logger.error('Error creating Buscoords.dss. ' + E.msg)
+
+        return Result
+
+
+    def _ReallocDeviceList(self):
+        """Reallocates the device list to improve the performance of searches.
+        """
+        TempList = []
+        i = 0
+        if self.LogEvents:
+            LogThisEvent('Reallocating Device List')
+
+        for i in range(len(self.DeviceList)):
+            TempList.Append(self.DeviceList[i])
+
+        del self.DeviceList[:] # Throw away the old one.
+        self.DeviceList = TempList
+
+
+    def GetBusAdjacentPDLists(self):
+#        if self._BusAdjPD is None:
+#            BuildActiveBusAdjacencyLists(self._BusAdjPD, self._BusAdjPC)
+        return self._BusAdjPD
+
+
+    def GetBusAdjacentPCLists(self):
+#        if self._BusAdjPC is None:
+#            BuildActiveBusAdjacencyLists(self._BusAdjPD, self._BusAdjPC)
+        return self._BusAdjPC
+
+
+    def GetTopology(self):
+        """Access to topology from the first source."""
+        i = 0
+        elem = None
+
+        if self.Branch_List is None:
+            # Initialize all Circuit Elements and Buses to not checked,
+            # then build a new tree}
+            elem = self.CktElements.next()
+            while elem is not None:
+                elem.Checked = False
+                for i in range(elem.Nterms):
+                    elem.Terminals[i].Checked = False
+                elem.IsIsolated = True  # till proven otherwise
+                elem = self.CktElements.next()
+
+            for i in range(self.NumBuses):
+                self.Buses[i].BusChecked = False
+            # calls back to build adjacency lists
+#            self.Branch_List = GetIsolatedSubArea(self.Sources.next(), True)
+
+        return self.Branch_List
+
+
+    def FreeTopology(self):
+        if self.Branch_List is not None:
+            del self.Branch_List[:]
+        self.Branch_List = None
+#        if self._BusAdjPC is not None:
+#            FreeAndNilBusAdjacencyLists(self._BusAdjPD, self._BusAdjPC)
+
+
+    def _Get_Name(self):
+        return self.LocalName
+
+    Name = property(_Get_Name)
+
 
     def Get_CaseName(self):
-        return ""
-    def Set_CaseName(self, value):
+        return self._CaseName
+
+    def _Set_CaseName(self, value):
         self._CaseName = value
-    CaseName = property(Get_CaseName, Set_CaseName)
+        CircuitName_ = value + "_"
+
+    CaseName = property(Get_CaseName, _Set_CaseName)
+
 
     def Get_ActiveCktElement(self):
         return self._ActiveCktElement
-    def Set_ActiveCktElement(self, value):
+
+    def _Set_ActiveCktElement(self, value):
         self._ActiveCktElement = value
         ActiveDSSObject = value
-    ActiveCktElement = property(Get_ActiveCktElement, Set_ActiveCktElement)
 
-    def Get_Losses(self):
-        """Total Circuit PD Element losses.
-        """
+    ActiveCktElement = property(Get_ActiveCktElement, _Set_ActiveCktElement)
+
+
+    def _Get_Losses(self):
+        """Total Circuit PD Element losses."""
         pdElem = self.PDElements.next()
         Result = complex(0.0, 0.0)
         while pdElem != None:
@@ -764,22 +913,28 @@ class Circuit(Named):
                     Result += pdElem.losses
             pdElem = self.PDElements.next()
         return Result
-    Losses = property(Get_Losses)
+
+    Losses = property(_Get_Losses)
+
 
     def Get_BusNameRedefined(self):
         return self._BusNameRedefined
-    def Set_BusNameRedefined(self, value):
+
+    def _Set_BusNameRedefined(self, value):
         self._BusNameRedefined = value
         if value:
             # Force Rebuilding of SystemY if bus def has changed
             Solution.SystemYChanged = True
             # So controls will know buses redefined
             self.Control_BusNameRedefined = True
-    BusNameRedefined = property(Get_BusNameRedefined, Set_BusNameRedefined)
+
+    BusNameRedefined = property(Get_BusNameRedefined, _Set_BusNameRedefined)
+
 
     def Get_LoadMultiplier(self):
         return self._LoadMultiplier
-    def Set_LoadMultiplier(self, Value):
+
+    def _Set_LoadMultiplier(self, Value):
         if (Value != self._LoadMultiplier):
             # We may have to change the Y matrix if the load multiplier
             # has changed
@@ -787,99 +942,5 @@ class Circuit(Named):
                 self.InvalidateAllPCElements()
 
         self._LoadMultiplier = Value
-    LoadMultiplier = property(Get_LoadMultiplier, Set_LoadMultiplier)
 
-
-    def _Set_ActiveCktElement(self, Value=None):
-        pass
-    def _Set_BusNameRedefined(self, Value=False):
-        pass
-    def _Get_Losses(self):
-        """Total Circuit losses
-        """
-        return complex
-    def _Set_LoadMultiplier(self, Value=0.0):
-        pass
-    def _SaveMasterFile(self):
-        return False
-    def _SaveDSSObjects(self):
-        return False
-    def _SaveFeeders(self):
-        return False
-    def _SaveBusCoords(self):
-        pass
-    def _ReallocDeviceList(self):
-        pass
-    def _Set_CaseName(self, Value=""):
-        pass
-    def _Get_Name(self):
-        return ""
-
-
-#    def add(self, element, uid=None):
-#        """ Adds an elements to the circuit model.
-#        """
-##        if uid is None:
-##            if element.m_rid == "":
-##                uid = uuid.uuid4().hex
-##            else:
-##                uid = element.mrid
-##
-##        self.elements[uid] = element
-#        element.model = self
-#
-#
-#    def remove(self, uid):
-#        """Removes the element corresponding the the specified UID.
-#        """
-#        del self.elements[uid]
-#
-#
-#    def topologicalAnalysis(self):
-#        """Returns a list of TopologicalNode objects that contain connectivity
-#        nodes that, in the current state, connect all non-primary elements
-#        between primary elements (Transformers, ACLineSegments etc.).
-#        """
-##        nodes = [e for e in self.elements.values() \
-##                 if isinstance(e, ConnectivityNode)]
-##
-##        tn = TopologicalNode()
-##
-##        for element in delivery:
-##            t1 = element.terminals[0]
-##            t2 = element.terminals[1]
-##
-##            cn1 = t1.connectivity_node
-##
-##            if cn1 in nodes:
-##                for terminal in cn1.terminals:
-##                    c_eq = terminal.conducting_equipment
-##
-##                    if type(c_eu) in primary_types:
-##                        nodes.remove(cn1)
-##                        tn = TopologicalNode() # Start a new node.
-##                    else:
-##                        tn.connectivity_nodes.append(cn1)
-##                        nodes.remove(cn1)
-##
-##            cn2 = t2.connectivity_node
-##
-##        for element in conversion:
-##            pass
-#
-#
-#    def loadElements(self, file_name):
-#        """Loads model elements from a CIM RDF/XML file and replaces the
-#        existing elements.
-#        """
-##        reader = CIMReader()
-##        uri_element_map = reader(file_name)
-##        self.elements = uri_element_map.values()
-#
-#
-#    def addElements(self, file_name):
-#        """Loads model elements from a CIM RDF/XML file and adds them to the
-#        existing list of elements.
-#        """
-##        element_map = read_cim(file_name)
-##        self.elements.update(element_map)
+    LoadMultiplier = property(Get_LoadMultiplier, _Set_LoadMultiplier)
