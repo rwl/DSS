@@ -113,3 +113,7 @@ class LoadShape(object):
         #  syntax: qmult = (file=filename) where the file contains one value
         #  per line.
         self.qMult = qMult
+
+    @classmethod
+    def Find(cls, name):
+        pass
