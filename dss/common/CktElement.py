@@ -17,7 +17,7 @@
 import sys
 import logging
 
-from numpy import sqrt
+from numpy import sqrt, finfo
 
 from dss.general.DSSObject import DSSObject
 from dss.common.Terminal import PowerTerminal
@@ -25,6 +25,7 @@ from dss.common.Terminal import PowerTerminal
 global ActiveCircuit
 
 CZERO = complex(0.0, 0.0)
+EPSILON = finfo(float).eps
 
 logger = logging.getLogger(__name__)
 
@@ -610,30 +611,149 @@ class CktElement(DSSObject):
                 F.write("\n")
 
 
-    def Closed(self, Index):
-        pass
-    def ComputeVterminal(self):
-        pass
-    def ZeroITerminal(self):
-        pass
-    def MakePosSequence(self):
-        """Make a positive Sequence Model"""
-        pass
-    def GetTermVoltages(self, iTerm, VBuffer):
-        pass
-    def GetSeqLosses(self, PosSeqLosses, NegSeqLosses, ZeroModeLosses):
-        pass
+    def _DoYprimCalcs(self, Ymatrix):
+        i, j, k , ii, jj, ElimRow = 0
+        Ynn, Yij, Yin, Ynj = complex
+        RowEliminated = []
+        ElementOpen = False
+
+        ## Now Account for Open Conductors}
+        ## For any conductor that is open, zero out row and column}
+        self.ElementOpen = False
+        k = 0
+        for i in range(self.NTerms):
+            for j in range(self.NConds):
+                if not self.Terminals[i].Conductors[j].Closed:
+                    if not self.ElementOpen:
+#                        RowEliminated = AllocMem(Sizeof(RowEliminated[1])*Yorder)
+                        ElementOpen = True
+                # First do Kron Reduction
+                ElimRow = j + k
+                Ynn = Ymatrix[ElimRow, ElimRow]
+                if abs(Ynn) == 0.0:
+                    Ynn.real = EPSILON
+                RowEliminated[ElimRow] = 1
+                for ii in range(self.Yorder):
+                    if RowEliminated[ii] == 0:
+                        Yin = Ymatrix[ii, ElimRow]
+                    for jj in range(ii, self.Yorder):
+                        if RowEliminated[jj] == 0:
+                            Yij = Ymatrix[ii, jj]
+                            Ynj = Ymatrix[ElimRow, jj]
+#                            SetElemSym(ii, jj, Csub(Yij, Cdiv(cmul(Yin, Ynj)  ,Ynn) ))
+                # Now zero out row and column
+                Ymatrix.ZeroRow(ElimRow)
+                Ymatrix.ZeroCol(ElimRow)
+                # In case node gets isolated
+                Ymatrix[ElimRow, ElimRow] = complex(EPSILON, 0.0)
+        k += self.NConds
+
+#        if self.ElementOpen:
+#            Reallocmem(RowEliminated, 0)
+
+        return
+
+
     def SumCurrents(self):
-        pass
+        """sum Terminal Currents into System  Currents Array"""
+        # Primarily for Newton Iteration
+        if self.Enabled:
+            self.ComputeIterminal()
+            sol = ActiveCircuit.Solution
+#            for i in range(self.Yorder):
+#                # Noderef=0 is OK
+#                Caccum(Currents[NodeRef[i]], Iterminal[i])
+
+
+    def GetTermVoltages(self, iTerm, VBuffer):
+        """Bus Voltages at indicated terminal
+        Fill Vbuffer array which must be adequately allocated
+        by calling routine."""
+        try:
+            NCond = self.NConds
+
+            # return Zero if terminal number improperly specified
+            if (iTerm < 1) or (iTerm > self.NTerms):
+                for i in range(NCond):
+                    self.VBuffer[i] = CZERO
+
+            sol = ActiveCircuit.Solution
+            for i in range(NCond):
+                self.Vbuffer[i] = \
+                    sol.NodeV[self.Terminals[iTerm].TermNodeRef[i]]
+
+        except Exception, E:
+            logger.error('Error filling voltage buffer in GetTermVoltages '
+                'for Circuit Element:' + self.DSSClassName + '.' + \
+                self.Name + "\n" +
+                'Probable Cause: Invalid definition of element.' + "\n" +
+                'System Error Message: ' + E.message)
+
+
+    def InitPropertyValues(self, ArrayOffset):
+        # Base freq
+        self.PropertyValue[self.ArrayOffset + 1] = '%-g' % self.BaseFrequency
+        # Enabled
+        self.PropertyValue[self.ArrayOffset + 2] = 'true'
+        # keep track of this
+        self.EnabledProperty = ArrayOffset + 2
+
+        super(CktElement, self).InitPropertyValues(self.ArrayOffset + 2)
+
 
     def GetPropertyValue(self, Index):
-        pass
-    def InitPropertyValues(self, ArrayOffset):
-        pass
+        if Index == self.EnabledProperty:
+            if self.Enabled:
+                Result = 'true'
+            else:
+                Result = 'false'
+            # *** RCD 6-18-03 commented out
+            # PropertyValue[self.EnabledProperty] = Result # Keep this in synch
+        else:
+            Result = super(CktElement, self).GetPropertyValue(Index)
 
-    def Power(self, idxTerm):
-        """Total power in active terminal"""
-        return self._Get_Power()
+        return Result
 
-    def _DoYprimCalcs(self, Ymatrix):
-        pass
+
+    def GetSeqLosses(self, PosSeqLosses, NegSeqLosses, ZeroModeLosses):
+        ## For the base class, just return CZERO}
+        ##Derived classes have to supply appropriate function}
+        PosSeqLosses = CZERO
+        NegSeqLosses = CZERO
+        ZeroModeLosses = CZERO
+
+
+    def IsGroundBus(self, S):
+        Result = True
+#        i = pos('.1', S);
+#        if i > 0: Result = False
+#        i = pos('.2', S)
+#        if i > 0: Result = False
+#        i = pos('.3', S)
+#        if i > 0: Result = False
+#        i = pos('.', S)
+#        if i == 0: Result = False
+        return Result
+
+
+    def MakePosSequence(self):
+        """Make a positive Sequence Model"""
+        i = 0
+        grnd = False
+        for i in range(self.NTerms):
+            grnd = self.IsGroundBus(self.BusNames[i])
+#            self.BusNames[i] = StripExtension(self.BusNames[i])
+            if grnd:
+                self.BusNames[i] = self.BusNames[i] + '.0'
+
+
+    def ComputeVterminal(self):
+        # Put terminal voltages in an array}
+        sol = ActiveCircuit.Solution
+        for i in range(self.Yorder):
+            self.VTerminal[i] = sol.NodeV[self.NodeRef[i]]
+
+
+    def ZeroITerminal(self):
+        for i in range(self.Yorder):
+            self.ITerminal[i] = CZERO
