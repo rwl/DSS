@@ -18,12 +18,39 @@ class Conductor(object):
     """A power conductor.
     """
 
-    def __init__(self, closed=False, fuseBlown=False, accumISqT=0.0,
-            tccName=''):
-        self.closed = closed
+    def __init__(self, Closed=True, FuseBlown=False):
+        super(Conductor, self).__init__()
 
-        self.fuseBlown = fuseBlown
+        self._TCCName = ""
 
-        self.accumISqT = accumISqT
+        self._AmbientTemp = 0.0
 
-        self.tccName = tccName
+        #: Accumulated I2t
+        self._Accum_Isqt = 0.0
+
+        self.Closed = Closed
+
+        self.FuseBlown = FuseBlown
+
+    def CalcIsqt(self, CurrentMag):
+        """Computes whether conductor has burned down."""
+        raise NotImplementedError
+
+
+    def ResetIsqt(self):
+        """Restore the conductor and reset the i2t calcs."""
+        raise NotImplementedError
+
+
+    def _Get_Ambient(self):
+        return self._AmbientTemp
+    def _Set_Ambient(self, Value):
+        self._AmbientTemp = Value
+    Ambient = property(_Get_Ambient, _Set_Ambient)
+
+
+    def _Get_TCCName(self):
+        return self._TCCName
+    def _Set_TCCName(self, Value):
+        self._TCCName = Value.lower()
+    TccCurve = property(_Get_TCCName, _Set_TCCName)
