@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA, USA
 
-class TimeCurrentCurve(object):
+class TCC_Curve(object):
     """Nominally, a time-current curve, but also used for volt-time curves.
     Collections of time points.  Return values can be interpolated either
     Log-Log as traditional TCC or as over- or under-voltage definite time.

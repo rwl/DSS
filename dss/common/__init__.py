@@ -28,3 +28,12 @@ from dss.common.Terminal import Terminal
 from dss.common.ControlQueue import ControlQueue
 from dss.common.Named import Named
 from dss.common.Electrickery import Electrickery
+
+def DSSMessageDlg(Msg="", err=False):
+    return 0
+
+def DSSInfoMessageDlg(Msg="", err=False):
+    return 0
+
+def GetDSSExeFile():
+    pass
