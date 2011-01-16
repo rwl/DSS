@@ -37,6 +37,8 @@ from dss.conversion.Storage import Storage
 from dss.common import DSSMessageDlg, DSSInfoMessageDlg, GetDSSExeFile
 
 ## Constants and Switches
+CZERO = complex(0.0, 0.0)
+
 CRLF = "\n"
 
 PI =  3.14159265359
