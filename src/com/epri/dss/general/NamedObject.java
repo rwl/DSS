@@ -1,75 +1,96 @@
 /**
  * Copyright (C) 2009 Electric Power Research Institute, Inc.
  * Copyright (C) 2011 Richard Lincoln
- * 
+ *
  * All rights reserved.
  */
 
 package com.epri.dss.general;
 
+import java.util.UUID;
+
 public class NamedObject {
-	
+
 	/* path name, or class name for DSS */
 	private String PName;
-	
+
 	/* localName is unique within a class, like the old FName */
 	private String LName;
-	
+
 	/* for optional display, does not have to be unique */
 	private String DName;
-	
-	private String pGuid;
+
+	private UUID pGuid;
+
 
 	public NamedObject(String ClassName) {
-		// TODO Auto-generated constructor stub
+		super();
+		this.PName = ClassName;
+		this.LName = "";
+		this.DName = "";
+		this.pGuid = null;
 	}
-	
-	private String Get_QualifiedName() {
-		return null;
+
+	protected void finalize() throws Throwable {
+		if (this.pGuid != null)
+			this.pGuid = null;
 	}
-	
-	private String Get_DisplayName() {
-		return null;
+
+
+	public String Get_DisplayName() {
+		if (this.DName == "") {
+			return this.PName + "_" + this.LName;
+		} else {
+			return this.DName;
+		}
 	}
-	
-	private void Set_DisplayName(String Value) {
-		
+
+	public void Set_DisplayName(String Value) {
+		this.DName = Value;
 	}
-	
-	private String Get_GUID() {
-		return null;
+
+	private UUID Get_GUID() {
+		if (this.pGuid == null) {
+			this.pGuid = UUID.randomUUID();
+		}
+		return this.pGuid;
 	}
-	
-	private String Get_ID() {
-		return null;
+
+	public void Set_GUID(UUID Value) {
+		//if (this.pGuid == null) {}
+		this.pGuid = Value;
 	}
-	
-	private String Get_CIM_ID() {
-		return null;
+
+	public String Get_ID() {
+		return Get_GUID().toString();
 	}
-	
-	private void Set_GUID(String Value) {
-		
+
+	public String Get_CIM_ID() {
+		return GUIDToCIMString(Get_GUID());
 	}
-	
-	public String getDSSClassName() {
+
+
+	public String Get_DSSClassName() {
 		return this.PName;
 	}
-	
-	public void setDSSClassName(String Value) {
+
+	public void Set_DSSClassName(String Value) {
 		this.PName = Value;
 	}
-	
-	public String getLocalName() {
+
+	public String Get_LocalName() {
 		return this.LName;
 	}
-	
-	public void setLocalName(String Value) {
+
+	public void Set_LocalName(String Value) {
 		this.LName = Value;
 	}
-	
-	public String getQualifiedName() {
-		return Get_QualifiedName();
+
+
+	public static String GUIDToCIMString(UUID GUID) {
+		String s;
+		s = GUID.toString();
+		return s.substring(1, s.length() - 2);
 	}
 
 }
