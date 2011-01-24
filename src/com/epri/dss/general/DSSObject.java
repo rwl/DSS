@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import com.epri.common.DSSClass;
+import com.epri.dss.common.DSSClass;
 
 public class DSSObject extends NamedObject {
 

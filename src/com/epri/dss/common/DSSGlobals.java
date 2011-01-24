@@ -1,4 +1,4 @@
-package com.epri.common;
+package com.epri.dss.common;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
