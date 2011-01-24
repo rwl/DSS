@@ -271,23 +271,68 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	private void AddDeviceHandle(int Handle) {
-
+		if (NumDevices > MaxDevices) {
+			MaxDevices = MaxDevices + IncDevices;
+			// FIXME: Set min capacity of array list
+			DeviceRef = new CktElementDef[MaxDevices];
+		}
+		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
+		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().LastClassReferenced;
 	}
 
 	private void AddABus() {
-
+	    if (NumBuses > MaxBuses) {
+	    	MaxBuses += IncBuses;
+			// FIXME: Set min capacity of array list
+	    	Buses = new Bus[MaxBuses];
+	    }
 	}
 
 	private void AddANodeBus() {
-
+		if (NumNodes > MaxNodes) {
+			MaxNodes += IncNodes;
+			// FIXME: Set min capacity of array list
+			MapNodeToBus = new NodeBus[MaxNodes];
+		}
 	}
 
 	private int AddBus(String BusName, int NNodes) {
-		return 0;
+		// Trap error in bus name
+	    if (BusName.length() == 0) {  // Error in busname
+	       DSSGlobals.getInstance().DoErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.Name + "\" is null.",
+	                  "Error in definition of object.", 424);
+	       for (int i = 0; i < ActiveCktElement.NConds; i++) {
+	    	   NodeBuffer[i] = 0;
+	       }
+	       return 0;
+	    }
+
+	    int Result = BusList.Find(BusName);
+	    if (Result == 0) {
+	         Result = BusList.Add(BusName);    // Result is index of bus
+	         NumBuses += 1;
+	         AddABus();   // Allocates more memory if necessary
+	         Buses[NumBuses] = new DSSBus();
+	    }
+
+	    /* Define nodes belonging to the bus */
+	    /* Replace Nodebuffer values with global reference number */
+	    int NodeRef;
+	    for (int i = 0; i < NNodes; i++) {
+	         NodeRef = Buses[Result].Add(NodeBuffer[i]);
+	         if (NodeRef == NumNodes) { // This was a new node so Add a NodeToBus element ????
+	             AddANodeBus();   // Allocates more memory if necessary
+	             MapNodeToBus[NumNodes].BusRef  = Result;
+	             MapNodeToBus[NumNodes].NodeNum = NodeBuffer[i];
+	         }
+	         NodeBuffer[i] = NodeRef;  //  Swap out in preparation to setnoderef call
+	    }
+		return Result;
 	}
 
 	public void Set_ActiveCktElement(DSSCktElement Value) {
-
+		ActiveCktElement = Value;
+		DSSGlobals.getInstance().ActiveDSSObject = Value;
 	}
 
 	public DSSCktElement Get_ActiveCktElement() {
@@ -373,7 +418,51 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	public void ProcessBusDefs() {
+	    int np = ActiveCktElement.NPhases;
+	    int NCond = ActiveCktElement.NConds;
 
+	    Parser.Token = ActiveCktElement.FirstBus;     // use parser functions to decode
+	    for (int iTerm = 0; iTerm < ActiveCktElement.Nterms; iTerm++) {
+	    	boolean NodesOK = true;
+	        // Assume normal phase rotation  for default
+	    	for (int i = 0; i < np; i++)
+				NodeBuffer[i] = i; // set up buffer with defaults
+
+	        // Default all other conductors to a ground connection
+	        // If user wants them ungrounded, must be specified explicitly!
+	    	for (int i = np + 1; i < NCond; i++)
+				NodeBuffer[i] = 0;
+
+			// Parser will override bus connection if any specified
+	        BusName = Parser.ParseAsBusName(NNodes, NodeBuffer);
+
+	    	// Check for error in node specification
+	    	for (int j = 0; j < NNodes; j++) {
+				if (NodeBuffer[j] < 0) {
+					int retval = DSSMessageDlg("Error in Node specification for Element: \""
+	                     + ActiveCktElement.ParentClass.Name + "." + Name + "\"" + CRLF +
+	                     "Bus Spec: \"" + Parser.Token + "\"", false);
+					NodesOK = false;
+	                if (retval == -1) {
+	                    AbortBusProcess = true;
+	                    DSSGlobals.getInstance().AppendGlobalResult("Aborted bus process.");
+	                    return;
+	                }
+	                break;
+				}
+	    	}
+
+
+	        // Node -Terminal Connnections
+	        // Caution: Magic -- AddBus replaces values in nodeBuffer to correspond
+	        // with global node reference number.
+	        if (NodesOK) {
+	        	ActiveCktElement.ActiveTerminalIdx = iTerm;
+	        	ActiveCktElement.ActiveTerminal.BusRef = AddBus(BusName, Ncond);
+	            SetNodeRef(iTerm, NodeBuffer);  // for active circuit
+	        }
+	        Parser.Token = NextBus;
+	    }
 	}
 
 	public void ReProcessBusDefs() {
@@ -385,7 +474,29 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	public int SetElementActive(String FullObjectName) {
-		return 0;
+		int Result = 0;
+
+		Utilities.ParseObjectClassandName(FullObjectName, DevType, DevName);
+		DevClassIndex = ClassNames.Find(DevType);
+		if (DevClassIndex == 0)
+			DevClassIndex = DSSGlobals.getInstance().LastClassReferenced;
+		Devindex = DeviceList.Find(DevName);
+		while (DevIndex >= 0) {
+			if (DeviceRef[Devindex].CktElementClass == DevClassIndex) {  // we got a match
+				DSSGlobals.getInstance().ActiveDSSClass = DSSGlobals.getInstance().DSSClassList.Get(DevClassIndex);
+				DSSGlobals.getInstance().LastClassReferenced = DevClassIndex;
+				Result = DeviceRef[Devindex].devHandle;
+				// ActiveDSSClass.Active := Result;
+				//  ActiveCktElement := ActiveDSSClass.GetActiveObj;
+				ActiveCktElement = CktElements.Get(Result);
+				break;
+			}
+			DevIndex = Devicelist.FindNext();   // Could be duplicates
+		}
+
+		DSSGlobals.getInstance().CmdResult = Result;
+
+		return Result;
 	}
 
 	public void InvalidateAllPCElements() {
