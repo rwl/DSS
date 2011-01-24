@@ -1,5 +1,6 @@
 package com.epri.common;
 
+import java.io.File;
 import java.io.PrintStream;
 
 import com.epri.dss.general.NamedObject;
@@ -340,7 +341,12 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	public void Set_BusNameRedefined(boolean Value) {
+		BusNameRedefined = Value;
 
+		if (Value) {
+			Solution.SystemYChanged = true;  // Force Rebuilding of SystemY if bus def has changed
+			Control_BusNameRedefined = true;  // So controls will know buses redefined
+		}
 	}
 
 	public boolean Is_BusNameRedefined() {
@@ -349,11 +355,29 @@ public class DSSCircuit extends NamedObject {
 
 	/* Total Circuit PD Element losses */
 	public double[] Get_Losses() {
-		return new double[] {0.0, 0.0};
+		PDElement pdElem = PDElements.First();
+		Result = DSSGlobals.getInstance().cZERO;
+		while (pdElem != null) {
+			if (pdElem.Is_Enabled()) {
+				/* Ignore Shunt Elements */
+				if (!pdElem.IsShunt())
+					Result = Resault + pdElem.Get_Losses();
+			}
+			pdElem = PDElements.Next();
+		}
+		return Result;
 	}
 
 	public void Set_LoadMultiplier(double Value) {
+		if (Value != LoadMultiplier) {
+			// We may have to change the Y matrix if the load multiplier  has changed
+			switch (Solution.Get_LoadModel()) {
+			case ADMITTANCE:
+				InvalidateAllPCElements();
+			}
+		}
 
+	    LoadMultiplier = Value;
 	}
 
 	public double Get_LoadMultiplier() {
@@ -361,11 +385,46 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	private void SaveBusInfo() {
+		/* Save existing bus definitions and names for info that needs to be restored */
+		SavedBuses = new DSSBus[NumBuses];
+		SavedBusNames = new String[NumBuses];
 
+		for (int i = 0; i < NumBuses; i++) {
+			SavedBuses[i] = Buses[i];
+	        SavedBusNames[i] = BusList.get(i);
+		}
+	    SavedNumBuses = NumBuses;
 	}
 
 	private void RestoreBusInfo() {
+		/* Restore  kV bases, other values to buses still in the list */
+		for (int i = 0; i < SavedNumBuses; i++) {
+			int idx = BusList.Find(SavedBusNames[i]);
+			if (idx != -1) {
+				Buses[idx].pBus = SavedBuses[i];
+				Buses[idx].kvBase = pBus.kVBase;
+				Buses[idx].x = pBus.x;
+				Buses[idx].y = pBus.y;
+				Buses[idx].CoordDefined = pBus.CoordDefined;
+				Buses[idx].Keep = pBus.Keep;
+	            /* Restore Voltages in new bus def that existed in old bus def */
+				if (pBus.VBus != null) {
+					for (int j = 0; j < pBus.NumNodesThisBus; j++) {
+						// Find index in new bus for j-th node  in old bus
+						int jdx = Buses[idx].FindIdx(pBus.GetNum(j));
+	                    if (jdx > -1) Vbus[jdx] = pBus.VBus[j];
+					}
+				}
+			}
+			SavedBusNames[i] = ""; // De-allocate string
+		}
 
+	    if (SavedBuses != null)
+	    	for (int i = 0; i < SavedNumBuses; i++)
+	    		SavedBuses[i].Free();  // gets rid of old bus voltages, too
+
+	    SavedBuses = null; //ReallocMem(SavedBuses, 0);
+	    SavedBusNames = null; //ReallocMem(SavedBusNames, 0);
 	}
 
 	private boolean SaveMasterFile() {
@@ -402,19 +461,205 @@ public class DSSCircuit extends NamedObject {
 
 	/* Adds last DSS object created to circuit */
 	public void AddCktElement(int Handle) {
+		// Update lists that keep track of individual circuit elements
+		NumDevices += 1;
 
+		// Resize DeviceList if no. of devices greatly exceeds allocation
+		if (NumDevices > 2 * DeviceList.InitialAllocation) ReAllocDeviceList();
+		DeviceList.Add(ActiveCktElement.Get_Name());
+		CktElements.Add(ActiveCktElement);
+
+		/* Build Lists of PC and PD elements */
+		if (ActiveCktElement instanceof PDElement) {
+			PDElements.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof PCElement) {
+			PCElements.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof ControlElement) {
+			DSSControls.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof MeterElement) {
+			MeterElements.Add(ActiveCktElement);
+		}
+
+		/* Build  lists of Special elements and generic types */
+		if (ActiveCktElement instanceof MonitorElement) {
+			Monitors.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof EnergyMeter) {
+		    EnergyMeters.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof SensorElement) {
+			Sensors.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Generator) {
+			Generators.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Source) {
+			Sources.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof CapacitorControl) {
+			CapControls.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof SWTControl) {
+			SwtControls.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof RegulatorControl) {
+			RegControls.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Load) {
+			Loads.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof CapacitorElement) {
+			ShuntCapacitors.Add(ActiveCktElement);
+		}
+		/* Keep Lines, Transformer, and Lines and Faults in PDElements and
+		separate lists so we can find them quickly. */
+		else if (ActiveCktElement instanceof TransformerElement) {
+			Transformers.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Line) {
+			Lines.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Fault) {
+			Faults.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Feeder) {
+			Feeders.Add(ActiveCktElement);
+		} else if (ActiveCktElement instanceof Storage) {
+			StorageElements.Add(ActiveCktElement);
+		}
+
+		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
+		AddDeviceHandle(CktElements.Get_ListSize()); // Handle is global index into CktElements
+		ActiveCktElement.Handle = CktElements.Get_ListSize();
 	}
 
+	/* Totalize all energymeters in the problem */
 	public void TotalizeMeters() {
+		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
+			RegisterTotals[i] = 0.0;
+		}
 
+	    EnergyMeter pEM = EnergyMeters.First();
+	    while (pEM != null) {
+	    	for (int i = 0; i < NumEMRegisters; i++) {
+	    		RegisterTotals[i] = RegisterTotals[i] + Registers[i] * TotalsMask[i];
+			}
+	        pEM = EnergyMeters.Next();
+	    }
 	}
 
+	private double SumSelectedRegisters(double[] mtrRegisters, int[] Regs, int count) {
+		double Result = 0.0;
+		for (int i = 0; i < count; i++)
+			Result = Result + mtrRegisters[Regs[i]];
+		return Result;
+	}
 	public boolean ComputeCapacity() {
+		boolean Result = false;
+		if (EnergyMeters.Get_ListSize() == 0) {
+			DSSGlobals.getInstance().DoSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
+			return;
+		}
 
+		if (NumUERegs == 0) {
+			DSSGlobals.getInstance().DoSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
+			return;
+		}
+
+		Solution.Mode = SNAPSHOT;
+		LoadMultiplier = CapacityStart;
+		CapacityFound = False;
+
+		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
+			EnergyMeterClass.ResetAll();
+			Solution.Solve();
+			EnergyMeterClass.SampleAll();
+			TotalizeMeters();
+
+			// Check for non-zero in UEregs
+			if (SumSelectedRegisters(RegisterTotals, UEregs, NumUEregs) != 0.0)
+				CapacityFound = true;
+			// LoadMultiplier is a property ...
+			if (!CapacityFound) LoadMultiplier = LoadMultiplier + CapacityIncrement;
+		}
+
+		if (LoadMultiplier > 1.0) LoadMultiplier = 1.0;
+		Result = true;
+
+		return Result;
 	}
 
 	public boolean Save(String Dir) {
+		// Make a new subfolder in the present folder based on the circuit name and
+		// a unique sequence number
+		String SaveDir = "";//GetCurrentDir;  // remember where to come back to
+		boolean Success = false;
+		if (Dir.length() == 0) {
+		    Dir = Get_Name();
 
+		    String CurrDir = Dir;
+		    for (int i = 0; i < 999; i++) {  // Find a unique dir name
+		    	File F = new File(CurrDir);
+		        if (!F.exists()) {
+		            if (F.mkdir()) {
+//		            	SetCurrentDir(CurrDir);
+		                Success = true;
+		                break;
+		            }
+		        }
+		        CurrDir = Dir + Format("%.3d", i);
+		    }
+		} else {
+			File F = new File(Dir);
+			if (!F.exists()) {
+				CurrDir = Dir;
+		        F = new File(CurrDir);
+		        if (F.mkdir()) {
+//		            SetCurrentDir(CurrDir);
+		            Success = true;
+		        }
+			} else {  // Exists - overwrite
+		        CurrDir = Dir;
+//		        SetCurrentDir(CurrDir);
+		        Success = true;
+			}
+		}
+
+		if (!Success) {
+		       DSSGlobals.getInstance().DoSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
+		       return;
+		}
+
+		SavedFileList.Clear();  // This list keeps track of all files saved
+
+		// Initialize so we will know when we have saved the circuit elements
+		for (int i = 0; i < CktElements.Get_ListSize(); i++) {
+			DSSCktElement(CktElements.Get(i)).HasBeenSaved = false;
+		}
+
+		// Initialize so we don't save a class twice
+		for (int i = 0; i < DSSClassList.Get_ListSize(); i++) {
+			DssClass(DSSClassList.Get(i)).Saved = false;
+		}
+
+		// Ignore Feeder Class -- gets saved with Energymeters
+		FeederClass.Saved = true;  // will think this class is already saved
+
+		// Define voltage sources first
+		Success = Utilities.WriteVsourceClassFile(GetDSSClassPtr("vsource"), true);
+		// Write library files so that they will be available to lines, loads, etc
+		/* Use default filename=classname */
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("wiredata"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linegeometry"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linecode"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linespacing"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linecode"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("xfmrcode"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("growthshape"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("TCC_Curve"), "", false);
+	    if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("Spectrum"), "", false);
+	    if (Success) Success = SaveFeeders(); // Save feeders first
+	    if (Success) Success = SaveDSSObjects();  // Save rest ot the objects
+	    if (Success) Success = SaveBusCoords();
+	    if (Success) Success = SaveMasterFile();
+
+	    if (Success) {
+	    	DSSGlobals.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
+	    } else {
+	    	DSSGlobals.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
+	    }
+	    // Return to Original directory
+//		SetCurrentDir(SaveDir);
+
+		return true;
 	}
 
 	public void ProcessBusDefs() {
@@ -465,12 +710,53 @@ public class DSSCircuit extends NamedObject {
 	    }
 	}
 
+	/* Redo all Buslists, nodelists */
 	public void ReProcessBusDefs() {
+		if (LogEvents) Utilities.LogThisEvent("Reprocessing Bus Definitions");
 
+		AbortBusProcess = false;
+	    SaveBusInfo();  // So we don't have to keep re-doing this
+	    // Keeps present definitions of bus objects until new ones created
+
+	    // get rid of old bus lists
+	    BusList.Free();  // Clears hash list of Bus names for adding more
+	    BusList = new HashList(NumDevices);  // won't have many more buses than this
+
+	    NumBuses = 0;  // Leave allocations same, but start count over
+	    NumNodes = 0;
+
+	    // Now redo all enabled circuit elements
+	    CktElement CktElementSave = ActiveCktElement;
+	    ActiveCktElement = CktElements.First();
+	    while (ActiveCktElement != null) {
+	        if (ActiveCktElement.Is_Enabled) ProcessBusDefs();
+	        if (AbortBusProcess) return;
+	        ActiveCktElement = CktElements.Next();
+	    }
+
+	    ActiveCktElement = CktElementSave;  // restore active circuit element
+
+	    for (int i = 0; i < NumBuses; i++) Buses[i].AllocateBusVoltages();
+	    for (int i = 0; i < array.length; i++) Buses[i].AllocateBusCurrents();
+
+	    RestoreBusInfo();     // frees old bus info, too
+	    DoResetMeterZones();  // Fix up meter zones to correspond
+
+	    BusNameRedefined = false;  // Get ready for next time
 	}
 
 	public void DoResetMeterZones() {
+		/* Do this only if meterzones unlocked .  Normally, Zones will remain
+		   unlocked so that all changes to the circuit will result in rebuilding
+		   the lists */
+		if (!MeterZonesComputed || !ZonesLocked) {
+			if (LogEvents) Utilities.LogThisEvent("Resetting Meter Zones");
+			DSSGlobals.getInstance().EnergyMeterClass.ResetMeterZonesAll();
+			MeterZonesComputed = true;
+			if (LogEvents) Utilities.LogThisEvent("Done Resetting Meter Zones");
+		}
 
+		FreeTopology();
 	}
 
 	public int SetElementActive(String FullObjectName) {
@@ -486,8 +772,8 @@ public class DSSCircuit extends NamedObject {
 				DSSGlobals.getInstance().ActiveDSSClass = DSSGlobals.getInstance().DSSClassList.Get(DevClassIndex);
 				DSSGlobals.getInstance().LastClassReferenced = DevClassIndex;
 				Result = DeviceRef[Devindex].devHandle;
-				// ActiveDSSClass.Active := Result;
-				//  ActiveCktElement := ActiveDSSClass.GetActiveObj;
+				// ActiveDSSClass.Active = Result;
+				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
 				ActiveCktElement = CktElements.Get(Result);
 				break;
 			}
@@ -500,11 +786,43 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	public void InvalidateAllPCElements() {
+		DSSCktElement p = PCElements.First();
+		while (p != null) {
+	        p.YprimInvalid = true;
+	        p = PCElements.Next();
+		}
 
+		// Force rebuild of matrix on next solution
+		Solution.SystemYChanged = true;
 	}
 
 	public void DebugDump(PrintStream F) {
-
+		F.println("NumBuses= " + NumBuses);
+	    F.println("NumNodes= " + NumNodes);
+	    F.println("NumDevices= " + NumDevices);
+	    F.println("BusList:");
+	    for (int i = 0; i < NumBuses; i++) {
+	        F.print("  %12s", BusList.Get(i));
+	        F.print(" (" + Buses[i].NumNodesThisBus + " Nodes)");
+	        for (int j = 0; j < Buses[i].NumNodesThisBus; j++) {
+	        	F.print(" " + Buses[i].GetNum(j));
+	        }
+	        F.println();
+	    }
+	    F.println("DeviceList:");
+	    for (int i = 0; i < NumDevices; i++) {
+			F.println("  %12s", DeviceList.Get(i));
+	        ActiveCktElement = CktElements.Get(i);
+	        if (!ActiveCktElement.Is_Enabled())
+	        	F.print("  DISABLED");
+	        F.println();
+	    }
+	    F.println("NodeToBus Array:");
+	    for (int i = 0; i < NumNodes; i++) {
+	       int j = MapNodeToBus[i].BusRef;
+	       F.print("  " + i + " " + j + " (=" +BusList.Get(j) + "." + MapNodeToBus[i].NodeNum + ")");
+	       F.println();
+	    }
 	}
 
 	/* Access to topology from the first source */
