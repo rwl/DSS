@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 
 import com.epri.dss.general.NamedObject;
+import com.epri.dss.shared.HashList;
 
 public class DSSCircuit extends NamedObject {
 
@@ -428,31 +429,117 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	private boolean SaveMasterFile() {
-		return false;
+		boolean Result = false;
+		try {
+			File FD = new File("Master.DSS");
+			PrintStream F = new PrintStream(FD);
+
+		    F.println("Clear");
+		    F.println("New Circuit." + Get_Name());
+		    F.println();
+		    if (PositiveSequence) F.println("Set Cktmodel=Positive");
+		    if (DuplicatesAllowed) F.println("set allowdup=yes");
+		    F.println();
+
+		    // Write Redirect for all populated DSS Classes  Except Solution Class
+		    for (int i = 0; i < DSSGlobals.getInstance().SavedFileList.Count; i++) {
+		    	F.println("Redirect " + SavedFileList.Strings[i-1]);
+			}
+
+		    if (new File("buscoords.dss").exists()) {
+		        F.println("MakeBusList");
+		        F.println("Buscoords buscoords.dss");
+		    }
+
+		    F.close();
+		    Result = true;
+		} catch (Exception e) {
+			DoSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
+		}
+
+		return Result;
 	}
 
 	private boolean SaveDSSObjects() {
-		return false;
+		DSSClass DSS_Class;
+		// Write Files for all populated DSS Classes  Except Solution Class
+		for (int i = 0; i < DSSGlobals.getInstance().DSSClassList.Get_ListSize(); i++) {
+			Dss_Class = DSSClassList.Get(i);
+			if ((DSS_Class == SolutionClass) || Dss_Class.Is_Saved()) continue;   // Cycle to next
+	            /* use default filename=classname */
+			if (!Utilities.WriteClassFile(Dss_Class, "", (DSS_Class == TCktElementClass) )) return false;  // bail on error
+			DSS_Class.Set_Saved(true);
+		}
+		return true;
 	}
 
 	private boolean SaveFeeders() {
-		return false;
+		String SaveDir, CurrDir;
+		EnergyMeter Meter;
+
+		boolean Result = true;
+		/* Write out all energy meter  zones to separate subdirectories */
+		SaveDir = "";//GetCurrentDir;
+		for (int i = 0; i < EnergyMeters.Get_ListSize(); i++) {
+			Meter = EnergyMeters.Get(i); // Recast pointer
+			CurrDir = Meter.Get_Name();
+			if (new File(CurrDir).mkdir()) {
+//				SetCurrentDir(CurrDir);
+				Meter.SaveZone(CurrDir);
+//				SetCurrentDir(SaveDir);
+			} else {
+				DSSGlobals.getInstance().DoSimpleMsg("Cannot create directory: " + CurrDir, 436);
+				Result = false;
+//				SetCurrentDir(SaveDir);  // back to whence we came
+				break;
+			}
+		}
+
+		return Result;
 	}
 
 	private boolean SaveBusCoords() {
+		boolean Result = false;
+
+		try {
+			File FD = new File("BusCoords.dss");
+			PrintStream F = new PrintStream(FD);
+
+			for (int i = 0; i < NumBuses; i++) {
+				if (Buses[i].CoordDefined)
+					F.println(Utilities.CheckForBlanks(BusList.Get(i)), Format(", %-g, %-g", Buses[i].x, Buses[i].y));
+			}
+
+			F.close();
+
+			Result = true;
+		} catch (Exception e) {
+			DSSGlobals.getInstance().DoSimpleMsg("Error creating Buscoords.dss.", 437);
+		}
+
 		return false;
 	}
 
+	/* Reallocate the device list to improve the performance of searches */
 	private void ReallocDeviceList() {
+		if (LogEvents) Utilities.LogThisEvent("Reallocating Device List");
+	    HashList TempList = new HashList(2 * NumDevices);
 
+	    for (int i = 0; i < DeviceList.Get_ListSize(); i++) {
+	        Templist.Add(DeviceList.Get(i));
+	    }
+
+	    DeviceList.Free(); // Throw away the old one.
+	    DeviceList = TempList;
 	}
 
 	public void Set_CaseName(String Value) {
-
+		CaseName = Value;
+		DSSGlobals.getInstance().CircuitName_ = Value + "_";
 	}
 
 	public String Get_CaseName() {
-		return null;
+		return this.Get_LocalName();
 	}
 
 	public String Get_Name() {
@@ -827,20 +914,41 @@ public class DSSCircuit extends NamedObject {
 
 	/* Access to topology from the first source */
 	public CktTree GetTopology() {
-		return null;
+		DSSCktElement Elem;
+
+		if (Branch_List == null) {
+			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
+			Elem = CktElements.First();
+			while (elem != null) {
+				Elem.Checked = false;
+				for (int i = 0; i < Elem.Nterms; i++) {
+					Elem.Terminals[i].Checked = false;
+				}
+				Elem.IsIsolated = true; // till proven otherwise
+				Elem = CktElements.Next();
+			}
+			for (int i = 0; i < NumBuses; i++) {
+				Buses[i].BusChecked = false;
+			}
+			Branch_List = CktTree.GetIsolatedSubArea(Sources.First, true);  // calls back to build adjacency lists
+		}
+		return Branch_List;
 	}
 
 	public void FreeTopology() {
-
+		if (Branch_List != null) Branch_List.Free();
+		Branch_List = null;
+		if (BusAdjPC != null) CktTree.FreeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
 	public AdjArray GetBusAdjacentPDLists() {
-		return null;
+		if (BusAdjPD == null) CktTree.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		return BusAdjPD;
 	}
 
 	public AdjArray GetBusAdjacentPCLists() {
-		return null;
+		if (BusAdjPC == null) CktTree.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		return BusAdjPC;
 	}
-
 
 }
