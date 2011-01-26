@@ -1,13 +1,14 @@
-package com.epri.dss.common;
+package com.epri.dss.common.impl;
 
 import java.io.PrintStream;
 
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
-import com.epri.dss.general.DSSObject;
+import com.epri.dss.common.CktElement;
+import com.epri.dss.general.impl.DSSObjectImpl;
 
-public class DSSCktElement extends DSSObject {
+public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	private String[] BusNames;
 	private boolean Enabled;
@@ -54,7 +55,7 @@ public class DSSCktElement extends DSSObject {
 
 	public PowerTerminal ActiveTerminal;
 
-	public DSSCktElement(DSSClass ParClass) {
+	public DSSCktElement(DSSClassImpl ParClass) {
 		super(ParClass);
 		// TODO Auto-generated constructor stub
 	}

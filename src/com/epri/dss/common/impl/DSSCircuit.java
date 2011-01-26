@@ -1,14 +1,15 @@
-package com.epri.dss.common;
+package com.epri.dss.common.impl;
 
 import java.io.File;
 import java.io.PrintStream;
 
-import com.epri.dss.general.NamedObject;
-import com.epri.dss.shared.CktTree;
-import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.common.Circuit;
+import com.epri.dss.general.impl.NamedObjectImpl;
+import com.epri.dss.shared.impl.CktTreeImpl;
+import com.epri.dss.shared.impl.HashListImpl;
+import com.epri.dss.shared.impl.PointerListImpl;
 
-public class DSSCircuit extends NamedObject {
+public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private class CktElementDef {
 		public int CktElementClass;
@@ -21,7 +22,7 @@ public class DSSCircuit extends NamedObject {
 	private DSSCktElement ActiveCktElement;
 
     // Temp arrays for when the bus swap takes place
-    private DSSBus[] SavedBuses;
+    private Bus[] SavedBuses;
     private String[] SavedBusNames;
     private int SavedNumBuses;
 
@@ -31,7 +32,7 @@ public class DSSCircuit extends NamedObject {
     private boolean AbortBusProcess;
 
     /* topology from the first source, lazy evaluation */
-    private CktTree Branch_List;
+    private CktTreeImpl Branch_List;
     /* bus adjacency lists of PD and PC elements */
     private AdjArray BusAdjPC, BusAdjPD;
 
@@ -44,11 +45,11 @@ public class DSSCircuit extends NamedObject {
     /* Flag for use by control elements to detect redefinition of buses */
     public boolean Control_BusNameRedefined;
 
-    public HashList BusList, AutoAddBusList, DeviceList;
+    public HashListImpl BusList, AutoAddBusList, DeviceList;
     public CktElementDef[] DeviceRef;  //Type and handle of device
 
     // lists of pointers to different elements by class
-    public PointerList Faults, CktElements, PDElements, PCElements, DSSControls,
+    public PointerListImpl Faults, CktElements, PDElements, PCElements, DSSControls,
     	Sources, MeterElements, Sensors, Monitors, EnergyMeters, Generators,
     	StorageElements, Substations, Transformers, CapControls, RegControls,
     	Lines, Loads, ShuntCapacitors, Feeders, SwtControls;
@@ -136,7 +137,7 @@ public class DSSCircuit extends NamedObject {
 	    this.CaseName = aName;  // Default case name to circuitname
 	                            // Sets CircuitName_
 
-	    this.Fundamental = DSSGlobals.getInstance().DefaultBaseFreq;
+	    this.Fundamental = DSSGlobalsImpl.getInstance().DefaultBaseFreq;
 	    this.ActiveCktElement = null;
 	    this.ActiveBusIndex = 1;    // Always a bus
 
@@ -150,9 +151,9 @@ public class DSSCircuit extends NamedObject {
 	    this.IncNodes   = 3000;
 
 	    // Allocate some nominal sizes
-	    this.BusList    = new HashList(900);  // Bus name list Nominal size to start; gets reallocated
-	    this.DeviceList = new HashList(900);
-	    this.AutoAddBusList = new HashList(100);
+	    this.BusList    = new HashListImpl(900);  // Bus name list Nominal size to start; gets reallocated
+	    this.DeviceList = new HashListImpl(900);
+	    this.AutoAddBusList = new HashListImpl(100);
 
 	    this.NumBuses   = 0;  // Eventually allocate a single source
 	    this.NumDevices = 0;
@@ -281,7 +282,7 @@ public class DSSCircuit extends NamedObject {
 			DeviceRef = new CktElementDef[MaxDevices];
 		}
 		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
-		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().LastClassReferenced;
+		DeviceRef[NumDevices].CktElementClass = DSSGlobalsImpl.getInstance().LastClassReferenced;
 	}
 
 	private void AddABus() {
@@ -303,7 +304,7 @@ public class DSSCircuit extends NamedObject {
 	private int AddBus(String BusName, int NNodes) {
 		// Trap error in bus name
 	    if (BusName.length() == 0) {  // Error in busname
-	       DSSGlobals.getInstance().DoErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.Name + "\" is null.",
+	       DSSGlobalsImpl.getInstance().DoErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.Name + "\" is null.",
 	                  "Error in definition of object.", 424);
 	       for (int i = 0; i < ActiveCktElement.NConds; i++) {
 	    	   NodeBuffer[i] = 0;
@@ -336,7 +337,7 @@ public class DSSCircuit extends NamedObject {
 
 	public void Set_ActiveCktElement(DSSCktElement Value) {
 		ActiveCktElement = Value;
-		DSSGlobals.getInstance().ActiveDSSObject = Value;
+		DSSGlobalsImpl.getInstance().ActiveDSSObject = Value;
 	}
 
 	public DSSCktElement Get_ActiveCktElement() {
@@ -359,7 +360,7 @@ public class DSSCircuit extends NamedObject {
 	/* Total Circuit PD Element losses */
 	public double[] Get_Losses() {
 		PDElement pdElem = PDElements.First();
-		Result = DSSGlobals.getInstance().cZERO;
+		Result = DSSGlobalsImpl.getInstance().cZERO;
 		while (pdElem != null) {
 			if (pdElem.Is_Enabled()) {
 				/* Ignore Shunt Elements */
@@ -444,7 +445,7 @@ public class DSSCircuit extends NamedObject {
 		    F.println();
 
 		    // Write Redirect for all populated DSS Classes  Except Solution Class
-		    for (int i = 0; i < DSSGlobals.getInstance().SavedFileList.Count; i++) {
+		    for (int i = 0; i < DSSGlobalsImpl.getInstance().SavedFileList.Count; i++) {
 		    	F.println("Redirect " + SavedFileList.Strings[i-1]);
 			}
 
@@ -463,9 +464,9 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	private boolean SaveDSSObjects() {
-		DSSClass DSS_Class;
+		DSSClassImpl DSS_Class;
 		// Write Files for all populated DSS Classes  Except Solution Class
-		for (int i = 0; i < DSSGlobals.getInstance().DSSClassList.Get_ListSize(); i++) {
+		for (int i = 0; i < DSSGlobalsImpl.getInstance().DSSClassList.Get_ListSize(); i++) {
 			Dss_Class = DSSClassList.Get(i);
 			if ((DSS_Class == SolutionClass) || Dss_Class.Is_Saved()) continue;   // Cycle to next
 	            /* use default filename=classname */
@@ -490,7 +491,7 @@ public class DSSCircuit extends NamedObject {
 				Meter.SaveZone(CurrDir);
 //				SetCurrentDir(SaveDir);
 			} else {
-				DSSGlobals.getInstance().DoSimpleMsg("Cannot create directory: " + CurrDir, 436);
+				DSSGlobalsImpl.getInstance().DoSimpleMsg("Cannot create directory: " + CurrDir, 436);
 				Result = false;
 //				SetCurrentDir(SaveDir);  // back to whence we came
 				break;
@@ -516,7 +517,7 @@ public class DSSCircuit extends NamedObject {
 
 			Result = true;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().DoSimpleMsg("Error creating Buscoords.dss.", 437);
+			DSSGlobalsImpl.getInstance().DoSimpleMsg("Error creating Buscoords.dss.", 437);
 		}
 
 		return false;
@@ -525,7 +526,7 @@ public class DSSCircuit extends NamedObject {
 	/* Reallocate the device list to improve the performance of searches */
 	private void ReallocDeviceList() {
 		if (LogEvents) Utilities.LogThisEvent("Reallocating Device List");
-	    HashList TempList = new HashList(2 * NumDevices);
+	    HashListImpl TempList = new HashListImpl(2 * NumDevices);
 
 	    for (int i = 0; i < DeviceList.Get_ListSize(); i++) {
 	        Templist.Add(DeviceList.Get(i));
@@ -537,7 +538,7 @@ public class DSSCircuit extends NamedObject {
 
 	public void Set_CaseName(String Value) {
 		CaseName = Value;
-		DSSGlobals.getInstance().CircuitName_ = Value + "_";
+		DSSGlobalsImpl.getInstance().CircuitName_ = Value + "_";
 	}
 
 	public String Get_CaseName() {
@@ -634,12 +635,12 @@ public class DSSCircuit extends NamedObject {
 	public boolean ComputeCapacity() {
 		boolean Result = false;
 		if (EnergyMeters.Get_ListSize() == 0) {
-			DSSGlobals.getInstance().DoSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
+			DSSGlobalsImpl.getInstance().DoSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
 			return;
 		}
 
 		if (NumUERegs == 0) {
-			DSSGlobals.getInstance().DoSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
+			DSSGlobalsImpl.getInstance().DoSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
 			return;
 		}
 
@@ -703,7 +704,7 @@ public class DSSCircuit extends NamedObject {
 		}
 
 		if (!Success) {
-		       DSSGlobals.getInstance().DoSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
+		       DSSGlobalsImpl.getInstance().DoSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
 		       return;
 		}
 
@@ -741,9 +742,9 @@ public class DSSCircuit extends NamedObject {
 	    if (Success) Success = SaveMasterFile();
 
 	    if (Success) {
-	    	DSSGlobals.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
+	    	DSSGlobalsImpl.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
 	    } else {
-	    	DSSGlobals.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
+	    	DSSGlobalsImpl.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
 	    }
 	    // Return to Original directory
 //		SetCurrentDir(SaveDir);
@@ -779,7 +780,7 @@ public class DSSCircuit extends NamedObject {
 					NodesOK = false;
 	                if (retval == -1) {
 	                    AbortBusProcess = true;
-	                    DSSGlobals.getInstance().AppendGlobalResult("Aborted bus process.");
+	                    DSSGlobalsImpl.getInstance().AppendGlobalResult("Aborted bus process.");
 	                    return;
 	                }
 	                break;
@@ -809,7 +810,7 @@ public class DSSCircuit extends NamedObject {
 
 	    // get rid of old bus lists
 	    BusList.Free();  // Clears hash list of Bus names for adding more
-	    BusList = new HashList(NumDevices);  // won't have many more buses than this
+	    BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
 
 	    NumBuses = 0;  // Leave allocations same, but start count over
 	    NumNodes = 0;
@@ -840,7 +841,7 @@ public class DSSCircuit extends NamedObject {
 		   the lists */
 		if (!MeterZonesComputed || !ZonesLocked) {
 			if (LogEvents) Utilities.LogThisEvent("Resetting Meter Zones");
-			DSSGlobals.getInstance().EnergyMeterClass.ResetMeterZonesAll();
+			DSSGlobalsImpl.getInstance().EnergyMeterClass.ResetMeterZonesAll();
 			MeterZonesComputed = true;
 			if (LogEvents) Utilities.LogThisEvent("Done Resetting Meter Zones");
 		}
@@ -854,12 +855,12 @@ public class DSSCircuit extends NamedObject {
 		Utilities.ParseObjectClassandName(FullObjectName, DevType, DevName);
 		DevClassIndex = ClassNames.Find(DevType);
 		if (DevClassIndex == 0)
-			DevClassIndex = DSSGlobals.getInstance().LastClassReferenced;
+			DevClassIndex = DSSGlobalsImpl.getInstance().LastClassReferenced;
 		Devindex = DeviceList.Find(DevName);
 		while (DevIndex >= 0) {
 			if (DeviceRef[Devindex].CktElementClass == DevClassIndex) {  // we got a match
-				DSSGlobals.getInstance().ActiveDSSClass = DSSGlobals.getInstance().DSSClassList.Get(DevClassIndex);
-				DSSGlobals.getInstance().LastClassReferenced = DevClassIndex;
+				DSSGlobalsImpl.getInstance().ActiveDSSClass = DSSGlobalsImpl.getInstance().DSSClassList.Get(DevClassIndex);
+				DSSGlobalsImpl.getInstance().LastClassReferenced = DevClassIndex;
 				Result = DeviceRef[Devindex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
@@ -869,7 +870,7 @@ public class DSSCircuit extends NamedObject {
 			DevIndex = Devicelist.FindNext();   // Could be duplicates
 		}
 
-		DSSGlobals.getInstance().CmdResult = Result;
+		DSSGlobalsImpl.getInstance().CmdResult = Result;
 
 		return Result;
 	}
@@ -915,7 +916,7 @@ public class DSSCircuit extends NamedObject {
 	}
 
 	/* Access to topology from the first source */
-	public CktTree GetTopology() {
+	public CktTreeImpl GetTopology() {
 		DSSCktElement Elem;
 
 		if (Branch_List == null) {
@@ -932,7 +933,7 @@ public class DSSCircuit extends NamedObject {
 			for (int i = 0; i < NumBuses; i++) {
 				Buses[i].BusChecked = false;
 			}
-			Branch_List = CktTree.GetIsolatedSubArea(Sources.First, true);  // calls back to build adjacency lists
+			Branch_List = CktTreeImpl.GetIsolatedSubArea(Sources.First, true);  // calls back to build adjacency lists
 		}
 		return Branch_List;
 	}
@@ -940,16 +941,16 @@ public class DSSCircuit extends NamedObject {
 	public void FreeTopology() {
 		if (Branch_List != null) Branch_List.Free();
 		Branch_List = null;
-		if (BusAdjPC != null) CktTree.FreeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPC != null) CktTreeImpl.FreeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
 	public AdjArray GetBusAdjacentPDLists() {
-		if (BusAdjPD == null) CktTree.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPD == null) CktTreeImpl.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPD;
 	}
 
 	public AdjArray GetBusAdjacentPCLists() {
-		if (BusAdjPC == null) CktTree.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPC == null) CktTreeImpl.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPC;
 	}
 

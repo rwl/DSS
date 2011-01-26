@@ -1,13 +1,15 @@
-package com.epri.dss.common;
+package com.epri.dss.common.impl;
 
-public class PowerTerminal {
+import com.epri.dss.common.Terminal;
+
+public class PowerTerminal implements Terminal {
 
 	private int NumCond;
 	private int ActiveConductor;
 
 	public int BusRef;
 	public int[] TermNodeRef;
-	public Conductor[] Conductors;
+	public ConductorImpl[] Conductors;
 	public boolean Checked;
 
 	public PowerTerminal(int Ncond) {
