@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.PrintStream;
 
 import com.epri.dss.general.NamedObject;
+import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
+import com.epri.dss.shared.PointerList;
 
 public class DSSCircuit extends NamedObject {
 
@@ -19,7 +21,7 @@ public class DSSCircuit extends NamedObject {
 	private DSSCktElement ActiveCktElement;
 
     // Temp arrays for when the bus swap takes place
-    private Bus[] SavedBuses;
+    private DSSBus[] SavedBuses;
     private String[] SavedBusNames;
     private int SavedNumBuses;
 
