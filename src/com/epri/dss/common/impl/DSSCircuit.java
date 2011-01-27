@@ -2,6 +2,7 @@ package com.epri.dss.common.impl;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.List;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -39,7 +40,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
     /* topology from the first source, lazy evaluation */
     private CktTree Branch_List;
     /* bus adjacency lists of PD and PC elements */
-    private AdjArray BusAdjPC, BusAdjPD;
+    private List<List<Object>> BusAdjPC, BusAdjPD;
 
     protected String CaseName;
 
