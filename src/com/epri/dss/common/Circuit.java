@@ -7,9 +7,6 @@ import com.epri.dss.general.NamedObject;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
 import com.epri.dss.shared.PointerList;
-import com.epri.dss.shared.impl.CktTreeImpl;
-import com.epri.dss.shared.impl.HashListImpl;
-import com.epri.dss.shared.impl.PointerListImpl;
 
 public interface Circuit extends NamedObject {
 

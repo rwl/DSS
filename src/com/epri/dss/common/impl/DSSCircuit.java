@@ -63,7 +63,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
     protected ControlQueue ControlQueue;
 
     protected SolutionObj Solution;
-    protected AutoAdd AutoAddObj;
+    protected AutoAddImpl AutoAddObj;
 
     // For AutoAdd stuff
     protected double UEWeight, LossWeight;
@@ -274,7 +274,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	    this.ReductionZmag = 0.02;
 
 	    /* Misc objects */
-	    this.AutoAddObj = new AutoAdd();
+	    this.AutoAddObj = new AutoAddImpl();
 
 	    this.Branch_List = null;
 	    this.BusAdjPC = null;
@@ -521,11 +521,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		Solution = solution;
 	}
 
-	public AutoAdd getAutoAddObj() {
+	public AutoAddImpl getAutoAddObj() {
 		return AutoAddObj;
 	}
 
-	public void setAutoAddObj(AutoAdd autoAddObj) {
+	public void setAutoAddObj(AutoAddImpl autoAddObj) {
 		AutoAddObj = autoAddObj;
 	}
 

@@ -6,6 +6,7 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public interface SolutionObj extends DSSObject {
 

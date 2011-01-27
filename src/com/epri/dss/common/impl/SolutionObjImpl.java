@@ -8,6 +8,7 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 

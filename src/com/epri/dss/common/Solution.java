@@ -1,5 +1,6 @@
 package com.epri.dss.common;
 
+/* Collection of all solution objects */
 public interface Solution extends DSSClass {
 
 	public static final int NORMALSOLVE = 0;
