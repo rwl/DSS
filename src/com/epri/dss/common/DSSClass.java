@@ -1,22 +1,60 @@
 package com.epri.dss.common;
 
+import com.epri.dss.shared.PointerList;
+
 public interface DSSClass {
 
-	public int Get_Active();
+	public int getNumProperties();
 
-	public void Set_Active(int Value);
+	public void setNumProperties(int numProperties);
 
-	public int Get_ElementCount();
+	public String[] getPropertyName();
 
-	public int Get_First();
+	public void setPropertyName(String[] propertyName);
 
-	public int Get_Next();
+	public String[] getPropertyHelp();
 
-	public String Get_Name();
+	public void setPropertyHelp(String[] propertyHelp);
 
-	public String Get_FirstPropertyName();
+	public int[] getPropertyIdxMap();
 
-	public String Get_NextPropertyName();
+	public void setPropertyIdxMap(int[] propertyIdxMap);
+
+	public int[] getRevPropertyIdxMap();
+
+	public void setRevPropertyIdxMap(int[] revPropertyIdxMap);
+
+	public int getDSSClassType();
+
+	public void setDSSClassType(int dSSClassType);
+
+	public PointerList getElementList();
+
+	public void setElementList(PointerList elementList);
+
+	public boolean isElementNamesOutOfSynch();
+
+	public void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch);
+
+	public boolean isSaved();
+
+	public void setSaved(boolean saved);
+
+	public int getActive();
+
+	public void setActive(int Value);
+
+	public int getElementCount();
+
+	public int getFirst();
+
+	public int getNext();
+
+	public String getName();
+
+	public String getFirstPropertyName();
+
+	public String getNextPropertyName();
 
 	/* Helper routine for building Property strings */
 	public void AddProperty(String PropName, int CmdMapIndex,

@@ -2,15 +2,24 @@ package com.epri.dss.common;
 
 public interface Conductor {
 
-	public void Set_Ambient(double Value);
+	public boolean isClosed();
 
-	public void Set_TCCname(String Value);
+	/* change this variable to indicate open or closed switch */
+	public void setClosed(boolean closed);
 
-	public String Get_TCCname();
+	public boolean isFuseBlown();
+
+	public void setFuseBlown(boolean fuseBlown);
+
+	public void setAmbient(double Value);
+
+	public void setTCCname(String Value);
+
+	public String getTCCname();
 
 	/* Computes whether conductor has burned down */
 	public void CalcIsqt(double CurrentMag);
 
-	/* restore the conductor and reset the i2t calcs */
+	/* Restore the conductor and reset the i2t calcs */
 	public void ResetIsqt();
 }

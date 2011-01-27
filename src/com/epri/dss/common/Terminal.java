@@ -1,16 +1,25 @@
 package com.epri.dss.common;
 
-import com.epri.dss.common.impl.ConductorImpl;
-
 public interface Terminal {
 
-	public int BusRef = 0;
-	public int[] TermNodeRef = null;
-	public ConductorImpl[] Conductors = null;
-	public boolean Checked = false;
+	public int getBusRef();
 
-	public void Set_ActiveConductor(int Value);
+	public void setBusRef(int busRef);
 
-	public int Get_ActiveConductor();
+	public int[] getTermNodeRef();
+
+	public void setTermNodeRef(int[] termNodeRef);
+
+	public Conductor[] getConductors();
+
+	public void setConductors(Conductor[] conductors);
+
+	public boolean isChecked();
+
+	public void setChecked(boolean checked);
+
+	public void setActiveConductor(int Value);
+
+	public int getActiveConductor();
 
 }

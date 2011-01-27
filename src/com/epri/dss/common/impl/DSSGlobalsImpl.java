@@ -5,89 +5,487 @@ import java.io.FileWriter;
 import java.io.File;
 import java.io.PrintStream;
 
+import com.epri.dss.common.Circuit;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.DSSGlobals;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.shared.PointerList;
 
 public class DSSGlobalsImpl implements DSSGlobals {
 
 	/** Variables */
-	public static boolean DLLFirstTime = true;
-	public static PrintStream DLLDebugFile;
-	public static String DSS_IniFileName = "OpenDSSPanel.ini";
+	private boolean DLLFirstTime = true;
+	private PrintStream DLLDebugFile;
+	private String DSS_IniFileName = "OpenDSSPanel.ini";
 	// Registry   (See Executive)
-	public static IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
+	private IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
 
-	public static boolean IsDLL = false;
-	public static boolean NoFormsAllowed = false;
+	private boolean IsDLL = false;
+	private boolean NoFormsAllowed = false;
 
-	public static DSSCircuit ActiveCircuit;
-	public static DSSClassImpl ActiveDSSClass;
-	public static int LastClassReferenced;  // index of class of last thing edited
-	public static DSSObjectImpl ActiveDSSObject;
-	public static int NumCircuits = 0;
-	public static int MaxCircuits = 1;
-	public static int MaxBusLimit = 0; // Set in Validation
-	public static int MaxAllocationIterations = 2;
-	public static PointerListImpl Circuits;
-	public static PointerListImpl DSSObjs;
+	private Circuit ActiveCircuit;
+	private DSSClass ActiveDSSClass;
+	private int LastClassReferenced;  // index of class of last thing edited
+	private DSSObject ActiveDSSObject;
+	private int NumCircuits = 0;
+	private int MaxCircuits = 1;
+	private int MaxBusLimit = 0; // Set in Validation
+	private int MaxAllocationIterations = 2;
+	private PointerList Circuits;
+	private PointerList DSSObjs;
 
     // Auxiliary parser for use by anybody for reparsing values
-	public static Parser AuxParser = new Parser();
+	private Parser AuxParser = new Parser();
 
-	public static boolean ErrorPending = false;
-	public static int CmdResult = 0;
-	public static int ErrorNumber = 0;
-	public static String LastErrorMessage = "";
+	private boolean ErrorPending = false;
+	private int CmdResult = 0;
+	private int ErrorNumber = 0;
+	private String LastErrorMessage = "";
 
-	public static String LastFileCompiled = "";
-	public static boolean LastCommandWasCompile = false;
+	private String LastFileCompiled = "";
+	private boolean LastCommandWasCompile = false;
 
-	// 120-degree shift constant
-	public static double[] CALPHA = new double[] {-0.5, -0.866025};
-	public static double SQRT2 = Math.sqrt(2.0);
-	public static double SQRT3 = Math.sqrt(3.0);
-	public static double InvSQRT3 = 1.0 / SQRT3;
-	public static double InvSQRT3x1000 = InvSQRT3 * 1000.0;
-	public static boolean SolutionAbort = false;
-	public static boolean InShowResults = false;
-	public static boolean Redirect_Abort = false;
-	public static boolean In_Redirect = false;
-	public static boolean DIFilesAreOpen = false;
-	public static boolean AutoShowExport = false;
-	public static boolean SolutionWasAttempted = false;
+	private boolean SolutionAbort = false;
+	private boolean InShowResults = false;
+	private boolean Redirect_Abort = false;
+	private boolean In_Redirect = false;
+	private boolean DIFilesAreOpen = false;
+	private boolean AutoShowExport = false;
+	private boolean SolutionWasAttempted = false;
 
-	public static String GlobalHelpString = "";
-	public static String GlobalPropertyValue = "";
-	public static String GlobalResult = "";
-	public static String VersionString = "Version " + GetDSSVersion();
+	private String GlobalHelpString = "";
+	private String GlobalPropertyValue = "";
+	private String GlobalResult = "";
+	private String VersionString = "Version " + GetDSSVersion();
 
-	public static String DefaultEditor = "NotePad";     // normally, Notepad
-//	public static String DSSFileName = GetDSSExeFile();     // Name of current exe or DLL
-//	public static String DSSDirectory = new File(DSSFileName).getParent();     // where the current exe resides
-//	public static String StartupDirectory = GetCurrentDir() + "\\";     // Where we started
-//	public static String DSSDataDirectory = StartupDirectory;
-	public static String CircuitName_;     // Name of Circuit with a "_" appended
+	private String DefaultEditor = "NotePad";     // normally, Notepad
+//	private String DSSFileName = GetDSSExeFile();     // Name of current exe or DLL
+//	private String DSSDirectory = new File(DSSFileName).getParent();     // where the current exe resides
+//	private String StartupDirectory = GetCurrentDir() + "\\";     // Where we started
+//	private String DSSDataDirectory = StartupDirectory;
+	private String CircuitName_;     // Name of Circuit with a "_" appended
 
-	public static double DefaultBaseFreq = 60.0;
-	public static double DaisySize = 1.0;
+	private double DefaultBaseFreq = 60.0;
+	private double DaisySize = 1.0;
 
 	// Some commonly used classes   so we can find them easily
-	public static LoadShape LoadShapeClass;
-	public static GrowthShape GrowthShapeClass;
-	public static Spectrum SpectrumClass;
-	public static DSSClassImpl SolutionClass;
-	public static EnergyMeter EnergyMeterClass;
-	public static Feeder FeederClass;
-	public static DSSMonitor MonitorClass;
-	public static Sensor SensorClass;
-	public static TCC_Curve TCC_CurveClass;
-	public static WireData WireDataClass;
-	public static LineSpacing LineSpacingClass;
-	public static Storage StorageClass;
+	private LoadShape LoadShapeClass;
+	private GrowthShape GrowthShapeClass;
+	private Spectrum SpectrumClass;
+	private DSSClass SolutionClass;
+	private EnergyMeter EnergyMeterClass;
+	private Feeder FeederClass;
+	private DSSMonitor MonitorClass;
+	private Sensor SensorClass;
+	private TCC_Curve TCC_CurveClass;
+	private WireData WireDataClass;
+	private LineSpacing LineSpacingClass;
+	private Storage StorageClass;
 
 
 	// Private constructor prevents instantiation from other classes
 	private DSSGlobalsImpl() {
+	}
+
+	public boolean isDLLFirstTime() {
+		return DLLFirstTime;
+	}
+
+	public void setDLLFirstTime(boolean dLLFirstTime) {
+		DLLFirstTime = dLLFirstTime;
+	}
+
+	public PrintStream getDLLDebugFile() {
+		return DLLDebugFile;
+	}
+
+	public void setDLLDebugFile(PrintStream dLLDebugFile) {
+		DLLDebugFile = dLLDebugFile;
+	}
+
+	public String getDSS_IniFileName() {
+		return DSS_IniFileName;
+	}
+
+	public void setDSS_IniFileName(String dSS_IniFileName) {
+		DSS_IniFileName = dSS_IniFileName;
+	}
+
+	public IniRegSave getDSS_Registry() {
+		return DSS_Registry;
+	}
+
+	public void setDSS_Registry(IniRegSave dSS_Registry) {
+		DSS_Registry = dSS_Registry;
+	}
+
+	public boolean isDLL() {
+		return IsDLL;
+	}
+
+	public void setDLL(boolean isDLL) {
+		IsDLL = isDLL;
+	}
+
+	public boolean isNoFormsAllowed() {
+		return NoFormsAllowed;
+	}
+
+	public void setNoFormsAllowed(boolean noFormsAllowed) {
+		NoFormsAllowed = noFormsAllowed;
+	}
+
+	public Circuit getActiveCircuit() {
+		return ActiveCircuit;
+	}
+
+	public void setActiveCircuit(Circuit activeCircuit) {
+		ActiveCircuit = activeCircuit;
+	}
+
+	public DSSClass getActiveDSSClass() {
+		return ActiveDSSClass;
+	}
+
+	public void setActiveDSSClass(DSSClass activeDSSClass) {
+		ActiveDSSClass = activeDSSClass;
+	}
+
+	public int getLastClassReferenced() {
+		return LastClassReferenced;
+	}
+
+	public void setLastClassReferenced(int lastClassReferenced) {
+		LastClassReferenced = lastClassReferenced;
+	}
+
+	public DSSObjectImpl getActiveDSSObject() {
+		return ActiveDSSObject;
+	}
+
+	public void setActiveDSSObject(DSSObjectImpl activeDSSObject) {
+		ActiveDSSObject = activeDSSObject;
+	}
+
+	public int getNumCircuits() {
+		return NumCircuits;
+	}
+
+	public void setNumCircuits(int numCircuits) {
+		NumCircuits = numCircuits;
+	}
+
+	public int getMaxCircuits() {
+		return MaxCircuits;
+	}
+
+	public void setMaxCircuits(int maxCircuits) {
+		MaxCircuits = maxCircuits;
+	}
+
+	public int getMaxBusLimit() {
+		return MaxBusLimit;
+	}
+
+	public void setMaxBusLimit(int maxBusLimit) {
+		MaxBusLimit = maxBusLimit;
+	}
+
+	public int getMaxAllocationIterations() {
+		return MaxAllocationIterations;
+	}
+
+	public void setMaxAllocationIterations(int maxAllocationIterations) {
+		MaxAllocationIterations = maxAllocationIterations;
+	}
+
+	public PointerList getCircuits() {
+		return Circuits;
+	}
+
+	public void setCircuits(PointerList circuits) {
+		Circuits = circuits;
+	}
+
+	public PointerList getDSSObjs() {
+		return DSSObjs;
+	}
+
+	public void setDSSObjs(PointerList dSSObjs) {
+		DSSObjs = dSSObjs;
+	}
+
+	public Parser getAuxParser() {
+		return AuxParser;
+	}
+
+	public void setAuxParser(Parser auxParser) {
+		AuxParser = auxParser;
+	}
+
+	public boolean isErrorPending() {
+		return ErrorPending;
+	}
+
+	public void setErrorPending(boolean errorPending) {
+		ErrorPending = errorPending;
+	}
+
+	public int getCmdResult() {
+		return CmdResult;
+	}
+
+	public void setCmdResult(int cmdResult) {
+		CmdResult = cmdResult;
+	}
+
+	public int getErrorNumber() {
+		return ErrorNumber;
+	}
+
+	public void setErrorNumber(int errorNumber) {
+		ErrorNumber = errorNumber;
+	}
+
+	public String getLastErrorMessage() {
+		return LastErrorMessage;
+	}
+
+	public void setLastErrorMessage(String lastErrorMessage) {
+		LastErrorMessage = lastErrorMessage;
+	}
+
+	public String getLastFileCompiled() {
+		return LastFileCompiled;
+	}
+
+	public void setLastFileCompiled(String lastFileCompiled) {
+		LastFileCompiled = lastFileCompiled;
+	}
+
+	public boolean isLastCommandWasCompile() {
+		return LastCommandWasCompile;
+	}
+
+	public void setLastCommandWasCompile(boolean lastCommandWasCompile) {
+		LastCommandWasCompile = lastCommandWasCompile;
+	}
+
+	public boolean isSolutionAbort() {
+		return SolutionAbort;
+	}
+
+	public void setSolutionAbort(boolean solutionAbort) {
+		SolutionAbort = solutionAbort;
+	}
+
+	public boolean isInShowResults() {
+		return InShowResults;
+	}
+
+	public void setInShowResults(boolean inShowResults) {
+		InShowResults = inShowResults;
+	}
+
+	public boolean isRedirect_Abort() {
+		return Redirect_Abort;
+	}
+
+	public void setRedirect_Abort(boolean redirect_Abort) {
+		Redirect_Abort = redirect_Abort;
+	}
+
+	public boolean isIn_Redirect() {
+		return In_Redirect;
+	}
+
+	public void setIn_Redirect(boolean in_Redirect) {
+		In_Redirect = in_Redirect;
+	}
+
+	public boolean isDIFilesAreOpen() {
+		return DIFilesAreOpen;
+	}
+
+	public void setDIFilesAreOpen(boolean dIFilesAreOpen) {
+		DIFilesAreOpen = dIFilesAreOpen;
+	}
+
+	public boolean isAutoShowExport() {
+		return AutoShowExport;
+	}
+
+	public void setAutoShowExport(boolean autoShowExport) {
+		AutoShowExport = autoShowExport;
+	}
+
+	public boolean isSolutionWasAttempted() {
+		return SolutionWasAttempted;
+	}
+
+	public void setSolutionWasAttempted(boolean solutionWasAttempted) {
+		SolutionWasAttempted = solutionWasAttempted;
+	}
+
+	public String getGlobalHelpString() {
+		return GlobalHelpString;
+	}
+
+	public void setGlobalHelpString(String globalHelpString) {
+		GlobalHelpString = globalHelpString;
+	}
+
+	public String getGlobalPropertyValue() {
+		return GlobalPropertyValue;
+	}
+
+	public void setGlobalPropertyValue(String globalPropertyValue) {
+		GlobalPropertyValue = globalPropertyValue;
+	}
+
+	public String getGlobalResult() {
+		return GlobalResult;
+	}
+
+	public void setGlobalResult(String globalResult) {
+		GlobalResult = globalResult;
+	}
+
+	public String getVersionString() {
+		return VersionString;
+	}
+
+	public void setVersionString(String versionString) {
+		VersionString = versionString;
+	}
+
+	public String getDefaultEditor() {
+		return DefaultEditor;
+	}
+
+	public void setDefaultEditor(String defaultEditor) {
+		DefaultEditor = defaultEditor;
+	}
+
+	public String getCircuitName_() {
+		return CircuitName_;
+	}
+
+	public void setCircuitName_(String circuitName_) {
+		CircuitName_ = circuitName_;
+	}
+
+	public double getDefaultBaseFreq() {
+		return DefaultBaseFreq;
+	}
+
+	public void setDefaultBaseFreq(double defaultBaseFreq) {
+		DefaultBaseFreq = defaultBaseFreq;
+	}
+
+	public double getDaisySize() {
+		return DaisySize;
+	}
+
+	public void setDaisySize(double daisySize) {
+		DaisySize = daisySize;
+	}
+
+	public LoadShape getLoadShapeClass() {
+		return LoadShapeClass;
+	}
+
+	public void setLoadShapeClass(LoadShape loadShapeClass) {
+		LoadShapeClass = loadShapeClass;
+	}
+
+	public GrowthShape getGrowthShapeClass() {
+		return GrowthShapeClass;
+	}
+
+	public void setGrowthShapeClass(GrowthShape growthShapeClass) {
+		GrowthShapeClass = growthShapeClass;
+	}
+
+	public Spectrum getSpectrumClass() {
+		return SpectrumClass;
+	}
+
+	public void setSpectrumClass(Spectrum spectrumClass) {
+		SpectrumClass = spectrumClass;
+	}
+
+	public DSSClass getSolutionClass() {
+		return SolutionClass;
+	}
+
+	public void setSolutionClass(DSSClass solutionClass) {
+		SolutionClass = solutionClass;
+	}
+
+	public EnergyMeter getEnergyMeterClass() {
+		return EnergyMeterClass;
+	}
+
+	public void setEnergyMeterClass(EnergyMeter energyMeterClass) {
+		EnergyMeterClass = energyMeterClass;
+	}
+
+	public Feeder getFeederClass() {
+		return FeederClass;
+	}
+
+	public void setFeederClass(Feeder feederClass) {
+		FeederClass = feederClass;
+	}
+
+	public DSSMonitor getMonitorClass() {
+		return MonitorClass;
+	}
+
+	public void setMonitorClass(DSSMonitor monitorClass) {
+		MonitorClass = monitorClass;
+	}
+
+	public Sensor getSensorClass() {
+		return SensorClass;
+	}
+
+	public void setSensorClass(Sensor sensorClass) {
+		SensorClass = sensorClass;
+	}
+
+	public TCC_Curve getTCC_CurveClass() {
+		return TCC_CurveClass;
+	}
+
+	public void setTCC_CurveClass(TCC_Curve tCC_CurveClass) {
+		TCC_CurveClass = tCC_CurveClass;
+	}
+
+	public WireData getWireDataClass() {
+		return WireDataClass;
+	}
+
+	public void setWireDataClass(WireData wireDataClass) {
+		WireDataClass = wireDataClass;
+	}
+
+	public LineSpacing getLineSpacingClass() {
+		return LineSpacingClass;
+	}
+
+	public void setLineSpacingClass(LineSpacing lineSpacingClass) {
+		LineSpacingClass = lineSpacingClass;
+	}
+
+	public Storage getStorageClass() {
+		return StorageClass;
+	}
+
+	public void setStorageClass(Storage storageClass) {
+		StorageClass = storageClass;
 	}
 
 	/**
@@ -95,15 +493,15 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	 * DSSGlobals.getInstance() or the first access to
 	 * DSSGlobalsHolder.INSTANCE, not before.
 	 */
-	private static class DSSGlobalsHolder {
-		public static final DSSGlobalsImpl INSTANCE = new DSSGlobalsImpl();
+	private class DSSGlobalsHolder {
+		public final DSSGlobals INSTANCE = new DSSGlobalsImpl();
 	}
 
-	public static DSSGlobalsImpl getInstance() {
+	public DSSGlobals getInstance() {
 		return DSSGlobalsHolder.INSTANCE;
 	}
 
-	public static void DoErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
+	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
 		String Msg = String.format("Error %d Reported From DSS Intrinsic Function: ", ErrNum)+ CRLF  + S
         + CRLF   + CRLF + "Error Description: " + CRLF + Emsg
         + CRLF   + CRLF + "Probable Cause: " + CRLF + ProbCause;
@@ -124,7 +522,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		AppendGlobalResultCRLF(Msg);
 	}
 
-	public static void DoSimpleMsg(String S, int ErrNum) {
+	public void doSimpleMsg(String S, int ErrNum) {
 		if (!NoFormsAllowed) {
 	       if (In_Redirect) {
 	    	   int RetVal = DSSMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
@@ -140,7 +538,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	    AppendGlobalResultCRLF(S);
 	}
 
-	public static void ClearAllCircuits() {
+	public void clearAllCircuits() {
 		ActiveCircuit = Circuits.First();
 		while (ActiveCircuit != null) {
 			ActiveCircuit.Free();
@@ -152,7 +550,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	}
 
 	/* Set object active by name */
-	public static void SetObject(String Param) {
+	public void setObject(String Param) {
 		String ObjName, ObjClass;
 
 		// Split off Obj class and name
@@ -189,7 +587,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	    }
 	}
 
-	public static int SetActiveBus(String BusName) {
+	public int setActiveBus(String BusName) {
 		// Now find the bus and set active
 		int Result = 0;
 
@@ -202,7 +600,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	}
 
 	/* Pathname may be null */
-	public static void SetDataPath(String PathName) {
+	public void setDataPath(String PathName) {
 		File F = new File(PathName);
 
 		if ((PathName.length() > 0) && !F.exists()) {
@@ -227,7 +625,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	}
 
 
-	public static void MakeNewCircuit(String Name) {
+	public void makeNewCircuit(String Name) {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
 	        ActiveDSSObject = ActiveSolutionObj;
@@ -247,7 +645,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	}
 
 	/* Append a string to Global result, separated by commas */
-	public static void AppendGlobalResult(String S) {
+	public void appendGlobalResult(String S) {
 		if (GlobalResult.length() == 0) {
 			GlobalResult = S;
 		} else {
@@ -256,7 +654,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	}
 
 	/* Separate by CRLF */
-	public static void AppendGlobalResultCRLF(String S) {
+	public void appendGlobalResultCRLF(String S) {
 		if (GlobalResult.length() > 0) {
 			GlobalResult = GlobalResult + CRLF + S;
 		} else {
@@ -264,7 +662,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		}
 	}
 
-	public static void WriteDLLDebugFile(String S) {
+	public void WriteDLLDebugFile(String S) {
 		boolean Append;
 		if (DLLFirstTime) {
 			Append = false;
@@ -278,19 +676,19 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		DLLDebugFile.close();
 	}
 
-	public static void ReadDSS_Registry() {
+	public void readDSS_Registry() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void WriteDSS_Registry() {
+	public void writeDSS_Registry() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static boolean IsDSSDLL(String Fname) {
+	public boolean isDSSDLL(String Fname) {
 		throw new UnsupportedOperationException();
 	}
 
-	public static String GetDSSVersion() {
+	public String getDSSVersion() {
 		// TODO: Implement GetDSSVersion()
 		return "Unknown.";
 	}

@@ -17,10 +17,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	private boolean YPrimInvalid;
 	private int Handle;
 
-	protected int nterms;
+	protected int nTerms;
 	/* no. conductors per terminal */
-	protected int nconds;
-	protected int nphases;
+	protected int nConds;
+	protected int nPhases;
 
 	protected DComplexMatrix1D ComplexBuffer;
 
@@ -36,101 +36,217 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	protected double YprimFreq;
 
 	/* Total Noderef array for element */
-	public int[] NodeRef;
-	public int Yorder;
+	protected int[] NodeRef;
+	protected int Yorder;
 	/* Flag used in tree searches */
-	public int LastTerminalChecked;
+	protected int LastTerminalChecked;
 
-	public boolean Checked, HasEnergyMeter, HasSensorObj, IsIsolated,
+	protected boolean Checked, HasEnergyMeter, HasSensorObj, IsIsolated,
     	HasControl, IsPartofFeeder;
 
-	public DSSCktElement ControlElement;
+	protected DSSCktElement ControlElement;
 
-	public DComplexMatrix1D Iterminal;
-	public DComplexMatrix1D Vterminal;
+	protected DComplexMatrix1D Iterminal;
+	protected DComplexMatrix1D Vterminal;
 
-	public double BaseFrequency;
+	protected double BaseFrequency;
 
-	public PowerTerminal[] Terminals;
+	protected PowerTerminal[] Terminals;
 
-	public PowerTerminal ActiveTerminal;
+	protected PowerTerminal ActiveTerminal;
 
 	public DSSCktElement(DSSClassImpl ParClass) {
 		super(ParClass);
 		// TODO Auto-generated constructor stub
 	}
 
+	public int[] getNodeRef() {
+		return NodeRef;
+	}
+
+	public void setNodeRef(int[] nodeRef) {
+		NodeRef = nodeRef;
+	}
+
+	public int getYorder() {
+		return Yorder;
+	}
+
+	public void setYorder(int yorder) {
+		Yorder = yorder;
+	}
+
+	public int getLastTerminalChecked() {
+		return LastTerminalChecked;
+	}
+
+	public void setLastTerminalChecked(int lastTerminalChecked) {
+		LastTerminalChecked = lastTerminalChecked;
+	}
+
+	public boolean isChecked() {
+		return Checked;
+	}
+
+	public void setChecked(boolean checked) {
+		Checked = checked;
+	}
+
+	public boolean isHasEnergyMeter() {
+		return HasEnergyMeter;
+	}
+
+	public void setHasEnergyMeter(boolean hasEnergyMeter) {
+		HasEnergyMeter = hasEnergyMeter;
+	}
+
+	public boolean isHasSensorObj() {
+		return HasSensorObj;
+	}
+
+	public void setHasSensorObj(boolean hasSensorObj) {
+		HasSensorObj = hasSensorObj;
+	}
+
+	public boolean isIsIsolated() {
+		return IsIsolated;
+	}
+
+	public void setIsIsolated(boolean isIsolated) {
+		IsIsolated = isIsolated;
+	}
+
+	public boolean isHasControl() {
+		return HasControl;
+	}
+
+	public void setHasControl(boolean hasControl) {
+		HasControl = hasControl;
+	}
+
+	public boolean isIsPartofFeeder() {
+		return IsPartofFeeder;
+	}
+
+	public void setIsPartofFeeder(boolean isPartofFeeder) {
+		IsPartofFeeder = isPartofFeeder;
+	}
+
+	public DSSCktElement getControlElement() {
+		return ControlElement;
+	}
+
+	public void setControlElement(DSSCktElement controlElement) {
+		ControlElement = controlElement;
+	}
+
+	public DComplexMatrix1D getIterminal() {
+		return Iterminal;
+	}
+
+	public void setIterminal(DComplexMatrix1D iterminal) {
+		Iterminal = iterminal;
+	}
+
+	public DComplexMatrix1D getVterminal() {
+		return Vterminal;
+	}
+
+	public void setVterminal(DComplexMatrix1D vterminal) {
+		Vterminal = vterminal;
+	}
+
+	public double getBaseFrequency() {
+		return BaseFrequency;
+	}
+
+	public void setBaseFrequency(double baseFrequency) {
+		BaseFrequency = baseFrequency;
+	}
+
+	public PowerTerminal[] getTerminals() {
+		return Terminals;
+	}
+
+	public void setTerminals(PowerTerminal[] terminals) {
+		Terminals = terminals;
+	}
+
+	public void setActiveTerminal(PowerTerminal activeTerminal) {
+		ActiveTerminal = activeTerminal;
+	}
+
 	/* set freq and recompute YPrim. */
-	private void Set_Freq(double value) {
+	private void setFreq(double value) {
 
 	}
 
-	public void Set_YprimFreq(double Value) {
-		Set_Freq(Value);
+	public void setYprimFreq(double Value) {
+		setFreq(Value);
 	}
 
-	public double Get_YprimFreq() {
+	public double getYprimFreq() {
 		return this.YprimFreq;
 	}
 
-	public void Set_Nconds(int Value) {
+	public void setNConds(int Value) {
 
 	}
 
-	public int Get_Nconds() {
-		return this.nconds;
+	public int getNConds() {
+		return this.nConds;
 	}
 
-	public void Set_NPhases(int Value) {
-
-	}
-
-	public int Get_NPhases() {
-		return this.nphases;
-	}
-
-	public void Set_Enabled(boolean Value) {
+	public void setNPhases(int Value) {
 
 	}
 
-	public boolean Get_Enabled() {
+	public int getNPhases() {
+		return this.nPhases;
+	}
+
+	public void setEnabled(boolean Value) {
+
+	}
+
+	public boolean getEnabled() {
 		return this.Enabled;
 	}
 
-	public void Set_ActiveTerminal(int Value) {
+	public void setActiveTerminal(int Value) {
 
 	}
 
-	public int Get_ActiveTerminal() {
+	public int getActiveTerminal() {
 		return this.ActiveTerminalIdx;
 	}
 
-	public boolean Get_ConductorClosed(int Index) {
+	public boolean getConductorClosed(int Index) {
 		return false;
 	}
 
-	public void Set_YprimInvalid(boolean Value) {
+	public void setYprimInvalid(boolean Value) {
 
 	}
 
-	public boolean Is_YprimInvalid() {
+	public boolean isYprimInvalid() {
 		return this.YPrimInvalid;
 	}
 
-	public String Get_FirstBus() {
+	public String getFirstBus() {
 		return null;
 	}
 
-	public String Get_NextBus() {
+	public String getNextBus() {
 		return null;
 	}
 
-	public double[] Get_Losses() {
+	public double[] getLosses() {
 		return new double[] {0.0, 0.0};
 	}
 
 	/* Get total complex power in active terminal */
-	public double[] Get_Power(int idxTerm) {
+	public double[] getPower(int idxTerm) {
 		return new double[] {0.0, 0.0};
 	}
 
@@ -138,23 +254,23 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	}
 
-	public void Set_ConductorClosed(int Index, boolean Value) {
+	public void setConductorClosed(int Index, boolean Value) {
 
 	}
 
-	public void Set_NTerms(int Value) {
+	public void setNTerms(int Value) {
 
 	}
 
-	public int Get_NTerms() {
-		return this.nterms;
+	public int getNTerms() {
+		return this.nTerms;
 	}
 
-	public void Set_Handle(int Value) {
+	public void setHandle(int Value) {
 
 	}
 
-	public int Get_Handle() {
+	public int getHandle() {
 		return 0;
 	}
 

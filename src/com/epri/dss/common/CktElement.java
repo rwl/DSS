@@ -5,54 +5,114 @@ import java.io.PrintStream;
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
+import com.epri.dss.common.impl.DSSCktElement;
+import com.epri.dss.common.impl.PowerTerminal;
 import com.epri.dss.general.DSSObject;
 
 public interface CktElement extends DSSObject {
 
-	public void Set_YprimFreq(double Value);
+	public int[] getNodeRef();
 
-	public double Get_YprimFreq();
+	public void setNodeRef(int[] nodeRef);
 
-	public void Set_Nconds(int Value);
+	public int getYorder();
 
-	public int Get_Nconds();
+	public void setYorder(int yorder);
 
-	public void Set_NPhases(int Value);
+	public int getLastTerminalChecked();
 
-	public int Get_NPhases();
+	public void setLastTerminalChecked(int lastTerminalChecked);
 
-	public void Set_Enabled(boolean Value);
+	public boolean isChecked();
 
-	public boolean Get_Enabled();
+	public void setChecked(boolean checked);
 
-	public void Set_ActiveTerminal(int Value);
+	public boolean isHasEnergyMeter();
 
-	public int Get_ActiveTerminal();
+	public void setHasEnergyMeter(boolean hasEnergyMeter);
 
-	public boolean Get_ConductorClosed(int Index);
+	public boolean isHasSensorObj();
 
-	public void Set_YprimInvalid(boolean Value);
+	public void setHasSensorObj(boolean hasSensorObj);
 
-	public boolean Is_YprimInvalid();
+	public boolean isIsIsolated();
 
-	public String Get_FirstBus();
+	public void setIsIsolated(boolean isIsolated);
 
-	public String Get_NextBus();
+	public boolean isHasControl();
 
-	public double[] Get_Losses();
+	public void setHasControl(boolean hasControl);
+
+	public boolean isIsPartofFeeder();
+
+	public void setIsPartofFeeder(boolean isPartofFeeder);
+
+	public DSSCktElement getControlElement();
+
+	public void setControlElement(DSSCktElement controlElement);
+
+	public DComplexMatrix1D getIterminal();
+
+	public void setIterminal(DComplexMatrix1D iterminal);
+
+	public DComplexMatrix1D getVterminal();
+
+	public void setVterminal(DComplexMatrix1D vterminal);
+
+	public double getBaseFrequency();
+
+	public void setBaseFrequency(double baseFrequency);
+
+	public PowerTerminal[] getTerminals();
+
+	public void setTerminals(PowerTerminal[] terminals);
+
+	public void setActiveTerminal(PowerTerminal activeTerminal);
+
+	public void setYprimFreq(double Value);
+
+	public double getYprimFreq();
+
+	public void setNConds(int Value);
+
+	public int getNConds();
+
+	public void setNPhases(int Value);
+
+	public int getNPhases();
+
+	public void setEnabled(boolean Value);
+
+	public boolean getEnabled();
+
+	public void setActiveTerminal(int Value);
+
+	public int getActiveTerminal();
+
+	public boolean getConductorClosed(int Index);
+
+	public void setYprimInvalid(boolean Value);
+
+	public boolean isYprimInvalid();
+
+	public String getFirstBus();
+
+	public String getNextBus();
+
+	public double[] getLosses();
 
 	/* Get total complex power in active terminal */
-	public double[] Get_Power(int idxTerm);
+	public double[] getPower(int idxTerm);
 
-	public void Set_ConductorClosed(int Index, boolean Value);
+	public void setConductorClosed(int Index, boolean Value);
 
-	public void Set_NTerms(int Value);
+	public void setNTerms(int Value);
 
-	public int Get_NTerms();
+	public int getNTerms();
 
-	public void Set_Handle(int Value);
+	public void setHandle(int Value);
 
-	public int Get_Handle();
+	public int getHandle();
 
 	public int GetYPrim(DComplexMatrix2D Ymatrix, int Opt);
 

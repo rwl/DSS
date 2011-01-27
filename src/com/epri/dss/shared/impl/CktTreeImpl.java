@@ -1,12 +1,13 @@
 package com.epri.dss.shared.impl;
 
 import com.epri.dss.shared.CktTree;
+import com.epri.dss.shared.PointerList;
 
 public class CktTreeImpl implements CktTree {
 
 	public class CktTreeNode {
 
-		private PointerListImpl ChildBranches;
+		private PointerList ChildBranches;
 		private int NumToBuses, ToBusPtr;
 		private int[] ToBusList;
 
@@ -14,15 +15,15 @@ public class CktTreeImpl implements CktTree {
 			// TODO Auto-generated constructor stub
 		}
 
-		public CktTreeNode Get_FirstChildBranch() {
+		public CktTreeNode getFirstChildBranch() {
 			return null;
 		}
 
-		public CktTreeNode Get_NextChildBranch() {
+		public CktTreeNode getNextChildBranch() {
 			return null;
 		}
 
-		public CktTreeNode Get_Parent() {
+		public CktTreeNode getParent() {
 			return null;
 		}
 
@@ -34,27 +35,27 @@ public class CktTreeImpl implements CktTree {
 
 		}
 
-		public int Get_NumChildBranches() {
+		public int getNumChildBranches() {
 			return 0;
 		}
 
-		public int Get_NumShuntObjects() {
+		public int getNumShuntObjects() {
 			return 0;
 		}
 
-		public int Get_ToBusReference() {
+		public int getToBusReference() {
 			return 0;
 		}
 
-		public void Set_ToBusReference(int Value) {
+		public void setToBusReference(int Value) {
 
 		}
 
-		public Object Get_FirstShuntObject() {
+		public Object getFirstShuntObject() {
 			return null;
 		}
 
-		public Object Get_NextObject() {
+		public Object getNextObject() {
 			return null;
 		}
 
@@ -65,10 +66,18 @@ public class CktTreeImpl implements CktTree {
 		private PointerListImpl EndNodeList;
 		private int[] EndBuses;
 
-		public int NumEnds;
+		protected int NumEnds;
 
 		public ZoneEndsList() {
 			// TODO Auto-generated constructor stub
+		}
+
+		public int getNumEnds() {
+			return NumEnds;
+		}
+
+		public void setNumEnds(int numEnds) {
+			NumEnds = numEnds;
 		}
 
 		public void Add(CktTreeNode Node, int EndBusRef) {
@@ -84,50 +93,66 @@ public class CktTreeImpl implements CktTree {
 	private CktTreeNode FirstNode;
 //	private Pstack ForwardStack;
 
-	public CktTreeNode PresentBranch;
-	public ZoneEndsList ZoneEndsList;
+	protected CktTreeNode PresentBranch;
+	protected ZoneEndsList ZoneEndsList;
 
 	public CktTreeImpl() {
 		// TODO Auto-generated constructor stub
 	}
 
+	public CktTreeNode getPresentBranch() {
+		return PresentBranch;
+	}
+
+	public void setPresentBranch(CktTreeNode presentBranch) {
+		PresentBranch = presentBranch;
+	}
+
+	public ZoneEndsList getZoneEndsList() {
+		return ZoneEndsList;
+	}
+
+	public void setZoneEndsList(ZoneEndsList zoneEndsList) {
+		ZoneEndsList = zoneEndsList;
+	}
+
 	/* Adds a pointer to an object to be associated with the current node */
-	public void Set_NewObject(Object Value) {
+	public void setNewObject(Object Value) {
 
 	}
 
-	private void PushAllChildren() {
+	private void pushAllChildren() {
 
 	}
 
 	/* Start Forward Search at the present location (can also use active) */
-	public void StartHere() {
+	public void startHere() {
 
 	}
 
-	public void AddNewChild(Object Value, int BusRef, int TerminalNo) {
+	public void addNewChild(Object Value, int BusRef, int TerminalNo) {
 
 	}
 
 	/* Adds Child and makes it present */
-	public void Set_New(Object Value) {
+	public void setNew(Object Value) {
 
 	}
 
 	/* Returns pointer to first cktobject */
-	public Object Get_First() {
+	public Object getFirst() {
 		return null;
 	}
 
-	public Object Get_Parent() {
+	public Object getParent() {
 		return null;
 	}
 
-	public Object Get_FirstObject() {
+	public Object getFirstObject() {
 		return null;
 	}
 
-	public Object Get_NextObject() {
+	public Object getNextObject() {
 		return null;
 	}
 
@@ -139,16 +164,16 @@ public class CktTreeImpl implements CktTree {
 		return null;
 	}
 
-	public Object Get_Active() {
+	public Object getActive() {
 		return null;
 	}
 
-	public void Set_Active(Object Value) {
+	public void setActive(Object Value) {
 
 	}
 
 	/* Get lexical level of present node */
-	public int Get_Level() {
+	public int getLevel() {
 		return 0;
 	}
 

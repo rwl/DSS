@@ -39,7 +39,7 @@ public class NamedObjectImpl implements NamedObject {
 	}
 
 
-	public String Get_DisplayName() {
+	public String getDisplayName() {
 		if (this.DName == "") {
 			return this.PName + "_" + this.LName;
 		} else {
@@ -47,51 +47,51 @@ public class NamedObjectImpl implements NamedObject {
 		}
 	}
 
-	public void Set_DisplayName(String Value) {
+	public void setDisplayName(String Value) {
 		this.DName = Value;
 	}
 
-	private UUID Get_GUID() {
+	private UUID getGUID() {
 		if (this.pGuid == null) {
 			this.pGuid = UUID.randomUUID();
 		}
 		return this.pGuid;
 	}
 
-	public void Set_GUID(UUID Value) {
+	public void setGUID(UUID Value) {
 		//if (this.pGuid == null) {}
 		this.pGuid = Value;
 	}
 
-	public String Get_ID() {
-		return Get_GUID().toString();
+	public String getID() {
+		return getGUID().toString();
 	}
 
-	public String Get_CIM_ID() {
-		return GUIDToCIMString(Get_GUID());
+	public String getCIM_ID() {
+		return uUIDToCIMString(getGUID());
 	}
 
 
-	public String Get_DSSClassName() {
+	public String getDSSClassName() {
 		return this.PName;
 	}
 
-	public void Set_DSSClassName(String Value) {
+	public void setDSSClassName(String Value) {
 		this.PName = Value;
 	}
 
-	public String Get_LocalName() {
+	public String getLocalName() {
 		return this.LName;
 	}
 
-	public void Set_LocalName(String Value) {
+	public void setLocalName(String Value) {
 		this.LName = Value;
 	}
 
 
-	public String GUIDToCIMString(UUID GUID) {
+	public String uUIDToCIMString(UUID uUID) {
 		String s;
-		s = GUID.toString();
+		s = uUID.toString();
 		return s.substring(1, s.length() - 2);
 	}
 

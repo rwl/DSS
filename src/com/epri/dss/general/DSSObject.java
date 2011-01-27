@@ -2,40 +2,51 @@ package com.epri.dss.general;
 
 import java.io.PrintStream;
 
-import com.epri.dss.common.impl.DSSClassImpl;
+import com.epri.dss.common.DSSClass;
 
 public interface DSSObject extends NamedObject {
 
 	/* PD, PC, Monitor, CondCode, etc. */
-	public int DSSObjType = 0;
+	public int getDSSObjType();
 
-	public DSSClassImpl ParentClass = null;
+	public void setDSSObjType(int dSSObjType);
+
+	public DSSClass getParentClass();
+
+	public void setParentClass(DSSClass parentClass);
 
 	/* Index into the class collection list */
-	public int ClassIndex = 0;
+	public int getClassIndex();
 
-	public boolean HasBeenSaved = false;
+	public void setClassIndex(int classIndex);
+
+	public boolean isHasBeenSaved();
+
+	public void setHasBeenSaved(boolean hasBeenSaved);
 
 	/* General purpose Flag for each object  don't assume inited */
-	public boolean Flag = false;
+	public boolean isFlag();
+
+	public void setFlag(boolean flag);
 
 	/* Use DSSClass.PropertyIndex to get index by name */
-	public String Get_PropertyValue(int Index);
+	public String getPropertyValue(int Index);
 
-	public void Set_PropertyValue(int Index, String Value);
+	public void setPropertyValue(int Index, String Value);
 
-	public String Get_Name();
+	public String getName();
 
-	public void Set_Name(String Value);
+	public void setName(String Value);
 
 	/* Allow Calls to edit from object itself */
-	public int Edit();
+	public int edit();
 
-	public void InitPropertyValues(int ArrayOffset);
+	public void initPropertyValues(int ArrayOffset);
 
-	public void DumpProperties(PrintStream F, boolean Complete);
+	public void dumpProperties(PrintStream F, boolean Complete);
 
-	public void SaveWrite(PrintStream F);
+	public void saveWrite(PrintStream F);
 
-	public void ClearPropSeqArray();
+	public void clearPropSeqArray();
+
 }

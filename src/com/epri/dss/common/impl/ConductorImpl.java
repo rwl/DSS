@@ -8,8 +8,8 @@ public class ConductorImpl {
 	private double Accum_Isqt;
 
 	/* change this variable to indicate open or closed switch */
-	public boolean Closed;
-	public boolean FuseBlown;
+	protected boolean Closed;
+	protected boolean FuseBlown;
 
 	public ConductorImpl() {
 		this.Closed = true;
@@ -18,15 +18,31 @@ public class ConductorImpl {
 		this.TCCName = "";
 	}
 
-	public void Set_Ambient(double Value) {
+	public boolean isClosed() {
+		return Closed;
+	}
+
+	public void setClosed(boolean closed) {
+		Closed = closed;
+	}
+
+	public boolean isFuseBlown() {
+		return FuseBlown;
+	}
+
+	public void setFuseBlown(boolean fuseBlown) {
+		FuseBlown = fuseBlown;
+	}
+
+	public void setAmbient(double Value) {
 
 	}
 
-	public void Set_TCCname(String Value) {
+	public void setTCCname(String Value) {
 
 	}
 
-	public String Get_TCCname() {
+	public String getTCCname() {
 		return null;
 	}
 

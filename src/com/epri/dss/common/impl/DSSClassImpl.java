@@ -1,6 +1,10 @@
 package com.epri.dss.common.impl;
 
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.shared.HashList;
+import com.epri.dss.shared.PointerList;
+import com.epri.dss.shared.impl.HashListImpl;
+import com.epri.dss.shared.impl.PointerListImpl;
 
 /**
  * Base Class for all DSS collection classes.
@@ -20,25 +24,26 @@ public class DSSClassImpl {
 	protected int ActiveProperty;
 
 	// TODO: Substitute HashList with LinkedHashMap
-	protected HashListImpl ElementNameList;
+	protected HashList ElementNameList;
 
-	public int NumProperties;
 
-	public String[] PropertyName, PropertyHelp;
+	protected int NumProperties;
 
-	public int[] PropertyIdxMap;
+	protected String[] PropertyName, PropertyHelp;
+
+	protected int[] PropertyIdxMap;
 
 	/* maps property to internal command number */
-	public int[] RevPropertyIdxMap;
+	protected int[] RevPropertyIdxMap;
 
-	public int DSSClassType;
+	protected int DSSClassType;
 
-	public PointerListImpl ElementList;
+	protected PointerList ElementList;
 
 	/* When device gets renamed */
-	public boolean ElementNamesOutOfSynch;
+	protected boolean ElementNamesOutOfSynch;
 
-	public boolean Saved;
+	protected boolean Saved;
 
 	public DSSClassImpl() {
 		super();
@@ -54,6 +59,78 @@ public class DSSClassImpl {
 
 		this.ElementNameList = new HashListImpl(100);
 		this.ElementNamesOutOfSynch = false;
+	}
+
+	public int getNumProperties() {
+		return NumProperties;
+	}
+
+	public void setNumProperties(int numProperties) {
+		NumProperties = numProperties;
+	}
+
+	public String[] getPropertyName() {
+		return PropertyName;
+	}
+
+	public void setPropertyName(String[] propertyName) {
+		PropertyName = propertyName;
+	}
+
+	public String[] getPropertyHelp() {
+		return PropertyHelp;
+	}
+
+	public void setPropertyHelp(String[] propertyHelp) {
+		PropertyHelp = propertyHelp;
+	}
+
+	public int[] getPropertyIdxMap() {
+		return PropertyIdxMap;
+	}
+
+	public void setPropertyIdxMap(int[] propertyIdxMap) {
+		PropertyIdxMap = propertyIdxMap;
+	}
+
+	public int[] getRevPropertyIdxMap() {
+		return RevPropertyIdxMap;
+	}
+
+	public void setRevPropertyIdxMap(int[] revPropertyIdxMap) {
+		RevPropertyIdxMap = revPropertyIdxMap;
+	}
+
+	public int getDSSClassType() {
+		return DSSClassType;
+	}
+
+	public void setDSSClassType(int dSSClassType) {
+		DSSClassType = dSSClassType;
+	}
+
+	public PointerList getElementList() {
+		return ElementList;
+	}
+
+	public void setElementList(PointerList elementList) {
+		ElementList = elementList;
+	}
+
+	public boolean isElementNamesOutOfSynch() {
+		return ElementNamesOutOfSynch;
+	}
+
+	public void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch) {
+		ElementNamesOutOfSynch = elementNamesOutOfSynch;
+	}
+
+	public boolean isSaved() {
+		return Saved;
+	}
+
+	public void setSaved(boolean saved) {
+		Saved = saved;
 	}
 
 	protected void finalize() throws Throwable {
@@ -72,11 +149,11 @@ public class DSSClassImpl {
 		super.finalize();
 	}
 
-	public int Get_Active() {
+	public int getActive() {
 		return this.ActiveElement;
 	}
 
-	public void Set_Active(int Value) {
+	public void setActive(int Value) {
 		if ((Value > 0) && (Value <= ElementList.ListSize)) {
 			DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
 			this.ActiveElement = Value;
@@ -89,11 +166,11 @@ public class DSSClassImpl {
 		}
 	}
 
-	public int Get_ElementCount() {
+	public int getElementCount() {
 		return this.ElementList.ListSize();
 	}
 
-	public int Get_First() {
+	public int getFirst() {
 		int Result;
 		if (this.ElementList.ListSize == 0) {
 			Result = 0;
@@ -111,7 +188,7 @@ public class DSSClassImpl {
 		return Result;
 	}
 
-	public int Get_Next() {
+	public int getNext() {
 		int Result;
 	    if (this.ActiveElement > this.ElementList.ListSize) {
 	    	Result = 0;
@@ -130,7 +207,7 @@ public class DSSClassImpl {
 		return Result;
 	}
 
-	public String Get_Name() {
+	public String getName() {
 		return this.Class_Name;
 	}
 
@@ -143,7 +220,7 @@ public class DSSClassImpl {
 	protected int AddObjectToList(Object Obj) {
 		// Stuff it in this collection's element list
 		this.ElementList.New(Obj);
-		this.ElementNameList.Add(new DSSObjectImpl(Obj).Get_Name());
+		this.ElementNameList.Add(new DSSObjectImpl(Obj).getName());
 
 		if (this.ElementList.ListSize() > 2 * this.ElementNameList.InitialAllocation)
 			ReallocateElementNameList();
@@ -152,12 +229,12 @@ public class DSSClassImpl {
 	    return this.ActiveElement; // Return index of object in list
 	}
 
-	public String Get_FirstPropertyName() {
+	public String getFirstPropertyName() {
 		this.ActiveProperty = 0;
-    	return Get_NextPropertyName();
+    	return getNextPropertyName();
 	}
 
-	public String Get_NextPropertyName() {
+	public String getNextPropertyName() {
 		String Result;
 
 	    if (this.ActiveProperty <= this.NumProperties) {
@@ -236,7 +313,7 @@ public class DSSClassImpl {
 	    // messed up if an element gets renamed
 
 	    for (int i = 0; i < this.ElementList.ListSize(); i++) {
-	    	this.ElementNameList.Add(new DSSObjectImpl(ElementList.Get(i)).Get_Name());
+	    	this.ElementNameList.Add(new DSSObjectImpl(ElementList.Get(i)).getName());
 	    }
 	}
 
