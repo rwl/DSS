@@ -494,10 +494,10 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	 * DSSGlobalsHolder.INSTANCE, not before.
 	 */
 	private class DSSGlobalsHolder {
-		public final DSSGlobals INSTANCE = new DSSGlobalsImpl();
+		public static final DSSGlobals INSTANCE = new DSSGlobalsImpl();
 	}
 
-	public DSSGlobals getInstance() {
+	public static DSSGlobals getInstance() {
 		return DSSGlobalsHolder.INSTANCE;
 	}
 

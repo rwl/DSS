@@ -1,8 +1,13 @@
 package com.epri.dss.common;
 
 import java.io.PrintStream;
+import java.util.List;
 
+import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
+import com.epri.dss.common.impl.DSSCircuit.ReductionStrategy;
+import com.epri.dss.common.impl.DSSCktElement;
+import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.NamedObject;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
@@ -415,8 +420,8 @@ public interface Circuit extends NamedObject {
 
 	public void freeTopology();
 
-	public AdjArray getBusAdjacentPDLists();
+	public List<List<Object>> getBusAdjacentPDLists();
 
-	public AdjArray getBusAdjacentPCLists();
+	public List<List<Object>> getBusAdjacentPCLists();
 
 }

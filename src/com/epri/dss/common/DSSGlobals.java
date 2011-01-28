@@ -51,9 +51,6 @@ public interface DSSGlobals {
 	public static final double InvSQRT3 = 1.0 / SQRT3;
 	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
-
-	public DSSGlobals getInstance();
-
 	public boolean isDLLFirstTime();
 
 	public void setDLLFirstTime(boolean dLLFirstTime);

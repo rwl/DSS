@@ -8,6 +8,12 @@ import com.epri.dss.general.impl.NamedObjectImpl;
 
 public class DSSBus extends NamedObjectImpl implements Bus {
 
+	public class NodeBus {
+		/* Ref to Bus in circuit's BusList */
+		public int BusRef;
+		public int NodeNum;
+	}
+
 	private int NumNodesThisBus;
 	private int[] Nodes;
 	private int Allocation;
@@ -24,8 +30,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	protected boolean CoordDefined, BusChecked, Keep, IsRadialBus;
 
-	public DSSBus(String ClassName) {
-		super(ClassName);
+	public DSSBus() {
+		super("Bus");
 		// TODO Auto-generated constructor stub
 	}
 
