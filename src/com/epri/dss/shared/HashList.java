@@ -23,21 +23,22 @@ package com.epri.dss.shared;
  */
 public interface HashList {
 
-	public int Add(String S);
+	int Add(String S);
 
 	/* repeat find for duplicate string in same hash list */
-	public int Find(String S);
+	int Find(String S);
 
-	public int FindAbbrev(String S);
+	int FindAbbrev(String S);
 
-	public String Get(int i);
+	String Get(int i);
 
 	/* Expands number of elements */
-	public void Expand(int NewSize);
+	void Expand(int NewSize);
 
-	public void DumpToFile(String fname);
+	void DumpToFile(String fname);
 
-	public void Clear();
+	void Clear();
 
-	public int Get_ListSize();
+	int Get_ListSize();
+
 }

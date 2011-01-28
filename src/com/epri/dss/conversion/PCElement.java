@@ -8,70 +8,70 @@ import com.epri.dss.common.CktElement;
 
 public interface PCElement extends CktElement {
 
-	public String getSpectrum();
+	String getSpectrum();
 
-	public void setSpectrum(String spectrum);
+	void setSpectrum(String spectrum);
 
     /* Upline Sensor for this element */
-	public SpectrumObj getSpectrumObj();
+	SpectrumObj getSpectrumObj();
 
-	public void setSpectrumObj(SpectrumObj spectrumObj);
+	void setSpectrumObj(SpectrumObj spectrumObj);
 
     /* Upline EnergyMeter */
-	public MeterElement getMeterObj();
+	MeterElement getMeterObj();
 
-	public void setMeterObj(MeterElement meterObj);
+	void setMeterObj(MeterElement meterObj);
 
-	public MeterElement getSensorObj();
+	MeterElement getSensorObj();
 
-	public void setSensorObj(MeterElement sensorObj);
+	void setSensorObj(MeterElement sensorObj);
 
-	public DComplexMatrix1D getInjCurrent();
+	DComplexMatrix1D getInjCurrent();
 
-	public void setInjCurrent(DComplexMatrix1D injCurrent);
+	void setInjCurrent(DComplexMatrix1D injCurrent);
 
-	public void setITerminalUpdated(boolean Value);
+	void setITerminalUpdated(boolean Value);
 
-	public boolean getITerminalUpdated();
+	boolean getITerminalUpdated();
 
-	public double getVariable(int i);
+	double getVariable(int i);
 
-	public void setVariable(int i, double Value);
+	void setVariable(int i, double Value);
 
-	public void zeroInjCurrent();
+	void zeroInjCurrent();
 
-	public void initPropertyValues(int ArrayOffset);
-
-	/* Get present values of terminal */
-	public void getCurrents(DComplexMatrix1D Curr);
+	void initPropertyValues(int ArrayOffset);
 
 	/* Get present values of terminal */
-	public void getInjCurrents(DComplexMatrix1D Curr);
+	void getCurrents(DComplexMatrix1D Curr);
 
-	public void computeIterminal();
+	/* Get present values of terminal */
+	void getInjCurrents(DComplexMatrix1D Curr);
 
-	public int injCurrents();
+	void computeIterminal();
 
-	public void calcYPrimContribution(DComplexMatrix1D Curr);
+	int injCurrents();
 
-	public void dumpProperties(PrintStream F, boolean Complete);
+	void calcYPrimContribution(DComplexMatrix1D Curr);
+
+	void dumpProperties(PrintStream F, boolean Complete);
 
 	/** For Harmonics Mode */
 
-	public void initHarmonics();
+	void initHarmonics();
 
 	/** For Dynamics Mode and Control Devices */
 
-	public void initStateVars();
+	void initStateVars();
 
-	public void integrateStates();
+	void integrateStates();
 
-	public int numVariables();
+	int numVariables();
 
-	public void getAllVariables(double[] States);
+	void getAllVariables(double[] States);
 
-	public String variableName(int i);
+	String variableName(int i);
 
-	public int lookupVariable(String s);
+	int lookupVariable(String s);
 
 }

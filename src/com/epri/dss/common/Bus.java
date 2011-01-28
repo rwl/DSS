@@ -7,55 +7,56 @@ import com.epri.dss.general.NamedObject;
 
 public interface Bus extends NamedObject {
 
-	public double[] getZsc0();
+	double[] getZsc0();
 
-	public double[] getZsc1();
+	double[] getZsc1();
 
-	public DComplexMatrix1D getVBus();
+	DComplexMatrix1D getVBus();
 
-	public void setVBus(DComplexMatrix1D vBus);
+	void setVBus(DComplexMatrix1D vBus);
 
-	public DComplexMatrix1D getBusCurrent();
+	DComplexMatrix1D getBusCurrent();
 
-	public void setBusCurrent(DComplexMatrix1D busCurrent);
+	void setBusCurrent(DComplexMatrix1D busCurrent);
 
-	public DComplexMatrix2D getZsc();
+	DComplexMatrix2D getZsc();
 
-	public void setZsc(DComplexMatrix2D zsc);
+	void setZsc(DComplexMatrix2D zsc);
 
-	public DComplexMatrix2D getYsc();
+	DComplexMatrix2D getYsc();
 
-	public void setYsc(DComplexMatrix2D ysc);
+	void setYsc(DComplexMatrix2D ysc);
 
-	public double getX();
+	double getX();
 
-	public void setX(double x);
+	void setX(double x);
 
-	public double getY();
+	double getY();
 
-	public void setY(double y);
+	void setY(double y);
 
-	public double getkVBase();
+	double getkVBase();
 
-	public void setkVBase(double kVBase);
+	void setkVBase(double kVBase);
 
-	public double getDistFromMeter();
+	double getDistFromMeter();
 
-	public void setDistFromMeter(double distFromMeter);
+	void setDistFromMeter(double distFromMeter);
 
-	public boolean isCoordDefined();
+	boolean isCoordDefined();
 
-	public void setCoordDefined(boolean coordDefined);
+	void setCoordDefined(boolean coordDefined);
 
-	public boolean isBusChecked();
+	boolean isBusChecked();
 
-	public void setBusChecked(boolean busChecked);
+	void setBusChecked(boolean busChecked);
 
-	public boolean isKeep();
+	boolean isKeep();
 
-	public void setKeep(boolean keep);
+	void setKeep(boolean keep);
 
-	public boolean isIsRadialBus();
+	boolean isIsRadialBus();
 
-	public void setIsRadialBus(boolean isRadialBus);
+	void setIsRadialBus(boolean isRadialBus);
+
 }

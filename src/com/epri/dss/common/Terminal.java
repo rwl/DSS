@@ -2,24 +2,24 @@ package com.epri.dss.common;
 
 public interface Terminal {
 
-	public int getBusRef();
+	int getBusRef();
 
-	public void setBusRef(int busRef);
+	void setBusRef(int busRef);
 
-	public int[] getTermNodeRef();
+	int[] getTermNodeRef();
 
-	public void setTermNodeRef(int[] termNodeRef);
+	void setTermNodeRef(int[] termNodeRef);
 
-	public Conductor[] getConductors();
+	Conductor[] getConductors();
 
-	public void setConductors(Conductor[] conductors);
+	void setConductors(Conductor[] conductors);
 
-	public boolean isChecked();
+	boolean isChecked();
 
-	public void setChecked(boolean checked);
+	void setChecked(boolean checked);
 
-	public void setActiveConductor(int Value);
+	void setActiveConductor(int Value);
 
-	public int getActiveConductor();
+	int getActiveConductor();
 
 }

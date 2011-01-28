@@ -2,16 +2,16 @@ package com.epri.dss.shared;
 
 public interface CommandList {
 
-	public int getNumCommands();
+	int getNumCommands();
 
-	public boolean isAbbrevAllowed();
+	boolean isAbbrevAllowed();
 
-	public void setAbbrevAllowed(boolean abbrevAllowed);
+	void setAbbrevAllowed(boolean abbrevAllowed);
 
-	public void addCommand(String cmd);
+	void addCommand(String cmd);
 
-	public int getCommand(String Cmd);
+	int getCommand(String Cmd);
 
-	public String get(int i);
+	String get(int i);
 
 }

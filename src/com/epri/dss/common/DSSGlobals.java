@@ -10,273 +10,273 @@ import com.epri.dss.shared.PointerList;
 
 public interface DSSGlobals {
 
-	public static final String CRLF = System.getProperty("line.separator");
-	public static final double PI = 3.14159265359;
-	public static final double TwoPi = 2.0 * PI;
-	public static final double RadiansToDegrees = 57.29577951;
-	public static final double EPSILON = 1.0e-12;   // Default tiny floating point
-	public static final double EPSILON2 = 1.0e-3;   // Default for Real number mismatch testing
+	static final String CRLF = System.getProperty("line.separator");
+	static final double PI = 3.14159265359;
+	static final double TwoPi = 2.0 * PI;
+	static final double RadiansToDegrees = 57.29577951;
+	static final double EPSILON = 1.0e-12;   // Default tiny floating point
+	static final double EPSILON2 = 1.0e-3;   // Default for Real number mismatch testing
 
 	// Load model types for solution
-	public static final int POWERFLOW  = 1;
-	public static final int ADMITTANCE = 2;
+	static final int POWERFLOW  = 1;
+	static final int ADMITTANCE = 2;
 
 	// For YPrim matrices
-	public static final int ALL_YPRIM = 0;
-	public static final int SERIES = 1;
-	public static final int SHUNT  = 2;
+	static final int ALL_YPRIM = 0;
+	static final int SERIES = 1;
+	static final int SHUNT  = 2;
 
     /* Control Modes */
-	public static final int CONTROLSOFF = -1;
-	public static final int EVENTDRIVEN =  1;
-	public static final int TIMEDRIVEN  =  2;
-	public static final int STATIC      =  0;
+	static final int CONTROLSOFF = -1;
+	static final int EVENTDRIVEN =  1;
+	static final int TIMEDRIVEN  =  2;
+	static final int STATIC      =  0;
 
     /* Randomization Constants */
-	public static final int GAUSSIAN  = 1;
-	public static final int UNIFORM   = 2;
-	public static final int LOGNORMAL = 3;
+	static final int GAUSSIAN  = 1;
+	static final int UNIFORM   = 2;
+	static final int LOGNORMAL = 3;
 
     /* Autoadd Constants */
-	public static final int GENADD = 1;
-	public static final int CAPADD = 2;
+	static final int GENADD = 1;
+	static final int CAPADD = 2;
 
     /* ERRORS */
-	public static final int SOLUTION_ABORT = 99;
+	static final int SOLUTION_ABORT = 99;
 
 	/* 120-degree shift constant */
-	public static final double[] CALPHA = new double[] {-0.5, -0.866025};
-	public static final double SQRT2 = Math.sqrt(2.0);
-	public static final double SQRT3 = Math.sqrt(3.0);
-	public static final double InvSQRT3 = 1.0 / SQRT3;
-	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
+	static final double[] CALPHA = new double[] {-0.5, -0.866025};
+	static final double SQRT2 = Math.sqrt(2.0);
+	static final double SQRT3 = Math.sqrt(3.0);
+	static final double InvSQRT3 = 1.0 / SQRT3;
+	static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
-	public boolean isDLLFirstTime();
+	boolean isDLLFirstTime();
 
-	public void setDLLFirstTime(boolean dLLFirstTime);
+	void setDLLFirstTime(boolean dLLFirstTime);
 
-	public PrintStream getDLLDebugFile();
+	PrintStream getDLLDebugFile();
 
-	public void setDLLDebugFile(PrintStream dLLDebugFile);
+	void setDLLDebugFile(PrintStream dLLDebugFile);
 
-	public String getDSS_IniFileName();
+	String getDSS_IniFileName();
 
-	public void setDSS_IniFileName(String dSS_IniFileName);
+	void setDSS_IniFileName(String dSS_IniFileName);
 
-	public IniRegSave getDSS_Registry();
+	IniRegSave getDSS_Registry();
 
-	public void setDSS_Registry(IniRegSave dSS_Registry);
+	void setDSS_Registry(IniRegSave dSS_Registry);
 
-	public boolean isDLL();
+	boolean isDLL();
 
-	public void setDLL(boolean isDLL);
+	void setDLL(boolean isDLL);
 
-	public boolean isNoFormsAllowed();
+	boolean isNoFormsAllowed();
 
-	public void setNoFormsAllowed(boolean noFormsAllowed);
+	void setNoFormsAllowed(boolean noFormsAllowed);
 
-	public Circuit getActiveCircuit();
+	Circuit getActiveCircuit();
 
-	public void setActiveCircuit(Circuit activeCircuit);
+	void setActiveCircuit(Circuit activeCircuit);
 
-	public DSSClass getActiveDSSClass();
+	DSSClass getActiveDSSClass();
 
-	public void setActiveDSSClass(DSSClass activeDSSClass);
+	void setActiveDSSClass(DSSClass activeDSSClass);
 
-	public int getLastClassReferenced();
+	int getLastClassReferenced();
 
-	public void setLastClassReferenced(int lastClassReferenced);
+	void setLastClassReferenced(int lastClassReferenced);
 
-	public DSSObject getActiveDSSObject();
+	DSSObject getActiveDSSObject();
 
-	public void setActiveDSSObject(DSSObject activeDSSObject);
+	void setActiveDSSObject(DSSObject activeDSSObject);
 
-	public int getNumCircuits();
+	int getNumCircuits();
 
-	public void setNumCircuits(int numCircuits);
+	void setNumCircuits(int numCircuits);
 
-	public int getMaxCircuits();
+	int getMaxCircuits();
 
-	public void setMaxCircuits(int maxCircuits);
+	void setMaxCircuits(int maxCircuits);
 
-	public int getMaxBusLimit();
+	int getMaxBusLimit();
 
-	public void setMaxBusLimit(int maxBusLimit);
+	void setMaxBusLimit(int maxBusLimit);
 
-	public int getMaxAllocationIterations();
+	int getMaxAllocationIterations();
 
-	public void setMaxAllocationIterations(int maxAllocationIterations);
+	void setMaxAllocationIterations(int maxAllocationIterations);
 
-	public PointerList getCircuits();
+	PointerList getCircuits();
 
-	public void setCircuits(PointerList circuits);
+	void setCircuits(PointerList circuits);
 
-	public PointerList getDSSObjs();
+	PointerList getDSSObjs();
 
-	public void setDSSObjs(PointerList dSSObjs);
+	void setDSSObjs(PointerList dSSObjs);
 
-	public Parser getAuxParser();
+	Parser getAuxParser();
 
-	public void setAuxParser(Parser auxParser);
+	void setAuxParser(Parser auxParser);
 
-	public boolean isErrorPending();
+	boolean isErrorPending();
 
-	public void setErrorPending(boolean errorPending);
+	void setErrorPending(boolean errorPending);
 
-	public int getCmdResult();
+	int getCmdResult();
 
-	public void setCmdResult(int cmdResult);
+	void setCmdResult(int cmdResult);
 
-	public int getErrorNumber();
+	int getErrorNumber();
 
-	public void setErrorNumber(int errorNumber);
+	void setErrorNumber(int errorNumber);
 
-	public String getLastErrorMessage();
+	String getLastErrorMessage();
 
-	public void setLastErrorMessage(String lastErrorMessage);
+	void setLastErrorMessage(String lastErrorMessage);
 
-	public String getLastFileCompiled();
+	String getLastFileCompiled();
 
-	public void setLastFileCompiled(String lastFileCompiled);
+	void setLastFileCompiled(String lastFileCompiled);
 
-	public boolean isLastCommandWasCompile();
+	boolean isLastCommandWasCompile();
 
-	public void setLastCommandWasCompile(boolean lastCommandWasCompile);
+	void setLastCommandWasCompile(boolean lastCommandWasCompile);
 
-	public boolean isSolutionAbort();
+	boolean isSolutionAbort();
 
-	public void setSolutionAbort(boolean solutionAbort);
+	void setSolutionAbort(boolean solutionAbort);
 
-	public boolean isInShowResults();
+	boolean isInShowResults();
 
-	public void setInShowResults(boolean inShowResults);
+	void setInShowResults(boolean inShowResults);
 
-	public boolean isRedirect_Abort();
+	boolean isRedirect_Abort();
 
-	public void setRedirect_Abort(boolean redirect_Abort);
+	void setRedirect_Abort(boolean redirect_Abort);
 
-	public boolean isIn_Redirect();
+	boolean isIn_Redirect();
 
-	public void setIn_Redirect(boolean in_Redirect);
+	void setIn_Redirect(boolean in_Redirect);
 
-	public boolean isDIFilesAreOpen();
+	boolean isDIFilesAreOpen();
 
-	public void setDIFilesAreOpen(boolean dIFilesAreOpen);
+	void setDIFilesAreOpen(boolean dIFilesAreOpen);
 
-	public boolean isAutoShowExport();
+	boolean isAutoShowExport();
 
-	public void setAutoShowExport(boolean autoShowExport);
+	void setAutoShowExport(boolean autoShowExport);
 
-	public boolean isSolutionWasAttempted();
+	boolean isSolutionWasAttempted();
 
-	public void setSolutionWasAttempted(boolean solutionWasAttempted);
+	void setSolutionWasAttempted(boolean solutionWasAttempted);
 
-	public String getGlobalHelpString();
+	String getGlobalHelpString();
 
-	public void setGlobalHelpString(String globalHelpString);
+	void setGlobalHelpString(String globalHelpString);
 
-	public String getGlobalPropertyValue();
+	String getGlobalPropertyValue();
 
-	public void setGlobalPropertyValue(String globalPropertyValue);
+	void setGlobalPropertyValue(String globalPropertyValue);
 
-	public String getGlobalResult();
+	String getGlobalResult();
 
-	public void setGlobalResult(String globalResult);
+	void setGlobalResult(String globalResult);
 
-	public String getVersionString();
+	String getVersionString();
 
-	public void setVersionString(String versionString);
+	void setVersionString(String versionString);
 
-	public String getDefaultEditor();
+	String getDefaultEditor();
 
-	public void setDefaultEditor(String defaultEditor);
+	void setDefaultEditor(String defaultEditor);
 
-	public String getCircuitName_();
+	String getCircuitName_();
 
-	public void setCircuitName_(String circuitName_);
+	void setCircuitName_(String circuitName_);
 
-	public double getDefaultBaseFreq();
+	double getDefaultBaseFreq();
 
-	public void setDefaultBaseFreq(double defaultBaseFreq);
+	void setDefaultBaseFreq(double defaultBaseFreq);
 
-	public double getDaisySize();
+	double getDaisySize();
 
-	public void setDaisySize(double daisySize);
+	void setDaisySize(double daisySize);
 
-	public LoadShape getLoadShapeClass();
+	LoadShape getLoadShapeClass();
 
-	public void setLoadShapeClass(LoadShape loadShapeClass);
+	void setLoadShapeClass(LoadShape loadShapeClass);
 
-	public GrowthShape getGrowthShapeClass();
+	GrowthShape getGrowthShapeClass();
 
-	public void setGrowthShapeClass(GrowthShape growthShapeClass);
+	void setGrowthShapeClass(GrowthShape growthShapeClass);
 
-	public Spectrum getSpectrumClass();
+	Spectrum getSpectrumClass();
 
-	public void setSpectrumClass(Spectrum spectrumClass);
+	void setSpectrumClass(Spectrum spectrumClass);
 
-	public DSSClass getSolutionClass();
+	DSSClass getSolutionClass();
 
-	public void setSolutionClass(DSSClass solutionClass);
+	void setSolutionClass(DSSClass solutionClass);
 
-	public EnergyMeter getEnergyMeterClass();
+	EnergyMeter getEnergyMeterClass();
 
-	public void setEnergyMeterClass(EnergyMeter energyMeterClass);
+	void setEnergyMeterClass(EnergyMeter energyMeterClass);
 
-	public Feeder getFeederClass();
+	Feeder getFeederClass();
 
-	public void setFeederClass(Feeder feederClass);
+	void setFeederClass(Feeder feederClass);
 
-	public DSSMonitor getMonitorClass();
+	DSSMonitor getMonitorClass();
 
-	public void setMonitorClass(DSSMonitor monitorClass);
+	void setMonitorClass(DSSMonitor monitorClass);
 
-	public Sensor getSensorClass();
+	Sensor getSensorClass();
 
-	public void setSensorClass(Sensor sensorClass);
+	void setSensorClass(Sensor sensorClass);
 
-	public TCC_Curve getTCC_CurveClass();
+	TCC_Curve getTCC_CurveClass();
 
-	public void setTCC_CurveClass(TCC_Curve tCC_CurveClass);
+	void setTCC_CurveClass(TCC_Curve tCC_CurveClass);
 
-	public WireData getWireDataClass();
+	WireData getWireDataClass();
 
-	public void setWireDataClass(WireData wireDataClass);
+	void setWireDataClass(WireData wireDataClass);
 
-	public LineSpacing getLineSpacingClass();
+	LineSpacing getLineSpacingClass();
 
-	public void setLineSpacingClass(LineSpacing lineSpacingClass);
+	void setLineSpacingClass(LineSpacing lineSpacingClass);
 
-	public Storage getStorageClass();
+	Storage getStorageClass();
 
-	public void setStorageClass(Storage storageClass);
+	void setStorageClass(Storage storageClass);
 
-	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum);
+	void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum);
 
-	public void doSimpleMsg(String S, int ErrNum);
+	void doSimpleMsg(String S, int ErrNum);
 
-	public void clearAllCircuits();
+	void clearAllCircuits();
 
 	/* Set object active by name */
-	public void setObject(String Param);
+	void setObject(String Param);
 
-	public int setActiveBus(String BusName);
+	int setActiveBus(String BusName);
 
-	public void makeNewCircuit(String Name);
+	void makeNewCircuit(String Name);
 
 	/* Append a string to Global result, separated by commas */
-	public void appendGlobalResult(String S);
+	void appendGlobalResult(String S);
 
 	/* Separate by CRLF */
-	public void appendGlobalResultCRLF(String S);
+	void appendGlobalResultCRLF(String S);
 
-	public void WriteDLLDebugFile(String S);
+	void WriteDLLDebugFile(String S);
 
-	public void readDSS_Registry();
+	void readDSS_Registry();
 
-	public void writeDSS_Registry();
+	void writeDSS_Registry();
 
-	public boolean isDSSDLL(String Fname);
+	boolean isDSSDLL(String Fname);
 
-	public String getDSSVersion();
+	String getDSSVersion();
 }

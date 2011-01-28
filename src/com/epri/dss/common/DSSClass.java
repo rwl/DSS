@@ -4,79 +4,80 @@ import com.epri.dss.shared.PointerList;
 
 public interface DSSClass {
 
-	public int getNumProperties();
+	int getNumProperties();
 
-	public void setNumProperties(int numProperties);
+	void setNumProperties(int numProperties);
 
-	public String[] getPropertyName();
+	String[] getPropertyName();
 
-	public void setPropertyName(String[] propertyName);
+	void setPropertyName(String[] propertyName);
 
-	public String[] getPropertyHelp();
+	String[] getPropertyHelp();
 
-	public void setPropertyHelp(String[] propertyHelp);
+	void setPropertyHelp(String[] propertyHelp);
 
-	public int[] getPropertyIdxMap();
+	int[] getPropertyIdxMap();
 
-	public void setPropertyIdxMap(int[] propertyIdxMap);
+	void setPropertyIdxMap(int[] propertyIdxMap);
 
-	public int[] getRevPropertyIdxMap();
+	int[] getRevPropertyIdxMap();
 
-	public void setRevPropertyIdxMap(int[] revPropertyIdxMap);
+	void setRevPropertyIdxMap(int[] revPropertyIdxMap);
 
-	public int getDSSClassType();
+	int getDSSClassType();
 
-	public void setDSSClassType(int dSSClassType);
+	void setDSSClassType(int dSSClassType);
 
-	public PointerList getElementList();
+	PointerList getElementList();
 
-	public void setElementList(PointerList elementList);
+	void setElementList(PointerList elementList);
 
-	public boolean isElementNamesOutOfSynch();
+	boolean isElementNamesOutOfSynch();
 
-	public void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch);
+	void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch);
 
-	public boolean isSaved();
+	boolean isSaved();
 
-	public void setSaved(boolean saved);
+	void setSaved(boolean saved);
 
-	public int getActive();
+	int getActive();
 
-	public void setActive(int Value);
+	void setActive(int Value);
 
-	public int getElementCount();
+	int getElementCount();
 
-	public int getFirst();
+	int getFirst();
 
-	public int getNext();
+	int getNext();
 
-	public String getName();
+	String getName();
 
-	public String getFirstPropertyName();
+	String getFirstPropertyName();
 
-	public String getNextPropertyName();
+	String getNextPropertyName();
 
 	/* Helper routine for building Property strings */
-	public void AddProperty(String PropName, int CmdMapIndex,
+	void AddProperty(String PropName, int CmdMapIndex,
 			String HelpString);
 
-	public void ReallocateElementNameList();
+	void ReallocateElementNameList();
 
 	/* uses global parser */
-	public int Edit();
+	int Edit();
 
-	public int Init(int Handle);
+	int Init(int Handle);
 
-	public int NewObject(String ObjName);
+	int NewObject(String ObjName);
 
-	public boolean SetActive(String Value);
+	boolean SetActive(String Value);
 
 	/* Get address of active obj of this class */
-	public Object GetActiveObj();
+	Object GetActiveObj();
 
 	/* Find an obj of this class by name */
-	public Object Find(String ObjName);
+	Object Find(String ObjName);
 
 	/* Find property value by string */
-	public int PropertyIndex(String Prop);
+	int PropertyIndex(String Prop);
+
 }

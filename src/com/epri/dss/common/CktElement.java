@@ -11,166 +11,167 @@ import com.epri.dss.general.DSSObject;
 
 public interface CktElement extends DSSObject {
 
-	public int[] getNodeRef();
+	int[] getNodeRef();
 
-	public void setNodeRef(int[] nodeRef);
+	void setNodeRef(int[] nodeRef);
 
-	public int getYorder();
+	int getYorder();
 
-	public void setYorder(int yorder);
+	void setYorder(int yorder);
 
-	public int getLastTerminalChecked();
+	int getLastTerminalChecked();
 
-	public void setLastTerminalChecked(int lastTerminalChecked);
+	void setLastTerminalChecked(int lastTerminalChecked);
 
-	public boolean isChecked();
+	boolean isChecked();
 
-	public void setChecked(boolean checked);
+	void setChecked(boolean checked);
 
-	public boolean isHasEnergyMeter();
+	boolean isHasEnergyMeter();
 
-	public void setHasEnergyMeter(boolean hasEnergyMeter);
+	void setHasEnergyMeter(boolean hasEnergyMeter);
 
-	public boolean isHasSensorObj();
+	boolean isHasSensorObj();
 
-	public void setHasSensorObj(boolean hasSensorObj);
+	void setHasSensorObj(boolean hasSensorObj);
 
-	public boolean isIsIsolated();
+	boolean isIsIsolated();
 
-	public void setIsIsolated(boolean isIsolated);
+	void setIsIsolated(boolean isIsolated);
 
-	public boolean isHasControl();
+	boolean isHasControl();
 
-	public void setHasControl(boolean hasControl);
+	void setHasControl(boolean hasControl);
 
-	public boolean isIsPartofFeeder();
+	boolean isIsPartofFeeder();
 
-	public void setIsPartofFeeder(boolean isPartofFeeder);
+	void setIsPartofFeeder(boolean isPartofFeeder);
 
-	public DSSCktElement getControlElement();
+	DSSCktElement getControlElement();
 
-	public void setControlElement(DSSCktElement controlElement);
+	void setControlElement(DSSCktElement controlElement);
 
-	public DComplexMatrix1D getIterminal();
+	DComplexMatrix1D getIterminal();
 
-	public void setIterminal(DComplexMatrix1D iterminal);
+	void setIterminal(DComplexMatrix1D iterminal);
 
-	public DComplexMatrix1D getVterminal();
+	DComplexMatrix1D getVterminal();
 
-	public void setVterminal(DComplexMatrix1D vterminal);
+	void setVterminal(DComplexMatrix1D vterminal);
 
-	public double getBaseFrequency();
+	double getBaseFrequency();
 
-	public void setBaseFrequency(double baseFrequency);
+	void setBaseFrequency(double baseFrequency);
 
-	public PowerTerminal[] getTerminals();
+	PowerTerminal[] getTerminals();
 
-	public void setTerminals(PowerTerminal[] terminals);
+	void setTerminals(PowerTerminal[] terminals);
 
-	public void setActiveTerminal(PowerTerminal activeTerminal);
+	void setActiveTerminal(PowerTerminal activeTerminal);
 
-	public void setYprimFreq(double Value);
+	void setYprimFreq(double Value);
 
-	public double getYprimFreq();
+	double getYprimFreq();
 
-	public void setNConds(int Value);
+	void setNConds(int Value);
 
-	public int getNConds();
+	int getNConds();
 
-	public void setNPhases(int Value);
+	void setNPhases(int Value);
 
-	public int getNPhases();
+	int getNPhases();
 
-	public void setEnabled(boolean Value);
+	void setEnabled(boolean Value);
 
-	public boolean getEnabled();
+	boolean getEnabled();
 
-	public void setActiveTerminal(int Value);
+	void setActiveTerminal(int Value);
 
-	public int getActiveTerminal();
+	int getActiveTerminal();
 
-	public boolean getConductorClosed(int Index);
+	boolean getConductorClosed(int Index);
 
-	public void setYprimInvalid(boolean Value);
+	void setYprimInvalid(boolean Value);
 
-	public boolean isYprimInvalid();
+	boolean isYprimInvalid();
 
-	public String getFirstBus();
+	String getFirstBus();
 
-	public String getNextBus();
+	String getNextBus();
 
-	public double[] getLosses();
+	double[] getLosses();
 
 	/* Get total complex power in active terminal */
-	public double[] getPower(int idxTerm);
+	double[] getPower(int idxTerm);
 
-	public void setConductorClosed(int Index, boolean Value);
+	void setConductorClosed(int Index, boolean Value);
 
-	public void setNTerms(int Value);
+	void setNTerms(int Value);
 
-	public int getNTerms();
+	int getNTerms();
 
-	public void setHandle(int Value);
+	void setHandle(int Value);
 
-	public int getHandle();
+	int getHandle();
 
-	public int GetYPrim(DComplexMatrix2D Ymatrix, int Opt);
+	int GetYPrim(DComplexMatrix2D Ymatrix, int Opt);
 
-	public DComplexMatrix1D GetYPrimValues(int Opt);
+	DComplexMatrix1D GetYPrimValues(int Opt);
 
 	/* Max of Iterminal 1 phase currents */
-	public double MaxTerminalOneIMag();
+	double MaxTerminalOneIMag();
 
 	/* Computes Iterminal for this device */
-	public void ComputeIterminal();
+	void ComputeIterminal();
 
-	public void ComputeVterminal();
+	void ComputeVterminal();
 
-	public void ZeroITerminal();
+	void ZeroITerminal();
 
 	/* Get present value of terminal Curr for reports */
-	public void GetCurrents(DComplexMatrix1D Curr);
+	void GetCurrents(DComplexMatrix1D Curr);
 
 	/* Returns Injextion currents */
-	public void GetInjCurrents(DComplexMatrix1D Curr);
+	void GetInjCurrents(DComplexMatrix1D Curr);
 
 	/* Applies to PC Elements Puts straight into Solution Array */
-	public int InjCurrents();
+	int InjCurrents();
 
 
 	/* Get bus name by index */
-	public String GetBus(int i);
+	String GetBus(int i);
 
 	/* Set bus name by index */
-	public void SetBus(int i, String s);
+	void SetBus(int i, String s);
 
 	/* Set NodeRef Array for fast solution with intrinsics */
-	public void SetNodeRef(int iTerm, int[] NodeRefArray);
+	void SetNodeRef(int iTerm, int[] NodeRefArray);
 
-	public void RecalcElementData();
+	void RecalcElementData();
 
-	public void CalcYPrim();
+	void CalcYPrim();
 
 	/* Make a positive Sequence Model */
-	public void MakePosSequence();
+	void MakePosSequence();
 
-	public void GetTermVoltages(int iTerm, DComplexMatrix1D VBuffer);
+	void GetTermVoltages(int iTerm, DComplexMatrix1D VBuffer);
 
-	public void GetPhasePower(DComplexMatrix1D PowerBuffer);
+	void GetPhasePower(DComplexMatrix1D PowerBuffer);
 
-	public void GetPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer);
+	void GetPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer);
 
-	public void GetLosses(double[] TotalLosses, double[] LoadLosses,
+	void GetLosses(double[] TotalLosses, double[] LoadLosses,
 			double[] NoLoadLosses);
 
-	public void GetSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
+	void GetSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
 			double[] ZeroModeLosses);
 
-	public String GetPropertyValue(int Index);
+	String GetPropertyValue(int Index);
 
-	public void InitPropertyValues(int ArrayOffset);
+	void InitPropertyValues(int ArrayOffset);
 
-	public void DumpProperties(PrintStream F, boolean Complete);
+	void DumpProperties(PrintStream F, boolean Complete);
 
-	public void SumCurrents();
+	void SumCurrents();
+
 }

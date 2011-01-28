@@ -15,413 +15,413 @@ import com.epri.dss.shared.PointerList;
 
 public interface Circuit extends NamedObject {
 
-	public int getActiveBusIndex();
+	int getActiveBusIndex();
 
-	public void setActiveBusIndex(int activeBusIndex);
+	void setActiveBusIndex(int activeBusIndex);
 
-	public double getFundamental();
+	double getFundamental();
 
-	public void setFundamental(double fundamental);
+	void setFundamental(double fundamental);
 
-	public boolean isControl_BusNameRedefined();
+	boolean isControl_BusNameRedefined();
 
-	public void setControl_BusNameRedefined(boolean control_BusNameRedefined);
+	void setControl_BusNameRedefined(boolean control_BusNameRedefined);
 
-	public HashList getBusList();
+	HashList getBusList();
 
-	public void setBusList(HashList busList);
+	void setBusList(HashList busList);
 
-	public HashList getAutoAddBusList();
+	HashList getAutoAddBusList();
 
-	public void setAutoAddBusList(HashList autoAddBusList);
+	void setAutoAddBusList(HashList autoAddBusList);
 
-	public HashList getDeviceList();
+	HashList getDeviceList();
 
-	public void setDeviceList(HashList deviceList);
+	void setDeviceList(HashList deviceList);
 
-	public CktElementDef[] getDeviceRef();
+	CktElementDef[] getDeviceRef();
 
-	public void setDeviceRef(CktElementDef[] deviceRef);
+	void setDeviceRef(CktElementDef[] deviceRef);
 
-	public PointerList getFaults();
+	PointerList getFaults();
 
-	public void setFaults(PointerList faults);
+	void setFaults(PointerList faults);
 
-	public PointerList getCktElements();
+	PointerList getCktElements();
 
-	public void setCktElements(PointerList cktElements);
+	void setCktElements(PointerList cktElements);
 
-	public PointerList getPDElements();
+	PointerList getPDElements();
 
-	public void setPDElements(PointerList pDElements);
+	void setPDElements(PointerList pDElements);
 
-	public PointerList getPCElements();
+	PointerList getPCElements();
 
-	public void setPCElements(PointerList pCElements);
+	void setPCElements(PointerList pCElements);
 
-	public PointerList getDSSControls();
+	PointerList getDSSControls();
 
-	public void setDSSControls(PointerList dSSControls);
+	void setDSSControls(PointerList dSSControls);
 
-	public PointerList getSources();
+	PointerList getSources();
 
-	public void setSources(PointerList sources);
+	void setSources(PointerList sources);
 
-	public PointerList getMeterElements();
+	PointerList getMeterElements();
 
-	public void setMeterElements(PointerList meterElements);
+	void setMeterElements(PointerList meterElements);
 
-	public PointerList getSensors();
+	PointerList getSensors();
 
-	public void setSensors(PointerList sensors);
+	void setSensors(PointerList sensors);
 
-	public PointerList getMonitors();
+	PointerList getMonitors();
 
-	public void setMonitors(PointerList monitors);
+	void setMonitors(PointerList monitors);
 
-	public PointerList getEnergyMeters();
+	PointerList getEnergyMeters();
 
-	public void setEnergyMeters(PointerList energyMeters);
+	void setEnergyMeters(PointerList energyMeters);
 
-	public PointerList getGenerators();
+	PointerList getGenerators();
 
-	public void setGenerators(PointerList generators);
+	void setGenerators(PointerList generators);
 
-	public PointerList getStorageElements();
+	PointerList getStorageElements();
 
-	public void setStorageElements(PointerList storageElements);
+	void setStorageElements(PointerList storageElements);
 
-	public PointerList getSubstations();
+	PointerList getSubstations();
 
-	public void setSubstations(PointerList substations);
+	void setSubstations(PointerList substations);
 
-	public PointerList getTransformers();
+	PointerList getTransformers();
 
-	public void setTransformers(PointerList transformers);
+	void setTransformers(PointerList transformers);
 
-	public PointerList getCapControls();
+	PointerList getCapControls();
 
-	public void setCapControls(PointerList capControls);
+	void setCapControls(PointerList capControls);
 
-	public PointerList getRegControls();
+	PointerList getRegControls();
 
-	public void setRegControls(PointerList regControls);
+	void setRegControls(PointerList regControls);
 
-	public PointerList getLines();
+	PointerList getLines();
 
-	public void setLines(PointerList lines);
+	void setLines(PointerList lines);
 
-	public PointerList getLoads();
+	PointerList getLoads();
 
-	public void setLoads(PointerList loads);
+	void setLoads(PointerList loads);
 
-	public PointerList getShuntCapacitors();
+	PointerList getShuntCapacitors();
 
-	public void setShuntCapacitors(PointerList shuntCapacitors);
+	void setShuntCapacitors(PointerList shuntCapacitors);
 
-	public PointerList getFeeders();
+	PointerList getFeeders();
 
-	public void setFeeders(PointerList feeders);
+	void setFeeders(PointerList feeders);
 
-	public PointerList getSwtControls();
+	PointerList getSwtControls();
 
-	public void setSwtControls(PointerList swtControls);
+	void setSwtControls(PointerList swtControls);
 
-	public ControlQueue getControlQueue();
+	ControlQueue getControlQueue();
 
-	public void setControlQueue(ControlQueue controlQueue);
+	void setControlQueue(ControlQueue controlQueue);
 
-	public SolutionObj getSolution();
+	SolutionObj getSolution();
 
-	public void setSolution(SolutionObj solution);
+	void setSolution(SolutionObj solution);
 
-	public AutoAdd getAutoAddObj();
+	AutoAdd getAutoAddObj();
 
-	public void setAutoAddObj(AutoAdd autoAddObj);
+	void setAutoAddObj(AutoAdd autoAddObj);
 
-	public double getUEWeight();
+	double getUEWeight();
 
-	public void setUEWeight(double uEWeight);
+	void setUEWeight(double uEWeight);
 
-	public double getLossWeight();
+	double getLossWeight();
 
-	public void setLossWeight(double lossWeight);
+	void setLossWeight(double lossWeight);
 
-	public int getNumUEregs();
+	int getNumUEregs();
 
-	public void setNumUEregs(int numUEregs);
+	void setNumUEregs(int numUEregs);
 
-	public int getNumLossRegs();
+	int getNumLossRegs();
 
-	public void setNumLossRegs(int numLossRegs);
+	void setNumLossRegs(int numLossRegs);
 
-	public int[] getUEregs();
+	int[] getUEregs();
 
-	public void setUEregs(int[] uEregs);
+	void setUEregs(int[] uEregs);
 
-	public int[] getLossRegs();
+	int[] getLossRegs();
 
-	public void setLossRegs(int[] lossRegs);
+	void setLossRegs(int[] lossRegs);
 
-	public double getCapacityStart();
+	double getCapacityStart();
 
-	public void setCapacityStart(double capacityStart);
+	void setCapacityStart(double capacityStart);
 
-	public double getCapacityIncrement();
+	double getCapacityIncrement();
 
-	public void setCapacityIncrement(double capacityIncrement);
+	void setCapacityIncrement(double capacityIncrement);
 
-	public boolean isTrapezoidalIntegration();
+	boolean isTrapezoidalIntegration();
 
-	public void setTrapezoidalIntegration(boolean trapezoidalIntegration);
+	void setTrapezoidalIntegration(boolean trapezoidalIntegration);
 
-	public boolean isLogEvents();
+	boolean isLogEvents();
 
-	public void setLogEvents(boolean logEvents);
+	void setLogEvents(boolean logEvents);
 
-	public String getLoadDurCurve();
+	String getLoadDurCurve();
 
-	public void setLoadDurCurve(String loadDurCurve);
+	void setLoadDurCurve(String loadDurCurve);
 
-	public LoadShapeObj getLoadDurCurveObj();
+	LoadShapeObj getLoadDurCurveObj();
 
-	public void setLoadDurCurveObj(LoadShapeObj loadDurCurveObj);
+	void setLoadDurCurveObj(LoadShapeObj loadDurCurveObj);
 
-	public String getPriceCurve();
+	String getPriceCurve();
 
-	public void setPriceCurve(String priceCurve);
+	void setPriceCurve(String priceCurve);
 
-	public LoadShapeObj getPriceCurveObj();
+	LoadShapeObj getPriceCurveObj();
 
-	public void setPriceCurveObj(LoadShapeObj priceCurveObj);
+	void setPriceCurveObj(LoadShapeObj priceCurveObj);
 
-	public int getNumDevices();
+	int getNumDevices();
 
-	public void setNumDevices(int numDevices);
+	void setNumDevices(int numDevices);
 
-	public int getNumBuses();
+	int getNumBuses();
 
-	public void setNumBuses(int numBuses);
+	void setNumBuses(int numBuses);
 
-	public int getNumNodes();
+	int getNumNodes();
 
-	public void setNumNodes(int numNodes);
+	void setNumNodes(int numNodes);
 
-	public int getMaxDevices();
+	int getMaxDevices();
 
-	public void setMaxDevices(int maxDevices);
+	void setMaxDevices(int maxDevices);
 
-	public int getMaxBuses();
+	int getMaxBuses();
 
-	public void setMaxBuses(int maxBuses);
+	void setMaxBuses(int maxBuses);
 
-	public int getMaxNodes();
+	int getMaxNodes();
 
-	public void setMaxNodes(int maxNodes);
+	void setMaxNodes(int maxNodes);
 
-	public int getIncDevices();
+	int getIncDevices();
 
-	public void setIncDevices(int incDevices);
+	void setIncDevices(int incDevices);
 
-	public int getIncBuses();
+	int getIncBuses();
 
-	public void setIncBuses(int incBuses);
+	void setIncBuses(int incBuses);
 
-	public int getIncNodes();
+	int getIncNodes();
 
-	public void setIncNodes(int incNodes);
+	void setIncNodes(int incNodes);
 
-	public Bus[] getBuses();
+	Bus[] getBuses();
 
-	public void setBuses(Bus[] buses);
+	void setBuses(Bus[] buses);
 
-	public NodeBus[] getMapNodeToBus();
+	NodeBus[] getMapNodeToBus();
 
-	public void setMapNodeToBus(NodeBus[] mapNodeToBus);
+	void setMapNodeToBus(NodeBus[] mapNodeToBus);
 
-	public boolean isIsSolved();
+	boolean isIsSolved();
 
-	public void setIsSolved(boolean isSolved);
+	void setIsSolved(boolean isSolved);
 
-	public boolean isDuplicatesAllowed();
+	boolean isDuplicatesAllowed();
 
-	public void setDuplicatesAllowed(boolean duplicatesAllowed);
+	void setDuplicatesAllowed(boolean duplicatesAllowed);
 
-	public boolean isZonesLocked();
+	boolean isZonesLocked();
 
-	public void setZonesLocked(boolean zonesLocked);
+	void setZonesLocked(boolean zonesLocked);
 
-	public boolean isMeterZonesComputed();
+	boolean isMeterZonesComputed();
 
-	public void setMeterZonesComputed(boolean meterZonesComputed);
+	void setMeterZonesComputed(boolean meterZonesComputed);
 
-	public boolean isPositiveSequence();
+	boolean isPositiveSequence();
 
-	public void setPositiveSequence(boolean positiveSequence);
+	void setPositiveSequence(boolean positiveSequence);
 
-	public double getNormalMinVolts();
+	double getNormalMinVolts();
 
-	public void setNormalMinVolts(double normalMinVolts);
+	void setNormalMinVolts(double normalMinVolts);
 
-	public double getNormalMaxVolts();
+	double getNormalMaxVolts();
 
-	public void setNormalMaxVolts(double normalMaxVolts);
+	void setNormalMaxVolts(double normalMaxVolts);
 
-	public double getEmergMaxVolts();
+	double getEmergMaxVolts();
 
-	public void setEmergMaxVolts(double emergMaxVolts);
+	void setEmergMaxVolts(double emergMaxVolts);
 
-	public double getEmergMinVolts();
+	double getEmergMinVolts();
 
-	public void setEmergMinVolts(double emergMinVolts);
+	void setEmergMinVolts(double emergMinVolts);
 
-	public double[] getLegalVoltageBases();
+	double[] getLegalVoltageBases();
 
-	public void setLegalVoltageBases(double[] legalVoltageBases);
+	void setLegalVoltageBases(double[] legalVoltageBases);
 
-	public double getGeneratorDispatchReference();
+	double getGeneratorDispatchReference();
 
-	public void setGeneratorDispatchReference(double generatorDispatchReference);
+	void setGeneratorDispatchReference(double generatorDispatchReference);
 
-	public double getDefaultGrowthFactor();
+	double getDefaultGrowthFactor();
 
-	public void setDefaultGrowthFactor(double defaultGrowthFactor);
+	void setDefaultGrowthFactor(double defaultGrowthFactor);
 
-	public double getDefaultGrowthRate();
+	double getDefaultGrowthRate();
 
-	public void setDefaultGrowthRate(double defaultGrowthRate);
+	void setDefaultGrowthRate(double defaultGrowthRate);
 
-	public double getGenMultiplier();
+	double getGenMultiplier();
 
-	public void setGenMultiplier(double genMultiplier);
+	void setGenMultiplier(double genMultiplier);
 
-	public double getHarmMult();
+	double getHarmMult();
 
-	public void setHarmMult(double harmMult);
+	void setHarmMult(double harmMult);
 
-	public double[] getDefaultHourMult();
+	double[] getDefaultHourMult();
 
-	public void setDefaultHourMult(double[] defaultHourMult);
+	void setDefaultHourMult(double[] defaultHourMult);
 
-	public double getPriceSignal();
+	double getPriceSignal();
 
-	public void setPriceSignal(double priceSignal);
+	void setPriceSignal(double priceSignal);
 
-	public double[] getRegisterTotals();
+	double[] getRegisterTotals();
 
-	public void setRegisterTotals(double[] registerTotals);
+	void setRegisterTotals(double[] registerTotals);
 
-	public LoadShapeObj getDefaultDailyShapeObj();
+	LoadShapeObj getDefaultDailyShapeObj();
 
-	public void setDefaultDailyShapeObj(LoadShapeObj defaultDailyShapeObj);
+	void setDefaultDailyShapeObj(LoadShapeObj defaultDailyShapeObj);
 
-	public LoadShapeObj getDefaultYearlyShapeObj();
+	LoadShapeObj getDefaultYearlyShapeObj();
 
-	public void setDefaultYearlyShapeObj(LoadShapeObj defaultYearlyShapeObj);
+	void setDefaultYearlyShapeObj(LoadShapeObj defaultYearlyShapeObj);
 
-	public String getCurrentDirectory();
+	String getCurrentDirectory();
 
-	public void setCurrentDirectory(String currentDirectory);
+	void setCurrentDirectory(String currentDirectory);
 
-	public ReductionStrategy getReductionStrategy();
+	ReductionStrategy getReductionStrategy();
 
-	public void setReductionStrategy(ReductionStrategy reductionStrategy);
+	void setReductionStrategy(ReductionStrategy reductionStrategy);
 
-	public double getReductionMaxAngle();
+	double getReductionMaxAngle();
 
-	public void setReductionMaxAngle(double reductionMaxAngle);
+	void setReductionMaxAngle(double reductionMaxAngle);
 
-	public double getReductionZmag();
+	double getReductionZmag();
 
-	public void setReductionZmag(double reductionZmag);
+	void setReductionZmag(double reductionZmag);
 
-	public String getReductionStrategyString();
+	String getReductionStrategyString();
 
-	public void setReductionStrategyString(String reductionStrategyString);
+	void setReductionStrategyString(String reductionStrategyString);
 
-	public double getPctNormalFactor();
+	double getPctNormalFactor();
 
-	public void setPctNormalFactor(double pctNormalFactor);
+	void setPctNormalFactor(double pctNormalFactor);
 
-	public int getNodeMarkerCode();
+	int getNodeMarkerCode();
 
-	public void setNodeMarkerCode(int nodeMarkerCode);
+	void setNodeMarkerCode(int nodeMarkerCode);
 
-	public int getNodeMarkerWidth();
+	int getNodeMarkerWidth();
 
-	public void setNodeMarkerWidth(int nodeMarkerWidth);
+	void setNodeMarkerWidth(int nodeMarkerWidth);
 
-	public int getSwitchMarkerCode();
+	int getSwitchMarkerCode();
 
-	public void setSwitchMarkerCode(int switchMarkerCode);
+	void setSwitchMarkerCode(int switchMarkerCode);
 
-	public int getTransMarkerSize();
+	int getTransMarkerSize();
 
-	public void setTransMarkerSize(int transMarkerSize);
+	void setTransMarkerSize(int transMarkerSize);
 
-	public int getTransMarkerCode();
+	int getTransMarkerCode();
 
-	public void setTransMarkerCode(int transMarkerCode);
+	void setTransMarkerCode(int transMarkerCode);
 
-	public boolean isMarkSwitches();
+	boolean isMarkSwitches();
 
-	public void setMarkSwitches(boolean markSwitches);
+	void setMarkSwitches(boolean markSwitches);
 
-	public boolean isMarkTransformers();
+	boolean isMarkTransformers();
 
-	public void setMarkTransformers(boolean markTransformers) ;
+	void setMarkTransformers(boolean markTransformers) ;
 
-	public void setActiveCktElement(DSSCktElement Value);
+	void setActiveCktElement(DSSCktElement Value);
 
-	public DSSCktElement getActiveCktElement();
+	DSSCktElement getActiveCktElement();
 
-	public void setBusNameRedefined(boolean Value);
+	void setBusNameRedefined(boolean Value);
 
-	public boolean isBusNameRedefined();
+	boolean isBusNameRedefined();
 
 	/* Total Circuit PD Element losses */
-	public double[] getLosses();
+	double[] getLosses();
 
-	public void setLoadMultiplier(double Value);
+	void setLoadMultiplier(double Value);
 
-	public double getLoadMultiplier();
+	double getLoadMultiplier();
 
-	public void setCaseName(String Value);
+	void setCaseName(String Value);
 
-	public String getCaseName();
+	String getCaseName();
 
-	public String getName();
+	String getName();
 
 	/* Adds last DSS object created to circuit */
-	public void addCktElement(int Handle);
+	void addCktElement(int Handle);
 
 	/* Totalize all energymeters in the problem */
-	public void totalizeMeters();
+	void totalizeMeters();
 
-	public boolean computeCapacity();
+	boolean computeCapacity();
 
-	public boolean save(String Dir);
+	boolean save(String Dir);
 
-	public void processBusDefs();
+	void processBusDefs();
 
 	/* Redo all Buslists, nodelists */
-	public void reProcessBusDefs();
+	void reProcessBusDefs();
 
-	public void doResetMeterZones();
+	void doResetMeterZones();
 
-	public int setElementActive(String FullObjectName);
+	int setElementActive(String FullObjectName);
 
-	public void invalidateAllPCElements();
+	void invalidateAllPCElements();
 
-	public void debugDump(PrintStream F);
+	void debugDump(PrintStream F);
 
 	/* Access to topology from the first source */
-	public CktTree getTopology();
+	CktTree getTopology();
 
-	public void freeTopology();
+	void freeTopology();
 
-	public List<List<Object>> getBusAdjacentPDLists();
+	List<List<Object>> getBusAdjacentPDLists();
 
-	public List<List<Object>> getBusAdjacentPCLists();
+	List<List<Object>> getBusAdjacentPCLists();
 
 }

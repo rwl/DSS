@@ -10,187 +10,187 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 public interface LoadObj extends PCElement {
 
-	public int getConnection();
+	int getConnection();
 
-	public void setConnection(int connection);
+	void setConnection(int connection);
 
-	public String getDailyShape();
+	String getDailyShape();
 
-	public void setDailyShape(String dailyShape);
+	void setDailyShape(String dailyShape);
 
-	public LoadShapeObj getDailyShapeObj();
+	LoadShapeObj getDailyShapeObj();
 
-	public void setDailyShapeObj(LoadShapeObj dailyShapeObj);
+	void setDailyShapeObj(LoadShapeObj dailyShapeObj);
 
-	public String getDutyShape();
+	String getDutyShape();
 
-	public void setDutyShape(String dutyShape);
+	void setDutyShape(String dutyShape);
 
-	public LoadShapeObj getDutyShapeObj();
+	LoadShapeObj getDutyShapeObj();
 
-	public void setDutyShapeObj(LoadShapeObj dutyShapeObj);
+	void setDutyShapeObj(LoadShapeObj dutyShapeObj);
 
-	public double getEEN_Factor();
+	double getEEN_Factor();
 
-	public void setEEN_Factor(double eEN_Factor);
+	void setEEN_Factor(double eEN_Factor);
 
-	public String getGrowthShape();
+	String getGrowthShape();
 
-	public void setGrowthShape(String growthShape);
+	void setGrowthShape(String growthShape);
 
-	public GrowthShapeObj getGrowthShapeObj();
+	GrowthShapeObj getGrowthShapeObj();
 
-	public void setGrowthShapeObj(GrowthShapeObj growthShapeObj);
+	void setGrowthShapeObj(GrowthShapeObj growthShapeObj);
 
-	public Boolean getHasBeenAllocated();
+	Boolean getHasBeenAllocated();
 
-	public void setHasBeenAllocated(Boolean hasBeenAllocated);
+	void setHasBeenAllocated(Boolean hasBeenAllocated);
 
-	public double getkWBase();
+	double getkWBase();
 
-	public void setkWBase(double kWBase);
+	void setkWBase(double kWBase);
 
-	public double getkVABase();
+	double getkVABase();
 
-	public void setkVABase(double kVABase);
+	void setkVABase(double kVABase);
 
-	public double getKvarBase();
+	double getKvarBase();
 
-	public void setKvarBase(double kvarBase);
+	void setKvarBase(double kvarBase);
 
-	public double getkVLoadBase();
+	double getkVLoadBase();
 
-	public void setkVLoadBase(double kVLoadBase);
+	void setkVLoadBase(double kVLoadBase);
 
-	public int getLoadClass();
+	int getLoadClass();
 
-	public void setLoadClass(int loadClass);
+	void setLoadClass(int loadClass);
 
-	public int getNumCustomers();
+	int getNumCustomers();
 
-	public void setNumCustomers(int numCustomers);
+	void setNumCustomers(int numCustomers);
 
-	public int getLoadSpecType();
+	int getLoadSpecType();
 
-	public void setLoadSpecType(int loadSpecType);
+	void setLoadSpecType(int loadSpecType);
 
-	public double getPFNominal();
+	double getPFNominal();
 
-	public void setPFNominal(double pFNominal);
+	void setPFNominal(double pFNominal);
 
-	public double getRneut();
+	double getRneut();
 
-	public void setRneut(double rneut);
+	void setRneut(double rneut);
 
-	public double getUE_Factor();
+	double getUE_Factor();
 
-	public void setUE_Factor(double uE_Factor);
+	void setUE_Factor(double uE_Factor);
 
-	public double getXneut();
+	double getXneut();
 
-	public void setXneut(double xneut);
+	void setXneut(double xneut);
 
-	public String getYearlyShape();
+	String getYearlyShape();
 
-	public void setYearlyShape(String yearlyShape);
+	void setYearlyShape(String yearlyShape);
 
-	public LoadShapeObj getYearlyShapeObj();
+	LoadShapeObj getYearlyShapeObj();
 
-	public void setYearlyShapeObj(LoadShapeObj yearlyShapeObj);
+	void setYearlyShapeObj(LoadShapeObj yearlyShapeObj);
 
-	public String getCVRshape();
+	String getCVRshape();
 
-	public void setCVRshape(String cVRshape);
+	void setCVRshape(String cVRshape);
 
-	public LoadShapeObj getCVRShapeObj();
+	LoadShapeObj getCVRShapeObj();
 
-	public void setCVRShapeObj(LoadShapeObj cVRShapeObj);
+	void setCVRShapeObj(LoadShapeObj cVRShapeObj);
 
-	public int getLoadModel();
+	int getLoadModel();
 
-	public void setLoadModel(int loadModel);
+	void setLoadModel(int loadModel);
 
-	public double getPuMean();
+	double getPuMean();
 
-	public double getPuStdDev();
+	double getPuStdDev();
 
-	public double getCVRwattFactor();
+	double getCVRwattFactor();
 
-	public double getCVRvarFactor();
+	double getCVRvarFactor();
 
-	public double getVmaxpu();
+	double getVmaxpu();
 
-	public double getVminEmerg();
+	double getVminEmerg();
 
-	public double getVminNormal();
+	double getVminNormal();
 
-	public double getVminpu();
+	double getVminpu();
 
-	public boolean isExemptFromLDCurve();
+	boolean isExemptFromLDCurve();
 
-	public boolean isFixed();
+	boolean isFixed();
 
-	public boolean getUnserved();
+	boolean getUnserved();
 
-	public boolean getExceedsNormal();
+	boolean getExceedsNormal();
 
 	/* Allocate load from connected kva or kWh billing */
-	public void setkVAAllocationFactor(double Value);
+	void setkVAAllocationFactor(double Value);
 
-	public double getkVAAllocationFactor();
+	double getkVAAllocationFactor();
 
-	public void setConnectedkVA(double Value);
+	void setConnectedkVA(double Value);
 
-	public double getConnectedkVA();
+	double getConnectedkVA();
 
 	/** Set kWh properties ... */
 
-	public void setCFactor(double Value);
+	void setCFactor(double Value);
 
-	public double getCFactor();
+	double getCFactor();
 
-	public void setKWh(double Value);
+	void setKWh(double Value);
 
-	public double getKWh();
+	double getKWh();
 
-	public void setKWhDays(double Value);
+	void setKWhDays(double Value);
 
-	public double getKWhDays();
+	double getKWhDays();
 
 	/* AllocationFactor adjusts either connected kVA allocation factor
 	 * or kWh CFactor
 	 */
-	public void setAllocationFactor(double Value);
+	void setAllocationFactor(double Value);
 
-	public double getAllocationFactor();
+	double getAllocationFactor();
 
-	public void recalcElementData();
+	void recalcElementData();
 
-	public void calcYPrim();
+	void calcYPrim();
 
-	public int injCurrents();
+	int injCurrents();
 
-	public void getInjCurrents(DComplexMatrix1D Curr);
+	void getInjCurrents(DComplexMatrix1D Curr);
 
-	public void initHarmonics();
+	void initHarmonics();
 
 	/* Make a positive Sequence Model */
-	public void makePosSequence();
+	void makePosSequence();
 
-	public void setNominalLoad();
+	void setNominalLoad();
 
 	/*
 	 * 0 = reset to 1.0
 	 * 1 = Gaussian around mean and std Dev
 	 * 2 = uniform
 	 */
-	public void randomize(int Opt);
+	void randomize(int Opt);
 
-	public String getPropertyValue(int Index);
+	String getPropertyValue(int Index);
 
-	public void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int ArrayOffset);
 
-	public void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream F, boolean Complete);
 
-	public void updateVoltageBases();
+	void updateVoltageBases();
 }

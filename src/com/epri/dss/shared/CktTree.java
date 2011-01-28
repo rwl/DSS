@@ -5,42 +5,42 @@ import com.epri.dss.shared.impl.CktTreeImpl.ZoneEndsList;
 
 public interface CktTree {
 
-	public CktTreeNode getPresentBranch();
+	CktTreeNode getPresentBranch();
 
-	public void setPresentBranch(CktTreeNode presentBranch);
+	void setPresentBranch(CktTreeNode presentBranch);
 
-	public ZoneEndsList getZoneEndsList();
+	ZoneEndsList getZoneEndsList();
 
-	public void setZoneEndsList(ZoneEndsList zoneEndsList);
+	void setZoneEndsList(ZoneEndsList zoneEndsList);
 
 	/* Adds a pointer to an object to be associated with the current node */
-	public void setNewObject(Object Value);
+	void setNewObject(Object Value);
 
 	/* Start Forward Search at the present location (can also use active) */
-	public void startHere();
+	void startHere();
 
-	public void addNewChild(Object Value, int BusRef, int TerminalNo);
+	void addNewChild(Object Value, int BusRef, int TerminalNo);
 
 	/* Adds Child and makes it present */
-	public void setNew(Object Value);
+	void setNew(Object Value);
 
 	/* Returns pointer to first cktobject */
-	public Object getFirst();
+	Object getFirst();
 
-	public Object getParent();
+	Object getParent();
 
-	public Object getFirstObject();
+	Object getFirstObject();
 
-	public Object getNextObject();
+	Object getNextObject();
 
-	public Object GoForward();
+	Object GoForward();
 
-	public Object GoBackward();
+	Object GoBackward();
 
-	public Object getActive();
+	Object getActive();
 
-	public void setActive(Object Value);
+	void setActive(Object Value);
 
 	/* Get lexical level of present node */
-	public int getLevel();
+	int getLevel();
 }

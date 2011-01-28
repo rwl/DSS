@@ -9,34 +9,34 @@ package com.epri.dss.common;
  */
 public interface AutoAdd {
 
-	public double getGenkW();
+	double getGenkW();
 
-	public void setGenkW(double genkW);
+	void setGenkW(double genkW);
 
-	public double getGenPF();
+	double getGenPF();
 
-	public void setGenPF(double genPF);
+	void setGenPF(double genPF);
 
-	public double getGenkvar();
+	double getGenkvar();
 
-	public void setGenkvar(double genkvar);
+	void setGenkvar(double genkvar);
 
-	public double getCapkvar();
+	double getCapkvar();
 
-	public void setCapkvar(double capkvar);
+	void setCapkvar(double capkvar);
 
-	public int getAddType();
+	int getAddType();
 
-	public void setAddType(int addType);
+	void setAddType(int addType);
 
-	public boolean isModeChanged();
+	boolean isModeChanged();
 
-	public void setModeChanged(boolean modeChanged);
+	void setModeChanged(boolean modeChanged);
 
-	public void makeBusList();
+	void makeBusList();
 
-	public void appendToFile(String WhichFile, String S);
+	void appendToFile(String WhichFile, String S);
 
-	public void addCurrents(int SolveType);
+	void addCurrents(int SolveType);
 
 }

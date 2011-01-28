@@ -4,24 +4,24 @@ import java.util.UUID;
 
 public interface NamedObject {
 
-	public String getDisplayName();
+	String getDisplayName();
 
-	public void setDisplayName(String Value);
+	void setDisplayName(String Value);
 
-	public void setGUID(UUID Value);
+	void setGUID(UUID Value);
 
-	public String getID();
+	String getID();
 
-	public String getCIM_ID();
+	String getCIM_ID();
 
-	public String getDSSClassName();
+	String getDSSClassName();
 
-	public void setDSSClassName(String Value);
+	void setDSSClassName(String Value);
 
-	public String getLocalName();
+	String getLocalName();
 
-	public void setLocalName(String Value);
+	void setLocalName(String Value);
 
-	public String uUIDToCIMString(UUID uUID);
+	String uUIDToCIMString(UUID uUID);
 
 }

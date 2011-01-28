@@ -2,22 +2,22 @@ package com.epri.dss.executive;
 
 public interface Executive {
 
-	public String getLastError();
+	String getLastError();
 
-	public int getErrorResult();
+	int getErrorResult();
 
-	public String getCommand();
+	String getCommand();
 
-	public void setCommand(String Value);
+	void setCommand(String Value);
 
-	public void setRecorderOn(boolean Value);
+	void setRecorderOn(boolean Value);
 
-	public boolean isRecorderOn();
+	boolean isRecorderOn();
 
-	public void createDefaultDSSItems();
+	void createDefaultDSSItems();
 
-	public void writeToRecorderFile(String S);
+	void writeToRecorderFile(String S);
 
-	public void clear();
+	void clear();
 
 }

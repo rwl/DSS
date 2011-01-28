@@ -44,30 +44,30 @@ import java.io.PrintStream;
  */
 public interface LoadShapeObj extends DSSObject {
 
-	public double getInterval();
+	double getInterval();
 
-	public void setNumPoints(int Value);
+	void setNumPoints(int Value);
 
-	public int getNumPoints();
+	int getNumPoints();
 
 	/* Get multiplier at specified time */
-	public double[] getMult(double hr);
+	double[] getMult(double hr);
 
 	/* get multiplier by index */
-	public double mult(int i);
+	double mult(int i);
 
 	/* get hour corresponding to point index */
-	public double hour(int i);
+	double hour(int i);
 
 	/* Normalize the curve presently in memory */
-	public void normalize();
+	void normalize();
 
-	public void calcMeanandStdDev();
+	void calcMeanandStdDev();
 
-	public String getPropertyValue(int Index);
+	String getPropertyValue(int Index);
 
-	public void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int ArrayOffset);
 
-	public void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream F, boolean Complete);
 
 }

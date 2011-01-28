@@ -5,50 +5,50 @@ import com.epri.dss.common.CktElement;
 
 public interface ControlElem extends CktElement {
 
-	public static final double USER_BASE_ACTION_CODE = 100;
+	static final double USER_BASE_ACTION_CODE = 100;
 
-	public String getElementName();
+	String getElementName();
 
-	public void setElementName(String elementName);
+	void setElementName(String elementName);
 
-	public int getElementTerminal();
+	int getElementTerminal();
 
-	public void setElementTerminal(int elementTerminal);
+	void setElementTerminal(int elementTerminal);
 
-	public String getControlledBusName();
+	String getControlledBusName();
 
-	public void setControlledBusName(String controlledBusName);
+	void setControlledBusName(String controlledBusName);
 
-	public Bus getControlledBus();
+	Bus getControlledBus();
 
-	public void setControlledBus(Bus controlledBus);
+	void setControlledBus(Bus controlledBus);
 
-	public String getMonitorVariable();
+	String getMonitorVariable();
 
-	public void setMonitorVariable(String monitorVariable);
+	void setMonitorVariable(String monitorVariable);
 
-	public int getMonitorVarIndex();
+	int getMonitorVarIndex();
 
-	public void setMonitorVarIndex(int monitorVarIndex);
+	void setMonitorVarIndex(int monitorVarIndex);
 
-	public double getTimeDelay();
+	double getTimeDelay();
 
-	public void setTimeDelay(double timeDelay);
+	void setTimeDelay(double timeDelay);
 
-	public double getDblTraceParameter();
+	double getDblTraceParameter();
 
-	public void setDblTraceParameter(double dblTraceParameter);
+	void setDblTraceParameter(double dblTraceParameter);
 
-	public void setControlledElement(CktElement Value);
+	void setControlledElement(CktElement Value);
 
-	public CktElement getControlledElement();
+	CktElement getControlledElement();
 
 	/* Sample control quantities and set action times in Control Queue */
-	public void sample();
+	void sample();
 
 	/* Do the action that is pending from last sample */
-	public void doPendingAction(int Code, int ProxyHdl);
+	void doPendingAction(int Code, int ProxyHdl);
 
-	public void reset();
+	void reset();
 
 }

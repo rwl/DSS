@@ -5,31 +5,30 @@ import com.epri.dss.controls.ControlElem;
 
 public interface ControlQueue {
 
-	public void setTrace(boolean Value);
+	void setTrace(boolean Value);
 
-	public boolean getTrace();
+	boolean getTrace();
 
-	public int push(int Hour, double Sec, int Code, int ProxyHdl,
+	int push(int Hour, double Sec, int Code, int ProxyHdl, ControlElem Owner);
+
+	int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
 			ControlElem Owner);
 
-	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
-			ControlElem Owner);
+	void clear();
 
-	public void clear();
-
-	public void doAllActions();
+	void doAllActions();
 
 	/* Do only actions with lowest time */
-	public boolean doNearestActions(int Hour, double Sec);
+	boolean doNearestActions(int Hour, double Sec);
 
 	/* Do actions with time <= t */
-	public boolean doActions(int Hour, double sec);
+	boolean doActions(int Hour, double sec);
 
-	public boolean isEmpty();
+	boolean isEmpty();
 
 	/* Delete queue item by handle */
-	public void delete(int Hdl);
+	void delete(int Hdl);
 
-	public void showQueue(String FileName);
+	void showQueue(String FileName);
 
 }

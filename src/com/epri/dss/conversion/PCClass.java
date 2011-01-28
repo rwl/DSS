@@ -4,6 +4,6 @@ import com.epri.dss.common.CktElementClass;
 
 public interface PCClass extends CktElementClass {
 
-	public int NumPCClassProps();
+	int NumPCClassProps();
 
 }

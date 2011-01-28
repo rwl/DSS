@@ -10,263 +10,263 @@ import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public interface SolutionObj extends DSSObject {
 
-	public void setFrequency(double Value);
+	void setFrequency(double Value);
 
-	public double getFrequency();
+	double getFrequency();
 
-	public void setMode(int Value);
+	void setMode(int Value);
 
-	public int getMode();
+	int getMode();
 
-	public void setYear(int Value);
+	void setYear(int Value);
 
-	public int getYear();
+	int getYear();
 
-	public int getAlgorithm();
+	int getAlgorithm();
 
-	public void setAlgorithm(int algorithm);
+	void setAlgorithm(int algorithm);
 
-	public DComplexMatrix1D getAuxCurrents();
+	DComplexMatrix1D getAuxCurrents();
 
-	public void setAuxCurrents(DComplexMatrix1D auxCurrents);
+	void setAuxCurrents(DComplexMatrix1D auxCurrents);
 
-	public boolean isControlActionsDone();
+	boolean isControlActionsDone();
 
-	public void setControlActionsDone(boolean controlActionsDone);
+	void setControlActionsDone(boolean controlActionsDone);
 
-	public int getControlIteration();
+	int getControlIteration();
 
-	public void setControlIteration(int controlIteration);
+	void setControlIteration(int controlIteration);
 
-	public int getControlMode();
+	int getControlMode();
 
-	public void setControlMode(int controlMode);
+	void setControlMode(int controlMode);
 
-	public double getConvergenceTolerance();
+	double getConvergenceTolerance();
 
-	public void setConvergenceTolerance(double convergenceTolerance);
+	void setConvergenceTolerance(double convergenceTolerance);
 
-	public boolean isConvergedFlag();
+	boolean isConvergedFlag();
 
-	public void setConvergedFlag(boolean convergedFlag);
+	void setConvergedFlag(boolean convergedFlag);
 
-	public int getDefaultControlMode();
+	int getDefaultControlMode();
 
-	public void setDefaultControlMode(int defaultControlMode);
+	void setDefaultControlMode(int defaultControlMode);
 
-	public int getDefaultLoadModel();
+	int getDefaultLoadModel();
 
-	public void setDefaultLoadModel(int defaultLoadModel);
+	void setDefaultLoadModel(int defaultLoadModel);
 
-	public boolean isDoAllHarmonics();
+	boolean isDoAllHarmonics();
 
-	public void setDoAllHarmonics(boolean doAllHarmonics);
+	void setDoAllHarmonics(boolean doAllHarmonics);
 
-	public boolean isDynamicsAllowed();
+	boolean isDynamicsAllowed();
 
-	public void setDynamicsAllowed(boolean dynamicsAllowed);
+	void setDynamicsAllowed(boolean dynamicsAllowed);
 
-	public DynamicsRec getDynaVars();
+	DynamicsRec getDynaVars();
 
-	public void setDynaVars(DynamicsRec dynaVars);
+	void setDynaVars(DynamicsRec dynaVars);
 
-	public double[] getErrorSaved();
+	double[] getErrorSaved();
 
-	public void setErrorSaved(double[] errorSaved);
+	void setErrorSaved(double[] errorSaved);
 
-	public boolean isFirstIteration();
+	boolean isFirstIteration();
 
-	public void setFirstIteration(boolean firstIteration);
+	void setFirstIteration(boolean firstIteration);
 
-	public boolean isFrequencyChanged();
+	boolean isFrequencyChanged();
 
-	public void setFrequencyChanged(boolean frequencyChanged);
+	void setFrequencyChanged(boolean frequencyChanged);
 
-	public double getHarmonic();
+	double getHarmonic();
 
-	public void setHarmonic(double harmonic);
+	void setHarmonic(double harmonic);
 
-	public double[] getHarmonicList();
+	double[] getHarmonicList();
 
-	public void setHarmonicList(double[] harmonicList);
+	void setHarmonicList(double[] harmonicList);
 
-	public int getHarmonicListSize();
+	int getHarmonicListSize();
 
-	public void setHarmonicListSize(int harmonicListSize);
+	void setHarmonicListSize(int harmonicListSize);
 
-	public int getIntHour();
+	int getIntHour();
 
-	public void setIntHour(int intHour);
+	void setIntHour(int intHour);
 
-	public double getDblHour();
+	double getDblHour();
 
-	public void setDblHour(double dblHour);
+	void setDblHour(double dblHour);
 
-	public DComplexMatrix2D getYsystem();
+	DComplexMatrix2D getYsystem();
 
-	public void setYsystem(DComplexMatrix2D ysystem);
+	void setYsystem(DComplexMatrix2D ysystem);
 
-	public DComplexMatrix2D getYseries();
+	DComplexMatrix2D getYseries();
 
-	public void setYseries(DComplexMatrix2D yseries);
+	void setYseries(DComplexMatrix2D yseries);
 
-	public DComplexMatrix2D getY();
+	DComplexMatrix2D getY();
 
-	public void setY(DComplexMatrix2D y);
+	void setY(DComplexMatrix2D y);
 
-	public double getIntervalHrs();
+	double getIntervalHrs();
 
-	public void setIntervalHrs(double intervalHrs);
+	void setIntervalHrs(double intervalHrs);
 
-	public boolean isIsDynamicModel();
+	boolean isIsDynamicModel();
 
-	public void setIsDynamicModel(boolean isDynamicModel);
+	void setIsDynamicModel(boolean isDynamicModel);
 
-	public boolean isIsHarmonicModel();
+	boolean isIsHarmonicModel();
 
-	public void setIsHarmonicModel(boolean isHarmonicModel);
+	void setIsHarmonicModel(boolean isHarmonicModel);
 
-	public int getIteration();
+	int getIteration();
 
-	public void setIteration(int iteration);
+	void setIteration(int iteration);
 
-	public int getLoadModel();
+	int getLoadModel();
 
-	public void setLoadModel(int loadModel);
+	void setLoadModel(int loadModel);
 
-	public boolean isLastSolutionWasDirect();
+	boolean isLastSolutionWasDirect();
 
-	public void setLastSolutionWasDirect(boolean lastSolutionWasDirect);
+	void setLastSolutionWasDirect(boolean lastSolutionWasDirect);
 
-	public boolean isLoadsNeedUpdating();
+	boolean isLoadsNeedUpdating();
 
-	public void setLoadsNeedUpdating(boolean loadsNeedUpdating);
+	void setLoadsNeedUpdating(boolean loadsNeedUpdating);
 
-	public int getMaxControlIterations();
+	int getMaxControlIterations();
 
-	public void setMaxControlIterations(int maxControlIterations);
+	void setMaxControlIterations(int maxControlIterations);
 
-	public double getMaxError();
+	double getMaxError();
 
-	public void setMaxError(double maxError);
+	void setMaxError(double maxError);
 
-	public int getMaxIterations();
+	int getMaxIterations();
 
-	public void setMaxIterations(int maxIterations);
+	void setMaxIterations(int maxIterations);
 
-	public int getMostIterationsDone();
+	int getMostIterationsDone();
 
-	public void setMostIterationsDone(int mostIterationsDone);
+	void setMostIterationsDone(int mostIterationsDone);
 
-	public double[] getNodeVbase();
+	double[] getNodeVbase();
 
-	public void setNodeVbase(double[] nodeVbase);
+	void setNodeVbase(double[] nodeVbase);
 
-	public int getNumberOfTimes();
+	int getNumberOfTimes();
 
-	public void setNumberOfTimes(int numberOfTimes);
+	void setNumberOfTimes(int numberOfTimes);
 
-	public boolean isPreserveNodeVoltages();
+	boolean isPreserveNodeVoltages();
 
-	public void setPreserveNodeVoltages(boolean preserveNodeVoltages);
+	void setPreserveNodeVoltages(boolean preserveNodeVoltages);
 
-	public int getRandomType();
+	int getRandomType();
 
-	public void setRandomType(int randomType);
+	void setRandomType(int randomType);
 
-	public boolean isSeriesYInvalid();
+	boolean isSeriesYInvalid();
 
-	public void setSeriesYInvalid(boolean seriesYInvalid);
+	void setSeriesYInvalid(boolean seriesYInvalid);
 
-	public int getSolutionCount();
+	int getSolutionCount();
 
-	public void setSolutionCount(int solutionCount);
+	void setSolutionCount(int solutionCount);
 
-	public boolean isSolutionInitialized();
+	boolean isSolutionInitialized();
 
-	public void setSolutionInitialized(boolean solutionInitialized);
+	void setSolutionInitialized(boolean solutionInitialized);
 
-	public boolean isSystemYChanged();
+	boolean isSystemYChanged();
 
-	public void setSystemYChanged(boolean systemYChanged);
+	void setSystemYChanged(boolean systemYChanged);
 
-	public boolean isUseAuxCurrents();
+	boolean isUseAuxCurrents();
 
-	public void setUseAuxCurrents(boolean useAuxCurrents);
+	void setUseAuxCurrents(boolean useAuxCurrents);
 
-	public double[] getVmagSaved();
+	double[] getVmagSaved();
 
-	public void setVmagSaved(double[] vmagSaved);
+	void setVmagSaved(double[] vmagSaved);
 
-	public boolean isVoltageBaseChanged();
+	boolean isVoltageBaseChanged();
 
-	public void setVoltageBaseChanged(boolean voltageBaseChanged);
+	void setVoltageBaseChanged(boolean voltageBaseChanged);
 
-	public DComplexMatrix1D getNodeV();
+	DComplexMatrix1D getNodeV();
 
-	public void setNodeV(DComplexMatrix1D nodeV);
+	void setNodeV(DComplexMatrix1D nodeV);
 
-	public DComplexMatrix1D getCurrents();
+	DComplexMatrix1D getCurrents();
 
-	public void setCurrents(DComplexMatrix1D currents);
+	void setCurrents(DComplexMatrix1D currents);
 
-	public void zeroAuxCurrents();
+	void zeroAuxCurrents();
 
-	public int solveZeroLoadSnapShot();
+	int solveZeroLoadSnapShot();
 
-	public void doPFLOWsolution();
+	void doPFLOWsolution();
 
 	/* Main Solution dispatch */
-	public void solve();
+	void solve();
 
-	public void snapShotInit();
+	void snapShotInit();
 
 	/* solve for now once */
-	public int solveSnap();
+	int solveSnap();
 
 	/* solve for now once, direct solution */
-	public int solveDirect();
+	int solveDirect();
 
 	/* Similar to SolveDirect; used for initialization */
-	public int solveYDirect();
+	int solveYDirect();
 
 	/* SolveSnap sans control iteration */
-	public int solveCircuit();
+	int solveCircuit();
 
 	/* Snapshot checks with matrix rebuild */
-	public void checkControls();
+	void checkControls();
 
-	public void sampleControlDevices();
+	void sampleControlDevices();
 
-	public void doControlActions();
+	void doControlActions();
 
 	/* Sample and Do */
-	public void sample_DoControlActions();
+	void sample_DoControlActions();
 
-	public void checkFaultStatus();
+	void checkFaultStatus();
 
-	public void setGeneratorDispRef();
+	void setGeneratorDispRef();
 
-	public void setVoltageBases();
+	void setVoltageBases();
 
-	public void saveVoltages();
+	void saveVoltages();
 
 	/* Updates voltages for each bus from NodeV */
-	public void updateVBus();
+	void updateVBus();
 
 	/* opposite of updateVBus() */
-	public void restoreNodeVfromVbus();
+	void restoreNodeVfromVbus();
 
 	/* Difference between two node voltages */
-	public double[] vDiff(int i, int j);
+	double[] vDiff(int i, int j);
 
-	public void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int ArrayOffset);
 
-	public void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream F, boolean Complete);
 
-	public void writeConvergenceReport(String fName);
+	void writeConvergenceReport(String fName);
 
-	public void updateDblHour();
+	void updateDblHour();
 
-	public void incrementTime();
+	void incrementTime();
 }
