@@ -6,6 +6,11 @@ import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.general.GrowthShape;
+import com.epri.dss.general.LoadShape;
+import com.epri.dss.general.Spectrum;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.parser.Parser;
 import com.epri.dss.shared.PointerList;
 
 public interface DSSGlobals {
@@ -63,9 +68,9 @@ public interface DSSGlobals {
 
 	void setDSS_IniFileName(String dSS_IniFileName);
 
-	IniRegSave getDSS_Registry();
+//	IniRegSave getDSS_Registry();
 
-	void setDSS_Registry(IniRegSave dSS_Registry);
+//	void setDSS_Registry(IniRegSave dSS_Registry);
 
 	boolean isDLL();
 

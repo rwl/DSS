@@ -9,7 +9,13 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.DSSGlobals;
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.general.GrowthShape;
+import com.epri.dss.general.LoadShape;
+import com.epri.dss.general.Spectrum;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.parser.Parser;
+import com.epri.dss.parser.impl.ParserImpl;
 import com.epri.dss.shared.PointerList;
 
 public class DSSGlobalsImpl implements DSSGlobals {
@@ -19,7 +25,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private PrintStream DLLDebugFile;
 	private String DSS_IniFileName = "OpenDSSPanel.ini";
 	// Registry   (See Executive)
-	private IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
+//	private IniRegSave DSS_Registry = IniRegSave("\\Software\\OpenDSS");
 
 	private boolean IsDLL = false;
 	private boolean NoFormsAllowed = false;
@@ -36,7 +42,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private PointerList DSSObjs;
 
     // Auxiliary parser for use by anybody for reparsing values
-	private Parser AuxParser = new Parser();
+	private Parser AuxParser = new ParserImpl();
 
 	private boolean ErrorPending = false;
 	private int CmdResult = 0;
@@ -57,7 +63,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private String GlobalHelpString = "";
 	private String GlobalPropertyValue = "";
 	private String GlobalResult = "";
-	private String VersionString = "Version " + GetDSSVersion();
+	private String VersionString = "Version " + getDSSVersion();
 
 	private String DefaultEditor = "NotePad";     // normally, Notepad
 //	private String DSSFileName = GetDSSExeFile();     // Name of current exe or DLL
@@ -112,13 +118,13 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		DSS_IniFileName = dSS_IniFileName;
 	}
 
-	public IniRegSave getDSS_Registry() {
-		return DSS_Registry;
-	}
+//	public IniRegSave getDSS_Registry() {
+//		return DSS_Registry;
+//	}
 
-	public void setDSS_Registry(IniRegSave dSS_Registry) {
-		DSS_Registry = dSS_Registry;
-	}
+//	public void setDSS_Registry(IniRegSave dSS_Registry) {
+//		DSS_Registry = dSS_Registry;
+//	}
 
 	public boolean isDLL() {
 		return IsDLL;
