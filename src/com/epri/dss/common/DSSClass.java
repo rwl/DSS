@@ -57,27 +57,27 @@ public interface DSSClass {
 	String getNextPropertyName();
 
 	/* Helper routine for building Property strings */
-	void AddProperty(String PropName, int CmdMapIndex,
+	void addProperty(String PropName, int CmdMapIndex,
 			String HelpString);
 
-	void ReallocateElementNameList();
+	void reallocateElementNameList();
 
 	/* uses global parser */
-	int Edit();
+	int edit();
 
-	int Init(int Handle);
+	int init(int Handle);
 
-	int NewObject(String ObjName);
+	int newObject(String ObjName);
 
-	boolean SetActive(String Value);
+	boolean setActive(String Value);
 
 	/* Get address of active obj of this class */
-	Object GetActiveObj();
+	Object getActiveObj();
 
 	/* Find an obj of this class by name */
-	Object Find(String ObjName);
+	Object find(String ObjName);
 
 	/* Find property value by string */
-	int PropertyIndex(String Prop);
+	int propertyIndex(String Prop);
 
 }

@@ -1,11 +1,13 @@
 package com.epri.dss.common.impl;
 
 import com.epri.dss.common.DSSGlobals;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.shared.HashList;
 import com.epri.dss.shared.PointerList;
 import com.epri.dss.shared.impl.HashListImpl;
 import com.epri.dss.shared.impl.PointerListImpl;
+import com.epri.dss.shared.CommandList;
 
 /**
  * Base Class for all DSS collection classes.
@@ -13,7 +15,7 @@ import com.epri.dss.shared.impl.PointerListImpl;
  *
  * @author Richard Lincoln
  */
-public class DSSClassImpl {
+public class DSSClassImpl implements DSSClass {
 
 	protected String Class_Name;
 
@@ -259,7 +261,7 @@ public class DSSClassImpl {
 		this.NumProperties = this.NumProperties + 1;
 	}
 
-	protected void AllocatePropertyArrays() {
+	protected void allocatePropertyArrays() {
 		this.PropertyName = new String[this.NumProperties];
 		this.PropertyHelp = new String[this.NumProperties];
 		this.PropertyIdxMap = new int[this.NumProperties];
