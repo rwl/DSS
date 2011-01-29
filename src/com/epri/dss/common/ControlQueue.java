@@ -1,7 +1,7 @@
 package com.epri.dss.common;
 
-import com.epri.dss.controls.impl.ControlElemImpl.ControlAction;
-import com.epri.dss.controls.ControlElem;
+import com.epri.dss.control.ControlElem;
+import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 
 public interface ControlQueue {
 

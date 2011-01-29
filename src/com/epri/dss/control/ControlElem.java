@@ -1,4 +1,4 @@
-package com.epri.dss.controls;
+package com.epri.dss.control;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.CktElement;

@@ -4,8 +4,8 @@ import java.io.PrintStream;
 import java.util.List;
 
 import com.epri.dss.common.ControlQueue;
-import com.epri.dss.controls.ControlElem;
-import com.epri.dss.controls.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.ControlElem;
+import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 
 public class ControlQueueImpl implements ControlQueue {
 

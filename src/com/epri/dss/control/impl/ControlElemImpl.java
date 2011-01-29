@@ -1,10 +1,10 @@
-package com.epri.dss.controls.impl;
+package com.epri.dss.control.impl;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
-import com.epri.dss.controls.ControlElem;
+import com.epri.dss.control.ControlElem;
 
 public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
