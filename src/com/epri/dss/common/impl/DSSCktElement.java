@@ -6,6 +6,7 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 import com.epri.dss.common.CktElement;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.impl.DSSObjectImpl;
 
 public class DSSCktElement extends DSSObjectImpl implements CktElement {
@@ -42,7 +43,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	protected int LastTerminalChecked;
 
 	protected boolean Checked, HasEnergyMeter, HasSensorObj, IsIsolated,
-    	HasControl, IsPartofFeeder;
+		HasControl, IsPartofFeeder;
 
 	protected DSSCktElement ControlElement;
 
@@ -55,7 +56,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	protected PowerTerminal ActiveTerminal;
 
-	public DSSCktElement(DSSClassImpl ParClass) {
+	public DSSCktElement(DSSClass ParClass) {
 		super(ParClass);
 		// TODO Auto-generated constructor stub
 	}
@@ -274,111 +275,111 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return 0;
 	}
 
-	public int GetYPrim(DComplexMatrix2D Ymatrix, int Opt) {
+	public int getYPrim(DComplexMatrix2D Ymatrix, int Opt) {
 		return 0;
 	}
 
-	public DComplexMatrix1D GetYPrimValues(int Opt) {
+	public DComplexMatrix1D getYPrimValues(int Opt) {
 		return null;
 	}
 
 	/* Max of Iterminal 1 phase currents */
-	public double MaxTerminalOneIMag() {
+	public double maxTerminalOneIMag() {
 		return 0.0;
 	}
 
 	/* Computes Iterminal for this device */
-	public void ComputeIterminal() {
+	public void computeIterminal() {
 
 	}
 
-	public void ComputeVterminal() {
+	public void computeVterminal() {
 
 	}
 
-	public void ZeroITerminal() {
+	public void zeroITerminal() {
 
 	}
 
 	/* Get present value of terminal Curr for reports */
-	public void GetCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(DComplexMatrix1D Curr) {
 
 	}
 
 	/* Returns Injextion currents */
-	public void GetInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(DComplexMatrix1D Curr) {
 
 	}
 
 	/* Applies to PC Elements Puts straight into Solution Array */
-	public int InjCurrents() {
+	public int injCurrents() {
 		return 0;
 	}
 
 
 	/* Get bus name by index */
-	public String GetBus(int i) {
+	public String getBus(int i) {
 		return null;
 	}
 
 	/* Set bus name by index */
-	public void SetBus(int i, String s) {
+	public void setBus(int i, String s) {
 
 	}
 
 	/* Set NodeRef Array for fast solution with intrinsics */
-	public void SetNodeRef(int iTerm, int[] NodeRefArray) {
+	public void setNodeRef(int iTerm, int[] NodeRefArray) {
 
 	}
 
-	public void RecalcElementData() {
+	public void recalcElementData() {
 
 	}
 
-	public void CalcYPrim() {
+	public void calcYPrim() {
 
 	}
 
 	/* Make a positive Sequence Model */
-	public void MakePosSequence() {
+	public void makePosSequence() {
 
 	}
 
-	public void GetTermVoltages(int iTerm, DComplexMatrix1D VBuffer) {
+	public void getTermVoltages(int iTerm, DComplexMatrix1D VBuffer) {
 
 	}
 
-	public void GetPhasePower(DComplexMatrix1D PowerBuffer) {
+	public void getPhasePower(DComplexMatrix1D PowerBuffer) {
 
 	}
 
-	public void GetPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer) {
+	public void getPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer) {
 
 	}
 
-	public void GetLosses(double[] TotalLosses, double[] LoadLosses,
+	public void getLosses(double[] TotalLosses, double[] LoadLosses,
 			double[] NoLoadLosses) {
 
 	}
 
-	public void GetSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
+	public void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
 			double[] ZeroModeLosses) {
 
 	}
 
-	public String GetPropertyValue(int Index) {
+	public String getPropertyValue(int Index) {
 		return null;
 	}
 
-	public void InitPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int ArrayOffset) {
 
 	}
 
-	public void DumpProperties(PrintStream F, boolean Complete) {
+	public void dumpProperties(PrintStream F, boolean Complete) {
 
 	}
 
-	public void SumCurrents() {
+	public void sumCurrents() {
 
 	}
 

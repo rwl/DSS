@@ -114,64 +114,64 @@ public interface CktElement extends DSSObject {
 
 	int getHandle();
 
-	int GetYPrim(DComplexMatrix2D Ymatrix, int Opt);
+	int getYPrim(DComplexMatrix2D Ymatrix, int Opt);
 
-	DComplexMatrix1D GetYPrimValues(int Opt);
+	DComplexMatrix1D getYPrimValues(int Opt);
 
 	/* Max of Iterminal 1 phase currents */
-	double MaxTerminalOneIMag();
+	double maxTerminalOneIMag();
 
 	/* Computes Iterminal for this device */
-	void ComputeIterminal();
+	void computeIterminal();
 
-	void ComputeVterminal();
+	void computeVterminal();
 
-	void ZeroITerminal();
+	void zeroITerminal();
 
 	/* Get present value of terminal Curr for reports */
-	void GetCurrents(DComplexMatrix1D Curr);
+	void getCurrents(DComplexMatrix1D Curr);
 
 	/* Returns Injextion currents */
-	void GetInjCurrents(DComplexMatrix1D Curr);
+	void getInjCurrents(DComplexMatrix1D Curr);
 
 	/* Applies to PC Elements Puts straight into Solution Array */
-	int InjCurrents();
+	int injCurrents();
 
 
 	/* Get bus name by index */
-	String GetBus(int i);
+	String getBus(int i);
 
 	/* Set bus name by index */
-	void SetBus(int i, String s);
+	void setBus(int i, String s);
 
 	/* Set NodeRef Array for fast solution with intrinsics */
-	void SetNodeRef(int iTerm, int[] NodeRefArray);
+	void setNodeRef(int iTerm, int[] NodeRefArray);
 
-	void RecalcElementData();
+	void recalcElementData();
 
-	void CalcYPrim();
+	void calcYPrim();
 
 	/* Make a positive Sequence Model */
-	void MakePosSequence();
+	void makePosSequence();
 
-	void GetTermVoltages(int iTerm, DComplexMatrix1D VBuffer);
+	void getTermVoltages(int iTerm, DComplexMatrix1D VBuffer);
 
-	void GetPhasePower(DComplexMatrix1D PowerBuffer);
+	void getPhasePower(DComplexMatrix1D PowerBuffer);
 
-	void GetPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer);
+	void getPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer);
 
-	void GetLosses(double[] TotalLosses, double[] LoadLosses,
+	void getLosses(double[] TotalLosses, double[] LoadLosses,
 			double[] NoLoadLosses);
 
-	void GetSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
+	void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
 			double[] ZeroModeLosses);
 
-	String GetPropertyValue(int Index);
+	String getPropertyValue(int Index);
 
-	void InitPropertyValues(int ArrayOffset);
+	void initPropertyValues(int ArrayOffset);
 
-	void DumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream F, boolean Complete);
 
-	void SumCurrents();
+	void sumCurrents();
 
 }

@@ -1,5 +1,6 @@
 package com.epri.dss.common.impl;
 
+import com.epri.dss.common.DSSGlobals;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.shared.HashList;
 import com.epri.dss.shared.PointerList;
@@ -155,14 +156,14 @@ public class DSSClassImpl {
 
 	public void setActive(int Value) {
 		if ((Value > 0) && (Value <= ElementList.ListSize)) {
-			DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
+			DSSGlobals Globals = DSSGlobalsImpl.getInstance();
 			this.ActiveElement = Value;
 			Globals.ActiveDSSObject = this.ElementList.Get(this.ActiveElement);
-	        // Make sure Active Ckt Element agrees if is a ckt element
-	        // So COM interface will work
-	        if (Globals.ActiveDSSObject instanceof DSSCktElement) {
-	        	Globals.ActiveCircuit.ActiveCktElement = DSSCktElement(Globals.ActiveDSSObject);
-	        }
+			// Make sure Active Ckt Element agrees if is a ckt element
+			// So COM interface will work
+			if (Globals.ActiveDSSObject instanceof DSSCktElement) {
+				Globals.ActiveCircuit.ActiveCktElement = DSSCktElement(Globals.ActiveDSSObject);
+			}
 		}
 	}
 
@@ -175,7 +176,7 @@ public class DSSClassImpl {
 		if (this.ElementList.ListSize == 0) {
 			Result = 0;
 		} else {
-			DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
+			DSSGlobals Globals = DSSGlobalsImpl.getInstance();
 
 			this.ActiveElement = 1;
 			Globals.ActiveDSSObject = ElementList.First();
@@ -190,19 +191,19 @@ public class DSSClassImpl {
 
 	public int getNext() {
 		int Result;
-	    if (this.ActiveElement > this.ElementList.ListSize) {
-	    	Result = 0;
-	    } else {
-	    	DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
+		if (this.ActiveElement > this.ElementList.ListSize) {
+			Result = 0;
+		} else {
+			DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
 
-	    	Globals.ActiveDSSObject = this.ElementList.Next();
-	    	// Make sure Active Ckt Element agrees if is a ckt element
-	    	if (Globals.ActiveDSSObject instanceof DSSCktElement) {
-	    		Globals.ActiveCircuit.ActiveCktElement =  new DSSCktElement(Globals.ActiveDSSObject);
-	    		Result = this.ActiveElement;
-	    	}
-	    }
-	    this.ActiveElement += 1;
+			Globals.ActiveDSSObject = this.ElementList.Next();
+			// Make sure Active Ckt Element agrees if is a ckt element
+			if (Globals.ActiveDSSObject instanceof DSSCktElement) {
+				Globals.ActiveCircuit.ActiveCktElement =  new DSSCktElement(Globals.ActiveDSSObject);
+				Result = this.ActiveElement;
+			}
+		}
+		this.ActiveElement += 1;
 
 		return Result;
 	}
@@ -211,50 +212,50 @@ public class DSSClassImpl {
 		return this.Class_Name;
 	}
 
-	private void ResynchElementNameList() {
-		ReallocateElementNameList();
-	    this.ElementNamesOutOfSynch = false;
+	private void resynchElementNameList() {
+		reallocateElementNameList();
+		this.ElementNamesOutOfSynch = false;
 	}
 
 	/* Used by NewObject */
-	protected int AddObjectToList(Object Obj) {
+	protected int addObjectToList(Object Obj) {
 		// Stuff it in this collection's element list
 		this.ElementList.New(Obj);
 		this.ElementNameList.Add(new DSSObjectImpl(Obj).getName());
 
 		if (this.ElementList.ListSize() > 2 * this.ElementNameList.InitialAllocation)
-			ReallocateElementNameList();
+			reallocateElementNameList();
 
-	    this.ActiveElement = this.ElementList.ListSize();
-	    return this.ActiveElement; // Return index of object in list
+		this.ActiveElement = this.ElementList.ListSize();
+		return this.ActiveElement; // Return index of object in list
 	}
 
 	public String getFirstPropertyName() {
 		this.ActiveProperty = 0;
-    	return getNextPropertyName();
+		return getNextPropertyName();
 	}
 
 	public String getNextPropertyName() {
 		String Result;
 
-	    if (this.ActiveProperty <= this.NumProperties) {
-	    	Result = this.PropertyName[ActiveProperty];
-	    } else {
-	    	Result = "";
-	    }
+		if (this.ActiveProperty <= this.NumProperties) {
+			Result = this.PropertyName[ActiveProperty];
+		} else {
+			Result = "";
+		}
 
-	    this.ActiveProperty += 1;
+		this.ActiveProperty += 1;
 
 		return Result;
 	}
 
-	protected int MakeLike(String ObjName) {
-		DSSGlobalsImpl.getInstance().DoSimpleMsg("virtual function TDSSClass.MakeLike called.  Should be overriden.", 784);
+	protected int makeLike(String ObjName) {
+		DSSGlobalsImpl.getInstance().doSimpleMsg("virtual function TDSSClass.MakeLike called.  Should be overriden.", 784);
 		return 0;
 	}
 
 	/* Add no. of intrinsic properties */
-	protected void CountProperties() {
+	protected void countProperties() {
 		this.NumProperties = this.NumProperties + 1;
 	}
 
@@ -270,17 +271,17 @@ public class DSSClassImpl {
 	}
 
 	/* Add Properties of this class to propName */
-	protected void DefineProperties() {
+	protected void defineProperties() {
 		String CRLF = DSSGlobalsImpl.getInstance().CRLF;
 
 		this.PropertyName[ActiveProperty] = "like";
 		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + CRLF + CRLF +
-	                      "New Capacitor.C2 like=c1  ...";
+						"New Capacitor.C2 like=c1  ...";
 
 		this.ActiveProperty = this.ActiveProperty + 1;
 	}
 
-	protected int ClassEdit(Object ActiveObj, int ParamPointer) {
+	protected int classEdit(Object ActiveObj, int ParamPointer) {
 		// continue parsing with contents of Parser
 		if (ParamPointer > 0) {
 			DSSObjectImpl obj = new DSSObjectImpl(ActiveObj);
@@ -293,53 +294,53 @@ public class DSSClassImpl {
 	}
 
 	/* Helper routine for building Property strings */
-	public void AddProperty(String PropName, int CmdMapIndex,
+	public void addProperty(String PropName, int CmdMapIndex,
 			String HelpString) {
 		this.ActiveProperty += 1;
 
-	    this.PropertyName[ActiveProperty] = PropName;
-	    this.PropertyHelp[ActiveProperty] = HelpString;
-	    // Map to internal object property index
-	    this.PropertyIdxMap[ActiveProperty] = CmdMapIndex;
-	    this.RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
+		this.PropertyName[ActiveProperty] = PropName;
+		this.PropertyHelp[ActiveProperty] = HelpString;
+		// Map to internal object property index
+		this.PropertyIdxMap[ActiveProperty] = CmdMapIndex;
+		this.RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
 	}
 
-	public void ReallocateElementNameList() {
+	public void reallocateElementNameList() {
 		/* Reallocate the device name list to improve the performance of searches */
-	    this.ElementNameList.Free(); // Throw away the old one.
-	    this.ElementNameList = new HashListImpl(2 * this.ElementList.ListSize());  // make a new one
+		this.ElementNameList.Free(); // Throw away the old one.
+		this.ElementNameList = new HashListImpl(2 * this.ElementList.ListSize());  // make a new one
 
-	    // Do this using the Names of the Elements rather than the old list because it might be
-	    // messed up if an element gets renamed
+		// Do this using the Names of the Elements rather than the old list because it might be
+		// messed up if an element gets renamed
 
-	    for (int i = 0; i < this.ElementList.ListSize(); i++) {
-	    	this.ElementNameList.Add(new DSSObjectImpl(ElementList.Get(i)).getName());
-	    }
+		for (int i = 0; i < this.ElementList.ListSize(); i++) {
+			this.ElementNameList.add(new DSSObjectImpl(ElementList.Get(i)).getName());
+		}
 	}
 
 	/* uses global parser */
-	public int Edit() {
+	public int edit() {
 		DSSGlobalsImpl.getInstance().DoSimpleMsg("virtual function DSSClass.Edit called.  Should be overriden.", 781);
 		return 0;
 	}
 
-	public int Init(int Handle) {
-		DSSGlobalsImpl.getInstance().DoSimpleMsg("virtual function DSSClass.Init called.  Should be overriden.", 782);
+	public int init(int Handle) {
+		DSSGlobalsImpl.getInstance().doSimpleMsg("virtual function DSSClass.Init called.  Should be overriden.", 782);
 		return 0;
 	}
 
-	public int NewObject(String ObjName) {
-		DSSGlobalsImpl.getInstance().DoErrorMsg(
+	public int newObject(String ObjName) {
+		DSSGlobalsImpl.getInstance().doErrorMsg(
 				"Reached base class of TDSSClass for device \"" +ObjName+ "\"",
-                "N/A",
-                "Should be overridden.", 780);
+				"N/A",
+				"Should be overridden.", 780);
 		return 0;
 	}
 
-	public boolean SetActive(String Value) {
+	public boolean setActive(String Value) {
 		boolean Result = false;
 		// Faster to look in hash list 7/7/03
-		if (this.ElementNamesOutOfSynch) ResynchElementNameList();
+		if (this.ElementNamesOutOfSynch) resynchElementNameList();
 		int idx = this.ElementNameList.Find(ObjName);
 		if (idx > 0) {
 			this.ActiveElement = idx;
@@ -350,18 +351,18 @@ public class DSSClassImpl {
 	}
 
 	/* Get address of active obj of this class */
-	public Object GetActiveObj() {
+	public Object getActiveObj() {
 		if (this.ActiveElement > 0) {
-	        return this.ElementList.Get(ActiveElement);
+			return this.ElementList.Get(ActiveElement);
 		} else {
-	        return null;
+			return null;
 		}
 	}
 
 	/* Find an obj of this class by name */
-	public Object Find(String ObjName) {
+	public Object find(String ObjName) {
 		Object Result = null;
-		if (this.ElementNamesOutOfSynch) ResynchElementNameList();
+		if (this.ElementNamesOutOfSynch) resynchElementNameList();
 		// Faster to look in hash list 7/7/03
 		int idx = this.ElementNameList.Find(ObjName);
 		if (idx > 0) {
@@ -372,7 +373,7 @@ public class DSSClassImpl {
 	}
 
 	/* Find property value by string */
-	public int PropertyIndex(String Prop) {
+	public int propertyIndex(String Prop) {
 		int Result = 0;  // Default result if not found
 		for (int i = 0; i < this.NumProperties; i++) {
 			if (Prop.equals(this.PropertyName[i])) {
