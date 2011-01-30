@@ -2,26 +2,27 @@ package com.epri.dss.meter.impl;
 
 import java.io.File;
 
+import com.epri.dss.conversion.Generator;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.SystemMeter;
 
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	private Generator GeneratorClass;
-    private boolean SaveDemandInterval;
-    private boolean DI_Verbose;
-    private File OverLoadFile;
-    private File VoltageFile;
+	private boolean SaveDemandInterval;
+	private boolean DI_Verbose;
+	private File OverLoadFile;
+	private File VoltageFile;
 
-    protected double[] DI_RegisterTotals;
-    protected String DI_Dir;
-    protected File DI_Totals;
-    protected File MeterTotals;
-    protected SystemMeter SystemMeter;
-    protected boolean Do_OverloadReport;
-    protected boolean Do_VoltageExceptionReport;
-    protected boolean OverLoadFileIsOpen;
-    protected boolean VoltageFileIsOpen;
+	protected double[] DI_RegisterTotals;
+	protected String DI_Dir;
+	protected File DI_Totals;
+	protected File MeterTotals;
+	protected SystemMeter SystemMeter;
+	protected boolean Do_OverloadReport;
+	protected boolean Do_VoltageExceptionReport;
+	protected boolean OverLoadFileIsOpen;
+	protected boolean VoltageFileIsOpen;
 
 	public EnergyMeterImpl() {
 		// TODO Auto-generated constructor stub

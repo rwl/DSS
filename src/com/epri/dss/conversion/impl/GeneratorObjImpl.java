@@ -9,6 +9,7 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
 
 public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	
@@ -454,7 +455,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	
 	@Override
 	public double getVariable(int i) {
-		
+		return 0.0;
 	}
 	
 	@Override
@@ -525,6 +526,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 	
 	/* Make a positive Sequence Model */
+	@Override
 	public void makePosSequence() {
 		
 	}
