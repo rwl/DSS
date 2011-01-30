@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 
 import com.epri.dss.common.CktElement;
+import com.epri.dss.meter.MeterElement;
+import com.epri.dss.general.SpectrumObj;
 
 public interface PCElement extends CktElement {
 
@@ -12,12 +14,12 @@ public interface PCElement extends CktElement {
 
 	void setSpectrum(String spectrum);
 
-    /* Upline Sensor for this element */
+	/* Upline Sensor for this element */
 	SpectrumObj getSpectrumObj();
 
 	void setSpectrumObj(SpectrumObj spectrumObj);
 
-    /* Upline EnergyMeter */
+	/* Upline EnergyMeter */
 	MeterElement getMeterObj();
 
 	void setMeterObj(MeterElement meterObj);

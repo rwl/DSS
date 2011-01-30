@@ -110,10 +110,10 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	public void setPropertyValue(int Index, String Value) {
 		PropertyValue[Index] = Value;
 
-	    // Keep track of the order in which this property was
+		// Keep track of the order in which this property was
 		// accessed for Save Command
-	    PropSeqCount += 1;
-	    PrpSequence[Index] = PropSeqCount;
+		PropSeqCount += 1;
+		PrpSequence[Index] = PropSeqCount;
 	}
 
 	public String getName() {
@@ -142,8 +142,8 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
 			if (PrpSequence[i] > idx) {
 				if (PrpSequence[i] < Smallest) {
-	                Smallest = PrpSequence[i];
-	               	Result = i;
+					Smallest = PrpSequence[i];
+					   Result = i;
 				}
 			}
 		}
@@ -154,7 +154,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	/* Allow Calls to edit from object itself */
 	public int edit() {
 		ParentClass.setActive(ClassIndex);
-		return super.edit();
+		return 0;//super.edit();
 	}
 
 	public void initPropertyValues(int ArrayOffset) {
@@ -171,12 +171,12 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 
 	public void saveWrite(PrintStream F) {
 		/* Write only properties that were explicitly set in the
-   		final order they were actually set */
+		final order they were actually set */
 		int iProp = GetNextPropertySet(0); // Works on ActiveDSSObject
 		while (iProp > 0) {
 			DSSClass pc = ParentClass;
-			F.print(' ' + pc.getPropertyName(pc.getRevPropertyIdxMap()[iProp]));
-			F.print('=' + Utilities.CheckForBlanks(PropertyValue[iProp]));
+//			F.print(' ' + pc.getPropertyName(pc.getRevPropertyIdxMap()[iProp]));
+//			F.print('=' + Utilities.CheckForBlanks(PropertyValue[iProp]));
 			iProp = GetNextPropertySet(iProp);
 		}
 	}

@@ -7,6 +7,8 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.PCElement;
+import com.epri.dss.meter.MeterElement;
+import com.epri.dss.general.SpectrumObj;
 
 public class PCElementImpl extends DSSCktElement implements PCElement {
 
@@ -14,9 +16,9 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 
 	private String Spectrum;
 	private SpectrumObj SpectrumObj;
-    /* Upline EnergyMeter */
+	/* Upline EnergyMeter */
 	private MeterElement MeterObj;
-    /* Upline Sensor for this element */
+	/* Upline Sensor for this element */
 	private MeterElement SensorObj;
 
 	private DComplexMatrix1D InjCurrent;
@@ -34,7 +36,7 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 		Spectrum = spectrum;
 	}
 
-    /* Upline Sensor for this element */
+	/* Upline Sensor for this element */
 	public SpectrumObj getSpectrumObj() {
 		return SpectrumObj;
 	}
@@ -43,7 +45,7 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 		SpectrumObj = spectrumObj;
 	}
 
-    /* Upline EnergyMeter */
+	/* Upline EnergyMeter */
 	public MeterElement getMeterObj() {
 		return MeterObj;
 	}
