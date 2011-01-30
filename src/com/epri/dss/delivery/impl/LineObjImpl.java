@@ -13,7 +13,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private double ZFrequency; 
 	private int LineCodeUnits;
 	private double UnitsConvert; // conversion factor
-	private LineGeometryObj LineGeometryObj;
+	private LineGeometryObjImpl LineGeometryObj;
 	private LineSpacingObj LineSpacingObj;
 	private WireData[] WireData;
 	private boolean[] rhoSpecified;

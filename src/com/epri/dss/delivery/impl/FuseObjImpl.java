@@ -8,12 +8,13 @@ import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.control.impl.ControlElemImpl;
 import com.epri.dss.delivery.FuseObj;
+import com.epri.dss.general.impl.TCC_CurveObjImpl;
 
 public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	
 	private static final int FUSEMAXDIM = 6;
 	
-	private TCC_CurveObj FuseCurve;
+	private TCC_CurveObjImpl FuseCurve;
 
 	private double RatedCurrent;
 
