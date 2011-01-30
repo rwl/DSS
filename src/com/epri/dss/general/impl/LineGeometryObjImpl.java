@@ -6,14 +6,16 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.LineGeometryObj;
+import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.OHLineConstants;
+import com.epri.dss.general.WireDataObj;;
 
 public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryObj {
 
 	private int NConds;
 	private int NPhases;
 	private String[] condType;
-	private WireData[] WireData;
+	private WireDataObj[] WireData;
 	private double[] X;
 	private double[] Y;
 	private int[] Units;
@@ -122,7 +124,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	 * called from a Line object that has its own Spacing and Wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases
 	 */
-	public void LoadSpacingAndWires(LineSpacingObj Spc, WireData[] Wires) {
+	public void LoadSpacingAndWires(LineSpacingObj Spc, WireDataObj[] Wires) {
 		
 	}
 

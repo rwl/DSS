@@ -6,6 +6,9 @@ import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.LineObj;
+import com.epri.dss.general.LineSpacingObj;
+import com.epri.dss.general.LineGeometryObj;
+import com.epri.dss.general.WireDataObj;;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
 	
@@ -13,9 +16,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private double ZFrequency; 
 	private int LineCodeUnits;
 	private double UnitsConvert; // conversion factor
-	private LineGeometryObjImpl LineGeometryObj;
+	private LineGeometryObj LineGeometryObj;
 	private LineSpacingObj LineSpacingObj;
-	private WireData[] WireData;
+	private WireDataObj[] WireData;
 	private boolean[] rhoSpecified;
 	private boolean LineCodeSpecified;
 	private int EarthModel;

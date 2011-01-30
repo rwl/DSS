@@ -53,6 +53,6 @@ public interface LineGeometryObj extends DSSObject {
 	 * called from a Line object that has its own Spacing and Wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases
 	 */
-	void LoadSpacingAndWires(LineSpacingObj Spc, WireData[] Wires);
+	void LoadSpacingAndWires(LineSpacingObj Spc, WireDataObj[] Wires);
 
 }
