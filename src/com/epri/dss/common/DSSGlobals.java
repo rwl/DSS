@@ -5,11 +5,17 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
+import com.epri.dss.conversion.Storage;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
+import com.epri.dss.general.LineSpacing;
 import com.epri.dss.general.LoadShape;
 import com.epri.dss.general.Spectrum;
+import com.epri.dss.general.TCC_Curve;
+import com.epri.dss.general.WireData;
 import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.Monitor;
+import com.epri.dss.meter.Sensor;
 import com.epri.dss.parser.Parser;
 import com.epri.dss.shared.PointerList;
 
@@ -31,22 +37,22 @@ public interface DSSGlobals {
 	static final int SERIES = 1;
 	static final int SHUNT  = 2;
 
-    /* Control Modes */
+	/* Control Modes */
 	static final int CONTROLSOFF = -1;
 	static final int EVENTDRIVEN =  1;
 	static final int TIMEDRIVEN  =  2;
 	static final int STATIC      =  0;
 
-    /* Randomization Constants */
+	/* Randomization Constants */
 	static final int GAUSSIAN  = 1;
 	static final int UNIFORM   = 2;
 	static final int LOGNORMAL = 3;
 
-    /* Autoadd Constants */
+	/* Autoadd Constants */
 	static final int GENADD = 1;
 	static final int CAPADD = 2;
 
-    /* ERRORS */
+	/* ERRORS */
 	static final int SOLUTION_ABORT = 99;
 
 	/* 120-degree shift constant */
@@ -232,9 +238,9 @@ public interface DSSGlobals {
 
 	void setFeederClass(Feeder feederClass);
 
-	DSSMonitor getMonitorClass();
+	Monitor getMonitorClass();
 
-	void setMonitorClass(DSSMonitor monitorClass);
+	void setMonitorClass(Monitor monitorClass);
 
 	Sensor getSensorClass();
 
