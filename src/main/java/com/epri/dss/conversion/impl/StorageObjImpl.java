@@ -3,12 +3,12 @@ package com.epri.dss.conversion.impl;
 import java.io.File;
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.shared.CMatrix;
 
 public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
@@ -24,10 +24,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private static final int STORE_PRICEMODE = 2;
 	private static final int STORE_EXTERNALMODE = 3;
 	
-	private double[] Yeq;         // at nominal
-	private double[] Yeq95;       // at 95%
-	private double[] Yeq105;      // at 105%
-	private double[] YeqIdling;   // in shunt representing idle impedance
+	private Complex Yeq;         // at nominal
+	private Complex Yeq95;       // at 95%
+	private Complex Yeq105;      // at 105%
+	private Complex YeqIdling;   // in shunt representing idle impedance
 
 	private boolean DebugTrace;
 	private int State;
@@ -83,7 +83,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private double Vminpu;
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
 	private double VThevhH; 
-	private DComplexMatrix2D YPrimOpenCond;
+	private CMatrix YPrimOpenCond;
 	private double RThev;
 	private double XThev;
 	
@@ -153,7 +153,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		
 	}
 	
-	private void calcYPrimMatrix(DComplexMatrix2D Ymatrix) {
+	private void calcYPrimMatrix(CMatrix Ymatrix) {
 		
 	}
 
@@ -185,7 +185,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		
 	}
 	
-	private void stickCurrInTerminalArray(DComplexMatrix1D TermArray,
+	private void stickCurrInTerminalArray(Complex[] TermArray,
 			double[] Curr, int i) {
 		
 	}
@@ -453,7 +453,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 	
 	@Override
-	protected void getTerminalCurrents(DComplexMatrix1D Curr) {
+	protected void getTerminalCurrents(Complex[] Curr) {
 		
 	}
 	
@@ -473,7 +473,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	

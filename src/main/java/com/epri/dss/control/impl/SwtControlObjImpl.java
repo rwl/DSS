@@ -2,7 +2,7 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.control.SwtControlObj;
@@ -64,12 +64,12 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

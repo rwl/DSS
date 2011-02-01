@@ -1,6 +1,6 @@
 package com.epri.dss.meter.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -17,8 +17,8 @@ public class MeterElementImpl extends DSSCktElement implements
 	protected double[] SensorCurrent;
 	protected double[] SensorVoltage;
 	protected double[] PhsAllocationFactor;
-	protected DComplexMatrix1D CalculatedCurrent;
-	protected DComplexMatrix1D CalculatedVoltage;
+	protected Complex[] CalculatedCurrent;
+	protected Complex[] CalculatedVoltage;
 	protected double AvgAllocFactor;
 
 	public MeterElementImpl(DSSClassImpl ParClass) {
@@ -82,19 +82,19 @@ public class MeterElementImpl extends DSSCktElement implements
 		PhsAllocationFactor = phsAllocationFactor;
 	}
 
-	public DComplexMatrix1D getCalculatedCurrent() {
+	public Complex[] getCalculatedCurrent() {
 		return CalculatedCurrent;
 	}
 
-	public void setCalculatedCurrent(DComplexMatrix1D calculatedCurrent) {
+	public void setCalculatedCurrent(Complex[] calculatedCurrent) {
 		CalculatedCurrent = calculatedCurrent;
 	}
 
-	public DComplexMatrix1D getCalculatedVoltage() {
+	public Complex[] getCalculatedVoltage() {
 		return CalculatedVoltage;
 	}
 
-	public void setCalculatedVoltage(DComplexMatrix1D calculatedVoltage) {
+	public void setCalculatedVoltage(Complex[] calculatedVoltage) {
 		CalculatedVoltage = calculatedVoltage;
 	}
 

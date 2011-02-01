@@ -1,8 +1,6 @@
 package com.epri.dss.general;
 
-import java.io.PrintStream;
-
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import com.epri.dss.shared.CMatrix;
 
 /**
  * The LineGeometry object is a general DSS object used by all circuits
@@ -29,9 +27,9 @@ public interface LineGeometryObj extends DSSObject {
 	
 	int getActiveCond();
 
-	DComplexMatrix2D getYCmatrix(double f, double Length, int Units);
+	CMatrix getYCmatrix(double f, double Length, int Units);
 
-	DComplexMatrix2D getZmatrix(double f, double Length, int Units);
+	CMatrix getZmatrix(double f, double Length, int Units);
 
 	double getRhoEarth();
 

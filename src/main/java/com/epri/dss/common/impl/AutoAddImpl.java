@@ -2,6 +2,8 @@ package com.epri.dss.common.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.AutoAdd;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.delivery.Capacitor;
@@ -21,7 +23,7 @@ public class AutoAddImpl implements AutoAdd {
 	private int Phases;
 
 	private double Ycap;
-	private double[] GenVA;
+	private Complex GenVA;
 
 	private double kWLosses, BaseLosses, puLossImprovement;
 	private double kWEEN , BaseEEN, puEENImprovement;

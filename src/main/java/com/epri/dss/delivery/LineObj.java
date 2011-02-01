@@ -1,16 +1,18 @@
 package com.epri.dss.delivery;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.CMatrix;
 
 public interface LineObj extends PDElement {
 
-	public DComplexMatrix2D getZ();
+	public CMatrix getZ();
 
-	public void setZ(DComplexMatrix2D z);
+	public void setZ(CMatrix z);
 
-	public DComplexMatrix2D getYc();
+	public CMatrix getYc();
 
-	public void setYc(DComplexMatrix2D yc);
+	public void setYc(CMatrix yc);
 
 	public double getR1();
 
@@ -96,8 +98,8 @@ public interface LineObj extends PDElement {
 
 	public void setIsSwitch(boolean isSwitch);
 	
-	public void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
-			double[] ZeroSeqLosses);
+	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
+			Complex ZeroSeqLosses);
 	
 	public boolean mergeWith(LineObj OtherLine, boolean Series);
 	

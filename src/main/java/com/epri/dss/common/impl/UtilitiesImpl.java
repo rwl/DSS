@@ -2,13 +2,13 @@ package com.epri.dss.common.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Utilities;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.shared.CMatrix;
 
 public class UtilitiesImpl implements Utilities {
 
@@ -234,7 +234,7 @@ public class UtilitiesImpl implements Utilities {
 	}
 
 	public static void dumpComplexMatrix(PrintStream F,
-			DComplexMatrix2D AMatrix) {
+			CMatrix AMatrix) {
 
 	}
 
@@ -266,7 +266,7 @@ public class UtilitiesImpl implements Utilities {
 
 	}
 
-	public static double[] CmulReal_im(double[] a, double Mult) {
+	public static Complex CmulReal_im(Complex a, double Mult) {
 		return null;
 	}
 
@@ -312,35 +312,35 @@ public class UtilitiesImpl implements Utilities {
 
 	}
 
-	public static void rotatePhasorDeg(double[] Phasor, double h,
+	public static void rotatePhasorDeg(Complex Phasor, double h,
 			double AngleDeg) {
 
 	}
 
-	public static void rotatePhasorRad(double[] Phasor, double h,
+	public static void rotatePhasorRad(Complex Phasor, double h,
 			double AngleRad) {
 
 	}
 
-	public static void convertComplexArrayToPolar(DComplexMatrix1D Buffer,
+	public static void convertComplexArrayToPolar(Complex[] Buffer,
 			int N) {
 
 	}
 
-	public static void convertComplexArrayToPowerandPF(DComplexMatrix1D Buffer,
+	public static void convertComplexArrayToPowerandPF(Complex[] Buffer,
 			int N) {
 
 	}
 
-	public static double[] residual(Object p, int Nph) {
+	public static Complex residual(Object p, int Nph) {
 		return null;
 	}
 
-	public static double[] residualPolar(Object p, int Nph) {
+	public static Complex residualPolar(Object p, int Nph) {
 		return null;
 	}
 
-	public static double powerFactor(double[] S) {
+	public static double powerFactor(Complex S) {
 		return 0;
 	}
 
@@ -352,7 +352,7 @@ public class UtilitiesImpl implements Utilities {
 		return 0;
 	}
 
-	public static void CmulArray(DComplexMatrix1D pc, double Multiplier,
+	public static void CmulArray(Complex[] pc, double Multiplier,
 			int size) {
 
 	}
@@ -385,7 +385,7 @@ public class UtilitiesImpl implements Utilities {
 		return 0;
 	}
 
-	public static double[] getTotalPowerFromSources() {
+	public static Complex getTotalPowerFromSources() {
 		return null;
 	}
 

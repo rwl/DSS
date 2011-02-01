@@ -2,7 +2,7 @@ package com.epri.dss.conversion;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.meter.MeterElement;
@@ -28,9 +28,9 @@ public interface PCElement extends CktElement {
 
 	void setSensorObj(MeterElement sensorObj);
 
-	DComplexMatrix1D getInjCurrent();
+	Complex[] getInjCurrent();
 
-	void setInjCurrent(DComplexMatrix1D injCurrent);
+	void setInjCurrent(Complex[] injCurrent);
 
 	void setITerminalUpdated(boolean Value);
 
@@ -45,16 +45,16 @@ public interface PCElement extends CktElement {
 	void initPropertyValues(int ArrayOffset);
 
 	/* Get present values of terminal */
-	void getCurrents(DComplexMatrix1D Curr);
+	void getCurrents(Complex[] Curr);
 
 	/* Get present values of terminal */
-	void getInjCurrents(DComplexMatrix1D Curr);
+	void getInjCurrents(Complex[] Curr);
 
 	void computeIterminal();
 
 	int injCurrents();
 
-	void calcYPrimContribution(DComplexMatrix1D Curr);
+	void calcYPrimContribution(Complex[] Curr);
 
 	void dumpProperties(PrintStream F, boolean Complete);
 

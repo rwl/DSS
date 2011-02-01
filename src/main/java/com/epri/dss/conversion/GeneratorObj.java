@@ -2,8 +2,6 @@ package com.epri.dss.conversion;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
 

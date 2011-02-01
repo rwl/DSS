@@ -3,6 +3,8 @@ package com.epri.dss.common;
 import java.io.PrintStream;
 import java.util.List;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
 import com.epri.dss.common.impl.DSSCircuit.ReductionStrategy;
@@ -380,7 +382,7 @@ public interface Circuit extends NamedObject {
 	boolean isBusNameRedefined();
 
 	/* Total Circuit PD Element losses */
-	double[] getLosses();
+	Complex getLosses();
 
 	void setLoadMultiplier(double Value);
 

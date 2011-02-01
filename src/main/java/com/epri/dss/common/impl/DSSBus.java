@@ -1,10 +1,10 @@
 package com.epri.dss.common.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.general.impl.NamedObjectImpl;
+import com.epri.dss.shared.CMatrix;
 
 public class DSSBus extends NamedObjectImpl implements Bus {
 
@@ -19,13 +19,13 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	private int Allocation;
 	private int[] RefNo;
 
-	protected DComplexMatrix1D VBus, BusCurrent;
-	protected DComplexMatrix2D Zsc, Ysc;
+	protected Complex[] VBus, BusCurrent;
+	protected CMatrix Zsc, Ysc;
 
-    /* Coordinates */
+	/* Coordinates */
 	protected double x, y;
 	protected double kVBase;
-    /* Base kV for each node to ground (0) */
+	/* Base kV for each node to ground (0) */
 	protected double distFromMeter;
 
 	protected boolean CoordDefined, BusChecked, Keep, IsRadialBus;
@@ -39,43 +39,43 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	}
 
-	public double[] getZsc0() {
+	public Complex getZsc0() {
 		return null;
 	}
 
-	public double[] getZsc1() {
+	public Complex getZsc1() {
 		return null;
 	}
 
-	public DComplexMatrix1D getVBus() {
+	public Complex[] getVBus() {
 		return VBus;
 	}
 
-	public void setVBus(DComplexMatrix1D vBus) {
+	public void setVBus(Complex[] vBus) {
 		VBus = vBus;
 	}
 
-	public DComplexMatrix1D getBusCurrent() {
+	public Complex[] getBusCurrent() {
 		return BusCurrent;
 	}
 
-	public void setBusCurrent(DComplexMatrix1D busCurrent) {
+	public void setBusCurrent(Complex[] busCurrent) {
 		BusCurrent = busCurrent;
 	}
 
-	public DComplexMatrix2D getZsc() {
+	public CMatrix getZsc() {
 		return Zsc;
 	}
 
-	public void setZsc(DComplexMatrix2D zsc) {
+	public void setZsc(CMatrix zsc) {
 		Zsc = zsc;
 	}
 
-	public DComplexMatrix2D getYsc() {
+	public CMatrix getYsc() {
 		return Ysc;
 	}
 
-	public void setYsc(DComplexMatrix2D ysc) {
+	public void setYsc(CMatrix ysc) {
 		Ysc = ysc;
 	}
 

@@ -3,7 +3,7 @@ package com.epri.dss.control.impl;
 import java.io.File;
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.control.RegControlObj;
@@ -40,7 +40,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	private int PTphase;
 	private int ControlledPhase;
 
-	private DComplexMatrix1D VBuffer, CBuffer;
+	private Complex[] VBuffer, CBuffer;
 
 	public RegControlObjImpl(DSSClassImpl ParClass, String RegControlName) {
 		super(ParClass);
@@ -95,7 +95,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		return 0.0;
 	}
 	
-	private double[] getControlVoltage(DComplexMatrix1D VBuffer, int Nphs,
+	private Complex getControlVoltage(Complex[] VBuffer, int Nphs,
 			double PTRatio) {
 		return null;
 	}
@@ -203,12 +203,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

@@ -3,12 +3,12 @@ package com.epri.dss.conversion.impl;
 import java.io.File;
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
 
 public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
@@ -17,11 +17,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private static final int NumGenRegisters = 6;    
 	private static final int NumGenVariables = 6;
 	
-	private double[] Yeq;     // at nominal
-	private double[] Yeq95;   // at 95%
-	private double[] Yeq105;  // at 105%
+	private Complex Yeq;     // at nominal
+	private Complex Yeq95;   // at 95%
+	private Complex Yeq105;  // at 105%
 
-	private double[] CurrentLimit;
+	private Complex CurrentLimit;
 	private boolean DebugTrace;
 	/* Max allowable var change on Model=3 per iteration */
 	private double DeltaQMax;  
@@ -52,7 +52,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private int Reg_MaxkVA;
 	private int Reg_MaxkW;
 	private int Reg_Price;
-	private double[] ShapeFactor;
+	private Complex ShapeFactor;
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
 	private double ThetaHarm;  
 	private File TraceFile;
@@ -72,7 +72,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private double VMaxPU;
 	private double VMinPU;
 	/* Thevinen equivalent voltage (complex) for dynamic model */
-	private double[] Vthev;  
+	private Complex Vthev;  
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
 	private double VThevHarm;  
 	/* Thevinen equivalent voltage for dynamic model */
@@ -81,7 +81,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 * To handle cases where one conductor of load is open;
 	 * We revert to admittance for inj currents
 	 */
-	private DComplexMatrix2D YPrimOpenCond;
+	private CMatrix YPrimOpenCond;
 	/* Fixed value of y for type 7 load */
 	private double YQFixed;  
 	private boolean ShapeIsActual;
@@ -156,7 +156,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		
 	}
 	
-	private void calcYPrimMatrix(DComplexMatrix2D Ymatrix) {
+	private void calcYPrimMatrix(CMatrix Ymatrix) {
 		
 	}
 
@@ -204,8 +204,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		
 	}
 	
-	private void stickCurrInTerminalArray(DComplexMatrix1D TermArray,
-			double[] Curr, int i) {
+	private void stickCurrInTerminalArray(Complex[] TermArray,
+			Complex Curr, int i) {
 		
 	}
 
@@ -267,7 +267,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 	
 	@Override
-	protected void getTerminalCurrents(DComplexMatrix1D Curr) {
+	protected void getTerminalCurrents(Complex[] Curr) {
 		
 	}
 
@@ -439,7 +439,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	

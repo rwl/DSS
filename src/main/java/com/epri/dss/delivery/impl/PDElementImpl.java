@@ -1,6 +1,6 @@
 package com.epri.dss.delivery.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSCktElement;
@@ -35,11 +35,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public double[] getExcessKVANorm (int idxTerm) {
+	public Complex getExcessKVANorm (int idxTerm) {
 		return null;
 	}
 	
-	public double[] getExcessKVAEmerg(int idxTerm) {
+	public Complex getExcessKVAEmerg(int idxTerm) {
 		return null;
 	}
 
@@ -169,7 +169,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 

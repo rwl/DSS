@@ -3,20 +3,22 @@ package com.epri.dss.meter.impl;
 import java.io.File;
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.meter.SystemMeter;
 
 public class SystemMeterImpl implements SystemMeter {
 
 	private double kWh, dkWh,
-    	kvarh, dkvarh,
-    	peakkW,
-    	peakkVA,
-    	Losseskwh,  dLosseskWh,
-    	Losseskvarh, dlosseskvarh,
-    	PeakLosseskW;
-    private boolean FirstSampleAfterReset, This_Meter_DIFileIsOpen;
-    private File SystemDIFile;
-    private double[] cPower, cLosses;
+		kvarh, dkvarh,
+		peakkW,
+		peakkVA,
+		Losseskwh,  dLosseskWh,
+		Losseskvarh, dlosseskvarh,
+		PeakLosseskW;
+	private boolean FirstSampleAfterReset, This_Meter_DIFileIsOpen;
+	private File SystemDIFile;
+	private Complex cPower, cLosses;
 
 	public SystemMeterImpl() {
 		// TODO Auto-generated constructor stub

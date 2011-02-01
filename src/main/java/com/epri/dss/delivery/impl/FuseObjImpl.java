@@ -2,7 +2,7 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -32,7 +32,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	/* Offset for monitored terminal */
 	private int CondOffset; 
-	private DComplexMatrix1D cBuffer;
+	private Complex[] cBuffer;
 
 	public FuseObjImpl(DSSClassImpl ParClass, String FuseName) {
 		super(ParClass);
@@ -74,13 +74,13 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	
 	/* Get present value of terminal Curr */
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	
 	/* Returns Injextion currents */
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	

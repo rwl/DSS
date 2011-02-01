@@ -2,6 +2,8 @@ package com.epri.dss.general;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 /*
  * The LoadShape object is a general DSS object used by all circuits
  * as a reference for obtaining yearly, daily, and other load shapes.
@@ -51,7 +53,7 @@ public interface LoadShapeObj extends DSSObject {
 	int getNumPoints();
 
 	/* Get multiplier at specified time */
-	double[] getMult(double hr);
+	Complex getMult(double hr);
 
 	/* get multiplier by index */
 	double mult(int i);

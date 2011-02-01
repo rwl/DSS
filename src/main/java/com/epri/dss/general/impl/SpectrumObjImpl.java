@@ -2,7 +2,7 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.SpectrumObj;
@@ -11,7 +11,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	private double[] puMagArray;
 	private double[] AngleArray;
-	private DComplexMatrix1D MultArray;
+	private Complex[] MultArray;
 
 	protected int NumHarm;
 	protected double[] HarmArray;
@@ -41,7 +41,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	}
 
-	public double[] getMult(double h) {
+	public Complex getMult(double h) {
 		return null;
 	}
 

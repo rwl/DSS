@@ -2,10 +2,9 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.shared.CMatrix;
 
 public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	
@@ -50,7 +49,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		
 	}
 	
-	private void makeYprimWork(DComplexMatrix2D YprimWork, int iStep) {
+	private void makeYprimWork(CMatrix YprimWork, int iStep) {
 		
 	}
 	

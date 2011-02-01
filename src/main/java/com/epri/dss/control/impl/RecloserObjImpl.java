@@ -2,7 +2,7 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -43,7 +43,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	private int CondOffset; // Offset for monitored terminal
 
-	private DComplexMatrix1D cBuffer;
+	private Complex[] cBuffer;
 
 	public RecloserObjImpl(DSSClassImpl ParClass, String RecloserName) {
 		super(ParClass);
@@ -89,12 +89,12 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

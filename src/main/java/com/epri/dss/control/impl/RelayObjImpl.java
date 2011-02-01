@@ -2,7 +2,7 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -67,7 +67,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	private int CondOffset;  // Offset for monitored terminal
 
-	private DComplexMatrix1D cBuffer;  // Complexarray buffer
+	private Complex[] cBuffer;  // Complexarray buffer
 
 	public RelayObjImpl(DSSClassImpl ParClass, String RelayName) {
 		super(ParClass);
@@ -141,12 +141,12 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

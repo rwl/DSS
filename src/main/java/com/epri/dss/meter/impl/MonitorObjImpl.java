@@ -2,7 +2,7 @@ package com.epri.dss.meter.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.meter.MonitorObj;
@@ -17,8 +17,8 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	/* point to present (last) element in buffer must be incremented to add */
 	private int BufPtr;  
 
-	private DComplexMatrix1D CurrentBuffer;
-	private DComplexMatrix1D VoltageBuffer;
+	private Complex[] CurrentBuffer;
+	private Complex[] VoltageBuffer;
 
 	private int NumStateVars;
 	private double[] StateBuffer;
@@ -130,12 +130,12 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

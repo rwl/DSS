@@ -2,6 +2,8 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.ReactorObj;
 
@@ -23,8 +25,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	}
 	
 	@Override
-	public void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses) {
+	public void getLosses(Complex TotalLosses, Complex LoadLosses,
+			Complex NoLoadLosses) {
 		
 	}
 	

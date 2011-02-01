@@ -2,12 +2,12 @@ package com.epri.dss.common;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.PowerTerminal;
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.shared.CMatrix;
 
 public interface CktElement extends DSSObject {
 
@@ -51,13 +51,13 @@ public interface CktElement extends DSSObject {
 
 	void setControlElement(DSSCktElement controlElement);
 
-	DComplexMatrix1D getIterminal();
+	Complex[] getIterminal();
 
-	void setIterminal(DComplexMatrix1D iterminal);
+	void setIterminal(Complex[] iterminal);
 
-	DComplexMatrix1D getVterminal();
+	Complex[] getVterminal();
 
-	void setVterminal(DComplexMatrix1D vterminal);
+	void setVterminal(Complex[] vterminal);
 
 	double getBaseFrequency();
 
@@ -99,10 +99,10 @@ public interface CktElement extends DSSObject {
 
 	String getNextBus();
 
-	double[] getLosses();
+	Complex getLosses();
 
 	/* Get total complex power in active terminal */
-	double[] getPower(int idxTerm);
+	Complex getPower(int idxTerm);
 
 	void setConductorClosed(int Index, boolean Value);
 
@@ -114,9 +114,9 @@ public interface CktElement extends DSSObject {
 
 	int getHandle();
 
-	int getYPrim(DComplexMatrix2D Ymatrix, int Opt);
+	int getYPrim(CMatrix Ymatrix, int Opt);
 
-	DComplexMatrix1D getYPrimValues(int Opt);
+	Complex[] getYPrimValues(int Opt);
 
 	/* Max of Iterminal 1 phase currents */
 	double maxTerminalOneIMag();
@@ -129,10 +129,10 @@ public interface CktElement extends DSSObject {
 	void zeroITerminal();
 
 	/* Get present value of terminal Curr for reports */
-	void getCurrents(DComplexMatrix1D Curr);
+	void getCurrents(Complex[] Curr);
 
 	/* Returns Injextion currents */
-	void getInjCurrents(DComplexMatrix1D Curr);
+	void getInjCurrents(Complex[] Curr);
 
 	/* Applies to PC Elements Puts straight into Solution Array */
 	int injCurrents();
@@ -154,17 +154,17 @@ public interface CktElement extends DSSObject {
 	/* Make a positive Sequence Model */
 	void makePosSequence();
 
-	void getTermVoltages(int iTerm, DComplexMatrix1D VBuffer);
+	void getTermVoltages(int iTerm, Complex[] VBuffer);
 
-	void getPhasePower(DComplexMatrix1D PowerBuffer);
+	void getPhasePower(Complex[] PowerBuffer);
 
-	void getPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer);
+	void getPhaseLosses(int Num_Phases, Complex[] LossBuffer);
 
-	void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses);
+	void getLosses(Complex TotalLosses, Complex LoadLosses,
+			Complex NoLoadLosses);
 
-	void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
-			double[] ZeroModeLosses);
+	void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
+			Complex ZeroModeLosses);
 
 	String getPropertyValue(int Index);
 

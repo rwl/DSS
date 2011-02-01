@@ -2,7 +2,7 @@ package com.epri.dss.conversion.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -21,7 +21,7 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 	/* Upline Sensor for this element */
 	private MeterElement SensorObj;
 
-	private DComplexMatrix1D InjCurrent;
+	private Complex[] InjCurrent;
 
 	public PCElementImpl(DSSClassImpl ParClass) {
 		super(ParClass);
@@ -62,11 +62,11 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 		SensorObj = sensorObj;
 	}
 
-	public DComplexMatrix1D getInjCurrent() {
+	public Complex[] getInjCurrent() {
 		return InjCurrent;
 	}
 
-	public void setInjCurrent(DComplexMatrix1D injCurrent) {
+	public void setInjCurrent(Complex[] injCurrent) {
 		InjCurrent = injCurrent;
 	}
 
@@ -78,7 +78,7 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 		return false;
 	}
 
-	protected void getTerminalCurrents(DComplexMatrix1D Curr) {
+	protected void getTerminalCurrents(Complex[] Curr) {
 
 	}
 
@@ -99,12 +99,12 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	/* Get present values of terminal */
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 
 	}
 
 	/* Get present values of terminal */
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 
 	}
 
@@ -116,7 +116,7 @@ public class PCElementImpl extends DSSCktElement implements PCElement {
 		return 0;
 	}
 
-	public void calcYPrimContribution(DComplexMatrix1D Curr) {
+	public void calcYPrimContribution(Complex[] Curr) {
 
 	}
 

@@ -2,7 +2,7 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -49,7 +49,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	private int ControlActionHandle;
 	private int CondOffset; // Offset for monitored terminal
 
-	private DComplexMatrix1D cBuffer;    // Complexarray buffer
+	private Complex[] cBuffer;    // Complexarray buffer
 
 	public CapControlObjImpl(DSSClassImpl ParClass, String CapControlName) {
 		super(ParClass);
@@ -171,12 +171,12 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

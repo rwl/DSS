@@ -2,12 +2,12 @@ package com.epri.dss.common.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.shared.CMatrix;
 
 public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
@@ -23,15 +23,15 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	protected int nConds;
 	protected int nPhases;
 
-	protected DComplexMatrix1D ComplexBuffer;
+	protected Complex[] ComplexBuffer;
 
 	protected int IterminalSolutionCount;
 
 	protected int BusIndex;
 
-	protected DComplexMatrix2D YPrim_Series;
-	protected DComplexMatrix2D YPrim_Shunt;
-	protected DComplexMatrix2D YPrim;  // Order will be NTerms * Ncond
+	protected CMatrix YPrim_Series;
+	protected CMatrix YPrim_Shunt;
+	protected CMatrix YPrim;  // Order will be NTerms * Ncond
 
 	/* Frequency at which YPrim has been computed */
 	protected double YprimFreq;
@@ -47,8 +47,8 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	protected DSSCktElement ControlElement;
 
-	protected DComplexMatrix1D Iterminal;
-	protected DComplexMatrix1D Vterminal;
+	protected Complex[] Iterminal;
+	protected Complex[] Vterminal;
 
 	protected double BaseFrequency;
 
@@ -141,19 +141,19 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		ControlElement = controlElement;
 	}
 
-	public DComplexMatrix1D getIterminal() {
+	public Complex[] getIterminal() {
 		return Iterminal;
 	}
 
-	public void setIterminal(DComplexMatrix1D iterminal) {
+	public void setIterminal(Complex[] iterminal) {
 		Iterminal = iterminal;
 	}
 
-	public DComplexMatrix1D getVterminal() {
+	public Complex[] getVterminal() {
 		return Vterminal;
 	}
 
-	public void setVterminal(DComplexMatrix1D vterminal) {
+	public void setVterminal(Complex[] vterminal) {
 		Vterminal = vterminal;
 	}
 
@@ -242,16 +242,16 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return null;
 	}
 
-	public double[] getLosses() {
-		return new double[] {0.0, 0.0};
+	public Complex getLosses() {
+		return new Complex(0, 0);
 	}
 
 	/* Get total complex power in active terminal */
-	public double[] getPower(int idxTerm) {
-		return new double[] {0.0, 0.0};
+	public Complex getPower(int idxTerm) {
+		return new Complex(0.0, 0.0);
 	}
 
-	private void DoYprimCalcs(DComplexMatrix2D Ymatrix) {
+	private void DoYprimCalcs(CMatrix Ymatrix) {
 
 	}
 
@@ -275,11 +275,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return 0;
 	}
 
-	public int getYPrim(DComplexMatrix2D Ymatrix, int Opt) {
+	public int getYPrim(CMatrix Ymatrix, int Opt) {
 		return 0;
 	}
 
-	public DComplexMatrix1D getYPrimValues(int Opt) {
+	public Complex[] getYPrimValues(int Opt) {
 		return null;
 	}
 
@@ -302,12 +302,12 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	/* Get present value of terminal Curr for reports */
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 
 	}
 
 	/* Returns Injextion currents */
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 
 	}
 
@@ -345,25 +345,25 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	}
 
-	public void getTermVoltages(int iTerm, DComplexMatrix1D VBuffer) {
+	public void getTermVoltages(int iTerm, Complex[] VBuffer) {
 
 	}
 
-	public void getPhasePower(DComplexMatrix1D PowerBuffer) {
+	public void getPhasePower(Complex[] PowerBuffer) {
 
 	}
 
-	public void getPhaseLosses(int Num_Phases, DComplexMatrix1D LossBuffer) {
+	public void getPhaseLosses(int Num_Phases, Complex[] LossBuffer) {
 
 	}
 
-	public void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses) {
+	public void getLosses(Complex TotalLosses, Complex LoadLosses,
+			Complex NoLoadLosses) {
 
 	}
 
-	public void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
-			double[] ZeroModeLosses) {
+	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
+			Complex ZeroModeLosses) {
 
 	}
 

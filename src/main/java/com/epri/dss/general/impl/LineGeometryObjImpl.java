@@ -2,13 +2,12 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.OHLineConstants;
-import com.epri.dss.general.WireDataObj;;
+import com.epri.dss.general.WireDataObj;
+import com.epri.dss.shared.CMatrix;
 
 public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryObj {
 
@@ -55,11 +54,11 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return ActiveCond;
 	}
 
-	public DComplexMatrix2D getYCmatrix(double f, double Length, int Units) {
+	public CMatrix getYCmatrix(double f, double Length, int Units) {
 		return null;
 	}
 
-	public DComplexMatrix2D getZmatrix(double f, double Length, int Units) {
+	public CMatrix getZmatrix(double f, double Length, int Units) {
 		return null;
 	}
 

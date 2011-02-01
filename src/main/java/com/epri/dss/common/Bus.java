@@ -1,31 +1,31 @@
 package com.epri.dss.common;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.general.NamedObject;
+import com.epri.dss.shared.CMatrix;
 
 public interface Bus extends NamedObject {
 
-	double[] getZsc0();
+	Complex getZsc0();
 
-	double[] getZsc1();
+	Complex getZsc1();
 
-	DComplexMatrix1D getVBus();
+	Complex[] getVBus();
 
-	void setVBus(DComplexMatrix1D vBus);
+	void setVBus(Complex[] vBus);
 
-	DComplexMatrix1D getBusCurrent();
+	Complex[] getBusCurrent();
 
-	void setBusCurrent(DComplexMatrix1D busCurrent);
+	void setBusCurrent(Complex[] busCurrent);
 
-	DComplexMatrix2D getZsc();
+	CMatrix getZsc();
 
-	void setZsc(DComplexMatrix2D zsc);
+	void setZsc(CMatrix zsc);
 
-	DComplexMatrix2D getYsc();
+	CMatrix getYsc();
 
-	void setYsc(DComplexMatrix2D ysc);
+	void setYsc(CMatrix ysc);
 
 	double getX();
 

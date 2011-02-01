@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
@@ -56,7 +58,7 @@ public interface DSSGlobals {
 	static final int SOLUTION_ABORT = 99;
 
 	/* 120-degree shift constant */
-	static final double[] CALPHA = new double[] {-0.5, -0.866025};
+	static final Complex CALPHA = new Complex(-0.5, -0.866025);
 	static final double SQRT2 = Math.sqrt(2.0);
 	static final double SQRT3 = Math.sqrt(3.0);
 	static final double InvSQRT3 = 1.0 / SQRT3;

@@ -2,119 +2,119 @@ package com.epri.dss.conversion.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.GrowthShapeObj;
+import com.epri.dss.shared.CMatrix;
 
 public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	private boolean PFChanged;
 	/* For all types of allocation */
-    private double AllocationFactor;
-    /* for connected kVA specification */
-    private double kVAAllocationFactor;
-    private double ConnectedkVA;
-    private double kWh;
-    private double kWhDays;
-    /* For kWh billed spec */
-    private double CFactor;
-    private double AvgkW;
-    /* References for Harmonics mode */
-    private double[] HarmAng;
-    private double[] HarmMag;
-    private double LastGrowthFactor;
-    /* added FOR speedup so we don't have to search FOR growth factor a lot */
-    private int LastYear;
-    private double LoadFundamental;
-    private int LoadSolutionCount;
-    private int OpenLoadSolutionCount;
-    private double RandomMult;
-    private double[] ShapeFactor;
-    /* Base vars per phase */
-    private double varBase;
-    private double varNominal;
-    /* Base volts suitable for computing currents */
-    private double VBase;
-    private double VBase105;
-    private double VBase95;
-    /* Nominal Watts per phase */
-    private double WNominal;
-    /* at nominal */
-    private double[] Yeq;
-    private double[] Yeq105;
-    private double[] Yeq95;
-    private double[] Yneut;
-    /* To handle cases where one conductor of load is open */
-    private DComplexMatrix2D YPrimOpenCond;
-    /* Fixed value of y FOR type 7 load */
-    private double YQFixed;
+	private double AllocationFactor;
+	/* for connected kVA specification */
+	private double kVAAllocationFactor;
+	private double ConnectedkVA;
+	private double kWh;
+	private double kWhDays;
+	/* For kWh billed spec */
+	private double CFactor;
+	private double AvgkW;
+	/* References for Harmonics mode */
+	private Complex HarmAng;
+	private Complex HarmMag;
+	private double LastGrowthFactor;
+	/* added FOR speedup so we don't have to search FOR growth factor a lot */
+	private int LastYear;
+	private double LoadFundamental;
+	private int LoadSolutionCount;
+	private int OpenLoadSolutionCount;
+	private double RandomMult;
+	private Complex ShapeFactor;
+	/* Base vars per phase */
+	private double varBase;
+	private double varNominal;
+	/* Base volts suitable for computing currents */
+	private double VBase;
+	private double VBase105;
+	private double VBase95;
+	/* Nominal Watts per phase */
+	private double WNominal;
+	/* at nominal */
+	private Complex Yeq;
+	private Complex Yeq105;
+	private Complex Yeq95;
+	private Complex Yneut;
+	/* To handle cases where one conductor of load is open */
+	private CMatrix YPrimOpenCond;
+	/* Fixed value of y FOR type 7 load */
+	private double YQFixed;
 
-    // formerly private, now read-only properties for COM access
-    protected double puMean;
-    protected double puStdDev;
-    protected double CVRwattFactor;
-    protected double CVRvarFactor;
-    protected double Vmaxpu;
-    protected double VminEmerg;  // overrides system settings IF <> 0.0
-    protected double VminNormal;
-    protected double Vminpu;
-    protected boolean ExemptFromLDCurve;
-    protected boolean Fixed;   // If Fixed, always at base value
+	// formerly private, now read-only properties for COM access
+	protected double puMean;
+	protected double puStdDev;
+	protected double CVRwattFactor;
+	protected double CVRvarFactor;
+	protected double Vmaxpu;
+	protected double VminEmerg;  // overrides system settings IF <> 0.0
+	protected double VminNormal;
+	protected double Vminpu;
+	protected boolean ExemptFromLDCurve;
+	protected boolean Fixed;   // If Fixed, always at base value
 
-    /* 0 = line-neutral; 1 = Delta */
-    protected int Connection;
-    /* Daily (24 HR) load shape */
-    protected String DailyShape;
-    /* Daily load Shape FOR this load */
-    protected LoadShapeObj DailyShapeObj;
-    /* Duty cycle load shape FOR changes typically less than one hour */
-    protected String DutyShape;
-    /* Shape for this load */
-    protected LoadShapeObj DutyShapeObj;
-    /* is overloaded  Factor is the amount of overload */
-    protected double EEN_Factor;
-    /* (year, Multiplier from previous year) */
-    protected String GrowthShape;
-    /* Shape for this Growth  Curve */
-    protected GrowthShapeObj GrowthShapeObj;
-    protected Boolean HasBeenAllocated;
-    protected double kWBase;
-    protected double kVABase;
-    protected double kvarBase;
-    protected double kVLoadBase;
-    protected int LoadClass;
-    protected int NumCustomers;
-    /* 0 = kW, PF;  1 = kw, kvar;  2 = kva, PF */
-    protected int LoadSpecType;
-    protected double PFNominal;
-    protected double Rneut;
-    /* These are set to > 0 IF a line in the critical path */
-    protected double UE_Factor;
-    /* Neutral impedance */
-    protected double Xneut;
-    /* ='fixed' means no variation  exempt from variation */
-    protected String YearlyShape;
-    /* Shape for this load */
-    protected LoadShapeObj YearlyShapeObj;
-    protected String CVRshape;
-    protected LoadShapeObj CVRShapeObj;
+	/* 0 = line-neutral; 1 = Delta */
+	protected int Connection;
+	/* Daily (24 HR) load shape */
+	protected String DailyShape;
+	/* Daily load Shape FOR this load */
+	protected LoadShapeObj DailyShapeObj;
+	/* Duty cycle load shape FOR changes typically less than one hour */
+	protected String DutyShape;
+	/* Shape for this load */
+	protected LoadShapeObj DutyShapeObj;
+	/* is overloaded  Factor is the amount of overload */
+	protected double EEN_Factor;
+	/* (year, Multiplier from previous year) */
+	protected String GrowthShape;
+	/* Shape for this Growth  Curve */
+	protected GrowthShapeObj GrowthShapeObj;
+	protected Boolean HasBeenAllocated;
+	protected double kWBase;
+	protected double kVABase;
+	protected double kvarBase;
+	protected double kVLoadBase;
+	protected int LoadClass;
+	protected int NumCustomers;
+	/* 0 = kW, PF;  1 = kw, kvar;  2 = kva, PF */
+	protected int LoadSpecType;
+	protected double PFNominal;
+	protected double Rneut;
+	/* These are set to > 0 IF a line in the critical path */
+	protected double UE_Factor;
+	/* Neutral impedance */
+	protected double Xneut;
+	/* ='fixed' means no variation  exempt from variation */
+	protected String YearlyShape;
+	/* Shape for this load */
+	protected LoadShapeObj YearlyShapeObj;
+	protected String CVRshape;
+	protected LoadShapeObj CVRShapeObj;
 
-    /*
-     * Variation with voltage
-     *
-     * 1 = Constant kVA (P,Q always in same ratio)
-     * 2 = Constant impedance
-     * 3 = Constant P, Quadratic Q (Mostly motor)
-     * 4 = Linear P, Quadratic Q  (Mixed motor/resistive Use this for CVR studies
-     * 5 = Constant |I|
-     * 6 = Constant P (Variable); Q is fixed value (not variable)
-     * 7 = Constant P (Variable); Q is fixed Z (not variable)
-     */
-    protected int LoadModel;
+	/*
+	 * Variation with voltage
+	 *
+	 * 1 = Constant kVA (P,Q always in same ratio)
+	 * 2 = Constant impedance
+	 * 3 = Constant P, Quadratic Q (Mostly motor)
+	 * 4 = Linear P, Quadratic Q  (Mixed motor/resistive Use this for CVR studies
+	 * 5 = Constant |I|
+	 * 6 = Constant P (Variable); Q is fixed value (not variable)
+	 * 7 = Constant P (Variable); Q is fixed Z (not variable)
+	 */
+	protected int LoadModel;
 
 
 	public LoadObjImpl(DSSClassImpl ParClass) {
@@ -394,7 +394,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	}
 
-	private void calcYPrimMatrix(DComplexMatrix2D Ymatrix) {
+	private void calcYPrimMatrix(CMatrix Ymatrix) {
 
 	}
 
@@ -434,8 +434,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return 0.0;
 	}
 
-	private void stickCurrInTerminalArray(DComplexMatrix1D TermArray,
-			double[] Curr, int i) {
+	private void stickCurrInTerminalArray(Complex[] TermArray,
+			Complex Curr, int i) {
 
 	}
 
@@ -505,7 +505,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return 0.0;
 	}
 
-	protected void getTerminalCurrents(DComplexMatrix1D Curr) {
+	protected void getTerminalCurrents(Complex[] Curr) {
 
 	}
 
@@ -521,7 +521,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return 0;
 	}
 
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 
 	}
 

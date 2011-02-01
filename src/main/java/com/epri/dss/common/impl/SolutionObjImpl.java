@@ -2,75 +2,75 @@ package com.epri.dss.common.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/* Array of delta V for Newton iteration */
-	private DComplexMatrix1D dV;
+	private Complex[] dV;
 	private double Frequency;
 
 	protected int Algorithm;      // NORMALSOLVE or NEWTONSOLVE
-    protected DComplexMatrix1D AuxCurrents;  // For injections like AutoAdd
-    protected boolean ControlActionsDone;
-    protected int ControlIteration;
-    protected int ControlMode;     // EVENTDRIVEN, TIMEDRIVEN
-    protected double ConvergenceTolerance;
-    protected boolean ConvergedFlag;
-    protected int DefaultControlMode;    // EVENTDRIVEN, TIMEDRIVEN
-    protected int DefaultLoadModel;     // 1=POWERFLOW  2=ADMITTANCE
-    protected boolean DoAllHarmonics;
-    protected boolean DynamicsAllowed;
-    protected DynamicsRec DynaVars;
-    protected double[] ErrorSaved;
-    protected boolean FirstIteration;
-    /* Flag set to true if something has altered the frequency */
-    protected boolean FrequencyChanged;
-    protected int year;
-    protected double Harmonic;
-    protected double[] HarmonicList;
-    protected int HarmonicListSize;
-    protected int intHour;
-    protected double dblHour;
-    /* Main (system) Y matrix */
-    protected DComplexMatrix2D Ysystem;
-    /* Series Y matrix */
-    protected DComplexMatrix2D Yseries;
-    /* either Ysystem or Yseries */
-    protected DComplexMatrix2D Y;
-    protected double IntervalHrs;   // Solution interval since last solution, hrs.
-    protected boolean IsDynamicModel;
-    protected boolean IsHarmonicModel;
-    protected int Iteration;
-    protected int LoadModel;        // 1=POWERFLOW  2=ADMITTANCE
-    protected boolean LastSolutionWasDirect;
-    protected boolean LoadsNeedUpdating;
-    protected int MaxControlIterations;
-    protected double MaxError;
-    protected int MaxIterations;
-    protected int MostIterationsDone;
-    protected double[] NodeVbase;
-    protected int NumberOfTimes;  // Number of times to solve
-    protected boolean PreserveNodeVoltages;
-    protected int RandomType;     //0 = none; 1 = gaussian; 2 = UNIFORM
-    protected boolean SeriesYInvalid;
-    protected int SolutionCount;  // Counter incremented for each solution
-    protected boolean SolutionInitialized;
-    protected boolean SystemYChanged;
-    protected boolean UseAuxCurrents;
-    protected double[] VmagSaved;
-    protected boolean VoltageBaseChanged;
+	protected Complex[] AuxCurrents;  // For injections like AutoAdd
+	protected boolean ControlActionsDone;
+	protected int ControlIteration;
+	protected int ControlMode;     // EVENTDRIVEN, TIMEDRIVEN
+	protected double ConvergenceTolerance;
+	protected boolean ConvergedFlag;
+	protected int DefaultControlMode;    // EVENTDRIVEN, TIMEDRIVEN
+	protected int DefaultLoadModel;     // 1=POWERFLOW  2=ADMITTANCE
+	protected boolean DoAllHarmonics;
+	protected boolean DynamicsAllowed;
+	protected DynamicsRec DynaVars;
+	protected double[] ErrorSaved;
+	protected boolean FirstIteration;
+	/* Flag set to true if something has altered the frequency */
+	protected boolean FrequencyChanged;
+	protected int year;
+	protected double Harmonic;
+	protected double[] HarmonicList;
+	protected int HarmonicListSize;
+	protected int intHour;
+	protected double dblHour;
+	/* Main (system) Y matrix */
+	protected CMatrix Ysystem;
+	/* Series Y matrix */
+	protected CMatrix Yseries;
+	/* either Ysystem or Yseries */
+	protected CMatrix Y;
+	protected double IntervalHrs;   // Solution interval since last solution, hrs.
+	protected boolean IsDynamicModel;
+	protected boolean IsHarmonicModel;
+	protected int Iteration;
+	protected int LoadModel;        // 1=POWERFLOW  2=ADMITTANCE
+	protected boolean LastSolutionWasDirect;
+	protected boolean LoadsNeedUpdating;
+	protected int MaxControlIterations;
+	protected double MaxError;
+	protected int MaxIterations;
+	protected int MostIterationsDone;
+	protected double[] NodeVbase;
+	protected int NumberOfTimes;  // Number of times to solve
+	protected boolean PreserveNodeVoltages;
+	protected int RandomType;     //0 = none; 1 = gaussian; 2 = UNIFORM
+	protected boolean SeriesYInvalid;
+	protected int SolutionCount;  // Counter incremented for each solution
+	protected boolean SolutionInitialized;
+	protected boolean SystemYChanged;
+	protected boolean UseAuxCurrents;
+	protected double[] VmagSaved;
+	protected boolean VoltageBaseChanged;
 
-    /* Main System Voltage Array */
-    protected DComplexMatrix1D NodeV;
-    /* Main System Currents Array */
-    protected DComplexMatrix1D Currents;
+	/* Main System Voltage Array */
+	protected Complex[] NodeV;
+	/* Main System Currents Array */
+	protected Complex[] Currents;
 
 	public SolutionObjImpl(DSSClass parClass, String solutionName) {
 		super(parClass);
@@ -89,7 +89,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		return false;
 	}
 
-	private int SolveSystem(DComplexMatrix1D V) {
+	private int SolveSystem(Complex[] V) {
 		return 0;
 	}
 
@@ -162,11 +162,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Algorithm = algorithm;
 	}
 
-	public DComplexMatrix1D getAuxCurrents() {
+	public Complex[] getAuxCurrents() {
 		return AuxCurrents;
 	}
 
-	public void setAuxCurrents(DComplexMatrix1D auxCurrents) {
+	public void setAuxCurrents(Complex[] auxCurrents) {
 		AuxCurrents = auxCurrents;
 	}
 
@@ -314,27 +314,27 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		this.dblHour = dblHour;
 	}
 
-	public DComplexMatrix2D getYsystem() {
+	public CMatrix getYsystem() {
 		return Ysystem;
 	}
 
-	public void setYsystem(DComplexMatrix2D ysystem) {
+	public void setYsystem(CMatrix ysystem) {
 		Ysystem = ysystem;
 	}
 
-	public DComplexMatrix2D getYseries() {
+	public CMatrix getYseries() {
 		return Yseries;
 	}
 
-	public void setYseries(DComplexMatrix2D yseries) {
+	public void setYseries(CMatrix yseries) {
 		Yseries = yseries;
 	}
 
-	public DComplexMatrix2D getY() {
+	public CMatrix getY() {
 		return Y;
 	}
 
-	public void setY(DComplexMatrix2D y) {
+	public void setY(CMatrix y) {
 		Y = y;
 	}
 
@@ -514,19 +514,19 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		VoltageBaseChanged = voltageBaseChanged;
 	}
 
-	public DComplexMatrix1D getNodeV() {
+	public Complex[] getNodeV() {
 		return NodeV;
 	}
 
-	public void setNodeV(DComplexMatrix1D nodeV) {
+	public void setNodeV(Complex[] nodeV) {
 		NodeV = nodeV;
 	}
 
-	public DComplexMatrix1D getCurrents() {
+	public Complex[] getCurrents() {
 		return Currents;
 	}
 
-	public void setCurrents(DComplexMatrix1D currents) {
+	public void setCurrents(Complex[] currents) {
 		Currents = currents;
 	}
 

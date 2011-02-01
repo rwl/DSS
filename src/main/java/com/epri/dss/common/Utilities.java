@@ -4,9 +4,6 @@ import java.io.PrintStream;
 
 import com.epri.dss.delivery.PDElement;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
-
 public interface Utilities {
 
 //	int compareTextShortest(String S1, String S2);
@@ -70,7 +67,7 @@ public interface Utilities {
 //	String strReal(double Value, int NumDecimals);
 //	void dumpAllDSSCommands(String Filename);
 //	void dumpAllocationFactors(String Filename);
-//	void dumpComplexMatrix(PrintStream F, DComplexMatrix2D AMatrix);
+//	void dumpComplexMatrix(PrintStream F, CMatrix AMatrix);
 //	double nearestBasekV(double kV);
 //	double presentTimeInSec();
 //	int doResetFaults();
@@ -79,7 +76,7 @@ public interface Utilities {
 //	int getNodeNum(int NodeRef);
 //	void initStringToNull(String S);
 //	/* Multiply only imaginary part by a real */
-//	double[] CmulReal_im(double[] a, double Mult);  
+//	Complex CmulReal_im(Complex a, double Mult);  
 //	//boolean isValidNumericField(Edit NumberField);
 //	double maxDblArrayValue(int npts, double[] dbls);
 //	int iMaxAbsdblArrayValue(int npts, double[] dbls);
@@ -99,17 +96,17 @@ public interface Utilities {
 //	void logThisEvent(String EventName);
 //
 //	/* Routines for doing common things to complex numbers */
-//	void rotatePhasorDeg(double[] Phasor, double h, double AngleDeg);
-//	void rotatePhasorRad(double[] Phasor, double h, double AngleRad);
-//	void convertComplexArrayToPolar(DComplexMatrix1D Buffer, int N);
-//	void convertComplexArrayToPowerandPF(DComplexMatrix1D Buffer, int N);
-//	double[] residual(Object p, int Nph);
-//	double[] residualPolar(Object p, int Nph);
-//	double powerFactor(double[] S);
+//	void rotatePhasorDeg(Complex Phasor, double h, double AngleDeg);
+//	void rotatePhasorRad(Complex Phasor, double h, double AngleRad);
+//	void convertComplexArrayToPolar(Complex[] Buffer, int N);
+//	void convertComplexArrayToPowerandPF(Complex[] Buffer, int N);
+//	Complex residual(Object p, int Nph);
+//	Complex residualPolar(Object p, int Nph);
+//	double powerFactor(Complex S);
 //	double convertPFToPFRange2(double value);
 //	double convertPFRange2ToPF(double value);
 //	/* Multiply a complex array times a double */
-//	void CmulArray(DComplexMatrix1D pc, double Multiplier, int size);  
+//	void CmulArray(Complex[] pc, double Multiplier, int size);  
 //
 //	/* Support for going in and out of Dynamics Mode and Harmonics Mode */
 //	void calcInitialMachineStates();
@@ -120,7 +117,7 @@ public interface Utilities {
 //
 //	double getMaxPUVoltage();
 //	double getMinPUVoltage(boolean ignoreNeutrals);
-//	double[] getTotalPowerFromSources();
+//	Complex getTotalPowerFromSources();
 //	int getMaxCktElementSize();
 //	int getUniqueNodeNumber(String sBusName, int StartNode);
 //

@@ -2,10 +2,10 @@ package com.epri.dss.common;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public interface SolutionObj extends DSSObject {
@@ -26,9 +26,9 @@ public interface SolutionObj extends DSSObject {
 
 	void setAlgorithm(int algorithm);
 
-	DComplexMatrix1D getAuxCurrents();
+	Complex[] getAuxCurrents();
 
-	void setAuxCurrents(DComplexMatrix1D auxCurrents);
+	void setAuxCurrents(Complex[] auxCurrents);
 
 	boolean isControlActionsDone();
 
@@ -102,17 +102,17 @@ public interface SolutionObj extends DSSObject {
 
 	void setDblHour(double dblHour);
 
-	DComplexMatrix2D getYsystem();
+	CMatrix getYsystem();
 
-	void setYsystem(DComplexMatrix2D ysystem);
+	void setYsystem(CMatrix ysystem);
 
-	DComplexMatrix2D getYseries();
+	CMatrix getYseries();
 
-	void setYseries(DComplexMatrix2D yseries);
+	void setYseries(CMatrix yseries);
 
-	DComplexMatrix2D getY();
+	CMatrix getY();
 
-	void setY(DComplexMatrix2D y);
+	void setY(CMatrix y);
 
 	double getIntervalHrs();
 
@@ -202,13 +202,13 @@ public interface SolutionObj extends DSSObject {
 
 	void setVoltageBaseChanged(boolean voltageBaseChanged);
 
-	DComplexMatrix1D getNodeV();
+	Complex[] getNodeV();
 
-	void setNodeV(DComplexMatrix1D nodeV);
+	void setNodeV(Complex[] nodeV);
 
-	DComplexMatrix1D getCurrents();
+	Complex[] getCurrents();
 
-	void setCurrents(DComplexMatrix1D currents);
+	void setCurrents(Complex[] currents);
 
 	void zeroAuxCurrents();
 

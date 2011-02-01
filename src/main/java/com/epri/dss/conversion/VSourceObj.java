@@ -1,16 +1,16 @@
 package com.epri.dss.conversion;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import com.epri.dss.shared.CMatrix;
 
 public interface VSourceObj extends PCElement {
 	
-	DComplexMatrix2D getZ();
+	CMatrix getZ();
 
-	void setZ(DComplexMatrix2D z);
+	void setZ(CMatrix z);
 
-	DComplexMatrix2D getZinv();
+	CMatrix getZinv();
 
-	void setZinv(DComplexMatrix2D zinv);
+	void setZinv(CMatrix zinv);
 
 	double getVMag();
 

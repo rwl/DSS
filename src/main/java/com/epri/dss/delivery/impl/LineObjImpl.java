@@ -2,13 +2,14 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.LineGeometryObj;
-import com.epri.dss.general.WireDataObj;;
+import com.epri.dss.general.WireDataObj;
+import com.epri.dss.shared.CMatrix;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
 	
@@ -23,12 +24,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private boolean LineCodeSpecified;
 	private int EarthModel;
 	
-	protected DComplexMatrix2D Zinv;
+	protected CMatrix Zinv;
 	
 	
 	/* Base Frequency Series Z matrix  per unit length */
-	protected DComplexMatrix2D Z;   
-	protected DComplexMatrix2D Yc;
+	protected CMatrix Z;   
+	protected CMatrix Yc;
 
 	protected double R1;
 	protected double X1;
@@ -84,19 +85,19 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		
 	}
 
-	public DComplexMatrix2D getZ() {
+	public CMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(DComplexMatrix2D z) {
+	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
-	public DComplexMatrix2D getYc() {
+	public CMatrix getYc() {
 		return Yc;
 	}
 
-	public void setYc(DComplexMatrix2D yc) {
+	public void setYc(CMatrix yc) {
 		Yc = yc;
 	}
 
@@ -269,13 +270,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	}
 	
 	@Override
-	public void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses) {
+	public void getLosses(Complex TotalLosses, Complex LoadLosses,
+			Complex NoLoadLosses) {
 		
 	}
 	
-	public void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
-			double[] ZeroSeqLosses) {
+	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
+			Complex ZeroSeqLosses) {
 		
 	}
 

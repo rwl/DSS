@@ -1,5 +1,7 @@
 package com.epri.dss.common.impl;
 
+import org.apache.commons.math.complex.Complex;
+
 public class YMatrix {
 	
 	/* Options for building Y matrix */
@@ -41,7 +43,7 @@ public class YMatrix {
 
 	// return 1 for success, 2 for singular, 0 for invalid handle
 	// factors matrix if needed
-	public static long solveSparseSet(long id, double[] x, double[] b) {
+	public static long solveSparseSet(long id, Complex[] x, Complex[] b) {
 		return 0;
 	}
 
@@ -99,7 +101,7 @@ public class YMatrix {
 	}
 
 	// return 1 for success, 0 for invalid handle or a node number out of range
-	public static long addPrimitiveMatrix(long id, long nOrder, long Nodes, double[] Mat) {
+	public static long addPrimitiveMatrix(long id, long nOrder, long Nodes, Complex Mat) {
 		return 0;
 	}
 
@@ -113,14 +115,14 @@ public class YMatrix {
 	// pColP must be of length nColP == nBus + 1
 	// pRowIdx and pMat of length nNZ, which
 //	    must be at least the value returned by GetNNZ
-	public static long getCompressedMatrix(long id, long nColP, long nNZ, long pColP, long pRowIdx, double[] Mat) {
+	public static long getCompressedMatrix(long id, long nColP, long nNZ, long pColP, long pRowIdx, Complex Mat) {
 		return 0;
 	}
 
 	// fill sparse matrix in triplet form
 	// return 1 for success, 0 for invalid handle, 2 for invalid array sizes
 	// pRows, pCols, and Mat must all be of length nNZ
-	public static long getTripletMatrix(long id, long nNZ, long pRows, long pCols, double[] Mat) {
+	public static long getTripletMatrix(long id, long nNZ, long pRows, long pCols, Complex Mat) {
 		return 0;
 	}
 
@@ -131,12 +133,12 @@ public class YMatrix {
 	}
 
 	// AddMatrixElement is deprecated, use AddPrimitiveMatrix instead
-	public static long addMatrixElement(long id, long i, long j, double[] Value) {
+	public static long addMatrixElement(long id, long i, long j, Complex Value) {
 		return 0;
 	}
 
 	// GetMatrixElement is deprecated, use GetCompressedMatrix or GetTripletMatrix
-	public static long getMatrixElement(long id, long i, long j, double[] Value) {
+	public static long getMatrixElement(long id, long i, long j, Complex Value) {
 		return 0;
 	}
 

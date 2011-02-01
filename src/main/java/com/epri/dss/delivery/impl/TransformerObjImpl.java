@@ -2,12 +2,12 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.delivery.Winding;
+import com.epri.dss.shared.CMatrix;
 
 public class TransformerObjImpl extends PDElementImpl implements TransformerObj {
 	
@@ -24,11 +24,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	protected double[] XSC;     // per unit SC measurements
 	protected double VABase;    // FOR impedances
 
-	protected DComplexMatrix2D ZB;
-	protected DComplexMatrix2D Y_1Volt;
-	protected DComplexMatrix2D Y_Term;
-	protected DComplexMatrix2D Y_1Volt_NL;   // No Load Y's
-	protected DComplexMatrix2D Y_Term_NL;
+	protected CMatrix ZB;
+	protected CMatrix Y_1Volt;
+	protected CMatrix Y_Term;
+	protected CMatrix Y_1Volt_NL;   // No Load Y's
+	protected CMatrix Y_Term_NL;
 
 	protected double Y_Terminal_Freqmult;
 
@@ -126,8 +126,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		return 0.0;
 	}
 	
-	private void buildYPrimComponent(DComplexMatrix2D YPrim_Component,
-			DComplexMatrix2D Y_Terminal) {
+	private void buildYPrimComponent(CMatrix YPrim_Component,
+			CMatrix Y_Terminal) {
 		
 	}
 	
@@ -256,8 +256,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	@Override
-	public void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses) {
+	public void getLosses(Complex TotalLosses, Complex LoadLosses,
+			Complex NoLoadLosses) {
 		
 	}
 	
@@ -300,7 +300,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		
 	}
 	
-	public void getWindingVoltages(int iWind, DComplexMatrix1D VBuffer) {
+	public void getWindingVoltages(int iWind, Complex[] VBuffer) {
 		
 	}
 

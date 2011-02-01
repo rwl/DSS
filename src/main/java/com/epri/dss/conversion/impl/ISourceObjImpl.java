@@ -2,7 +2,7 @@ package com.epri.dss.conversion.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.ISourceObj;
@@ -23,7 +23,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		// TODO Auto-generated constructor stub
 	}
 	
-	private double[] getBaseCurr() {
+	private Complex getBaseCurr() {
 		return null;
 	}
 
@@ -57,12 +57,12 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

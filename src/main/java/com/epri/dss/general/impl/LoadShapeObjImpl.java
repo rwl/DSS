@@ -2,6 +2,8 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.LoadShapeObj;
 
@@ -47,7 +49,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	}
 
 	/* Get multiplier at specified time */
-	public double[] getMult(double hr) {
+	public Complex getMult(double hr) {
 		return null;
 	}
 

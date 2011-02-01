@@ -1,6 +1,6 @@
 package com.epri.dss.meter;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSCktElement;
@@ -35,13 +35,13 @@ public interface MeterElement extends CktElement {
 
 	void setPhsAllocationFactor(double[] phsAllocationFactor);
 
-	DComplexMatrix1D getCalculatedCurrent();
+	Complex[] getCalculatedCurrent();
 
-	void setCalculatedCurrent(DComplexMatrix1D calculatedCurrent);
+	void setCalculatedCurrent(Complex[] calculatedCurrent);
 
-	DComplexMatrix1D getCalculatedVoltage();
+	Complex[] getCalculatedVoltage();
 
-	void setCalculatedVoltage(DComplexMatrix1D calculatedVoltage);
+	void setCalculatedVoltage(Complex[] calculatedVoltage);
 
 	double getAvgAllocFactor();
 

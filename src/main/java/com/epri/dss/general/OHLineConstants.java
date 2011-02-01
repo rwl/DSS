@@ -1,6 +1,8 @@
 package com.epri.dss.general;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.CMatrix;
 
 /**
  * Manages the geometry data and calculates the impedance matrices for an
@@ -40,19 +42,19 @@ public interface OHLineConstants {
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
 	 */
-	DComplexMatrix2D getYCmatrix(double f, double Lngth, int Units);
+	CMatrix getYCmatrix(double f, double Lngth, int Units);
 	
 	/* Earth return impedance at present frequency for ij element */
-	double[] getZe(int i, int j);
+	Complex getZe(int i, int j);
 	
 	/* Internal impedance of i-th conductor for present frequency */
-	double[] getZint(int i);
+	Complex getZint(int i);
 
 	/*
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
 	 */
-	DComplexMatrix2D getZmatrix(double f, double Lngth, int Units);
+	CMatrix getZmatrix(double f, double Lngth, int Units);
 	
 	void setGMR(int i, int units, double Value);
 	

@@ -1,5 +1,7 @@
 package com.epri.dss.general;
 
+import org.apache.commons.math.complex.Complex;
+
 /**
  * Harmonic Spectrum specified as Harmonic, pct magnitude and angle.
  *
@@ -16,6 +18,6 @@ public interface SpectrumObj extends DSSObject {
 
 	void setHarmArray(double[] harmArray);
 
-	double[] getMult(double h);
+	Complex getMult(double h);
 
 }

@@ -8,12 +8,19 @@ import java.io.PrintStream;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.DSSGlobals;
+import com.epri.dss.common.Feeder;
+import com.epri.dss.conversion.Storage;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
+import com.epri.dss.general.LineSpacing;
 import com.epri.dss.general.LoadShape;
 import com.epri.dss.general.Spectrum;
+import com.epri.dss.general.TCC_Curve;
+import com.epri.dss.general.WireData;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.Monitor;
+import com.epri.dss.meter.Sensor;
 import com.epri.dss.parser.Parser;
 import com.epri.dss.parser.impl.ParserImpl;
 import com.epri.dss.shared.PointerList;
@@ -41,7 +48,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private PointerList Circuits;
 	private PointerList DSSObjs;
 
-    // Auxiliary parser for use by anybody for reparsing values
+	// Auxiliary parser for use by anybody for reparsing values
 	private Parser AuxParser = new ParserImpl();
 
 	private boolean ErrorPending = false;
@@ -82,7 +89,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private DSSClass SolutionClass;
 	private EnergyMeter EnergyMeterClass;
 	private Feeder FeederClass;
-	private DSSMonitor MonitorClass;
+	private Monitor MonitorClass;
 	private Sensor SensorClass;
 	private TCC_Curve TCC_CurveClass;
 	private WireData WireDataClass;
@@ -166,7 +173,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		LastClassReferenced = lastClassReferenced;
 	}
 
-	public DSSObjectImpl getActiveDSSObject() {
+	public DSSObject getActiveDSSObject() {
 		return ActiveDSSObject;
 	}
 
@@ -446,11 +453,11 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		FeederClass = feederClass;
 	}
 
-	public DSSMonitor getMonitorClass() {
+	public Monitor getMonitorClass() {
 		return MonitorClass;
 	}
 
-	public void setMonitorClass(DSSMonitor monitorClass) {
+	public void setMonitorClass(Monitor monitorClass) {
 		MonitorClass = monitorClass;
 	}
 
@@ -509,8 +516,8 @@ public class DSSGlobalsImpl implements DSSGlobals {
 
 	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
 		String Msg = String.format("Error %d Reported From DSS Intrinsic Function: ", ErrNum)+ CRLF  + S
-        + CRLF   + CRLF + "Error Description: " + CRLF + Emsg
-        + CRLF   + CRLF + "Probable Cause: " + CRLF + ProbCause;
+		+ CRLF   + CRLF + "Error Description: " + CRLF + Emsg
+		+ CRLF   + CRLF + "Probable Cause: " + CRLF + ProbCause;
 
 		if (!NoFormsAllowed) {
 
@@ -530,18 +537,18 @@ public class DSSGlobalsImpl implements DSSGlobals {
 
 	public void doSimpleMsg(String S, int ErrNum) {
 		if (!NoFormsAllowed) {
-	       if (In_Redirect) {
-	    	   int RetVal = DSSMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
-	    	   if (RetVal == -1)
-	    		   Redirect_Abort = true;
-	       } else {
-	    	   DSSInfoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
-	       }
+		if (In_Redirect) {
+			int RetVal = DSSMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
+			if (RetVal == -1)
+				Redirect_Abort = true;
+		} else {
+			DSSInfoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
+		}
 		}
 
-	    LastErrorMessage = S;
-	    ErrorNumber = ErrNum;
-	    AppendGlobalResultCRLF(S);
+		LastErrorMessage = S;
+		ErrorNumber = ErrNum;
+		AppendGlobalResultCRLF(S);
 	}
 
 	public void clearAllCircuits() {
@@ -560,8 +567,8 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		String ObjName, ObjClass;
 
 		// Split off Obj class and name
-	    int dotpos = Param.indexOf(".");
-	    switch (dotpos) {
+		int dotpos = Param.indexOf(".");
+		switch (dotpos) {
 		case 0:
 			// assume it is all name; class defaults
 			ObjName = Param;
@@ -570,27 +577,27 @@ public class DSSGlobalsImpl implements DSSGlobals {
 			ObjName = Param.substring(dotpos + 1, Param.length());
 		}
 
-	    if (ObjClass.length() > 0)
-	    	SetObjectClass(ObjClass);
+		if (ObjClass.length() > 0)
+			SetObjectClass(ObjClass);
 
 
-	    ActiveDSSClass = DSSClassList.Get(LastClassReferenced);
-	    if (ActiveDSSClass != null) {
-	        if (!ActiveDSSClass.SetActive(ObjName)) {
-	        	// scroll through list of objects untill a match
-	        	DoSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.CmdString, 904);
-	        } else {
-		        switch (ActiveDSSObject.DSSObjType) {
+		ActiveDSSClass = DSSClassList.Get(LastClassReferenced);
+		if (ActiveDSSClass != null) {
+			if (!ActiveDSSClass.SetActive(ObjName)) {
+				// scroll through list of objects untill a match
+				DoSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.CmdString, 904);
+			} else {
+				switch (ActiveDSSObject.DSSObjType) {
 				case DSS_OBJECT:
 					// do nothing for general DSS object
 				default:
 					// for circuit types, set ActiveCircuit Element, too
 					ActiveCircuit.ActiveCktElement = ActiveDSSClass.GetActiveObj();
 				}
-	        }
-	    } else {
-	        DoSimpleMsg("Error! Active object type/class is not set.", 905);
-	    }
+			}
+		} else {
+			DoSimpleMsg("Error! Active object type/class is not set.", 905);
+		}
 	}
 
 	public int setActiveBus(String BusName) {
@@ -619,34 +626,34 @@ public class DSSGlobalsImpl implements DSSGlobals {
 
 		}
 
-	    DSSDataDirectory = PathName;
+		DSSDataDirectory = PathName;
 
-	    // Put a \ on the end if not supplied. Allow a null specification.
-	    if (DSSDataDirectory.length() > 0) {
+		// Put a \ on the end if not supplied. Allow a null specification.
+		if (DSSDataDirectory.length() > 0) {
 //	    	ChDir(DSSDataDirectory);   // Change to specified directory
-	    	if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
-	    			DSSDataDirectory = DSSDataDirectory + "\\";
-	    	}
-	    }
+			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
+					DSSDataDirectory = DSSDataDirectory + "\\";
+			}
+		}
 	}
 
 
 	public void makeNewCircuit(String Name) {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
-	        ActiveDSSObject = ActiveSolutionObj;
-	        /*Handle := */ Circuits.Add(ActiveCircuit);
-	        NumCircuits += 1;
-	        S = Parser.Remainder;    // Pass remainder of string on to vsource.
-	        /* Create a default Circuit */
-	        SolutionABort = false;
-	        /* Voltage source named "source" connected to SourceBus */
-	        DSSExecutive.Command = "New object=vsource.source Bus1=SourceBus " + S;  // Load up the parser as if it were read in
+			ActiveDSSObject = ActiveSolutionObj;
+			/*Handle := */ Circuits.Add(ActiveCircuit);
+			NumCircuits += 1;
+			S = Parser.Remainder;    // Pass remainder of string on to vsource.
+			/* Create a default Circuit */
+			SolutionABort = false;
+			/* Voltage source named "source" connected to SourceBus */
+			DSSExecutive.Command = "New object=vsource.source Bus1=SourceBus " + S;  // Load up the parser as if it were read in
 		} else {
-	         DoErrorMsg("MakeNewCircuit",
-	                    "Cannot create new circuit.",
-	                    "Max. Circuits Exceeded." + CRLF +
-	                    "(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
+			DoErrorMsg("MakeNewCircuit",
+						"Cannot create new circuit.",
+						"Max. Circuits Exceeded." + CRLF +
+						"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
 		}
 	}
 

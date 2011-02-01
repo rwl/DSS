@@ -1,6 +1,6 @@
 package com.epri.dss.delivery;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
+import org.apache.commons.math.complex.Complex;
 
 public interface TransformerObj extends PDElement {
 	
@@ -96,6 +96,6 @@ public interface TransformerObj extends PDElement {
 	
 	public int rotatePhases(int iPhs);
 	
-	public void getWindingVoltages(int iWind, DComplexMatrix1D VBuffer);
+	public void getWindingVoltages(int iWind, Complex[] VBuffer);
 
 }

@@ -1,8 +1,9 @@
 package com.epri.dss.general.impl;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.general.OHLineConstants;
+import com.epri.dss.shared.CMatrix;
 
 public class OHLineConstantsImpl implements OHLineConstants {
 	
@@ -19,12 +20,12 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	private double[] GMR;   // m
 	private double[] radius;
 
-	private DComplexMatrix2D Zmatrix;   // in ohms/m
-	private DComplexMatrix2D YCmatrix;   // siemens/m   --- jwC
+	private CMatrix Zmatrix;   // in ohms/m
+	private CMatrix YCmatrix;   // siemens/m   --- jwC
 
 	/* These two do not exist until Kron Reduction is executed */
-	private DComplexMatrix2D Zreduced;  
-	private DComplexMatrix2D YCreduced;  
+	private CMatrix Zreduced;  
+	private CMatrix YCreduced;  
 
 	private double Frequency;  // Frequency for which impedances are computed
 	private double w;  // 2piF
@@ -64,17 +65,17 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
 	 */
-	public DComplexMatrix2D getYCmatrix(double f, double Lngth, int Units) {
+	public CMatrix getYCmatrix(double f, double Lngth, int Units) {
 		return null;
 	}
 	
 	/* Earth return impedance at present frequency for ij element */
-	public double[] getZe(int i, int j) {
+	public Complex getZe(int i, int j) {
 		return null;
 	}
 	
 	/* Internal impedance of i-th conductor for present frequency */
-	public double[] getZint(int i) {
+	public Complex getZint(int i) {
 		return null;
 	}
 
@@ -82,7 +83,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
 	 */
-	public DComplexMatrix2D getZmatrix(double f, double Lngth, int Units) {
+	public CMatrix getZmatrix(double f, double Lngth, int Units) {
 		return null;
 	}
 	

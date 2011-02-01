@@ -2,11 +2,11 @@ package com.epri.dss.conversion.impl;
 
 import java.io.PrintStream;
 
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.conversion.VSourceObj;
+import com.epri.dss.shared.CMatrix;
 
 public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	
@@ -22,8 +22,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 	private int ScanType;
 	
-	protected DComplexMatrix2D Z;  // Base Frequency Series Z matrix
-	protected DComplexMatrix2D Zinv;
+	protected CMatrix Z;  // Base Frequency Series Z matrix
+	protected CMatrix Zinv;
 	protected double VMag;
 
 	protected double kVBase;
@@ -40,19 +40,19 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		
 	}
 	
-	public DComplexMatrix2D getZ() {
+	public CMatrix getZ() {
 		return Z;
 	}
 
-	public void setZ(DComplexMatrix2D z) {
+	public void setZ(CMatrix z) {
 		Z = z;
 	}
 
-	public DComplexMatrix2D getZinv() {
+	public CMatrix getZinv() {
 		return Zinv;
 	}
 
-	public void setZinv(DComplexMatrix2D zinv) {
+	public void setZinv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 
@@ -118,12 +118,12 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	}
 	
 	@Override
-	public void getInjCurrents(DComplexMatrix1D Curr) {
+	public void getInjCurrents(Complex[] Curr) {
 		
 	}
 	
 	@Override
-	public void getCurrents(DComplexMatrix1D Curr) {
+	public void getCurrents(Complex[] Curr) {
 		
 	}
 	

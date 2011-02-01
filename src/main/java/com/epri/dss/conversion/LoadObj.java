@@ -2,11 +2,10 @@ package com.epri.dss.conversion;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.general.GrowthShapeObj;
 import com.epri.dss.general.LoadShapeObj;
-
-import cern.colt.matrix.tdcomplex.DComplexMatrix1D;
-import cern.colt.matrix.tdcomplex.DComplexMatrix2D;
 
 public interface LoadObj extends PCElement {
 
@@ -170,7 +169,7 @@ public interface LoadObj extends PCElement {
 
 	int injCurrents();
 
-	void getInjCurrents(DComplexMatrix1D Curr);
+	void getInjCurrents(Complex[] Curr);
 
 	void initHarmonics();
 

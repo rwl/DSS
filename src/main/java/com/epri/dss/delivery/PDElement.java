@@ -1,11 +1,13 @@
 package com.epri.dss.delivery;
 
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.common.CktElement;
 import com.epri.dss.meter.MeterElement;
 
 public interface PDElement extends CktElement {
 	
-	double[] getExcessKVAEmerg(int idxTerm);
+	Complex getExcessKVAEmerg(int idxTerm);
 
 	double getNormAmps();
 
