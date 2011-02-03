@@ -27,23 +27,23 @@ public interface CktElement extends DSSObject {
 
 	void setChecked(boolean checked);
 
-	boolean isHasEnergyMeter();
+	boolean hasEnergyMeter();
 
 	void setHasEnergyMeter(boolean hasEnergyMeter);
 
-	boolean isHasSensorObj();
+	boolean hasSensorObj();
 
 	void setHasSensorObj(boolean hasSensorObj);
 
-	boolean isIsIsolated();
+	boolean isIsolated();
 
 	void setIsIsolated(boolean isIsolated);
 
-	boolean isHasControl();
+	boolean hasControl();
 
 	void setHasControl(boolean hasControl);
 
-	boolean isIsPartofFeeder();
+	boolean isPartofFeeder();
 
 	void setIsPartofFeeder(boolean isPartofFeeder);
 
@@ -68,6 +68,8 @@ public interface CktElement extends DSSObject {
 	void setTerminals(PowerTerminal[] terminals);
 
 	void setActiveTerminal(PowerTerminal activeTerminal);
+	
+	PowerTerminal getActiveTerminal();
 
 	void setYprimFreq(double Value);
 
@@ -85,9 +87,9 @@ public interface CktElement extends DSSObject {
 
 	boolean isEnabled();
 
-	void setActiveTerminal(int Value);
+	void setActiveTerminalIdx(int Value);
 
-	int getActiveTerminal();
+	int getActiveTerminalIdx();
 
 	boolean getConductorClosed(int Index);
 

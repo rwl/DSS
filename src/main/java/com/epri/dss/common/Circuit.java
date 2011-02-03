@@ -8,40 +8,27 @@ import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
-import com.epri.dss.common.impl.DSSCircuit.ReductionStrategy;
+import com.epri.dss.common.impl.DSSCircuit.ReductionStrategyType;
 import com.epri.dss.common.impl.DSSCktElement;
-import com.epri.dss.control.CapControl;
 import com.epri.dss.control.CapControlObj;
 import com.epri.dss.control.ControlElem;
-import com.epri.dss.control.RegControl;
 import com.epri.dss.control.RegControlObj;
-import com.epri.dss.control.SwtControl;
 import com.epri.dss.control.SwtControlObj;
-import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
-import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
-import com.epri.dss.conversion.Storage;
 import com.epri.dss.conversion.StorageObj;
-import com.epri.dss.delivery.Capacitor;
 import com.epri.dss.delivery.CapacitorObj;
-import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
-import com.epri.dss.delivery.Line;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
-import com.epri.dss.delivery.Transformer;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.NamedObject;
-import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MeterElement;
-import com.epri.dss.meter.Monitor;
 import com.epri.dss.meter.MonitorObj;
-import com.epri.dss.meter.Sensor;
 import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
@@ -356,9 +343,9 @@ public interface Circuit extends NamedObject {
 
 	void setCurrentDirectory(String currentDirectory);
 
-	ReductionStrategy getReductionStrategy();
+	ReductionStrategyType getReductionStrategy();
 
-	void setReductionStrategy(ReductionStrategy reductionStrategy);
+	void setReductionStrategy(ReductionStrategyType reductionStrategy);
 
 	double getReductionMaxAngle();
 
@@ -453,8 +440,8 @@ public interface Circuit extends NamedObject {
 
 	void freeTopology();
 
-	List<List<Object>> getBusAdjacentPDLists();
+	List[] getBusAdjacentPDLists();
 
-	List<List<Object>> getBusAdjacentPCLists();
+	List[] getBusAdjacentPCLists();
 
 }

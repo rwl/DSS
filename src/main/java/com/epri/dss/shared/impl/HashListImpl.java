@@ -87,6 +87,10 @@ public class HashListImpl implements HashList {
 	public int find(String S) {
 		return 0;
 	}
+	
+	public int findNext() {
+		return 0;
+	}
 
 	public int findAbbrev(String S) {
 		return 0;

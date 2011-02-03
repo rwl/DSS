@@ -29,6 +29,8 @@ public interface HashList {
 
 	/* repeat find for duplicate string in same hash list */
 	int find(String S);
+	
+	int findNext();
 
 	int findAbbrev(String S);
 

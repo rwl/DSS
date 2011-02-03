@@ -18,7 +18,6 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.SolutionObj;
-import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.control.CapControlObj;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.RegControlObj;
@@ -28,19 +27,19 @@ import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.delivery.CapacitorObj;
-import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.forms.DSSForms;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.impl.NamedObjectImpl;
-import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MeterElement;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.meter.SensorObj;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.HashList;
@@ -49,7 +48,7 @@ import com.epri.dss.shared.impl.HashListImpl;
 
 public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
-	public enum ReductionStrategy {
+	public enum ReductionStrategyType {
 		rsDefault,
 		rsStubs,
 		rsTapEnds,
@@ -82,7 +81,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	/* topology from the first source, lazy evaluation */
 	private CktTree Branch_List;
 	/* bus adjacency lists of PD and PC elements */
-	private List<List<Object>> BusAdjPC, BusAdjPD;
+	private List<Object>[] BusAdjPC, BusAdjPD;
 
 	protected String CaseName;
 
@@ -124,7 +123,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected ControlQueue ControlQueue;
 
 	protected SolutionObj Solution;
-	protected AutoAddImpl AutoAddObj;
+	protected AutoAdd AutoAddObj;
 
 	// For AutoAdd stuff
 	protected double UEWeight, LossWeight;
@@ -179,7 +178,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	protected String CurrentDirectory;
 
-	protected ReductionStrategy ReductionStrategy;
+	protected ReductionStrategyType ReductionStrategy;
 	protected double ReductionMaxAngle, ReductionZmag;
 	protected String ReductionStrategyString;
 
@@ -330,7 +329,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.SavedBuses = null;
 		this.SavedBusNames = null;
 
-		this.ReductionStrategy = ReductionStrategy.rsDefault;
+		this.ReductionStrategy = ReductionStrategyType.rsDefault;
 		this.ReductionMaxAngle = 15.0;
 		this.ReductionZmag = 0.02;
 
@@ -398,171 +397,171 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		DeviceRef = deviceRef;
 	}
 
-	public ArrayList getFaults() {
+	public ArrayList<FaultObj> getFaults() {
 		return Faults;
 	}
 
-	public void setFaults(ArrayList faults) {
+	public void setFaults(ArrayList<FaultObj> faults) {
 		Faults = faults;
 	}
 
-	public ArrayList getCktElements() {
+	public ArrayList<CktElement> getCktElements() {
 		return CktElements;
 	}
 
-	public void setCktElements(ArrayList cktElements) {
+	public void setCktElements(ArrayList<CktElement> cktElements) {
 		CktElements = cktElements;
 	}
 
-	public ArrayList getPDElements() {
+	public ArrayList<PDElement> getPDElements() {
 		return PDElements;
 	}
 
-	public void setPDElements(ArrayList pDElements) {
+	public void setPDElements(ArrayList<PDElement> pDElements) {
 		PDElements = pDElements;
 	}
 
-	public ArrayList getPCElements() {
+	public ArrayList<PCElement> getPCElements() {
 		return PCElements;
 	}
 
-	public void setPCElements(ArrayList pCElements) {
+	public void setPCElements(ArrayList<PCElement> pCElements) {
 		PCElements = pCElements;
 	}
 
-	public ArrayList getDSSControls() {
+	public ArrayList<ControlElem> getDSSControls() {
 		return DSSControls;
 	}
 
-	public void setDSSControls(ArrayList dSSControls) {
+	public void setDSSControls(ArrayList<ControlElem> dSSControls) {
 		DSSControls = dSSControls;
 	}
 
-	public ArrayList getSources() {
+	public ArrayList<PCElement> getSources() {
 		return Sources;
 	}
 
-	public void setSources(ArrayList sources) {
+	public void setSources(ArrayList<PCElement> sources) {
 		Sources = sources;
 	}
 
-	public ArrayList getMeterElements() {
+	public ArrayList<MeterElement> getMeterElements() {
 		return MeterElements;
 	}
 
-	public void setMeterElements(ArrayList meterElements) {
+	public void setMeterElements(ArrayList<MeterElement> meterElements) {
 		MeterElements = meterElements;
 	}
 
-	public ArrayList getSensors() {
+	public ArrayList<SensorObj> getSensors() {
 		return Sensors;
 	}
 
-	public void setSensors(ArrayList sensors) {
+	public void setSensors(ArrayList<SensorObj> sensors) {
 		Sensors = sensors;
 	}
 
-	public ArrayList getMonitors() {
+	public ArrayList<MonitorObj> getMonitors() {
 		return Monitors;
 	}
 
-	public void setMonitors(ArrayList monitors) {
+	public void setMonitors(ArrayList<MonitorObj> monitors) {
 		Monitors = monitors;
 	}
 
-	public ArrayList getEnergyMeters() {
+	public ArrayList<EnergyMeterObj> getEnergyMeters() {
 		return EnergyMeters;
 	}
 
-	public void setEnergyMeters(ArrayList energyMeters) {
+	public void setEnergyMeters(ArrayList<EnergyMeterObj> energyMeters) {
 		EnergyMeters = energyMeters;
 	}
 
-	public ArrayList getGenerators() {
+	public ArrayList<GeneratorObj> getGenerators() {
 		return Generators;
 	}
 
-	public void setGenerators(ArrayList generators) {
+	public void setGenerators(ArrayList<GeneratorObj> generators) {
 		Generators = generators;
 	}
 
-	public ArrayList getStorageElements() {
+	public ArrayList<StorageObj> getStorageElements() {
 		return StorageElements;
 	}
 
-	public void setStorageElements(ArrayList storageElements) {
+	public void setStorageElements(ArrayList<StorageObj> storageElements) {
 		StorageElements = storageElements;
 	}
 
-	public ArrayList getSubstations() {
+	public ArrayList<DSSObject> getSubstations() {
 		return Substations;
 	}
 
-	public void setSubstations(ArrayList substations) {
+	public void setSubstations(ArrayList<DSSObject> substations) {
 		Substations = substations;
 	}
 
-	public ArrayList getTransformers() {
+	public ArrayList<TransformerObj> getTransformers() {
 		return Transformers;
 	}
 
-	public void setTransformers(ArrayList transformers) {
+	public void setTransformers(ArrayList<TransformerObj> transformers) {
 		Transformers = transformers;
 	}
 
-	public ArrayList getCapControls() {
+	public ArrayList<CapControlObj> getCapControls() {
 		return CapControls;
 	}
 
-	public void setCapControls(ArrayList capControls) {
+	public void setCapControls(ArrayList<CapControlObj> capControls) {
 		CapControls = capControls;
 	}
 
-	public ArrayList getRegControls() {
+	public ArrayList<RegControlObj> getRegControls() {
 		return RegControls;
 	}
 
-	public void setRegControls(ArrayList regControls) {
+	public void setRegControls(ArrayList<RegControlObj> regControls) {
 		RegControls = regControls;
 	}
 
-	public ArrayList getLines() {
+	public ArrayList<LineObj> getLines() {
 		return Lines;
 	}
 
-	public void setLines(ArrayList lines) {
+	public void setLines(ArrayList<LineObj> lines) {
 		Lines = lines;
 	}
 
-	public ArrayList getLoads() {
+	public ArrayList<LoadObj> getLoads() {
 		return Loads;
 	}
 
-	public void setLoads(ArrayList loads) {
+	public void setLoads(ArrayList<LoadObj> loads) {
 		Loads = loads;
 	}
 
-	public ArrayList getShuntCapacitors() {
+	public ArrayList<CapacitorObj> getShuntCapacitors() {
 		return ShuntCapacitors;
 	}
 
-	public void setShuntCapacitors(ArrayList shuntCapacitors) {
+	public void setShuntCapacitors(ArrayList<CapacitorObj> shuntCapacitors) {
 		ShuntCapacitors = shuntCapacitors;
 	}
 
-	public ArrayList getFeeders() {
+	public ArrayList<FeederObj> getFeeders() {
 		return Feeders;
 	}
 
-	public void setFeeders(ArrayList feeders) {
+	public void setFeeders(ArrayList<FeederObj> feeders) {
 		Feeders = feeders;
 	}
 
-	public ArrayList getSwtControls() {
+	public ArrayList<SwtControlObj> getSwtControls() {
 		return SwtControls;
 	}
 
-	public void setSwtControls(ArrayList swtControls) {
+	public void setSwtControls(ArrayList<SwtControlObj> swtControls) {
 		SwtControls = swtControls;
 	}
 
@@ -582,11 +581,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		Solution = solution;
 	}
 
-	public AutoAddImpl getAutoAddObj() {
+	public AutoAdd getAutoAddObj() {
 		return AutoAddObj;
 	}
 
-	public void setAutoAddObj(AutoAddImpl autoAddObj) {
+	public void setAutoAddObj(AutoAdd autoAddObj) {
 		AutoAddObj = autoAddObj;
 	}
 
@@ -958,11 +957,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		CurrentDirectory = currentDirectory;
 	}
 
-	public ReductionStrategy getReductionStrategy() {
+	public ReductionStrategyType getReductionStrategy() {
 		return ReductionStrategy;
 	}
 
-	public void setReductionStrategy(ReductionStrategy reductionStrategy) {
+	public void setReductionStrategy(ReductionStrategyType reductionStrategy) {
 		ReductionStrategy = reductionStrategy;
 	}
 
@@ -1250,12 +1249,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	private boolean saveFeeders() {
-		String SaveDir, CurrDir;
+		String CurrDir;
 //		EnergyMeter Meter;
 
 		boolean Result = true;
 		/* Write out all energy meter  zones to separate subdirectories */
-		SaveDir = System.getProperty("user.dir");
+//		String SaveDir = System.getProperty("user.dir");
 		for (EnergyMeterObj Meter : EnergyMeters) {
 			CurrDir = Meter.getName();
 			if (new File(CurrDir).mkdir()) {
@@ -1290,7 +1289,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			DSSGlobals.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
 		}
 
-		return false;
+		return Result;
 	}
 
 	/* Reallocate the device list to improve the performance of searches */
@@ -1440,7 +1439,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		// Make a new subfolder in the present folder based on the circuit
 		// name and a unique sequence number.
 		boolean Result = false;
-		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
+//		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
 		String CurrDir;
 		
 		boolean Success = false;
@@ -1526,11 +1525,15 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public void processBusDefs() {
+		String BusName;
+		int NNodes = 0;
 		int np = ActiveCktElement.getNPhases();
 		int NCond = ActiveCktElement.getNConds();
 
-		Parser.Token = ActiveCktElement.FirstBus;     // use parser functions to decode
-		for (int iTerm = 0; iTerm < ActiveCktElement.Nterms; iTerm++) {
+		// use parser functions to decode
+		Parser.getInstance().setToken(ActiveCktElement.getFirstBus());
+		
+		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
 			boolean NodesOK = true;
 			// Assume normal phase rotation  for default
 			for (int i = 0; i < np; i++)
@@ -1542,47 +1545,48 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				NodeBuffer[i] = 0;
 
 			// Parser will override bus connection if any specified
-			BusName = Parser.ParseAsBusName(NNodes, NodeBuffer);
+			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer); // TODO: Check NNodes gets set.
 
 			// Check for error in node specification
 			for (int j = 0; j < NNodes; j++) {
 				if (NodeBuffer[j] < 0) {
-					int retval = DSSMessageDlg("Error in Node specification for Element: \""
-						+ ActiveCktElement.ParentClass.Name + "." + Name + "\"" + CRLF +
-						"Bus Spec: \"" + Parser.Token + "\"", false);
+					int retval = DSSForms.messageDlg("Error in Node specification for Element: \""
+						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
+						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					NodesOK = false;
 					if (retval == -1) {
 						AbortBusProcess = true;
-						DSSGlobals.getInstance().AppendGlobalResult("Aborted bus process.");
+						DSSGlobals.getInstance().appendGlobalResult("Aborted bus process.");
 						return;
 					}
 					break;
 				}
 			}
 
-
 			// Node -Terminal Connnections
 			// Caution: Magic -- AddBus replaces values in nodeBuffer to correspond
 			// with global node reference number.
 			if (NodesOK) {
-				ActiveCktElement.ActiveTerminalIdx = iTerm;
-				ActiveCktElement.ActiveTerminal.BusRef = AddBus(BusName, Ncond);
-				SetNodeRef(iTerm, NodeBuffer);  // for active circuit
+				ActiveCktElement.setActiveTerminalIdx(iTerm);
+				ActiveCktElement.getActiveTerminal().setBusRef(addBus(BusName, NCond));
+				ActiveCktElement.setNodeRef(iTerm, NodeBuffer);  // for active circuit
 			}
-			Parser.Token = NextBus;
+			Parser.getInstance().setToken(ActiveCktElement.getNextBus());
 		}
 	}
 
-	/* Redo all Buslists, nodelists */
+	/**
+	 * Redo all BusLists, NodeLists
+	 */
 	public void reProcessBusDefs() {
-		if (LogEvents) Utilities.LogThisEvent("Reprocessing Bus Definitions");
+		if (LogEvents) Utilities.logThisEvent("Reprocessing Bus Definitions");
 
 		AbortBusProcess = false;
-		SaveBusInfo();  // So we don't have to keep re-doing this
+		saveBusInfo();  // So we don't have to keep re-doing this
 		// Keeps present definitions of bus objects until new ones created
 
 		// get rid of old bus lists
-		BusList.Free();  // Clears hash list of Bus names for adding more
+//		BusList.Free();  // Clears hash list of Bus names for adding more
 		BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
 
 		NumBuses = 0;  // Leave allocations same, but start count over
@@ -1590,20 +1594,19 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		// Now redo all enabled circuit elements
 		CktElement CktElementSave = ActiveCktElement;
-		ActiveCktElement = CktElements.First();
-		while (ActiveCktElement != null) {
-			if (ActiveCktElement.isEnabled) ProcessBusDefs();
+		for (int i = 0; i < CktElements.size(); i++) {
+			ActiveCktElement = CktElements.get(i);
+			if (ActiveCktElement.isEnabled()) processBusDefs();
 			if (AbortBusProcess) return;
-			ActiveCktElement = CktElements.Next();
 		}
 
 		ActiveCktElement = CktElementSave;  // restore active circuit element
 
-		for (int i = 0; i < NumBuses; i++) Buses[i].AllocateBusVoltages();
-		for (int i = 0; i < array.length; i++) Buses[i].AllocateBusCurrents();
+		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
+		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
 
-		RestoreBusInfo();     // frees old bus info, too
-		DoResetMeterZones();  // Fix up meter zones to correspond
+		restoreBusInfo();     // frees old bus info, too
+		doResetMeterZones();  // Fix up meter zones to correspond
 
 		BusNameRedefined = false;  // Get ready for next time
 	}
@@ -1613,50 +1616,48 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		unlocked so that all changes to the circuit will result in rebuilding
 		the lists */
 		if (!MeterZonesComputed || !ZonesLocked) {
-			if (LogEvents) Utilities.LogThisEvent("Resetting Meter Zones");
-			DSSGlobals.getInstance().EnergyMeterClass.ResetMeterZonesAll();
+			if (LogEvents) Utilities.logThisEvent("Resetting Meter Zones");
+			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
 			MeterZonesComputed = true;
-			if (LogEvents) Utilities.LogThisEvent("Done Resetting Meter Zones");
+			if (LogEvents) Utilities.logThisEvent("Done Resetting Meter Zones");
 		}
 
-		FreeTopology();
+		freeTopology();
 	}
 
 	public int setElementActive(String FullObjectName) {
 		int Result = 0;
+		String DevType = "", DevName = "";
 
-		Utilities.ParseObjectClassandName(FullObjectName, DevType, DevName);
-		DevClassIndex = ClassNames.Find(DevType);
+		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);  // TODO: Check DevType and DevName get set.
+		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType);
 		if (DevClassIndex == 0)
-			DevClassIndex = DSSGlobals.getInstance().LastClassReferenced;
-		Devindex = DeviceList.Find(DevName);
+			DevClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
+		int DevIndex = DeviceList.find(DevName);
 		while (DevIndex >= 0) {
-			if (DeviceRef[Devindex].CktElementClass == DevClassIndex) {  // we got a match
-				DSSGlobals.getInstance().ActiveDSSClass = DSSGlobals.getInstance().DSSClassList.Get(DevClassIndex);
-				DSSGlobals.getInstance().LastClassReferenced = DevClassIndex;
-				Result = DeviceRef[Devindex].devHandle;
+			if (DeviceRef[DevIndex].CktElementClass == DevClassIndex) {  // we got a match
+				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(DevClassIndex));
+				DSSGlobals.getInstance().setLastClassReferenced(DevClassIndex);
+				Result = DeviceRef[DevIndex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
-				ActiveCktElement = CktElements.Get(Result);
+				ActiveCktElement = CktElements.get(Result);
 				break;
 			}
-			DevIndex = Devicelist.FindNext();   // Could be duplicates
+			DevIndex = DeviceList.findNext();   // Could be duplicates
 		}
 
-		DSSGlobals.getInstance().CmdResult = Result;
+		DSSGlobals.getInstance().setCmdResult(Result);
 
 		return Result;
 	}
 
 	public void invalidateAllPCElements() {
-		CktElement p = PCElements.Get_First();
-		while (p != null) {
-			p.YprimInvalid = true;
-			p = PCElements.Next();
-		}
+		for (PCElement p : PCElements) 
+			p.setYprimInvalid(true);
 
 		// Force rebuild of matrix on next solution
-		Solution.SystemYChanged = true;
+		Solution.setSystemYChanged(true);
 	}
 
 	public void debugDump(PrintStream F) {
@@ -1665,65 +1666,64 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		F.println("NumDevices= " + NumDevices);
 		F.println("BusList:");
 		for (int i = 0; i < NumBuses; i++) {
-			F.print("  %12s", BusList.Get(i));
-			F.print(" (" + Buses[i].NumNodesThisBus + " Nodes)");
-			for (int j = 0; j < Buses[i].NumNodesThisBus; j++) {
-				F.print(" " + Buses[i].GetNum(j));
+			F.printf("  %12s", BusList.get(i));
+			F.printf(" (" + Buses[i].getNumNodesThisBus() + " Nodes)");
+			for (int j = 0; j < Buses[i].getNumNodesThisBus(); j++) {
+				F.print(" " + Buses[i].getNum(j));
 			}
 			F.println();
 		}
 		F.println("DeviceList:");
 		for (int i = 0; i < NumDevices; i++) {
-			F.println("  %12s", DeviceList.Get(i));
-			ActiveCktElement = CktElements.Get(i);
+			F.printf("  %12s%s", DeviceList.get(i), DSSGlobals.CRLF);
+			ActiveCktElement = CktElements.get(i);
 			if (!ActiveCktElement.isEnabled())
 				F.print("  DISABLED");
 			F.println();
 		}
 		F.println("NodeToBus Array:");
 		for (int i = 0; i < NumNodes; i++) {
-		int j = MapNodeToBus[i].BusRef;
-		F.print("  " + i + " " + j + " (=" +BusList.Get(j) + "." + MapNodeToBus[i].NodeNum + ")");
-		F.println();
+			int j = MapNodeToBus[i].BusRef;
+			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].NodeNum + ")");
+			F.println();
 		}
 	}
 
 	/* Access to topology from the first source */
 	public CktTree getTopology() {
-		DSSCktElement Elem;
+//		DSSCktElement Elem;
 
 		if (Branch_List == null) {
 			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
-			Elem = CktElements.Get_First();
-			while (elem != null) {
-				Elem.Checked = false;
-				for (int i = 0; i < Elem.Nterms; i++) {
-					Elem.Terminals[i].Checked = false;
-				}
-				Elem.IsIsolated = true; // till proven otherwise
-				Elem = CktElements.Next();
+			for (CktElement elem : CktElements) {
+				elem.setChecked(false);
+				for (int i = 0; i < elem.getNTerms(); i++) 
+					elem.getTerminals()[i].setChecked(false);
+				elem.setIsIsolated(true); // till proven otherwise
 			}
-			for (int i = 0; i < NumBuses; i++) {
-				Buses[i].BusChecked = false;
-			}
-			Branch_List = CktTreeImpl.GetIsolatedSubArea(Sources.First, true);  // calls back to build adjacency lists
+
+			for (int i = 0; i < NumBuses; i++) 
+				Buses[i].setBusChecked(false);
+			
+			Branch_List = CktTreeImpl.getIsolatedSubArea(Sources.get(0), true);  // calls back to build adjacency lists
 		}
 		return Branch_List;
 	}
 
 	public void freeTopology() {
-		if (Branch_List != null) Branch_List.Free();
+//		if (Branch_List != null) Branch_List.Free();
 		Branch_List = null;
-		if (BusAdjPC != null) CktTreeImpl.FreeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPC != null)
+			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
-	public List<List<Object>> getBusAdjacentPDLists() {
-		if (BusAdjPD == null) CktTreeImpl.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+	public List<Object>[] getBusAdjacentPDLists() {
+		if (BusAdjPD == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPD;
 	}
 
-	public List<List<Object>> getBusAdjacentPCLists() {
-		if (BusAdjPC == null) CktTreeImpl.BuildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+	public List<Object>[] getBusAdjacentPCLists() {
+		if (BusAdjPC == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPC;
 	}
 

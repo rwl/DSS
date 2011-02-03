@@ -93,7 +93,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		Checked = checked;
 	}
 
-	public boolean isHasEnergyMeter() {
+	public boolean hasEnergyMeter() {
 		return HasEnergyMeter;
 	}
 
@@ -101,7 +101,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		HasEnergyMeter = hasEnergyMeter;
 	}
 
-	public boolean isHasSensorObj() {
+	public boolean hasSensorObj() {
 		return HasSensorObj;
 	}
 
@@ -109,7 +109,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		HasSensorObj = hasSensorObj;
 	}
 
-	public boolean isIsIsolated() {
+	public boolean isIsolated() {
 		return IsIsolated;
 	}
 
@@ -117,7 +117,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		IsIsolated = isIsolated;
 	}
 
-	public boolean isHasControl() {
+	public boolean hasControl() {
 		return HasControl;
 	}
 
@@ -125,7 +125,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		HasControl = hasControl;
 	}
 
-	public boolean isIsPartofFeeder() {
+	public boolean isPartofFeeder() {
 		return IsPartofFeeder;
 	}
 
@@ -176,6 +176,10 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public void setActiveTerminal(PowerTerminal activeTerminal) {
 		ActiveTerminal = activeTerminal;
 	}
+	
+	public PowerTerminal getActiveTerminal() {
+		return ActiveTerminal;
+	}
 
 	/* set freq and recompute YPrim. */
 	private void setFreq(double value) {
@@ -214,11 +218,11 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		return this.Enabled;
 	}
 
-	public void setActiveTerminal(int Value) {
+	public void setActiveTerminalIdx(int Value) {
 
 	}
 
-	public int getActiveTerminal() {
+	public int getActiveTerminalIdx() {
 		return this.ActiveTerminalIdx;
 	}
 

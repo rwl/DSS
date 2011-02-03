@@ -1,12 +1,16 @@
 package com.epri.dss.shared.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.epri.dss.common.CktElement;
 import com.epri.dss.shared.CktTree;
 
 public class CktTreeImpl implements CktTree {
 
 	public class CktTreeNode {
 
-		private PointerList ChildBranches;
+		private ArrayList ChildBranches;
 		private int NumToBuses, ToBusPtr;
 		private int[] ToBusList;
 
@@ -174,6 +178,20 @@ public class CktTreeImpl implements CktTree {
 	/* Get lexical level of present node */
 	public int getLevel() {
 		return 0;
+	}
+	
+	// build a tree of connected elements beginning at StartElement
+	// Analyze = TRUE will check for loops, isolated components, and parallel lines (takes longer)
+	public static CktTree getIsolatedSubArea(CktElement StartElement, boolean Analyze) {
+		return null;
+	}
+	
+	public static void buildActiveBusAdjacencyLists(List[] lstPD, List[] lstPC) {
+		
+	}
+	
+	public static void freeAndNilBusAdjacencyLists(List[] lstPD, List[] lstPC) {
+		
 	}
 
 }
