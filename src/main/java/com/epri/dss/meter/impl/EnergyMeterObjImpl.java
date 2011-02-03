@@ -15,10 +15,6 @@ import com.epri.dss.shared.impl.CktTreeImpl.CktTreeNode;
 
 public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterObj {
 	
-	private static final int NumEMVbase = 7;
-	// Total Number of energy meter registers
-	private static final int NumEMRegisters = 32 + 5 * NumEMVbase;   
-	
 	private boolean FirstSampleAfterReset;
 	private boolean ExcessFlag;
 	private boolean ZoneIsRadial;

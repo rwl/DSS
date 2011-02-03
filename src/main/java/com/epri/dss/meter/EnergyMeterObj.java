@@ -38,6 +38,10 @@ import com.epri.dss.shared.CktTree;
  *
  */
 public interface EnergyMeterObj extends MeterElement {
+	
+	public static final int NumEMVbase = 7;
+	// Total number of energy meter registers
+	public static final int NumEMRegisters = 32 + 5 * NumEMVbase;   
 
 	String[] getRegisterNames();
 

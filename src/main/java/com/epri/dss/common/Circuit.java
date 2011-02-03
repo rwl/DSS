@@ -180,17 +180,17 @@ public interface Circuit extends NamedObject {
 
 	void setLossWeight(double lossWeight);
 
-	int getNumUEregs();
+	int getNumUERegs();
 
-	void setNumUEregs(int numUEregs);
+	void setNumUERegs(int numUERegs);
 
 	int getNumLossRegs();
 
 	void setNumLossRegs(int numLossRegs);
 
-	int[] getUEregs();
+	int[] getUERegs();
 
-	void setUEregs(int[] uEregs);
+	void setUERegs(int[] uEregs);
 
 	int[] getLossRegs();
 

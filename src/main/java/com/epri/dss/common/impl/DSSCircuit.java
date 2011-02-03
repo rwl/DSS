@@ -42,6 +42,7 @@ import com.epri.dss.meter.MeterElement;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CktTree;
+import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.HashList;
 import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.HashListImpl;
@@ -128,8 +129,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	// For AutoAdd stuff
 	protected double UEWeight, LossWeight;
 
-	protected int NumUEregs, NumLossRegs;
-	protected int[] UEregs, LossRegs;
+	protected int NumUERegs, NumLossRegs;
+	protected int[] UERegs, LossRegs;
 
 	protected double CapacityStart, CapacityIncrement;
 
@@ -277,11 +278,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		// Factors for Autoadd stuff
 		this.UEWeight   = 1.0;  // Default to weighting UE same as losses
 		this.LossWeight = 1.0;
-		this.NumUEregs  = 1;
+		this.NumUERegs  = 1;
 		this.NumLossRegs = 1;
-		this.UEregs = new int[NumUEregs];
+		this.UERegs = new int[NumUERegs];
 		this.LossRegs = new int[NumLossRegs];
-		this.UEregs[0]      = 10;   // Overload UE
+		this.UERegs[0]      = 10;   // Overload UE
 		this.LossRegs[0]    = 13;   // Zone Losses
 
 		this.CapacityStart = 0.9;     // for Capacity search
@@ -605,12 +606,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		LossWeight = lossWeight;
 	}
 
-	public int getNumUEregs() {
-		return NumUEregs;
+	public int getNumUERegs() {
+		return NumUERegs;
 	}
 
-	public void setNumUEregs(int numUEregs) {
-		NumUEregs = numUEregs;
+	public void setNumUERegs(int numUERegs) {
+		NumUERegs = numUERegs;
 	}
 
 	public int getNumLossRegs() {
@@ -621,12 +622,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		NumLossRegs = numLossRegs;
 	}
 
-	public int[] getUEregs() {
-		return UEregs;
+	public int[] getUERegs() {
+		return UERegs;
 	}
 
-	public void setUEregs(int[] uEregs) {
-		UEregs = uEregs;
+	public void setUERegs(int[] uERegs) {
+		UERegs = uERegs;
 	}
 
 	public int[] getLossRegs() {
@@ -1379,54 +1380,54 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		ActiveCktElement.setHandle(CktElements.size());
 	}
 
-	/* Totalize all energymeters in the problem */
+	/**
+	 * Totalize all energy meters in the problem.
+	 */
 	public void totalizeMeters() {
-		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
+		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++) 
 			RegisterTotals[i] = 0.0;
-		}
-
-		EnergyMeter pEM = EnergyMeters.Get_First();
-		while (pEM != null) {
-			for (int i = 0; i < NumEMRegisters; i++) {
-				RegisterTotals[i] = RegisterTotals[i] + Registers[i] * TotalsMask[i];
-			}
-			pEM = EnergyMeters.Get_Next();
+		
+		for (int i = 0; i < EnergyMeters.size(); i++) {
+			EnergyMeterObj Meter = EnergyMeters.get(i);
+			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++) 
+				RegisterTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
 		}
 	}
 
 	private double sumSelectedRegisters(double[] mtrRegisters, int[] Regs, int count) {
 		double Result = 0.0;
 		for (int i = 0; i < count; i++)
-			Result = Result + mtrRegisters[Regs[i]];
+			Result += mtrRegisters[Regs[i]];
 		return Result;
 	}
 	public boolean computeCapacity() {
 		boolean Result = false;
-		if (EnergyMeters.Get_ListSize() == 0) {
+		if (EnergyMeters.size() == 0) {
 			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
-			return;
+			return Result;
 		}
 
 		if (NumUERegs == 0) {
 			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
-			return;
+			return Result;
 		}
 
-		Solution.setMode(SNAPSHOT);
+		Solution.setMode(Dynamics.SNAPSHOT);
 		LoadMultiplier = CapacityStart;
 		boolean CapacityFound = false;
 
 		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
-			EnergyMeterClass.ResetAll();
-			Solution.Solve();
-			EnergyMeterClass.SampleAll();
+			DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
+			Solution.solve();
+			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
 			totalizeMeters();
 
 			// Check for non-zero in UEregs
-			if (sumSelectedRegisters(RegisterTotals, UEregs, NumUEregs) != 0.0)
+			if (sumSelectedRegisters(RegisterTotals, UERegs, NumUERegs) != 0.0)
 				CapacityFound = true;
 			// LoadMultiplier is a property ...
-			if (!CapacityFound) LoadMultiplier = LoadMultiplier + CapacityIncrement;
+			if (!CapacityFound)
+				LoadMultiplier += CapacityIncrement;
 		}
 
 		if (LoadMultiplier > 1.0) LoadMultiplier = 1.0;
@@ -1436,14 +1437,17 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public boolean save(String Dir) {
-		// Make a new subfolder in the present folder based on the circuit name and
-		// a unique sequence number
-		String SaveDir = "";//GetCurrentDir;  // remember where to come back to
+		// Make a new subfolder in the present folder based on the circuit
+		// name and a unique sequence number.
+		boolean Result = false;
+		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
+		String CurrDir;
+		
 		boolean Success = false;
 		if (Dir.length() == 0) {
 			Dir = getName();
 
-			String CurrDir = Dir;
+			CurrDir = Dir;
 			for (int i = 0; i < 999; i++) {  // Find a unique dir name
 				File F = new File(CurrDir);
 				if (!F.exists()) {
@@ -1453,7 +1457,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 						break;
 					}
 				}
-				CurrDir = Dir + Format("%.3d", i);
+				CurrDir = Dir + String.format("%.3d", i);
 			}
 		} else {
 			File F = new File(Dir);
@@ -1473,49 +1477,50 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		if (!Success) {
 			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
-			return;
+			return Result;
 		}
 
-		SavedFileList.Clear();  // This list keeps track of all files saved
+		// This list keeps track of all files saved
+		DSSGlobals.getInstance().setSavedFileList(new String[0]);  
 
 		// Initialize so we will know when we have saved the circuit elements
-		for (int i = 0; i < CktElements.getListSize(); i++) {
-			DSSCktElement(CktElements.Get(i)).HasBeenSaved = false;
-		}
+		for (CktElement elem : CktElements) 
+			elem.setHasBeenSaved(false);
+//			DSSCktElement(elem).setHasBeenSaved(false);
 
 		// Initialize so we don't save a class twice
-		for (int i = 0; i < DSSClassList.getListSize(); i++) {
-			DssClass(DSSClassList.Get(i)).Saved = false;
-		}
-
+		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
+			cls.setSaved(false);
+//			DSSClass(cls).setSaved(false);
+		
 		// Ignore Feeder Class -- gets saved with Energymeters
-		FeederClass.Saved = true;  // will think this class is already saved
+		DSSGlobals.getInstance().getFeederClass().setSaved(true);
 
 		// Define voltage sources first
-		Success = Utilities.WriteVsourceClassFile(GetDSSClassPtr("vsource"), true);
+		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
 		// Write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("wiredata"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linegeometry"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linecode"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linespacing"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("linecode"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("xfmrcode"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("growthshape"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("TCC_Curve"), "", false);
-		if (Success) Success = Utilities.WriteClassFile(GetDssClassPtr("Spectrum"), "", false);
-		if (Success) Success = SaveFeeders(); // Save feeders first
-		if (Success) Success = SaveDSSObjects();  // Save rest ot the objects
-		if (Success) Success = SaveBusCoords();
-		if (Success) Success = SaveMasterFile();
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
+		if (Success) Success = saveFeeders(); // Save feeders first
+		if (Success) Success = saveDSSObjects();  // Save rest ot the objects
+		if (Success) Success = saveBusCoords();
+		if (Success) Success = saveMasterFile();
 
 		if (Success) {
-			DSSGlobals.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
+			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + System.getProperty("user.dir"), 433);
 		} else {
-			DSSGlobals.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
+			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + System.getProperty("user.dir"), 434);
 		}
 		// Return to Original directory
-//		SetCurrentDir(SaveDir);
+//		SetCurrentDir(SaveDir);  FIXME: Set cwd
 
 		return true;
 	}
