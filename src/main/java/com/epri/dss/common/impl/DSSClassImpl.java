@@ -3,11 +3,8 @@ package com.epri.dss.common.impl;
 import com.epri.dss.common.DSSGlobals;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.general.impl.DSSObjectImpl;
-import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.PointerList;
-import com.epri.dss.shared.impl.HashListImpl;
-import com.epri.dss.shared.impl.PointerListImpl;
 import com.epri.dss.shared.CommandList;
+import com.epri.dss.shared.HashList;
 
 /**
  * Base Class for all DSS collection classes.
@@ -26,7 +23,6 @@ public class DSSClassImpl implements DSSClass {
 
 	protected int ActiveProperty;
 
-	// TODO: Substitute HashList with LinkedHashMap
 	protected HashList ElementNameList;
 
 
@@ -158,7 +154,7 @@ public class DSSClassImpl implements DSSClass {
 
 	public void setActive(int Value) {
 		if ((Value > 0) && (Value <= ElementList.ListSize)) {
-			DSSGlobals Globals = DSSGlobalsImpl.getInstance();
+			DSSGlobals Globals = DSSGlobals.getInstance();
 			this.ActiveElement = Value;
 			Globals.ActiveDSSObject = this.ElementList.Get(this.ActiveElement);
 			// Make sure Active Ckt Element agrees if is a ckt element
@@ -178,7 +174,7 @@ public class DSSClassImpl implements DSSClass {
 		if (this.ElementList.ListSize == 0) {
 			Result = 0;
 		} else {
-			DSSGlobals Globals = DSSGlobalsImpl.getInstance();
+			DSSGlobals Globals = DSSGlobals.getInstance();
 
 			this.ActiveElement = 1;
 			Globals.ActiveDSSObject = ElementList.First();
@@ -196,7 +192,7 @@ public class DSSClassImpl implements DSSClass {
 		if (this.ActiveElement > this.ElementList.ListSize) {
 			Result = 0;
 		} else {
-			DSSGlobalsImpl Globals = DSSGlobalsImpl.getInstance();
+			DSSGlobals Globals = DSSGlobals.getInstance();
 
 			Globals.ActiveDSSObject = this.ElementList.Next();
 			// Make sure Active Ckt Element agrees if is a ckt element
@@ -252,7 +248,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	protected int makeLike(String ObjName) {
-		DSSGlobalsImpl.getInstance().doSimpleMsg("virtual function TDSSClass.MakeLike called.  Should be overriden.", 784);
+		DSSGlobals.getInstance().doSimpleMsg("virtual function TDSSClass.MakeLike called.  Should be overriden.", 784);
 		return 0;
 	}
 
@@ -274,7 +270,7 @@ public class DSSClassImpl implements DSSClass {
 
 	/* Add Properties of this class to propName */
 	protected void defineProperties() {
-		String CRLF = DSSGlobalsImpl.getInstance().CRLF;
+		String CRLF = DSSGlobals.getInstance().CRLF;
 
 		this.PropertyName[ActiveProperty] = "like";
 		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + CRLF + CRLF +
@@ -322,17 +318,17 @@ public class DSSClassImpl implements DSSClass {
 
 	/* uses global parser */
 	public int edit() {
-		DSSGlobalsImpl.getInstance().DoSimpleMsg("virtual function DSSClass.Edit called.  Should be overriden.", 781);
+		DSSGlobals.getInstance().DoSimpleMsg("virtual function DSSClass.Edit called.  Should be overriden.", 781);
 		return 0;
 	}
 
 	public int init(int Handle) {
-		DSSGlobalsImpl.getInstance().doSimpleMsg("virtual function DSSClass.Init called.  Should be overriden.", 782);
+		DSSGlobals.getInstance().doSimpleMsg("virtual function DSSClass.Init called.  Should be overriden.", 782);
 		return 0;
 	}
 
 	public int newObject(String ObjName) {
-		DSSGlobalsImpl.getInstance().doErrorMsg(
+		DSSGlobals.getInstance().doErrorMsg(
 				"Reached base class of TDSSClass for device \"" +ObjName+ "\"",
 				"N/A",
 				"Should be overridden.", 780);
@@ -346,7 +342,7 @@ public class DSSClassImpl implements DSSClass {
 		int idx = this.ElementNameList.Find(ObjName);
 		if (idx > 0) {
 			this.ActiveElement = idx;
-			DSSGlobalsImpl.getInstance().ActiveDSSObject = ElementList.Get(idx);
+			DSSGlobals.getInstance().ActiveDSSObject = ElementList.Get(idx);
 			Result = true;
 		}
 		return Result;

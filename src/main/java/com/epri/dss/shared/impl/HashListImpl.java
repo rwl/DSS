@@ -34,74 +34,74 @@ public class HashListImpl implements HashList {
 	public HashListImpl(int Nelements) {
 		super();
 		this.NumElements = 0;
-	    this.InitialAllocation = Nelements;
-	    this.StringPtr = null;  // new String[Nelements];
+		this.InitialAllocation = Nelements;
+		this.StringPtr = null;  // new String[Nelements];
 
-	    this.NumLists = (int) Math.round(Math.sqrt(Nelements));
-	    int ElementsPerList = Nelements / NumLists + 1;
-	    this.AllocationInc = ElementsPerList;
-	    if (this.NumLists < 1) this.NumLists = 1;  // make sure at least one list
-	    this.ListPtr = new SubList[NumLists];
-	    for (int i = 0; i < this.NumLists; i++) {
+		this.NumLists = (int) Math.round(Math.sqrt(Nelements));
+		int ElementsPerList = Nelements / NumLists + 1;
+		this.AllocationInc = ElementsPerList;
+		if (this.NumLists < 1) this.NumLists = 1;  // make sure at least one list
+		this.ListPtr = new SubList[NumLists];
+		for (int i = 0; i < this.NumLists; i++) {
 			/* Allocate initial Sublists to zero; allocated on demand */
-	    	ListPtr[i].Str = null;
-	    	ListPtr[i].Idx = null;
-	    	ListPtr[i].Nallocated = 0;
-	    	ListPtr[i].Nelem = 0;
-	    }
-	    this.NumElementsAllocated = 0;
-	    this.LastFind = 0;
-	    this.LastHash = 0;
-	    this.LastSearchString = "";
+			ListPtr[i].Str = null;
+			ListPtr[i].Idx = null;
+			ListPtr[i].Nallocated = 0;
+			ListPtr[i].Nelem = 0;
+		}
+		this.NumElementsAllocated = 0;
+		this.LastFind = 0;
+		this.LastHash = 0;
+		this.LastSearchString = "";
 	}
 
-	private void ResizeSubList(SubList SubList) {
+	private void resizeSubList(SubList SubList) {
 		// resize by reasonable amount
-	    int OldAllocation = SubList.Nallocated;
-	    SubList.Nallocated = OldAllocation + AllocationInc;
+		int OldAllocation = SubList.Nallocated;
+		SubList.Nallocated = OldAllocation + AllocationInc;
 //	    ReallocStr(Str, Sizeof(Str^[1]) * OldAllocation, Sizeof(Str^[1]) * Nallocated);
 //	    Reallocmem(Idx, Sizeof(Idx^[1]) * Nallocated);
 	}
 
-	private int Hash(String S) {
+	private int hash(String S) {
 		return 0;
 	}
 
-	private void ResizeStrPtr() {
+	private void resizeStr() {
 
 	}
 
-	public int Add(String S) {
+	public int add(String S) {
 		return 0;
 	}
 
 	/* repeat find for duplicate string in same hash list */
-	public int Find(String S) {
+	public int find(String S) {
 		return 0;
 	}
 
-	public int FindAbbrev(String S) {
+	public int findAbbrev(String S) {
 		return 0;
 	}
 
-	public String Get(int i) {
+	public String get(int i) {
 		return null;
 	}
 
 	/* Expands number of elements */
-	public void Expand(int NewSize) {
+	public void expand(int NewSize) {
 
 	}
 
-	public void DumpToFile(String fname) {
+	public void dumpToFile(String fname) {
 
 	}
 
-	public void Clear() {
+	public void clear() {
 
 	}
 
-	public int Get_ListSize() {
+	public int listSize() {
 		return this.NumElements;
 	}
 

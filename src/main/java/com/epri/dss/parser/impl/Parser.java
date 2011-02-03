@@ -1,9 +1,8 @@
 package com.epri.dss.parser.impl;
 
-import com.epri.dss.parser.Parser;
 import com.epri.dss.parser.RPNCalc;
 
-public class ParserImpl implements Parser {
+public class Parser {
 
 	private static final char CommentChar = '!';
 
@@ -12,29 +11,30 @@ public class ParserImpl implements Parser {
 	}
 
 	private String CmdBuffer;
-    private int Position;
-    private String ParameterBuffer;
-    private String TokenBuffer;
-    private String DelimChars;
-    private String WhiteSpaceChars;
-    private String BeginQuoteChars, EndQuoteChars;
-    private char LastDelimiter;
-    private char MatrixRowTerminator;
-    private boolean AutoIncrement;
-    private boolean ConvertError;
-    private boolean IsQuotedString;
-    private RPNCalc RPNCalculator;
+	private int Position = 0;
+	private String ParameterBuffer;
+	private String TokenBuffer;
+	private String DelimChars        = ",=";
+	private String WhiteSpaceChars   = " " + "\t";   // blank + tab
+	private String BeginQuoteChars   = "(\"'[{";
+	private String EndQuoteChars     = ")\"']}";
+	private char LastDelimiter;
+	private char MatrixRowTerminator = '|';
+	private boolean AutoIncrement    = false;
+	private boolean ConvertError;
+	private boolean IsQuotedString;
+	private RPNCalc RPNCalculator    = new RPNCalcImpl();
 
-	public ParserImpl() {
-		this.DelimChars          = ",=";
-		this.WhiteSpaceChars     = " " + "\t";   // blank + tab
-		this.BeginQuoteChars     = "(\"'[{";
-		this.EndQuoteChars       = ")\"']}";
-		this.Position            = 0;
-		this.MatrixRowTerminator = '|';
-		this.AutoIncrement       = false;
-		this.RPNCalculator       = new RPNCalcImpl();
-    }
+	private Parser() {
+	}
+
+	private static class ParserHolder {
+		public static final Parser INSTANCE = new Parser();
+	}
+
+	public static Parser getInstance() {
+		return ParserHolder.INSTANCE;
+	}
 
 	public String getDelimChars() {
 		return DelimChars;

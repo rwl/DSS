@@ -2,28 +2,46 @@ package com.epri.dss.common.impl;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
+import com.epri.dss.common.AutoAdd;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.ControlQueue;
-import com.epri.dss.common.DSSGlobals;
+import com.epri.dss.common.FeederObj;
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
+import com.epri.dss.control.CapControlObj;
+import com.epri.dss.control.ControlElem;
+import com.epri.dss.control.RegControlObj;
+import com.epri.dss.control.SwtControlObj;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
+import com.epri.dss.conversion.StorageObj;
+import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.Fault;
+import com.epri.dss.delivery.FaultObj;
+import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.impl.NamedObjectImpl;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.MeterElement;
+import com.epri.dss.meter.MonitorObj;
+import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.PointerList;
 import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.HashListImpl;
-import com.epri.dss.shared.impl.PointerListImpl;
 
 public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
@@ -71,14 +89,33 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	/* Flag for use by control elements to detect redefinition of buses */
 	protected boolean Control_BusNameRedefined;
 
-	protected HashList BusList, AutoAddBusList, DeviceList;
+	protected HashList BusList;
+	protected HashList AutoAddBusList;
+	protected HashList DeviceList;
 	protected CktElementDef[] DeviceRef;  //Type and handle of device
 
 	// lists of pointers to different elements by class
-	protected PointerList Faults, CktElements, PDElements, PCElements, DSSControls,
-		Sources, MeterElements, Sensors, Monitors, EnergyMeters, Generators,
-		StorageElements, Substations, Transformers, CapControls, RegControls,
-		Lines, Loads, ShuntCapacitors, Feeders, SwtControls;
+	protected ArrayList<FaultObj> Faults;
+	protected ArrayList<CktElement> CktElements;
+	protected ArrayList<PDElement> PDElements;
+	protected ArrayList<PCElement> PCElements;
+	protected ArrayList<ControlElem> DSSControls;
+	protected ArrayList<PCElement> Sources;
+	protected ArrayList<MeterElement> MeterElements;
+	protected ArrayList<SensorObj> Sensors;
+	protected ArrayList<MonitorObj> Monitors;
+	protected ArrayList<EnergyMeter> EnergyMeters;
+	protected ArrayList<GeneratorObj> Generators;
+	protected ArrayList<StorageObj> StorageElements;
+	protected ArrayList<DSSObject> Substations;
+	protected ArrayList<TransformerObj> Transformers;
+	protected ArrayList<CapControlObj> CapControls;
+	protected ArrayList<RegControlObj> RegControls;
+	protected ArrayList<LineObj> Lines;
+	protected ArrayList<LoadObj> Loads;
+	protected ArrayList<CapacitorObj> ShuntCapacitors;
+	protected ArrayList<FeederObj> Feeders;
+	protected ArrayList<SwtControlObj> SwtControls;
 
 	protected ControlQueue ControlQueue;
 
@@ -155,7 +192,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		super("Circuit");
 
 		this.IsSolved = false;
-		/*Retval   = */ SolutionClass.NewObject(getName());
+		/*Retval   = */ DSSGlobals.getInstance().getSolutionClass().newObject(getName());
 		this.Solution = ActiveSolutionObj;
 
 		setLocalName(aName.toLowerCase());
@@ -163,7 +200,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.CaseName = aName;  // Default case name to circuitname
 								// Sets CircuitName_
 
-		this.Fundamental = DSSGlobalsImpl.getInstance().getDefaultBaseFreq();
+		this.Fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
 		this.ActiveCktElement = null;
 		this.ActiveBusIndex = 1;    // Always a bus
 
@@ -279,8 +316,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.DefaultGrowthRate = 1.025;
 		this.DefaultGrowthFactor = 1.0;
 
-		this.DefaultDailyShapeObj  = LoadShapeClass.Find("default");
-		this.DefaultYearlyShapeObj = LoadShapeClass.Find("default");
+		this.DefaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		this.DefaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
 
 		this.CurrentDirectory = "";
 
@@ -357,171 +394,171 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		DeviceRef = deviceRef;
 	}
 
-	public PointerList getFaults() {
+	public ArrayList getFaults() {
 		return Faults;
 	}
 
-	public void setFaults(PointerList faults) {
+	public void setFaults(ArrayList faults) {
 		Faults = faults;
 	}
 
-	public PointerList getCktElements() {
+	public ArrayList getCktElements() {
 		return CktElements;
 	}
 
-	public void setCktElements(PointerList cktElements) {
+	public void setCktElements(ArrayList cktElements) {
 		CktElements = cktElements;
 	}
 
-	public PointerList getPDElements() {
+	public ArrayList getPDElements() {
 		return PDElements;
 	}
 
-	public void setPDElements(PointerList pDElements) {
+	public void setPDElements(ArrayList pDElements) {
 		PDElements = pDElements;
 	}
 
-	public PointerList getPCElements() {
+	public ArrayList getPCElements() {
 		return PCElements;
 	}
 
-	public void setPCElements(PointerList pCElements) {
+	public void setPCElements(ArrayList pCElements) {
 		PCElements = pCElements;
 	}
 
-	public PointerList getDSSControls() {
+	public ArrayList getDSSControls() {
 		return DSSControls;
 	}
 
-	public void setDSSControls(PointerList dSSControls) {
+	public void setDSSControls(ArrayList dSSControls) {
 		DSSControls = dSSControls;
 	}
 
-	public PointerList getSources() {
+	public ArrayList getSources() {
 		return Sources;
 	}
 
-	public void setSources(PointerList sources) {
+	public void setSources(ArrayList sources) {
 		Sources = sources;
 	}
 
-	public PointerList getMeterElements() {
+	public ArrayList getMeterElements() {
 		return MeterElements;
 	}
 
-	public void setMeterElements(PointerList meterElements) {
+	public void setMeterElements(ArrayList meterElements) {
 		MeterElements = meterElements;
 	}
 
-	public PointerList getSensors() {
+	public ArrayList getSensors() {
 		return Sensors;
 	}
 
-	public void setSensors(PointerList sensors) {
+	public void setSensors(ArrayList sensors) {
 		Sensors = sensors;
 	}
 
-	public PointerList getMonitors() {
+	public ArrayList getMonitors() {
 		return Monitors;
 	}
 
-	public void setMonitors(PointerList monitors) {
+	public void setMonitors(ArrayList monitors) {
 		Monitors = monitors;
 	}
 
-	public PointerList getEnergyMeters() {
+	public ArrayList getEnergyMeters() {
 		return EnergyMeters;
 	}
 
-	public void setEnergyMeters(PointerList energyMeters) {
+	public void setEnergyMeters(ArrayList energyMeters) {
 		EnergyMeters = energyMeters;
 	}
 
-	public PointerList getGenerators() {
+	public ArrayList getGenerators() {
 		return Generators;
 	}
 
-	public void setGenerators(PointerList generators) {
+	public void setGenerators(ArrayList generators) {
 		Generators = generators;
 	}
 
-	public PointerList getStorageElements() {
+	public ArrayList getStorageElements() {
 		return StorageElements;
 	}
 
-	public void setStorageElements(PointerList storageElements) {
+	public void setStorageElements(ArrayList storageElements) {
 		StorageElements = storageElements;
 	}
 
-	public PointerList getSubstations() {
+	public ArrayList getSubstations() {
 		return Substations;
 	}
 
-	public void setSubstations(PointerList substations) {
+	public void setSubstations(ArrayList substations) {
 		Substations = substations;
 	}
 
-	public PointerList getTransformers() {
+	public ArrayList getTransformers() {
 		return Transformers;
 	}
 
-	public void setTransformers(PointerList transformers) {
+	public void setTransformers(ArrayList transformers) {
 		Transformers = transformers;
 	}
 
-	public PointerList getCapControls() {
+	public ArrayList getCapControls() {
 		return CapControls;
 	}
 
-	public void setCapControls(PointerList capControls) {
+	public void setCapControls(ArrayList capControls) {
 		CapControls = capControls;
 	}
 
-	public PointerList getRegControls() {
+	public ArrayList getRegControls() {
 		return RegControls;
 	}
 
-	public void setRegControls(PointerList regControls) {
+	public void setRegControls(ArrayList regControls) {
 		RegControls = regControls;
 	}
 
-	public PointerList getLines() {
+	public ArrayList getLines() {
 		return Lines;
 	}
 
-	public void setLines(PointerList lines) {
+	public void setLines(ArrayList lines) {
 		Lines = lines;
 	}
 
-	public PointerList getLoads() {
+	public ArrayList getLoads() {
 		return Loads;
 	}
 
-	public void setLoads(PointerList loads) {
+	public void setLoads(ArrayList loads) {
 		Loads = loads;
 	}
 
-	public PointerList getShuntCapacitors() {
+	public ArrayList getShuntCapacitors() {
 		return ShuntCapacitors;
 	}
 
-	public void setShuntCapacitors(PointerList shuntCapacitors) {
+	public void setShuntCapacitors(ArrayList shuntCapacitors) {
 		ShuntCapacitors = shuntCapacitors;
 	}
 
-	public PointerList getFeeders() {
+	public ArrayList getFeeders() {
 		return Feeders;
 	}
 
-	public void setFeeders(PointerList feeders) {
+	public void setFeeders(ArrayList feeders) {
 		Feeders = feeders;
 	}
 
-	public PointerList getSwtControls() {
+	public ArrayList getSwtControls() {
 		return SwtControls;
 	}
 
-	public void setSwtControls(PointerList swtControls) {
+	public void setSwtControls(ArrayList swtControls) {
 		SwtControls = swtControls;
 	}
 
@@ -1020,7 +1057,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			DeviceRef = new CktElementDef[MaxDevices];
 		}
 		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
-		DeviceRef[NumDevices].CktElementClass = DSSGlobalsImpl.getInstance().getLastClassReferenced();
+		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
 	}
 
 	private void addABus() {
@@ -1042,7 +1079,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private int addBus(String BusName, int NNodes) {
 		// Trap error in bus name
 		if (BusName.length() == 0) {  // Error in busname
-		DSSGlobalsImpl.getInstance().doErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
+		DSSGlobals.getInstance().doErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
 		for (int i = 0; i < ActiveCktElement.getNConds(); i++) {
 			NodeBuffer[i] = 0;
@@ -1075,7 +1112,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setActiveCktElement(DSSCktElement Value) {
 		ActiveCktElement = Value;
-		DSSGlobalsImpl.getInstance().setActiveDSSObject(Value);
+		DSSGlobals.getInstance().setActiveDSSObject(Value);
 	}
 
 	public DSSCktElement getActiveCktElement() {
@@ -1185,7 +1222,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			F.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
-			for (int i = 0; i < DSSGlobalsImpl.getInstance().SavedFileList.Count; i++) {
+			for (int i = 0; i < DSSGlobals.getInstance().SavedFileList.Count; i++) {
 				F.println("Redirect " + SavedFileList.Strings[i-1]);
 			}
 
@@ -1206,7 +1243,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private boolean saveDSSObjects() {
 		DSSClassImpl DSS_Class;
 		// Write Files for all populated DSS Classes  Except Solution Class
-		for (int i = 0; i < DSSGlobalsImpl.getInstance().DSSClassList.getListSize(); i++) {
+		for (int i = 0; i < DSSGlobals.getInstance().DSSClassList.getListSize(); i++) {
 			Dss_Class = DSSClassList.Get(i);
 			if ((DSS_Class == SolutionClass) || Dss_Class.isSaved()) continue;   // Cycle to next
 				/* use default filename=classname */
@@ -1231,7 +1268,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				Meter.SaveZone(CurrDir);
 //				SetCurrentDir(SaveDir);
 			} else {
-				DSSGlobalsImpl.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
+				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
 				Result = false;
 //				SetCurrentDir(SaveDir);  // back to whence we came
 				break;
@@ -1257,7 +1294,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 			Result = true;
 		} catch (Exception e) {
-			DSSGlobalsImpl.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
+			DSSGlobals.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
 		}
 
 		return false;
@@ -1278,7 +1315,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setCaseName(String Value) {
 		CaseName = Value;
-		DSSGlobalsImpl.getInstance().setCircuitName_(Value + "_");
+		DSSGlobals.getInstance().setCircuitName_(Value + "_");
 	}
 
 	public String getCaseName() {
@@ -1375,12 +1412,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	public boolean computeCapacity() {
 		boolean Result = false;
 		if (EnergyMeters.Get_ListSize() == 0) {
-			DSSGlobalsImpl.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
+			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
 			return;
 		}
 
 		if (NumUERegs == 0) {
-			DSSGlobalsImpl.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
+			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
 			return;
 		}
 
@@ -1444,7 +1481,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 
 		if (!Success) {
-			DSSGlobalsImpl.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
+			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
 			return;
 		}
 
@@ -1482,9 +1519,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (Success) Success = SaveMasterFile();
 
 		if (Success) {
-			DSSGlobalsImpl.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
+			DSSGlobals.getInstance().DoSimpleMsg("Circuit saved in directory: " + GetCurrentDir, 433);
 		} else {
-			DSSGlobalsImpl.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
+			DSSGlobals.getInstance().DoSimpleMsg("Error attempting to save circuit in " + GetCurrentDir, 434);
 		}
 		// Return to Original directory
 //		SetCurrentDir(SaveDir);
@@ -1520,7 +1557,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 					NodesOK = false;
 					if (retval == -1) {
 						AbortBusProcess = true;
-						DSSGlobalsImpl.getInstance().AppendGlobalResult("Aborted bus process.");
+						DSSGlobals.getInstance().AppendGlobalResult("Aborted bus process.");
 						return;
 					}
 					break;
@@ -1581,7 +1618,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		the lists */
 		if (!MeterZonesComputed || !ZonesLocked) {
 			if (LogEvents) Utilities.LogThisEvent("Resetting Meter Zones");
-			DSSGlobalsImpl.getInstance().EnergyMeterClass.ResetMeterZonesAll();
+			DSSGlobals.getInstance().EnergyMeterClass.ResetMeterZonesAll();
 			MeterZonesComputed = true;
 			if (LogEvents) Utilities.LogThisEvent("Done Resetting Meter Zones");
 		}
@@ -1595,12 +1632,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		Utilities.ParseObjectClassandName(FullObjectName, DevType, DevName);
 		DevClassIndex = ClassNames.Find(DevType);
 		if (DevClassIndex == 0)
-			DevClassIndex = DSSGlobalsImpl.getInstance().LastClassReferenced;
+			DevClassIndex = DSSGlobals.getInstance().LastClassReferenced;
 		Devindex = DeviceList.Find(DevName);
 		while (DevIndex >= 0) {
 			if (DeviceRef[Devindex].CktElementClass == DevClassIndex) {  // we got a match
-				DSSGlobalsImpl.getInstance().ActiveDSSClass = DSSGlobalsImpl.getInstance().DSSClassList.Get(DevClassIndex);
-				DSSGlobalsImpl.getInstance().LastClassReferenced = DevClassIndex;
+				DSSGlobals.getInstance().ActiveDSSClass = DSSGlobals.getInstance().DSSClassList.Get(DevClassIndex);
+				DSSGlobals.getInstance().LastClassReferenced = DevClassIndex;
 				Result = DeviceRef[Devindex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
@@ -1610,7 +1647,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			DevIndex = Devicelist.FindNext();   // Could be duplicates
 		}
 
-		DSSGlobalsImpl.getInstance().CmdResult = Result;
+		DSSGlobals.getInstance().CmdResult = Result;
 
 		return Result;
 	}

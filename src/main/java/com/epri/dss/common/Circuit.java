@@ -1,6 +1,7 @@
 package com.epri.dss.common;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math.complex.Complex;
@@ -9,11 +10,41 @@ import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
 import com.epri.dss.common.impl.DSSCircuit.ReductionStrategy;
 import com.epri.dss.common.impl.DSSCktElement;
+import com.epri.dss.control.CapControl;
+import com.epri.dss.control.CapControlObj;
+import com.epri.dss.control.ControlElem;
+import com.epri.dss.control.RegControl;
+import com.epri.dss.control.RegControlObj;
+import com.epri.dss.control.SwtControl;
+import com.epri.dss.control.SwtControlObj;
+import com.epri.dss.conversion.Generator;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.Load;
+import com.epri.dss.conversion.LoadObj;
+import com.epri.dss.conversion.PCElement;
+import com.epri.dss.conversion.Storage;
+import com.epri.dss.conversion.StorageObj;
+import com.epri.dss.delivery.Capacitor;
+import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.Fault;
+import com.epri.dss.delivery.FaultObj;
+import com.epri.dss.delivery.Line;
+import com.epri.dss.delivery.LineObj;
+import com.epri.dss.delivery.PDElement;
+import com.epri.dss.delivery.Transformer;
+import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.NamedObject;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.EnergyMeterObj;
+import com.epri.dss.meter.MeterElement;
+import com.epri.dss.meter.Monitor;
+import com.epri.dss.meter.MonitorObj;
+import com.epri.dss.meter.Sensor;
+import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.PointerList;
 
 public interface Circuit extends NamedObject {
 
@@ -45,89 +76,89 @@ public interface Circuit extends NamedObject {
 
 	void setDeviceRef(CktElementDef[] deviceRef);
 
-	PointerList getFaults();
+	ArrayList<FaultObj> getFaults();
 
-	void setFaults(PointerList faults);
+	void setFaults(ArrayList<FaultObj> faults);
 
-	PointerList getCktElements();
+	ArrayList<CktElement> getCktElements();
 
-	void setCktElements(PointerList cktElements);
+	void setCktElements(ArrayList<CktElement> cktElements);
 
-	PointerList getPDElements();
+	ArrayList<PDElement> getPDElements();
 
-	void setPDElements(PointerList pDElements);
+	void setPDElements(ArrayList<PDElement> pDElements);
 
-	PointerList getPCElements();
+	ArrayList<PCElement> getPCElements();
 
-	void setPCElements(PointerList pCElements);
+	void setPCElements(ArrayList<PCElement> pCElements);
 
-	PointerList getDSSControls();
+	ArrayList<ControlElem> getDSSControls();
 
-	void setDSSControls(PointerList dSSControls);
+	void setDSSControls(ArrayList<ControlElem> dSSControls);
 
-	PointerList getSources();
+	ArrayList<PCElement> getSources();
 
-	void setSources(PointerList sources);
+	void setSources(ArrayList<PCElement> sources);
 
-	PointerList getMeterElements();
+	ArrayList<MeterElement> getMeterElements();
 
-	void setMeterElements(PointerList meterElements);
+	void setMeterElements(ArrayList<MeterElement> meterElements);
 
-	PointerList getSensors();
+	ArrayList<SensorObj> getSensors();
 
-	void setSensors(PointerList sensors);
+	void setSensors(ArrayList<SensorObj> sensors);
 
-	PointerList getMonitors();
+	ArrayList<MonitorObj> getMonitors();
 
-	void setMonitors(PointerList monitors);
+	void setMonitors(ArrayList<MonitorObj> monitors);
 
-	PointerList getEnergyMeters();
+	ArrayList<EnergyMeterObj> getEnergyMeters();
 
-	void setEnergyMeters(PointerList energyMeters);
+	void setEnergyMeters(ArrayList<EnergyMeterObj> energyMeters);
 
-	PointerList getGenerators();
+	ArrayList<GeneratorObj> getGenerators();
 
-	void setGenerators(PointerList generators);
+	void setGenerators(ArrayList<GeneratorObj> generators);
 
-	PointerList getStorageElements();
+	ArrayList<StorageObj> getStorageElements();
 
-	void setStorageElements(PointerList storageElements);
+	void setStorageElements(ArrayList<StorageObj> storageElements);
 
-	PointerList getSubstations();
+	ArrayList<DSSObject> getSubstations();
 
-	void setSubstations(PointerList substations);
+	void setSubstations(ArrayList<DSSObject> substations);
 
-	PointerList getTransformers();
+	ArrayList<TransformerObj> getTransformers();
 
-	void setTransformers(PointerList transformers);
+	void setTransformers(ArrayList<TransformerObj> transformers);
 
-	PointerList getCapControls();
+	ArrayList<CapControlObj> getCapControls();
 
-	void setCapControls(PointerList capControls);
+	void setCapControls(ArrayList<CapControlObj> capControls);
 
-	PointerList getRegControls();
+	ArrayList<RegControlObj> getRegControls();
 
-	void setRegControls(PointerList regControls);
+	void setRegControls(ArrayList<RegControlObj> regControls);
 
-	PointerList getLines();
+	ArrayList<LineObj> getLines();
 
-	void setLines(PointerList lines);
+	void setLines(ArrayList<LineObj> lines);
 
-	PointerList getLoads();
+	ArrayList<LoadObj> getLoads();
 
-	void setLoads(PointerList loads);
+	void setLoads(ArrayList<LoadObj> loads);
 
-	PointerList getShuntCapacitors();
+	ArrayList<CapacitorObj> getShuntCapacitors();
 
-	void setShuntCapacitors(PointerList shuntCapacitors);
+	void setShuntCapacitors(ArrayList<CapacitorObj> shuntCapacitors);
 
-	PointerList getFeeders();
+	ArrayList<FeederObj> getFeeders();
 
-	void setFeeders(PointerList feeders);
+	void setFeeders(ArrayList<FeederObj> feeders);
 
-	PointerList getSwtControls();
+	ArrayList<SwtControlObj> getSwtControls();
 
-	void setSwtControls(PointerList swtControls);
+	void setSwtControls(ArrayList<SwtControlObj> swtControls);
 
 	ControlQueue getControlQueue();
 

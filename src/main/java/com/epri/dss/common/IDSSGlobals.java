@@ -19,50 +19,8 @@ import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.Monitor;
 import com.epri.dss.meter.Sensor;
 import com.epri.dss.parser.Parser;
-import com.epri.dss.shared.PointerList;
 
-public interface DSSGlobals {
-
-	static final String CRLF = System.getProperty("line.separator");
-	static final double PI = 3.14159265359;
-	static final double TwoPi = 2.0 * PI;
-	static final double RadiansToDegrees = 57.29577951;
-	static final double EPSILON = 1.0e-12;   // Default tiny floating point
-	static final double EPSILON2 = 1.0e-3;   // Default for Real number mismatch testing
-
-	// Load model types for solution
-	static final int POWERFLOW  = 1;
-	static final int ADMITTANCE = 2;
-
-	// For YPrim matrices
-	static final int ALL_YPRIM = 0;
-	static final int SERIES = 1;
-	static final int SHUNT  = 2;
-
-	/* Control Modes */
-	static final int CONTROLSOFF = -1;
-	static final int EVENTDRIVEN =  1;
-	static final int TIMEDRIVEN  =  2;
-	static final int STATIC      =  0;
-
-	/* Randomization Constants */
-	static final int GAUSSIAN  = 1;
-	static final int UNIFORM   = 2;
-	static final int LOGNORMAL = 3;
-
-	/* Autoadd Constants */
-	static final int GENADD = 1;
-	static final int CAPADD = 2;
-
-	/* ERRORS */
-	static final int SOLUTION_ABORT = 99;
-
-	/* 120-degree shift constant */
-	static final Complex CALPHA = new Complex(-0.5, -0.866025);
-	static final double SQRT2 = Math.sqrt(2.0);
-	static final double SQRT3 = Math.sqrt(3.0);
-	static final double InvSQRT3 = 1.0 / SQRT3;
-	static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
+public interface IDSSGlobals {
 
 	boolean isDLLFirstTime();
 

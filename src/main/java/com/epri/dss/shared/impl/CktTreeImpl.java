@@ -1,7 +1,6 @@
 package com.epri.dss.shared.impl;
 
 import com.epri.dss.shared.CktTree;
-import com.epri.dss.shared.PointerList;
 
 public class CktTreeImpl implements CktTree {
 

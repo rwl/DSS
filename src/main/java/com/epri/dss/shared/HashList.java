@@ -18,27 +18,25 @@ package com.epri.dss.shared;
  * certain number of hash lists, without caring about how many actual there
  * will be.
  *
- * @see LinkedHashMap
- *
  */
 public interface HashList {
 
-	int Add(String S);
+	int add(String S);
 
 	/* repeat find for duplicate string in same hash list */
-	int Find(String S);
+	int find(String S);
 
-	int FindAbbrev(String S);
+	int findAbbrev(String S);
 
-	String Get(int i);
+	String get(int i);
 
 	/* Expands number of elements */
-	void Expand(int NewSize);
+	void expand(int NewSize);
 
-	void DumpToFile(String fname);
+	void dumpToFile(String fname);
 
-	void Clear();
+	void clear();
 
-	int Get_ListSize();
+	int listSize();
 
 }

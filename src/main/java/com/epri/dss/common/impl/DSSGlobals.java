@@ -3,13 +3,20 @@ package com.epri.dss.common.impl;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
-import com.epri.dss.common.DSSGlobals;
 import com.epri.dss.common.Feeder;
+import com.epri.dss.common.Solution;
 import com.epri.dss.conversion.Storage;
+import com.epri.dss.executive.Executive;
+import com.epri.dss.executive.impl.DSSExecutive;
+import com.epri.dss.forms.DSSForms;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
 import com.epri.dss.general.LineSpacing;
@@ -21,11 +28,51 @@ import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.Monitor;
 import com.epri.dss.meter.Sensor;
-import com.epri.dss.parser.Parser;
-import com.epri.dss.parser.impl.ParserImpl;
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.HashList;
 
-public class DSSGlobalsImpl implements DSSGlobals {
+public class DSSGlobals {
+
+	static final String CRLF = System.getProperty("line.separator");
+	static final double PI = 3.14159265359;
+	static final double TwoPi = 2.0 * PI;
+	static final double RadiansToDegrees = 57.29577951;
+	static final double EPSILON = 1.0e-12;   // Default tiny floating point
+	static final double EPSILON2 = 1.0e-3;   // Default for Real number mismatch testing
+
+	// Load model types for solution
+	static final int POWERFLOW  = 1;
+	static final int ADMITTANCE = 2;
+
+	// For YPrim matrices
+	static final int ALL_YPRIM = 0;
+	static final int SERIES = 1;
+	static final int SHUNT  = 2;
+
+	/* Control Modes */
+	static final int CONTROLSOFF = -1;
+	static final int EVENTDRIVEN =  1;
+	static final int TIMEDRIVEN  =  2;
+	static final int STATIC      =  0;
+
+	/* Randomization Constants */
+	static final int GAUSSIAN  = 1;
+	static final int UNIFORM   = 2;
+	static final int LOGNORMAL = 3;
+
+	/* Autoadd Constants */
+	static final int GENADD = 1;
+	static final int CAPADD = 2;
+
+	/* ERRORS */
+	static final int SOLUTION_ABORT = 99;
+
+	/* 120-degree shift constant */
+	static final Complex CALPHA = new Complex(-0.5, -0.866025);
+	static final double SQRT2 = Math.sqrt(2.0);
+	static final double SQRT3 = Math.sqrt(3.0);
+	static final double InvSQRT3 = 1.0 / SQRT3;
+	static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
 	/** Variables */
 	private boolean DLLFirstTime = true;
@@ -45,11 +92,11 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private int MaxCircuits = 1;
 	private int MaxBusLimit = 0; // Set in Validation
 	private int MaxAllocationIterations = 2;
-	private PointerList Circuits;
-	private PointerList DSSObjs;
+	private ArrayList<Circuit> Circuits;
+	private ArrayList<DSSObject> DSSObjs;
 
 	// Auxiliary parser for use by anybody for reparsing values
-	private Parser AuxParser = new ParserImpl();
+	private Parser AuxParser = Parser.getInstance();
 
 	private boolean ErrorPending = false;
 	private int CmdResult = 0;
@@ -73,10 +120,10 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private String VersionString = "Version " + getDSSVersion();
 
 	private String DefaultEditor = "NotePad";     // normally, Notepad
-//	private String DSSFileName = GetDSSExeFile();     // Name of current exe or DLL
-//	private String DSSDirectory = new File(DSSFileName).getParent();     // where the current exe resides
-//	private String StartupDirectory = GetCurrentDir() + "\\";     // Where we started
-//	private String DSSDataDirectory = StartupDirectory;
+	private String DSSFileName;// = GetDSSExeFile();     // Name of current exe or DLL
+	private String DSSDirectory;// = new File(DSSFileName).getParent();     // where the current exe resides
+	private String StartupDirectory;// = GetCurrentDir() + "\\";     // Where we started
+	private String DSSDataDirectory;// = StartupDirectory;
 	private String CircuitName_;     // Name of Circuit with a "_" appended
 
 	private double DefaultBaseFreq = 60.0;
@@ -96,9 +143,14 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	private LineSpacing LineSpacingClass;
 	private Storage StorageClass;
 
+	private String[] EventStrings;
+	private String[] SavedFileList;
+
+	private ArrayList<DSSClass> DSSClassList;  // base class types
+	private HashList ClassNames;
 
 	// Private constructor prevents instantiation from other classes
-	private DSSGlobalsImpl() {
+	private DSSGlobals() {
 	}
 
 	public boolean isDLLFirstTime() {
@@ -213,19 +265,19 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		MaxAllocationIterations = maxAllocationIterations;
 	}
 
-	public PointerList getCircuits() {
+	public ArrayList<Circuit> getCircuits() {
 		return Circuits;
 	}
 
-	public void setCircuits(PointerList circuits) {
+	public void setCircuits(ArrayList<Circuit> circuits) {
 		Circuits = circuits;
 	}
 
-	public PointerList getDSSObjs() {
+	public ArrayList<DSSObject> getDSSObjs() {
 		return DSSObjs;
 	}
 
-	public void setDSSObjs(PointerList dSSObjs) {
+	public void setDSSObjs(ArrayList<DSSObject> dSSObjs) {
 		DSSObjs = dSSObjs;
 	}
 
@@ -501,13 +553,45 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		StorageClass = storageClass;
 	}
 
+	public String[] getEventStrings() {
+		return EventStrings;
+	}
+
+	public void setEventStrings(String[] eventStrings) {
+		EventStrings = eventStrings;
+	}
+
+	public String[] getSavedFileList() {
+		return SavedFileList;
+	}
+
+	public void setSavedFileList(String[] savedFileList) {
+		SavedFileList = savedFileList;
+	}
+
+	public ArrayList<DSSClass> getDSSClassList() {
+		return DSSClassList;
+	}
+
+	public void setDSSClassList(ArrayList<DSSClass> dSSClassList) {
+		DSSClassList = dSSClassList;
+	}
+
+	public HashList getClassNames() {
+		return ClassNames;
+	}
+
+	public void setClassNames(HashList classNames) {
+		ClassNames = classNames;
+	}
+
 	/**
 	 * DSSGlobalsHolder is loaded on the first execution of
 	 * DSSGlobals.getInstance() or the first access to
 	 * DSSGlobalsHolder.INSTANCE, not before.
 	 */
-	private class DSSGlobalsHolder {
-		public static final DSSGlobals INSTANCE = new DSSGlobalsImpl();
+	private static class DSSGlobalsHolder {
+		public static final DSSGlobals INSTANCE = new DSSGlobals();
 	}
 
 	public static DSSGlobals getInstance() {
@@ -520,45 +604,39 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		+ CRLF   + CRLF + "Probable Cause: " + CRLF + ProbCause;
 
 		if (!NoFormsAllowed) {
-
 			if (In_Redirect) {
-				int RetVal = DSSMessageDlg(Msg, false);
+				int RetVal = DSSForms.messageDlg(Msg, false);
 				if (RetVal == -1)
 					Redirect_Abort = true;
 			} else {
-				DSSMessageDlg(Msg, true);
+				DSSForms.messageDlg(Msg, true);
 			}
 		}
 
 		LastErrorMessage = Msg;
 		ErrorNumber = ErrNum;
-		AppendGlobalResultCRLF(Msg);
+		appendGlobalResult(Msg);
 	}
 
 	public void doSimpleMsg(String S, int ErrNum) {
 		if (!NoFormsAllowed) {
-		if (In_Redirect) {
-			int RetVal = DSSMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
-			if (RetVal == -1)
-				Redirect_Abort = true;
-		} else {
-			DSSInfoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
-		}
+			if (In_Redirect) {
+				int RetVal = DSSForms.messageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
+				if (RetVal == -1)
+					Redirect_Abort = true;
+			} else {
+				DSSForms.infoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
+			}
 		}
 
 		LastErrorMessage = S;
 		ErrorNumber = ErrNum;
-		AppendGlobalResultCRLF(S);
+		appendGlobalResult(S);
 	}
 
-	public void clearAllCircuits() {
-		ActiveCircuit = Circuits.First();
-		while (ActiveCircuit != null) {
-			ActiveCircuit.Free();
-			ActiveCircuit = Circuits.Next();
-		}
-		Circuits.Free();
-		Circuits = new PointerListImpl(2);   // Make a new list of circuits
+	public void clearAllCircuits() {		
+		ActiveCircuit = null;
+		Circuits = new ArrayList<Circuit>(2);   // Make a new list of circuits
 		NumCircuits = 0;
 	}
 
@@ -578,25 +656,24 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		}
 
 		if (ObjClass.length() > 0)
-			SetObjectClass(ObjClass);
+			DSSClassDefs.setObjectClass(ObjClass);
 
-
-		ActiveDSSClass = DSSClassList.Get(LastClassReferenced);
+		ActiveDSSClass = DSSClassList.get(LastClassReferenced);
 		if (ActiveDSSClass != null) {
-			if (!ActiveDSSClass.SetActive(ObjName)) {
+			if (!ActiveDSSClass.setActive(ObjName)) {
 				// scroll through list of objects untill a match
-				DoSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.CmdString, 904);
+				doSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
 			} else {
-				switch (ActiveDSSObject.DSSObjType) {
-				case DSS_OBJECT:
+				switch (ActiveDSSObject.getDSSObjType()) {
+				case DSSClassDefs.DSS_OBJECT:
 					// do nothing for general DSS object
 				default:
 					// for circuit types, set ActiveCircuit Element, too
-					ActiveCircuit.ActiveCktElement = ActiveDSSClass.GetActiveObj();
+					ActiveCircuit.setActiveCktElement((DSSCktElement) ActiveDSSClass.getActiveObj());
 				}
 			}
 		} else {
-			DoSimpleMsg("Error! Active object type/class is not set.", 905);
+			doSimpleMsg("Error! Active object type/class is not set.", 905);
 		}
 	}
 
@@ -604,12 +681,13 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		// Now find the bus and set active
 		int Result = 0;
 
-		if (ActiveCircuit.BusList.ListSize == 0) System.exit(0);   // Buslist not yet built
-		ActiveBusIndex = ActiveCircuit.BusList.Find(BusName);
-		if (ActiveCircuit.ActiveBusIndex == 0) {
+		if (ActiveCircuit.getBusList().listSize() == 0) System.exit(0);   // Buslist not yet built
+		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
+		if (ActiveCircuit.getActiveBusIndex() == 0) {
 			Result = 1;
-			AppendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
+			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
 		}
+		return Result;
 	}
 
 	/* Pathname may be null */
@@ -620,7 +698,7 @@ public class DSSGlobalsImpl implements DSSGlobals {
 
 			// Try to create the directory
 			if (F.mkdir()) {
-				DoSimpleMsg("Cannot create " + PathName + " directory.", 907);
+				doSimpleMsg("Cannot create " + PathName + " directory.", 907);
 				System.exit(0);
 			}
 
@@ -630,7 +708,8 @@ public class DSSGlobalsImpl implements DSSGlobals {
 
 		// Put a \ on the end if not supplied. Allow a null specification.
 		if (DSSDataDirectory.length() > 0) {
-//	    	ChDir(DSSDataDirectory);   // Change to specified directory
+			// FIXME: change directory
+//	    	cd(DSSDataDirectory);   // Change to specified directory
 			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
 					DSSDataDirectory = DSSDataDirectory + "\\";
 			}
@@ -641,19 +720,20 @@ public class DSSGlobalsImpl implements DSSGlobals {
 	public void makeNewCircuit(String Name) {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
-			ActiveDSSObject = ActiveSolutionObj;
-			/*Handle := */ Circuits.Add(ActiveCircuit);
+			ActiveDSSObject = Solution.ActiveSolutionObj;
+			/*Handle := */ Circuits.add(ActiveCircuit);
 			NumCircuits += 1;
-			S = Parser.Remainder;    // Pass remainder of string on to vsource.
+			String S = Parser.getInstance().getRemainder();    // Pass remainder of string on to vsource.
 			/* Create a default Circuit */
-			SolutionABort = false;
+			SolutionAbort = false;
 			/* Voltage source named "source" connected to SourceBus */
-			DSSExecutive.Command = "New object=vsource.source Bus1=SourceBus " + S;  // Load up the parser as if it were read in
+			// Load up the parser as if it were read in
+			Executive.DSSExecutive.setCommand("New object=vsource.source Bus1=SourceBus " + S);  
 		} else {
-			DoErrorMsg("MakeNewCircuit",
-						"Cannot create new circuit.",
-						"Max. Circuits Exceeded." + CRLF +
-						"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
+			doErrorMsg("MakeNewCircuit",
+					"Cannot create new circuit.",
+					"Max. Circuits Exceeded." + CRLF +
+					"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
 		}
 	}
 
@@ -683,10 +763,15 @@ public class DSSGlobalsImpl implements DSSGlobals {
 		} else {
 			Append = true;
 		}
-		FileWriter Writer = new FileWriter(DSSDataDirectory + "DSSDLLDebug.txt", Append);
-		BufferedWriter DLLDebugFile = new BufferedWriter(Writer);
-		DLLDebugFile.write(S + CRLF);
-		DLLDebugFile.close();
+		FileWriter Writer;
+		try {
+			Writer = new FileWriter(DSSDataDirectory + "DSSDLLDebug.txt", Append);
+			BufferedWriter DLLDebugFile = new BufferedWriter(Writer);
+			DLLDebugFile.write(S + CRLF);
+			DLLDebugFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
 	}
 
 	public void readDSS_Registry() {
