@@ -37,9 +37,9 @@ public interface PDElement extends CktElement {
 
 	void setToTerminal(int toTerminal);
 
-	boolean isIsShunt();
+	boolean isShunt();
 
-	void setIsShunt(boolean isShunt);
+	void setShunt(boolean isShunt);
 
 	int getNumCustomers();
 

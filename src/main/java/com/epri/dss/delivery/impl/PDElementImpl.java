@@ -99,11 +99,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		ToTerminal = toTerminal;
 	}
 
-	public boolean isIsShunt() {
+	public boolean isShunt() {
 		return IsShunt;
 	}
 
-	public void setIsShunt(boolean isShunt) {
+	public void setShunt(boolean isShunt) {
 		IsShunt = isShunt;
 	}
 

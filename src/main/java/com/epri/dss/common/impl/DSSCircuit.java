@@ -192,8 +192,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		super("Circuit");
 
 		this.IsSolved = false;
-		/*Retval   = */ DSSGlobals.getInstance().getSolutionClass().newObject(getName());
-		this.Solution = ActiveSolutionObj;
+		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
+		this.Solution = com.epri.dss.common.Solution.ActiveSolutionObj;
 
 		setLocalName(aName.toLowerCase());
 
@@ -222,33 +222,33 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.NumDevices = 0;
 		this.NumNodes   = 0;
 
-		this.Faults       = new PointerListImpl(2);
-		this.CktElements  = new PointerListImpl(1000);
-		this.PDElements   = new PointerListImpl(1000);
-		this.PCElements   = new PointerListImpl(1000);
-		this.DSSControls  = new PointerListImpl(10);
-		this.Sources      = new PointerListImpl(10);
-		this.MeterElements= new PointerListImpl(20);
-		this.Monitors     = new PointerListImpl(20);
-		this.EnergyMeters = new PointerListImpl(5);
-		this.Sensors      = new PointerListImpl(5);
-		this.Generators   = new PointerListImpl(5);
-		this.StorageElements = new PointerListImpl(5);
-		this.Feeders      = new PointerListImpl(10);
-		this.Substations  = new PointerListImpl(5);
-		this.Transformers = new PointerListImpl(10);
-		this.CapControls  = new PointerListImpl(10);
-		this.SwtControls  = new PointerListImpl(50);
-		this.RegControls  = new PointerListImpl(5);
-		this.Lines        = new PointerListImpl(1000);
-		this.Loads        = new PointerListImpl(1000);
-		this.ShuntCapacitors = new PointerListImpl(20);
+		this.Faults       = new ArrayList<FaultObj>(2);
+		this.CktElements  = new ArrayList<CktElement>(1000);
+		this.PDElements   = new ArrayList<PDElement>(1000);
+		this.PCElements   = new ArrayList<PCElement>(1000);
+		this.DSSControls  = new ArrayList<ControlElem>(10);
+		this.Sources      = new ArrayList<PCElement>(10);
+		this.MeterElements= new ArrayList<MeterElement>(20);
+		this.Monitors     = new ArrayList<MonitorObj>(20);
+		this.EnergyMeters = new ArrayList<EnergyMeter>(5);
+		this.Sensors      = new ArrayList<SensorObj>(5);
+		this.Generators   = new ArrayList<GeneratorObj>(5);
+		this.StorageElements = new ArrayList<StorageObj>(5);
+		this.Feeders      = new ArrayList<FeederObj>(10);
+		this.Substations  = new ArrayList<DSSObject>(5);
+		this.Transformers = new ArrayList<TransformerObj>(10);
+		this.CapControls  = new ArrayList<CapControlObj>(10);
+		this.SwtControls  = new ArrayList<SwtControlObj>(50);
+		this.RegControls  = new ArrayList<RegControlObj>(5);
+		this.Lines        = new ArrayList<LineObj>(1000);
+		this.Loads        = new ArrayList<LoadObj>(1000);
+		this.ShuntCapacitors = new ArrayList<CapacitorObj>(20);
 
 		this.Buses     = new Bus[this.MaxBuses];
-		this.MapNodeToBus = NodeBus[this.MaxNodes];
+		this.MapNodeToBus = new NodeBus[this.MaxNodes];
 		this.DeviceRef = new CktElementDef[MaxDevices];
 
-		this.ControlQueue = new ControlQueue();
+		this.ControlQueue = new ControlQueueImpl();
 
 		this.LegalVoltageBases = new double[8];
 		// Default Voltage Bases
@@ -1053,8 +1053,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private void addDeviceHandle(int Handle) {
 		if (NumDevices > MaxDevices) {
 			MaxDevices = MaxDevices + IncDevices;
-			// FIXME: Set min capacity of array list
-			DeviceRef = new CktElementDef[MaxDevices];
+			DeviceRef = (CktElementDef[]) Utilities.resizeArray(DeviceRef, MaxDevices);
 		}
 		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
 		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
@@ -1063,43 +1062,39 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private void addABus() {
 		if (NumBuses > MaxBuses) {
 			MaxBuses += IncBuses;
-			// FIXME: Set min capacity of array list
-			Buses = new Bus[MaxBuses];
+			Buses = (Bus[]) Utilities.resizeArray(Buses, MaxBuses);
 		}
 	}
 
 	private void addANodeBus() {
 		if (NumNodes > MaxNodes) {
 			MaxNodes += IncNodes;
-			// FIXME: Set min capacity of array list
-			MapNodeToBus = new NodeBus[MaxNodes];
+			MapNodeToBus = (NodeBus[]) Utilities.resizeArray(MapNodeToBus, MaxNodes);
 		}
 	}
 
 	private int addBus(String BusName, int NNodes) {
-		// Trap error in bus name
+		
 		if (BusName.length() == 0) {  // Error in busname
-		DSSGlobals.getInstance().doErrorMsg("TDSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
+			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
-		for (int i = 0; i < ActiveCktElement.getNConds(); i++) {
-			NodeBuffer[i] = 0;
-		}
-		return 0;
+			for (int i = 0; i < ActiveCktElement.getNConds(); i++) NodeBuffer[i] = 0;
+			return 0;
 		}
 
-		int Result = BusList.Find(BusName);
+		int Result = BusList.find(BusName);
 		if (Result == 0) {
-			Result = BusList.Add(BusName);    // Result is index of bus
+			Result = BusList.add(BusName);    // Result is index of bus
 			NumBuses += 1;
 			addABus();   // Allocates more memory if necessary
 			Buses[NumBuses] = new DSSBus();
 		}
 
 		/* Define nodes belonging to the bus */
-		/* Replace Nodebuffer values with global reference number */
+		/* Replace NodeBuffer values with global reference number */
 		int NodeRef;
 		for (int i = 0; i < NNodes; i++) {
-			NodeRef = Buses[Result].Add(NodeBuffer[i]);
+			NodeRef = Buses[Result].add(NodeBuffer[i]);
 			if (NodeRef == NumNodes) { // This was a new node so Add a NodeToBus element ????
 				addANodeBus();   // Allocates more memory if necessary
 				MapNodeToBus[NumNodes].BusRef  = Result;
@@ -1136,15 +1131,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	/* Total Circuit PD Element losses */
 	public Complex getLosses() {
-		PDElement pdElem = PDElements.Get_First();
-		Complex Result = DSSGlobals.cZERO;
-		while (pdElem != null) {
+		Complex Result = Complex.ZERO;
+		for (PDElement pdElem : PDElements) {
 			if (pdElem.isEnabled()) {
 				/* Ignore Shunt Elements */
-				if (!pdElem.IsShunt())
-					Result = Result + pdElem.getLosses();
+				if (!pdElem.isShunt())
+					Result = Result.add(pdElem.getLosses());
 			}
-			pdElem = PDElements.Get_Next();
 		}
 		return Result;
 	}
@@ -1153,11 +1146,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (Value != LoadMultiplier) {
 			// We may have to change the Y matrix if the load multiplier  has changed
 			switch (Solution.getLoadModel()) {
-			case ADMITTANCE:
+			case DSSGlobals.ADMITTANCE:
 				invalidateAllPCElements();
 			}
 		}
-
 		LoadMultiplier = Value;
 	}
 
@@ -1172,28 +1164,29 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		for (int i = 0; i < NumBuses; i++) {
 			SavedBuses[i] = Buses[i];
-			SavedBusNames[i] = BusList.Get(i);
+			SavedBusNames[i] = BusList.get(i);
 		}
 		SavedNumBuses = NumBuses;
 	}
 
 	private void restoreBusInfo() {
+		Bus bus;
 		/* Restore  kV bases, other values to buses still in the list */
 		for (int i = 0; i < SavedNumBuses; i++) {
-			int idx = BusList.Find(SavedBusNames[i]);
+			int idx = BusList.find(SavedBusNames[i]);
 			if (idx != -1) {
-				Buses[idx].pBus = SavedBuses[i];
-				Buses[idx].setkVBase(pBus.kVBase);
-				Buses[idx].setX(pBus.x);
-				Buses[idx].setY(pBus.y);
-				Buses[idx].setCoordDefined(pBus.CoordDefined);
-				Buses[idx].setKeep(pBus.Keep);
+				bus = SavedBuses[i];
+				Buses[idx].setkVBase(bus.getkVBase());
+				Buses[idx].setX(bus.getX());
+				Buses[idx].setY(bus.getY());
+				Buses[idx].setCoordDefined(bus.isCoordDefined());
+				Buses[idx].setKeep(bus.isKeep());
 				/* Restore Voltages in new bus def that existed in old bus def */
-				if (pBus.VBus != null) {
-					for (int j = 0; j < pBus.NumNodesThisBus; j++) {
+				if (bus.getVBus() != null) {
+					for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 						// Find index in new bus for j-th node  in old bus
-						int jdx = Buses[idx].FindIdx(pBus.GetNum(j));
-						if (jdx > -1) Vbus[jdx] = pBus.VBus[j];
+						int jdx = Buses[idx].findIdx(bus.getNum(j));
+						if (jdx > -1) Buses[idx].getVBus()[jdx] = bus.getVBus()[j];
 					}
 				}
 			}
@@ -1202,10 +1195,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		if (SavedBuses != null)
 			for (int i = 0; i < SavedNumBuses; i++)
-				SavedBuses[i].Free();  // gets rid of old bus voltages, too
+				SavedBuses[i] = null;  // gets rid of old bus voltages, too
 
-		SavedBuses = null; //ReallocMem(SavedBuses, 0);
-		SavedBusNames = null; //ReallocMem(SavedBusNames, 0);
+		SavedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
+		SavedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
 	}
 
 	private boolean saveMasterFile() {

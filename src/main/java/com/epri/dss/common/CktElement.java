@@ -83,7 +83,7 @@ public interface CktElement extends DSSObject {
 
 	void setEnabled(boolean Value);
 
-	boolean getEnabled();
+	boolean isEnabled();
 
 	void setActiveTerminal(int Value);
 

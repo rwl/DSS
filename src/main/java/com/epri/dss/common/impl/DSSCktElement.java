@@ -210,7 +210,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 
 	}
 
-	public boolean getEnabled() {
+	public boolean isEnabled() {
 		return this.Enabled;
 	}
 

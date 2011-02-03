@@ -153,6 +153,19 @@ public class DSSGlobals {
 	private DSSGlobals() {
 	}
 
+	/**
+	 * DSSGlobalsHolder is loaded on the first execution of
+	 * DSSGlobals.getInstance() or the first access to
+	 * DSSGlobalsHolder.INSTANCE, not before.
+	 */
+	private static class DSSGlobalsHolder {
+		public static final DSSGlobals INSTANCE = new DSSGlobals();
+	}
+
+	public static DSSGlobals getInstance() {
+		return DSSGlobalsHolder.INSTANCE;
+	}
+
 	public boolean isDLLFirstTime() {
 		return DLLFirstTime;
 	}
@@ -585,19 +598,6 @@ public class DSSGlobals {
 		ClassNames = classNames;
 	}
 
-	/**
-	 * DSSGlobalsHolder is loaded on the first execution of
-	 * DSSGlobals.getInstance() or the first access to
-	 * DSSGlobalsHolder.INSTANCE, not before.
-	 */
-	private static class DSSGlobalsHolder {
-		public static final DSSGlobals INSTANCE = new DSSGlobals();
-	}
-
-	public static DSSGlobals getInstance() {
-		return DSSGlobalsHolder.INSTANCE;
-	}
-
 	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
 		String Msg = String.format("Error %d Reported From DSS Intrinsic Function: ", ErrNum)+ CRLF  + S
 		+ CRLF   + CRLF + "Error Description: " + CRLF + Emsg
@@ -677,20 +677,24 @@ public class DSSGlobals {
 		}
 	}
 
+	/** Finds the bus and sets it active. */
 	public int setActiveBus(String BusName) {
-		// Now find the bus and set active
 		int Result = 0;
 
-		if (ActiveCircuit.getBusList().listSize() == 0) System.exit(0);   // Buslist not yet built
+		if (ActiveCircuit.getBusList().listSize() == 0)
+			return Result;   // BusList not yet built
+		
 		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
+		
 		if (ActiveCircuit.getActiveBusIndex() == 0) {
 			Result = 1;
 			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
 		}
+		
 		return Result;
 	}
 
-	/* Pathname may be null */
+	/** Pathname may be null */
 	public void setDataPath(String PathName) {
 		File F = new File(PathName);
 
@@ -721,9 +725,11 @@ public class DSSGlobals {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
 			ActiveDSSObject = Solution.ActiveSolutionObj;
-			/*Handle := */ Circuits.add(ActiveCircuit);
+			/*Handle = */ Circuits.add(ActiveCircuit);
 			NumCircuits += 1;
-			String S = Parser.getInstance().getRemainder();    // Pass remainder of string on to vsource.
+			// Pass remainder of string on to vsource.
+			String S = Parser.getInstance().getRemainder();    
+			
 			/* Create a default Circuit */
 			SolutionAbort = false;
 			/* Voltage source named "source" connected to SourceBus */
@@ -749,7 +755,7 @@ public class DSSGlobals {
 	/* Separate by CRLF */
 	public void appendGlobalResultCRLF(String S) {
 		if (GlobalResult.length() > 0) {
-			GlobalResult = GlobalResult + CRLF + S;
+			GlobalResult += CRLF + S;
 		} else {
 			GlobalResult = S;
 		}

@@ -59,4 +59,26 @@ public interface Bus extends NamedObject {
 
 	void setIsRadialBus(boolean isRadialBus);
 
+	int getNumNodesThisBus();
+	
+	void allocateBusQuantities();
+	
+	void allocateBusVoltages();
+	
+	void allocateBusCurrents();
+
+	int add(int NodeNum);
+	
+	/** Returns reference num for node by node number */
+	int find(int NodeNum);
+	
+	/** Returns index of node by node number */
+	int findIdx(int NodeNum);
+	
+	/** Returns reference Num for node by node index */
+	int getRef(int NodeIndex);
+	
+	/** Returns ith node number designation */
+	int getNum(int NodeIndex);
+
 }

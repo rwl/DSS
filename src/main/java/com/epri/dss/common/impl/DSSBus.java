@@ -143,4 +143,44 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		IsRadialBus = isRadialBus;
 	}
 
+	public int getNumNodesThisBus() {
+		return NumNodesThisBus;
+	}
+	
+	public void allocateBusQuantities() {
+		
+	}
+	
+	public void allocateBusVoltages() {
+		
+	}
+	
+	public void allocateBusCurrents() {
+		
+	}
+
+	public int add(int NodeNum) {
+		return 0;
+	}
+	
+	/** Returns reference num for node by node number */
+	public int find(int NodeNum) {
+		return 0;
+	}
+	
+	/** Returns index of node by node number */
+	public int findIdx(int NodeNum) {
+		return 0;
+	}
+	
+	/** Returns reference Num for node by node index */
+	public int getRef(int NodeIndex) {
+		return 0;
+	}
+	
+	/** Returns ith node number designation */
+	public int getNum(int NodeIndex) {
+		return 0;
+	}
+
 }

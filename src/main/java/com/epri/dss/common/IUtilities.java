@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import com.epri.dss.delivery.PDElement;
 
-public interface Utilities {
+public interface IUtilities {
 
 //	int compareTextShortest(String S1, String S2);
 //	void fireOffEditor(String FileNm);
