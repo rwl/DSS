@@ -29,7 +29,7 @@ public class HashListImpl implements HashList {
 
 	private String LastSearchString;
 
-	public int InitialAllocation;
+	protected int InitialAllocation;
 
 	public HashListImpl(int Nelements) {
 		super();
@@ -53,6 +53,14 @@ public class HashListImpl implements HashList {
 		this.LastFind = 0;
 		this.LastHash = 0;
 		this.LastSearchString = "";
+	}
+
+	public int getInitialAllocation() {
+		return InitialAllocation;
+	}
+
+	public void setInitialAllocation(int initialAllocation) {
+		InitialAllocation = initialAllocation;
 	}
 
 	private void resizeSubList(SubList SubList) {

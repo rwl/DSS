@@ -12,7 +12,9 @@ import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.AutoAdd;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
+import com.epri.dss.common.CktElementClass;
 import com.epri.dss.common.ControlQueue;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.SolutionObj;
@@ -35,6 +37,7 @@ import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.impl.NamedObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MeterElement;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.meter.SensorObj;
@@ -104,7 +107,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected ArrayList<MeterElement> MeterElements;
 	protected ArrayList<SensorObj> Sensors;
 	protected ArrayList<MonitorObj> Monitors;
-	protected ArrayList<EnergyMeter> EnergyMeters;
+	protected ArrayList<EnergyMeterObj> EnergyMeters;
 	protected ArrayList<GeneratorObj> Generators;
 	protected ArrayList<StorageObj> StorageElements;
 	protected ArrayList<DSSObject> Substations;
@@ -230,7 +233,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.Sources      = new ArrayList<PCElement>(10);
 		this.MeterElements= new ArrayList<MeterElement>(20);
 		this.Monitors     = new ArrayList<MonitorObj>(20);
-		this.EnergyMeters = new ArrayList<EnergyMeter>(5);
+		this.EnergyMeters = new ArrayList<EnergyMeterObj>(5);
 		this.Sensors      = new ArrayList<SensorObj>(5);
 		this.Generators   = new ArrayList<GeneratorObj>(5);
 		this.StorageElements = new ArrayList<StorageObj>(5);
@@ -1215,10 +1218,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			F.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
-			for (int i = 0; i < DSSGlobals.getInstance().SavedFileList.Count; i++) {
-				F.println("Redirect " + SavedFileList.Strings[i-1]);
-			}
-
+			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().length; i++) 
+				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList()[i-1]);
+			
 			if (new File("buscoords.dss").exists()) {
 				F.println("MakeBusList");
 				F.println("Buscoords buscoords.dss");
@@ -1227,20 +1229,20 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			F.close();
 			Result = true;
 		} catch (Exception e) {
-			doSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
+			DSSGlobals.getInstance().doSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
 		}
 
 		return Result;
 	}
 
 	private boolean saveDSSObjects() {
-		DSSClassImpl DSS_Class;
 		// Write Files for all populated DSS Classes  Except Solution Class
-		for (int i = 0; i < DSSGlobals.getInstance().DSSClassList.getListSize(); i++) {
-			Dss_Class = DSSClassList.Get(i);
-			if ((DSS_Class == SolutionClass) || Dss_Class.isSaved()) continue;   // Cycle to next
-				/* use default filename=classname */
-			if (!Utilities.WriteClassFile(Dss_Class, "", (DSS_Class == TCktElementClass) )) return false;  // bail on error
+		for (DSSClass DSS_Class : DSSGlobals.getInstance().getDSSClassList()) {
+			if ((DSS_Class == DSSGlobals.getInstance().getSolutionClass()) || DSS_Class.isSaved())
+				continue;   // Cycle to next
+			/* use default filename=classname */
+			if (!Utilities.writeClassFile(DSS_Class, "", (DSS_Class instanceof CktElementClass) ))
+				return false;  // bail on error
 			DSS_Class.setSaved(true);
 		}
 		return true;
@@ -1248,26 +1250,24 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private boolean saveFeeders() {
 		String SaveDir, CurrDir;
-		EnergyMeter Meter;
+//		EnergyMeter Meter;
 
 		boolean Result = true;
 		/* Write out all energy meter  zones to separate subdirectories */
-		SaveDir = "";//GetCurrentDir;
-		for (int i = 0; i < EnergyMeters.Get_ListSize(); i++) {
-			Meter = EnergyMeters.Get(i); // Recast pointer
+		SaveDir = System.getProperty("user.dir");
+		for (EnergyMeterObj Meter : EnergyMeters) {
 			CurrDir = Meter.getName();
 			if (new File(CurrDir).mkdir()) {
-//				SetCurrentDir(CurrDir);
-				Meter.SaveZone(CurrDir);
-//				SetCurrentDir(SaveDir);
+//				SetCurrentDir(CurrDir);  FIXME: Set cwd
+				Meter.saveZone(CurrDir);
+//				SetCurrentDir(SaveDir);  FIXME: Set cwd
 			} else {
 				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
 				Result = false;
-//				SetCurrentDir(SaveDir);  // back to whence we came
+//				SetCurrentDir(SaveDir);  FIXME: Set cwd // back to whence we came
 				break;
 			}
 		}
-
 		return Result;
 	}
 
@@ -1278,11 +1278,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			File FD = new File("BusCoords.dss");
 			PrintStream F = new PrintStream(FD);
 
-			for (int i = 0; i < NumBuses; i++) {
+			for (int i = 0; i < NumBuses; i++) 
 				if (Buses[i].isCoordDefined())
-					F.println(Utilities.CheckForBlanks(BusList.Get(i)), Format(", %-g, %-g", Buses[i].x, Buses[i].y));
-			}
-
+					F.println(Utilities.checkForBlanks(BusList.get(i)) + String.format(", %-g, %-g", Buses[i].getX(), Buses[i].getY()));
+			
 			F.close();
 
 			Result = true;
@@ -1295,14 +1294,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	/* Reallocate the device list to improve the performance of searches */
 	private void reallocDeviceList() {
-		if (LogEvents) Utilities.LogThisEvent("Reallocating Device List");
+		if (LogEvents) Utilities.logThisEvent("Reallocating Device List");
 		HashListImpl TempList = new HashListImpl(2 * NumDevices);
 
-		for (int i = 0; i < DeviceList.Get_ListSize(); i++) {
-			Templist.Add(DeviceList.Get(i));
-		}
-
-		DeviceList.Free(); // Throw away the old one.
+		for (int i = 0; i < DeviceList.listSize(); i++) 
+			TempList.add(DeviceList.get(i));
+		
 		DeviceList = TempList;
 	}
 
@@ -1312,11 +1309,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public String getCaseName() {
-		return this.getLocalName();
+		return CaseName;
 	}
 
 	public String getName() {
-		return null;
+		return getLocalName();
 	}
 
 	/* Adds last DSS object created to circuit */
@@ -1325,60 +1322,61 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		NumDevices += 1;
 
 		// Resize DeviceList if no. of devices greatly exceeds allocation
-		if (NumDevices > 2 * DeviceList.InitialAllocation) reallocDeviceList();
-		DeviceList.Add(ActiveCktElement.getName());
-		CktElements.Add(ActiveCktElement);
+		if (NumDevices > 2 * DeviceList.getInitialAllocation())
+			reallocDeviceList(); 
+		DeviceList.add(ActiveCktElement.getName());
+		CktElements.add(ActiveCktElement);
 
 		/* Build Lists of PC and PD elements */
-		if (ActiveCktElement instanceof PDElement) {
-			PDElements.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof PCElement) {
-			PCElements.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof ControlElement) {
-			DSSControls.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof MeterElement) {
-			MeterElements.Add(ActiveCktElement);
+		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
+			PDElements.add((PDElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
+			PCElements.add((PCElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CTRL_ELEMENT) {
+			DSSControls.add((ControlElem) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.METER_ELEMENT) {
+			MeterElements.add((MeterElement) ActiveCktElement);
 		}
 
 		/* Build  lists of Special elements and generic types */
-		if (ActiveCktElement instanceof MonitorElement) {
-			Monitors.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof EnergyMeter) {
-			EnergyMeters.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof SensorElement) {
-			Sensors.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Generator) {
-			Generators.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Source) {
-			Sources.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof CapacitorControl) {
-			CapControls.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof SWTControl) {
-			SwtControls.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof RegulatorControl) {
-			RegControls.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Load) {
-			Loads.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof CapacitorElement) {
-			ShuntCapacitors.Add(ActiveCktElement);
+		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
+			Monitors.add((MonitorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
+			EnergyMeters.add((EnergyMeterObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SENSOR_ELEMENT) {
+			Sensors.add((SensorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.GEN_ELEMENT) {
+			Generators.add((GeneratorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SOURCE) {
+			Sources.add((PCElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_CONTROL) {
+			CapControls.add((CapControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SWT_CONTROL) {
+			SwtControls.add((SwtControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.REG_CONTROL) {
+			RegControls.add((RegControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LOAD_ELEMENT) {
+			Loads.add((LoadObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
+			ShuntCapacitors.add((CapacitorObj) ActiveCktElement);
 		}
 		/* Keep Lines, Transformer, and Lines and Faults in PDElements and
 		separate lists so we can find them quickly. */
-		else if (ActiveCktElement instanceof TransformerElement) {
-			Transformers.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Line) {
-			Lines.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Fault) {
-			Faults.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Feeder) {
-			Feeders.Add(ActiveCktElement);
-		} else if (ActiveCktElement instanceof Storage) {
-			StorageElements.Add(ActiveCktElement);
+		else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
+			Transformers.add((TransformerObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
+			Lines.add((LineObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FAULTOBJECT) {
+			Faults.add((FaultObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FEEDER_ELEMENT) {
+			Feeders.add((FeederObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
+			StorageElements.add((StorageObj) ActiveCktElement);
 		}
 
 		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
-		addDeviceHandle(CktElements.Get_ListSize()); // Handle is global index into CktElements
-		ActiveCktElement.setHandle(CktElements.Get_ListSize());
+		addDeviceHandle(CktElements.size()); // Handle is global index into CktElements
+		ActiveCktElement.setHandle(CktElements.size());
 	}
 
 	/* Totalize all energymeters in the problem */

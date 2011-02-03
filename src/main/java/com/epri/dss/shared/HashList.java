@@ -21,6 +21,10 @@ package com.epri.dss.shared;
  */
 public interface HashList {
 
+	int getInitialAllocation();
+
+	void setInitialAllocation(int initialAllocation);
+
 	int add(String S);
 
 	/* repeat find for duplicate string in same hash list */
