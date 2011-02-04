@@ -8,7 +8,7 @@ public interface CMatrix {
 
 	void setInvertError(int invertError);
 	
-	int getnOrder();
+	int getNOrder();
 	
 	void invert();
 
@@ -17,7 +17,7 @@ public interface CMatrix {
 	
 	void addFrom(CMatrix otherMatrix);
 	
-	void CopyFrom(CMatrix otherMatrix);
+	void copyFrom(CMatrix otherMatrix);
 	
 	void setElement(int i, int j, Complex Value);
 	
@@ -34,10 +34,10 @@ public interface CMatrix {
 	Complex sumBlock(int row1, int row2, int col1, int col2);
 	
 	/* b = Ax */
-	void MVmult(Complex[] b, Complex[] x);
+	void MVMult(Complex[] b, Complex[] x);
 	
 	/* b = Ax */
-	void MVmultAccum(Complex[] b, Complex[] x);
+	void MVMultAccum(Complex[] b, Complex[] x);
 	
 	Complex[] asArray(int Order);
 	
@@ -54,6 +54,6 @@ public interface CMatrix {
 	void multByConst(double x);
 
 	/* Perform Kron reduction on last row/col and return new matrix */
-	CMatrix Kron(int eliminationRow);
+	CMatrix kron(int eliminationRow);
 
 }
