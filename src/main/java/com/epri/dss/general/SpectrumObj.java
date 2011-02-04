@@ -1,6 +1,6 @@
 package com.epri.dss.general;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 /**
  * Harmonic Spectrum specified as Harmonic, pct magnitude and angle.

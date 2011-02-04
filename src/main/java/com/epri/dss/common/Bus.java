@@ -1,6 +1,6 @@
 package com.epri.dss.common;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.general.NamedObject;
 import com.epri.dss.shared.CMatrix;

@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.general.DSSObject;

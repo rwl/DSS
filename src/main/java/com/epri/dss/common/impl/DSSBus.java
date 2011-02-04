@@ -1,6 +1,6 @@
 package com.epri.dss.common.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.general.impl.NamedObjectImpl;

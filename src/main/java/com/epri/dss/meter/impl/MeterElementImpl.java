@@ -1,6 +1,6 @@
 package com.epri.dss.meter.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;

@@ -1,6 +1,6 @@
 package com.epri.dss.delivery.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSCktElement;

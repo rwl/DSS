@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;

@@ -2,7 +2,7 @@ package com.epri.dss.general;
 
 import java.io.PrintStream;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 /*
  * The LoadShape object is a general DSS object used by all circuits

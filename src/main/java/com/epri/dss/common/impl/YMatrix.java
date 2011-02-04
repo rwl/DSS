@@ -1,6 +1,6 @@
 package com.epri.dss.common.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 public class YMatrix {
 	

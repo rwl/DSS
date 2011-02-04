@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;

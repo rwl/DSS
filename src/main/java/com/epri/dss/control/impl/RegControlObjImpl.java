@@ -3,7 +3,7 @@ package com.epri.dss.control.impl;
 import java.io.File;
 import java.io.PrintStream;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.control.RegControlObj;

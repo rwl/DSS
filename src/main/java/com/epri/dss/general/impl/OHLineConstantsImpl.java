@@ -1,6 +1,6 @@
 package com.epri.dss.general.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.general.OHLineConstants;
 import com.epri.dss.shared.CMatrix;
