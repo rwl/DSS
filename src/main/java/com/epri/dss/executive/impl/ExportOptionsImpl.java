@@ -55,10 +55,10 @@ public class ExportOptionsImpl implements ExportOptions {
 		this.ExportHelp[ 9] = "(Default file = EXP_SEQPOWERS.CSV) Sequence powers into each terminal of 3-phase elements.";
 		this.ExportHelp[10] = "(Default file = EXP_FAULTS.CSV) results of a fault study.";
 		this.ExportHelp[11] = "(Default file = EXP_GENMETERS.CSV) Present values of generator meters. Adding the switch \"/multiple\" or \"/m\" will " +
-		                      " cause a separate file to be written for each generator.";
+							  " cause a separate file to be written for each generator.";
 		this.ExportHelp[12] = "(Default file = EXP_LOADS.CSV) Report on loads from most recent solution.";
 		this.ExportHelp[13] = "(Default file = EXP_METERS.CSV) Energy meter exports. Adding the switch \"/multiple\" or \"/m\" will " +
-		                      " cause a separate file to be written for each meter.";
+							  " cause a separate file to be written for each meter.";
 		this.ExportHelp[14] = "(file name is assigned by Monitor export) Monitor values.";
 		this.ExportHelp[15] = "(Default file = EXP_YPRIMS.CSV) All primitive Y matrices.";
 		this.ExportHelp[16] = "(Default file = EXP_Y.CSV) System Y matrix.";
@@ -74,7 +74,7 @@ public class ExportOptionsImpl implements ExportOptions {
 
 	}
 
-	public int doExportCmd() {
+	public static int doExportCmd() {
 		return 0;
 	}
 

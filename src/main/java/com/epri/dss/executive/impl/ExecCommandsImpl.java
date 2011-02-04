@@ -1,5 +1,6 @@
 package com.epri.dss.executive.impl;
 
+import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.executive.ExecCommands;
 import com.epri.dss.executive.Executive;
@@ -382,9 +383,9 @@ public class ExecCommandsImpl implements ExecCommands {
 		int ParamPointer;
 		String ParamName;
 		String Param;
-		String ObjName, PropName;
+		String ObjName = "", PropName = "";
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		Parser Parser = Parser.getInstance();
+		Parser Parser = com.epri.dss.parser.impl.Parser.getInstance();
 
 		try {
 			Globals.setCmdResult(0);
@@ -462,12 +463,12 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 72:
 				ParamName = Parser.getNextParam();
 				Param = Parser.makeString();
-				if (setCurrentDir(Param)) {
-					Globals.setCmdResult(0);
-					Globals.setDataPath(Param);  // Change DSSdataDirectory
-				} else {
-					Globals.doSimpleMsg("Directory \""+Param+"\" not found.", 282);
-				}
+//				if (setCurrentDir(Param)) {  FIXME: Change cwd.
+//					Globals.setCmdResult(0);
+//					Globals.setDataPath(Param);  // Change DSSdataDirectory
+//				} else {
+//					Globals.doSimpleMsg("Directory \""+Param+"\" not found.", 282);
+//				}
 			case 75:
 				ExecHelper.doADOScmd();
 			case 88:
@@ -482,12 +483,12 @@ public class ExecCommandsImpl implements ExecCommands {
 			if (ParamPointer == 0) {
 				/* If not a command or the command is unknown, then it could be a property of a circuit element */
 
-				/* If a command or no text beFORe the = sign, THEN error */
+				/* If a command or no text before the = sign, then error */
 				if ((ParamName.length() == 0) || ParamName.equals("command")) {
 					Globals.doSimpleMsg("Unknown Command: \"" + Param + "\" "+ CRLF + Parser.getCmdString(), 302);
 					Globals.setCmdResult(1);
 				} else {
-					ExecHelper.parseObjName(ParamName, ObjName, PropName);
+					ExecHelper.parseObjName(ParamName, ObjName, PropName);  // TODO: Check ObjName and PropName get set.
 					if (ObjName.length() > 0)
 						Globals.setObject(ObjName);  // Set active element
 					if (Globals.getActiveDSSObject() != null) {
@@ -517,7 +518,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 8:
 				Globals.setCmdResult(ShowOptionsImpl.doShowCmd()); // show
 			case 9:
-				Globals.setCmdResult(ExecOptionsImpl.doSetCmd()); // solve
+				Globals.setCmdResult(ExecOptionsImpl.doSetCmd(1)); // solve
 			case 10:
 				Globals.setCmdResult(ExecHelper.doEnableCmd());
 			case 11:
@@ -555,11 +556,11 @@ public class ExecCommandsImpl implements ExecCommands {
 				// Force rebuilding of Y
 				Globals.getActiveCircuit().invalidateAllPCElements();
 			case 32:
-				Globals.setCmdResult(ExecOptions.doGetCmd());
+				Globals.setCmdResult(ExecOptionsImpl.doGetCmd());
 			case 33:
 				Globals.getActiveCircuit().getSolution().setSolutionInitialized(false);
 			case 34:
-				Globals.setCmdResult(ExecOptions.doExportCmd());
+				Globals.setCmdResult(ExportOptionsImpl.doExportCmd());
 //			case 35:
 //				Globals.setCmdResult(ExecHelper.doFileEditCmd());
 			case 36:
@@ -664,7 +665,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 90:
 				Globals.setCmdResult(ExecHelper.doRephaseCmd());
 			case 91:
-				Globals.setCmdResult(ExecHelper.doSetbusXYCmd());
+				Globals.setCmdResult(ExecHelper.doSetBusXYCmd());
 			default:
 				// Ignore excess parameters
 			}

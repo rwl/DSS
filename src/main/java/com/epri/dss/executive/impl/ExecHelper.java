@@ -364,6 +364,18 @@ public class ExecHelper {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public static int doNodeDiffCmd() {
+		return 0;
+	}
+	
+	public static int doRephaseCmd() {
+		return 0;
+	}
+	
+	public static int doSetBusXYCmd() {
+		return 0;
+	}
 
 	public static void doSetNormal(double pctNormal) {
 		// TODO Auto-generated method stub
