@@ -1,6 +1,6 @@
 package com.epri.dss.executive;
 
-public interface ExecHelper {
+public interface IExecHelper {
 
 	int doNewCmd();
 	int doEditCmd();

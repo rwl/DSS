@@ -1,414 +1,411 @@
 package com.epri.dss.executive.impl;
 
-import com.epri.dss.executive.ExecHelper;
+public class ExecHelper {
 
-public class ExecHelperImpl implements ExecHelper {
-
-	public ExecHelperImpl() {
-		// TODO Auto-generated constructor stub
+	private ExecHelper() {
 	}
 
-	public int doNewCmd() {
+	public static int doNewCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doEditCmd() {
+	public static int doEditCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSelectCmd() {
+	public static int doSelectCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doMoreCmd() {
+	public static int doMoreCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doRedirect(boolean IsCompile) {
+	public static int doRedirect(boolean IsCompile) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSaveCmd() {
+	public static int doSaveCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSampleCmd() {
+	public static int doSampleCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSolveCmd() {
+	public static int doSolveCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doEnableCmd() {
+	public static int doEnableCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doDisableCmd() {
+	public static int doDisableCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doOpenCmd() {
+	public static int doOpenCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doResetCmd() {
+	public static int doResetCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doNextCmd() {
+	public static int doNextCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doFormEditCmd() {
+	public static int doFormEditCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doClassesCmd() {
+	public static int doClassesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doUserClassesCmd() {
+	public static int doUserClassesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doHelpCmd() {
+	public static int doHelpCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doClearCmd() {
+	public static int doClearCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doReduceCmd() {
+	public static int doReduceCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doInterpolateCmd() {
+	public static int doInterpolateCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCloseCmd() {
+	public static int doCloseCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doResetMonitors() {
+	public static int doResetMonitors() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doFileEditCmd() {
+	public static int doFileEditCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doQueryCmd() {
+	public static int doQueryCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doResetMeters() {
+	public static int doResetMeters() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public void doAboutBox() {
+	public static void doAboutBox() {
 		// TODO Auto-generated method stub
 
 	}
 
-	public int doSetVoltageBases() {
+	public static int doSetVoltageBases() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSetkVBase() {
+	public static int doSetkVBase() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public void doLegalVoltageBases() {
+	public static void doLegalVoltageBases() {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void doAutoAddBusList(String S) {
+	public static void doAutoAddBusList(String S) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void doKeeperBusList(String S) {
+	public static void doKeeperBusList(String S) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void doSetReduceStrategy(String S) {
+	public static void doSetReduceStrategy(String S) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void doSetAllocationFactors(double X) {
+	public static void doSetAllocationFactors(double X) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void doSetCFactors(double X) {
+	public static void doSetCFactors(double X) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public int doVoltagesCmd(boolean PerUnit) {
+	public static int doVoltagesCmd(boolean PerUnit) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCurrentsCmd() {
+	public static int doCurrentsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doPowersCmd() {
+	public static int doPowersCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSeqVoltagesCmd() {
+	public static int doSeqVoltagesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSeqCurrentsCmd() {
+	public static int doSeqCurrentsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSeqPowersCmd() {
+	public static int doSeqPowersCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doLossesCmd() {
+	public static int doLossesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doPhaseLossesCmd() {
+	public static int doPhaseLossesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCktLossesCmd() {
+	public static int doCktLossesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doAllocateLoadsCmd() {
+	public static int doAllocateLoadsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doHarmonicsList(String S) {
+	public static int doHarmonicsList(String S) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doMeterTotals() {
+	public static int doMeterTotals() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCapacityCmd() {
+	public static int doCapacityCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doZscCmd(boolean Zmatrix) {
+	public static int doZscCmd(boolean Zmatrix) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doZsc10Cmd() {
+	public static int doZsc10Cmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doZscRefresh() {
+	public static int doZscRefresh() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doBusCoordsCmd() {
+	public static int doBusCoordsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doGuidsCmd() {
+	public static int doGuidsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSetLoadAndGenKVCmd() {
+	public static int doSetLoadAndGenKVCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doVarValuesCmd() {
+	public static int doVarValuesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doVarNamesCmd() {
+	public static int doVarNamesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doMakePosSeq() {
+	public static int doMakePosSeq() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doAlignFileCmd() {
+	public static int doAlignFileCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doTOPCmd() {
+	public static int doTOPCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doRotateCmd() {
+	public static int doRotateCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doVDiffCmd() {
+	public static int doVDiffCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doSummaryCmd() {
+	public static int doSummaryCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doDistributeCmd() {
+	public static int doDistributeCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doDI_PlotCmd() {
+	public static int doDI_PlotCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCompareCasesCmd() {
+	public static int doCompareCasesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doYearlyCurvesCmd() {
+	public static int doYearlyCurvesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doVisualizeCmd() {
+	public static int doVisualizeCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCloseDICmd() {
+	public static int doCloseDICmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doADOScmd() {
+	public static int doADOScmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doEstimateCmd() {
+	public static int doEstimateCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doReconductorCmd() {
+	public static int doReconductorCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doAddMarkerCmd() {
+	public static int doAddMarkerCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doCvrtLoadshapesCmd() {
+	public static int doCvrtLoadshapesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public void doSetNormal(double pctNormal) {
+	public static void doSetNormal(double pctNormal) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void setTime() {
+	public static void setTime() {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void parseObjName(String fullname, String objname, String propname) {
+	public static void parseObjName(String fullname, String objname, String propname) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void getObjClassAndName(String ObjClass, String ObjName) {
+	public static void getObjClassAndName(String ObjClass, String ObjName) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public int addObject(String ObjType, String name) {
+	public static int addObject(String ObjType, String name) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int editObject(String ObjType, String name) {
+	public static int editObject(String ObjType, String name) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public void setActiveCircuit(String cktname) {
+	public static void setActiveCircuit(String cktname) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public int setActiveCktElement() {
+	public static int setActiveCktElement() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public int doPropertyDump() {
+	public static int doPropertyDump() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
