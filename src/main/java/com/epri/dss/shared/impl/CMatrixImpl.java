@@ -1,6 +1,6 @@
 package com.epri.dss.shared.impl;
 
-import org.apache.commons.math.complex.Complex;
+import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.shared.CMatrix;
 
@@ -230,23 +230,76 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 	
-	/* Average of Diagonal Elements */
+	/**
+	 * Average of Diagonal Elements
+	 */
 	public Complex avgDiagonal() {
-		return null;
-	}
-	
-	public Complex avgOffDiagonal() {
-		return null;
-	}
-	
-	/* Multiply all elements by a constant */
-	public void multByConst(double x) {
+		Complex Result = Complex.ZERO;
+		for (int i = 0; i < nOrder; i++) 
+			Result = Result.add(values[((i - 1) * nOrder + i)]);
 		
+		if (nOrder > 0)
+			Result = Result.divide(nOrder);
+
+		return Result;
+	}
+	
+	/**
+	 * Average the upper triangle off diagonals.
+	 */
+	public Complex avgOffDiagonal() {
+		Complex Result = Complex.ZERO;
+		int nTimes = 0;
+		for (int i = 0; i < nOrder; i++) {
+			for (int j = i+1; j < nOrder; j++) {
+				nTimes += 1;
+				Result = Result.add(values[((j - 1) * nOrder + i)]);
+			}
+		}
+		
+		if (nTimes > 0) 
+			Result = Result.divide(nTimes);
+		
+		return Result;
+	}
+	
+	/**
+	 * Multiply all elements by a constant
+	 */
+	public void multByConst(double x) {
+		for (int i = 0; i < nOrder * nOrder; i++) 
+			values[i] = values[i].multiply(x);
 	}
 
-	/* Perform Kron reduction on last row/col and return new matrix */
+	/**
+	 * Perform Kron reduction on last row/col and return new matrix
+	 */
 	public CMatrix kron(int eliminationRow) {
-		return null;
+		int ii, jj;
+		CMatrix Result = null;   // Null result means it failed
+		if ((nOrder > 1) && (eliminationRow <= nOrder) && (eliminationRow > 0)) {
+			Result = new CMatrixImpl(nOrder - 1);
+			int N = eliminationRow;
+			Complex NNElement = getElement(N, N);
+			
+			ii = 0;
+			for (int i = 0; i < nOrder; i++) {
+				if (i != N) {
+					ii += 1;
+					jj = 0;
+					for (int j = 0; j < nOrder; j++) {
+						if (j != N) {
+							jj += 1;
+							Result.setElement(ii, jj,
+									getElement(i, j).subtract( getElement(i, N).multiply(getElement(N, j)).divide(NNElement) )
+							);
+						}
+					}
+				}
+			}
+		}
+	
+		return Result;
 	}
 
 }
