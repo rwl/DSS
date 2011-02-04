@@ -21,6 +21,10 @@ public class Utilities {
 	 * @param oldArray the old array, to be reallocated.
 	 * @param newSize the new array size.
 	 * @return A new array with the same contents.
+	 * 
+	 * @see http://www.source-code.biz/snippets/java/3.htm
+	 * @author Christian d'Heureuse <chdh@source-code.biz>
+	 * @license LGPL
 	 */
 	public static Object resizeArray(Object oldArray, int newSize) {
 		int oldSize = java.lang.reflect.Array.getLength(oldArray);
