@@ -1,7 +1,10 @@
 package com.epri.dss.common.impl;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.CktElement;
@@ -12,6 +15,16 @@ import com.epri.dss.shared.CMatrix;
 public class Utilities {
 
 	private Utilities() {
+	}
+	
+	public static String expandFileName(String child) {
+		try {
+			return new File(System.getProperty("user.dir"), child).getCanonicalPath();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	/**
@@ -321,7 +334,7 @@ public class Utilities {
 		return false;
 	}
 
-	public static void ClearEventLog() {
+	public static void clearEventLog() {
 
 	}
 

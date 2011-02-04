@@ -20,7 +20,7 @@ public class ExecCommandsImpl implements ExecCommands {
 
 	/* Always has last command processed */
 	private String LastCmdLine;
-	private String RedirFile;
+	private static String RedirFile;
 
 	public ExecCommandsImpl() {
 
@@ -377,6 +377,14 @@ public class ExecCommandsImpl implements ExecCommands {
 							"cvrtloadshapes type=dbl"+CRLF+CRLF+
 							"A DSS script for loading the loadshapes from the created files is produced and displayed in the default editor. ";
 
+	}
+
+	public static String getRedirFile() {
+		return RedirFile;
+	}
+
+	public static void setRedirFile(String redirFile) {
+		RedirFile = redirFile;
 	}
 
 	public void processCommand(String CmdLine) {
