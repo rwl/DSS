@@ -15,7 +15,6 @@ import com.epri.dss.common.Feeder;
 import com.epri.dss.common.Solution;
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.executive.Executive;
-import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.forms.DSSForms;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
@@ -122,7 +121,7 @@ public class DSSGlobals {
 	private String DefaultEditor = "NotePad";     // normally, Notepad
 	private String DSSFileName;// = GetDSSExeFile();     // Name of current exe or DLL
 	private String DSSDirectory;// = new File(DSSFileName).getParent();     // where the current exe resides
-	private String StartupDirectory;// = GetCurrentDir() + "\\";     // Where we started
+	private String StartupDirectory = System.getProperty("user.dir") + "/";  // Where we started
 	private String DSSDataDirectory;// = StartupDirectory;
 	private String CircuitName_;     // Name of Circuit with a "_" appended
 
@@ -444,6 +443,38 @@ public class DSSGlobals {
 
 	public void setDefaultEditor(String defaultEditor) {
 		DefaultEditor = defaultEditor;
+	}
+
+	public String getDSSFileName() {
+		return DSSFileName;
+	}
+
+	public void setDSSFileName(String dSSFileName) {
+		DSSFileName = dSSFileName;
+	}
+
+	public String getDSSDirectory() {
+		return DSSDirectory;
+	}
+
+	public void setDSSDirectory(String dSSDirectory) {
+		DSSDirectory = dSSDirectory;
+	}
+
+	public String getStartupDirectory() {
+		return StartupDirectory;
+	}
+
+	public void setStartupDirectory(String startupDirectory) {
+		StartupDirectory = startupDirectory;
+	}
+
+	public String getDSSDataDirectory() {
+		return DSSDataDirectory;
+	}
+
+	public void setDSSDataDirectory(String dSSDataDirectory) {
+		DSSDataDirectory = dSSDataDirectory;
 	}
 
 	public String getCircuitName_() {
