@@ -6,8 +6,20 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+import com.epri.dss.common.Circuit;
+import com.epri.dss.common.CktElement;
+import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.Solution;
+import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSCktElement;
+import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.executive.Executive;
+import com.epri.dss.meter.EnergyMeterObj;
+import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.parser.impl.Parser;
 
 public class ExecHelper {
@@ -185,39 +197,267 @@ public class ExecHelper {
 		return Result;
 	}
 
+	/**
+	 * Select active object.
+	 * select element=elementname terminal=terminalnumber
+	 */
 	public static int doSelectCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		String ObjClass = "", ObjName = "";
+		String ParamName, Param;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 1;
+
+		getObjClassAndName(ObjClass, ObjName);  // Parse Object class and name
+
+		if ((ObjClass.length() == 0) && (ObjName.length() == 0))
+			return Result;  // select active obj if any
+
+		if (ObjClass.equals("circuit")) {
+			setActiveCircuit(ObjName);
+		} else {
+			// Everything else must be a circuit element
+			if (ObjClass.length() > 0)
+				DSSClassDefs.setObjectClass(ObjClass);
+
+			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
+			if (Globals.getActiveDSSClass() != null) {
+				if (!Globals.getActiveDSSClass().setActive(ObjName)) {
+					// scroll through list of objects until a match
+					Globals.doSimpleMsg("Error! Object \"" + ObjName + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 245);
+					Result = 0;
+				} else {
+					switch (Globals.getActiveDSSObject().getDSSObjType()) {
+					case DSSClassDefs.DSS_OBJECT:
+						// do nothing for general DSS object
+					default:  // for circuit types, set ActiveCircuit Element, too
+						Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
+						// Now check for active terminal designation
+						ParamName = Parser.getInstance().getNextParam().toLowerCase();
+						Param = Parser.getInstance().makeString();
+						if (Param.length() > 0) {
+							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger());
+						} else {
+							// TODO: Check zero indexing.
+							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(1);  // default to 1
+						}
+						Globals.setActiveBus( Globals.getActiveCircuit().getActiveCktElement().getBus(Globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()) );
+					}
+				}
+			} else {
+				Globals.doSimpleMsg("Error! Active object type/class is not set.", 246);
+				Result = 0;
+			}
+		}
+		
+		return Result;
 	}
 
+	/**
+	 * more editstring  (assumes active circuit element)
+	 */
 	public static int doMoreCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		if (DSSGlobals.getInstance().getActiveDSSClass() != null) {
+			return DSSGlobals.getInstance().getActiveDSSClass().edit();
+		} else {
+			return 0;
+		}
 	}
 
 	public static int doSaveCmd() {
-		// TODO Auto-generated method stub
+		// TODO: Implement this method
+		throw new UnsupportedOperationException();
+	}
+
+	public static int doClearCmd() {
+		Executive.DSSExecutive.clear();
 		return 0;
 	}
 
+	public static int doHelpCmd() {
+		DSSForms.showHelpForm();
+		return 0;
+	}
+
+	/**
+	 * Force all monitors and meters in active circuit to take a sample.
+	 */
 	public static int doSampleCmd() {
-		// TODO Auto-generated method stub
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		for (MonitorObj mon : ckt.getMonitors()) 
+			mon.takeSample();
+			
+		for (EnergyMeterObj meter : ckt.getEnergyMeters()) 
+			meter.takeSample();
+		
+		for (GeneratorObj gen : ckt.getGenerators()) 
+			gen.takeSample();
+		
 		return 0;
 	}
 
 	public static int doSolveCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		// Just invoke solution obj's editor to pick up parsing
+		// and execute rest of command
+		Solution.ActiveSolutionObj = DSSGlobals.getInstance().getActiveCircuit().getSolution();  
+		return DSSGlobals.getInstance().getSolutionClass().edit();
+	}
+
+	/**
+	 * Parses the object off the line and sets it active as a CktElement.
+	 */
+	public static int setActiveCktElement() {
+		String ObjType = "", ObjName = "";
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int Result = 0;
+
+		getObjClassAndName(ObjType, ObjName);
+
+		if (ObjType.equals("circuit")) {
+			// Do nothing
+		} else {
+			if (ObjType.equals(Globals.getActiveDSSClass().getName())) {
+				Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
+				
+				switch (Globals.getLastClassReferenced()) {
+				case 0:
+					Globals.doSimpleMsg("Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 253);
+					Result = 0;
+					return Result;
+				default:
+					// intrinsic and user Defined models
+					Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
+					if (Globals.getActiveDSSClass().setActive(ObjName)) {
+						// scroll through list of objects until a match
+						switch (Globals.getActiveDSSObject().getDSSObjType()) {
+						case DSSClassDefs.DSS_OBJECT:
+							Globals.doSimpleMsg("Error in SetActiveCktElement: Object not a circuit Element."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 254);
+						default:
+							Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
+							Result = 1;
+						}
+					}
+				}
+			}
+		}
+		
+		return Result;
 	}
 
 	public static int doEnableCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		String ObjType = "", ObjName = "";
+		DSSClass ClassPtr;
+		CktElement CktElem;
+
+		//Result = setActiveCktElement();
+		//if (Result > 0) DSSGlobals.getInstance().getActiveCircuit().getActiveCktElement().setEnabled(true);
+
+		int Result = 0;
+
+		getObjClassAndName(ObjType, ObjName);
+
+		if (ObjType.equals("circuit")) {
+			// Do nothing
+		} else {
+			if (ObjType.length() > 0) {
+				// only applies to CktElementClass objects
+				ClassPtr = DSSClassDefs.getDSSClass(ObjType);
+				if (ClassPtr != null) {
+					
+					if (ClassPtr.getDSSClassType() && DSSClassDefs.BASECLASSMASK) > 0) {
+						// Everything else must be a circuit element
+						if (ObjName.equals("*")) {
+							// Enable all elements of this class
+							for (int i = 0; i < ClassPtr.getElementCount(); i++) {
+								CktElem = (CktElement) ClassPtr.getElementList().get(i);
+								CktElem.setEnabled(true);
+							}
+						} else {
+							// just load up the parser and call the edit routine for the object in question
+							Parser.getInstance().setCmdString("Enabled=true");  // Will only work for CktElements
+							Result = editObject(ObjType, ObjName);
+						}
+					}
+					
+				}
+			}
+		}
+		
+		return Result;
 	}
 
 	public static int doDisableCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		String ObjType = "", ObjName = "";
+		DSSClass ClassPtr;
+		CktElement CktElem;
+
+		int Result = 0;
+
+		getObjClassAndName(ObjType, ObjName);
+
+		if (ObjType.equals("circuit")) {
+			// Do nothing
+		} else {
+			if (ObjType.length() > 0) {
+				// only applies to CktElementClass objects
+				ClassPtr = DSSClassDefs.getDSSClass(ObjType);
+				if (ClassPtr != null) {
+
+					if (ClassPtr.getDSSClassType() && DSSClassDefs.BASECLASSMASK) {
+						// Everything else must be a circuit element
+						if (ObjName.equals("*")) {
+							// Disable all elements of this class
+							for (int i = 0; i < ClassPtr.getElementCount(); i++) {
+								CktElem = (CktElement) ClassPtr.getElementList().get(i);
+								CktElem.setEnabled(false);
+							}
+						}
+					} else {
+						// just load up the parser and call the edit routine for the object in question
+						Parser.getInstance().setCmdString("Enabled=false");  // Will only work for CktElements
+						Result = editObject(ObjType, ObjName);
+					}
+					
+				}
+			}
+		}
+		
+
+		//Result = setActiveCktElement();
+		//if (Result > 0) getActiveCircuit().getActiveCktElement().setEnabled(false);
+		
+		return Result;
+	}
+
+	public static int doPropertyDump() {
+		// TODO Implement this method.
+		throw new UnsupportedOperationException();
+	}
+
+	/** For interpreting time specified as an array "hour, sec". */
+	public static void setTime() {
+		double[] TimeArray = new double[2];
+		Parser.getInstance().parseAsVector(2, TimeArray);
+		
+		SolutionObj Solution = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		Solution.setIntHour((int) TimeArray[0]);
+		Solution.getDynaVars().t = TimeArray[1];
+		Solution.updateDblHour();
+	}
+
+	public static void setActiveCircuit(String cktname) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		for (Circuit ckt : Globals.getCircuits()) 
+			if (ckt.getName().equals(cktname)) {
+				Globals.setActiveCircuit(ckt);
+				return;
+			}
+
+		Globals.doSimpleMsg("Error! No circuit named \"" + cktname + "\" found." + DSSGlobals.CRLF +
+				"Active circuit not changed.", 258);
 	}
 
 	public static int doOpenCmd() {
@@ -246,16 +486,6 @@ public class ExecHelper {
 	}
 
 	public static int doUserClassesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doHelpCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doClearCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -547,11 +777,6 @@ public class ExecHelper {
 
 	}
 
-	public static void setTime() {
-		// TODO Auto-generated method stub
-
-	}
-
 	public static void parseObjName(String fullname, String objname, String propname) {
 		// TODO Auto-generated method stub
 
@@ -563,21 +788,6 @@ public class ExecHelper {
 	}
 
 	public static int editObject(String ObjType, String name) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static void setActiveCircuit(String cktname) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static int setActiveCktElement() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doPropertyDump() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
