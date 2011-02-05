@@ -22,6 +22,7 @@ import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.delivery.impl.CapacitorObjImpl;
 import com.epri.dss.delivery.impl.ReactorObjImpl;
 import com.epri.dss.executive.Executive;
+import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MonitorObj;
@@ -709,9 +710,247 @@ public class ExecHelper {
 		}
 	}
 
-	public static int doNextCmd() {
-		// TODO Auto-generated method stub
+	/**
+	 * ? Command
+	 * Syntax:  ? Line.Line1.R1 
+	 */
+	public static int doQueryCmd() {
+		String ObjName = "", PropName = "";
+		int Result = 0;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+
+		parseObjName(Param, ObjName, PropName);
+
+		if (ObjName.equals("solution")) {  // special for solution
+			Globals.setActiveDSSClass(Globals.getSolutionClass());
+			Globals.setActiveDSSObject((DSSObjectImpl) Globals.getActiveCircuit().getSolution());
+		} else {
+			// Set Object Active
+			Parser.getInstance().setCmdString("\"" + ObjName + "\"");
+			doSelectCmd();
+		}
+
+		// Put property value in global VARiable
+		int PropIndex = Globals.getActiveDSSClass().propertyIndex(PropName);
+		if (PropIndex > 0) {
+			Globals.setGlobalPropertyValue(Globals.getActiveDSSObject().getPropertyValue(PropIndex));
+		} else {
+			Globals.setGlobalPropertyValue("Property Unknown");
+		}
+
+		Globals.setGlobalResult(Globals.getGlobalPropertyValue());
+		//MessageDlg(Param + ' = ' + GlobalPropertyValue,  mtCustom, [mbOK], 0);
+
+		return Result;
+	}
+
+	public static int doResetMeters() {
+		DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
 		return 0;
+	}
+
+	public static int doNextCmd() {
+		// Get next parm and try to interpret as a file name
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		
+		SolutionObj solution = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		switch (Param.toUpperCase().charAt(0)) {
+		case 'Y':
+			solution.setYear(solution.getYear() + 1);  // Year
+		case 'H':
+			solution.setIntHour(solution.getIntHour() + 1);  // Hour
+		case 'T':
+			solution.incrementTime();  // Time
+		}	 
+		
+		return 0;
+	}
+
+	public static int doSetVoltageBases() {
+		DSSGlobals.getInstance().getActiveCircuit().getSolution().setVoltageBases();
+		return 0;
+	}
+
+	public static void doAboutBox() {
+		if (DSSGlobals.getInstance().isNoFormsAllowed()) return;
+		DSSForms.showAboutBox();
+	}
+
+	public static int addObject(String ObjType, String name) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Parser parser = Parser.getInstance();
+		
+		int Result = 0;
+
+		// Search for class if not already active.
+		// If nothing specified, LastClassReferenced remains.
+		if (ObjType.equals(Globals.getActiveDSSClass().getName()))
+			Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
+			
+		switch (Globals.getLastClassReferenced()) {
+		case 0:  // TODO Check zero indexing
+			Globals.doSimpleMsg("New Command: Object Type \"" + ObjType + "\" not found." + DSSGlobals.CRLF + parser.getCmdString(), 263);
+			Result = 0;
+			return Result;
+		default:
+			// intrinsic and user Defined models
+			// Make a new circuit element
+			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
+
+			// Name must be supplied
+			if (name.length() == 0) {
+				Globals.doSimpleMsg("Object Name Missing"+ DSSGlobals.CRLF + parser.getCmdString(), 264);
+				return Result;
+			}
+
+			// now let's make a new object or set an existing one active, whatever the case
+			switch (Globals.getActiveDSSClass().getDSSClassType()) {
+			case DSSClassDefs.DSS_OBJECT:
+				// These can be added WITHout having an active circuit
+				// Duplicates not allowed in general DSS objects;
+				if  (!Globals.getActiveDSSClass().setActive(name)) {
+					Result = Globals.getActiveDSSClass().newObject(name);
+					// Stick in object list to keep track of it.
+					Globals.getDSSObjs().add(Globals.getActiveDSSObject());  
+				}
+			default:
+				// These are circuit elements
+				if (Globals.getActiveCircuit() == null) {
+					Globals.doSimpleMsg("You Must Create a circuit first: \"new circuit.yourcktname\"", 265);
+					return Result;
+				}
+
+				// If Object already exists. Treat as an Edit if duplicates not allowed
+				if (Globals.getActiveCircuit().isDuplicatesAllowed()) {
+					Result = Globals.getActiveDSSClass().newObject(name); // Returns index into this class
+					Globals.getActiveCircuit().addCktElement(Result);   // Adds active object to active circuit
+				} else {
+					// Check to see if we can set it active first
+					if (!Globals.getActiveDSSClass().setActive(name)) {
+						Result = Globals.getActiveDSSClass().newObject(name);   // Returns index into this class
+						Globals.getActiveCircuit().addCktElement(Result);   // Adds active object to active circuit
+					} else {
+						Globals.doSimpleMsg("Warning: Duplicate new element definition: \""+ Globals.getActiveDSSClass().getName()+"."+name+"\""+
+									DSSGlobals.CRLF+ "Element being redefined.", 266);
+					}
+				}
+			}
+
+			// ActiveDSSObject now points to the object just added
+			// If a circuit element, ActiveCktElement in ActiveCircuit is also set
+			if (Result > 0) Globals.getActiveDSSObject().setClassIndex(Result);
+
+			Globals.getActiveDSSClass().edit();    // Process remaining instructions on the command line
+		}
+		
+		return Result;
+	}
+
+	public static int editObject(String ObjType, String name) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
+		
+		switch (Globals.getLastClassReferenced()) {
+		case 0:  // TODO Check zero indexing
+			Globals.doSimpleMsg("Edit Command: Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 267);
+			Result = 0;
+			return Result;
+		default:
+			// intrinsic and user Defined models
+			// Edit the DSS object
+			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
+			if (Globals.getActiveDSSClass().setActive(name)) 	
+				Result = Globals.getActiveDSSClass().edit();   // Edit the active object
+		}
+	
+		return Result;
+	}
+
+	public static int doSetkVBase() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int Result = 0;
+		
+		// Parse off next two items on line
+		String ParamName = Parser.getInstance().getNextParam();
+		String BusName = Parser.getInstance().makeString();
+
+		ParamName = Parser.getInstance().getNextParam();
+		double kVValue = Parser.getInstance().makeDouble();
+
+		// Now find the bus and set the value
+		Circuit ckt = Globals.getActiveCircuit();
+		
+		ckt.setActiveBusIndex(ckt.getBusList().find(BusName));
+
+		if (ckt.getActiveBusIndex() > 0) {
+			if (ParamName.equals("kvln")) {
+				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue);
+			} else {
+				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue / DSSGlobals.SQRT3);
+			}
+			Result = 0;
+			ckt.getSolution().setVoltageBaseChanged(true);
+			// Solution.SolutionInitialized := FALSE;  // Force reinitialization
+		} else {
+			Result = 1;
+			Globals.appendGlobalResult("Bus " + BusName + " Not Found.");
+		}
+		
+		return Result;
+	}
+
+	/**
+	 * Syntax can be either a list of bus names or a file specification:
+	 *     File= ...
+	 */
+	public static void doAutoAddBusList(String S) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		String S2;
+
+		Globals.getActiveCircuit().getAutoAddBusList().clear();
+
+		// Load up auxiliary parser to reparse the array list or file name
+		Globals.getAuxParser().setCmdString(S);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+
+		/* Syntax can be either a list of bus names or a file specification:  File= ... */
+
+		if (ParmName.equals("file")) {
+			// load the list from a file
+
+			try {
+				File F = new File(Param);
+				FileInputStream fstream = new FileInputStream(F);
+				DataInputStream in = new DataInputStream(in);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			
+				while ((S2 = br.readLine()) != null) {
+					Globals.getAuxParser().setCmdString(S2);
+					ParmName = Globals.getAuxParser().getNextParam();
+					Param = Globals.getAuxParser().makeString();
+					if (Param.length() > 0) 
+						Globals.getActiveCircuit().getAutoAddBusList().add(Param);
+				}
+				F.close();
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error trying to read bus list file. Error is: "+e.getMessage(), 268);
+			}
+		} else {
+			// Parse bus names off of array list
+			while (Param.length() > 0) {  // TODO Check zero indexing
+				Globals.getActiveCircuit().getAutoAddBusList().add(Param);
+				Globals.getAuxParser().getNextParam();
+				Param = Globals.getAuxParser().makeString();
+			}
+		}
 	}
 
 	public static int doFormEditCmd() {
@@ -732,36 +971,6 @@ public class ExecHelper {
 	public static int doInterpolateCmd() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public static int doQueryCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doResetMeters() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static void doAboutBox() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static int doSetVoltageBases() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSetkVBase() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static void doAutoAddBusList(String S) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static void doKeeperBusList(String S) {
@@ -989,16 +1198,6 @@ public class ExecHelper {
 	public static void doSetNormal(double pctNormal) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public static int addObject(String ObjType, String name) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int editObject(String ObjType, String name) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }
