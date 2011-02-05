@@ -17,7 +17,12 @@ import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.ReactorObj;
+import com.epri.dss.delivery.impl.CapacitorObjImpl;
+import com.epri.dss.delivery.impl.ReactorObjImpl;
 import com.epri.dss.executive.Executive;
+import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.parser.impl.Parser;
@@ -460,14 +465,248 @@ public class ExecHelper {
 				"Active circuit not changed.", 258);
 	}
 
+	public static void doLegalVoltageBases() {
+		double[] Dummy = new double[100];  // Big Buffer
+		int Num = Parser.getInstance().parseAsVector(100, Dummy);
+		/* Parsing zero-fills the array */
+
+		/* LegalVoltageBases is a zero-terminated array, so we have to allocate
+		 * one more than the number of actual values}
+		 */
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		ckt.setLegalVoltageBases(new double[Num + 1]);
+		for (int i = 0; i < Num + 1; i++) 
+			ckt.getLegalVoltageBases()[i] = Dummy[i];
+	}
+
+	/**
+	 * Opens a terminal and conductor of a ckt Element.
+	 * 
+	 * Syntax:  "Open class.name term=xx cond=xx"
+	 * If cond is omitted, all conductors are opened.
+	 */
 	public static int doOpenCmd() {
-		// TODO Auto-generated method stub
+		int Terminal;
+		int Conductor;
+		String ParamName;
+		Parser parser = Parser.getInstance();
+
+		int retval = setActiveCktElement();
+		if (retval > 0) {
+			ParamName = parser.getNextParam();
+			Terminal  = parser.makeInteger();
+			ParamName = parser.getNextParam();
+			Conductor = parser.makeInteger();
+			
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+			ckt.getActiveCktElement().setActiveTerminalIdx(Terminal);
+			ckt.getActiveCktElement().setConductorClosed(Conductor, false);
+			DSSGlobals.getInstance().setActiveBus(
+					Utilities.stripExtension(ckt.getActiveCktElement().getBus(
+							ckt.getActiveCktElement().getActiveTerminalIdx()) ) );
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Error in Open Command: Circuit Element Not Found." +DSSGlobals.CRLF+parser.getCmdString(), 259);
+		}
+	
+		return 0;
+	}
+
+	/**
+	 * Closes a terminal and conductor of a ckt Element.
+	 * 
+	 * Syntax:  "Close class.name term=xx cond=xx"
+	 * If cond is omitted, all conductors are opened.
+	 */
+	public static int doCloseCmd() {
+		int Terminal;
+		int Conductor;
+		String ParamName;
+		Parser parser = Parser.getInstance();
+
+		int retval = setActiveCktElement();
+		if (retval > 0) {
+			ParamName = parser.getNextParam();                 
+			Terminal = parser.makeInteger();
+			ParamName = parser.getNextParam();
+			Conductor = parser.makeInteger();
+			
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+			ckt.getActiveCktElement().setActiveTerminalIdx(Terminal);
+			ckt.getActiveCktElement().setConductorClosed(Conductor, true);
+			DSSGlobals.getInstance().setActiveBus(
+					Utilities.stripExtension(ckt.getActiveCktElement().getBus(
+							ckt.getActiveCktElement().getActiveTerminalIdx()) ) );
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Error in Close Command: Circuit Element Not Found."+DSSGlobals.CRLF+parser.getCmdString(), 260);
+		}
 		return 0;
 	}
 
 	public static int doResetCmd() {
-		// TODO Auto-generated method stub
+		Parser parser = Parser.getInstance();
+		int Result = 0;
+
+		// Get next parm and try to interpret as a file name
+		String ParamName = parser.getNextParam();
+		String Param = parser.makeString().toUpperCase();
+		if (Param.length() == 0) {
+			doResetMonitors();
+			doResetMeters();
+			Utilities.doResetFaults();
+			Utilities.doResetControls();
+			Utilities.clearEventLog();
+			Utilities.doResetKeepList();
+		} else {
+			switch (Param.charAt(0)) {
+			case 'M':
+				switch (Param.charAt(1)) {
+				case 'O':
+					// Monitor
+					doResetMonitors();
+				case 'E':
+					// Meter
+					doResetMeters();
+				}
+			case 'F':
+				// Faults
+				Utilities.doResetFaults();
+			case 'C':
+				// Controls
+				Utilities.doResetControls();
+			case 'E':
+				// EventLog
+				Utilities.clearEventLog();
+			case 'K':
+				Utilities.doResetKeepList();
+			default:
+				DSSGlobals.getInstance().doSimpleMsg("Unknown argument to Reset Command: \""+Param+"\"", 261);
+			}
+		}
+			
 		return 0;
+	}
+	
+	private static void markCapAndReactorBuses() {
+		DSSClass cls;
+		CapacitorObj capElement;
+		ReactorObj reacElement;
+		int ObjRef;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		/* Mark all buses as keepers if there are capacitors or reactors on them */
+		cls = DSSClassDefs.getDSSClass("capacitor");
+		if (cls != null) {
+			ObjRef = cls.getFirst();
+			while (ObjRef > 0) {
+				capElement = new CapacitorObjImpl(Globals.getActiveDSSObject());
+				if (capElement.isShunt()) {
+					if (capElement.isEnabled()) {
+						Globals.getActiveCircuit().getBuses()[capElement.getTerminals()[0].getBusRef()].setKeep(true);
+					}
+				}
+				ObjRef = cls.getNext();
+			}
+		}
+
+		/* Now Get the Reactors */
+		cls = DSSClassDefs.getDSSClass("reactor");
+		if (cls != null) {
+			ObjRef = cls.getFirst();
+			while (ObjRef > 0) {
+				reacElement = new ReactorObjImpl(Globals.getActiveDSSObject());
+				if (reacElement.isShunt()) {
+					try {
+						if (reacElement.isEnabled())
+							Globals.getActiveCircuit().getBuses()[reacElement.getTerminals()[0].getBusRef()].setKeep(true);
+					} catch (Exception e) {
+						Globals.doSimpleMsg(String.format("%s %s Reactor=%s Bus No.=%d ", e.getMessage(), DSSGlobals.CRLF, reacElement.getName(), reacElement.getNodeRef()[0]), 9999);
+					}
+				}
+				ObjRef = cls.getNext();
+			}
+		}
+	}
+
+	public static int doReduceCmd() {
+		EnergyMeter MeterClass;
+		int DevClassIndex;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		// Get next parm and try to interpret as a file name
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString().toUpperCase();
+
+		/* Mark Capacitor and Reactor buses as Keep so we don't lose them */
+		markCapAndReactorBuses();
+
+		if (Param.length() == 0) Param = "A";
+		switch (Param.charAt(0)) {
+		case 'A':
+			for (EnergyMeterObj MeterObj : Globals.getActiveCircuit().getEnergyMeters()) 
+				MeterObj.reduceZone();
+		default:
+			/* Reduce a specific meter */
+			DevClassIndex = Globals.getClassNames().find("energymeter");
+			if (DevClassIndex > 0) {  // TODO Check zero indexing
+				MeterClass = (EnergyMeter) Globals.getDSSClassList().get(DevClassIndex);
+				if (MeterClass.setActive(Param)) {   // Try to set it active
+					EnergyMeterObj MeterObj = (EnergyMeterObj) MeterClass.getActiveObj();
+					MeterObj.reduceZone();
+				} else {
+					Globals.doSimpleMsg("EnergyMeter \""+Param+"\" not found.", 262);
+				}
+			}
+		}
+		return 0;
+	}
+
+	public static int doResetMonitors() {
+		for (MonitorObj Mon : DSSGlobals.getInstance().getActiveCircuit().getMonitors()) 
+			Mon.resetIt();
+		return 0;
+	}
+	
+	public static int doFileEditCmd() {
+
+		// Get next parm and try to interpret as a file name
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+
+		if (new File(Param).exists()) {
+			Utilities.fireOffEditor(Param);
+		} else {
+			DSSGlobals.getInstance().setGlobalResult("File \""+Param+"\" does not exist.");
+		}
+	
+		return 1;
+	}
+
+	/**
+	 * Parse strings such as
+	 *     1. Classname.Objectname,Property  (full name)
+	 *     2. Objectname.Property            (classname omitted)
+	 *     3. Property                       (classname and objectname omitted
+	 */
+	public static void parseObjName(String fullName, String objName, String propName) {
+		int DotPos1 = fullName.indexOf(".");
+		switch (DotPos1) {
+		case -1:
+			objName = "";
+			propName = fullName;
+		default:
+			propName = fullName.substring(DotPos1 + 1, (fullName.length() - DotPos1));  // TODO Check indexing.
+			int DotPos2 = propName.indexOf(".");
+			switch (DotPos2) {
+			case -1:
+				objName = fullName.substring(0, DotPos1 - 1);
+			default:
+				objName  = fullName.substring(0, DotPos1 + DotPos2 - 1);
+				propName = propName.substring(DotPos2 + 1, propName.length() - DotPos2);
+			}
+		}
 	}
 
 	public static int doNextCmd() {
@@ -490,27 +729,7 @@ public class ExecHelper {
 		return 0;
 	}
 
-	public static int doReduceCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public static int doInterpolateCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doCloseCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doResetMonitors() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doFileEditCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -538,11 +757,6 @@ public class ExecHelper {
 	public static int doSetkVBase() {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-	public static void doLegalVoltageBases() {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static void doAutoAddBusList(String S) {
@@ -773,11 +987,6 @@ public class ExecHelper {
 	}
 
 	public static void doSetNormal(double pctNormal) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void parseObjName(String fullname, String objname, String propname) {
 		// TODO Auto-generated method stub
 
 	}
