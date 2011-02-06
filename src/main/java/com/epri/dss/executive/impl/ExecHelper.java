@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
@@ -13,10 +14,12 @@ import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.delivery.impl.CapacitorObjImpl;
@@ -26,7 +29,9 @@ import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MonitorObj;
+import com.epri.dss.meter.SensorObj;
 import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.Complex;
 
 public class ExecHelper {
@@ -1273,19 +1278,301 @@ public class ExecHelper {
 		return Result;
 	}
 
+	/** Bus Voltages at active terminal. */
+	public static int doVoltagesCmd(boolean perUnit) {
+		Complex Volts;
+		Bus ActiveBus;
+		double Vmag;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+			
+			if (ckt.getActiveBusIndex() != 0) { // TODO Check indexing.
+				ActiveBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+				Globals.setGlobalResult("");
+				for (int i = 0; i < ActiveBus.getNumNodesThisBus(); i++) {
+					Volts = ckt.getSolution().getNodeV()[ActiveBus.getRef(i)];
+					Vmag = Volts.abs();
+					if (perUnit && (ActiveBus.getkVBase() > 0.0)) {
+						Vmag = Vmag * 0.001 / ActiveBus.getkVBase();
+						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", Vmag, Volts.degArg()));
+					} else {
+						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", Vmag, Volts.degArg()));
+					}
+				}
+			} else {
+				Globals.setGlobalResult("No Active Bus.");
+			}
+			
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+
+		return Result;
+	}
+
+	/** Bus Short Circuit matrix. */
+	public static int doZscCmd(boolean Zmatrix) {
+		Bus ActiveBus;
+		Complex Z;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+			
+			if (ckt.getActiveBusIndex() != 0) {  // FIXME: Bus indexing.
+				ActiveBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+				Globals.setGlobalResult("");
+				if (ActiveBus.getZsc() == null)
+					return Result;
+				
+				for (int i = 0; i < ActiveBus.getNumNodesThisBus(); i++) {
+					for (int j = 0; j < ActiveBus.getNumNodesThisBus(); j++) {
+						if (Zmatrix) {
+							Z = ActiveBus.getZsc().getElement(i, j);
+						} else {
+							Z = ActiveBus.getYsc().getElement(i, j);
+						}
+						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%-.5g, %-.5g,   ", Z.getReal(), Z.getImaginary()) );
+					}
+				}
+			} else {
+				Globals.setGlobalResult("No Active Bus.");
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+		
+		return Result;
+	}
+
+	/** Bus Short Circuit matrix. */
+	public static int doZsc10Cmd() {
+		Bus ActiveBus;
+		Complex Z;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+			
+			if (ckt.getActiveBusIndex() != 0) {  // FIXME: Bus indexing.
+				ActiveBus = ckt.getBuses()[ckt.getActiveBusIndex()];
+				Globals.setGlobalResult("");
+				if (ActiveBus.getZsc() == null) {
+					
+					Z = ActiveBus.getZsc1();
+					Globals.setGlobalResult( Globals.getGlobalResult() + String.format("Z1, %-.5g, %-.5g, ", Z.getReal(), Z.getImaginary()) + DSSGlobals.CRLF);
+				
+					Z = ActiveBus.getZsc0();
+					Globals.setGlobalResult( Globals.getGlobalResult() + String.format("Z0, %-.5g, %-.5g, ", Z.getReal(), Z.getImaginary()));
+				}
+			} else {
+				Globals.setGlobalResult("No Active Bus.");
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+			
+		return Result;
+	}
+
+	/**
+	 * Requires an EnergyMeter Object at the head of the feeder.
+	 * Adjusts loads defined by connected kVA or kWh billing.
+	 */
+	public static int doAllocateLoadsCmd() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		Circuit ckt = Globals.getActiveCircuit();
+		
+		ckt.setLoadMultiplier(1.0);   // Property .. has side effects
+		ckt.getSolution().setMode(Dynamics.SNAPSHOT);
+		ckt.getSolution().solve();  // Make guess based on present allocationfactors
+
+		/* Allocation loop -- make MaxAllocationIterations iterations */
+		for (int i = 0; i < Globals.getMaxAllocationIterations(); i++) {
+			/* Do EnergyMeters */
+			for (EnergyMeterObj meter : ckt.getEnergyMeters()) 
+				meter.calcAllocationFactors();
+
+			/* Now do other Sensors */
+			for (SensorObj sensor : ckt.getSensors()) 
+				sensor.calcAllocationFactors();
+
+			/* Now let the EnergyMeters run down the circuit setting the loads */
+			for (EnergyMeterObj meter : ckt.getEnergyMeters()) 
+				meter.allocateLoad();
+			
+			ckt.getSolution().solve();  // Update the solution
+		}
+		
+		return Result;
+	}
+
+	public static void doSetAllocationFactors(double x) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		if (x < 0.0) {
+			Globals.doSimpleMsg("Allocation Factor must be greater than zero.", 271);
+		} else {
+			for (LoadObj load : Globals.getActiveCircuit().getLoads()) 
+				load.setkVAAllocationFactor(x);
+		}
+	}
+
+	public static void doSetCFactors(double x) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		if (x <= 0.0) {
+			Globals.doSimpleMsg("CFactor must be greater than zero.", 271);
+		} else {
+			for (LoadObj load : Globals.getActiveCircuit().getLoads()) 
+				load.setCFactor(x);
+		}
+	}
+
+	public static int doHarmonicsList(String S) {
+		int Result = 0;
+
+		SolutionObj solution = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		if (S.equals("ALL")) {
+			solution.setDoAllHarmonics(true);
+		} else {
+			solution.setDoAllHarmonics(false);
+		
+			double[] Dummy = new double[100]; // Big Buffer
+			int Num = Parser.getInstance().parseAsVector(100, Dummy);
+			/* Parsing zero-fills the array */
+
+			solution.setHarmonicListSize(Num);
+			Utilities.resizeArray(solution.getHarmonicList(), solution.getHarmonicListSize());
+			for (int i = 0; i < solution.getHarmonicListSize(); i++) 
+				solution.getHarmonicList()[i] = Dummy[i];
+			Dummy = null;
+		}
+	
+		return Result;
+	}
+
 	public static int doFormEditCmd() {
-		// TODO Auto-generated method stub
+		if (DSSGlobals.getInstance().isNoFormsAllowed()) 
+			return 0;
+		
+		doSelectCmd();  // Select ActiveObject
+		
+		if (DSSGlobals.getInstance().getActiveDSSObject() != null) {
+			DSSForms.showPropEditForm();
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Element Not Found.", 272);
+		}
+	
+		return 1;
+	}
+
+	public static int doMeterTotals() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		if (Globals.getActiveCircuit() != null) {
+			Globals.getActiveCircuit().totalizeMeters();
+			// Now export to global result
+			for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++) 
+				Globals.appendGlobalResult( String.format("%-.6g", Globals.getActiveCircuit().getRegisterTotals()[i]) );
+		}
+		
+		return 0;
+	}
+
+	public static int doCapacityCmd() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int ParamPointer = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		
+		while (Param.length() > 0) {
+			
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				switch (ParamName.charAt(0)) {
+				case 's':
+					ParamPointer = 1;
+				case 'i':
+					ParamPointer = 2;
+				default:
+					ParamPointer = 0;
+				}
+			}
+			
+			switch (ParamPointer) {
+			case 0:
+				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Capacity Command", 273);
+			case 1:
+				Globals.getActiveCircuit().setCapacityStart(Parser.getInstance().makeDouble());
+			case 2:
+				Globals.getActiveCircuit().setCapacityIncrement(Parser.getInstance().makeDouble());
+			}
+
+			ParamName = Parser.getInstance().getNextParam();
+			Param = Parser.getInstance().makeString();
+		}
+		
+		Circuit ckt = Globals.getActiveCircuit();
+		if (ckt.computeCapacity()) {  // Totalizes EnergyMeters at End
+
+			Globals.setGlobalResult(String.format("%-.6g", (ckt.getRegisterTotals()[3] + ckt.getRegisterTotals()[19]) ) );  // Peak KW in Meters
+			Globals.appendGlobalResult( String.format("%-.6g", ckt.getLoadMultiplier()) );
+		}
+
 		return 0;
 	}
 
 	public static int doClassesCmd() {
-		// TODO Auto-generated method stub
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		for (int i = 0; i < DSSClassDefs.getNumIntrinsicClasses(); i++) 
+			Globals.appendGlobalResult( DSSClassImpl(Globals.getDSSClassList().get(i)).getName() );
+		
 		return 0;
 	}
 
 	public static int doUserClassesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		if (DSSClassDefs.getNumUserClasses() == 0) {
+			Globals.appendGlobalResult("No User Classes Defined.");
+		} else {
+			for (int i = DSSClassDefs.getNumIntrinsicClasses() + 1; i < Globals.getDSSClassList().size(); i++) 
+				Globals.appendGlobalResult( DSSClassImpl(Globals.getDSSClassList().get(i)).getName() );
+		}     
+	return 0;
+	}
+
+	public static int doZscRefresh() {
+		int Result = 1;
+
+		try {
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			SolutionObj solution = ckt.getSolution();
+			for (int i = 0; i < ckt.getNumNodes(); i++) 
+				solution.getCurrents()[i] = Complex.ZERO;  // Clear Currents array
+			
+			if ((ckt.getActiveBusIndex() > 0) && (ckt.getActiveBusIndex() <= ckt.getNumBuses())) {  // TODO Check zero indexing
+				if (ckt.getBuses()[ckt.getActiveBusIndex()].getZsc() == null)
+					ckt.getBuses()[ckt.getActiveBusIndex()].allocateBusQuantities();
+				SolutionAlgs.computeYsc(ckt.getActiveBusIndex());      // Compute YSC for active Bus
+				Result = 0;
+			}
+			
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("ZscRefresh Error: " + e.getMessage() + DSSGlobals.CRLF , 274);
+		}
+			
+		return Result;
 	}
 
 	public static int doInterpolateCmd() {
@@ -1296,56 +1583,6 @@ public class ExecHelper {
 	public static void doSetReduceStrategy(String S) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public static void doSetAllocationFactors(double X) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void doSetCFactors(double X) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static int doVoltagesCmd(boolean PerUnit) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doAllocateLoadsCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doHarmonicsList(String S) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doMeterTotals() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doCapacityCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doZscCmd(boolean Zmatrix) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doZsc10Cmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doZscRefresh() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	public static int doBusCoordsCmd() {

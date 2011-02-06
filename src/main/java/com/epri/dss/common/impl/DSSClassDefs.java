@@ -36,6 +36,25 @@ public class DSSClassDefs {
 	public static final int STORAGE_CONTROL  = 22 * 8;
 	public static final int SWT_CONTROL      = 23 * 8;
 	
+	private static int NumIntrinsicClasses;
+	private static int NumUserClasses;
+	
+	public static int getNumIntrinsicClasses() {
+		return NumIntrinsicClasses;
+	}
+
+	public static void setNumIntrinsicClasses(int numIntrinsicClasses) {
+		NumIntrinsicClasses = numIntrinsicClasses;
+	}
+
+	public static int getNumUserClasses() {
+		return NumUserClasses;
+	}
+
+	public static void setNumUserClasses(int numUserClasses) {
+		NumUserClasses = numUserClasses;
+	}
+
 	public static void createDSSClasses() {
 		
 	}
