@@ -99,6 +99,11 @@ public class Complex implements Serializable  {
 	public Complex divide(double rhs) {
 		return createComplex(real / rhs, imaginary / rhs);
 	}
+	
+	public double degArg() {
+		double arg = getArgument();
+		return arg * 180.0 / Math.PI;
+	}
 
 	/**
 	 * Return the absolute value of this complex number.

@@ -27,6 +27,7 @@ import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.impl.Complex;
 
 public class ExecHelper {
 
@@ -953,6 +954,325 @@ public class ExecHelper {
 		}
 	}
 
+	/**
+	 * Set Keep flag on buses found in list so they aren't eliminated by
+	 * some reduction algorithm.  This command is cumulative. To clear flag,
+	 * use Reset Keeplist.
+	 * 
+	 * Syntax can be either a list of bus names or a file specification:  File= ...
+	 */
+	public static void doKeeperBusList(String S) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		String S2;
+		int iBus;
+		Circuit ckt;
+		
+		// Load up auxiliary parser to reparse the array list or file name
+		Globals.getAuxParser().setCmdString(S);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+
+		if (ParmName.equals("file")) {
+			// load the list from a file
+
+			try {
+				File F = new File(Param);
+				FileInputStream fstream = new FileInputStream(F);
+				DataInputStream in = new DataInputStream(in);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			
+				while ((S2 = br.readLine()) != null) {
+					Globals.getAuxParser().setCmdString(S2);
+					ParmName = Globals.getAuxParser().getNextParam();
+					Param = Globals.getAuxParser().makeString();
+					if (Param.length() > 0) {
+						ckt = Globals.getActiveCircuit();
+						iBus = ckt.getBusList().find(Param);
+						if (iBus > 0) ckt.getBuses()[iBus].setKeep(true);
+					}
+				}
+				F.close();
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error trying to read bus list file "+Param+". Error is: "+e.getMessage(), 269);
+			}
+		} else {
+			// Parse bus names off of array list
+			while (Param.length() > 0) {
+				ckt = Globals.getActiveCircuit();
+
+				iBus = ckt.getBusList().find(Param);
+				if (iBus > 0) ckt.getBuses()[iBus].setKeep(true);
+
+				Globals.getAuxParser().getNextParam();
+				Param = Globals.getAuxParser().makeString();
+			}
+		}
+	}
+
+	public static int doCktLossesCmd() {
+		Complex LossValue;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int Result = 0;
+		
+		if (Globals.getActiveCircuit() != null) {
+			Globals.setGlobalResult("");
+			LossValue = Globals.getActiveCircuit().getLosses();
+			Globals.setGlobalResult(String.format("%10.5g, %10.5g", LossValue.getReal() * 0.001,  LossValue.getImaginary() * 0.001));
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+
+		return Result;
+	}
+
+	public static int doCurrentsCmd() {
+		Complex[] cBuffer;
+		int nValues;
+		int Result = 0;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (Globals.getActiveCircuit() != null) {
+			CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+			
+			nValues = cktElem.getNConds() * cktElem.getNTerms();
+			Globals.setGlobalResult("");
+			cBuffer = new Complex[nValues];
+			cktElem.getCurrents(cBuffer);
+			for (int i = 0; i < nValues; i++) 
+				Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %6.1f,", cBuffer[i].abs(), cBuffer[i].degArg()) );
+			cBuffer = null;
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+
+		return Result;
+	}
+
+	public static int doLossesCmd() {
+		Complex LossValue;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+			if (ckt.getActiveCktElement() != null) {
+				Globals.setGlobalResult("");
+				LossValue = ckt.getActiveCktElement().getLosses();
+				Globals.setGlobalResult(String.format("%10.5g, %10.5g", LossValue.getReal() * 0.001, LossValue.getImaginary() * 0.001));
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+			
+		return Result;
+	}
+
+	/**
+	 * Returns Phase losses in kW, kVar.
+	 */
+	public static int doPhaseLossesCmd() {
+		Complex[] cBuffer;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int nValues;
+
+		int Result = 0;
+
+		if (Globals.getActiveCircuit() != null) {
+			CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+
+			nValues = cktElem.getNPhases();
+			cBuffer = new Complex[nValues];
+			Globals.setGlobalResult("");
+			cktElem.getPhaseLosses(nValues, cBuffer);
+			for (int i = 0; i < nValues; i++)
+				Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %10.5g,", cBuffer[i].getReal() * 0.001, cBuffer[i].getImaginary() * 0.001));
+			cBuffer = null;
+		} else {
+			Globals.setGlobalResult("No Active Circuit.");
+		}
+		
+		return Result;
+	}
+
+	public static int doPowersCmd() {
+		Complex[] cBuffer;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int nValues;
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+			
+			nValues = cktElem.getNConds() * cktElem.getNTerms();
+			Globals.setGlobalResult("");
+			cBuffer = new Complex[nValues];
+			cktElem.getPhasePower(cBuffer);
+			for (int i = 0; i < nValues; i++)
+				Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %10.5g,", cBuffer[i].getReal() * 0.001, cBuffer[i].getImaginary() * 0.001));
+			cBuffer = null;
+		} else {
+			Globals.setGlobalResult("No Active Circuit");
+		}
+		
+		return Result;
+	}
+
+	/**
+	 * All sequence currents of active circuit element.
+	 * Returns magnitude only.
+	 */
+	public static int doSeqCurrentsCmd() {
+		int nValues, i, k;
+		Complex[] Iph = new Complex[3];
+		Complex[] I012 = new Complex[3];
+		Complex[] cBuffer;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+			if (ckt.getActiveCktElement() != null) {
+				CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+
+				Globals.setGlobalResult("");
+				if (cktElem.getNPhases() < 3) {
+					for (i = 0; i < 3 * cktElem.getNTerms(); i++) 
+						Globals.setGlobalResult( Globals.getGlobalResult() + " -1.0," );  // Signify n/A
+				} else {
+					nValues = cktElem.getNConds() * cktElem.getNTerms();
+					cBuffer = new Complex[nValues];
+					cktElem.getCurrents(cBuffer);
+					for (int j = 0; j < cktElem.getNTerms(); j++) {
+						k = (j - 1) * cktElem.getNConds();
+						for (i = 0; i < 3; i++) 
+							Iph[i] = cBuffer[k + i];
+						MathUtil.phase2SymComp(Iph, I012);
+						for (i = 0; i < 3; i++) 
+							Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, ", I012[i].abs()) );
+					}
+					cBuffer = null;
+				}
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit");
+		}
+
+		return Result;
+	}
+
+	/**
+	 * All seq Powers of active 3-phase ciruit element.
+	 * Returns kW + j kVAr
+	 */
+	public static int doSeqPowersCmd() {
+		int nValues, i, j, k;
+		Complex S;
+		Complex[] Vph = new Complex[3];
+		Complex[] V012 = new Complex[3];
+		Complex[] Iph = new Complex[3];
+		Complex[] I012 = new Complex[3];
+		Complex[] cBuffer;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+
+			if (ckt.getActiveCktElement() != null) {
+				CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+				
+				Globals.setGlobalResult("");
+				if (cktElem.getNPhases() < 3) {
+					for (i = 0; i < 2 * 3 * cktElem.getNTerms() - 1; i++) 
+						Globals.setGlobalResult( Globals.getGlobalResult() + "-1.0, ");  // Signify N/A
+				} else {
+					nValues = cktElem.getNConds() * cktElem.getNTerms();
+					cBuffer = new Complex[nValues];
+					cktElem.getCurrents(cBuffer);
+					for (j = 0; j < cktElem.getNTerms(); j++) {
+						k = (j - 1) * cktElem.getNConds();
+						for (i = 0; i < 3; i++) 
+							Vph[i] = ckt.getSolution().getNodeV()[cktElem.getTerminals()[j].getTermNodeRef()[i]];
+						for (i = 0; i < 3; i++) 
+							Iph[i] = cBuffer[k + i];
+						MathUtil.phase2SymComp(Iph, I012);
+						MathUtil.phase2SymComp(Vph, V012);
+						for (i = 0; i < 3; i++) 
+							S = V012[i].multiply( I012[i].conjugate() );
+						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %10.5g,", S.getReal() * 0.003, S.getImaginary() * 0.003)); // 3-phase kW conversion
+					}
+				}
+				cBuffer = null;
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit");
+		}
+		
+		return Result;
+	}
+
+	/**
+	 * All voltages of active ciruit element.
+	 * Magnitude only.
+	 * @return a set of seq voltages (3) for each terminal.
+	 */
+	public static int doSeqVoltagesCmd() {
+		int nValues, i, j, k, n;
+		Complex[] Vph = new Complex[3];
+		Complex[] V012 = new Complex[3];
+		String S;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		nValues = -1;  // unassigned, for exception message
+		n = -1;        // unassigned, for exception message
+		if (Globals.getActiveCircuit() != null) {
+			Circuit ckt = Globals.getActiveCircuit();
+
+			if (ckt.getActiveCktElement() != null) {
+				CktElement cktElem = Globals.getActiveCircuit().getActiveCktElement();
+			
+				if (cktElem.isEnabled()) {
+					try {
+						nValues = cktElem.getNPhases();
+						Globals.setGlobalResult("");
+						if (nValues < 3) {
+							for (i = 0; i < 3 * cktElem.getNTerms(); i++) 
+								Globals.setGlobalResult( Globals.getGlobalResult() + "-1.0, ");  // Signify N/A
+						} else {
+							for (j = 0; j < cktElem.getNTerms(); j++) {
+
+								k = (j - 1) * cktElem.getNConds();
+								for (i = 0; i < 3; i++) 
+									Vph[i] = ckt.getSolution().getNodeV()[cktElem.getNodeRef()[i + k]];
+
+								MathUtil.phase2SymComp(Vph, V012);  // Compute Symmetrical components
+
+								for (i = 0; i < 3; i++) 
+									Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, ", V012[i].abs()));
+								
+							}
+						}
+					} catch (Exception e) {
+						S = e.getMessage() + DSSGlobals.CRLF +
+							"Element=" + cktElem.getName() + DSSGlobals.CRLF +
+							"Nvalues=" + String.valueOf(nValues) + DSSGlobals.CRLF +
+							"Nterms=" + String.valueOf(cktElem.getNTerms()) + DSSGlobals.CRLF +
+							"NConds =" + String.valueOf(cktElem.getNConds()) + DSSGlobals.CRLF +
+							"noderef=" + String.valueOf(n) ;
+						Globals.doSimpleMsg(S, 270);	
+					}
+				}
+			} else {
+				Globals.setGlobalResult("Element Disabled");  // Disabled
+			}
+		} else {
+			Globals.setGlobalResult("No Active Circuit");
+		}
+
+		return Result;
+	}
+
 	public static int doFormEditCmd() {
 		// TODO Auto-generated method stub
 		return 0;
@@ -973,11 +1293,6 @@ public class ExecHelper {
 		return 0;
 	}
 
-	public static void doKeeperBusList(String S) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public static void doSetReduceStrategy(String S) {
 		// TODO Auto-generated method stub
 
@@ -994,46 +1309,6 @@ public class ExecHelper {
 	}
 
 	public static int doVoltagesCmd(boolean PerUnit) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doCurrentsCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doPowersCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSeqVoltagesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSeqCurrentsCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSeqPowersCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doLossesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doPhaseLossesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doCktLossesCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
