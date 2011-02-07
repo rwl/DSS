@@ -788,7 +788,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		MapNodeToBus = mapNodeToBus;
 	}
 
-	public boolean isIsSolved() {
+	public boolean isSolved() {
 		return IsSolved;
 	}
 

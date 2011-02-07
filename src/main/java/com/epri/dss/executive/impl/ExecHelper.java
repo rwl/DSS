@@ -12,6 +12,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSCircuit.ReductionStrategyType;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -20,7 +21,9 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
+import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.delivery.impl.CapacitorObjImpl;
 import com.epri.dss.delivery.impl.ReactorObjImpl;
@@ -31,6 +34,8 @@ import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.meter.SensorObj;
 import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.plot.DSSPlot;
+import com.epri.dss.plot.impl.DSSPlotImpl;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.Complex;
 
@@ -1575,18 +1580,460 @@ public class ExecHelper {
 		return Result;
 	}
 
-	public static int doInterpolateCmd() {
-		// TODO Auto-generated method stub
+	public static int doVarValuesCmd() {
+		if (DSSGlobals.getInstance().getActiveCircuit() != null) {
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			/* Check if PCElement */
+			switch (ckt.getActiveCktElement().getDSSObjType()) {
+			case DSSClassDefs.PC_ELEMENT:
+				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
+				for (int i = 0; i < cktElem.numVariables(); i++) 
+					DSSGlobals.getInstance().appendGlobalResult(String.format("%-.6g", cktElem.getVariable(i)));
+			default:
+				DSSGlobals.getInstance().appendGlobalResult("Null");
+			}
+		}
 		return 0;
 	}
 
-	public static void doSetReduceStrategy(String S) {
-		// TODO Auto-generated method stub
-
+	public static int doVarNamesCmd() {
+		if (DSSGlobals.getInstance().getActiveCircuit() != null) {
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			/* Check if PCElement */
+			switch (ckt.getActiveCktElement().getDSSObjType()) {
+			case DSSClassDefs.PC_ELEMENT:
+				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
+				for (int i = 0; i < cktElem.numVariables(); i++) 
+					DSSGlobals.getInstance().appendGlobalResult(cktElem.variableName(i));
+			default:
+				DSSGlobals.getInstance().appendGlobalResult("Null");
+			}
+		} 
+		return 0;
 	}
 
+	/**
+	 * Format of file should be
+	 * 
+	 *   BusName, x, y
+	 *   
+	 * (x, y are real values)
+	 */
 	public static int doBusCoordsCmd() {
-		// TODO Auto-generated method stub
+		String BusName, S;
+		int iB, Result = 0;
+		File F;
+
+		/* Get next parameter on command line */
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+
+		try {
+
+			try {
+				F = new File(Param);
+				FileInputStream fstream = new FileInputStream(F);
+				DataInputStream in = new DataInputStream(in);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+
+				while ((S = br.readLine()) != null) {
+					Parser parser = DSSGlobals.getInstance().getAuxParser();  // User Auxparser to parse line
+
+					parser.setCmdString(S);
+					parser.getNextParam();
+					BusName = parser.makeString();
+					iB = DSSGlobals.getInstance().getActiveCircuit().getBusList().find(BusName);
+					if (iB > 0) {
+						Bus bus = DSSGlobals.getInstance().getActiveCircuit().getBuses()[iB];
+						parser.getNextParam();
+						bus.setX(parser.makeDouble());
+						parser.getNextParam();
+						bus.setY(parser.makeDouble());
+						bus.setCoordDefined(true);
+					}
+				}  // Just ignore a bus that's not in the circuit
+			} catch (Exception e) {
+				DSSGlobals.getInstance().doSimpleMsg("Bus Coordinate file: \"" + Param + "\" not found.", 275);
+			}
+		} finally {
+			F.close();
+		}
+	
+		return Result;
+	}
+
+	public static int doMakePosSeq() {
+		
+		DSSGlobals.getInstance().getActiveCircuit().setPositiveSequence(true);
+
+		for (CktElement cktElem : DSSGlobals.getInstance().getActiveCircuit().getCktElements()) 
+			cktElem.makePosSequence();
+		
+		return 0;
+	}
+
+	private static int atLeast(int i, int j) {
+		if (j < i) {
+			return i;
+		} else {
+			return j;
+		}
+	}
+	
+	public static void doSetReduceStrategy(String S) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		Globals.getActiveCircuit().setReductionStrategyString(S);
+		Globals.getAuxParser().setCmdString(S);
+		String ParamName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString().toUpperCase();
+		ParamName = Globals.getAuxParser().getNextParam();
+		String Param2 = Globals.getAuxParser().makeString();
+
+		Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDefault);
+		if (Param.length() == 0)
+			return;  // No option given
+
+		switch (Param.charAt(0)) {
+		case 'B':
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsBreakLoop);
+		case 'D':
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDefault);
+		case 'E':
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDangling);
+		case 'M':
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsMergeParallel);
+		case 'T':
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsTapEnds);
+			Globals.getActiveCircuit().setReductionMaxAngle(15.0);  // default
+			if (Param2.length() > 0)
+				Globals.getActiveCircuit().setReductionMaxAngle(Globals.getAuxParser().makeDouble());
+		case 'S':  // Stubs
+			if (Utilities.compareTextShortest(Param, "SWITCH") == 0) {
+				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsSwitches);
+			} else {
+				Globals.getActiveCircuit().setReductionZmag(0.02);
+				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsStubs);
+				if (Param2.length() > 0) 
+					Globals.getActiveCircuit().setReductionZmag(Globals.getAuxParser().makeDouble());
+			}
+		default:
+			Globals.doSimpleMsg("Unknown Reduction Strategy: \"" + S + "\".", 276);
+		}
+	}
+
+	/**
+	 * Interpolate bus coordinates in meter zones.
+	 */
+	public static int doInterpolateCmd() {
+		EnergyMeter MeterClass;
+		String ParamName, Param;
+		int DevClassIndex;
+		CktElement CktElem;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		int Result = 0;
+
+		ParamName = Parser.getInstance().getNextParam();
+		Param = Parser.getInstance().makeString().toUpperCase();
+
+		// initialize the Checked Flag FOR all circuit Elements
+		Circuit ckt = Globals.getActiveCircuit();
+
+		for (CktElement cktElem : ckt.getCktElements()) 
+			cktElem.setChecked(false);
+
+		if (Param.length() == 0) Param = "A";
+		switch (Param.charAt(0)) {
+		case 'A':
+			for (EnergyMeterObj MetObj : ckt.getEnergyMeters()) 
+				MetObj.interpolateCoordinates();
+		default:
+			/* Interpolate a specific meter */
+			DevClassIndex = Globals.getClassNames().find("energymeter");
+			if (DevClassIndex > 0) {
+				MeterClass = (EnergyMeter) Globals.getDSSClassList().get(DevClassIndex);
+				if (MeterClass.setActive(Param)) {  // Try to set it active
+					EnergyMeterObj MetObj = (EnergyMeterObj) MeterClass.getActiveObj();
+					MetObj.interpolateCoordinates();
+				} else {	
+					Globals.doSimpleMsg("EnergyMeter \""+Param+"\" not found.", 277);
+				}
+			}
+		}
+		
+		return Result;
+	}
+
+	/**
+	 * Rewrites designated file, aligning the fields into columns.
+	 */
+	public static int doAlignFileCmd() {
+		int Result = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+
+		if (new File(Param).exists()) {
+			if (!Utilities.rewriteAlignedFile(Param)) 
+				Result = 1;
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("File \""+Param+"\" does not exist.", 278);
+			Result = 1;
+		}
+
+		if (Result == 0)
+			Utilities.fireOffEditor(DSSGlobals.getInstance().getGlobalResult());
+	
+		return Result;
+	}
+
+	/**
+	 * Sends Monitors, Loadshapes, GrowthShapes, or TCC Curves to TOP
+	 * as an STO file.
+	 */
+	public static int doTOPCmd() {
+		int Result = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString().toUpperCase();
+
+		ParamName = Parser.getInstance().getNextParam();
+		String ObjName = Parser.getInstance().makeString().toUpperCase();
+
+		if (ObjName.length() == 0) ObjName = "ALL";
+
+		switch (Param.charAt(0)) {
+		case 'L':
+			DSSGlobals.getInstance().getLoadShapeClass().tOPExport(ObjName);
+//		case 'G':
+//			DSSGlobals.getInstance().getGrowthShapeClass().tOPExportAll();
+//		case 'T':
+//			DSSGlobals.getInstance().getTCC_CurveClass().tOPExportAll();
+		default:
+			DSSGlobals.getInstance().getMonitorClass().tOPExport(ObjName);
+		}
+		return Result;
+	}
+
+	public static void doSetNormal(double pctNormal) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (ckt != null) {
+			pctNormal = pctNormal * 0.01;  // FIXME local copy only
+			for (LineObj line : ckt.getLines()) 
+				line.setNormAmps(pctNormal * line.getEmergAmps());
+		}
+	}
+
+	/**
+	 * Rotate about the center of the coordinates.
+	 */
+	public static int doRotateCmd() {
+		double Angle, xmin, xmax, ymin, ymax, xc, yc;
+		String ParamName;
+		Bus bus;
+		Complex a, vector;
+		
+		int Result = 0;
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (ckt != null) {
+
+			ParamName = Parser.getInstance().getNextParam();
+			Angle = Parser.getInstance().makeDouble() * DSSGlobals.PI / 180.0;   // Deg to rad
+
+			a = new Complex(Math.cos(Angle), Math.sin(Angle));
+			xmin =  1.0e50;
+			xmax = -1.0e50;
+			ymin =  1.0e50;
+			ymax = -1.0e50;
+			for (int i = 0; i < ckt.getNumBuses(); i++) {
+				if (ckt.getBuses()[i].isCoordDefined()) {
+					bus = ckt.getBuses()[i];
+					xmax = Math.max(xmax, bus.getX());
+					xmin = Math.min(xmin, bus.getX());
+					ymax = Math.max(ymax, bus.getY());
+					ymin = Math.min(ymin, bus.getY());
+				}
+			}
+
+			xc = (xmax + xmin) / 2.0;
+			yc = (ymax + ymin) / 2.0;
+
+			for (int i = 0; i < ckt.getNumBuses(); i++) {
+				if (ckt.getBuses()[i].isCoordDefined()) {
+					bus = ckt.getBuses()[i];
+					vector = new Complex(bus.getX() - xc, bus.getY() - yc);
+					vector = vector.multiply(a);
+					bus.setX(xc + vector.getReal());
+					bus.setY(yc + vector.getImaginary());
+				}
+			}
+		}
+		return Result;
+	}
+
+	public static int doVDiffCmd() {
+		// TODO Implement this method.
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Returns summary in global result string.
+	 */
+	public static int doSummaryCmd() {
+		String S;
+		Complex cLosses, cPower;
+		String CRLF = DSSGlobals.CRLF;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		int Result = 0;
+		S = "";
+		if (ckt.isSolved()) {
+			S = S + "Status = SOLVED" + DSSGlobals.CRLF;
+		} else {
+			S = S + "Status = NOT Solved" + CRLF;
+		}
+		S = S + "Solution Mode = " + Utilities.getSolutionModeID() + CRLF;
+		S = S + "Number = " + String.valueOf(ckt.getSolution().getNumberOfTimes()) + CRLF;
+		S = S + "Load Mult = " + String.format("%5.3f", ckt.getLoadMultiplier()) + CRLF;
+		S = S + "Devices = " + String.format("%d", ckt.getNumDevices()) + CRLF;
+		S = S + "Buses = " + String.format("%d", ckt.getNumBuses()) + CRLF;
+		S = S + "Nodes = " + String.format("%d", ckt.getNumNodes()) + CRLF;
+		S = S + "Control Mode =" + Utilities.getControlModeID() + CRLF;
+		S = S + "Total Iterations = " + String.valueOf(ckt.getSolution().getIteration()) + CRLF;
+		S = S + "Control Iterations = " + String.valueOf(ckt.getSolution().getControlIteration()) + CRLF;
+		S = S + "Max Sol Iter = " + String.valueOf(ckt.getSolution().getMostIterationsDone()) + CRLF;
+		S = S + " " + CRLF;
+		S = S + " - Circuit Summary -" + CRLF;
+		S = S + " " + CRLF;
+		if (ckt != null) {
+			S = S + String.format("Year = %d ", ckt.getSolution().getYear()) + CRLF;
+			S = S + String.format("Hour = %d ", ckt.getSolution().getIntHour()) + CRLF;
+			S = S + "Max pu. voltage = " + String.format("%-.5g ", Utilities.getMaxPUVoltage()) + CRLF;
+			S = S + "Min pu. voltage = " + String.format("%-.5g ", Utilities.getMinPUVoltage(true)) + CRLF;
+			cPower = Utilities.getTotalPowerFromSources().multiply(0.000001);  // MVA
+			S = S + String.format("Total Active Power:   %-.6g MW", cPower.getReal()) + CRLF;
+			S = S + String.format("Total Reactive Power: %-.6g Mvar", cPower.getImaginary()) + CRLF;
+			cLosses = ckt.getLosses().multiply(0.000001);
+			if (cPower.getReal() != 0.0) {
+				S = S + String.format("Total Active Losses:   %-.6g MW, (%-.4g %%)", cLosses.getReal(), (cLosses.getReal() / cPower.getReal() * 100.0)) + CRLF;
+			} else {
+				S = S + "Total Active Losses:   ****** MW, (**** %%)" + CRLF;
+			}
+			S = S + String.format("Total Reactive Losses: %-.6g Mvar", cLosses.getImaginary()) + CRLF;
+			S = S + String.format("Frequency = %-g Hz", ckt.getSolution().getFrequency()) + CRLF;
+			S = S + "Mode = " + Utilities.getSolutionModeID() + CRLF;
+			S = S + "Control Mode = " + Utilities.getControlModeID() + CRLF;
+			S = S + "Load Model = " + Utilities.getLoadModel() + CRLF;
+		}
+
+		DSSGlobals.getInstance().setGlobalResult(S);
+		
+		return Result;
+	}
+
+	public static int doDistributeCmd() {
+		Parser parser = Parser.getInstance();
+		int Result = 0;
+		int ParamPointer = 0;
+		/* Defaults */
+		double kW = 1000.0;
+		String How = "Proportional";
+		int Skip = 1;
+		double PF = 1.0;
+		String FilName = "DistGenerators.dss";
+
+		String ParamName = parser.getNextParam();
+		String Param = parser.makeString();
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = DistributeCommands.getCommand(ParamName);
+			}
+
+			switch (ParamPointer) {
+			case 1:
+				kW = parser.makeDouble();
+			case 2:
+				How = parser.makeString();
+			case 3:
+				Skip = parser.makeInteger();
+			case 4:
+				PF = parser.makeDouble();
+			case 5:
+				FilName = parser.makeString();
+			case 6:
+				kW = parser.makeDouble() * 1000.0;
+			default:
+				// ignore unnamed and extra parms
+			}
+
+			ParamName = parser.getNextParam();
+			Param = parser.makeString();
+		}
+
+		Utilities.makeDistributedGenerators(kW, PF, How, Skip, FilName); 
+	
+		return Result;
+	}
+
+	public static int doDI_PlotCmd() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		if (Globals.isDIFilesAreOpen())
+			Globals.getEnergyMeterClass().closeAllDIFiles();
+
+		if (DSSPlot.DSSPlotObj == null)
+			DSSPlot.DSSPlotObj = new DSSPlotImpl();
+		
+		/* Defaults */
+		int NumRegs = 1;
+		double[] dRegisters = new double[EnergyMeterObj.NumEMRegisters];
+		int[] iRegisters = new int[NumRegs];
+		iRegisters[0] = 9;
+		boolean PeakDay = false;
+		int CaseYear = 1;
+		String CaseName = "";
+		String MeterName = "DI_Totals";
+
+		Parser parser = Parser.getInstance();
+
+		int ParamPointer = 0;
+		String ParamName = parser.getNextParam();
+		String Param = parser.makeString();
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = DI_PlotCommands.getCommand(ParamName);
+			}
+			
+			switch (ParamPointer) {
+			case 1:
+				CaseName = Param;
+			case 2:
+				CaseYear = parser.makeInteger();
+			case 3:
+				NumRegs = parser.parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
+				iRegisters = new int[NumRegs];
+				for (int i = 0; i < NumRegs; i++) 
+					iRegisters[i - 1] = (int) dRegisters[i];
+			case 4:
+				PeakDay = Utilities.interpretYesNo(Param);
+			case 5:
+				MeterName = parser.makeString();
+			default:
+				// ignore unnamed and extra parms
+			}
+
+			ParamName = parser.getNextParam();
+			Param = parser.makeString();
+		}
+
+		DSSPlot.DSSPlotObj.doDI_Plot(CaseName, CaseYear, iRegisters, PeakDay, MeterName);
+
+		iRegisters = null;
+		
 		return 0;
 	}
 
@@ -1596,56 +2043,6 @@ public class ExecHelper {
 	}
 
 	public static int doSetLoadAndGenKVCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doVarValuesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doVarNamesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doMakePosSeq() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doAlignFileCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doTOPCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doRotateCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doVDiffCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSummaryCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doDistributeCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doDI_PlotCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -1705,11 +2102,6 @@ public class ExecHelper {
 	
 	public static int doSetBusXYCmd() {
 		return 0;
-	}
-
-	public static void doSetNormal(double pctNormal) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

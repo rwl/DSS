@@ -259,7 +259,7 @@ public interface Circuit extends NamedObject {
 
 	void setMapNodeToBus(NodeBus[] mapNodeToBus);
 
-	boolean isIsSolved();
+	boolean isSolved();
 
 	void setIsSolved(boolean isSolved);
 

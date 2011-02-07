@@ -5,8 +5,9 @@ import java.awt.Color;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.plot.DSSPlot;
 
-public class DSSPlotImpl {
+public class DSSPlotImpl implements DSSPlot {
 	
 	private static int vizCURRENT = 1;
 	private static int vizVOLTAGE = 2;

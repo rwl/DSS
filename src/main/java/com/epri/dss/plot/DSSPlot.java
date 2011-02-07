@@ -7,6 +7,8 @@ import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotType;
 
 public interface DSSPlot {
+	
+	public static DSSPlot DSSPlotObj = null;
 
 	void setMaxLineThickness(int Value);
 	
