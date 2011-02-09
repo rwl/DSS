@@ -45,12 +45,39 @@ import com.epri.dss.meter.SensorObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.plot.DSSPlot;
 import com.epri.dss.plot.impl.DSSPlotImpl;
+import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.Dynamics;
+import com.epri.dss.shared.impl.CommandListImpl;
 import com.epri.dss.shared.impl.Complex;
 
 public class ExecHelper {
+	
+	private static CommandList SaveCommands, DistributeCommands, 
+		DI_PlotCommands, ReconductorCommands, RephaseCommands,
+		AddMarkerCommands, SetBusXYCommands;
 
 	private ExecHelper() {
+	}
+	
+	public static void initialize() {
+		SaveCommands = new CommandListImpl(new String[] {"class", "file", "dir", "keepdisabled"});
+		SaveCommands.setAbbrevAllowed(true);
+		
+		DI_PlotCommands = new CommandListImpl(new String[] {"case", "year", "registers", "peak", "meter"});
+		DistributeCommands = new CommandListImpl(new String[] {"kW", "how", "skip", "pf", "file", "MW"});
+		DistributeCommands.setAbbrevAllowed(true);
+		
+		ReconductorCommands = new CommandListImpl(new String[] {"Line1", "Line2", "LineCode", "Geometry", "EditString"});
+		ReconductorCommands.setAbbrevAllowed(true);
+		
+		RephaseCommands = new CommandListImpl(new String[] {"StartLine", "PhaseDesignation", "EditString", "ScriptFileName", "StopAtTransformers"});
+		RephaseCommands.setAbbrevAllowed(true);
+		
+		AddMarkerCommands = new CommandListImpl(new String[] {"Bus", "code", "color", "size"});
+		AddMarkerCommands.setAbbrevAllowed(true);
+		
+		SetBusXYCommands = new CommandListImpl(new String[] {"Bus", "x", "y"});
+		SetBusXYCommands.setAbbrevAllowed(true);
 	}
 
 	/**
@@ -2694,9 +2721,9 @@ public class ExecHelper {
 
 			int iB = Globals.getActiveCircuit().getBusList().find(BusName);
 			if (iB > 0) {
-			  Globals.getActiveCircuit().getBuses()[iB].setX(Xval);
-			  Globals.getActiveCircuit().getBuses()[iB].setY(Yval);
-			  Globals.getActiveCircuit().getBuses()[iB].setCoordDefined(true);
+			Globals.getActiveCircuit().getBuses()[iB].setX(Xval);
+			Globals.getActiveCircuit().getBuses()[iB].setY(Yval);
+			Globals.getActiveCircuit().getBuses()[iB].setCoordDefined(true);
 			} else {
 				Globals.doSimpleMsg("Error: Bus \"" + BusName + "\" Not Found.", 28722);
 			}
