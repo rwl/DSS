@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.DataInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+
+import org.apache.commons.math.optimization.GoalType;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -24,12 +28,15 @@ import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.Line;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.delivery.impl.CapacitorObjImpl;
 import com.epri.dss.delivery.impl.ReactorObjImpl;
 import com.epri.dss.executive.Executive;
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.general.LoadShape;
+import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
@@ -2238,62 +2245,467 @@ public class ExecHelper {
 				Globals.doSimpleMsg(elem.getName() + " must be a circuit element type!", 282);   // Wrong type
 			}
 		} else {
-		   Globals.doSimpleMsg("Requested Circuit Element: \"" + ElemName + "\" Not Found.", 282);  // Did not find it ..
+		Globals.doSimpleMsg("Requested Circuit Element: \"" + ElemName + "\" Not Found.", 282);  // Did not find it ..
 		}
 
 		return 0;
 	}
 
-	public static int doGuidsCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doSetLoadAndGenKVCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public static int doCloseDICmd() {
-		// TODO Auto-generated method stub
+		DSSGlobals.getInstance().getEnergyMeterClass().closeAllDIFiles();
 		return 0;
 	}
 
 	public static int doADOScmd() {
-		// TODO Auto-generated method stub
+		Utilities.doDOSCmd(Parser.getInstance().getRemainder());
 		return 0;
 	}
 
+	/**
+	 * Load current estimation is driven by Energy Meters at head of feeders.
+	 */
 	public static int doEstimateCmd() {
-		// TODO Auto-generated method stub
+		doAllocateLoadsCmd();
+
+		/* Let's look to see how well we did */
+		if (!DSSGlobals.getInstance().isAutoShowExport())
+			Executive.DSSExecutive.setCommand("Set showexport=yes");
+		Executive.DSSExecutive.setCommand("Export Estimation");
+		
 		return 0;
 	}
 
 	public static int doReconductorCmd() {
-		// TODO Auto-generated method stub
-		return 0;
+		String LineCode, Geometry, EditString;
+		LineObj pLine1, pLine2;
+		Line LineClass;
+		int TraceDirection;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		int ParamPointer = 0;
+		boolean LineCodeSpecified = false;
+		boolean GeometrySpecified = false;
+		String Line1 = "";
+		String Line2 = "";
+		String MyEditString = "";
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = ReconductorCommands.getCommand(ParamName);
+			}
+			switch (ParamPointer	     ) {
+			case 1:
+				Line1 = Param;
+			case 2:
+				Line2 = Param;
+			case 3:
+				LineCode = Param;
+				LineCodeSpecified = true;
+				GeometrySpecified = false;
+			case 4:
+				Geometry = Param;
+				LineCodeSpecified = false;
+				GeometrySpecified = true;
+			case 5:
+				MyEditString = Param;
+			default:
+				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28701);
+			}
+
+			ParamName = Parser.getInstance().getNextParam();
+			Param = Parser.getInstance().makeString();
+		}
+
+		/* Check for Errors */
+
+		/* If user specified full line name, get rid of "line." */
+		Line1 = Utilities.stripClassName(Line1);
+		Line2 = Utilities.stripClassName(Line2);
+
+		if ((Line1.length() == 0) || (Line2.length() == 0)) {
+			Globals.doSimpleMsg("Both Line1 and Line2 must be specified!", 28702);
+			return Result;
+		}
+
+		if (!LineCodeSpecified && !GeometrySpecified) {
+			Globals.doSimpleMsg("Either a new LineCode or a Geometry must be specified!", 28703);
+			return Result;
+		}
+
+		LineClass = (Line) Globals.getDSSClassList().get(Globals.getClassNames().find("Line"));
+		pLine1 = (LineObj) LineClass.find(Line1);
+		pLine2 = (LineObj) LineClass.find(Line2);
+
+		if ((pLine1 == null) || (pLine2 == null)) {
+			if (pLine1 == null) {
+				Globals.doSimpleMsg("Line."+Line1+" not found.", 28704);
+			} else if (pLine2 == null) {
+				Globals.doSimpleMsg("Line."+Line2+" not found.", 28704);
+			}
+			return Result;
+		}
+
+		/* Now check to make sure they are in the same meter's zone */
+		if ((pLine1.getMeterObj() == null) || (pLine2.getMeterObj() == null)) {
+			Globals.doSimpleMsg("Error: Both Lines must be in the same EnergyMeter zone. One or both are not in any meter zone.", 28705);
+			return Result;
+		}
+
+		if (pLine1.getMeterObj() != pLine2.getMeterObj()) {
+			Globals.doSimpleMsg("Error: Line1 is in EnergyMeter."+pLine1.getMeterObj().getName()+
+					" zone while Line2 is in EnergyMeter."+pLine2.getMeterObj().getName()+ " zone. Both must be in the same Zone.", 28706);
+			return Result;
+		}
+
+		/* Since the lines can be given in either order, Have to check to see
+		 * which direction they are specified and find the path between them.
+		 */
+		TraceDirection = 0;
+		if (Utilities.isPathBetween(pLine1, pLine2))
+			TraceDirection = 1;
+		if (Utilities.isPathBetween(pLine2, pLine1))
+			TraceDirection = 2;
+
+		if (LineCodeSpecified) {
+			EditString = "Linecode=" + LineCode;
+		} else {
+			EditString = "Geometry=" + Geometry;
+		}
+
+		// Append MyEditString onto the end of the edit string to change the linecode or geometry
+		EditString = String.format("%s  %s", EditString, MyEditString);
+
+		switch (TraceDirection) {
+		case 1:
+			Utilities.traceAndEdit(pLine1, pLine2, EditString);
+		case 2:
+			Utilities.traceAndEdit(pLine2, pLine1, EditString);
+		default:
+			Globals.doSimpleMsg("Traceback path not found between Line1 and Line2.", 28707);
+			return Result;
+		}
+		
+		return Result;
 	}
 
 	public static int doAddMarkerCmd() {
-		// TODO Auto-generated method stub
+		String BusName;
+		int BusIdx;
+		Bus Bus;
+		
+		Parser parser = Parser.getInstance();
+
+		int Result = 0;
+		int ParamPointer = 0;
+
+		String ParamName = parser.getNextParam();
+		String Param = parser.makeString();
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = AddMarkerCommands.getCommand(ParamName);
+			}
+
+			switch (ParamPointer) {
+			case 1:
+				BusName = Param;
+			case 2:
+				DSSPlot.AddMarkerCode = parser.makeInteger();
+			case 3:
+				DSSPlot.AddMarkerColor = parser.makeInteger();
+			case 4:
+				DSSPlot.AddMarkerSize = parser.makeInteger();
+			default:
+				// ignore unnamed and extra params
+			}
+			
+			ParamName = parser.getNextParam();
+			Param = parser.makeString();
+		}
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		BusIdx = ckt.getBusList().find(BusName);
+		if (BusIdx > 0) {  // TODO Check zero indexing.
+			Bus = ckt.getBuses()[BusIdx];
+			if (Bus.isCoordDefined()) {
+				DSSGraphDeclarations.addNewMarker(Bus.getX(), Bus.getY(), DSSPlot.AddMarkerColor, DSSPlot.AddMarkerCode, DSSPlot.AddMarkerSize);
+				DSSGraphDeclarations.showGraph();
+			} else {
+				DSSGlobals.getInstance().doSimpleMsg("Bus Coordinates not defined for bus " + BusName, 28709);
+			}
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Bus not found.", 28708);
+		}
+		
+		return Result;
+	}
+
+	public static int doSetLoadAndGenKVCmd() {
+		Bus pBus;
+		String sBus;
+		int iBus, i;
+		double kvln;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		int Result = 0;
+		for (LoadObj pLoad : ckt.getLoads()) {
+			Load.ActiveLoadObj = pLoad; // for UpdateVoltageBases to work
+			sBus = Utilities.stripExtension(pLoad.getBus(0));  // TODO Check zero indexing
+			iBus = ckt.getBusList().find(sBus);
+			pBus = ckt.getBuses()[iBus];
+			kvln = pBus.getkVBase();
+			if ((pLoad.getConnection() == 1) || (pLoad.getNPhases() == 3)) {
+				pLoad.setkVLoadBase(kvln * DSSGlobals.SQRT3);
+			} else {
+				pLoad.setkVLoadBase(kvln);
+			}
+			pLoad.updateVoltageBases();
+			pLoad.recalcElementData();
+		}
+		
+		for (GeneratorObj pGen : ckt.getGenerators()) {
+			sBus = Utilities.stripExtension(pGen.getBus(0));  // TODO Check zero indexing
+			iBus = ckt.getBusList().find(sBus);
+			pBus = ckt.getBuses()[iBus];
+			kvln = pBus.getkVBase();
+			if ((pGen.getConnection() == 1) || (pGen.getNPhases() > 1)) {
+				pGen.setPresentKV(kvln * DSSGlobals.SQRT3);
+			} else {
+				pGen.setPresentKV(kvln);
+			}
+			pGen.recalcElementData();
+		}
+	
 		return 0;
 	}
 
+	public static int doUUIDsCmd() {
+		// TODO Implement this method.
+		throw new UnsupportedOperationException();
+	}
+
 	public static int doCvrtLoadshapesCmd() {
-		// TODO Auto-generated method stub
+		LoadShapeObj pLoadShape;
+		int iLoadshape;
+		LoadShape LoadShapeClass;
+		String Action;
+
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+
+		if (Param.length() == 0) Param = "s";
+
+		/* Double file or Single file? */
+		switch (Param.toLowerCase().charAt(0)) {
+		case 'd':
+			Action = "action=dblsave";
+		default:
+			Action = "action=sngsave";  // default
+		}
+
+		LoadShapeClass = (LoadShape) DSSClassDefs.getDSSClass("loadshape");
+
+		String Fname = "ReloadLoadShapes.dss";
+		File FD = new File(Fname);
+		PrintWriter F;
+		try {
+			F = new PrintWriter(FD);
+
+			iLoadshape = LoadShapeClass.getFirst();  // TODO Make class iterable.
+			while (iLoadshape > 0) {  // FIXME Zero based indexing
+				pLoadShape = (LoadShapeObj) LoadShapeClass.getActiveObj();
+				Parser.getInstance().setCmdString(Action);
+				pLoadShape.edit();
+				F.println(String.format("New Loadshape.%s Npts=%d Interval=%.8g %s", pLoadShape.getName(), pLoadShape.getNumPoints(), pLoadShape.getInterval(), DSSGlobals.getInstance().getGlobalResult()));
+				iLoadshape = LoadShapeClass.getNext();
+			}
+
+			F.close();
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Utilities.fireOffEditor(Fname);
+		
 		return 0;
 	}
 	
 	public static int doNodeDiffCmd() {
-		return 0;
+		String sNode1, sNode2;
+		String sBusName;
+		Complex V1, V2, VNodeDiff;
+		int iBusIdx;
+		int B1ref;
+		int B2ref;
+		int NumNodes = 0;
+		int[] NodeBuffer = new int[50];
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		sNode1 = Param;
+		if (ParamName.indexOf('2') >= 0)  // TODO Check zero indexing
+			sNode2 = Param;
+
+		ParamName = Parser.getInstance().getNextParam();
+		Param = Parser.getInstance().makeString();
+		sNode2 = Param;
+		if (ParamName.indexOf('1') > 0) 
+			sNode1 = Param;
+
+		// Get first node voltage
+		Globals.getAuxParser().setToken(sNode1);
+		NodeBuffer[0] = 1;  // TODO Check zero indexing
+		sBusName = Globals.getAuxParser().parseAsBusName(NumNodes, NodeBuffer);
+		iBusIdx = Globals.getActiveCircuit().getBusList().find(sBusName);
+		if (iBusIdx > 0) {
+			B1ref = Globals.getActiveCircuit().getBuses()[iBusIdx].find(NodeBuffer[0]);  // TODO Check zero indexing
+		} else {
+			Globals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28709);
+			return Result;
+		}
+
+		V1 = Globals.getActiveCircuit().getSolution().getNodeV()[B1ref];
+
+		// Get 2nd node voltage
+		Globals.getAuxParser().setToken(sNode2);
+		NodeBuffer[0] = 1;  // TODO Check zero indexing
+		sBusName = Globals.getAuxParser().parseAsBusName(NumNodes, NodeBuffer);
+		iBusIdx = Globals.getActiveCircuit().getBusList().find(sBusName);
+		if (iBusIdx > 0) {
+			B2ref = Globals.getActiveCircuit().getBuses()[iBusIdx].find(NodeBuffer[0]); // TODO Check zero indexing
+		} else {
+			Globals.doSimpleMsg(String.format("Bus %s not found.", sBusName), 28710);
+			return Result;
+		}
+
+		V2 = Globals.getActiveCircuit().getSolution().getNodeV()[B2ref];
+
+		VNodeDiff = V1.subtract(V2);
+		Globals.setGlobalResult(String.format("%.7g, V,    %.7g, deg  ", VNodeDiff.abs(), VNodeDiff.degArg()));
+			
+		return Result;
 	}
 	
 	public static int doRephaseCmd() {
-		return 0;
+		String StartLine;
+		String NewPhases;
+		LineObj pStartLine;
+		Line LineClass;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		int ParamPointer = 0;
+		String MyEditString = "";
+		String ScriptFileName = "RephaseEditScript.dss";
+		boolean TransfStop = true;  // Stop at Transformers
+
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = RephaseCommands.getCommand(ParamName);
+			}
+			
+			switch (ParamPointer) {
+			case 1:
+				StartLine = Param;
+			case 2:
+				NewPhases = Param;
+			case 3:
+				MyEditString = Param;
+			case 4:
+				ScriptFileName = Param;
+			case 5:
+				TransfStop = Utilities.interpretYesNo(Param);
+			default:
+				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28711);
+			}
+
+			ParamName = Parser.getInstance().getNextParam();
+			Param = Parser.getInstance().makeString();
+		}
+
+		LineClass = (Line) Globals.getDSSClassList().get(Globals.getClassNames().find("Line"));
+		pStartLine = (LineObj) LineClass.find(Utilities.stripClassName(StartLine));
+		if (pStartLine == null) {
+			Globals.doSimpleMsg("Starting Line ("+StartLine+") not found.", 28712);
+			return Result;
+		}
+		/* Check for some error conditions and abort if necessary */
+		if (pStartLine.getMeterObj() == null) {
+			Globals.doSimpleMsg("Starting Line must be in an EnergyMeter zone.", 28713);
+			return Result;
+		}
+
+		if (!(pStartLine.getMeterObj() instanceof EnergyMeterObj)) {
+			Globals.doSimpleMsg("Starting Line must be in an EnergyMeter zone.", 28713);
+			return Result;
+		}
+
+		Utilities.goForwardAndRephase(pStartLine, NewPhases, MyEditString, ScriptFileName, TransfStop);
+
+		return Result;
 	}
 	
 	public static int doSetBusXYCmd() {
-		return 0;
+		String BusName;
+		double Xval = 0.0;
+		double Yval = 0.0;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		int ParamPointer = 0;
+		while (Param.length() > 0) {
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				ParamPointer = SetBusXYCommands.getCommand(ParamName);
+			}
+			
+			switch (ParamPointer) {
+			case 1:
+				BusName = Param;
+			case 2:
+				Xval = Parser.getInstance().makeDouble();
+			case 3:
+				Yval = Parser.getInstance().makeDouble();
+			default:
+				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28721);
+			}
+
+			int iB = Globals.getActiveCircuit().getBusList().find(BusName);
+			if (iB > 0) {
+			  Globals.getActiveCircuit().getBuses()[iB].setX(Xval);
+			  Globals.getActiveCircuit().getBuses()[iB].setY(Yval);
+			  Globals.getActiveCircuit().getBuses()[iB].setCoordDefined(true);
+			} else {
+				Globals.doSimpleMsg("Error: Bus \"" + BusName + "\" Not Found.", 28722);
+			}
+	
+			ParamName = Parser.getInstance().getNextParam();
+			Param = Parser.getInstance().makeString();
+		}
+		
+		return Result;
 	}
 
 }
