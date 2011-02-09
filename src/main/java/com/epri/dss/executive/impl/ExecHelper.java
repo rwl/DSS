@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -28,6 +29,7 @@ import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.delivery.impl.CapacitorObjImpl;
 import com.epri.dss.delivery.impl.ReactorObjImpl;
 import com.epri.dss.executive.Executive;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
@@ -2037,27 +2039,217 @@ public class ExecHelper {
 		return 0;
 	}
 
+	public static int doCompareCasesCmd() {
+		boolean Unknown;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (Globals.isDIFilesAreOpen())
+			Globals.getEnergyMeterClass().closeAllDIFiles();
+
+		if (DSSPlot.DSSPlotObj == null)
+			DSSPlot.DSSPlotObj = new DSSPlotImpl();
+
+		String CaseName1 = "base";
+		String CaseName2 = "";
+		int Reg = 9;    // Overload EEN
+		String WhichFile = "Totals";
+
+		int ParamPointer = 0;
+		String ParamName = Parser.getInstance().getNextParam().toUpperCase();
+		String Param = Parser.getInstance().makeString();
+		while (Param.length() > 0) {
+			Unknown = false;
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				if (Utilities.compareTextShortest(ParamName, "CASE1") == 0) { 
+					ParamPointer = 1;
+				} else if (Utilities.compareTextShortest(ParamName, "CASE2") == 0) {
+					ParamPointer = 2;
+				} else if (Utilities.compareTextShortest(ParamName, "REGISTER") == 0) {
+					ParamPointer = 3;
+				} else if (Utilities.compareTextShortest(ParamName, "METER") == 0) {
+					ParamPointer = 4;
+				} else {
+					Unknown = true;
+				}
+			}
+			
+			if (!Unknown) {
+				switch (ParamPointer) {
+				case 1:
+					CaseName1 = Param;
+				case 2:
+					CaseName2 = Param;
+				case 3:
+					Reg = Parser.getInstance().makeInteger();
+				case 4:
+					WhichFile = Param;
+				default:
+					// ignore unnamed and extra params
+				}
+			}
+			ParamName = Parser.getInstance().getNextParam().toUpperCase();
+			Param = Parser.getInstance().makeString();
+		}
+
+		DSSPlot.DSSPlotObj.doCompareCases(CaseName1, CaseName2, WhichFile, Reg);
+
+		return 0;
+	}
+
+	public static int doYearlyCurvesCmd() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		boolean Unknown;
+		ArrayList<String> CaseNames;
+		double[] dRegisters = new double[EnergyMeterObj.NumEMRegisters];
+		int[] iRegisters;
+		String WhichFile;
+
+		if (Globals.isDIFilesAreOpen())
+			Globals.getEnergyMeterClass().closeAllDIFiles();
+
+		if (DSSPlot.DSSPlotObj == null) 
+			DSSPlot.DSSPlotObj = new DSSPlotImpl();
+
+		int nRegs = 1;
+		iRegisters = new int[nRegs];
+		CaseNames = new ArrayList<String>();
+		CaseNames.clear();
+		WhichFile = "Totals";
+
+		int ParamPointer = 0;
+		String ParamName = Parser.getInstance().getNextParam();
+		String Param = Parser.getInstance().makeString();
+		while (Param.length() > 0) {
+			Unknown = false;
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+				switch (ParamName.toUpperCase().charAt(0)) {
+				case 'C':
+					ParamPointer = 1;
+				case 'R':
+					ParamPointer = 2;
+				case 'M':
+					ParamPointer = 3; // meter=
+				default: 
+					Unknown = true;
+				}
+			}
+			
+			if (!Unknown) {
+				switch (ParamPointer) {
+				case 1:  // List of case names
+					Globals.getAuxParser().setCmdString(Param);
+					Globals.getAuxParser().getNextParam();
+					Param = Globals.getAuxParser().makeString();
+					while (Param.length() > 0) {
+						CaseNames.add(Param);
+						Globals.getAuxParser().getNextParam();
+						Param = Globals.getAuxParser().makeString();
+					}
+				case 2:
+					nRegs = Parser.getInstance().parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
+					iRegisters = new int[nRegs];
+					for (int i = 0; i < nRegs; i++) 
+						iRegisters[i - 1] = (int) dRegisters[i];  // TODO: Check zero indexing
+				case 3:
+					WhichFile = Param;
+				default:
+					// ignore unnamed and extra params
+				}
+			}
+
+			ParamName = Parser.getInstance().getNextParam();
+			Param = Parser.getInstance().makeString();
+		}
+
+		DSSPlot.DSSPlotObj.doYearlyCurvePlot(CaseNames, WhichFile, iRegisters);
+
+		iRegisters = null;
+		CaseNames.clear();
+	
+		return 0;
+	}
+
+	public static int doVisualizeCmd() {
+		int DevIndex;
+		String Param;
+		String ParamName;
+		int ParamPointer;
+		boolean Unknown;
+		int Quantity;
+		String ElemName;
+		DSSObject elem;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		int Result = 0;
+		Quantity = DSSPlot.vizCURRENT;
+		String ElemName = "";
+		/* Parse rest of command line */
+		int ParamPointer = 0;
+		String ParamName = Parser.getInstance().getNextParam().toUpperCase();
+		String Param = Parser.getInstance().makeString();
+		while (Param.length() > 0) {
+			Unknown = false;
+			if (ParamName.length() == 0) { 
+				ParamPointer += 1;
+			} else {
+				if (Utilities.compareTextShortest(ParamName, 'WHAT') == 0) {
+					ParamPointer = 1;
+				} else if (Utilities.compareTextShortest(ParamName, 'ELEMENT') == 0) {
+					ParamPointer = 2;
+				} else {
+					Unknown = true;
+				}
+			}
+
+			if (!Unknown) {
+				switch (ParamPointer) {
+				case 1:
+					switch (Param.toLowerCase().charAt(0)) {
+					case 'c':
+						Quantity = DSSPlot.vizCURRENT;
+					case 'v':
+						Quantity = DSSPlot.vizVOLTAGE;
+					case 'p':
+						Quantity = DSSPlot.vizPOWER;
+					}
+				case 2:
+					ElemName = Param;
+				default:
+					// ignore unnamed and extra params
+				}
+			}
+
+			ParamName = Parser.getInstance().getNextParam().toUpperCase();
+			Param = Parser.getInstance().makeString();
+		}
+
+		/*--------------------------------------------------------------*/
+	
+		DevIndex = Utilities.getCktElementIndex(ElemName); // Global function
+		if (DevIndex > 0) {  //  element must already exist
+			elem = Globals.getActiveCircuit().getCktElements().get(DevIndex);
+			if (elem instanceof DSSCktElement) {
+				DSSPlot.DSSPlotObj.doVisualizationPlot(DSSCktElement(elem), Quantity);
+			} else {
+				Globals.doSimpleMsg(elem.getName() + " must be a circuit element type!", 282);   // Wrong type
+			}
+		} else {
+		   Globals.doSimpleMsg("Requested Circuit Element: \"" + ElemName + "\" Not Found.", 282);  // Did not find it ..
+		}
+
+		return 0;
+	}
+
 	public static int doGuidsCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public static int doSetLoadAndGenKVCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doCompareCasesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doYearlyCurvesCmd() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public static int doVisualizeCmd() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

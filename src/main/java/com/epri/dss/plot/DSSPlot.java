@@ -1,6 +1,7 @@
 package com.epri.dss.plot;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
@@ -116,7 +117,7 @@ public interface DSSPlot {
 	
 	void doCompareCases(String CaseName1, String CaseName2, String WhichFile, int Reg);
 	
-	void doYearlyCurvePlot(String[] CaseNames, String WhichFile, int[] iRegisters);
+	void doYearlyCurvePlot(ArrayList<String> caseNames, String WhichFile, int[] iRegisters);
 	
 	void doVisualizationPlot(CktElement Element, int Quantity);
 
