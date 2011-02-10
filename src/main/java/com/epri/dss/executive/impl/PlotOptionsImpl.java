@@ -1,7 +1,13 @@
 package com.epri.dss.executive.impl;
 
 import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.executive.PlotOptions;
+import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.plot.DSSPlot;
+import com.epri.dss.plot.impl.DSSPlotImpl;
+import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
+import com.epri.dss.plot.impl.DSSPlotImpl.PlotType;
 import com.epri.dss.shared.CommandList;
 
 public class PlotOptionsImpl implements PlotOptions {
@@ -83,8 +89,159 @@ public class PlotOptionsImpl implements PlotOptions {
 
 	}
 
+	/** Produce a plot with the DSSGraphX object. */
 	public static int doPlotCmd() {
-		return 0;
+
+		Parser parser = Parser.getInstance();
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		double[] DblBuffer = new double[50];
+		int NumChannels;
+
+		int Result = 0;
+
+		if (Globals.isNoFormsAllowed()) {
+			Result =1;
+			return Result;
+		}
+
+		if (DSSPlot.DSSPlotObj == null) 
+			DSSPlot.DSSPlotObj = new DSSPlotImpl();
+
+		DSSPlot.DSSPlotObj.setDefaults();
+
+		/* Get next parameter on command line */
+		int ParamPointer = 0;
+		String ParamName = parser.getNextParam().toUpperCase();
+		String Param = parser.makeString().toUpperCase();
+		while (Param.length() > 0) {
+			/* Interpret Parameter */
+			if (ParamName.length() == 0) {
+				ParamPointer += 1;
+			} else {
+			ParamPointer = PlotCommands.getCommand(ParamName);
+			}
+			
+			DSSPlot plot = DSSPlot.DSSPlotObj;
+			switch (ParamPointer) {
+			case 1:
+				switch (Param.charAt(0)) {
+				case 'A':
+					plot.setPlotType(PlotType.AutoAddLogPlot);
+					plot.setObjectName(Globals.getCircuitName_() + "AutoAddLog.csv");
+					plot.setValueIndex(2);
+				case 'C':
+					plot.setPlotType(PlotType.CircuitPlot);
+				case 'G':
+					plot.setPlotType(PlotType.GeneralDataPlot);
+				case 'L':
+					plot.setPlotType(PlotType.LoadShape);
+				case 'M':
+					plot.setPlotType(PlotType.MonitorPlot);
+				/*case 'P':
+					plot.setPlotType(PlotType.Profile);*/
+				case 'D': 
+					plot.setPlotType(PlotType.DaisyPlot);
+//					plot.getDaisyBusList().clear();
+				case 'Z':
+					plot.setPlotType(PlotType.MeterZones);
+				}
+			case 2:
+				switch (Param.charAt(0)) {
+				case 'V':
+					plot.setQuantity(PlotQuantity.Voltage);
+				case 'C':
+					switch (Param.charAt(1)) {
+					case 'A':
+						plot.setQuantity(PlotQuantity.Capacity);
+					case 'U':
+						plot.setQuantity(PlotQuantity.Current);
+					}
+				case 'P':
+					plot.setQuantity(PlotQuantity.Power);
+				case 'L':
+					plot.setQuantity(PlotQuantity.Losses);
+				default:
+					plot.setQuantity(PlotQuantity.None);
+					plot.setValueIndex(parser.makeInteger());
+				}
+			case 3:
+				plot.setMaxScale(parser.makeDouble());
+				if (plot.getMaxScale() > 0.0)
+					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
+			case 4:
+				plot.setDots(Utilities.interpretYesNo(Param));
+			case 5: 
+				plot.setLabels(Utilities.interpretYesNo(Param));
+			case 6:
+				plot.setObjectName(parser.makeString());
+			case 7:
+				plot.setShowLoops(Utilities.interpretYesNo(Param));
+				if (plot.isShowLoops())
+					plot.setPlotType(PlotType.MeterZones);
+			case 8:
+				plot.setTriColorMax(parser.makeDouble());
+			case 9:
+				plot.setTriColorMid(parser.makeDouble());
+			case 10:
+				plot.setColor1(Utilities.interpretColorName(Param));
+			case 11:
+				plot.setColor2(Utilities.interpretColorName(Param));
+			case 12: 
+				plot.setColor3(Utilities.interpretColorName(Param));
+			case 13:  // Channel definitions for Plot Monitor
+				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
+				if (NumChannels > 0) {  // Else take the defaults
+					plot.setChannels(new int[NumChannels]);
+					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
+						plot.getChannels()[i] = (int) DblBuffer[i];
+					plot.setBases(new double[NumChannels]);  
+					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing 
+						plot.getBases()[i] = 1.0;
+				}
+			case 14: 
+				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
+				if (NumChannels > 0) {
+					plot.setBases(new double[NumChannels]);
+					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
+						plot.getBases()[i] = DblBuffer[i];
+				}
+			case 15:
+				plot.setShowSubs(Utilities.interpretYesNo(Param));
+			case 16:
+				plot.setMaxLineThickness(parser.makeInteger());
+			case 17:
+				Utilities.interpretTStringListArray(Param, plot.getDaisyBusList());  // read in Bus list
+			/*case 18: 
+				plot.setMinScale(parser.makeDouble());
+				plot.setMinScaleIsSpecified(true);*/    // Indicate the user wants a particular value
+			/*case 19:
+				plot.setThreePhLineStyle = parser.makeInteger();*/
+			/*case 20:
+				plot.setSinglePhLineStyle = parser.makeInteger();*/
+			/*case 21:  // Parse off phase(s) to plot
+				plot.setPhasesToPlot(PROFILE3PH); // the default
+				if (Utilities.compareTextShortest(Param, "default") == 0) {
+					plot.setPhasesToPlot(PROFILE3PH);
+				} else if (Utilities.compareTextShortest(Param, "all") == 0) {
+					plot.setPhasesToPlot(PROFILEALL);
+				} else if (Utilities.compareTextShortest(Param, "primary") == 0) {
+					plot.setPhasesToPlot(PROFILEALLPRI) {
+				} else if (Param.length() == 1) {
+					plot.setPhasesToPlot(parser.makeInteger());
+				}*/
+			}
+
+			ParamName = parser.getNextParam().toUpperCase();
+			Param = parser.makeString().toUpperCase();
+		}
+
+		if (Globals.getActiveCircuit().isSolved()) 
+			DSSPlot.DSSPlotObj.setQuantity(PlotQuantity.None);
+
+		DSSPlot.DSSPlotObj.execute();  // makes a new plot based on these options
+			
+		return Result;
 	}
 
 }
