@@ -94,28 +94,28 @@ public class ExportOptionsImpl implements ExportOptions {
 		boolean UEonlyOpt = false;
 
 		switch (ParamPointer) {
-		case 9:  // Trap export powers command and look for MVA/kVA option
+		case 8:  // Trap export powers command and look for MVA/kVA option
 			ParamName = parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
 			MVAOpt = 0;
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
-		case 19:
+		case 18:
 			ParamName = parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
 			MVAOpt = 0;
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
-		case 8:  // Trap UE only flag
+		case 7:  // Trap UE only flag
 			ParamName = parser.getNextParam();
 			Parm2 = parser.makeString().toLowerCase();
 			UEonlyOpt = false;
 			if (Parm2.length() > 0) 
 				if (Parm2.charAt(0) == 'u')
 					UEonlyOpt = true;
-		case 15:  // Get monitor name for export monitors command
+		case 14:  // Get monitor name for export monitors command
 			ParamName = parser.getNextParam();
 			Parm2 = parser.makeString();
 		}
@@ -129,33 +129,33 @@ public class ExportOptionsImpl implements ExportOptions {
 		/* Assign default file name if alternate not specified */
 		if (FileName.length() == 0) {
 			switch (ParamPointer) {
-			case 1: FileName = "EXP_VOLTAGES.CSV";
-			case 2: FileName = "EXP_SEQVOLTAGES.CSV";
-			case 3: FileName = "EXP_CURRENTS.CSV";
-			case 4: FileName = "EXP_SEQCURRENTS.CSV";
-			case 5: FileName = "EXP_ESTIMATION.CSV";   // Estimation error
-			case 6: FileName = "EXP_CAPACITY.CSV";
-			case 7: FileName = "EXP_OVERLOADS.CSV";
-			case 8: FileName = "EXP_UNSERVED.CSV";
-			case 9: FileName = "EXP_POWERS.CSV";
-			case 10: FileName = "EXP_SEQPOWERS.CSV";
-			case 11: FileName = "EXP_FAULTS.CSV";
-			case 12: FileName = "EXP_GENMETERS.CSV";
-			case 13: FileName = "EXP_LOADS.CSV";
-			case 14: FileName = "EXP_METERS.CSV";
-			//case 15: FileName is assigned
-			case 16: FileName = "EXP_YPRIM.CSV";
-			case 17: FileName = "EXP_Y.CSV";
-			case 18: FileName = "EXP_SEQZ.CSV";
-			case 19: FileName = "EXP_P_BYPHASE.CSV";
-			case 20: FileName = "CDPSM_Unbalanced.XML";
-			case 21: FileName = "CDPSM_Connect.XML";
-			case 22: FileName = "CDPSM_Balanced.XML";
-			case 23: FileName = "EXP_BUSCOORDS.CSV";
-			case 24: FileName = "EXP_LOSSES.CSV";
-			case 25: FileName = "EXP_GUIDS.CSV";
-			case 26: FileName = "EXP_Counts.CSV";
-			case 27: FileName = "EXP_Summary.CSV";
+			case 0: FileName = "EXP_VOLTAGES.CSV";
+			case 1: FileName = "EXP_SEQVOLTAGES.CSV";
+			case 2: FileName = "EXP_CURRENTS.CSV";
+			case 3: FileName = "EXP_SEQCURRENTS.CSV";
+			case 4: FileName = "EXP_ESTIMATION.CSV";   // Estimation error
+			case 5: FileName = "EXP_CAPACITY.CSV";
+			case 6: FileName = "EXP_OVERLOADS.CSV";
+			case 7: FileName = "EXP_UNSERVED.CSV";
+			case 8: FileName = "EXP_POWERS.CSV";
+			case 9: FileName = "EXP_SEQPOWERS.CSV";
+			case 10: FileName = "EXP_FAULTS.CSV";
+			case 11: FileName = "EXP_GENMETERS.CSV";
+			case 12: FileName = "EXP_LOADS.CSV";
+			case 13: FileName = "EXP_METERS.CSV";
+			//case 14: FileName is assigned
+			case 15: FileName = "EXP_YPRIM.CSV";
+			case 16: FileName = "EXP_Y.CSV";
+			case 17: FileName = "EXP_SEQZ.CSV";
+			case 18: FileName = "EXP_P_BYPHASE.CSV";
+			case 19: FileName = "CDPSM_Unbalanced.XML";
+			case 20: FileName = "CDPSM_Connect.XML";
+			case 21: FileName = "CDPSM_Balanced.XML";
+			case 22: FileName = "EXP_BUSCOORDS.CSV";
+			case 23: FileName = "EXP_LOSSES.CSV";
+			case 24: FileName = "EXP_GUIDS.CSV";
+			case 25: FileName = "EXP_Counts.CSV";
+			case 26: FileName = "EXP_Summary.CSV";
 			default:
 				FileName = "EXP_VOLTAGES.CSV";
 			}
@@ -163,21 +163,21 @@ public class ExportOptionsImpl implements ExportOptions {
 		}
 
 		switch (ParamPointer) {
-		case 1: ExportResults.exportVoltages(FileName);
-		case 2: ExportResults.exportSeqVoltages(FileName);
-		case 3: ExportResults.exportCurrents(FileName);
-		case 4: ExportResults.exportSeqCurrents(FileName);
-		case 5: ExportResults.exportEstimation(FileName);   // Estimation error
-		case 6: ExportResults.exportCapacity(FileName);
-		case 7: ExportResults.exportOverloads(FileName);
-		case 8: ExportResults.exportUnserved(FileName, UEonlyOpt);
-		case 9: ExportResults.exportPowers(FileName, MVAOpt);
-		case 10: ExportResults.exportSeqPowers(FileName, MVAOpt);
-		case 11: ExportResults.exportFaultStudy(FileName);
-		case 12: ExportResults.exportGenMeters(FileName);
-		case 13: ExportResults.exportLoads(FileName);
-		case 14: ExportResults.exportMeters(FileName);
-		case 15:
+		case 0: ExportResults.exportVoltages(FileName);
+		case 1: ExportResults.exportSeqVoltages(FileName);
+		case 2: ExportResults.exportCurrents(FileName);
+		case 3: ExportResults.exportSeqCurrents(FileName);
+		case 4: ExportResults.exportEstimation(FileName);   // Estimation error
+		case 5: ExportResults.exportCapacity(FileName);
+		case 6: ExportResults.exportOverloads(FileName);
+		case 7: ExportResults.exportUnserved(FileName, UEonlyOpt);
+		case 8: ExportResults.exportPowers(FileName, MVAOpt);
+		case 9: ExportResults.exportSeqPowers(FileName, MVAOpt);
+		case 10: ExportResults.exportFaultStudy(FileName);
+		case 11: ExportResults.exportGenMeters(FileName);
+		case 12: ExportResults.exportLoads(FileName);
+		case 13: ExportResults.exportMeters(FileName);
+		case 14:
 			if (Parm2.length() > 0) {
 				pMon = (MonitorObj) Globals.getMonitorClass().find(Parm2);
 				if (pMon != null) {
@@ -188,18 +188,18 @@ public class ExportOptionsImpl implements ExportOptions {
 			} else {
 				Globals.doSimpleMsg("Monitor Name Not Specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
 			}
-		case 16: ExportResults.exportYprim(FileName);
-		case 17: ExportResults.exportY(FileName);
-		case 18: ExportResults.exportSeqZ(FileName);
-		case 19: ExportResults.exportPbyphase(FileName, MVAOpt);
-		case 20: ExportResults.exportCDPSM_UnBal(FileName);        // defaults to a load-flow model
-		case 21: ExportResults.exportCDPSM_UnBal(FileName, false); // not a load-flow model
-		case 22: ExportResults.exportCDPSM_Bal(FileName);
-		case 23: ExportResults.exportBusCoords(FileName);
-		case 24: ExportResults.exportLosses(FileName);
-		case 25: ExportResults.exportUUIDs(FileName);
-		case 26: ExportResults.exportCounts(FileName);
-		case 27: ExportResults.exportSummary(FileName);
+		case 15: ExportResults.exportYprim(FileName);
+		case 16: ExportResults.exportY(FileName);
+		case 17: ExportResults.exportSeqZ(FileName);
+		case 18: ExportResults.exportPbyphase(FileName, MVAOpt);
+		case 19: ExportResults.exportCDPSM_UnBal(FileName);        // defaults to a load-flow model
+		case 20: ExportResults.exportCDPSM_UnBal(FileName, false); // not a load-flow model
+		case 21: ExportResults.exportCDPSM_Bal(FileName);
+		case 22: ExportResults.exportBusCoords(FileName);
+		case 23: ExportResults.exportLosses(FileName);
+		case 24: ExportResults.exportUUIDs(FileName);
+		case 25: ExportResults.exportCounts(FileName);
+		case 26: ExportResults.exportSummary(FileName);
 		default:
 			ExportResults.exportVoltages(FileName);    
 		}

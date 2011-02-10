@@ -119,12 +119,12 @@ public class PlotOptionsImpl implements PlotOptions {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-			ParamPointer = PlotCommands.getCommand(ParamName);
+				ParamPointer = PlotCommands.getCommand(ParamName);
 			}
 			
 			DSSPlot plot = DSSPlot.DSSPlotObj;
 			switch (ParamPointer) {
-			case 1:
+			case 0:
 				switch (Param.charAt(0)) {
 				case 'A':
 					plot.setPlotType(PlotType.AutoAddLogPlot);
@@ -146,7 +146,7 @@ public class PlotOptionsImpl implements PlotOptions {
 				case 'Z':
 					plot.setPlotType(PlotType.MeterZones);
 				}
-			case 2:
+			case 1:
 				switch (Param.charAt(0)) {
 				case 'V':
 					plot.setQuantity(PlotQuantity.Voltage);
@@ -165,31 +165,31 @@ public class PlotOptionsImpl implements PlotOptions {
 					plot.setQuantity(PlotQuantity.None);
 					plot.setValueIndex(parser.makeInteger());
 				}
-			case 3:
+			case 2:
 				plot.setMaxScale(parser.makeDouble());
 				if (plot.getMaxScale() > 0.0)
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
-			case 4:
+			case 3:
 				plot.setDots(Utilities.interpretYesNo(Param));
-			case 5: 
+			case 4: 
 				plot.setLabels(Utilities.interpretYesNo(Param));
-			case 6:
+			case 5:
 				plot.setObjectName(parser.makeString());
-			case 7:
+			case 6:
 				plot.setShowLoops(Utilities.interpretYesNo(Param));
 				if (plot.isShowLoops())
 					plot.setPlotType(PlotType.MeterZones);
-			case 8:
+			case 7:
 				plot.setTriColorMax(parser.makeDouble());
-			case 9:
+			case 8:
 				plot.setTriColorMid(parser.makeDouble());
-			case 10:
+			case 9:
 				plot.setColor1(Utilities.interpretColorName(Param));
-			case 11:
+			case 10:
 				plot.setColor2(Utilities.interpretColorName(Param));
-			case 12: 
+			case 11: 
 				plot.setColor3(Utilities.interpretColorName(Param));
-			case 13:  // Channel definitions for Plot Monitor
+			case 12:  // Channel definitions for Plot Monitor
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {  // Else take the defaults
 					plot.setChannels(new int[NumChannels]);
@@ -199,27 +199,27 @@ public class PlotOptionsImpl implements PlotOptions {
 					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing 
 						plot.getBases()[i] = 1.0;
 				}
-			case 14: 
+			case 13: 
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {
 					plot.setBases(new double[NumChannels]);
 					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
 						plot.getBases()[i] = DblBuffer[i];
 				}
-			case 15:
+			case 14:
 				plot.setShowSubs(Utilities.interpretYesNo(Param));
-			case 16:
+			case 15:
 				plot.setMaxLineThickness(parser.makeInteger());
-			case 17:
+			case 16:
 				Utilities.interpretTStringListArray(Param, plot.getDaisyBusList());  // read in Bus list
-			/*case 18: 
+			/*case 17: 
 				plot.setMinScale(parser.makeDouble());
 				plot.setMinScaleIsSpecified(true);*/    // Indicate the user wants a particular value
-			/*case 19:
+			/*case 18:
 				plot.setThreePhLineStyle = parser.makeInteger();*/
-			/*case 20:
+			/*case 19:
 				plot.setSinglePhLineStyle = parser.makeInteger();*/
-			/*case 21:  // Parse off phase(s) to plot
+			/*case 20:  // Parse off phase(s) to plot
 				plot.setPhasesToPlot(PROFILE3PH); // the default
 				if (Utilities.compareTextShortest(Param, "default") == 0) {
 					plot.setPhasesToPlot(PROFILE3PH);
