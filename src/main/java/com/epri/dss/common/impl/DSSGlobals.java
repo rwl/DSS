@@ -51,7 +51,7 @@ public class DSSGlobals {
 	public static final int CONTROLSOFF = -1;
 	public static final int EVENTDRIVEN =  1;
 	public static final int TIMEDRIVEN  =  2;
-	public static final int STATIC      =  0;
+	public static final int CTRLSTATIC  =  0;
 
 	/* Randomization Constants */
 	public static final int GAUSSIAN  = 1;
