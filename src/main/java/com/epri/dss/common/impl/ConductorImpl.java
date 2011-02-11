@@ -12,10 +12,37 @@ public class ConductorImpl {
 	protected boolean FuseBlown;
 
 	public ConductorImpl() {
+		super();
 		this.Closed = true;
 		this.FuseBlown = false;
 		this.Accum_Isqt = 0.0;
 		this.TCCName = "";
+	}
+
+	public void setAmbient(double Value) {
+		AmbientTemp = Value;
+	}
+
+	public void setTCCname(String Value) {
+		TCCName = Value.toLowerCase();
+	}
+
+	public String getTCCname() {
+		return TCCName;
+	}
+
+	/**
+	 * Computes whether conductor has burned down.
+	 */
+	public void calcIsqt(double CurrentMag) {
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement Conductor.calcIsqt", 770);
+	}
+
+	/**
+	 * Restore the conductor and reset the i2t calcs.
+	 */
+	public void ResetIsqt() {
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
 	}
 
 	public boolean isClosed() {
@@ -32,28 +59,6 @@ public class ConductorImpl {
 
 	public void setFuseBlown(boolean fuseBlown) {
 		FuseBlown = fuseBlown;
-	}
-
-	public void setAmbient(double Value) {
-
-	}
-
-	public void setTCCname(String Value) {
-
-	}
-
-	public String getTCCname() {
-		return null;
-	}
-
-	/* Computes whether conductor has burned down */
-	public void CalcIsqt(double CurrentMag) {
-
-	}
-
-	/* restore the conductor and reset the i2t calcs */
-	public void ResetIsqt() {
-
 	}
 
 }

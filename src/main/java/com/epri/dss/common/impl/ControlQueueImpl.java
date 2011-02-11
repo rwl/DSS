@@ -27,6 +27,23 @@ public class ControlQueueImpl implements ControlQueue {
 	private PrintStream Tracefile;
 	private int ctrlHandle;
 
+	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
+			ControlElem Owner) {
+		
+		ControlAction[] actions = ControlAction.values();
+
+		for (int i = 0; i < actions.length; i++) 
+			if (actions[i].equals(Code))
+				return push(Hour, Sec, i, ProxyHdl, Owner);
+		
+		return -1;
+	}
+
+	public int push(int Hour, double Sec, int Code, int ProxyHdl,
+			ControlElem Owner) {
+		return 0;
+	}
+
 	public ControlQueueImpl() {
 		// TODO Auto-generated constructor stub
 	}
@@ -56,16 +73,6 @@ public class ControlQueueImpl implements ControlQueue {
 	private void writeTraceRecord(String ElementName, int Code,
 			double TraceParameter, String s) {
 
-	}
-
-	public int push(int Hour, double Sec, int Code, int ProxyHdl,
-			ControlElem Owner) {
-		return 0;
-	}
-
-	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
-			ControlElem Owner) {
-		return 0;
 	}
 
 	public void clear() {
