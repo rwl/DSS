@@ -1,10 +1,16 @@
 package com.epri.dss.common.impl;
 
-import com.epri.dss.common.DSSGlobals;
+import java.util.ArrayList;
+
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.impl.DSSObjectImpl;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.HashList;
+import com.epri.dss.shared.impl.HashListImpl;
 
 /**
  * Base Class for all DSS collection classes.
@@ -37,7 +43,7 @@ public class DSSClassImpl implements DSSClass {
 
 	protected int DSSClassType;
 
-	protected PointerList ElementList;
+	protected ArrayList<CktElement> ElementList;
 
 	/* When device gets renamed */
 	protected boolean ElementNamesOutOfSynch;
@@ -47,7 +53,7 @@ public class DSSClassImpl implements DSSClass {
 	public DSSClassImpl() {
 		super();
 		// Init size and increment
-		this.ElementList = new PointerListImpl(20);
+		this.ElementList = new ArrayList<CktElement>(20);
 		this.PropertyName = null;
 		this.PropertyHelp = null;
 		this.PropertyIdxMap = null;
@@ -58,6 +64,262 @@ public class DSSClassImpl implements DSSClass {
 
 		this.ElementNameList = new HashListImpl(100);
 		this.ElementNamesOutOfSynch = false;
+	}
+
+	protected void finalize() throws Throwable {
+		// Get rid of space occupied by strings
+		for (int i = 0; i < this.NumProperties; i++) this.PropertyName[i] = "";
+		for (int i = 0; i < this.NumProperties; i++) this.PropertyHelp[i] = "";
+
+		this.PropertyName = new String[0];
+		this.PropertyHelp = new String[0];
+		this.PropertyIdxMap = new int[0];
+		this.RevPropertyIdxMap = new int[0];
+		this.ElementList = null;
+		this.ElementNameList = null;
+		this.CommandList = null;
+
+		super.finalize();
+	}
+
+	public int newObject(String ObjName) {
+		DSSGlobals.getInstance().doErrorMsg(
+				"Reached base class of DSSClass for device \"" +ObjName+ "\"",
+				"N/A",
+				"Should be overridden.", 780);
+		return 0;
+	}
+
+	public void setActive(int Value) {
+		if ((Value > 0) && (Value <= ElementList.size())) {
+			DSSGlobals Globals = DSSGlobals.getInstance();
+			this.ActiveElement = Value;
+			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(ActiveElement));
+			// Make sure Active Ckt Element agrees if is a ckt element
+			// So COM interface will work
+			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
+				Globals.getActiveCircuit().setActiveCktElement(DSSCktElement(Globals.getActiveDSSObject()));
+			}
+		}
+	}
+
+	/**
+	 * Uses global parser.
+	 */
+	public int edit() {
+		DSSGlobals.getInstance().doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
+		return 0;
+	}
+
+	public int init(int Handle) {
+		DSSGlobals.getInstance().doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
+		return 0;
+	}
+
+	/**
+	 * Used by newObject().
+	 */
+	protected int addObjectToList(Object Obj) {
+		// Stuff it in this collection's element list.
+		ElementList.add((CktElement) Obj);
+		ElementNameList.add(new DSSObjectImpl(Obj).getName());
+
+		if (ElementList.size() > 2 * ElementNameList.getInitialAllocation())
+			reallocateElementNameList();
+
+		ActiveElement = ElementList.size();
+		return ActiveElement;  // Return index of object in list
+	}
+
+	public boolean setActive(String ObjName) {
+		boolean Result = false;
+
+		if (ElementNamesOutOfSynch)
+			resynchElementNameList();
+		int idx = ElementNameList.find(ObjName);
+		if (idx > 0) {
+			this.ActiveElement = idx;
+			DSSGlobals.getInstance().setActiveDSSObject(ElementList.get(idx));
+			Result = true;
+		}
+		return Result;
+	}
+
+	/**
+	 * Find an obj of this class by name.
+	 */
+	public Object find(String ObjName) {
+		Object Result = null;
+		if (ElementNamesOutOfSynch)
+			resynchElementNameList();
+		
+		int idx = ElementNameList.find(ObjName);
+		if (idx > 0) {
+			ActiveElement = idx;
+			Result = ElementList.get(idx);
+		}
+		return Result;
+	}
+
+	/**
+	 * Get address of active obj of this class.
+	 */
+	public Object getActiveObj() {
+		if (ActiveElement > 0) {
+			return ElementList.get(ActiveElement);
+		} else {
+			return null;
+		}
+	}
+
+	public String getFirstPropertyName() {
+		ActiveProperty = 0;
+		return getNextPropertyName();
+	}
+
+	public String getNextPropertyName() {
+		String Result;
+
+		if (ActiveProperty <= NumProperties) {
+			Result = PropertyName[ActiveProperty];
+		} else {
+			Result = "";
+		}
+
+		ActiveProperty += 1;
+
+		return Result;
+	}
+
+	/**
+	 * Find property value by string.
+	 */
+	public int propertyIndex(String Prop) {
+		int Result = 0;  // Default result if not found
+		for (int i = 0; i < NumProperties; i++) {
+			if (Prop.equals(PropertyName[i])) {
+				Result = PropertyIdxMap[i];
+				break;
+			}
+		}
+		return Result;
+	}
+
+	/**
+	 * Add no. of intrinsic properties.
+	 */
+	protected void countProperties() {
+		NumProperties = NumProperties + 1;
+	}
+
+	/**
+	 * Add Properties of this class to propName.
+	 */
+	protected void defineProperties() {
+		String CRLF = DSSGlobals.getInstance().CRLF;
+
+		this.PropertyName[ActiveProperty] = "like";
+		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + CRLF + CRLF +
+						"New Capacitor.C2 like=c1  ...";
+
+		this.ActiveProperty = this.ActiveProperty + 1;
+	}
+
+	protected int classEdit(Object ActiveObj, int ParamPointer) {
+		// continue parsing with contents of Parser
+		if (ParamPointer > 0) {
+			DSSObject obj = new DSSObjectImpl((DSSClass) ActiveObj);
+			switch (ParamPointer) {
+			case 1:
+				makeLike(Parser.getInstance().makeString());  // like command
+			}
+		}
+		return 0;
+	}
+
+	protected int makeLike(String ObjName) {
+		DSSGlobals.getInstance().doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
+		return 0;
+	}
+
+	public int getFirst() {
+		int Result;
+		if (ElementList.size() == 0) {
+			Result = 0;
+		} else {
+			DSSGlobals Globals = DSSGlobals.getInstance();
+
+			this.ActiveElement = 1;
+			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(0));
+			// Make sure Active Ckt Element agrees if is a ckt element
+			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
+				Globals.getActiveCircuit().setActiveCktElement(new DSSCktElement(Globals.getActiveDSSObject()));
+				Result = ActiveElement;
+			}
+		}
+		return Result;
+	}
+
+	public int getNext() {
+		int Result;
+		if (ActiveElement > ElementList.size()) {
+			Result = 0;
+		} else {
+			DSSGlobals Globals = DSSGlobals.getInstance();
+
+			Globals.setActiveDSSObject(ElementList.next());
+			// Make sure Active Ckt Element agrees if is a ckt element
+			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
+				Globals.getActiveCircuit().setActiveCktElement(new DSSCktElement(Globals.getActiveDSSObject()));
+				Result = ActiveElement;
+			}
+		}
+		this.ActiveElement += 1;
+
+		return Result;
+	}
+
+	/* Helper routine for building Property strings */
+	public void addProperty(String PropName, int CmdMapIndex, String HelpString) {
+		ActiveProperty += 1;
+
+		PropertyName[ActiveProperty] = PropName;
+		PropertyHelp[ActiveProperty] = HelpString;
+		// Map to internal object property index
+		PropertyIdxMap[ActiveProperty] = CmdMapIndex;
+		RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
+	}
+
+	protected void allocatePropertyArrays() {
+		PropertyName = new String[NumProperties];
+		PropertyHelp = new String[NumProperties];
+		PropertyIdxMap = new int[NumProperties];
+		RevPropertyIdxMap = new int[NumProperties];
+		ActiveProperty = 0;    // initialize for AddProperty
+		/* initialize PropertyIdxMap to take care of legacy items */
+		for (int i = 0; i < NumProperties; i++) PropertyIdxMap[i] = i;
+		for (int i = 0; i < NumProperties; i++) RevPropertyIdxMap[i] = i;
+	}
+
+	public void reallocateElementNameList() {
+		/* Reallocate the device name list to improve the performance of searches */
+		ElementNameList = null;  // Throw away the old one.
+		ElementNameList = new HashListImpl(2 * ElementList.size());  // make a new one
+
+		// Do this using the Names of the Elements rather than the old list because it might be
+		// messed up if an element gets renamed
+
+		for (int i = 0; i < this.ElementList.size(); i++) 
+			ElementNameList.add(new DSSObjectImpl(ElementList.get(i)).getName());
+	}
+
+	private void resynchElementNameList() {
+		reallocateElementNameList();
+		ElementNamesOutOfSynch = false;
+	}
+
+	public int getElementCount() {
+		return ElementList.size();
 	}
 
 	public int getNumProperties() {
@@ -108,11 +370,11 @@ public class DSSClassImpl implements DSSClass {
 		DSSClassType = dSSClassType;
 	}
 
-	public PointerList getElementList() {
+	public ArrayList<CktElement> getElementList() {
 		return ElementList;
 	}
 
-	public void setElementList(PointerList elementList) {
+	public void setElementList(ArrayList<CktElement> elementList) {
 		ElementList = elementList;
 	}
 
@@ -132,254 +394,12 @@ public class DSSClassImpl implements DSSClass {
 		Saved = saved;
 	}
 
-	protected void finalize() throws Throwable {
-		// Get rid of space occupied by strings
-		for (int i = 0; i < this.NumProperties; i++) this.PropertyName[i] = "";
-		for (int i = 0; i < this.NumProperties; i++) this.PropertyHelp[i] = "";
-
-		this.PropertyName = new String[0];
-		this.PropertyHelp = new String[0];
-		this.PropertyIdxMap = new int[0];
-		this.RevPropertyIdxMap = new int[0];
-		this.ElementList.Free();
-		this.ElementNameList.Free();
-		this.CommandList.Free();
-
-		super.finalize();
-	}
-
 	public int getActive() {
-		return this.ActiveElement;
-	}
-
-	public void setActive(int Value) {
-		if ((Value > 0) && (Value <= ElementList.ListSize)) {
-			DSSGlobals Globals = DSSGlobals.getInstance();
-			this.ActiveElement = Value;
-			Globals.ActiveDSSObject = this.ElementList.Get(this.ActiveElement);
-			// Make sure Active Ckt Element agrees if is a ckt element
-			// So COM interface will work
-			if (Globals.ActiveDSSObject instanceof DSSCktElement) {
-				Globals.ActiveCircuit.ActiveCktElement = DSSCktElement(Globals.ActiveDSSObject);
-			}
-		}
-	}
-
-	public int getElementCount() {
-		return this.ElementList.ListSize();
-	}
-
-	public int getFirst() {
-		int Result;
-		if (this.ElementList.ListSize == 0) {
-			Result = 0;
-		} else {
-			DSSGlobals Globals = DSSGlobals.getInstance();
-
-			this.ActiveElement = 1;
-			Globals.ActiveDSSObject = ElementList.First();
-			// Make sure Active Ckt Element agrees if is a ckt element
-			if (Globals.ActiveDSSObject instanceof DSSCktElement) {
-				Globals.ActiveCircuit.ActiveCktElement = new DSSCktElement(Globals.ActiveDSSObject);
-				Result = this.ActiveElement;
-			}
-		}
-		return Result;
-	}
-
-	public int getNext() {
-		int Result;
-		if (this.ActiveElement > this.ElementList.ListSize) {
-			Result = 0;
-		} else {
-			DSSGlobals Globals = DSSGlobals.getInstance();
-
-			Globals.ActiveDSSObject = this.ElementList.Next();
-			// Make sure Active Ckt Element agrees if is a ckt element
-			if (Globals.ActiveDSSObject instanceof DSSCktElement) {
-				Globals.ActiveCircuit.ActiveCktElement =  new DSSCktElement(Globals.ActiveDSSObject);
-				Result = this.ActiveElement;
-			}
-		}
-		this.ActiveElement += 1;
-
-		return Result;
+		return ActiveElement;
 	}
 
 	public String getName() {
-		return this.Class_Name;
-	}
-
-	private void resynchElementNameList() {
-		reallocateElementNameList();
-		this.ElementNamesOutOfSynch = false;
-	}
-
-	/* Used by NewObject */
-	protected int addObjectToList(Object Obj) {
-		// Stuff it in this collection's element list
-		this.ElementList.New(Obj);
-		this.ElementNameList.Add(new DSSObjectImpl(Obj).getName());
-
-		if (this.ElementList.ListSize() > 2 * this.ElementNameList.InitialAllocation)
-			reallocateElementNameList();
-
-		this.ActiveElement = this.ElementList.ListSize();
-		return this.ActiveElement; // Return index of object in list
-	}
-
-	public String getFirstPropertyName() {
-		this.ActiveProperty = 0;
-		return getNextPropertyName();
-	}
-
-	public String getNextPropertyName() {
-		String Result;
-
-		if (this.ActiveProperty <= this.NumProperties) {
-			Result = this.PropertyName[ActiveProperty];
-		} else {
-			Result = "";
-		}
-
-		this.ActiveProperty += 1;
-
-		return Result;
-	}
-
-	protected int makeLike(String ObjName) {
-		DSSGlobals.getInstance().doSimpleMsg("virtual function TDSSClass.MakeLike called.  Should be overriden.", 784);
-		return 0;
-	}
-
-	/* Add no. of intrinsic properties */
-	protected void countProperties() {
-		this.NumProperties = this.NumProperties + 1;
-	}
-
-	protected void allocatePropertyArrays() {
-		this.PropertyName = new String[this.NumProperties];
-		this.PropertyHelp = new String[this.NumProperties];
-		this.PropertyIdxMap = new int[this.NumProperties];
-		this.RevPropertyIdxMap = new int[this.NumProperties];
-		this.ActiveProperty = 0;    // initialize for AddProperty
-		/* initialize PropertyIdxMap to take care of legacy items */
-		for (int i = 0; i < this.NumProperties; i++) this.PropertyIdxMap[i] = i;
-		for (int i = 0; i < this.NumProperties; i++) this.RevPropertyIdxMap[i] = i;
-	}
-
-	/* Add Properties of this class to propName */
-	protected void defineProperties() {
-		String CRLF = DSSGlobals.getInstance().CRLF;
-
-		this.PropertyName[ActiveProperty] = "like";
-		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + CRLF + CRLF +
-						"New Capacitor.C2 like=c1  ...";
-
-		this.ActiveProperty = this.ActiveProperty + 1;
-	}
-
-	protected int classEdit(Object ActiveObj, int ParamPointer) {
-		// continue parsing with contents of Parser
-		if (ParamPointer > 0) {
-			DSSObjectImpl obj = new DSSObjectImpl(ActiveObj);
-			switch (ParamPointer) {
-			case 1:
-				MakeLike(Parser.StrValue);    // Like command (virtual)
-			}
-		}
-		return 0;
-	}
-
-	/* Helper routine for building Property strings */
-	public void addProperty(String PropName, int CmdMapIndex,
-			String HelpString) {
-		this.ActiveProperty += 1;
-
-		this.PropertyName[ActiveProperty] = PropName;
-		this.PropertyHelp[ActiveProperty] = HelpString;
-		// Map to internal object property index
-		this.PropertyIdxMap[ActiveProperty] = CmdMapIndex;
-		this.RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
-	}
-
-	public void reallocateElementNameList() {
-		/* Reallocate the device name list to improve the performance of searches */
-		this.ElementNameList.Free(); // Throw away the old one.
-		this.ElementNameList = new HashListImpl(2 * this.ElementList.ListSize());  // make a new one
-
-		// Do this using the Names of the Elements rather than the old list because it might be
-		// messed up if an element gets renamed
-
-		for (int i = 0; i < this.ElementList.ListSize(); i++) {
-			this.ElementNameList.add(new DSSObjectImpl(ElementList.Get(i)).getName());
-		}
-	}
-
-	/* uses global parser */
-	public int edit() {
-		DSSGlobals.getInstance().DoSimpleMsg("virtual function DSSClass.Edit called.  Should be overriden.", 781);
-		return 0;
-	}
-
-	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("virtual function DSSClass.Init called.  Should be overriden.", 782);
-		return 0;
-	}
-
-	public int newObject(String ObjName) {
-		DSSGlobals.getInstance().doErrorMsg(
-				"Reached base class of TDSSClass for device \"" +ObjName+ "\"",
-				"N/A",
-				"Should be overridden.", 780);
-		return 0;
-	}
-
-	public boolean setActive(String Value) {
-		boolean Result = false;
-		// Faster to look in hash list 7/7/03
-		if (this.ElementNamesOutOfSynch) resynchElementNameList();
-		int idx = this.ElementNameList.Find(ObjName);
-		if (idx > 0) {
-			this.ActiveElement = idx;
-			DSSGlobals.getInstance().ActiveDSSObject = ElementList.Get(idx);
-			Result = true;
-		}
-		return Result;
-	}
-
-	/* Get address of active obj of this class */
-	public Object getActiveObj() {
-		if (this.ActiveElement > 0) {
-			return this.ElementList.Get(ActiveElement);
-		} else {
-			return null;
-		}
-	}
-
-	/* Find an obj of this class by name */
-	public Object find(String ObjName) {
-		Object Result = null;
-		if (this.ElementNamesOutOfSynch) resynchElementNameList();
-		// Faster to look in hash list 7/7/03
-		int idx = this.ElementNameList.Find(ObjName);
-		if (idx > 0) {
-			this.ActiveElement = idx;
-			Result = ElementList.Get(idx);
-		}
-		return Result;
-	}
-
-	/* Find property value by string */
-	public int propertyIndex(String Prop) {
-		int Result = 0;  // Default result if not found
-		for (int i = 0; i < this.NumProperties; i++) {
-			if (Prop.equals(this.PropertyName[i])) {
-				Result = this.PropertyIdxMap[i];
-				break;
-			}
-		}
-		return Result;
+		return Class_Name;
 	}
 
 }

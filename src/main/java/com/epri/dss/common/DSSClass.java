@@ -28,9 +28,9 @@ public interface DSSClass {
 
 	void setDSSClassType(int dSSClassType);
 
-	ArrayList getElementList();
+	ArrayList<CktElement> getElementList();
 
-	void setElementList(ArrayList elementList);
+	void setElementList(ArrayList<CktElement> elementList);
 
 	boolean isElementNamesOutOfSynch();
 
