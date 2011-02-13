@@ -8,10 +8,6 @@ import com.epri.dss.shared.CMatrix;
 
 public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	
-	public static LineCodeObj ActiveLineCodeObj;
-	
-	public static final int NumPropsThisClass = 22;
-	
 	private int NeutralConductor;
 	
 	protected int NPhases;

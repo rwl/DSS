@@ -2,8 +2,13 @@ package com.epri.dss.general.impl;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.general.LineCode;
+import com.epri.dss.general.LineCodeObj;
 
 public class LineCodeImpl extends DSSClassImpl implements LineCode {
+	
+	public static LineCodeObj ActiveLineCodeObj;
+	
+	public static final int NumPropsThisClass = 22;
 	
 	private boolean SymComponentsChanged;
 
