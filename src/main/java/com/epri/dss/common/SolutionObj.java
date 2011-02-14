@@ -258,7 +258,7 @@ public interface SolutionObj extends DSSObject {
 	void restoreNodeVfromVbus();
 
 	/* Difference between two node voltages */
-	double[] vDiff(int i, int j);
+	Complex vDiff(int i, int j);
 
 	void initPropertyValues(int ArrayOffset);
 
