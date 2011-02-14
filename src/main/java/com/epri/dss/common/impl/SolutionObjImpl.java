@@ -6,11 +6,13 @@ import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.YMatrix.Esolv32Problem;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
@@ -247,7 +249,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			default:
 				Globals.doSimpleMsg("Unknown solution mode.", 481);
 			}
-		} catch (Exception e) {
+		} catch (Esolv32Problem e) {
 			Globals.doSimpleMsg("Error Encountered in Solve: " + e.getMessage(), 482);
 			Globals.setSolutionAbort(true);
 		}
@@ -438,7 +440,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		try {
 			if (Did_One)  // Reset Initial Solution
 				solveZeroLoadSnapShot();
-		} catch (Exception e) {
+		} catch (Esolv32Problem e) {
 			DSSGlobals.getInstance().doSimpleMsg("From SetGenerator dQdV, SolveZeroLoadSnapShot: " + DSSGlobals.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
 			throw new SolveError("Aborting");
 		}
@@ -539,6 +541,145 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 						NodeV[i].getImaginary() - dV[i].getImaginary());
 			}
 		}
+	}
+
+	public void doPFlowSolution() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		SolutionCount += 1;    // Unique number for this solution
+
+		if (VoltageBaseChanged)
+			YMatrix.initializeNodeVbase(); // for convergence test
+
+		if (!SolutionInitialized) {
+			
+			if (Globals.getActiveCircuit().isLogEvents())
+				Utilities.logThisEvent("Initializing Solution");
+			try {
+				//solveZeroLoadSnapShot();
+				solveYDirect();  // 8-14-06 This should give a better answer than zero load snapshot
+			} catch (Esolv32Problem e) {
+				Globals.doSimpleMsg("From doPFlowSolution().solveYDirect(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
+				throw new SolveError("Aborting");
+			}
+			if (Globals.isSolutionAbort())
+				return;  // Initialization can result in abort
+
+			try {
+				setGeneratordQdV();  // Set dQdV for Model 3 generators
+			} catch (Esolv32Problem e) { 
+				Globals.doSimpleMsg("From doPFlowSolution.setGeneratordQdV(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
+				throw new SolveError("Aborting");
+			}
+
+			/* The above resets the active sparse set to hY */
+			SolutionInitialized = true;
+		}
+
+		switch (Algorithm) {
+		case Solution.NORMALSOLVE:
+			doNormalSolution();
+		case Solution.NEWTONSOLVE:
+			doNewtonSolution();
+		}
+
+		Globals.getActiveCircuit().setIsSolved(ConvergedFlag);
+		LastSolutionWasDirect = false;
+	}
+
+	/**
+	 * Solve without load for initialization purposes.
+	 */
+	public int solveZeroLoadSnapShot() {
+		
+		if (SystemYChanged || SeriesYInvalid)
+			YMatrix.buildYMatrix(YMatrix.SERIESONLY, true);  // Side Effect: Allocates V
+
+		SolutionCount += 1;    //Unique number for this solution
+
+		zeroInjCurr();   // Side Effect: Allocates InjCurr
+		getSourceInjCurrents();    // Vsource and Isource only
+
+		/* Make the series Y matrix the active matrix */
+		if (Yseries == null)
+			throw new Esolv32Problem("Series Y matrix not built yet in solveZeroLoadSnapshot().");
+		Y = Yseries;
+
+		if (DSSGlobals.getInstance().getActiveCircuit().isLogEvents())
+			Utilities.logThisEvent("Solve Sparse Set ZeroLoadSnapshot ...");
+
+		SolveSystem(NodeV);  // also sets voltages in radial part of the circuit if radial solution
+
+		/* Reset the main system Y as the solution matrix */
+		if ((Ysystem != null) && !DSSGlobals.getInstance().isSolutionAbort())
+			Y = Ysystem;
+			
+		return 0;
+	}
+
+	/**
+	 * Set voltage bases using voltage at first node (phase) of a bus.
+	 */
+	public void setVoltageBases() {
+		boolean bZoneCalc, bZoneLock;
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			// don't allow the meter zones to auto-build in this load flow
+			// solution, because the voltage bases are not available yet
+
+			bZoneCalc = ckt.isMeterZonesComputed();
+			bZoneLock = ckt.isZonesLocked();
+			ckt.setMeterZonesComputed(true);
+			ckt.setZonesLocked(true);
+
+			solveZeroLoadSnapShot();
+
+			for (int i = 0; i < ckt.getNumBuses(); i++) {
+				Bus bus = ckt.getBuses()[i];
+				bus.setkVBase( Utilities.nearestBasekV( NodeV[bus.getRef(0)].abs() * 0.001732 ) / DSSGlobals.SQRT3);  // l-n base kV  TODO Check zero based indexing
+			}
+
+			YMatrix.initializeNodeVbase();  // for convergence test
+
+			ckt.setIsSolved(true);
+
+			// now build the meter zones
+			ckt.setMeterZonesComputed(bZoneCalc);
+			ckt.setZonesLocked(bZoneLock);
+			ckt.doResetMeterZones();
+
+		} catch (Esolv32Problem e) {
+			DSSGlobals.getInstance().doSimpleMsg("From setVoltageBases().solveZeroLoadSnapShot(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
+			throw new SolveError("Aborting");
+		}
+	}
+
+	public void snapShotInit() {
+		setGeneratorDispRef();
+		ControlIteration   = 0;
+		ControlActionsDone = false;
+		MostIterationsDone = 0;
+		LoadsNeedUpdating  = true;  // Force the loads to update at least once
+	}
+
+	/**
+	 * Snapshot checks with matrix rebuild.
+	 */
+	public void checkControls() {
+		if (ControlIteration < MaxControlIterations) {
+			if (ConvergedFlag) {
+				if (DSSGlobals.getInstance().getActiveCircuit().isLogEvents())
+					Utilities.logThisEvent("Control Iteration " + String.valueOf(ControlIteration));
+				sample_DoControlActions();
+				checkFaultStatus();
+			} else {
+				ControlActionsDone = true;  // Stop solution process if failure to converge
+			}
+		}
+
+		if (SystemYChanged)
+			YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // Rebuild Y matrix, but V stays same
 	}
 
 	private boolean oKForDynamics(int Value) {
@@ -978,18 +1119,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	}
 
-	public int solveZeroLoadSnapShot() {
-		return 0;
-	}
-
-	public void doPFLOWsolution() {
-
-	}
-
-	public void snapShotInit() {
-
-	}
-
 	/* solve for now once */
 	public int solveSnap() {
 		return 0;
@@ -1010,11 +1139,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		return 0;
 	}
 
-	/* Snapshot checks with matrix rebuild */
-	public void checkControls() {
-
-	}
-
 	public void sampleControlDevices() {
 
 	}
@@ -1029,10 +1153,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	public void checkFaultStatus() {
-
-	}
-
-	public void setVoltageBases() {
 
 	}
 

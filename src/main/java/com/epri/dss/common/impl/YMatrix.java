@@ -4,6 +4,10 @@ import com.epri.dss.shared.impl.Complex;
 
 public class YMatrix {
 	
+	public class Esolv32Problem extends Exception {
+		private static final long serialVersionUID = -2686189062049376595L;
+	}
+	
 	/* Options for building Y matrix */
 	public static int SERIESONLY = 1;
 	public static int WHOLEMATRIX = 2;
