@@ -166,7 +166,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	DefaultGrowthRate,
 	GenMultiplier,   // global multiplier for every generator
 	HarmMult;
-	protected double[] DefaultHourMult; // complex
+	protected Complex DefaultHourMult;
 
 	protected double PriceSignal; // price signal for entire circuit
 
@@ -908,11 +908,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		HarmMult = harmMult;
 	}
 
-	public double[] getDefaultHourMult() {
+	public Complex getDefaultHourMult() {
 		return DefaultHourMult;
 	}
 
-	public void setDefaultHourMult(double[] defaultHourMult) {
+	public void setDefaultHourMult(Complex defaultHourMult) {
 		DefaultHourMult = defaultHourMult;
 	}
 

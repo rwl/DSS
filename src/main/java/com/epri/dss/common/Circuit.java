@@ -319,9 +319,9 @@ public interface Circuit extends NamedObject {
 
 	void setHarmMult(double harmMult);
 
-	double[] getDefaultHourMult();
+	Complex getDefaultHourMult();
 
-	void setDefaultHourMult(double[] defaultHourMult);
+	void setDefaultHourMult(Complex defaultHourMult);
 
 	double getPriceSignal();
 

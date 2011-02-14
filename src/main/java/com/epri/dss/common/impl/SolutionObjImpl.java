@@ -1,16 +1,34 @@
 package com.epri.dss.common.impl;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Circuit;
+import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.Load;
+import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
+
+	public class ControlProblem extends Exception {
+
+	}
+
+	/** Raised when solution aborted */
+	public class SolveError extends Exception {
+
+	}
 
 	/* Array of delta V for Newton iteration */
 	private Complex[] dV;
@@ -74,11 +92,453 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	public SolutionObjImpl(DSSClass parClass, String solutionName) {
 		super(parClass);
-		// TODO Auto-generated constructor stub
+		setName(solutionName.toLowerCase());
+
+		this.year    = 0;
+		this.intHour = 0;
+		this.DynaVars.t = 0.0;
+		this.dblHour = 0.0;
+		this.DynaVars.tstart = 0.0;
+		this.DynaVars.tstop = 0.0;
+		//duration = 0.0;
+		this.DynaVars.h = 0.001;  // default for dynasolve
+
+		this.LoadsNeedUpdating = true;
+		this.VoltageBaseChanged = true;  // Forces Building of convergence check arrays
+
+		this.MaxIterations = 15;
+		this.MaxControlIterations = 10;
+		this.ConvergenceTolerance = 0.0001;
+		this.ConvergedFlag = false;
+
+		this.IsDynamicModel  = false;
+		this.IsHarmonicModel = false;
+
+		this.Frequency = DSSGlobals.getInstance().getDefaultBaseFreq();
+		/*this.Fundamental = 60.0; Moved to Circuit and used as default base frequency*/
+		this.Harmonic = 1.0;
+		
+		this.FrequencyChanged = true;  // Force Building of YPrim matrices
+		this.DoAllHarmonics   = true;
+		this.FirstIteration   = true;
+		this.DynamicsAllowed  = false;
+		this.SystemYChanged   = true;
+		this.SeriesYInvalid   = true;
+
+		/* Define default harmonic list */
+		this.HarmonicListSize = 5;
+		this.HarmonicList = new double[this.HarmonicListSize];
+		this.HarmonicList[0] = 1.0;
+		this.HarmonicList[1] = 5.0;
+		this.HarmonicList[2] = 7.0;
+		this.HarmonicList[3] = 11.0;
+		this.HarmonicList[4] = 13.0;
+
+		this.SolutionInitialized = false;
+		this.LoadModel = DSSGlobals.POWERFLOW;
+		this.DefaultLoadModel = LoadModel;
+		this.LastSolutionWasDirect = false;
+
+		this.Yseries = null;
+		this.Ysystem = null;
+		this.Y = null;
+
+		this.NodeV      = null;
+		this.dV         = null;
+		this.Currents   = null;
+		this.AuxCurrents= null;
+		this.VmagSaved  = null;
+		this.ErrorSaved = null;
+		this.NodeVbase  = null;
+
+		this.UseAuxCurrents = false;
+
+		this.SolutionCount = 0;
+
+		this.DynaVars.SolutionMode = Dynamics.SNAPSHOT;
+		this.ControlMode           = DSSGlobals.CTRLSTATIC;
+		this.DefaultControlMode    = ControlMode;
+		this.Algorithm             = Solution.NORMALSOLVE;
+
+		this.RandomType    = DSSGlobals.GAUSSIAN;  // default to gaussian
+		this.NumberOfTimes = 100;
+		this.IntervalHrs   = 1.0;
+
+		initPropertyValues(0);
+	}
+
+	/**
+	 * Main solution dispatch.
+	 */
+	public void solve() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		Globals.getActiveCircuit().setIsSolved(false);
+		Globals.setSolutionWasAttempted(true);
+
+		DSSForms.initProgressForm(); // initialize Progress Form;
+
+		/* Check of some special conditions that must be met before executing solutions */
+
+		if (Globals.getActiveCircuit().getEmergMinVolts() >= Globals.getActiveCircuit().getNormalMinVolts()) {
+			Globals.doSimpleMsg("Error: Emergency Min Voltage Must Be Less Than Normal Min Voltage!" +
+					DSSGlobals.CRLF + "Solution Not Executed.", 480);
+			return;
+		}
+
+		if (Globals.isSolutionAbort()) {
+			Globals.setGlobalResult("Solution aborted.");
+			Globals.setCmdResult(DSSGlobals.SOLUTION_ABORT);
+			Globals.setErrorNumber(Globals.getCmdResult());
+			return;
+		}
+
+		try {
+
+			/* Main solution algorithm dispatcher */
+			Circuit ckt = Globals.getActiveCircuit();
+		
+			switch (year) {
+			case 0:  // TODO Check zero based indexing
+				ckt.setDefaultGrowthFactor(1.0);
+			default:
+				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (year - 1)));
+			}
+			
+//			fire_InitControls();
+
+			/* CheckFaultStatus;  ???? needed here?? */
+			
+			switch (DynaVars.SolutionMode) {
+			case Dynamics.SNAPSHOT:
+				solveSnap();
+			case Dynamics.YEARLYMODE:
+				SolutionAlgs.solveYearly();
+			case Dynamics.DAILYMODE:
+				SolutionAlgs.solveDaily();
+			case Dynamics.DUTYCYCLE:
+				SolutionAlgs.solveDuty();
+			case Dynamics.DYNAMICMODE:
+				SolutionAlgs.solveDynamic();
+			case Dynamics.MONTECARLO1:
+				SolutionAlgs.solveMonte1();
+			case Dynamics.MONTECARLO2:
+				SolutionAlgs.solveMonte2();
+			case Dynamics.MONTECARLO3:
+				SolutionAlgs.solveMonte3();
+			case Dynamics.PEAKDAY:
+				SolutionAlgs.solvePeakDay();
+			case Dynamics.LOADDURATION1:
+				SolutionAlgs.solveLD1();
+			case Dynamics.LOADDURATION2:
+				SolutionAlgs.solveLD2();
+			case Dynamics.DIRECT:
+				solveDirect();
+			case Dynamics.MONTEFAULT:
+				SolutionAlgs.solveMonteFault();  // Monte Carlo Fault Cases
+			case Dynamics.FAULTSTUDY:
+				SolutionAlgs.solveFaultStudy();
+			case Dynamics.AUTOADDFLAG:
+				ckt.getAutoAddObj().solve();
+			case Dynamics.HARMONICMODE:
+				SolutionAlgs.solveHarmonic();
+			case Dynamics.GENERALTIME:
+				SolutionAlgs.solveGeneralTime();
+			default:
+				Globals.doSimpleMsg("Unknown solution mode.", 481);
+			}
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error Encountered in Solve: " + e.getMessage(), 482);
+			Globals.setSolutionAbort(true);
+		}
 	}
 
 	private boolean converged() {
-		return false;
+		boolean Result;
+		double VMag;
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		// base convergence on voltage magnitude
+
+		MaxError = 0.0;
+		for (int i = 0; i < ckt.getNumNodes(); i++) {
+			VMag = NodeV[i].abs();
+
+			/* If base specified, use it; otherwise go on present magnitude */
+			if (NodeVbase[i] > 0.0) {
+				ErrorSaved[i] = Math.abs(VMag - VmagSaved[i]) / NodeVbase[i];
+			} else {
+				if (VMag != 0.0)
+					ErrorSaved[i] = Math.abs(1.0 - VmagSaved[i] / VMag);
+			}
+
+			VmagSaved[i] = VMag;  // for next go-'round
+
+			MaxError = Math.max(MaxError, ErrorSaved[i]);  // update max error
+		}
+
+		/* $IFDEF debugtrace */
+//		FileWriter F = new FileWriter("DebugTrace.csv", true);
+//		BufferedWriter FDebug = new BufferedWriter(F);
+//		if (Iteration == 1) {
+//			FDebug.write("Iter");
+//			for (int i = 0; i < ckt.getNumNodes(); i++) 
+//				FDebug.write(", " + ckt.getBusList().get(ckt.getMapNodeToBus()[i].BusRef) + "." + ckt.getMapNodeToBus()[i].NodeNum);  // TODO Implement colon syntax
+//			FDebug.newLine();
+//		}
+//		/* ***** */  // FIXME Format number widths
+//		FDebug.write(Iteration);
+//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//			FDebug.write(", " + VmagSaved[i]);
+//		FDebug.newLine();
+//		FDebug.write("Err");
+//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//			FDebug.write(", " + String.format("%-.5g", ErrorSaved[i]));
+//		FDebug.newLine();
+//		FDebug.write("Curr");
+//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//			FDebug.write(", " + Currents[i].abs());
+//		FDebug.newLine();
+//		/* ***** */
+//		FDebug.close();
+		/* $ENDIF */
+
+		if (MaxError <= ConvergenceTolerance) {
+			Result = true;
+		} else {
+			Result = false;
+		}
+
+		ConvergedFlag = Result;
+		
+		return Result;
+	}
+
+	/**
+	 * Add in the contributions of all source type elements to the global
+	 * solution vector InjCurr.
+	 */
+	private void getSourceInjCurrents() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		for (CktElement pElem : ckt.getSources()) 
+			if (pElem.isEnabled())
+				pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
+
+		if (IsHarmonicModel) {  // Pick up generators and Loads, too
+
+			for (GeneratorObj pElem : ckt.getGenerators()) 
+				if (pElem.isEnabled())
+					pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
+				
+			for (LoadObj pElem : ckt.getLoads()) 
+				if (pElem.isEnabled())
+					pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
+		}
+	}
+
+	/**
+	 * Set the global generator dispatch reference.
+	 */
+	public void setGeneratorDispRef() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		switch (DynaVars.SolutionMode) {
+		case Dynamics.SNAPSHOT:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+		case Dynamics.YEARLYMODE:
+			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.DAILYMODE:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.DUTYCYCLE:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.GENERALTIME:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.DYNAMICMODE: 
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+		case Dynamics.HARMONICMODE:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+		case Dynamics.MONTECARLO1:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+		case Dynamics.MONTECARLO2:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.MONTECARLO3:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.PEAKDAY:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.LOADDURATION1:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.LOADDURATION2:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+		case Dynamics.DIRECT:
+			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+		case Dynamics.MONTEFAULT:
+			ckt.setGeneratorDispatchReference(1.0);  // Monte Carlo Fault Cases solve  at peak load only base case
+		case Dynamics.FAULTSTUDY:
+			ckt.setGeneratorDispatchReference(1.0);
+		case Dynamics.AUTOADDFLAG:
+			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor());   // peak load only
+		default:
+			DSSGlobals.getInstance().doSimpleMsg("Unknown solution mode.", 483);
+		}
+	}
+
+	private void setGeneratordQdV() {
+		boolean Did_One = false;
+		double GenDispSave;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		// Save the generator dispatch level and set on high enough to
+		// turn all generators on
+		GenDispSave = ckt.getGeneratorDispatchReference();
+		ckt.setGeneratorDispatchReference(1000.0);
+		
+		for (GeneratorObj pGen : ckt.getGenerators()) {
+			if (pGen.isEnabled()) {
+
+				// for PV generator models only ...
+				if (pGen.getGenModel() == 3) {
+				
+					pGen.initDQDVCalc();
+
+					// solve at base var setting
+					Iteration = 0;
+					while (!converged() && (Iteration < MaxIterations)) {
+						Iteration += 1;
+						zeroInjCurr();
+						getSourceInjCurrents();
+						pGen.injCurrents();  // get generator currents with nominal vars
+						SolveSystem(NodeV);
+					}
+
+					pGen.rememberQV();  // Remember Q and V
+					pGen.bumpUpQ();
+
+					// solve after changing vars
+					Iteration = 0;
+					while (!converged() && (Iteration < MaxIterations)) {
+						Iteration += 1;
+						zeroInjCurr();
+						getSourceInjCurrents();
+						pGen.injCurrents();  // get generator currents with nominal vars
+						SolveSystem(NodeV);
+					}
+
+					pGen.calcDQDV(); // bssed on remembered Q and V and present values of same
+					pGen.resetStartPoint();
+
+					Did_One = true;
+				}
+			}
+		}
+		
+		// Restore generator dispatch reference
+		ckt.setGeneratorDispatchReference(GenDispSave);
+		try {
+			if (Did_One)  // Reset Initial Solution
+				solveZeroLoadSnapShot();
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("From SetGenerator dQdV, SolveZeroLoadSnapShot: " + DSSGlobals.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
+			throw new SolveError("Aborting");
+		}
+	}
+
+	/**
+	 * Normal fixed-point solution.
+	 * 
+	 *   Vn+1 = [Y]-1 Injcurr
+	 *   
+	 * Where Injcurr includes only PC elements (loads, generators, etc.)
+	 * i.e., the shunt elements.
+	 * 
+	 * Injcurr are the current injected into the node (need to reverse
+	 * current direction for loads).
+	 */
+	private void doNormalSolution() {
+		Iteration = 0;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		/* **** Main iteration loop **** */
+		while ((!converged() || (Iteration <= 1)) && (Iteration < MaxIterations)) {  // TODO Double-check reverse logic
+			Iteration += 1;
+
+			if (ckt.isLogEvents())
+				Utilities.logThisEvent("Solution Iteration " + String.valueOf(Iteration));
+
+			/* Get injcurrents for all PC devices */
+			zeroInjCurr();
+			getSourceInjCurrents();  // sources
+			getPCInjCurr();  // Get the injection currents from all the power conversion devices and feeders
+
+			// The above call could change the primitive Y matrix, so have to check
+			if (SystemYChanged)
+				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // Does not realloc V, I
+
+			if (UseAuxCurrents)
+				addInAuxCurrents(Solution.NORMALSOLVE);
+
+			// Solve for voltages          /* Note: NodeV[0] = 0 + j0 always */
+			if (ckt.isLogEvents())
+				Utilities.logThisEvent("Solve Sparse Set doNormalSolution ...");
+			SolveSystem(NodeV);
+			LoadsNeedUpdating = false;
+		}
+	}
+
+	/**
+	 * Newton iteration.
+	 *   
+	 *   Vn+1 =  Vn - [Y]-1 Termcurr
+	 *   
+	 * Where Termcurr includes currents from all elements and we are
+	 * attempting to get the  currents to sum to zero at all nodes.
+	 * 
+	 * Termcurr is the sum of all currents going into the terminals of
+	 * the elements.
+	 * 
+	 * For PD Elements, Termcurr = Yprim*V
+	 * 
+	 * For Loads, Termcurr = (Sload/V)*
+	 * For Generators, Termcurr = -(Sgen/V)*
+	 */
+	private void doNewtonSolution() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		dV = (Complex[]) Utilities.resizeArray(dV, ckt.getNumNodes() + 1); // Make sure this is always big enough
+
+		if (ControlIteration == 1)
+			getPCInjCurr();  // Update the load multipliers for this solution
+
+		Iteration = 0;
+		while ((!converged() || (Iteration <= 1)) && (Iteration < MaxIterations)) {  // TODO Double-check reverse logic
+			Iteration += 1;
+			SolutionCount += 1;  // SumAllCurrents Uses ITerminal  So must force a recalc
+
+			// Get sum of currents at all nodes for all  devices
+			zeroInjCurr();
+			sumAllCurrents();
+
+			// Call to current calc could change YPrim for some devices
+			if (SystemYChanged)
+				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // Does not realloc V, I
+
+			if (UseAuxCurrents) 
+				addInAuxCurrents(Solution.NEWTONSOLVE);
+
+			// Solve for change in voltages
+			SolveSystem(dV);
+
+			LoadsNeedUpdating = false;
+
+			// Compute new guess at voltages
+			for (int i = 0; i < ckt.getNumNodes(); i++) {  // 0 node is always 0
+				NodeV[i] = new Complex(
+						NodeV[i].getReal() - dV[i].getReal(),
+						NodeV[i].getImaginary() - dV[i].getImaginary());
+			}
+		}
 	}
 
 	private boolean oKForDynamics(int Value) {
@@ -97,23 +557,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	}
 
-	private void doNewtonSolution() {
-
-	}
-
-	private void doNormalSolution() {
-
-	}
-
 	private void getMachineInjCurrents() {
 
 	}
 
 	private void getPCInjCurr() {
-
-	}
-
-	private void getSourceInjCurrents() {
 
 	}
 
@@ -139,10 +587,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	public int getYear() {
 		return year;
-	}
-
-	private void setGeneratordQdV() {
-
 	}
 
 	private void sumAllCurrents() {
@@ -542,11 +986,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	}
 
-	/* Main Solution dispatch */
-	public void solve() {
-
-	}
-
 	public void snapShotInit() {
 
 	}
@@ -590,10 +1029,6 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	public void checkFaultStatus() {
-
-	}
-
-	public void setGeneratorDispRef() {
 
 	}
 
