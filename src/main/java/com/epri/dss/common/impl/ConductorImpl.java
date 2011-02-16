@@ -1,6 +1,8 @@
 package com.epri.dss.common.impl;
 
-public class ConductorImpl {
+import com.epri.dss.common.Conductor;
+
+public class ConductorImpl implements Conductor {
 
 	private String TCCName;
 	private double AmbientTemp;

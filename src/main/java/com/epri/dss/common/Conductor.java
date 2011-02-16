@@ -18,7 +18,7 @@ public interface Conductor {
 	String getTCCname();
 
 	/* Computes whether conductor has burned down */
-	void CalcIsqt(double CurrentMag);
+	void calcIsqt(double CurrentMag);
 
 	/* Restore the conductor and reset the i2t calcs */
 	void ResetIsqt();

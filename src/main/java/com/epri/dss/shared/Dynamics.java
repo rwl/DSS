@@ -4,7 +4,7 @@ public interface Dynamics {
 
 	static final int NumSolutionModes = 16;
 
-    /* Solution modes */
+	/* Solution modes */
 	static final int SNAPSHOT = 0;
 	static final int DAILYMODE = 1;
 	static final int YEARLYMODE = 2;  // 8760 hour
@@ -21,5 +21,6 @@ public interface Dynamics {
 	static final int AUTOADDFLAG = 13;
 	static final int DYNAMICMODE = 14;
 	static final int HARMONICMODE = 15;
+	static final int GENERALTIME = 16;
 
 }

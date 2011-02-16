@@ -14,8 +14,15 @@ public class PowerTerminal implements Terminal {
 	protected Conductor[] Conductors;
 	protected boolean Checked;
 
-	public PowerTerminal(int Ncond) {
-
+	public PowerTerminal(int nCond) {
+		super();
+		this.NumCond = nCond;
+		this.BusRef = -1;  // signify not set
+		this.TermNodeRef = new int[this.NumCond];
+		this.Conductors = new Conductor[this.NumCond];
+		for (int i = 0; i < this.NumCond; i++) 
+			Conductors[i] = new ConductorImpl();
+		this.ActiveConductor = 0;  // TODO Check zero based indexing
 	}
 
 	public int getBusRef() {
@@ -51,10 +58,11 @@ public class PowerTerminal implements Terminal {
 	}
 
 	public void setActiveConductor(int Value) {
-
+		if ((Value >= 0) & (Value < NumCond))  // TODO Check zero based indexing
+			ActiveConductor = Value;
 	}
 
 	public int getActiveConductor() {
-		return 0;
+		return ActiveConductor;
 	}
 }

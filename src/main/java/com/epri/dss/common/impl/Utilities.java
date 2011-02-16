@@ -1,18 +1,29 @@
 package com.epri.dss.common.impl;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.Solution;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.Dynamics;
 
 public class Utilities {
+	
+	private static final int ZERONULL = 0;
+	private static final String padString = "                                                  "; // 50 blanks
+	private static final String padDotsString = " ................................................."; // 50 dots
 
 	private Utilities() {
 	}
@@ -50,53 +61,443 @@ public class Utilities {
 	}
 
 	public static int compareTextShortest(String S1, String S2) {
-		return 0;
+		String TestStr;
+		
+		if (S1.length() < S2.length()) {
+			TestStr = S2.substring(0, S1.length());  // TODO Check zero based indexing
+			return TestStr.equals(S1) ? 1 : 0;
+		} else {
+			TestStr = S1.substring(0, S2.length());
+			return TestStr.equals(S2) ? 1 : 0;
+		}
+	}
+
+	/**
+	 * Pad out a string with blanks to width characters.
+	 */
+	public static String pad(String S, int width) {
+		return S.substring(0, S.length()) + padString.substring(0, width - S.length());
+	}
+
+	/**
+	 * Pad out a string with dots to Width characters.
+	 */
+	public static String padDots(String S, int width) {
+		return S.substring(0, S.length()) + padDotsString.substring(0, width - S.length());
+	}
+
+	/**
+	 * Pad out a string with blanks to width characters or truncate to width chars.
+	 */
+	public static String padTrunc(String S, int width) {
+		return pad(S, width).substring(0, width);
+	}
+
+	public static String fullName(CktElement pElem) {
+		return encloseQuotes(pElem.getDSSClassName() + "." + pElem.getName());
+	}
+
+	/**
+	 * Strips off everything up to a period.
+	 */
+	public static String stripExtension(String S) {
+		int dotpos = S.indexOf('.');  // TODO Check zero based indexing
+		if (dotpos == -1)
+			dotpos = S.length();
+		return S.substring(0, dotpos);
+	}
+
+	/**
+	 * Returns everything past the first period.
+	 */
+	public static String stripClassName(String S) {
+		return S.substring(S.indexOf('.'));
 	}
 
 	public static void fireOffEditor(String FileNm) {
-
+		// FIXME Implement this method
+		throw new UnsupportedOperationException();
+	}
+	
+	public static void doShellCmd(String CmdString) {
+		// FIXME Implement this method (assessing security concerns)
+		throw new UnsupportedOperationException();
 	}
 
-	public static void doDOSCmd(String CmdString) {
-
-	}
-
-	public static String stripExtension(String S) {
-		return null;
-	}
-
-	public static String stripClassName(String S) {
-		return null;
-	}
-
-	public static String pad(String S, int Width) {
-		return null;
-	}
-
-	public static String padDots(String S, int Width) {
-		return null;
-	}
-
-	public static String padTrunc(String S, int Width) {
-		return null;
-	}
-
+	/**
+	 * Put array values in parentheses separated by commas.
+	 */
 	public static String intArrayToString(int[] iarray, int count) {
-		return null;
+		String Result = "(";
+		for (int i = 0; i < count; i++) {
+			Result = Result + String.valueOf(iarray[i]);
+			if (i != count - 1)  // TODO Check zero based indexing
+				Result = Result + ", ";
+		}
+		return Result + ')';
 	}
 
 	public static String encloseQuotes(String s) {
-		return null;
+		return '"' + s + '"';
 	}
+
+	/**
+	 * Interpret solution mode. Could be: "nominal", "daily",  "yearly",
+	 *   "montecarlo", "dutycycle",  "loadduration", "peakdays", etc.
+	 */
+	public static int interpretSolveMode(String s) {
+		String SLC;
+
+		SLC = s.toLowerCase();
+
+		switch (SLC.charAt(0)) {
+		case 's':
+			return Dynamics.SNAPSHOT;
+		case 'd':
+			switch (SLC.charAt(1)) {
+			case 'u':
+				return Dynamics.DUTYCYCLE;
+			case 'i':
+				return Dynamics.DIRECT;
+			case 'y':
+				return Dynamics.DYNAMICMODE;
+			default:
+				return Dynamics.DAILYMODE;
+			}
+		case 'f':
+			return Dynamics.FAULTSTUDY;
+		case 'h':
+			return Dynamics.HARMONICMODE;
+		case 'y':
+			return Dynamics.YEARLYMODE;
+		case 'm':
+			switch (SLC.charAt(1)) {
+			case '1':
+				return Dynamics.MONTECARLO1;
+			case '2':
+				return Dynamics.MONTECARLO2;
+			case '3':
+				return Dynamics.MONTECARLO3;
+			case 'f':
+				return Dynamics.MONTEFAULT;
+			default:
+				return Dynamics.MONTECARLO1;
+			}
+		case 'p': 
+			return Dynamics.PEAKDAY;
+		case 'a':
+			return Dynamics.AUTOADDFLAG;
+		case 'l':
+			switch (SLC.charAt(1)) {
+			case 'd':
+				switch (SLC.charAt(2)) {
+				case '1':
+					return Dynamics.LOADDURATION1;
+				case '2':
+					return Dynamics.LOADDURATION2;
+				default:
+					return Dynamics.LOADDURATION1;
+				}
+			default:
+				return Dynamics.LOADDURATION1;
+			}
+		case 't':
+			return Dynamics.GENERALTIME;
+		default:
+			return Dynamics.SNAPSHOT;
+		}
+	}
+
+	/**
+	 * Interpret solution control mode.
+	 */
+	public static int interpretControlMode(String s) {
+		String SLC = s.toLowerCase();
+
+		switch (SLC.charAt(0)) {
+		case 'o':
+			return DSSGlobals.CONTROLSOFF;
+		case 'e':
+			return DSSGlobals.EVENTDRIVEN;  // "event"
+		case 't':
+			return DSSGlobals.TIMEDRIVEN;   // "time"
+		default:
+			return DSSGlobals.CTRLSTATIC;
+		}
+	}
+
+	public static int interpretLoadModel(String s) {
+		int Result;
+		String S2 = s.toLowerCase();
+		
+		switch (S2.charAt(0)) {
+		case 'a':
+			Result = DSSGlobals.ADMITTANCE;
+		case 'p':
+			Result = DSSGlobals.POWERFLOW;
+		default:
+			Result = DSSGlobals.ADMITTANCE;
+		}
+		
+		/* If this represents a change, invalidate all the PC Yprims */
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (Result != ckt.getSolution().getLoadModel())
+			ckt.invalidateAllPCElements();
+		
+		return Result;
+	}
+
+	/** 
+	 * Interpret yes/no properties - can also be true/false.
+	 */
+	public static boolean interpretYesNo(String s) {
+		String S2 = s.toLowerCase();
+		switch (S2.charAt(0)) {
+		case 'y': 
+			return true;
+		case 't': 
+			return true;
+		case 'n':
+			return false;
+		case 'f':
+			return false;
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Interpret the type of random variation in the load.
+	 * none|gaussian|uniform|lognormal
+	 */
+	public static int interpretRandom(String s) {
+		String SLC = s.toLowerCase();
+
+		switch (SLC.charAt(0)) {
+		case 'g':
+			return DSSGlobals.GAUSSIAN;
+		case 'u':
+			return DSSGlobals.UNIFORM;
+		case 'l':
+			return DSSGlobals.LOGNORMAL;
+		default:
+		return 0;  // no variation for any other entry
+		}
+	}
+
+	/**
+	 * Type of device to automatically add. Default is capacitor.
+	 */
+	public static int interpretAddType(String s) {
+		String SLC = s.toLowerCase();
+		switch (SLC.charAt(0)) {
+		case 'g':
+			return DSSGlobals.GENADD;
+		default:
+			return DSSGlobals.CAPADD;
+		}
+	}
+
+	/**
+	 * Accepts (Case insensitive)
+	 *   delta or LL    Result = 1       
+	 *   Y, wye, or LN  Result = 0
+	 */
+	public static int interpretConnection(String s) {
+		switch (s.toLowerCase().charAt(0)) {
+		case 'y':
+			return 0;  // Wye
+		case 'w':
+			return 0;  // Wye
+		case 'd':
+			return 1;  // Delta or line-Line
+		case 'l':
+			switch (s.toLowerCase().charAt(1)) {
+			case 'n':
+				return 0;
+			case 'l':
+				return 1;
+			}
+		default:
+			return 0;
+		}
+	}
+
+	public static int interpretSolveAlg(String s) {
+		String SLC = s.toLowerCase().substring(0, 1);  // TODO Check zero based indexing
+		if (SLC.equals("ne")) {
+			return Solution.NEWTONSOLVE;
+		} else {
+			return Solution.NORMALSOLVE;
+		}
+	}
+
+	/**
+	 * Returns true if positive sequence.
+	 */
+	public static boolean interpretCktModel(String s) {
+		switch (s.toLowerCase().charAt(0)) {
+		case 'p':
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Set all elements of a double array.
+	 */
+	public static void initDblArray(int NumValues, double[] Xarray, double Value) {
+		for (int i = 0; i < NumValues; i++)
+			Xarray[i] = Value;
+	}
+
+	/**
+	 * Set all elements of a integer array.
+	 */
+	public static void initIntArray(int NumValues, int[] Xarray, int Value) {
+		for (int i = 0; i < NumValues; i++)
+			Xarray[i] = Value;
+	}
+
+	/**
+	 * Get numeric values from an array specified either as a list on numbers
+	 * or a text file spec. ResultArray must be allocated to MaxValues by
+	 * calling routine. File is assumed to have one value per line.
+	 */
+	public static int interpretDblArray(String s, int MaxValues, double[] ResultArray) {
+		FileInputStream fileStream = null;
+		BufferedInputStream bufferedStream = null;
+		DataInputStream dataStream = null;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		Globals.getAuxParser().setCmdString(s);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+		int Result = MaxValues; // Default return value;
+
+		/* Syntax can be either a list of numeric values or a file specification: File= ... */
+
+		if (ParmName.equals("file")) {
+			// load the list from a file
+			try {
+				fileStream = new FileInputStream(Param);
+				bufferedStream = new BufferedInputStream(fileStream);
+				dataStream = new DataInputStream(bufferedStream);
+
+				for (int i = 0; i < MaxValues; i++) {
+					try {
+						if (dataStream.available() != 0) {
+							ResultArray[i] = dataStream.readDouble();
+						} else {
+							Result = i - 1;  // This will be different if less found;  TODO Check zero based indexing
+							break;
+						}
+					} catch (Exception e) {
+						Globals.doSimpleMsg(String.format("Error reading %d-th numeric array value from file: \"%s\" Error is:", i, Param, e.getMessage()), 705);
+						Result = i - 1;
+						break;
+					}
+				}
+				fileStream.close();
+				bufferedStream.close();
+				dataStream.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else if ((ParmName.length() > 0) && (compareTextShortest(ParmName, "dblfile") == 0)) {
+			// load the list from a file of doubles (no checking done on type of data)
+			throw new UnsupportedOperationException();
+			// TODO Implement this section
+		} else if ((ParmName.length() > 0) && (compareTextShortest(ParmName, "sngfile") == 0)) {
+			// load the list from a file of singles (no checking done on type of data)
+			throw new UnsupportedOperationException();
+			// TODO Implement this section
+		} else {
+			// Parse list of values off input string
+		
+			// Parse Values of array list
+			for (int i = 0; i < MaxValues; i++) {
+				ResultArray[i] = Globals.getAuxParser().makeDouble();  // Fills array with zeros if we run out of numbers
+				Globals.getAuxParser().getNextParam();
+			}
+		}
+		return Result;
+	}
+
+	/**
+	 * Get numeric values from an array specified either as a list on numbers
+	 * or a text file spec. ResultArray must be allocated to MaxValues by
+	 * calling routine. File is assumed to have one value per line.
+	 */
+	public static int interpretIntArray(String s, int MaxValues, int[] ResultArray) {
+		FileInputStream fileStream = null;
+		BufferedInputStream bufferedStream = null;
+		DataInputStream dataStream = null;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		Globals.getAuxParser().setCmdString(s);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+		int Result = MaxValues;  // Default return value
+
+		/* Syntax can be either a list of numeric values or a file specification: File= ... */
+
+		if (ParmName.equals("file")) {
+			// load the list from a file
+			try {
+				fileStream = new FileInputStream(Param);
+				bufferedStream = new BufferedInputStream(fileStream);
+				dataStream = new DataInputStream(bufferedStream);
+
+				for (int i = 0; i < MaxValues; i++) {
+					try {
+						if (dataStream.available() != 0) {
+							ResultArray[i] = dataStream.readInt();
+						} else {
+							Result = i - 1;  // This will be different if less found;  TODO Check zero based indexing
+							break;
+						}
+					} catch (Exception e) {
+						Globals.doSimpleMsg(String.format("Error trying to read numeric array values from file: \""+Param +"\"  Error is: "+e.getMessage()), 706);
+						Result = i - 1;
+						break;
+					}
+				}
+				fileStream.close();
+				bufferedStream.close();
+				dataStream.close();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		} else {  // Parse list of values off input string
+
+			// Parse Values of array list
+			for (int i = 0; i < MaxValues; i++) {
+				ResultArray[i] = Globals.getAuxParser().makeInteger();  // Fills array with zeros if we run out of numbers
+				Globals.getAuxParser().getNextParam();
+			}
+		}
+		return Result;
+	}
+	
+	
 
 	public static void showMessageBeep(String s) {
 
 	}
-
-	public static String fullName(CktElement pElem) {
-		return null;
-	}
-
+	
 	public static void parseObjectClassandName(String FullObjName,
 			String ClassName, String ObjName) {
 
@@ -104,61 +505,6 @@ public class Utilities {
 
 	public static void parseIntArray(int[] iarray, int count, String s) {
 
-	}
-
-	public static int interpretSolveMode(String s) {
-		return 0;
-	}
-
-	public static int interpretControlMode(String s) {
-		return 0;
-	}
-
-	public static int interpretLoadModel(String s) {
-		return 0;
-	}
-
-	public static boolean interpretYesNo(String s) {
-		return false;
-	}
-
-	public static int interpretRandom(String s) {
-		return 0;
-	}
-
-	public static int interpretAddType(String s) {
-		return 0;
-	}
-
-	public static int interpretConnection(String s) {
-		return 0;
-	}
-
-	public static int interpretSolveAlg(String s) {
-		return 0;
-	}
-
-	public static boolean interpretCktModel(String s) {
-		return false;
-	}
-
-	public static void initDblArray(int NumValues, double[] Xarray,
-			double Value) {
-
-	}
-
-	public static void initIntArray(int NumValues, int[] Xarray, int Value) {
-
-	}
-
-	public static int interpretDblArray(String s, int MaxValues,
-			double[] ResultArray) {
-		return 0;
-	}
-
-	public static int interpretIntArray(String s, int MaxValues,
-			int[] ResultArray) {
-		return 0;
 	}
 
 	public static void interpretAndAllocStrArray(String s, int Size,
