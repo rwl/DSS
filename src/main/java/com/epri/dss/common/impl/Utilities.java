@@ -1,12 +1,15 @@
 package com.epri.dss.common.impl;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.ArrayList;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
@@ -382,6 +385,7 @@ public class Utilities {
 		if (ParmName.equals("file")) {
 			// load the list from a file
 			try {
+				// FIXME Use BufferedReader not BufferedInputStream
 				fileStream = new FileInputStream(Param);
 				bufferedStream = new BufferedInputStream(fileStream);
 				dataStream = new DataInputStream(bufferedStream);
@@ -452,6 +456,7 @@ public class Utilities {
 		if (ParmName.equals("file")) {
 			// load the list from a file
 			try {
+				// FIXME Use BufferedReader not BufferedInputStream 
 				fileStream = new FileInputStream(Param);
 				bufferedStream = new BufferedInputStream(fileStream);
 				dataStream = new DataInputStream(bufferedStream);
@@ -491,34 +496,238 @@ public class Utilities {
 		}
 		return Result;
 	}
+
+	/**
+	 * Return stepsize in seconds.
+	 */
+	public static double interpretTimeStepSize(String s) {
+		int Code;
+		char ch;
+		String s2;
+		double Result;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		/* Try to convert and see if we get an error */
+		try {
+			return Double.valueOf(s);  // Only a number was specified, so must be seconds
+		} catch (NumberFormatException e) {
+			/* Error occurred so must have a units specifier */
+			ch = s.charAt(s.length() - 1);  // get last character
+			s2 = s.substring(0, s.length() - 2);
+			try {
+				Result = Double.valueOf(s2);
+				switch (ch) {
+				case 'h':
+					Result = Result * 3600.0;
+				case 'm':
+					Result = Result * 60.0;
+				case 's':
+					// do nothing
+				default:
+					Result = Globals.getActiveCircuit().getSolution().getDynaVars().h;  // Don't change it
+					Globals.doSimpleMsg("Error in specification of StepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
+				}
+			} catch (NumberFormatException ee) {
+				Result = Globals.getActiveCircuit().getSolution().getDynaVars().h; // Don't change it
+				Globals.doSimpleMsg("Error in specification of StepSize: " + s, 99933);
+				return Result;
+			}
+		}
+			
+		return Result;
+	}
+
+	public static void initStringToNull(String S) {
+		//Move(ZeroNull, S, 4);
+		S = null;
+	}
+
+	/**
+	 * Get string values from an array specified either as a list on strings or
+	 * a text file spec. ResultArray is allocated as needed. File is assumed to
+	 * have one value per line.
+	 */
+	public static void interpretAndAllocStrArray(String s, int Size, String[] ResultArray) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		// Throw away any previous allocation
+		ResultArray = new String[0];
+
+		// Now Reallocate
+		int MaxSize = 100;  // initialize
+		Size = 0;
+		ResultArray = new String[MaxSize];
+
+		Globals.getAuxParser().setCmdString(s);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+
+		/* Syntax can be either a list of string values or a file specification:  File= ... */
+		if (ParmName.equals("file")) {
+			// load the list from a file
+			try {
+				FileInputStream fileStream = new FileInputStream(Param);
+				DataInputStream dataStream = new DataInputStream(fileStream);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
+				
+				while ((Param = reader.readLine()) != null) {
+					if (Param != "") {  // Ignore blank lines in file
+						Size += 1;
+						if (Size > MaxSize) {
+							MaxSize += 100;
+							ResultArray = (String[]) resizeArray(ResultArray, MaxSize);
+						}
+						ResultArray[Size] = Param;
+					}
+				}
+				fileStream.close();
+				dataStream.close();
+				reader.close();
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
+			}
+			
+		} else {  // Parse list of values off input string
+
+			// Parse Values of array list
+			while (Param != "") {
+				Size += 1;
+				if (Size > MaxSize) {
+					MaxSize += 100;
+					ResultArray = (String[]) resizeArray(ResultArray, MaxSize);
+				}
+				ResultArray[Size] = Param;
+				ParmName = Globals.getAuxParser().getNextParam();
+				Param = Globals.getAuxParser().makeString();
+			}
+		}
+
+		MaxSize = Size;  // Get rid of excess allocation
+		ResultArray = (String[]) resizeArray(ResultArray, MaxSize);
+	}
+
+	/**
+	 * Get string values from an array specified either as a list on strings or
+	 * a text file spec. ResultArray is allocated as needed. File is assumed to
+	 * have one value per line.
+	 */
+	public static void interpretStringListArray(String s, ArrayList<String> ResultList) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		String NextParam;
+		
+		// Throw away any previous allocation
+		ResultList.clear();
+
+		Globals.getAuxParser().setCmdString(S);
+		String ParmName = Globals.getAuxParser().getNextParam();
+		String Param = Globals.getAuxParser().makeString();
+
+		/* Syntax can be either a list of string values or a file specification:  File= ... */
+
+		if (ParmName.equals("file")) {
+			// load the list from a file
+			try {
+				FileInputStream fileStream = new FileInputStream(Param);
+				DataInputStream dataStream = new DataInputStream(fileStream);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
+				
+				while ((Param = reader.readLine()) != null) {
+					Globals.getAuxParser().setCmdString(Param);
+					ParmName = Globals.getAuxParser().getNextParam();
+					NextParam = Globals.getAuxParser().makeString();
+					if (NextParam.length() > 0)  // Ignore Blank Lines in File
+						ResultList.add(NextParam);
+				}
+				fileStream.close();
+				dataStream.close();
+				reader.close();
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 708);
+			}
+		} else {  // Parse list of values off input string
+
+			// Parse Values of array list
+			while (Param != "") {
+				ResultList.add(Param);
+				ParmName = Globals.getAuxParser().getNextParam();
+				Param = Globals.getAuxParser().makeString();
+			}
+		}
+	}
+	
+	public static void parseObjectClassandName(String FullObjName, String ClassName, String ObjName) {
+		// Split off obj class and name
+		int dotpos = FullObjName.indexOf('.');  // TODO Check zero based indexing
+		switch (dotpos) {
+		case -1:
+			ObjName = FullObjName.substring(0, FullObjName.length());  // assume it is all objname; class defaults
+			ClassName = "";
+		default:
+			ClassName = FullObjName.substring(0, dotpos);
+			ObjName   = FullObjName.substring(dotpos + 1, FullObjName.length());
+		}
+	}
+
+	public static String getSolutionModeIDName(int idx) {
+
+		switch (idx) {
+		case Dynamics.SNAPSHOT:
+			return "Snap";
+		case Dynamics.DAILYMODE:
+			return "Daily";
+		case Dynamics.YEARLYMODE:
+			return "Yearly";
+		case Dynamics.MONTECARLO1:
+			return "M1";
+		case Dynamics.MONTECARLO2:
+			return "M2";
+		case Dynamics.MONTECARLO3:
+			return "M3";
+		case Dynamics.LOADDURATION1:
+			return "LD1";
+		case Dynamics.LOADDURATION2:
+			return "LD2";
+		case Dynamics.PEAKDAY:
+			return "Peakday";
+		case Dynamics.DUTYCYCLE:
+			return "DUtycycle";
+		case Dynamics.DIRECT:
+			return "DIrect";
+		case Dynamics.DYNAMICMODE:
+			return "DYnamic";
+		case Dynamics.MONTEFAULT:
+			return "MF";
+		case Dynamics.FAULTSTUDY:
+			return "Faultstudy";
+		case Dynamics.AUTOADDFLAG:
+			return "Autoadd";
+		case Dynamics.HARMONICMODE:
+			return "Harmonic";
+		case Dynamics.GENERALTIME:
+			return "Time";
+		default:
+			return "UNKNOWN";
+		}
+	}
+
+	public static String getSolutionModeID() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (ckt != null) {
+			return getSolutionModeIDName(ckt.getSolution().getMode());
+		} else {
+			return "UNKNOWN";
+		}
+	}
 	
 	
 
 	public static void showMessageBeep(String s) {
 
 	}
-	
-	public static void parseObjectClassandName(String FullObjName,
-			String ClassName, String ObjName) {
-
-	}
 
 	public static void parseIntArray(int[] iarray, int count, String s) {
 
-	}
-
-	public static void interpretAndAllocStrArray(String s, int Size,
-			String[] ResultArray) {
-
-	}
-
-	public static void interpretTStringListArray(String s,
-			String[] ResultList) {
-
-	}
-
-	public static double interpretTimeStepSize(String s) {
-		return 0;
 	}
 
 	public static int interpretLoadShapeClass(String s) {
@@ -531,14 +740,6 @@ public class Utilities {
 
 	public static int interpretColorName(String s) {
 		return 0;
-	}
-
-	public static String getSolutionModeID() {
-		return null;
-	}
-
-	public static String getSolutionModeIDName(int idx) {
-		return null;
 	}
 
 	public static String getControlModeID() {
@@ -640,10 +841,6 @@ public class Utilities {
 
 	public static int getNodeNum(int NodeRef) {
 		return 0;
-	}
-
-	public static void initStringToNull(String S) {
-
 	}
 
 	public static Complex CmulReal_im(Complex a, double Mult) {
