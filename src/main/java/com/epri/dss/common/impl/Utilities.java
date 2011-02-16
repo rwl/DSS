@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 
 import com.epri.dss.parser.impl.Parser;
@@ -18,7 +20,10 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Solution;
+import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
@@ -619,7 +624,7 @@ public class Utilities {
 		// Throw away any previous allocation
 		ResultList.clear();
 
-		Globals.getAuxParser().setCmdString(S);
+		Globals.getAuxParser().setCmdString(s);
 		String ParmName = Globals.getAuxParser().getNextParam();
 		String Param = Globals.getAuxParser().makeString();
 
@@ -719,14 +724,196 @@ public class Utilities {
 			return "UNKNOWN";
 		}
 	}
+
+	public static String getControlModeID() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (ckt != null) {
+			switch (ckt.getSolution().getControlMode()) {
+			case DSSGlobals.CTRLSTATIC:
+				return "STATIC";
+			case DSSGlobals.EVENTDRIVEN:
+				return "EVENT";
+			case DSSGlobals.TIMEDRIVEN:
+				return "TIME";
+			case DSSGlobals.CONTROLSOFF:
+				return "OFF";
+			default:
+				return "UNKNOWN";
+			}
+		} else {
+			return "UNKNOWN";
+		}
+	}
+
+	public static String getRandomModeID() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		if (ckt != null) {
+			switch (ckt.getSolution().getRandomType()) {
+			case 0: 
+				return "None";
+			case DSSGlobals.GAUSSIAN:
+				return "Gaussian";
+			case DSSGlobals.UNIFORM:
+				return "Uniform";
+			case DSSGlobals.LOGNORMAL:
+				return "LogNormal";
+			default:
+				return "Unknown";
+			}
+		} else {
+			return "Unknown";
+		}
+	}
+
+	public static String getLoadModel() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		switch (ckt.getSolution().getLoadModel()) {
+		case DSSGlobals.ADMITTANCE:
+			return "Admittance";
+		default:
+			return "PowerFlow";
+		}
+	}
+
+	public static void parseIntArray(int[] iarray, int count, String s) {
+		@SuppressWarnings("unused")
+		String ParamName;
+		String Param = " ";
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		// Parse the line once to get the count of tokens on string, S
+		Globals.getAuxParser().setCmdString(s);
+		count = 0;
+		while (Param.length() > 0) {
+			ParamName = Globals.getAuxParser().getNextParam();
+			Param     = Globals.getAuxParser().makeString();
+			if (Param.length() > 0)
+				count += 1;
+		}
+
+		// reallocate iarray to new size
+		iarray = (int[]) resizeArray(iarray, count);
+
+		// Parse again for real
+		Globals.getAuxParser().setCmdString(s);
+		for (int i = 0; i < count; i++) {
+			ParamName = Globals.getAuxParser().getNextParam();
+			iarray[i] = Globals.getAuxParser().makeInteger();
+		}
+	}
+
+	public static boolean isShuntElement(CktElement Elem) {
+		switch (Elem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+		case DSSClassDefs.CAP_ELEMENT:
+			CapacitorObj cElem = (CapacitorObj) Elem;
+			return cElem.isShunt();
+		case DSSClassDefs.REACTOR_ELEMENT:
+			ReactorObj rElem = (ReactorObj) Elem;
+			return rElem.isShunt();
+		default:
+			return false;
+		}
+	}
+
+	public static boolean isLineElement(CktElement Elem) {
+		if ((Elem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LINE_ELEMENT) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isTransformerElement(CktElement Elem) {
+		if ((Elem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.XFMR_ELEMENT) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isStubLine(CktElement Elem) {
+		double Ztest;
+		LineObj LineElement = (LineObj) Elem;
+		
+		/* Get Positive Sequence or equivalent from matrix */
+		if (LineElement.isSymComponentsModel()) {
+			Ztest = (new Complex(LineElement.getR1(), LineElement.getX1())).abs() * LineElement.getLen();
+		} else {
+			/* Get impedance from Z matrix */   /* Zs - Zm */
+			if (LineElement.getNPhases() > 1) {  // TODO Check zero based indexing
+				Ztest = LineElement.getZ().getElement(0, 0).subtract(LineElement.getZ().getElement(0, 1)).abs() * LineElement.getLen();
+			} else {
+				Ztest = LineElement.getZ().getElement(0, 0).abs() * LineElement.getLen();
+			}
+		}
+
+		if (Ztest <= DSSGlobals.getInstance().getActiveCircuit().getReductionZmag()) { 
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Given the full object name, return the index to the circuit element in the
+	 * active circuit.  Use full name if given. Else assume last class referenced.
+	 */
+	public static int getCktElementIndex(String fullObjName) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		int DevClassIndex, DevIndex;
+		String DevClassName = null, DevName = null;
+
+		int Result = 0; // Default return value
+		parseObjectClassandName(fullObjName, DevClassName, DevName);
+		DevClassIndex = Globals.getClassNames().find(DevClassName);
+		if (DevClassIndex == -1)
+			DevClassIndex = Globals.getLastClassReferenced();
+
+		// Since there could be devices of the same name of different classes,
+		// loop until we find one of the correct class
+		Circuit ckt = Globals.getActiveCircuit();
+		DevIndex = ckt.getDeviceList().find(DevName);
+		while (DevIndex > -1) {
+			if ((ckt.getDeviceRef()[DevIndex]).CktElementClass == DevClassIndex)  // we got a match
+				return DevIndex;
+			DevIndex = ckt.getDeviceList().findNext();
+		}
+					
+		return 0;
+	}
+
+	public static String strReal(double Value, int NumDecimals) {
+		try {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			String fmt = String.format("%%.%df", NumDecimals);
+			pw.printf(fmt, Value);
+			return sw.toString();
+		} catch (Exception e) {
+			return "*****";
+		}
+	}
+	
+	/**
+	 * Replace CRLF with a \n character sequence.
+	 */
+	private String replaceCRLF(String S) {
+//		String Result = S;
+//		nPos = Result.indexOf(DSSGlobals.CRLF);
+//		while (nPos > -1) {
+//			Result[nPos] = '\';
+//			Result[nPos+1] = 'n';
+//			nPos = Result.indexOf(DSSGlobals.CRLF);
+//		}
+		return S;
+	}
 	
 	
 
 	public static void showMessageBeep(String s) {
-
-	}
-
-	public static void parseIntArray(int[] iarray, int count, String s) {
 
 	}
 
@@ -740,18 +927,6 @@ public class Utilities {
 
 	public static int interpretColorName(String s) {
 		return 0;
-	}
-
-	public static String getControlModeID() {
-		return null;
-	}
-
-	public static String getRandomModeID() {
-		return null;
-	}
-
-	public static String getLoadModel() {
-		return null;
 	}
 
 	public static String getActiveLoadShapeClass() {
@@ -774,36 +949,12 @@ public class Utilities {
 		return 0;
 	}
 
-	public static int getCktElementIndex(String fullObjName) {
-		return 0;
-	}
-
-	public static boolean isShuntElement(CktElement Elem) {
-		return false;
-	}
-
-	public static boolean isLineElement(CktElement Elem) {
-		return false;
-	}
-
-	public static boolean isTransformerElement(CktElement Elem) {
-		return false;
-	}
-
-	public static boolean isStubLine(CktElement Elem) {
-		return false;
-	}
-
 	public static boolean checkParallel(CktElement Line1, CktElement Line2) {
 		return false;
 	}
 
 	public static boolean allTerminalsClosed(CktElement thisElement) {
 		return false;
-	}
-
-	public static String strReal(double Value, int NumDecimals) {
-		return null;
 	}
 
 	public static void dumpAllDSSCommands(String Filename) {
