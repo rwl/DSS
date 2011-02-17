@@ -1121,6 +1121,112 @@ public class Utilities {
 		Phasor = Phasor.multiply( ComplexUtils.polar2Complex(1.0, h * AngleRad) );
 	}
 	
+	private static double pFSign(Complex S) {
+		return S.getReal() * S.getImaginary() < 0.0 ? -1.0 : 1.0;
+	}
+
+	/**
+	 * Creates continous PF function from 1 to 2 where 1-2 range is leading (opposite sign).
+	 */
+	public static void convertComplexArrayToPowerandPF(Complex[] Buffer, int N) {
+		double Mag, PF;
+		
+		/* Assume we get P + jQ */
+		for (int i = 0; i < N; i++) {
+			Mag = Buffer[i].abs();
+			if (Mag > 0.0) {
+				PF = pFSign(Buffer[i]) * Math.abs(Buffer[i].getReal()) / Mag;
+				if (PF < 0.0)
+					PF = 2.0 - Math.abs(PF);
+			} else {
+				PF = 1.0;  // for zero power
+			}
+			Buffer[i] = new Complex(Buffer[i].getReal(), PF);
+		}
+	}
+
+	public static void convertComplexArrayToPolar(Complex[] Buffer, int N) {
+		for (int i = 0; i < N; i++) 
+			Buffer[i] = new Complex(Buffer[i].abs(), Buffer[i].degArg());
+	}
+
+	/**
+	 * Assume p is a complex array and compute the residual of the number of
+	 * phases specified.
+	 */
+	public static Complex residual(Object p, int Nph) {
+		Complex[] pc = (Complex[]) p;
+		Complex Result = Complex.ZERO;
+		for (int i = 0; i < Nph; i++) 
+			Result = Result.add(pc[i]);
+		return Result;
+	}
+
+	/**
+	 * Assume p is a complex array and compute the residual of the number of
+	 * phases specified and convert to polar.
+	 */
+	public static Complex residualPolar(Object p, int Nph) {
+		Complex x = residual(p, Nph);
+		return new Complex(x.abs(), x.degArg());
+	}
+	
+	private static double sign(double x) {
+		return x < 0.0 ? -1.0 : 1.0;
+	}
+
+	public static double powerFactor(Complex S) {
+		if ((S.getReal() != 0.0) && (S.getImaginary() != 0.0)) {
+			return sign(S.getReal() * S.getImaginary()) * Math.abs(S.getReal()) / S.abs();
+		} else {
+			return 1.0;
+		}
+	}
+
+	/**
+	 * Convert PF from +/- 1 to 0..2 where 1..2 is leading.
+	 */
+	public static double convertPFToPFRange2(double value) {
+		if (value < 0.0) {
+			return 2.0 + value;
+		} else {
+			return value;
+		}
+	}
+
+	public static double convertPFRange2ToPF(double value) {
+		if (value > 1.0) {
+			return value - 2.0;
+		} else {
+			return value;
+		}
+	}
+
+	public static void clearEventLog() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		try {
+			Globals.getEventStrings().clear();
+		} catch (Exception e) {
+			Globals.doSimpleMsg(String.format("Exception clearing event log: %s, @EventStrings=%p", e.getMessage(), Globals.getEventStrings()), 7151);
+		}
+	}
+
+	public static void logThisEvent(String EventName) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		DSSGlobals.getInstance().getEventStrings().add(String.format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
+				sol.getIntHour(), sol.getDynaVars().t, sol.getIteration(), sol.getControlIteration(), EventName));
+	}
+
+	public static void appendToEventLog(String OpDev, String action) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		String S = String.format("Hour=%d, Sec=%-.5g, ControlIter=%d, Element=%s, Action=%s",
+				sol.getIntHour(), sol.getDynaVars().t, sol.getControlIteration(), OpDev, action.toUpperCase());
+		
+		DSSGlobals.getInstance().getEventStrings().add(S);
+	}
+	
 	
 
 	public static void showMessageBeep(String s) {
@@ -1208,48 +1314,6 @@ public class Utilities {
 
 	public static boolean rewriteAlignedFile(String FileName) {
 		return false;
-	}
-
-	public static void clearEventLog() {
-
-	}
-
-	public static void appendToEventLog(String opdev, String action) {
-
-	}
-
-	public static void logThisEvent(String EventName) {
-
-	}
-
-	public static void convertComplexArrayToPolar(Complex[] Buffer,
-			int N) {
-
-	}
-
-	public static void convertComplexArrayToPowerandPF(Complex[] Buffer,
-			int N) {
-
-	}
-
-	public static Complex residual(Object p, int Nph) {
-		return null;
-	}
-
-	public static Complex residualPolar(Object p, int Nph) {
-		return null;
-	}
-
-	public static double powerFactor(Complex S) {
-		return 0;
-	}
-
-	public static double convertPFToPFRange2(double value) {
-		return 0;
-	}
-
-	public static double convertPFRange2ToPF(double value) {
-		return 0;
 	}
 
 	public static void CmulArray(Complex[] pc, double Multiplier,

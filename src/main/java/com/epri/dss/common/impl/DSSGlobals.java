@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.epri.dss.shared.impl.Complex;
 
@@ -141,10 +142,10 @@ public class DSSGlobals {
 	private LineSpacing LineSpacingClass;
 	private Storage StorageClass;
 
-	private String[] EventStrings;
+	private List<String> EventStrings;
 	private String[] SavedFileList;
 
-	private ArrayList<DSSClass> DSSClassList;  // base class types
+	private List<DSSClass> DSSClassList;  // base class types
 	private HashList ClassNames;
 
 	// Private constructor prevents instantiation from other classes
@@ -596,11 +597,11 @@ public class DSSGlobals {
 		StorageClass = storageClass;
 	}
 
-	public String[] getEventStrings() {
+	public List<String> getEventStrings() {
 		return EventStrings;
 	}
 
-	public void setEventStrings(String[] eventStrings) {
+	public void setEventStrings(List<String> eventStrings) {
 		EventStrings = eventStrings;
 	}
 
@@ -612,11 +613,11 @@ public class DSSGlobals {
 		SavedFileList = savedFileList;
 	}
 
-	public ArrayList<DSSClass> getDSSClassList() {
+	public List<DSSClass> getDSSClassList() {
 		return DSSClassList;
 	}
 
-	public void setDSSClassList(ArrayList<DSSClass> dSSClassList) {
+	public void setDSSClassList(List<DSSClass> dSSClassList) {
 		DSSClassList = dSSClassList;
 	}
 
