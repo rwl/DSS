@@ -6,12 +6,16 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+
+import org.apache.commons.math.complex.ComplexUtils;
+import org.w3c.dom.Node;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
@@ -20,10 +24,19 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Solution;
+import com.epri.dss.common.SolutionObj;
+import com.epri.dss.control.ControlElem;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.LoadObj;
+import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.ReactorObj;
+import com.epri.dss.executive.ExecCommands;
+import com.epri.dss.executive.ExecOptions;
+import com.epri.dss.executive.impl.ExecCommandsImpl;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
@@ -897,18 +910,215 @@ public class Utilities {
 		}
 	}
 	
+//	/**
+//	 * Replace CRLF with a \n character sequence.
+//	 */
+//	private String replaceCRLF(String S) {
+//		return S;
+//	}
+//	
+//	/**
+//	 * Replace \n character sequence with CRLF.
+//	 */
+//	private String restoreCRLF(String S) {
+//		return S;
+//	}
+
+	public static void dumpAllocationFactors(String FileName) {
+		PrintWriter F;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			FileName = Globals.getDSSDataDirectory() + "AllocationFactors.txt";
+			FileWriter FW = new FileWriter(FileName);
+			F = new PrintWriter(FW);
+		} catch (IOException e) {
+			Globals.doErrorMsg("Error opening "+FileName+" for writing.", e.getMessage(), " File protected or other file error.", 709);
+			return;
+		}
+
+		for (LoadObj pLoad : Globals.getActiveCircuit().getLoads()) {
+			switch (pLoad.getLoadSpecType()) {
+			case 3:
+				F.println("Load."+pLoad.getName()+".AllocationFactor=" + String.format("%-.5g", pLoad.getkVAAllocationFactor()));
+			case 4:
+				F.println("Load."+pLoad.getName()+".CFactor=" + String.format("%-.5g", pLoad.getCFactor()));
+			}
+		}
+
+		F.close();
+	}
+
+	public static void dumpAllDSSCommands(String FileName) {
+		PrintWriter F;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			FileName = Globals.getDSSDataDirectory() + "AllocationFactors.txt";
+			FileWriter FW = new FileWriter(FileName);
+			F = new PrintWriter(FW);
+		} catch (IOException e) {
+			Globals.doErrorMsg("Error opening "+FileName+" for writing.", e.getMessage(), "Disk protected or other file error", 710);
+			return;
+		}
+
+		// dump Executive commands
+		F.println("[execcommands]");
+		for (int i = 0; i < ExecCommands.NumExecCommands; i++) {
+			F.println(i,", \"", ExecCommands.getExecCommand()[i], "\", \"", ExecCommands.getCommandHelp()[i], "\"");
+		}
+
+		// Dump Executive Options
+		F.println("[execoptions]");
+		for (int i = 0; i < ExecOptions.NumExecOptions; i++) {
+			F.println(i, ", \"", ExecOptions.getExecOption()[i], "\", \"", ExecOptions.getOptionHelp()[i], "\"");
+		}
+
+		// Dump all present DSSClasses
+		for (DSSClass pClass : Globals.getDSSClassList()) {
+			F.println("[", pClass.getName(), "]");
+			for (int i = 0; i < pClass.getNumProperties(); i++) 
+				F.println(i, ", \"", pClass.getPropertyName()[i], "\", \"", pClass.getPropertyHelp()[i], "\"");
+		}
+
+		F.close();
+	}
+
 	/**
-	 * Replace CRLF with a \n character sequence.
+	 * Find closest base voltage.
 	 */
-	private String replaceCRLF(String S) {
-//		String Result = S;
-//		nPos = Result.indexOf(DSSGlobals.CRLF);
-//		while (nPos > -1) {
-//			Result[nPos] = '\';
-//			Result[nPos+1] = 'n';
-//			nPos = Result.indexOf(DSSGlobals.CRLF);
-//		}
-		return S;
+	public static double nearestBasekV(double kV) {
+		double Diff;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		int Count = 1;
+		double TestkV = ckt.getLegalVoltageBases()[0];
+		double Result = TestkV;
+		double MinDiff = 1.e50;  // Big number
+
+		while (TestkV != 0.0) {
+			Diff = Math.abs(1.0 - kV / TestkV);  // Get per unit difference
+			if (Diff < MinDiff) {
+				MinDiff = Diff;
+				Result = TestkV;
+			}
+
+			Count += 1;
+			TestkV = ckt.getLegalVoltageBases()[Count];
+		}
+		return Result;
+	}
+
+	public static boolean savePresentVoltages() {
+		PrintWriter F;
+		double dNumNodes;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			FileWriter FW = new FileWriter(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "SavedVoltages.dbl");
+			F = new PrintWriter(FW);
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening/creating file to save voltages: " + e.getMessage(), 711);
+			return false;
+		}
+
+		try {
+			Circuit ckt = Globals.getActiveCircuit();
+			SolutionObj sol = ckt.getSolution();
+		
+			dNumNodes = ckt.getNumNodes();
+			F.printf("%.d",  dNumNodes);
+			for (int i = 0; i < ckt.getNumNodes(); i++) {
+				F.printf(" %.5f %.5f", sol.getNodeV()[i].getReal(), sol.getNodeV()[i].getImaginary());
+			}
+
+			F.close();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error writing file to save voltages: " + e.getMessage(), 712);
+			return false;
+		}
+	
+		return true;
+	}
+
+	public static boolean retrieveSavedVoltages() {
+		// FIXME Implement this method and savePresentVoltages() using MatrixMarket format.
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * Intialize load and generator base values for harmonics analysis.
+	 */
+	public static boolean initializeForHarmonics() {
+		if (savePresentVoltages()) {  // Zap voltage vector to disk
+			for (PCElement pcElem : DSSGlobals.getInstance().getActiveCircuit().getPCElements()) 
+				pcElem.initHarmonics();
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Does all PC elements.
+	 * 
+	 * If state variables not defined for a PC class, does nothing.
+	 */
+	public static void calcInitialMachineStates() {
+		for (PCElement pcElem : DSSGlobals.getInstance().getActiveCircuit().getPCElements()) {
+			if (pcElem.isEnabled())
+				pcElem.initStateVars();
+		}
+	}
+
+	/**
+	 * For now, just does generators.
+	 */
+	public static void invalidateAllMachines() {
+		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators()) 
+			pGen.setYprimInvalid(true);
+	}
+
+	public static double presentTimeInSec() {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		return sol.getDynaVars().t + sol.getIntHour() * 3600.0;
+	}
+
+	public static int doResetFaults() {
+		for (FaultObj fElem : DSSGlobals.getInstance().getActiveCircuit().getFaults())
+			fElem.reset();
+		return 0;
+	}
+
+	public static int doResetControls() {
+		for (ControlElem cElem : DSSGlobals.getInstance().getActiveCircuit().getDSSControls()) {
+			if (cElem.isEnabled())
+				cElem.reset();
+		}
+		return 0;
+	}
+
+	public static int getNodeNum(int NodeRef) {
+		if (NodeRef == 0) {  // TODO Check zero based indexing
+			return 0;
+		} else {
+			return DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef].NodeNum;
+		}
+	}
+
+	/**
+	 * Rotate a phasor by an angle and harmonic.
+	 */
+	public static void rotatePhasorDeg(Complex Phasor, double h, double AngleDeg) {
+		Phasor = Phasor.multiply( ComplexUtils.polar2Complex(1.0, Math.toRadians(h * AngleDeg)) );
+	}
+
+	public static void rotatePhasorRad(Complex Phasor, double h, double AngleRad) {
+		Phasor = Phasor.multiply( ComplexUtils.polar2Complex(1.0, h * AngleRad) );
 	}
 	
 	
@@ -957,41 +1167,13 @@ public class Utilities {
 		return false;
 	}
 
-	public static void dumpAllDSSCommands(String Filename) {
-
-	}
-
-	public static void dumpAllocationFactors(String Filename) {
-
-	}
-
 	public static void dumpComplexMatrix(PrintStream F,
 			CMatrix AMatrix) {
 
 	}
 
-	public static double nearestBasekV(double kV) {
-		return 0;
-	}
-
-	public static double presentTimeInSec() {
-		return 0;
-	}
-
-	public static int doResetFaults() {
-		return 0;
-	}
-
-	public static int doResetControls() {
-		return 0;
-	}
-
 	public static void doResetKeepList() {
 
-	}
-
-	public static int getNodeNum(int NodeRef) {
-		return 0;
 	}
 
 	public static Complex CmulReal_im(Complex a, double Mult) {
@@ -1040,16 +1222,6 @@ public class Utilities {
 
 	}
 
-	public static void rotatePhasorDeg(Complex Phasor, double h,
-			double AngleDeg) {
-
-	}
-
-	public static void rotatePhasorRad(Complex Phasor, double h,
-			double AngleRad) {
-
-	}
-
 	public static void convertComplexArrayToPolar(Complex[] Buffer,
 			int N) {
 
@@ -1083,26 +1255,6 @@ public class Utilities {
 	public static void CmulArray(Complex[] pc, double Multiplier,
 			int size) {
 
-	}
-
-	public static void calcInitialMachineStates() {
-
-	}
-
-	public static void invalidateAllMachines() {
-
-	}
-
-	public static boolean initializeForHarmonics() {
-		return false;
-	}
-
-	public static boolean savePresentVoltages() {
-		return false;
-	}
-
-	public static boolean retrieveSavedVoltages() {
-		return false;
 	}
 
 	public static double getMaxPUVoltage() {
