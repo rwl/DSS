@@ -143,7 +143,7 @@ public class DSSGlobals {
 	private Storage StorageClass;
 
 	private List<String> EventStrings;
-	private String[] SavedFileList;
+	private List<String> SavedFileList;
 
 	private List<DSSClass> DSSClassList;  // base class types
 	private HashList ClassNames;
@@ -605,11 +605,11 @@ public class DSSGlobals {
 		EventStrings = eventStrings;
 	}
 
-	public String[] getSavedFileList() {
+	public List<String> getSavedFileList() {
 		return SavedFileList;
 	}
 
-	public void setSavedFileList(String[] savedFileList) {
+	public void setSavedFileList(List<String> savedFileList) {
 		SavedFileList = savedFileList;
 	}
 
@@ -755,7 +755,7 @@ public class DSSGlobals {
 	public void makeNewCircuit(String Name) {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
-			ActiveDSSObject = Solution.ActiveSolutionObj;
+			ActiveDSSObject = Solution.getActiveSolutionObj();
 			/*Handle = */ Circuits.add(ActiveCircuit);
 			NumCircuits += 1;
 			// Pass remainder of string on to vsource.

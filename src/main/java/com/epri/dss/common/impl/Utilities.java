@@ -1226,6 +1226,189 @@ public class Utilities {
 		
 		DSSGlobals.getInstance().getEventStrings().add(S);
 	}
+
+	public static void dumpComplexMatrix(PrintStream F, CMatrix aMatrix) {
+		// TODO Convert to use MatrixMarket format
+		try {
+			if (aMatrix != null) {
+				F.println("!(G matrix)");
+				for (int i = 0; i < aMatrix.getNOrder(); i++) {
+					F.print("! ");
+					for (int j = 0; j < i; j++) 
+						F.printf("%.8f ", aMatrix.getElement(i, j).getReal());
+					F.println();
+				}
+				F.println("!(B Matrix) = ");
+				for (int i = 0; i < aMatrix.getNOrder(); i++) {
+					F.print("! ");
+					for (int j = 0; j < i; j++) 
+						F.printf("%.8f ", aMatrix.getElement(i, j).getImaginary());
+					F.println();
+				}
+			}
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("Error in Dump Complex Matrix: "+e.getMessage()+"  Write aborted.", 716);
+		}
+	}
+
+	/**
+	 * Check all conductors of this element to see if it is closed.
+	 * Make sure at least one phase on each terminal is closed.
+	 */
+	public static boolean allTerminalsClosed(CktElement thisElement) {
+		boolean Result = false;
+		for (int i = 0; i < thisElement.getNTerms(); i++) {
+			Result = false;
+			thisElement.setActiveTerminalIdx(i);  // TODO Check zero based indexing
+			for (int j = 0; j < thisElement.getNPhases(); j++) 
+				if (thisElement.getConductorClosed(j)) {
+					Result = true;
+					break;
+				}
+			if (!Result)
+				return Result;  // didn't find a closed phase on this terminal
+		}
+		return Result;
+	}
+
+	/**
+	 * Special Function to write the Vsource class and change the DSS command
+	 * of the first Source so that there is no problem with duplication when
+	 * the circuit is subsequently created.
+	 */
+	public static boolean writeVsourceClassFile(DSSClass DSS_Class, boolean isCktElement) {
+		PrintWriter F;
+		String ClassName;
+		CktElement elem;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		boolean Result = true;
+		if (DSS_Class.getElementCount() == 0) 
+			return Result;
+	
+		try {
+			ClassName = DSS_Class.getName();
+			FileWriter FW = new FileWriter(ClassName + ".dss");
+			F = new PrintWriter(FW);
+			
+			Globals.getSavedFileList().add(ClassName + ".dss");
+			DSS_Class.getFirst();  // Sets ActiveDSSObject
+			writeActiveDSSObject(F, "Edit");  // Write first Vsource out as an edit
+			while (DSS_Class.getNext() >= 0) {  // TODO Check zero based indexing
+				// Skip cktElements that have been checked before and written out by
+				// something else
+				elem = (CktElement) Globals.getActiveDSSObject();
+				if (elem.isHasBeenSaved())
+					continue;
+				// Skip disabled circuit elements; write all general DSS objects
+				writeActiveDSSObject(F, "New");  // sets HasBeenSaved = true
+			}
+			F.close();
+			DSS_Class.setSaved(true);
+		} catch (Exception e) {
+			Globals.doSimpleMsg("WriteClassFile Error: "+e.getMessage(), 717);
+			Result = false;
+		}
+	
+		return Result;
+	}
+
+	public static boolean writeClassFile(DSSClass DSS_Class, String FileName, boolean isCktElement) {
+		PrintWriter F;
+		String ClassName;
+		int nRecords;
+		CktElement elem;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		boolean Result = true;
+
+		if (DSS_Class.getElementCount() == 0)
+			return Result;
+
+		try {
+			ClassName = DSS_Class.getName();
+			if (FileName.length() == 0)
+				FileName = ClassName + ".dss";  // default file name
+			
+			FileWriter FW = new FileWriter(FileName);
+			F = new PrintWriter(FW);
+
+			nRecords = 0;
+
+			DSS_Class.getFirst();  // Sets ActiveDSSObject
+			
+			while (DSS_Class.getNext() >= 0) {  // TODO Check zero based indexing
+				// Skip cktElements that have been checked before and written out by
+				// something else
+				if (isCktElement) {
+					elem = (CktElement) Globals.getActiveDSSObject();
+					if (elem.isHasBeenSaved() || (!elem.isEnabled()))
+						continue;
+				}
+
+				writeActiveDSSObject(F, "New");  // sets HasBeenSaved = true
+				nRecords += 1; // count the actual records
+
+			}
+			F.close();
+
+			if (nRecords > 0) {
+				Globals.getSavedFileList().add(FileName);
+			} else {
+				new File(FileName).delete();
+			}
+
+			DSS_Class.setSaved(true);
+		} catch (Exception e) {
+			Globals.doSimpleMsg("WriteClassFile Error: "+e.getMessage(), 718);
+			Result = false;
+		}
+		return Result;
+	}
+
+	/**
+	 * Checks for blanks in the name and puts quotes around it.
+	 */
+	public static String checkForBlanks(String S) {
+		String Result = S;
+		if (S.indexOf(' ') >= 0) 
+			if (S.charAt(0) != '(')  // Ignore if already quoted
+				if (S.charAt(0) != '[')  // Ignore if already quoted
+					if (S.charAt(0) != '{')  // Ignore if already quoted
+						Result = "\""+S+"\"";
+		return Result;
+	}
+
+	public static void writeActiveDSSObject(PrintWriter F, String NewOrEdit) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		DSSClass ParClass = Globals.getActiveDSSObject().getParentClass();
+		F.write(NewOrEdit + " \"" + ParClass.getName() + "." + Globals.getActiveDSSObject().getName() + "\"");
+
+		Globals.getActiveDSSObject().saveWrite(F);
+
+		// Handle disabled circuit elements;  Modified to allow applets to save disabled elements 12-28-06
+		if ((Globals.getActiveDSSObject().getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
+			CktElement elem = (CktElement) Globals.getActiveDSSObject();
+			if (!elem.isEnabled()) 
+				F.write(" ENABLED=NO");
+		}
+		F.println();  // Terminate line
+
+		Globals.getActiveDSSObject().setHasBeenSaved(true);
+	}
+
+	public static void doResetKeepList() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		for (int i = 0; i < ckt.getNumBuses(); i++) 
+			ckt.getBuses()[i].setKeep(false);
+	}
+	
+	private static String extractComment(String s) {
+		return s.substring(s.indexOf('!'));
+	}
 	
 	
 
@@ -1269,19 +1452,6 @@ public class Utilities {
 		return false;
 	}
 
-	public static boolean allTerminalsClosed(CktElement thisElement) {
-		return false;
-	}
-
-	public static void dumpComplexMatrix(PrintStream F,
-			CMatrix AMatrix) {
-
-	}
-
-	public static void doResetKeepList() {
-
-	}
-
 	public static Complex CmulReal_im(Complex a, double Mult) {
 		return null;
 	}
@@ -1292,24 +1462,6 @@ public class Utilities {
 
 	public static int iMaxAbsdblArrayValue(int npts, double[] dbls) {
 		return 0;
-	}
-
-	public static boolean writeClassFile(DSSClass DSS_Class, String FileName,
-			boolean isCktElement) {
-		return false;
-	}
-
-	public static boolean writeVsourceClassFile(DSSClass DSS_Class,
-			boolean isCktElement) {
-		return false;
-	}
-
-	public static void writeActiveDSSObject(PrintStream F, String NewOrEdit) {
-
-	}
-
-	public static String checkForBlanks(String S) {
-		return null;
 	}
 
 	public static boolean rewriteAlignedFile(String FileName) {
