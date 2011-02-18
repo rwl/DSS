@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
@@ -36,6 +37,7 @@ import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.executive.ExecCommands;
 import com.epri.dss.executive.ExecOptions;
+import com.epri.dss.executive.Executive;
 import com.epri.dss.executive.impl.ExecCommandsImpl;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
@@ -1409,6 +1411,236 @@ public class Utilities {
 	private static String extractComment(String s) {
 		return s.substring(s.indexOf('!'));
 	}
+
+	public static boolean rewriteAlignedFile(String FileName) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		FileInputStream fileInput;
+		DataInputStream dataInput;
+		BufferedReader inputReader;
+		
+		FileWriter FWout;
+		PrintWriter Fout;
+		
+		String SaveDelims, Line, Field, AlignedFile;
+		int[] FieldLength;
+		int ArraySize, FieldLen, FieldNum;
+
+
+		boolean Result = true;
+
+		try {
+			fileInput = new FileInputStream(FileName);
+			dataInput = new DataInputStream(fileInput);
+			inputReader = new BufferedReader(new InputStreamReader(dataInput));
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening file: "+FileName+", "+e.getMessage(), 719);
+			return false;
+		}
+
+		try {
+			AlignedFile = new File(FileName).getAbsolutePath() + "Aligned_" + new File(FileName).getName();
+			FWout = new FileWriter(AlignedFile);
+			Fout = new PrintWriter(FWout);
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening file: "+ AlignedFile +", "+e.getMessage(), 720);
+			fileInput.close();
+			dataInput.close();
+			inputReader.close();
+			return false;
+		}
+
+		SaveDelims = Globals.getAuxParser().getDelimChars();
+		Globals.getAuxParser().setDelimChars(",");
+		ArraySize   = 10;
+		FieldLength = new int[ArraySize];
+
+		try {
+			/* Scan once to set field lengths */
+			while ((Line = inputReader.readLine()) != null) {
+				Globals.getAuxParser().setCmdString(Line);  // Load the parser
+				FieldNum = 0;
+				while (FieldLen > 0) {
+					Globals.getAuxParser().getNextParam();
+					Field = Globals.getAuxParser().makeString();
+					FieldLen = Field.length();
+					if (Field.indexOf(' ') >= 0)  // TODO Check zero based indexing
+						FieldLen = FieldLen + 2;
+					if (FieldLen > 0) {
+						FieldNum += 1;
+						if (FieldNum > ArraySize) {
+							ArraySize = FieldNum;
+							FieldLength = (int[]) resizeArray(FieldLength, ArraySize);
+							FieldLength[FieldNum] = FieldLen;
+						}
+					} else if (FieldLen > FieldLength[FieldNum]) {
+						FieldLength[FieldNum] = FieldLen;
+					}
+				}
+			}
+
+			/* Now go back and re-read while writing the new file */
+			inputReader.reset();
+
+			while ((Line = inputReader.readLine()) != null) {
+				Globals.getAuxParser().setCmdString(Line);  // Load the parser
+				FieldNum = 0;
+				while (FieldLen > 0) {
+					Globals.getAuxParser().getNextParam();
+					Field = Globals.getAuxParser().makeString();
+					if (Field.indexOf(' ') >= 0)  // TODO Check zero based indexing
+						Field = "\"" + Field + "\"";  // add quotes if a space in field
+					FieldLen = Field.length();
+					if (FieldLen > 0) {
+						FieldNum += 1;
+						Fout.write( pad(Field, FieldLength[FieldNum] + 1) );  // TODO Check zero based indexing
+					}
+				}
+
+				if (Line.indexOf('!') > 0)
+					Fout.write(extractComment(Line));
+
+				Fout.println();
+			}
+		} finally {
+			
+			try {
+				fileInput.close();
+				dataInput.close();
+				inputReader.close();
+				
+				FWout.close();
+				Fout.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			FieldLength = null;
+			Globals.getAuxParser().setDelimChars(SaveDelims);
+		}
+
+		Globals.setGlobalResult(AlignedFile);
+	
+		return Result;
+	}
+
+	public static int doExecutiveCommand(String s) {
+		Executive.DSSExecutive.setCommand(s);
+		return Executive.DSSExecutive.getErrorResult();
+	}
+
+	/**
+	 * Check to see if two lines are in parallel.
+	 */
+	public static boolean checkParallel(CktElement Line1, CktElement Line2) {
+
+		if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[0].BusRef)  // TODO Check zero based indexing
+			if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[1].BusRef) 
+				return true;
+				
+		if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[0].BusRef)
+			if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[1].BusRef)
+				return true;
+				
+		return false;
+	}
+
+	public static double getMaxPUVoltage() {
+		int nRef;
+		double Result = -1.0;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		for (int i = 0; i < ckt.getNumBuses(); i++) {
+			if (ckt.getBuses()[i].getkVBase() > 0.0) {
+				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
+					nRef = ckt.getBuses()[i].getRef(j);
+					if (nRef > 0) 
+						Result = Math.max(Result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getkVBase());
+				}
+			}
+		}
+		
+		return Result * 0.001;
+	}
+
+	public static double getMinPUVoltage(boolean ignoreNeutrals) {
+		int nRef;
+		double VMagPU;
+		
+		double Result    = 1.0e50;  // start with big number
+		boolean MinFound = false;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		for (int i = 0; i < ckt.getNumBuses(); i++) {
+			Bus bus = ckt.getBuses()[i];
+			if (bus.getkVBase() > 0.0) 
+				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
+					nRef = bus.getRef(j);
+					if (nRef > 0) {
+						VMagPU = ckt.getSolution().getNodeV()[nRef].abs() / bus.getkVBase();
+						if (ignoreNeutrals) {
+							if (VMagPU > 100.0) {  // 0.1 pu
+								Result   = Math.min(Result, VMagPU);  // only check buses greater than 10%
+								MinFound = true;
+							}
+						} else {
+							Result   = Math.min(Result, VMagPU);
+							MinFound = true;
+						}
+					}
+				}
+		}
+		
+		Result = Result * 0.001;
+	
+		if (!MinFound)
+			Result = -1.0;
+	
+		return Result;
+	}
+
+	public static Complex getTotalPowerFromSources() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		Complex Result = Complex.ZERO;
+		
+		for (CktElement pElem : ckt.getSources()) 
+			Result = Result.add(pElem.getPower(0).negate());
+	
+		return Result;
+	}
+	
+	
+	/**
+	 * Distribute the generators uniformly amongst the feeder nodes that have loads.
+	 */
+	public static void writeUniformGenerators(PrintWriter F, double kW, double PF) {
+		LoadObj pLoad;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
+		int Count = LoadClass.getElementList().size();
+
+		double kWEach = kW / Math.max(1.0, Math.round(Count));
+		if (ckt.isPositiveSequence()) 
+			kWEach = kWEach / 3.0;
+
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled()) {
+				F.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
+				F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+				F.printf(" kW=%-g", kWEach);
+				F.printf(" PF=%-.3g", PF);
+			}
+			F.print(" model=1");
+			F.println();
+		}
+	}
 	
 	
 
@@ -1444,14 +1676,6 @@ public class Utilities {
 		return null;
 	}
 
-	public static int doExecutiveCommand(String s) {
-		return 0;
-	}
-
-	public static boolean checkParallel(CktElement Line1, CktElement Line2) {
-		return false;
-	}
-
 	public static Complex CmulReal_im(Complex a, double Mult) {
 		return null;
 	}
@@ -1464,25 +1688,9 @@ public class Utilities {
 		return 0;
 	}
 
-	public static boolean rewriteAlignedFile(String FileName) {
-		return false;
-	}
-
 	public static void CmulArray(Complex[] pc, double Multiplier,
 			int size) {
 
-	}
-
-	public static double getMaxPUVoltage() {
-		return 0;
-	}
-
-	public static double getMinPUVoltage(boolean ignoreNeutrals) {
-		return 0;
-	}
-
-	public static Complex getTotalPowerFromSources() {
-		return null;
 	}
 
 	public static int getMaxCktElementSize() {
