@@ -1,5 +1,6 @@
 package com.epri.dss.common.impl;
 
+import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import org.apache.commons.math.complex.ComplexUtils;
 import org.w3c.dom.Node;
 
+import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
 
@@ -24,6 +26,7 @@ import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.FeederObj;
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.control.ControlElem;
@@ -1617,7 +1620,7 @@ public class Utilities {
 	/**
 	 * Distribute the generators uniformly amongst the feeder nodes that have loads.
 	 */
-	public static void writeUniformGenerators(PrintWriter F, double kW, double PF) {
+	private static void writeUniformGenerators(PrintWriter F, double kW, double PF) {
 		LoadObj pLoad;
 		
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -1636,16 +1639,305 @@ public class Utilities {
 				F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
 				F.printf(" kW=%-g", kWEach);
 				F.printf(" PF=%-.3g", PF);
+				F.print(" model=1");
+				F.println();
 			}
-			F.print(" model=1");
-			F.println();
 		}
 	}
 	
+	/**
+	 * Distribute Generators randomly to loaded buses.
+	 */
+	private static void writeRandomGenerators(PrintWriter F, double kW, double PF) {
+		LoadObj pLoad;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
+		
+		int Count = LoadClass.getElementList().size();
+		
+		/* Count enabled loads */
+		int LoadCount = 0;
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled())
+				LoadCount += 1;
+		}
+
+		double kWEach = kW / LoadCount;  // median sized generator
+		if (ckt.isPositiveSequence())
+			kWEach = kWEach / 3.0;
+
+//		randomize;
+
+		/* Place random sizes on load buses so that total is approximately what was spec'd */
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled()) {
+				F.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
+				F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+				F.printf(" kW=%-g", kWEach * Math.random() * 2.0);
+				F.printf(" PF=%-.3g", PF);
+				F.print(" model=1");
+				F.println();
+			}
+		}
+	}
+	
+	/**
+	 * Distribute generators on every other load, skipping the number specified.
+	 * 
+	 * Distribute the generator proportional to load.
+	 */
+	private static void writeEveryOtherGenerators(PrintWriter F, double kW, double PF, int Skip) {
+		double kWEach;
+		LoadObj pLoad;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
+		int Count = LoadClass.getElementList().size();
+		/* Add up the rated load in the enabled loads where gens will be placed */
+		double TotalkW = 0.0;
+		int SkipCount = Skip;
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled())
+				/* Do not count skipped loads */
+				if (SkipCount == 0) { 
+					TotalkW = TotalkW + pLoad.getkWBase();  // will be right value if pos seq, too
+					SkipCount = Skip;  // start counter over again
+				} else {
+					SkipCount -= 1;
+				}
+		}
+
+		if (ckt.isPositiveSequence()) {
+			kWEach = kW / TotalkW / 3.0;
+		} else {
+			kWEach = kW / TotalkW;
+		}
+
+		SkipCount = Skip;
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled()) 
+				if (SkipCount == 0) {
+					F.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
+					F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+					F.printf(" kW=%-g ", kWEach * pLoad.getkWBase());
+					F.printf(" PF=%-.3g", PF);
+					F.print(" model=1");
+					F.println();
+					SkipCount = Skip;
+				} else {
+					SkipCount -= 1;
+				}
+		}
+	}
+	
+	/**
+	 * Distribute the generator proportional to load.
+	 */
+	private static void writeProportionalGenerators(PrintWriter F, double kW, double PF) {
+		double kWEach;
+		LoadObj pLoad;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
+		int Count = LoadClass.getElementList().size();
+		
+		/* Add up the rated load in the enabled loads */
+		double TotalkW = 0.0;
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled()) 
+				TotalkW = TotalkW + pLoad.getkWBase();  // will be right value if pos seq, too
+		}
+
+		if (ckt.isPositiveSequence()) {
+			kWEach = kW / TotalkW / 3.0;
+		} else {
+			kWEach = kW / TotalkW;
+		}
+
+		for (int i = 0; i < Count; i++) {
+			pLoad = (LoadObj) LoadClass.getElementList().get(i);
+			if (pLoad.isEnabled()) {
+				F.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
+				F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+				F.printf(" kW=%-g", kWEach * pLoad.getkWBase());
+				F.printf(" PF=%-.3g", PF);
+				F.print(" model=1");
+				F.println();
+			}
+		}
+	}
+
+	public static void makeDistributedGenerators(double kW, double PF,
+			String How, int Skip, String Fname) {
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		FileWriter FW;
+		PrintWriter F;
+
+		/* Write outputfile and then redirect command parser to it. */
+
+		try {
+			if (new File(Fname).exists())
+				Globals.doSimpleMsg("File \""+Fname+"\" is about to be overwritten. Rename it now before continuing if you wish to keep it.", 721);
+			FW = new FileWriter(Fname);
+			F = new PrintWriter(FW);
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening \"" + Fname + "\" for writing. Aborting.", 722);
+			return;
+		}
+
+		try {
+			F.println("! Created with Distribute Command:");
+			F.println(String.format("! Distribute kW=%-.6g PF=%-.6g How=%s Skip=%d  file=%s", kW, PF, How, Skip, Fname));
+			F.println();
+			//F.println("Set allowduplicates=yes");
+			if (How.length() == 0)
+				How = "P";
+			switch (How.toUpperCase().charAt(0)) {
+			case 'U':
+				writeUniformGenerators(F, kW, PF);
+			case 'R':
+				writeRandomGenerators(F, kW, PF);
+			case 'S':
+				writeEveryOtherGenerators(F, kW, PF, Skip);
+			default:
+				writeProportionalGenerators(F, kW, PF);
+			}
+			Globals.setGlobalResult(Fname);
+		} finally {
+			F.println("Set allowduplicates=no");
+			try {
+				FW.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			F.close();
+		}
+	}
+
+	/**
+	 * Let EnergyMeter Objects control re-enabling of feeders.
+	 * 
+	 * Feeder could have been dumped in meantime by setting Feeder=False in EnergyMeter.
+	 */
+	public static void enableFeeders() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters()) 
+			pMeter.enableFeeder();
+	}
+
+	public static void disableFeeders() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		for (FeederObj pFeeder : ckt.getFeeders()) {
+			pFeeder.setEnabled(false);
+			pFeeder.setCktElementFeederFlags(false);
+		}
+	}
+
+	public static void initializeFeeders() {
+		// Do nothing for now
+	}
+
+	public static void forwardSweepAllFeeders() {
+		// Do nothing for now
+	}
+
+	public static void backwardSweepAllFeeders() {
+		// Do nothing for now
+	}
+
+	public static String getDSSArray_Real(int n, double[] dbls) {
+		String Result = "(";
+		for (int i = 0; i < n; i++)
+			Result = Result + String.format(" %-.5g", dbls[i]);
+		return Result + ")";
+	}
+
+	public static String getDSSArray_Integer(int n, int[] ints) {
+		String Result = "(";
+		for (int i = 0; i < n; i++) 
+			Result = Result + String.format(" %-.d", ints[i]);
+		return Result + ")";
+	}
+
+	/**
+	 * Multiply only imaginary part by a real.
+	 */
+	public static Complex CmulReal_im(Complex a, double Mult) {
+		return new Complex(a.getReal(), a.getImaginary() * Mult);
+	}
+
+	/**
+	 * Multiply a complex array times a double.
+	 */
+	public static void CmulArray(Complex[] pc, double Multiplier, int size) {
+		for (int i = 0; i < size; i++) 
+			pc[i] = pc[i].multiply(Multiplier);
+	}
+
+	public static int getMaxCktElementSize() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		int Result = 0;
+		for (int i = 0; i < ckt.getNumDevices(); i++)
+			Result = Math.max(Result, ckt.getCktElements().get(i).getYorder());
+		return Result;
+	}
+
+	/**
+	 * To help avoid collisions of neutral numbers, this function returns a
+	 * node number that is not being used, starting at the StartNode value.
+	 */
+	public static int getUniqueNodeNumber(String sBusName, int StartNode) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		int Result = StartNode;
+		int iBusidx = ckt.getBusList().find(sBusName);
+		if (iBusidx >= 0)  // TODO Check zero based indexing
+			while (ckt.getBuses()[iBusidx].findIdx(Result) != -1)  // TODO Check zero based indexing
+				Result += 1;
+		ckt.getBuses()[iBusidx].add(Result);  // add it to the list so next call will be unique
+		return Result;
+	}
 	
 
 	public static void showMessageBeep(String s) {
+		Toolkit.getDefaultToolkit().beep();
+		DSSForms.infoMessageDlg(s);
+	}
 
+	public static boolean isPathBetween(PDElement FromLine, PDElement ToLine) {
+		PDElement PDElem = FromLine;
+		while (PDElem != null) {
+			if (PDElem.equals(ToLine)) 
+				return true;
+			PDElem = PDElem.getParentPDElement();
+		}
+		return false;
+	}
+
+	/**
+	 * Trace back up a tree and execute an edit command string.
+	 */
+	public static void traceAndEdit(PDElement FromLine, PDElement ToLine, String EditStr) {
+		PDElement pLine = FromLine;
+		while (pLine != null) {
+			Parser.getInstance().setCmdString(EditStr);
+			pLine.edit();  // Uses Parser
+			if (pLine.equals(ToLine)) 
+				break;
+			pLine = pLine.getParentPDElement();
+		}
 	}
 
 	public static int interpretLoadShapeClass(String s) {
@@ -1664,19 +1956,7 @@ public class Utilities {
 		return null;
 	}
 
-	public static String getDSSArray_Real(int n, double[] dbls) {
-		return null;
-	}
-
-	public static String getDSSArray_Integer(int n, int[] ints) {
-		return null;
-	}
-
 	public static String getEarthModel(int n) {
-		return null;
-	}
-
-	public static Complex CmulReal_im(Complex a, double Mult) {
 		return null;
 	}
 
@@ -1688,56 +1968,9 @@ public class Utilities {
 		return 0;
 	}
 
-	public static void CmulArray(Complex[] pc, double Multiplier,
-			int size) {
-
-	}
-
-	public static int getMaxCktElementSize() {
-		return 0;
-	}
-
-	public static int getUniqueNodeNumber(String sBusName, int StartNode) {
-		return 0;
-	}
-
-	public static boolean isPathBetween(PDElement FromLine, PDElement ToLine) {
-		return false;
-	}
-
-	public static void traceAndEdit(PDElement FromLine, PDElement ToLine,
-			String EditStr) {
-
-	}
-
 	public static void goForwardAndRephase(PDElement FromLine,
 			String PhaseString, String EditStr, String ScriptFileName,
 			boolean TransStop) {
-
-	}
-
-	public static void makeDistributedGenerators(double kW, double PF,
-			String How, int Skip, String Fname) {
-
-	}
-
-	public static void enableFeeders() {
-
-	}
-
-	public static void disableFeeders() {
-
-	}
-
-	public static void initializeFeeders() {
-
-	}
-
-	public static void forwardSweepAllFeeders() {
-
-	}
-
-	public static void backwardSweepAllFeeders() {
 
 	}
 
