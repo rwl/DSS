@@ -66,6 +66,17 @@ public class DSSGlobals {
 	/* ERRORS */
 	public static final int SOLUTION_ABORT = 99;
 
+	/* For General Sequential Time Simulations */
+	public static final int USEDAILY  = 0;
+	public static final int USEYEARLY = 1;
+	public static final int USEDUTY   = 2;
+	public static final int USENONE   =-1;
+
+	/* Earth Model */
+	public static final int SIMPLECARSON  = 1;
+	public static final int FULLCARSON    = 2;
+	public static final int DERI          = 3;
+
 	/* 120-degree shift constant */
 	public static final Complex CALPHA = new Complex(-0.5, -0.866025);
 	public static final double SQRT2 = Math.sqrt(2.0);

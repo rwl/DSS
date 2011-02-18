@@ -189,6 +189,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	protected boolean MarkSwitches;
 	protected boolean MarkTransformers;
+	
+	protected int ActiveLoadShapeClass;
 
 	public DSSCircuit(String aName) {
 		super("Circuit");
@@ -1050,6 +1052,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setMarkTransformers(boolean markTransformers) {
 		MarkTransformers = markTransformers;
+	}
+
+	public int getActiveLoadShapeClass() {
+		return ActiveLoadShapeClass;
+	}
+
+	public void setActiveLoadShapeClass(int activeLoadShapeClass) {
+		ActiveLoadShapeClass = activeLoadShapeClass;
 	}
 
 	private void addDeviceHandle(int Handle) {

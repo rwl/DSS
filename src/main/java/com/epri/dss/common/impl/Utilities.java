@@ -1,5 +1,6 @@
 package com.epri.dss.common.impl;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -1940,38 +1941,261 @@ public class Utilities {
 		}
 	}
 
+	/**
+	 * Trace forward down a tree and Generate a script file to change the phase.
+	 */
+	public static void goForwardAndRephase(PDElement FromLine, String PhaseString,
+			String EditStr, String ScriptFileName, boolean TransStop) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		PDElement pPDelem;
+		CktElement pShuntObject;
+		String S;
+		FileWriter FWout;
+		PrintWriter Fout = null;
+		String FileName = null;
+		int XfmrLevel;
+
+		EnergyMeterObj pMeter = (EnergyMeterObj) FromLine.getMeterObj();
+
+		/* Search for starting line in branchlist */
+		pPDelem = (PDElement) pMeter.getBranchList().getFirst();
+		while (pPDelem != null) {
+			if (FromLine.equals(pPDelem)) 
+				break;
+			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+		}
+
+		/* Error check */
+		if (pPDelem == null) {
+		Globals.doSimpleMsg(FromLine.getParentClass().getName() + "." + FromLine.getName() + " Not found in Meter Zone.", 723);
+		return;
+		}
+
+		try {
+			FileName = Globals.getDSSDataDirectory() + Globals.getCircuitName_() + ScriptFileName;
+			Globals.setGlobalResult(FileName);
+
+			FWout = new FileWriter(FileName);
+			Fout = new PrintWriter(FWout);
+
+			int i;
+			pMeter.getBranchList().startHere();
+			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+
+			while (pPDelem != null) {	
+				S = "edit " + pPDelem.getParentClass().getName() + "." + pPDelem.getName();
+
+				/* ----------------LINES--------------------------------------------------- */
+
+				if (isLineElement(pPDelem)) {
+
+					for (i = 0; i < pPDelem.getNTerms(); i++) {
+						S = S + String.format(" Bus%d=%s%s", i, stripExtension(pPDelem.getBus(i)), PhaseString);
+						//Parser.getInstance().setCmdString(String.format("Bus$d=%s%s", i, StripExtension(pPDelem.getBus(i)), PhaseString));
+						//pPDelem.edit();
+					}
+
+					/* When we're done with that, we'll send the edit string */
+					if (EditStr.length() > 0) {
+						S = S + "  " + EditStr;
+						//Parser.getInstance().setCmdString(EditStr);
+						//pPDelem.edit();   // Uses Parser
+					}
+
+					Fout.println(S);
+
+					/* Now get all shunt objects connected to this branch */
+					pShuntObject = (CktElement) pMeter.getBranchList().getFirstObject();
+					while (pShuntObject != null) {
+						/* 1st Terminal Only */
+						i = 0;  // TODO Check zero based indexing
+						S = "edit " + pShuntObject.getParentClass().getName() + "." + pShuntObject.getName();
+						S = S + String.format(" Bus%d=%s%s", i, stripExtension(pShuntObject.getBus(i)), PhaseString);
+						if (EditStr.length() > 0)
+							S = S + "  " + EditStr;
+						Fout.println(S);
+						//Parser.getInstance().setCmdString(String.format("Bus$d=%s%s", i, stripExtension(pShuntObject.getBus(0)), PhaseString));
+						//pShuntObject.edit();
+						pShuntObject = (CktElement) pMeter.getBranchList().getNextObject();
+					}
+					
+					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+				} // isLine
+
+				/* ----------------TRANSFORMERS--------------------------------------------------- */
+
+				else if (isTransformerElement(pPDelem)) {
+					
+					/* We'll stop at transformers and change only the primary winding.
+					 * Then we'll cycle forward until the lexical level is less or we're done
+					 */
+					XfmrLevel = pMeter.getBranchList().getLevel();
+					S = S + String.format(" wdg=1 Bus=%s%s  %s", stripExtension(pPDelem.getBus(0)), PhaseString, EditStr);
+					if (!TransStop)
+						S = S + String.format(" wdg=2 Bus=%s%s  %s", stripExtension(pPDelem.getBus(1)), PhaseString, EditStr);
+					Fout.println(S);
+
+					/* Be default Go forward in the tree until we bounce back up to a line section above the transformer */
+					if (TransStop) {
+						while ((pPDelem != null) && (pMeter.getBranchList().getLevel() > XfmrLevel)) {
+							pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+						}
+					}
+				} else {
+					// Then we get lines and loads beyond transformer
+					pPDelem = (PDElement) pMeter.getBranchList().GoForward();  
+				}
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			Fout.close();
+			fireOffEditor(FileName);
+		}
+	}
+
+	/**
+	 * Returns max value of an array of doubles.
+	 */
+	public static double maxDblArrayValue(int npts, double[] dbls) {
+		if (npts == 0)
+			return 0.0;
+
+		double Result = dbls[0];
+		for (int i = 1; i < npts; i++) 
+			Result = Math.max(Result, dbls[i]);
+		
+		return Result;
+	}
+
+	/**
+	 * Returns index of max array value in abs value.
+	 */
+	public static int iMaxAbsdblArrayValue(int npts, double[] dbls) {
+		if (npts == 0)
+			return -1;  // TODO Check zero based indexing
+
+		int Result = 0;  // TODO Check zero based indexing
+		double MaxValue = Math.abs(dbls[0]);
+		for (int i = 1; i < npts; i++) 
+			if (Math.abs(dbls[i]) > MaxValue) {
+				MaxValue = Math.abs(dbls[i]);
+				Result = i;  // save index
+			}
+		return Result;
+	}
+
 	public static int interpretLoadShapeClass(String s) {
-		return 0;
+		String ss = s.toLowerCase();
+		int Result = DSSGlobals.USENONE;
+
+		switch (ss.charAt(0)) {
+		case 'd':
+			switch (ss.charAt(1)) {
+			case 'a':
+				Result = DSSGlobals.USEDAILY;
+			case 'u':
+				Result = DSSGlobals.USEDUTY;
+			}
+		case 'y':
+			Result = DSSGlobals.USEYEARLY;
+		case 'n':
+			Result = DSSGlobals.USENONE;
+		}
+		return Result;
 	}
 
 	public static int interpretEarthModel(String s) {
-		return 0;
-	}
-
-	public static int interpretColorName(String s) {
-		return 0;
+		String ss = s.toLowerCase();
+		int Result = DSSGlobals.SIMPLECARSON;
+		switch (ss.charAt(0)) {
+		case 'c':
+			Result = DSSGlobals.SIMPLECARSON;
+		case 'f':
+			Result = DSSGlobals.FULLCARSON;
+		case 'd':
+			Result = DSSGlobals.DERI;
+		}
+		return Result;
 	}
 
 	public static String getActiveLoadShapeClass() {
-		return null;
+		switch (DSSGlobals.getInstance().getActiveCircuit().getActiveLoadShapeClass()) {
+		case DSSGlobals.USEDAILY:
+			return "Daily";
+		case DSSGlobals.USEYEARLY:
+			return "Yearly";
+		case DSSGlobals.USEDUTY:
+			return "Duty";
+		case DSSGlobals.USENONE:  
+			return "None";
+		default:
+			return "None";
+		}
 	}
 
 	public static String getEarthModel(int n) {
-		return null;
+		switch (n) {
+		case DSSGlobals.SIMPLECARSON:
+			return "Carson";
+		case DSSGlobals.FULLCARSON:
+			return "FullCarson";
+		case DSSGlobals.DERI:
+			return "Deri";
+		default:
+			return "Carson";
+		}
 	}
 
-	public static double maxDblArrayValue(int npts, double[] dbls) {
-		return 0;
-	}
+	public static int interpretColorName(String S) {
 
-	public static int iMaxAbsdblArrayValue(int npts, double[] dbls) {
-		return 0;
-	}
-
-	public static void goForwardAndRephase(PDElement FromLine,
-			String PhaseString, String EditStr, String ScriptFileName,
-			boolean TransStop) {
-
+		int Result = 16711680;  // default color
+		try {
+			if (compareTextShortest(S, "black") == 0) {
+				return 0;
+			} else if (compareTextShortest(S, "Maroon") == 0) {
+				return 128;
+			} else if (compareTextShortest(S, "Green") == 0) {
+				return 32768;
+			} else if (compareTextShortest(S, "Olive") == 0) {
+				return 32896;
+			} else if (compareTextShortest(S, "Navy") == 0) {
+				return 8388608;
+			} else if (compareTextShortest(S, "Purple") == 0) {
+				return 8388736;
+			} else if (compareTextShortest(S, "Teal") == 0) {
+				return 8421376;
+			} else if (compareTextShortest(S, "Gray") == 0) {
+				return 8421504;
+			} else if (compareTextShortest(S, "Silver") == 0) {
+				return 12632256;
+			} else if (compareTextShortest(S, "Red") == 0) {
+				return 255;
+			} else if (compareTextShortest(S, "Lime") == 0) {
+				return 65280;
+			} else if (compareTextShortest(S, "Yellow") == 0) {
+				return 65535;
+			} else if (compareTextShortest(S, "Blue") == 0) {
+				return 16711680;
+			} else if (compareTextShortest(S, "Fuchsia") == 0) {
+				return 16711935;
+			} else if (compareTextShortest(S, "Aqua") == 0) {
+				return 16776960;
+			} else if (compareTextShortest(S, "LtGray") == 0){
+				return 12632256;
+			} else if (compareTextShortest(S, "DkGray") == 0) {
+				return 8421504;
+			} else if (compareTextShortest(S, "White") == 0) {
+				return 16777215;
+			} else {
+				return Integer.parseInt(S);
+			}
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("Invalid Color Specification: \"" + S + "\".", 724);
+		}
+		return Result;
 	}
 
 }

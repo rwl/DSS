@@ -391,6 +391,10 @@ public interface Circuit extends NamedObject {
 
 	void setMarkTransformers(boolean markTransformers) ;
 
+	int getActiveLoadShapeClass();
+
+	void setActiveLoadShapeClass(int activeLoadShapeClass);
+
 	void setActiveCktElement(DSSCktElement Value);
 
 	DSSCktElement getActiveCktElement();
