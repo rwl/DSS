@@ -3,6 +3,9 @@ package com.epri.dss.general;
 import java.io.PrintStream;
 
 public interface GrowthShapeObj extends DSSObject {
+	
+	/* FIXME Private method in OpenDSS */
+	void reCalcYearMult();
 
 	String getPropertyValue(int Index);
 
@@ -12,5 +15,21 @@ public interface GrowthShapeObj extends DSSObject {
 
 	/* Get multiplier for Specified Year */
 	double getMult(int Yr);
+	
+	int getNpts();
+
+	void setNpts(int npts);
+
+	int[] getYear();
+
+	void setYear(int[] year);
+
+	double[] getMultiplier();
+
+	void setMultiplier(double[] multiplier);
+	
+	int getBaseYear();
+
+	void setBaseYear(int baseYear);
 
 }
