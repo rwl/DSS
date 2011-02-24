@@ -53,4 +53,52 @@ public interface LineGeometryObj extends DSSObject {
 	 */
 	void LoadSpacingAndWires(LineSpacingObj Spc, WireDataObj[] Wires);
 
+	double getNormAmps();
+
+	void setNormAmps(double normAmps);
+
+	double getEmergAmps();
+
+	void setEmergAmps(double emergAmps);
+	
+	String[] getCondType();
+
+	void setCondType(String[] condType);
+
+	WireDataObj[] getWireData();
+
+	void setWireData(WireDataObj[] wireData);
+
+	double[] getX();
+
+	void setX(double[] x);
+
+	double[] getY();
+
+	void setY(double[] y);
+
+	int[] getUnits();
+
+	void setUnits(int[] units);
+
+	int getLastUnit();
+
+	void setLastUnit(int lastUnit);
+
+	boolean isDataChanged();
+
+	void setDataChanged(boolean dataChanged);
+
+	boolean isReduce();
+
+	void setReduce(boolean reduce);
+
+	String getSpacingType();
+
+	void setSpacingType(String spacingType);
+
+	OHLineConstants getLineData();
+
+	void setLineData(OHLineConstants lineData);
+
 }

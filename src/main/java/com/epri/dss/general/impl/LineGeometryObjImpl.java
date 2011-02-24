@@ -26,8 +26,8 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 
 	private OHLineConstants LineData;
 	
-	public double NormAmps;
-	public double EmergAmps;
+	protected double NormAmps;
+	protected double EmergAmps;
 
 	public LineGeometryObjImpl(DSSClass ParClass, String LineGeometryName) {
 		super(ParClass);
@@ -125,6 +125,102 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	 */
 	public void LoadSpacingAndWires(LineSpacingObj Spc, WireDataObj[] Wires) {
 		
+	}
+
+	public double getNormAmps() {
+		return NormAmps;
+	}
+
+	public void setNormAmps(double normAmps) {
+		NormAmps = normAmps;
+	}
+
+	public double getEmergAmps() {
+		return EmergAmps;
+	}
+
+	public void setEmergAmps(double emergAmps) {
+		EmergAmps = emergAmps;
+	}
+
+	public String[] getCondType() {
+		return condType;
+	}
+
+	public void setCondType(String[] condType) {
+		this.condType = condType;
+	}
+
+	public WireDataObj[] getWireData() {
+		return WireData;
+	}
+
+	public void setWireData(WireDataObj[] wireData) {
+		WireData = wireData;
+	}
+
+	public double[] getX() {
+		return X;
+	}
+
+	public void setX(double[] x) {
+		X = x;
+	}
+
+	public double[] getY() {
+		return Y;
+	}
+
+	public void setY(double[] y) {
+		Y = y;
+	}
+
+	public int[] getUnits() {
+		return Units;
+	}
+
+	public void setUnits(int[] units) {
+		Units = units;
+	}
+
+	public int getLastUnit() {
+		return LastUnit;
+	}
+
+	public void setLastUnit(int lastUnit) {
+		LastUnit = lastUnit;
+	}
+
+	public boolean isDataChanged() {
+		return DataChanged;
+	}
+
+	public void setDataChanged(boolean dataChanged) {
+		DataChanged = dataChanged;
+	}
+
+	public boolean isReduce() {
+		return Reduce;
+	}
+
+	public void setReduce(boolean reduce) {
+		Reduce = reduce;
+	}
+
+	public String getSpacingType() {
+		return SpacingType;
+	}
+
+	public void setSpacingType(String spacingType) {
+		SpacingType = spacingType;
+	}
+
+	public OHLineConstants getLineData() {
+		return LineData;
+	}
+
+	public void setLineData(OHLineConstants lineData) {
+		LineData = lineData;
 	}
 
 }
