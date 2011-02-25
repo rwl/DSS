@@ -61,6 +61,8 @@ public interface LineGeometryObj extends DSSObject {
 
 	void setEmergAmps(double emergAmps);
 	
+	// FIXME Private members in OpenDSS.
+	
 	String[] getCondType();
 
 	void setCondType(String[] condType);

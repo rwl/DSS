@@ -342,6 +342,8 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	public void setEmergAmps(double emergAmps) {
 		EmergAmps = emergAmps;
 	}
+	
+	// FIXME Private members in OpenDSS.
 
 	public String[] getCondType() {
 		return condType;

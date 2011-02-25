@@ -57,5 +57,47 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		
 	}
+	
+	// FIXME Private members in OpenDSS.
+
+	public int getNConds() {
+		return NConds;
+	}
+
+	public void setNConds(int nConds) {
+		NConds = nConds;
+	}
+
+	public double[] getX() {
+		return X;
+	}
+
+	public void setX(double[] x) {
+		X = x;
+	}
+
+	public double[] getY() {
+		return Y;
+	}
+
+	public void setY(double[] y) {
+		Y = y;
+	}
+
+	public boolean isDataChanged() {
+		return DataChanged;
+	}
+
+	public void setDataChanged(boolean dataChanged) {
+		DataChanged = dataChanged;
+	}
+
+	public void setNPhases(int nPhases) {
+		NPhases = nPhases;
+	}
+
+	public void setUnits(int units) {
+		Units = units;
+	}
 
 }
