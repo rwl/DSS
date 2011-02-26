@@ -15,13 +15,17 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	private int ArrayPropertyIndex;
 
 	/* =0.0 then random interval (hr) */
-	public double Interval;
+	protected double Interval;
 	/* Time values (hr) if Interval > 0.0 */
-	public double[] Hours;
-	public double[] PMultipliers, QMultipliers;
+	protected double[] Hours;
+	protected double[] PMultipliers, QMultipliers;
+	
+	protected double MaxP, MaxQ;
 
-	public double Mean;
-	public double StdDev;
+	protected boolean UseActual;
+
+	protected double Mean;
+	protected double StdDev;
 
 	public LoadShapeObjImpl(DSSClass ParClass) {
 		super(ParClass);
@@ -82,6 +86,74 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void dumpProperties(PrintStream F, boolean Complete) {
 
+	}
+
+	public double[] getHours() {
+		return Hours;
+	}
+
+	public void setHours(double[] hours) {
+		Hours = hours;
+	}
+
+	public double[] getPMultipliers() {
+		return PMultipliers;
+	}
+
+	public void setPMultipliers(double[] pMultipliers) {
+		PMultipliers = pMultipliers;
+	}
+
+	public double[] getQMultipliers() {
+		return QMultipliers;
+	}
+
+	public void setQMultipliers(double[] qMultipliers) {
+		QMultipliers = qMultipliers;
+	}
+
+	public double getMean() {
+		return Mean;
+	}
+
+	public void setMean(double mean) {
+		Mean = mean;
+	}
+
+	public double getStdDev() {
+		return StdDev;
+	}
+
+	public void setStdDev(double stdDev) {
+		StdDev = stdDev;
+	}
+
+	public void setInterval(double interval) {
+		Interval = interval;
+	}
+
+	public double getMaxP() {
+		return MaxP;
+	}
+
+	public void setMaxP(double maxP) {
+		MaxP = maxP;
+	}
+
+	public double getMaxQ() {
+		return MaxQ;
+	}
+
+	public void setMaxQ(double maxQ) {
+		MaxQ = maxQ;
+	}
+
+	public boolean isUseActual() {
+		return UseActual;
+	}
+
+	public void setUseActual(boolean useActual) {
+		UseActual = useActual;
 	}
 
 }

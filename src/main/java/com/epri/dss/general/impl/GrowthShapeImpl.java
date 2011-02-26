@@ -200,6 +200,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		BufferedReader reader;
 		String s;
 		
+		Parser parser;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 	
 		try {
@@ -221,7 +222,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			while (((s = reader.readLine()) != null) && i < pShape.getNpts()) {  // TODO: Check zero based indexing
 				i += 1;
 				// Use AuxParser to allow flexible formats
-				Parser parser = Globals.getAuxParser();
+				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				parser.getNextParam();
 				pShape.getYear()[i] = parser.makeInteger();

@@ -71,5 +71,38 @@ public interface LoadShapeObj extends DSSObject {
 	void initPropertyValues(int ArrayOffset);
 
 	void dumpProperties(PrintStream F, boolean Complete);
+	
+	double[] getHours();
 
+	void setHours(double[] hours);
+
+	double[] getPMultipliers();
+
+	void setPMultipliers(double[] pMultipliers);
+
+	double[] getQMultipliers();
+
+	void setQMultipliers(double[] qMultipliers);
+
+	double getMean();
+
+	void setMean(double mean);
+
+	double getStdDev();
+
+	void setStdDev(double stdDev);
+
+	void setInterval(double interval);
+
+	double getMaxP();
+
+	void setMaxP(double maxP);
+
+	double getMaxQ();
+
+	void setMaxQ(double maxQ);
+
+	boolean isUseActual();
+
+	void setUseActual(boolean useActual);
 }
