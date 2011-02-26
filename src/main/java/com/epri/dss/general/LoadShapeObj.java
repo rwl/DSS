@@ -64,7 +64,7 @@ public interface LoadShapeObj extends DSSObject {
 	/* Normalize the curve presently in memory */
 	void normalize();
 
-	void calcMeanandStdDev();
+	void calcMeanAndStdDev();
 
 	String getPropertyValue(int Index);
 
