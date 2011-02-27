@@ -13,13 +13,19 @@ import com.epri.dss.general.NamedObject;
 
 public class NamedObjectImpl implements NamedObject {
 
-	/* path name, or class name for DSS */
+	/**
+	 * Path name, or class name for DSS.
+	 */
 	private String PName;
 
-	/* localName is unique within a class, like the old FName */
+	/**
+	 * LocalName is unique within a class.
+	 */
 	private String LName;
 
-	/* for optional display, does not have to be unique */
+	/**
+	 * For optional display, does not have to be unique.
+	 */
 	private String DName;
 
 	private UUID pGuid;
@@ -38,7 +44,6 @@ public class NamedObjectImpl implements NamedObject {
 			this.pGuid = null;
 	}
 
-
 	public String getDisplayName() {
 		if (this.DName == "") {
 			return this.PName + "_" + this.LName;
@@ -50,25 +55,29 @@ public class NamedObjectImpl implements NamedObject {
 	public void setDisplayName(String Value) {
 		this.DName = Value;
 	}
+	
+	public String getQualifiedName() {
+		return PName + "." + LName;
+	}
 
-	private UUID getGUID() {
+	private UUID getUUID() {
 		if (this.pGuid == null) {
 			this.pGuid = UUID.randomUUID();
 		}
 		return this.pGuid;
 	}
 
-	public void setGUID(UUID Value) {
+	public void setUUID(UUID Value) {
 		//if (this.pGuid == null) {}
 		this.pGuid = Value;
 	}
 
 	public String getID() {
-		return getGUID().toString();
+		return getUUID().toString();
 	}
 
 	public String getCIM_ID() {
-		return uUIDToCIMString(getGUID());
+		return UUIDToCIMString(getUUID());
 	}
 
 
@@ -89,7 +98,7 @@ public class NamedObjectImpl implements NamedObject {
 	}
 
 
-	public String uUIDToCIMString(UUID uUID) {
+	public String UUIDToCIMString(UUID uUID) {
 		String s;
 		s = uUID.toString();
 		return s.substring(1, s.length() - 2);

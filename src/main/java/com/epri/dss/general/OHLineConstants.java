@@ -26,6 +26,10 @@ import com.epri.dss.shared.CMatrix;
  */
 public interface OHLineConstants {
 	
+	static final double e0 = 8.854e-12;     // dielectric constant  F/m
+	static final double mu0 = 12.56637e-7;  // hy/m
+	static final double TwoPi = 6.283185307;
+	
 	double getGMR(int i, int units);
 	
 	double getRadius(int i, int units);

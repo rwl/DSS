@@ -3,12 +3,14 @@ package com.epri.dss.general;
 import java.util.UUID;
 
 public interface NamedObject {
+	
+	String getQualifiedName();
 
 	String getDisplayName();
 
 	void setDisplayName(String Value);
 
-	void setGUID(UUID Value);
+	void setUUID(UUID Value);
 
 	String getID();
 
@@ -22,6 +24,6 @@ public interface NamedObject {
 
 	void setLocalName(String Value);
 
-	String uUIDToCIMString(UUID uUID);
+	String UUIDToCIMString(UUID uUID);
 
 }

@@ -91,6 +91,11 @@ public class Complex implements Serializable  {
 		(Double.isInfinite(real) || Double.isInfinite(imaginary));
 	}
 	
+	public Complex invert() {
+		double dnom = real * real + imaginary * imaginary;
+		return createComplex(real / dnom, -imaginary / dnom);
+	}
+	
 	/**
 	 * Return the quotient of this complex number and the given real number.
 	 * @param rhs the real number
