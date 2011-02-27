@@ -252,7 +252,7 @@ public class DSSGlobals {
 		return ActiveDSSObject;
 	}
 
-	public void setActiveDSSObject(DSSObjectImpl activeDSSObject) {
+	public void setActiveDSSObject(DSSObject activeDSSObject) {
 		ActiveDSSObject = activeDSSObject;
 	}
 

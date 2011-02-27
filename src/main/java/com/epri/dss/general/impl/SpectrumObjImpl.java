@@ -57,4 +57,28 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	}
 
+	public double[] getPuMagArray() {
+		return puMagArray;
+	}
+
+	public void setPuMagArray(double[] puMagArray) {
+		this.puMagArray = puMagArray;
+	}
+
+	public double[] getAngleArray() {
+		return AngleArray;
+	}
+
+	public void setAngleArray(double[] angleArray) {
+		AngleArray = angleArray;
+	}
+
+	public Complex[] getMultArray() {
+		return MultArray;
+	}
+
+	public void setMultArray(Complex[] multArray) {
+		MultArray = multArray;
+	}
+
 }
