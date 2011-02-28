@@ -25,5 +25,30 @@ public interface TCC_CurveObj extends DSSObject {
 	double time(int i);
 
 	int getNumPoints();
+	
+	// FIXME Private members in OpenDSS
+	
+	int getLastValueAccessed();
 
+	void setLastValueAccessed(int lastValueAccessed);
+
+	int getNpts();
+
+	void setNpts(int npts);
+
+	double[] getLogT();
+
+	void setLogT(double[] logt);
+
+	double[] getLogC();
+
+	void setLogC(double[] logC);
+
+	double[] getC_values();
+
+	void setC_values(double[] c_values);
+	
+	double[] getT_values();
+
+	void setT_values(double[] t_values);
 }

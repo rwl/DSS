@@ -63,4 +63,52 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		return null;
 	}
 
+	public int getLastValueAccessed() {
+		return LastValueAccessed;
+	}
+
+	public void setLastValueAccessed(int lastValueAccessed) {
+		LastValueAccessed = lastValueAccessed;
+	}
+
+	public int getNpts() {
+		return Npts;
+	}
+
+	public void setNpts(int npts) {
+		Npts = npts;
+	}
+
+	public double[] getLogT() {
+		return Logt;
+	}
+
+	public void setLogT(double[] logt) {
+		Logt = logt;
+	}
+
+	public double[] getLogC() {
+		return LogC;
+	}
+
+	public void setLogC(double[] logC) {
+		LogC = logC;
+	}
+
+	public double[] getC_values() {
+		return c_values;
+	}
+
+	public void setC_values(double[] c_values) {
+		this.c_values = c_values;
+	}
+
+	public double[] getT_values() {
+		return t_values;
+	}
+
+	public void setT_values(double[] t_values) {
+		this.t_values = t_values;
+	}
+
 }
