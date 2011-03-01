@@ -36,5 +36,21 @@ public interface WireDataObj extends DSSObject {
 	int getResistanceUnits();
 
 	int getRadiusUnits();
+	
+	// FIXME Private members in OpenDSS
+	
+	void setRDC(double rDC);
+
+	void setR60(double r60);
+
+	void setGMR60(double gMR60);
+
+	void setRadius(double radius);
+
+	void setGMRUnits(int gMRUnits);
+
+	void setResistanceUnits(int resistanceUnits);
+
+	void setRadiusUnits(int radiusUnits);
 
 }

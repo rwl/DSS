@@ -76,5 +76,35 @@ public class WireDataObjImpl extends DSSObjectImpl implements WireDataObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		
 	}
+	
+	// FIXME Private members in OpenDSS
+
+	public void setRDC(double rDC) {
+		RDC = rDC;
+	}
+
+	public void setR60(double r60) {
+		R60 = r60;
+	}
+
+	public void setGMR60(double gMR60) {
+		GMR60 = gMR60;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public void setGMRUnits(int gMRUnits) {
+		GMRUnits = gMRUnits;
+	}
+
+	public void setResistanceUnits(int resistanceUnits) {
+		ResistanceUnits = resistanceUnits;
+	}
+
+	public void setRadiusUnits(int radiusUnits) {
+		RadiusUnits = radiusUnits;
+	}
 
 }
