@@ -1,8 +1,11 @@
 package com.epri.dss.delivery.impl;
 
 import com.epri.dss.delivery.Transformer;
+import com.epri.dss.delivery.TransformerObj;
 
 public class TransformerImpl extends PDClassImpl implements Transformer {
+	
+	private static TransformerObj ActiveTransfObj;
 
 	public TransformerImpl() {
 		// TODO Auto-generated constructor stub
@@ -62,6 +65,14 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	@Override
 	public int newObject(String ObjName) {
 		return 0;
+	}
+
+	public static TransformerObj getActiveTransfObj() {
+		return ActiveTransfObj;
+	}
+
+	public static void setActiveTransfObj(TransformerObj activeTransfObj) {
+		ActiveTransfObj = activeTransfObj;
 	}
 
 }
