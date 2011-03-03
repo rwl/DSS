@@ -119,5 +119,95 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	public double getKvrating() {
 		return kvrating;
 	}
+	
+	// FIXME Private members in OpenDSS
+
+	public double[] getC() {
+		return C;
+	}
+
+	public void setC(double[] c) {
+		C = c;
+	}
+
+	public double[] getXL() {
+		return XL;
+	}
+
+	public void setXL(double[] xL) {
+		XL = xL;
+	}
+
+	public double[] getKvarrating() {
+		return kvarrating;
+	}
+
+	public void setKvarrating(double[] kvarrating) {
+		this.kvarrating = kvarrating;
+	}
+
+	public double[] getR() {
+		return R;
+	}
+
+	public void setR(double[] r) {
+		R = r;
+	}
+
+	public double[] getHarm() {
+		return Harm;
+	}
+
+	public void setHarm(double[] harm) {
+		Harm = harm;
+	}
+
+	public int[] getStates() {
+		return States;
+	}
+
+	public void setStates(int[] states) {
+		States = states;
+	}
+
+	public int getLastStepInService() {
+		return LastStepInService;
+	}
+
+	public void setLastStepInService(int lastStepInService) {
+		LastStepInService = lastStepInService;
+	}
+
+	public double[] getCmatrix() {
+		return Cmatrix;
+	}
+
+	public void setCmatrix(double[] cmatrix) {
+		Cmatrix = cmatrix;
+	}
+
+	public boolean isDoHarmonicRecalc() {
+		return doHarmonicRecalc;
+	}
+
+	public void setDoHarmonicRecalc(boolean doHarmonicRecalc) {
+		this.doHarmonicRecalc = doHarmonicRecalc;
+	}
+
+	public int getSpecType() {
+		return SpecType;
+	}
+
+	public void setSpecType(int specType) {
+		SpecType = specType;
+	}
+
+	public void setTotalkvar(double totalkvar) {
+		this.totalkvar = totalkvar;
+	}
+
+	public void setKvrating(double kvrating) {
+		this.kvrating = kvrating;
+	}
 
 }

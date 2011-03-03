@@ -60,5 +60,51 @@ public interface CapacitorObj extends PDElement {
 	double getTotalkvar();
 
 	double getKvrating();
+	
+	// FIXME Private members in OpenDSS
+	
+	double[] getC();
+
+	void setC(double[] c);
+
+	double[] getXL();
+
+	void setXL(double[] xL);
+
+	double[] getKvarrating();
+
+	void setKvarrating(double[] kvarrating);
+
+	double[] getR();
+
+	void setR(double[] r);
+
+	double[] getHarm();
+
+	void setHarm(double[] harm);
+
+	int[] getStates();
+
+	void setStates(int[] states);
+
+	int getLastStepInService();
+
+	void setLastStepInService(int lastStepInService);
+
+	double[] getCmatrix();
+
+	void setCmatrix(double[] cmatrix);
+
+	boolean isDoHarmonicRecalc();
+
+	void setDoHarmonicRecalc(boolean doHarmonicRecalc);
+
+	int getSpecType();
+
+	void setSpecType(int specType);
+
+	void setTotalkvar(double totalkvar);
+
+	void setKvrating(double kvrating);
 
 }
