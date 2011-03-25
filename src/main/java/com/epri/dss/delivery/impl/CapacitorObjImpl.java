@@ -5,9 +5,12 @@ import java.io.PrintStream;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.delivery.Capacitor;
 import com.epri.dss.delivery.CapacitorObj;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.Complex;
 
 public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	
@@ -154,8 +157,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		int i;
 		CMatrix YPrimTemp, YPrimWork;
 
-		// Normally build only Yprim Shunt, but if there are 2 terminals and
-		// Bus1 != Bus 2
+		// Normally build only Yprim Shunt, but if there are 2 terminals and Bus1 != Bus2
 
 		if (isYprimInvalid()) {
 			// Reallocate YPrim if something has invalidated old allocation
@@ -204,29 +206,431 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		setYprimInvalid(false);
 	}
 	
+	@Override
+	public void dumpProperties(PrintStream F, boolean Complete) {
+		super.dumpProperties(F, Complete);
+
+		F.println("~ " + ParentClass.getPropertyName()[0] + "=" + getFirstBus());
+		F.println("~ " + ParentClass.getPropertyName()[1] + "=" + getNextBus());
+
+		F.println("~ " + ParentClass.getPropertyName()[2] + "=" + getNPhases());
+		F.println("~ " + ParentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
+
+		F.println("~ " + ParentClass.getPropertyName()[4] + "=" + getKvrating());
+		switch (getConnection()) {
+		case 0:
+			F.println("~ " + ParentClass.getPropertyName()[5] + "=wye");
+		case 1:
+			F.println("~ " + ParentClass.getPropertyName()[6] + "=delta");
+		}
+		if (getCmatrix() != null) {
+			F.print(ParentClass.getPropertyName()[6] + "= (");
+			for (int i = 0; i < getNPhases(); i++) {
+				for (int j = 0; j < i; j++) {					
+					// TODO: Check zero based indexing
+					F.print((getCmatrix()[(i - 1) * getNPhases() + j] * 1.0e6) + " ");
+				}
+				if (i != getNPhases())
+					F.print("|");
+			}
+			F.println(")");
+		}
+
+		F.println("~ " + ParentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
+		F.println("~ " + ParentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
+		F.println("~ " + ParentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
+		F.println("~ " + ParentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
+		F.println("~ " + ParentClass.getPropertyName()[11] + "=" + getNumSteps());
+		F.println("~ " + ParentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
+
+		for (int i = Capacitor.NumPropsThisClass + 1; i < ParentClass.getNumProperties(); i++) {  // TODO: Check zero based indexing
+			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+		}
+
+		if (Complete) {
+			F.println("SpecType=" + getSpecType());
+		}
+	}
+	
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+		PropertyValue[0] = getBus(1);  // TODO: Check zero based indexing
+		PropertyValue[1] = getBus(2);  // TODO: Check zero based indexing
+		PropertyValue[2] = "3";
+		PropertyValue[3] = "1200";
+		PropertyValue[4] = "12.47";
+		PropertyValue[5] = "wye";
+		PropertyValue[6] = "";
+		PropertyValue[7] = "";
+		PropertyValue[8] = "0";
+		PropertyValue[9] = "0";
+		PropertyValue[10] = "0";
+		PropertyValue[11] = "1";
+		PropertyValue[12] = "1"; // states
+
+
+		super.initPropertyValues(Capacitor.NumPropsThisClass);
+
+		// Override Inherited properties
+		PropertyValue[Capacitor.NumPropsThisClass + 1] = Utilities.strReal(getNormAmps(), 0);  // TODO: Check zero based indexing
+		PropertyValue[Capacitor.NumPropsThisClass + 2] = Utilities.strReal(getEmergAmps(), 0);
+		PropertyValue[Capacitor.NumPropsThisClass + 3] = Utilities.strReal(getFaultRate(), 0);
+		PropertyValue[Capacitor.NumPropsThisClass + 4] = Utilities.strReal(getPctPerm(), 0);
+		PropertyValue[Capacitor.NumPropsThisClass + 5] = Utilities.strReal(getHrsToRepair(), 0);
+		clearPropSeqArray();
+	}
+	
+	@Override
+	public void makePosSequence() {
+		String S = null;
+		double kvarPerPhase, PhasekV, Cs, Cm;
+		int i, j;
+
+		if (getNPhases() > 1) {
+			switch (getSpecType()) {
+			case 1:  // kvar
+
+				if ((getNPhases() > 1) || (getConnection() != 0)) {
+					PhasekV = getKvrating() / DSSGlobals.SQRT3;
+				} else {
+					PhasekV = getKvrating();
+				}
+
+				S = "Phases=1 " + String.format(" kV=%-.5g kvar=(", PhasekV);
+
+				for (i = 0; i < getNumSteps(); i++) {
+					kvarPerPhase = getKvarrating()[i] / getNPhases();
+					S = S + String.format(" %-.5g", kvarPerPhase);
+				}
+
+				S = S + ")";
+
+				/* Leave R as specified */
+			case 2:
+				S = "Phases=1 ";
+			case 3:  // C Matrix
+				S = "Phases=1 ";
+				// R1
+				Cs = 0.0;  // Avg Self
+				for (i = 0; i < getNPhases(); i++)
+					Cs = Cs + getCmatrix()[(i - 1) * getNPhases() + i];  // TODO: Check zero based indexing
+				Cs = Cs / getNPhases();
+		
+				Cm = 0.0;  // Avg mutual
+				for (i = 1; i < getNPhases(); i++) 
+					for (j = i; j < getNPhases(); j++) 
+						Cm = Cm + getCmatrix()[(i - 1) * getNPhases() + j];
+				Cm = Cm / (getNPhases() * (getNPhases() - 1.0) / 2.0);
+
+				S = S + String.format(" Cuf=%-.5g", (Cs - Cm));
+			}
+
+			Parser.getInstance().setCmdString(S);
+			edit();
+		}
+
+		super.makePosSequence();
+	}
+	
 	public int getStates(int Idx) {
-		return 0;
+		return getStates()[Idx];
 	}
 	
 	public void setStates(int Idx, int Value) {
+		if (getStates()[Idx] != Value) {
+			getStates()[Idx] = Value;
+			setYprimInvalid(true);
+		}
+	}
+	
+	/**
+	 * Special case for changing from 1 to more. Automatically make a new bank.
+	 * 
+	 * 1=kvar, 2=Cuf, 3=Cmatrix
+	 */
+	public void setNumSteps(int Value) {
+		double StepSize, Rstep, XLstep;
+		int i;
 		
+		/* reallocate all arrays associated with steps */
+
+		if ((getNumSteps() != Value) && (Value > 0)) {
+			Rstep = 0.0;
+			XLstep = 0.0;
+			if (getNumSteps() == 1) {
+				/* Save total values to be divided up */
+				setTotalkvar(getKvarrating()[0]);
+				Rstep = getR()[0] * Value;
+				XLstep = getXL()[0] * Value;
+			}
+
+			// Reallocate arrays (Must be initialized to nil for first call)
+			setC( (double[]) Utilities.resizeArray(getC(), Value) );
+			setXL( (double[]) Utilities.resizeArray(getXL(), Value) );
+			setKvarrating( (double[]) Utilities.resizeArray(getKvarrating(), Value) );
+			setR( (double[]) Utilities.resizeArray(getR(), Value) );
+			setHarm( (double[]) Utilities.resizeArray(getHarm(), Value) );
+			setStates( (int[]) Utilities.resizeArray(getStates(), Value) );
+
+			// Special case for FNumSteps=1
+
+			if (getNumSteps() == 1) {
+				switch (getSpecType()) {
+				case 1:  // kvar   /* We'll make a multi-step bank of same net size as at present */
+					StepSize = getTotalkvar() / Value;
+					for (i = 0; i < Value; i++) 
+						getKvarrating()[i] = StepSize;
+
+				case 2:  // Cuf   /* We'll make a multi-step bank with all the same as first */
+					for (i = 1; i < Value; i++) 
+						getC()[i] = getC()[0];  // Make same as first step
+
+				case 3:  // Cmatrix   /* We'll make a multi-step bank with all the same as first */
+					// Nothing to do since all will be the same
+				}
+
+				switch (getSpecType()) {
+				case 1:
+					for (i = 0; i < Value; i++)
+						getR()[i] = Rstep;
+					for (i = 0; i < Value; i++) 
+						getXL()[i] = XLstep;
+
+				case 2:  // Make R and XL same as first step
+					for (i = 1; i < Value; i++) 
+						getR()[i] = getR()[0];
+					for (i = 1; i < Value; i++) 
+						getXL()[i] = getXL()[0];
+				case 3:  // Make R and XL same as first step
+					for (i = 1; i < Value; i++) 
+						getR()[i] = getR()[0];
+					for (i = 1; i < Value; i++) 
+						getXL()[i] = getXL()[0];
+				}
+
+				for (i = 0; i < Value; i++)
+					getStates()[i] = 1;  // turn 'em all ON
+				setLastStepInService(Value);
+				for (i = 1; i < Value; i++) 
+					getHarm()[i] = getHarm()[0];  // tune 'em all the same as first
+			}
+		}
+
+		setNumSteps(Value);
 	}
 	
 	private void processHarmonicSpec(String Param) {
-		
+		Utilities.interpretDblArray(Param, getNumSteps(), getHarm());
+
+		setDoHarmonicRecalc(true);
 	}
 	
 	private void processStatesSpec(String Param) {
-		
+		Utilities.interpretIntArray(Param, getNumSteps(), getStates());
+
+		LastStepInService = 0;
+
+		for (int i = getNumSteps(); i < 0; i--) {  // TODO Check zero based indexing
+			if (getStates()[i] == 1) {
+				LastStepInService = i;
+				break;
+			}
+		}
 	}
 	
+	/**
+	 * Call this routine only if step is energized.
+	 */
 	private void makeYprimWork(CMatrix YprimWork, int iStep) {
-		
+		Complex Value, Value2, ZL = null;
+		int i,j, ioffset;
+		double w, FreqMultiple;
+		boolean HasZL;
+
+		setYprimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
+		FreqMultiple = getYprimFreq() / getBaseFrequency();
+		w = DSSGlobals.TwoPi * getYprimFreq();
+
+		if ((getR()[iStep] + Math.abs(getXL()[iStep])) > 0.0) {
+			HasZL = true;
+		} else {
+			HasZL = false;
+		}
+
+		if (HasZL) 
+			ZL = new Complex(getR()[iStep], getXL()[iStep] * FreqMultiple);
+
+		/* Now, put C into in Yprim matrix */
+
+		switch (getSpecType()) {
+		case 1:
+
+			Value = new Complex(0.0, getC()[iStep] * w);
+			switch (getConnection()) {
+			case 1:  // Line-Line
+				Value2 = Value.multiply(2.0);
+				Value = Value.negate();
+				for (i = 0; i < getNPhases(); i++) {
+					YprimWork.setElement(i, i, Value2);
+					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
+						YprimWork.setElemSym(i, j, Value);
+					}
+					// Remainder of the matrix is all zero
+				}
+			default:  // Wye
+				if (HasZL)
+					Value = ZL.add(Value.invert()).invert(); // add in ZL
+				Value2 = Value.negate();
+				for (i = 0; i < getNPhases(); i++) {
+					YprimWork.setElement(i, i, Value);  // Elements are only on the diagonals
+					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
+					YprimWork.setElemSym(i, i + getNPhases(), Value2);
+				}
+			}
+		case 2:  // identical to case 1
+
+			Value = new Complex(0.0, getC()[iStep] * w);
+			switch (getConnection()) {
+			case 1:  // Line-Line
+				Value2 = Value.multiply(2.0);
+				Value = Value.negate();
+				for (i = 0; i < getNPhases(); i++) {
+					YprimWork.setElement(i, i, Value2);
+					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
+						YprimWork.setElemSym(i, j, Value);
+					}
+					// Remainder of the matrix is all zero
+				}
+			default:  // Wye
+				if (HasZL)
+					Value = ZL.add(Value.invert()).invert(); // add in ZL
+				Value2 = Value.negate();
+				for (i = 0; i < getNPhases(); i++) {
+					YprimWork.setElement(i, i, Value);  // Elements are only on the diagonals
+					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
+					YprimWork.setElemSym(i, i + getNPhases(), Value2);
+				}
+			}
+		case 3:  // C matrix specified
+			for (i = 0; i < getNPhases(); i++) {
+				ioffset = (i - 1) * getNPhases();  // TODO Check zero based indexing
+				for (j = 0; j < getNPhases(); j++) {
+					Value = new Complex(0.0, getCmatrix()[(ioffset + j)] * w);
+					YprimWork.setElement(i, j, Value);
+					YprimWork.setElement(i + getNPhases(), j + getNPhases(), Value);
+					Value = Value.negate();
+					YprimWork.setElemSym(i, j + getNPhases(), Value);
+				}
+			}
+		}
+
+		/* Add line reactance for filter reactor, if any */
+		if (HasZL) {
+			switch (getSpecType()) {
+			case 1:
+				
+				switch (getConnection()) {
+				case 1:  // Line-Line
+					/* Add a little bit to each phase so it will invert */
+					for (i = 0; i < getNPhases(); i++) 
+						YprimWork.setElement(i, i, YprimWork.getElement(i, i).multiply(1.000001));
+					YprimWork.invert();
+					for (i = 0; i < getNPhases(); i++) {
+						Value = ZL.add(YprimWork.getElement(i, i));
+						YprimWork.setElement(i, i, Value);
+					}
+					YprimWork.invert();
+				default:  /* WYE - just put ZL in series */
+					/* Do nothing; Already in - see above */
+				}
+			case 2:  // identical to case 1
+				
+				switch (getConnection()) {
+				case 1:  // Line-Line
+					/* Add a little bit to each phase so it will invert */
+					for (i = 0; i < getNPhases(); i++) 
+						YprimWork.setElement(i, i, YprimWork.getElement(i, i).multiply(1.000001));
+					YprimWork.invert();
+					for (i = 0; i < getNPhases(); i++) {
+						Value = ZL.add(YprimWork.getElement(i, i));
+						YprimWork.setElement(i, i, Value);
+					}
+					YprimWork.invert();
+				default:  /* WYE - just put ZL in series */
+					/* Do nothing; Already in - see above */
+				}
+			case 3:
+				YprimWork.invert();
+				for (i = 0; i < getNPhases(); i++) {
+					Value = ZL.add(YprimWork.getElement(i, i));
+					YprimWork.setElement(i, i, Value);
+				}
+				YprimWork.invert();
+			}
+		}
 	}
 	
-	/* 1=kvar, 2=Cuf, 3=Cmatrix */
-	public void setNumSteps(int Value) {
-		
+	@Override
+	public String getPropertyValue(int Index) {
+		double[] Temp;
+
+		String Result = "";
+		switch (Index) {  // Special cases
+		case 0:
+			Result = getBus(1);  // TODO: Check zero based indexing
+		case 1:
+			Result = getBus(2);  // TODO: Check zero based indexing
+		case 3:
+			Result = Utilities.getDSSArray_Real(getNumSteps(), getKvarrating());
+		case 7:
+			Temp = new double[getNumSteps()];
+			for (int i = 0; i < getNumSteps(); i++) {
+				Temp[i] = getC()[i] * 1.0e6;  // To microfarads
+			}
+			Result = Utilities.getDSSArray_Real(getNumSteps(), Temp);
+			Temp = null;  // throw away temp storage
+		case 8:
+			Result = Utilities.getDSSArray_Real(getNumSteps(), getR());
+		case 10:
+			Result = Utilities.getDSSArray_Real(getNumSteps(), getXL());
+		case 11:
+			Result = Utilities.getDSSArray_Real(getNumSteps(), getHarm());
+		case 12:
+			Result = Utilities.getDSSArray_Integer(getNumSteps(), getStates());
+		default:
+			Result = super.getPropertyValue(Index);
+		}
+		return Result;
+	}
+	
+	public boolean addStep() {
+		// Start with last step in service and see if we can add more.  If not return FALSE
+
+		if (LastStepInService == getNumCustomers()) {
+			return false;
+		} else {
+			LastStepInService += 1;
+			getStates()[LastStepInService] = 1;  // TODO Check zero based indexing
+			return true;
+		}
+	}
+	
+	public boolean subtractStep() {
+		if (LastStepInService == 0) {  // TODO Check zero based indexing
+			return false;
+		} else {
+			getStates()[LastStepInService] = 0;  // TODO Check zero based indexing
+			LastStepInService -= 1;
+			if (LastStepInService == 0) {
+				return false;
+			} else {
+				return true;   // signify bank OPEN
+			}
+		}
+	}
+	
+	public int availableSteps() {
+		return getNumSteps() - LastStepInService;
 	}
 	
 	public int getNumSteps() {
@@ -239,38 +643,6 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	public void setConnection(int connection) {
 		Connection = connection;
-	}
-	
-	@Override
-	public void makePosSequence() {
-		
-	}
-	
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
-		
-	}
-	
-	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		
-	}
-	
-	@Override
-	public String getPropertyValue(int Index) {
-		return null;
-	}
-	
-	public boolean addStep() {
-		return false;
-	}
-	
-	public boolean subtractStep() {
-		return false;
-	}
-	
-	public int availableSteps() {
-		return 0;
 	}
 
 	public double getTotalkvar() {
