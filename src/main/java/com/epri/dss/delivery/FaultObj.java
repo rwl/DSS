@@ -30,5 +30,45 @@ public interface FaultObj extends PDElement {
 	void checkStatus(int ControlMode);
 	
 	void reset();
+	
+	double getMinAmps();
+
+	void setMinAmps(double minAmps);
+
+	boolean isIsTemporary();
+
+	void setIsTemporary(boolean isTemporary);
+
+	boolean isCleared();
+
+	void setCleared(boolean cleared);
+
+	boolean isIs_ON();
+
+	void setIs_ON(boolean is_ON);
+
+	double getOn_Time();
+
+	void setOn_Time(double on_Time);
+
+	double getRandomMult();
+
+	void setRandomMult(double randomMult);
+
+	double getG();
+
+	void setG(double g);
+
+	double[] getGmatrix();
+
+	void setGmatrix(double[] gmatrix);
+
+	double getStddev();
+
+	void setStddev(double stddev);
+
+	int getSpecType();
+
+	void setSpecType(int specType);
 
 }

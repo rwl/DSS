@@ -71,5 +71,87 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	public String getPropertyValue(int Index) {
 		return null;
 	}
+	
+	// FIXME Private members in OpenDSS
+
+	public double getMinAmps() {
+		return MinAmps;
+	}
+
+	public void setMinAmps(double minAmps) {
+		MinAmps = minAmps;
+	}
+
+	public boolean isIsTemporary() {
+		return IsTemporary;
+	}
+
+	public void setIsTemporary(boolean isTemporary) {
+		IsTemporary = isTemporary;
+	}
+
+	public boolean isCleared() {
+		return Cleared;
+	}
+
+	public void setCleared(boolean cleared) {
+		Cleared = cleared;
+	}
+
+	public boolean isIs_ON() {
+		return Is_ON;
+	}
+
+	public void setIs_ON(boolean is_ON) {
+		Is_ON = is_ON;
+	}
+
+	public double getOn_Time() {
+		return On_Time;
+	}
+
+	public void setOn_Time(double on_Time) {
+		On_Time = on_Time;
+	}
+
+	public double getRandomMult() {
+		return RandomMult;
+	}
+
+	public void setRandomMult(double randomMult) {
+		RandomMult = randomMult;
+	}
+
+	public double getG() {
+		return G;
+	}
+
+	public void setG(double g) {
+		G = g;
+	}
+
+	public double[] getGmatrix() {
+		return Gmatrix;
+	}
+
+	public void setGmatrix(double[] gmatrix) {
+		Gmatrix = gmatrix;
+	}
+
+	public double getStddev() {
+		return Stddev;
+	}
+
+	public void setStddev(double stddev) {
+		Stddev = stddev;
+	}
+
+	public int getSpecType() {
+		return SpecType;
+	}
+
+	public void setSpecType(int specType) {
+		SpecType = specType;
+	}
 
 }
