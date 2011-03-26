@@ -1,5 +1,8 @@
 package com.epri.dss.delivery;
 
+import com.epri.dss.general.LineGeometryObj;
+import com.epri.dss.general.LineSpacingObj;
+import com.epri.dss.general.WireDataObj;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.shared.CMatrix;
@@ -115,4 +118,44 @@ public interface LineObj extends PDElement {
 
 	public boolean isLineCodeSpecified();
 
+	
+	// FIXME Private members in OpenDSS
+	
+	double getZFrequency();
+
+	void setZFrequency(double zFrequency);
+
+	int getLineCodeUnits();
+
+	void setLineCodeUnits(int lineCodeUnits);
+
+	double getUnitsConvert();
+
+	void setUnitsConvert(double unitsConvert);
+
+	LineGeometryObj getLineGeometryObj();
+
+	void setLineGeometryObj(LineGeometryObj lineGeometryObj);
+
+	LineSpacingObj getLineSpacingObj();
+
+	void setLineSpacingObj(LineSpacingObj lineSpacingObj);
+
+	WireDataObj[] getWireData();
+
+	void setWireData(WireDataObj[] wireData);
+
+	boolean getRhoSpecified();
+
+	void setRhoSpecified(boolean rhoSpecified);
+
+	int getEarthModel();
+
+	void setEarthModel(int earthModel);
+
+	void setLineCodeSpecified(boolean lineCodeSpecified);
+
+	CMatrix getZinv();
+
+	void setZinv(CMatrix zinv);
 }

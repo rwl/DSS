@@ -6,7 +6,6 @@ import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
-import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
@@ -15,7 +14,6 @@ import com.epri.dss.control.impl.ControlElemImpl;
 import com.epri.dss.delivery.Fuse;
 import com.epri.dss.delivery.FuseObj;
 import com.epri.dss.general.TCC_CurveObj;
-import com.epri.dss.general.impl.TCC_CurveObjImpl;
 
 public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	
@@ -30,10 +28,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	private DSSCktElement MonitoredElement;
 
 	/* handle to control queue actions */
-	private int[] hAction = new int[FUSEMAXDIM];
+	private int[] hAction = new int[Fuse.FUSEMAXDIM];
 	/* 0 = open 1 = close */
-	private ControlAction[] PresentState = new ControlAction[FUSEMAXDIM];  
-	private boolean[] ReadyToBlow = new boolean[FUSEMAXDIM];
+	private ControlAction[] PresentState = new ControlAction[Fuse.FUSEMAXDIM];  
+	private boolean[] ReadyToBlow = new boolean[Fuse.FUSEMAXDIM];
 
 	/* Offset for monitored terminal */
 	private int CondOffset; 

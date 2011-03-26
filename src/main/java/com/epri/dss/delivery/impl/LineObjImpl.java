@@ -20,7 +20,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private LineGeometryObj LineGeometryObj;
 	private LineSpacingObj LineSpacingObj;
 	private WireDataObj[] WireData;
-	private boolean[] rhoSpecified;
+	private boolean rhoSpecified;
 	private boolean LineCodeSpecified;
 	private int EarthModel;
 	
@@ -336,6 +336,84 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 	public boolean isLineCodeSpecified() {
 		return LineCodeSpecified;
+	}
+	
+	// FIXME Private members in OpenDSS
+
+	public double getZFrequency() {
+		return ZFrequency;
+	}
+
+	public void setZFrequency(double zFrequency) {
+		ZFrequency = zFrequency;
+	}
+
+	public int getLineCodeUnits() {
+		return LineCodeUnits;
+	}
+
+	public void setLineCodeUnits(int lineCodeUnits) {
+		LineCodeUnits = lineCodeUnits;
+	}
+
+	public double getUnitsConvert() {
+		return UnitsConvert;
+	}
+
+	public void setUnitsConvert(double unitsConvert) {
+		UnitsConvert = unitsConvert;
+	}
+
+	public LineGeometryObj getLineGeometryObj() {
+		return LineGeometryObj;
+	}
+
+	public void setLineGeometryObj(LineGeometryObj lineGeometryObj) {
+		LineGeometryObj = lineGeometryObj;
+	}
+
+	public LineSpacingObj getLineSpacingObj() {
+		return LineSpacingObj;
+	}
+
+	public void setLineSpacingObj(LineSpacingObj lineSpacingObj) {
+		LineSpacingObj = lineSpacingObj;
+	}
+
+	public WireDataObj[] getWireData() {
+		return WireData;
+	}
+
+	public void setWireData(WireDataObj[] wireData) {
+		WireData = wireData;
+	}
+
+	public boolean getRhoSpecified() {
+		return rhoSpecified;
+	}
+
+	public void setRhoSpecified(boolean rhoSpecified) {
+		this.rhoSpecified = rhoSpecified;
+	}
+
+	public int getEarthModel() {
+		return EarthModel;
+	}
+
+	public void setEarthModel(int earthModel) {
+		EarthModel = earthModel;
+	}
+
+	public void setLineCodeSpecified(boolean lineCodeSpecified) {
+		LineCodeSpecified = lineCodeSpecified;
+	}
+
+	public CMatrix getZinv() {
+		return Zinv;
+	}
+
+	public void setZinv(CMatrix zinv) {
+		Zinv = zinv;
 	}
 
 }
