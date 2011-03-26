@@ -2,8 +2,18 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.math.util.MathUtils;
+
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
+import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.Complex;
 
 public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	
@@ -23,53 +33,301 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	public FaultObjImpl(DSSClass ParClass, String FaultName) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
-	}
-	
-	private boolean faultStillGoing() {
-		return false;
+		
+		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // Only in Fault object class
+		setName(FaultName.toLowerCase());
+
+		// Default to SLG fault
+		this.nPhases = 1;  // Directly set conds and phases
+		this.nConds = 1;
+		this.nTerms = 2;  // Force allocation of terminals and conductors
+
+		setBus(2, (getBus(1) + ".0"));  // Default to grounded   TODO Check zero based indexing
+		setShunt(true);
+
+		this.Gmatrix       = null;
+		this.G             = 10000.0;
+		this.SpecType      = 1;  // G  2=Gmatrix
+
+		this.MinAmps       = 5.0;
+		this.IsTemporary   = false;
+		this.Cleared       = false;
+		this.Is_ON         = true;
+		this.On_Time       = 0.0;  // Always enabled at the start of a solution.
+
+
+		this.RandomMult = 1;
+
+		setNormAmps(0.0);
+		setEmergAmps(0.0);
+		setFaultRate(0.0);
+		setPctPerm(100.0);
+		setHrsToRepair(0.0);
+
+		initPropertyValues(0);
+
+		this.Yorder = this.nTerms * this.nConds;
+		recalcElementData();
 	}
 	
 	@Override
 	public void recalcElementData() {
+		// Nothing to do
+	}
+	
+	private double cube(double x) {
+		return x * x * x;
+	}
+	
+	/**
+	 * Called from solveMontefault procedure.
+	 */
+	public void randomize() {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 		
+		switch (sol.getRandomType()) {
+		case DSSGlobals.GAUSSIAN:
+			RandomMult = MathUtil.gauss(1.0, Stddev);
+		case DSSGlobals.UNIFORM:
+			RandomMult = Math.random();
+		case DSSGlobals.LOGNORMAL:
+			RandomMult = MathUtil.QuasiLogNormal(1.0);
+		default:
+			RandomMult = 1.0;
+		}
+
+		// Give the multiplier some skew to approximate more uniform/Gaussian current distributions
+		// RandomMult = cube(RandomMult);   removed 12/7/04
+
+		setYprimInvalid(true);    // force rebuilding of matrix
 	}
 	
 	@Override
 	public void calcYPrim() {
+		Complex Value, Value2;
+		int i, j, ioffset;
+
+		CMatrix YPrimTemp;
+
+		if (isYprimInvalid()) {  // Reallocate YPrim if something has invalidated old allocation
+			if (YPrim_Series != null)
+				YPrim_Series = null;
+			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrim_Shunt != null) 
+				YPrim_Shunt = null;
+			YPrim_Shunt = new CMatrixImpl(Yorder);
+			if (YPrim != null)
+				YPrim = null;
+			YPrim = new CMatrixImpl(Yorder);
+		} else {
+			YPrim_Series.clear(); // zero out YPrim
+			YPrim_Shunt.clear(); // zero out YPrim
+			YPrim.clear();
+		}
+
 		
-	}
-	
-	public void randomize() {
-		
-	}
-	
-	public void checkStatus(int ControlMode) {
-		
-	}
-	
-	public void reset() {
-		
-	}
-	
-	@Override
-	public void makePosSequence() {
-		
-	}
-	
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
-		
+		if (isShunt()) {
+			YPrimTemp = YPrim_Shunt;
+		} else {
+			YPrimTemp = YPrim_Series;
+		}
+
+		// make sure randommult is 1.0 if not solution mode MonteFault
+
+		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != DSSGlobals.MONTEFAULT)
+			RandomMult = 1.0;
+
+		if (RandomMult == 0.0)
+			RandomMult = 0.000001;
+
+		/* Now, put in Yprim matrix */
+
+		/* If the fault is not ON, the set zero conductance */
+
+		switch (SpecType) {
+		case 1:
+
+			if (Is_ON) {
+				Value = new Complex(G / RandomMult, 0.0);
+			} else {
+				Value = Complex.ZERO;
+			}
+			Value2 = Value.negate();
+			for (i = 0; i < nPhases; i++) {
+				YPrimTemp.setElement(i, i, Value);  // Elements are only on the diagonals
+				YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
+				YPrimTemp.setElemSym(i, i + nPhases, Value2);
+			}
+		case 2:  // G matrix specified
+			for (i = 0; i < nPhases; i++) {
+				ioffset = (i - 1) * nPhases;
+				for (j = 0; j < nPhases; j++) {
+					if (Is_ON) {
+						Value = new Complex(Gmatrix[(ioffset + j)] / RandomMult, 0.0)
+					} else {
+						Value = Complex.ZERO;
+					}
+					YPrimTemp.setElement(i, j, Value);
+					YPrimTemp.setElement(i + nPhases, j + nPhases, Value);
+					Value = Value.negate();
+					YPrimTemp.setElemSym(i, j + nPhases, Value);
+				}
+			}
+		}
+
+		YPrim.copyFrom(YPrimTemp);
+			
+		super.calcYPrim();
+		setYprimInvalid(false);
 	}
 	
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
-		
+		int i, j;
+
+		super.dumpProperties(F, Complete);
+
+		DSSClass pc = getParentClass();
+
+		F.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
+		F.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
+
+		F.println("~ " + pc.getPropertyName()[2] + "=" + nPhases);
+		F.println("~ " + pc.getPropertyName()[3] + "=" + (1.0 / G));
+		F.println("~ " + pc.getPropertyName()[4] + "=" + (Stddev * 100.0));
+		if (Gmatrix != null) {
+			F.print("~ " + pc.getPropertyName()[5] + "= (");
+			for (i = 0; i < nPhases; i++) {
+				for (j = 0; j < i; j++)
+					F.print(Gmatrix[(i - 1) * nPhases + j] + " ");
+				if (i != nPhases)
+					F.print("|");
+			}
+			F.println(")");
+		}
+		F.println("~ " + pc.getPropertyName()[6] + "=" + On_Time);
+		if (IsTemporary) {
+			F.println("~ " + pc.getPropertyName()[7] + "= Yes");
+		} else {
+			F.println("~ " + pc.getPropertyName()[7] + "= No");
+		}
+		F.println("~ " + pc.getPropertyName()[8] + "=" + MinAmps);
+
+
+		for (i = Fault.NumPropsThisClass; i < pc.getNumProperties(); i++)
+			F.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
+
+		if (Complete) 
+			F.println("// SpecType=" + SpecType);
+	}
+	
+	public void checkStatus(int ControlMode) {
+
+		switch (ControlMode) {
+		case DSSGlobals.CTRLSTATIC:  /* Leave it however it is defined by other processes */
+		case DSSGlobals.EVENTDRIVEN:
+			if (!Is_ON) {
+				/* Turn it on unless it has been previously cleared */
+				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
+					Is_ON = true;
+					setYprimInvalid(true);
+					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
+				}
+			} else {
+				if (IsTemporary) 
+					if (!faultStillGoing()) {
+						Is_ON = false;
+						Cleared = true;
+						setYprimInvalid(true);
+						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
+					}
+			}
+		case DSSGlobals.TIMEDRIVEN:  // Identical to event driven case.
+			if (!Is_ON) {
+				/* Turn it on unless it has been previously cleared */
+				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
+					Is_ON = true;
+					setYprimInvalid(true);
+					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
+				}
+			} else {
+				if (IsTemporary) 
+					if (!faultStillGoing()) {
+						Is_ON = false;
+						Cleared = true;
+						setYprimInvalid(true);
+						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
+					}
+			}
+		}
+	}
+	
+	private boolean faultStillGoing() {
+		computeIterminal();
+		for (int i = 0; i < nPhases; i++) 
+			if (Iterminal[i].abs() > MinAmps)
+				return true;
+		return false;
+	}
+	
+	public void reset() {
+		setCleared(false);
+	}
+	
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+
+		PropertyValue[0] = getBus(1);  // TODO Check zero based indexing
+		PropertyValue[1] = getBus(2);
+		PropertyValue[2] = "1";
+		PropertyValue[3] = "0.0001";
+		PropertyValue[4] = "0";
+		PropertyValue[5] = "";
+		PropertyValue[6] = "0.0";
+		PropertyValue[7] = "no";
+		PropertyValue[8] = "5.0";
+
+		super.initPropertyValues(Fault.NumPropsThisClass);
+
+		// Override Inherited Properties
+		PropertyValue[Fault.NumPropsThisClass + 1] = "0";  // NormAmps   TODO Check zero based indexing
+		PropertyValue[Fault.NumPropsThisClass + 2] = "0";  // EmergAmps
+		PropertyValue[Fault.NumPropsThisClass + 3] = "0";  // Fault rate
+		PropertyValue[Fault.NumPropsThisClass + 4] = "0";  // Pct Perm
+		PropertyValue[Fault.NumPropsThisClass + 5] = "0";  // Hrs to repair
 	}
 	
 	@Override
 	public String getPropertyValue(int Index) {
-		return null;
+		String Result;
+		
+		switch (Index) {
+		case 5:
+			Result = "(";
+			if (Gmatrix != null) {
+				for (int i = 0; i < nPhases; i++) {
+					for (int j = 0; j < i; j++) 
+						Result = Result + String.format("%-g", Gmatrix[(i - 1) * nPhases + j]) + " ";
+				if (i < nPhases)
+					Result = Result + "|";
+				}
+			}
+
+			Result = Result + ")";
+		default:
+			Result = super.getPropertyValue(Index);
+		}
+		
+		return Result;
+	}
+	
+	@Override
+	public void makePosSequence() {
+		if (nPhases != 1) {
+			Parser.getInstance().setCmdString("Phases=1");
+			edit();
+		}
+		super.makePosSequence();
 	}
 	
 	// FIXME Private members in OpenDSS
