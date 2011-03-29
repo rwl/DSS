@@ -18,8 +18,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	
 	private static LineObj ActiveLineObj;
 	private static LineGeometry LineGeometryClass;
-	
-	private static Complex CAP_EPSILON;
+
 	private static LineCode LineCodeClass;
 
 	public LineImpl() {
@@ -461,6 +460,14 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	public static void setLineGeometryClass(LineGeometry lineGeometryClass) {
 		LineGeometryClass = lineGeometryClass;
+	}
+
+	public static LineCode getLineCodeClass() {
+		return LineCodeClass;
+	}
+
+	public static void setLineCodeClass(LineCode lineCodeClass) {
+		LineCodeClass = lineCodeClass;
 	}
 
 }
