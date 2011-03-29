@@ -2,6 +2,7 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.LineUnits;
@@ -597,9 +598,334 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		return Result;
 	}
 	
+	/**
+	 * Only consider 3-phase branches with Pos seq >> Neg seq
+	 * Otherwise, we don't know whether it is a 3-phase line or just a line with 3 phases
+	 */
+	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses, Complex ZeroSeqLosses) {
+		int k;
+		
+		Complex[] Vph = new Complex[2];
+		Complex[] V012 = new Complex[2];
+		Complex[] I012 = new Complex[2];
+
+		PosSeqLosses  = Complex.ZERO;
+		NegSeqLosses  = Complex.ZERO;
+		ZeroSeqLosses = Complex.ZERO;
+
+		/* Method: sum seq powers going into each terminal */
+
+		if (nPhases == 3) {
+			/* 3-phase lines only */
+			computeIterminal();
+			for (int i = 0; i < 2; i++) {
+				k = (i - 1) * nPhases + 1;  // TODO Check zero based indexing
+				for (int j = 0; j < 2; j++) 
+					Vph[j] = DSSGlobals.getInstance().getActiveCircuit().getSolution().getNodeV()[NodeRef[k + j]];
+				MathUtil.phase2SymComp(Vph, V012);
+				MathUtil.phase2SymComp(Iterminal[k], I012);
+				PosSeqLosses = PosSeqLosses.add( V012[1].multiply(I012[1].conjugate()) );  // TODO Check zero based indexing
+				NegSeqLosses = NegSeqLosses.add( V012[2].multiply(I012[2].conjugate()) );  // accumulate both line modes
+				ZeroSeqLosses = ZeroSeqLosses.add( V012[0].multiply(I012[0].conjugate()) );
+			}
+			PosSeqLosses = PosSeqLosses.multiply(3.0);
+			NegSeqLosses = NegSeqLosses.multiply(3.0);
+			ZeroSeqLosses = ZeroSeqLosses.multiply(3.0);
+		}
+	}
+	
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+
+		PropertyValue[0] = getBus(1);  // TODO Check zero based indexing
+		PropertyValue[1] = getBus(2);
+		PropertyValue[2] = "";
+		PropertyValue[3] = "1.0";  // "5.28"; Changed 2/17/00
+		PropertyValue[4] = "3";
+		PropertyValue[5] = ".058";
+		PropertyValue[6] = ".1206";
+		PropertyValue[7] = ".1784";
+		PropertyValue[8] = ".4047";
+		PropertyValue[9] = "3.4";
+		PropertyValue[10] = "1.6";
+		PropertyValue[11] = "";
+		PropertyValue[12] = "";
+		PropertyValue[13] = "";
+		PropertyValue[14] = "false";
+		PropertyValue[15] = "0.01805";
+		PropertyValue[16] = "0.155081";
+		PropertyValue[17] = "100";
+		PropertyValue[18] = "";
+		PropertyValue[19] = "NONE";
+		PropertyValue[20] = "";
+		PropertyValue[21] = "";
+		PropertyValue[22] = Utilities.getEarthModel(DSSGlobals.SIMPLECARSON);
+
+		super.initPropertyValues(Line.NumPropsThisClass);
+
+		// Override Inherited properties  just in case
+		PropertyValue[Line.NumPropsThisClass + 1] = "400";  // normamps    // TODO Check zero based indexing
+		PropertyValue[Line.NumPropsThisClass + 2] = "600";  // emergamps
+		PropertyValue[Line.NumPropsThisClass + 3] = "0.1";  // fault rate
+		PropertyValue[Line.NumPropsThisClass + 4] = "20";   // Pct Perm
+		PropertyValue[Line.NumPropsThisClass + 5] = "3";    // Hrs to repair
+
+		clearPropSeqArray();	
+	}
+	
 	@Override
 	public void makePosSequence() {
-		
+		String S;
+		double C1_new, Cs, Cm;
+		Complex Z1, ZS, Zm;
+		int i, j;
+
+		// set to single phase and make sure R1, X1, C1 set.
+		// If already single phase, let alone
+		if (nPhases > 1) {
+			// Kill certain propertyvalue elements to get a cleaner looking save
+			PrpSequence[2] = 0;  // TODO Check zero based indexing
+			for (i = 5; i < 13; i++) 
+				PrpSequence[i] = 0;
+
+			if (IsSwitch) {
+				S = " R1=1 X1=1 C1=1.1 Phases=1 Len=0.001";
+			} else {
+				if (SymComponentsModel) {  // keep the same Z1 and C1
+					Z1 = new Complex(R1, X1);
+					C1_new = C1 * 1.0e9;  // convert to nF
+				} else {  // matrix was input directly, or built from physical data
+					// average the diagonal and off-dialgonal elements
+					ZS = Complex.ZERO;
+					for (i = 0; i < nPhases; i++) 
+						ZS = ZS.add(Z.getElement(i, i));
+					ZS = ZS.divide(nPhases);
+					Zm = Complex.ZERO;
+					for (i = 0; i < nPhases - 1; i++) {  // TODO Check zero based indexing
+						for (j = i + 1; j < nPhases; j++) {
+							Zm = Zm.add(Z.getElement(i, j));
+						}
+					}
+					Zm = Zm.divide(nPhases * (nPhases - 1.0) / 2.0);
+					Z1 = ZS.subtract(Zm);
+
+					// Do same for capacitances
+					Cs = 0.0;
+					for (i = 0; i < nPhases; i++) 
+						Cs = Cs + Yc.getElement(i, i).getImaginary();
+					Cm = 0.0;
+					for (i = 1; i < nPhases; i++) {  // TODO Check zero based indexing
+						for (j = i + 1; j < nPhases; j++) {
+							Cm = Cm + Yc.getElement(i, j).getImaginary();
+						}
+					}
+					C1_new = (Cs - Cm) / DSSGlobals.TwoPi / BaseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
+				}
+				S = String.format(" R1=%-.5g  %-.5g  C1=%-.5g Phases=1", Z1.getReal(), Z1.getImaginary(), C1_new);
+			}
+			// Conductor Current Ratings
+			S = S + String.format(" Normamps=%-.5g  %-.5g", getNormAmps(), getEmergAmps());
+			Parser.getInstance().setCmdString(S);
+			edit();
+		}
+
+		super.makePosSequence();
+	}
+	
+	/**
+	 * Merge this line with another line and disble the other line.
+	 */
+	public boolean mergeWith(LineObj OtherLine, boolean Series) {
+		Complex[] Values1, Values2;
+		int Order1, Order2, i, j, Common1, Common2;
+		double TotalLen, wnano;
+		String S, NewName;
+		int TestBusNum;
+		int LenUnitsSaved;
+		Complex NewZ;
+		double LenSelf, LenOther;
+
+		boolean Result = false;
+		if (OtherLine != null) {
+			if (nPhases != OtherLine.getNPhases())
+				return Result;  // Can't merge
+
+			LenUnitsSaved = LengthUnits;
+
+			setYprimInvalid(true);
+
+			// Redefine property values to make it appear that line was defined this way originally using matrices
+
+			if (Series) {
+				TotalLen = Len + OtherLine.getLen() * LineUnits.convertLineUnits(OtherLine.getLengthUnits(), LengthUnits);
+			} else {
+				TotalLen = 1.0;
+			}
+
+			if (Series) {
+				/* redefine the bus connections */
+
+				// Find bus in common between the two lines
+				Common1 = 0;
+				Common2 = 0;
+				i = 1;
+				while ((Common1 == 0) && (i <= 2)) { 
+					TestBusNum = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[1 + (i - 1) * nConds]].BusRef;
+					for (j = 0; j < 2; j++) {
+						if (DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[OtherLine.getNodeRef()[1 + (j - 1) * OtherLine.getNConds()]].BusRef == TestBusNum) {
+							Common1 = i;
+							Common2 = j;
+							break;
+						}
+					}
+					i += 1;
+				}
+
+				if (Common1 == 0)
+					return Result;  // There's been an error; didn't find anything in common
+
+				/* Redefine the bus connections */
+				switch (Common1) {
+				case 1:
+					switch (Common2) {
+					case 1:
+						S = "Bus1=\"" + OtherLine.getBus(2) + "\"";
+					case 2:
+						S = "Bus1=\"" + OtherLine.getBus(1) + "\"";
+					}
+				case 2:
+					switch (Common2) {
+					case 1:
+						S = "Bus2=\"" + OtherLine.getBus(2) + "\"";
+					case 2:
+						S = "Bus2=\"" + OtherLine.getBus(1) + "\"";
+					}
+				}
+
+				Parser.getInstance().setCmdString(S);
+				edit();	
+
+			}
+
+			/* Rename the line */
+			if (Series) {
+				NewName = Utilities.stripExtension(getBus(1)) + "~"  + Utilities.stripExtension(getBus(2));
+			} else {
+				NewName = Utilities.stripExtension(getBus(1)) + "||" + Utilities.stripExtension(getBus(2));
+			}
+	
+			/* Update ControlElement Connections to This Line */
+			updateControlElements("line." + NewName, "line." + getName());
+			updateControlElements("line." + NewName, "line." + OtherLine.getName());
+			setName(NewName);
+	
+			if (Series)
+				IsSwitch = false; // not allowed on series merge.
+
+			/* Now Do the impedances */
+	
+			LenSelf = Len / UnitsConvert;  // in units of R X Data
+			LenOther = OtherLine.getLen() / OtherLine.getUnitsConvert();
+	
+			if (SymComponentsModel) {
+				/*------------------------- Sym Component Model ----------------------------------*/
+				if (Series) {
+					S = " R1=" + String.format("%-g", (R1 * LenSelf + OtherLine.getR1() * LenOther) / TotalLen);  // Ohms per unit length of this line length units
+					S = S + String.format(" %-g", (X1 * LenSelf + OtherLine.getX1() * LenOther) / TotalLen);
+					S = S + String.format(" %-g", (R0 * LenSelf + OtherLine.getR0() * LenOther) / TotalLen);
+					S = S + String.format(" %-g", (X0 * LenSelf + OtherLine.getX0() * LenOther) / TotalLen);
+					S = S + String.format(" %-g", (C1 * LenSelf + OtherLine.getC1() * LenOther) / TotalLen * 1.0e9);
+					S = S + String.format(" %-g", (C0 * LenSelf + OtherLine.getC0() * LenOther) / TotalLen * 1.0e9);
+				} else {
+					/* parallel */
+					if (IsSwitch) {
+						S = "";   /* Leave as is if switch; just dummy z anyway */
+					} else if (OtherLine.isIsSwitch()) {
+						S = " switch=yes";  /* This will take care of setting Z's */
+					} else {
+						/* ********* Will This work with Length multiplier?  did it ever work? ************************* */
+						NewZ = MathUtil.parallelZ(new Complex(R1 * Len, X1 * Len),
+								new Complex(OtherLine.getR1() * OtherLine.getLen(), OtherLine.getX1() * OtherLine.getLen()));
+						S = " R1=" + String.format("%-g %-g ", NewZ.getReal(), NewZ.getImaginary());
+						NewZ = MathUtil.ParallelZ(new Complex(R0 * Len, X0 * Len),
+								new Complex(OtherLine.getR0() * OtherLine.getLen(), OtherLine.getX0() * OtherLine.getLen()));
+						S = " R0=" + String.format("%-g %-g ", NewZ.getReal(), NewZ.getImaginary());
+						S = S + String.format(" %-g", (C1 * Len + OtherLine.getC1() * OtherLine.getLen()) / TotalLen * 1.0e9);
+						S = S + String.format(" %-g", (C0 * Len + OtherLine.getC0() * OtherLine.getLen()) / TotalLen * 1.0e9);
+					}
+				}
+				Parser.getInstance().setCmdString(S);   // This reset the length units
+				edit();
+			} else {
+				/*------------------------- Matrix Model ----------------------------------*/
+				if (!Series) {
+					TotalLen = Len / 2.0; /* We'll assume lines are equal for now */
+				} else {
+					/* Matrices were defined */
+	
+					// Merge Z matrices
+					Values1 = Z.asArray(Order1);
+					Values2 = OtherLine.getZ().asArray(Order2);
+	
+					if (Order1 != Order2)
+						return Result;  // OOps.  Lines not same size for some reason
+	
+					// Z <= (Z1 + Z2 )/TotalLen   to get equiv ohms per unit length
+					for (i = 0; i < Order1 * Order1; i++) 
+						Values1[i] = Values1[i].multiply(LenSelf).add(Values2[i].multiply(LenOther)).divide(TotalLen);
+	
+					// Merge Yc matrices
+					Values1 = Yc.asArray(Order1);
+					Values2 = OtherLine.getYc().asArray(Order2);
+	
+					if (Order1 != Order2)
+						return Result;  // OOps.  Lines not same size for some reason
+	
+					for (i = 0; i < Order1 * Order1; i++) 
+						Values1[i] = Values1[i].multiply(LenSelf).add( Values2[i].multiply(LenOther) ).divide(TotalLen);
+	
+					/* R Matrix */
+					S = "Rmatrix=[";
+					for (i = 0; i < 3; i++) {
+						for (j = 0; j < i; j++)
+							S = S + String.format(" %-g", Z.getElement(i, j).getReal());
+						S = S + " | ";
+					}
+					S = S + "] Xmatrix=[";
+					/* X Matrix */
+					for (i = 0; i < 3; i++) {
+						for (j = 0; j < i; j++)
+							S = S + String.format(" %-g", Z.getElement(i, j).getImaginary());
+						S = S + " | ";
+					}
+					S = S + "]";
+					Parser.getInstance().setCmdString(S);
+					edit();
+	
+					/* C Matrix */
+					wnano = DSSGlobals.TwoPi * BaseFrequency / 1.0e9;
+					S = "Cmatrix=[";
+					for (i = 0; i < 3; i++) {
+						for (j = 0; j < i; j++)
+							S = S + String.format(" %-g", (Yc.getElement(i, j).getImaginary() / wnano));  // convert from mhos to nanofs
+						S = S + " | ";
+					}
+					S = S + "] ";
+					Parser.getInstance().setCmdString(S);
+					edit();
+				}
+			}  // Matrix definition
+	
+			Parser.getInstance().setCmdString(String.format(" Length=%-g  Units=%s", TotalLen, LineUnits.lineUnitsStr(LenUnitsSaved)));
+			edit();
+
+			OtherLine.setEnabled(false);  // Disable the Other Line
+			Result = true;
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Error in Line Merge: Attempt to merge with invalid (nil) line object found.", 184);
+		}
+
+		return Result;
 	}
 	
 	/**
@@ -820,21 +1146,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		IsSwitch = isSwitch;
 	}
 	
-	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
-			Complex ZeroSeqLosses) {
-		
-	}
-	
-	public boolean mergeWith(LineObj OtherLine, boolean Series) {
-		return false;
-	}
-	
 	public void updateControlElements(String NewName, String OldName) {
-		
-	}
-	
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
 		
 	}
 
