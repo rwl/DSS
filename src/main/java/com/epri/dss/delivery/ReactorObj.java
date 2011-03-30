@@ -46,4 +46,60 @@ package com.epri.dss.delivery;
  */
 public interface ReactorObj extends PDElement {
 
+	double getR();
+
+	void setR(double r);
+
+	double getRp();
+
+	void setRp(double rp);
+
+	double getGp();
+
+	void setGp(double gp);
+
+	double getX();
+
+	void setX(double x);
+
+	double getKvarrating();
+
+	void setKvarrating(double kvarrating);
+
+	double getKvrating();
+
+	void setKvrating(double kvrating);
+
+	double[] getRmatrix();
+
+	void setRmatrix(double[] rmatrix);
+
+	double[] getGmatrix();
+
+	void setGmatrix(double[] gmatrix);
+
+	double[] getXMatrix();
+
+	void setXMatrix(double[] xMatrix);
+
+	double[] getBmatrix();
+
+	void setBmatrix(double[] bmatrix);
+
+	int getConnection();
+
+	void setConnection(int connection);
+
+	int getSpecType();
+
+	void setSpecType(int specType);
+
+	boolean isIsParallel();
+
+	void setIsParallel(boolean isParallel);
+
+	boolean isRpSpecified();
+
+	void setRpSpecified(boolean rpSpecified);
+	
 }

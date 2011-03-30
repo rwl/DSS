@@ -55,4 +55,116 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		
 	}
 
+	public double getR() {
+		return R;
+	}
+
+	public void setR(double r) {
+		R = r;
+	}
+
+	public double getRp() {
+		return Rp;
+	}
+
+	public void setRp(double rp) {
+		Rp = rp;
+	}
+
+	public double getGp() {
+		return Gp;
+	}
+
+	public void setGp(double gp) {
+		Gp = gp;
+	}
+
+	public double getX() {
+		return X;
+	}
+
+	public void setX(double x) {
+		X = x;
+	}
+
+	public double getKvarrating() {
+		return kvarrating;
+	}
+
+	public void setKvarrating(double kvarrating) {
+		this.kvarrating = kvarrating;
+	}
+
+	public double getKvrating() {
+		return kvrating;
+	}
+
+	public void setKvrating(double kvrating) {
+		this.kvrating = kvrating;
+	}
+
+	public double[] getRmatrix() {
+		return Rmatrix;
+	}
+
+	public void setRmatrix(double[] rmatrix) {
+		Rmatrix = rmatrix;
+	}
+
+	public double[] getGmatrix() {
+		return Gmatrix;
+	}
+
+	public void setGmatrix(double[] gmatrix) {
+		Gmatrix = gmatrix;
+	}
+
+	public double[] getXMatrix() {
+		return XMatrix;
+	}
+
+	public void setXMatrix(double[] xMatrix) {
+		XMatrix = xMatrix;
+	}
+
+	public double[] getBmatrix() {
+		return Bmatrix;
+	}
+
+	public void setBmatrix(double[] bmatrix) {
+		Bmatrix = bmatrix;
+	}
+
+	public int getConnection() {
+		return Connection;
+	}
+
+	public void setConnection(int connection) {
+		Connection = connection;
+	}
+
+	public int getSpecType() {
+		return SpecType;
+	}
+
+	public void setSpecType(int specType) {
+		SpecType = specType;
+	}
+
+	public boolean isIsParallel() {
+		return IsParallel;
+	}
+
+	public void setIsParallel(boolean isParallel) {
+		IsParallel = isParallel;
+	}
+
+	public boolean isRpSpecified() {
+		return RpSpecified;
+	}
+
+	public void setRpSpecified(boolean rpSpecified) {
+		RpSpecified = rpSpecified;
+	}
+
 }
