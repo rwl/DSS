@@ -11,13 +11,17 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.control.ControlElem;
 import com.epri.dss.delivery.Line;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
+import com.epri.dss.general.LineGeometry;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.WireDataObj;
+import com.epri.dss.general.impl.LineGeometryObjImpl;
+import com.epri.dss.general.impl.WireDataImpl;
 import com.epri.dss.shared.CMatrix;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
@@ -195,18 +199,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		} else {
 			Globals.doSimpleMsg("Line Code:" + Code + " not found.", 180);
 		}
-	}
-	
-	public void fetchGeometryCode(String Code) {
-		
-	}
-	
-	public void fetchLineSpacing(String Code) {
-		
-	}
-	
-	public void fetchWireList(String Code) {
-		
 	}
 
 	@Override
@@ -928,38 +920,206 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		return Result;
 	}
 	
+	public void updateControlElements(String NewName, String OldName) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		for (ControlElem pControlElem : ckt.getDSSControls()) 
+			if (OldName.equals(pControlElem.getElementName())) {
+				Parser.getInstance().setCmdString(" Element=" + NewName);  // Change name of the property
+				pControlElem.edit();
+			}	
+	}
+	
+	public void fetchLineSpacing(String Code) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		if (Globals.getLineSpacingClass().setActive(Code)) {
+			setLineSpacingObj( (LineSpacingObj) Globals.getLineSpacingClass().getActiveObj() );
+			LineCodeSpecified = false;
+			killGeometrySpecified();
+			SpacingCode = Code.toLowerCase();
+
+			// need to establish Yorder before FMakeZFromSpacing
+			nPhases       = LineSpacingObj.getNPhases();
+			nConds        = nPhases;  // Force Reallocation of terminal info
+			Yorder        = nConds * nTerms;
+			setYprimInvalid(true);    // Force Rebuild of Y matrix
+		} else {
+			Globals.doSimpleMsg("Line Spacing object " + Code + " not found.", 181);
+		}
+	}
+	
+	public void fetchWireList(String Code) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		
+		LineCodeSpecified = false;
+		killGeometrySpecified();
+		if (getLineSpacingObj() == null)
+			Globals.doSimpleMsg("Must assign the LineSpacing before wires.", 181);
+
+		WireData = new WireDataObj[getLineSpacingObj().getNWires()];
+		Globals.getAuxParser().setCmdString(Code);
+		for (int i = 0; i < getLineSpacingObj().getNWires(); i++) {
+			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			Globals.getWireDataClass().setCode(Globals.getAuxParser().makeString());
+			if (WireDataImpl.getActiveWireDataObj() != null) {
+				WireData[i] = WireDataImpl.getActiveWireDataObj();
+			} else {
+				Globals.doSimpleMsg("Wire " + Globals.getAuxParser().makeString() + " was not defined first.", 181);
+			}
+		}
+	}
+	
+	public void fetchGeometryCode(String Code) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (LineImpl.getLineGeometryClass() == null)
+			LineImpl.setLineGeometryClass((LineGeometry) Globals.getDSSClassList().get(Globals.getClassNames().find("LineGeometry")));
+
+		if (LineImpl.getLineGeometryClass().setActive(Code)) {
+			LineCodeSpecified = false;  // Cancel this flag
+			SpacingSpecified  = false;
+
+			setLineGeometryObj((LineGeometryObj) LineImpl.getLineGeometryClass().getActiveObj());
+			ZFrequency = -1.0;  // Init to signify not computed
+
+			GeometryCode     = Code.toLowerCase();
+
+			if (rhoSpecified) 
+				LineGeometryObj.setRhoEarth(rho);
+
+			setNormAmps(LineGeometryObj.getNormAmps());
+			setEmergAmps(LineGeometryObj.getEmergAmps());
+			updatePDProperties();
+
+			nPhases       = LineGeometryObj.getNconds();
+			nConds        = nPhases;  // Force Reallocation of terminal info
+			Yorder        = nConds * nTerms;
+			setYprimInvalid(true);    // Force Rebuild of Y matrix
+		} else {
+			Globals.doSimpleMsg("Line Geometry Object:" + Code + " not found.", 181);
+		}
+	}
+	
 	/**
 	 * Make new Z, Zinv, Yc, etc
 	 */
 	private void makeZFromGeometry(double f) {
 		
-	}
-	
-	private void killGeometrySpecified() {
-		
+		if (f == ZFrequency)
+			return;  // Already Done for this frequency, no need to do anything
+
+		if (LineGeometryObj != null) {
+			/* This will make a New Z; Throw away present allocations */
+
+			if (Z != null) Z = null;
+			if (Zinv != null) Zinv = null;
+			if (Yc != null) Yc = null;
+
+			DSSGlobals.getInstance().setActiveEarthModel(getEarthModel());
+
+			Z    = getLineGeometryObj().getZmatrix(f, Len, LengthUnits);
+			Yc   = getLineGeometryObj().getYCmatrix(f, Len, LengthUnits);
+			/* Init Zinv */
+			if (Z != null) {
+				Zinv = new CMatrixImpl(Z.getNOrder());  // Either no. phases or no. conductors
+				Zinv.copyFrom(Z);
+			}
+
+			// Z and YC are actual total impedance for the line;
+
+			ZFrequency = f;
+		}
 	}
 	
 	/**
 	 * Make new Z, Zinv, Yc, etc
 	 */
 	private void makeZFromSpacing(double f) {
-		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (f == ZFrequency)
+			return;  // Already Done for this frequency, no need to do anything
+
+		if (Z != null) Z = null;
+		if (Zinv != null) Zinv = null;
+		if (Yc != null) Yc = null;
+
+		// make a temporary LineGeometry to calculate line constants
+		if (LineImpl.getLineGeometryClass() == null)
+			LineImpl.setLineGeometryClass( (LineGeometry) Globals.getDSSClassList().get(Globals.getClassNames().find("LineGeometry")) );
+		LineGeometryObj pGeo = new LineGeometryObjImpl(LineImpl.getLineGeometryClass(), "==");
+		pGeo.LoadSpacingAndWires(getLineSpacingObj(), getWireData());
+
+		if (rhoSpecified)
+			pGeo.setRhoEarth(rho);
+		setNormAmps(pGeo.getNormAmps());
+		setEmergAmps(pGeo.getEmergAmps());
+		updatePDProperties();
+
+		Globals.setActiveEarthModel(EarthModel);
+
+		Z    = pGeo.getZmatrix(f, Len, LengthUnits);
+		Yc   = pGeo.getYCmatrix(f, Len, LengthUnits);
+		if (Z != null) {
+			Zinv = new CMatrixImpl(Z.getNOrder());  // Either no. phases or no. conductors
+			Zinv.copyFrom(Z);
+		}
+		pGeo = null;
+
+		ZFrequency = f;
+	}
+	
+	/**
+	 * Indicate No Line Geometry specification if this is called.
+	 */
+	private void killGeometrySpecified() {
+		if (GeometrySpecified) {
+			LineGeometryObj = null;
+			ZFrequency      = -1.0;
+			GeometrySpecified = false;
+		}
 	}
 	
 	private void killSpacingSpecified() {
-		
+		if (SpacingSpecified) {
+			LineSpacingObj = null;
+			WireData = new WireDataObj[0];
+			ZFrequency = -1.0;
+			SpacingSpecified = false;
+		}
 	}
 	
 	private void clearYPrim() {
-		
+		// Line Object needs both Series and Shunt YPrims built
+		if (isYprimInvalid()) {  // Reallocate YPrim if something has invalidated old allocation
+			if (YPrim_Series != null) YPrim_Series = null;
+			if (YPrim_Shunt != null) YPrim_Shunt = null;
+			if (YPrim != null) YPrim = null;
+
+			YPrim_Series = new CMatrixImpl(Yorder);
+			YPrim_Shunt  = new CMatrixImpl(Yorder);
+			YPrim        = new CMatrixImpl(Yorder);
+		} else {
+			YPrim_Series.clear();   // zero out YPrim Series
+			YPrim_Shunt.clear();    // zero out YPrim Shunt
+			YPrim.clear();          // zero out YPrim
+		}
 	}
 	
+	/**
+	 * If specify the impedances always assume the length units match.
+	 */
 	private void resetLengthUnits() {
-		
+		UnitsConvert = 1.0;
+		LengthUnits  = LineUnits.UNITS_NONE;
 	}
 	
 	private void updatePDProperties() {
-		
+		PropertyValue[Line.NumPropsThisClass + 1] = String.format("%-g", getNormAmps());
+		PropertyValue[Line.NumPropsThisClass + 2] = String.format("%-g", getEmergAmps());
+		PropertyValue[Line.NumPropsThisClass + 3] = String.format("%-g", getFaultRate());
+		PropertyValue[Line.NumPropsThisClass + 4] = String.format("%-g", getPctPerm());
+		PropertyValue[Line.NumPropsThisClass + 5] = String.format("%-g", getHrsToRepair());
 	}
 
 	public CMatrix getZ() {
@@ -1144,10 +1304,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 	public void setIsSwitch(boolean isSwitch) {
 		IsSwitch = isSwitch;
-	}
-	
-	public void updateControlElements(String NewName, String OldName) {
-		
 	}
 
 	public boolean isLineCodeSpecified() {
