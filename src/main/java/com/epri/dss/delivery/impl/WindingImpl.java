@@ -1,5 +1,6 @@
 package com.epri.dss.delivery.impl;
 
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.delivery.Winding;
 
 public class WindingImpl implements Winding {
@@ -21,7 +22,25 @@ public class WindingImpl implements Winding {
 	private int NumTaps;
 
 	public WindingImpl() {
-		// TODO Auto-generated constructor stub
+		super();
+		this.Connection = 0;
+		this.kvll       = 12.47;
+		this.VBase      = kvll / DSSGlobals.SQRT3 * 1000.0;
+		this.kva        = 1000.0;
+		this.puTap      = 1.0;
+		this.Rpu        = 0.002;
+		this.Rneut      = -1.0;    // default to open - make user specify connection
+		this.Xneut      = 0.0;
+		computeAntiFloatAdder(1.0e-6, kva / 3.0 / 1000.0);  //  1 PPM
+
+		this.TapIncrement = 0.00625;
+		this.NumTaps      = 32;
+		this.MaxTap       = 1.10;
+		this.MinTap       = 0.90;
+	}
+	
+	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
+		Y_PPM = -PPM_Factor / (Math.pow(VBase, 2) / VABase1ph);
 	}
 
 	public int getConnection() {
@@ -126,10 +145,6 @@ public class WindingImpl implements Winding {
 
 	public void setNumTaps(int numTaps) {
 		NumTaps = numTaps;
-	}
-	
-	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
-		
 	}
 
 }

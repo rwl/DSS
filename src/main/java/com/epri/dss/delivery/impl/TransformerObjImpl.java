@@ -1,7 +1,6 @@
 package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
@@ -14,6 +13,7 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.delivery.Transformer;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.delivery.Winding;
+import com.epri.dss.general.XfmrCodeObj;
 import com.epri.dss.shared.CMatrix;
 
 public class TransformerObjImpl extends PDElementImpl implements TransformerObj {
@@ -155,7 +155,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	public void recalcElementData() {
 		int i, iHVolt;
 		double VFactor;
-		PrintWriter F;
+//		PrintWriter F;
 		Winding w;
 
 		// Determine Delta Direction
@@ -1064,10 +1064,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		Y_1Volt_NL.addElement(1, 1, new Complex((pctNoLoadLoss / 100.0 / Zbase), -pctImag / 100.0 / Zbase));
 
 /* ******************************DEBUG****************************************************** */
-		if (false) {
-			F.println("Y_OneVolt ...");
-			dumpComplexMatrix(F, Y_OneVolt);
-		}
+//		if (false) {
+//			F.println("Y_OneVolt ...");
+//			dumpComplexMatrix(F, Y_OneVolt);
+//		}
 /* ***************************************************************************************** */
 		// should have admittance of one phase of the transformer on a one-volt, wye-connected base
 
@@ -1147,6 +1147,65 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		Y_Terminal_Freqmult = FreqMult;
 	}
 	
+	private void fetchXfmrCode(String Code) {
+		XfmrCodeObj Obj;
+		int i;
+		
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (TransformerImpl.getXfmrCodeClass() == null)
+			TransformerImpl.setXfmrCodeClass((com.epri.dss.general.XfmrCode) Globals.getDSSClassList().get(Globals.getClassNames().find("xfmrcode")));
+
+		if (TransformerImpl.getXfmrCodeClass().setActive(Code)) {
+			Obj = (XfmrCodeObj) TransformerImpl.getXfmrCodeClass().getActiveObj();
+			XfmrCode = Code.toLowerCase();
+			// set sizes and copy parameters
+			nPhases = Obj.getNPhases();
+			setNumWindings(Obj.getNumWindings());
+			setPropertyValue(0, String.valueOf(nPhases));  // synch up property values
+			setPropertyValue(1, String.valueOf(NumWindings));
+			nConds = nPhases + 1; // forces reallocation of terminals and conductors
+			for (i = 0; i < NumWindings; i++) {
+				Winding W = Winding[i];
+				W.setConnection(Obj.getWinding()[i].getConnection());
+				W.setKvll(Obj.getWinding()[i].getKvll());
+				W.setVBase(Obj.getWinding()[i].getVBase());
+				W.setKva(Obj.getWinding()[i].getKva());
+				W.setPuTap(Obj.getWinding()[i].getPuTap());
+				W.setRpu(Obj.getWinding()[i].getRpu());
+				W.setRneut(Obj.getWinding()[i].getRneut());
+				W.setXneut(Obj.getWinding()[i].getXneut());
+				W.setTapIncrement(Obj.getWinding()[i].getTapIncrement());
+				W.setMinTap(Obj.getWinding()[i].getMinTap());
+				W.setMaxTap(Obj.getWinding()[i].getMaxTap());
+				W.setNumTaps(Obj.getWinding()[i].getNumTaps());
+			}
+		
+			setTermRef();
+			XHL = Obj.getXHL();
+			XHT = Obj.getXHT();
+			XLT = Obj.getXLT();
+			for (i = 0; i < (NumWindings * (NumWindings - 1) / 2); i++)
+				XSC[i] = Obj.getXSC()[i];
+			ThermalTimeConst = Obj.getThermalTimeConst();
+			n_thermal        = Obj.getN_thermal();
+			m_thermal        = Obj.getM_thermal();
+			FLrise           = Obj.getLrise();
+			HSrise           = Obj.getHSrise();
+			pctLoadLoss      = Obj.getPctLoadLoss();
+			pctNoLoadLoss    = Obj.getPctNoLoadLoss();
+			setNormMaxHKVA(Obj.getNormMaxHKVA());
+			setEmergMaxHKVA(Obj.getEmergMaxHKVA());
+			Yorder = nConds * nTerms;
+			setYprimInvalid(true);
+			Y_Terminal_Freqmult = 0.0;
+	
+			recalcElementData();
+		} else {
+			Globals.doSimpleMsg("Xfmr Code:" + Code + " not found.", 180);
+		}
+	}
+	
 	public double getPresentTap(int i) {
 		return 0.0;
 	}
@@ -1155,10 +1214,6 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	
 	public int getNumWindings() {
 		return NumWindings;
-	}
-	
-	private void fetchXfmrCode(String Code) {
-		
 	}
 
 	public int getActiveWinding() {
