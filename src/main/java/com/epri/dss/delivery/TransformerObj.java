@@ -1,5 +1,6 @@
 package com.epri.dss.delivery;
 
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.Complex;
 
 public interface TransformerObj extends PDElement {
@@ -97,5 +98,98 @@ public interface TransformerObj extends PDElement {
 	public int rotatePhases(int iPhs);
 	
 	public void getWindingVoltages(int iWind, Complex[] VBuffer);
+	
+
+	// FIXME Private memebers in OpenDSS
+
+	int getDeltaDirection();
+
+	void setDeltaDirection(int deltaDirection);
+
+	int getMaxWindings();
+
+	void setMaxWindings(int maxWindings);
+
+	int[] getTermRef();
+
+	void setTermRef(int[] termRef);
+
+	double getZbase();
+
+	void setZbase(double zbase);
+
+	double[] getXSC();
+
+	void setXSC(double[] xSC);
+
+	double getVABase();
+
+	void setVABase(double vABase);
+
+	CMatrix getZB();
+
+	void setZB(CMatrix zB);
+
+	CMatrix getY_1Volt();
+
+	void setY_1Volt(CMatrix y_1Volt);
+
+	CMatrix getY_Term();
+
+	void setY_Term(CMatrix y_Term);
+
+	CMatrix getY_1Volt_NL();
+
+	void setY_1Volt_NL(CMatrix y_1Volt_NL);
+
+	CMatrix getY_Term_NL();
+
+	void setY_Term_NL(CMatrix y_Term_NL);
+
+	double getY_Terminal_Freqmult();
+
+	void setY_Terminal_Freqmult(double y_Terminal_Freqmult);
+
+	double getThermalTimeConst();
+
+	void setThermalTimeConst(double thermalTimeConst);
+
+	double getN_thermal();
+
+	void setN_thermal(double n_thermal);
+
+	double getM_thermal();
+
+	void setM_thermal(double m_thermal);
+
+	boolean isXHLChanged();
+
+	void setXHLChanged(boolean xHLChanged);
+
+	boolean isIsSubstation();
+
+	void setIsSubstation(boolean isSubstation);
+
+	void setPpm_FloatFactor(double ppm_FloatFactor);
+
+	void setPctImag(double pctImag);
+
+	void setXHL(double xHL);
+
+	void setXHT(double xHT);
+
+	void setXLT(double xLT);
+
+	void setNormMaxHKVA(double normMaxHKVA);
+
+	void setEmergMaxHKVA(double emergMaxHKVA);
+
+	void setFLrise(double fLrise);
+
+	void setHSrise(double hSrise);
+
+	void setPctLoadLoss(double pctLoadLoss);
+
+	void setPctNoLoadLoss(double pctNoLoadLoss);
 
 }
