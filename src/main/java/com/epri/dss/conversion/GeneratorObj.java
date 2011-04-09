@@ -1,8 +1,11 @@
 package com.epri.dss.conversion;
 
+import java.io.File;
 import java.io.PrintStream;
 
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
 
 
@@ -28,17 +31,17 @@ import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
  *   5. Hours in operation
  *   6. Price * kwH
  *   
- *   Generator meters reset with the circuit energy meters and take a sample
- *   with the circuit energy meters as well. The Energy meters also used
- *   trapezoidal integration so that they are compatible with Load-Duration
- *   simulations.
+ * Generator meters reset with the circuit energy meters and take a sample
+ * with the circuit energy meters as well. The Energy meters also used
+ * trapezoidal integration so that they are compatible with Load-Duration
+ * simulations.
  *   
- *   Generator models are:
- *     1. Constant P, Q  (* dispatch curve, if appropriate).
- *     2. Constant Z  (For simple solution)
- *     3. Constant P, |V|  like a standard power flow  [not implemented]
- *     4. Constant P, Fixed Q  (vars)
- *     5. Constant P, Fixed Q  (reactance)
+ * Generator models are:
+ *   1. Constant P, Q  (* dispatch curve, if appropriate).
+ *   2. Constant Z  (For simple solution)
+ *   3. Constant P, |V|  like a standard power flow  [not implemented]
+ *   4. Constant P, Fixed Q  (vars)
+ *   5. Constant P, Fixed Q  (reactance)
  *     
  * Most of the time you will use #1 for planning studies.
  * 
@@ -171,4 +174,199 @@ public interface GeneratorObj extends PCElement {
 	/* Make a positive Sequence Model */
 	void makePosSequence();
 
+
+	// FIXME Private members in OpenDSS
+
+	Complex getYeq();
+
+	void setYeq(Complex yeq);
+
+	Complex getYeq95();
+
+	void setYeq95(Complex yeq95);
+
+	Complex getYeq105();
+
+	void setYeq105(Complex yeq105);
+
+	Complex getCurrentLimit();
+
+	void setCurrentLimit(Complex currentLimit);
+
+	boolean isDebugTrace();
+
+	void setDebugTrace(boolean debugTrace);
+
+	double getDeltaQMax();
+
+	void setDeltaQMax(double deltaQMax);
+
+	int getDispatchMode();
+
+	void setDispatchMode(int dispatchMode);
+
+	double getDispatchValue();
+
+	void setDispatchValue(double dispatchValue);
+
+	double getdQdV();
+
+	void setdQdV(double dQdV);
+
+	double getdQdVSaved();
+
+	void setdQdVSaved(double dQdVSaved);
+
+	boolean isFirstSampleAfterReset();
+
+	void setFirstSampleAfterReset(boolean firstSampleAfterReset);
+
+	boolean isFixed();
+
+	void setFixed(boolean fixed);
+
+	int getGeneratorSolutionCount();
+
+	void setGeneratorSolutionCount(int generatorSolutionCount);
+
+	double getGenFundamental();
+
+	void setGenFundamental(double genFundamental);
+
+	boolean isGenON();
+
+	void setGenON(boolean genON);
+
+	boolean isGenSwitchOpen();
+
+	void setGenSwitchOpen(boolean genSwitchOpen);
+
+	boolean iskVANotSet();
+
+	void setkVANotSet(boolean kVANotSet);
+
+	double getLastGrowthFactor();
+
+	void setLastGrowthFactor(double lastGrowthFactor);
+
+	int getLastYear();
+
+	void setLastYear(int lastYear);
+
+	int getOpenGeneratorSolutionCount();
+
+	void setOpenGeneratorSolutionCount(int openGeneratorSolutionCount);
+
+	double getPVFactor();
+
+	void setPVFactor(double pVFactor);
+
+	double getRandomMult();
+
+	void setRandomMult(double randomMult);
+
+	int getReg_Hours();
+
+	void setReg_Hours(int reg_Hours);
+
+	int getReg_kvarh();
+
+	void setReg_kvarh(int reg_kvarh);
+
+	int getReg_kWh();
+
+	void setReg_kWh(int reg_kWh);
+
+	int getReg_MaxkVA();
+
+	void setReg_MaxkVA(int reg_MaxkVA);
+
+	int getReg_MaxkW();
+
+	void setReg_MaxkW(int reg_MaxkW);
+
+	int getReg_Price();
+
+	void setReg_Price(int reg_Price);
+
+	Complex getShapeFactor();
+
+	void setShapeFactor(Complex shapeFactor);
+
+	double getThetaHarm();
+
+	void setThetaHarm(double thetaHarm);
+
+	File getTraceFile();
+
+	void setTraceFile(File traceFile);
+
+	double getV_Avg();
+
+	void setV_Avg(double v_Avg);
+
+	double getV_Remembered();
+
+	void setV_Remembered(double v_Remembered);
+
+	double getVar_Remembered();
+
+	void setVar_Remembered(double var_Remembered);
+
+	double getVarBase();
+
+	void setVarBase(double varBase);
+
+	double getVarMax();
+
+	void setVarMax(double varMax);
+
+	double getVarMin();
+
+	void setVarMin(double varMin);
+
+	double getVBase();
+
+	void setVBase(double vBase);
+
+	double getVBase105();
+
+	void setVBase105(double vBase105);
+
+	double getVBase95();
+
+	void setVBase95(double vBase95);
+
+	double getVMaxPU();
+
+	void setVMaxPU(double vMaxPU);
+
+	double getVMinPU();
+
+	void setVMinPU(double vMinPU);
+
+	Complex getVthev();
+
+	void setVthev(Complex vthev);
+
+	double getVThevHarm();
+
+	void setVThevHarm(double vThevHarm);
+
+	double getVThevMag();
+
+	void setVThevMag(double vThevMag);
+
+	CMatrix getYPrimOpenCond();
+
+	void setYPrimOpenCond(CMatrix yPrimOpenCond);
+
+	double getYQFixed();
+
+	void setYQFixed(double yQFixed);
+
+	boolean isShapeIsActual();
+
+	void setShapeIsActual(boolean shapeIsActual);
+	
 }

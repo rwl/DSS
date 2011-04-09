@@ -545,5 +545,391 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public String getPropertyValue(int Index) {
 		return null;
 	}
+	
+	// FIXME Private members in OpenDSS
+
+	public Complex getYeq() {
+		return Yeq;
+	}
+
+	public void setYeq(Complex yeq) {
+		Yeq = yeq;
+	}
+
+	public Complex getYeq95() {
+		return Yeq95;
+	}
+
+	public void setYeq95(Complex yeq95) {
+		Yeq95 = yeq95;
+	}
+
+	public Complex getYeq105() {
+		return Yeq105;
+	}
+
+	public void setYeq105(Complex yeq105) {
+		Yeq105 = yeq105;
+	}
+
+	public Complex getCurrentLimit() {
+		return CurrentLimit;
+	}
+
+	public void setCurrentLimit(Complex currentLimit) {
+		CurrentLimit = currentLimit;
+	}
+
+	public boolean isDebugTrace() {
+		return DebugTrace;
+	}
+
+	public void setDebugTrace(boolean debugTrace) {
+		DebugTrace = debugTrace;
+	}
+
+	public double getDeltaQMax() {
+		return DeltaQMax;
+	}
+
+	public void setDeltaQMax(double deltaQMax) {
+		DeltaQMax = deltaQMax;
+	}
+
+	public int getDispatchMode() {
+		return DispatchMode;
+	}
+
+	public void setDispatchMode(int dispatchMode) {
+		DispatchMode = dispatchMode;
+	}
+
+	public double getDispatchValue() {
+		return DispatchValue;
+	}
+
+	public void setDispatchValue(double dispatchValue) {
+		DispatchValue = dispatchValue;
+	}
+
+	public double getdQdV() {
+		return dQdV;
+	}
+
+	public void setdQdV(double dQdV) {
+		this.dQdV = dQdV;
+	}
+
+	public double getdQdVSaved() {
+		return dQdVSaved;
+	}
+
+	public void setdQdVSaved(double dQdVSaved) {
+		this.dQdVSaved = dQdVSaved;
+	}
+
+	public boolean isFirstSampleAfterReset() {
+		return FirstSampleAfterReset;
+	}
+
+	public void setFirstSampleAfterReset(boolean firstSampleAfterReset) {
+		FirstSampleAfterReset = firstSampleAfterReset;
+	}
+
+	public boolean isFixed() {
+		return Fixed;
+	}
+
+	public void setFixed(boolean fixed) {
+		Fixed = fixed;
+	}
+
+	public int getGeneratorSolutionCount() {
+		return GeneratorSolutionCount;
+	}
+
+	public void setGeneratorSolutionCount(int generatorSolutionCount) {
+		GeneratorSolutionCount = generatorSolutionCount;
+	}
+
+	public double getGenFundamental() {
+		return GenFundamental;
+	}
+
+	public void setGenFundamental(double genFundamental) {
+		GenFundamental = genFundamental;
+	}
+
+	public boolean isGenON() {
+		return GenON;
+	}
+
+	public void setGenON(boolean genON) {
+		GenON = genON;
+	}
+
+	public boolean isGenSwitchOpen() {
+		return GenSwitchOpen;
+	}
+
+	public void setGenSwitchOpen(boolean genSwitchOpen) {
+		GenSwitchOpen = genSwitchOpen;
+	}
+
+	public boolean iskVANotSet() {
+		return kVANotSet;
+	}
+
+	public void setkVANotSet(boolean kVANotSet) {
+		this.kVANotSet = kVANotSet;
+	}
+
+	public double getLastGrowthFactor() {
+		return LastGrowthFactor;
+	}
+
+	public void setLastGrowthFactor(double lastGrowthFactor) {
+		LastGrowthFactor = lastGrowthFactor;
+	}
+
+	public int getLastYear() {
+		return LastYear;
+	}
+
+	public void setLastYear(int lastYear) {
+		LastYear = lastYear;
+	}
+
+	public int getOpenGeneratorSolutionCount() {
+		return OpenGeneratorSolutionCount;
+	}
+
+	public void setOpenGeneratorSolutionCount(int openGeneratorSolutionCount) {
+		OpenGeneratorSolutionCount = openGeneratorSolutionCount;
+	}
+
+	public double getPVFactor() {
+		return PVFactor;
+	}
+
+	public void setPVFactor(double pVFactor) {
+		PVFactor = pVFactor;
+	}
+
+	public double getRandomMult() {
+		return RandomMult;
+	}
+
+	public void setRandomMult(double randomMult) {
+		RandomMult = randomMult;
+	}
+
+	public int getReg_Hours() {
+		return Reg_Hours;
+	}
+
+	public void setReg_Hours(int reg_Hours) {
+		Reg_Hours = reg_Hours;
+	}
+
+	public int getReg_kvarh() {
+		return Reg_kvarh;
+	}
+
+	public void setReg_kvarh(int reg_kvarh) {
+		Reg_kvarh = reg_kvarh;
+	}
+
+	public int getReg_kWh() {
+		return Reg_kWh;
+	}
+
+	public void setReg_kWh(int reg_kWh) {
+		Reg_kWh = reg_kWh;
+	}
+
+	public int getReg_MaxkVA() {
+		return Reg_MaxkVA;
+	}
+
+	public void setReg_MaxkVA(int reg_MaxkVA) {
+		Reg_MaxkVA = reg_MaxkVA;
+	}
+
+	public int getReg_MaxkW() {
+		return Reg_MaxkW;
+	}
+
+	public void setReg_MaxkW(int reg_MaxkW) {
+		Reg_MaxkW = reg_MaxkW;
+	}
+
+	public int getReg_Price() {
+		return Reg_Price;
+	}
+
+	public void setReg_Price(int reg_Price) {
+		Reg_Price = reg_Price;
+	}
+
+	public Complex getShapeFactor() {
+		return ShapeFactor;
+	}
+
+	public void setShapeFactor(Complex shapeFactor) {
+		ShapeFactor = shapeFactor;
+	}
+
+	public double getThetaHarm() {
+		return ThetaHarm;
+	}
+
+	public void setThetaHarm(double thetaHarm) {
+		ThetaHarm = thetaHarm;
+	}
+
+	public File getTraceFile() {
+		return TraceFile;
+	}
+
+	public void setTraceFile(File traceFile) {
+		TraceFile = traceFile;
+	}
+
+	public double getV_Avg() {
+		return V_Avg;
+	}
+
+	public void setV_Avg(double v_Avg) {
+		V_Avg = v_Avg;
+	}
+
+	public double getV_Remembered() {
+		return V_Remembered;
+	}
+
+	public void setV_Remembered(double v_Remembered) {
+		V_Remembered = v_Remembered;
+	}
+
+	public double getVar_Remembered() {
+		return var_Remembered;
+	}
+
+	public void setVar_Remembered(double var_Remembered) {
+		this.var_Remembered = var_Remembered;
+	}
+
+	public double getVarBase() {
+		return varBase;
+	}
+
+	public void setVarBase(double varBase) {
+		this.varBase = varBase;
+	}
+
+	public double getVarMax() {
+		return varMax;
+	}
+
+	public void setVarMax(double varMax) {
+		this.varMax = varMax;
+	}
+
+	public double getVarMin() {
+		return varMin;
+	}
+
+	public void setVarMin(double varMin) {
+		this.varMin = varMin;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public double getVMaxPU() {
+		return VMaxPU;
+	}
+
+	public void setVMaxPU(double vMaxPU) {
+		VMaxPU = vMaxPU;
+	}
+
+	public double getVMinPU() {
+		return VMinPU;
+	}
+
+	public void setVMinPU(double vMinPU) {
+		VMinPU = vMinPU;
+	}
+
+	public Complex getVthev() {
+		return Vthev;
+	}
+
+	public void setVthev(Complex vthev) {
+		Vthev = vthev;
+	}
+
+	public double getVThevHarm() {
+		return VThevHarm;
+	}
+
+	public void setVThevHarm(double vThevHarm) {
+		VThevHarm = vThevHarm;
+	}
+
+	public double getVThevMag() {
+		return VThevMag;
+	}
+
+	public void setVThevMag(double vThevMag) {
+		VThevMag = vThevMag;
+	}
+
+	public CMatrix getYPrimOpenCond() {
+		return YPrimOpenCond;
+	}
+
+	public void setYPrimOpenCond(CMatrix yPrimOpenCond) {
+		YPrimOpenCond = yPrimOpenCond;
+	}
+
+	public double getYQFixed() {
+		return YQFixed;
+	}
+
+	public void setYQFixed(double yQFixed) {
+		YQFixed = yQFixed;
+	}
+
+	public boolean isShapeIsActual() {
+		return ShapeIsActual;
+	}
+
+	public void setShapeIsActual(boolean shapeIsActual) {
+		ShapeIsActual = shapeIsActual;
+	}
 
 }
