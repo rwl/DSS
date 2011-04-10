@@ -1,5 +1,7 @@
 package com.epri.dss.conversion;
 
+import com.epri.dss.shared.impl.Complex;
+
 public interface Generator extends PCClass {
 	
 	/* Number of energy meter registers */

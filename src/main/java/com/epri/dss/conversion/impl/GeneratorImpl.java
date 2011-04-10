@@ -19,7 +19,6 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	private static GeneratorObj ActiveGeneratorObj;
 	
 	private Complex[] cBuffer = new Complex[24];  // Temp buffer for calcs  24-phase generator?
-	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
 	
 	private String[] RegisterNames = new String[Generator.NumGenRegisters];
 
