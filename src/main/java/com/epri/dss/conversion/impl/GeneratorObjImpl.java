@@ -1139,14 +1139,310 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		/* When this is done, ITerminal is up to date */
 	}
 	
+	/**
+	 * Difference between currents in YPrim and total current.
+	 */
+	private void calcInjCurrentArray() {
+
+		// Now get injection currents.
+		if (GenSwitchOpen) {
+			zeroInjCurrent();
+		} else {
+			calcGenModelContribution();
+		}
+
+		/*
+		We're not going to mess with this logic here -- too complicated: Use an open line in series
+		to look at open phase conditions.
+
+		} else {
+			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+			// some terminals not closed  use admittance model for injection
+			if (OpenGeneratorSolutionCount != sol.getSolutionCount()) {
+
+				// Rebuild the Yprimopencond if a new solution because values may have changed.
+
+				// only reallocate when necessary
+				if (YPrimOpenCond == null) {
+					YPrimOpenCond = new CMatrixImpl(Yorder);
+				} else {
+					YPrimOpenCond.clear();
+				}
+				if (YPrimOpenCond.getNOrder() != Yorder) {
+					YPrimOpenCond = null;
+					YPrimOpenCond = new CMatrixImpl(Yorder);
+				}
+				calcYPrimMatrix(YPrimOpenCond);
+
+				// Now Account for the Open Conductors //
+				// For any conductor that is open, zero out row and column
+				int k = 0;
+				for (int i = 0; i < nTerms; i++) {
+					for (int j = 0; j < nConds; j++) {
+						if (!Terminals[i].getConductors()[j].isClosed()) {
+							YPrimOpenCond.zeroRow(j + k);
+							YPrimOpenCond.zeroCol(j + k);
+							YPrimOpenCond.setElement(j + k, j + k, new Complex(1.0e-12, 0.0));  // In case node gets isolated
+						}
+					}
+					k = k + nConds;
+				}
+
+				OpenGeneratorSolutionCount = sol.getSolutionCount();
+				
+			}
+			
+			for (int i = 0; i < Yorder; i++) {
+				Ref = NodeRef[i];
+				if (Ref == -1) {
+					Vterminal[i] = Complex.ZERO;
+				} else {
+					Vterminal[i] = V[Ref];
+				}
+			}
+			YPrimOpenCond.MVmult(InjTemp, Vterminal);
+			for (int i = 0; i < Yorder; i++)
+				InjTemp[i] = InjTemp[i].neagte();
+		} */
+	}
+	
+	/**
+	 * Compute total currents.
+	 */
 	@Override
-	public int injCurrents() {
-		return 0;
+	protected void getTerminalCurrents(Complex[] Curr) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		if (IterminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
+			if (!GenSwitchOpen)
+				calcGenModelContribution();  // Adds totals in Iterminal as a side effect
+		}
+
+		super.getTerminalCurrents(Curr);
+
+		if (DebugTrace) writeTraceRecord("TotalCurrent");
 	}
 	
 	@Override
+	public int injCurrents() {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		if (sol.isLoadsNeedUpdating())
+			setNominalGeneration();  // Set the nominal kW, etc for the type of solution being done
+
+		calcInjCurrentArray();          // Difference between currents in YPrim and total terminal current
+
+		if (DebugTrace) writeTraceRecord("Injection");
+
+		// Add into system injection current array
+
+		return super.injCurrents();
+	}
+	
+	/**
+	 * Gives the currents for the last solution performed.
+	 * 
+	 * Do not call SetNominalLoad, as that may change the load values.
+	 */
+	@Override
 	public void getInjCurrents(Complex[] Curr) {
+		calcInjCurrentArray();  // Difference between currents in YPrim and total current
+
+		try {
+			// Copy into buffer array
+			for (int i = 0; i < Yorder; i++) 
+				Curr[i] = getInjCurrent()[i];
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
+					e.getMessage(),
+					"Current buffer not big enough.", 568);
+		}
+	}
+	
+	public void resetRegisters() {
+		for (int i = 0; i < NumGenRegisters; i++) 
+			Registers[i] = 0.0;
+		for (int i = 0; i < NumGenRegisters; i++)
+			Derivatives[i] = 0.0;
+		FirstSampleAfterReset = true;  // initialize for trapezoidal integration	
+	}
+	
+	private void integrate(int Reg, double Deriv, double Interval) {
+		if (DSSGlobals.getInstance().getActiveCircuit().isTrapezoidalIntegration()) {
+			/* Trapezoidal Rule Integration */
+			if (!FirstSampleAfterReset)
+				Registers[Reg] = Registers[Reg] + 0.5 * Interval * (Deriv + Derivatives[Reg]);
+		} else {
+			/* Plain Euler integration */
+			Registers[Reg] = Registers[Reg] + Interval * Deriv;
+		}
+
+		Derivatives[Reg] = Deriv;	
+	}
+	
+	/**
+	 * Update energy from metered zone.
+	 */
+	public void takeSample() {
+		Complex S;
+		double Smag;
+		double HourValue;
+
+		// Compute energy in Generator branch
+		if (isEnabled()) {
+
+			if (GenON) {
+				S = new Complex(getPresentkW(), getPresentKVar());
+				Smag = S.abs();
+				HourValue = 1.0;
+			} else {
+				S = Complex.ZERO;
+				Smag = 0.0;
+				HourValue = 0.0;
+			}
+			
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+			if (GenON || ckt.isTrapezoidalIntegration()) {
+				/* Make sure we always integrate for Trapezoidal case. 
+				 * Don't need to for Gen Off and normal integration.
+				 */
+				if (ckt.isPositiveSequence()) {
+					S    = S.multiply(3.0);
+					Smag = 3.0 * Smag;
+				}
+				integrate            (Reg_kWh,   S.getReal(), ckt.getSolution().getIntervalHrs());   // Accumulate the power
+				integrate            (Reg_kvarh, S.getImaginary(), ckt.getSolution().getIntervalHrs());
+				setDragHandRegister  (Reg_MaxkW, Math.abs(S.getReal()));
+				setDragHandRegister  (Reg_MaxkVA, Smag);
+				integrate            (Reg_Hours, HourValue, ckt.getSolution().getIntervalHrs());  // Accumulate Hours in operation
+				integrate            (Reg_Price, S.getReal() * ckt.getPriceSignal(), ckt.getSolution().getIntervalHrs());  // Accumulate Hours in operation
+				FirstSampleAfterReset = false;
+			}
+		}
+	}
+
+	public double getPresentkW() {
+		return GenVars.Pnominalperphase * 0.001 * nPhases;
+	}
+	
+	public double getPresentKV() {
+		return GenVars.kVGeneratorBase;
+	}
+	
+	public double getPresentKVar() {
+		return GenVars.Qnominalperphase * 0.001 * nPhases;
+	}
+	
+	/**
+	 * Procedures for setting the dQdV used by the solution object.
+	 */
+	public void initDQDVCalc() {
+		dQdV = 0.0;
+		GenVars.Qnominalperphase = 0.5 * (varMax + varMin);  // avg of the limits
+	}
+	
+	/**
+	 * Bump up vars by 10% of range for next calc.
+	 */
+	public void bumpUpQ() {
+		GenVars.Qnominalperphase = GenVars.Qnominalperphase + 0.1 * (varMax - varMin);
+	}
+	
+	public void rememberQV() {
+		var_Remembered = GenVars.Qnominalperphase;
+		calcVterminal();
+		V_Avg = 0.0;
+		for (int i = 0; i < nPhases; i++)
+			V_Avg = V_Avg + Vterminal[i].abs();
+		V_Avg = V_Avg / nPhases;
+		V_Remembered = V_Avg;
+	}
+	
+	public void calcDQDV() {
+		double Vdiff;
+		int i;
+
+		calcVterminal();
+		V_Avg = 0.0;
+		for (i = 0; i < nPhases; i++) 
+			V_Avg = V_Avg + Vterminal[i].abs();
+		V_Avg = V_Avg / nPhases;
+
+		Vdiff = V_Avg - V_Remembered;
+		if (Vdiff != 0.0) {
+			dQdV = (GenVars.Qnominalperphase - var_Remembered) / Vdiff;
+		} else {
+			dQdV = 0.0;  // Something strange has occured
+		}
+
+		// this will force a de facto P, Q model
+		dQdVSaved = dQdV;  // Save for next time. Allows generator to be enabled/disabled during simulation.
+	}
+	
+	public void resetStartPoint() {
+		GenVars.Qnominalperphase = 1000.0 * kvarBase / nPhases;
+	}
+	
+	@Override 
+	public void dumpProperties(PrintStream F, boolean Complete) {
+		int i, idx;
+
+		super.dumpProperties(F, Complete);
+
+		F.println("!dQdV=" + dQdV);
+
+		for (i = 0; i < getParentClass().getNumProperties(); i++) {
+			idx = getParentClass().getPropertyIdxMap()[i];
+			switch (idx) {
+			case 33:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+			case 35:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+			default:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[idx]);
+			}
+		}
+
+		F.println();	
+	}
+	
+	/**
+	 * Support for harmonics mode.
+	 */
+	@Override
+	public void initHarmonics() {
+		Complex E, Va = null;
 		
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		setYprimInvalid(true);  // Force rebuild of YPrims
+		GenFundamental = sol.getFrequency();  // Whatever the frequency is when we enter here.
+
+
+		Yeq = new Complex(0.0, GenVars.Xdpp).invert();      // used for current calcs  Always L-N
+
+		/* Compute reference Thevinen voltage from phase 1 current */
+
+		if (GenON) {
+
+			computeIterminal();  // Get present value of current
+
+			switch (Connection) {
+			case 0:  /* wye - neutral is explicit */
+				Va = sol.getNodeV()[NodeRef[0]].subtract( sol.getNodeV()[NodeRef[nConds]] );
+			case 1:  /* delta -- assume neutral is at zero */
+				Va = sol.getNodeV()[NodeRef[0]];
+			}
+
+			E = Va.subtract(Iterminal[0].multiply( new Complex(0.0, GenVars.Xdpp) ));
+			VThevHarm = E.abs();   // establish base mag and angle
+			ThetaHarm = E.getArgument();
+		} else {
+			VThevHarm = 0.0;
+			ThetaHarm = 0.0;
+		}
 	}
 	
 	@Override
@@ -1174,35 +1470,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		return null;
 	}
 	
-	public void resetRegisters() {
-		
-	}
-	
-	public void takeSample() {
-		
-	}
-	
-	/* Procedures for setting the DQDV used by the Solution Object */
-	public void initDQDVCalc() {
-		
-	}
-	
-	public void bumpUpQ() {
-		
-	}
-	
-	public void rememberQV() {
-		
-	}
-	
-	public void calcDQDV() {
-		
-	}
-	
-	public void resetStartPoint() {
-		
-	}
-	
 	/* Support for Dynamics Mode */
 	
 	@Override
@@ -1212,13 +1479,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	
 	@Override
 	public void integrateStates() {
-		
-	}
-	
-	/* Support for Harmonics Mode */
-	
-	@Override
-	public void initHarmonics() {
 		
 	}
 	
@@ -1233,26 +1493,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		
 	}
 	
-	@Override 
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		
-	}
-	
 	@Override
 	public String getPropertyValue(int Index) {
 		return null;
 	}
 	
-	private void calcInjCurrentArray() {
-		
-	}
-	
 	/* 3-phase Voltage behind transient reactance */
 	private void calcVThevDyn() {
-		
-	}
-
-	private void integrate(int Reg, double Deriv, double Interval) {
 		
 	}
 	
@@ -1262,18 +1509,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	private void syncUpPowerQuantities() {
 		
-	}
-
-	public double getPresentkW() {
-		return 0.0;
-	}
-	
-	public double getPresentKVar() {
-		return 0.0;
-	}
-	
-	public double getPresentKV() {
-		return 0.0;
 	}
 	
 	public void setPresentKV(double Value) {
@@ -1310,11 +1545,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	
 	@Override
 	public void setConductorClosed(int Index, boolean Value) {
-		
-	}
-	
-	@Override
-	protected void getTerminalCurrents(Complex[] Curr) {
 		
 	}
 
