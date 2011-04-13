@@ -25,6 +25,10 @@ public class ComplexUtil {
 		super();
 	}
 	
+	public static Complex pclx(double magn, double angle) {
+		return new Complex(magn * Math.cos(angle), magn * Math.sin(angle));
+	}
+	
 	/**
 	 * 
 	 * @param r the modulus of the complex number to create

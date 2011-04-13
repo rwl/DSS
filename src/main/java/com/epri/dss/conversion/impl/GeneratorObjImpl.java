@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+import com.epri.dss.shared.impl.DynamicsImpl;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.SolutionObj;
@@ -1411,6 +1414,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	/**
 	 * Support for harmonics mode.
 	 */
+	
 	@Override
 	public void initHarmonics() {
 		Complex E, Va = null;
@@ -1446,81 +1450,496 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 	
 	@Override
-	public int numVariables() {
-		return 0;
+	public void initPropertyValues(int ArrayOffset) {
+
+		PropertyValue[0]      = "3";        // phases;
+		PropertyValue[1]      = getBus(1);  // bus1  TODO Check zero based indexing
+		PropertyValue[2]      = "12.47";
+		PropertyValue[3]      = "100";
+		PropertyValue[4]      = ".80";
+		PropertyValue[5]      = "1";
+		PropertyValue[6]      = "";
+		PropertyValue[7]      = "";
+		PropertyValue[8]      = "";
+		PropertyValue[9]      = "Default";
+		PropertyValue[10]     = "0.0";
+		PropertyValue[11]     = "wye";
+		PropertyValue[12]     = "60";
+		PropertyValue[13]     = "0"; // "rneut"; // if entered -, assume open
+		PropertyValue[14]     = "0";  //"xneut";
+		PropertyValue[15]     = "variable"; //"status"  fixed or variable
+		PropertyValue[16]     = "1"; //"class"
+		PropertyValue[17]     = "1.0";
+		PropertyValue[18]     = Utilities.strReal(kvarMax, 3);
+		PropertyValue[19]     = Utilities.strReal(kvarMin, 3);
+		PropertyValue[20]     = "0.1";
+		PropertyValue[21]     = "no";
+		PropertyValue[22]     = "0.90";
+		PropertyValue[23]     = "1.10";
+		PropertyValue[24]     = "No";
+		PropertyValue[25]     = String.format("%-g", GenVars.kVArating);
+		PropertyValue[26]     = String.format("%-g", GenVars.kVArating * 0.001);
+		PropertyValue[27]     = String.format("%-g", GenVars.puXd);
+		PropertyValue[28]     = String.format("%-g", GenVars.puXdp);
+		PropertyValue[29]     = String.format("%-g", GenVars.puXdpp);
+		PropertyValue[30]     = String.format("%-g", GenVars.Hmass);
+		PropertyValue[31]     = String.format("%-g", GenVars.Dpu);
+		PropertyValue[32]     = "";
+		PropertyValue[33]     = "";
+		PropertyValue[34]     = "";
+		PropertyValue[35]     = "";
+
+		super.initPropertyValues(Generator.NumPropsThisClass);
 	}
 	
-	@Override
-	public void getAllVariables(double[] States) {
-		
-	}
-	
-	@Override
-	public double getVariable(int i) {
-		return 0.0;
-	}
-	
-	@Override
-	public void setVariable(int i, double Value) {
-		
-	}
-	
-	@Override
-	public String variableName(int i) {
-		return null;
-	}
-	
-	/* Support for Dynamics Mode */
+	/**
+	 * Support for dynamics mode.
+	 */
 	
 	@Override
 	public void initStateVars() {
-		
+		//Complex VNeut;
+		Complex Edp;
+		int i;
+		Complex[] V012 = new Complex[2];  // TODO Check zero based indexing
+		Complex[] I012 = new Complex[2];
+		Complex[] Vabc = new Complex[3];
+
+		setYprimInvalid(true);  // Force rebuild of YPrims
+
+		Yeq = new Complex(0.0, GenVars.Xdp).invert();
+
+		/* Compute nominal Positive sequence voltage behind transient reactance */
+
+		if (GenON) {
+			DSSGlobals Globals = DSSGlobals.getInstance();
+			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+
+			computeIterminal();
+
+			switch (nPhases) {
+			case 1:
+				Edp      = sol.getNodeV()[NodeRef[0]].subtract( sol.getNodeV()[NodeRef[1]] ).subtract( getIterminal()[0].multiply(new Complex(0.0, GenVars.Xdp)) );
+				VThevMag = Edp.abs();
+
+			case 3:
+				// Calculate Edp based on Pos Seq only
+				MathUtil.phase2SymComp(getIterminal(), I012);
+				// Voltage behind Xdp  (transient reactance), volts
+
+				for (i = 0; i < nPhases; i++) 
+					Vabc[i] = sol.getNodeV()[NodeRef[i]];   // Wye Voltage
+				MathUtil.phase2SymComp(Vabc, V012);
+				Edp      = V012[0].subtract( I012[0].multiply(new Complex(0.0, GenVars.Xdp)) );    // Pos sequence
+				VThevMag = Edp.abs();
+			default:
+				Globals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5672);
+				Globals.setSolutionAbort(true);
+			}
+
+
+			// Shaft variables
+			// Theta is angle on Vthev[1] relative to system reference
+			//Theta  = Vthev[0].getArgument();   // Assume source at 0
+			GenVars.Theta  = Edp.getArgument() ;
+			GenVars.dTheta = 0.0;
+			GenVars.w0     = DSSGlobals.TwoPi * sol.getFrequency();
+			// recalc Mmass and D in case the frequency has changed
+			GenVars.Mmass = 2.0 * GenVars.Hmass * GenVars.kVArating * 1000.0 / GenVars.w0;   // M = W-sec
+			GenVars.D = GenVars.Dpu * GenVars.kVArating * 1000.0 / GenVars.w0;
+			
+			GenVars.Pshaft = -getPower(0).getReal(); // Initialize Pshaft to present power Output
+
+			GenVars.Speed  = 0.0;  // relative to synch speed
+			GenVars.dSpeed = 0.0;
+
+			// Init User-written models
+			//int nCond; Complex[] V, I; double X, Pshaft, Theta, Speed, dt, time;
+			if (GenModel == 6) {
+				if (UserModel.exists())
+					UserModel.fInit(Vterminal, Iterminal);
+				if (ShaftModel.exists())
+					ShaftModel.fInit(Vterminal, Iterminal);
+			}
+
+		} else {
+			Vthev  = Complex.ZERO;
+			GenVars.Theta  = 0.0;
+			GenVars.dTheta = 0.0;
+			GenVars.w0     = 0;
+			GenVars.Speed  = 0.0;
+			GenVars.dSpeed = 0.0;
+		}
 	}
 	
 	@Override
 	public void integrateStates() {
-		
+		Complex TracePower;
+
+		// Compute Derivatives and then integrate
+
+		computeIterminal();
+
+		// Check for user-written exciter model.
+		//function(Complex[] V, Complex[] I, double Pshaft, double Theta, double Speed, double dt, double time)
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		if (sol.getDynaVars().IterationFlag == 0){  // First iteration of new time step
+			GenVars.ThetaHistory = GenVars.Theta + 0.5 * sol.getDynaVars().h * GenVars.dTheta;
+			GenVars.SpeedHistory = GenVars.Speed + 0.5 * sol.getDynaVars().h * GenVars.dSpeed;
+		}
+
+
+		// Compute shaft dynamics
+		TracePower = MathUtil.terminalPowerIn(Vterminal, Iterminal, nPhases);
+		GenVars.dSpeed = (GenVars.Pshaft + TracePower.getReal() - GenVars.D * GenVars.Speed) / GenVars.Mmass;
+		//GenVars.dSpeed = (GenVars.Torque + terminalPowerIn(Vtemp, Itemp, nPhases).getReal() / GenVars.Speed) / (GenVars.Mmass);
+		GenVars.dTheta  = GenVars.Speed;
+
+		// Trapezoidal method
+		GenVars.Speed = GenVars.SpeedHistory + 0.5 * sol.getDynaVars().h * GenVars.dSpeed;
+		GenVars.Theta = GenVars.ThetaHistory + 0.5 * sol.getDynaVars().h * GenVars.dTheta;
+
+		// Write Dynamics Trace Record
+		if (DebugTrace) {
+			FileWriter TraceStream = new FileWriter(TraceFile, true);
+			BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+			TraceBuffer.write(String.format("t=%-.5g ", sol.getDynaVars().t));
+			TraceBuffer.write(String.format(" Flag=%d ", sol.getDynaVars().IterationFlag));
+			TraceBuffer.write(String.format(" Speed=%-.5g ", GenVars.Speed));
+			TraceBuffer.write(String.format(" dSpeed=%-.5g ", GenVars.dSpeed));
+			TraceBuffer.write(String.format(" Pshaft=%-.5g ", GenVars.Pshaft));
+			TraceBuffer.write(String.format(" P=%-.5g Q= %-.5g", TracePower.getReal(), TracePower.getImaginary()));
+			TraceBuffer.write(String.format(" M=%-.5g ", GenVars.Mmass));
+			TraceBuffer.newLine();
+			TraceBuffer.close();
+			TraceStream.close();
+		}
+
+		if (GenModel == 6) {
+			if (UserModel.exists()) UserModel.integrate();
+			if (ShaftModel.exists()) ShaftModel.integrate();
+		}	
 	}
 	
-	/* Make a positive Sequence Model */
+	/**
+	 * Return variables one at a time.
+	 */
 	@Override
-	public void makePosSequence() {
+	public double getVariable(int i) {
+		int N, k;
+
+		N = 0;
+		double Result = -9999.99;  // error return value
 		
+		if (i < 0) return Result;  // Someone goofed
+
+		switch (i) {
+		case 0:
+			Result = (GenVars.w0 + GenVars.Speed) / DSSGlobals.TwoPi;  // Frequency, Hz
+		case 1:
+			Result = GenVars.Theta * DSSGlobals.RadiansToDegrees;  // Report in Deg
+		case 2:
+			Result = Vthev.abs() / VBase;      // Report in pu
+		case 3:
+			Result = GenVars.Pshaft;
+		case 4:
+			Result = GenVars.dSpeed * DSSGlobals.RadiansToDegrees;  // Report in Deg
+		case 5:
+			Result = GenVars.dTheta;
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.getNumVars();
+				k = (i - NumGenVariables);
+				if (k <= N)
+					return UserModel.getVariable(k);
+			}
+
+			/* If we get here, must be in the Shaft Model if anywhere */
+			if (ShaftModel.exists()) {
+				k = i - (NumGenVariables + N);
+				if (k > 0)
+					return ShaftModel.getVariable(k);
+			}
+		}
+			
+		return Result;
 	}
 	
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void setVariable(int i, double Value) {
+		int N, k;
+
+		N = 0;
+		if (i < 0) return;  // Someone goofed
+		switch (i) {
+		case 0:
+			GenVars.Speed = (Value - GenVars.w0) * DSSGlobals.TwoPi;
+		case 1:
+			GenVars.Theta = Value / DSSGlobals.RadiansToDegrees; // deg to rad
+		case 2:
+			// meaningless to set Vd = Value * vbase; // pu to volts
+		case 3:
+			GenVars.Pshaft = Value;
+		case 4:
+			GenVars.dSpeed = Value / DSSGlobals.RadiansToDegrees;
+		case 5:
+			GenVars.dTheta = Value ;
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.getNumVars();
+				k = (i - NumGenVariables) ;
+				if (k <= N) {
+					UserModel.setVariable(k, Value);
+					return;
+				}
+			}
+			
+			// If we get here, must be in the shaft model
+			if (ShaftModel.exists()) {
+				k = (i - (NumGenVariables + N)) ;
+				if (k > 0)
+					ShaftModel.setVariable(k, Value);
+			}
+		}
+	}
+	
+	@Override
+	public void getAllVariables(double[] States) {
+		int i, N;
+		N = 0;
 		
+		for (i = 0; i < NumGenVariables; i++)
+			States[i] = getVariable(i);
+
+		if (UserModel.exists()) {
+			N = UserModel.getNumVars();
+			UserModel.getAllVars(States[NumGenVariables + 1]);
+		}
+
+		if (ShaftModel.exists())
+			ShaftModel.getAllVars(States[NumGenVariables + 1 + N]);
+	}
+	
+	@Override
+	public int numVariables() {
+		int Result = NumGenVariables;
+		if (UserModel.exists())
+			Result = Result + UserModel.getNumVars();
+		if (ShaftModel.exists())
+			Result = Result + ShaftModel.getNumVars();
+		return Result;
+	}
+	
+	@Override
+	public String variableName(int i) {
+		int BuffSize = 255;
+
+		int n, i2;
+		char[] Buff = new char[BuffSize];
+		char pName;
+		String Result = "";
+
+		n = 0;
+		if (i < 0) return Result;  // Someone goofed
+		switch (i) {
+		case 0:
+			Result = "Frequency";
+		case 1:
+			Result = "Theta (Deg)";
+		case 2:
+			Result = "Vd";
+		case 3:
+			Result = "PShaft";
+		case 4:
+			Result = "dSpeed (Deg/sec)";
+		case 5:
+			Result = "dTheta (Deg)";
+		default:
+			if (UserModel.exists()) {
+				pName = @Buff;
+				n = UserModel.getNumVars();
+				i2 = i - NumGenVariables;
+				if (i2 <= n) {
+					// DLL functions require AnsiString type
+					UserModel.getVarName(i2, pName, BuffSize);
+					return String.valueOf(pName);
+				}
+			}
+
+			if (ShaftModel.exists()) {
+				pName = @Buff;
+				i2 = i - NumGenVariables - n;
+				if (i2 >= 0)
+					UserModel.getVarName(i2, pName, BuffSize);
+				Result = String.valueOf(pName);
+			}
+		}
+			
+		return Result;
 	}
 	
 	@Override
 	public String getPropertyValue(int Index) {
-		return null;
+		String Result = "";
+		
+		switch (Index) {
+		case 2:
+			Result = String.format("%.6g", GenVars.kVGeneratorBase);
+		case 3: 
+			Result = String.format("%.6g", kWBase);
+		case 4:
+			Result = String.format("%.6g", PFNominal);
+		case 6:
+			Result = YearlyShape;
+		case 7:
+			Result = DailyDispShape;
+		case 8:
+			Result = DutyShape;
+		case 12:
+			Result = String.format("%.6g", kvarBase);
+		case 18:
+			Result = String.format("%.6g", kvarMax);
+		case 19:
+			Result = String.format("%.6g", kvarMin);
+		case 25:
+			Result = String.format("%.6g", GenVars.kVArating);
+		case 26:
+			Result = String.format("%.6g", GenVars.kVArating * 0.001);
+		case 33:
+			Result = "(" + super.getPropertyValue(Index) + ")";
+		case 35:
+			Result = "(" + super.getPropertyValue(Index) + ")";
+		default:	
+			Result = super.getPropertyValue(Index);
+		}
+	
+		return Result;
 	}
 	
-	/* 3-phase Voltage behind transient reactance */
-	private void calcVThevDyn() {
-		
+	/**
+	 * Make a positive sequence model
+	 */
+	@Override
+	public void makePosSequence() {
+		String S;
+		double V;
+
+		S = "Phases=1 conn=wye";
+
+		// Make sure voltage is line-neutral
+		if ((nPhases > 1) || (Connection != 0)) {
+			V =  GenVars.kVGeneratorBase / DSSGlobals.SQRT3;
+		} else {
+			V =  GenVars.kVGeneratorBase;
+		}
+
+		S = S + String.format(" kV=%-.5g", V);
+
+		// Divide the load by no. phases
+		if (nPhases > 1) {
+			S = S + String.format(" kW=%-.5g  PF=%-.5g", kWBase / nPhases, PFNominal);
+			if ((PrpSequence[18] != 0) || (PrpSequence[19] != 0))
+				S = S + String.format(" maxkvar=%-.5g  minkvar=%-.5g", kvarMax / nPhases, kvarMin / nPhases);
+			if (PrpSequence[25] > 0)
+				S = S + String.format(" kva=%-.5g  ", GenVars.kVArating / nPhases);
+			if (PrpSequence[26] > 0)
+				S = S + String.format(" MVA=%-.5g  ", GenVars.kVArating / 1000.0 / nPhases);
+		}
+
+		Parser.getInstance().setCmdString(S);
+		edit();
+
+		super.makePosSequence();
 	}
 	
-	private void setDragHandRegister(int Reg, double Value) {
-		
+	@Override
+	public void setConductorClosed(int Index, boolean Value) {
+		super.setConductorClosed(Index, Value);
+
+		// Just turn generator on or off;
+
+		if (Value) {
+			GenSwitchOpen = false;
+		} else {
+			GenSwitchOpen = true;
+		}
 	}
 
-	private void syncUpPowerQuantities() {
-		
+	public void setPowerFactor(double Value) {
+		PFNominal = Value;
+		syncUpPowerQuantities();	
 	}
 	
 	public void setPresentKV(double Value) {
+		GenVars.kVGeneratorBase = Value;
 		
+		switch (nPhases) {
+		case 2:
+			VBase = GenVars.kVGeneratorBase * DSSGlobals.InvSQRT3x1000;
+		case 3:
+			VBase = GenVars.kVGeneratorBase * DSSGlobals.InvSQRT3x1000;
+		default:
+			VBase = GenVars.kVGeneratorBase * 1000.0 ;
+		}	
 	}
 	
 	public void setPresentKVar(double Value) {
+		double kVA_Gen;
+
+		kvarBase = Value;
+		GenVars.Qnominalperphase = 1000.0 * kvarBase  / nPhases; // init to something reasonable
+		kVA_Gen = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
+		if (kVA_Gen != 0.0) {
+			setPFNominal(kWBase / kVA_Gen);  // TODO Check for property use
+		} else {
+			setPFNominal(1.0);
+		}
 		
+		if ((kWBase * kvarBase) < 0.0)
+			setPFNominal(-getPFNominal());
+
+		kvarMax  = 2.0 * kvarBase;
+		kvarMin  = -kvarMax;	
 	}
 	
 	public void setPresentKW(double Value) {
-		
+		kWBase = Value;
+		syncUpPowerQuantities();	
+	}
+
+	private void syncUpPowerQuantities() {
+		// keep kvar nominal up to date with kW and PF
+		if (getPFNominal() != 0.0) {
+			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(getPFNominal(), 2) - 1.0);
+			GenVars.Qnominalperphase = 1000.0 * kvarBase / nPhases;
+			kvarMax = 2.0 * kvarBase;
+			kvarMin = -kvarMax;
+			if (getPFNominal() < 0.0)
+				kvarBase = -kvarBase;
+
+			if (kVANotSet)
+				GenVars.kVArating = kWBase * 1.2;
+		}
+	}
+	
+	private void setDragHandRegister(int Reg, double Value) {
+		if (Value > Registers[Reg])
+			Registers[Reg] = Value;		
+	}
+
+	private void setKwKVar(double PkW, double QkVar) {
+		setkWBase(PkW);
+		setPresentKVar(QkVar);	
+	}
+	
+	/**
+	 * 3-phase Voltage behind transient reactance.
+	 */
+	private void calcVThevDyn() {
+		if (GenSwitchOpen)
+			VThevMag = 0.0;
+		Vthev = ComplexUtil.pclx(VThevMag, GenVars.Theta);	
 	}
 	
 	public boolean isForcedON() {
@@ -1530,22 +1949,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public void setForcedON(boolean forcedON) {
 		ForcedON = forcedON;
 	}
-
-	public void setPowerFactor(double Value) {
-		
-	}
 	
 	public double getPowerFactor() {
 		return PFNominal;
-	}
-
-	private void setKwKVar(double PkW, double QkVar) {
-		
-	}
-	
-	@Override
-	public void setConductorClosed(int Index, boolean Value) {
-		
 	}
 
 	public int getConnection() {
