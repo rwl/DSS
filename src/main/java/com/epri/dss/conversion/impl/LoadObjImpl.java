@@ -562,5 +562,247 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public void updateVoltageBases() {
 
 	}
+	
+	// FIXME Private members in OpenDSS.
+
+	public boolean isPFChanged() {
+		return PFChanged;
+	}
+
+	public void setPFChanged(boolean pFChanged) {
+		PFChanged = pFChanged;
+	}
+
+	public double getkWh() {
+		return kWh;
+	}
+
+	public void setkWh(double kWh) {
+		this.kWh = kWh;
+	}
+
+	public double getkWhDays() {
+		return kWhDays;
+	}
+
+	public void setkWhDays(double kWhDays) {
+		this.kWhDays = kWhDays;
+	}
+
+	public double getAvgkW() {
+		return AvgkW;
+	}
+
+	public void setAvgkW(double avgkW) {
+		AvgkW = avgkW;
+	}
+
+	public Complex getHarmAng() {
+		return HarmAng;
+	}
+
+	public void setHarmAng(Complex harmAng) {
+		HarmAng = harmAng;
+	}
+
+	public Complex getHarmMag() {
+		return HarmMag;
+	}
+
+	public void setHarmMag(Complex harmMag) {
+		HarmMag = harmMag;
+	}
+
+	public double getLastGrowthFactor() {
+		return LastGrowthFactor;
+	}
+
+	public void setLastGrowthFactor(double lastGrowthFactor) {
+		LastGrowthFactor = lastGrowthFactor;
+	}
+
+	public int getLastYear() {
+		return LastYear;
+	}
+
+	public void setLastYear(int lastYear) {
+		LastYear = lastYear;
+	}
+
+	public double getLoadFundamental() {
+		return LoadFundamental;
+	}
+
+	public void setLoadFundamental(double loadFundamental) {
+		LoadFundamental = loadFundamental;
+	}
+
+	public int getLoadSolutionCount() {
+		return LoadSolutionCount;
+	}
+
+	public void setLoadSolutionCount(int loadSolutionCount) {
+		LoadSolutionCount = loadSolutionCount;
+	}
+
+	public int getOpenLoadSolutionCount() {
+		return OpenLoadSolutionCount;
+	}
+
+	public void setOpenLoadSolutionCount(int openLoadSolutionCount) {
+		OpenLoadSolutionCount = openLoadSolutionCount;
+	}
+
+	public double getRandomMult() {
+		return RandomMult;
+	}
+
+	public void setRandomMult(double randomMult) {
+		RandomMult = randomMult;
+	}
+
+	public Complex getShapeFactor() {
+		return ShapeFactor;
+	}
+
+	public void setShapeFactor(Complex shapeFactor) {
+		ShapeFactor = shapeFactor;
+	}
+
+	public double getVarBase() {
+		return varBase;
+	}
+
+	public void setVarBase(double varBase) {
+		this.varBase = varBase;
+	}
+
+	public double getVarNominal() {
+		return varNominal;
+	}
+
+	public void setVarNominal(double varNominal) {
+		this.varNominal = varNominal;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public double getWNominal() {
+		return WNominal;
+	}
+
+	public void setWNominal(double wNominal) {
+		WNominal = wNominal;
+	}
+
+	public Complex getYeq() {
+		return Yeq;
+	}
+
+	public void setYeq(Complex yeq) {
+		Yeq = yeq;
+	}
+
+	public Complex getYeq105() {
+		return Yeq105;
+	}
+
+	public void setYeq105(Complex yeq105) {
+		Yeq105 = yeq105;
+	}
+
+	public Complex getYeq95() {
+		return Yeq95;
+	}
+
+	public void setYeq95(Complex yeq95) {
+		Yeq95 = yeq95;
+	}
+
+	public Complex getYneut() {
+		return Yneut;
+	}
+
+	public void setYneut(Complex yneut) {
+		Yneut = yneut;
+	}
+
+	public CMatrix getYPrimOpenCond() {
+		return YPrimOpenCond;
+	}
+
+	public void setYPrimOpenCond(CMatrix yPrimOpenCond) {
+		YPrimOpenCond = yPrimOpenCond;
+	}
+
+	public double getYQFixed() {
+		return YQFixed;
+	}
+
+	public void setYQFixed(double yQFixed) {
+		YQFixed = yQFixed;
+	}
+
+	public void setPuMean(double puMean) {
+		this.puMean = puMean;
+	}
+
+	public void setPuStdDev(double puStdDev) {
+		this.puStdDev = puStdDev;
+	}
+
+	public void setCVRwattFactor(double cVRwattFactor) {
+		CVRwattFactor = cVRwattFactor;
+	}
+
+	public void setCVRvarFactor(double cVRvarFactor) {
+		CVRvarFactor = cVRvarFactor;
+	}
+
+	public void setVmaxpu(double vmaxpu) {
+		Vmaxpu = vmaxpu;
+	}
+
+	public void setVminEmerg(double vminEmerg) {
+		VminEmerg = vminEmerg;
+	}
+
+	public void setVminNormal(double vminNormal) {
+		VminNormal = vminNormal;
+	}
+
+	public void setVminpu(double vminpu) {
+		Vminpu = vminpu;
+	}
+
+	public void setExemptFromLDCurve(boolean exemptFromLDCurve) {
+		ExemptFromLDCurve = exemptFromLDCurve;
+	}
+
+	public void setFixed(boolean fixed) {
+		Fixed = fixed;
+	}
 
 }

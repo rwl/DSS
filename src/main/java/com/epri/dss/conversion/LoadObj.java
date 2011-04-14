@@ -2,6 +2,7 @@ package com.epri.dss.conversion;
 
 import java.io.PrintStream;
 
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.general.GrowthShapeObj;
@@ -192,4 +193,126 @@ public interface LoadObj extends PCElement {
 	void dumpProperties(PrintStream F, boolean Complete);
 
 	void updateVoltageBases();
+	
+	// FIXME Private members in OpenDSS.
+
+	public boolean isPFChanged();
+
+	public void setPFChanged(boolean pFChanged);
+
+	public double getkWh();
+
+	public void setkWh(double kWh);
+
+	public double getkWhDays();
+
+	public void setkWhDays(double kWhDays);
+
+	public double getAvgkW();
+
+	public void setAvgkW(double avgkW);
+
+	public Complex getHarmAng();
+
+	public void setHarmAng(Complex harmAng);
+
+	public Complex getHarmMag();
+
+	public void setHarmMag(Complex harmMag);
+
+	public double getLastGrowthFactor();
+
+	public void setLastGrowthFactor(double lastGrowthFactor);
+
+	public int getLastYear();
+
+	public void setLastYear(int lastYear);
+
+	public double getLoadFundamental();
+
+	public void setLoadFundamental(double loadFundamental);
+
+	public int getLoadSolutionCount();
+
+	public void setLoadSolutionCount(int loadSolutionCount);
+
+	public int getOpenLoadSolutionCount();
+
+	public void setOpenLoadSolutionCount(int openLoadSolutionCount);
+
+	public double getRandomMult();
+
+	public void setRandomMult(double randomMult);
+
+	public Complex getShapeFactor();
+
+	public void setShapeFactor(Complex shapeFactor);
+
+	public double getVarBase();
+
+	public void setVarBase(double varBase);
+
+	public double getVarNominal();
+
+	public void setVarNominal(double varNominal);
+
+	public double getVBase();
+
+	public void setVBase(double vBase);
+
+	public double getVBase105();
+
+	public void setVBase105(double vBase105);
+
+	public double getVBase95();
+
+	public void setVBase95(double vBase95);
+
+	public double getWNominal();
+
+	public void setWNominal(double wNominal);
+
+	public Complex getYeq();
+
+	public void setYeq(Complex yeq);
+
+	public Complex getYeq105();
+
+	public void setYeq105(Complex yeq105);
+
+	public Complex getYeq95();
+
+	public void setYeq95(Complex yeq95);
+
+	public Complex getYneut();
+
+	public void setYneut(Complex yneut);
+
+	public CMatrix getYPrimOpenCond();
+
+	public void setYPrimOpenCond(CMatrix yPrimOpenCond);
+
+	public double getYQFixed();
+
+	public void setYQFixed(double yQFixed);
+
+	public void setPuMean(double puMean);
+
+	public void setPuStdDev(double puStdDev);
+
+	public void setCVRwattFactor(double cVRwattFactor);
+
+	public void setCVRvarFactor(double cVRvarFactor);
+
+	public void setVmaxpu(double vmaxpu);
+
+	public void setVminEmerg(double vminEmerg);
+
+	public void setVminNormal(double vminNormal);
+
+	public void setVminpu(double vminpu);
+
+	public void setExemptFromLDCurve(boolean exemptFromLDCurve);
+
+	public void setFixed(boolean fixed);
 }
