@@ -163,6 +163,8 @@ public interface LoadObj extends PCElement {
 	void setAllocationFactor(double Value);
 
 	double getAllocationFactor();
+	
+	void setkWkvar(double PkW, double Qkvar);
 
 	void recalcElementData();
 
@@ -196,123 +198,127 @@ public interface LoadObj extends PCElement {
 	
 	// FIXME Private members in OpenDSS.
 
-	public boolean isPFChanged();
+	boolean isPFChanged();
 
-	public void setPFChanged(boolean pFChanged);
+	void setPFChanged(boolean pFChanged);
 
-	public double getkWh();
+	double getkWh();
 
-	public void setkWh(double kWh);
+	void setkWh(double kWh);
 
-	public double getkWhDays();
+	double getkWhDays();
 
-	public void setkWhDays(double kWhDays);
+	void setkWhDays(double kWhDays);
 
-	public double getAvgkW();
+	double getAvgkW();
 
-	public void setAvgkW(double avgkW);
+	void setAvgkW(double avgkW);
 
-	public Complex getHarmAng();
+	Complex getHarmAng();
 
-	public void setHarmAng(Complex harmAng);
+	void setHarmAng(Complex harmAng);
 
-	public Complex getHarmMag();
+	Complex getHarmMag();
 
-	public void setHarmMag(Complex harmMag);
+	void setHarmMag(Complex harmMag);
 
-	public double getLastGrowthFactor();
+	double getLastGrowthFactor();
 
-	public void setLastGrowthFactor(double lastGrowthFactor);
+	void setLastGrowthFactor(double lastGrowthFactor);
 
-	public int getLastYear();
+	int getLastYear();
 
-	public void setLastYear(int lastYear);
+	void setLastYear(int lastYear);
 
-	public double getLoadFundamental();
+	double getLoadFundamental();
 
-	public void setLoadFundamental(double loadFundamental);
+	void setLoadFundamental(double loadFundamental);
 
-	public int getLoadSolutionCount();
+	int getLoadSolutionCount();
 
-	public void setLoadSolutionCount(int loadSolutionCount);
+	void setLoadSolutionCount(int loadSolutionCount);
 
-	public int getOpenLoadSolutionCount();
+	int getOpenLoadSolutionCount();
 
-	public void setOpenLoadSolutionCount(int openLoadSolutionCount);
+	void setOpenLoadSolutionCount(int openLoadSolutionCount);
 
-	public double getRandomMult();
+	double getRandomMult();
 
-	public void setRandomMult(double randomMult);
+	void setRandomMult(double randomMult);
 
-	public Complex getShapeFactor();
+	Complex getShapeFactor();
 
-	public void setShapeFactor(Complex shapeFactor);
+	void setShapeFactor(Complex shapeFactor);
 
-	public double getVarBase();
+	double getVarBase();
 
-	public void setVarBase(double varBase);
+	void setVarBase(double varBase);
 
-	public double getVarNominal();
+	double getVarNominal();
 
-	public void setVarNominal(double varNominal);
+	void setVarNominal(double varNominal);
 
-	public double getVBase();
+	double getVBase();
 
-	public void setVBase(double vBase);
+	void setVBase(double vBase);
 
-	public double getVBase105();
+	double getVBase105();
 
-	public void setVBase105(double vBase105);
+	void setVBase105(double vBase105);
 
-	public double getVBase95();
+	double getVBase95();
 
-	public void setVBase95(double vBase95);
+	void setVBase95(double vBase95);
 
-	public double getWNominal();
+	double getWNominal();
 
-	public void setWNominal(double wNominal);
+	void setWNominal(double wNominal);
 
-	public Complex getYeq();
+	Complex getYeq();
 
-	public void setYeq(Complex yeq);
+	void setYeq(Complex yeq);
 
-	public Complex getYeq105();
+	Complex getYeq105();
 
-	public void setYeq105(Complex yeq105);
+	void setYeq105(Complex yeq105);
 
-	public Complex getYeq95();
+	Complex getYeq95();
 
-	public void setYeq95(Complex yeq95);
+	void setYeq95(Complex yeq95);
 
-	public Complex getYneut();
+	Complex getYneut();
 
-	public void setYneut(Complex yneut);
+	void setYneut(Complex yneut);
 
-	public CMatrix getYPrimOpenCond();
+	CMatrix getYPrimOpenCond();
 
-	public void setYPrimOpenCond(CMatrix yPrimOpenCond);
+	void setYPrimOpenCond(CMatrix yPrimOpenCond);
 
-	public double getYQFixed();
+	double getYQFixed();
 
-	public void setYQFixed(double yQFixed);
+	void setYQFixed(double yQFixed);
 
-	public void setPuMean(double puMean);
+	void setPuMean(double puMean);
 
-	public void setPuStdDev(double puStdDev);
+	void setPuStdDev(double puStdDev);
 
-	public void setCVRwattFactor(double cVRwattFactor);
+	void setCVRwattFactor(double cVRwattFactor);
 
-	public void setCVRvarFactor(double cVRvarFactor);
+	void setCVRvarFactor(double cVRvarFactor);
 
-	public void setVmaxpu(double vmaxpu);
+	void setVmaxpu(double vmaxpu);
 
-	public void setVminEmerg(double vminEmerg);
+	void setVminEmerg(double vminEmerg);
 
-	public void setVminNormal(double vminNormal);
+	void setVminNormal(double vminNormal);
 
-	public void setVminpu(double vminpu);
+	void setVminpu(double vminpu);
 
-	public void setExemptFromLDCurve(boolean exemptFromLDCurve);
+	void setExemptFromLDCurve(boolean exemptFromLDCurve);
 
-	public void setFixed(boolean fixed);
+	void setFixed(boolean fixed);
+
+	boolean isShapeIsActual();
+
+	void setShapeIsActual(boolean shapeIsActual);
 }
