@@ -14,5 +14,23 @@ public interface ISourceObj extends PCElement {
 	double getSrcFrequency();
 
 	void setSrcFrequency(double srcFrequency);
+	
+	// FIXME Private members in OpenDSS
+
+	double getAmps();
+
+	void setAmps(double amps);
+
+	double getAngle();
+
+	void setAngle(double angle);
+
+	double getPhaseShift();
+
+	void setPhaseShift(double phaseShift);
+
+	int getScanType();
+
+	void setScanType(int scanType);
 
 }
