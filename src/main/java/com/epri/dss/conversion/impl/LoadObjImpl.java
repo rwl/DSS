@@ -2,6 +2,7 @@ package com.epri.dss.conversion.impl;
 
 import java.io.PrintStream;
 
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 
@@ -10,6 +11,7 @@ import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.GrowthShapeObj;
@@ -129,7 +131,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public LoadObjImpl(DSSClassImpl ParClass, String SourceName) {
 		super(ParClass);
 		setName(SourceName.toLowerCase());
-		DSSObjType = ParClass.DSSClassType ;
+		DSSObjType = ParClass.getDSSClassType();
 
 		this.nPhases       = 3;
 		this.nConds        = 4;  // defaults to wye  so it has a 4th conductor
@@ -1038,91 +1040,349 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	/**
+	 * Line overload takes precedence.
+	 * Assumes that low voltage is due to overloaded line.
+	 * If voltage is below Emergency minimum, it is counted as unserved.
+	 */
 	public boolean getUnserved() {
+		double Vpu, Vmag;
+		double NormMinCriteria, EmergMinCriteria;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		if (UE_Factor > 0.0)
+			return true;
+
+		// else check voltages
+		if (LoadSolutionCount != ckt.getSolution().getSolutionCount()) 
+			calcVTerminalPhase();
+
+		// Get the lowest of the phase voltages
+		Vpu = VBase;
+		for (int i = 0; i < nPhases; i++) {
+			Vmag = Vterminal[i].abs();
+			if (Vmag < Vpu)
+				Vpu = Vmag;
+		}
+		Vpu = Vpu / VBase;
+
+		if (VminNormal != 0.0) {
+			NormMinCriteria = VminNormal;
+		} else {
+			NormMinCriteria = ckt.getNormalMinVolts();
+		}
+
+		if (VminEmerg != 0.0) {
+			EmergMinCriteria = VminEmerg;
+		} else {
+			EmergMinCriteria = ckt.getEmergMinVolts();
+		}
+
+		if (Vpu < EmergMinCriteria) {
+			//UE_Factor = 1.0;
+			// 9-19-00 RCD  let UE_Factor start small and grow linearly at same slope
+			// as EEN_Factor
+			UE_Factor = (EmergMinCriteria - Vpu) / (NormMinCriteria - EmergMinCriteria);
+			return true;
+		}
+		
 		return false;
 	}
 
+	/**
+	 * Line overload takes precedence.
+	 * Assumes that low voltage is due to overloaded line.
+	 * If voltage is below Normal minumum, it is counted as unserved in proportion
+	 * to the difference between the normal and emergency voltage limits.
+	 */
 	public boolean getExceedsNormal() {
+		double Vpu, Vmag;
+		double NormMinCriteria, EmergMinCriteria;
+		
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		
+		if (EEN_Factor > 0.0)
+			return true;
+
+		// Check line overload
+
+		if (LoadSolutionCount != ckt.getSolution().getSolutionCount())
+			calcVTerminalPhase();
+
+		// Get the lowest of the phase voltages
+		Vpu = VBase;
+		for (int i = 0; i < nPhases; i++) {
+			Vmag = Vterminal[i].abs();
+			if (Vmag < Vpu)
+				Vpu = Vmag;
+		}
+		Vpu = Vpu / VBase;
+
+		if (VminNormal != 0.0) {
+			NormMinCriteria = VminNormal;
+		} else {
+			NormMinCriteria = ckt.getNormalMinVolts();
+		}
+
+		if (VminEmerg != 0.0) {
+			EmergMinCriteria = VminEmerg;
+		} else {
+			EmergMinCriteria = ckt.getEmergMinVolts();
+		}
+
+		if (Vpu < NormMinCriteria) {
+			EEN_Factor = (NormMinCriteria - Vpu) / (NormMinCriteria - EmergMinCriteria);
+			// 9-19-00 RCD  Let EEN factor grow linearly at same slope
+			// IF EEN_Factor > 1.0 THEN EEN_Factor = 1.0;
+			return true;
+		}
+		
 		return false;
 	}
 
-	/* Allocate load from connected kva or kWh billing */
-	public void setkVAAllocationFactor(double Value) {
+	public void dumpProperties(PrintStream F, boolean Complete) {
+		super.dumpProperties(F, Complete);
 
+		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
+			switch (i) {
+			case 3:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kWBase);
+			case 4:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PFNominal);
+			case 11:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kvarBase);
+			case 21:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVAAllocationFactor);
+			case 22:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVABase);
+			default:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			}
+		}
 	}
 
-	public double getkVAAllocationFactor() {
-		return 0.0;
+	/**
+	 * Allocate load from connected kva or kWh billing.
+	 */
+	public void setkVAAllocationFactor(double Value) {
+		kVAAllocationFactor = Value;
+		AllocationFactor = Value;
+		LoadSpecType = 3;
+		computeAllocatedLoad();
+		HasBeenAllocated = true;
+	}
+
+	/**
+	 * AllocationFactor adjusts either connected kVA allocation factor or kWh CFactor.
+	 * 
+	 * This procedure is used by the EnergyMeter allocateLoad function to adjust load allocation factors.
+	 */
+	public void setAllocationFactor(double Value) {
+		AllocationFactor = Value;
+		switch (LoadSpecType) {
+		case 3:
+			kVAAllocationFactor = Value;
+		case 4:
+			CFactor             = Value;
+		}
+		computeAllocatedLoad();  // update kWbase
+		HasBeenAllocated = true;
+	}
+
+	public void setCFactor(double Value) {
+		CFactor = Value;
+		AllocationFactor = Value;
+		LoadSpecType = 4;
+		computeAllocatedLoad();
+		HasBeenAllocated = true;
 	}
 
 	public void setConnectedkVA(double Value) {
-
-	}
-
-	public double getConnectedkVA() {
-		return 0.0;
-	}
-
-	private void computeAllocatedLoad() {
-
-	}
-
-	/** Set kWh properties ... */
-
-	public void setCFactor(double Value) {
-
-	}
-
-	public double getCFactor() {
-		return 0.0;
+		ConnectedkVA = Value;
+		LoadSpecType = 3;
+		AllocationFactor = kVAAllocationFactor;
+		computeAllocatedLoad();
 	}
 
 	public void setKWh(double Value) {
-
-	}
-
-	public double getKWh() {
-		return 0.0;
+		kWh = Value;
+		LoadSpecType = 4;
+		AllocationFactor = CFactor;
+		computeAllocatedLoad();
 	}
 
 	public void setKWhDays(double Value) {
-
+		kWhDays = Value;
+		LoadSpecType = 4;
+		computeAllocatedLoad();
 	}
 
-	public double getKWhDays() {
-		return 0.0;
-	}
-
-	/* AllocationFactor adjusts either connected kVA allocation factor
-	 * or kWh CFactor
+	/**
+	 * Fixed loads defined by kW, kvar or kW, pf are ignored.
 	 */
-	public void setAllocationFactor(double Value) {
-
+	private void computeAllocatedLoad() {
+		switch (LoadSpecType) {
+		case 3:
+			if (ConnectedkVA > 0.0) {
+				kWBase = ConnectedkVA * kVAAllocationFactor * Math.abs(PFNominal);
+				kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				if (PFNominal < 0.0)
+					kvarBase = -kvarBase;
+			}
+		case 4:
+			AvgkW = kWh / (kWhDays * 24);
+			kWBase = AvgkW * CFactor;
+			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			if (PFNominal < 0.0)
+				kvarBase = -kvarBase;
+		}
 	}
 
-	public double getAllocationFactor() {
-		return 0.0;
-	}
-
+	/**
+	 * Get the present terminal currents and store for harmonics base reference.
+	 */
 	public void initHarmonics() {
+		Complex[] Currents;
 
-	}
+		/* Make sure there's enough memory */
+		HarmMag = (double[]) Utilities.resizeArray(HarmMag, nPhases);
+		HarmAng = (double[]) Utilities.resizeArray(HarmAng, nPhases);
+		Currents = new Complex[Yorder];  // to hold currents
 
-	/* Make a positive Sequence Model */
-	public void makePosSequence() {
+		LoadFundamental = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
 
-	}
+		getCurrents(Currents);
+		/* Store the currents at fundamental frequency.
+		 * The spectrum is applied to these.
+		 */
+		for (int i = 0; i < nPhases; i++) {
+			HarmMag[i] = Currents[i].abs();
+			HarmAng[i] = Currents[i].degArg();
+		}
 
-	public String getPropertyValue(int Index) {
-		return null;
+		Currents = null;  // get rid of temp space
 	}
 
 	public void initPropertyValues(int ArrayOffset) {
 
+		PropertyValue[0]  = "3";        // "phases";
+		PropertyValue[1]  = getBus(1);  // "bus1";
+		PropertyValue[2]  = "12.47";
+		PropertyValue[3]  = "10";
+		PropertyValue[4]  = ".88";
+		PropertyValue[5]  = "1";
+		PropertyValue[6]  = "";
+		PropertyValue[7]  = "";
+		PropertyValue[8]  = "";
+		PropertyValue[9]  = "";
+		PropertyValue[10] = "wye";
+		PropertyValue[11] = "5";
+		PropertyValue[12] = "-1"; // "rneut"; // IF entered -, assume open or user defined
+		PropertyValue[13] = "0";  //"xneut";
+		PropertyValue[14] = "variable"; //"status";  // fixed or variable
+		PropertyValue[15] = "1"; //class
+		PropertyValue[16] = "0.95";
+		PropertyValue[17] = "1.05";
+		PropertyValue[18] = "0.0";
+		PropertyValue[19] = "0.0";
+		PropertyValue[20] = "0.0";
+		PropertyValue[21] = "0.5";  // Allocation Factor
+		PropertyValue[22] = "11.3636";
+		PropertyValue[23] = "50";
+		PropertyValue[24] = "10";
+		PropertyValue[25] = "1";  // CVR watt factor
+		PropertyValue[26] = "2";  // CVR var factor
+		PropertyValue[27] = "0";  // kwh bulling
+		PropertyValue[28] = "30";  // kwhdays
+		PropertyValue[29] = "4";  // Cfactor
+		PropertyValue[30] = "";  // CVRCurve
+		PropertyValue[31] = "1";  // NumCust
+
+		super.initPropertyValues(Load.NumPropsThisClass);
 	}
 
-	public void dumpProperties(PrintStream F, boolean Complete) {
+	/**
+	 * Make a positive sequence model.
+	 */
+	public void makePosSequence() {
+		double V;
 
+		String S = "Phases=1 conn=wye";
+
+		// Make sure voltage is line-neutral
+		if ((nPhases > 1) || (Connection != 0)) {
+			V = kVLoadBase / DSSGlobals.SQRT3;
+		} else {
+			V = kVLoadBase;
+		}
+
+		S = S + String.format(" kV=%-.5g", V);
+
+		// Divide the load by no. phases
+		if (nPhases > 1) {
+			S = S + String.format(" kW=%-.5g  kvar=%-.5g", kWBase / nPhases, kvarBase / nPhases);
+			if (ConnectedkVA > 0.0) 
+				S = S + String.format(" xfkVA=%-.5g  ", ConnectedkVA / nPhases);
+		}
+
+		Parser.getInstance().setCmdString(S);
+		edit();	
+
+		super.makePosSequence();
+	}
+
+	public String getPropertyValue(int Index) {
+		switch (Index) {
+		case 1:
+			return getBus(1);
+		case 2: 
+			return String.format("%-g", kVLoadBase);
+		case 3:
+			return String.format("%-g", kWBase);
+		case 4:
+			return String.format("%-.3g", PFNominal);
+		case 6: 
+			return YearlyShape;
+		case 7: 
+			return DailyShape;
+		case 8:
+			return DutyShape;
+		case 11:
+			return String.format("%-.3g", kvarBase);
+		case 21:
+			return String.format("%-.3g", kVAAllocationFactor);
+		case 22:
+			return String.format("%-g", kVABase);
+		case 29:
+			return String.format("%-.3g", CFactor);
+		default:
+			return super.getPropertyValue(Index);
+		}
+	}
+
+	public double getkVAAllocationFactor() {
+		return kVAAllocationFactor;
+	}
+
+	public double getConnectedkVA() {
+		return ConnectedkVA;
+	}
+
+	public double getCFactor() {
+		return CFactor;
+	}
+
+	public double getKWh() {
+		return kWh;
+	}
+
+	public double getKWhDays() {
+		return kWhDays;
+	}
+
+	public double getAllocationFactor() {
+		return AllocationFactor;
 	}
 
 	public int getConnection() {
