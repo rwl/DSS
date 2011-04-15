@@ -32,8 +32,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private double CFactor;
 	private double AvgkW;
 	/* References for Harmonics mode */
-	private Complex HarmAng;
-	private Complex HarmMag;
+	private double[] HarmAng;
+	private double[] HarmMag;
 	private double LastGrowthFactor;
 	/* added FOR speedup so we don't have to search FOR growth factor a lot */
 	private int LastYear;
@@ -652,48 +652,390 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	private void doConstantZLoad() {
+		Complex Curr;
+
+		// Assume Yeq is kept up to date
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // Get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (int i = 0; i < nPhases; i++) {
+			Curr = Yeq.multiply(Vterminal[i]);
+			stickCurrInTerminalArray(getIterminal(),  Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Constant P, quadratic Q
+	 */
+	private void doMotorTypeLoad() {
+		Complex Curr;
+		Complex V;
+		double VMag;
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase(); // get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (int i = 0; i < nPhases; i++) {
+			V    = Vterminal[i];
+			VMag = V.abs();
+			if (VMag <= VBase95) {
+				Curr = Yeq95.multiply(V);  // Below 95% use an impedance model
+			} else if (VMag > VBase105) {
+				Curr = Yeq105.multiply(V);  // above 105% use an impedance model
+			} else {
+				Curr = new Complex(WNominal, 0.0).divide(V).conjugate();  // Above 95%, constant P
+				Curr = Curr.add(new Complex(0.0, Yeq.getImaginary()).multiply(V));  // Add in Q component of current
+			}
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Constant current load.
+	 */
+	private void doConstantILoad() {
+		Complex V;
+		Complex Curr;
+
+		// Computes the current assuming the voltage mag is Vbase
+		// Just uses the phase angle off the voltage
+
+		/*
+		 * Injection = [s/v]* = [ (P+jQ)/(Vbase * V/|V|)]*
+		 */
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // Get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (int i = 0; i < nPhases; i++) {
+			V    = Vterminal[i];
+
+			Curr = new Complex(WNominal, varNominal).divide( V.divide( V.abs() ).multiply(VBase) ).conjugate();
+
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Linear P, quadratic Q.
+	 */
+	private void doCVRModel() {
+		Complex V;
+		Complex Curr;
+		Complex Cvar;  // var current
+		double WattFactor;
+		double VarFactor;
+		double Vmag;
+		double VRatio;
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // Get actual voltage across each phase of the load
+		zeroITerminal();
+
+		try {
+			for (int i = 0; i < nPhases; i++) {
+				V    = Vterminal[i];
+				Vmag = V.abs();
+				VRatio = Vmag / VBase;  // vbase is l-n for wye and l-l for delta
+				// Linear factor adjustment does not converge for some reason while power adjust does easily
+				// WattFactor = (1.0 + FCVRwattFactor*(Vmag/VBase - 1.0));
+				if (CVRwattFactor != 1.0) {
+					WattFactor = Math.pow(VRatio, CVRwattFactor);
+				} else {
+					WattFactor = VRatio;  // old value (in error): 1.0;
+				}
+				if (WattFactor > 0.0) {
+					Curr = new Complex(WNominal * WattFactor, 0.0).divide(V).conjugate();
+				} else {
+					Curr = Complex.ZERO;  // P component of current
+				}
+
+				/* Compute Q component of current */
+				if (CVRvarFactor == 2.0) {  /* Check for easy, quick ones first */
+					Cvar = new Complex(0.0, Yeq.getImaginary()).multiply(V); // 2 is same as Constant impedance
+				} else if (CVRvarFactor == 3.0) {
+					VarFactor = Math.pow(VRatio, 3);
+					/*writeDLLDebugFile(String.format("%s, V=%.6g +j %.6g", getName(), V.getReal(), V.getImaginary()));*/
+					Cvar      = new Complex(0.0, varNominal * VarFactor).divide(V).conjugate();
+				} else {
+					/* Other Var factor code here if not squared or cubed */
+					VarFactor = Math.pow(VRatio, CVRvarFactor);
+					Cvar      = new Complex(0.0, varNominal * VarFactor).divide(V).conjugate();
+				}
+				Curr = Curr.add(Cvar);  // add in Q component of current
+				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ", getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
+				stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+				setITerminalUpdated(true);
+				stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+			}
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg(String.format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
+		}
+	}
+
+	/**
+	 * Constant P, Fixed Q.  Q is always kvarBase.
+	 */
+	private void doFixedQ() {
+		Complex Curr, V;
+		double Vmag;
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // Get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (int i = 0; i < nPhases; i++) {
+			V    = Vterminal[i];
+			Vmag = V.abs();
+			if (Vmag <= VBase95) {
+				Curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // Below 95% use an impedance model
+			} else if (Vmag > VBase105) {
+				Curr = new Complex(Yeq105.getReal(), YQFixed).multiply(V);  // above 105% use an impedance model
+			} else {
+				Curr = new Complex(WNominal, varBase).divide(V).conjugate();
+			}
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Constant P, Fixed Q.  Q is always a fixed Z derived from kvarBase.
+	 */
+	private void doFixedQZ() {
+		Complex Curr, V;
+		double Vmag;
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // Get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (int i = 0; i < nPhases; i++) {
+			V = Vterminal[i];
+			Vmag = V.abs();
+			if (Vmag <= VBase95) {
+				Curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // Below 95% use an impedance model
+			} else if (Vmag >  VBase105) {
+				Curr = new Complex(Yeq105.getReal(), YQFixed).multiply(V);
+			} else {
+				Curr = new Complex(WNominal, 0.0).divide(V).conjugate(); // P component of current
+				Curr = Curr.add(new Complex(0.0, YQFixed).multiply(V));  // add in Q component of current
+			}
+
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Compute Injection Current Only when in harmonics mode.
+	 * Assumes spectrum is an ideal current source based on the fundamental current and spectrum.
+	 */
+	private void doHarmonicMode() {
+		Complex Curr, Mult;
+		double LoadHarmonic;
+
+		/* Don't calc Vterminal here because it could be undefined! */
+		zeroInjCurrent();
+		zeroITerminal();
+		
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		LoadHarmonic = sol.getFrequency() / LoadFundamental;  // LoadFundamental = frequency of solution when Harmonic mode entered
+		Mult = getSpectrumObj().getMult(LoadHarmonic);
+		for (int i = 0; i < nPhases; i++) {
+			Curr = Mult.multiply(HarmMag[i]); // Get base harmonic magnitude
+			Utilities.rotatePhasorDeg(Curr, LoadHarmonic, HarmAng[i]);   // Time shift by fundamental
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+		}
+	}
+
 	private boolean allTerminalsClosed() {
-		return false;
-	}
-
-	private void calcInjCurrentArray() {
-
-	}
-
-	private void calcLoadModelContribution() {
-
+		for (int i = 0; i < nTerms; i++) 
+			for (int j = 0; j < nConds; j++) 
+				if (!Terminals[i].getConductors()[j].isClosed())
+					return false;
+		return true;
 	}
 
 	private void calcVTerminalPhase() {
+		int j;
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		/* Establish phase voltages and stick in Vtemp */
+		switch (Connection) {
+		case 0:
+			for (int i = 0; i < nPhases; i++)
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+		case 1:
+			for (int i = 0; i < nPhases; i++) {
+				j = i + 1;  // TODO Check zero based indexing
+				if (j > nConds)
+					j = 0;
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
+			}
+		}
 
+		LoadSolutionCount = sol.getSolutionCount();
 	}
 
-	private void doConstantILoad() {
+	/**
+	 * Calculates total load current and adds it properly into the InjCurrent array.
+	 */
+	private void calcLoadModelContribution() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
 
+		setITerminalUpdated(false);
+
+		if (sol.isIsDynamicModel()) {
+			//doDynamicMode();  // TODO Implement dynamic mode
+		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+			doHarmonicMode();
+		} else {
+			// Compute total Load currents and add into InjCurrent array;
+			switch (LoadModel) {
+			case 1:
+				doConstantPQLoad();  // normal load-flow type load
+			case 2:
+				doConstantZLoad();
+			case 3:
+				doMotorTypeLoad();  // Constant P, Quadratic Q;
+			case 4:
+				doCVRModel();       // mixed motor/resistive load   with CVR factors
+			case 5:
+				doConstantILoad();
+			case 6:
+				doFixedQ();         // Fixed Q
+			case 7:
+				doFixedQZ();        // Fixed, constant Z Q
+			default:
+				doConstantZLoad();     // FOR now, until we implement the other models.
+			}
+		}
 	}
 
-	private void doConstantZLoad() {
+	/**
+	 * Fill InjCurrent array with the current values to use for injections.
+	 */
+	private void calcInjCurrentArray() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
+		// If a terminal is open, then standard load models don't apply, so check it out first.
+		if (allTerminalsClosed()) {
+			
+			// Now get injection currents
+			calcLoadModelContribution();
+
+		} else {
+
+			// FIXME: THIS MAY NOT WORK !!! WATCH FOR BAD RESULTS
+
+			// Some terminals not closed use admittance model for injection.
+			if (OpenLoadSolutionCount != ckt.getSolution().getSolutionCount()) {
+
+				// Rebuild the YprimOpenCond if a new solution because values may have changed.
+
+				// Only reallocate when necessary
+				if (YPrimOpenCond == null) {
+					YPrimOpenCond = new CMatrixImpl(Yorder);
+				} else {
+					YPrimOpenCond.clear();
+				}
+				if (YPrimOpenCond.getNOrder() != Yorder) {
+					YPrimOpenCond = null;
+					YPrimOpenCond = new CMatrixImpl(Yorder);
+				}
+				calcYPrimMatrix(YPrimOpenCond);
+
+				/* Now account for the open conductors */
+				/* For any conductor that is open, zero out row and column */
+
+				int k = 0;
+				for (int i = 0; i < nTerms; i++) {
+					for (int j = 0; j < nConds; j++) {
+						if (!Terminals[i].getConductors()[j].isClosed()) {
+							YPrimOpenCond.zeroRow(j + k);
+							YPrimOpenCond.zeroCol(j + k);
+							YPrimOpenCond.setElement(j + k, j + k, new Complex(1.0e-12, 0.0));  // In case node gets isolated
+						}
+					}
+					k = k + nConds;
+				}
+
+				OpenLoadSolutionCount = ckt.getSolution().getSolutionCount();
+
+			}
+
+			computeVterminal(); 
+			YPrimOpenCond.MVMult(ComplexBuffer, Vterminal);
+			for (int i = 0; i < Yorder; i++)
+				ComplexBuffer[i] = ComplexBuffer[i].negate();
+		}
 	}
 
-	private void doFixedQ() {
+	/**
+	 * Always return total terminal currents in the Curr array
+	 */
+	protected void getTerminalCurrents(Complex[] Curr) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
+		if (IterminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
+			calcLoadModelContribution();  // Adds totals in Iterminal as a side effect
+		
+		super.getTerminalCurrents(Curr);
 	}
 
-	private void doFixedQZ() {
-
+	/**
+	 * Get the injection currents and add them directly into the currents array.
+	 */
+	public int injCurrents() {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		
+		int Result = 0;
+		if (isEnabled()) {
+			if (sol.isLoadsNeedUpdating())
+				setNominalLoad();  // Set the nominal kW, etc. for the type of solution being done
+			calcInjCurrentArray();
+			Result = super.injCurrents();  // Add into Global Currents Array
+		}
+		
+		return Result;
 	}
 
-	private void doHarmonicMode() {
-
-	}
-
-	private void doCVRModel() {
-
-	}
-
-	private void doMotorTypeLoad() {
-
+	/**
+	 * Gets the injection  currents for the last solution performed.
+	 * Do not call setNominalLoad, as that may change the load values.
+	 */
+	public void getInjCurrents(Complex[] Curr) {
+		try {
+			if (isEnabled()) {
+				calcInjCurrentArray();
+				// Copy into buffer array
+				for (int i = 0; i < Yorder; i++) 
+					Curr[i] = getInjCurrent()[i];
+			} else {
+				for (int i = 0; i < Curr.length; i++) 
+					Curr[i] = Complex.ZERO;
+			}
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doErrorMsg("Load Object: \"" + getName() + "\" in getInjCurrents function.",
+					e.getMessage(), "Current buffer may not big enough.", 588);
+		}
 	}
 
 	public boolean getUnserved() {
@@ -760,18 +1102,6 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public double getAllocationFactor() {
 		return 0.0;
-	}
-
-	protected void getTerminalCurrents(Complex[] Curr) {
-
-	}
-
-	public int injCurrents() {
-		return 0;
-	}
-
-	public void getInjCurrents(Complex[] Curr) {
-
 	}
 
 	public void initHarmonics() {
@@ -1069,19 +1399,19 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		AvgkW = avgkW;
 	}
 
-	public Complex getHarmAng() {
+	public double[] getHarmAng() {
 		return HarmAng;
 	}
 
-	public void setHarmAng(Complex harmAng) {
+	public void setHarmAng(double[] harmAng) {
 		HarmAng = harmAng;
 	}
 
-	public Complex getHarmMag() {
+	public double[] getHarmMag() {
 		return HarmMag;
 	}
 
-	public void setHarmMag(Complex harmMag) {
+	public void setHarmMag(double[] harmMag) {
 		HarmMag = harmMag;
 	}
 

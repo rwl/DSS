@@ -214,13 +214,13 @@ public interface LoadObj extends PCElement {
 
 	void setAvgkW(double avgkW);
 
-	Complex getHarmAng();
+	double[] getHarmAng();
 
-	void setHarmAng(Complex harmAng);
+	void setHarmAng(double[] harmAng);
 
-	Complex getHarmMag();
+	double[] getHarmMag();
 
-	void setHarmMag(Complex harmMag);
+	void setHarmMag(double[] harmMag);
 
 	double getLastGrowthFactor();
 
