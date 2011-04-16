@@ -1,34 +1,70 @@
 package com.epri.dss.conversion.impl;
 
 import com.epri.dss.common.impl.CktElementClassImpl;
+import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.PCClass;
+import com.epri.dss.conversion.PCElement;
+import com.epri.dss.parser.impl.Parser;
 
 public class PCClassImpl extends CktElementClassImpl implements PCClass {
-
+	
+	int NumPCClassProps;
+	
 	public PCClassImpl() {
-		// TODO Auto-generated constructor stub
+		super();
+		this.NumPCClassProps = 1;
+		this.DSSClassType = DSSClassDefs.PC_ELEMENT;
+	}
+
+	/**
+	 * Add no. of intrinsic properties.
+	 */
+	protected void countProperties() {
+		NumProperties = NumProperties + NumPCClassProps;
+		super.countProperties();
+	}
+
+	/**
+	 * Add Properties of this class to propName.
+	 * 
+	 * Define the properties for the base power delivery element class.
+	 */
+	protected void defineProperties() {
+		PropertyName[ActiveProperty + 1] = "spectrum";
+
+		PropertyHelp[ActiveProperty + 1] = "Name of harmonic spectrum for this device.";
+
+		ActiveProperty = ActiveProperty + NumPCClassProps;
+
+		super.defineProperties();
 	}
 
 	protected int classEdit(Object ActivePCObj, int ParamPointer) {
-		return 0;
+		int Result = 0;
+		// continue parsing with contents of Parser
+		if (ParamPointer >= 0) {
+			PCElement pElem = (PCElement) ActivePCObj;
+
+			switch (ParamPointer) {
+			case 1:
+				pElem.setSpectrum(Parser.getInstance().makeString());
+			default:
+				super.classEdit(ActivePCObj, ParamPointer - NumPCClassProps);
+			}
+		}
+		return Result;
 	}
 
 	protected void classMakeLike(Object OtherObj) {
+		PCElement OtherPCObj = (PCElement) OtherObj;
 
-	}
+		PCElement pElem = (PCElement) DSSGlobals.getInstance().getActiveDSSObject();
 
-	/* Add no. of intrinsic properties */
-	protected void countProperties() {
+		pElem.setSpectrum(OtherPCObj.getSpectrum());
+		pElem.setSpectrumObj(OtherPCObj.getSpectrumObj());
 
-	}
-
-	/* Add Properties of this class to propName */
-	protected void defineProperties() {
-
-	}
-
-	public int NumPCClassProps() {
-		return 0;
+		super.classMakeLike(OtherObj);
 	}
 
 }
