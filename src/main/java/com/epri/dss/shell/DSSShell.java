@@ -20,5 +20,4 @@ public class DSSShell extends AbstractShell {
 	public void executeCommand(String line) {
 		executive.setCommand(line);
 	}
-	
 }
