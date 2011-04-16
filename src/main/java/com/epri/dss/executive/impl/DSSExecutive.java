@@ -13,6 +13,8 @@ import com.epri.dss.executive.Executive;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class DSSExecutive implements Executive {
+	
+	private static Executive DSSExecutive;
 
 	private boolean RecorderOn;
 	private String RecorderFile;
@@ -127,6 +129,14 @@ public class DSSExecutive implements Executive {
 
 	public void writeToRecorderFile(String S) {
 		RecorderFile.println(S);
+	}
+
+	public static void setDSSExecutive(Executive dSSExecutive) {
+		DSSExecutive = dSSExecutive;
+	}
+
+	public static Executive getDSSExecutive() {
+		return DSSExecutive;
 	}
 
 }

@@ -1,8 +1,6 @@
 package com.epri.dss.executive;
 
 public interface Executive {
-	
-	static Executive DSSExecutive = null;
 
 	String getLastError();
 
