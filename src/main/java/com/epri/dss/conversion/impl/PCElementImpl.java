@@ -206,7 +206,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	public void setITerminalUpdated(boolean Value) {
 		IterminalUpdated = Value;
 		if (Value)
-			setITerminalSolutionCount(DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount());
+			IterminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
 	}
 
 	public boolean getITerminalUpdated() {

@@ -1,28 +1,27 @@
 package com.epri.dss.conversion.impl;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintStream;
 
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Circuit;
+import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSClassImpl;
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.conversion.Storage;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.Dynamics;
 
 public class StorageObjImpl extends PCElementImpl implements StorageObj {
-
-	private static final int NumStorageRegisters = 6;    
-	private static final int NumStorageVariables = 4;
 	
-	private static final int STORE_CHARGING = -1;
-	private static final int STORE_IDLING =  0;
-	private static final int STORE_DISCHARGING = 1;
-	
-	private static final int STORE_DEFAULT = 0;
-	private static final int STORE_LOADMODE = 1;
-	private static final int STORE_PRICEMODE = 2;
-	private static final int STORE_EXTERNALMODE = 3;
+	static Complex CDOUBLEONE = new Complex(1.0, 1.0);
 	
 	private Complex Yeq;         // at nominal
 	private Complex Yeq95;       // at 95%
@@ -68,7 +67,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private int Reg_MaxkVA;
 	private int Reg_MaxkW;
 	private int Reg_Price;
-	private double[] ShapeFactor;
+	private Complex ShapeFactor;
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
 	private double ThetaHarm;  
 	private File TraceFile;
@@ -117,19 +116,778 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	protected double pctReserve;
 	protected int DispatchMode;
 
-	protected double[] Registers = new double[NumStorageRegisters];
-	protected double[] Derivatives = new double[NumStorageRegisters];
+	protected double[] Registers = new double[Storage.NumStorageRegisters];
+	protected double[] Derivatives = new double[Storage.NumStorageRegisters];
 
 	public StorageObjImpl(DSSClassImpl ParClass, String StorageName) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
+
+		setName(StorageName.toLowerCase());
+		this.DSSObjType = ParClass.getDSSClassType(); // + STORAGE_ELEMENT;  // In both PCelement and Storageelement list
+
+		this.nPhases    = 3;
+		this.nConds     = 4;  // defaults to wye
+		this.Yorder     = 0;  // To trigger an initial allocation
+		this.nTerms     = 1;  // forces allocations
+
+		this.YearlyShape       = "";
+		this.YearlyShapeObj    = null;  // If YearlyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.DailyShape        = "";
+		this.DailyShapeObj     = null;  // If DaillyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.DutyShape         = "";
+		this.DutyShapeObj      = null;  // If DutyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.Connection        = 0;     // Wye (star)
+		this.VoltageModel      = 1;  /* Typical fixed kW negative load */
+		this.StorageClass      = 1;
+
+		this.StorageSolutionCount     = -1;  // For keep track of the present solution in Injcurrent calcs
+		this.OpenStorageSolutionCount = -1;
+		this.YPrimOpenCond            = null;
+
+		this.kVStorageBase    = 12.47;
+		this.VBase            = 7200.0;
+		this.Vminpu           = 0.90;
+		this.Vmaxpu           = 1.10;
+		this.VBase95          = this.Vminpu * this.VBase;
+		this.VBase105         = this.Vmaxpu * this.VBase;
+		this.Yorder           = this.nTerms * this.nConds;
+		this.RandomMult       = 1.0 ;
+
+		/* Output rating stuff */
+		this.kW_out       = 25.0;
+		this.kvar_out     = 0.0;
+		this.PFNominal    = 1.0;
+		this.kWrating     = 25.0;
+		this.kVArating    = this.kWrating *1.0;
+
+		this.State           = Storage.STORE_IDLING;  // Idling and fully charged
+		this.StateChanged    = true;  // Force building of YPrim
+		this.kWhRating       = 50;
+		this.kWhStored       = kWhRating;
+		this.pctReserve      = 20.0;  // per cent of kWhRating
+		this.kWhReserve      = kWhRating * pctReserve /100.0;
+		this.pctR            = 0.0;;
+		this.pctX            = 50.0;
+		this.pctIdlekW       = 1.0;
+		this.pctIdlekvar     = 0.0;
+
+		this.DischargeTrigger = 0.0;
+		this.ChargeTrigger    = 0.0;
+		this.pctChargeEff     = 90.0;
+		this.pctDischargeEff  = 90.0;
+		this.pctKWout         = 100.0;
+		this.pctKVarout       = 100.0;
+		this.pctKWin          = 100.0;
+
+		this.ChargeTime       = 2.0;   // 2 AM
+
+		this.kVANotSet    = true;  // Flag to set the default value for kVA
+
+		this.UserModel  = new StoreUserModel();
+
+		this.Reg_kWh    = 1;
+		this.Reg_kvarh  = 2;
+		this.Reg_MaxkW  = 3;
+		this.Reg_MaxkVA = 4;
+		this.Reg_Hours  = 5;
+		this.Reg_Price  = 6;
+
+		this.DebugTrace = false;
+		this.StorageObjSwitchOpen = false;
+		setSpectrum("");  // override base class
+		setSpectrumObj(null);
+		
+		initPropertyValues(0);
+		recalcElementData();
+	}
+	
+	private String decodeState() {
+		switch (State) {
+		case Storage.STORE_CHARGING:
+			return "CHARGING";
+		case Storage.STORE_DISCHARGING:
+			return "DISCHARGING";
+		default:
+			return "IDLING";
+		}
+	}
+	
+	/**
+	 * Define default values for the properties.
+	 */
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+
+		PropertyValue[0]      = "3";         // "phases";
+		PropertyValue[1]      = getBus(1);   // "bus1";
+
+		PropertyValue[Storage.propKV]      = String.format("%-g", kVStorageBase);
+		PropertyValue[Storage.propKW]      = String.format("%-g", kW_out);
+		PropertyValue[Storage.propPF]      = String.format("%-g", PFNominal);
+		PropertyValue[Storage.propMODEL]     = "1";
+		PropertyValue[Storage.propYEARLY]    = "";
+		PropertyValue[Storage.propDAILY]     = "";
+		PropertyValue[Storage.propDUTY]      = "";
+		PropertyValue[Storage.propDISPMODE]  = "Default";
+		PropertyValue[Storage.propIDLEKVAR]  = "0";
+		PropertyValue[Storage.propCONNECTION]= "wye";
+		PropertyValue[Storage.propKVAR]      = String.format("%-g", getPresentKVar());
+
+		PropertyValue[Storage.propPCTR]      = String.format("%-g", pctR);
+		PropertyValue[Storage.propPCTX]      = String.format("%-g", pctX);
+
+		PropertyValue[Storage.propIDLEKW]    = "1";       // PERCENT
+		PropertyValue[Storage.propCLASS]     = "1"; //"class"
+		PropertyValue[Storage.propDISPOUTTRIG] = "0";   // 0 MEANS NO TRIGGER LEVEL
+		PropertyValue[Storage.propDISPINTRIG] = "0";
+		PropertyValue[Storage.propCHARGEEFF] = "90";
+		PropertyValue[Storage.propDISCHARGEEFF] = "90";
+		PropertyValue[Storage.propPCTKWOUT]  = "100";
+		PropertyValue[Storage.propPCTKWIN]   = "100";
+
+		PropertyValue[Storage.propVMINPU]    = "0.90";
+		PropertyValue[Storage.propVMAXPU]    = "1.10";
+		PropertyValue[Storage.propSTATE]     = "IDLING";
+		PropertyValue[Storage.propKVA]       = String.format("%-g", kVArating);
+		PropertyValue[Storage.propKWRATED]   = String.format("%-g", kWrating);
+		PropertyValue[Storage.propKWHRATED]  = String.format("%-g", kWhRating);
+		PropertyValue[Storage.propKWHSTORED] = String.format("%-g", kWhStored);
+		PropertyValue[Storage.propPCTSTORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
+		PropertyValue[Storage.propPCTRESERVE]= String.format("%-g", pctReserve);
+		PropertyValue[Storage.propCHARGETIME]= String.format("%-g", ChargeTime);
+
+		PropertyValue[Storage.propUSERMODEL] = "";  // Usermodel
+		PropertyValue[Storage.propUSERDATA]  = "";  // Userdata
+		PropertyValue[Storage.propDEBUGTRACE]= "NO";
+
+		super.initPropertyValues(Storage.NumPropsThisClass);
+	}
+	
+	private String returnDispMode(int imode) {
+		switch (imode) {
+		case Storage.STORE_EXTERNALMODE:
+			return "External";
+		case Storage.STORE_LOADMODE: 
+			return "Loadshape";
+		case Storage.STORE_PRICEMODE:
+			return "Price";
+		default:
+			return "default";
+		}
+	}
+	
+	@Override
+	public String getPropertyValue(int Index) {
+
+		switch (Index) {
+		case Storage.propKV:
+			return String.format("%.6g", kVStorageBase);
+		case Storage.propKW:
+			return String.format("%.6g", kW_out);
+		case Storage.propPF:
+			return String.format("%.6g", PFNominal);
+		case Storage.propMODEL:
+			return String.format("%d", VoltageModel);
+		case Storage.propYEARLY:
+			return YearlyShape;
+		case Storage.propDAILY:
+			return DailyShape;
+		case Storage.propDUTY:
+			return DutyShape;
+		case Storage.propDISPMODE:
+			return returnDispMode(DispatchMode);
+		case Storage.propIDLEKVAR:
+			return String.format("%.6g", pctIdlekvar);
+		//case Storage.propCONNECTION:;
+		case Storage.propKVAR:
+			return String.format("%.6g", kvar_out);
+		case Storage.propPCTR:
+			return String.format("%.6g", pctR);
+		case Storage.propPCTX:
+			return String.format("%.6g", pctX);
+		case Storage.propIDLEKW:
+			return String.format("%.6g", pctIdlekW);
+		//case Storage.propCLASS      = 17;
+		case Storage.propDISPOUTTRIG:
+			return String.format("%.6g", DischargeTrigger);
+		case Storage.propDISPINTRIG:
+			return String.format("%.6g", ChargeTrigger);
+		case Storage.propCHARGEEFF:
+			return String.format("%.6g", pctChargeEff);
+		case Storage.propDISCHARGEEFF:
+			return String.format("%.6g", pctDischargeEff);
+		case Storage.propPCTKWOUT:
+			return String.format("%.6g", pctKWout);
+		case Storage.propVMINPU:
+			return String.format("%.6g", Vminpu);
+		case Storage.propVMAXPU:
+			return String.format("%.6g", Vmaxpu);
+		case Storage.propSTATE:
+			return decodeState();
+		case Storage.propKVA:
+			return String.format("%.6g", kVArating);
+		case Storage.propKWRATED:
+			return String.format("%.6g", kWrating);
+		case Storage.propKWHRATED:
+			return String.format("%.6g", kWhRating);
+		case Storage.propKWHSTORED:
+			return String.format("%.6g", kWhStored);
+		case Storage.propPCTRESERVE:
+			return String.format("%.6g", pctReserve);
+		case Storage.propUSERMODEL:
+			return UserModel.getName();
+		case Storage.propUSERDATA:
+			return "(" + super.getPropertyValue(Index) + ")";
+		//case Storage.propDEBUGTRACE = 33;
+		case Storage.propPCTKWIN:
+			return String.format("%.6g", pctKWin);
+		case Storage.propPCTSTORED:
+			return String.format("%.6g", kWhStored / kWhRating * 100.0);
+		case Storage.propCHARGETIME:
+			return String.format("%.6g", ChargeTime);
+		default:  // take the generic handler
+			return super.getPropertyValue(Index);
+		}
+	}
+	
+	/**
+	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
+	 */
+	public void randomize(int Opt) {
+		switch (Opt) {
+		case 0:
+			RandomMult = 1.0;
+		case DSSGlobals.GAUSSIAN:
+			RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
+		case DSSGlobals.UNIFORM:
+			RandomMult = Math.random();  // number between 0 and 1.0
+		case DSSGlobals.LOGNORMAL:
+			RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
+		}
 	}
 	
 	private void calcDailyMult(double Hr) {
-		
+		if (DailyShapeObj != null) {
+			ShapeFactor = DailyShapeObj.getMult(Hr);
+		} else {
+			ShapeFactor = CDOUBLEONE;  // Default to no  variation
+		}
+
+		checkStateTriggerLevel(ShapeFactor.getReal());   // last recourse	
 	}
 	
 	private void CalcDutyMult(double Hr) {
+		if (DutyShapeObj != null) {
+			ShapeFactor = DutyShapeObj.getMult(Hr);
+			checkStateTriggerLevel(ShapeFactor.getReal());
+		} else {
+			calcDailyMult(Hr);  // Default to Daily Mult If no duty curve specified
+		}
+	}
+	
+	private void calcYearlyMult(double Hr) {
+		if (YearlyShapeObj != null) {
+			ShapeFactor = YearlyShapeObj.getMult(Hr) ;
+			checkStateTriggerLevel(ShapeFactor.getReal());
+		} else {
+			calcDailyMult(Hr);  // Defaults to Daily curve	
+		}
+	}
+	
+	private void setKWandKvarOut() {
+		switch (State) {
+		case Storage.STORE_CHARGING:
+			if (kWhStored < kWhRating) {
+				kW_out = -kWrating * pctKWin / 100.0;
+				if (PFNominal == 1.0) {
+					kvar_out = 0.0;
+				} else {
+					kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				}
+			} else {
+				State = Storage.STORE_IDLING;   // all charged up
+			}
+
+		case Storage.STORE_DISCHARGING:
+			if (kWhStored > kWhReserve) {
+				kW_out = kWrating * pctKWout / 100.0;
+				if (PFNominal == 1.0) {
+					kvar_out = 0.0;
+				} else {
+					kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				}
+			} else {
+				State = Storage.STORE_IDLING;  // not enough storage to discharge
+			}
+		}
+	}
+	
+	public void setNominalStorageOuput() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		ShapeFactor = CDOUBLEONE;  // init here; changed by curve routine
+		
+		// Check to make sure the Storage element is ON
+		if (! (sol.isIsDynamicModel() || sol.isIsHarmonicModel()) ) {  // Leave Storage element in whatever state it was prior to entering Dynamic mode
+
+			// Check dispatch to see what state the storage element should be in
+			switch (DispatchMode) {
+			case Storage.STORE_EXTERNALMODE:
+				// Do nothing
+			case Storage.STORE_LOADMODE:
+				checkStateTriggerLevel(ckt.getGeneratorDispatchReference());
+			case Storage.STORE_PRICEMODE:
+				checkStateTriggerLevel(ckt.getPriceSignal());
+
+			default:  // dispatch off element's loadshapes, If any
+
+				switch (sol.getMode()) {
+				case Dynamics.SNAPSHOT:
+					/* Just solve for the present kW, kvar */  // Don't check for state change
+				case Dynamics.DAILYMODE:
+					calcDailyMult(sol.getDblHour()); // Daily dispatch curve
+				case Dynamics.YEARLYMODE:
+					calcYearlyMult(sol.getDblHour());
+				case Dynamics.MONTECARLO1:
+				case Dynamics.MONTEFAULT:
+				case Dynamics.FAULTSTUDY: 
+				case Dynamics.DYNAMICMODE:
+					// do nothing
+					// Assume daily curve, if any, for the following
+				case Dynamics.MONTECARLO2:
+					calcDailyMult(sol.getDblHour());
+				case Dynamics.MONTECARLO3:
+					calcDailyMult(sol.getDblHour());
+				case Dynamics.LOADDURATION1:
+					calcDailyMult(sol.getDblHour());
+				case Dynamics.LOADDURATION2:
+					calcDailyMult(sol.getDblHour());
+				case Dynamics.PEAKDAY:
+					calcDailyMult(sol.getDblHour());
+				case Dynamics.DUTYCYCLE:
+					CalcDutyMult(sol.getDblHour());
+				case Dynamics.AUTOADDFLAG:
+				}
+
+			}
+
+			setKWandKvarOut();  // Based on State and amount of energy left in storage
+
+			if (State == Storage.STORE_IDLING) {
+				// YeqIdle will be in the Yprim matrix so set this to zero
+				PNominalPerPhase = 0.0;  // -0.1 * kWRating / Fnphases;     // watts
+				if (DispatchMode == Storage.STORE_EXTERNALMODE) {  // Check for requested kvar
+					QNominalPerPhase = kvarRequested / nPhases * 1000.0;
+				} else {
+					QNominalPerPhase = 0.0;
+				}
+				Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide(Math.pow(VBase, 2));   // Vbase must be L-N for 3-phase
+				Yeq95  = Yeq;
+				Yeq105 = Yeq;
+			} else {
+				PNominalPerPhase = 1000.0 * kW_out   / nPhases;
+				QNominalPerPhase = 1000.0 * kvar_out / nPhases;
+
+				switch (VoltageModel) {
+				/*  Fix this when user model gets connected in */
+				case 3:
+					// Yeq = new Complex(0.0, -StoreVARs.Xd)).invert();  // Gets negated in calcYPrim
+				default:
+					Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide(Math.pow(VBase, 2));   // Vbase must be L-N for 3-phase
+					if (Vminpu != 0.0) {
+						Yeq95 = Yeq.divide(Math.pow(Vminpu, 2));  // at 95% voltage
+					} else {
+						Yeq95 = Yeq;  // Always a constant Z model
+					}
+
+					if (Vmaxpu != 0.0) {
+						Yeq105 = Yeq.divide(Math.pow(Vmaxpu, 2));  // at 105% voltage
+					} else {
+						Yeq105 = Yeq;
+					}
+				}
+			}
+			/* When we leave here, all the Yeq's are in L-N values */
+
+		}
+
+		// If Storage element state changes, force re-calc of Y matrix
+		if (StateChanged) {
+			setYprimInvalid(true);
+			StateChanged = false;  // reset the flag
+		}
+	}
+	
+	@Override
+	public void recalcElementData() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		VBase95  = Vminpu * VBase;
+		VBase105 = Vmaxpu * VBase;
+
+		varBase = 1000.0 * kvar_out / nPhases;
+
+		// values in ohms for thevenin equivalents
+		RThev = pctR * 0.01 * Math.pow(getPresentKV(), 2) / kVArating * 1000.0;
+		XThev = pctX * 0.01 * Math.pow(getPresentKV(), 2) / kVArating * 1000.0;
+
+		// efficiencies
+		ChargeEff    = pctChargeEff    * 0.01;
+		DischargeEff = pctDischargeEff * 0.01;
+
+		YeqIdling = new Complex(pctIdlekW, pctIdlekvar).multiply( (kWrating * 10.0 / Math.pow(VBase, 2) / nPhases) );  // 10.0 = 1000/100 = kW->W/pct
+
+		setNominalStorageOuput();
+
+		/* Now check for errors.  If any of these came out nil and the string was not nil, give warning */
+		if (YearlyShapeObj == null)
+			if (YearlyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Yearly load shape: \""+ YearlyShape +"\" Not Found.", 563);
+		if (DailyShapeObj == null)
+			if (DailyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Daily load shape: \""+ DailyShape +"\" Not Found.", 564);
+		if (DutyShapeObj == null)
+			if (DutyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Duty load shape: \""+ DutyShape +"\" Not Found.", 565);
+
+		if (getSpectrum().length() > 0) {
+			setSpectrumObj( (com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()) );
+			if (getSpectrumObj() == null)
+				Globals.doSimpleMsg("ERROR! Spectrum \""+getSpectrum()+"\" Not Found.", 566);
+		} else {
+			setSpectrumObj(null);
+		}
+
+		// Initialize to Zero - defaults to PQ Storage element
+		// Solution object will reset after circuit modifications
+
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+
+		/* Update any user-written models */
+		if (UserModel.exists())
+			UserModel.updateModel();
+	}
+	
+	private void calcYPrimMatrix(CMatrix Ymatrix) {
+		Complex Y, Yij;
+		int i, j;
+		double FreqMultiplier;
+		
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		YprimFreq = sol.getFrequency();
+		FreqMultiplier = YprimFreq / BaseFrequency;
+
+		if (/*sol.isIsDynamicModel() ||*/ sol.isIsHarmonicModel()) {
+			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
+			switch (State) {
+			case Storage.STORE_IDLING:
+				Y = YeqIdling;
+			case Storage.STORE_DISCHARGING:
+				Y = Yeq.negate().add(YeqIdling);
+			default:
+				Y = Yeq;  // L-N value computed in initialization routines
+			}
+
+			if (Connection == 1)
+				Y = Y.divide(3.0); // Convert to delta impedance
+			Y = new Complex(Y.getReal(), Y.getImaginary() / FreqMultiplier);
+			Yij = Y.negate();
+			for (i = 0; i < nPhases; i++) {
+				switch (Connection) {
+				case 0: 
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(nConds, nConds, Y);
+					Ymatrix.setElemSym(i, nConds, Yij);
+				case 1:  /* Delta connection */
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(i, i, Y);  // put it in again
+					for (j = 0; j < i - 1; j++)  // TODO Check zero based indexing
+						Ymatrix.setElemSym(i, j, Yij);
+				}
+			}
+		} else {
+			//  Regular power flow Storage element model
+
+			/* Yeq is always expected as the equivalent line-neutral admittance */
+
+			switch (State) {
+			case Storage.STORE_IDLING:
+				Y = YeqIdling;
+			default:
+				Y = Yeq.negate().add(YeqIdling);   // negate for generation    Yeq is L-N quantity
+			}
+
+			// ****** Need to modify the base admittance for real harmonics calcs
+			Y = new Complex(Y.getReal(), Y.getImaginary() / FreqMultiplier);
+
+			switch (Connection) {
+			case 0: 
+				// WYE
+				Yij = Y.negate();
+				for (i = 0; i < nPhases; i++) {
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(nConds, nConds, Y);
+					Ymatrix.setElemSym(i, nConds, Yij);
+				}
+
+			case 1: 
+				// Delta  or L-L
+				Y = Y.divide(3.0); // Convert to delta impedance
+				Yij = Y.negate();
+				for (i = 0; i < nPhases; i++) {
+					j = i + 1;
+					if (j >= nConds)
+						j = 0;  // wrap around for closed connections
+					Ymatrix.addElement(i, i, Y);
+					Ymatrix.addElement(j, j, Y);
+					Ymatrix.addElemSym(i, j, Yij);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Normalize time to a floating point number representing time of day if Hour > 24
+	 * time should be 0 to 24.
+	 */
+	private double normalizeToTOD(int h, double sec) {
+		int HourOfDay;
+
+		if (h > 23) {
+			HourOfDay = (h - (h / 24) * 24);
+		} else {
+			HourOfDay = h;
+		}
+
+		double Result = HourOfDay + sec / 3600.0;
+
+		if (Result > 24.0)	
+			Result = Result - 24.0;  // wrap around
+		
+		return Result;
+	}
+	
+	/**
+	 * This is where we set the state of the storage element.
+	 */
+	private void checkStateTriggerLevel(double Level) {
+		
+		StateChanged = false;
+		if ((ChargeTrigger == 0.0) && (DischargeTrigger == 0.0))
+			return;
+
+		int OldState = State;
+		// First see If we want to turn off Charging or Discharging State
+		switch (State) {
+		case Storage.STORE_CHARGING:
+			if (ChargeTrigger != 0.0)
+				if ((ChargeTrigger < Level) || (kWhStored >= kWhRating))
+					State = Storage.STORE_IDLING;
+		case Storage.STORE_DISCHARGING:
+			if (DischargeTrigger != 0.0)
+				if ((DischargeTrigger > Level) || (kWhStored <= kWhReserve))
+					State = Storage.STORE_IDLING;
+		}
+
+		// Now check to see If we want to turn on the opposite state
+		switch (State) {
+		case Storage.STORE_IDLING:
+			if ((DischargeTrigger != 0.0) && (DischargeTrigger < Level) && (kWhStored > kWhReserve)) {
+				State = Storage.STORE_DISCHARGING;
+			} else if ((ChargeTrigger != 0.0) && (ChargeTrigger > Level) && (kWhStored < kWhRating)) {
+				State = Storage.STORE_CHARGING;
+			}
+
+			// Check to see If it is time to turn the charge cycle on If it is not already on.
+			if (! (State == Storage.STORE_CHARGING)) {
+				if (ChargeTime > 0.0) {
+					SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+					if (Math.abs( normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTime) < sol.getDynaVars().h / 3600.0)
+						State = Storage.STORE_CHARGING;
+				}
+			}
+		}
+
+		if (OldState != State)
+			StateChanged = true;
+	}
+	
+	@Override
+	public void calcYPrim() {
+		// Build only shunt Yprim
+		// Build a dummy Yprim Series so that CalcV does not fail
+		if (isYprimInvalid()) {
+			if (YPrim_Shunt != null) YPrim_Shunt = null;
+			YPrim_Shunt = new CMatrixImpl(Yorder);
+			if (YPrim_Series != null) YPrim_Series = null;
+			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrim != null) YPrim = null;
+			YPrim = new CMatrixImpl(Yorder);
+		} else {
+			YPrim_Shunt.clear();
+			YPrim_Series.clear();
+			YPrim.clear();
+		}
+
+		setNominalStorageOuput();
+		calcYPrimMatrix(YPrim_Shunt);
+
+		// Set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
+		for (int i = 0; i < Yorder; i++)
+			YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+
+		YPrim.copyFrom(YPrim_Shunt);
+
+		// Account for open conductors
+		super.calcYPrim();	
+	}
+	
+	/**
+	 * Add the current into the proper location according to connection.
+	 * 
+	 * Reverse of similar routine in load  (complex negates are switched).
+	 */
+	private void stickCurrInTerminalArray(Complex[] TermArray, Complex Curr, int i) {
+		switch (Connection) {
+		case 0:  // Wye
+			TermArray[i] = TermArray[i].add(Curr);
+			TermArray[nConds] = TermArray[nConds].add(Curr.negate());  // Neutral
+		case 1:  // DELTA
+			TermArray[i] = TermArray[i].add(Curr);
+			int j = i + 1;
+			if (j >= nConds)
+				j = 0;
+			TermArray[j] = TermArray[j].add(Curr.negate());
+		}
+	}
+
+	private void writeTraceRecord(String S) {
+		int i;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getInstance().getActiveCircuit();
+
+		try {
+			if (!Globals.isInShowResults()) {
+				FileWriter TraceStream = new FileWriter(new File(TraceFile), true);
+				BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+				
+				TraceBuffer.write(String.format("%-.g, %d, %-.g, ",
+						ckt.getSolution().getDynaVars().t,
+						ckt.getSolution().getIteration(),
+						ckt.getLoadMultiplier()) +
+						Utilities.getSolutionModeID() + ", " + 
+						Utilities.getLoadModel() + ", " +
+						VoltageModel + ", " +
+						(QNominalPerPhase * 3.0 / 1.0e6) + ", " +
+						(PNominalPerPhase * 3.0 / 1.0e6) + ", " +
+						S + ", ");
+				
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write( getInjCurrent()[i].abs() + ", ");
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write( getIterminal()[i].abs() + ", ");
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write( getVterminal()[i].abs() + ", " );
+				//TraceBuffer.write(VThevMag + ", " + StoreVARs.Theta * 180.0 / Math.PI);
+				TraceBuffer.newLine();
+				TraceBuffer.close();
+				TraceStream.close();
+			}
+		} catch (Exception e) {
+			
+		}
+	}
+
+	private void doConstantPQStorageObj() {
+		
+	}
+	
+	private void doConstantZStorageObj() {
+		
+	}
+
+	@Override
+	public void setConductorClosed(int Index, boolean Value) {
+		
+	}
+	
+	@Override
+	protected void getTerminalCurrents(Complex[] Curr) {
+		
+	}
+	
+	@Override
+	public int injCurrents() {
+		return 0;
+	}
+	
+	@Override
+	public void getInjCurrents(Complex[] Curr) {
+		
+	}
+	
+	@Override
+	public int numVariables() {
+		return 0;
+	}
+	
+	@Override
+	public void getAllVariables(double[] States) {
+		
+	}
+	
+	@Override
+	public double getVariable(int i) {
+		return 0.0;
+	}
+	
+	@Override
+	public void setVariable(int i, double Value) {
+		
+	}
+	
+	@Override
+	public String variableName(int i) {
+		return null;
+	}
+	
+	public void resetRegisters() {
+		
+	}
+	
+	public void takeSample() {
+		
+	}
+	
+	/* Support for Dynamics Mode */
+	
+	@Override
+	public void initStateVars() {
+		
+	}
+	
+	@Override
+	public void integrateStates() {
+		
+	}
+	
+	/* Support for Harmonics Mode */
+	
+	@Override
+	public void initHarmonics() {
+		
+	}
+	
+	/* Make a positive Sequence Model */
+	@Override
+	public void makePosSequence() {
+		
+	}
+	
+	@Override 
+	public void dumpProperties(PrintStream F, boolean Complete) {
 		
 	}
 	
@@ -146,22 +904,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 //    }
 	
 	private void calcVTerminalPhase() {
-		
-	}
-	
-	private void calcYearlyMult(double Hr) {
-		
-	}
-	
-	private void calcYPrimMatrix(CMatrix Ymatrix) {
-		
-	}
-
-	private void doConstantPQStorageObj() {
-		
-	}
-	
-	private void doConstantZStorageObj() {
 		
 	}
 	
@@ -184,25 +926,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private void setDragHandRegister(int Reg, double Value) {
 		
 	}
-	
-	private void stickCurrInTerminalArray(Complex[] TermArray,
-			double[] Curr, int i) {
-		
-	}
-
-	private void writeTraceRecord(String S) {
-		
-	}
 
 	private void syncUpPowerQuantities() {
-		
-	}
-	
-	private void setKWandKvarOut() {
-		
-	}
-	
-	private void checkStateTriggerLevel(double Level) {
 		
 	}
 	
@@ -210,17 +935,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private void updateStorage() {
 		
 	}
-	
-	private double normalizeToTOD(int h, double sec) {
-		return 0.0;
-	}
 
 	private int interpretState(String S) {
 		return 0;
-	}
-	
-	private String decodeState() {
-		return null;
 	}
 
 	public double getPresentkW() {
@@ -446,117 +1163,407 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public void setDerivatives(double[] derivatives) {
 		Derivatives = derivatives;
 	}
+	
+	// FIXME Private members in OpenDSS
 
-	@Override
-	public void setConductorClosed(int Index, boolean Value) {
-		
+	public Complex getYeq() {
+		return Yeq;
 	}
-	
-	@Override
-	protected void getTerminalCurrents(Complex[] Curr) {
-		
+
+	public void setYeq(Complex yeq) {
+		Yeq = yeq;
 	}
-	
-	@Override
-	public void recalcElementData() {
-		
+
+	public Complex getYeq95() {
+		return Yeq95;
 	}
-	
-	@Override
-	public void calcYPrim() {
-		
+
+	public void setYeq95(Complex yeq95) {
+		Yeq95 = yeq95;
 	}
-	
-	@Override
-	public int injCurrents() {
-		return 0;
+
+	public Complex getYeq105() {
+		return Yeq105;
 	}
-	
-	@Override
-	public void getInjCurrents(Complex[] Curr) {
-		
+
+	public void setYeq105(Complex yeq105) {
+		Yeq105 = yeq105;
 	}
-	
-	@Override
-	public int numVariables() {
-		return 0;
+
+	public Complex getYeqIdling() {
+		return YeqIdling;
 	}
-	
-	@Override
-	public void getAllVariables(double[] States) {
-		
+
+	public void setYeqIdling(Complex yeqIdling) {
+		YeqIdling = yeqIdling;
 	}
-	
-	@Override
-	public double getVariable(int i) {
-		return 0.0;
+
+	public boolean isDebugTrace() {
+		return DebugTrace;
 	}
-	
-	@Override
-	public void setVariable(int i, double Value) {
-		
+
+	public void setDebugTrace(boolean debugTrace) {
+		DebugTrace = debugTrace;
 	}
-	
-	@Override
-	public String variableName(int i) {
-		return null;
+
+	public boolean isStateChanged() {
+		return StateChanged;
 	}
-	
-	public void setNominalStorageOuput() {
-		
+
+	public void setStateChanged(boolean stateChanged) {
+		StateChanged = stateChanged;
 	}
-	
-	/* 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
-	public void randomize(int Opt) {
-		
+
+	public boolean isFirstSampleAfterReset() {
+		return FirstSampleAfterReset;
 	}
-	
-	public void resetRegisters() {
-		
+
+	public void setFirstSampleAfterReset(boolean firstSampleAfterReset) {
+		FirstSampleAfterReset = firstSampleAfterReset;
 	}
-	
-	public void takeSample() {
-		
+
+	public int getStorageSolutionCount() {
+		return StorageSolutionCount;
 	}
-	
-	/* Support for Dynamics Mode */
-	
-	@Override
-	public void initStateVars() {
-		
+
+	public void setStorageSolutionCount(int storageSolutionCount) {
+		StorageSolutionCount = storageSolutionCount;
 	}
-	
-	@Override
-	public void integrateStates() {
-		
+
+	public double getStorageFundamental() {
+		return StorageFundamental;
 	}
-	
-	/* Support for Harmonics Mode */
-	
-	@Override
-	public void initHarmonics() {
-		
+
+	public void setStorageFundamental(double storageFundamental) {
+		StorageFundamental = storageFundamental;
 	}
-	
-	/* Make a positive Sequence Model */
-	@Override
-	public void makePosSequence() {
-		
+
+	public boolean isStorageObjSwitchOpen() {
+		return StorageObjSwitchOpen;
 	}
-	
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
-		
+
+	public void setStorageObjSwitchOpen(boolean storageObjSwitchOpen) {
+		StorageObjSwitchOpen = storageObjSwitchOpen;
 	}
-	
-	@Override 
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		
+
+	public boolean iskVANotSet() {
+		return kVANotSet;
 	}
-	
-	@Override
-	public String getPropertyValue(int Index) {
-		return null;
+
+	public void setkVANotSet(boolean kVANotSet) {
+		this.kVANotSet = kVANotSet;
+	}
+
+	public double getkVArating() {
+		return kVArating;
+	}
+
+	public void setkVArating(double kVArating) {
+		this.kVArating = kVArating;
+	}
+
+	public double getkVStorageBase() {
+		return kVStorageBase;
+	}
+
+	public void setkVStorageBase(double kVStorageBase) {
+		this.kVStorageBase = kVStorageBase;
+	}
+
+	public double getKvar_out() {
+		return kvar_out;
+	}
+
+	public void setKvar_out(double kvar_out) {
+		this.kvar_out = kvar_out;
+	}
+
+	public double getkW_out() {
+		return kW_out;
+	}
+
+	public void setkW_out(double kW_out) {
+		this.kW_out = kW_out;
+	}
+
+	public double getKvarRequested() {
+		return kvarRequested;
+	}
+
+	public void setKvarRequested(double kvarRequested) {
+		this.kvarRequested = kvarRequested;
+	}
+
+	public double getPctIdlekW() {
+		return pctIdlekW;
+	}
+
+	public void setPctIdlekW(double pctIdlekW) {
+		this.pctIdlekW = pctIdlekW;
+	}
+
+	public double getPctIdlekvar() {
+		return pctIdlekvar;
+	}
+
+	public void setPctIdlekvar(double pctIdlekvar) {
+		this.pctIdlekvar = pctIdlekvar;
+	}
+
+	public double getPctChargeEff() {
+		return pctChargeEff;
+	}
+
+	public void setPctChargeEff(double pctChargeEff) {
+		this.pctChargeEff = pctChargeEff;
+	}
+
+	public double getPctDischargeEff() {
+		return pctDischargeEff;
+	}
+
+	public void setPctDischargeEff(double pctDischargeEff) {
+		this.pctDischargeEff = pctDischargeEff;
+	}
+
+	public double getChargeEff() {
+		return ChargeEff;
+	}
+
+	public void setChargeEff(double chargeEff) {
+		ChargeEff = chargeEff;
+	}
+
+	public double getDischargeEff() {
+		return DischargeEff;
+	}
+
+	public void setDischargeEff(double dischargeEff) {
+		DischargeEff = dischargeEff;
+	}
+
+	public double getDischargeTrigger() {
+		return DischargeTrigger;
+	}
+
+	public void setDischargeTrigger(double dischargeTrigger) {
+		DischargeTrigger = dischargeTrigger;
+	}
+
+	public double getChargeTrigger() {
+		return ChargeTrigger;
+	}
+
+	public void setChargeTrigger(double chargeTrigger) {
+		ChargeTrigger = chargeTrigger;
+	}
+
+	public double getChargeTime() {
+		return ChargeTime;
+	}
+
+	public void setChargeTime(double chargeTime) {
+		ChargeTime = chargeTime;
+	}
+
+	public double getPctR() {
+		return pctR;
+	}
+
+	public void setPctR(double pctR) {
+		this.pctR = pctR;
+	}
+
+	public double getPctX() {
+		return pctX;
+	}
+
+	public void setPctX(double pctX) {
+		this.pctX = pctX;
+	}
+
+	public int getOpenStorageSolutionCount() {
+		return OpenStorageSolutionCount;
+	}
+
+	public void setOpenStorageSolutionCount(int openStorageSolutionCount) {
+		OpenStorageSolutionCount = openStorageSolutionCount;
+	}
+
+	public double getPNominalPerPhase() {
+		return PNominalPerPhase;
+	}
+
+	public void setPNominalPerPhase(double pNominalPerPhase) {
+		PNominalPerPhase = pNominalPerPhase;
+	}
+
+	public double getQNominalPerPhase() {
+		return QNominalPerPhase;
+	}
+
+	public void setQNominalPerPhase(double qNominalPerPhase) {
+		QNominalPerPhase = qNominalPerPhase;
+	}
+
+	public double getRandomMult() {
+		return RandomMult;
+	}
+
+	public void setRandomMult(double randomMult) {
+		RandomMult = randomMult;
+	}
+
+	public int getReg_Hours() {
+		return Reg_Hours;
+	}
+
+	public void setReg_Hours(int reg_Hours) {
+		Reg_Hours = reg_Hours;
+	}
+
+	public int getReg_kvarh() {
+		return Reg_kvarh;
+	}
+
+	public void setReg_kvarh(int reg_kvarh) {
+		Reg_kvarh = reg_kvarh;
+	}
+
+	public int getReg_kWh() {
+		return Reg_kWh;
+	}
+
+	public void setReg_kWh(int reg_kWh) {
+		Reg_kWh = reg_kWh;
+	}
+
+	public int getReg_MaxkVA() {
+		return Reg_MaxkVA;
+	}
+
+	public void setReg_MaxkVA(int reg_MaxkVA) {
+		Reg_MaxkVA = reg_MaxkVA;
+	}
+
+	public int getReg_MaxkW() {
+		return Reg_MaxkW;
+	}
+
+	public void setReg_MaxkW(int reg_MaxkW) {
+		Reg_MaxkW = reg_MaxkW;
+	}
+
+	public int getReg_Price() {
+		return Reg_Price;
+	}
+
+	public void setReg_Price(int reg_Price) {
+		Reg_Price = reg_Price;
+	}
+
+	public Complex getShapeFactor() {
+		return ShapeFactor;
+	}
+
+	public void setShapeFactor(Complex shapeFactor) {
+		ShapeFactor = shapeFactor;
+	}
+
+	public double getThetaHarm() {
+		return ThetaHarm;
+	}
+
+	public void setThetaHarm(double thetaHarm) {
+		ThetaHarm = thetaHarm;
+	}
+
+	public File getTraceFile() {
+		return TraceFile;
+	}
+
+	public void setTraceFile(File traceFile) {
+		TraceFile = traceFile;
+	}
+
+	public double getVarBase() {
+		return varBase;
+	}
+
+	public void setVarBase(double varBase) {
+		this.varBase = varBase;
+	}
+
+	public double getVBase() {
+		return VBase;
+	}
+
+	public void setVBase(double vBase) {
+		VBase = vBase;
+	}
+
+	public double getVBase105() {
+		return VBase105;
+	}
+
+	public void setVBase105(double vBase105) {
+		VBase105 = vBase105;
+	}
+
+	public double getVBase95() {
+		return VBase95;
+	}
+
+	public void setVBase95(double vBase95) {
+		VBase95 = vBase95;
+	}
+
+	public double getVmaxpu() {
+		return Vmaxpu;
+	}
+
+	public void setVmaxpu(double vmaxpu) {
+		Vmaxpu = vmaxpu;
+	}
+
+	public double getVminpu() {
+		return Vminpu;
+	}
+
+	public void setVminpu(double vminpu) {
+		Vminpu = vminpu;
+	}
+
+	public double getVThevhH() {
+		return VThevhH;
+	}
+
+	public void setVThevhH(double vThevhH) {
+		VThevhH = vThevhH;
+	}
+
+	public CMatrix getYPrimOpenCond() {
+		return YPrimOpenCond;
+	}
+
+	public void setYPrimOpenCond(CMatrix yPrimOpenCond) {
+		YPrimOpenCond = yPrimOpenCond;
+	}
+
+	public double getRThev() {
+		return RThev;
+	}
+
+	public void setRThev(double rThev) {
+		RThev = rThev;
+	}
+
+	public double getXThev() {
+		return XThev;
+	}
+
+	public void setXThev(double xThev) {
+		XThev = xThev;
 	}
 
 }
