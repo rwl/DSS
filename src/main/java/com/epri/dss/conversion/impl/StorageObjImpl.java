@@ -21,7 +21,9 @@ import com.epri.dss.shared.Dynamics;
 
 public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	
-	static Complex CDOUBLEONE = new Complex(1.0, 1.0);
+	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
+	
+	private static Complex[] cBuffer = new Complex[24];
 	
 	private Complex Yeq;         // at nominal
 	private Complex Yeq95;       // at 95%
@@ -800,12 +802,215 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
+	/**
+	 * Compute total terminal current for Constant PQ.
+	 */
 	private void doConstantPQStorageObj() {
+		Complex Curr = null, V;
+		double Vmag;
+
+		// Treat this just like the load model
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		zeroITerminal();
+
+		calcVTerminalPhase(); // Get actual voltage across each phase of the load
+		
+		for (int i = 0; i < nPhases; i++) {
+			V    = Vterminal[i];
+			Vmag = V.abs();
+
+			switch (Connection) {
+			case 0:  /* Wye */
+				if (Vmag <= VBase95) {
+					Curr = Yeq95.multiply(V);  // Below 95% use an impedance model
+				} else if (Vmag > VBase105) {
+					Curr = Yeq105.multiply(V);  // above 105% use an impedance model
+				} else {
+					Curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // Between 95% -105%, constant PQ
+				}
+
+			case 1:  /* Delta */
+				Vmag = Vmag / DSSGlobals.SQRT3;  // L-N magnitude
+				if (Vmag <= VBase95) {
+					Curr = Yeq95.divide(3.0).multiply(V);  // Below 95% use an impedance model
+				} else if (Vmag > VBase105) {
+					Curr = Yeq105.divide(3.0).multiply(V);  // above 105% use an impedance model
+				} else {
+					Curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // Between 95% -105%, constant PQ
+				}
+			}
+
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+	
+	/**
+	 * Constant Z model.
+	 */
+	private void doConstantZStorageObj() {
+		Complex Curr, Yeq2;
+
+		// Assume Yeq is kept up to date
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase(); // get actual voltage across each phase of the load
+		zeroITerminal();
+		
+		if (Connection == 0) {
+			Yeq2 = Yeq;
+		} else {
+			Yeq2 = Yeq.divide(3.0);
+		}
+
+		for (int i = 0; i < nPhases; i++) {
+			Curr = Yeq2.multiply(Vterminal[i]);   // Yeq is always line to neutral
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+	
+	/**
+	 * Compute total terminal current from user-written model.
+	 */
+	private void doUserModel() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+
+		if (UserModel.exists()) {  // Check automatically selects the usermodel If true
+			UserModel.fCalc(Vterminal, Iterminal);
+			setITerminalUpdated(true);
+			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+			// Negate currents from user model for power flow Storage element model
+			for (int i = 0; i < nConds; i++)
+				getInjCurrent()[i] = getInjCurrent()[i].add( Iterminal[i].negate() );
+		} else {
+			Globals.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+		}
+	}
+	
+	/**
+	 * Compute Total Current and add into InjTemp.
+	 * 
+	 * For now, just assume the storage element is constant power
+	 * for the duration of the dynamic simulation.
+	 */
+	private void doDynamicMode() {
+		
+		doConstantPQStorageObj();
 		
 	}
 	
-	private void doConstantZStorageObj() {
-		
+	/**
+	 * Compute Injection Current Only when in harmonics mode.
+	 * 
+	 * Assumes spectrum is a voltage source behind subtransient reactance and YPrim has been built
+	 * Vd is the fundamental frequency voltage behind Xd" for phase 1.
+	 */
+	private void doHarmonicMode() {
+		Complex E;
+		double StorageHarmonic;
+
+		computeVterminal();
+
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		StorageHarmonic = sol.getFrequency() / StorageFundamental;
+		if (getSpectrumObj() != null) {
+			E = getSpectrumObj().getMult(StorageHarmonic).multiply(VThevHarm); // Get base harmonic magnitude
+		} else {
+			E = Complex.ZERO;
+		}
+
+		Utilities.rotatePhasorRad(E, StorageHarmonic, ThetaHarm);  // Time shift by fundamental frequency phase shift
+		for (int i = 0; i < nPhases; i++) {
+			cBuffer[i] = E;
+			if (i < nPhases)
+				Utilities.rotatePhasorDeg(E, StorageHarmonic, -120.0);  // Assume 3-phase Storage element
+		}
+
+		/* Handle Wye Connection */
+		if (Connection == 0)
+			cBuffer[nConds] = Vterminal[nConds];  // assume no neutral injection voltage
+
+		/* Inj currents = Yprim (E) */
+		YPrim.MVMult(getInjCurrent(), cBuffer);
+	}
+	
+	private void calcVTerminalPhase() {
+		int i, j;
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		/* Establish phase voltages and stick in Vterminal */
+		switch (Connection) {
+		case 0:
+			for (i = 0; i < nPhases; i++) 
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+
+		case 1:
+			for (i = 0; i < nPhases; i++) {
+				j = i + 1;
+				if (j >= nConds)
+					j = 0;
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
+			}
+		}
+
+		StorageSolutionCount = sol.getSolutionCount();
+	}
+	
+//	/**
+//	 * Put terminal voltages in an array.
+//	 */
+//	private void calcVterminal() {
+//		computeVterminal();
+//		StorageSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+//	}
+	
+	/**
+	 * Calculates Storage element current and adds it properly into the injcurrent array
+	 * routines may also compute ITerminal (ITerminalUpdated flag).
+	 */
+	private void calcStorageModelContribution() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		setITerminalUpdated(false);
+
+		if (sol.isIsDynamicModel()) {
+			doDynamicMode();
+		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+			doHarmonicMode();
+		} else {
+			// Compute currents and put into InjTemp array;
+			switch (VoltageModel) {
+			case 1:
+				doConstantPQStorageObj();
+			case 2:
+				doConstantZStorageObj();
+			case 3:
+				doUserModel();
+			default:
+				doConstantPQStorageObj();  // for now, until we implement the other models.
+			}
+		}
+
+		/* When this is done, ITerminal is up to date */
+	}
+	
+	/**
+	 * Difference between currents in YPrim and total current.
+	 */
+	private void calcInjCurrentArray() {
+		// Now get injection currents
+		if (StorageObjSwitchOpen) {
+			zeroInjCurrent();
+		} else {
+			calcStorageModelContribution();
+		}
 	}
 
 	@Override
@@ -888,34 +1093,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	
 	@Override 
 	public void dumpProperties(PrintStream F, boolean Complete) {
-		
-	}
-	
-	private void calcStorageModelContribution() {
-		
-	}
-	
-	private void calcInjCurrentArray() {
-		
-	}
-	
-//    private void calcVterminal() {
-//    	
-//    }
-	
-	private void calcVTerminalPhase() {
-		
-	}
-	
-	private void doDynamicMode() {
-		
-	}
-	
-	private void doHarmonicMode() {
-		
-	}
-	
-	private void doUserModel() {
 		
 	}
 
