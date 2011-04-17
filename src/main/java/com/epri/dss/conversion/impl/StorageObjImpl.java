@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 
@@ -1012,161 +1013,479 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			calcStorageModelContribution();
 		}
 	}
-
-	@Override
-	public void setConductorClosed(int Index, boolean Value) {
-		
-	}
 	
+	/**
+	 * Compute total currents.
+	 */
 	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 		
+		if (IterminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
+			if (!StorageObjSwitchOpen)
+				calcStorageModelContribution();  // Adds totals in Iterminal as a side effect
+			super.getTerminalCurrents(Curr);
+		}
+
+		if (DebugTrace)
+			writeTraceRecord("TotalCurrent");
 	}
 	
 	@Override
 	public int injCurrents() {
-		return 0;
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		if (sol.isLoadsNeedUpdating())
+			setNominalStorageOuput();  // Set the nominal kW, etc for the type of solution being Done
+
+		calcInjCurrentArray();  // Difference between currents in YPrim and total terminal current
+
+		if (DebugTrace)
+			writeTraceRecord("Injection");
+
+		// Add into System Injection Current Array
+
+		return super.injCurrents();
 	}
 	
+	/**
+	 * Gives the currents for the last solution performed.
+	 * 
+	 * Do not call setNominalLoad, as that may change the load values.
+	 */
 	@Override
 	public void getInjCurrents(Complex[] Curr) {
-		
-	}
-	
-	@Override
-	public int numVariables() {
-		return 0;
-	}
-	
-	@Override
-	public void getAllVariables(double[] States) {
-		
-	}
-	
-	@Override
-	public double getVariable(int i) {
-		return 0.0;
-	}
-	
-	@Override
-	public void setVariable(int i, double Value) {
-		
-	}
-	
-	@Override
-	public String variableName(int i) {
-		return null;
+
+		calcInjCurrentArray();  // Difference between currents in YPrim and total current
+
+		try {
+			// Copy into buffer array
+			for (int i = 0; i < Yorder; i++)
+				Curr[i] = getInjCurrent()[i];
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doErrorMsg("Storage Object: \"" + getName() + "\" in getInjCurrents method.",
+					e.getMessage(), "Current buffer not big enough.", 568);
+		}
 	}
 	
 	public void resetRegisters() {
+		int i;
+		for (i = 0; i < Storage.NumStorageRegisters; i++)
+			Registers[i] = 0.0;
+		for (i = 0; i < Storage.NumStorageRegisters; i++)
+			Derivatives[i] = 0.0;
+		FirstSampleAfterReset = true;  // initialize for trapezoidal integration	
+	}
+
+	private void integrate(int Reg, double Deriv, double Interval) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		
+		if (ckt.isTrapezoidalIntegration()) {
+			/* Trapezoidal Rule Integration */
+			if (!FirstSampleAfterReset) 
+				Registers[Reg] = Registers[Reg] + 0.5 * Interval * (Deriv + Derivatives[Reg]);
+		} else {  /* Plain Euler integration */
+			Registers[Reg] = Registers[Reg] + Interval * Deriv;
+		}
+
+		Derivatives[Reg] = Deriv;	
 	}
 	
+	/**
+	 * Update energy from metered zone.
+	 */
 	public void takeSample() {
-		
+		Complex S;
+		double Smag;
+		double HourValue;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		// Compute energy in Storage element branch
+		if (isEnabled()) {
+
+			// Only tabulate discharge hours
+			if (State == Storage.STORE_DISCHARGING) {
+				S = new Complex(getPresentkW(), getPresentKVar());
+				Smag = S.abs();
+				HourValue = 1.0;
+			} else {
+				S = Complex.ZERO;
+				Smag = 0.0;
+				HourValue = 0.0;
+			}
+
+			if ((State == Storage.STORE_DISCHARGING) || ckt.isTrapezoidalIntegration()) {
+				/* Make sure we always integrate for Trapezoidal case
+				 * Don't need to for Gen Off and normal integration
+				 */
+				SolutionObj sol = ckt.getSolution();
+				
+				if (ckt.isPositiveSequence()) {
+					S    = S.multiply(3.0);
+					Smag = 3.0 * Smag;
+				}
+				integrate            (Reg_kWh,   S.getReal(), sol.getIntervalHrs());   // Accumulate the power
+				integrate            (Reg_kvarh, S.getImaginary(), sol.getIntervalHrs());
+				setDragHandRegister  (Reg_MaxkW, Math.abs(S.getReal()));
+				setDragHandRegister  (Reg_MaxkVA, Smag);
+				integrate            (Reg_Hours, HourValue, sol.getIntervalHrs());  // Accumulate Hours in operation
+				integrate            (Reg_Price, S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // Accumulate Hours in operation
+				FirstSampleAfterReset = false;
+			}
+		}
 	}
 	
-	/* Support for Dynamics Mode */
-	
-	@Override
-	public void initStateVars() {
+	/**
+	 * Update Storage elements based on present kW and IntervalHrs variable.
+	 */
+	private void updateStorage() {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 		
+		switch (State) {
+		case Storage.STORE_DISCHARGING:
+			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() / DischargeEff;
+			if (kWhStored < kWhReserve) {
+				kWhStored = kWhReserve;
+				State = Storage.STORE_IDLING;  // It's empty Turn it off
+				StateChanged = true;
+			}
+
+		case Storage.STORE_CHARGING:
+			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() * ChargeEff;
+			if (kWhStored > kWhRating) {
+				kWhStored = kWhRating;
+				State = Storage.STORE_IDLING;  // It's full turn it off
+				StateChanged = true;
+			}
+		}	
+	}
+
+	public double getPresentkW() {
+		return PNominalPerPhase * 0.001 * nPhases;
 	}
 	
-	@Override
-	public void integrateStates() {
-		
+	public double getPresentKV() {
+		return kVStorageBase;
 	}
 	
-	/* Support for Harmonics Mode */
-	
-	@Override
-	public void initHarmonics() {
-		
-	}
-	
-	/* Make a positive Sequence Model */
-	@Override
-	public void makePosSequence() {
-		
+	public double getPresentKVar() {
+		return QNominalPerPhase * 0.001 * nPhases;
 	}
 	
 	@Override 
 	public void dumpProperties(PrintStream F, boolean Complete) {
-		
-	}
+		int i, idx;
 
-	private void integrate(int Reg, double Deriv, double Interval) {
-		
+		super.dumpProperties(F, Complete);
+
+		for (i = 0; i < getParentClass().getNumProperties(); i++) {
+			idx = getParentClass().getPropertyIdxMap()[i] ;
+			switch (idx) {
+			case Storage.propUSERDATA:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+			default:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[idx]);
+			}
+		}
+		F.println();	
 	}
 	
-	private void setDragHandRegister(int Reg, double Value) {
-		
-	}
+	/**
+	 * This routine makes a Thevenin equivalent behis the reactance spec'd in %R and %X
+	 */
+	@Override
+	public void initHarmonics() {
+		Complex E, Va = null;
 
-	private void syncUpPowerQuantities() {
-		
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		setYprimInvalid(true);  // Force rebuild of YPrims
+		StorageFundamental = sol.getFrequency();  // Whatever the frequency is when we enter here.
+
+		Yeq = new Complex(RThev, XThev).invert();      // used for current calcs  Always L-N
+
+		/* Compute reference Thevinen voltage from phase 1 current */
+
+		if (State == Storage.STORE_DISCHARGING) {
+			computeIterminal();  // Get present value of current
+
+			switch (Connection) {
+			case 0:  /* wye - neutral is explicit */
+				Va = sol.getNodeV()[NodeRef[0]].subtract( sol.getNodeV()[NodeRef[nConds]] );
+			case 1:  /* delta -- assume neutral is at zero */
+				Va = sol.getNodeV()[NodeRef[0]];
+			}
+
+			E = Va.subtract( Iterminal[0].multiply(new Complex(RThev, XThev)) );
+			VThevhH = E.abs();   // establish base mag and angle
+			ThetaHarm = E.getArgument();
+		} else {
+			VThevhH = 0.0;
+			ThetaHarm = 0.0;
+		}
 	}
 	
-	/* Update Storage elements based on present kW and IntervalHrs variable */
-	private void updateStorage() {
+	/**
+	 * For going into dynamics mode.
+	 */
+	@Override
+	public void initStateVars() {
+		setYprimInvalid(true);  // Force rebuild of YPrims
+	}
+	
+	/**
+	 * Dynamics mode integration routine.
+	 */
+	@Override
+	public void integrateStates() {
 		
 	}
 
 	private int interpretState(String S) {
-		return 0;
+		
+		switch (S.toLowerCase().charAt(0)) {
+		case 'c':
+			return Storage.STORE_CHARGING;
+		case 'd':
+			return Storage.STORE_DISCHARGING;
+		default:
+			return Storage.STORE_IDLING;
+		}
+	}
+	
+	/**
+	 * Return variables one at a time.
+	 */
+	@Override
+	public double getVariable(int i) {
+		int N, k;
+
+		if (i < 0)
+			return -9999.99;
+
+		// for now, report kWhstored and mode
+		switch (i) {
+		case 0:
+			return kWhStored;
+		case 1:
+			return State;
+		case 2: 
+			return pctKWout;
+		case 3: 
+			return pctKWin;
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.getNumVars();
+				k = (i - Storage.NumStorageVariables);
+				if (k <= N) 
+					return UserModel.getVariable(k);
+			}
+		}
+	}
+	
+	@Override
+	public void setVariable(int i, double Value) {
+		int N, k;
+
+		if (i < 0)
+			return;  // No variables to set
+
+		switch (i) {
+		case 0:
+			kWhStored = Value;
+		case 1:
+			State = (int) Value;
+		case 2:
+			pctKWout = Value;
+		case 3:
+			pctKWin = Value;
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.getNumVars();
+				k = (i - Storage.NumStorageVariables) ;
+				if (k <= N) {
+					UserModel.setVariable(k, Value);
+					return;
+				}
+			}
+		}	
+	}
+	
+	@Override
+	public void getAllVariables(double[] States) {
+		for (int i = 0; i < Storage.NumStorageVariables; i++)
+			States[i] = getVariable(i);
+
+		if (UserModel.exists()) 
+			UserModel.getAllVars(States[Storage.NumStorageVariables]);
+	}
+	
+	@Override
+	public int numVariables() {
+		int Result = Storage.NumStorageVariables;
+		if (UserModel.exists())
+			Result = Result + UserModel.getNumVars();
+		return Result;
+	}
+	
+	@Override
+	public String variableName(int i) {
+		int BuffSize = 255;
+
+		int n, i2;
+		char[] Buff = new char[BuffSize];
+		char pName;
+
+		if (i < 0)
+			return null;
+
+		switch (i) {
+		case 0:
+			return "kWh Stored";
+		case 1:
+			return "Storage State Flag";
+		case 2:
+			return "% discharge level";
+		case 3:
+			return "% charge level";
+		default:
+			if (UserModel.exists()) {
+				pName = Buff;
+				n = UserModel.getNumVars();
+				i2 = i - Storage.NumStorageVariables;
+				if (i2 <= n) {
+					UserModel.getVarName(i2, pName, BuffSize);
+					return String.valueOf(pName);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Make a positive sequence model.
+	 */
+	@Override
+	public void makePosSequence() {
+		String S;
+		double V;
+
+		S = "phases=1 conn=wye";
+
+		// Make sure voltage is line-neutral
+		if ((nPhases > 1) || (Connection != 0)) {
+			V = kVStorageBase / DSSGlobals.SQRT3;
+		} else {
+			V = kVStorageBase;
+		}
+
+		S = S + String.format(" kV=%-.5g", V);
+
+		if (nPhases > 1)
+			S = S + String.format(" kWrating=%-.5g  PF=%-.5g", kWrating / nPhases, PFNominal);
+
+		Parser.getInstance().setCmdString(S);
+		edit();
+
+		super.makePosSequence();  // write out other properties	
 	}
 
-	public double getPresentkW() {
-		return 0.0;
+	@Override
+	public void setConductorClosed(int Index, boolean Value) {
+		super.setConductorClosed(Index, Value);
+
+		// Just turn storage element on or off;
+
+		if (Value) {
+			StorageObjSwitchOpen = false;
+		} else {
+			StorageObjSwitchOpen = true;
+		}
 	}
 	
-	public double getPresentKVar() {
-		return 0.0;
+	public void setPctKVarOut(double Value) {
+		pctKVarout = Value;
+		// Force recompute of target PF and requested kVAr
+		setPresentKVar( kWrating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVarout / 100.0 );	
 	}
 	
-	public double getPresentKV() {
-		return 0.0;
-	}
-	
-	public void setPresentKV(double Value) {
-		
-	}
-	
-	public void setPresentKVar(double Value) {
-		
-	}
-	
-	public void setPresentKW(double Value) {
-		
+	public void setPctKWOut(double Value) {
+		pctKWout = Value;
+		kW_out = pctKWout * kWrating / 100.0;	
 	}
 	
 	public void setPowerFactor(double Value) {
-		
+		PFNominal = Value;
+		syncUpPowerQuantities();	
+	}
+	
+	public void setPresentKV(double Value) {
+		kVStorageBase = Value;
+		switch (nPhases) {
+		case 2:
+			VBase = kVStorageBase * DSSGlobals.InvSQRT3x1000;
+		case 3:
+			VBase = kVStorageBase * DSSGlobals.InvSQRT3x1000;
+		default:
+			VBase = kVStorageBase * 1000.0 ;
+		}
+	}
+	
+	public void setPresentKVar(double Value) {
+		double kVA_Gen;
+
+		kvar_out = Value;
+		kvarRequested = Value;
+		/* Requested kVA output */
+		kVA_Gen = Math.sqrt(Math.pow(kW_out, 2) + Math.pow(kvar_out, 2)) ;
+		if (kVA_Gen > kVArating)
+			kVA_Gen = kVArating;  // Limit kVA to rated value
+		if (kVA_Gen != 0.0) {
+			setPFNominal(kW_out / kVA_Gen);
+		} else {
+			setPFNominal(1.0);
+		}
+		if ((kW_out * kvar_out) < 0.0)
+			setPFNominal(-getPFNominal());
+	}
+	
+	public void setPresentKW(double Value) {
+		pctKWout = Value / kWhRating * 100.0;
+		kW_out   = Value;
+		//syncUpPowerQuantities();
+	}
+	
+	public void setState(int Value) {
+		State = Value;
+	}
+
+	private void syncUpPowerQuantities() {
+		// keep kvar nominal up to date with kW and PF
+		if (PFNominal != 0.0) {
+			kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+			QNominalPerPhase = 1000.0 * kvar_out / nPhases;
+			if (PFNominal < 0.0)
+				kvar_out = -kvar_out;
+			if (kVANotSet)
+				kVArating = kWrating;
+		}
+	}
+	
+	private void setDragHandRegister(int Reg, double Value) {
+		if (Value > Registers[Reg])
+			Registers[Reg] = Value;	
 	}
 	
 	public double getPowerFactor() {
 		return PFNominal;
 	}
 	
-	public void setState(int Value) {
-		
-	}
-	
 	public int getState() {
 		return State;
 	}
 	
-	public void setPctKVarOut(double Value) {
-		
-	}
-	
 	public double getPctKVarOut() {
 		return pctKVarout;
-	}
-	
-	public void setPctKWOut(double Value) {
-		
 	}
 	
 	public double getPctKWOut() {
