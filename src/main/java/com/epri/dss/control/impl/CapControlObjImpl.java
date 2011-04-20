@@ -1,6 +1,8 @@
 package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.epri.dss.shared.impl.Complex;
 
@@ -348,14 +350,18 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	
 
 	private static double PF1to2(Complex Spower) {  // return PF in range of 1 to 2
-		double Result, Sabs = Spower.abs();
+		double Result;
+		double Sabs = Spower.abs();
+		
 		if (Sabs != 0.0) {
 			Result = Math.abs(Spower.getReal()) / Sabs;
 		} else {
 			Result = 1.0;  // default to unity
 		}
+		
 		if (Spower.getImaginary() < 0.0)
 			Result = 2.0 - Result;
+		
 		return Result;
 	}
 	/**
@@ -363,30 +369,349 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	@Override
 	public void sample() {
+		double CurrTest = 0, Vtest = 0, NormalizedTime, Q;
+		Complex S;
+		double PF;
+
+		getControlledElement().setActiveTerminalIdx(0);
+		if (getControlledElement().getConductorClosed(0)) {  // Check state of phases of active terminal
+			PresentState = ControlAction.CLOSE;
+		} else {
+			PresentState = ControlAction.OPEN;
+		}
+		ShouldSwitch = false;
+
+		// First check voltage override
+		if (VOverride) {
+			if (ControlType != CapControlType.VOLTAGECONTROL) {  // Don't bother for voltage control
+
+				MonitoredElement.getTermVoltages(ElementTerminal, cBuffer);
+
+				getControlVoltage(Vtest);
+
+				switch (PresentState) {
+				case OPEN:
+					if (Vtest < Vmin) {
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					}
+				case CLOSE:
+					if (Vtest > Vmax) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					}
+				}
+			}
+		}
+
 		
+		if (!ShouldSwitch) {  // Else skip other control evaluations
+			switch (ControlType) {
+			case CURRENTCONTROL:  /* Current */
+
+				// Check largest Current of all phases of monitored element
+				MonitoredElement.getCurrents(cBuffer);
+
+				getControlCurrent(CurrTest);
+
+				switch (PresentState) {
+				case OPEN:
+					if (CurrTest > ON_Value) {
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				case CLOSE:
+					if (CurrTest < OFF_Value) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					} else if (ControlledCapacitor.availableSteps() > 0) {
+						if (CurrTest > ON_Value) {
+							PendingChange = ControlAction.CLOSE;
+							ShouldSwitch = true;
+						}
+					} else {  // Reset
+						PendingChange = ControlAction.NONE;
+					}
+				}
+
+			case VOLTAGECONTROL:  /* Voltage */
+				MonitoredElement.getTermVoltages(ElementTerminal, cBuffer);
+
+				getControlVoltage(Vtest);
+
+				switch (PresentState) {
+				case OPEN:
+					if (Vtest < ON_Value) {
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				case CLOSE:
+					if (Vtest > OFF_Value) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					} else if (ControlledCapacitor.availableSteps() > 0) {
+						if (Vtest < ON_Value) {
+							PendingChange = ControlAction.CLOSE;
+							ShouldSwitch = true;
+						}
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				}
+
+			case KVARCONTROL:  /* kvar */
+				//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
+				S = MonitoredElement.getPower(ElementTerminal);
+				Q = S.getImaginary() * 0.001;  // kvar
+
+				switch (PresentState) {
+				case OPEN:
+					if (Q > ON_Value) {
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				case CLOSE:
+					if (Q < OFF_Value) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					} else if (ControlledCapacitor.availableSteps() > 0) {
+						if (Q > ON_Value) {
+							PendingChange = ControlAction.CLOSE;  // We can go some more
+							ShouldSwitch = true;
+						}
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+
+				}
+
+			case SRPCONTROL:  /* kvar modified to keep PF around .98 lead */
+				//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
+				S = MonitoredElement.getPower(ElementTerminal);
+				Q = S.getImaginary() * 0.001 + 0.20306 * S.getReal() * 0.001;  // kvar for -.98 PF
+
+				switch (PresentState) {
+				case OPEN:
+					if (Q > ON_Value) {
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				case CLOSE:
+					if (Q < OFF_Value) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					} else if (ControlledCapacitor.availableSteps() > 0) {
+						if (Q > ON_Value) {
+							PendingChange = ControlAction.CLOSE;  // We can go some more
+							ShouldSwitch = true;
+						}
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				}
+
+			case TIMECONTROL:  /* time */
+				SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+				NormalizedTime = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t);
+						
+				switch (PresentState) {
+				case OPEN:
+					if (OFF_Value > ON_Value) {
+						if ((NormalizedTime >= ON_Value) && (NormalizedTime < OFF_Value)) {
+							PendingChange = ControlAction.CLOSE;
+							ShouldSwitch  = true;
+						} else {
+							// Reset
+							PendingChange = ControlAction.NONE;
+						}
+					} else {  // OFF time is next day
+						if ((NormalizedTime >= ON_Value) && (NormalizedTime < 24.0)) {
+							PendingChange = ControlAction.CLOSE;
+							ShouldSwitch  = true;
+						} else {
+							// Reset
+							PendingChange = ControlAction.NONE;
+						}
+					}
+
+				case CLOSE:
+					if (OFF_Value > ON_Value) {
+						if (NormalizedTime  >= OFF_Value) {
+							PendingChange = ControlAction.OPEN;
+							ShouldSwitch = true;
+						} else if (ControlledCapacitor.availableSteps() > 0) {
+							if ((NormalizedTime >= ON_Value) && (NormalizedTime < OFF_Value)) {
+								PendingChange = ControlAction.CLOSE;  // We can go some more
+								ShouldSwitch = true;
+							}
+						} else {
+							// Reset
+							PendingChange = ControlAction.NONE;
+						}
+					} else {  // OFF time is next day
+						if ((NormalizedTime >= OFF_Value) && (NormalizedTime < ON_Value)) {
+							PendingChange = ControlAction.OPEN;
+							ShouldSwitch = true;
+						} else if (ControlledCapacitor.availableSteps() > 0) {
+							if ((NormalizedTime >= ON_Value) && (NormalizedTime < 24.0)) {
+								PendingChange = ControlAction.CLOSE;  // We can go some more
+								ShouldSwitch = true;
+							}
+						} else {
+							// Reset
+							PendingChange = ControlAction.NONE;
+						}
+					}
+				}
+					
+			case PFCONTROL:  /* PF */
+				//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
+				S = MonitoredElement.getPower(ElementTerminal);
+				PF = PF1to2(S);  // TODO Check zero based indexing
+
+				/* PF is in range of 0 .. 2;  Leading is 1..2 */
+				/* When turning on make sure there is at least half the kvar of the bank */
+
+				switch (PresentState) {
+				case OPEN:
+					if ((PF < PFON_Value) && (S.getImaginary() * 0.001 > ControlledCapacitor.getTotalkvar() * 0.5)) {  // make sure we don't go too far leading
+						PendingChange = ControlAction.CLOSE;
+						ShouldSwitch = true;
+					} else {  // Reset
+						PendingChange = ControlAction.NONE;
+					}
+				case CLOSE:
+					if (PF > PFOFF_Value) {
+						PendingChange = ControlAction.OPEN;
+						ShouldSwitch = true;
+					} else if (ControlledCapacitor.availableSteps() > 0) {
+						if ((PF < PFON_Value) && (S.getImaginary() * 0.001 > ControlledCapacitor.getTotalkvar() / ControlledCapacitor.getNumSteps() * 0.5)) {
+							PendingChange = ControlAction.CLOSE;  // We can go some more
+							ShouldSwitch = true;
+						}
+					} else {
+						// Reset
+						PendingChange = ControlAction.NONE;
+					}
+				}
+			}
+		
+		}
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		if (ShouldSwitch && !Armed) {
+			if (PendingChange == ControlAction.CLOSE) {
+				if ((sol.getDynaVars().t + sol.getIntHour() * 3600.0 - LastOpenTime) < DeadTime) {  // delay the close operation
+					/* 2-6-09 Added ONDelay to DeadTime so that all caps do not close back in at same time */
+					TimeDelay = Math.max(ONDelay, (DeadTime + ONDelay) - (sol.getDynaVars().t + sol.getIntHour() * 3600.0 - LastOpenTime));
+				} else {
+					TimeDelay = ONDelay;
+				}
+			} else {
+				TimeDelay = OFFDelay;
+			}
+			ControlActionHandle = ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t + TimeDelay , PendingChange, 0, this);
+			Armed = true;
+			Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), String.format("**Armed**, Delay= %.5g sec", TimeDelay));
+		}
+
+		if (Armed && (PendingChange == ControlAction.NONE)) {
+			ckt.getControlQueue().delete(ControlActionHandle);
+			Armed = false;
+			Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Reset**");
+		}
 	}
 	
-	/* Reset to initial defined state */
+	public CapacitorObj getCapacitor() {
+		return (CapacitorObj) getControlledElement();
+	}
+	
+	/**
+	 * Normalize time to a floating point number representing time of day if Hour > 24
+	 * Resulting time should be 0:00+ to 24:00 inclusive.
+	 */
+	private double normalizeToTOD(int h, double sec) {
+		int HourOfDay;
+
+		if (h > 24) {
+			HourOfDay = (h - ((h - 1) / 24) * 24);  // creates numbers 1-24
+		} else {
+			HourOfDay = h;
+		}
+
+		double Result = HourOfDay + sec / 3600.0;
+
+		// If the TOD is at least slightly greater than 24:00 wrap around to 0:00
+		if (Result - 24.0 > DSSGlobals.EPSILON) 
+			Result = Result - 24.0;  // Wrap around
+		
+		return Result;
+	}
+	
+	/**
+	 * Reset to initial defined state.
+	 */
 	@Override
 	public void reset() {
-		
+		PendingChange = ControlAction.NONE;
+		getControlledElement().setActiveTerminalIdx(0);
+		switch (InitialState) {
+		case OPEN:
+			getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
+		case CLOSE: 
+			getControlledElement().setConductorClosed(0, true);    // Close all phases of active terminal
+		}
+		ShouldSwitch = false;
+		LastOpenTime = -DeadTime;
+		PresentState = InitialState;
 	}
 	
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		
-	}
-	
-	public CapacitorObj getCapacitor() {
-		return null;
-	}
-	
-	private double normalizeToTOD(int h, double sec) {
-		return 0.0;
+
+		PropertyValue[0]  = "";   //"element";
+		PropertyValue[1]  = "1";   //"terminal";
+		PropertyValue[2]  = "";
+		PropertyValue[3]  = "current";
+		PropertyValue[4]  = "60";
+		PropertyValue[5]  = "60";
+		PropertyValue[6]  = "300";
+		PropertyValue[7]  = "200";
+		PropertyValue[8]  = "15";
+		PropertyValue[9]  = "NO";
+		PropertyValue[10] = "126";
+		PropertyValue[11] = "115";
+		PropertyValue[12] = "15";
+		PropertyValue[13] = "300";
+		PropertyValue[14] = "1";
+		PropertyValue[15] = "1";
+
+		super.initPropertyValues(CapControl.NumPropsThisClass);
 	}
 	
 	public void setPendingChange(ControlAction Value) {
-		
+		PendingChange = Value;
+		List actions = new ArrayList<ControlAction>();
+		for (ControlAction act : ControlAction.values())
+			actions.add(act);
+		DblTraceParameter = actions.indexOf(Value);	
 	}
 	
 	public ControlAction getPendingChange() {
