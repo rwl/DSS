@@ -13,7 +13,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	private double kWLimit,
 		kWBand,
 		HalfkWBand,
-		FkvarLimit,
+		kvarLimit,
 		TotalWeight;
 	private int ListSize;
 	private String[] GeneratorNameList;
@@ -83,6 +83,88 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	
 	public boolean makeGenList() {
 		return false;
+	}
+	
+	// FIXME Private members in OpenDSS
+
+	public double getkWLimit() {
+		return kWLimit;
+	}
+
+	public void setkWLimit(double kWLimit) {
+		this.kWLimit = kWLimit;
+	}
+
+	public double getkWBand() {
+		return kWBand;
+	}
+
+	public void setkWBand(double kWBand) {
+		this.kWBand = kWBand;
+	}
+
+	public double getHalfkWBand() {
+		return HalfkWBand;
+	}
+
+	public void setHalfkWBand(double halfkWBand) {
+		HalfkWBand = halfkWBand;
+	}
+
+	public double getKvarLimit() {
+		return kvarLimit;
+	}
+
+	public void setKvarLimit(double fkvarLimit) {
+		kvarLimit = fkvarLimit;
+	}
+
+	public double getTotalWeight() {
+		return TotalWeight;
+	}
+
+	public void setTotalWeight(double totalWeight) {
+		TotalWeight = totalWeight;
+	}
+
+	public int getListSize() {
+		return ListSize;
+	}
+
+	public void setListSize(int listSize) {
+		ListSize = listSize;
+	}
+
+	public String[] getGeneratorNameList() {
+		return GeneratorNameList;
+	}
+
+	public void setGeneratorNameList(String[] generatorNameList) {
+		GeneratorNameList = generatorNameList;
+	}
+
+	public Object[] getGenPointerList() {
+		return GenPointerList;
+	}
+
+	public void setGenPointerList(Object[] genPointerList) {
+		GenPointerList = genPointerList;
+	}
+
+	public double[] getWeights() {
+		return Weights;
+	}
+
+	public void setWeights(double[] weights) {
+		Weights = weights;
+	}
+
+	public CktElement getMonitoredElement() {
+		return MonitoredElement;
+	}
+
+	public void setMonitoredElement(CktElement monitoredElement) {
+		MonitoredElement = monitoredElement;
 	}
 
 }

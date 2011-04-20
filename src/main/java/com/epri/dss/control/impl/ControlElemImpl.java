@@ -2,21 +2,23 @@ package com.epri.dss.control.impl;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.CktElement;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSCktElement;
-import com.epri.dss.common.impl.DSSClassImpl;
+import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.control.ControlElem;
 
 public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
 	public enum ControlAction {
-	    NONE,
-	    OPEN,
-	    CLOSE,
-	    CTRL_RESET, // can't use the same name as file reset function
-	    LOCK,
-	    UNLOCK,
-	    TAPUP,
-	    TAPDOWN}
+		NONE,
+		OPEN,
+		CLOSE,
+		CTRL_RESET, // can't use the same name as file reset function
+		LOCK,
+		UNLOCK,
+		TAPUP,
+		TAPDOWN}
 
 	private CktElement ControlledElement;
 
@@ -29,9 +31,50 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	protected int MonitorVarIndex;
 	protected double TimeDelay, DblTraceParameter;
 
-	public ControlElemImpl(DSSClassImpl ParClass) {
+	public ControlElemImpl(DSSClass ParClass) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
+
+		this.DSSObjType = DSSClassDefs.CTRL_ELEMENT;
+		this.DblTraceParameter = 0.0;
+		this.MonitorVariable = "";
+		this.MonitorVarIndex = 0;
+		this.ControlledElement = null;
+	}
+
+	/**
+	 * Do the action that is pending from last sample.
+	 */
+	public void doPendingAction(int Code, int ProxyHdl) {
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for DoPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
+	}
+
+	public void reset() {
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for reset."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 461);
+	}
+
+	/**
+	 * Sample control quantities and set action times in control queue.
+	 */
+	public void sample() {
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for sample."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
+	}
+
+	public void setControlledElement(CktElement Value) {
+		try {
+			// Check for reassignment
+			if (ControlledElement != null) 
+				ControlledElement.setHasControl(false);
+		} finally {
+			ControlledElement = Value;
+			if (ControlledElement != null) {
+				ControlledElement.setHasControl(true);
+				ControlledElement.setControlElement(this);
+			}
+		}
+	}
+
+	public CktElement getControlledElement() {
+		return ControlledElement;
 	}
 
 	public String getElementName() {
@@ -96,28 +139,6 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
 	public void setDblTraceParameter(double dblTraceParameter) {
 		DblTraceParameter = dblTraceParameter;
-	}
-
-	public void setControlledElement(CktElement Value) {
-
-	}
-
-	public CktElement getControlledElement() {
-		return null;
-	}
-
-	/* Sample control quantities and set action times in Control Queue */
-	public void sample() {
-
-	}
-
-	/* Do the action that is pending from last sample */
-	public void doPendingAction(int Code, int ProxyHdl) {
-
-	}
-
-	public void reset() {
-
 	}
 
 }
