@@ -4,8 +4,11 @@ import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.RecloserObj;
 import com.epri.dss.general.TCC_CurveObj;
 
@@ -47,26 +50,159 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	public RecloserObjImpl(DSSClassImpl ParClass, String RecloserName) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
-	}
 
-	private void interpretRecloserAction(String Action) {
+		setName(RecloserName.toLowerCase());
+		this.DSSObjType = ParClass.getDSSClassType();
 
-	}
+		this.nPhases = 3;  // Directly set conds and phases
+		this.nConds  = 3;
+		this.nTerms  = 1;  // This forces allocation of terminals and conductors in base class
 
-	/* Make a positive Sequence Model */
-	@Override
-	public void makePosSequence() {
+		this.ElementName       = "";
+		setControlledElement(null);
+		this.ElementTerminal   = 1;
 
+		this.MonitoredElementName = "";
+		this.MonitoredElementTerminal = 1;
+		this.MonitoredElement = null;
+
+		this.PhaseFast      = RecloserImpl.getTCC_Curve("a");
+		this.PhaseDelayed   = RecloserImpl.getTCC_Curve("d");
+		this.GroundFast     = null;
+		this.GroundDelayed  = null;
+
+		this.PhaseTrip      = 1.0;
+		this.GroundTrip     = 1.0;
+		this.PhaseInst      = 0.0;
+		this.GroundInst     = 0.0;
+
+		this.TDGrDelayed    = 1.0;
+		this.TDPhDelayed    = 1.0;
+		this.TDGrFast       = 1.0;
+		this.TDPhFast       = 1.0;
+
+		this.ResetTime      = 15.0;
+		this.NumReclose     = 3;
+		this.NumFast	    = 1;
+
+		this.RecloseIntervals = new double[4];  // fixed allocation of 4
+		this.RecloseIntervals[0] = 0.5;
+		this.RecloseIntervals[1] = 2.0;
+		this.RecloseIntervals[2] = 2.0;
+
+
+		this.PresentState  = ControlAction.CLOSE;
+
+
+		this.OperationCount = 1;
+		this.LockedOut      = false;
+		this.ArmedForOpen   = false;
+		this.ArmedForClose  = false;
+		this.GroundTarget   = false;
+		this.PhaseTarget    = false;
+
+
+		this.cBuffer = null;  // Complex buffer
+
+		this.DSSObjType = ParClass.getDSSClassType();  // CAP_CONTROL;
+
+		initPropertyValues(0);
+
+		//recalcElementData();
 	}
 
 	@Override
 	public void recalcElementData() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
+		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);  // Global function
+
+		if (DevIndex >= 0) {
+			MonitoredElement = ckt.getCktElements().get(DevIndex);
+			nPhases = MonitoredElement.getNPhases();       // Force number of phases to be same
+			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
+				Globals.doErrorMsg("Recloser: \"" + getName() + "\"",
+						"Terminal no. \"" +"\" does not exist.",
+						"Re-specify terminal no.", 392);
+			} else {
+				// Sets name of i-th terminal's connected bus in Recloser's buslist
+				setBus(1, MonitoredElement.getBus(MonitoredElementTerminal));
+				// Allocate a buffer bigenough to hold everything from the monitored element
+				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
+				CondOffset = (MonitoredElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+			}
+		}
+
+		/* Check for existence of Controlled Element */
+
+		DevIndex = Utilities.getCktElementIndex(ElementName);  // Global function
+		if (DevIndex >= 0) {  // Both CktElement and monitored element must already exist
+
+			setControlledElement( ckt.getCktElements().get(DevIndex) );
+
+			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Make the 1st terminal active
+			if (getControlledElement().getConductorClosed(0)) {  // Check state of phases of active terminal
+				PresentState = ControlAction.CLOSE;
+				LockedOut = false;
+				OperationCount = 1;
+				ArmedForOpen = false;
+			} else {
+				PresentState = ControlAction.OPEN;
+				LockedOut = true;
+				OperationCount = NumReclose + 1;
+				ArmedForClose = false;
+			}
+		} else {
+			setControlledElement(null);  // element not found
+			Globals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement Element \""+ ElementName + "\" Not Found.",
+					" Element must be defined previously.", 393);
+		}
+	}
+
+	/**
+	 * Make a positive sequence model.
+	 */
+	@Override
+	public void makePosSequence() {
+		if (MonitoredElement != null) {
+			nPhases = MonitoredElement.getNPhases();
+			nConds = nPhases;
+			setBus(1, MonitoredElement.getBus(ElementTerminal));
+			// Allocate a buffer big enough to hold everything from the monitored element
+			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
+			CondOffset = (ElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+		}
+		super.makePosSequence();
 	}
 
 	@Override
 	public void calcYPrim() {
+		// Leave YPrims as null and they will be ignored.
+		// Yprim is zeroed when created.  Leave it as is.
+	}
+
+	@Override
+	public void getCurrents(Complex[] Curr) {
+		for (int i = 0; i < nConds; i++)
+			Curr[i] = Complex.ZERO;
+	}
+
+	@Override
+	public void getInjCurrents(Complex[] Curr) {
+		for (int i = 0; i < nConds; i++)
+			Curr[i] = Complex.ZERO;
+	}
+
+	/**
+	 * Do the action that is pending from last sample.
+	 */
+	@Override
+	public void doPendingAction(int Code, int ProxyHdl) {
+
+	}
+
+	private void interpretRecloserAction(String Action) {
 
 	}
 
@@ -76,25 +212,9 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	}
 
-	/* Do the action that is pending from last sample */
-	@Override
-	public void doPendingAction(int Code, int ProxyHdl) {
-
-	}
-
 	/* Reset to initial defined state */
 	@Override
 	public void reset() {
-
-	}
-
-	@Override
-	public void getInjCurrents(Complex[] Curr) {
-
-	}
-
-	@Override
-	public void getCurrents(Complex[] Curr) {
 
 	}
 
