@@ -11,6 +11,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.control.Recloser;
 import com.epri.dss.control.RecloserObj;
 import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
@@ -274,26 +275,196 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		}
 	}
 
-	/* Sample control quantities and set action times in Control Queue */
+	/**
+	 * Sample control quantities and set action times in control queue.
+	 */
 	@Override
 	public void sample() {
+		int i;
+		double Cmag;
+		Complex Csum;
 
+		TCC_CurveObj GroundCurve, PhaseCurve;
+		double Groundtime, PhaseTime, TripTime, TimeTest;
+		double TDPhase, TDGround;
+
+		getControlledElement().setActiveTerminalIdx(ElementTerminal);
+
+		if (getControlledElement().getConductorClosed(0)) {      // Check state of phases of active terminal
+			PresentState = ControlAction.CLOSE;
+		} else {
+			PresentState = ControlAction.OPEN;
+		}
+
+		if (OperationCount > NumFast) {
+			GroundCurve = GroundDelayed;
+			PhaseCurve = PhaseDelayed;
+			TDGround = TDGrDelayed;
+			TDPhase =  TDPhDelayed;
+		} else {
+			GroundCurve = GroundFast;
+			PhaseCurve = PhaseFast;
+			TDGround = TDGrFast;
+			TDPhase =  TDPhFast;
+		}
+
+		if (PresentState == ControlAction.CLOSE) {
+			TripTime = -1.0;
+			Groundtime = -1.0;
+			PhaseTime = -1.0;  /* No trip */
+
+			// Check largest Current of all phases of monitored element
+			MonitoredElement.getCurrents(cBuffer);
+
+			/* Check ground trip, if any */
+			if (GroundCurve != null) {
+				Csum = Complex.ZERO;
+				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
+					Csum = Csum.add(cBuffer[i]);
+				Cmag = Csum.abs();
+				if ((GroundInst > 0.0) && (Cmag >= GroundInst) && (OperationCount == 1)) {
+					Groundtime = 0.01 + DelayTime;  // Inst trip on first operation
+				} else {
+					Groundtime = TDGround * GroundCurve.getTCCTime(Cmag / GroundTrip);
+				}
+			}
+
+			if (Groundtime > 0.0) {
+				TripTime = Groundtime;
+				GroundTarget = true;
+			}
+
+			// If GroundTime > 0 then we have a ground trip
+
+			/* Check phase trip, if any */
+
+			if (PhaseCurve != null) {
+				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++) {
+					Cmag =  cBuffer[i].abs();
+
+					if ((PhaseInst > 0.0) && (Cmag >= PhaseInst) && (OperationCount == 1)) {
+						PhaseTime = 0.01 + DelayTime;  // Inst trip on first operation
+						break;  /* no sense checking other phases */
+					} else {
+						TimeTest = TDPhase * PhaseCurve.getTCCTime(Cmag / PhaseTrip);
+						if (TimeTest > 0.0) {
+							if (PhaseTime < 0.0) {
+								PhaseTime = TimeTest;
+							} else {
+								PhaseTime = Math.min(PhaseTime, TimeTest);
+							}
+						}
+					}
+				}
+			}
+
+			// If PhaseTime > 0 then we have a phase trip
+			if (PhaseTime > 0.0) {
+				PhaseTarget = true;
+				if (TripTime > 0.0) {
+					TripTime = Math.min(TripTime, PhaseTime);
+				} else {
+					TripTime = PhaseTime;
+				}
+			}
+
+			if (TripTime > 0.0) {
+				if (!ArmedForOpen) {
+					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					// Then arm for an open operation
+					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + DelayTime, ControlAction.OPEN, 0, this);
+					if (OperationCount <= NumReclose)
+						ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + DelayTime + RecloseIntervals[OperationCount], ControlAction.CLOSE, 0, this);
+					ArmedForOpen = true;
+					ArmedForClose = true;
+				}
+			} else {
+				if (ArmedForOpen) {
+					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					// If current dropped below pickup, disarm trip and set for reset.
+					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
+					ArmedForOpen = false;
+					ArmedForClose = false;
+					GroundTarget = false;
+					PhaseTarget = false;
+				}
+			}
+		}
 	}
 
-	/* Reset to initial defined state */
+	@Override
+	public void dumpProperties(PrintStream F, boolean Complete) {
+		super.dumpProperties(F, Complete);
+
+		for (int i = 0; i < getParentClass().getNumProperties(); i++)
+			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+
+		if (Complete)
+			F.println();
+	}
+
+	@Override
+	public String getPropertyValue(int Index) {
+		String Result = "";
+		switch (Index) {
+		case 15:
+			Result = "(";
+			for (int i = 0; i < NumReclose; i++)
+				Result = Result + String.format("%-g, ", RecloseIntervals[i]);
+			Result = Result + ")";
+		default:
+			Result = super.getPropertyValue(Index);
+		}
+		return Result;
+	}
+
+	/**
+	 * Reset to initial defined state.
+	 */
 	@Override
 	public void reset() {
 
+		PresentState   = ControlAction.CLOSE;
+		OperationCount = 1;
+		LockedOut      = false;
+		ArmedForOpen   = false;
+		ArmedForClose  = false;
+		GroundTarget   = false;
+		PhaseTarget    = false;
+
+		if (getControlledElement() != null) {
+			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal
+			getControlledElement().setConductorClosed(0, true);             // Close all phases of active terminal
+		}
 	}
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-	}
+		PropertyValue[0]  = "";  // "element";
+		PropertyValue[1]  = "1"; // "terminal";
+		PropertyValue[2]  = "";
+		PropertyValue[3]  = "1";  // "terminal";
+		PropertyValue[4]  = String.valueOf(NumFast);
+		PropertyValue[5]  = "";
+		PropertyValue[6]  = "";
+		PropertyValue[7]  = "";
+		PropertyValue[8]  = "";
+		PropertyValue[9]  = "1.0";
+		PropertyValue[10] = "1.0";
+		PropertyValue[11] = "0";
+		PropertyValue[12] = "0";
+		PropertyValue[13] = "15";
+		PropertyValue[14] = "4";
+		PropertyValue[15] = "(0.5, 2.0, 2.0)";
+		PropertyValue[16] = "0.0";
+		PropertyValue[17] = "";
+		PropertyValue[18] = "1.0";
+		PropertyValue[19] = "1.0";
+		PropertyValue[20] = "1.0";
+		PropertyValue[21] = "1.0";
 
-	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-
+		super.initPropertyValues(Recloser.NumPropsThisClass);
 	}
 
 	// FIXME Private members in Open DSS
