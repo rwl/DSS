@@ -1,6 +1,8 @@
 package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.epri.dss.shared.impl.Complex;
 
@@ -10,6 +12,7 @@ import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.RecloserObj;
+import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
 
 public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
@@ -200,10 +203,75 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void doPendingAction(int Code, int ProxyHdl) {
 
+		getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal of CktElement to terminal 1
+
+		List<ControlAction> actions = new ArrayList<ControlAction>();
+		for (ControlAction act : ControlAction.values())
+			actions.add(act);
+
+		switch (Code) {
+		case actions.indexOf(ControlAction.OPEN):
+			switch (PresentState) {
+			case CLOSE:
+				if (ArmedForOpen) {  // ignore if we became disarmed in meantime
+					getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
+					if (OperationCount > NumReclose) {
+						LockedOut = true;
+						Utilities.appendToEventLog("Recloser."+getName(), "Opened, Locked Out");
+					} else {
+						if (OperationCount > NumFast) {
+							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Delayed");
+						} else {
+							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Fast");
+						}
+					}
+					if (PhaseTarget)
+						Utilities.appendToEventLog(" ", "Phase Target");
+					if (GroundTarget)
+						Utilities.appendToEventLog(" ", "Ground Target");
+					ArmedForOpen = false;
+				}
+			}
+
+		case actions.indexOf(ControlAction.CLOSE):
+			switch (PresentState) {
+			case OPEN:
+				if (ArmedForClose && !LockedOut) {
+					getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
+					OperationCount += 1;
+					Utilities.appendToEventLog("Recloser."+getName(), "Closed");
+					ArmedForClose = false;
+				}
+			}
+
+		case actions.indexOf(ControlAction.CTRL_RESET):
+			switch (PresentState) {
+			case CLOSE:
+				if (!ArmedForOpen)
+					OperationCount = 1;  // Don't reset if we just rearmed
+			}
+		}
 	}
 
 	private void interpretRecloserAction(String Action) {
 
+		if (getControlledElement() != null) {
+			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal
+			switch (Action.toLowerCase().charAt(0)) {
+			case 'o':
+				getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
+				LockedOut = true;
+				OperationCount = NumReclose + 1;
+			case 't':
+				getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
+				LockedOut = true;
+				OperationCount = NumReclose + 1;
+			case 'c':
+				getControlledElement().setConductorClosed(0, true);    // Close all phases of active terminal
+				LockedOut = false;
+				OperationCount = 1;
+			}
+		}
 	}
 
 	/* Sample control quantities and set action times in Control Queue */
