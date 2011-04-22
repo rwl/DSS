@@ -17,8 +17,6 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 	private static RegControlObj ActiveRegControlObj;
 
-	private static int LastChange;
-
 	public RegControlImpl() {
 		super();
 
