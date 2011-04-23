@@ -206,7 +206,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			case StorageController.propELEMENTLIST:
 				Utilities.interpretStringListArray(Param, asc.getStorageNameList());
 			case StorageController.propWEIGHTS:
-				asc.setFleetSize(asc.getStorageNameList().length;
+				asc.setFleetSize(asc.getStorageNameList().size());
 				if (asc.getFleetSize() > 0) {
 					asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 					Utilities.interpretDblArray(Param, asc.getFleetSize(), asc.getWeights());
@@ -273,7 +273,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.getFleetPointerList().clear();  // clear this for resetting on first sample
 				asc.setFleetListChanged(true);
 				asc.setElementListSpecified(true);
-				asc.setFleetSize(asc.getStorageNameList().length);
+				asc.setFleetSize(asc.getStorageNameList().size());
 				// Realloc weights to be same size as possible number of storage elements
 				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
@@ -305,7 +305,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 	protected int makeLike(String StorageControllerName) {
 		int Result = 0;
 		/* See if we can find this StorageController name in the present collection */
-		StorageControllerObj OtherStorageController = find(StorageControllerName);
+		StorageControllerObj OtherStorageController = (StorageControllerObj) find(StorageControllerName);
 		if (OtherStorageController != null) {
 			StorageControllerObj asc = getActiveStorageControllerObj();
 
@@ -324,10 +324,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			asc.setHalfPFBand(OtherStorageController.getHalfPFBand());
 
 			asc.getStorageNameList().clear();
-			for (int i = 0; i < OtherStorageController.getStorageNameList().length; i++)
+			for (int i = 0; i < OtherStorageController.getStorageNameList().size(); i++)
 				asc.getStorageNameList().add(OtherStorageController.getStorageNameList().get(i - 1));
 
-			asc.setFleetSize(asc.getStorageNameList().length);
+			asc.setFleetSize(asc.getStorageNameList().size());
 			if (asc.getFleetSize() > 0) {
 				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)

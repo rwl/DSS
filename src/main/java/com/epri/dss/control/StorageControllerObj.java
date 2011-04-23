@@ -1,7 +1,10 @@
 package com.epri.dss.control;
 
+import java.util.List;
+
 import com.epri.dss.common.CktElement;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.shared.impl.Complex;
 
 /**
  * A StorageController is a control element that is connected to a terminal
@@ -67,13 +70,13 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setFleetState(int fleetState);
 
-	String[] getStorageNameList();
+	List<String> getStorageNameList();
 
-	void setStorageNameList(String[] storageNameList);
+	void setStorageNameList(List<String> storageNameList);
 
-	Object[] getFleetPointerList();
+	List<Object> getFleetPointerList();
 
-	void setFleetPointerList(Object[] fleetPointerList);
+	void setFleetPointerList(List<Object> fleetPointerList);
 
 	double[] getWeights();
 
@@ -179,9 +182,9 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setDutyShapeObj(LoadShapeObj dutyShapeObj);
 
-	double[] getLoadShapeMult();
+	Complex getLoadShapeMult();
 
-	void setLoadShapeMult(double[] loadShapeMult);
+	void setLoadShapeMult(Complex loadShapeMult);
 
 	CktElement getMonitoredElement();
 
