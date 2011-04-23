@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
@@ -704,70 +705,274 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	}
 
 	private void doLoadShapeMode() {
+		int FleetStateSaved;
+		boolean RateChanged;
+		double NewChargeRate;
+		double NewkWRate, NewkvarRate;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		FleetStateSaved = FleetState;
+		RateChanged     = false;
+
+		// Get multiplier
+		switch (sol.getMode()) {
+		case Dynamics.DAILYMODE:
+			calcDailyMult(sol.getDblHour());  // Daily dispatch curve
+		case Dynamics.YEARLYMODE:
+			calcYearlyMult(sol.getDblHour());
+		case Dynamics.LOADDURATION2:
+			calcDailyMult(sol.getDblHour());
+		case Dynamics.PEAKDAY:
+			calcDailyMult(sol.getDblHour());
+		case Dynamics.DUTYCYCLE:
+			calcDutyMult(sol.getDblHour()) ;
+		}
+
+		if (LoadShapeMult.getReal() < 0.0) {
+			ChargingAllowed = true;
+			NewChargeRate = Math.abs(LoadShapeMult.getReal()) * 100.0;
+			if (NewChargeRate != pctChargeRate)
+				RateChanged = true;
+			pctChargeRate = NewChargeRate;
+			setFleetChargeRate();
+			setFleetToCharge();
+		} else if (LoadShapeMult.getReal() == 0.0) {
+			setFleetToIdle();
+		} else {
+			// Set fleet to discharging at a rate
+			NewkWRate   = LoadShapeMult.getReal() * 100.0;
+			NewkvarRate = LoadShapeMult.getImaginary() * 100.0;
+			if ((NewkWRate != pctKWRate) || (NewkvarRate != pctkvarRate))
+				RateChanged = true;
+			pctKWRate   = NewkWRate;
+			pctkvarRate = NewkvarRate;
+			setFleetkWRate();
+			setFleetkvarRate();
+			setFleetToDisCharge();
+			sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
+		}
+
+		if ((FleetState != FleetStateSaved) || RateChanged) {
+			sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
+			// Push present time onto control queue to force re solve at new dispatch value
+			ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, 0, 0, this);
+		}
 	}
-
-	/* Reset to initial defined state */
-	@Override
-	public void reset() {
-
-	}
-
-	// private void setPctReserve()
 	private void setAllFleetValues() {
-
-	}
-
-	private void setFleetkWRate() {
-
-	}
-
-	private void setFleetkvarRate() {
-
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setPctKWin(pctChargeRate);
+			pStorage.setPctKVarout(pctkvarRate);
+			pStorage.setPctKWout(pctKWRate);
+			pStorage.setPctReserve(pctFleetReserve);
+		}
 	}
 
 	private void setFleetChargeRate() {
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setPctKWin(pctChargeRate);
+		}
+	}
 
+	private void setFleetkvarRate() {
+		StorageObj pStorage;
+		/* For side effects see pctKVArOut property of storage element */
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setPctKVarout(pctkvarRate);
+		}
+	}
+
+	private void setFleetkWRate() {
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setPctKWout(pctKWRate);
+		}
 	}
 
 	private void setFleetToCharge() {
-
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setState(Storage.STORE_CHARGING);
+		}
+		FleetState = Storage.STORE_CHARGING;
 	}
 
 	private void setFleetToDisCharge() {
-
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setState(Storage.STORE_DISCHARGING);
+		}
+		FleetState = Storage.STORE_DISCHARGING;
 	}
 
 	private void setFleetToIdle() {
-
-	}
-
-	private void setFleetToExternal() {
-
-	}
-
-	private int interpretMode(int Opt, String S) {
-		return 0;
-	}
-
-	private String returnElementsList() {
-		return null;
-	}
-
-	private String returnWeightsList() {
-		return null;
-	}
-
-	private boolean makeFleetList() {
-		return false;
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setState(Storage.STORE_IDLING);
+			pStorage.setPresentKW(0.0);
+		}
+		FleetState = Storage.STORE_IDLING;
 	}
 
 	public void setPFBand(double Value) {
-
+		PFBand = Value;
+		HalfPFBand = PFBand / 2.0;
 	}
 
 	public double getPFBand() {
 		return PFBand;
+	}
+
+	private void setFleetToExternal() {
+		StorageObj pStorage;
+		for (int i = 0; i < FleetPointerList.size(); i++) {
+			pStorage = (StorageObj) FleetPointerList.get(i);
+			pStorage.setState(Storage.STORE_EXTERNALMODE);
+		}
+	}
+
+//	private void setPctReserve() {
+//		StorageObj pStorage;
+//		for (int i = 0; i < FleetPointerList.size(); i++) {
+//			pStorage = (StorageObj) FleetPointerList.get(i);
+//			pStorage.setPctReserve(pctFleetReserve);
+//		}
+//	}
+
+	private int interpretMode(int Opt, String S) {
+		switch (Opt) {
+		case StorageController.propMODEDISCHARGE:
+			switch (S.toLowerCase().charAt(0)) {
+			case 'f':
+				return StorageController.MODEFOLLOW;
+			case 'l':
+				return StorageController.MODELOADSHAPE;
+			case 'p':
+				return StorageController.MODEPEAKSHAVE;
+			case 's':
+				return StorageController.MODESUPPORT;
+			case 't':
+				return StorageController.MODETIME;
+			default:
+				DSSGlobals.getInstance().doSimpleMsg("Discharge Mode \"" + S + "\" not recognized.", 14402);
+			}
+		case StorageController.propMODECHARGE:
+			switch (S.toLowerCase().charAt(0)) {
+			/*case 'f':
+				return StorageController.MODEFOLLOW;*/
+			case 'l':
+				return StorageController.MODELOADSHAPE;
+			/*case 's':
+				return StorageController.MODESUPPORT;*/
+			case 't':
+				return StorageController.MODETIME;
+			default:
+				DSSGlobals.getInstance().doSimpleMsg("Charge Mode \"" + S + "\" not recognized.", 14402);
+			}
+		default:
+			return 0;
+		}
+	}
+
+	private boolean makeFleetList() {
+		StorageObj pStorage;
+		int i;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		boolean Result = false;
+
+		if (ElementListSpecified) {  // Name list is defined - Use it
+
+			FleetPointerList.clear();
+			for (i = 0; i < FleetSize; i++) {
+				pStorage = (StorageObj) Globals.getStorageClass().find(StorageNameList.get(i - 1));
+				if (pStorage != null) {
+					if (pStorage.isEnabled())
+						FleetPointerList.add(pStorage);
+				} else {
+					Globals.doSimpleMsg("Error: Storage Element \"" + StorageNameList.get(i - 1) + "\" not found.", 14403);
+					return Result;
+				}
+			}
+
+		} else {
+
+			/* Search through the entire circuit for enabled storage elements and add them to the list */
+			StorageNameList.clear();
+			FleetPointerList.clear();
+			for (i = 0; i < Globals.getStorageClass().getElementCount(); i++) {
+				pStorage = (StorageObj) Globals.getStorageClass().getElementList().get(i);
+				// Look for a storage element not already assigned
+				if (pStorage.isEnabled() && (pStorage.getDispatchMode() != Storage.STORE_EXTERNALMODE)) {
+					StorageNameList.add(pStorage.getName());  // Add to list of names
+					FleetPointerList.add(pStorage);
+				}
+			}
+
+			/* Allocate uniform weights */
+			FleetSize = FleetPointerList.size();
+			Weights = (double[]) Utilities.resizeArray(Weights, FleetSize);
+			for (i = 0; i < FleetSize; i++)
+				Weights[i] = 1.0;
+		}
+
+		// Add up total weights
+		TotalWeight = 0.0;
+		for (i = 0; i < FleetSize; i++)
+			TotalWeight = TotalWeight + Weights[i];
+
+		if (FleetPointerList.size() > 0)
+			Result = true;
+
+		FleetListChanged = false;
+
+		return Result;
+	}
+
+	/**
+	 * Reset to initial defined state.
+	 */
+	@Override
+	public void reset() {
+		//super.reset();
+		setFleetToIdle();
+
+		// Do we want to set fleet to 100% charged storage?
+	}
+
+	private String returnElementsList() {
+		if (FleetSize == 0)
+			return "";
+
+		String Result = "[" + StorageNameList.get(0);
+		for (int i = 0; i < FleetSize - 1; i++)
+			Result = Result + ", " + StorageNameList.get(i);
+		Result = Result + "]";  // terminate the array
+
+		return Result;
+	}
+
+	private String returnWeightsList() {
+		if (FleetSize == 0)
+			return "";
+
+		String Result = "["+ String.format("%-.6g", Weights[0]);
+		for (int i = 1; i < FleetSize; i++)
+			Result = Result + String.format(", %-.6g", Weights[i]);
+		Result = Result + "]";  // terminate the array
+
+		return Result;
 	}
 
 	// FIXME Private members in OpenDSS
