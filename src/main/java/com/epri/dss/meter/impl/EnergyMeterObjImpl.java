@@ -1,11 +1,14 @@
 package com.epri.dss.meter.impl;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.impl.DSSCktElement;
+import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -13,6 +16,7 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
+import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
@@ -20,6 +24,8 @@ import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.impl.CktTreeImpl.CktTreeNode;
 
 public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterObj {
+
+	private static double Delta_Hrs;
 
 	private boolean FirstSampleAfterReset;
 	private boolean ExcessFlag;
@@ -178,16 +184,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		/* Registers for capturing losses by base voltage, names assigned later */
 		for (i = EnergyMeter.Reg_VBaseStart + 1; i < EnergyMeter.NumEMRegisters; i++)
-			RegisterNames[i] = "";
+		RegisterNames[i] = "";
 
 		resetRegisters();
 		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
-			TotalsMask[i] = 1.0;
+		TotalsMask[i] = 1.0;
 
 		allocateSensorArrays();
 
 		for (i = 0; i < this.nPhases; i++)
-			SensorCurrent[i] = 400.0;
+		SensorCurrent[i] = 400.0;
 
 		//recalcElementData();
 	}
@@ -203,51 +209,539 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int DevIndex = Utilities.getCktElementIndex(ElementName);   // Global function
 
 		if (DevIndex >= 0) {  // Monitored element must already exist
-			MeteredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex); // Get pointer to metered element
-			/* MeteredElement must be a PDElement */
-			if (!(MeteredElement instanceof PDElement)) {
-				MeteredElement = null;  // element not found
-				Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" is not a Power Delivery (PD) element.",
-						" Element must be a PD element.", 525);
-				return;
-			}
-
-			if (MeteredTerminal >= MeteredElement.getNTerms()) {  // TODO Check zero based indexing
-				Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
-						"Terminal no. \"" + String.valueOf(MeteredTerminal)+"\" does not exist.",
-						"Respecify terminal no.", 524);
-			} else {
-
-				if (MeteredElementChanged) {
-					// Sets name of i-th terminal's connected bus in monitor's buslist
-					// This value will be used to set the NodeRef array (see TakeSample)
-					setBus(1, MeteredElement.getBus(MeteredTerminal));
-					nPhases = MeteredElement.getNPhases();
-					nConds  = MeteredElement.getNConds();
-					allocateSensorArrays();
-
-					// If we come through here, throw branchlist away
-					BranchList = null;
-				}
-
-				if (HasFeeder) makeFeederObj();  // OK to call multiple times
-			}
-		} else {
+		MeteredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex); // Get pointer to metered element
+		/* MeteredElement must be a PDElement */
+		if (!(MeteredElement instanceof PDElement)) {
 			MeteredElement = null;  // element not found
-			Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" Not Found.",
-					" Element must be defined previously.", 525);
+			Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" is not a Power Delivery (PD) element.",
+				" Element must be a PD element.", 525);
+			return;
+		}
+
+		if (MeteredTerminal >= MeteredElement.getNTerms()) {  // TODO Check zero based indexing
+			Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"",
+				"Terminal no. \"" + String.valueOf(MeteredTerminal)+"\" does not exist.",
+				"Respecify terminal no.", 524);
+		} else {
+
+			if (MeteredElementChanged) {
+				// Sets name of i-th terminal's connected bus in monitor's buslist
+				// This value will be used to set the NodeRef array (see TakeSample)
+				setBus(1, MeteredElement.getBus(MeteredTerminal));
+				nPhases = MeteredElement.getNPhases();
+				nConds  = MeteredElement.getNConds();
+				allocateSensorArrays();
+
+				// If we come through here, throw branchlist away
+				BranchList = null;
+			}
+
+			if (HasFeeder) makeFeederObj();  // OK to call multiple times
+		}
+		} else {
+		MeteredElement = null;  // element not found
+		Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" Not Found.",
+				" Element must be defined previously.", 525);
 		}
 	}
 
-	/* Make a positive Sequence Model */
+	/**
+	 * Make a positive sequence model.
+	 */
 	@Override
 	public void makePosSequence() {
 
+		if (MeteredElement != null) {
+		setBus(1, MeteredElement.getBus(MeteredTerminal));
+		nPhases = MeteredElement.getNPhases();
+		nConds = MeteredElement.getNConds();
+		allocateSensorArrays();
+		BranchList = null;
+		}
+
+		if (HasFeeder) makeFeederObj();
+
+		super.makePosSequence();
+	}
+
+	private String makeVPhaseReportFileName() {
+		return DSSGlobals.getInstance().getEnergyMeterClass().getDI_Dir() + "/" + getName() + "_PhaseVoltageReport.csv";
+	}
+
+	public void resetRegisters() {
+		int i;
+
+		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		Registers[i] = 0.0;
+		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		Derivatives[i] = 0.0;
+
+		/* Initialise drag hand registers to some big negative number */
+		Registers[EnergyMeter.Reg_MaxkW]           = -1.0e50;
+		Registers[EnergyMeter.Reg_MaxkVA]          = -1.0e50;
+		Registers[EnergyMeter.Reg_ZoneMaxkW]       = -1.0e50;
+		Registers[EnergyMeter.Reg_ZoneMaxkVA]      = -1.0e50;
+		Registers[EnergyMeter.Reg_MaxLoadLosses]   = -1.0e50;
+		Registers[EnergyMeter.Reg_MaxNoLoadLosses] = -1.0e50;
+		Registers[EnergyMeter.Reg_LossesMaxkW]     = -1.0e50;
+		Registers[EnergyMeter.Reg_LossesMaxkvar]   = -1.0e50;
+
+		Registers[EnergyMeter.Reg_GenMaxkW]        = -1.0e50;
+		Registers[EnergyMeter.Reg_GenMaxkVA]       = -1.0e50;
+
+		FirstSampleAfterReset = true;  // initialise for trapezoidal integration
+		// Removed .. open in solution loop See Solve Yearly if (EnergyMeterClass.SaveDemandInterval) openDemandIntervalFile();
 	}
 
 	@Override
 	public void calcYPrim() {
+		// YPrim is all zeros. Just leave as nil so it is ignored.
+	}
 
+	public void saveRegisters() {
+		File F;
+		FileWriter FStream;
+		BufferedWriter FBuffer;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		String CSVName = "MTR_" + getName() + ".csv";
+
+		try {
+		F = new File(Globals.getDSSDataDirectory() + CSVName);
+		FStream = new FileWriter(F, false);
+		FBuffer = new BufferedWriter(FStream);
+
+		Globals.setGlobalResult(CSVName);
+
+		FBuffer.write("Year, " + Globals.getActiveCircuit().getSolution().getYear() + ",");
+		FBuffer.newLine();
+
+		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
+			FBuffer.write("\"" + RegisterNames[i] + "\"," + Registers[i]);
+			FBuffer.newLine();
+		}
+
+		FBuffer.close();
+		FStream.close();
+		} catch (Exception e) {
+		Globals.doSimpleMsg("Error opening Meter File \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 526);
+		return;
+		}
+	}
+
+	private void integrate(int Reg, double Deriv, double Interval) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		if (ckt.isTrapezoidalIntegration()) {
+		/* Trapezoidal Rule Integration */
+		if (!FirstSampleAfterReset)
+			Registers[Reg] = Registers[Reg] + 0.5 * Interval * (Deriv + Derivatives[Reg]);
+		} else {
+		/* Plain Euler integration */
+		Registers[Reg] = Registers[Reg] + Interval * Deriv;
+		}
+
+		/* Set the derivatives so that the proper value shows up in Demand Interval Files
+		 * and prepare for next time step in Trapezoidal integration.
+		 */
+		Derivatives[Reg] = Deriv;
+	}
+
+	/**
+	 * Update registers from metered zone.
+	 * Assumes one time period has taken place since last sample.
+	 */
+	@Override
+	public void takeSample() {
+		int i, j;
+
+		Complex S_Local,
+		S_Totallosses,
+		S_LoadLosses,
+		S_NoLoadLosses,
+		TotalLoadLosses,
+		TotalNoLoadLosses,
+		TotalLineLosses,
+		TotalTransformerLosses,
+		TotalLineModeLosses,    // Lines only  for now
+		TotalZeroModeLosses,
+		Total3phaseLosses,
+		Total1phaseLosses,
+		TotalLosses;
+
+		PDElement CktElem, ParenElem;
+		PCElement PCelem;
+		LoadObj pLoad;
+		GeneratorObj pGen;
+
+		double MaxExcesskWNorm,
+		MaxExcesskWEmerg,
+		EEN,
+		UE,
+		ZonekW,
+		TotalZonekw,
+		TotalZonekvar,
+		TotalLoad_EEN,
+		TotalLoad_UE,
+		TotalGenkW,
+		TotalGenkVAr,
+		LoadkVA,
+		GenkVA,
+		S_Local_kVA,
+		Load_kW;
+		Complex S_PosSeqLosses;
+		Complex S_ZeroSeqLosses;
+		Complex S_NegSeqLosses;
+
+		double puV;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		// Compute energy in branch to which meter is connected
+
+		//MeteredElement.setActiveTerminalIdx(MeteredTerminal);  // needed for Excess kVA calcs
+		S_Local     = MeteredElement.getPower(MeteredTerminal).multiply(0.001);
+		S_Local_kVA = S_Local.abs();
+		Delta_Hrs   = Globals.getActiveCircuit().getSolution().getIntervalHrs();
+		integrate(EnergyMeter.Reg_kWh,   S_Local.getReal(), Delta_Hrs);  // Accumulate the power
+		integrate(EnergyMeter.Reg_kvarh, S_Local.getImaginary(), Delta_Hrs);
+		setDragHandRegister(EnergyMeter.Reg_MaxkW,  S_Local.getReal());   // 3-10-04 removed abs()
+		setDragHandRegister(EnergyMeter.Reg_MaxkVA, S_Local_kVA);
+
+		// Compute maximum overload energy in all branches in zone
+		// and mark all load downline from an overloaded branch as unserved
+		// If localonly, check only metered element
+
+		TotalLosses         = Complex.ZERO;     // Initialize loss accumulators
+		TotalLoadLosses     = Complex.ZERO;
+		TotalNoLoadLosses   = Complex.ZERO;
+		TotalLineLosses     = Complex.ZERO;
+		TotalLineModeLosses = Complex.ZERO;
+		TotalZeroModeLosses = Complex.ZERO;
+		Total3phaseLosses   = Complex.ZERO;
+		Total1phaseLosses   = Complex.ZERO;
+		TotalTransformerLosses   = Complex.ZERO;
+
+		// Init all voltage base loss accumulators
+		for (i = 0; i < MaxVBaseCount; i++) {
+			VBaseTotalLosses[i]  = 0.0;
+			VBaseLineLosses[i]   = 0.0;
+			VBaseLoadLosses[i]   = 0.0;
+			VBaseNoLoadLosses[i] = 0.0;
+			VBaseLoad[i]         = 0.0;
+		}
+
+		// Phase voltage arrays
+		if (PhaseVoltageReport) {
+			for (i = 0; i < MaxVBaseCount; i++) {
+				if (VBaseList[i] > 0.0) {
+					for (j = 0; j < 3; j++) {
+						VphaseMax[jiIndex(j, i)] = 0.0;
+						VPhaseMin[jiIndex(j, i)] = 9999.0;
+						VPhaseAccum[jiIndex(j, i)] = 0.0;
+						VPhaseAccumCount[jiIndex(j, i)] = 0;  // Keep track of counts for average
+					}
+				}
+			}
+		}
+
+		CktElem           = (PDElement) BranchList.getFirst();
+		MaxExcesskWNorm   = 0.0;
+		MaxExcesskWEmerg  = 0.0;
+
+		/* -------------------------------------------------------------------------- */
+		/* ------------------------ Local Zone Only --------------------------------- */
+		/* -------------------------------------------------------------------------- */
+		if (LocalOnly) {
+			CktElem = (PDElement) MeteredElement;
+			MaxExcesskWNorm  = Math.abs(CktElem.getExcessKVANorm(MeteredTerminal).getReal());
+			MaxExcesskWEmerg = Math.abs(CktElem.getExcessKVAEmerg(MeteredTerminal).getReal());
+		} else {
+			/* -------------------------------------------------------------------------- */
+			/* --------Cyle Through Entire Zone Setting EEN/UE -------------------------- */
+			/* -------------------------------------------------------------------------- */
+			while (CktElem != null) {
+				// loop thru all ckt elements on zone
+
+				CktElem.setActiveTerminalIdx( BranchList.getPresentBranch().getFromTerminal() );
+				// Invoking this property sets the Overload_UE flag in the PD Element
+				EEN = Math.abs(CktElem.getExcessKVANorm(CktElem.getActiveTerminalIdx()).getReal());
+				UE  = Math.abs(CktElem.getExcessKVAEmerg(CktElem.getActiveTerminalIdx()).getReal());
+			}
+
+			/* For radial circuits just keep the maximum overload; for mesh, add 'em up */
+			if (ZoneIsRadial) {
+				if (UE  > MaxExcesskWEmerg) MaxExcesskWEmerg = UE;
+				if (EEN > MaxExcesskWNorm)  MaxExcesskWNorm  = EEN;
+			} else {
+				MaxExcesskWEmerg = MaxExcesskWEmerg + UE;
+				MaxExcesskWNorm  = MaxExcesskWNorm  + EEN;
+			}
+
+			// Even if this branch is not overloaded, if the parent element is overloaded
+			// mark load on this branch as unserved also
+			// Use the larger of the two factors
+			ParenElem = (PDElement) BranchList.getParent();
+			if (ParenElem != null) {
+				CktElem.setOverLoad_EEN( Math.max(CktElem.getOverLoad_EEN(), ParenElem.getOverLoad_EEN()) );
+				CktElem.setOverload_UE( Math.max(CktElem.getOverload_UE(), ParenElem.getOverload_UE()) );
+			}
+
+			// Mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial
+			// This overrides and supercedes the load's own determination of unserved based on voltage
+			// If voltage only is to be used for Load UE/EEN, don't mark (set to 0.0 and load will calc UE based on voltage)
+			PCelem = (PCElement) BranchList.getFirstObject();
+			while (PCelem != null) {
+				if ((PCelem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
+					pLoad = (LoadObj) PCelem;
+					if ((CktElem.getOverLoad_EEN() > 0.0) && (ZoneIsRadial) && !VoltageUEOnly) {
+						pLoad.setEEN_Factor(CktElem.getOverLoad_EEN());
+					} else {
+						pLoad.setEEN_Factor(0.0);
+					}
+
+					if ((CktElem.getOverload_UE() > 0.0) && ZoneIsRadial && !VoltageUEOnly) {
+						pLoad.setUE_Factor(CktElem.getOverload_UE());
+					} else {
+						pLoad.setUE_Factor(0.0);
+					}
+				}
+				PCelem = (PCElement) BranchList.getNextObject();
+			}
+
+			CktElem = (PDElement) BranchList.GoForward();
+		}
+
+		// Get the losses, and unserved bus energies
+		TotalZonekw   = 0.0;
+		TotalZonekvar = 0.0;
+		TotalLoad_EEN = 0.0;
+		TotalLoad_UE  = 0.0;
+		TotalGenkW    = 0.0;
+		TotalGenkVAr  = 0.0;
+
+		/* -------------------------------------------------------------------------- */
+		/* --------       Cycle Through Zone Accumulating Load and Losses    -------- */
+		/* -------------------------------------------------------------------------- */
+		CktElem = (PDElement) BranchList.getFirst();
+		while (CktElem != null) {
+			PCelem = (PCElement) BranchList.getFirstObject();
+			while (PCelem != null) {
+				switch (PCelem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+				case DSSClassDefs.LOAD_ELEMENT:
+					if (!LocalOnly) {  // Dont check for load EEN/UE if Local only
+						pLoad = (LoadObj) PCelem;
+						Load_kW = accumulateLoad(pLoad, TotalZonekw, TotalZonekvar, TotalLoad_EEN, TotalLoad_UE);
+						if (VBaseLosses) {
+							int vbi = BranchList.getPresentBranch().getVoltBaseIndex();
+							if (vbi > 0)
+								VBaseLoad[vbi] = VBaseLoad[vbi] + Load_kW;
+						}
+					}
+				case DSSClassDefs.GEN_ELEMENT:
+					pGen = (GeneratorObj) PCelem;
+					accumulateGen(pGen, TotalGenkW, TotalGenkVAr);
+				}
+				PCelem = (PCElement) BranchList.getNextObject();
+			}
+
+			if (Losses) {  // Compute and report losses
+
+				/* Get losses from the present circuit element */
+				CktElem.getLosses(S_Totallosses, S_LoadLosses, S_NoLoadLosses);  // returns watts, vars
+				/* Convert to kW */
+				S_Totallosses = S_Totallosses.multiply(0.001);
+				S_LoadLosses = S_LoadLosses.multiply(0.001);
+				S_NoLoadLosses = S_NoLoadLosses.multiply(0.001);
+				/* Update accumulators */
+				TotalLosses = TotalLosses.add(S_Totallosses);  // Accumulate total losses in meter zone
+				TotalLoadLosses = TotalLoadLosses.add(S_LoadLosses);  // Accumulate total load losses in meter zone
+				TotalNoLoadLosses = TotalNoLoadLosses.add(S_NoLoadLosses);  // Accumulate total no load losses in meter zone
+
+				/* Line and Transformer Elements */
+				if (Utilities.isLineElement(CktElem) && LineLosses) {
+					TotalLineLosses = TotalLineLosses.add(S_Totallosses);  // Accumulate total losses in meter zone
+					if (SeqLosses) {
+						CktElem.getSeqLosses(S_PosSeqLosses, S_NegSeqLosses, S_ZeroSeqLosses);
+						S_PosSeqLosses = S_PosSeqLosses.add(S_NegSeqLosses);  // add line modes together
+						S_PosSeqLosses = S_PosSeqLosses.multiply(0.001);  // convert to kW
+						S_ZeroSeqLosses = S_ZeroSeqLosses.multiply(0.001);
+						TotalLineModeLosses = TotalLineModeLosses.add(S_PosSeqLosses);
+						TotalZeroModeLosses = TotalZeroModeLosses.add(S_ZeroSeqLosses);
+					}
+					/* Separate Line losses into 3- and "1-phase" losses */
+					if (ThreePhaseLosses) {
+						if (CktElem.getNPhases() == 3) {
+							Total3phaseLosses = Total3phaseLosses.add(S_Totallosses);
+						} else {
+							Total1phaseLosses = Total1phaseLosses.add(S_Totallosses);
+						}
+					}
+				} else if (Utilities.isTransformerElement(CktElem) && XfmrLosses) {
+					TotalTransformerLosses = TotalTransformerLosses.add(S_Totallosses); // Accumulate total losses in meter zone
+				}
+
+				if (VBaseLosses) {
+					int vbi = BranchList.getPresentBranch().getVoltBaseIndex();
+					if (vbi >= 0) {
+						VBaseTotalLosses[vbi] = VBaseTotalLosses[vbi]  + S_Totallosses.getReal();
+						if (Utilities.isLineElement(CktElem)) {
+							VBaseLineLosses[vbi] = VBaseLineLosses[vbi] + S_Totallosses.getReal();
+						} else if (Utilities.isTransformerElement(CktElem)) {
+							VBaseLoadLosses[vbi]   = VBaseLoadLosses[vbi]   + S_LoadLosses.getReal();
+							VBaseNoLoadLosses[vbi] = VBaseNoLoadLosses[vbi] + S_NoLoadLosses.getReal();
+						}
+					}
+				}
+
+				// Compute min, max, and average pu voltages for 1st 3 phases  (nodes designated 1, 2, or 3)
+				if (PhaseVoltageReport) {
+					int vbi = BranchList.getPresentBranch().getVoltBaseIndex();
+					int fbr = BranchList.getPresentBranch().getFromBusReference();
+					if (vbi >= 0) {
+						Circuit ckt = Globals.getActiveCircuit();
+						if (ckt.getBuses()[fbr].getkVBase() > 0.0) {
+							for (i = 0; i < ckt.getBuses()[fbr].getNumNodesThisBus(); i++) {
+								j = ckt.getBuses()[fbr].getNum(i);
+								if ((j >= 0) && (j < 3)) {  // TODO Check zero based indexing
+									puV = ckt.getSolution().getNodeV()[ ckt.getBuses()[fbr].getRef(i) ].abs() / ckt.getBuses()[fbr].getkVBase();
+									VphaseMax[jiIndex(j, vbi)] = Math.max(VphaseMax[jiIndex(j, vbi)], puV);
+									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
+									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
+									VPhaseAccumCount[jiIndex(j, vbi)] += 1;  // Keep track of counts for average
+								}
+							}
+						}
+					}
+				}
+			}  // if (Losses)
+
+			CktElem = (PDElement) BranchList.GoForward();
+		}
+
+		/* NOTE: integrate proc automatically sets derivatives array */
+		integrate(EnergyMeter.Reg_LoadEEN, TotalLoad_EEN, Delta_Hrs);
+		integrate(EnergyMeter.Reg_LoadUE , TotalLoad_UE,  Delta_Hrs);
+
+		/* Accumulate losses in appropriate registers */
+		integrate(EnergyMeter.Reg_ZoneLosseskWh,     TotalLosses.getReal(),          Delta_Hrs);
+		integrate(EnergyMeter.Reg_ZoneLosseskvarh,   TotalLosses.getImaginary(),     Delta_Hrs);
+		integrate(EnergyMeter.Reg_LoadLosseskWh,     TotalLoadLosses.getReal(),      Delta_Hrs);
+		integrate(EnergyMeter.Reg_LoadLosseskvarh,   TotalLoadLosses.getImaginary(), Delta_Hrs);
+		integrate(EnergyMeter.Reg_NoLoadLosseskWh,   TotalNoLoadLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.Reg_NoLoadLosseskvarh, TotalNoLoadLosses.getImaginary(),    Delta_Hrs);
+		integrate(EnergyMeter.Reg_LineLosseskWh,     TotalLineLosses.getReal(),      Delta_Hrs);
+		integrate(EnergyMeter.Reg_LineModeLineLoss,  TotalLineModeLosses.getReal(),  Delta_Hrs);
+		integrate(EnergyMeter.Reg_ZeroModeLineLoss,  TotalZeroModeLosses.getReal(),  Delta_Hrs);
+		integrate(EnergyMeter.Reg_3_phaseLineLoss,   Total3phaseLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.Reg_1_phaseLineLoss,   Total1phaseLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.Reg_TransformerLosseskWh,  TotalTransformerLosses.getReal(),  Delta_Hrs);
+
+		for (i = 0; i < MaxVBaseCount; i++) {
+			integrate(EnergyMeter.Reg_VBaseStart + i, VBaseTotalLosses[i],  Delta_Hrs);
+			integrate(EnergyMeter.Reg_VBaseStart + 1 * MaxVBaseCount + i, VBaseLineLosses[i],    Delta_Hrs);
+			integrate(EnergyMeter.Reg_VBaseStart + 2 * MaxVBaseCount + i, VBaseLoadLosses[i],    Delta_Hrs);
+			integrate(EnergyMeter.Reg_VBaseStart + 3 * MaxVBaseCount + i, VBaseNoLoadLosses[i],  Delta_Hrs);
+			integrate(EnergyMeter.Reg_VBaseStart + 4 * MaxVBaseCount + i, VBaseLoad[i],          Delta_Hrs);
+		}
+
+
+		/* -------------------------------------------------------------------------- */
+		/* ---------------   Total Zone Load and Generation ------------------------- */
+		/* -------------------------------------------------------------------------- */
+
+		integrate(EnergyMeter.Reg_ZonekWh,   TotalZonekw,   Delta_Hrs);
+		integrate(EnergyMeter.Reg_Zonekvarh, TotalZonekvar, Delta_Hrs);
+		integrate(EnergyMeter.Reg_GenkWh,    TotalGenkW,    Delta_Hrs);
+		integrate(EnergyMeter.Reg_Genkvarh,  TotalGenkVAr,  Delta_Hrs);
+		GenkVA  = Math.sqrt(Math.pow(TotalGenkVAr, 2)  + Math.pow(TotalGenkW, 2));
+		LoadkVA = Math.sqrt(Math.pow(TotalZonekvar, 2) + Math.pow(TotalZonekw, 2));
+
+		/* -------------------------------------------------------------------------- */
+		/* ---------------   Set Drag Hand Registers  ------------------------------- */
+		/* -------------------------------------------------------------------------- */
+
+		setDragHandRegister(EnergyMeter.Reg_LossesMaxkW,     Math.abs(TotalLosses.getReal()));
+		setDragHandRegister(EnergyMeter.Reg_LossesMaxkvar,   Math.abs(TotalLosses.getImaginary()));
+		setDragHandRegister(EnergyMeter.Reg_MaxLoadLosses,   Math.abs(TotalLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.Reg_MaxNoLoadLosses, Math.abs(TotalNoLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.Reg_ZoneMaxkW,       TotalZonekw);  // Removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.Reg_ZoneMaxkVA,      LoadkVA);
+		/* Max total generator registers */
+		setDragHandRegister(EnergyMeter.Reg_GenMaxkW,        TotalGenkW); // Removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.Reg_GenMaxkVA,       GenkVA);
+
+		/* -------------------------------------------------------------------------- */
+		/* ---------------------   Overload Energy  --------------------------------- */
+		/* -------------------------------------------------------------------------- */
+		/* Overload energy for the entire zone */
+		if (LocalOnly) {
+			ZonekW = S_Local.getReal();
+		} else {
+			ZonekW = TotalZonekw;
+		}
+
+		/* Either the max excess kW of any PD element or the excess over zone limits */
+
+		/* regs 9 and 10 */
+		/* Fixed these formulas 2-7-07 per discussions with Daniel Brooks */
+		if (MaxZonekVA_Norm > 0.0) {
+			if (S_Local_kVA == 0.0) S_Local_kVA = MaxZonekVA_Norm;
+			integrate(EnergyMeter.Reg_OverloadkWhNorm, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Norm / S_Local_kVA))), Delta_Hrs);
+		} else {
+			integrate(EnergyMeter.Reg_OverloadkWhNorm, MaxExcesskWNorm, Delta_Hrs);
+		}
+
+		if (MaxZonekVA_Emerg > 0.0) {
+			if (S_Local_kVA == 0.0) S_Local_kVA = MaxZonekVA_Emerg;
+			integrate(EnergyMeter.Reg_OverloadkWhEmerg, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Emerg / S_Local_kVA))), Delta_Hrs);
+		} else {
+			integrate(EnergyMeter.Reg_OverloadkWhEmerg, MaxExcesskWEmerg,  Delta_Hrs);
+		}
+
+		FirstSampleAfterReset = false;
+		if (Globals.getEnergyMeterClass().isSaveDemandInterval())
+			writeDemandIntervalData();
+	}
+
+	private void totalUpDownstreamCustomers() {
+		int i, Accumulator;
+		CktTreeNode PresentNode;
+		PDElement CktElem;
+
+		if (BranchList == null) {
+			DSSGlobals.getInstance().doSimpleMsg("Meter Zone Lists need to be built. Do Solve or makeBusList first!", 529);
+			return;
+		}
+
+		/* Init totsls and checked flag */
+		CktElem = (PDElement) BranchList.getFirst();
+		while (CktElem != null) {
+			CktElem.setChecked(false);
+			CktElem.setTotalCustomers(0);
+			CktElem = (PDElement) BranchList.GoForward();
+		}
+
+		/* This algorithm could be made more efficient with a sequence list */
+
+		for (i = 0; i < BranchList.getZoneEndsList().getNumEnds(); i++) {
+			/*Busref = */BranchList.getZoneEndsList().Get(i, PresentNode);
+			if (PresentNode != null) {
+				CktElem = PresentNode.getCktObject();
+				if (!CktElem.isChecked()) {  // don't do a zone end element more than once
+					CktElem.setChecked(true);
+					Accumulator = CktElem.getNumCustomers();
+					while (true) {  /* Go back to the source */
+						CktElem.setTotalCustomers( CktElem.getTotalCustomers() + Accumulator );
+						PresentNode = PresentNode.getParent();
+						if (PresentNode == null) break;
+						CktElem = PresentNode.getCktObject();
+						Accumulator = Accumulator + CktElem.getNumCustomers();
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -257,19 +751,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	@Override
 	public void getCurrents(Complex[] Curr) {
-
-	}
-
-	public void resetRegisters() {
-
-	}
-
-	@Override
-	public void takeSample() {
-
-	}
-
-	public void saveRegisters() {
 
 	}
 
@@ -317,16 +798,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	}
 
-	private void integrate(int Reg, double Deriv, double Interval) {
-
-	}
-
 	private void setDragHandRegister(int Reg, double Value) {
 
 	}
 
 	private double accumulateLoad(LoadObj Load, double TotalZonekW,
-			double TotalZonekvar, double TotalLoad_EEN, double TotalLoad_UE) {
+		double TotalZonekvar, double TotalLoad_EEN, double TotalLoad_UE) {
 		return 0.0;
 	}
 
@@ -335,7 +812,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private void calcBusCoordinates(CktTreeNode StartBranch, int FirstCoordRef,
-			int SecondCoordRef, int LineCount) {
+		int SecondCoordRef, int LineCount) {
 
 	}
 
@@ -344,10 +821,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private String makeDIFileName() {
-		return null;
-	}
-
-	private String makeVPhaseReportFileName() {
 		return null;
 	}
 
@@ -360,10 +833,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private void removeFeederObj() {
-
-	}
-
-	private void totalUpDownstreamCustomers() {
 
 	}
 

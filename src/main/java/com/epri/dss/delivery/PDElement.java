@@ -6,7 +6,9 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.meter.MeterElement;
 
 public interface PDElement extends CktElement {
-	
+
+	Complex getExcessKVANorm (int idxTerm);
+
 	Complex getExcessKVAEmerg(int idxTerm);
 
 	double getNormAmps();

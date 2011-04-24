@@ -23,7 +23,6 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
-	private static double Delta_Hrs;
 	// Adjacency lists for PC and PD elements at each bus, built for faster searches
 	private static List<String>[] BusAdjPC; // Also includes shunt PD elements
 	private static List<String>[] BusAdjPD;
