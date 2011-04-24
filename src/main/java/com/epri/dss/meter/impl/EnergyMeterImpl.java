@@ -3,16 +3,22 @@ package com.epri.dss.meter.impl;
 import java.io.File;
 import java.util.List;
 
+import com.epri.dss.common.Circuit;
+import com.epri.dss.common.CktElement;
+import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.impl.SwtControlObjImpl;
 import com.epri.dss.conversion.Generator;
+import com.epri.dss.conversion.PCElement;
+import com.epri.dss.delivery.PDElement;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.SystemMeter;
 import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
@@ -270,29 +276,190 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		return Result;
 	}
 
+	protected int makeLike(String EnergyMeterName) {
+		int Result = 0;
+		/* See IF we can find this EnergyMeter name in the present collection */
+		EnergyMeterObj OtherEnergyMeter = (EnergyMeterObj) find(EnergyMeterName);
+		if (OtherEnergyMeter != null) {
+
+			EnergyMeterObj aem = getActiveEnergyMeterObj();
+
+			aem.setNPhases(OtherEnergyMeter.getNPhases());
+			aem.setNConds(OtherEnergyMeter.getNConds());  // Force reallocation of terminal stuff
+
+			aem.setElementName(OtherEnergyMeter.getElementName());
+			aem.setMeteredElement(OtherEnergyMeter.getMeteredElement());  // Pointer to target circuit element
+			aem.setMeteredTerminal(OtherEnergyMeter.getMeteredTerminal());
+			aem.setExcessFlag(OtherEnergyMeter.isExcessFlag());
+
+			aem.setMaxZonekVA_Norm(OtherEnergyMeter.getMaxZonekVA_Norm());
+			aem.setMaxZonekVA_Emerg(OtherEnergyMeter.getMaxZonekVA_Emerg());
+
+			aem.setDefinedZoneListSize(OtherEnergyMeter.getDefinedZoneListSize());
+			aem.setDefinedZoneList(new String[aem.getDefinedZoneListSize()]);
+			// Copy strings over (actually incr ref count on string)
+			for (int i = 0; i < aem.getDefinedZoneListSize(); i++)
+				aem.getDefinedZoneList()[i] = OtherEnergyMeter.getDefinedZoneList()[i];
+
+			aem.setLocalOnly(OtherEnergyMeter.isLocalOnly());
+			aem.setVoltageUEOnly(OtherEnergyMeter.isVoltageUEOnly());
+
+			/* Boolean Flags */
+			aem.setLosses(OtherEnergyMeter.isLosses());
+			aem.setLineLosses(OtherEnergyMeter.isLineLosses());
+			aem.setXfmrLosses(OtherEnergyMeter.isXfmrLosses());
+			aem.setSeqLosses(OtherEnergyMeter.isSeqLosses());
+			aem.setThreePhaseLosses(OtherEnergyMeter.isThreePhaseLosses());
+			aem.setVBaseLosses(OtherEnergyMeter.isVBaseLosses());
+			aem.setPhaseVoltageReport(OtherEnergyMeter.isPhaseVoltageReport());
+
+			for (int i = 0; i < aem.getParentClass().getNumProperties(); i++)
+				aem.setPropertyValue(i, OtherEnergyMeter.getPropertyValue(i));
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Error in EnergyMeter makeLike: \"" + EnergyMeterName + "\" Not Found.", 521);
+		}
+
+		return Result;
+	}
+
 	public int init(int Handle) {
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement EnergyMeter.init", -1);
 		return 0;
 	}
 
 	public void resetMeterZonesAll() {
+		int i;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		if (ckt.getEnergyMeters().size() == 0)
+			return;
+
+		// Initialize the checked flag for all circuit elements.
+		for (CktElement pCktElement : ckt.getCktElements()) {
+			pCktElement.setChecked(false);
+			pCktElement.setIsIsolated(true);
+			for (i = 0; i < pCktElement.getNTerms(); i++)
+				pCktElement.getTerminals()[i].setChecked(false);
+		}
+
+		/* Clear some things that will be set by the meter zone */
+		for (PDElement PDElem : ckt.getPDElements()) {
+			PDElem.setMeterObj(null);
+			PDElem.setSensorObj(null);
+			PDElem.setParentPDElement(null);
+		}
+
+		for (PCElement PCElem : ckt.getPCElements()) {
+			PCElem.setMeterObj(null);
+			PCElem.setSensorObj(null);
+		}
+
+		// Set up the bus adjacency lists for faster searches to build meter zone lists.
+		CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+
+		/* Set HasMeter flag for all cktElements */
+		setHasMeterFlag();
+		DSSGlobals.getInstance().getSensorClass().setHasSensorFlag();  // Set all sensor branch flags, too.
+
+		// Initialise the checked flag for all buses
+		for (i = 0; i < ckt.getNumBuses(); i++)
+			ckt.getBuses()[i].setBusChecked(false);
+
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
+			if (pMeter.isEnabled())
+				pMeter.makeMeterZoneLists();
+
+		CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
-	/* Reset all meters in active circuit to zero */
+	/**
+	 * Reset all meters in active circuit to zero.
+	 */
 	@Override
 	public void resetAll() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
+		if (Globals.isDIFilesAreOpen())
+			closeAllDIFiles();
+
+		if (SaveDemandInterval) {
+
+			/* Make directories to save data */
+			File dir = new File(ckt.getCaseName());
+			if (!dir.exists()) {
+				try {
+					dir.mkdir();
+				} catch (Exception e) {
+					Globals.doSimpleMsg("Error making directory: \""+ckt.getCaseName()+"\". " + e.getMessage(), 522);
+				}
+			}
+			DI_Dir = ckt.getCaseName() + "/DI_yr_" + String.valueOf(ckt.getSolution().getYear()).trim();
+			dir = new File(DI_Dir);
+			if (!dir.exists()) {
+				try {
+					dir.mkdir();
+				} catch (Exception e) {
+					Globals.doSimpleMsg("Error making Demand Interval Directory: \""+DI_Dir+"\". " + e.getMessage(), 523);
+				}
+			}
+
+			createFDI_Totals();
+			DI_Totals.close();
+		}
+
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
+			pMeter.resetRegisters();
+
+		SystemMeter.reset();
+
+		// Reset generator objects, too
+		GeneratorClass.resetRegistersAll();
+		Globals.getStorageClass().resetRegistersAll();
 	}
 
-	/* Force all meters in active circuit to sample */
+	/**
+	 * Force all meters in active circuit to sample.
+	 */
 	@Override
 	public void sampleAll() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
+			if (pMeter.isEnabled())
+				pMeter.takeSample();
+
+		SystemMeter.takeSample();
+
+		if (SaveDemandInterval) {  /* Write totals demand interval file */
+			DI_Totals.write(String.format("%-.6g ", ckt.getSolution().getDblHour()));
+			for (int i = 0; i < NumEMRegisters; i++)
+				DI_Totals.write(String.format(", %-.6g", DI_RegisterTotals[i]));
+			DI_Totals.println();
+			clearDI_Totals();
+			if (OverLoadFileIsOpen) writeOverloadReport();
+			if (VoltageFileIsOpen) writeVoltageReport();
+		}
+
+		// Sample generator and storage objects, too
+		GeneratorClass.sampleAll();
+		Globals.getStorageClass().sampleAll();
 	}
 
+	/**
+	 * Force all EnergyMeters in the circuit to take a sample.
+	 */
 	@Override
 	public void saveAll() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
+			if (pMeter.isEnabled())
+				pMeter.saveRegisters();
+
+		SystemMeter.save();
 	}
 
 	public void appendAllDIFiles() {
@@ -361,10 +528,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	public boolean isDIVerbose() {
 		return DI_Verbose;
-	}
-
-	protected int makeLike(String EnergyMeterName) {
-		return 0;
 	}
 
 	protected void setHasMeterFlag() {
