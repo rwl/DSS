@@ -5,9 +5,12 @@ import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
+import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.SystemMeter;
 
 public class SystemMeterImpl implements SystemMeter {
+
+	private static double[] RegisterArray = new double[EnergyMeter.NumEMRegisters];
 
 	private double kWh, dkWh,
 		kvarh, dkvarh,
