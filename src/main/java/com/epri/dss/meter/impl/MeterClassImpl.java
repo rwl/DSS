@@ -1,52 +1,67 @@
 package com.epri.dss.meter.impl;
 
 import com.epri.dss.common.impl.CktElementClassImpl;
+import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSClassImpl;
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.meter.MeterClass;
 
 public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 
-	private int numMeterClassProps;
+	private int NumMeterClassProps;
 
 	public MeterClassImpl() {
-		// TODO Auto-generated constructor stub
+		super();
+		this.NumMeterClassProps = 0;
+		this.DSSClassType = DSSClassDefs.METER_ELEMENT;
 	}
 
-	public int getNumMeterClassProps() {
-		return numMeterClassProps;
+	protected void countProperties() {
+		NumProperties = NumProperties + NumMeterClassProps;
+		super.countProperties();
 	}
 
-	public void setNumMeterClassProps(int numMeterClassProps) {
-		this.numMeterClassProps = numMeterClassProps;
+	protected void defineProperties() {
+		ActiveProperty = ActiveProperty + NumMeterClassProps;
+		super.defineProperties();
 	}
 
 	protected int classEdit(Object ActiveMeterObj, int ParamPointer) {
+
+		if (ParamPointer > 0)
+			super.classEdit(ActiveMeterObj, ParamPointer - NumMeterClassProps);
+
 		return 0;
 	}
 
 	protected void classMakeLike(Object OtherObj) {
-
-	}
-
-	protected void countProperties() {
-
-	}
-
-	protected void defineProperties() {
-
+		new MeterElementImpl((DSSClass) OtherObj);
 	}
 
 	public void resetAll() {
-
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getName(), 760);
 	}
 
-	/* Force all monitors to take a sample */
+	/**
+	 * Force all monitors to take a sample.
+	 */
 	public void sampleAll() {
-
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getName(), 761);
 	}
 
-	/* Force all monitors to save their buffers to disk */
+	/**
+	 * Force all monitors to save their buffers to disk.
+	 */
 	public void saveAll() {
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getName(), 762);
+	}
 
+	public int getNumMeterClassProps() {
+		return NumMeterClassProps;
+	}
+
+	public void setNumMeterClassProps(int numMeterClassProps) {
+		this.NumMeterClassProps = numMeterClassProps;
 	}
 
 }

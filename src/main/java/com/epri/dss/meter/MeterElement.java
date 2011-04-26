@@ -11,9 +11,9 @@ public interface MeterElement extends CktElement {
 
 	public void setElementName(String elementName);
 
-	public DSSCktElement getMeteredElement();
+	public CktElement getMeteredElement();
 
-	public void setMeteredElement(DSSCktElement meteredElement);
+	public void setMeteredElement(CktElement meteredElement);
 
 	public int getMeteredTerminal();
 
