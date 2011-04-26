@@ -3,25 +3,34 @@ package com.epri.dss.meter.impl;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.List;
 
+import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.LineUnits;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
+import com.epri.dss.common.CktElement;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
+import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.shared.CktTree;
-import com.epri.dss.shared.impl.CktTreeImpl.CktTreeNode;
+import com.epri.dss.shared.CktTreeNode;
 
 public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterObj {
 
@@ -308,25 +317,25 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		String CSVName = "MTR_" + getName() + ".csv";
 
 		try {
-		F = new File(Globals.getDSSDataDirectory() + CSVName);
-		FStream = new FileWriter(F, false);
-		FBuffer = new BufferedWriter(FStream);
+			F = new File(Globals.getDSSDataDirectory() + CSVName);
+			FStream = new FileWriter(F, false);
+			FBuffer = new BufferedWriter(FStream);
 
-		Globals.setGlobalResult(CSVName);
+			Globals.setGlobalResult(CSVName);
 
-		FBuffer.write("Year, " + Globals.getActiveCircuit().getSolution().getYear() + ",");
-		FBuffer.newLine();
-
-		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
-			FBuffer.write("\"" + RegisterNames[i] + "\"," + Registers[i]);
+			FBuffer.write("Year, " + Globals.getActiveCircuit().getSolution().getYear() + ",");
 			FBuffer.newLine();
-		}
 
-		FBuffer.close();
-		FStream.close();
+			for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
+				FBuffer.write("\"" + RegisterNames[i] + "\"," + Registers[i]);
+				FBuffer.newLine();
+			}
+
+			FBuffer.close();
+			FStream.close();
 		} catch (Exception e) {
-		Globals.doSimpleMsg("Error opening Meter File \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 526);
-		return;
+			Globals.doSimpleMsg("Error opening Meter File \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 526);
+			return;
 		}
 	}
 
@@ -357,9 +366,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		int i, j;
 
 		Complex S_Local,
-		S_Totallosses,
-		S_LoadLosses,
-		S_NoLoadLosses,
+		S_Totallosses = null,
+		S_LoadLosses = null,
+		S_NoLoadLosses = null,
 		TotalLoadLosses,
 		TotalNoLoadLosses,
 		TotalLineLosses,
@@ -377,8 +386,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		double MaxExcesskWNorm,
 		MaxExcesskWEmerg,
-		EEN,
-		UE,
+		EEN = 0,
+		UE = 0,
 		ZonekW,
 		TotalZonekw,
 		TotalZonekvar,
@@ -390,9 +399,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		GenkVA,
 		S_Local_kVA,
 		Load_kW;
-		Complex S_PosSeqLosses;
-		Complex S_ZeroSeqLosses;
-		Complex S_NegSeqLosses;
+		Complex S_PosSeqLosses = null;
+		Complex S_ZeroSeqLosses = null;
+		Complex S_NegSeqLosses = null;
 
 		double puV;
 
@@ -707,7 +716,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	private void totalUpDownstreamCustomers() {
 		int i, Accumulator;
-		CktTreeNode PresentNode;
+		CktTreeNode PresentNode = null;
 		PDElement CktElem;
 
 		if (BranchList == null) {
@@ -728,7 +737,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		for (i = 0; i < BranchList.getZoneEndsList().getNumEnds(); i++) {
 			/*Busref = */BranchList.getZoneEndsList().Get(i, PresentNode);
 			if (PresentNode != null) {
-				CktElem = PresentNode.getCktObject();
+				CktElem = (PDElement) PresentNode.getCktObject();
 				if (!CktElem.isChecked()) {  // don't do a zone end element more than once
 					CktElem.setChecked(true);
 					Accumulator = CktElem.getNumCustomers();
@@ -736,7 +745,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						CktElem.setTotalCustomers( CktElem.getTotalCustomers() + Accumulator );
 						PresentNode = PresentNode.getParent();
 						if (PresentNode == null) break;
-						CktElem = PresentNode.getCktObject();
+						CktElem = (PDElement) PresentNode.getCktObject();
 						Accumulator = Accumulator + CktElem.getNumCustomers();
 					}
 				}
@@ -744,80 +753,810 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	/**
+	 * This gets fired off whenever the buslists are rebuilt.
+	 * Must be updated whenever there is a change in the circuit.
+	 */
+	public void makeMeterZoneLists() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
+		int TestBusNum, ZoneListCounter;
+		int j, iTerm, iPC, iPD;
+		DSSCktElement ActiveBranch;
+		PDElement TestElement;
+		PCElement pC;
+		LoadObj pLoad;
+		boolean IsFeederEnd;
+		String S;
+		List<String> adjLst;
+
+		ZoneListCounter = 0;
+		VBaseCount      = 0;  /* Build the voltage base list over in case a base added or deleted */
+		for (j = 0; j < MaxVBaseCount; j++)
+			VBaseList[j] = 0.0;
+
+
+		BranchList = new CktTreeImpl();  /* Instantiates ZoneEndsList, too */
+
+		// Get Started
+		if (MeteredElement != null) {
+			BranchList.setNew(MeteredElement);
+		} else {
+			Globals.doSimpleMsg("Metered Element for EnergyMeter "+getName()+" not defined.", 527);
+			return;
+		}
+
+		/* Initialize SensorObj property of the first branch to this MeterElement object.
+		 * Before starting, all sensorObj definitions are cleared in PCElements and PDElements. The
+		 * SensorObj property is passed down to the Load objects for LoadAllocation and state estimation.
+		 */
+		if (MeteredElement instanceof PDElement) {
+			((PDElement) MeteredElement).setSensorObj(this);
+		} else if (MeteredElement instanceof PCElement) {
+			((PCElement) MeteredElement).setSensorObj(this);
+		}
+
+		if (MeteredElement instanceof PDElement) {
+			((PDElement) MeteredElement).setMeterObj(this);
+		} else if (MeteredElement instanceof PCElement) {
+			((PCElement) MeteredElement).setMeterObj(this);
+		}
+
+		MeteredElement.getTerminals()[MeteredTerminal].setChecked(true);
+		CktTreeNode pb = BranchList.getPresentBranch();
+		// This bus is the head of the feeder; do not mark as radial bus
+		pb.setFromBusReference( MeteredElement.getTerminals()[MeteredTerminal].getBusRef() );
+		Globals.getActiveCircuit().getBuses()[pb.getFromBusReference()].setDistFromMeter(0.0);
+		pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
+		pb.setFromTerminal(MeteredTerminal);
+		if (MeteredElement instanceof PDElement)
+			((PDElement) MeteredElement).setFromTerminal(MeteredTerminal);
+
+		// Check off this element so we don't use it again
+		MeteredElement.setChecked(true);
+		MeteredElement.setIsIsolated(false);
+
+		// Now start looking for other branches
+		// Finds any branch connected to the TestBranch and adds it to the list
+		// Goes until end of circuit, another energy meter, an open terminal, or disabled device.
+		ActiveBranch = MeteredElement;
+		while (ActiveBranch != null) {
+			pb = BranchList.getPresentBranch();
+			pb.setIsLoopedHere(false);
+			pb.setIsParallel(false);
+			pb.setIsDangling(true);  // Unless we find something connected to it
+			pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
+
+			((PDElement) ActiveBranch).setNumCustomers(0);  // Init counter
+
+			for (iTerm = 0; iTerm < ActiveBranch.getNTerms(); iTerm++) {
+				if (!ActiveBranch.getTerminals()[iTerm].isChecked()) {
+					// Now find all loads and generators connected to the bus on this end of branch
+					// attach them as generic objects to cktTree node.
+					TestBusNum = ActiveBranch.getTerminals()[iTerm].getBusRef();
+					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // Add this as a "to" bus reference
+					if (Utilities.isLineElement(ActiveBranch)) {  // Convert to consistent units (km)
+						ckt.getBuses()[TestBusNum].setDistFromMeter( ckt.getBuses()[ BranchList.getPresentBranch().getFromBusReference() ].getDistFromMeter()
+								+ ((LineObj) ActiveBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) ActiveBranch).getLengthUnits(), LineUnits.UNITS_KM) );
+					} else {
+						ckt.getBuses()[TestBusNum].setDistFromMeter( ckt.getBuses()[BranchList.getPresentBranch().getFromBusReference()].getDistFromMeter() );
+					}
+
+					adjLst = EnergyMeterImpl.BusAdjPC[TestBusNum];
+					for (iPC = 0; iPC < adjLst.size(); iPC++) {
+						pC = adjLst[iPC];
+						if (pC.isChecked()) continue;  // skip ones we already checked
+						BranchList.getPresentBranch().setIsDangling(false);  // Something is connected here
+						// Is this a load or a generator or a Capacitor or reactor?
+						if (((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT)
+								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT)
+								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT)
+								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.REACTOR_ELEMENT)) {
+
+							BranchList.setNewObject(pC);
+							pC.setChecked(true);  // So we don't pick this element up again
+							pC.setIsIsolated(false);
+							pC.setActiveTerminalIdx(1);  // TODO Check zero based indexing
+							/* Totalize number of customers if load type */
+							if (pC instanceof LoadObj) {
+								pLoad = (LoadObj) pC;
+								((PDElement) ActiveBranch).setNumCustomers( ((PDElement) ActiveBranch).getNumCustomers() + pLoad.getNumCustomers() );
+							}
+							/* If object does not have a sensor attached, it acquires the sensor of its parent branch */
+							if (!pC.hasSensorObj())
+								pC.setSensorObj( ((PDElement) ActiveBranch).getSensorObj() );
+							pC.setMeterObj(this);
+						}
+					}
+
+					// Now find all branches connected to this bus that we havent found already
+					// Do not include in this zone if branch has open terminals or has another meter
+
+					if (DefinedZoneListSize == 0) {  // Search tree for connected branches (default)
+						IsFeederEnd = true;
+						adjLst = EnergyMeterImpl.BusAdjPD[TestBusNum];
+						for (iPD = 0; iPD < adjLst.size(); iPD++) {
+							TestElement = adjLst[iPD];  // Only enabled objects are in this list
+							// See resetMeterZonesAll()
+							if (!(TestElement == ActiveBranch)) {  // Skip self
+								if (!TestElement.hasEnergyMeter()) {  // Stop at other meters  so zones don't interfere
+									for (j = 0; j < TestElement.getNTerms(); j++) {  // Check each terminal
+										if (TestBusNum == TestElement.getTerminals()[j].getBusRef()) {
+											BranchList.getPresentBranch().setIsDangling(false);  // We found something it was connected to
+											/* Check for loops and parallel branches and mark them */
+											if (TestElement.isChecked()) {  /* This branch is on some meter's list already */
+												BranchList.getPresentBranch().setIsLoopedHere(true);  /* It's a loop */
+												BranchList.getPresentBranch().setLoopLineObj(TestElement);
+												if (Utilities.isLineElement(ActiveBranch) && Utilities.isLineElement(TestElement))
+													if (Utilities.checkParallel(ActiveBranch, TestElement))
+														BranchList.getPresentBranch().setIsParallel(true);  /* It's paralleled with another line */
+											} else {  // Push testElement onto stack and set properties
+												IsFeederEnd = false;  // for interpolation
+												BranchList.addNewChild(TestElement, TestBusNum, j);  // Add new child to the branchlist
+												TestElement.getTerminals()[j].setChecked(true);
+												TestElement.setFromTerminal(j);
+												TestElement.setChecked(true);
+												TestElement.setIsIsolated(false);
+												/* Branch inherits sensor of upline branch if it doesn't have its own */
+												if (!HasSensorObj)
+													TestElement.setSensorObj( ((PDElement) ActiveBranch).getSensorObj() );
+												TestElement.setMeterObj(this);   // Set meterobj to this meter
+												TestElement.setParentPDElement( (PDElement) ActiveBranch );  // record the parent so we can easily back up for reconductoring, etc.
+												break;
+											}
+										}  /* if TestBusNum */
+									}  /* for terminals */
+								}
+							}
+						}  /* for iPD */
+						if (IsFeederEnd)
+							BranchList.getZoneEndsList().Add(BranchList.getPresentBranch(), TestBusNum);
+						/* This is an end of the feeder and testbusnum is the end bus */
+					} else {  // Zone is manually specified; Just add next element in list as a child
+						ZoneListCounter += 1;
+						while (ZoneListCounter <= DefinedZoneListSize) {
+							if (ckt.setElementActive(DefinedZoneList[ZoneListCounter]) == 0) {
+								ZoneListCounter += 1;  // Not found. Let's search for another
+							} else {
+								TestElement = (PDElement) ckt.getActiveCktElement();
+								if (!TestElement.isEnabled()) {
+									ZoneListCounter += 1;  // Lets ignore disabled devices
+								} else {
+									if ((TestElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PD_ELEMENT) {
+										ZoneListCounter += 1;  // Lets ignore non-PD elements
+									} else {
+										BranchList.addNewChild(TestElement, 0, 0);  // Add it as a child to the previous element
+									}
+									break;  // Can't do reductions if manually spec'd
+								}
+							}
+						}  // while
+					}
+				}
+			}  /* for iTerm */
+			ActiveBranch = (DSSCktElement) BranchList.GoForward();  // Sets present node
+		}
+
+		totalUpDownstreamCustomers();
+
+		if (HasFeeder)
+			FeederObj.initializeFeeder(BranchList);   // Synchronise the feeder definition
+
+		assignVoltBaseRegisterNames();
 	}
 
 	@Override
 	public void getCurrents(Complex[] Curr) {
-
+		for (int i = 0; i < nConds; i++)
+			Curr[i] = Complex.ZERO;
 	}
 
-	public void makeMeterZoneLists() {
-
+	@Override
+	public void getInjCurrents(Complex[] Curr) {
+		for (int i = 0; i < nConds; i++)
+			Curr[i] = Complex.ZERO;
 	}
 
 	public void zoneDump() {
+		File F;
+		FileWriter FStream;
+		BufferedWriter FBuffer;
+		PDElement PDElem;
+		CktElement LoadElem;
 
-	}
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
-	public void interpolateCoordinates() {
+		String CSVName = "Zone_" + getName() + ".csv";
 
-	}
+		try {
+			F = new File(Globals.getDSSDataDirectory(), CSVName);
+			FStream = new FileWriter(F, false);
+			FBuffer = new BufferedWriter(FStream);
 
-	public void enableFeeder() {
+			Globals.setGlobalResult(CSVName);
 
-	}
+			FBuffer.write("Level, Branch, Bus1, Bus2, Distance");
+			FBuffer.newLine();
 
-	public void allocateLoad() {
+			if (BranchList != null) {
+				PDElem = (PDElement) BranchList.getFirst();
+				while (PDElem != null) {
+					FBuffer.write(String.format("%d, %s.%s, %s, %s, %10.4f",
+							BranchList.getLevel(), PDElem.getParentClass().getName(), PDElem.getName(),
+							PDElem.getFirstBus(), PDElem.getNextBus(),
+							/*BusList.get(BranchList.getPresentBranch().getToBusReference()),*/
+							ckt.getBuses()[BranchList.getPresentBranch().getToBusReference()].getDistFromMeter()));
+					FBuffer.newLine();
+					LoadElem = (CktElement) BranchList.getFirstObject();
+					while (LoadElem != null) {
+						FBuffer.write("-1, " + String.format("%s.%s, %s", LoadElem.getParentClass().getName(), LoadElem.getName(), LoadElem.getFirstBus()/*ckt.getBusList().get(BranchList.getPresentBranch().getToBusReference())*/));
+						FBuffer.newLine();
+						LoadElem = (CktElement) BranchList.getNextObject();
+					}
+					PDElem = (PDElement) BranchList.GoForward();
+				}
+			}
 
-	}
-
-	/* Reduce Zone by eliminating buses and merging lines */
-	public void reduceZone() {
-
-	}
-
-	public void saveZone(String dirname) {
-
-	}
-
-	@Override
-	public String getPropertyValue(int Index) {
-		return null;
-	}
-
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
-
+			FBuffer.close();
+			FStream.close();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening File \"" + CSVName + "\": " + e.getMessage(), 528);
+		}
 	}
 
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
+		int i;
+		PDElement PDElem;
+		CktElement LoadElem;
 
+		super.dumpProperties(F, Complete);
+
+		for (i = 0; i < getParentClass().getNumProperties(); i++) {
+			switch (i) {
+			case 3:  // option
+				F.print("~ " + getParentClass().getPropertyName()[i] + "=(");
+				if (ExcessFlag) {
+					F.print("E,");
+				} else {
+					F.print("T,");
+				}
+				if (ZoneIsRadial) {
+					F.print(" R,");
+				} else {
+					F.print(" M,");
+				}
+				if (VoltageUEOnly) {
+					F.print(" V");
+				} else {
+					F.print(" C");
+				}
+				F.println(")");
+			case 6:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+			default:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			}
+		}
+
+		if (Complete) {
+			F.println("Registers");
+			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				F.println("\"" + RegisterNames[i] + "\" = " + Registers[i]);
+			F.println();
+
+			F.println("Branch List:");
+			if (BranchList != null) {
+				PDElem = (PDElement) BranchList.getFirst();
+				while (PDElem != null) {
+					F.println("Circuit Element = " + PDElem.getName());
+					LoadElem = (CktElement) BranchList.getFirstObject();
+					while (LoadElem != null) {
+						F.println("   Shunt Element = " + LoadElem.getParentClass().getName() + "." + LoadElem.getName());
+						LoadElem = (CktElement) BranchList.getNextObject();
+					}
+					PDElem = (PDElement) BranchList.GoForward();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Add to VoltBase list if not already there and return index.
+	 */
+	private int addToVoltBaseList(int BusRef) {
+		Bus bus = DSSGlobals.getInstance().getActiveCircuit().getBuses()[BusRef];
+
+		for (int i = 0; i < VBaseCount; i++) {
+			if (Math.abs(1.0 - bus.getkVBase() / VBaseList[i]) < 0.01)  // < 1% difference
+				return i;
+		}
+
+		if ((bus.getkVBase() > 0.0) && (VBaseCount < MaxVBaseCount)) {
+			VBaseCount += 1;
+			VBaseList[VBaseCount] = bus.getkVBase();
+			return VBaseCount;
+		} else {
+			return 0;
+		}
+	}
+
+	public void allocateLoad() {
+		int ConnectedPhase;
+		PDElement CktElem;
+		LoadObj LoadElem;
+
+		/* Now go through the meter's zone and adjust the loads.
+		 *
+		 * While the AllocationFactor property is adjusted for all loads, it will only
+		 * have an effect on loads defined with either the XFKVA property or the
+		 * kWh property.
+		 *
+		 * Loads have a SensorObj property that points to its upstream sensor that has the adjustments for
+		 * the allocation factors.  This is established in the MakeMeterZoneLists proc in this Unit.
+		 *
+		 * Sensors consist of EnergyMeters, which drive the load allocation process and Sensor objects that
+		 * are simply voltage and current measuring points.  A Sensor may be attached to a line or transformer
+		 * or it may be connected directly to a load.
+		 */
+
+		CktElem = (PDElement) BranchList.getFirst();
+		while (CktElem != null) {
+			LoadElem = (LoadObj) BranchList.getFirstObject();
+			while (LoadElem != null) {
+				if ((LoadElem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {  // only for loads not other shunts
+					switch (LoadElem.getNPhases()) {
+					/* For single phase loads, allocate based on phase factor, else average factor */
+					case 1:
+						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].NodeNum;
+						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // Restrict to phases 1..3
+							LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * LoadElem.getSensorObj().getPhsAllocationFactor()[ConnectedPhase] );
+					default:
+						LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * AvgAllocFactor);
+					}
+				}
+				LoadElem = (LoadObj) BranchList.getNextObject();  /* Next load at this bus */
+			}
+			CktElem = (PDElement) BranchList.GoForward();  /* Go on down the tree */
+		}
+	}
+
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+		String S;
+
+		setPropertyValue(0, ""); // "element";
+		setPropertyValue(1, "1"); // "terminal";
+		setPropertyValue(2, "clear"); // "action";
+		setPropertyValue(3, "(E, R, C)"); // "option";
+		setPropertyValue(4, "0.0"); // "kWnormal";
+		setPropertyValue(5, "0.0"); // "kwEmerg";
+		setPropertyValue(6, "(400, 400, 400)"); // "PeakCurrent";
+		setPropertyValue(7, ""); // ZoneList
+		setPropertyValue(8, "No");
+		/* Define mask as 1 for all registers */
+		S = "[";
+		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			S = S + "1 ";
+		setPropertyValue(9, S + "]");
+		setPropertyValue(10, "Yes");
+		setPropertyValue(11, "Yes");
+		setPropertyValue(12, "Yes");
+		setPropertyValue(13, "Yes");
+		setPropertyValue(14, "Yes");  // segregate losses by voltage base
+		setPropertyValue(15, "Yes");
+		setPropertyValue(16, "No");
+
+		super.initPropertyValues(EnergyMeter.NumPropsThisClass);
+	}
+
+	private void accumulateGen(GeneratorObj pGen, double TotalZonekW, double TotalZonekvar) {
+		//pGen.setActiveTerminalIdx(1);
+		Complex S = pGen.getPower(1).multiply(0.001).negate();  // TODO Check zero based indexing
+		TotalZonekW   = TotalZonekW   + S.getReal();
+		TotalZonekvar = TotalZonekvar + S.getImaginary();
+	}
+
+	private double accumulateLoad(LoadObj pLoad, double TotalZonekW, double TotalZonekvar, double TotalLoad_EEN, double TotalLoad_UE) {
+
+		Complex S_Load;
+		double kW_Load, Result;
+		double Load_EEN, Load_UE;
+
+		//pLoad.setActiveTerminalIdx(1);
+		S_Load  = pLoad.getPower(1).multiply(0.001);   // Get Power in Terminal 1   TODO Check zero based indexing
+		kW_Load = S_Load.getReal();
+		Result  = kW_Load;
+
+		/* Accumulate load in zone */
+		TotalZonekW   = TotalZonekW   + kW_Load;
+		TotalZonekvar = TotalZonekvar + S_Load.getImaginary();
+
+		/* always integrate even if the value is 0.0
+		 * otherwise the Integrate function is not correct
+		 */
+		/* Invoking the ExceedsNormal and Unserved Properties causes the factors to be computed */
+		if (ExcessFlag) {  // Return Excess load as EEN/UE
+			if (pLoad.getExceedsNormal()) {
+				Load_EEN = kW_Load * pLoad.getEEN_Factor();
+			} else {
+				Load_EEN = 0.0;
+			}
+			if (pLoad.getUnserved()) {
+				Load_UE  = kW_Load * pLoad.getUE_Factor();
+			} else {
+				Load_UE = 0.0;
+			}
+		} else {  // Return TOTAL load as EEN/UE
+			if (pLoad.getExceedsNormal()) {
+				Load_EEN = kW_Load;
+			} else {
+				Load_EEN = 0.0;
+			}
+			if (pLoad.getUnserved()) {
+				Load_UE = kW_Load;
+			} else {
+				Load_UE = 0.0;
+			}
+		}
+
+		TotalLoad_EEN = TotalLoad_EEN + Load_EEN;
+		TotalLoad_UE  = TotalLoad_UE  + Load_UE;
+
+		return Result;
+	}
+
+	/**
+	 * Reduce Zone by eliminating buses and merging lines.
+	 */
+	public void reduceZone() {
+		// Make  sure zone list is built
+		if (BranchList == null) makeMeterZoneLists();
+
+		switch (DSSGlobals.getInstance().getActiveCircuit().getReductionStrategy()) {
+		case rsStubs:         ReduceAlgs.doReduceStubs(BranchList);
+		case rsTapEnds:       ReduceAlgs.doReduceTapEnds (BranchList);
+		case rsMergeParallel: ReduceAlgs.doMergeParallelLines(BranchList);
+		case rsDangling:      ReduceAlgs.doReduceDangling(BranchList);
+		case rsBreakLoop:     ReduceAlgs.doBreakLoops(BranchList);
+		case rsSwitches:      ReduceAlgs.doReduceSwitches(BranchList);
+		default:
+			ReduceAlgs.doReduceDefault(BranchList);
+		}
+
+		// Resynchronize with Feeders
+		if (HasFeeder) FeederObj.initializeFeeder(BranchList);
+	}
+
+	/**
+	 * Start at the ends of the zone and work toward the start
+	 * interpolating between known coordinates.
+	 */
+	public void interpolateCoordinates() {
+		int i, BusRef, FirstCoordRef, SecondCoordRef, LineCount;
+		CktTreeNode StartNode, PresentNode = null;
+		CktElement CktElem;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		if (BranchList == null) {
+			Globals.doSimpleMsg("Meter Zone Lists need to be built. Do Solve or Makebuslist first!", 529);
+			return;
+		}
+
+		for (i = 0; i < BranchList.getZoneEndsList().getNumEnds(); i++) {
+			BusRef = BranchList.getZoneEndsList().Get(i, PresentNode);
+
+			FirstCoordRef = BusRef;
+			SecondCoordRef = FirstCoordRef;  /* so compiler won't issue warning */
+			/* Find a bus with a coordinate */
+			if (!ckt.getBuses()[BusRef].isCoordDefined()) {
+				while (!ckt.getBuses()[PresentNode.getFromBusReference()].isCoordDefined()) {
+					PresentNode = PresentNode.getParent();
+					if (PresentNode == null) break;
+				}
+				if (PresentNode != null) FirstCoordRef = PresentNode.getFromBusReference();
+			}
+
+			while (PresentNode != null) {
+				/* Back up until we find another Coord defined */
+				LineCount = 0;  /* number of line segments in this segment */
+				StartNode = PresentNode;
+				CktElem   = (CktElement) PresentNode.getCktObject();
+				if (FirstCoordRef != PresentNode.getFromBusReference()) {
+					/* Handle special case for end branch */
+					if (ckt.getBuses()[PresentNode.getFromBusReference()].isCoordDefined()) {
+						FirstCoordRef = PresentNode.getFromBusReference();
+					} else {
+						LineCount += 1;
+					}
+				}
+
+				while (!ckt.getBuses()[SecondCoordRef].isCoordDefined() && !CktElem.isChecked()) {
+					CktElem.setChecked(true);
+					PresentNode = PresentNode.getParent();
+					if (PresentNode == null) break;
+					CktElem = (CktElement) PresentNode.getCktObject();
+					SecondCoordRef = PresentNode.getFromBusReference();
+					LineCount += 1;
+				}
+
+				if ((PresentNode != null) && (LineCount > 1)) {
+					if (ckt.getBuses()[SecondCoordRef].isCoordDefined()) {
+						calcBusCoordinates(StartNode,  FirstCoordRef, SecondCoordRef, LineCount);
+					} else {
+						break;  /* While - went as far as we could go this way */
+					}
+				}
+
+				FirstCoordRef = SecondCoordRef;
+			}
+
+		}  /* for */
+	}
+
+	private void calcBusCoordinates(CktTreeNode StartBranch, int FirstCoordRef, int SecondCoordRef, int LineCount) {
+
+		double X, Y, Xinc, Yinc;
+
+		if (LineCount == 1) return;  /* Nothing to do! */
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		Xinc = (ckt.getBuses()[FirstCoordRef].getX() - ckt.getBuses()[SecondCoordRef].getX()) / LineCount;
+		Yinc = (ckt.getBuses()[FirstCoordRef].getY() - ckt.getBuses()[SecondCoordRef].getY()) / LineCount;
+
+		X = ckt.getBuses()[FirstCoordRef].getX();
+		Y = ckt.getBuses()[FirstCoordRef].getY();
+
+		/*if (((X < 10.0) && (y < 10.0)) || ((ckt.getBuses()[SecondCoordRef].getX() < 10.0) && (ckt.getBuses()[SecondCoordRef].getY() < 10.0)))
+			X = Y;*/  // Stopping point
+
+		/* Either start with the "to" end of StartNode or the "from" end; */
+		if (FirstCoordRef != StartBranch.getFromBusReference()) {
+			// Start with "to" end
+			X = X - Xinc;
+			Y = Y - Yinc;
+			ckt.getBuses()[StartBranch.getFromBusReference()].setX(X);
+			ckt.getBuses()[StartBranch.getFromBusReference()].setY(Y);
+			ckt.getBuses()[StartBranch.getFromBusReference()].setCoordDefined(true);
+			LineCount -= 1;
+		}
+
+		while (LineCount > 1) {
+			X = X - Xinc;
+			Y = Y - Yinc;
+			StartBranch = StartBranch.getParent();  // back up the tree
+			ckt.getBuses()[StartBranch.getFromBusReference()].setX(X);
+			ckt.getBuses()[StartBranch.getFromBusReference()].setY(Y);
+			ckt.getBuses()[StartBranch.getFromBusReference()].setCoordDefined(true);
+			LineCount -= 1;
+		}
+	}
+
+	@Override
+	public String getPropertyValue(int Index) {
+		String Result;
+
+		switch (Index) {
+		case 3:
+			Result = "(";
+		case 6:
+			Result = "(";
+		default:
+			Result = "";
+		}
+
+		switch (Index) {
+		case 4:  // option
+			if (ExcessFlag) {
+				Result = Result + "E,";
+			} else {
+				Result = Result + "T,";
+			}
+			if (ZoneIsRadial) {
+				Result = Result + " R,";
+			} else {
+				Result = Result + " M,";
+			}
+			if (VoltageUEOnly) {
+				Result = Result + " V";
+			} else {
+				Result = Result + " C";
+			}
+		default:
+			Result = Result + super.getPropertyValue(Index);
+		}
+
+		switch (Index) {
+		case 3:
+			Result = Result + ")";
+		case 6:
+			Result = Result + ")";
+		}
+
+		return Result;
+	}
+
+	public void saveZone(String dirname) {
+		CktElement cktElem, shuntElement;
+		LoadObj LoadElement;
+		File FBranches, FShunts, FLoads, FGens, FCaps;
+		FileWriter FBranchesStream, FShuntsStream, FLoadsStream, FGensStream, FCapsStream;
+		PrintWriter FBranchesBuffer, FShuntsBuffer, FLoadsBuffer, FGensBuffer, FCapsBuffer;
+		int NBranches, NShunts, NLoads, NGens, NCaps;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		/* We are in the directory indicated by dirname */
+
+		/* Run down the zone and write each element into a file */
+
+		if (BranchList != null) {
+			/* Open some files: */
+
+			try {
+				FBranches = new File("Branches.dss");  // Both lines and transformers
+				FBranchesStream = new FileWriter(FBranches, false);
+				FBranchesBuffer = new PrintWriter(FBranchesStream);
+
+				NBranches = 0;
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error creating Branches.dss for Energymeter: " + getName()+". " + e.getMessage(), 530);
+				return;
+			}
+
+			try {
+				FShunts = new File("Shunts.dss");
+				FShuntsStream = new FileWriter(FShunts, false);
+				FShuntsBuffer = new PrintWriter(FShuntsStream);
+
+				NShunts = 0;
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error creating Shunts.dss for Energymeter: " + getName() + ". " + e.getMessage(), 531);
+				return;
+			}
+
+			try {
+				FLoads = new File("Loads.dss");
+				FLoadsStream = new FileWriter(FLoads, false);
+				FLoadsBuffer = new PrintWriter(FLoadsStream);
+
+				NLoads = 0;
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error creating Loads.dss for Energymeter: " + getName() + ". " + e.getMessage(), 532);
+				return;
+			}
+
+			try {
+				FGens = new File("Generators.dss");
+				FGensStream = new FileWriter(FGens, false);
+				FGensBuffer = new PrintWriter(FGensStream);
+
+				NGens = 0;
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error creating Generators.dss for Energymeter: " + getName() + ". " + e.getMessage(), 533);
+				return;
+			}
+
+			try {
+				FCaps = new File("Capacitors.dss");
+				FCapsStream = new FileWriter(FCaps, false);
+				FCapsBuffer = new PrintWriter(FCapsStream);
+				NCaps = 0;
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error creating Generators.dss for Energymeter: " + getName() + ". " + e.getMessage(), 534);
+				return;
+			}
+
+
+			cktElem = (CktElement) BranchList.getFirst();
+			while (cktElem != null) {
+				if (cktElem.isEnabled()) {
+					ckt.setActiveCktElement(cktElem);
+					NBranches += 1;
+					Utilities.writeActiveDSSObject(FBranchesBuffer, "New");     // sets hasBeenSaved(true)
+					if (ckt.getActiveCktElement().hasControl()) {
+						ckt.setActiveCktElement( ckt.getActiveCktElement().getControlElement() );
+						Utilities.writeActiveDSSObject(FBranchesBuffer, "New");  //  regulator control ... also, relays, switch controls
+					}
+
+					shuntElement = (CktElement) BranchList.getFirstObject();
+					while (shuntElement != null) {
+						ckt.setActiveCktElement(shuntElement);
+						if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
+							LoadElement = (LoadObj) shuntElement;
+							if (LoadElement.getHasBeenAllocated()) {
+								/* Manually set the allocation factor so it shows up */
+								Parser.getInstance().setCmdString( "allocationfactor=" + String.format("%-.4g", LoadElement.getAllocationFactor()) );
+								LoadElement.edit();
+							}
+							ckt.setActiveCktElement(shuntElement);  // reset in case edit mangles it
+							NLoads += 1;
+							Utilities.writeActiveDSSObject(FLoadsBuffer, "New");
+						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT) {
+							NGens += 1;
+							Utilities.writeActiveDSSObject(FGensBuffer, "New");
+							if (ckt.getActiveCktElement().hasControl()) {
+								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
+								Utilities.writeActiveDSSObject(FGensBuffer, "New");
+							}
+						} else if ((shuntElement.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT) {
+							NCaps += 1;
+							Utilities.writeActiveDSSObject(FCapsBuffer, "New");
+							if (ckt.getActiveCktElement().hasControl()) {
+								ckt.setActiveCktElement(ckt.getActiveCktElement().getControlElement());
+								Utilities.writeActiveDSSObject(FCapsBuffer, "New");
+							}
+						} else {
+							NShunts += 1;
+							Utilities.writeActiveDSSObject(FShuntsBuffer, "New");
+						}
+						shuntElement = (CktElement) BranchList.getNextObject();
+					}
+				}  /* if enabled */
+				cktElem = (CktElement) BranchList.GoForward();
+			}
+
+			FBranchesBuffer.close();
+			FShuntsBuffer.close();
+			FLoadsBuffer.close();
+			FGensBuffer.close();
+			FCapsBuffer.close();
+
+			try {
+				FBranchesStream.close();
+				FShuntsStream.close();
+				FLoadsStream.close();
+				FGensStream.close();
+				FCapsStream.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			/* If any records were written to the file, record their relative names */
+			if (NBranches > 0) {
+				Globals.getSavedFileList().add(dirname + "/Branches.dss");
+			} else {
+				FBranches.delete();
+			}
+			if (NShunts > 0) {
+				Globals.getSavedFileList().add(dirname + "/Shunts.dss");
+			} else {
+				FShunts.delete();
+			}
+			if (NLoads > 0) {
+				Globals.getSavedFileList().add(dirname + "/Loads.dss");
+			} else {
+				FLoads.delete();
+			}
+			if (NGens > 0) {
+				Globals.getSavedFileList().add(dirname + "/Generators.dss");
+			} else {
+				FGens.delete();
+			}
+			if (NCaps > 0) {
+				Globals.getSavedFileList().add(dirname + "/Capacitors.dss");
+			} else {
+				FCaps.delete();
+			}
+		}
 	}
 
 	private void setDragHandRegister(int Reg, double Value) {
-
+		if (Value > Registers[Reg]) {
+			Registers[Reg]   = Value;
+			Derivatives[Reg] = Value;  // Use this for demand interval data;
+		}
 	}
 
-	private double accumulateLoad(LoadObj Load, double TotalZonekW,
-		double TotalZonekvar, double TotalLoad_EEN, double TotalLoad_UE) {
-		return 0.0;
-	}
+	public void enableFeeder() {
 
-	private void accumulateGen(GeneratorObj Gen, double TotalZonekW, double TotalZonekvar) {
-
-	}
-
-	private void calcBusCoordinates(CktTreeNode StartBranch, int FirstCoordRef,
-		int SecondCoordRef, int LineCount) {
-
-	}
-
-	private int addToVoltBaseList(int BusRef) {
-		return 0;
 	}
 
 	private String makeDIFileName() {

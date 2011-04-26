@@ -224,7 +224,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			case 5:
 				aem.setMaxZonekVA_Emerg(parser.makeDouble());
 			case 6:
-				parser.parseAsVector(nPhases, aem.getSensorCurrent());   // Inits to zero
+				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());   // Inits to zero
 			case 7:
 				Utilities.interpretAndAllocStrArray(Param, aem.getDefinedZoneListSize(), aem.getDefinedZoneList());
 			case 8:
@@ -461,6 +461,59 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		SystemMeter.save();
 	}
 
+	/**
+	 * Set the HasMeter flag for all cktElement;
+	 */
+	protected void setHasMeterFlag() {
+		int i;
+		EnergyMeterObj ThisMeter;
+		DSSCktElement CktElem;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		/* Initialize all to false */
+		for (i = 0; i < ckt.getPDElements().size(); i++) {
+			CktElem = (DSSCktElement) ckt.getPDElements().get(i);
+			CktElem.setHasEnergyMeter(false);
+		}
+
+		for (i = 0; i < ckt.getEnergyMeters().size(); i++) {
+			ThisMeter = ckt.getEnergyMeters().get(i);
+			if (ThisMeter.getMeteredElement() != null)
+				ThisMeter.getMeteredElement().setHasEnergyMeter(true);
+		}
+	}
+
+	private void processOptions(String Opts) {
+		String S1, S2 = " ";
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		Globals.getAuxParser().setCmdString(Opts);  // Load up aux parser
+
+		EnergyMeterObj aem = getActiveEnergyMeterObj();
+
+		/* Loop until no more options found */
+		while (S2.length() > 0) {
+			S1 = Globals.getAuxParser().getNextParam(); // ignore any parameter name  not expecting any
+			S2 = Globals.getAuxParser().makeString().toLowerCase();
+			if (S2.length() > 0)
+				switch (S2.charAt(0)) {
+				case 'e':
+					aem.setExcessFlag(true);
+				case 't':
+					aem.setExcessFlag(false);
+				case 'r':
+					aem.setZoneIsRadial(true);
+				case 'm':
+					aem.setZoneIsRadial(false);
+				case 'c':
+					aem.setVoltageUEOnly(false);
+				case 'v':
+					aem.setVoltageUEOnly(true);
+				}
+		}
+	}
+
 	public void appendAllDIFiles() {
 
 	}
@@ -470,10 +523,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	public void closeAllDIFiles() {
-
-	}
-
-	private void processOptions(String Opts) {
 
 	}
 
@@ -527,10 +576,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	public boolean isDIVerbose() {
 		return DI_Verbose;
-	}
-
-	protected void setHasMeterFlag() {
-
 	}
 
 	public double[] getDI_RegisterTotals() {

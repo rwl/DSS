@@ -395,7 +395,7 @@ public interface Circuit extends NamedObject {
 
 	void setActiveLoadShapeClass(int activeLoadShapeClass);
 
-	void setActiveCktElement(DSSCktElement Value);
+	void setActiveCktElement(CktElement shuntElement);
 
 	DSSCktElement getActiveCktElement();
 

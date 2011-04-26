@@ -1,6 +1,5 @@
 package com.epri.dss.shared;
 
-import com.epri.dss.shared.impl.CktTreeImpl.CktTreeNode;
 import com.epri.dss.shared.impl.CktTreeImpl.ZoneEndsList;
 
 public interface CktTree {
@@ -43,4 +42,5 @@ public interface CktTree {
 
 	/* Get lexical level of present node */
 	int getLevel();
+
 }
