@@ -1729,20 +1729,44 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	private String makeDIFileName() {
-		return DSSGlobals.getInstance().getEnergyMeterClass().getDI_Dir() + "/" + getName() + ".csv";
-	}
-
-	public void enableFeeder() {
-
-	}
-
 	private void makeFeederObj() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
 
+		if (MeteredElement != null) {
+			Globals.getFeederClass().newObject(getName());  // newObject creates only if not existent else inits and desynchs
+			setFeederObj( (FeederObj) Globals.getActiveCircuit().getActiveCktElement() );
+			getFeederObj().setBus(1, MeteredElement.getBus(MeteredTerminal));  // TODO Check zero based indexing
+			getFeederObj().setNPhases(MeteredElement.getNPhases());
+			getFeederObj().setNConds(MeteredElement.getNConds());
+			//getFeederObj().setEnabled(Globals.getActiveCircuit().isRadialSolution());
+		} else {
+			Globals.doSimpleMsg("Error: Attempted to make Feeder Obj without instantiating Metered Element in Energymeter."+getName(), 544);
+		}
 	}
 
 	private void removeFeederObj() {
+		if (FeederObj != null) {
+			FeederObj.setEnabled(false);
+			FeederObj.setCktElementFeederFlags(false);
+		}
+	}
 
+	/**
+	 * HasFeeder has to be true before FeederObj will be re-enabled.
+	 */
+	public void enableFeeder() {
+		if (HasFeeder) {
+			if (FeederObj == null) {
+				makeFeederObj();
+			} else {
+				FeederObj.setEnabled(true);
+			}
+			FeederObj.setCktElementFeederFlags(true);
+		}
+	}
+
+	private String makeDIFileName() {
+		return DSSGlobals.getInstance().getEnergyMeterClass().getDI_Dir() + "/" + getName() + ".csv";
 	}
 
 	public String[] getRegisterNames() {
@@ -1784,6 +1808,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void setTotalsMask(double[] totalsMask) {
 		TotalsMask = totalsMask;
 	}
+
 
 	// FIXME Private members in OpenDSS
 

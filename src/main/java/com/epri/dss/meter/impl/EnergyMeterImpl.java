@@ -771,24 +771,83 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		VoltageFile.newLine();
 	}
 
-	public void openAllDIFiles() {
+	private void interpretRegisterMaskArray(double[] Mask) {
+		int n = Parser.getInstance().parseAsVector(NumEMRegisters, Mask);
+		for (int i = n; i < EnergyMeter.NumEMRegisters; i++)  // TODO Check zero based indexing
+			Mask[i] = 1.0;  // Set the rest to 1
+	}
 
+	/**
+	 * Similar to "append", by creates the files.
+	 */
+	public void openAllDIFiles() {
+		EnergyMeterObj mtr;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (SaveDemandInterval) {
+
+			clearDI_Totals();  // clears accumulator arrays
+
+			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
+				if (pMeter.isEnabled())
+					pMeter.openDemandIntervalFile();
+
+			SystemMeter.openDemandIntervalFile();
+
+			/* Optional Exception Reporting */
+			if (Do_OverloadReport) openOverloadReportFile();
+			if (Do_VoltageExceptionReport) openVoltageReportFile();
+
+			/* Open DI_Totals */
+			try {
+				createDI_Totals();  // TODO Add throws exception
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
+			}
+
+			Globals.setDIFilesAreOpen(true);
+		}
+	}
+
+	private void openOverloadReportFile() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			if (OverLoadFileIsOpen) OverLoadFile.close();
+
+			OverLoadFile = new File(Globals.getEnergyMeterClass().getDI_Dir() + "/DI_Overloads.csv");
+			FileWriter OverLoadStream = new FileWriter(OverLoadFile, false);
+			BufferedWriter OverLoadBuffer = new BufferedWriter(OverLoadStream);  // Add stream and buffer members
+
+			OverLoadFileIsOpen = true;
+			OverLoadBuffer.write("\"Hour\", \"Element\", \"Normal Amps\", \"Emerg Amps\", \"% Normal\", \"% Emerg\", \"kVBase\"");
+			OverLoadBuffer.newLine();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_Overloads.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+		}
+	}
+
+	private void openVoltageReportFile() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			if (VoltageFileIsOpen) VoltageFile.close();
+
+			VoltageFile = new File(Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv");
+			FileWriter VoltageStream = new FileWriter(VoltageFile, false);
+			BufferedWriter VoltageBuffer = new BufferedWriter(VoltageStream);  // Add stream and buffer members
+
+			VoltageFileIsOpen = true;
+			VoltageBuffer.write("\"Hour\", \"Undervoltages\", \"Min Voltage\", \"Overvoltage\", \"Max Voltage\"");
+			VoltageBuffer.newLine();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv\" for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+		}
 	}
 
 	public boolean isSaveDemandInterval() {
 		return SaveDemandInterval;
-	}
-
-	private void openOverloadReportFile() {
-
-	}
-
-	private void openVoltageReportFile() {
-
-	}
-
-	private void interpretRegisterMaskArray(double[] Mask) {
-
 	}
 
 	public boolean isDIVerbose() {

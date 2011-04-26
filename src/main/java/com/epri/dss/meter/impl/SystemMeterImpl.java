@@ -207,6 +207,10 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	private void writeRegisterNames(PrintStream F) {
+		F.print("kWh, kvarh, \"Peak kW\", \"peak kVA\", \"Losses kWh\", \"Losses kvarh\", \"Peak Losses kW\"");
+	}
+
+	private void writeRegisters(PrintStream F) {
 
 		F.printf(", %-g", kWh);
 		F.printf(", %-g", kvarh);
@@ -215,10 +219,6 @@ public class SystemMeterImpl implements SystemMeter {
 		F.printf(", %-g", Losseskwh);
 		F.printf(", %-g", Losseskvarh);
 		F.printf(", %-g", PeakLosseskW);
-	}
-
-	private void writeRegisters(PrintStream F) {
-
 	}
 
 }
