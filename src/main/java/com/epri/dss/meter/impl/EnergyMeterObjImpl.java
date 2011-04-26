@@ -22,6 +22,7 @@ import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.FeederObj;
+import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
@@ -1555,15 +1556,184 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	public void enableFeeder() {
+	protected void closeDemandIntervalFile() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
 
+		try {
+			if (This_Meter_DIFileIsOpen) {
+				DI_File.close();
+				This_Meter_DIFileIsOpen = false;
+				if (VPhaseReportFileIsOpen) VPhase_File.close();
+				VPhaseReportFileIsOpen = false;
+			}
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error Closing Demand Interval file for Meter \""+getName()+"\"", 534);
+		}
+
+		/* Write Registers to Totals File */
+		Globals.getEnergyMeterClass().getMeterTotals().write("\"", getName(), "\"");
+		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			Globals.getEnergyMeterClass().getMeterTotals().write(String.format(", %-g", Registers[i]));
+		Globals.getEnergyMeterClass().getMeterTotals().newLine();
 	}
 
-	private String makeDIFileName() {
-		return null;
+	protected void openDemandIntervalFile() {
+		int i, j;
+		double Vbase;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			if (This_Meter_DIFileIsOpen) closeDemandIntervalFile();
+
+			if (Globals.getEnergyMeterClass().isDIVerbose()) {
+
+				DI_File = new File(makeDIFileName());
+				FileWriter DI_Stream = new FileWriter(DI_File, false);
+				BufferedWriter DI_Buffer = new BufferedWriter(DI_Stream);
+
+				This_Meter_DIFileIsOpen = true;
+				DI_Buffer.write("\"Hour\"");
+				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					DI_Buffer.write(", \"" + RegisterNames[i] + "\"");
+				DI_Buffer.newLine();
+
+				/* Phase Voltage Report, if requested */
+				if (PhaseVoltageReport) {
+					VPhase_File = new File(makeVPhaseReportFileName());
+					FileWriter VPhase_Stream = new FileWriter(VPhase_File, false);
+					BufferedWriter VPhase_Buffer = new BufferedWriter(VPhase_Stream);
+
+					VPhaseReportFileIsOpen = true;
+					VPhase_Buffer.write("\"Hour\"");
+					for (i = 0; i < MaxVBaseCount; i++) {
+						Vbase = VBaseList[i] * DSSGlobals.SQRT3;
+						if (Vbase > 0.0) {
+							for (j = 0; j < 3; j++) {
+								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Max", Vbase, j));
+								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Min", Vbase, j));
+								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Avg", Vbase, j));
+							}
+						}
+					}
+					VPhase_Buffer.newLine();
+				}
+
+			}
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening demand interval file \"" + getName() + ".csv" +" for writing."+DSSGlobals.CRLF+e.getMessage(), 535);
+		}
+	}
+
+	private double myCountAvg(double Value, int Count) {
+		if (Count == 0) {
+			return 0.0;
+		} else {
+			return Value / Count;
+		}
+	}
+	protected void writeDemandIntervalData() {
+		int i, j;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		SolutionObj sol = Globals.getActiveCircuit().getSolution();
+
+		if ((Globals.getEnergyMeterClass().isDIVerbose()) && This_Meter_DIFileIsOpen) {
+			DI_File.write(String.format("%-.6g", sol.getDblHour()));
+			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				DI_File.write(String.format(", %-.6g", Derivatives[i]));
+			DI_File.newLine();
+		}
+
+		/* Add to Class demand interval registers */
+		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			Globals.getEnergyMeterClass().getDI_RegisterTotals()[i] += Derivatives[i] * TotalsMask[i];
+
+		/* Phase Voltage Report, if requested */
+		if (VPhaseReportFileIsOpen) {
+			VPhase_File.write(String.format("%-.6g", sol.getDblHour()));
+			for (i = 0; i < MaxVBaseCount; i++) {
+				if (VBaseList[i] > 0.0) {
+					for (j = 0; j < 3; j++) {
+						VPhase_File.write(String.format(", %-.6g", 0.001 * VphaseMax[jiIndex(j, i)]));
+						VPhase_File.write(String.format(", %-.6g", 0.001 * VPhaseMin[jiIndex(j, i)]));
+						VPhase_File.write(String.format(", %-.6g", 0.001 * myCountAvg(VPhaseAccum[jiIndex(j, i)], VPhaseAccumCount[jiIndex(j, i)])));
+					}
+				}
+			}
+			VPhase_File.newLine();
+		}
+	}
+
+	/**
+	 * Only called if "SaveDemandInterval".
+	 */
+	protected void appendDemandIntervalFile() {
+		String FileNm;
+		FileWriter DI_Stream;
+		BufferedWriter DI_Buffer;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (This_Meter_DIFileIsOpen)
+			return;
+
+		try {
+			if (Globals.getEnergyMeterClass().isDIVerbose()) {
+				FileNm = makeDIFileName();  // Creates directory if it doesn't exist
+				DI_File = new File(FileNm);
+				/* File must exist */
+				if (DI_File.exists()) {
+					DI_Stream = new FileWriter(DI_File, true);
+				} else {
+					DI_Stream = new FileWriter(DI_File, false);
+				}
+				DI_Buffer = new BufferedWriter(DI_Stream);  // FIXME Add stream and buffer members
+
+				This_Meter_DIFileIsOpen = true;
+			}
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 537);
+		}
 	}
 
 	private void assignVoltBaseRegisterNames() {
+		int i, ireg;
+		double Vbase;
+
+		ireg = 0;
+		for (i = 0; i < MaxVBaseCount; i++) {
+			if (VBaseList[i] > 0.0) {
+				Vbase = VBaseList[i] * DSSGlobals.SQRT3;
+				RegisterNames[i + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Losses", Vbase);
+				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Line Loss", Vbase);
+				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Load Loss", Vbase);
+				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV No Load Loss", Vbase);
+				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Load Energy", Vbase);
+			} else {
+				RegisterNames[i + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				ireg += 1;
+				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				ireg += 1;
+				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				ireg += 1;
+				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				ireg += 1;
+				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				ireg += 1;
+			}
+		}
+		for (i = EnergyMeter.Reg_VBaseStart + 5; i < EnergyMeter.NumEMRegisters; i++) {  // TODO Check zero based indexing
+			RegisterNames[i] = String.format("Aux%d", ireg);
+			ireg += 1;
+		}
+	}
+
+	private String makeDIFileName() {
+		return DSSGlobals.getInstance().getEnergyMeterClass().getDI_Dir() + "/" + getName() + ".csv";
+	}
+
+	public void enableFeeder() {
 
 	}
 
@@ -1572,22 +1742,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	private void removeFeederObj() {
-
-	}
-
-	protected void openDemandIntervalFile() {
-
-	}
-
-	protected void writeDemandIntervalData() {
-
-	}
-
-	protected void closeDemandIntervalFile() {
-
-	}
-
-	protected void appendDemandIntervalFile() {
 
 	}
 

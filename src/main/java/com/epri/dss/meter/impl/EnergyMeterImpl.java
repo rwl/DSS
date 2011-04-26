@@ -1,8 +1,12 @@
 package com.epri.dss.meter.impl;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 
+import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
@@ -514,40 +518,265 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 	}
 
-	public void appendAllDIFiles() {
+	public void closeAllDIFiles() {
+		EnergyMeterObj mtr;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (SaveDemandInterval) {
+			/* While closing DI files, write all meter registers to one file */
+			try {
+				createMeterTotals();
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error on rewrite of totals file: "+e.getMessage(), 536);
+			}
+
+			/* Close all the DI file for each meter */
+			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
+				if (pMeter.isEnabled())
+					pMeter.closeDemandIntervalFile();
+
+			writeTotalsFile();  // Sum all EnergyMeter registers to "Totals.csv"
+			SystemMeter.closeDemandIntervalFile();
+			SystemMeter.save();
+			MeterTotals.close();
+			DI_Totals.close();
+			Globals.setDIFilesAreOpen(false);
+			if (OverLoadFileIsOpen) {
+				OverLoadFile.close();
+				OverLoadFileIsOpen = false;
+			}
+			if (VoltageFileIsOpen) {
+				VoltageFile.close();
+				VoltageFileIsOpen = false;
+			}
+		}
+	}
+
+	public void appendAllDIFiles() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (SaveDemandInterval) {
+
+			clearDI_Totals();  // clears accumulator arrays
+
+			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
+				if (pMeter.isEnabled())
+					pMeter.appendDemandIntervalFile();
+
+			SystemMeter.appendDemandIntervalFile();
+
+			/* Open DI_Totals */
+			try {
+				DI_Totals = new File(DI_Dir + "/DI_Totals.csv");
+				/* File Must Exist */
+				if (DI_Totals.exists()) {
+					FileWriter DI_TotalsStream = new FileWriter(DI_Totals, true);
+					BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_TotalsStream);
+				} else {
+					createFDI_Totals();
+				}
+			} catch (Exception e) {
+				Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
+			}
+
+			Globals.setDIFilesAreOpen(true);
+		}
+	}
+
+	public void setSaveDemandInterval(boolean Value) {
+		SaveDemandInterval = Value;
+		resetAll();
+	}
+
+	/**
+	 * Scans the active circuit for overloaded PD elements and writes each to a file.
+	 * This is called only if in Demand Interval (DI) mode and the file is open.
+	 */
+	private void writeOverloadReport() {
+		double Cmax;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		/* Check PDElements only */
+		for (PDElement PDElem : ckt.getPDElements()) {
+			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // Ignore shunts
+
+				if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
+					PDElem.computeIterminal();
+					Cmax = PDElem.maxTerminalOneIMag();  // For now, check only terminal 1 for overloads
+					if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
+						OverLoadFile.write(String.format("%-.6g,", ckt.getSolution().getDblHour()));
+						OverLoadFile.write(String.format(" %s, %-.4g, %-.4g,", FullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps()));
+						if (PDElem.getNormAmps() > 0.0) {
+							OverLoadFile.write(String.format(" %-.7g,", Cmax / PDElem.getNormAmps() * 100.0))
+						} else {
+							OverLoadFile.write(" 0.0,");
+						}
+						if (PDElem.getEmergAmps() > 0.0) {
+							OverLoadFile.write(String.format(" %-.7g,", Cmax / PDElem.getEmergAmps() * 100.0));
+						} else {
+							OverLoadFile.write(" 0.0,");
+						}
+						/* Find bus of first terminal */
+						OverLoadFile.write(String.format(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].BusRef].getkVBase()));
+
+						OverLoadFile.newLine();
+					}
+				}
+			}
+		}
+	}
+
+	private void clearDI_Totals() {
+		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			DI_RegisterTotals[i] = 0.0;
+	}
+
+	private void createDI_Totals() {
+		EnergyMeterObj pMeter;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			DI_Totals = new File(DI_Dir + "/DI_Totals.csv");
+			FileWriter DI_TotalsStream = new FileWriter(DI_Totals, false);
+			BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_TotalsStream);
+
+			DI_TotalsBuffer.write("Time");
+			for (int i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
+				pMeter = Globals.getActiveCircuit().getEnergyMeters().get(i);
+				DI_TotalsBuffer.write(", \"" + pMeter.getRegisterNames()[i] + "\"");
+			}
+			DI_TotalsBuffer.newLine();
+			// FIXME Close stream and buffer
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error creating: \""+DI_Dir+"/DI_Totals.csv\": "+e.getMessage(), 539);
+		}
+	}
+
+	private void createMeterTotals() {
+		int i;
+		EnergyMeterObj mtr;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		MeterTotals = new File(DI_Dir + "/EnergyMeterTotals.csv");
+		FileWriter MeterTotalsStream;
+		try {
+			MeterTotalsStream = new FileWriter(MeterTotals, false);
+			BufferedWriter MeterTotalsBuffer = new BufferedWriter(MeterTotalsStream);
+
+			MeterTotalsBuffer.write("Name");
+			mtr = ckt.getEnergyMeters().get(0);
+			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
+			MeterTotalsBuffer.newLine();
+
+			// FIXME Close stream and buffer
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void setDIVerbose(boolean Value) {
+		DI_Verbose = Value;
+		resetAll();
+	}
+
+	private void writeTotalsFile() {
+		EnergyMeterObj mtr;
+		double[] RegSum = new double[EnergyMeter.NumEMRegisters];
+		int i, j;
+		File F;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		/* Sum up all registers of all meters and write to Totals.csv */
+		for (i = 0; i < EnergyMeter.NumEMRegisters; i++) RegSum[i] = 0.0;
+
+		for (i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
+			mtr = Globals.getActiveCircuit().getEnergyMeters().get(i);
+			if (mtr.isEnabled())
+				for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+					RegSum[j] = RegSum[j] + mtr.getRegisters()[j] * mtr.getTotalsMask()[j];
+		}
+
+		try {  // Write the file
+			F = new File(DI_Dir + "/Totals.csv");
+
+			FileWriter FStream = new FileWriter(F, false);
+			BufferedWriter FBuffer = new BufferedWriter(FStream);
+
+			FBuffer.write("Year");
+			mtr = Globals.getActiveCircuit().getEnergyMeters().get(0);
+			if (mtr != null)
+				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					FBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
+			FBuffer.newLine();
+
+			FBuffer.write(Globals.getActiveCircuit().getSolution().getYear());
+			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				FBuffer.write(String.format(", %-g ", RegSum[i]));
+			FBuffer.newLine();
+
+			FBuffer.close();
+			FStream.close();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error opening demand interval file Totals.csv."+DSSGlobals.CRLF+e.getMessage(), 543);
+		}
+	}
+
+	private void writeVoltageReport() {
+		int i, j;
+		double Vmagpu;
+		int UnderCount;
+		int OverCount;
+		double OverVmax;
+		double UnderVmin;
+		Bus bus;
+
+		/* For any bus with a defined voltage base, test for > Vmax or < Vmin */
+
+		OverCount  = 0;
+		UnderCount = 0;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		OverVmax   = ckt.getNormalMinVolts();
+		UnderVmin  = ckt.getNormalMaxVolts();
+		for (i = 0; i < ckt.getNumBuses(); i++) {
+			bus = ckt.getBuses()[i];
+			if (bus.getkVBase() > 0.0) {
+				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
+					Vmagpu = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getkVBase() * 0.001;
+					if (Vmagpu > 0.1) {  // ignore neutral buses
+						UnderVmin = Math.min(UnderVmin, Vmagpu);
+						OverVmax  = Math.max(OverVmax,  Vmagpu);
+						if (Vmagpu < ckt.getNormalMinVolts()) {
+							UnderCount += 1;
+							break;  /* next i */
+						} else if (Vmagpu > ckt.getNormalMaxVolts()) {
+							OverCount += 1;
+							break;
+						}
+					}
+				}
+			}
+		}  /* for i */
+
+		VoltageFile.write(String.format("%-.6g,", ckt.getSolution().getDblHour()));
+		VoltageFile.write(String.format(" %d, %-.6g, %d, %-.6g", UnderCount, UnderVmin, OverCount, OverVmax));
+		VoltageFile.newLine();
 	}
 
 	public void openAllDIFiles() {
 
 	}
 
-	public void closeAllDIFiles() {
-
-	}
-
-	public void setSaveDemandInterval(boolean Value) {
-
-	}
-
 	public boolean isSaveDemandInterval() {
 		return SaveDemandInterval;
-	}
-
-	private void createMeterTotals() {
-
-	}
-
-	private void createFDI_Totals() {
-
-	}
-
-	private void clearDI_Totals() {
-
-	}
-
-	private void writeTotalsFile() {
-
 	}
 
 	private void openOverloadReportFile() {
@@ -558,19 +787,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	}
 
-	private void writeOverloadReport() {
-
-	}
-
-	private void writeVoltageReport() {
-
-	}
-
 	private void interpretRegisterMaskArray(double[] Mask) {
-
-	}
-
-	public void setDIVerbose(boolean Value) {
 
 	}
 
