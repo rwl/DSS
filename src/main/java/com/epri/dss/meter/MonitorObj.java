@@ -59,7 +59,7 @@ import com.epri.dss.shared.impl.Complex;
  */
 public interface MonitorObj extends MeterElement {
 
-	String getCSVFileName();
+	String getFileName();
 
 	int getMode();
 
