@@ -10,13 +10,13 @@ public interface SensorObj extends MeterElement {
 
 	/* Connection code */
 	void setConn(int Value);
-	
+
 	int getConn();
-	
+
 	void setAction(String Value);
-	
+
 	double getWLSCurrentError();
-	
+
 	double getWLSVoltageError();
 
 	double[] getSensorKW();
@@ -34,10 +34,49 @@ public interface SensorObj extends MeterElement {
 	double getWeight();
 
 	void setWeight(double weight);
-	
+
 	void resetIt();
-	
+
 	/* Saves present buffer to file */
 	void save();
+
+
+	// FIXME Private members in OpenDSS
+
+	boolean isValidSensor();
+
+	void setValidSensor(boolean validSensor);
+
+	double getVbase();
+
+	void setVbase(double vbase);
+
+	boolean isVspecified();
+
+	void setVspecified(boolean vspecified);
+
+	boolean isIspecified();
+
+	void setIspecified(boolean ispecified);
+
+	boolean isPspecified();
+
+	void setPspecified(boolean pspecified);
+
+	boolean isQspecified();
+
+	void setQspecified(boolean qspecified);
+
+	boolean isClearSpecified();
+
+	void setClearSpecified(boolean clearSpecified);
+
+	void setSensorKW(double[] sensorKW);
+
+	void setSensorKVar(double[] sensorKVar);
+
+	void setkVBase(double kVBase);
+
+	void setDeltaDirection(int deltaDirection);
 
 }
