@@ -20,7 +20,7 @@ public interface CktTreeNode {
 	/**
 	 * Number of objects at present node.
 	 */
-	void getNumObjects();
+	int getNumObjects();
 
 	int getToBusReference();
 

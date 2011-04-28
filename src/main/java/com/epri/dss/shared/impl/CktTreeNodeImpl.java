@@ -59,8 +59,8 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	/**
 	 * Number of objects at present node.
 	 */
-	public void getNumObjects() {
-
+	public int getNumObjects() {
+		return 0;
 	}
 
 	public int getToBusReference() {
