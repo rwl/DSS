@@ -1,18 +1,15 @@
 package com.epri.dss.conversion.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.Equivalent;
 import com.epri.dss.conversion.EquivalentObj;
-import com.epri.dss.conversion.PCClass;
-import com.epri.dss.delivery.impl.CapacitorObjImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EquivalentImpl extends PCClassImpl implements Equivalent {
-	
+
 	private static EquivalentObj ActiveEquivalentObj;
 
 	public EquivalentImpl() {
@@ -29,7 +26,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = Equivalent.NumPropsThisClass;
@@ -70,7 +67,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		// Override help string
 		PropertyHelp[Equivalent.NumPropsThisClass + 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -78,15 +75,15 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		Globals.getActiveCircuit().setActiveCktElement(new EquivalentObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing with contents of Parser
-		setActiveEquivalentObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveEquivalentObj());
+		setActiveEquivalentObj((EquivalentObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
 
 		int Result = 0;
 
@@ -101,7 +98,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}
-			
+
 			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
 				ae.setPropertyValue(ParamPointer, Param);
 
@@ -134,7 +131,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			default:
 				classEdit(getActiveEquivalentObj(), ParamPointer - Equivalent.NumPropsThisClass);
 			}
-			
+
 			if ((ParamPointer == 0) || ((ParamPointer >= 7) && (ParamPointer <= 10))) {
 				ae.setNeedToDoRecalc(true);
 			}
@@ -145,14 +142,14 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 		// recalcElementData();
 		ae.setYprimInvalid(true);
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String OtherSource) {
 		int i, Result = 0;
-		
+
 		/* See if we can find this line name in the present collection */
 		EquivalentObj OtherEquivalent = (EquivalentObj) find(OtherSource);
 		if (OtherEquivalent != null) {
@@ -161,13 +158,13 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			if ((ae.getNPhases() != OtherEquivalent.getNPhases()) ||
 					(ae.getNTerms() != OtherEquivalent.getNTerms())) {
 
-				ae.setNTerms(ae.doTerminalsDef(OtherEquivalent.getNTerms());
+				ae.setNTerms( ae.doTerminalsDef(OtherEquivalent.getNTerms()) );
 				ae.setNPhases(OtherEquivalent.getNPhases());
 				ae.setNConds(ae.getNPhases());  // Forces reallocation of terminal stuff
 
 				ae.setYorder(ae.getNConds() * ae.getNTerms());
 				ae.setYprimInvalid(true);
-				
+
 				for (i = 0; i < ae.getNTerms(); i++)
 					ae.getR1()[i] = OtherEquivalent.getR1()[i];
 				for (i = 0; i < ae.getNTerms(); i++)
@@ -203,21 +200,21 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" Not Found.", 801);
 		}
-	
+
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Equivalent.init", -1);
 		return 0;
 	}
-	
+
 	/**
 	 * Routine expecting all winding connections expressed in one array of strings.
 	 */
 	public void interpretAllBuses(String S) {
-		String S1, BusNam;
+		String BusNam;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		Globals.getAuxParser().setCmdString(S);  // Load up Parser
@@ -225,7 +222,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		/* Loop for no more than the expected number of windings;  Ignore omitted values */
 		EquivalentObj ae = getActiveEquivalentObj();
 		for (int i = 0; i < ae.getNTerms(); i++) {
-			S1 = Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			BusNam = Globals.getAuxParser().makeString();
 			if (BusNam.length() > 0)
 				ae.setBus(i, BusNam);  // TODO Check zero based indexing

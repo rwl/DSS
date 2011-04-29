@@ -10,15 +10,15 @@ import com.epri.dss.shared.impl.Complex;
  * The storage element is essentially a generator that can be dispatched
  * to either produce power or consume power commensurate with rating and
  * amount of stored energy.
- * 
+ *
  * The storage element can also produce or absorb vars within the kVA rating
  * of the inverter.
  * That is, a StorageController object requests kvar and the storage element
  * provides them if it has any capacity left. The storage element can
  * produce/absorb kvar while idling.
- * 
+ *
  * The Storage element is assumed balanced over the no. of phases defined.
- * 
+ *
  * TODO: Make connection to User model
  * TODO: Yprim for various modes
  * TODO: Define state vars and dynamics mode behavior
@@ -28,33 +28,33 @@ import com.epri.dss.shared.impl.Complex;
 public interface StorageObj extends PCElement {
 
 	double getPresentkW();
-	
+
 	double getPresentKVar();
-	
+
 	double getPresentKV();
-	
+
 	void setPresentKV(double Value);
-	
+
 	void setPresentKVar(double Value);
-	
+
 	void setPresentKW(double Value);
-	
+
 	void setPowerFactor(double Value);
-	
+
 	double getPowerFactor();
-	
+
 	void setState(int Value);
-	
+
 	int getState();
-	
+
 	void setPctKVarOut(double Value);
-	
+
 	double getPctKVarOut();
-	
+
 	void setPctKWOut(double Value);
-	
+
 	double getPctKWOut();
-	
+
 	int getConnection();
 
 	void setConnection(int connection);
@@ -138,16 +138,26 @@ public interface StorageObj extends PCElement {
 	double[] getDerivatives();
 
 	void setDerivatives(double[] derivatives);
-	
+
 	void setNominalStorageOuput();
-	
+
 	/* 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
 	void randomize(int Opt);
-	
+
 	void resetRegisters();
-	
+
 	void takeSample();
-	
+
+	// FIXME Private method in OpenDSS
+	void updateStorage();
+
+	// FIXME Private method in OpenDSS
+	int interpretState(String S);
+
+	// FIXME Private method in OpenDSS
+	void syncUpPowerQuantities();
+
+
 	// FIXME Private members in OpenDSS
 
 	Complex getYeq();
@@ -349,5 +359,9 @@ public interface StorageObj extends PCElement {
 	double getXThev();
 
 	void setXThev(double xThev);
+
+	StoreUserModel getUserModel();
+
+	void setUserModel(StoreUserModel userModel);
 
 }

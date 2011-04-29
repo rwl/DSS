@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.SolutionObj;
@@ -19,7 +20,7 @@ import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class LoadObjImpl extends PCElementImpl implements LoadObj {
-	
+
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
 
 	private boolean PFChanged;
@@ -283,7 +284,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 		return LastGrowthFactor;  // for now
 	}
-	
+
 	public void setkWkvar(double PkW, double Qkvar) {
 		kWBase = PkW;
 		kvarBase = Qkvar;
@@ -292,7 +293,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void setNominalLoad() {
 		double Factor;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
 
@@ -386,7 +387,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				calcDailyMult(sol.getDblHour());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
-				
+
 			case Dynamics.PEAKDAY:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
@@ -474,10 +475,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		if (YearlyShapeObj == null)
 			if (YearlyShape.length() > 0)
 				Global.doSimpleMsg("WARNING! Yearly load shape: \""+ YearlyShape +"\" Not Found.", 583);
-		if (DailyShapeObj == null) 
+		if (DailyShapeObj == null)
 			if (DailyShape.length() > 0)
 				Global.doSimpleMsg("WARNING! Daily load shape: \""+ DailyShape +"\" Not Found.", 584);
-		if (DutyShapeObj == null) 
+		if (DutyShapeObj == null)
 			if (DutyShape.length() > 0)
 				Global.doSimpleMsg("WARNING! Duty load shape: \""+ DutyShape +"\" Not Found.", 585);
 		if (GrowthShapeObj == null)
@@ -600,7 +601,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		case 1:  // Delta
 			TermArray[i] = TermArray[i].add(Curr.negate());
-			int j = i + 1; 
+			int j = i + 1;
 			if (j > nConds)
 				j = 0;  // rotate the phases
 			TermArray[j] = TermArray[j].add(Curr);
@@ -610,18 +611,18 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public void updateVoltageBases() {
 
 		LoadObj al = LoadImpl.getActiveLoadObj();
-		
+
 		switch (Connection) {
 		case 1:
-			VBase = kVLoadBase * 1000.0;
+			al.setVBase(kVLoadBase * 1000.0);
 		default:  /* wye*/
 			switch (nPhases) {
 			case 2:
-				VBase = kVLoadBase * DSSGlobals.InvSQRT3x1000;
+				al.setVBase(kVLoadBase * DSSGlobals.InvSQRT3x1000);
 			case 3:
-				VBase = kVLoadBase * DSSGlobals.InvSQRT3x1000;
+				al.setVBase(kVLoadBase * DSSGlobals.InvSQRT3x1000);
 			default:
-				VBase = kVLoadBase * 1000.0;  /* 1-phase or unknown */
+				al.setVBase(kVLoadBase * 1000.0);  /* 1-phase or unknown */
 			}
 		}
 	}
@@ -852,7 +853,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		/* Don't calc Vterminal here because it could be undefined! */
 		zeroInjCurrent();
 		zeroITerminal();
-		
+
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
 		LoadHarmonic = sol.getFrequency() / LoadFundamental;  // LoadFundamental = frequency of solution when Harmonic mode entered
@@ -867,8 +868,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	}
 
 	private boolean allTerminalsClosed() {
-		for (int i = 0; i < nTerms; i++) 
-			for (int j = 0; j < nConds; j++) 
+		for (int i = 0; i < nTerms; i++)
+			for (int j = 0; j < nConds; j++)
 				if (!Terminals[i].getConductors()[j].isClosed())
 					return false;
 		return true;
@@ -877,7 +878,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private void calcVTerminalPhase() {
 		int j;
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 		/* Establish phase voltages and stick in Vtemp */
 		switch (Connection) {
 		case 0:
@@ -939,7 +940,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		// If a terminal is open, then standard load models don't apply, so check it out first.
 		if (allTerminalsClosed()) {
-			
+
 			// Now get injection currents
 			calcLoadModelContribution();
 
@@ -983,7 +984,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 			}
 
-			computeVterminal(); 
+			computeVterminal();
 			YPrimOpenCond.MVMult(ComplexBuffer, Vterminal);
 			for (int i = 0; i < Yorder; i++)
 				ComplexBuffer[i] = ComplexBuffer[i].negate();
@@ -998,7 +999,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		if (IterminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
 			calcLoadModelContribution();  // Adds totals in Iterminal as a side effect
-		
+
 		super.getTerminalCurrents(Curr);
 	}
 
@@ -1007,7 +1008,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 */
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 		int Result = 0;
 		if (isEnabled()) {
 			if (sol.isLoadsNeedUpdating())
@@ -1015,7 +1016,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			calcInjCurrentArray();
 			Result = super.injCurrents();  // Add into Global Currents Array
 		}
-		
+
 		return Result;
 	}
 
@@ -1028,10 +1029,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			if (isEnabled()) {
 				calcInjCurrentArray();
 				// Copy into buffer array
-				for (int i = 0; i < Yorder; i++) 
+				for (int i = 0; i < Yorder; i++)
 					Curr[i] = getInjCurrent()[i];
 			} else {
-				for (int i = 0; i < Curr.length; i++) 
+				for (int i = 0; i < Curr.length; i++)
 					Curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
@@ -1048,14 +1049,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public boolean getUnserved() {
 		double Vpu, Vmag;
 		double NormMinCriteria, EmergMinCriteria;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		if (UE_Factor > 0.0)
 			return true;
 
 		// else check voltages
-		if (LoadSolutionCount != ckt.getSolution().getSolutionCount()) 
+		if (LoadSolutionCount != ckt.getSolution().getSolutionCount())
 			calcVTerminalPhase();
 
 		// Get the lowest of the phase voltages
@@ -1086,7 +1087,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			UE_Factor = (EmergMinCriteria - Vpu) / (NormMinCriteria - EmergMinCriteria);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1099,9 +1100,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public boolean getExceedsNormal() {
 		double Vpu, Vmag;
 		double NormMinCriteria, EmergMinCriteria;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		if (EEN_Factor > 0.0)
 			return true;
 
@@ -1137,7 +1138,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			// IF EEN_Factor > 1.0 THEN EEN_Factor = 1.0;
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -1175,7 +1176,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	/**
 	 * AllocationFactor adjusts either connected kVA allocation factor or kWh CFactor.
-	 * 
+	 *
 	 * This procedure is used by the EnergyMeter allocateLoad function to adjust load allocation factors.
 	 */
 	public void setAllocationFactor(double Value) {
@@ -1322,12 +1323,12 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		// Divide the load by no. phases
 		if (nPhases > 1) {
 			S = S + String.format(" kW=%-.5g  kvar=%-.5g", kWBase / nPhases, kvarBase / nPhases);
-			if (ConnectedkVA > 0.0) 
+			if (ConnectedkVA > 0.0)
 				S = S + String.format(" xfkVA=%-.5g  ", ConnectedkVA / nPhases);
 		}
 
 		Parser.getInstance().setCmdString(S);
-		edit();	
+		edit();
 
 		super.makePosSequence();
 	}
@@ -1336,15 +1337,15 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (Index) {
 		case 1:
 			return getBus(1);
-		case 2: 
+		case 2:
 			return String.format("%-g", kVLoadBase);
 		case 3:
 			return String.format("%-g", kWBase);
 		case 4:
 			return String.format("%-.3g", PFNominal);
-		case 6: 
+		case 6:
 			return YearlyShape;
-		case 7: 
+		case 7:
 			return DailyShape;
 		case 8:
 			return DutyShape;
@@ -1624,7 +1625,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public boolean isFixed() {
 		return Fixed;
 	}
-	
+
 	// FIXME Private members in OpenDSS.
 
 	public boolean isPFChanged() {

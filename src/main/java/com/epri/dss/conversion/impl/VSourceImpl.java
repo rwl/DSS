@@ -1,6 +1,5 @@
 package com.epri.dss.conversion.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.VSource;
@@ -10,7 +9,7 @@ import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class VSourceImpl extends PCClassImpl implements VSource {
-	
+
 	private static VSourceObj ActiveVsourceObj;
 
 	public VSourceImpl() {
@@ -27,7 +26,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = VSource.NumPropsThisClass;
@@ -97,7 +96,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		// Override help string
 		PropertyHelp[VSource.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -105,7 +104,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		Globals.getActiveCircuit().setActiveCktElement(new VSourceObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void vSourceSetBus1(String S) {
 		String S2;
 		int i, dotpos;
@@ -114,7 +113,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		// Set Bus2 = Bus1.0.0.0
 
 		VSourceObj avs = getActiveVsourceObj();
-	
+
 		avs.setBus(1, S);  // TODO Check zero based indexing
 
 		// Default Bus2 to zero node of Bus1. (Grounded-Y connection)
@@ -131,16 +130,16 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		avs.setBus(2, S2);  // default setting for Bus2
 	}
-	
+
 	@Override
 	public int edit() {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// Continue parsing with contents of parser
-		setActiveVSourceObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveVsourceObj());
+		setActiveVsourceObj((VSourceObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
 
 		int Result = 0;
 
@@ -155,8 +154,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}
-			
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties)) 
+
+			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
 				avs.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -172,7 +171,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setAngle(parser.makeDouble());  // Ang
 			case 4:
 				avs.setSrcFrequency(parser.makeDouble()); // freq
-			case 5: 
+			case 5:
 				avs.setNPhases(parser.makeInteger());  // num phases
 						avs.setNConds(avs.getNPhases());  // Force reallocation of terminal info
 			case 6:
@@ -238,20 +237,20 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		avs.recalcElementData();
 		avs.setYprimInvalid(true);
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String OtherSource) {
-		
+
 		int Result = 0;
-		
+
 		/* See if we can find this line name in the present collection */
 		VSourceObj OtherVSource = (VSourceObj) find(OtherSource);
 		if (OtherVSource != null) {
 			VSourceObj avs = getActiveVsourceObj();
-		
+
 			if (avs.getNPhases() != OtherVSource.getNPhases()) {
 				avs.setNPhases(OtherVSource.getNPhases());
 				avs.setNConds(avs.getNPhases());  // Forces reallocation of terminal stuff
@@ -280,9 +279,9 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			classMakeLike(OtherVSource);
 
-			for (int i = 0; i < avs.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < avs.getParentClass().getNumProperties(); i++)
 				avs.setPropertyValue(i, OtherVSource.getPropertyValue(i));
-			
+
 			Result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Vsource makeLike: \"" + OtherSource + "\" Not Found.", 322);
@@ -290,7 +289,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Vsource.init", -1);

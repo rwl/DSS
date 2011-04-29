@@ -3,36 +3,38 @@ package com.epri.dss.conversion.impl;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
-import com.epri.dss.shared.impl.DynamicsImpl;
+import com.epri.dss.shared.impl.GeneratorVars;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.conversion.GenUserModel;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
-import com.epri.dss.shared.impl.DynamicsImpl.GeneratorVars;
 
 public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
-	
+
 	/* Number of energy meter registers */
-	private static final int NumGenRegisters = 6;    
+	private static final int NumGenRegisters = 6;
 	private static final int NumGenVariables = 6;
-	
+
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
-	
+
 	private Complex[] cBuffer = new Complex[24];  // Temp buffer for calcs  24-phase generator?
-	
+
 	private Complex Yeq;     // at nominal
 	private Complex Yeq95;   // at 95%
 	private Complex Yeq105;  // at 105%
@@ -40,7 +42,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private Complex CurrentLimit;
 	private boolean DebugTrace;
 	/* Max allowable var change on Model=3 per iteration */
-	private double DeltaQMax;  
+	private double DeltaQMax;
 	private int DispatchMode;
 	private double DispatchValue;
 	private double dQdV;
@@ -50,17 +52,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private boolean Fixed;   // if Fixed, always at base value
 	private int GeneratorSolutionCount;
 	/* Thevenin equivalent voltage mag and angle reference for Harmonic model */
-	private double GenFundamental; 
+	private double GenFundamental;
 	/* Indicates whether generator is currently on */
-	private boolean GenON;           
+	private boolean GenON;
 	private boolean GenSwitchOpen;
 	private boolean kVANotSet;
 	private double LastGrowthFactor;
 	/* Added for speedup so we don't have to search for growth factor a lot */
-	private int LastYear;   
+	private int LastYear;
 	private int OpenGeneratorSolutionCount;
 	/* Deceleration Factor for computing vars for PV generators */
-	private double PVFactor;  
+	private double PVFactor;
 	private double RandomMult;
 	private int Reg_Hours;
 	private int Reg_kvarh;
@@ -70,66 +72,66 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private int Reg_Price;
 	private Complex ShapeFactor;
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
-	private double ThetaHarm;  
+	private double ThetaHarm;
 	private File TraceFile;
 	/* User-Written Models */
-//	private GenUserModel UserModel, ShaftModel;   
+	private GenUserModel UserModel, ShaftModel;
 	private double V_Avg;
 	private double V_Remembered;
 	private double var_Remembered;
 	/* Base vars per phase */
-	private double varBase; 
+	private double varBase;
 	private double varMax;
 	private double varMin;
 	/* Base volts suitable for computing currents */
-	private double VBase;  
+	private double VBase;
 	private double VBase105;
 	private double VBase95;
 	private double VMaxPU;
 	private double VMinPU;
 	/* Thevinen equivalent voltage (complex) for dynamic model */
-	private Complex Vthev;  
+	private Complex Vthev;
 	/* Thevinen equivalent voltage mag and angle reference for Harmonic model */
-	private double VThevHarm;  
+	private double VThevHarm;
 	/* Thevinen equivalent voltage for dynamic model */
-	private double VThevMag;    
+	private double VThevMag;
 	/*
 	 * To handle cases where one conductor of load is open;
 	 * We revert to admittance for inj currents
 	 */
 	private CMatrix YPrimOpenCond;
 	/* Fixed value of y for type 7 load */
-	private double YQFixed;  
+	private double YQFixed;
 	private boolean ShapeIsActual;
-	
+
 	/* 0 = line-neutral; 1 = Delta */
-	protected int Connection; 
+	protected int Connection;
 	/* Daily (24 HR) Generator shape */
-	protected String DailyDispShape;  
+	protected String DailyDispShape;
 	/* Daily Generator Shape for this load */
 	protected LoadShapeObj DailyDispShapeObj;
 	/* Duty cycle load shape for changes typically less than one hour */
-	protected String DutyShape;  
+	protected String DutyShape;
 	/* Shape for this generator */
-	protected LoadShapeObj DutyShapeObj;  
+	protected LoadShapeObj DutyShapeObj;
 	protected int GenClass;
 	/* Variation with voltage */
-	protected int GenModel;   
+	protected int GenModel;
 	/* State Variables */
-	protected GeneratorVars GenVars; 
+	protected GeneratorVars GenVars;
 	protected double kvarBase;
 	protected double kvarMax;
 	protected double kvarMin;
 	protected double kWBase;
 	protected double PFNominal;
 	/* Per unit Target voltage for generator with voltage control */
-	protected double Vpu;       
+	protected double Vpu;
 	/* Target voltage for generator with voltage control */
-	protected double VTarget;  
+	protected double VTarget;
 	/* ='fixed' means no variation  on all the time */
-	protected String YearlyShape;  
+	protected String YearlyShape;
 	/* Shape for this Generator */
-	protected LoadShapeObj YearlyShapeObj;  
+	protected LoadShapeObj YearlyShapeObj;
 
 	protected double[] Registers = new double[NumGenRegisters];
 	protected double[] Derivatives = new double[NumGenRegisters];
@@ -185,7 +187,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		/* Machine rating stuff */
 		this.GenVars.kVArating  = this.kWBase * 1.2;
 		this.kVANotSet = true;  // Flag for default value for kVA
-		
+
 		//this.GenVars.Vd = 7200.0;
 
 
@@ -202,8 +204,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.GenVars.dSpeed     = 0.0;
 		this.GenVars.D          = 1.0;
 
-		this.UserModel  = new GenUserModel(this.GenVars) ;
-		this.ShaftModel = new GenUserModel(this.GenVars);
+		this.UserModel  = new GenUserModelImpl(this.GenVars) ;
+		this.ShaftModel = new GenUserModelImpl(this.GenVars);
 
 		this.DispatchValue = 0.0;  // Follow curves
 
@@ -226,7 +228,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		recalcElementData();
 	}
-	
+
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
 	 */
@@ -235,14 +237,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		case 0:
 			RandomMult = 1.0;
 		case DSSGlobals.GAUSSIAN:
-			RandomMult = MathUtil.Gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
+			RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();  // number between 0 and 1.0
 		case DSSGlobals.LOGNORMAL:
-			RandomMult = MathUtil.QuasiLognormal(YearlyShapeObj.getMean());
+			RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
 		}
 	}
-	
+
 	private void calcDailyMult(double Hr) {
 		if (DailyDispShapeObj != null) {
 			ShapeFactor = DailyDispShapeObj.getMult(Hr);
@@ -251,7 +253,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			ShapeFactor = CDOUBLEONE;  // Default to no daily variation
 		}
 	}
-	
+
 	private void calcDutyMult(double Hr) {
 		if (DutyShapeObj != null) {
 			ShapeFactor = DutyShapeObj.getMult(Hr);
@@ -260,7 +262,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			calcDailyMult(Hr);  // Default to Daily Mult if no duty curve specified
 		}
 	}
-	
+
 	private void calcYearlyMult(double Hr) {
 		/* Yearly curve is assumed to be hourly only */
 		if (YearlyShapeObj != null) {
@@ -270,7 +272,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			ShapeFactor = CDOUBLEONE;  // Defaults to no variation
 		}
 	}
-	
+
 	public void setNominalGeneration() {
 		double Factor;
 		boolean GenOn_Saved;
@@ -280,10 +282,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// Check to make sure the generation is ON
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
-		
+
 		if (!sol.isIsDynamicModel() || !sol.isIsHarmonicModel()) {  // Leave generator in whatever state it was prior to entering Dynamic mode
 			GenON = true;   // Init to on then check if it should be off
-			if (!ForcedON) 
+			if (!ForcedON)
 				switch (DispatchMode) {
 				case Generator.LOADMODE:
 					if ((DispatchValue > 0.0) && (ckt.getGeneratorDispatchReference() < DispatchValue))
@@ -302,7 +304,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			GenVars.Qnominalperphase = 0.0;
 		} else {
 			// Generator is on, compute it's nominal watts and vars
-			
+
 			if (isFixed()) {
 				Factor = 1.0;   // for fixed generators, set constant
 			} else {
@@ -360,15 +362,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					Factor = 1.0;
 				}
 			}
-	
-			if (!sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {  
+
+			if (!sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {
 				if (ShapeIsActual) {
 					GenVars.Pnominalperphase = 1000.0 * ShapeFactor.getReal() / nPhases;
 				} else {
 					GenVars.Pnominalperphase = 1000.0 * kWBase * Factor * ShapeFactor.getReal() / nPhases;
 				}
-	
-				
+
+
 				if (GenModel == 3) {
 					/* Just make sure present value is reasonable} */
 					if (GenVars.Qnominalperphase > varMax) {
@@ -416,7 +418,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (GenON != GenOn_Saved)
 			setYprimInvalid(true);
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -480,17 +482,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (UserModel.exists()) UserModel.updateModel();
 		if (ShaftModel.exists()) ShaftModel.updateModel();
 	}
-	
+
 	private void calcYPrimMatrix(CMatrix Ymatrix) {
 		Complex Y , Yij;
 		int i, j;
 		double FreqMultiplier;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		YprimFreq = ckt.getSolution().getFrequency();
 		FreqMultiplier = YprimFreq / BaseFrequency;
-		
+
 		SolutionObj sol = ckt.getSolution();
 
 		if (sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {
@@ -528,7 +530,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 
 			 */
-			
+
 		} else {
 			// Regular power flow generator model
 
@@ -560,7 +562,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 		}
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 
@@ -580,7 +582,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 
 		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
-		
+
 			// 12-7-99 we'll start with Yeq in system matrix
 			setNominalGeneration();
 			calcYPrimMatrix(YPrim_Shunt);
@@ -596,16 +598,16 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// Set YPrim_Series based on diagonals of YPrim_shunt  so that CalcVoltages doesn't fail
 		for (int i = 0; i < Yorder; i++)
 			YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
-		
+
 		YPrim.copyFrom(YPrim_Shunt);
 
 		// Account for Open Conductors
 		super.calcYPrim();
 	}
-	
+
 	/**
 	 * Add the current into the proper location according to connection.
-	 * 
+	 *
 	 * Reverse of similar routine in load  (complex negates are switched).
 	 */
 	private void stickCurrInTerminalArray(Complex[] TermArray, Complex Curr, int i) {
@@ -633,7 +635,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				TraceBuffer.write(String.format("%-.g, %d, %-.g, ",
 						Globals.getActiveCircuit().getSolution().getDynaVars().t,
 						Globals.getActiveCircuit().getSolution().getIteration(),
-						Globals.getActiveCircuit().getLoadMultiplier()) + 
+						Globals.getActiveCircuit().getLoadMultiplier()) +
 						Utilities.getSolutionModeID() + ", " +
 						Utilities.getLoadModel() + ", " +
 						GenModel + ", " +
@@ -655,7 +657,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				TraceStream.close();
 			}
 		} catch (Exception e) {
-			
+
 		}
 	}
 
@@ -668,7 +670,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		double Vmag;
 		//Complex[] V012, I012 = new Complex[2];
 		//Complex[] Iabc = new Complex[3];
-		
+
 		// Treat this just like the Load moVdel
 
 		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
@@ -760,7 +762,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	private void doConstantZGen() {
 		int i;
 		Complex Curr, Yeq2;
@@ -782,7 +784,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	/**
 	 * Compute total terminal current for Constant P, |V|.
 	 */
@@ -834,7 +836,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	/**
 	 * Compute total terminal current for Fixed Q.
 	 * Constant P, Fixed Q  Q is always kvarBase.
@@ -876,7 +878,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	/**
 	 * Compute total terminal current for constant P, fixed Q.
 	 * Q is always a fixed Z derived from kvarBase
@@ -921,7 +923,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	/**
 	 * Compute total terminal current from User-written model.
 	 */
@@ -931,17 +933,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		if (UserModel.exists()) {  // Check automatically selects the usermodel if true
 			//appendToEventLog("Wnominal=", String.format("%-.5g", Pnominalperphase));
-			UserModel.fCalc(Vterminal, Iterminal);
+			UserModel.calc(Vterminal, Iterminal);
 			setITerminalUpdated(true);
-			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+//			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 			// Negate currents from user model for power flow generator model
-			for (int i = 0; i < nConds; i++) 
+			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( getIterminal()[i].negate() );
 		} else {
 			Globals.doSimpleMsg("Generator." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
-	
+
 	/**
 	 * Compute total terminal current for constant PQ, but limit to max current below VminPU.
 	 */
@@ -981,7 +983,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 		}
 	}
-	
+
 	/**
 	 * Compute total current and add into InjTemp.
 	 */
@@ -993,9 +995,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
 
 		/* Inj = -Itotal (in) - Yprim * Vtemp */
-		if ((GenModel = 6) && UserModel.exists()) {  // auto selects model
+		if ((GenModel == 6) && UserModel.exists()) {  // auto selects model
 			/* We have total currents in Itemp */
-			UserModel.fCalc(Vterminal, Iterminal);  // returns terminal currents in Iterminal
+			UserModel.calc(Vterminal, Iterminal);  // returns terminal currents in Iterminal
 		} else {
 			/* No user model, use default Thevinen equivalent */
 			switch (nPhases) {
@@ -1005,7 +1007,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				getIterminal()[0] = getVterminal()[0].subtract(Vthev).subtract(getVterminal()[1]).divide(new Complex(0.0, GenVars.Xdp));
 				getIterminal()[1] = getIterminal()[0].negate();
 
-			case 3: 
+			case 3:
 				MathUtil.phase2SymComp(Vterminal, V012);
 
 				// Positive sequence contribution to Iterminal
@@ -1039,13 +1041,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		/* Take Care of any shaft model calcs */
 		if ((GenModel == 6) && ShaftModel.exists()) {  // auto selects model
 			// Compute Mech Power to shaft
-			ShaftModel.fCalc(getVterminal(), getIterminal());  // Returns pshaft at least
+			ShaftModel.calc(getVterminal(), getIterminal());  // Returns pshaft at least
 		}
 	}
-	
+
 	/**
 	 * Compute Injection Current Only when in harmonics mode.
-	 * 
+	 *
 	 * Assumes spectrum is a voltage source behind subtransient reactance and YPrim has been built.
 	 * Vd is the fundamental frequency voltage behind Xd" for phase 1.
 	 */
@@ -1073,7 +1075,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		/* Inj currents = Yprim (E) */
 		YPrim.MVMult(getInjCurrent(), cBuffer);
 	}
-	
+
 	private void calcVTerminalPhase() {
 		int i, j;
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
@@ -1092,9 +1094,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 		}
 
-		GeneratorSolutionCount = sol.getSolutionCount();	
+		GeneratorSolutionCount = sol.getSolutionCount();
 	}
-	
+
 	/**
 	 * Put terminal voltages in an array.
 	 */
@@ -1104,7 +1106,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		GeneratorSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
 	}
-	
+
 	/**
 	 * Calculates generator current and adds it properly into the injcurrent array
 	 * routines may also compute ITerminal (ITerminalUpdated flag).
@@ -1112,7 +1114,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	private void calcGenModelContribution() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
-		
+
 		setITerminalUpdated(false);
 		if (sol.isIsDynamicModel()) {
 			doDynamicMode();
@@ -1141,7 +1143,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 		/* When this is done, ITerminal is up to date */
 	}
-	
+
 	/**
 	 * Difference between currents in YPrim and total current.
 	 */
@@ -1160,7 +1162,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		} else {
 			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 			// some terminals not closed  use admittance model for injection
 			if (OpenGeneratorSolutionCount != sol.getSolutionCount()) {
 
@@ -1193,9 +1195,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				}
 
 				OpenGeneratorSolutionCount = sol.getSolutionCount();
-				
+
 			}
-			
+
 			for (int i = 0; i < Yorder; i++) {
 				Ref = NodeRef[i];
 				if (Ref == -1) {
@@ -1209,14 +1211,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				InjTemp[i] = InjTemp[i].neagte();
 		} */
 	}
-	
+
 	/**
 	 * Compute total currents.
 	 */
 	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 		if (IterminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
 			if (!GenSwitchOpen)
 				calcGenModelContribution();  // Adds totals in Iterminal as a side effect
@@ -1226,7 +1228,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		if (DebugTrace) writeTraceRecord("TotalCurrent");
 	}
-	
+
 	@Override
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
@@ -1242,10 +1244,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		return super.injCurrents();
 	}
-	
+
 	/**
 	 * Gives the currents for the last solution performed.
-	 * 
+	 *
 	 * Do not call SetNominalLoad, as that may change the load values.
 	 */
 	@Override
@@ -1254,7 +1256,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		try {
 			// Copy into buffer array
-			for (int i = 0; i < Yorder; i++) 
+			for (int i = 0; i < Yorder; i++)
 				Curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
@@ -1262,15 +1264,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					"Current buffer not big enough.", 568);
 		}
 	}
-	
+
 	public void resetRegisters() {
-		for (int i = 0; i < NumGenRegisters; i++) 
+		for (int i = 0; i < NumGenRegisters; i++)
 			Registers[i] = 0.0;
 		for (int i = 0; i < NumGenRegisters; i++)
 			Derivatives[i] = 0.0;
-		FirstSampleAfterReset = true;  // initialize for trapezoidal integration	
+		FirstSampleAfterReset = true;  // initialize for trapezoidal integration
 	}
-	
+
 	private void integrate(int Reg, double Deriv, double Interval) {
 		if (DSSGlobals.getInstance().getActiveCircuit().isTrapezoidalIntegration()) {
 			/* Trapezoidal Rule Integration */
@@ -1281,9 +1283,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Registers[Reg] = Registers[Reg] + Interval * Deriv;
 		}
 
-		Derivatives[Reg] = Deriv;	
+		Derivatives[Reg] = Deriv;
 	}
-	
+
 	/**
 	 * Update energy from metered zone.
 	 */
@@ -1304,11 +1306,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				Smag = 0.0;
 				HourValue = 0.0;
 			}
-			
+
 			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 			if (GenON || ckt.isTrapezoidalIntegration()) {
-				/* Make sure we always integrate for Trapezoidal case. 
+				/* Make sure we always integrate for Trapezoidal case.
 				 * Don't need to for Gen Off and normal integration.
 				 */
 				if (ckt.isPositiveSequence()) {
@@ -1329,15 +1331,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public double getPresentkW() {
 		return GenVars.Pnominalperphase * 0.001 * nPhases;
 	}
-	
+
 	public double getPresentKV() {
 		return GenVars.kVGeneratorBase;
 	}
-	
+
 	public double getPresentKVar() {
 		return GenVars.Qnominalperphase * 0.001 * nPhases;
 	}
-	
+
 	/**
 	 * Procedures for setting the dQdV used by the solution object.
 	 */
@@ -1345,14 +1347,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		dQdV = 0.0;
 		GenVars.Qnominalperphase = 0.5 * (varMax + varMin);  // avg of the limits
 	}
-	
+
 	/**
 	 * Bump up vars by 10% of range for next calc.
 	 */
 	public void bumpUpQ() {
 		GenVars.Qnominalperphase = GenVars.Qnominalperphase + 0.1 * (varMax - varMin);
 	}
-	
+
 	public void rememberQV() {
 		var_Remembered = GenVars.Qnominalperphase;
 		calcVterminal();
@@ -1362,14 +1364,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		V_Avg = V_Avg / nPhases;
 		V_Remembered = V_Avg;
 	}
-	
+
 	public void calcDQDV() {
 		double Vdiff;
 		int i;
 
 		calcVterminal();
 		V_Avg = 0.0;
-		for (i = 0; i < nPhases; i++) 
+		for (i = 0; i < nPhases; i++)
 			V_Avg = V_Avg + Vterminal[i].abs();
 		V_Avg = V_Avg / nPhases;
 
@@ -1383,12 +1385,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// this will force a de facto P, Q model
 		dQdVSaved = dQdV;  // Save for next time. Allows generator to be enabled/disabled during simulation.
 	}
-	
+
 	public void resetStartPoint() {
 		GenVars.Qnominalperphase = 1000.0 * kvarBase / nPhases;
 	}
-	
-	@Override 
+
+	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		int i, idx;
 
@@ -1408,17 +1410,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 		}
 
-		F.println();	
+		F.println();
 	}
-	
+
 	/**
 	 * Support for harmonics mode.
 	 */
-	
+
 	@Override
 	public void initHarmonics() {
 		Complex E, Va = null;
-		
+
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
 		setYprimInvalid(true);  // Force rebuild of YPrims
@@ -1448,7 +1450,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			ThetaHarm = 0.0;
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -1491,15 +1493,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		super.initPropertyValues(Generator.NumPropsThisClass);
 	}
-	
+
 	/**
 	 * Support for dynamics mode.
 	 */
-	
+
 	@Override
 	public void initStateVars() {
 		//Complex VNeut;
-		Complex Edp;
+		Complex Edp = null;
 		int i;
 		Complex[] V012 = new Complex[2];  // TODO Check zero based indexing
 		Complex[] I012 = new Complex[2];
@@ -1527,7 +1529,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				MathUtil.phase2SymComp(getIterminal(), I012);
 				// Voltage behind Xdp  (transient reactance), volts
 
-				for (i = 0; i < nPhases; i++) 
+				for (i = 0; i < nPhases; i++)
 					Vabc[i] = sol.getNodeV()[NodeRef[i]];   // Wye Voltage
 				MathUtil.phase2SymComp(Vabc, V012);
 				Edp      = V012[0].subtract( I012[0].multiply(new Complex(0.0, GenVars.Xdp)) );    // Pos sequence
@@ -1547,7 +1549,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			// recalc Mmass and D in case the frequency has changed
 			GenVars.Mmass = 2.0 * GenVars.Hmass * GenVars.kVArating * 1000.0 / GenVars.w0;   // M = W-sec
 			GenVars.D = GenVars.Dpu * GenVars.kVArating * 1000.0 / GenVars.w0;
-			
+
 			GenVars.Pshaft = -getPower(0).getReal(); // Initialize Pshaft to present power Output
 
 			GenVars.Speed  = 0.0;  // relative to synch speed
@@ -1557,9 +1559,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			//int nCond; Complex[] V, I; double X, Pshaft, Theta, Speed, dt, time;
 			if (GenModel == 6) {
 				if (UserModel.exists())
-					UserModel.fInit(Vterminal, Iterminal);
+					UserModel.init(Vterminal, Iterminal);
 				if (ShaftModel.exists())
-					ShaftModel.fInit(Vterminal, Iterminal);
+					ShaftModel.init(Vterminal, Iterminal);
 			}
 
 		} else {
@@ -1571,7 +1573,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			GenVars.dSpeed = 0.0;
 		}
 	}
-	
+
 	@Override
 	public void integrateStates() {
 		Complex TracePower;
@@ -1602,26 +1604,30 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		// Write Dynamics Trace Record
 		if (DebugTrace) {
-			FileWriter TraceStream = new FileWriter(TraceFile, true);
-			BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
-			TraceBuffer.write(String.format("t=%-.5g ", sol.getDynaVars().t));
-			TraceBuffer.write(String.format(" Flag=%d ", sol.getDynaVars().IterationFlag));
-			TraceBuffer.write(String.format(" Speed=%-.5g ", GenVars.Speed));
-			TraceBuffer.write(String.format(" dSpeed=%-.5g ", GenVars.dSpeed));
-			TraceBuffer.write(String.format(" Pshaft=%-.5g ", GenVars.Pshaft));
-			TraceBuffer.write(String.format(" P=%-.5g Q= %-.5g", TracePower.getReal(), TracePower.getImaginary()));
-			TraceBuffer.write(String.format(" M=%-.5g ", GenVars.Mmass));
-			TraceBuffer.newLine();
-			TraceBuffer.close();
-			TraceStream.close();
+			try {
+				FileWriter TraceStream = new FileWriter(TraceFile, true);
+				BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+				TraceBuffer.write(String.format("t=%-.5g ", sol.getDynaVars().t));
+				TraceBuffer.write(String.format(" Flag=%d ", sol.getDynaVars().IterationFlag));
+				TraceBuffer.write(String.format(" Speed=%-.5g ", GenVars.Speed));
+				TraceBuffer.write(String.format(" dSpeed=%-.5g ", GenVars.dSpeed));
+				TraceBuffer.write(String.format(" Pshaft=%-.5g ", GenVars.Pshaft));
+				TraceBuffer.write(String.format(" P=%-.5g Q= %-.5g", TracePower.getReal(), TracePower.getImaginary()));
+				TraceBuffer.write(String.format(" M=%-.5g ", GenVars.Mmass));
+				TraceBuffer.newLine();
+				TraceBuffer.close();
+				TraceStream.close();
+			} catch (IOException e) {
+				// TODO: handle exception
+			}
 		}
 
 		if (GenModel == 6) {
 			if (UserModel.exists()) UserModel.integrate();
 			if (ShaftModel.exists()) ShaftModel.integrate();
-		}	
+		}
 	}
-	
+
 	/**
 	 * Return variables one at a time.
 	 */
@@ -1631,7 +1637,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		N = 0;
 		double Result = -9999.99;  // error return value
-		
+
 		if (i < 0) return Result;  // Someone goofed
 
 		switch (i) {
@@ -1649,7 +1655,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Result = GenVars.dTheta;
 		default:
 			if (UserModel.exists()) {
-				N = UserModel.getNumVars();
+				N = UserModel.numVars();
 				k = (i - NumGenVariables);
 				if (k <= N)
 					return UserModel.getVariable(k);
@@ -1662,10 +1668,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					return ShaftModel.getVariable(k);
 			}
 		}
-			
+
 		return Result;
 	}
-	
+
 	@Override
 	public void setVariable(int i, double Value) {
 		int N, k;
@@ -1687,14 +1693,14 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			GenVars.dTheta = Value ;
 		default:
 			if (UserModel.exists()) {
-				N = UserModel.getNumVars();
+				N = UserModel.numVars();
 				k = (i - NumGenVariables) ;
 				if (k <= N) {
 					UserModel.setVariable(k, Value);
 					return;
 				}
 			}
-			
+
 			// If we get here, must be in the shaft model
 			if (ShaftModel.exists()) {
 				k = (i - (NumGenVariables + N)) ;
@@ -1703,41 +1709,41 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 		}
 	}
-	
+
 	@Override
 	public void getAllVariables(double[] States) {
 		int i, N;
 		N = 0;
-		
+
 		for (i = 0; i < NumGenVariables; i++)
 			States[i] = getVariable(i);
 
 		if (UserModel.exists()) {
-			N = UserModel.getNumVars();
+			N = UserModel.numVars();
 			UserModel.getAllVars(States[NumGenVariables + 1]);
 		}
 
 		if (ShaftModel.exists())
 			ShaftModel.getAllVars(States[NumGenVariables + 1 + N]);
 	}
-	
+
 	@Override
 	public int numVariables() {
 		int Result = NumGenVariables;
 		if (UserModel.exists())
-			Result = Result + UserModel.getNumVars();
+			Result = Result + UserModel.numVars();
 		if (ShaftModel.exists())
-			Result = Result + ShaftModel.getNumVars();
+			Result = Result + ShaftModel.numVars();
 		return Result;
 	}
-	
+
 	@Override
 	public String variableName(int i) {
 		int BuffSize = 255;
 
 		int n, i2;
-		char[] Buff = new char[BuffSize];
-		char pName;
+		//char[] Buff = new char[BuffSize];
+		int pName;
 		String Result = "";
 
 		n = 0;
@@ -1757,8 +1763,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Result = "dTheta (Deg)";
 		default:
 			if (UserModel.exists()) {
-				pName = @Buff;
-				n = UserModel.getNumVars();
+				pName = 0;
+				n = UserModel.numVars();
 				i2 = i - NumGenVariables;
 				if (i2 <= n) {
 					// DLL functions require AnsiString type
@@ -1768,25 +1774,25 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 
 			if (ShaftModel.exists()) {
-				pName = @Buff;
+				pName = 0;
 				i2 = i - NumGenVariables - n;
 				if (i2 >= 0)
 					UserModel.getVarName(i2, pName, BuffSize);
 				Result = String.valueOf(pName);
 			}
 		}
-			
+
 		return Result;
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		String Result = "";
-		
+
 		switch (Index) {
 		case 2:
 			Result = String.format("%.6g", GenVars.kVGeneratorBase);
-		case 3: 
+		case 3:
 			Result = String.format("%.6g", kWBase);
 		case 4:
 			Result = String.format("%.6g", PFNominal);
@@ -1810,13 +1816,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Result = "(" + super.getPropertyValue(Index) + ")";
 		case 35:
 			Result = "(" + super.getPropertyValue(Index) + ")";
-		default:	
+		default:
 			Result = super.getPropertyValue(Index);
 		}
-	
+
 		return Result;
 	}
-	
+
 	/**
 	 * Make a positive sequence model
 	 */
@@ -1852,7 +1858,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		super.makePosSequence();
 	}
-	
+
 	@Override
 	public void setConductorClosed(int Index, boolean Value) {
 		super.setConductorClosed(Index, Value);
@@ -1868,12 +1874,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	public void setPowerFactor(double Value) {
 		PFNominal = Value;
-		syncUpPowerQuantities();	
+		syncUpPowerQuantities();
 	}
-	
+
 	public void setPresentKV(double Value) {
 		GenVars.kVGeneratorBase = Value;
-		
+
 		switch (nPhases) {
 		case 2:
 			VBase = GenVars.kVGeneratorBase * DSSGlobals.InvSQRT3x1000;
@@ -1881,9 +1887,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			VBase = GenVars.kVGeneratorBase * DSSGlobals.InvSQRT3x1000;
 		default:
 			VBase = GenVars.kVGeneratorBase * 1000.0 ;
-		}	
+		}
 	}
-	
+
 	public void setPresentKVar(double Value) {
 		double kVA_Gen;
 
@@ -1895,20 +1901,21 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		} else {
 			setPFNominal(1.0);
 		}
-		
+
 		if ((kWBase * kvarBase) < 0.0)
 			setPFNominal(-getPFNominal());
 
 		kvarMax  = 2.0 * kvarBase;
-		kvarMin  = -kvarMax;	
-	}
-	
-	public void setPresentKW(double Value) {
-		kWBase = Value;
-		syncUpPowerQuantities();	
+		kvarMin  = -kvarMax;
 	}
 
-	private void syncUpPowerQuantities() {
+	public void setPresentKW(double Value) {
+		kWBase = Value;
+		syncUpPowerQuantities();
+	}
+
+	// FIXME Private method in OpenDSS
+	public void syncUpPowerQuantities() {
 		// keep kvar nominal up to date with kW and PF
 		if (getPFNominal() != 0.0) {
 			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(getPFNominal(), 2) - 1.0);
@@ -1922,26 +1929,27 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				GenVars.kVArating = kWBase * 1.2;
 		}
 	}
-	
+
 	private void setDragHandRegister(int Reg, double Value) {
 		if (Value > Registers[Reg])
-			Registers[Reg] = Value;		
+			Registers[Reg] = Value;
 	}
 
-	private void setKwKVar(double PkW, double QkVar) {
+	// FIXME Private method in OpenDSS
+	public void setKwKVar(double PkW, double QkVar) {
 		setkWBase(PkW);
-		setPresentKVar(QkVar);	
+		setPresentKVar(QkVar);
 	}
-	
+
 	/**
 	 * 3-phase Voltage behind transient reactance.
 	 */
 	private void calcVThevDyn() {
 		if (GenSwitchOpen)
 			VThevMag = 0.0;
-		Vthev = ComplexUtil.pclx(VThevMag, GenVars.Theta);	
+		Vthev = ComplexUtil.pclx(VThevMag, GenVars.Theta);
 	}
-	
+
 	public boolean isForcedON() {
 		return ForcedON;
 	}
@@ -1949,7 +1957,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public void setForcedON(boolean forcedON) {
 		ForcedON = forcedON;
 	}
-	
+
 	public double getPowerFactor() {
 		return PFNominal;
 	}
@@ -2105,7 +2113,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public void setDerivatives(double[] derivatives) {
 		Derivatives = derivatives;
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public Complex getYeq() {
@@ -2490,6 +2498,22 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	public void setShapeIsActual(boolean shapeIsActual) {
 		ShapeIsActual = shapeIsActual;
+	}
+
+	public GenUserModel getUserModel() {
+		return UserModel;
+	}
+
+	public void setUserModel(GenUserModel userModel) {
+		UserModel = userModel;
+	}
+
+	public GenUserModel getShaftModel() {
+		return ShaftModel;
+	}
+
+	public void setShaftModel(GenUserModel shaftModel) {
+		ShaftModel = shaftModel;
 	}
 
 }

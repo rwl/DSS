@@ -1,6 +1,5 @@
 package com.epri.dss.conversion.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.ISource;
@@ -9,7 +8,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ISourceImpl extends PCClassImpl implements ISource {
-	
+
 	private static ISourceObj ActiveISourceObj;
 
 	public ISourceImpl() {
@@ -26,10 +25,10 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		NumProperties = ISource.NumPropsThisClass;
-		
+
 		countProperties();   // Get inherited property count
 		allocatePropertyArrays();
 
@@ -61,7 +60,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		// Override help string
 		PropertyHelp[ISource.NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -69,15 +68,15 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		Globals.getActiveCircuit().setActiveCktElement(new ISourceObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing with contents of Parser
-		setActiveISourceObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveISourceObj());
+		setActiveISourceObj((ISourceObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
 
 		int Result = 0;
 
@@ -138,20 +137,20 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 			ParamName = parser.getNextParam();
 			Param     = parser.makeString();
 		}
-		
+
 		ais.recalcElementData();
 		ais.setYprimInvalid(true);
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String OtherSource) {
 		int Result = 0;
 
 		/* See if we can find this line name in the present collection */
 		ISourceObj OtherIsource = (ISourceObj) find(OtherSource);
-		
+
 		if (OtherIsource != null) {
 			ISourceObj ais  = getActiveISourceObj();
 
@@ -171,7 +170,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 			for (int i = 0; i < ais.getParentClass().getNumProperties(); i++)
 				ais.setPropertyValue(i, OtherIsource.getPropertyValue(i));
-			
+
 			Result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Isource makeLike: \"" + OtherSource + "\" Not Found.", 332);
@@ -179,7 +178,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Isource.init", -1);

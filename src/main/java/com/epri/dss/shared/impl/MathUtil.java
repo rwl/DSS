@@ -21,4 +21,14 @@ public abstract class MathUtil {
 
 	}
 
+	public static void symComp2Phase(Complex[] iterminal, Complex[] i012) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static Complex terminalPowerIn(Complex[] vterminal, Complex[] iterminal, int nPhases) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

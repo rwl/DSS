@@ -4,20 +4,19 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
-import com.epri.dss.shared.impl.Complex;
 
 public class GeneratorImpl extends PCClassImpl implements Generator {
-	
+
 	private static GeneratorObj ActiveGeneratorObj;
-	
+
 	private String[] RegisterNames = new String[Generator.NumGenRegisters];
 
 	public GeneratorImpl() {
@@ -42,7 +41,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = Generator.NumPropsThisClass;
@@ -154,7 +153,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 							"Voltage behind Xd' for machine - default. Current injection for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -162,7 +161,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		Globals.getActiveCircuit().setActiveCktElement(new GeneratorObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void setNcondsForConnection() {
 		GeneratorObj ag = getActiveGeneratorObj();
 
@@ -189,9 +188,9 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	private void interpretConnection(String S) {
 		String TestS;
 		GeneratorObj ag = getActiveGeneratorObj();
-		
+
 		TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) { 
+		switch (TestS.charAt(0)) {
 		case 'y':
 			ag.setConnection(0);  /* Wye */
 		case 'w':
@@ -224,7 +223,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		ag.setYorder(ag.getNConds() * ag.getNTerms());
 		ag.setYprimInvalid(true);
 	}
-	
+
 	private static int interpretDispMode(String S) {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'l':
@@ -235,15 +234,15 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			return Generator.DEFAULT;
 		}
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// Continue parsing with contents of parser
-		setActiveGeneratorObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveGeneratorObj());
+		setActiveGeneratorObj((GeneratorObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
 
 		int Result = 0;
 		GeneratorObj ag = getActiveGeneratorObj();
@@ -337,13 +336,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 31:
 					ag.getGenVars().Dpu = parser.makeDouble();
 				case 32:
-					ag.getUserModel().Name = parser.makeString();  // Connect to user written models
+					ag.getUserModel().setName(parser.makeString());  // Connect to user written models
 				case 33:
-					ag.getUserModel().Edit = parser.makeString();  // Send edit string to user model
+					ag.getUserModel().edit(parser.makeString());  // Send edit string to user model
 				case 34:
-					ag.getShaftModel().Name = parser.makeString();
+					ag.getShaftModel().setName(parser.makeString());
 				case 35:
-					ag.getShaftModel().Edit = parser.makeString();
+					ag.getShaftModel().edit(parser.makeString());
 				default:
 					// Inherited parameters
 					classEdit(getActiveGeneratorObj(), ParamPointer - Generator.NumPropsThisClass);
@@ -363,44 +362,48 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 6:
 					/* Set shape objects;  returns nil if not valid */
 					/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
-					ag.setYearlyShapeObj( Globals.getLoadShapeClass().find(ag.getYearlyShape()) );
+					ag.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
-							ag.setkWkvar(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
+							ag.setKwKVar(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
 				case 7:
-					ag.setDailyDispShapeObj( Globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
+					ag.setDailyDispShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
-							ag.setkWkvar(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
+							ag.setKwKVar(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
 				case 8:
-					ag.setDutyShapeObj( Globals.getLoadShapeClass().find(ag.getDutyShape()) );
+					ag.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
-							ag.setkWkvar(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
+							ag.setKwKVar(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
 					}
 
-				case 21: 
+				case 21:
 					if (ag.isDebugTrace()) {
-						File TraceFile = new File(Globals.getDSSDataDirectory() + "GEN_"+ag.getName()+".csv");
-						FileWriter TraceStream = new FileWriter(TraceFile, false);
-						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
-						
-						TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, GenModel, dQdV, Avg_Vpu, Vdiff, MQnominalperphase, MPnominalperphase, CurrentType");
-						
-						for (int i = 0; i < ag.getNPhases(); i++)
-							TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
-						for (int i = 0; i < ag.getNPhases(); i++)
-							TraceBuffer.write(", |Iterm" + String.valueOf(i) + "|");
-						for (int i = 0; i < ag.getNPhases(); i++)
-							TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
-						
-						TraceBuffer.write(",Vthev, Theta");
-						TraceBuffer.newLine();
-						
-						TraceBuffer.close();
-						TraceStream.close();
+						try {
+							File TraceFile = new File(Globals.getDSSDataDirectory() + "GEN_"+ag.getName()+".csv");
+							FileWriter TraceStream = new FileWriter(TraceFile, false);
+							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+
+							TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, GenModel, dQdV, Avg_Vpu, Vdiff, MQnominalperphase, MPnominalperphase, CurrentType");
+
+							for (int i = 0; i < ag.getNPhases(); i++)
+								TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
+							for (int i = 0; i < ag.getNPhases(); i++)
+								TraceBuffer.write(", |Iterm" + String.valueOf(i) + "|");
+							for (int i = 0; i < ag.getNPhases(); i++)
+								TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
+
+							TraceBuffer.write(",Vthev, Theta");
+							TraceBuffer.newLine();
+
+							TraceBuffer.close();
+							TraceStream.close();
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
 					}
 				case 25:
 					ag.setkVANotSet(false);
@@ -418,7 +421,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String OtherGeneratorName) {
 		int i;
@@ -449,7 +452,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setPFNominal(OtherGenerator.getPFNominal());
 			ag.getGenVars().Qnominalperphase = OtherGenerator.getGenVars().Qnominalperphase;
 			ag.setVarMin(OtherGenerator.getVarMin());
-			ag.setVarMax(OtherGenerator.getVarMax());	
+			ag.setVarMax(OtherGenerator.getVarMax());
 			ag.setConnection(OtherGenerator.getConnection());
 			//ag.setRneut(OtherGenerator.getRneut());
 			//ag.setXneut(OtherGenerator.getXneut());
@@ -483,8 +486,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.getGenVars().D              = OtherGenerator.getGenVars().D;
 			ag.getGenVars().Dpu            = OtherGenerator.getGenVars().Dpu;
 
-			ag.getUserModel().Name    = OtherGenerator.getUserModel().Name;  // Connect to user written models
-			ag.getShaftModel().Name   = OtherGenerator.getShaftModel().Name;
+			ag.getUserModel().setName(OtherGenerator.getUserModel().getName());  // Connect to user written models
+			ag.getShaftModel().setName(OtherGenerator.getShaftModel().getName());
 
 			classMakeLike(OtherGenerator);
 
@@ -498,7 +501,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		GeneratorObj p;
@@ -517,7 +520,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Generator.init()", -1);
 		return 0;
 	}
-	
+
 	/**
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
@@ -533,7 +536,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators())
 			pGen.takeSample();
 	}
-	
+
 	public String[] getRegisterNames() {
 		return RegisterNames;
 	}

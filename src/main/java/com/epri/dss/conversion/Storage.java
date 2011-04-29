@@ -1,16 +1,14 @@
 package com.epri.dss.conversion;
 
-import com.epri.dss.shared.impl.Complex;
-
 public interface Storage extends PCClass {
 
-	static int NumStorageRegisters = 6;    
+	static int NumStorageRegisters = 6;
 	static int NumStorageVariables = 4;
-	
+
 	static int STORE_CHARGING    = -1;
 	static int STORE_IDLING      =  0;
 	static int STORE_DISCHARGING =  1;
-	
+
 	/* Dispatch Modes */
 	static int STORE_DEFAULT = 0;
 	static int STORE_LOADMODE = 1;
@@ -52,7 +50,7 @@ public interface Storage extends PCClass {
 	static int propKWRATED    = 26;
 	static int propKWHRATED   = 27;
 	static int propKWHSTORED  = 28;
-	static int propPCTRESERVE = 29;      
+	static int propPCTRESERVE = 29;
 	static int propUSERMODEL  = 30;
 	static int propUSERDATA   = 31;
 	static int propDEBUGTRACE = 32;
@@ -61,15 +59,15 @@ public interface Storage extends PCClass {
 	static int propCHARGETIME = 35;
 
 	static int NumPropsThisClass = 36; // Make this agree with the last property constant
-	
+
 	String[] getRegisterNames();
 
 	void setRegisterNames(String[] registerNames);
-	
+
 	void resetRegistersAll();
-	
+
 	void sampleAll();
-	
+
 	void updateAll();
 
 }

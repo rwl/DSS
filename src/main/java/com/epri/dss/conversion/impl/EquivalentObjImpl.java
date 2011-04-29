@@ -16,7 +16,7 @@ import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
 
 public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
-	
+
 	private double kVBase;
 
 	private double VMag;
@@ -27,9 +27,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	private double[] R1, X1, R0, X0;
 
 	private boolean NeedToDoRecalc;
-	
+
 	// Base Frequency Series Z matrix
-	protected CMatrix Z;  
+	protected CMatrix Z;
 	protected CMatrix Zinv;
 
 	public EquivalentObjImpl(DSSClassImpl ParClass, String SourceName) {
@@ -68,11 +68,11 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		this.Yorder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
-	
+
 	private int idx(int a, int b) {
 		return (b - 1) * nTerms + a;
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		Complex Zs, Zm;
@@ -126,13 +126,13 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		NeedToDoRecalc = false;
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 		Complex Value;
 		int i, j;
 		double FreqMultiplier;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		// Build only YPrim Series
@@ -145,7 +145,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			YPrim_Series.clear();
 			YPrim.clear();
 		}
-		
+
 		if (NeedToDoRecalc)
 			recalcElementData();
 
@@ -157,7 +157,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			for (j = 0; j < Yorder; j++) {
 				Value = Z.getElement(i, j);
 				/* Modify from base freq */
-				Value = new Complex(Value.getReal(), Value.getImaginary() * FreqMultiplier);  
+				Value = new Complex(Value.getReal(), Value.getImaginary() * FreqMultiplier);
 				Zinv.setElement(i, j, Value);
 			}
 		}
@@ -189,7 +189,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		int i;
 		Complex Vharm;
 		double EquivHarm;
-	
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -203,20 +203,20 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			default:
 				VMag = kVBase * PerUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
 			}
-			
+
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
-			
+
 			if (sol.isIsHarmonicModel()) {
 				EquivHarm = sol.getFrequency() / EquivFrequency ;
 				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // Base voltage for this harmonic
 				Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // Rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
-					if (i < nPhases) 
+					if (i < nPhases)
 						Utilities.rotatePhasorDeg(Vharm, EquivHarm, -360.0 / nPhases);
 				}
 			} else {
-				for (i = 0; i < nPhases; i++) 
+				for (i = 0; i < nPhases; i++)
 					Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i - 1) * 360.0 / nPhases));
 			}
 
@@ -232,7 +232,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		getInjCurrents(getInjCurrent());
 		return super.injCurrents();  // Add into system array
 	}
-	
+
 	@Override
 	public void getCurrents(Complex[] Curr) {
 		int i;
@@ -240,31 +240,31 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		try {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
-			for (i = 0; i < Yorder; i++) 
+			for (i = 0; i < Yorder; i++)
 				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
 
 			YPrim.MVMult(Curr, Vterminal);
 
 			getInjCurrents(ComplexBuffer);  // Get present value of inj currents
 			// Add together with Yprim currents
-			for (i = 0; i < Yorder; i++) 
+			for (i = 0; i < Yorder; i++)
 				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
 		} catch (Exception e) {
 			Globals.doErrorMsg(("GetCurrents for Element: " + getName() + "."), e.getMessage(),
 			"Inadequate storage allotted for circuit element.", 805);
 		}
 	}
-	
+
 	@Override
 	public void getInjCurrents(Complex[] Curr) {
-		
+
 		getVterminalForSource();
 		YPrim.MVMult(Curr, Vterminal);  /* I = Y V */
 
-		setITerminalUpdated(false);	
+		setITerminalUpdated(false);
 	}
-	
-	@Override 
+
+	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		int i, j;
 		Complex c;
@@ -289,7 +289,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			}
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -305,14 +305,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		PropertyValue[9]  = "1.9";
 		PropertyValue[10] = "5.7";
 
-		super.initPropertyValues(Equivalent.NumPropsThisClass);	
+		super.initPropertyValues(Equivalent.NumPropsThisClass);
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		switch (Index) {
 		case 0:
-			return null;	
+			return null;
 		default:
 			return super.getPropertyValue(Index);
 		}
@@ -324,7 +324,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public void makePosSequence() {
 		String S;
-		
+
 		S = "Phases=1 ";
 		S = S + String.format("BasekV=%-.5g ", kVBase / DSSGlobals.SQRT3);
 		S = S + String.format("R1=%-.5g ", R1);
@@ -332,27 +332,29 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		Parser.getInstance().setCmdString(S);
 		edit();
-		
+
 		super.makePosSequence();
 	}
-	
-	private int doTerminalsDef(int N) {
+
+	// Private method in OpenDSS
+	public int doTerminalsDef(int N) {
 		int Result = nTerms;
-		
+
 		if (N != nTerms)
 			if (N > 0)
 				reallocRX();
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Parse input string as an array.
 	 */
-	private void parseDblMatrix(double[] Mat) {
+	// Private method in OpenDSS
+	public void parseDblMatrix(double[] Mat) {
 		Parser.getInstance().parseAsSymMatrix(nTerms, Mat);
 	}
-	
+
 	private void reallocRX() {
 		R1 = (double[]) Utilities.resizeArray(R1, (int) Math.pow(nTerms, 2));
 		X1 = (double[]) Utilities.resizeArray(X1, (int) Math.pow(nTerms, 2));
@@ -375,7 +377,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	public void setZinv(CMatrix zinv) {
 		Zinv = zinv;
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public double getkVBase() {

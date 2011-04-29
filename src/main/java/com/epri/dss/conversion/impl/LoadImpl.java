@@ -1,6 +1,5 @@
 package com.epri.dss.conversion.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.Load;
@@ -11,7 +10,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class LoadImpl extends PCClassImpl implements Load {
-	
+
 	private static LoadObj ActiveLoadObj;
 
 	public LoadImpl() {
@@ -192,7 +191,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 	private void setNcondsForConnection() {
 		LoadObj al = getActiveLoadObj();
-		
+
 		switch (al.getConnection()) {
 		case 0:
 			al.setNConds(al.getNPhases() + 1);
@@ -215,7 +214,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	 */
 	private void interpretConnection(String S) {
 		LoadObj al = getActiveLoadObj();
-		
+
 		String TestS = S.toLowerCase();
 		switch (TestS.charAt(0)) {
 		case 'y':
@@ -259,15 +258,15 @@ public class LoadImpl extends PCClassImpl implements Load {
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// Continue parsing with contents of parser
-		setActiveLoadObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveLoadObj());
+		setActiveLoadObj((LoadObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveLoadObj());
 
 		int Result = 0;
 
 		LoadObj al = getActiveLoadObj();
-			
+
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
@@ -278,7 +277,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties)) 
+			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 				al.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -379,20 +378,20 @@ public class LoadImpl extends PCClassImpl implements Load {
 				/* Set shape objects;  returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
 				al.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getYearlyShape()));
-				if (al.getYearlyShapeObj() != null) 
+				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
 						al.setkWkvar(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
-			case 7: 
+			case 7:
 				al.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDailyShape()));
-				if (al.getDailyShapeObj() != null) 
+				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
 						al.setkWkvar(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
 				/* If Yearly load shape is not yet defined, make it the same as Daily */
 				if (al.getYearlyShapeObj() == null)
 					al.setYearlyShapeObj(al.getDailyShapeObj());
-			case 8: 
+			case 8:
 				al.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDutyShape()));
-				if (al.getDutyShapeObj() != null) 
+				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
 						al.setkWkvar(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
 			case 9:
@@ -413,16 +412,16 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		al.recalcElementData();
 		al.setYprimInvalid(true);
-		
+
 		return Result;
 	}
 
 	@Override
 	protected int makeLike(String OtherLoadName) {
 		int Result = 0;
-	
+
 		/* See if we can find this line name in the present collection */
-		LoadObj OtherLoad = find(OtherLoadName);
+		LoadObj OtherLoad = (LoadObj) find(OtherLoadName);
 		if (OtherLoad != null) {
 			LoadObj al = getActiveLoadObj();
 
@@ -442,7 +441,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setkWBase(OtherLoad.getkWBase());
 			al.setkVABase(OtherLoad.getkVABase());
 			al.setKvarBase(OtherLoad.getKvarBase());
-			al.setLoadSpecType(OtherLoad.getLoadSpecType();
+			al.setLoadSpecType(OtherLoad.getLoadSpecType());
 			al.setWNominal(OtherLoad.getWNominal());
 			al.setPFNominal(OtherLoad.getPFNominal());
 			al.setVarNominal(OtherLoad.getVarNominal());
@@ -470,12 +469,12 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setConnectedkVA(OtherLoad.getConnectedkVA());
 			al.setCVRwattFactor(OtherLoad.getCVRwattFactor());
 			al.setCVRvarFactor(OtherLoad.getCVRvarFactor());
-			al.setShapeFactor(OtherLoad.isShapeIsActual());
+			al.setShapeIsActual(OtherLoad.isShapeIsActual());
 
 			classMakeLike(OtherLoad);  // Take care of inherited class properties
 
 
-			for (int i = 0; i < al.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
 				al.setPropertyValue(i, OtherLoad.getPropertyValue(i));
 
 			Result = 1;

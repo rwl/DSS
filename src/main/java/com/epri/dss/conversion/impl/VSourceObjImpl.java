@@ -16,7 +16,7 @@ import com.epri.dss.conversion.VSourceObj;
 import com.epri.dss.shared.CMatrix;
 
 public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
-	
+
 	private double MVAsc3;
 	private double MVAsc1;
 	private double Isc3;
@@ -28,7 +28,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	private double X0R0;
 
 	private int ScanType;
-	
+
 	protected CMatrix Z;  // Base Frequency Series Z matrix
 	protected CMatrix Zinv;
 	protected double VMag;
@@ -180,12 +180,12 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		}
 
 		setSpectrumObj((com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()));
-		if (getSpectrumObj() == null) 
+		if (getSpectrumObj() == null)
 			Globals.doSimpleMsg("Spectrum Object \"" + getSpectrum() + "\" for Device Vsource."+getName()+" Not Found.", 324);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 		Complex Value;
@@ -240,14 +240,14 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		}
 
 		YPrim.copyFrom(YPrim_Series);
-		
+
 		/* Now Account for Open Conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
 		setYprimInvalid(false);
 	}
-	
+
 	private void getVTerminalForSource() {
 		int i;
 		Complex Vharm;
@@ -268,16 +268,16 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			}
 
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
-			
+
 			if (sol.isIsHarmonicModel()) {
-				
+
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // Base voltage for this harmonic
 				Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // Rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
-					VTerminal[i + nPhases] = Complex.ZERO;
-					if (i < nPhases) 
+					Vterminal[i + nPhases] = Complex.ZERO;
+					if (i < nPhases)
 						switch (ScanType) {
 						case 1:
 							Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0 / nPhases); // maintain pos seq
@@ -289,7 +289,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				}
 			} else {
 
-				if (Math.abs(sol.getFrequency() - SrcFrequency) > DSSGlobals.EPSILON2) 
+				if (Math.abs(sol.getFrequency() - SrcFrequency) > DSSGlobals.EPSILON2)
 					VMag = 0.0;  // Solution Frequency and Source Frequency don't match!
 				/* NOTE: RE-uses VTerminal space */
 				for (i = 0; i < nPhases; i++) {
@@ -308,7 +308,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				Globals.setRedirect_Abort(true);
 		}
 	}
-	
+
 	@Override
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
@@ -317,22 +317,22 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		return super.injCurrents();  // Add into system array
 	}
-	
+
 	@Override
 	public void getCurrents(Complex[] Curr) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		try {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
-			for (int i = 0; i < Yorder; i++) 
+			for (int i = 0; i < Yorder; i++)
 				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
 
 			YPrim.MVMult(Curr, Vterminal);  // Current from Elements in System Y
 
 			getInjCurrents(ComplexBuffer);  // Get present value of inj currents
 			// Add together  with Yprim currents
-			for (int i = 0; i < Yorder; i++) 
+			for (int i = 0; i < Yorder; i++)
 				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
 
 		} catch (Exception e) {
@@ -340,7 +340,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 					"Inadequate storage allotted for circuit element.", 327);
 		}
 	}
-	
+
 	/**
 	 * Source injection currents given by this formula:
 	 * 		_     _           _         _
@@ -357,14 +357,14 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		setITerminalUpdated(false);
 	}
-	
-	@Override 
+
+	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		Complex c;
 
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++) 
+		for (int i = 0; i < getParentClass().getNumProperties(); i++)
 			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[i]);
 
 		if (Complete) {
@@ -379,9 +379,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				}
 				F.println();
 			}
-		}	
+		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -405,9 +405,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		PropertyValue[17] = "Pos";
 		PropertyValue[18] = getBus(2);
 
-		super.initPropertyValues(VSource.NumPropsThisClass);	
+		super.initPropertyValues(VSource.NumPropsThisClass);
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		switch (Index) {
@@ -425,17 +425,17 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			return String.format("%-.5g", R1);
 		case 13:
 			return String.format("%-.5g", X1);
-		case 14: 
+		case 14:
 			return String.format("%-.5g", R0);
-		case 15: 
+		case 15:
 			return String.format("%-.5g", X0);
-		case 17: 
+		case 17:
 			return getBus(2);
 		default:
 			return super.getPropertyValue(Index);
 		}
 	}
-	
+
 	/**
 	 * Make a positive sequence model.
 	 */
@@ -449,9 +449,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		Parser.getInstance().setCmdString(S);
 		edit();
 
-		super.makePosSequence();	
+		super.makePosSequence();
 	}
-	
+
 	public CMatrix getZ() {
 		return Z;
 	}
@@ -507,7 +507,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void setSrcFrequency(double srcFrequency) {
 		SrcFrequency = srcFrequency;
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public double getMVAsc3() {
@@ -605,5 +605,5 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void setScanType(int scanType) {
 		ScanType = scanType;
 	}
-	
+
 }

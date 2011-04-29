@@ -4,20 +4,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.conversion.StorageObj;
+import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 import com.epri.dss.shared.impl.Complex;
 
 public class StorageImpl extends PCClassImpl implements Storage {
-	
+
 	public static StorageObj ActiveStorageObj;
-	
+
 	public static Complex[] cBuffer = new Complex[24];
 
 	private String[] RegisterNames = new String[NumStorageRegisters];
@@ -44,7 +44,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = NumPropsThisClass;
@@ -186,7 +186,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		addProperty("debugtrace", propDEBUGTRACE,
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the Storage model " +
 				"for each iteration.  Creates a separate file for each Storage element named \"STORAGE_name.CSV\"." );
-		
+
 		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
@@ -195,7 +195,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 							"Current injection is assumed for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -203,10 +203,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		Globals.getActiveCircuit().setActiveCktElement(new StorageObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void setNcondsForConnection() {
 		StorageObj as = getActiveStorageObj();
-		
+
 		switch (as.getConnection()) {
 		case 0:
 			as.setNConds(as.getNPhases() + 1);
@@ -221,7 +221,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			}
 		}
 	}
-	
+
 	public void updateAll() {
 		StorageObj pElem;
 		for (int i = 0; i < ElementList.size(); i++) {
@@ -274,31 +274,31 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		as.setYorder(as.getNConds() * as.getNTerms());
 		as.setYprimInvalid(true);
 	}
-	
+
 	private int interpretDispMode(String S) {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'e':
 			return STORE_EXTERNALMODE;
 		case 'l':
 			return STORE_LOADMODE;
-		case 'p': 
+		case 'p':
 			return STORE_PRICEMODE;
 		default:
 			return STORE_DEFAULT;
 		}
 	}
-	
+
 	@Override
 	public int edit() {
 		int i, iCase;
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// Continue parsing with contents of parser
-		setActiveStorageObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveStorageObj());
-		
+		setActiveStorageObj((StorageObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
+
 		int Result = 0;
 
 		StorageObj as = getActiveStorageObj();
@@ -374,7 +374,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				case propVMAXPU:
 					as.setVmaxpu(parser.makeDouble());
 				case propSTATE:
-					as.setState(as.interpretState(Param)); 
+					as.setState(as.interpretState(Param));
 				case propKVA:
 					as.setkVArating(parser.makeDouble());
 				case propKWRATED:
@@ -412,38 +412,43 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 					/* Set loadshape objects;  returns nil If not valid */
 				case propYEARLY:
-					as.setYearlyShapeObj(Globals.getLoadShapeClass().find(as.getYearlyShape()));
-				case propDAILY: 
-					as.setDailyShapeObj(Globals.getLoadShapeClass().find(as.getDailyShape()));
+					as.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getYearlyShape()));
+				case propDAILY:
+					as.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDailyShape()));
 				case propDUTY:
-					as.setDutyShapeObj(Globals.getLoadShapeClass().find(as.getDutyShape()));
+					as.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDutyShape()));
 				case propKWRATED:
 					as.setkVArating(as.getkWrating());
 				case propKWHRATED:
-					as.setkWhStored(kWhRating);  // Assume fully charged
+					as.setkWhStored(as.getkWhRating());  // Assume fully charged
 					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
 
 				case propPCTRESERVE:
 					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
 
 				case propDEBUGTRACE:
-					if (as.isDebugTrace()) {  // Init trace file
-						File TraceFile = new File(Globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
-						FileWriter TraceStream = new FileWriter(TraceFile, false);
-						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
-					
-						TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, StorageModel,  Qnominalperphase, Pnominalperphase, CurrentType");
-						for (i = 0; i < as.getNPhases(); i++) 
-							TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
-						for (i = 0; i < as.getNPhases(); i++) 
-							TraceBuffer.write(", |Iterm"+ String.valueOf(i) + "|");
-						for (i = 0; i < as.getNPhases(); i++) 
-							TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
-						TraceBuffer.write(",Vthev, Theta");
-						TraceBuffer.newLine();
-						
-						TraceBuffer.close();
-						TraceStream.close();
+					if (as.isDebugTrace()) {
+						try {
+							// Init trace file
+							File TraceFile = new File(Globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
+							FileWriter TraceStream = new FileWriter(TraceFile, false);
+							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+
+							TraceBuffer.write("t, Iteration, LoadMultiplier, Mode, LoadModel, StorageModel,  Qnominalperphase, Pnominalperphase, CurrentType");
+							for (i = 0; i < as.getNPhases(); i++)
+								TraceBuffer.write(", |Iinj" + String.valueOf(i) + "|");
+							for (i = 0; i < as.getNPhases(); i++)
+								TraceBuffer.write(", |Iterm"+ String.valueOf(i) + "|");
+							for (i = 0; i < as.getNPhases(); i++)
+								TraceBuffer.write(", |Vterm" + String.valueOf(i) + "|");
+							TraceBuffer.write(",Vthev, Theta");
+							TraceBuffer.newLine();
+
+							TraceBuffer.close();
+							TraceStream.close();
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
 					}
 
 				case propKVA:
@@ -457,10 +462,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		as.recalcElementData();
 		as.setYprimInvalid(true);
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Copy over essential properties from other object.
 	 */
@@ -468,10 +473,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	protected int makeLike(String OtherStorageObjName) {
 		int Result = 0;
 		/* See If we can find this line name in the present collection */
-		StorageObj OtherStorageObj = find(OtherStorageObjName);
+		StorageObj OtherStorageObj = (StorageObj) find(OtherStorageObjName);
 		if (OtherStorageObj != null) {
 			StorageObj as = getActiveStorageObj();
-		
+
 			if (as.getNPhases() != OtherStorageObj.getNPhases()) {
 				as.setNPhases(OtherStorageObj.getNPhases());
 				as.setNConds(as.getNPhases());  // Forces reallocation of terminal stuff
@@ -531,17 +536,17 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			classMakeLike(OtherStorageObj);
 
-			for (int i = 0; i < as.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < as.getParentClass().getNumProperties(); i++)
 				as.setPropertyValue(i, OtherStorageObj.getPropertyValue(i));
 
 			Result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherStorageObjName + "\" Not Found.", 562);
 		}
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 
@@ -558,10 +563,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			pElem.randomize(0);
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Storage.init", -1);			
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement Storage.init", -1);
 		return 0;
 	}
-	
+
 	/**
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
@@ -574,7 +579,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			idx = getNext();
 		}
 	}
-	
+
 	/**
 	 * Force all EnergyMeters in the circuit to take a sample.
 	 */
@@ -586,7 +591,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				pElem.takeSample();
 		}
 	}
-	
+
 	public String[] getRegisterNames() {
 		return RegisterNames;
 	}
