@@ -397,7 +397,7 @@ public interface Circuit extends NamedObject {
 
 	void setActiveCktElement(CktElement shuntElement);
 
-	DSSCktElement getActiveCktElement();
+	CktElement getActiveCktElement();
 
 	void setBusNameRedefined(boolean Value);
 

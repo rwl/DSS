@@ -18,7 +18,6 @@ import com.epri.dss.general.WireData;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.Monitor;
 import com.epri.dss.meter.Sensor;
-import com.epri.dss.parser.Parser;
 
 public interface IDSSGlobals {
 
@@ -78,17 +77,17 @@ public interface IDSSGlobals {
 
 	void setMaxAllocationIterations(int maxAllocationIterations);
 
-	PointerList getCircuits();
-
-	void setCircuits(PointerList circuits);
-
-	PointerList getDSSObjs();
-
-	void setDSSObjs(PointerList dSSObjs);
-
-	Parser getAuxParser();
-
-	void setAuxParser(Parser auxParser);
+//	PointerList getCircuits();
+//
+//	void setCircuits(PointerList circuits);
+//
+//	PointerList getDSSObjs();
+//
+//	void setDSSObjs(PointerList dSSObjs);
+//
+//	Parser getAuxParser();
+//
+//	void setAuxParser(Parser auxParser);
 
 	boolean isErrorPending();
 

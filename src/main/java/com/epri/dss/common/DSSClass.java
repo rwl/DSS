@@ -2,6 +2,8 @@ package com.epri.dss.common;
 
 import java.util.ArrayList;
 
+import com.epri.dss.shared.PointerList;
+
 public interface DSSClass {
 
 	int getNumProperties();
@@ -28,9 +30,9 @@ public interface DSSClass {
 
 	void setDSSClassType(int dSSClassType);
 
-	ArrayList<CktElement> getElementList();
+	PointerList getElementList();
 
-	void setElementList(ArrayList<CktElement> elementList);
+	void setElementList(PointerList elementList);
 
 	boolean isElementNamesOutOfSynch();
 

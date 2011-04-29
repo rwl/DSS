@@ -8,24 +8,41 @@ import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.executive.ExecOptions;
 import com.epri.dss.executive.Executive;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 
-public class ExecOptionsImpl implements ExecOptions {
+public class ExecOptions {
 
 	private static final String CRLF = DSSGlobals.CRLF;
 
-	private final static int NumExecOptions = 79;
+	public final static int NumExecOptions = 79;
 
 	private String[] ExecOption;
 	private String[] OptionHelp;
 
 	private CommandList OptionList;
 
-	public ExecOptionsImpl() {
+	// Private constructor prevents instantiation from other classes
+	private ExecOptions() {
+		defineOptions();
+	}
+
+	/**
+	 * ExecOptionsHolder is loaded on the first execution of
+	 * ExecOptions.getInstance() or the first access to
+	 * ExecOptionsHolder.INSTANCE, not before.
+	 */
+	private static class ExecOptionsHolder {
+		public static final ExecOptions INSTANCE = new ExecOptions();
+	}
+
+	public static ExecOptions getInstance() {
+		return ExecOptionsHolder.INSTANCE;
+	}
+
+	private void defineOptions() {
 
 		this.ExecOption = new String[NumExecOptions];
 
@@ -314,29 +331,37 @@ public class ExecOptionsImpl implements ExecOptions {
 		this.OptionHelp[78] = "Size of transformer marker. Default is 1.";
 	}
 
+	public String getExecOption(int i) {
+		return ExecOption[i];
+	}
+
+	public String getOptionHelp(int i) {
+		return OptionHelp[i];
+	}
+
 	/**
 	 * Set Commands that do not require a circuit.
-	 * 
+	 *
 	 * This is for setting global options that do not require an active circuit.
 	 */
 	public static boolean doSetCmd_NoCircuit() {
 		boolean Result = true;
-		
+
 		Parser parser = Parser.getInstance();
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		// Continue parsing command line
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
-		
+
 		while (Param.length() > 0) {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
 				ParamPointer = OptionList.getCommand(ParamName);
 			}
-			
+
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set Command ", 130);
@@ -345,7 +370,7 @@ public class ExecOptionsImpl implements ExecOptions {
 			case 56:
 				Globals.setDataPath(Param);  // Set a legal data path
 			case 66:
-				Executive.DSSExecutive.setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getDSSExecutive().setRecorderOn(Utilities.interpretYesNo(Param));
 			case 72:
 				Globals.setDefaultBaseFreq(parser.makeDouble());
 			default:
@@ -357,13 +382,13 @@ public class ExecOptionsImpl implements ExecOptions {
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
 		}
-		
+
 		return Result;
 	}
 
 	/**
 	 * Set DSS Options.
-	 * 
+	 *
 	 * Solve Command is re-routed here first to set options before solving.
 	 */
 	public static int doSetCmd(int SolveOption) {
@@ -379,14 +404,14 @@ public class ExecOptionsImpl implements ExecOptions {
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
-		
+
 		while (Param.length() > 0) {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
 				ParamPointer = OptionList.getCommand(ParamName);
 			}
-			
+
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set Command ", 130);
@@ -497,7 +522,7 @@ public class ExecOptionsImpl implements ExecOptions {
 				if (TestLoadShapeObj != null)
 					Globals.getActiveCircuit().setDefaultDailyShapeObj(TestLoadShapeObj);
 			case 46:
-				TestLoadShapeObj = Globals.getLoadShapeClass().find(Param);
+				TestLoadShapeObj = (LoadShapeObj) Globals.getLoadShapeClass().find(Param);
 				if (TestLoadShapeObj != null)
 					Globals.getActiveCircuit().setDefaultYearlyShapeObj(TestLoadShapeObj);
 			case 47:
@@ -510,7 +535,7 @@ public class ExecOptionsImpl implements ExecOptions {
 				ckt = Globals.getActiveCircuit();
 				ckt.setPriceCurve(Param);
 				ckt.setPriceCurveObj((LoadShapeObj) Globals.getLoadShapeClass().find(Param));
-				if (ckt.getPriceCurveObj() == null) 
+				if (ckt.getPriceCurveObj() == null)
 					Globals.doSimpleMsg("Price Curve: \"" +Param+ "\" not found.", 132);
 			case 51:
 				ckt = Globals.getActiveCircuit();
@@ -520,7 +545,7 @@ public class ExecOptionsImpl implements ExecOptions {
 					Globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );   // bus connected to terminal
 				}
 			case 52:
-				Globals.getActiveCircuit().setFundamental(parser.makeDouble();  // Set Base Frequency for system (used henceforth)
+				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // Set Base Frequency for system (used henceforth)
 				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 			case 53:
 				ExecHelper.doHarmonicsList(Param);
@@ -550,7 +575,7 @@ public class ExecOptionsImpl implements ExecOptions {
 			case 65:
 				Globals.getActiveCircuit().setLogEvents(Utilities.interpretYesNo(Param));
 			case 66:
-				Executive.DSSExecutive.setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getDSSExecutive().setRecorderOn(Utilities.interpretYesNo(Param));
 			case 67:
 				Globals.getEnergyMeterClass().setDo_OverloadReport(Utilities.interpretYesNo(Param));
 			case 68:
@@ -584,7 +609,7 @@ public class ExecOptionsImpl implements ExecOptions {
 			default:
 				// Ignore excess parameters
 			}
-			
+
 			switch (ParamPointer) {
 			case 3:
 				Globals.getActiveCircuit().getSolution().updateDblHour();
@@ -609,7 +634,7 @@ public class ExecOptionsImpl implements ExecOptions {
 	public static int doGetCmd() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Circuit ckt;
-		
+
 		int Result = 0;
 		int ParamPointer;
 		try {
@@ -718,7 +743,7 @@ public class ExecOptionsImpl implements ExecOptions {
 				case 38:
 					ckt = Globals.getActiveCircuit();
 					Globals.setGlobalResult("(");
-					for (double vBase : ckt.getLegalVoltageBases()) 
+					for (double vBase : ckt.getLegalVoltageBases())
 						Globals.setGlobalResult(Globals.getGlobalResult() + String.format("%-g, ", vBase));
 					Globals.setGlobalResult(Globals.getGlobalResult() + ")");
 				case 39:
@@ -735,13 +760,13 @@ public class ExecOptionsImpl implements ExecOptions {
 						Globals.appendGlobalResult("No");
 					}
 				case 41:
-					for (int i = 0; i < Globals.getActiveCircuit().getAutoAddBusList().listSize(); i++) 
+					for (int i = 0; i < Globals.getActiveCircuit().getAutoAddBusList().listSize(); i++)
 						Globals.appendGlobalResult(Globals.getActiveCircuit().getAutoAddBusList().get(i));
 				case 42:
 					Globals.appendGlobalResult(Utilities.getControlModeID());
 				case 43:
 					if (Globals.getActiveCircuit().getControlQueue().getTrace()) {
-						Globals.appendGlobalResult("Yes"); 
+						Globals.appendGlobalResult("Yes");
 					} else {
 						Globals.appendGlobalResult("No");
 					}
@@ -772,7 +797,7 @@ public class ExecOptionsImpl implements ExecOptions {
 					if (sol.isDoAllHarmonics()) {
 						Globals.appendGlobalResult("ALL");
 					} else {
-						for (int i = 0; i < sol.getHarmonicListSize(); i++) 
+						for (int i = 0; i < sol.getHarmonicListSize(); i++)
 							Globals.appendGlobalResult(String.format("%-g", sol.getHarmonicList()[i]));
 					}
 				case 54:
@@ -783,8 +808,8 @@ public class ExecOptionsImpl implements ExecOptions {
 					Globals.appendGlobalResult(Globals.getDSSDataDirectory());
 				case 57:
 					ckt = Globals.getActiveCircuit();
-					for (int i = 0; i < ckt.getNumBuses(); i++) 
-						if (ckt.getBuses()[i].isKeep()) 
+					for (int i = 0; i < ckt.getNumBuses(); i++)
+						if (ckt.getBuses()[i].isKeep())
 							Globals.appendGlobalResult(ckt.getBusList().get(i));
 				case 58:
 					Globals.appendGlobalResult(Globals.getActiveCircuit().getReductionStrategyString());
@@ -815,7 +840,7 @@ public class ExecOptionsImpl implements ExecOptions {
 						Globals.appendGlobalResult("No");
 					}
 				case 66:
-					if (Executive.DSSExecutive.isRecorderOn()) {
+					if (DSSExecutive.getDSSExecutive().isRecorderOn()) {
 						Globals.appendGlobalResult("Yes");
 					} else {
 						Globals.appendGlobalResult("No");
@@ -879,7 +904,7 @@ public class ExecOptionsImpl implements ExecOptions {
 		} catch (Exception e) {
 			Globals.appendGlobalResult("***Error***");
 		}
-	
+
 		return Result;
 	}
 

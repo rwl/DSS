@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
-import com.epri.dss.executive.ExecCommands;
+import com.epri.dss.executive.IExecCommands;
 import com.epri.dss.executive.ExecOptions;
 import com.epri.dss.executive.Executive;
 import com.epri.dss.shared.impl.CommandListImpl;
@@ -22,7 +22,7 @@ public class DSSExecutive implements Executive {
 	public DSSExecutive() {
 		super();
 		
-		ExecCommands.CommandList = null;
+		IExecCommands.CommandList = null;
 		
 		ExecOptions.OptionList = null;
 		
@@ -35,8 +35,8 @@ public class DSSExecutive implements Executive {
 		
 		Parser.INSTANCE = new Parser();  // Create global parser object
 		
-		ExecCommands.LastCmdLine = "";
-		ExecCommands.RedirFile = "";
+		IExecCommands.LastCmdLine = "";
+		IExecCommands.RedirFile = "";
 		
 		this.RecorderOn = false;
 		this.RecorderFile = "";
@@ -49,7 +49,7 @@ public class DSSExecutive implements Executive {
 		
 		DSSGlobals.getInstance().clearAllCircuits();
 		
-		ExecCommands.CommandList = null;
+		IExecCommands.CommandList = null;
 		ExecOptions.OptionList = null;
 		DSSGlobals.getInstance().setCircuits(null);
 		
@@ -90,11 +90,11 @@ public class DSSExecutive implements Executive {
 	}
 
 	public String getCommand() {
-		return ExecCommands.getLastCmdLine();
+		return IExecCommands.getLastCmdLine();
 	}
 
 	public void setCommand(String Value) {
-		ExecCommands.processCommand(Value);
+		IExecCommands.processCommand(Value);
 	}
 
 	public void clear() {

@@ -26,62 +26,62 @@ public class PointerListImpl implements PointerList {
 		this.IncrementSize = MaxAllocated;
 	}
 
-	public Object Get_First() {
-	    if (NumInList > 0) {
-	       ActiveItem = 0;
-	       return List[ActiveItem];
-	    } else {
-	        ActiveItem = -1;
-	        return null;
-	    }
-	}
-
-	public Object Get_Next() {
+	public Object getFirst() {
 		if (NumInList > 0) {
-	       ActiveItem += 1;
-	       if (ActiveItem > NumInList) {
-	          ActiveItem = NumInList;
-	          return null;
-	       } else {
-	    	   return List[ActiveItem];
-	       }
+		ActiveItem = 0;
+		return List[ActiveItem];
 		} else {
 			ActiveItem = -1;
 			return null;
 		}
 	}
 
-	public Object Get_Active() {
+	public Object getNext() {
+		if (NumInList > 0) {
+		ActiveItem += 1;
+		if (ActiveItem > NumInList) {
+			ActiveItem = NumInList;
+			return null;
+		} else {
+			return List[ActiveItem];
+		}
+		} else {
+			ActiveItem = -1;
+			return null;
+		}
+	}
+
+	public Object getActive() {
 		if ((ActiveItem > 0) && (ActiveItem <= NumInList)) {
-			return Get(ActiveItem);
+			return get(ActiveItem);
 		} else {
 			return null;
 		}
 	}
 
-	public void Set_New(Object Value) {
-		Add(Value);
+	public void setNew(Object Value) {
+		add(Value);
 	}
 
-	public void Clear() {
-	    ActiveItem = -1;
-	    NumInList = 0;
+	public void clear() {
+		ActiveItem = -1;
+		NumInList = 0;
 	}
 
 	/* Returns index of item */
-	public int Add(Object p) {
+	public int add(Object p) {
 		NumInList += 1;
-	    if (NumInList > MaxAllocated) {
-	        MaxAllocated = MaxAllocated + IncrementSize;
-	        // FIXME: Resize array
-	        List = new Object[MaxAllocated];
-	    }
-	    List[NumInList] = p;
-	    ActiveItem = NumInList;
+		if (NumInList > MaxAllocated) {
+			MaxAllocated = MaxAllocated + IncrementSize;
+			// FIXME: Resize array
+			List = new Object[MaxAllocated];
+		}
+		List[NumInList] = p;
+		ActiveItem = NumInList;
 		return NumInList;
 	}
 
-	public Object Get(int i) {
+	public Object get(int i) {
 		if ((i < 1) || (i > NumInList)) {
 			return null;
 		} else {
@@ -90,12 +90,12 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
-	public int Get_ListSize() {
-		return this.NumInList;
+	public int size() {
+		return NumInList;
 	}
 
-	public int Get_ActiveIndex() {
-		return this.ActiveItem;
+	public int getActiveIndex() {
+		return ActiveItem;
 	}
 
 }

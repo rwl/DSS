@@ -17,7 +17,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	protected int classEdit(Object ActiveCktElemObj, int ParamPointer) {
 		// continue parsing with contents of Parser
 		if (ParamPointer >= 0) {  // TODO Check zero based indexing
-			CktElement cktElem = DSSCktElement(ActiveCktElemObj); // FIXME Translate this
+			CktElement cktElem = (CktElement) ActiveCktElemObj;
 			switch (ParamPointer) {
 			case 0:
 				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
@@ -31,9 +31,9 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	}
 
 	protected void classMakeLike(Object OtherObj) {
-		CktElement OtherCktObj = DSSCktElement(OtherObj);  // TODO Translate this
+		CktElement OtherCktObj = (CktElement) OtherObj;
 
-		CktElement cktElem = DSSCktElement(DSSGlobals.getInstance().getActiveDSSObject());  // TODO Translate this
+		CktElement cktElem = (CktElement) DSSGlobals.getInstance().getActiveDSSObject();
 		cktElem.setBaseFrequency(OtherCktObj.getBaseFrequency());
 		cktElem.setEnabled(true);
 	}

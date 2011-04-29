@@ -22,6 +22,7 @@ import org.w3c.dom.Node;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -39,22 +40,22 @@ import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.ReactorObj;
-import com.epri.dss.executive.ExecCommands;
-import com.epri.dss.executive.ExecOptions;
 import com.epri.dss.executive.Executive;
-import com.epri.dss.executive.impl.ExecCommandsImpl;
+import com.epri.dss.executive.impl.DSSExecutive;
+import com.epri.dss.executive.impl.ExecCommands;
+import com.epri.dss.executive.impl.ExecOptions;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 
 public class Utilities {
-	
+
 	private static final int ZERONULL = 0;
 	private static final String padString = "                                                  "; // 50 blanks
 	private static final String padDotsString = " ................................................."; // 50 dots
 
 	private Utilities() {
 	}
-	
+
 	public static String expandFileName(String child) {
 		try {
 			return new File(System.getProperty("user.dir"), child).getCanonicalPath();
@@ -64,15 +65,15 @@ public class Utilities {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Reallocates an array with a new size, and copies the contents
 	 * of the old array to the new array.
-	 * 
+	 *
 	 * @param oldArray the old array, to be reallocated.
 	 * @param newSize the new array size.
 	 * @return A new array with the same contents.
-	 * 
+	 *
 	 * @see http://www.source-code.biz/snippets/java/3.htm
 	 * @author Christian d'Heureuse <chdh@source-code.biz>
 	 * @license LGPL
@@ -89,7 +90,7 @@ public class Utilities {
 
 	public static int compareTextShortest(String S1, String S2) {
 		String TestStr;
-		
+
 		if (S1.length() < S2.length()) {
 			TestStr = S2.substring(0, S1.length());  // TODO Check zero based indexing
 			return TestStr.equals(S1) ? 1 : 0;
@@ -145,7 +146,7 @@ public class Utilities {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public static void doShellCmd(String CmdString) {
 		// FIXME Implement this method (assessing security concerns)
 		throw new UnsupportedOperationException();
@@ -210,7 +211,7 @@ public class Utilities {
 			default:
 				return Dynamics.MONTECARLO1;
 			}
-		case 'p': 
+		case 'p':
 			return Dynamics.PEAKDAY;
 		case 'a':
 			return Dynamics.AUTOADDFLAG;
@@ -256,7 +257,7 @@ public class Utilities {
 	public static int interpretLoadModel(String s) {
 		int Result;
 		String S2 = s.toLowerCase();
-		
+
 		switch (S2.charAt(0)) {
 		case 'a':
 			Result = DSSGlobals.ADMITTANCE;
@@ -265,24 +266,24 @@ public class Utilities {
 		default:
 			Result = DSSGlobals.ADMITTANCE;
 		}
-		
+
 		/* If this represents a change, invalidate all the PC Yprims */
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		if (Result != ckt.getSolution().getLoadModel())
 			ckt.invalidateAllPCElements();
-		
+
 		return Result;
 	}
 
-	/** 
+	/**
 	 * Interpret yes/no properties - can also be true/false.
 	 */
 	public static boolean interpretYesNo(String s) {
 		String S2 = s.toLowerCase();
 		switch (S2.charAt(0)) {
-		case 'y': 
+		case 'y':
 			return true;
-		case 't': 
+		case 't':
 			return true;
 		case 'n':
 			return false;
@@ -327,7 +328,7 @@ public class Utilities {
 
 	/**
 	 * Accepts (Case insensitive)
-	 *   delta or LL    Result = 1       
+	 *   delta or LL    Result = 1
 	 *   Y, wye, or LN  Result = 0
 	 */
 	public static int interpretConnection(String s) {
@@ -396,7 +397,7 @@ public class Utilities {
 		FileInputStream fileStream = null;
 		BufferedInputStream bufferedStream = null;
 		DataInputStream dataStream = null;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		Globals.getAuxParser().setCmdString(s);
@@ -448,7 +449,7 @@ public class Utilities {
 			// TODO Implement this section
 		} else {
 			// Parse list of values off input string
-		
+
 			// Parse Values of array list
 			for (int i = 0; i < MaxValues; i++) {
 				ResultArray[i] = Globals.getAuxParser().makeDouble();  // Fills array with zeros if we run out of numbers
@@ -467,9 +468,9 @@ public class Utilities {
 		FileInputStream fileStream = null;
 		BufferedInputStream bufferedStream = null;
 		DataInputStream dataStream = null;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.getAuxParser().setCmdString(s);
 		String ParmName = Globals.getAuxParser().getNextParam();
 		String Param = Globals.getAuxParser().makeString();
@@ -480,7 +481,7 @@ public class Utilities {
 		if (ParmName.equals("file")) {
 			// load the list from a file
 			try {
-				// FIXME Use BufferedReader not BufferedInputStream 
+				// FIXME Use BufferedReader not BufferedInputStream
 				fileStream = new FileInputStream(Param);
 				bufferedStream = new BufferedInputStream(fileStream);
 				dataStream = new DataInputStream(bufferedStream);
@@ -509,7 +510,7 @@ public class Utilities {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		} else {  // Parse list of values off input string
 
 			// Parse Values of array list
@@ -529,7 +530,7 @@ public class Utilities {
 		char ch;
 		String s2;
 		double Result;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		/* Try to convert and see if we get an error */
@@ -558,7 +559,7 @@ public class Utilities {
 				return Result;
 			}
 		}
-			
+
 		return Result;
 	}
 
@@ -594,7 +595,7 @@ public class Utilities {
 				FileInputStream fileStream = new FileInputStream(Param);
 				DataInputStream dataStream = new DataInputStream(fileStream);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
-				
+
 				while ((Param = reader.readLine()) != null) {
 					if (Param != "") {  // Ignore blank lines in file
 						Size += 1;
@@ -611,7 +612,7 @@ public class Utilities {
 			} catch (Exception e) {
 				Globals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
 			}
-			
+
 		} else {  // Parse list of values off input string
 
 			// Parse Values of array list
@@ -639,7 +640,7 @@ public class Utilities {
 	public static void interpretStringListArray(String s, ArrayList<String> ResultList) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		String NextParam;
-		
+
 		// Throw away any previous allocation
 		ResultList.clear();
 
@@ -655,7 +656,7 @@ public class Utilities {
 				FileInputStream fileStream = new FileInputStream(Param);
 				DataInputStream dataStream = new DataInputStream(fileStream);
 				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
-				
+
 				while ((Param = reader.readLine()) != null) {
 					Globals.getAuxParser().setCmdString(Param);
 					ParmName = Globals.getAuxParser().getNextParam();
@@ -679,7 +680,7 @@ public class Utilities {
 			}
 		}
 	}
-	
+
 	public static void parseObjectClassandName(String FullObjName, String ClassName, String ObjName) {
 		// Split off obj class and name
 		int dotpos = FullObjName.indexOf('.');  // TODO Check zero based indexing
@@ -768,7 +769,7 @@ public class Utilities {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		if (ckt != null) {
 			switch (ckt.getSolution().getRandomType()) {
-			case 0: 
+			case 0:
 				return "None";
 			case DSSGlobals.GAUSSIAN:
 				return "Gaussian";
@@ -786,7 +787,7 @@ public class Utilities {
 
 	public static String getLoadModel() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		switch (ckt.getSolution().getLoadModel()) {
 		case DSSGlobals.ADMITTANCE:
 			return "Admittance";
@@ -799,7 +800,7 @@ public class Utilities {
 		@SuppressWarnings("unused")
 		String ParamName;
 		String Param = " ";
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		// Parse the line once to get the count of tokens on string, S
@@ -855,7 +856,7 @@ public class Utilities {
 	public static boolean isStubLine(CktElement Elem) {
 		double Ztest;
 		LineObj LineElement = (LineObj) Elem;
-		
+
 		/* Get Positive Sequence or equivalent from matrix */
 		if (LineElement.isSymComponentsModel()) {
 			Ztest = (new Complex(LineElement.getR1(), LineElement.getX1())).abs() * LineElement.getLen();
@@ -868,7 +869,7 @@ public class Utilities {
 			}
 		}
 
-		if (Ztest <= DSSGlobals.getInstance().getActiveCircuit().getReductionZmag()) { 
+		if (Ztest <= DSSGlobals.getInstance().getActiveCircuit().getReductionZmag()) {
 			return true;
 		} else {
 			return false;
@@ -881,7 +882,7 @@ public class Utilities {
 	 */
 	public static int getCktElementIndex(String fullObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		int DevClassIndex, DevIndex;
 		String DevClassName = null, DevName = null;
 
@@ -900,7 +901,7 @@ public class Utilities {
 				return DevIndex;
 			DevIndex = ckt.getDeviceList().findNext();
 		}
-					
+
 		return 0;
 	}
 
@@ -915,14 +916,14 @@ public class Utilities {
 			return "*****";
 		}
 	}
-	
+
 //	/**
 //	 * Replace CRLF with a \n character sequence.
 //	 */
 //	private String replaceCRLF(String S) {
 //		return S;
 //	}
-//	
+//
 //	/**
 //	 * Replace \n character sequence with CRLF.
 //	 */
@@ -932,7 +933,7 @@ public class Utilities {
 
 	public static void dumpAllocationFactors(String FileName) {
 		PrintWriter F;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -958,7 +959,7 @@ public class Utilities {
 
 	public static void dumpAllDSSCommands(String FileName) {
 		PrintWriter F;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -973,20 +974,20 @@ public class Utilities {
 		// dump Executive commands
 		F.println("[execcommands]");
 		for (int i = 0; i < ExecCommands.NumExecCommands; i++) {
-			F.println(i,", \"", ExecCommands.getExecCommand()[i], "\", \"", ExecCommands.getCommandHelp()[i], "\"");
+			F.println(i +" + \"" + ExecCommands.getInstance().getExecCommand(i) + "\" \"" + ExecCommands.getInstance().getCommandHelp(i) + "\"");
 		}
 
 		// Dump Executive Options
 		F.println("[execoptions]");
 		for (int i = 0; i < ExecOptions.NumExecOptions; i++) {
-			F.println(i, ", \"", ExecOptions.getExecOption()[i], "\", \"", ExecOptions.getOptionHelp()[i], "\"");
+			F.println(i + ", \"" + ExecOptions.getInstance().getExecOption(i) + "\", \"" + ExecOptions.getInstance().getOptionHelp(i) + "\"");
 		}
 
 		// Dump all present DSSClasses
 		for (DSSClass pClass : Globals.getDSSClassList()) {
-			F.println("[", pClass.getName(), "]");
-			for (int i = 0; i < pClass.getNumProperties(); i++) 
-				F.println(i, ", \"", pClass.getPropertyName()[i], "\", \"", pClass.getPropertyHelp()[i], "\"");
+			F.println("[" + pClass.getName() + "]");
+			for (int i = 0; i < pClass.getNumProperties(); i++)
+				F.println(i + ", \"" + pClass.getPropertyName()[i] + "\" \"" + pClass.getPropertyHelp()[i] + "\"");
 		}
 
 		F.close();
@@ -997,7 +998,7 @@ public class Utilities {
 	 */
 	public static double nearestBasekV(double kV) {
 		double Diff;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		int Count = 1;
@@ -1021,7 +1022,7 @@ public class Utilities {
 	public static boolean savePresentVoltages() {
 		PrintWriter F;
 		double dNumNodes;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -1035,7 +1036,7 @@ public class Utilities {
 		try {
 			Circuit ckt = Globals.getActiveCircuit();
 			SolutionObj sol = ckt.getSolution();
-		
+
 			dNumNodes = ckt.getNumNodes();
 			F.printf("%.d",  dNumNodes);
 			for (int i = 0; i < ckt.getNumNodes(); i++) {
@@ -1047,7 +1048,7 @@ public class Utilities {
 			Globals.doSimpleMsg("Error writing file to save voltages: " + e.getMessage(), 712);
 			return false;
 		}
-	
+
 		return true;
 	}
 
@@ -1061,7 +1062,7 @@ public class Utilities {
 	 */
 	public static boolean initializeForHarmonics() {
 		if (savePresentVoltages()) {  // Zap voltage vector to disk
-			for (PCElement pcElem : DSSGlobals.getInstance().getActiveCircuit().getPCElements()) 
+			for (PCElement pcElem : DSSGlobals.getInstance().getActiveCircuit().getPCElements())
 				pcElem.initHarmonics();
 			return true;
 		} else {
@@ -1071,7 +1072,7 @@ public class Utilities {
 
 	/**
 	 * Does all PC elements.
-	 * 
+	 *
 	 * If state variables not defined for a PC class, does nothing.
 	 */
 	public static void calcInitialMachineStates() {
@@ -1085,7 +1086,7 @@ public class Utilities {
 	 * For now, just does generators.
 	 */
 	public static void invalidateAllMachines() {
-		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators()) 
+		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators())
 			pGen.setYprimInvalid(true);
 	}
 
@@ -1120,13 +1121,13 @@ public class Utilities {
 	 * Rotate a phasor by an angle and harmonic.
 	 */
 	public static void rotatePhasorDeg(Complex Phasor, double h, double AngleDeg) {
-		Phasor = Phasor.multiply( ComplexUtils.polar2Complex(1.0, Math.toRadians(h * AngleDeg)) );
+		Phasor = Phasor.multiply( ComplexUtil.polar2Complex(1.0, Math.toRadians(h * AngleDeg)) );
 	}
 
 	public static void rotatePhasorRad(Complex Phasor, double h, double AngleRad) {
-		Phasor = Phasor.multiply( ComplexUtils.polar2Complex(1.0, h * AngleRad) );
+		Phasor = Phasor.multiply( ComplexUtil.polar2Complex(1.0, h * AngleRad) );
 	}
-	
+
 	private static double pFSign(Complex S) {
 		return S.getReal() * S.getImaginary() < 0.0 ? -1.0 : 1.0;
 	}
@@ -1136,7 +1137,7 @@ public class Utilities {
 	 */
 	public static void convertComplexArrayToPowerandPF(Complex[] Buffer, int N) {
 		double Mag, PF;
-		
+
 		/* Assume we get P + jQ */
 		for (int i = 0; i < N; i++) {
 			Mag = Buffer[i].abs();
@@ -1152,7 +1153,7 @@ public class Utilities {
 	}
 
 	public static void convertComplexArrayToPolar(Complex[] Buffer, int N) {
-		for (int i = 0; i < N; i++) 
+		for (int i = 0; i < N; i++)
 			Buffer[i] = new Complex(Buffer[i].abs(), Buffer[i].degArg());
 	}
 
@@ -1163,7 +1164,7 @@ public class Utilities {
 	public static Complex residual(Object p, int Nph) {
 		Complex[] pc = (Complex[]) p;
 		Complex Result = Complex.ZERO;
-		for (int i = 0; i < Nph; i++) 
+		for (int i = 0; i < Nph; i++)
 			Result = Result.add(pc[i]);
 		return Result;
 	}
@@ -1176,7 +1177,7 @@ public class Utilities {
 		Complex x = residual(p, Nph);
 		return new Complex(x.abs(), x.degArg());
 	}
-	
+
 	private static double sign(double x) {
 		return x < 0.0 ? -1.0 : 1.0;
 	}
@@ -1219,7 +1220,7 @@ public class Utilities {
 
 	public static void logThisEvent(String EventName) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 		DSSGlobals.getInstance().getEventStrings().add(String.format("Hour=%d, Sec=%-.8g, Iteration=%d, ControlIter=%d, Event=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getIteration(), sol.getControlIteration(), EventName));
 	}
@@ -1229,7 +1230,7 @@ public class Utilities {
 
 		String S = String.format("Hour=%d, Sec=%-.5g, ControlIter=%d, Element=%s, Action=%s",
 				sol.getIntHour(), sol.getDynaVars().t, sol.getControlIteration(), OpDev, action.toUpperCase());
-		
+
 		DSSGlobals.getInstance().getEventStrings().add(S);
 	}
 
@@ -1240,14 +1241,14 @@ public class Utilities {
 				F.println("!(G matrix)");
 				for (int i = 0; i < aMatrix.getNOrder(); i++) {
 					F.print("! ");
-					for (int j = 0; j < i; j++) 
+					for (int j = 0; j < i; j++)
 						F.printf("%.8f ", aMatrix.getElement(i, j).getReal());
 					F.println();
 				}
 				F.println("!(B Matrix) = ");
 				for (int i = 0; i < aMatrix.getNOrder(); i++) {
 					F.print("! ");
-					for (int j = 0; j < i; j++) 
+					for (int j = 0; j < i; j++)
 						F.printf("%.8f ", aMatrix.getElement(i, j).getImaginary());
 					F.println();
 				}
@@ -1266,7 +1267,7 @@ public class Utilities {
 		for (int i = 0; i < thisElement.getNTerms(); i++) {
 			Result = false;
 			thisElement.setActiveTerminalIdx(i);  // TODO Check zero based indexing
-			for (int j = 0; j < thisElement.getNPhases(); j++) 
+			for (int j = 0; j < thisElement.getNPhases(); j++)
 				if (thisElement.getConductorClosed(j)) {
 					Result = true;
 					break;
@@ -1286,18 +1287,18 @@ public class Utilities {
 		PrintWriter F;
 		String ClassName;
 		CktElement elem;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		boolean Result = true;
-		if (DSS_Class.getElementCount() == 0) 
+		if (DSS_Class.getElementCount() == 0)
 			return Result;
-	
+
 		try {
 			ClassName = DSS_Class.getName();
 			FileWriter FW = new FileWriter(ClassName + ".dss");
 			F = new PrintWriter(FW);
-			
+
 			Globals.getSavedFileList().add(ClassName + ".dss");
 			DSS_Class.getFirst();  // Sets ActiveDSSObject
 			writeActiveDSSObject(F, "Edit");  // Write first Vsource out as an edit
@@ -1316,7 +1317,7 @@ public class Utilities {
 			Globals.doSimpleMsg("WriteClassFile Error: "+e.getMessage(), 717);
 			Result = false;
 		}
-	
+
 		return Result;
 	}
 
@@ -1325,7 +1326,7 @@ public class Utilities {
 		String ClassName;
 		int nRecords;
 		CktElement elem;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		boolean Result = true;
@@ -1337,14 +1338,14 @@ public class Utilities {
 			ClassName = DSS_Class.getName();
 			if (FileName.length() == 0)
 				FileName = ClassName + ".dss";  // default file name
-			
+
 			FileWriter FW = new FileWriter(FileName);
 			F = new PrintWriter(FW);
 
 			nRecords = 0;
 
 			DSS_Class.getFirst();  // Sets ActiveDSSObject
-			
+
 			while (DSS_Class.getNext() >= 0) {  // TODO Check zero based indexing
 				// Skip cktElements that have been checked before and written out by
 				// something else
@@ -1379,7 +1380,7 @@ public class Utilities {
 	 */
 	public static String checkForBlanks(String S) {
 		String Result = S;
-		if (S.indexOf(' ') >= 0) 
+		if (S.indexOf(' ') >= 0)
 			if (S.charAt(0) != '(')  // Ignore if already quoted
 				if (S.charAt(0) != '[')  // Ignore if already quoted
 					if (S.charAt(0) != '{')  // Ignore if already quoted
@@ -1389,7 +1390,7 @@ public class Utilities {
 
 	public static void writeActiveDSSObject(PrintWriter F, String NewOrEdit) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		DSSClass ParClass = Globals.getActiveDSSObject().getParentClass();
 		F.write(NewOrEdit + " \"" + ParClass.getName() + "." + Globals.getActiveDSSObject().getName() + "\"");
 
@@ -1398,7 +1399,7 @@ public class Utilities {
 		// Handle disabled circuit elements;  Modified to allow applets to save disabled elements 12-28-06
 		if ((Globals.getActiveDSSObject().getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
 			CktElement elem = (CktElement) Globals.getActiveDSSObject();
-			if (!elem.isEnabled()) 
+			if (!elem.isEnabled())
 				F.write(" ENABLED=NO");
 		}
 		F.println();  // Terminate line
@@ -1408,27 +1409,27 @@ public class Utilities {
 
 	public static void doResetKeepList() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		for (int i = 0; i < ckt.getNumBuses(); i++) 
+		for (int i = 0; i < ckt.getNumBuses(); i++)
 			ckt.getBuses()[i].setKeep(false);
 	}
-	
+
 	private static String extractComment(String s) {
 		return s.substring(s.indexOf('!'));
 	}
 
 	public static boolean rewriteAlignedFile(String FileName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		FileInputStream fileInput;
 		DataInputStream dataInput;
 		BufferedReader inputReader;
-		
+
 		FileWriter FWout;
 		PrintWriter Fout;
-		
-		String SaveDelims, Line, Field, AlignedFile;
+
+		String SaveDelims, Line, Field, AlignedFile = "";
 		int[] FieldLength;
-		int ArraySize, FieldLen, FieldNum;
+		int ArraySize, FieldLen = 0, FieldNum;
 
 
 		boolean Result = true;
@@ -1448,9 +1449,15 @@ public class Utilities {
 			Fout = new PrintWriter(FWout);
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error opening file: "+ AlignedFile +", "+e.getMessage(), 720);
-			fileInput.close();
-			dataInput.close();
-			inputReader.close();
+
+			try {
+				fileInput.close();
+				dataInput.close();
+				inputReader.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+			}
+
 			return false;
 		}
 
@@ -1506,13 +1513,16 @@ public class Utilities {
 
 				Fout.println();
 			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
-			
+
 			try {
 				fileInput.close();
 				dataInput.close();
 				inputReader.close();
-				
+
 				FWout.close();
 				Fout.close();
 			} catch (IOException e) {
@@ -1525,13 +1535,13 @@ public class Utilities {
 		}
 
 		Globals.setGlobalResult(AlignedFile);
-	
+
 		return Result;
 	}
 
 	public static int doExecutiveCommand(String s) {
-		Executive.DSSExecutive.setCommand(s);
-		return Executive.DSSExecutive.getErrorResult();
+		DSSExecutive.getDSSExecutive().setCommand(s);
+		return DSSExecutive.getDSSExecutive().getErrorResult();
 	}
 
 	/**
@@ -1540,47 +1550,47 @@ public class Utilities {
 	public static boolean checkParallel(CktElement Line1, CktElement Line2) {
 
 		if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[0].BusRef)  // TODO Check zero based indexing
-			if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[1].BusRef) 
+			if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[1].BusRef)
 				return true;
-				
+
 		if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[0].BusRef)
 			if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[1].BusRef)
 				return true;
-				
+
 		return false;
 	}
 
 	public static double getMaxPUVoltage() {
 		int nRef;
 		double Result = -1.0;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			if (ckt.getBuses()[i].getkVBase() > 0.0) {
 				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
 					nRef = ckt.getBuses()[i].getRef(j);
-					if (nRef > 0) 
+					if (nRef > 0)
 						Result = Math.max(Result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getkVBase());
 				}
 			}
 		}
-		
+
 		return Result * 0.001;
 	}
 
 	public static double getMinPUVoltage(boolean ignoreNeutrals) {
 		int nRef;
 		double VMagPU;
-		
+
 		double Result    = 1.0e50;  // start with big number
 		boolean MinFound = false;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBuses()[i];
-			if (bus.getkVBase() > 0.0) 
+			if (bus.getkVBase() > 0.0)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 					nRef = bus.getRef(j);
 					if (nRef > 0) {
@@ -1597,40 +1607,40 @@ public class Utilities {
 					}
 				}
 		}
-		
+
 		Result = Result * 0.001;
-	
+
 		if (!MinFound)
 			Result = -1.0;
-	
+
 		return Result;
 	}
 
 	public static Complex getTotalPowerFromSources() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		Complex Result = Complex.ZERO;
-		
-		for (CktElement pElem : ckt.getSources()) 
+
+		for (CktElement pElem : ckt.getSources())
 			Result = Result.add(pElem.getPower(0).negate());
-	
+
 		return Result;
 	}
-	
-	
+
+
 	/**
 	 * Distribute the generators uniformly amongst the feeder nodes that have loads.
 	 */
 	private static void writeUniformGenerators(PrintWriter F, double kW, double PF) {
 		LoadObj pLoad;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
 		int Count = LoadClass.getElementList().size();
 
 		double kWEach = kW / Math.max(1.0, Math.round(Count));
-		if (ckt.isPositiveSequence()) 
+		if (ckt.isPositiveSequence())
 			kWEach = kWEach / 3.0;
 
 		for (int i = 0; i < Count; i++) {
@@ -1645,19 +1655,19 @@ public class Utilities {
 			}
 		}
 	}
-	
+
 	/**
 	 * Distribute Generators randomly to loaded buses.
 	 */
 	private static void writeRandomGenerators(PrintWriter F, double kW, double PF) {
 		LoadObj pLoad;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
-		
+
 		int Count = LoadClass.getElementList().size();
-		
+
 		/* Count enabled loads */
 		int LoadCount = 0;
 		for (int i = 0; i < Count; i++) {
@@ -1685,18 +1695,18 @@ public class Utilities {
 			}
 		}
 	}
-	
+
 	/**
 	 * Distribute generators on every other load, skipping the number specified.
-	 * 
+	 *
 	 * Distribute the generator proportional to load.
 	 */
 	private static void writeEveryOtherGenerators(PrintWriter F, double kW, double PF, int Skip) {
 		double kWEach;
 		LoadObj pLoad;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
 		int Count = LoadClass.getElementList().size();
 		/* Add up the rated load in the enabled loads where gens will be placed */
@@ -1706,7 +1716,7 @@ public class Utilities {
 			pLoad = (LoadObj) LoadClass.getElementList().get(i);
 			if (pLoad.isEnabled())
 				/* Do not count skipped loads */
-				if (SkipCount == 0) { 
+				if (SkipCount == 0) {
 					TotalkW = TotalkW + pLoad.getkWBase();  // will be right value if pos seq, too
 					SkipCount = Skip;  // start counter over again
 				} else {
@@ -1723,7 +1733,7 @@ public class Utilities {
 		SkipCount = Skip;
 		for (int i = 0; i < Count; i++) {
 			pLoad = (LoadObj) LoadClass.getElementList().get(i);
-			if (pLoad.isEnabled()) 
+			if (pLoad.isEnabled())
 				if (SkipCount == 0) {
 					F.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
 					F.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
@@ -1737,24 +1747,24 @@ public class Utilities {
 				}
 		}
 	}
-	
+
 	/**
 	 * Distribute the generator proportional to load.
 	 */
 	private static void writeProportionalGenerators(PrintWriter F, double kW, double PF) {
 		double kWEach;
 		LoadObj pLoad;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		DSSClass LoadClass = DSSClassDefs.getDSSClass("load");
 		int Count = LoadClass.getElementList().size();
-		
+
 		/* Add up the rated load in the enabled loads */
 		double TotalkW = 0.0;
 		for (int i = 0; i < Count; i++) {
 			pLoad = (LoadObj) LoadClass.getElementList().get(i);
-			if (pLoad.isEnabled()) 
+			if (pLoad.isEnabled())
 				TotalkW = TotalkW + pLoad.getkWBase();  // will be right value if pos seq, too
 		}
 
@@ -1779,7 +1789,7 @@ public class Utilities {
 
 	public static void makeDistributedGenerators(double kW, double PF,
 			String How, int Skip, String Fname) {
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		FileWriter FW;
 		PrintWriter F;
@@ -1828,12 +1838,12 @@ public class Utilities {
 
 	/**
 	 * Let EnergyMeter Objects control re-enabling of feeders.
-	 * 
+	 *
 	 * Feeder could have been dumped in meantime by setting Feeder=False in EnergyMeter.
 	 */
 	public static void enableFeeders() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		for (EnergyMeterObj pMeter : ckt.getEnergyMeters()) 
+		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
 			pMeter.enableFeeder();
 	}
 
@@ -1866,7 +1876,7 @@ public class Utilities {
 
 	public static String getDSSArray_Integer(int n, int[] ints) {
 		String Result = "(";
-		for (int i = 0; i < n; i++) 
+		for (int i = 0; i < n; i++)
 			Result = Result + String.format(" %-.d", ints[i]);
 		return Result + ")";
 	}
@@ -1882,13 +1892,13 @@ public class Utilities {
 	 * Multiply a complex array times a double.
 	 */
 	public static void CmulArray(Complex[] pc, double Multiplier, int size) {
-		for (int i = 0; i < size; i++) 
+		for (int i = 0; i < size; i++)
 			pc[i] = pc[i].multiply(Multiplier);
 	}
 
 	public static int getMaxCktElementSize() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		int Result = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++)
 			Result = Math.max(Result, ckt.getCktElements().get(i).getYorder());
@@ -1910,7 +1920,7 @@ public class Utilities {
 		ckt.getBuses()[iBusidx].add(Result);  // add it to the list so next call will be unique
 		return Result;
 	}
-	
+
 
 	public static void showMessageBeep(String s) {
 		Toolkit.getDefaultToolkit().beep();
@@ -1920,7 +1930,7 @@ public class Utilities {
 	public static boolean isPathBetween(PDElement FromLine, PDElement ToLine) {
 		PDElement PDElem = FromLine;
 		while (PDElem != null) {
-			if (PDElem.equals(ToLine)) 
+			if (PDElem.equals(ToLine))
 				return true;
 			PDElem = PDElem.getParentPDElement();
 		}
@@ -1935,7 +1945,7 @@ public class Utilities {
 		while (pLine != null) {
 			Parser.getInstance().setCmdString(EditStr);
 			pLine.edit();  // Uses Parser
-			if (pLine.equals(ToLine)) 
+			if (pLine.equals(ToLine))
 				break;
 			pLine = pLine.getParentPDElement();
 		}
@@ -1947,7 +1957,7 @@ public class Utilities {
 	public static void goForwardAndRephase(PDElement FromLine, String PhaseString,
 			String EditStr, String ScriptFileName, boolean TransStop) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		PDElement pPDelem;
 		CktElement pShuntObject;
 		String S;
@@ -1961,7 +1971,7 @@ public class Utilities {
 		/* Search for starting line in branchlist */
 		pPDelem = (PDElement) pMeter.getBranchList().getFirst();
 		while (pPDelem != null) {
-			if (FromLine.equals(pPDelem)) 
+			if (FromLine.equals(pPDelem))
 				break;
 			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 		}
@@ -1983,7 +1993,7 @@ public class Utilities {
 			pMeter.getBranchList().startHere();
 			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 
-			while (pPDelem != null) {	
+			while (pPDelem != null) {
 				S = "edit " + pPDelem.getParentClass().getName() + "." + pPDelem.getName();
 
 				/* ----------------LINES--------------------------------------------------- */
@@ -2019,14 +2029,14 @@ public class Utilities {
 						//pShuntObject.edit();
 						pShuntObject = (CktElement) pMeter.getBranchList().getNextObject();
 					}
-					
+
 					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 				} // isLine
 
 				/* ----------------TRANSFORMERS--------------------------------------------------- */
 
 				else if (isTransformerElement(pPDelem)) {
-					
+
 					/* We'll stop at transformers and change only the primary winding.
 					 * Then we'll cycle forward until the lexical level is less or we're done
 					 */
@@ -2044,7 +2054,7 @@ public class Utilities {
 					}
 				} else {
 					// Then we get lines and loads beyond transformer
-					pPDelem = (PDElement) pMeter.getBranchList().GoForward();  
+					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 				}
 			}
 		} catch (IOException e) {
@@ -2064,9 +2074,9 @@ public class Utilities {
 			return 0.0;
 
 		double Result = dbls[0];
-		for (int i = 1; i < npts; i++) 
+		for (int i = 1; i < npts; i++)
 			Result = Math.max(Result, dbls[i]);
-		
+
 		return Result;
 	}
 
@@ -2079,7 +2089,7 @@ public class Utilities {
 
 		int Result = 0;  // TODO Check zero based indexing
 		double MaxValue = Math.abs(dbls[0]);
-		for (int i = 1; i < npts; i++) 
+		for (int i = 1; i < npts; i++)
 			if (Math.abs(dbls[i]) > MaxValue) {
 				MaxValue = Math.abs(dbls[i]);
 				Result = i;  // save index
@@ -2129,7 +2139,7 @@ public class Utilities {
 			return "Yearly";
 		case DSSGlobals.USEDUTY:
 			return "Duty";
-		case DSSGlobals.USENONE:  
+		case DSSGlobals.USENONE:
 			return "None";
 		default:
 			return "None";

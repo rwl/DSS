@@ -34,26 +34,25 @@ public class ControlQueueImpl implements ControlQueue {
 
 	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
 			ControlElem Owner) {
-		
+
 		ControlAction[] actions = ControlAction.values();
 
-		for (int i = 0; i < actions.length; i++) 
+		for (int i = 0; i < actions.length; i++)
 			if (actions[i].equals(Code))
 				return push(Hour, Sec, i, ProxyHdl, Owner);
-		
+
 		return -1;
 	}
 
 	/**
 	 * Add a control action to the queue, sorted by lowest time first.
-	 * 
+	 *
 	 * @return handle to the action
 	 */
-	public int push(int Hour, double Sec, int Code, int ProxyHdl,
-			ControlElem Owner) {
+	public int push(int Hour, double Sec, int Code, int ProxyHdl, ControlElem Owner) {
 		int Hr;
 		double ThisActionTime, S;
-		TimeRec TRec;
+		TimeRec TRec = null;
 		ActionRecord pAction;
 		boolean ActionInserted;
 
@@ -77,7 +76,7 @@ public class ControlQueueImpl implements ControlQueue {
 		/* Insert the action in the list in order of time */
 		ActionInserted = false;
 		for (int i = 0; i < ActionList.size() - 1; i++) {  // TODO Check zero based indexing
-			if (ThisActionTime <= timeRecToTime(pActionRecord(ActionList.get(i)).actionTime())) {
+			if (ThisActionTime <= timeRecToTime( ((ActionRecord) ActionList.get(i)).ActionTime )) {
 				ActionList.add(i, pAction);
 				ActionInserted = true;
 				break;
@@ -86,7 +85,7 @@ public class ControlQueueImpl implements ControlQueue {
 
 		if (!ActionInserted)
 			ActionList.add(pAction);
-		
+
 		pAction.ActionTime = TRec;
 		pAction.ActionCode = Code;
 		pAction.ActionHandle = ctrlHandle;
@@ -175,7 +174,7 @@ public class ControlQueueImpl implements ControlQueue {
 				break;
 			}
 		}
-		
+
 		return Result;
 	}
 
@@ -187,7 +186,7 @@ public class ControlQueueImpl implements ControlQueue {
 		String S;
 
 		ActionRecord action = ActionList.get(i);
-		
+
 		pElem = action.ControlElement;
 		if (DebugTrace) {
 			if (popped) {
@@ -224,7 +223,7 @@ public class ControlQueueImpl implements ControlQueue {
 			pElem = pop(t, Code, ProxyHdl, hdl);
 		}
 		}
-	
+
 		return Result;
 	}
 
@@ -232,7 +231,7 @@ public class ControlQueueImpl implements ControlQueue {
 		return TRec.Hour * 3600.0 + TRec.Sec;
 	}
 
-	public void setTrace(boolean Value) {		
+	public void setTrace(boolean Value) {
 		DebugTrace = Value;
 
 		if (DebugTrace) {
@@ -283,8 +282,8 @@ public class ControlQueueImpl implements ControlQueue {
 
 	private void writeTraceRecord(String ElementName, int Code,
 			double TraceParameter, String S) {
-		
-		DSSGlobals Globals = DSSGlobals.getInstance(); 
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
 			if (!Globals.isInShowResults()) {

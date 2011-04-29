@@ -1,6 +1,7 @@
 package com.epri.dss.general;
 
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.epri.dss.common.DSSClass;
 
@@ -45,7 +46,7 @@ public interface DSSObject extends NamedObject {
 
 	void dumpProperties(PrintStream F, boolean Complete);
 
-	void saveWrite(PrintStream F);
+	void saveWrite(PrintWriter f);
 
 	void clearPropSeqArray();
 

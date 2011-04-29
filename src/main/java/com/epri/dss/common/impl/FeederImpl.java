@@ -8,9 +8,9 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FeederImpl extends PCClassImpl implements Feeder {
-	
+
 	private static int NumPropsThisClass;
-	
+
 	private static FeederObj ActiveFeederObj;
 
 	public FeederImpl() {
@@ -27,7 +27,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		NumPropsThisClass = 0;
 
@@ -47,18 +47,18 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		ActiveProperty = NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	/**
 	 * Called from EnergyMeter.
 	 */
 	@Override
 	public int newObject(String ObjName) {
 		int Result;
-		
+
 		// Make a new Feeder object
 		// First see if this one already exists. If so, just reinitialize
 		FeederObj Obj = (FeederObj) find(ObjName);
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		if (Obj != null) {
@@ -70,14 +70,14 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 			ckt.addCktElement(Result);
 			// done here because feeder objects are instantiated from energy meters
 		}
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	public int edit() {
 		// continue parsing with contents of Parser
-		ActiveFeederObj = ElementList.getActive();
+		ActiveFeederObj = (FeederObj) ElementList.getActive();
 		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) ActiveFeederObj);
 
 		int Result = 0;
@@ -92,7 +92,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties)) 
+			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 				ActiveFeederObj.setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -108,14 +108,14 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 		ActiveFeederObj.recalcElementData();
 		ActiveFeederObj.setYprimInvalid(true);
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String OtherFeederName) {
 		int Result = 0;
-		
+
 		/* See if we can find this name in the present collection */
 		FeederObj OtherFeeder = (FeederObj) find(OtherFeederName);
 		if (OtherFeeder != null) {
@@ -141,7 +141,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Feeder.init()", -1);

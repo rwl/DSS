@@ -10,7 +10,9 @@ import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.HashList;
+import com.epri.dss.shared.PointerList;
 import com.epri.dss.shared.impl.HashListImpl;
+import com.epri.dss.shared.impl.PointerListImpl;
 
 /**
  * Base Class for all DSS collection classes.
@@ -19,6 +21,8 @@ import com.epri.dss.shared.impl.HashListImpl;
  * @author Richard Lincoln
  */
 public class DSSClassImpl implements DSSClass {
+
+	private static com.epri.dss.common.DSSClasses DSSClasses;
 
 	protected String Class_Name;
 
@@ -43,7 +47,7 @@ public class DSSClassImpl implements DSSClass {
 
 	protected int DSSClassType;
 
-	protected ArrayList<CktElement> ElementList;
+	protected PointerList ElementList;
 
 	/* When device gets renamed */
 	protected boolean ElementNamesOutOfSynch;
@@ -53,7 +57,7 @@ public class DSSClassImpl implements DSSClass {
 	public DSSClassImpl() {
 		super();
 		// Init size and increment
-		this.ElementList = new ArrayList<CktElement>(20);
+		this.ElementList = new PointerListImpl(20);
 		this.PropertyName = null;
 		this.PropertyHelp = null;
 		this.PropertyIdxMap = null;
@@ -97,9 +101,8 @@ public class DSSClassImpl implements DSSClass {
 			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(ActiveElement));
 			// Make sure Active Ckt Element agrees if is a ckt element
 			// So COM interface will work
-			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
-				Globals.getActiveCircuit().setActiveCktElement(DSSCktElement(Globals.getActiveDSSObject()));
-			}
+			if (Globals.getActiveDSSObject() instanceof DSSCktElement)
+				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 		}
 	}
 
@@ -122,7 +125,7 @@ public class DSSClassImpl implements DSSClass {
 	protected int addObjectToList(Object Obj) {
 		// Stuff it in this collection's element list.
 		ElementList.add((CktElement) Obj);
-		ElementNameList.add(new DSSObjectImpl(Obj).getName());
+		ElementNameList.add( ((DSSObject) Obj).getName() );
 
 		if (ElementList.size() > 2 * ElementNameList.getInitialAllocation())
 			reallocateElementNameList();
@@ -139,7 +142,7 @@ public class DSSClassImpl implements DSSClass {
 		int idx = ElementNameList.find(ObjName);
 		if (idx > 0) {
 			this.ActiveElement = idx;
-			DSSGlobals.getInstance().setActiveDSSObject(ElementList.get(idx));
+			DSSGlobals.getInstance().setActiveDSSObject((DSSObject) ElementList.get(idx));
 			Result = true;
 		}
 		return Result;
@@ -152,7 +155,7 @@ public class DSSClassImpl implements DSSClass {
 		Object Result = null;
 		if (ElementNamesOutOfSynch)
 			resynchElementNameList();
-		
+
 		int idx = ElementNameList.find(ObjName);
 		if (idx > 0) {
 			ActiveElement = idx;
@@ -243,7 +246,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public int getFirst() {
-		int Result;
+		int Result = 0;
 		if (ElementList.size() == 0) {
 			Result = 0;
 		} else {
@@ -253,7 +256,7 @@ public class DSSClassImpl implements DSSClass {
 			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(0));
 			// Make sure Active Ckt Element agrees if is a ckt element
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
-				Globals.getActiveCircuit().setActiveCktElement(new DSSCktElement(Globals.getActiveDSSObject()));
+				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 				Result = ActiveElement;
 			}
 		}
@@ -261,16 +264,16 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public int getNext() {
-		int Result;
+		int Result = -1;
 		if (ActiveElement > ElementList.size()) {
 			Result = 0;
 		} else {
 			DSSGlobals Globals = DSSGlobals.getInstance();
 
-			Globals.setActiveDSSObject(ElementList.next());
+			Globals.setActiveDSSObject((DSSObject) ElementList.getNext());
 			// Make sure Active Ckt Element agrees if is a ckt element
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
-				Globals.getActiveCircuit().setActiveCktElement(new DSSCktElement(Globals.getActiveDSSObject()));
+				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 				Result = ActiveElement;
 			}
 		}
@@ -309,8 +312,8 @@ public class DSSClassImpl implements DSSClass {
 		// Do this using the Names of the Elements rather than the old list because it might be
 		// messed up if an element gets renamed
 
-		for (int i = 0; i < this.ElementList.size(); i++) 
-			ElementNameList.add(new DSSObjectImpl(ElementList.get(i)).getName());
+		for (int i = 0; i < this.ElementList.size(); i++)
+			ElementNameList.add( ((DSSObject) ElementList.get(i)).getName() );
 	}
 
 	private void resynchElementNameList() {
@@ -370,11 +373,11 @@ public class DSSClassImpl implements DSSClass {
 		DSSClassType = dSSClassType;
 	}
 
-	public ArrayList<CktElement> getElementList() {
+	public PointerList getElementList() {
 		return ElementList;
 	}
 
-	public void setElementList(ArrayList<CktElement> elementList) {
+	public void setElementList(PointerList elementList) {
 		ElementList = elementList;
 	}
 
@@ -400,6 +403,14 @@ public class DSSClassImpl implements DSSClass {
 
 	public String getName() {
 		return Class_Name;
+	}
+
+	public static void setDSSClasses(com.epri.dss.common.DSSClasses dSSClasses) {
+		DSSClasses = dSSClasses;
+	}
+
+	public static com.epri.dss.common.DSSClasses getDSSClasses() {
+		return DSSClasses;
 	}
 
 }

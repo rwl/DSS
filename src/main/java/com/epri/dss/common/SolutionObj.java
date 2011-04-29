@@ -3,10 +3,13 @@ package com.epri.dss.common;
 import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.DynamicsRec;
 
+import com.epri.dss.common.impl.ControlProblem;
+import com.epri.dss.common.impl.Esolv32Problem;
+import com.epri.dss.common.impl.SolverError;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public interface SolutionObj extends DSSObject {
 
@@ -212,9 +215,9 @@ public interface SolutionObj extends DSSObject {
 
 	void zeroAuxCurrents();
 
-	int solveZeroLoadSnapShot();
+	int solveZeroLoadSnapShot() throws Esolv32Problem;
 
-	void doPFLOWsolution();
+	void doPFlowSolution() throws SolverError, Esolv32Problem;
 
 	/* Main Solution dispatch */
 	void solve();
@@ -222,32 +225,32 @@ public interface SolutionObj extends DSSObject {
 	void snapShotInit();
 
 	/* solve for now once */
-	int solveSnap();
+	int solveSnap() throws SolverError, ControlProblem, Esolv32Problem;
 
 	/* solve for now once, direct solution */
-	int solveDirect();
+	int solveDirect() throws Esolv32Problem;
 
 	/* Similar to SolveDirect; used for initialization */
-	int solveYDirect();
+	int solveYDirect() throws Esolv32Problem;
 
 	/* SolveSnap sans control iteration */
-	int solveCircuit();
+	int solveCircuit() throws SolverError;
 
 	/* Snapshot checks with matrix rebuild */
-	void checkControls();
+	void checkControls() throws ControlProblem, Esolv32Problem;
 
-	void sampleControlDevices();
+	void sampleControlDevices() throws ControlProblem;
 
 	void doControlActions();
 
 	/* Sample and Do */
-	void sample_DoControlActions();
+	void sample_DoControlActions() throws ControlProblem;
 
 	void checkFaultStatus();
 
 	void setGeneratorDispRef();
 
-	void setVoltageBases();
+	void setVoltageBases() throws SolverError;
 
 	void saveVoltages();
 

@@ -7,29 +7,26 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
+import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.Complex;
 
 public class YMatrix {
-	
-	public class Esolv32Problem extends Exception {
-		private static final long serialVersionUID = -2686189062049376595L;
-	}
-	
+
 	/* Options for building Y matrix */
-	public static int SERIESONLY = 1;
-	public static int WHOLEMATRIX = 2;
+	public static final int SERIESONLY = 1;
+	public static final int WHOLEMATRIX = 2;
 
 	private YMatrix() {
 	}
-	
+
 	private static void reCalcAllYPrims() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		if (ckt.isLogEvents())
 			Utilities.logThisEvent("Recalc All Yprims");
-		for (CktElement pElem : ckt.getCktElements()) 
+		for (CktElement pElem : ckt.getCktElements())
 			pElem.calcYPrim();
 	}
-	
+
 	/**
 	 * Recalc YPrims only for those circuit elements that have had changes
 	 * since last solution.
@@ -42,8 +39,8 @@ public class YMatrix {
 			if (pElem.isYprimInvalid())
 				pElem.calcYPrim();
 	}
-	
-	public static void resetSparseMatrix(long Y, int size) {
+
+	public static void resetSparseMatrix(long Y, int size) throws Esolv32Problem {
 		if (Y != 0) {
 			if (deleteSparseSet(Y) < 1)  // Get rid of existing one beFore making a new one
 				throw new Esolv32Problem("Error Deleting System Y Matrix in ResetSparseMatrix. Problem with sparse matrix solver.");
@@ -55,22 +52,23 @@ public class YMatrix {
 		if (Y < 1)  // Raise and exception  TODO Check zero based indexing
 			throw new Esolv32Problem("Error Creating System Y Matrix. Problem WITH Sparse matrix solver.");
 	}
-	
+
 	public static void initializeNodeVbase() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
-		
+
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			NodeBus nb = ckt.getMapNodeToBus()[i];
 			sol.getNodeVbase()[i] = ckt.getBuses()[nb.BusRef].getkVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
 	}
-	
+
 	/**
 	 * Builds designated Y matrix for system and allocates solution arrays.
+	 * @throws Esolv32Problem
 	 */
-	public static void buildYMatrix(int BuildOption, boolean AllocateVI) {
+	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws Esolv32Problem {
 		int YMatrixSize;
 		Complex[] CmatArray;
 
@@ -81,7 +79,7 @@ public class YMatrix {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Circuit ckt = Globals.getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
-		
+
 		if (sol.isPreserveNodeVoltages())
 			sol.updateVBus();  // Update voltage values stored with Bus object
 
@@ -112,7 +110,7 @@ public class YMatrix {
 			Globals.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
 			return;  // Some problem occured building Yprims
 		}
-		
+
 		sol.setFrequencyChanged(false);
 
 		if (ckt.isLogEvents())
@@ -122,7 +120,7 @@ public class YMatrix {
 			case SERIESONLY:
 				Utilities.logThisEvent("Building Series Y Matrix");
 			}
-		
+
 		// Add in Yprims for all devices
 		for (CktElement pElem : ckt.getCktElements()) {
 			if (pElem.isEnabled()) {
@@ -172,23 +170,33 @@ public class YMatrix {
 
 		if (sol.isPreserveNodeVoltages())
 			sol.restoreNodeVfromVbus();
-		
+
+	}
+
+	private static int addPrimitiveMatrix(CMatrix y, int yorder, int nodes, Complex mat) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private static void resetSparseMatrix(CMatrix ysystem, int yMatrixSize) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/**
 	 * Leave the call to getMatrixElement, but add more diagnostics.
 	 */
 	public static String checkYMatrixforZeroes() {
-		Complex c;
-		long Y;
-		long sCol;
+		Complex c = null;
+		CMatrix Y;
+		int sCol = 0;
 		long nIslands, iCount, iFirst;
 		List<Long> Cliques;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		String Result = "";
-		
+
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			getMatrixElement(Y, i, i, c);
@@ -219,17 +227,31 @@ public class YMatrix {
 							iFirst = p + 1;
 					}
 				}
-				NodeBus nb = ckt.getMapNodeToBus()[iFirst] {
-					Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSSGlobals.CRLF, i, iCount, ckt.getBusList().get(nb.BusRef), iFirst);
-				}
+				NodeBus nb = ckt.getMapNodeToBus()[(int) iFirst];
+				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSSGlobals.CRLF, i, iCount, ckt.getBusList().get(nb.BusRef), iFirst);
 			}
 		}
 
 		return Result;
 	}
-	
+
 	// in general, KLU arrays are 0-based
 	// function calls return 0 to indicate failure, 1 for success
+
+	private static long findIslands(CMatrix y, int numNodes, Long pNodes) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	private static void getSingularCol(CMatrix y, long sCol) {
+		// TODO Auto-generated method stub
+
+	}
+
+	private static void getMatrixElement(CMatrix y, int i, int i2, Complex c) {
+		// TODO Auto-generated method stub
+
+	}
 
 	// returns the non-zero handle of a new sparse matrix, if successful
 	// must call DeleteSparseSet on the valid handle when finished
@@ -270,32 +292,32 @@ public class YMatrix {
 	public static long getFlops(long id, double Res) {
 		return 0;
 	}
-	
+
 	// Res is number of non-zero entries in the original matrix
 	public static long getNNZ(long id, long Res) {
 		return 0;
 	}
-	
+
 	// Res is the number of non-zero entries in factored matrix
 	public static long getSparseNNZ(long id, long Res) {
 		return 0;
 	}
-	
+
 	// Res is a column number corresponding to a singularity, or 0 if not singular
 	public static long getSingularCol(long id, long Res) {
 		return 0;
 	}
-	
+
 	// Res is the pivot element growth factor
 	public static long getRGrowth(long id, double Res) {
 		return 0;
 	}
-	
+
 	// Res is aquick estimate of the reciprocal of condition number
 	public static long getRCond(long id, double Res) {
 		return 0;
 	}
-	
+
 	// Res is a more accurate estimate of condition number
 	public static long getCondEst(long id, double Res) {
 		return 0;
@@ -341,6 +363,31 @@ public class YMatrix {
 	// GetMatrixElement is deprecated, use GetCompressedMatrix or GetTripletMatrix
 	public static long getMatrixElement(long id, long i, long j, Complex Value) {
 		return 0;
+	}
+
+	public static int solveSparseSet(CMatrix ysystem, Complex complex, Complex complex2) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public static void setLogFile(String string, int action) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void getRCond(CMatrix y, double dRes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void getNNZ(CMatrix y, long iRes) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void getSparseNNZ(CMatrix y, long iRes) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

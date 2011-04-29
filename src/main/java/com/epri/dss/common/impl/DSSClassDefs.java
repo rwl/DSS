@@ -23,6 +23,7 @@ import com.epri.dss.delivery.impl.ReactorImpl;
 import com.epri.dss.delivery.impl.TransformerImpl;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.impl.GrowthShapeImpl;
+import com.epri.dss.general.impl.LineCodeImpl;
 import com.epri.dss.general.impl.LineGeometryImpl;
 import com.epri.dss.general.impl.LineSpacingImpl;
 import com.epri.dss.general.impl.LoadShapeImpl;
@@ -31,6 +32,7 @@ import com.epri.dss.general.impl.TCC_CurveImpl;
 import com.epri.dss.general.impl.WireDataImpl;
 import com.epri.dss.general.impl.XfmrCodeImpl;
 import com.epri.dss.meter.impl.EnergyMeterImpl;
+import com.epri.dss.meter.impl.MonitorImpl;
 import com.epri.dss.meter.impl.SensorImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.HashListImpl;
@@ -71,10 +73,10 @@ public class DSSClassDefs {
 	public static final int STORAGE_ELEMENT  = 21 * 8;
 	public static final int STORAGE_CONTROL  = 22 * 8;
 	public static final int SWT_CONTROL      = 23 * 8;
-	
+
 	private static int NumIntrinsicClasses;
 	private static int NumUserClasses;
-	
+
 	public static int getNumIntrinsicClasses() {
 		return NumIntrinsicClasses;
 	}
@@ -93,10 +95,10 @@ public class DSSClassDefs {
 
 	public static void createDSSClasses() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-	
+
 		Globals.setClassNames(new HashListImpl(25));   // Makes 5 sub lists
 		Globals.setDSSClassList(new ArrayList<DSSClass>(10));  // 10 is initial size and increment
-		DSSClass.DSSClasses = new DSSClassesImpl();  // class to handle junk for defining DSS classes
+		DSSClassImpl.setDSSClasses(new DSSClassesImpl());  // class to handle defining DSS classes
 
 		/* General DSS objects, not circuit elements */
 		Globals.setDSSObjs(new ArrayList<DSSObject>(25));  // 25 is initial size and increment
@@ -104,57 +106,57 @@ public class DSSClassDefs {
 		/* Instantiate all intrinsic object classes */
 
 		/* Generic Object classes first in case others refer to them */
-		DSSClass.DSSClasses.add(new SolutionImpl());
+		DSSClassImpl.getDSSClasses().setNew( new SolutionImpl() );
 		Globals.setSolutionClass(Globals.getActiveDSSClass());     // this is a special class
-		DSSClass.DSSClasses.add(new LineCodeImpl());
+		DSSClassImpl.getDSSClasses().setNew( new LineCodeImpl() );
 		Globals.setLoadShapeClass(new LoadShapeImpl());
-		DSSClass.DSSClasses.add(Globals.getLoadShapeClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getLoadShapeClass() );
 		Globals.setGrowthShapeClass(new GrowthShapeImpl());
-		DSSClass.DSSClasses.add(Globals.getGrowthShapeClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getGrowthShapeClass() );
 		Globals.setTCC_CurveClass(new TCC_CurveImpl());
-		DSSClass.DSSClasses.add(Globals.getTCC_CurveClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getTCC_CurveClass() );
 		Globals.setSpectrumClass(new SpectrumImpl());
-		DSSClass.DSSClasses.add(Globals.getSpectrumClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getSpectrumClass() );
 		Globals.setWireDataClass(new WireDataImpl());
-		DSSClass.DSSClasses.add(Globals.getWireDataClass());
-		DSSClass.DSSClasses.add(new LineGeometryImpl());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getWireDataClass() );
+		DSSClassImpl.getDSSClasses().setNew( new LineGeometryImpl() );
 		Globals.setLineSpacingClass(new LineSpacingImpl());
-		DSSClass.DSSClasses.add(Globals.getLineSpacingClass());
-		DSSClass.DSSClasses.add(new XfmrCodeImpl());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getLineSpacingClass() );
+		DSSClassImpl.getDSSClasses().setNew( new XfmrCodeImpl() );
 
 		/* Circuit Element Classes */
-		DSSClass.DSSClasses.add(new LineImpl());
-		DSSClass.DSSClasses.add(new VSourceImpl());
-		DSSClass.DSSClasses.add(new ISourceImpl());
-		DSSClass.DSSClasses.add(new LoadImpl());
-		DSSClass.DSSClasses.add(new TransformerImpl());
-		DSSClass.DSSClasses.add(new RegControlImpl());
-		DSSClass.DSSClasses.add(new CapacitorImpl());
-		DSSClass.DSSClasses.add(new ReactorImpl());
-		DSSClass.DSSClasses.add(new CapControlImpl());
-		DSSClass.DSSClasses.add(new FaultImpl());
-		DSSClass.DSSClasses.add(new GeneratorImpl());
-		DSSClass.DSSClasses.add(new GenDispatcherImpl());
+		DSSClassImpl.getDSSClasses().setNew( new LineImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new VSourceImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new ISourceImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new LoadImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new TransformerImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new RegControlImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new CapacitorImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new ReactorImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new CapControlImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new FaultImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new GeneratorImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new GenDispatcherImpl() );
 		Globals.setStorageClass(new StorageImpl());
-		DSSClass.DSSClasses.add(Globals.getStorageClass());
-		DSSClass.DSSClasses.add(new StorageControllerImpl());
-		DSSClass.DSSClasses.add(new RelayImpl());
-		DSSClass.DSSClasses.add(new RecloserImpl());
-		DSSClass.DSSClasses.add(new FuseImpl());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getStorageClass() );
+		DSSClassImpl.getDSSClasses().setNew( new StorageControllerImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new RelayImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new RecloserImpl() );
+		DSSClassImpl.getDSSClasses().setNew( new FuseImpl() );
 		Globals.setFeederClass(new FeederImpl());
-		DSSClass.DSSClasses.add(Globals.getFeederClass());
-		DSSClass.DSSClasses.add(new SwtControlImpl());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
+		DSSClassImpl.getDSSClasses().setNew( new SwtControlImpl() );
 
-		Globals.setMonitorClass(new DSSMonitorImpl());       // Have to do this after Generator
-		DSSClass.DSSClasses.add(Globals.getMonitorClass());
+		Globals.setMonitorClass(new MonitorImpl() );       // Have to do this after Generator
+		DSSClassImpl.getDSSClasses().setNew( Globals.getMonitorClass() );
 		Globals.setEnergyMeterClass(new EnergyMeterImpl());  // Have to do this after Generator
-		DSSClass.DSSClasses.add(Globals.getEnergyMeterClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getEnergyMeterClass() );
 		Globals.setSensorClass(new SensorImpl());      // Create state estimation sensors
-		DSSClass.DSSClasses.add(Globals.getSensorClass());
+		DSSClassImpl.getDSSClasses().setNew( Globals.getSensorClass() );
 
 
 		/* Create Classes for custom implementations */
-		MyClassDefs.createMyDSSClasses();	
+//		MyClassDefs.createMyDSSClasses();
 
 		NumIntrinsicClasses = Globals.getDSSClassList().size();
 		NumUserClasses = 0;
@@ -162,11 +164,11 @@ public class DSSClassDefs {
 		/* Add user-defined objects */
 
 	}
-	
+
 	public static void disposeDSSClasses() {
 		DSSObject DSSObj;
-		String TraceName;
-		String SuccessFree;
+		String TraceName = "";
+		String SuccessFree = "";
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
@@ -187,34 +189,34 @@ public class DSSClassDefs {
 		}
 
 		try {
-			for (int i = 0; i < Globals.getDSSClassList().size(); i++) 
+			for (int i = 0; i < Globals.getDSSClassList().size(); i++)
 				Globals.getDSSClassList().set(i, null);
 			TraceName = "(DSS Class List)";
 			Globals.setDSSClassList(null);
 			TraceName = "(DSS Classes)";
-			DSSClass.DSSClasses = null;
+			DSSClassImpl.setDSSClasses(null);
 			TraceName = "(ClassNames)";
 			Globals.setClassNames(null);
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Exception disposing of DSS Class\""+TraceName+"\". "+DSSGlobals.CRLF + e.getMessage(), 902);
 		}
 	}
-	
+
 	public static void addUserClass() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	public static void loadUserClasses() {
 		throw new UnsupportedOperationException();
 	}
-	
+
 	/**
 	 * set LastClassReferenced variable by class name.
 	 */
 	public static boolean setObjectClass(String ObjType) {
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		int ClassRef = Globals.getClassNames().find(ObjType);
 
 		switch (ClassRef) {
@@ -227,10 +229,10 @@ public class DSSClassDefs {
 
 		return true;
 	}
-	
+
 	public static DSSClass getDSSClass(String ClassName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		return Globals.getDSSClassList().get( Globals.getClassNames().find(ClassName.toLowerCase()) );
 	}
 

@@ -2,23 +2,23 @@ package com.epri.dss.shared;
 
 public interface PointerList {
 
-	Object Get_First();
+	Object getFirst();
 
-	Object Get_Next();
+	Object getNext();
 
-	Object Get_Active();
+	Object getActive();
 
-	void Set_New(Object Value);
+	void setNew(Object Value);
 
-	void Clear();
+	void clear();
 
 	/* Returns index of item */
-	int Add(Object p);
+	int add(Object p);
 
-	Object Get(int i);
+	Object get(int i);
 
-	int Get_ListSize();
+	int size();
 
-	int Get_ActiveIndex();
+	int getActiveIndex();
 
 }

@@ -1,5 +1,9 @@
 package com.epri.dss.common;
 
+import com.epri.dss.common.impl.ControlProblem;
+import com.epri.dss.common.impl.Esolv32Problem;
+import com.epri.dss.common.impl.SolverError;
+
 /*
  * Unit for processing the AutoAdd Solution FUNCTIONs
  *
@@ -38,5 +42,15 @@ public interface AutoAdd {
 	void appendToFile(String WhichFile, String S);
 
 	void addCurrents(int SolveType);
+
+	/**
+	 * Automatically add caps or generators.
+	 * @throws ControlProblem
+	 * @throws SolverError
+	 * @throws Esolv32Problem
+	 */
+	int solve() throws SolverError, ControlProblem, Esolv32Problem;
+
+	double getWeightedLosses();
 
 }

@@ -10,6 +10,7 @@ package com.epri.dss.general.impl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSClassImpl;
@@ -96,14 +97,14 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		clearPropSeqArray();
 	}
 
-	public void saveWrite(PrintStream F) {
+	public void saveWrite(PrintWriter F) {
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.
 		 */
 		int iProp = getNextPropertySet(0); // Works on ActiveDSSObject
 		while (iProp > 0) {
 			DSSClass pc = ParentClass;
-			F.print(" " + pc.getPropertyName().get(pc.getRevPropertyIdxMap()[iProp]));
+			F.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
 			F.print("=" + Utilities.checkForBlanks(PropertyValue[iProp]));
 			iProp = getNextPropertySet(iProp);
 		}
@@ -120,8 +121,8 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		if (idx > 0)
 			idx = PrpSequence[idx];
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) 
-			if (PrpSequence[i] > idx) 
+		for (int i = 0; i < ParentClass.getNumProperties(); i++)
+			if (PrpSequence[i] > idx)
 				if (PrpSequence[i] < Smallest) {
 					Smallest = PrpSequence[i];
 					Result = i;
@@ -190,5 +191,5 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	public void setFlag(boolean flag) {
 		Flag = flag;
 	}
-	
+
 }

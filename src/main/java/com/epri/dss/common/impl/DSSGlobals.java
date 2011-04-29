@@ -16,6 +16,7 @@ import com.epri.dss.common.Feeder;
 import com.epri.dss.common.Solution;
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.executive.Executive;
+import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
 import com.epri.dss.general.LineSpacing;
@@ -676,7 +677,7 @@ public class DSSGlobals {
 		appendGlobalResult(S);
 	}
 
-	public void clearAllCircuits() {		
+	public void clearAllCircuits() {
 		ActiveCircuit = null;
 		Circuits = new ArrayList<Circuit>(2);   // Make a new list of circuits
 		NumCircuits = 0;
@@ -725,14 +726,14 @@ public class DSSGlobals {
 
 		if (ActiveCircuit.getBusList().listSize() == 0)
 			return Result;   // BusList not yet built
-		
+
 		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
-		
+
 		if (ActiveCircuit.getActiveBusIndex() == 0) {
 			Result = 1;
 			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
 		}
-		
+
 		return Result;
 	}
 
@@ -766,17 +767,17 @@ public class DSSGlobals {
 	public void makeNewCircuit(String Name) {
 		if (NumCircuits <= MaxCircuits - 1) {
 			ActiveCircuit = new DSSCircuit(Name);
-			ActiveDSSObject = Solution.getActiveSolutionObj();
+			ActiveDSSObject = SolutionImpl.getActiveSolutionObj();
 			/*Handle = */ Circuits.add(ActiveCircuit);
 			NumCircuits += 1;
 			// Pass remainder of string on to vsource.
-			String S = Parser.getInstance().getRemainder();    
-			
+			String S = Parser.getInstance().getRemainder();
+
 			/* Create a default Circuit */
 			SolutionAbort = false;
 			/* Voltage source named "source" connected to SourceBus */
 			// Load up the parser as if it were read in
-			Executive.DSSExecutive.setCommand("New object=vsource.source Bus1=SourceBus " + S);  
+			DSSExecutive.getDSSExecutive().setCommand("New object=vsource.source Bus1=SourceBus " + S);
 		} else {
 			doErrorMsg("MakeNewCircuit",
 					"Cannot create new circuit.",

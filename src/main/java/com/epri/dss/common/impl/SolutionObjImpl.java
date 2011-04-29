@@ -7,6 +7,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.DynamicsRec;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -15,7 +16,6 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
-import com.epri.dss.common.impl.YMatrix.Esolv32Problem;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.Load;
@@ -25,18 +25,8 @@ import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
-import com.epri.dss.shared.impl.DynamicsImpl.DynamicsRec;
 
 public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
-
-	public class ControlProblem extends Exception {
-
-	}
-
-	/** Raised when solution aborted */
-	public class SolveError extends Exception {
-
-	}
 
 	/* Array of delta V for Newton iteration */
 	private Complex[] dV;
@@ -125,7 +115,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		this.Frequency = DSSGlobals.getInstance().getDefaultBaseFreq();
 		/*this.Fundamental = 60.0; Moved to Circuit and used as default base frequency*/
 		this.Harmonic = 1.0;
-		
+
 		this.FrequencyChanged = true;  // Force Building of YPrim matrices
 		this.DoAllHarmonics   = true;
 		this.FirstIteration   = true;
@@ -205,18 +195,18 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			/* Main solution algorithm dispatcher */
 			Circuit ckt = Globals.getActiveCircuit();
-		
+
 			switch (year) {
 			case 0:  // TODO Check zero based indexing
 				ckt.setDefaultGrowthFactor(1.0);
 			default:
 				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (year - 1)));
 			}
-			
+
 //			fire_InitControls();
 
 			/* CheckFaultStatus;  ???? needed here?? */
-			
+
 			switch (DynaVars.SolutionMode) {
 			case Dynamics.SNAPSHOT:
 				solveSnap();
@@ -258,6 +248,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		} catch (Esolv32Problem e) {
 			Globals.doSimpleMsg("Error Encountered in Solve: " + e.getMessage(), 482);
 			Globals.setSolutionAbort(true);
+		} catch (SolverError e) {
+			// TODO Handle solver error
+		} catch (ControlProblem e) {
+			// TODO Handle control problem
 		}
 	}
 
@@ -290,21 +284,21 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 //		BufferedWriter FDebug = new BufferedWriter(F);
 //		if (Iteration == 1) {
 //			FDebug.write("Iter");
-//			for (int i = 0; i < ckt.getNumNodes(); i++) 
+//			for (int i = 0; i < ckt.getNumNodes(); i++)
 //				FDebug.write(", " + ckt.getBusList().get(ckt.getMapNodeToBus()[i].BusRef) + "." + ckt.getMapNodeToBus()[i].NodeNum);  // TODO Implement colon syntax
 //			FDebug.newLine();
 //		}
 //		/* ***** */  // FIXME Format number widths
 //		FDebug.write(Iteration);
-//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//		for (int i = 0; i < ckt.getNumNodes(); i++)
 //			FDebug.write(", " + VmagSaved[i]);
 //		FDebug.newLine();
 //		FDebug.write("Err");
-//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//		for (int i = 0; i < ckt.getNumNodes(); i++)
 //			FDebug.write(", " + String.format("%-.5g", ErrorSaved[i]));
 //		FDebug.newLine();
 //		FDebug.write("Curr");
-//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+//		for (int i = 0; i < ckt.getNumNodes(); i++)
 //			FDebug.write(", " + Currents[i].abs());
 //		FDebug.newLine();
 //		/* ***** */
@@ -318,7 +312,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 
 		ConvergedFlag = Result;
-		
+
 		return Result;
 	}
 
@@ -328,18 +322,18 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 */
 	private void getSourceInjCurrents() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
-		for (CktElement pElem : ckt.getSources()) 
+
+		for (CktElement pElem : ckt.getSources())
 			if (pElem.isEnabled())
 				pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
 
 		if (IsHarmonicModel) {  // Pick up generators and Loads, too
 
-			for (GeneratorObj pElem : ckt.getGenerators()) 
+			for (GeneratorObj pElem : ckt.getGenerators())
 				if (pElem.isEnabled())
 					pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
-				
-			for (LoadObj pElem : ckt.getLoads()) 
+
+			for (LoadObj pElem : ckt.getLoads())
 				if (pElem.isEnabled())
 					pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
 		}
@@ -350,7 +344,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 */
 	public void setGeneratorDispRef() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		switch (DynaVars.SolutionMode) {
 		case Dynamics.SNAPSHOT:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
@@ -362,7 +356,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
 		case Dynamics.GENERALTIME:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
-		case Dynamics.DYNAMICMODE: 
+		case Dynamics.DYNAMICMODE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
 		case Dynamics.HARMONICMODE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
@@ -391,23 +385,23 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
-	private void setGeneratordQdV() {
+	private void setGeneratordQdV() throws SolverError, Esolv32Problem {
 		boolean Did_One = false;
 		double GenDispSave;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		// Save the generator dispatch level and set on high enough to
 		// turn all generators on
 		GenDispSave = ckt.getGeneratorDispatchReference();
 		ckt.setGeneratorDispatchReference(1000.0);
-		
+
 		for (GeneratorObj pGen : ckt.getGenerators()) {
 			if (pGen.isEnabled()) {
 
 				// for PV generator models only ...
 				if (pGen.getGenModel() == 3) {
-				
+
 					pGen.initDQDVCalc();
 
 					// solve at base var setting
@@ -417,7 +411,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 						zeroInjCurr();
 						getSourceInjCurrents();
 						pGen.injCurrents();  // get generator currents with nominal vars
-						SolveSystem(NodeV);
+						solveSystem(NodeV);
 					}
 
 					pGen.rememberQV();  // Remember Q and V
@@ -430,7 +424,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 						zeroInjCurr();
 						getSourceInjCurrents();
 						pGen.injCurrents();  // get generator currents with nominal vars
-						SolveSystem(NodeV);
+						solveSystem(NodeV);
 					}
 
 					pGen.calcDQDV(); // bssed on remembered Q and V and present values of same
@@ -440,7 +434,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				}
 			}
 		}
-		
+
 		// Restore generator dispatch reference
 		ckt.setGeneratorDispatchReference(GenDispSave);
 		try {
@@ -448,24 +442,25 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				solveZeroLoadSnapShot();
 		} catch (Esolv32Problem e) {
 			DSSGlobals.getInstance().doSimpleMsg("From SetGenerator dQdV, SolveZeroLoadSnapShot: " + DSSGlobals.CRLF + e.getMessage()  + YMatrix.checkYMatrixforZeroes(), 7071);
-			throw new SolveError("Aborting");
+			throw new SolverError("Aborting");
 		}
 	}
 
 	/**
 	 * Normal fixed-point solution.
-	 * 
+	 *
 	 *   Vn+1 = [Y]-1 Injcurr
-	 *   
+	 *
 	 * Where Injcurr includes only PC elements (loads, generators, etc.)
 	 * i.e., the shunt elements.
-	 * 
+	 *
 	 * Injcurr are the current injected into the node (need to reverse
 	 * current direction for loads).
+	 * @throws Esolv32Problem
 	 */
-	private void doNormalSolution() {
+	private void doNormalSolution() throws Esolv32Problem {
 		Iteration = 0;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		/* **** Main iteration loop **** */
@@ -490,30 +485,31 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			// Solve for voltages          /* Note: NodeV[0] = 0 + j0 always */
 			if (ckt.isLogEvents())
 				Utilities.logThisEvent("Solve Sparse Set doNormalSolution ...");
-			SolveSystem(NodeV);
+			solveSystem(NodeV);
 			LoadsNeedUpdating = false;
 		}
 	}
 
 	/**
 	 * Newton iteration.
-	 *   
+	 *
 	 *   Vn+1 =  Vn - [Y]-1 Termcurr
-	 *   
+	 *
 	 * Where Termcurr includes currents from all elements and we are
 	 * attempting to get the  currents to sum to zero at all nodes.
-	 * 
+	 *
 	 * Termcurr is the sum of all currents going into the terminals of
 	 * the elements.
-	 * 
+	 *
 	 * For PD Elements, Termcurr = Yprim*V
-	 * 
+	 *
 	 * For Loads, Termcurr = (Sload/V)*
-	 * For Generators, Termcurr = -(Sgen/V)*
+	 * For Generators, Termcurr = -(Sgen/V)
+	 * @throws Esolv32Problem *
 	 */
-	private void doNewtonSolution() {
+	private void doNewtonSolution() throws Esolv32Problem {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		dV = (Complex[]) Utilities.resizeArray(dV, ckt.getNumNodes() + 1); // Make sure this is always big enough
 
 		if (ControlIteration == 1)
@@ -532,11 +528,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			if (SystemYChanged)
 				YMatrix.buildYMatrix(YMatrix.WHOLEMATRIX, false);  // Does not realloc V, I
 
-			if (UseAuxCurrents) 
+			if (UseAuxCurrents)
 				addInAuxCurrents(Solution.NEWTONSOLVE);
 
 			// Solve for change in voltages
-			SolveSystem(dV);
+			solveSystem(dV);
 
 			LoadsNeedUpdating = false;
 
@@ -549,16 +545,16 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
-	public void doPFlowSolution() {
+	public void doPFlowSolution() throws SolverError, Esolv32Problem {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		SolutionCount += 1;    // Unique number for this solution
 
 		if (VoltageBaseChanged)
 			YMatrix.initializeNodeVbase(); // for convergence test
 
 		if (!SolutionInitialized) {
-			
+
 			if (Globals.getActiveCircuit().isLogEvents())
 				Utilities.logThisEvent("Initializing Solution");
 			try {
@@ -566,16 +562,16 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				solveYDirect();  // 8-14-06 This should give a better answer than zero load snapshot
 			} catch (Esolv32Problem e) {
 				Globals.doSimpleMsg("From doPFlowSolution().solveYDirect(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7072);
-				throw new SolveError("Aborting");
+				throw new SolverError("Aborting");
 			}
 			if (Globals.isSolutionAbort())
 				return;  // Initialization can result in abort
 
 			try {
 				setGeneratordQdV();  // Set dQdV for Model 3 generators
-			} catch (Esolv32Problem e) { 
+			} catch (Esolv32Problem e) {
 				Globals.doSimpleMsg("From doPFlowSolution.setGeneratordQdV(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7073);
-				throw new SolveError("Aborting");
+				throw new SolverError("Aborting");
 			}
 
 			/* The above resets the active sparse set to hY */
@@ -595,9 +591,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/**
 	 * Solve without load for initialization purposes.
+	 * @throws Esolv32Problem
 	 */
-	public int solveZeroLoadSnapShot() {
-		
+	public int solveZeroLoadSnapShot() throws Esolv32Problem {
+
 		if (SystemYChanged || SeriesYInvalid)
 			YMatrix.buildYMatrix(YMatrix.SERIESONLY, true);  // Side Effect: Allocates V
 
@@ -614,19 +611,20 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		if (DSSGlobals.getInstance().getActiveCircuit().isLogEvents())
 			Utilities.logThisEvent("Solve Sparse Set ZeroLoadSnapshot ...");
 
-		SolveSystem(NodeV);  // also sets voltages in radial part of the circuit if radial solution
+		solveSystem(NodeV);  // also sets voltages in radial part of the circuit if radial solution
 
 		/* Reset the main system Y as the solution matrix */
 		if ((Ysystem != null) && !DSSGlobals.getInstance().isSolutionAbort())
 			Y = Ysystem;
-			
+
 		return 0;
 	}
 
 	/**
 	 * Set voltage bases using voltage at first node (phase) of a bus.
+	 * @throws SolverError
 	 */
-	public void setVoltageBases() {
+	public void setVoltageBases() throws SolverError {
 		boolean bZoneCalc, bZoneLock;
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
@@ -657,7 +655,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		} catch (Esolv32Problem e) {
 			DSSGlobals.getInstance().doSimpleMsg("From setVoltageBases().solveZeroLoadSnapShot(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
-			throw new SolveError("Aborting");
+			throw new SolverError("Aborting");
 		}
 	}
 
@@ -671,8 +669,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/**
 	 * Snapshot checks with matrix rebuild.
+	 * @throws ControlProblem
+	 * @throws Esolv32Problem
 	 */
-	public void checkControls() {
+	public void checkControls() throws ControlProblem, Esolv32Problem {
 		if (ControlIteration < MaxControlIterations) {
 			if (ConvergedFlag) {
 				if (DSSGlobals.getInstance().getActiveCircuit().isLogEvents())
@@ -690,22 +690,25 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/**
 	 * Solve for now once.
+	 * @throws SolverError
+	 * @throws ControlProblem
+	 * @throws Esolv32Problem
 	 */
-	public int solveSnap() {
-		int Result;
+	public int solveSnap() throws SolverError, ControlProblem, Esolv32Problem {
+		int Result = 0;
 		int TotalIterations = 0;
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		snapShotInit();
 
-		while (!ControlActionsDone && (ControlIteration < MaxControlIterations>)) {
+		while (!ControlActionsDone && (ControlIteration < MaxControlIterations)) {
 			ControlIteration += 1;
 
 			Result = solveCircuit();  // Do circuit solution w/o checking controls
 
 			/* Now Check controls */
 			/* TODO $IFDEF DLL_ENGINE */
-			fire_CheckControls();
+//			fire_checkControls();
 			/* TODO $ENDIF */
 			checkControls();
 
@@ -726,7 +729,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			Utilities.logThisEvent("Solution Done");
 
 		/* TODO $IFDEF DLL_ENGINE */
-		fire_StepControls();
+//		fire_StepControls();
 		/* $ENDIF */
 
 		Iteration = TotalIterations;  /* so that it reports a more interesting number */
@@ -736,8 +739,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/**
 	 * Solve for now once, direct solution.
+	 * @throws Esolv32Problem
 	 */
-	public int solveDirect() {
+	public int solveDirect() throws Esolv32Problem {
 		LoadsNeedUpdating = true;  // Force possible update of loads and generators
 
 		if (SystemYChanged)
@@ -756,20 +760,21 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		Iteration = 1;
 		LastSolutionWasDirect = true;
-		
+
 		return 0;
 	}
 
 	/**
 	 * SolveSnap sans control iteration.
+	 * @throws SolverError
 	 */
-	public int solveCircuit() {
+	public int solveCircuit() throws SolverError {
 		if (LoadModel == DSSGlobals.ADMITTANCE) {
 			try {
 				solveDirect();  // no sense horsing around when it's all admittance
 			} catch (Esolv32Problem e) {
 				DSSGlobals.getInstance().doSimpleMsg("From solveSnap().solveDirect(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7075);
-				throw new SolveError("Aborting");
+				throw new SolverError("Aborting");
 			}
 		} else {
 			try {
@@ -778,14 +783,14 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				doPFlowSolution();
 			} catch (Esolv32Problem e) {
 				DSSGlobals.getInstance().doSimpleMsg("From solveSnap().doPFlowSolution(): " + DSSGlobals.CRLF + e.getMessage() + YMatrix.checkYMatrixforZeroes(), 7074);
-				throw new SolveError("Aborting");
+				throw new SolverError("Aborting");
 			}
 		}
 		return 0;
 	}
 
 	private void zeroInjCurr() {
-		for (int i = 0; i < DSSGlobals.getInstance().getActiveCircuit().getNumNodes(); i++) 
+		for (int i = 0; i < DSSGlobals.getInstance().getActiveCircuit().getNumNodes(); i++)
 			Currents[i] = Complex.ZERO;
 	}
 
@@ -794,7 +799,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	 */
 	private void getPCInjCurr() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		for (PCElement pElem : ckt.getPCElements()) 
+		for (PCElement pElem : ckt.getPCElements())
 			if (pElem.isEnabled())
 				pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
 	}
@@ -823,9 +828,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			F.println("Convergence Report:");
 			F.println("-------------------");
 			F.println("\"Bus.Node\", \"Error\", \"|V|\",\"Vbase\"");
-			
+
 			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-			
+
 			for (int i = 0; i < ckt.getNumNodes(); i++) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
 				F.print("\"" + Utilities.pad((ckt.getBusList().get(nb.BusRef)+"."+String.valueOf(nb.NodeNum)+"\""), 18) );
@@ -848,14 +853,14 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	private void sumAllCurrents() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		for (CktElement pElem : ckt.getCktElements()) 
+		for (CktElement pElem : ckt.getCktElements())
 			pElem.sumCurrents();  // sum terminal currents into system currents array
 	}
 
 	public void doControlActions() {
 		int xHour = 0;
 		double xSec = 0.0;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		switch (ControlMode) {
@@ -876,8 +881,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 	}
 
-	public void sampleControlDevices() {
-		ControlElem ControlDevice;
+	public void sampleControlDevices() throws ControlProblem {
+		ControlElem ControlDevice = null;
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		try {
 			// Sample all controls and set action times in control queue.
@@ -894,8 +899,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	/**
 	 * Sample and do.
+	 * @throws ControlProblem
 	 */
-	public void sample_DoControlActions() {
+	public void sample_DoControlActions() throws ControlProblem {
 		if (ControlMode == DSSGlobals.CONTROLSOFF) {
 			ControlActionsDone = true;
 		} else {
@@ -909,11 +915,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	public void setMode(int Value) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		intHour    = 0;
 		DynaVars.t = 0.0;
 		updateDblHour();
-		
+
 		ckt.setTrapezoidalIntegration(false);
 
 		if (!oKForDynamics(Value))
@@ -969,7 +975,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			IsDynamicModel = true;
 		case Dynamics.FAULTSTUDY:
 			IsDynamicModel = true;
-		case Dynamics.LOADDURATION1: 
+		case Dynamics.LOADDURATION1:
 			DynaVars.h = 3600.0;
 			ckt.setTrapezoidalIntegration(true);
 		case Dynamics.LOADDURATION2:
@@ -996,26 +1002,26 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	private void addInAuxCurrents(int solveType) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
-//		for (int i = 0; i < ckt.getNumNodes(); i++) 
+
+//		for (int i = 0; i < ckt.getNumNodes(); i++)
 //			Currents[i] = Currents[i].add(AuxCurrents[i]);
 		// For Now, only AutoAddObj uses this.
 
-		if (DynaVars.SolutionMode == Dynamics.AUTOADDFLAG) 
+		if (DynaVars.SolutionMode == Dynamics.AUTOADDFLAG)
 			ckt.getAutoAddObj().addCurrents(solveType);
 	}
 
 	public void zeroAuxCurrents() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		for (int i = 0; i < ckt.getNumNodes(); i++) 
+		for (int i = 0; i < ckt.getNumNodes(); i++)
 			AuxCurrents[i] = Complex.ZERO;
 	}
 
 	public void checkFaultStatus() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		for (FaultObj pFault : ckt.getFaults()) 
+		for (FaultObj pFault : ckt.getFaults())
 			pFault.checkStatus(ControlMode);
 	}
 
@@ -1028,7 +1034,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		// do machines in Dynamics Mode
 		if (IsDynamicModel) {
 			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-			for (GeneratorObj pElem : ckt.getGenerators()) 
+			for (GeneratorObj pElem : ckt.getGenerators())
 				if (pElem.isEnabled())
 					pElem.injCurrents();  // uses NodeRef to add current into InjCurr Array;
 		}
@@ -1055,7 +1061,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			Utilities.invalidateAllMachines();  // Force Recomp of YPrims when we leave Dynamics mode
 
 		if (!IsDynamicModel && ValueIsDynamic) {  // see if conditions right for going into dynamics
-	
+
 			if (Globals.getActiveCircuit().isSolved()) {
 				Utilities.calcInitialMachineStates();  // set state variables for machines (loads and generators)
 			} else {
@@ -1107,7 +1113,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		}
 
 		Frequency = Value;
-		
+
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		if (ckt != null)
 			Harmonic = Frequency / ckt.getFundamental();  // Make sure harmonic stays in synch
@@ -1130,15 +1136,15 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 	public void setYear(int Value) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		if (Globals.isDIFilesAreOpen())
 			Globals.getEnergyMeterClass().closeAllDIFiles();
-		
+
 		year = Value;
 		intHour = 0;  /* Change year, start over */
 		DynaVars.t = 0.0;
 		updateDblHour();
-		
+
 		Globals.getEnergyMeterClass().resetAll();  // force any previous year data to complete
 	}
 
@@ -1151,9 +1157,9 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		try {
 			FD = new FileWriter(DSSGlobals.getInstance().getCircuitName_() + "SavedVoltages.txt");
 			F = new PrintWriter(FD);
-			
+
 			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-			
+
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
 				BusName = ckt.getBusList().get(i);
 				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
@@ -1164,7 +1170,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			F.close();
 			DSSGlobals.getInstance().setGlobalResult(DSSGlobals.getInstance().getCircuitName_() + "SavedVoltages.txt");
-		
+
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doSimpleMsg("Error opening Saved Voltages File: "+e.getMessage(), 488);
 			return;
@@ -1172,12 +1178,13 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	/**
-	 * *************  MAIN SOLVER CALL  *************
+	 * *************  MAIN SOLVER CALL
+	 * @throws Esolv32Problem *************
 	 */
-	private int solveSystem(Complex[] V) {
+	private int solveSystem(Complex[] V) throws Esolv32Problem {
 		int RetCode;
-		long iRes;
-		double dRes;
+		long iRes = 0;
+		double dRes = 0;
 
 		/* Note: NodeV[0] = 0 + j0 always. Therefore, pass the address of the element 1 of the array. */
 		try {
@@ -1211,8 +1218,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBuses()[i];
-			if (bus.getVBus() != null) 
-				for (int j = 0; j < bus.getNumNodesThisBus(); j++) 
+			if (bus.getVBus() != null)
+				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					bus.getVBus()[j] = NodeV[bus.getRef(j)];
 		}
 	}
@@ -1224,18 +1231,19 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBuses()[i];
-			if (bus.getVBus() != null) 
-				for (int j = 0; j < bus.getNumNodesThisBus(); j++) 
+			if (bus.getVBus() != null)
+				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					NodeV[bus.getRef(j)] = bus.getVBus()[j];
 		}
 	}
 
 	/**
 	 * Similar to solveDirect(); used for initialization.
-	 * 
+	 *
 	 * Solves present Y matrix with no injection sources except voltage and current sources.
+	 * @throws Esolv32Problem
 	 */
-	public int solveYDirect() {
+	public int solveYDirect() throws Esolv32Problem {
 		zeroInjCurr();   // Side Effect: Allocates InjCurr
 		getSourceInjCurrents();
 		getMachineInjCurrents();  // Need this in dynamics mode to pick up injections

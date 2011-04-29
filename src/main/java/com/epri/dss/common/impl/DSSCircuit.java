@@ -189,7 +189,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	protected boolean MarkSwitches;
 	protected boolean MarkTransformers;
-	
+
 	protected int ActiveLoadShapeClass;
 
 	public DSSCircuit(String aName) {
@@ -197,7 +197,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		this.IsSolved = false;
 		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
-		this.Solution = com.epri.dss.common.Solution.ActiveSolutionObj;
+		this.Solution = SolutionImpl.getActiveSolutionObj();
 
 		setLocalName(aName.toLowerCase());
 
@@ -1086,7 +1086,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	private int addBus(String BusName, int NNodes) {
-		
+
 		if (BusName.length() == 0) {  // Error in busname
 			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
@@ -1117,13 +1117,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		return Result;
 	}
 
-	public void setActiveCktElement(DSSCktElement Value) {
+	public void setActiveCktElement(CktElement Value) {
 		ActiveCktElement = Value;
 		DSSGlobals.getInstance().setActiveDSSObject(Value);
 	}
 
-	public DSSCktElement getActiveCktElement() {
-		return null;
+	public CktElement getActiveCktElement() {
+		return ActiveCktElement;
 	}
 
 	public void setBusNameRedefined(boolean Value) {
@@ -1227,9 +1227,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			F.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
-			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().length; i++) 
-				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList()[i-1]);
-			
+			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
+				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
+
 			if (new File("buscoords.dss").exists()) {
 				F.println("MakeBusList");
 				F.println("Buscoords buscoords.dss");
@@ -1287,10 +1287,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			File FD = new File("BusCoords.dss");
 			PrintStream F = new PrintStream(FD);
 
-			for (int i = 0; i < NumBuses; i++) 
+			for (int i = 0; i < NumBuses; i++)
 				if (Buses[i].isCoordDefined())
 					F.println(Utilities.checkForBlanks(BusList.get(i)) + String.format(", %-g, %-g", Buses[i].getX(), Buses[i].getY()));
-			
+
 			F.close();
 
 			Result = true;
@@ -1306,9 +1306,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (LogEvents) Utilities.logThisEvent("Reallocating Device List");
 		HashListImpl TempList = new HashListImpl(2 * NumDevices);
 
-		for (int i = 0; i < DeviceList.listSize(); i++) 
+		for (int i = 0; i < DeviceList.listSize(); i++)
 			TempList.add(DeviceList.get(i));
-		
+
 		DeviceList = TempList;
 	}
 
@@ -1332,7 +1332,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		// Resize DeviceList if no. of devices greatly exceeds allocation
 		if (NumDevices > 2 * DeviceList.getInitialAllocation())
-			reallocDeviceList(); 
+			reallocDeviceList();
 		DeviceList.add(ActiveCktElement.getName());
 		CktElements.add(ActiveCktElement);
 
@@ -1392,12 +1392,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	 * Totalize all energy meters in the problem.
 	 */
 	public void totalizeMeters() {
-		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++) 
+		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++)
 			RegisterTotals[i] = 0.0;
-		
+
 		for (int i = 0; i < EnergyMeters.size(); i++) {
 			EnergyMeterObj Meter = EnergyMeters.get(i);
-			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++) 
+			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++)
 				RegisterTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
 		}
 	}
@@ -1450,7 +1450,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		boolean Result = false;
 //		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
 		String CurrDir;
-		
+
 		boolean Success = false;
 		if (Dir.length() == 0) {
 			Dir = getName();
@@ -1489,10 +1489,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 
 		// This list keeps track of all files saved
-		DSSGlobals.getInstance().setSavedFileList(new String[0]);  
+		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
 
 		// Initialize so we will know when we have saved the circuit elements
-		for (CktElement elem : CktElements) 
+		for (CktElement elem : CktElements)
 			elem.setHasBeenSaved(false);
 //			DSSCktElement(elem).setHasBeenSaved(false);
 
@@ -1500,7 +1500,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
 			cls.setSaved(false);
 //			DSSClass(cls).setSaved(false);
-		
+
 		// Ignore Feeder Class -- gets saved with Energymeters
 		DSSGlobals.getInstance().getFeederClass().setSaved(true);
 
@@ -1541,7 +1541,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		// use parser functions to decode
 		Parser.getInstance().setToken(ActiveCktElement.getFirstBus());
-		
+
 		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
 			boolean NodesOK = true;
 			// Assume normal phase rotation  for default
@@ -1662,7 +1662,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public void invalidateAllPCElements() {
-		for (PCElement p : PCElements) 
+		for (PCElement p : PCElements)
 			p.setYprimInvalid(true);
 
 		// Force rebuild of matrix on next solution
@@ -1706,14 +1706,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
 			for (CktElement elem : CktElements) {
 				elem.setChecked(false);
-				for (int i = 0; i < elem.getNTerms(); i++) 
+				for (int i = 0; i < elem.getNTerms(); i++)
 					elem.getTerminals()[i].setChecked(false);
 				elem.setIsIsolated(true); // till proven otherwise
 			}
 
-			for (int i = 0; i < NumBuses; i++) 
+			for (int i = 0; i < NumBuses; i++)
 				Buses[i].setBusChecked(false);
-			
+
 			Branch_List = CktTreeImpl.getIsolatedSubArea(Sources.get(0), true);  // calls back to build adjacency lists
 		}
 		return Branch_List;

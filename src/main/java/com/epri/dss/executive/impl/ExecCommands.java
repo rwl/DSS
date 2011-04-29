@@ -2,16 +2,14 @@ package com.epri.dss.executive.impl;
 
 import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
-import com.epri.dss.executive.ExecCommands;
-import com.epri.dss.executive.Executive;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 
-public class ExecCommandsImpl implements ExecCommands {
+public class ExecCommands {
 
 	private static final String CRLF = DSSGlobals.CRLF;
 
-	private static final int NumExecCommands = 88;
+	public static final int NumExecCommands = 91;
 
 	private String[] ExecCommand;
 	private String[] CommandHelp;
@@ -22,8 +20,25 @@ public class ExecCommandsImpl implements ExecCommands {
 	private String LastCmdLine;
 	private static String RedirFile;
 
-	public ExecCommandsImpl() {
+	// Private constructor prevents instantiation from other classes
+	private ExecCommands() {
+		defineCommands();
+	}
 
+	/**
+	 * ExecCommandsHolder is loaded on the first execution of
+	 * ExecCommands.getInstance() or the first access to
+	 * ExecCommandsHolder.INSTANCE, not before.
+	 */
+	private static class ExecCommandsHolder {
+		public static final ExecCommands INSTANCE = new ExecCommands();
+	}
+
+	public static ExecCommands getInstance() {
+		return ExecCommandsHolder.INSTANCE;
+	}
+
+	private void defineCommands() {
 		this.ExecCommand = new String[NumExecCommands];
 
 		this.ExecCommand[0]  = "New";
@@ -387,6 +402,14 @@ public class ExecCommandsImpl implements ExecCommands {
 		RedirFile = redirFile;
 	}
 
+	public String getExecCommand(int i) {
+		return ExecCommand[i];
+	}
+
+	public String getCommandHelp(int i) {
+		return CommandHelp[i];
+	}
+
 	public void processCommand(String CmdLine) {
 		int ParamPointer;
 		String ParamName;
@@ -404,7 +427,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			LastCmdLine = CmdLine;
 			Parser.setCmdString(LastCmdLine);  // Load up command parser
 			Globals.setLastCommandWasCompile(false);
-			
+
 			ParamPointer = 0;
 			ParamName = Parser.getNextParam();
 			Param = Parser.makeString();
@@ -418,18 +441,18 @@ public class ExecCommandsImpl implements ExecCommands {
 			// Check first for Compile or Redirect and get outta here
 			switch (ParamPointer) {
 			case 13:
-				if (Executive.DSSExecutive.isRecorderOn())
-					Executive.DSSExecutive.writeToRecorderFile(CRLF+"!*********"+CmdLine);
+				if (DSSExecutive.getDSSExecutive().isRecorderOn())
+					DSSExecutive.getDSSExecutive().writeToRecorderFile(CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(true));
 				return;
 			case 19:
-				if (Executive.DSSExecutive.isRecorderOn())
-					Executive.DSSExecutive.writeToRecorderFile(CRLF+"!*********"+CmdLine);
+				if (DSSExecutive.getDSSExecutive().isRecorderOn())
+					DSSExecutive.getDSSExecutive().writeToRecorderFile(CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(false));
 				return;
 			default:  // Write everything direct to recorder, if ON
-				if (Executive.DSSExecutive.isRecorderOn())
-					Executive.DSSExecutive.writeToRecorderFile(CmdLine);
+				if (DSSExecutive.getDSSExecutive().isRecorderOn())
+					DSSExecutive.getDSSExecutive().writeToRecorderFile(CmdLine);
 			}
 
 			// Things that are OK to do before a circuit is defined
@@ -446,7 +469,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 20:
 				Globals.setCmdResult(ExecHelper.doHelpCmd());
 			case 21:
-				if (!Globals.isDLL()) 
+				if (!Globals.isDLL())
 					DSSForms.exitControlPanel();  // Quit in Stand alone version
 			case 24:
 				DSSForms.showControlPanel();
@@ -482,7 +505,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 87:
 				ExecHelper.doCvrtLoadshapesCmd();
 			default:
-				if (Globals.getActiveCircuit() == null) 
+				if (Globals.getActiveCircuit() == null)
 					Globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this command.", 301);
 			}
 
@@ -541,7 +564,7 @@ public class ExecCommandsImpl implements ExecCommands {
 				Globals.setCmdResult(ExecHelper.doPropertyDump());
 			case 17:
 				Globals.setCmdResult(ExecHelper.doCloseCmd());
-				
+
 			case 22:
 				Globals.setCmdResult(ExecHelper.doQueryCmd());
 			case 23:
@@ -660,7 +683,7 @@ public class ExecCommandsImpl implements ExecCommands {
 			case 82:
 				Globals.getActiveCircuit().getSolution().solveDirect();
 			case 83:
-				Globals.getActiveCircuit().getSolution().doPFLOWsolution();
+				Globals.getActiveCircuit().getSolution().doPFlowSolution();
 			case 84:
 				Globals.setCmdResult(ExecHelper.doAddMarkerCmd());
 			case 85:
