@@ -192,4 +192,9 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		Flag = flag;
 	}
 
+	// FIXME Protected member in OpenDSS
+	public int[] getPrpSequence() {
+		return PrpSequence;
+	}
+
 }

@@ -1,6 +1,5 @@
 package com.epri.dss.delivery.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -10,7 +9,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FaultImpl extends PDClassImpl implements Fault {
-	
+
 	private static FaultObj ActiveFaultObj;
 
 	public FaultImpl() {
@@ -27,7 +26,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = Fault.NumPropsThisClass;
@@ -72,7 +71,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		ActiveProperty = Fault.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -80,32 +79,32 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		Globals.getActiveCircuit().setActiveCktElement(new FaultObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void doGmatrix() {
 
 		FaultObj af = getActiveFaultObj();
-	
+
 		double[] MatBuffer = new double[af.getNPhases() * af.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), MatBuffer);
 
 		if (OrderFound > 0) {  // Parse was successful  TODO Check zero based indexing
 			/* X */
-			af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) ); 
+			af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) );
 			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
 				af.getGmatrix()[j] = MatBuffer[j];
 		}
 
 		MatBuffer = null;
 	}
-	
+
 	private void fltSetBus1(String S) {
 		String S2;
 
 		// Special handling for Bus 1
 		// Set Bus2 = Bus1.0.0.0
-		
+
 		FaultObj af = getActiveFaultObj();
-	
+
 		af.setBus(1, S);  // TODO Check zero based indexing
 
 		// Default Bus2 to zero node of Bus1. (Wye Grounded connection)
@@ -123,7 +122,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		af.setBus(2, S2);  // TODO Check zero based indexing
 		af.setShunt(true);
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -131,8 +130,8 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveFaultObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveFaultObj());  // use property to set this value
+		setActiveFaultObj((FaultObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
 
 		FaultObj af = getActiveFaultObj();
 
@@ -217,8 +216,10 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		}
 
 		af.recalcElementData();
+
+		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String FaultName) {
 
@@ -251,13 +252,13 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setGmatrix(null);
 			} else {
 				af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) );
-				for (int i = 0; i < af.getNPhases() * af.getNPhases(); i++) 
+				for (int i = 0; i < af.getNPhases() * af.getNPhases(); i++)
 					af.getGmatrix()[i] = OtherFault.getGmatrix()[i];
 			}
 
 			classMakeLike(OtherFault);
 
-			for (int i = 0; i < af.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < af.getParentClass().getNumProperties(); i++)
 				af.setPropertyValue(i, OtherFault.getPropertyValue(i));
 			Result = 1;
 		} else {
@@ -265,7 +266,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		}
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Fault.init()", -1);

@@ -111,6 +111,9 @@ public class DSSGlobals {
 	private int ErrorNumber = 0;
 	private String LastErrorMessage = "";
 
+	private int DefaultEarthModel = DERI;
+	private int ActiveEarthModel = DefaultEarthModel;
+
 	private String LastFileCompiled = "";
 	private boolean LastCommandWasCompile = false;
 
@@ -340,6 +343,22 @@ public class DSSGlobals {
 
 	public void setLastErrorMessage(String lastErrorMessage) {
 		LastErrorMessage = lastErrorMessage;
+	}
+
+	public int getDefaultEarthModel() {
+		return DefaultEarthModel;
+	}
+
+	public void setDefaultEarthModel(int defaultEarthModel) {
+		DefaultEarthModel = defaultEarthModel;
+	}
+
+	public int getActiveEarthModel() {
+		return ActiveEarthModel;
+	}
+
+	public void setActiveEarthModel(int activeEarthModel) {
+		ActiveEarthModel = activeEarthModel;
 	}
 
 	public String getLastFileCompiled() {

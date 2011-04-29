@@ -4,39 +4,39 @@ import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.Complex;
 
 public interface TransformerObj extends PDElement {
-	
+
 	public double getPresentTap(int i);
-	
+
 	public void setPresentTap(int i, double Value);
-	
+
 	public double getMinTap(int i);
-	
+
 	public double getMaxTap(int i);
-	
+
 	public double getTapIncrement(int i);
-	
+
 	public double getBaseVoltage(int i);
-	
+
 	public double getBasekVLL(int i);
-	
+
 	/* CIM accessors */
-	
+
 	public int getNumWindings();
 
 	public int getNumTaps(int i);
-	
+
 	public double getWdgResistance(int i);
-	
+
 	public int getWdgConnection(int i);
-	
+
 	public double getWdgKVA(int i);
-	
+
 	public double getXsc(int i);
-	
+
 	public double getWdgRneutral(int i);
-	
+
 	public double getWdgXneutral(int i);
-	
+
 	public double getWdgYPPM(int i);
 
 	public int getActiveWinding();
@@ -62,9 +62,9 @@ public interface TransformerObj extends PDElement {
 	public String getXfmrCode();
 
 	public void setXfmrCode(String xfmrCode);
-	
+
 	public void setNumWindings(int N);
-	
+
 	public double getPpm_FloatFactor();
 
 	public double getPctImag();
@@ -94,11 +94,17 @@ public interface TransformerObj extends PDElement {
 	public double getPctLoadLoss();
 
 	public double getPctNoLoadLoss();
-	
+
 	public int rotatePhases(int iPhs);
-	
+
 	public void getWindingVoltages(int iWind, Complex[] VBuffer);
-	
+
+	// FIXME Private method in OpenDSS
+	void fetchXfmrCode(String Code);
+
+	// FIXME Protected method in OpenDSS
+	void setTermRef();
+
 
 	// FIXME Private memebers in OpenDSS
 

@@ -31,4 +31,14 @@ public abstract class MathUtil {
 		return null;
 	}
 
+	public static Complex parallelZ(Complex complex, Complex complex2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void ETKInvert(double[] rmatrix, int nPhases, int checkError) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

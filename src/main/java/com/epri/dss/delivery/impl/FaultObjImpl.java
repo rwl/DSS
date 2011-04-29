@@ -2,8 +2,6 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
-import org.apache.commons.math.util.MathUtils;
-
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSGlobals;
@@ -12,28 +10,30 @@ import com.epri.dss.delivery.Fault;
 import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 public class FaultObjImpl extends PDElementImpl implements FaultObj {
-	
+
 	private double MinAmps;
 	private boolean IsTemporary, Cleared, Is_ON;
 	private double On_Time;
 	private double RandomMult;
-	
+
 	/* single G per phase (line rating) if Gmatrix not specified */
 	protected double G;
 	/* If not null then overrides G */
 	protected double[] Gmatrix;
-	
+
 	/* per unit stddev */
 	protected double Stddev;
 	protected int SpecType;
 
 	public FaultObjImpl(DSSClass ParClass, String FaultName) {
 		super(ParClass);
-		
+
 		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // Only in Fault object class
 		setName(FaultName.toLowerCase());
 
@@ -69,29 +69,29 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		this.Yorder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		// Nothing to do
 	}
-	
-	private double cube(double x) {
-		return x * x * x;
-	}
-	
+
+//	private double cube(double x) {
+//		return x * x * x;
+//	}
+
 	/**
 	 * Called from solveMontefault procedure.
 	 */
 	public void randomize() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 		switch (sol.getRandomType()) {
 		case DSSGlobals.GAUSSIAN:
 			RandomMult = MathUtil.gauss(1.0, Stddev);
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();
 		case DSSGlobals.LOGNORMAL:
-			RandomMult = MathUtil.QuasiLogNormal(1.0);
+			RandomMult = MathUtil.quasiLognormal(1.0);
 		default:
 			RandomMult = 1.0;
 		}
@@ -101,7 +101,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		setYprimInvalid(true);    // force rebuilding of matrix
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 		Complex Value, Value2;
@@ -113,7 +113,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			if (YPrim_Series != null)
 				YPrim_Series = null;
 			YPrim_Series = new CMatrixImpl(Yorder);
-			if (YPrim_Shunt != null) 
+			if (YPrim_Shunt != null)
 				YPrim_Shunt = null;
 			YPrim_Shunt = new CMatrixImpl(Yorder);
 			if (YPrim != null)
@@ -125,7 +125,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			YPrim.clear();
 		}
 
-		
+
 		if (isShunt()) {
 			YPrimTemp = YPrim_Shunt;
 		} else {
@@ -134,7 +134,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		// make sure randommult is 1.0 if not solution mode MonteFault
 
-		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != DSSGlobals.MONTEFAULT)
+		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != Dynamics.MONTEFAULT)
 			RandomMult = 1.0;
 
 		if (RandomMult == 0.0)
@@ -163,7 +163,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				ioffset = (i - 1) * nPhases;
 				for (j = 0; j < nPhases; j++) {
 					if (Is_ON) {
-						Value = new Complex(Gmatrix[(ioffset + j)] / RandomMult, 0.0)
+						Value = new Complex(Gmatrix[(ioffset + j)] / RandomMult, 0.0);
 					} else {
 						Value = Complex.ZERO;
 					}
@@ -176,11 +176,11 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		}
 
 		YPrim.copyFrom(YPrimTemp);
-			
+
 		super.calcYPrim();
 		setYprimInvalid(false);
 	}
-	
+
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		int i, j;
@@ -217,10 +217,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		for (i = Fault.NumPropsThisClass; i < pc.getNumProperties(); i++)
 			F.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete) 
+		if (Complete)
 			F.println("// SpecType=" + SpecType);
 	}
-	
+
 	public void checkStatus(int ControlMode) {
 
 		switch (ControlMode) {
@@ -234,7 +234,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
-				if (IsTemporary) 
+				if (IsTemporary)
 					if (!faultStillGoing()) {
 						Is_ON = false;
 						Cleared = true;
@@ -251,7 +251,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
-				if (IsTemporary) 
+				if (IsTemporary)
 					if (!faultStillGoing()) {
 						Is_ON = false;
 						Cleared = true;
@@ -261,19 +261,19 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			}
 		}
 	}
-	
+
 	private boolean faultStillGoing() {
 		computeIterminal();
-		for (int i = 0; i < nPhases; i++) 
+		for (int i = 0; i < nPhases; i++)
 			if (Iterminal[i].abs() > MinAmps)
 				return true;
 		return false;
 	}
-	
+
 	public void reset() {
 		setCleared(false);
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -296,17 +296,17 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		PropertyValue[Fault.NumPropsThisClass + 4] = "0";  // Pct Perm
 		PropertyValue[Fault.NumPropsThisClass + 5] = "0";  // Hrs to repair
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		String Result;
-		
+
 		switch (Index) {
 		case 5:
 			Result = "(";
 			if (Gmatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
-					for (int j = 0; j < i; j++) 
+					for (int j = 0; j < i; j++)
 						Result = Result + String.format("%-g", Gmatrix[(i - 1) * nPhases + j]) + " ";
 				if (i < nPhases)
 					Result = Result + "|";
@@ -317,10 +317,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		default:
 			Result = super.getPropertyValue(Index);
 		}
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	public void makePosSequence() {
 		if (nPhases != 1) {
@@ -329,7 +329,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		}
 		super.makePosSequence();
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public double getMinAmps() {

@@ -100,27 +100,36 @@ public interface LineObj extends PDElement {
 	public boolean isIsSwitch();
 
 	public void setIsSwitch(boolean isSwitch);
-	
+
 	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
 			Complex ZeroSeqLosses);
-	
+
 	public boolean mergeWith(LineObj OtherLine, boolean Series);
-	
+
 	public void updateControlElements(String NewName, String OldName);
-	
+
 	public void fetchLineCode(String Code);
-	
+
 	public void fetchGeometryCode(String Code);
-	
+
 	public void fetchLineSpacing(String Code);
-	
+
 	public void fetchWireList(String Code);
 
 	public boolean isLineCodeSpecified();
 
-	
+	// FIXME Private method in OpenDSS
+	void killGeometrySpecified();
+
+	// FIXME Private method in OpenDSS
+	void killSpacingSpecified();
+
+	// FIXME Private method in OpenDSS
+	public void resetLengthUnits();
+
+
 	// FIXME Private members in OpenDSS
-	
+
 	double getZFrequency();
 
 	void setZFrequency(double zFrequency);

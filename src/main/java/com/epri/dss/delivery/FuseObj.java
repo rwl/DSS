@@ -2,25 +2,25 @@ package com.epri.dss.delivery;
 
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.control.ControlElem;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
 import com.epri.dss.shared.impl.Complex;
 
 /**
  * A Fuse is a control element that is connected to a terminal of a
  * circuit element and controls the switches in the same or another terminal.
- * 
+ *
  * The control is usually placed in the
  * terminal of a line or transformer, but it could be any element.
- * 
+ *
  * CktElement to be controlled must already exist.
  *
  */
 public interface FuseObj extends ControlElem {
-	
+
 	// FIXME: Private in OpenDSS
 	void interpretFuseAction(String Action);
-	
+
 	TCC_CurveObj getFuseCurve();
 
 	void setFuseCurve(TCC_CurveObj fuseCurve);

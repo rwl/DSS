@@ -7,14 +7,13 @@ import com.epri.dss.control.impl.ControlClassImpl;
 import com.epri.dss.delivery.Fuse;
 import com.epri.dss.delivery.FuseObj;
 import com.epri.dss.general.TCC_CurveObj;
-import com.epri.dss.general.impl.TCC_CurveImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FuseImpl extends ControlClassImpl implements Fuse {
-	
+
 	private static FuseObj ActiveFuseObj;
-	
+
 	private static DSSClass TCC_CurveClass;
 
 	public FuseImpl() {
@@ -32,7 +31,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 		setTCC_CurveClass( DSSClassDefs.getDSSClass("TCC_Curve") );
 	}
-	
+
 	/**
 	 * General module function
 	 */
@@ -42,10 +41,10 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 		if (Result == null)
 			DSSGlobals.getInstance().doSimpleMsg("TCC Curve object: \"" + CurveName + "\" not found.", 401);
-		
+
 		return Result;
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = Fuse.NumPropsThisClass;
@@ -88,7 +87,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		ActiveProperty  = Fuse.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -96,14 +95,14 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		Globals.getActiveCircuit().setActiveCktElement(new FuseObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing WITH contents of Parser
-		setActiveFuseObj(ElementList.getActive());
+		setActiveFuseObj((FuseObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
 
 		int Result = 0;
@@ -147,7 +146,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				// Inherited parameters
 				classEdit(getActiveFuseObj(), ParamPointer - Fuse.NumPropsThisClass);
 			}
-			
+
 			switch (ParamPointer) {
 			/* Default the controlled element to the monitored element */
 			case 0:
@@ -161,13 +160,13 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		}
 
 		af.recalcElementData();
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String FuseName) {
-		
+
 		int Result = 0;
 		/* See if we can find this Fuse name in the present collection */
 		FuseObj OtherFuse = (FuseObj) find(FuseName);
@@ -192,7 +191,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 			af.setPresentState(OtherFuse.getPresentState());
 			af.setCondOffset(OtherFuse.getCondOffset());
 
-			for (int i = 0; i < af.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < af.getParentClass().getNumProperties(); i++)
 				af.setPropertyValue(i, OtherFuse.getPropertyValue(i));
 
 		} else {

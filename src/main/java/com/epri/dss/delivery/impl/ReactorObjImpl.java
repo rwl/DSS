@@ -6,6 +6,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
@@ -15,10 +16,10 @@ import com.epri.dss.delivery.Reactor;
 import com.epri.dss.delivery.ReactorObj;
 
 public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
-	
+
 	private double R, Rp, Gp, X, kvarrating, kvrating;
 	/* If not null then overrides C */
-	private double[] Rmatrix, Gmatrix, XMatrix, Bmatrix;  
+	private double[] Rmatrix, Gmatrix, XMatrix, Bmatrix;
 
 	private int Connection;  // 0 or 1 for wye (default) or delta, respectively
 	private int SpecType;   // 1=kvar, 2=R+jX, 3=R and X matrices
@@ -30,7 +31,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		super(ParClass);
 		setName(ReactorName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
-		
+
 		this.nPhases = 3;  // Directly set conds and phases
 		this.nConds = 3;
 		this.nTerms = 2;  // Force allocation of terminals and conductors
@@ -63,11 +64,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		initPropertyValues(0);
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		double KvarPerPhase, PhasekV;
-		int i, CheckError;
+		int i, CheckError = 0;
 
 		switch (SpecType) {
 		case 1:  // kvar
@@ -92,7 +93,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		case 2:  // R + j X
 			// Nothing to do
 		case 3:  // Matrices
-			
+
 		}
 
 		if (RpSpecified && (Rp != 0.0)) {
@@ -100,14 +101,14 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		} else {
 			Gp = 0.0;  // default to 0,0 if Rp=0;
 		}
-			
+
 		if (IsParallel && (SpecType == 3)) {
 
 			Gmatrix = (double[]) Utilities.resizeArray(Gmatrix, nPhases * nPhases);
 			Bmatrix = (double[]) Utilities.resizeArray(Bmatrix, nPhases * nPhases);
 
 			/* Copy Rmatrix to Gmatrix and invert */
-			for (i = 0; i < nPhases * nPhases; i++) 
+			for (i = 0; i < nPhases * nPhases; i++)
 				Gmatrix[i] = Rmatrix[i];
 			MathUtil.ETKInvert(Rmatrix, nPhases, CheckError);
 			if (CheckError > 0) {  // TODO Check zero based indexing
@@ -122,13 +123,13 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				MathUtil.ETKInvert(Bmatrix, nPhases, CheckError);
 				if (CheckError > 0) {
 					DSSGlobals.getInstance().doSimpleMsg("Error inverting X Matrix for Reactor."+getName()+" - B is zeroed.", 233);
-					for (i = 0; i < nPhases * nPhases; i++) 
+					for (i = 0; i < nPhases * nPhases; i++)
 						Gmatrix[i] = 0.0;
 				}
 			}
 		}
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -145,8 +146,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		if (isYprimInvalid()) {  // Reallocate YPrim if something has invalidated old allocation
 			if (YPrim_Shunt != null) YPrim_Shunt = null;
 			YPrim_Shunt = new CMatrixImpl(Yorder);
-			if (Yprim_Series != null) Yprim_Series = null;
-			Yprim_Series = new CMatrixImpl(Yorder);
+			if (YPrim_Series != null) YPrim_Series = null;
+			YPrim_Series = new CMatrixImpl(Yorder);
 			if (YPrim != null) YPrim = null;
 			YPrim = new CMatrixImpl(Yorder);
 		} else {
@@ -233,7 +234,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 						YPrimTemp.setElemSym(i, j + nPhases, Value.negate());
 					}
 				}
-			} else {  // For Series R and X 
+			} else {  // For Series R and X
 				ZMatrix = new CMatrixImpl(nPhases);
 				ZValues = ZMatrix.asArray(nPhases);  // So we can stuff array fast
 				/* Put in Series R & L */
@@ -268,7 +269,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		// Set YPrim_Series based on diagonals of YPrim_shunt  so that CalcVoltages doesn't fail
 		if (isShunt()) {
 			if ((nPhases == 1) && (!Globals.getActiveCircuit().isPositiveSequence())) {  // assume a neutral or grounding reactor; Leave diagonal in the circuit
-				for (i = 0; i < Yorder; i++) 
+				for (i = 0; i < Yorder; i++)
 					YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i));
 			} else {
 				for (i = 0; i < Yorder; i++)
@@ -283,7 +284,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		setYprimInvalid(false);
 	}
-	
+
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		int i, j, k;
@@ -303,13 +304,13 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 					F.println(")");
 				}
-			case 7: 
+			case 7:
 				if (XMatrix != null) {
 					F.print(ParentClass.getPropertyName()[k] + "= (");
 					for (i = 0; i < nPhases; i++) {
-						for (j = 0; j < i; j++) 
+						for (j = 0; j < i; j++)
 							F.printf("%-.5g", XMatrix[(i - 1) * nPhases + j] + " ");
-						if (i != nPhases) 
+						if (i != nPhases)
 							F.print("|");
 					}
 					F.println(")");
@@ -319,12 +320,12 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			}
 		}
 	}
-	
+
 	@Override
 	public void getLosses(Complex TotalLosses, Complex LoadLosses, Complex NoLoadLosses) {
 
 		/* Only report No Load Losses if Rp defined and Reactor is a shunt device;
-		 * else do default behavior. 
+		 * else do default behavior.
 		 */
 
 		if (RpSpecified && isShunt() && (Rp != 0.0)) {
@@ -346,7 +347,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			super.getLosses();  /* do the default Cktelement behaviors */
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -372,9 +373,9 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		PropertyValue[Reactor.NumPropsThisClass + 4] = String.valueOf(getPctPerm());
 		PropertyValue[Reactor.NumPropsThisClass + 5] = String.valueOf(getHrsToRepair());
 
-		clearPropSeqArray();	
+		clearPropSeqArray();
 	}
-	
+
 	@Override
 	public void makePosSequence() {
 		String S = null;
@@ -399,12 +400,12 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				S = "Phases=1 ";
 				// R1
 				Rs = 0.0;   // Avg Self
-				for (i = 0; i < nPhases; i++) 
+				for (i = 0; i < nPhases; i++)
 					Rs = Rs + Rmatrix[(i - 1) * nPhases + i];  // TODO Check zero based indexing
 				Rs = Rs / nPhases;
 				Rm = 0.0;   // Avg mutual
-				for (i = 1; i < nPhases; i++) 
-					for (j = i; j < nPhases; j++) 
+				for (i = 1; i < nPhases; i++)
+					for (j = i; j < nPhases; j++)
 						Rm = Rm + Rmatrix[(i - 1) * nPhases + j];
 				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
@@ -416,14 +417,14 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					Rs = Rs + XMatrix[(i - 1) * nPhases + i];
 				Rs = Rs / nPhases;
 				Rm = 0.0;   // Avg mutual
-				for (i = 1; i < nPhases; i++) 
-					for (j = i; j < nPhases; j++) 
+				for (i = 1; i < nPhases; i++)
+					for (j = i; j < nPhases; j++)
 						Rm = Rm + XMatrix[(i - 1) * nPhases + j];
 				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
 				S = S + String.format(" X=%-.5g", (Rs - Rm));
 			}
-		
+
 			Parser.getInstance().setCmdString(S);
 			edit();
 		}

@@ -10,8 +10,8 @@ import com.epri.dss.shared.impl.CommandListImpl;
 import com.epri.dss.shared.impl.LineUnits;
 
 public class WireDataImpl extends DSSClassImpl implements WireData {
-	
-	private WireDataObj ActiveWireDataObj;
+
+	private static WireDataObj ActiveWireDataObj;
 
 	public WireDataImpl() {
 		super();
@@ -26,7 +26,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		NumProperties = WireData.NumPropsThisClass;
 		countProperties();   // Get inherited property count
@@ -57,7 +57,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 		ActiveProperty = WireData.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -65,7 +65,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 		Globals.setActiveDSSObject(new WireDataObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		int Result = 0;
@@ -99,7 +99,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 				awo.setR60(parser.makeDouble());
 			case 3:
 				awo.setResistanceUnits(LineUnits.getUnitsCode(Param));
-			case 4: 
+			case 4:
 				awo.setGMR60(parser.makeDouble());
 			case 5:
 				awo.setGMRUnits(LineUnits.getUnitsCode(Param));
@@ -132,13 +132,13 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 			case 5:
 				if (awo.getRadiusUnits() == 0 )
 					awo.setRadiusUnits(awo.getGMRUnits());
-			case 6: 
+			case 6:
 				if (awo.getGMR60() < 0.0)
 					awo.setGMR60(0.7788 * awo.getRadius());
-			case 7: 
+			case 7:
 				if (awo.getGMRUnits() == 0)
 					awo.setGMRUnits(awo.getRadiusUnits());
-			case 8: 
+			case 8:
 				if (awo.getEmergAmps() < 0.0)
 					awo.setEmergAmps(1.5 * awo.getNormAmps());
 			case 9:
@@ -165,7 +165,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String Name) {
 		int Result = 0;
@@ -185,7 +185,7 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 			awo.setNormAmps(OtherWireData.getNormAmps());
 			awo.setEmergAmps(OtherWireData.getEmergAmps());
 
-			for (int i = 0; i < awo.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < awo.getParentClass().getNumProperties(); i++)
 				awo.setPropertyValue(i, OtherWireData.getPropertyValue(i));
 			Result = 1;
 		} else {
@@ -193,20 +193,20 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 		}
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement WireData.init()", -1);
 		return 0;
 	}
-	
+
 	public String getCode() {
-		WireDataObj active = ElementList.getActive();
+		WireDataObj active = (WireDataObj) ElementList.getActive();
 		return active.getName();
 	}
-	
+
 	public void setCode(String Value) {
-		
+
 		setActiveWireDataObj(null);
 		WireDataObj pWireData;
 		for (int i = 0; i < ElementList.size(); i++) {
@@ -220,11 +220,11 @@ public class WireDataImpl extends DSSClassImpl implements WireData {
 		DSSGlobals.getInstance().doSimpleMsg("WireData: \"" + Value + "\" not found.", 103);
 	}
 
-	public WireDataObj getActiveWireDataObj() {
+	public static WireDataObj getActiveWireDataObj() {
 		return ActiveWireDataObj;
 	}
 
-	public void setActiveWireDataObj(WireDataObj activeWireDataObj) {
+	public static void setActiveWireDataObj(WireDataObj activeWireDataObj) {
 		ActiveWireDataObj = activeWireDataObj;
 	}
 

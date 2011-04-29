@@ -6,13 +6,12 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
-import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.meter.MeterElement;
 
 public class PDElementImpl extends DSSCktElement implements PDElement {
-	
+
 	private double NormAmps,
 		EmergAmps,
 		FaultRate,
@@ -45,12 +44,12 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		this.ParentPDElement = null;
 		this.DSSObjType = DSSClassDefs.PD_ELEMENT;
 	}
-	
+
 	@Override
 	public void getCurrents(Complex[] Curr) {
 		int i;
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		try {
 			if (isEnabled()) {
 				SolutionObj sol = Globals.getActiveCircuit().getSolution();
@@ -59,15 +58,15 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 
 				YPrim.MVMult(Curr, Vterminal);
 			} else {
-				for (i = 0; i < Yorder; i++) 
-					Curr[i] = Complex.ZERO;			
+				for (i = 0; i < Yorder; i++)
+					Curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
 			Globals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
 					"Has circuit been solved?", 660);
 		}
 	}
-	
+
 	public Complex getExcessKVANorm (int idxTerm) {
 		Complex Result;
 
@@ -90,10 +89,10 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		/* ****    WriteDLLDebugFile(String.format("%s.%s: Terminal=%u Factor=%.7g kW=%.7g kvar=%.7g Normamps=%.7g Overload_EEN=%.7g Result=%.7g +j %.7g ",
 			ParentClass.getName(), getName(), ActiveTerminalIdx, Factor, kVA.re, kVA.im, NormAmps, Overload_EEN, Result.re, Result.im));
 		*/
-		
+
 		return Result;
 	}
-	
+
 	public Complex getExcessKVAEmerg(int idxTerm) {
 		Complex Result;
 
@@ -113,10 +112,10 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 			Overload_UE = 0.0;
 			Result = Complex.ZERO;
 		}
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 

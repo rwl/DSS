@@ -50,4 +50,8 @@ public interface DSSObject extends NamedObject {
 
 	void clearPropSeqArray();
 
+
+	// FIXME Protected member in OpenDSS
+	int[] getPrpSequence();
+
 }

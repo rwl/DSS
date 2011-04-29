@@ -10,13 +10,14 @@ import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.control.impl.ControlElemImpl;
 import com.epri.dss.delivery.Fuse;
 import com.epri.dss.delivery.FuseObj;
 import com.epri.dss.general.TCC_CurveObj;
 
 public class FuseObjImpl extends ControlElemImpl implements FuseObj {
-	
+
 	private TCC_CurveObj FuseCurve;
 
 	private double RatedCurrent;
@@ -30,18 +31,18 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	/* handle to control queue actions */
 	private int[] hAction = new int[Fuse.FUSEMAXDIM];
 	/* 0 = open 1 = close */
-	private ControlAction[] PresentState = new ControlAction[Fuse.FUSEMAXDIM];  
+	private ControlAction[] PresentState = new ControlAction[Fuse.FUSEMAXDIM];
 	private boolean[] ReadyToBlow = new boolean[Fuse.FUSEMAXDIM];
 
 	/* Offset for monitored terminal */
-	private int CondOffset; 
+	private int CondOffset;
 	private Complex[] cBuffer;
 
 	public FuseObjImpl(DSSClassImpl ParClass, String FuseName) {
 		super(ParClass);
-		
+
 		int i;
-		
+
 		setName(FuseName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
@@ -52,7 +53,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		setElementName("");
 		setControlledElement(null);
 		setElementTerminal(1);
-		
+
 		this.MonitoredElementName = "";
 		this.MonitoredElementTerminal = 1;
 		this.MonitoredElement = null;
@@ -67,7 +68,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			this.ReadyToBlow[i] = false;
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
 			this.hAction[i] = 0;
-			
+
 		cBuffer = null;  // Complex buffer
 
 		this.DSSObjType = ParClass.getDSSClassType(); //cap_CONTROL;
@@ -76,7 +77,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		//recalcElementData();
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -115,9 +116,9 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 					PresentState[i] = ControlAction.OPEN;
 				}
 			}
-			for (i = 0; i < getControlledElement().getNPhases(); i++) 
+			for (i = 0; i < getControlledElement().getNPhases(); i++)
 				hAction[i] = 0;
-			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++) 
+			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
 				ReadyToBlow[i] = false;
 		} else {
 			setControlledElement(null);  // element not found
@@ -125,7 +126,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 					" Element must be defined previously.", 405);
 		}
 	}
-	
+
 	/**
 	 * Always Zero for a Fuse.
 	 */
@@ -133,7 +134,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	public void calcYPrim() {
 		// Leave YPrims as null and they will be ignored.
 	}
-	
+
 	/**
 	 * Get present value of terminal current.
 	 */
@@ -142,7 +143,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		for (int i = 0; i < getNConds(); i++)
 			Curr[i] = Complex.ZERO;
 	}
-	
+
 	/**
 	 * Returns injection currents.
 	 */
@@ -151,12 +152,12 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		for (int i = 0; i < getNConds(); i++)
 			Curr[i] = Complex.ZERO;
 	}
-	
+
 	/**
 	 * Do the action that is pending from last sample.
-	 * 
+	 *
 	 * Theoretically, there shouldn't be anything on the queue unless we have to do something.
-	 * 
+	 *
 	 * Only legal action is to open one phase.
 	 */
 	@Override
@@ -171,16 +172,16 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 					hAction[Phs] = 0;
 				}
 			default:
-				// Do Nothing 
+				// Do Nothing
 			}
 		}
 	}
-	
+
 	public void interpretFuseAction(String Action) {
 		if (getControlElement() != null) {
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal
 			switch (Action.toLowerCase().charAt(0)) {
-			case 'o': 
+			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal   TODO Check zero based indexing
 			case 't':
 				getControlledElement().setConductorClosed(0, false);
@@ -189,7 +190,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			}
 		}
 	}
-	
+
 	/**
 	 * Sample control quantities and set action times in Control Queue.
 	 */
@@ -236,23 +237,23 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			}
 		}
 	}
-	
+
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++) 
+		for (int i = 0; i < getParentClass().getNumProperties(); i++)
 			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		if (Complete)
 			F.println();
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		return super.getPropertyValue(Index);
 	}
-	
+
 	/**
 	 * Reset to initial defined state.
 	 */
@@ -271,7 +272,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			getControlledElement().setConductorClosed(0, true);            // Close all phases of active terminal
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 		PropertyValue[1]  = "";  // "element";
@@ -285,7 +286,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		super.initPropertyValues(Fuse.NumPropsThisClass);
 	}
-	
+
 	// FIXME: Private members in OpenDSS
 
 	public TCC_CurveObj getFuseCurve() {

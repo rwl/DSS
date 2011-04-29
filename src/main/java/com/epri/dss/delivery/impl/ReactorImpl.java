@@ -1,6 +1,5 @@
 package com.epri.dss.delivery.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -10,7 +9,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ReactorImpl extends PDClassImpl implements Reactor {
-	
+
 	private static ReactorObj ActiveReactorObj;
 
 	public ReactorImpl() {
@@ -27,7 +26,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = Reactor.NumPropsThisClass;
@@ -73,7 +72,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		ActiveProperty = Reactor.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -81,23 +80,23 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		Globals.getActiveCircuit().setActiveCktElement(new ReactorObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void doMatrix(double[] Matrix) {
 		ReactorObj ar = getActiveReactorObj();
-		
+
 		double[] MatBuffer = new double[ar.getNPhases() * ar.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(ar.getNPhases(), MatBuffer);
 
 		if (OrderFound > 0) {  // Parse was successful Else don't change Matrix
 			/* X */
 			Matrix = (double[]) Utilities.resizeArray(Matrix, ar.getNPhases() * ar.getNPhases());
-			for (int j = 0; j < ar.getNPhases() * ar.getNPhases(); j++) 
+			for (int j = 0; j < ar.getNPhases() * ar.getNPhases(); j++)
 				Matrix[j] = MatBuffer[j];
-		
+
 			MatBuffer = null;
 		}
 	}
-	
+
 	/**
 	 * Accepts:
 	 * 		delta or LL           (Case insensitive)
@@ -105,7 +104,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	 */
 	private void interpretConnection(String S) {
 		ReactorObj ar = getActiveReactorObj();
-		
+
 		String TestS = S.toLowerCase();
 		switch (TestS.charAt(0)) {
 		case 'y':
@@ -122,7 +121,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setConnection(1);
 			}
 		}
-		
+
 		switch (ar.getConnection()) {
 		case 1:
 			ar.setNTerms(1);  // Force reallocation of terminals
@@ -131,7 +130,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setNTerms(2);
 		}
 	}
-	
+
 	private void reactorSetBus1(String S) {
 		String S2;
 		int i, dotpos;
@@ -140,42 +139,42 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		// Set Bus2 = Bus1.0.0.0
 
 		ReactorObj ar = getActiveReactorObj();
-		
+
 		ar.setBus(1, S);
 
 		// Default Bus2 to zero node of Bus1. (Wye Grounded connection)
 
 		// Strip node designations from S
 		dotpos = S.indexOf('.');
-		if (dotpos >= 0) { 
+		if (dotpos >= 0) {
 			S2 = S.substring(0, dotpos);  // TODO Check zero based indexing
 		} else {
 			S2 = S.substring(0, S.length());  // copy up to Dot
 		}
-		
-		for (i = 0; i < ar.getNPhases(); i++) 
+
+		for (i = 0; i < ar.getNPhases(); i++)
 			S2 = S2 + ".0";
 
 		ar.setBus(2, S2);
 		ar.setShunt(true);
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveReactorObj(ElementList.getActive());
-		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveReactorObj());  // use property to set this value
+		setActiveReactorObj((ReactorObj) ElementList.getActive());
+		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(getActiveReactorObj());
 
 		ReactorObj ar = getActiveReactorObj();
 
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
-		
+
 		while (Param.length() > 0) {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
@@ -254,15 +253,15 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		}
 
 		ar.recalcElementData();
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String ReactorName) {
 
 		int i, Result = 0;
-		
+
 		/* See if we can find this Reactor name in the present collection */
 		ReactorObj OtherReactor = (ReactorObj) find(ReactorName);
 		if (OtherReactor != null) {
@@ -317,7 +316,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Reactor.init()", -1);
