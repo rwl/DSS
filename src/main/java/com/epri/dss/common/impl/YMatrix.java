@@ -200,7 +200,7 @@ public class YMatrix {
 		Y = ckt.getSolution().getY();
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			getMatrixElement(Y, i, i, c);
-			if (c.abs() == 0.0){
+			if (c.abs() == 0.0) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
 				Result += String.format("%sZero diagonal for bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.BusRef), nb.NodeNum);
 			}

@@ -1,6 +1,5 @@
 package com.epri.dss.control.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -68,8 +67,8 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveSwtControlObj());
+		setActiveSwtControlObj((SwtControlObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveSwtControlObj());
 
 		int Result = 0;
 

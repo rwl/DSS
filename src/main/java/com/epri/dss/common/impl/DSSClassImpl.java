@@ -1,7 +1,5 @@
 package com.epri.dss.common.impl;
 
-import java.util.ArrayList;
-
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
@@ -219,10 +217,9 @@ public class DSSClassImpl implements DSSClass {
 	 * Add Properties of this class to propName.
 	 */
 	protected void defineProperties() {
-		String CRLF = DSSGlobals.getInstance().CRLF;
 
 		this.PropertyName[ActiveProperty] = "like";
-		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + CRLF + CRLF +
+		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + DSSGlobals.CRLF + DSSGlobals.CRLF +
 						"New Capacitor.C2 like=c1  ...";
 
 		this.ActiveProperty = this.ActiveProperty + 1;
@@ -231,7 +228,7 @@ public class DSSClassImpl implements DSSClass {
 	protected int classEdit(Object ActiveObj, int ParamPointer) {
 		// continue parsing with contents of Parser
 		if (ParamPointer > 0) {
-			DSSObject obj = new DSSObjectImpl((DSSClass) ActiveObj);
+//			DSSObject obj = (DSSObject) ActiveObj;
 			switch (ParamPointer) {
 			case 1:
 				makeLike(Parser.getInstance().makeString());  // like command

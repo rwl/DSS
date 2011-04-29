@@ -1,6 +1,5 @@
 package com.epri.dss.common.impl;
 
-import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -14,10 +13,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.ArrayList;
-
-import org.apache.commons.math.complex.ComplexUtils;
-import org.w3c.dom.Node;
+import java.util.List;
 
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
@@ -40,7 +36,6 @@ import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.ReactorObj;
-import com.epri.dss.executive.Executive;
 import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.executive.impl.ExecCommands;
 import com.epri.dss.executive.impl.ExecOptions;
@@ -49,7 +44,6 @@ import com.epri.dss.shared.Dynamics;
 
 public class Utilities {
 
-	private static final int ZERONULL = 0;
 	private static final String padString = "                                                  "; // 50 blanks
 	private static final String padDotsString = " ................................................."; // 50 dots
 
@@ -526,7 +520,6 @@ public class Utilities {
 	 * Return stepsize in seconds.
 	 */
 	public static double interpretTimeStepSize(String s) {
-		int Code;
 		char ch;
 		String s2;
 		double Result;
@@ -637,7 +630,7 @@ public class Utilities {
 	 * a text file spec. ResultArray is allocated as needed. File is assumed to
 	 * have one value per line.
 	 */
-	public static void interpretStringListArray(String s, ArrayList<String> ResultList) {
+	public static void interpretStringListArray(String s, List<String> ResultList) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		String NextParam;
 
@@ -902,7 +895,7 @@ public class Utilities {
 			DevIndex = ckt.getDeviceList().findNext();
 		}
 
-		return 0;
+		return Result;
 	}
 
 	public static String strReal(double Value, int NumDecimals) {

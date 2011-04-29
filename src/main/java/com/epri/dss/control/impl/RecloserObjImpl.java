@@ -1,8 +1,6 @@
 package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.epri.dss.shared.impl.Complex;
 
@@ -13,7 +11,6 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.Recloser;
 import com.epri.dss.control.RecloserObj;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
 
 public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
@@ -206,12 +203,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 		getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal of CktElement to terminal 1
 
-		List<ControlAction> actions = new ArrayList<ControlAction>();
-		for (ControlAction act : ControlAction.values())
-			actions.add(act);
-
-		switch (Code) {
-		case actions.indexOf(ControlAction.OPEN):
+		if (Code == ControlAction.OPEN.code()) {
 			switch (PresentState) {
 			case CLOSE:
 				if (ArmedForOpen) {  // ignore if we became disarmed in meantime
@@ -234,7 +226,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				}
 			}
 
-		case actions.indexOf(ControlAction.CLOSE):
+		} else if (Code == ControlAction.CLOSE.code()) {
 			switch (PresentState) {
 			case OPEN:
 				if (ArmedForClose && !LockedOut) {
@@ -245,7 +237,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				}
 			}
 
-		case actions.indexOf(ControlAction.CTRL_RESET):
+		} else if (Code == ControlAction.CTRL_RESET.code()) {
 			switch (PresentState) {
 			case CLOSE:
 				if (!ArmedForOpen)
@@ -254,7 +246,8 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		}
 	}
 
-	private void interpretRecloserAction(String Action) {
+	// FIXME Private method in OpenDSS
+	public void interpretRecloserAction(String Action) {
 
 		if (getControlledElement() != null) {
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal

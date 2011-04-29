@@ -1,6 +1,5 @@
 package com.epri.dss.common.impl;
 
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,7 +17,6 @@ import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.conversion.GeneratorObj;
-import com.epri.dss.conversion.Load;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.FaultObj;

@@ -11,4 +11,14 @@ public abstract class MathUtil {
 		return 0;
 	}
 
+	public static void phase2SymComp(Complex complex, Complex[] i012) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void phase2SymComp(Complex[] cBuffer, Complex[] v012) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

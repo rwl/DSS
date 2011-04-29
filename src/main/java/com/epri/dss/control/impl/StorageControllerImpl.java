@@ -1,6 +1,5 @@
 package com.epri.dss.control.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -168,8 +167,8 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveStorageControllerObj());
+		setActiveStorageControllerObj((StorageControllerObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageControllerObj());
 
 		int Result = 0;
 

@@ -7,7 +7,6 @@ import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.CktElement;
-import com.epri.dss.common.Feeder;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.conversion.impl.PCElementImpl;
 import com.epri.dss.shared.CktTree;

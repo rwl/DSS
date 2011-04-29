@@ -1,7 +1,5 @@
 package com.epri.dss.common;
 
-import java.util.ArrayList;
-
 import com.epri.dss.shared.PointerList;
 
 public interface DSSClass {

@@ -1,7 +1,7 @@
 package com.epri.dss.control;
 
 import com.epri.dss.common.CktElement;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
 import com.epri.dss.shared.impl.Complex;
 
@@ -35,6 +35,13 @@ import com.epri.dss.shared.impl.Complex;
  *
  */
 public interface RelayObj extends ControlElem {
+
+	// FIXME Private method in OpenDSS
+	void interpretRelayType(String S);
+
+	// FIXME Private method in OpenDSS
+	void interpretRelayAction(String Action);
+
 
 	// FIXME Private members in OpenDSS
 

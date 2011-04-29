@@ -1,7 +1,7 @@
 package com.epri.dss.common;
 
 import com.epri.dss.control.ControlElem;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.impl.ControlAction;
 
 public interface ControlQueue {
 
@@ -11,8 +11,7 @@ public interface ControlQueue {
 
 	int push(int Hour, double Sec, int Code, int ProxyHdl, ControlElem Owner);
 
-	int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
-			ControlElem Owner);
+	int push(int Hour, double Sec, ControlAction Code, int ProxyHdl, ControlElem Owner);
 
 	void clear();
 

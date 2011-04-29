@@ -1,8 +1,8 @@
 package com.epri.dss.control;
 
 import com.epri.dss.common.CktElement;
+import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.control.impl.CapControlObjImpl.CapControlType;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.shared.impl.Complex;
 
@@ -11,22 +11,22 @@ import com.epri.dss.shared.impl.Complex;
  * circuit element and controls a capacitor.  The control is usually placed in
  * the terminal of a line or transformer, although a voltage control device
  * could be placed in the terminal of the capacitor it controls
- * 
+ *
  * A CapControl is defined by a New command:
- * 
+ *
  * New CapControl.Name=myname Element=devclass.name terminal=[ 1|2|...] Capacitor = name
- * 
+ *
  * Capacitor to be controlled must already exist.
  *
  */
 public interface CapControlObj extends ControlElem {
-	
+
 	CapacitorObj getCapacitor();
-	
+
 	void setPendingChange(ControlAction Value);
-	
+
 	ControlAction getPendingChange();
-		
+
 	CapControlType getControlType();
 
 	void setControlType(CapControlType controlType);
@@ -54,7 +54,7 @@ public interface CapControlObj extends ControlElem {
 	double getVmax();
 
 	double getVmin();
-	
+
 	// FIXME Private properties in OpenDSS
 
 	int getCTPhase();

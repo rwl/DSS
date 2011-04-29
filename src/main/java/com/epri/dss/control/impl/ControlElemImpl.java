@@ -10,16 +10,6 @@ import com.epri.dss.control.ControlElem;
 
 public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
-	public enum ControlAction {
-		NONE,
-		OPEN,
-		CLOSE,
-		CTRL_RESET, // can't use the same name as file reset function
-		LOCK,
-		UNLOCK,
-		TAPUP,
-		TAPDOWN}
-
 	private CktElement ControlledElement;
 
 	protected String ElementName;
@@ -62,7 +52,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	public void setControlledElement(CktElement Value) {
 		try {
 			// Check for reassignment
-			if (ControlledElement != null) 
+			if (ControlledElement != null)
 				ControlledElement.setHasControl(false);
 		} finally {
 			ControlledElement = Value;

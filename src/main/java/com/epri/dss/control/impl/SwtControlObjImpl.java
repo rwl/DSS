@@ -97,18 +97,19 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	public void doPendingAction(int Code, int ProxyHdl) {
 		if (!Locked) {
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);
-			if ((Code == Integer.valueOf(ControlAction.OPEN)) && (PresentState == ControlAction.CLOSE)) {
+			if ((Code == ControlAction.OPEN.code()) && (PresentState == ControlAction.CLOSE)) {
 				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Opened");
 			}
-			if ((Code == Integer.valueOf(ControlAction.CLOSE)) && (PresentState == ControlAction.OPEN)) {
+			if ((Code == ControlAction.CLOSE.code()) && (PresentState == ControlAction.OPEN)) {
 				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Closed");
 			}
 		}
 	}
 
-	private void interpretSwitchAction(String Action) {
+	// FIXME Private method in OpenDSS
+	public void interpretSwitchAction(String Action) {
 		if (!Locked) {
 			switch (Action.toLowerCase().charAt(0)) {
 			case 'o':

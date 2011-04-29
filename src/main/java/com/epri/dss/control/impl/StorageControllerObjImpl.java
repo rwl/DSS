@@ -849,7 +849,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 //		}
 //	}
 
-	private int interpretMode(int Opt, String S) {
+	// FIXME Private method in OpenDSS
+	public int interpretMode(int Opt, String S) {
 		switch (Opt) {
 		case StorageController.propMODEDISCHARGE:
 			switch (S.toLowerCase().charAt(0)) {

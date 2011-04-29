@@ -1,18 +1,16 @@
 package com.epri.dss.control.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.CapControl;
 import com.epri.dss.control.CapControlObj;
 import com.epri.dss.control.impl.CapControlObjImpl.CapControlType;
-import com.epri.dss.conversion.impl.EquivalentObjImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class CapControlImpl extends ControlClassImpl implements CapControl {
-	
+
 	private static CapControlObj ActiveCapControlObj;
 
 	public CapControlImpl() {
@@ -28,7 +26,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		NumProperties = CapControl.NumPropsThisClass;
@@ -102,7 +100,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		ActiveProperty = CapControl.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -110,15 +108,15 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		Globals.getActiveCircuit().setActiveCktElement(new CapControlObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing with contents of Parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveCapControlObj());
+		setActiveCapControlObj((CapControlObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
 
 		int Result = 0;
 
@@ -134,7 +132,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) 
+			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties))
 				acc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -159,7 +157,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				case 'p':
 					acc.setControlType(CapControlType.PFCONTROL);
 				case 's':
-					acc.setControlType(CapControlType.SRPCONTROL); 
+					acc.setControlType(CapControlType.SRPCONTROL);
 				default:
 					Globals.doSimpleMsg(String.format("Unrecognized CapControl Type: \"%s\" (Capcontrol.%s)", Param, acc.getName()), 352);
 				}
@@ -213,7 +211,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 			/* PF Controller changes */
 			if (acc.getControlType() == CapControlType.PFCONTROL) {
 				switch (ParamPointer) {
-				case 3: 
+				case 3:
 					acc.setPFON_Value(0.95);     // defaults
 					acc.setPFOFF_Value(1.05);
 
@@ -227,7 +225,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					} else {
 						Globals.doSimpleMsg("Invalid PF ON value for CapControl."+acc.getName(), 353);
 					}
-					
+
 				case 7:
 					if ((acc.getOFF_Value() >= -1.0) && (acc.getOFF_Value() <= 1.0)) {
 						if (acc.getOFF_Value() < 0.0) {
@@ -252,20 +250,20 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					}
 				}
 			}
-			
+
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
 		}
 
 		acc.recalcElementData();
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String CapControlName) {
 		int i, Result = 0;
-		
+
 		/* See if we can find this CapControl name in the present collection */
 		CapControlObj OtherCapControl = (CapControlObj) find(CapControlName);
 		if (OtherCapControl != null) {
@@ -286,7 +284,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 			acc.setPresentState(OtherCapControl.getPresentState());
 			acc.setShouldSwitch(OtherCapControl.isShouldSwitch());
 			acc.setCondOffset(OtherCapControl.getCondOffset());
-			
+
 			acc.setON_Value(OtherCapControl.getON_Value());
 			acc.setOFF_Value(OtherCapControl.getOFF_Value());
 			acc.setPFON_Value(OtherCapControl.getPFON_Value());
@@ -301,7 +299,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + CapControlName + "\" Not Found.", 360);
 		}
-		
+
 		return Result;
 	}
 

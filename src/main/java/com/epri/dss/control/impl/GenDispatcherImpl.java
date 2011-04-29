@@ -1,6 +1,5 @@
 package com.epri.dss.control.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -10,7 +9,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher {
-	
+
 	private static GenDispatcherObj ActiveGenDispatcherObj;
 
 	public GenDispatcherImpl() {
@@ -26,7 +25,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 
 		this.NumProperties = GenDispatcher.NumPropsThisClass;
@@ -59,7 +58,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		ActiveProperty = GenDispatcher.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -67,15 +66,15 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		Globals.getActiveCircuit().setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveGenDispatcherObj());
+		setActiveGenDispatcherObj((GenDispatcherObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveGenDispatcherObj());
 
 		int Result = 0;
 
@@ -109,8 +108,8 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				agd.setKvarLimit(parser.makeDouble());
 			case 5:
 				Utilities.interpretStringListArray(Param, agd.getGeneratorNameList());
-			case 6: 
-				agd.setListSize(agd.getGeneratorNameList().length);
+			case 6:
+				agd.setListSize(agd.getGeneratorNameList().size());
 				if (agd.getListSize() > 0) {
 					agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
 
@@ -126,9 +125,9 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				agd.setHalfkWBand(agd.getkWBand() / 2.0);
 			case 5:  // levelize the list
 				agd.getGenPointerList().clear();  // clear this for resetting on first sample
-				agd.setListSize(agd.getGeneratorNameList().length);
-				agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) ); 
-				for (int i = 0; i < agd.getListSize(); i++) 
+				agd.setListSize(agd.getGeneratorNameList().size());
+				agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
+				for (int i = 0; i < agd.getListSize(); i++)
 					agd.getWeights()[i] = 1.0;
 			}
 
@@ -137,14 +136,14 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		}
 
 		agd.recalcElementData();
-		
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String GenDispatcherName) {
 		int Result = 0;
-		
+
 		/* See if we can find this GenDispatcher name in the present collection */
 		GenDispatcherObj OtherGenDispatcher = (GenDispatcherObj) find(GenDispatcherName);
 		if (OtherGenDispatcher != null) {
@@ -159,7 +158,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 			agd.setElementTerminal(OtherGenDispatcher.getElementTerminal());
 
-			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
 				agd.setPropertyValue(i, OtherGenDispatcher.getPropertyValue(i));
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + GenDispatcherName + "\" Not Found.", 370);

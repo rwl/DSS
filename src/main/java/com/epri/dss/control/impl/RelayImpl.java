@@ -1,7 +1,6 @@
 package com.epri.dss.control.impl;
 
 import com.epri.dss.common.DSSClass;
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -141,8 +140,8 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveRelayObj());
+		setActiveRelayObj((RelayObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveRelayObj());
 
 		int Result = 0;
 

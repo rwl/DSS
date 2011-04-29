@@ -9,7 +9,6 @@ import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
 import com.epri.dss.common.impl.DSSCircuit.ReductionStrategyType;
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.control.CapControlObj;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.RegControlObj;

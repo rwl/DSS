@@ -32,6 +32,10 @@ public interface StorageControllerObj extends ControlElem {
 
 	double getFleetReserveKWh();
 
+	// FIXME Private method in OpenDSS
+	int interpretMode(int Opt, String S);
+
+
 	// FIXME Private members in OpenDSS
 
 	double getkWTarget();

@@ -1,7 +1,7 @@
 package com.epri.dss.control;
 
 import com.epri.dss.common.CktElement;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
 import com.epri.dss.shared.impl.Complex;
 
@@ -134,5 +134,8 @@ public interface RecloserObj extends ControlElem {
 	Complex[] getcBuffer();
 
 	void setcBuffer(Complex[] cBuffer);
+
+	// FIXME Private method in OpenDSS
+	void interpretRecloserAction(String param);
 
 }

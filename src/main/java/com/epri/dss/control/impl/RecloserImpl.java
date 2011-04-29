@@ -1,7 +1,6 @@
 package com.epri.dss.control.impl;
 
 import com.epri.dss.common.DSSClass;
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -15,7 +14,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 	private static RecloserObj ActiveRecloserObj;
 
-	private static DSSClass TCC_CurveClass;
+	private static DSSClass TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 
 	public RecloserImpl() {
 		super();
@@ -29,8 +28,6 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
-
-		this.TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
 	public static TCC_CurveObj getTCC_Curve(String CurveName) {
@@ -134,9 +131,9 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// continue parsing with contents of Parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveRecloserObj());
+		// continue parsing with contents of parser
+		setActiveRecloserObj((RecloserObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveRecloserObj());
 
 		int Result = 0;
 

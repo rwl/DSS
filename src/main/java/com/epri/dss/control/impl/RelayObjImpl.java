@@ -1,10 +1,9 @@
 package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
@@ -14,7 +13,6 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.Relay;
 import com.epri.dss.control.RelayObj;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.general.TCC_CurveObj;
 
@@ -269,12 +267,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal of CktElement to terminal 1
 
-		List<ControlAction> actions = new ArrayList<ControlAction>();
-		for (ControlAction act : ControlAction.values())
-			actions.add(act);
-
-		switch (Code) {
-		case actions.indexOf(ControlAction.OPEN):
+		if (Code == ControlAction.OPEN.code()) {
 			switch (PresentState) {
 			case CLOSE:
 				if (ArmedForOpen) {
@@ -291,7 +284,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				if (GroundTarget) Utilities.appendToEventLog(" ", "Ground Target");
 				ArmedForOpen = false;
 			}
-		case actions.indexOf(ControlAction.CLOSE):
+		} else if (Code == ControlAction.CLOSE.code()) {
 			switch (PresentState) {
 			case OPEN:
 				if (ArmedForClose && !LockedOut) {
@@ -301,7 +294,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					ArmedForClose = false;
 				}
 			}
-		case actions.indexOf(ControlAction.CTRL_RESET):
+		} else if (Code == ControlAction.CTRL_RESET.code()) {
 			switch (PresentState) {
 			case CLOSE:
 				if (!ArmedForOpen)
@@ -310,7 +303,8 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		}
 	}
 
-	private void interpretRelayAction(String Action) {
+	// FIXME Private method in OpenDSS
+	public void interpretRelayAction(String Action) {
 
 		if (getControlledElement() != null) {
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal
@@ -449,7 +443,8 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		super.initPropertyValues(Relay.NumPropsThisClass);
 	}
 
-	private void interpretRelayType(String S) {
+	// FIXME Private method in OpenDSS
+	public void interpretRelayType(String S) {
 
 		switch (S.toLowerCase().charAt(0)) {
 		case 'c':

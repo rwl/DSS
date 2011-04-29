@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -128,8 +127,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveRegControlObj());
+		setActiveRegControlObj((RegControlObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveRegControlObj());
 
 		int Result = 0;
 
@@ -217,14 +216,18 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				arc.setPropertyValue(19, Param);
 			case 16:
 				if (arc.isDebugTrace()) {
-					File TraceFile = new File(Globals.getDSSDataDirectory() + "REG_"+arc.getName()+".csv");
-					FileWriter TraceStream = new FileWriter(TraceFile, false);
-					BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+					try {
+						File TraceFile = new File(Globals.getDSSDataDirectory() + "REG_"+arc.getName()+".csv");
+						FileWriter TraceStream = new FileWriter(TraceFile, false);
+						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
-					TraceBuffer.write("Hour, Sec, ControlIteration, Iterations, LoadMultiplier, Present Tap, Pending Change, Actual Change, Increment, Min Tap, Max Tap");
-					TraceBuffer.newLine();
-					TraceBuffer.close();
-					TraceStream.close();
+						TraceBuffer.write("Hour, Sec, ControlIteration, Iterations, LoadMultiplier, Present Tap, Pending Change, Actual Change, Increment, Min Tap, Max Tap");
+						TraceBuffer.newLine();
+						TraceBuffer.close();
+						TraceStream.close();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 				}
 			}
 

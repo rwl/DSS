@@ -1,16 +1,14 @@
 package com.epri.dss.common.impl;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.epri.dss.common.ControlQueue;
 import com.epri.dss.control.ControlElem;
-import com.epri.dss.control.impl.ControlElemImpl.ControlAction;
+import com.epri.dss.control.impl.ControlAction;
 
 public class ControlQueueImpl implements ControlQueue {
 
@@ -32,16 +30,9 @@ public class ControlQueueImpl implements ControlQueue {
 	private FileWriter TraceFile;
 	private int ctrlHandle;
 
-	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl,
-			ControlElem Owner) {
+	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl, ControlElem Owner) {
 
-		ControlAction[] actions = ControlAction.values();
-
-		for (int i = 0; i < actions.length; i++)
-			if (actions[i].equals(Code))
-				return push(Hour, Sec, i, ProxyHdl, Owner);
-
-		return -1;
+		return push(Hour, Sec, Code.code(), ProxyHdl, Owner);
 	}
 
 	/**

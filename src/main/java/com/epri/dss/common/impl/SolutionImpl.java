@@ -1,17 +1,15 @@
 package com.epri.dss.common.impl;
 
-import java.io.File;
-
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SolutionImpl extends DSSClassImpl implements Solution {
-	
+
 	private static SolutionObj ActiveSolutionObj;
-	
-	private static File FDebug;
-	
+
+//	private static File FDebug;
+
 	public static final int NumPropsThisClass = 1;
 
 	public SolutionImpl() {
