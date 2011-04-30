@@ -2,6 +2,7 @@ package com.epri.dss.plot.impl;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.delivery.LineObj;
@@ -68,7 +69,7 @@ public class DSSPlotImpl implements DSSPlot {
 	protected boolean MaxScaleIsSpecified;
 	protected boolean MinScaleIsSpecified;
 
-	protected String[] DaisyBusList;
+	protected List<String> DaisyBusList;
 
 	public DSSPlotImpl() {
 		// TODO Auto-generated constructor stub
@@ -363,11 +364,11 @@ public class DSSPlotImpl implements DSSPlot {
 		MinScaleIsSpecified = minScaleIsSpecified;
 	}
 
-	public String[] getDaisyBusList() {
+	public List<String> getDaisyBusList() {
 		return DaisyBusList;
 	}
 
-	public void setDaisyBusList(String[] daisyBusList) {
+	public void setDaisyBusList(List<String> daisyBusList) {
 		DaisyBusList = daisyBusList;
 	}
 

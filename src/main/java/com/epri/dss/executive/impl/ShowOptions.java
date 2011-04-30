@@ -5,12 +5,13 @@ import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.ShowResults;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.executive.ShowOptions;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
+import com.epri.dss.shared.impl.CommandListImpl;
+import com.epri.dss.shared.impl.LineUnits;
 
-public class ShowOptionsImpl implements ShowOptions {
+public class ShowOptions {
 
 	private String CRLF = DSSGlobals.CRLF;
 
@@ -21,7 +22,28 @@ public class ShowOptionsImpl implements ShowOptions {
 
 	private CommandList ShowCommands;
 
-	public ShowOptionsImpl() {
+	// Private constructor prevents instantiation from other classes
+	private ShowOptions() {
+		defineOptions();
+
+		ShowCommands = new CommandListImpl(ShowOption);
+		ShowCommands.setAbbrevAllowed(true);
+	}
+
+	/**
+	 * ShowOptionsHolder is loaded on the first execution of
+	 * ShowOptions.getInstance() or the first access to
+	 * ShowOptionsHolder.INSTANCE, not before.
+	 */
+	private static class ShowOptionsHolder {
+		public static final ShowOptions INSTANCE = new ShowOptions();
+	}
+
+	public static ShowOptions getInstance() {
+		return ShowOptionsHolder.INSTANCE;
+	}
+
+	private void defineOptions() {
 
 		this.ShowOption = new String[NumShowOptions];
 
@@ -129,8 +151,8 @@ public class ShowOptionsImpl implements ShowOptions {
 
 	}
 
-	public static int doShowCmd() {
-		String Filname;
+	public int doShowCmd() {
+		String Filname = "";
 		MonitorObj pMon;
 
 		Parser parser = Parser.getInstance();
@@ -145,7 +167,7 @@ public class ShowOptionsImpl implements ShowOptions {
 		int Units;
 		double Rho_line;
 
-		String ParamName = parser.getNextParam();
+		parser.getNextParam();
 		String Param = parser.makeString().toLowerCase();
 		int ParamPointer = ShowCommands.getCommand(Param);
 
@@ -160,10 +182,10 @@ public class ShowOptionsImpl implements ShowOptions {
 			Utilities.fireOffEditor(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "AutoAddedCapacitors.txt");
 		case 1:
 			ShowResults.showBuses(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Buses.txt");
-		case 2: 
+		case 2:
 			ShowOptionCode = 0;
 			ShowResid = false;
-			ParamName = parser.getNextParam();  // Look for residual
+			parser.getNextParam();  // Look for residual
 			Param = parser.makeString().toUpperCase();
 			// logic handles show curr y|n|T elements or show curr elements
 			if (Param.length() > 0) {
@@ -177,7 +199,7 @@ public class ShowOptionsImpl implements ShowOptions {
 				case 'E':
 					ShowOptionCode = 1;
 				}
-				ParamName = parser.getNextParam();  // Look for another param
+				parser.getNextParam();  // Look for another param
 				Param = parser.makeString().toUpperCase();
 				if (Param.length() > 0) {
 					switch (Param.charAt(0)) {
@@ -191,12 +213,12 @@ public class ShowOptionsImpl implements ShowOptions {
 				case 1:
 					Filname = "Curr_Elem";
 				}
-				ShowResults.showCurrents(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FilName + ".txt", ShowResid, ShowOptionCode);
+				ShowResults.showCurrents(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", ShowResid, ShowOptionCode);
 			}
 		case 3:
 			Globals.getActiveCircuit().getSolution().writeConvergenceReport(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Convergence.txt");
 		case 4:
-			ParamName = parser.getNextParam();  // Look for another param
+			parser.getNextParam();  // Look for another param
 			Param = parser.makeString().toLowerCase();
 			ShowResults.showElements(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Elements.txt", Param);
 		case 5:
@@ -208,10 +230,10 @@ public class ShowOptionsImpl implements ShowOptions {
 		case 8:
 			ShowResults.showMeters(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "EMout.txt");
 		case 9:  // Show Monitor
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString();
 			if (Param.length() > 0) {
-				pMon = Globals.getMonitorClass().find(Param);
+				pMon = (MonitorObj) Globals.getMonitorClass().find(Param);
 				if (pMon != null) {
 					pMon.translateToCSV(true);
 				} else {
@@ -222,67 +244,67 @@ public class ShowOptionsImpl implements ShowOptions {
 			}
 		case 10:
 			DSSForms.showControlPanel();
-		case 11: 
+		case 11:
 			ShowOptionCode = 0;
-			MVAOpt = 0;
-			FilName = "Power";
-			Paramname = parser.getNextParam();
+			MVAopt = 0;
+			Filname = "Power";
+			parser.getNextParam();
 			Param = parser.makeString().toLowerCase();
 			if (Param.length() > 0) {
 				switch (Param.charAt(0)) {
 				case 'm':
-					MVAOpt = 1;
+					MVAopt = 1;
 				case 'e':
 					ShowOptionCode = 1;
 				}
 			}
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString().toLowerCase();
-			if (Param.length() > 0) 
+			if (Param.length() > 0)
 				if (Param.charAt(0) == 'e')
 					ShowOptionCode = 1;
 			if (ShowOptionCode == 1) {
-				FilName = FilName + "_elem";
+				Filname = Filname + "_elem";
 			} else {
-				FilName = FilName + "_seq";
+				Filname = Filname + "_seq";
 			}
-			if (MVAOpt == 1) {
-				FilName = FilName + "_MVA";
+			if (MVAopt == 1) {
+				Filname = Filname + "_MVA";
 			} else {
-				FilName = FilName + "_kVA";
+				Filname = Filname + "_kVA";
 			}
 
-			ShowResults.showPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FilName + ".txt", MVAOpt, ShowOptionCode);
+			ShowResults.showPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", MVAopt, ShowOptionCode);
 		case 12:
-			LLOpt = false;  // Line-Line voltage option
+			LLopt = false;  // Line-Line voltage option
 			ShowOptionCode = 0;
 			/* Check for LL or LN option */
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString();
 
-			FilName = "VLN";
+			Filname = "VLN";
 			if (Param.length() > 0) {
 				if (Param.equals("LL")) {
-					LLOpt = true;
-					FilName = "VLL";
+					LLopt = true;
+					Filname = "VLL";
 				}
 			}
 			/* Check for Seq | nodes | elements */
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString().toUpperCase();
 			if (Param.length() > 0) {
 				switch (Param.charAt(0)) {
-				case 'N': 
+				case 'N':
 					ShowOptionCode = 1;
-					FilName = FilName + "_Node";
-				case 'E': 
+					Filname = Filname + "_Node";
+				case 'E':
 					ShowOptionCode = 2;
-					FilName = FilName + "_elem";
+					Filname = Filname + "_elem";
 				default:
-					FilName = FilName + "_seq";
+					Filname = Filname + "_seq";
 				}
 			}
-			ShowResults.showVoltages(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FilName + ".txt", LLopt, ShowOptionCode);
+			ShowResults.showVoltages(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", LLopt, ShowOptionCode);
 		case 13:
 			ShowResults.showMeterZone(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "ZoneOut.txt");
 		case 14:
@@ -290,7 +312,7 @@ public class ShowOptionsImpl implements ShowOptions {
 		case 15:
 			ShowResults.showOverloads(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Overload.txt");
 		case 16:
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString();
 			if (Param.length() > 0) {
 				ShowResults.showUnserved(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Unserved.txt", true);
@@ -298,7 +320,7 @@ public class ShowOptionsImpl implements ShowOptions {
 				ShowResults.showUnserved(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Unserved.txt", false);
 			}
 		case 17:
-			DSSForms.showMessageForm(EventStrings);
+			DSSForms.showMessageForm(Globals.getEventStrings());
 		case 18:
 			ShowResults.showVariables(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Variables.txt");
 		case 19:
@@ -310,14 +332,14 @@ public class ShowOptionsImpl implements ShowOptions {
 		case 22:  // Show Bus Power Report
 			ShowOptionCode = 0;
 			MVAopt = 0;
-			ParamName = parser.getNextParam(); // Get busname
+			parser.getNextParam(); // Get busname
 			BusName = parser.makeString();
 			if (BusName.length() > 0) {
-				FilName = BusName;
+				Filname = BusName;
 			} else {
-				FilName = "BusPower";
+				Filname = "BusPower";
 			}
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString().toLowerCase();
 			if (Param.length() > 0) {
 				switch (Param.charAt(0)) {
@@ -327,34 +349,34 @@ public class ShowOptionsImpl implements ShowOptions {
 					ShowOptionCode = 1;
 				}
 			}
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Param = parser.makeString().toLowerCase();
 			if (Param.length() > 0)
 				if (Param.charAt(0) == 'e')
 					ShowOptionCode = 1;
 			if (ShowOptionCode == 1) {
-				FilName = FilName + "_elem";
+				Filname = Filname + "_elem";
 			} else {
-				FilName = FilName + "_seq";
+				Filname = Filname + "_seq";
 			}
 			if (MVAopt == 1) {
-				FilName = FilName + "_MVA";
+				Filname = Filname + "_MVA";
 			} else {
-				FilName = FilName + "_kVA";
+				Filname = Filname + "_kVA";
 			}
-			
-			ShowResults.showBusPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FilName + ".txt", BusName, MVAopt, ShowOptionCode);
+
+			ShowResults.showBusPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", BusName, MVAopt, ShowOptionCode);
 		case 23:  // ShowLineConstants  Show Lineconstants 60 mi
 			Freq = Globals.getDefaultBaseFreq();  // Default
 			Units = LineUnits.UNITS_KFT; // 'kft'; // default
 			Rho_line = 100.0;
-			ParamName = parser.getNextParam();
-			if (parser.makeString().length() > 0) 
+			parser.getNextParam();
+			if (parser.makeString().length() > 0)
 				Freq = parser.makeDouble();
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				Units = LineUnits.getUnitsCode(parser.makeString());
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			if (parser.makeString().length() > 0)
 				Rho_line = parser.makeDouble();
 			ShowResults.showLineConstants(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "LineConstants.txt", Freq, Units, Rho_line);
@@ -366,7 +388,7 @@ public class ShowOptionsImpl implements ShowOptions {
 		case 25:  // Y
 			ShowResults.showY(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "SystemY.txt");
 		case 26:
-			if (Globals.getActiveCircuit() != null) 
+			if (Globals.getActiveCircuit() != null)
 				Globals.getActiveCircuit().getControlQueue().showQueue(Globals.getDSSDataDirectory() + Globals.getCircuitName_()  + "ControlQueue.csv");
 		case 27:
 			ShowResults.showTopology(Globals.getDSSDataDirectory() + Globals.getCircuitName_());

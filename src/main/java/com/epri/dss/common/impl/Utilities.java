@@ -1,5 +1,6 @@
 package com.epri.dss.common.impl;
 
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -2199,6 +2200,10 @@ public class Utilities {
 			DSSGlobals.getInstance().doSimpleMsg("Invalid Color Specification: \"" + S + "\".", 724);
 		}
 		return Result;
+	}
+
+	public static Color interpretColor(String S) {
+		return null;
 	}
 
 	public static String extractFileDir(String redirFile) {

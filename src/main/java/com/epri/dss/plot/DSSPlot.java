@@ -2,6 +2,7 @@ package com.epri.dss.plot;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
@@ -108,9 +109,9 @@ public interface DSSPlot {
 
 	void setMinScaleIsSpecified(boolean minScaleIsSpecified);
 
-	String[] getDaisyBusList();
+	List<String> getDaisyBusList();
 
-	void setDaisyBusList(String[] daisyBusList);
+	void setDaisyBusList(List<String> daisyBusList);
 
 	void execute();
 

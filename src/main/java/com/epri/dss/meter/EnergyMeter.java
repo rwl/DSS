@@ -45,6 +45,8 @@ public interface EnergyMeter extends MeterClass {
 
 	void setSaveDemandInterval(boolean Value);
 
+	void setDIVerbose(boolean Value);
+
 	boolean isSaveDemandInterval();
 
 	boolean isDIVerbose();

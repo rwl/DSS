@@ -3,12 +3,12 @@ package com.epri.dss.executive.impl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.ExportResults;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.executive.ExportOptions;
 import com.epri.dss.meter.MonitorObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
+import com.epri.dss.shared.impl.CommandListImpl;
 
-public class ExportOptionsImpl implements ExportOptions {
+public class ExportOptions {
 
 	private static final int NumExportOptions = 26;
 
@@ -17,76 +17,97 @@ public class ExportOptionsImpl implements ExportOptions {
 
 	private static CommandList ExportCommands;
 
-	public ExportOptionsImpl() {
+	// Private constructor prevents instantiation from other classes
+	private ExportOptions() {
+		defineOptions();
 
-		this.ExportOption = new String[NumExportOptions];
+		ExportCommands = new CommandListImpl(ExportOption);
+		ExportCommands.setAbbrevAllowed(true);
+	}
 
-		this.ExportOption[ 0] = "Voltages";
-		this.ExportOption[ 1] = "SeqVoltages";
-		this.ExportOption[ 2] = "Currents";
-		this.ExportOption[ 3] = "SeqCurrents";
-		this.ExportOption[ 4] = "Estimation";
-		this.ExportOption[ 5] = "Capacity";
-		this.ExportOption[ 6] = "Overloads";
-		this.ExportOption[ 7] = "Unserved";
-		this.ExportOption[ 8] = "Powers";
-		this.ExportOption[ 9] = "SeqPowers";
-		this.ExportOption[10] = "Faultstudy";
-		this.ExportOption[11] = "Generators";
-		this.ExportOption[12] = "Loads";
-		this.ExportOption[13] = "Meters";
-		this.ExportOption[14] = "Monitors";
-		this.ExportOption[15] = "Yprims";
-		this.ExportOption[16] = "Y";
-		this.ExportOption[17] = "seqz";
-		this.ExportOption[18] = "P_byphase";
-		this.ExportOption[19] = "CDPSM";
-		this.ExportOption[20] = "CDPSMConnect";
-		this.ExportOption[21] = "CDPSMBalanced";
-		this.ExportOption[22] = "Buscoords";
-		this.ExportOption[23] = "Losses";
-		this.ExportOption[24] = "Guids";
-		this.ExportOption[25] = "Counts";
+	/**
+	 * ExportOptionsHolder is loaded on the first execution of
+	 * ExportOptions.getInstance() or the first access to
+	 * ExportOptionsHolder.INSTANCE, not before.
+	 */
+	private static class ExportOptionsHolder {
+		public static final ExportOptions INSTANCE = new ExportOptions();
+	}
 
-		this.ExportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
-		this.ExportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
-		this.ExportHelp[ 2] = "(Default file = EXP_CURRENTS.CSV) Currents in each conductor of each element.";
-		this.ExportHelp[ 3] = "(Default file = EXP_SEQCURRENTS.CSV) Sequence currents in each terminal of 3-phase elements.";
-		this.ExportHelp[ 4] = "(Default file = EXP_ESTIMATION.CSV) Results of last estimation.";
-		this.ExportHelp[ 5] = "(Default file = EXP_CAPACITY.CSV) Capacity report.";
-		this.ExportHelp[ 6] = "(Default file = EXP_OVERLOADS.CSV) Overloaded elements report.";
-		this.ExportHelp[ 7] = "(Default file = EXP_UNSERVED.CSV) Report on elements that are served in violation of ratings.";
-		this.ExportHelp[ 8] = "(Default file = EXP_POWERS.CSV) Powers into each terminal of each element.";
-		this.ExportHelp[ 9] = "(Default file = EXP_SEQPOWERS.CSV) Sequence powers into each terminal of 3-phase elements.";
-		this.ExportHelp[10] = "(Default file = EXP_FAULTS.CSV) results of a fault study.";
-		this.ExportHelp[11] = "(Default file = EXP_GENMETERS.CSV) Present values of generator meters. Adding the switch \"/multiple\" or \"/m\" will " +
+	public static ExportOptions getInstance() {
+		return ExportOptionsHolder.INSTANCE;
+	}
+
+	private void defineOptions() {
+
+		ExportOption = new String[NumExportOptions];
+
+		ExportOption[ 0] = "Voltages";
+		ExportOption[ 1] = "SeqVoltages";
+		ExportOption[ 2] = "Currents";
+		ExportOption[ 3] = "SeqCurrents";
+		ExportOption[ 4] = "Estimation";
+		ExportOption[ 5] = "Capacity";
+		ExportOption[ 6] = "Overloads";
+		ExportOption[ 7] = "Unserved";
+		ExportOption[ 8] = "Powers";
+		ExportOption[ 9] = "SeqPowers";
+		ExportOption[10] = "Faultstudy";
+		ExportOption[11] = "Generators";
+		ExportOption[12] = "Loads";
+		ExportOption[13] = "Meters";
+		ExportOption[14] = "Monitors";
+		ExportOption[15] = "Yprims";
+		ExportOption[16] = "Y";
+		ExportOption[17] = "seqz";
+		ExportOption[18] = "P_byphase";
+		ExportOption[19] = "CDPSM";
+		ExportOption[20] = "CDPSMConnect";
+		ExportOption[21] = "CDPSMBalanced";
+		ExportOption[22] = "Buscoords";
+		ExportOption[23] = "Losses";
+		ExportOption[24] = "Guids";
+		ExportOption[25] = "Counts";
+
+		ExportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
+		ExportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
+		ExportHelp[ 2] = "(Default file = EXP_CURRENTS.CSV) Currents in each conductor of each element.";
+		ExportHelp[ 3] = "(Default file = EXP_SEQCURRENTS.CSV) Sequence currents in each terminal of 3-phase elements.";
+		ExportHelp[ 4] = "(Default file = EXP_ESTIMATION.CSV) Results of last estimation.";
+		ExportHelp[ 5] = "(Default file = EXP_CAPACITY.CSV) Capacity report.";
+		ExportHelp[ 6] = "(Default file = EXP_OVERLOADS.CSV) Overloaded elements report.";
+		ExportHelp[ 7] = "(Default file = EXP_UNSERVED.CSV) Report on elements that are served in violation of ratings.";
+		ExportHelp[ 8] = "(Default file = EXP_POWERS.CSV) Powers into each terminal of each element.";
+		ExportHelp[ 9] = "(Default file = EXP_SEQPOWERS.CSV) Sequence powers into each terminal of 3-phase elements.";
+		ExportHelp[10] = "(Default file = EXP_FAULTS.CSV) results of a fault study.";
+		ExportHelp[11] = "(Default file = EXP_GENMETERS.CSV) Present values of generator meters. Adding the switch \"/multiple\" or \"/m\" will " +
 							" cause a separate file to be written for each generator.";
-		this.ExportHelp[12] = "(Default file = EXP_LOADS.CSV) Report on loads from most recent solution.";
-		this.ExportHelp[13] = "(Default file = EXP_METERS.CSV) Energy meter exports. Adding the switch \"/multiple\" or \"/m\" will " +
+		ExportHelp[12] = "(Default file = EXP_LOADS.CSV) Report on loads from most recent solution.";
+		ExportHelp[13] = "(Default file = EXP_METERS.CSV) Energy meter exports. Adding the switch \"/multiple\" or \"/m\" will " +
 							" cause a separate file to be written for each meter.";
-		this.ExportHelp[14] = "(file name is assigned by Monitor export) Monitor values.";
-		this.ExportHelp[15] = "(Default file = EXP_YPRIMS.CSV) All primitive Y matrices.";
-		this.ExportHelp[16] = "(Default file = EXP_Y.CSV) System Y matrix.";
-		this.ExportHelp[17] = "(Default file = EXP_SEQZ.CSV) Equivalent sequence Z1, Z0 to each bus.";
-		this.ExportHelp[18] = "(Default file = EXP_P_BYPHASE.CSV) Power by phase.";
-		this.ExportHelp[19] = "(Default file = CDPSM.XML) (IEC 61968-13, CDPSM Unbalanced load flow profile)";
-		this.ExportHelp[20] = "(Default file = CDPSM_Connect.XML) (IEC 61968-13, CDPSM Unbalanced connectivity profile)";
-		this.ExportHelp[21] = "(Default file = CDPSM_Balanced.XML) (IEC 61968-13, CDPSM Balanced profile)";
-		this.ExportHelp[22] = "[Default file = EXP_BUSCOORDS.CSV] Bus coordinates in csv form.";
-		this.ExportHelp[23] = "[Default file = EXP_LOSSES.CSV] Losses for each element.";
-		this.ExportHelp[24] = "[Default file = EXP_GUIDS.CSV] Guids for each element.";
-		this.ExportHelp[25] = "[Default file = EXP_Counts.CSV] (instance counts for each class)";
+		ExportHelp[14] = "(file name is assigned by Monitor export) Monitor values.";
+		ExportHelp[15] = "(Default file = EXP_YPRIMS.CSV) All primitive Y matrices.";
+		ExportHelp[16] = "(Default file = EXP_Y.CSV) System Y matrix.";
+		ExportHelp[17] = "(Default file = EXP_SEQZ.CSV) Equivalent sequence Z1, Z0 to each bus.";
+		ExportHelp[18] = "(Default file = EXP_P_BYPHASE.CSV) Power by phase.";
+		ExportHelp[19] = "(Default file = CDPSM.XML) (IEC 61968-13, CDPSM Unbalanced load flow profile)";
+		ExportHelp[20] = "(Default file = CDPSM_Connect.XML) (IEC 61968-13, CDPSM Unbalanced connectivity profile)";
+		ExportHelp[21] = "(Default file = CDPSM_Balanced.XML) (IEC 61968-13, CDPSM Balanced profile)";
+		ExportHelp[22] = "[Default file = EXP_BUSCOORDS.CSV] Bus coordinates in csv form.";
+		ExportHelp[23] = "[Default file = EXP_LOSSES.CSV] Losses for each element.";
+		ExportHelp[24] = "[Default file = EXP_GUIDS.CSV] Guids for each element.";
+		ExportHelp[25] = "[Default file = EXP_Counts.CSV] (instance counts for each class)";
 
 	}
 
-	public static int doExportCmd() {
-		String Parm2, FileName;
+	public int doExportCmd() {
+		String Parm2 = "", FileName;
 		MonitorObj pMon;
-		
+
 		Parser parser = Parser.getInstance();
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		String ParamName = Parser.getInstance().getNextParam();
+		Parser.getInstance().getNextParam();
 		String Parm1 = Parser.getInstance().makeString().toLowerCase();
 		int ParamPointer = ExportCommands.getCommand(Parm1);
 
@@ -95,33 +116,33 @@ public class ExportOptionsImpl implements ExportOptions {
 
 		switch (ParamPointer) {
 		case 8:  // Trap export powers command and look for MVA/kVA option
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
 			MVAOpt = 0;
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
 		case 18:
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
 			MVAOpt = 0;
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
 		case 7:  // Trap UE only flag
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Parm2 = parser.makeString().toLowerCase();
 			UEonlyOpt = false;
-			if (Parm2.length() > 0) 
+			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'u')
 					UEonlyOpt = true;
 		case 14:  // Get monitor name for export monitors command
-			ParamName = parser.getNextParam();
+			parser.getNextParam();
 			Parm2 = parser.makeString();
 		}
 
 		/* Pick up last parameter on line, alternate file name, if any */
-		ParamName = parser.getNextParam();
+		parser.getNextParam();
 		FileName = parser.makeString().toLowerCase();  // should be full path name to work universally
 
 		Globals.setInShowResults(true);
@@ -201,7 +222,7 @@ public class ExportOptionsImpl implements ExportOptions {
 		case 25: ExportResults.exportCounts(FileName);
 		case 26: ExportResults.exportSummary(FileName);
 		default:
-			ExportResults.exportVoltages(FileName);    
+			ExportResults.exportVoltages(FileName);
 		}
 
 		int Result = 0;

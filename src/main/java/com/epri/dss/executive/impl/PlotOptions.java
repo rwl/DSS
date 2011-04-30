@@ -2,15 +2,15 @@ package com.epri.dss.executive.impl;
 
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.executive.PlotOptions;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.plot.DSSPlot;
 import com.epri.dss.plot.impl.DSSPlotImpl;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotType;
 import com.epri.dss.shared.CommandList;
+import com.epri.dss.shared.impl.CommandListImpl;
 
-public class PlotOptionsImpl implements PlotOptions {
+public class PlotOptions {
 
 	private String CRLF = DSSGlobals.CRLF;
 
@@ -21,7 +21,28 @@ public class PlotOptionsImpl implements PlotOptions {
 
 	private CommandList PlotCommands;
 
-	public PlotOptionsImpl() {
+	// Private constructor prevents instantiation from other classes
+	private PlotOptions() {
+		defineOptions();
+
+		PlotCommands = new CommandListImpl(PlotOption);
+		PlotCommands.setAbbrevAllowed(true);
+	}
+
+	/**
+	 * PlotOptionsHolder is loaded on the first execution of
+	 * PlotOptions.getInstance() or the first access to
+	 * PlotOptionsHolder.INSTANCE, not before.
+	 */
+	private static class PlotOptionsHolder {
+		public static final PlotOptions INSTANCE = new PlotOptions();
+	}
+
+	public static PlotOptions getInstance() {
+		return PlotOptionsHolder.INSTANCE;
+	}
+
+	private void defineOptions() {
 
 		this.PlotOption = new String[NumPlotOptions];
 
@@ -90,11 +111,11 @@ public class PlotOptionsImpl implements PlotOptions {
 	}
 
 	/** Produce a plot with the DSSGraphX object. */
-	public static int doPlotCmd() {
+	public int doPlotCmd() {
 
 		Parser parser = Parser.getInstance();
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		double[] DblBuffer = new double[50];
 		int NumChannels;
 
@@ -105,10 +126,10 @@ public class PlotOptionsImpl implements PlotOptions {
 			return Result;
 		}
 
-		if (DSSPlot.DSSPlotObj == null) 
-			DSSPlot.DSSPlotObj = new DSSPlotImpl();
+		if (DSSPlotImpl.getDSSPlotObj() == null)
+			DSSPlotImpl.setDSSPlotObj(new DSSPlotImpl());
 
-		DSSPlot.DSSPlotObj.setDefaults();
+		DSSPlotImpl.getDSSPlotObj().setDefaults();
 
 		/* Get next parameter on command line */
 		int ParamPointer = 0;
@@ -121,8 +142,8 @@ public class PlotOptionsImpl implements PlotOptions {
 			} else {
 				ParamPointer = PlotCommands.getCommand(ParamName);
 			}
-			
-			DSSPlot plot = DSSPlot.DSSPlotObj;
+
+			DSSPlot plot = DSSPlotImpl.getDSSPlotObj();
 			switch (ParamPointer) {
 			case 0:
 				switch (Param.charAt(0)) {
@@ -140,7 +161,7 @@ public class PlotOptionsImpl implements PlotOptions {
 					plot.setPlotType(PlotType.MonitorPlot);
 				/*case 'P':
 					plot.setPlotType(PlotType.Profile);*/
-				case 'D': 
+				case 'D':
 					plot.setPlotType(PlotType.DaisyPlot);
 //					plot.getDaisyBusList().clear();
 				case 'Z':
@@ -171,7 +192,7 @@ public class PlotOptionsImpl implements PlotOptions {
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
 			case 3:
 				plot.setDots(Utilities.interpretYesNo(Param));
-			case 4: 
+			case 4:
 				plot.setLabels(Utilities.interpretYesNo(Param));
 			case 5:
 				plot.setObjectName(parser.makeString());
@@ -184,22 +205,22 @@ public class PlotOptionsImpl implements PlotOptions {
 			case 8:
 				plot.setTriColorMid(parser.makeDouble());
 			case 9:
-				plot.setColor1(Utilities.interpretColorName(Param));
+				plot.setColor1(Utilities.interpretColor(Param));
 			case 10:
-				plot.setColor2(Utilities.interpretColorName(Param));
-			case 11: 
-				plot.setColor3(Utilities.interpretColorName(Param));
+				plot.setColor2(Utilities.interpretColor(Param));
+			case 11:
+				plot.setColor3(Utilities.interpretColor(Param));
 			case 12:  // Channel definitions for Plot Monitor
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {  // Else take the defaults
 					plot.setChannels(new int[NumChannels]);
 					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
 						plot.getChannels()[i] = (int) DblBuffer[i];
-					plot.setBases(new double[NumChannels]);  
-					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing 
+					plot.setBases(new double[NumChannels]);
+					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
 						plot.getBases()[i] = 1.0;
 				}
-			case 13: 
+			case 13:
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {
 					plot.setBases(new double[NumChannels]);
@@ -211,8 +232,8 @@ public class PlotOptionsImpl implements PlotOptions {
 			case 15:
 				plot.setMaxLineThickness(parser.makeInteger());
 			case 16:
-				Utilities.interpretTStringListArray(Param, plot.getDaisyBusList());  // read in Bus list
-			/*case 17: 
+				Utilities.interpretStringListArray(Param, plot.getDaisyBusList());  // read in Bus list
+			/*case 17:
 				plot.setMinScale(parser.makeDouble());
 				plot.setMinScaleIsSpecified(true);*/    // Indicate the user wants a particular value
 			/*case 18:
@@ -236,11 +257,11 @@ public class PlotOptionsImpl implements PlotOptions {
 			Param = parser.makeString().toUpperCase();
 		}
 
-		if (Globals.getActiveCircuit().isSolved()) 
-			DSSPlot.DSSPlotObj.setQuantity(PlotQuantity.None);
+		if (Globals.getActiveCircuit().isSolved())
+			DSSPlotImpl.getDSSPlotObj().setQuantity(PlotQuantity.None);
 
-		DSSPlot.DSSPlotObj.execute();  // makes a new plot based on these options
-			
+		DSSPlotImpl.getDSSPlotObj().execute();  // makes a new plot based on these options
+
 		return Result;
 	}
 

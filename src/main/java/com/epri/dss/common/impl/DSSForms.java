@@ -1,6 +1,6 @@
 package com.epri.dss.common.impl;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -57,7 +57,7 @@ public class DSSForms {
 
 	}
 
-	public static void showMessageForm(ArrayList<String> S) {
+	public static void showMessageForm(List<String> S) {
 
 	}
 
