@@ -4,17 +4,16 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
-import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.control.impl.SwtControlObjImpl;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
@@ -28,8 +27,8 @@ import com.epri.dss.shared.impl.CommandListImpl;
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	// Adjacency lists for PC and PD elements at each bus, built for faster searches
-	private static List<String>[] BusAdjPC; // Also includes shunt PD elements
-	private static List<String>[] BusAdjPD;
+	public static List<CktElement>[] BusAdjPC; // Also includes shunt PD elements
+	public static List<CktElement>[] BusAdjPD;
 
 	private static EnergyMeterObj ActiveEnergyMeterObj;
 
@@ -37,13 +36,13 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	private Generator GeneratorClass;
 	private boolean SaveDemandInterval;
 	private boolean DI_Verbose;
-	private File OverLoadFile;
-	private File VoltageFile;
+	private FileWriter OverLoadFile;
+	private FileWriter VoltageFile;
 
 	protected double[] DI_RegisterTotals;
 	protected String DI_Dir;
-	protected File DI_Totals;
-	protected File MeterTotals;
+	protected FileWriter DI_Totals;
+	protected FileWriter MeterTotals;
 	protected SystemMeter SystemMeter;
 	protected boolean Do_OverloadReport;
 	protected boolean Do_VoltageExceptionReport;
@@ -175,8 +174,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveEnergyMeterObj());
+		setActiveEnergyMeterObj((EnergyMeterObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveEnergyMeterObj());
 
 		int Result = 0;
 
@@ -408,8 +407,12 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				}
 			}
 
-			createFDI_Totals();
-			DI_Totals.close();
+			createDI_Totals();
+			try {
+				DI_Totals.close();
+			} catch (IOException e) {
+				// TODO: handle exception
+			}
 		}
 
 		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
@@ -437,10 +440,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		SystemMeter.takeSample();
 
 		if (SaveDemandInterval) {  /* Write totals demand interval file */
-			DI_Totals.write(String.format("%-.6g ", ckt.getSolution().getDblHour()));
+			PrintWriter DI_TotalsPrinter = new PrintWriter(DI_Totals);
+
+			DI_TotalsPrinter.printf("%-.6g ", ckt.getSolution().getDblHour());
 			for (int i = 0; i < NumEMRegisters; i++)
-				DI_Totals.write(String.format(", %-.6g", DI_RegisterTotals[i]));
-			DI_Totals.println();
+				DI_TotalsPrinter.printf(", %-.6g", DI_RegisterTotals[i]);
+			DI_TotalsPrinter.println();
+			DI_TotalsPrinter.close();
+
 			clearDI_Totals();
 			if (OverLoadFileIsOpen) writeOverloadReport();
 			if (VoltageFileIsOpen) writeVoltageReport();
@@ -489,7 +496,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	private void processOptions(String Opts) {
-		String S1, S2 = " ";
+		String S2 = " ";
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		Globals.getAuxParser().setCmdString(Opts);  // Load up aux parser
@@ -498,7 +505,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		/* Loop until no more options found */
 		while (S2.length() > 0) {
-			S1 = Globals.getAuxParser().getNextParam(); // ignore any parameter name  not expecting any
+			Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
 			S2 = Globals.getAuxParser().makeString().toLowerCase();
 			if (S2.length() > 0)
 				switch (S2.charAt(0)) {
@@ -519,8 +526,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	public void closeAllDIFiles() {
-		EnergyMeterObj mtr;
-
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		if (SaveDemandInterval) {
@@ -539,16 +544,20 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			writeTotalsFile();  // Sum all EnergyMeter registers to "Totals.csv"
 			SystemMeter.closeDemandIntervalFile();
 			SystemMeter.save();
-			MeterTotals.close();
-			DI_Totals.close();
-			Globals.setDIFilesAreOpen(false);
-			if (OverLoadFileIsOpen) {
-				OverLoadFile.close();
-				OverLoadFileIsOpen = false;
-			}
-			if (VoltageFileIsOpen) {
-				VoltageFile.close();
-				VoltageFileIsOpen = false;
+			try {
+				MeterTotals.close();
+				DI_Totals.close();
+				Globals.setDIFilesAreOpen(false);
+				if (OverLoadFileIsOpen) {
+					OverLoadFile.close();
+					OverLoadFileIsOpen = false;
+				}
+				if (VoltageFileIsOpen) {
+					VoltageFile.close();
+					VoltageFileIsOpen = false;
+				}
+			} catch (IOException e) {
+				Globals.doSimpleMsg("Error closing file: "+e.getMessage(), 537);
 			}
 		}
 	}
@@ -568,13 +577,12 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			/* Open DI_Totals */
 			try {
-				DI_Totals = new File(DI_Dir + "/DI_Totals.csv");
+				File DI_TotalsFile = new File(DI_Dir + "/DI_Totals.csv");
 				/* File Must Exist */
-				if (DI_Totals.exists()) {
-					FileWriter DI_TotalsStream = new FileWriter(DI_Totals, true);
-					BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_TotalsStream);
+				if (DI_TotalsFile.exists()) {
+					DI_Totals = new FileWriter(DI_TotalsFile, true);
 				} else {
-					createFDI_Totals();
+					createDI_Totals();
 				}
 			} catch (Exception e) {
 				Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
@@ -598,6 +606,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
+		PrintWriter OverLoadPrinter = new PrintWriter(OverLoadFile);
+
 		/* Check PDElements only */
 		for (PDElement PDElem : ckt.getPDElements()) {
 			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // Ignore shunts
@@ -606,26 +616,28 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 					PDElem.computeIterminal();
 					Cmax = PDElem.maxTerminalOneIMag();  // For now, check only terminal 1 for overloads
 					if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
-						OverLoadFile.write(String.format("%-.6g,", ckt.getSolution().getDblHour()));
-						OverLoadFile.write(String.format(" %s, %-.4g, %-.4g,", FullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps()));
+						OverLoadPrinter.printf("%-.6g,", ckt.getSolution().getDblHour());
+						OverLoadPrinter.printf(" %s, %-.4g, %-.4g,", Utilities.fullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps());
 						if (PDElem.getNormAmps() > 0.0) {
-							OverLoadFile.write(String.format(" %-.7g,", Cmax / PDElem.getNormAmps() * 100.0))
+							OverLoadPrinter.printf(" %-.7g,", Cmax / PDElem.getNormAmps() * 100.0);
 						} else {
-							OverLoadFile.write(" 0.0,");
+							OverLoadPrinter.print(" 0.0,");
 						}
 						if (PDElem.getEmergAmps() > 0.0) {
-							OverLoadFile.write(String.format(" %-.7g,", Cmax / PDElem.getEmergAmps() * 100.0));
+							OverLoadPrinter.printf(" %-.7g,", Cmax / PDElem.getEmergAmps() * 100.0);
 						} else {
-							OverLoadFile.write(" 0.0,");
+							OverLoadPrinter.print(" 0.0,");
 						}
 						/* Find bus of first terminal */
-						OverLoadFile.write(String.format(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].BusRef].getkVBase()));
+						OverLoadPrinter.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].BusRef].getkVBase());
 
-						OverLoadFile.newLine();
+						OverLoadPrinter.println();
 					}
 				}
 			}
 		}
+
+		OverLoadPrinter.close();
 	}
 
 	private void clearDI_Totals() {
@@ -639,9 +651,9 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
-			DI_Totals = new File(DI_Dir + "/DI_Totals.csv");
-			FileWriter DI_TotalsStream = new FileWriter(DI_Totals, false);
-			BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_TotalsStream);
+			DI_Totals = new FileWriter(DI_Dir + "/DI_Totals.csv");
+//			FileWriter DI_TotalsStream = new FileWriter(DI_Totals, false);
+			BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_Totals);
 
 			DI_TotalsBuffer.write("Time");
 			for (int i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
@@ -649,7 +661,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				DI_TotalsBuffer.write(", \"" + pMeter.getRegisterNames()[i] + "\"");
 			}
 			DI_TotalsBuffer.newLine();
-			// FIXME Close stream and buffer
+			DI_TotalsBuffer.close();
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error creating: \""+DI_Dir+"/DI_Totals.csv\": "+e.getMessage(), 539);
 		}
@@ -661,11 +673,10 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		MeterTotals = new File(DI_Dir + "/EnergyMeterTotals.csv");
-		FileWriter MeterTotalsStream;
 		try {
-			MeterTotalsStream = new FileWriter(MeterTotals, false);
-			BufferedWriter MeterTotalsBuffer = new BufferedWriter(MeterTotalsStream);
+			File MeterTotalsFile = new File(DI_Dir + "/EnergyMeterTotals.csv");
+			MeterTotals = new FileWriter(MeterTotalsFile);
+			BufferedWriter MeterTotalsBuffer = new BufferedWriter(MeterTotals);
 
 			MeterTotalsBuffer.write("Name");
 			mtr = ckt.getEnergyMeters().get(0);
@@ -673,7 +684,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
 			MeterTotalsBuffer.newLine();
 
-			// FIXME Close stream and buffer
+			MeterTotalsBuffer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -766,9 +777,11 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			}
 		}  /* for i */
 
-		VoltageFile.write(String.format("%-.6g,", ckt.getSolution().getDblHour()));
-		VoltageFile.write(String.format(" %d, %-.6g, %d, %-.6g", UnderCount, UnderVmin, OverCount, OverVmax));
-		VoltageFile.newLine();
+		PrintWriter VoltagePrinter = new PrintWriter(VoltageFile);
+		VoltagePrinter.printf("%-.6g,", ckt.getSolution().getDblHour());
+		VoltagePrinter.printf(" %d, %-.6g, %d, %-.6g", UnderCount, UnderVmin, OverCount, OverVmax);
+		VoltagePrinter.println();
+		VoltagePrinter.close();
 	}
 
 	private void interpretRegisterMaskArray(double[] Mask) {
@@ -781,8 +794,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	 * Similar to "append", by creates the files.
 	 */
 	public void openAllDIFiles() {
-		EnergyMeterObj mtr;
-
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		if (SaveDemandInterval) {
@@ -816,13 +827,13 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		try {
 			if (OverLoadFileIsOpen) OverLoadFile.close();
 
-			OverLoadFile = new File(Globals.getEnergyMeterClass().getDI_Dir() + "/DI_Overloads.csv");
-			FileWriter OverLoadStream = new FileWriter(OverLoadFile, false);
-			BufferedWriter OverLoadBuffer = new BufferedWriter(OverLoadStream);  // Add stream and buffer members
+			OverLoadFile = new FileWriter(Globals.getEnergyMeterClass().getDI_Dir() + "/DI_Overloads.csv");
+			PrintWriter OverLoadPrinter = new PrintWriter(OverLoadFile);
 
 			OverLoadFileIsOpen = true;
-			OverLoadBuffer.write("\"Hour\", \"Element\", \"Normal Amps\", \"Emerg Amps\", \"% Normal\", \"% Emerg\", \"kVBase\"");
-			OverLoadBuffer.newLine();
+			OverLoadPrinter.print("\"Hour\", \"Element\", \"Normal Amps\", \"Emerg Amps\", \"% Normal\", \"% Emerg\", \"kVBase\"");
+			OverLoadPrinter.println();
+			OverLoadPrinter.close();
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_Overloads.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
@@ -834,13 +845,12 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		try {
 			if (VoltageFileIsOpen) VoltageFile.close();
 
-			VoltageFile = new File(Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv");
-			FileWriter VoltageStream = new FileWriter(VoltageFile, false);
-			BufferedWriter VoltageBuffer = new BufferedWriter(VoltageStream);  // Add stream and buffer members
+			VoltageFile = new FileWriter(Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv");
 
 			VoltageFileIsOpen = true;
-			VoltageBuffer.write("\"Hour\", \"Undervoltages\", \"Min Voltage\", \"Overvoltage\", \"Max Voltage\"");
-			VoltageBuffer.newLine();
+			PrintWriter VoltagePrinter = new PrintWriter(VoltageFile);
+			VoltagePrinter.println("\"Hour\", \"Undervoltages\", \"Min Voltage\", \"Overvoltage\", \"Max Voltage\"");
+			VoltagePrinter.close();
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv\" for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
@@ -870,19 +880,19 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		DI_Dir = dI_Dir;
 	}
 
-	public File getDI_Totals() {
+	public FileWriter getDI_Totals() {
 		return DI_Totals;
 	}
 
-	public void setDI_Totals(File dI_Totals) {
+	public void setDI_Totals(FileWriter dI_Totals) {
 		DI_Totals = dI_Totals;
 	}
 
-	public File getMeterTotals() {
+	public FileWriter getMeterTotals() {
 		return MeterTotals;
 	}
 
-	public void setMeterTotals(File meterTotals) {
+	public void setMeterTotals(FileWriter meterTotals) {
 		MeterTotals = meterTotals;
 	}
 

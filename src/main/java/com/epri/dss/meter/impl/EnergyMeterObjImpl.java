@@ -77,11 +77,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	private double[] VPhaseMin;
 	private double[] VPhaseAccum;
 	private int[] VPhaseAccumCount;
-	private File VPhase_File;
+	private FileWriter VPhase_File;
 	private boolean VPhaseReportFileIsOpen;
 
 	/* Demand Interval File variables */
-	private File DI_File;
+	private FileWriter DI_File;
 	private boolean This_Meter_DIFileIsOpen;
 
 
@@ -764,13 +764,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		int TestBusNum, ZoneListCounter;
 		int j, iTerm, iPC, iPD;
-		DSSCktElement ActiveBranch;
+		CktElement ActiveBranch;
 		PDElement TestElement;
 		PCElement pC;
 		LoadObj pLoad;
 		boolean IsFeederEnd;
-		String S;
-		List<String> adjLst;
+//		String S;
+		List<CktElement> adjLst;
 
 		ZoneListCounter = 0;
 		VBaseCount      = 0;  /* Build the voltage base list over in case a base added or deleted */
@@ -846,7 +846,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 					adjLst = EnergyMeterImpl.BusAdjPC[TestBusNum];
 					for (iPC = 0; iPC < adjLst.size(); iPC++) {
-						pC = adjLst[iPC];
+						pC = (PCElement) adjLst.get(iPC);
 						if (pC.isChecked()) continue;  // skip ones we already checked
 						BranchList.getPresentBranch().setIsDangling(false);  // Something is connected here
 						// Is this a load or a generator or a Capacitor or reactor?
@@ -878,7 +878,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						IsFeederEnd = true;
 						adjLst = EnergyMeterImpl.BusAdjPD[TestBusNum];
 						for (iPD = 0; iPD < adjLst.size(); iPD++) {
-							TestElement = adjLst[iPD];  // Only enabled objects are in this list
+							TestElement = (PDElement) adjLst.get(iPD);  // Only enabled objects are in this list
 							// See resetMeterZonesAll()
 							if (!(TestElement == ActiveBranch)) {  // Skip self
 								if (!TestElement.hasEnergyMeter()) {  // Stop at other meters  so zones don't interfere
@@ -1556,7 +1556,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	protected void closeDemandIntervalFile() {
+	// FIXME Protected method in OpenDSS
+	public void closeDemandIntervalFile() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -1566,18 +1567,21 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				if (VPhaseReportFileIsOpen) VPhase_File.close();
 				VPhaseReportFileIsOpen = false;
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Globals.doSimpleMsg("Error Closing Demand Interval file for Meter \""+getName()+"\"", 534);
 		}
 
 		/* Write Registers to Totals File */
-		Globals.getEnergyMeterClass().getMeterTotals().write("\"", getName(), "\"");
+		PrintWriter MeterTotalsPrinter = new PrintWriter(Globals.getEnergyMeterClass().getMeterTotals());
+		MeterTotalsPrinter.print("\"" + getName() + "\"");
 		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
-			Globals.getEnergyMeterClass().getMeterTotals().write(String.format(", %-g", Registers[i]));
-		Globals.getEnergyMeterClass().getMeterTotals().newLine();
+			MeterTotalsPrinter.printf(", %-g", Registers[i]);
+		MeterTotalsPrinter.println();
+		MeterTotalsPrinter.close();
 	}
 
-	protected void openDemandIntervalFile() {
+	// FIXME Protected method in OpenDSS
+	public void openDemandIntervalFile() {
 		int i, j;
 		double Vbase;
 
@@ -1588,39 +1592,39 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 			if (Globals.getEnergyMeterClass().isDIVerbose()) {
 
-				DI_File = new File(makeDIFileName());
-				FileWriter DI_Stream = new FileWriter(DI_File, false);
-				BufferedWriter DI_Buffer = new BufferedWriter(DI_Stream);
+				DI_File = new FileWriter(makeDIFileName());
+				PrintWriter DI_Printer = new PrintWriter(DI_File);
 
 				This_Meter_DIFileIsOpen = true;
-				DI_Buffer.write("\"Hour\"");
+				DI_Printer.print("\"Hour\"");
 				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
-					DI_Buffer.write(", \"" + RegisterNames[i] + "\"");
-				DI_Buffer.newLine();
+					DI_Printer.print(", \"" + RegisterNames[i] + "\"");
+				DI_Printer.println();
+				DI_Printer.close();
 
 				/* Phase Voltage Report, if requested */
 				if (PhaseVoltageReport) {
-					VPhase_File = new File(makeVPhaseReportFileName());
-					FileWriter VPhase_Stream = new FileWriter(VPhase_File, false);
-					BufferedWriter VPhase_Buffer = new BufferedWriter(VPhase_Stream);
+					VPhase_File = new FileWriter(makeVPhaseReportFileName());
+					PrintWriter VPhase_Printer = new PrintWriter(VPhase_File);
 
 					VPhaseReportFileIsOpen = true;
-					VPhase_Buffer.write("\"Hour\"");
+					VPhase_Printer.write("\"Hour\"");
 					for (i = 0; i < MaxVBaseCount; i++) {
 						Vbase = VBaseList[i] * DSSGlobals.SQRT3;
 						if (Vbase > 0.0) {
 							for (j = 0; j < 3; j++) {
-								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Max", Vbase, j));
-								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Min", Vbase, j));
-								VPhase_Buffer.write(String.format(", %.3gkV_Phs_%d_Avg", Vbase, j));
+								VPhase_Printer.printf(", %.3gkV_Phs_%d_Max", Vbase, j);
+								VPhase_Printer.printf(", %.3gkV_Phs_%d_Min", Vbase, j);
+								VPhase_Printer.printf(", %.3gkV_Phs_%d_Avg", Vbase, j);
 							}
 						}
 					}
-					VPhase_Buffer.newLine();
+					VPhase_Printer.println();
+					VPhase_Printer.close();
 				}
 
 			}
-		} catch (Exception e) {
+		} catch (IOException e) {
 			Globals.doSimpleMsg("Error opening demand interval file \"" + getName() + ".csv" +" for writing."+DSSGlobals.CRLF+e.getMessage(), 535);
 		}
 	}
@@ -1639,10 +1643,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
 		if ((Globals.getEnergyMeterClass().isDIVerbose()) && This_Meter_DIFileIsOpen) {
-			DI_File.write(String.format("%-.6g", sol.getDblHour()));
+			PrintWriter DI_Printer = new PrintWriter(DI_File);
+			DI_Printer.printf("%-.6g", sol.getDblHour());
 			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
-				DI_File.write(String.format(", %-.6g", Derivatives[i]));
-			DI_File.newLine();
+				DI_Printer.printf(", %-.6g", Derivatives[i]);
+			DI_Printer.println();
+			DI_Printer.close();
 		}
 
 		/* Add to Class demand interval registers */
@@ -1651,27 +1657,27 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		/* Phase Voltage Report, if requested */
 		if (VPhaseReportFileIsOpen) {
-			VPhase_File.write(String.format("%-.6g", sol.getDblHour()));
+			PrintWriter VPhase_Printer = new PrintWriter(VPhase_File);
+			VPhase_Printer.printf("%-.6g", sol.getDblHour());
 			for (i = 0; i < MaxVBaseCount; i++) {
 				if (VBaseList[i] > 0.0) {
 					for (j = 0; j < 3; j++) {
-						VPhase_File.write(String.format(", %-.6g", 0.001 * VphaseMax[jiIndex(j, i)]));
-						VPhase_File.write(String.format(", %-.6g", 0.001 * VPhaseMin[jiIndex(j, i)]));
-						VPhase_File.write(String.format(", %-.6g", 0.001 * myCountAvg(VPhaseAccum[jiIndex(j, i)], VPhaseAccumCount[jiIndex(j, i)])));
+						VPhase_Printer.printf(", %-.6g", 0.001 * VphaseMax[jiIndex(j, i)]);
+						VPhase_Printer.printf(", %-.6g", 0.001 * VPhaseMin[jiIndex(j, i)]);
+						VPhase_Printer.printf(", %-.6g", 0.001 * myCountAvg(VPhaseAccum[jiIndex(j, i)], VPhaseAccumCount[jiIndex(j, i)]));
 					}
 				}
 			}
-			VPhase_File.newLine();
+			VPhase_Printer.println();
 		}
 	}
 
 	/**
 	 * Only called if "SaveDemandInterval".
 	 */
-	protected void appendDemandIntervalFile() {
+	// FIXME Protected method in OpenDSS
+	public void appendDemandIntervalFile() {
 		String FileNm;
-		FileWriter DI_Stream;
-		BufferedWriter DI_Buffer;
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
@@ -1681,14 +1687,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		try {
 			if (Globals.getEnergyMeterClass().isDIVerbose()) {
 				FileNm = makeDIFileName();  // Creates directory if it doesn't exist
-				DI_File = new File(FileNm);
 				/* File must exist */
-				if (DI_File.exists()) {
-					DI_Stream = new FileWriter(DI_File, true);
+				if (new File(FileNm).exists()) {
+					DI_File = new FileWriter(FileNm, true);
 				} else {
-					DI_Stream = new FileWriter(DI_File, false);
+					DI_File = new FileWriter(FileNm, false);
 				}
-				DI_Buffer = new BufferedWriter(DI_Stream);  // FIXME Add stream and buffer members
 
 				This_Meter_DIFileIsOpen = true;
 			}
@@ -1744,7 +1748,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 	}
 
-	private void removeFeederObj() {
+	// FIXME Private method in OpenDSS
+	public void removeFeederObj() {
 		if (FeederObj != null) {
 			FeederObj.setEnabled(false);
 			FeederObj.setCktElementFeederFlags(false);
@@ -2052,11 +2057,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		VPhaseAccumCount = vPhaseAccumCount;
 	}
 
-	public File getVPhase_File() {
+	public FileWriter getVPhase_File() {
 		return VPhase_File;
 	}
 
-	public void setVPhase_File(File vPhase_File) {
+	public void setVPhase_File(FileWriter vPhase_File) {
 		VPhase_File = vPhase_File;
 	}
 
@@ -2068,11 +2073,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		VPhaseReportFileIsOpen = vPhaseReportFileIsOpen;
 	}
 
-	public File getDI_File() {
+	public FileWriter getDI_File() {
 		return DI_File;
 	}
 
-	public void setDI_File(File dI_File) {
+	public void setDI_File(FileWriter dI_File) {
 		DI_File = dI_File;
 	}
 

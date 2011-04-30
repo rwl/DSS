@@ -8,4 +8,13 @@ public interface SystemMeter {
 
 	void save();
 
+	// FIXME Protected method in OpenDSS
+	void closeDemandIntervalFile();
+
+	// FIXME Protected method in OpenDSS
+	void appendDemandIntervalFile();
+
+	// FIXME Protected method in OpenDSS
+	void openDemandIntervalFile();
+
 }

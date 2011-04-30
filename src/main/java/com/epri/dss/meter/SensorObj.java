@@ -40,6 +40,12 @@ public interface SensorObj extends MeterElement {
 	/* Saves present buffer to file */
 	void save();
 
+	// FIXME Private method in OpenDSS
+	int limitToPlusMinusOne(int i);
+
+	// FIXME Private method in OpenDSS
+	void clearSensor();
+
 
 	// FIXME Private members in OpenDSS
 

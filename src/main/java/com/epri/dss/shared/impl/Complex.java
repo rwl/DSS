@@ -90,12 +90,12 @@ public class Complex implements Serializable  {
 		isInfinite = !isNaN &&
 		(Double.isInfinite(real) || Double.isInfinite(imaginary));
 	}
-	
+
 	public Complex invert() {
 		double dnom = real * real + imaginary * imaginary;
 		return createComplex(real / dnom, -imaginary / dnom);
 	}
-	
+
 	/**
 	 * Return the quotient of this complex number and the given real number.
 	 * @param rhs the real number
@@ -104,10 +104,14 @@ public class Complex implements Serializable  {
 	public Complex divide(double rhs) {
 		return createComplex(real / rhs, imaginary / rhs);
 	}
-	
+
 	public double degArg() {
 		double arg = getArgument();
 		return arg * 180.0 / Math.PI;
+	}
+
+	public double[] asArray() {
+		return new double[] {real, imaginary};
 	}
 
 	/**

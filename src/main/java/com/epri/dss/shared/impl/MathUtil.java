@@ -56,4 +56,9 @@ public abstract class MathUtil {
 		return null;
 	}
 
+	public static void calckPowers(Complex[] voltageBuffer, Complex[] voltageBuffer2, Complex complex, int numVI) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

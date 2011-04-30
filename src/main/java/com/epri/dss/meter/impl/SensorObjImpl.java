@@ -237,7 +237,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			F.println();
 	}
 
-	private void clearSensor() {
+	// FIXME Private method in OpenDSS
+	public void clearSensor() {
 		Vspecified = false;
 		Ispecified = false;
 		Pspecified = false;
@@ -279,7 +280,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		super.initPropertyValues(Sensor.NumPropsThisClass);
 	}
 
-	private int limitToPlusMinusOne(int i) {
+	// FIXME Private method in OpenDSS
+	public int limitToPlusMinusOne(int i) {
 		if (i >= 0) {
 			return 1;
 		} else {

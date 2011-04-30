@@ -1,6 +1,7 @@
 package com.epri.dss.meter;
 
 import java.io.File;
+import java.io.FileWriter;
 
 public interface EnergyMeter extends MeterClass {
 
@@ -59,13 +60,13 @@ public interface EnergyMeter extends MeterClass {
 
 	void setDI_Dir(String dI_Dir);
 
-	File getDI_Totals();
+	FileWriter getDI_Totals();
 
-	void setDI_Totals(File dI_Totals);
+	void setDI_Totals(FileWriter dI_Totals);
 
-	File getMeterTotals();
+	FileWriter getMeterTotals();
 
-	void setMeterTotals(File meterTotals);
+	void setMeterTotals(FileWriter meterTotals);
 
 	SystemMeter getSystemMeter();
 

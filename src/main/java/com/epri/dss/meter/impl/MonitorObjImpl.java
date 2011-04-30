@@ -7,10 +7,10 @@ import java.io.FileWriter;
 import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
@@ -434,7 +434,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		if (!IsFileOpen) openMonitorStream();  // Position to end of stream
 
 		/* Write present monitor buffer to monitor stream */
-		MonitorStream.write(MonBuffer);
+//		MonitorStream.write(MonBuffer);
 
 		BufPtr = 0; // reset buffer for next
 	}
@@ -453,8 +453,8 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		boolean IsSequence;
 		int NumVI;
 		int Offset;
-		Complex ResidualCurr;
-		Complex ResidualVolt;
+		Complex ResidualCurr = null;
+		Complex ResidualVolt = null;
 		Complex Sum;
 		Complex[] V012 = new Complex[3];
 		Complex[] I012 = new Complex[3];
@@ -521,7 +521,6 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 		case 2:  // Monitor Transformer Tap Position
 
-			TransformerObj me = (TransformerObj) MeteredElement;
 			addDblToBuffer( ((TransformerObj) MeteredElement).getPresentTap(MeteredTerminal) );
 			return;  // Done with this mode now.
 
@@ -531,7 +530,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			return;  // Done with this mode now
 
 		default:
-			return; // Ignore invalid mask
+//			return; // Ignore invalid mask
 		}
 
 
@@ -668,11 +667,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		float hr;
 		int i;
 		int Mode;
-		int Nread;
+		int Nread = 0;
 		int pStr;
 		int RecordBytes;
-		int RecordSize;
-		float s;
+		int RecordSize = 0;
+		float s = 0;
 		float[] sngBuffer = new float[100];
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -691,39 +690,37 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			return;
 		}
 
-		MonitorStream.seek(0);  // Start at the beginning of the Stream
-		MonitorStream.read(Fsignature);
-		MonitorStream.read(Fversion);
-		MonitorStream.read(RecordSize);
-		MonitorStream.read(Mode);
-		MonitorStream.read(StrBuffer);
+//		MonitorStream.seek(0);  // Start at the beginning of the Stream
+//		MonitorStream.read(Fsignature);
+//		MonitorStream.read(Fversion);
+//		MonitorStream.read(RecordSize);
+//		MonitorStream.read(Mode);
+//		MonitorStream.read(StrBuffer);
 
 		pStr = StrBuffer.length();
-		FBuffer.write(pStr);
-		FBuffer.newLine();
+//		FBuffer.write(pStr);
+//		FBuffer.newLine();
 		RecordBytes = RecordSize;
 
 		try {
-			try {
 
-				while (!(MonitorStream.position() >= MonitorStream.size())) {
-					MonitorStream.read(hr);
-					MonitorStream.read(s);
-					Nread = MonitorStream.read(sngBuffer, RecordBytes);
-				}
-				if (Nread < RecordBytes) break;
-				FBuffer.write(hr);  // hours
-				FBuffer.write(", " + s);  // sec
-				for (i = 0; i < RecordSize; i++)
-					FBuffer.write(", " + String.format("%-.6g", sngBuffer[i]));
-				FBuffer.newLine();
-			} catch (Exception e) {
-				Globals.doSimpleMsg("Error Writing CSVFile \""+CSVName+"\" " +DSSGlobals.CRLF + e.getMessage(), 673);
-			}
-		} finally {
+//			while (!(MonitorStream.position() >= MonitorStream.size())) {
+//				MonitorStream.read(hr);
+//				MonitorStream.read(s);
+//				Nread = MonitorStream.read(sngBuffer, RecordBytes);
+//			}
+//			if (Nread < RecordBytes) break;
+//			FBuffer.write(hr);  // hours
+			FBuffer.write(", " + s);  // sec
+			for (i = 0; i < RecordSize; i++)
+				FBuffer.write(", " + String.format("%-.6g", sngBuffer[i]));
+			FBuffer.newLine();
+
 			closeMonitorStream();
 			FBuffer.close();
 			FStream.close();
+		} catch (Exception e) {
+			Globals.doSimpleMsg("Error Writing CSVFile \""+CSVName+"\" " +DSSGlobals.CRLF + e.getMessage(), 673);
 		}
 
 		if (Show) Utilities.fireOffEditor(CSVName);

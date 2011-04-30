@@ -1,8 +1,8 @@
 package com.epri.dss.meter.impl;
 
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.CktElementClassImpl;
 import com.epri.dss.common.impl.DSSClassDefs;
-import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.meter.MeterClass;
 

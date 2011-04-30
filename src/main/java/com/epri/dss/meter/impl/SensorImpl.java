@@ -2,7 +2,6 @@ package com.epri.dss.meter.impl;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -95,8 +94,8 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveSensorObj());
+		setActiveSensorObj((SensorObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveSensorObj());
 
 		int Result = 0;
 		boolean DoRecalcElementData = false;

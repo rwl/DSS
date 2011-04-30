@@ -1,6 +1,7 @@
 package com.epri.dss.meter;
 
 import java.io.File;
+import java.io.FileWriter;
 
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.shared.CktTree;
@@ -84,6 +85,18 @@ public interface EnergyMeterObj extends MeterElement {
 	void reduceZone();
 
 	void saveZone(String dirname);
+
+	// FIXME Private method in OpenDSS
+	void removeFeederObj();
+
+	// FIXME Protected method in OpenDSS
+	void closeDemandIntervalFile();
+
+	// FIXME Protected method in OpenDSS
+	void appendDemandIntervalFile();
+
+	// FIXME Protected method in OpenDSS
+	void openDemandIntervalFile();
 
 
 	// FIXME Private members in OpenDSS
@@ -208,17 +221,17 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setVPhaseAccumCount(int[] vPhaseAccumCount);
 
-	File getVPhase_File();
+	FileWriter getVPhase_File();
 
-	void setVPhase_File(File vPhase_File);
+	void setVPhase_File(FileWriter vPhase_File);
 
 	boolean isVPhaseReportFileIsOpen();
 
 	void setVPhaseReportFileIsOpen(boolean vPhaseReportFileIsOpen);
 
-	File getDI_File();
+	FileWriter getDI_File();
 
-	void setDI_File(File dI_File);
+	void setDI_File(FileWriter dI_File);
 
 	boolean isThis_Meter_DIFileIsOpen();
 

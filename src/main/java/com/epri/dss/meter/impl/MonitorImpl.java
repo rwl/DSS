@@ -1,6 +1,5 @@
 package com.epri.dss.meter.impl;
 
-import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -88,8 +87,8 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj(ElementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) getActiveMonitorObj());
+		setActiveMonitorObj((MonitorObj) ElementList.getActive());
+		Globals.getActiveCircuit().setActiveCktElement(getActiveMonitorObj());
 
 		int Result = 0;
 
