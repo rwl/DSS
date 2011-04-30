@@ -1,7 +1,5 @@
 package com.epri.dss.parser;
 
-import com.epri.dss.parser.impl.Parser;
-
 public interface IParser {
 
 	String getDelimChars();
