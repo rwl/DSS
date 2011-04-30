@@ -331,6 +331,22 @@ public class ExecOptions {
 		this.OptionHelp[78] = "Size of transformer marker. Default is 1.";
 	}
 
+	public String[] getExecOption() {
+		return ExecOption;
+	}
+
+	public void setExecOption(String[] execOption) {
+		ExecOption = execOption;
+	}
+
+	public String[] getOptionHelp() {
+		return OptionHelp;
+	}
+
+	public void setOptionHelp(String[] optionHelp) {
+		OptionHelp = optionHelp;
+	}
+
 	public String getExecOption(int i) {
 		return ExecOption[i];
 	}
@@ -339,12 +355,20 @@ public class ExecOptions {
 		return OptionHelp[i];
 	}
 
+	public CommandList getOptionList() {
+		return OptionList;
+	}
+
+	public void setOptionList(CommandList optionList) {
+		OptionList = optionList;
+	}
+
 	/**
 	 * Set Commands that do not require a circuit.
 	 *
 	 * This is for setting global options that do not require an active circuit.
 	 */
-	public static boolean doSetCmd_NoCircuit() {
+	public boolean doSetCmd_NoCircuit() {
 		boolean Result = true;
 
 		Parser parser = Parser.getInstance();
@@ -391,7 +415,7 @@ public class ExecOptions {
 	 *
 	 * Solve Command is re-routed here first to set options before solving.
 	 */
-	public static int doSetCmd(int SolveOption) {
+	public int doSetCmd(int SolveOption) {
 		LoadShapeObj TestLoadShapeObj;
 
 		Parser parser = Parser.getInstance();
@@ -631,7 +655,7 @@ public class ExecOptions {
 	 * Get DSS Options Reguaeste and put it in Global Result string
 	 * may be retrieved by Result property of the DSSText interface.
 	 */
-	public static int doGetCmd() {
+	public int doGetCmd() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Circuit ckt;
 

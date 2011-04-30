@@ -1,6 +1,7 @@
 package com.epri.dss.plot.impl;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.delivery.LineObj;
@@ -8,14 +9,14 @@ import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.plot.DSSPlot;
 
 public class DSSPlotImpl implements DSSPlot {
-	
-	private static int vizCURRENT = 1;
-	private static int vizVOLTAGE = 2;
-	private static int vizPOWER   = 3;
-	private static int PROFILE3PH = 9999; // some big number > likely no. of phases
-	private static int PROFILEALL = 9998;
-	private static int PROFILEALLPRI = 9997;
-	
+
+	private static DSSPlot DSSPlotObj;
+
+	private static int AddMarkerColor;
+	private static int AddMarkerCode, AddMarkerSize;
+	private static int SinglePhLineStyle;
+	private static int ThreePhLineStyle;
+
 	public enum PlotType {
 		AutoAddLogPlot,
 		CircuitPlot,
@@ -27,11 +28,11 @@ public class DSSPlotImpl implements DSSPlot {
 		LoadShape,
 		Profile
 	}
-	
+
 	public enum PlotQuantity {
 		Voltage, Current, Power, Losses, Capacity, None
 	}
-	
+
 	private int ActiveColorIdx;
 	private int[] ColorArray = new int[17];
 	private LineObj Line;
@@ -40,13 +41,13 @@ public class DSSPlotImpl implements DSSPlot {
 	private int Bus2Idx;
 	private String GeneralCircuitPlotQuantity;
 	private int MaxLineThickness;
-	
+
 	protected PlotType PlotType;
 	protected double MaxScale;
 	protected double MinScale;
 	protected boolean Dots,
 		Labels,
-		ShowLoops,         // applies to Meterzone plots only 
+		ShowLoops,         // applies to Meterzone plots only
 		ShowSubs;
 	protected PlotQuantity Quantity;
 	protected String ObjectName,
@@ -72,70 +73,70 @@ public class DSSPlotImpl implements DSSPlot {
 	public DSSPlotImpl() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	private void doGeneralPlot() {
-		
+
 	}
-	
+
 	private void doAutoAddPlot() {
-		
+
 	}
 
 	private void doTheDaisies() {
-		
+
 	}
 
 	private void doCircuitPlot() {
-		
+
 	}
 
 	private void doGeneralCircuitPlot() {
-		
+
 	}
 
 	private void doMeterZonePlot() {
-		
+
 	}
 
 	private void doMonitorPlot() {
-		
+
 	}
 
 	private void doProfilePlot() {
-		
+
 	}
 
 	/* Misc support procedures */
 	private void markSubTransformers() {
-		
+
 	}
 
 	private void markTheTransformers() {
-		
+
 	}
 
 	private void doBusLabels(int Idx1, int Idx2) {
-		
+
 	}
 
 	private void doBusLabel(int Idx, String BusLabel) {
-		
+
 	}
-	
+
 	private void labelBuses() {
-		
+
 	}
 
 	private void loadGeneralLineData() {
-		
+
 	}
 
 	private void setColorArray() {
-		
+
 	}
 
 	private void setMaxScale() {
-		
+
 	}
 
 	private int getColor() {
@@ -179,9 +180,9 @@ public class DSSPlotImpl implements DSSPlot {
 	}
 
 	public void setMaxLineThickness(int Value) {
-		
+
 	}
-	
+
 	public int getMaxLineThickness() {
 		return MaxLineThickness;
 	}
@@ -371,31 +372,79 @@ public class DSSPlotImpl implements DSSPlot {
 	}
 
 	public void execute() {
-		
+
 	}
-	
+
 	public void setDefaults() {
-		
+
 	}
 
 	public void doLoadShapePlot(String LoadShapeName) {
-		
+
 	}
-	
+
 	public void doDI_Plot(String CaseName, int CaseYear, int[] iRegisters, boolean PeakDay, String MeterName) {
-		
+
 	}
-	
+
 	public void doCompareCases(String CaseName1, String CaseName2, String WhichFile, int Reg) {
-		
+
 	}
-	
-	public void doYearlyCurvePlot(String[] CaseNames, String WhichFile, int[] iRegisters) {
-		
+
+	public void doYearlyCurvePlot(ArrayList<String> CaseNames, String WhichFile, int[] iRegisters) {
+
 	}
-	
+
 	public void doVisualizationPlot(CktElement Element, int Quantity) {
-		
+
 	}
-	
+
+	public static void setDSSPlotObj(DSSPlot dSSPlotObj) {
+		DSSPlotObj = dSSPlotObj;
+	}
+
+	public static DSSPlot getDSSPlotObj() {
+		return DSSPlotObj;
+	}
+
+	public static int getAddMarkerColor() {
+		return AddMarkerColor;
+	}
+
+	public static void setAddMarkerColor(int addMarkerColor) {
+		AddMarkerColor = addMarkerColor;
+	}
+
+	public static int getAddMarkerCode() {
+		return AddMarkerCode;
+	}
+
+	public static void setAddMarkerCode(int addMarkerCode) {
+		AddMarkerCode = addMarkerCode;
+	}
+
+	public static int getAddMarkerSize() {
+		return AddMarkerSize;
+	}
+
+	public static void setAddMarkerSize(int addMarkerSize) {
+		AddMarkerSize = addMarkerSize;
+	}
+
+	public static int getSinglePhLineStyle() {
+		return SinglePhLineStyle;
+	}
+
+	public static void setSinglePhLineStyle(int singlePhLineStyle) {
+		SinglePhLineStyle = singlePhLineStyle;
+	}
+
+	public static int getThreePhLineStyle() {
+		return ThreePhLineStyle;
+	}
+
+	public static void setThreePhLineStyle(int threePhLineStyle) {
+		ThreePhLineStyle = threePhLineStyle;
+	}
+
 }

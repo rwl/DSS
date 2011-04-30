@@ -2201,4 +2201,14 @@ public class Utilities {
 		return Result;
 	}
 
+	public static String extractFileDir(String redirFile) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static void setCurrentDir(String currDir) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

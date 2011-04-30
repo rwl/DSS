@@ -7,8 +7,6 @@ import com.epri.dss.shared.CommandList;
 
 public class ExecCommands {
 
-	private static final String CRLF = DSSGlobals.CRLF;
-
 	public static final int NumExecCommands = 91;
 
 	private String[] ExecCommand;
@@ -18,7 +16,7 @@ public class ExecCommands {
 
 	/* Always has last command processed */
 	private String LastCmdLine;
-	private static String RedirFile;
+	private String RedirFile;
 
 	// Private constructor prevents instantiation from other classes
 	private ExecCommands() {
@@ -39,6 +37,8 @@ public class ExecCommands {
 	}
 
 	private void defineCommands() {
+		String CRLF = DSSGlobals.CRLF;
+
 		this.ExecCommand = new String[NumExecCommands];
 
 		this.ExecCommand[0]  = "New";
@@ -394,12 +394,36 @@ public class ExecCommands {
 
 	}
 
-	public static String getRedirFile() {
+	public String getLastCmdLine() {
+		return LastCmdLine;
+	}
+
+	public void setLastCmdLine(String lastCmdLine) {
+		LastCmdLine = lastCmdLine;
+	}
+
+	public String getRedirFile() {
 		return RedirFile;
 	}
 
-	public static void setRedirFile(String redirFile) {
+	public void setRedirFile(String redirFile) {
 		RedirFile = redirFile;
+	}
+
+	public String[] getExecCommand() {
+		return ExecCommand;
+	}
+
+	public void setExecCommand(String[] execCommand) {
+		ExecCommand = execCommand;
+	}
+
+	public CommandList getCommandList() {
+		return CommandList;
+	}
+
+	public void setCommandList(CommandList commandList) {
+		CommandList = commandList;
 	}
 
 	public String getExecCommand(int i) {
@@ -442,12 +466,12 @@ public class ExecCommands {
 			switch (ParamPointer) {
 			case 13:
 				if (DSSExecutive.getDSSExecutive().isRecorderOn())
-					DSSExecutive.getDSSExecutive().writeToRecorderFile(CRLF+"!*********"+CmdLine);
+					DSSExecutive.getDSSExecutive().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(true));
 				return;
 			case 19:
 				if (DSSExecutive.getDSSExecutive().isRecorderOn())
-					DSSExecutive.getDSSExecutive().writeToRecorderFile(CRLF+"!*********"+CmdLine);
+					DSSExecutive.getDSSExecutive().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(false));
 				return;
 			default:  // Write everything direct to recorder, if ON
@@ -461,7 +485,7 @@ public class ExecCommands {
 				Globals.setCmdResult(ExecHelper.doNewCmd());  // new
 			case 14:
 				if (Globals.getActiveCircuit() == null) {
-					ExecOptionsImpl.doSetCmd_NoCircuit();  // can only call this if no circuit active
+					ExecOptions.getInstance().doSetCmd_NoCircuit();  // can only call this if no circuit active
 					return;  // We exit with either a good outcome or bad
 				}
 			case 18:
@@ -516,7 +540,7 @@ public class ExecCommands {
 
 				/* If a command or no text before the = sign, then error */
 				if ((ParamName.length() == 0) || ParamName.equals("command")) {
-					Globals.doSimpleMsg("Unknown Command: \"" + Param + "\" "+ CRLF + Parser.getCmdString(), 302);
+					Globals.doSimpleMsg("Unknown Command: \"" + Param + "\" "+ DSSGlobals.CRLF + Parser.getCmdString(), 302);
 					Globals.setCmdResult(1);
 				} else {
 					ExecHelper.parseObjName(ParamName, ObjName, PropName);  // TODO: Check ObjName and PropName get set.
@@ -549,7 +573,7 @@ public class ExecCommands {
 			case 7:
 				Globals.setCmdResult(ShowOptionsImpl.doShowCmd()); // show
 			case 8:
-				Globals.setCmdResult(ExecOptionsImpl.doSetCmd(1)); // solve
+				Globals.setCmdResult(ExecOptions.getInstance().doSetCmd(1)); // solve
 			case 9:
 				Globals.setCmdResult(ExecHelper.doEnableCmd());
 			case 10:
@@ -559,7 +583,7 @@ public class ExecCommands {
 			case 12:
 				Globals.setCmdResult(ExecHelper.doResetCmd());
 			case 14:
-				Globals.setCmdResult(ExecOptionsImpl.doSetCmd(0));  // set with no solve
+				Globals.setCmdResult(ExecOptions.getInstance().doSetCmd(0));  // set with no solve
 			case 15:
 				Globals.setCmdResult(ExecHelper.doPropertyDump());
 			case 17:
@@ -587,7 +611,7 @@ public class ExecCommands {
 				// Force rebuilding of Y
 				Globals.getActiveCircuit().invalidateAllPCElements();
 			case 31:
-				Globals.setCmdResult(ExecOptionsImpl.doGetCmd());
+				Globals.setCmdResult(ExecOptions.getInstance().doGetCmd());
 			case 32:
 				Globals.getActiveCircuit().getSolution().setSolutionInitialized(false);
 			case 33:
@@ -701,7 +725,7 @@ public class ExecCommands {
 				// Ignore excess parameters
 			}
 		} catch (Exception e) {
-			Globals.doErrorMsg(("ProcessCommand"+CRLF+"Exception Raised WHILE Processing DSS Command:"+ CRLF + Parser.getCmdString()),
+			Globals.doErrorMsg(("ProcessCommand"+DSSGlobals.CRLF+"Exception Raised WHILE Processing DSS Command:"+ DSSGlobals.CRLF + Parser.getCmdString()),
 					e.getMessage(),
 					"Error in command string or circuit data.", 303);
 		}

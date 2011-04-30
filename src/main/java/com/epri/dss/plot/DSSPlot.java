@@ -8,11 +8,16 @@ import com.epri.dss.plot.impl.DSSPlotImpl.PlotQuantity;
 import com.epri.dss.plot.impl.DSSPlotImpl.PlotType;
 
 public interface DSSPlot {
-	
-	public static DSSPlot DSSPlotObj = null;
+
+	static final int vizCURRENT = 1;
+	static final int vizVOLTAGE = 2;
+	static final int vizPOWER   = 3;
+	static final int PROFILE3PH = 9999; // some big number > likely no. of phases
+	static final int PROFILEALL = 9998;
+	static final int PROFILEALLPRI = 9997;
 
 	void setMaxLineThickness(int Value);
-	
+
 	int getMaxLineThickness();
 
 	PlotType getPlotType();
@@ -108,17 +113,17 @@ public interface DSSPlot {
 	void setDaisyBusList(String[] daisyBusList);
 
 	void execute();
-	
+
 	void setDefaults();
 
 	void doLoadShapePlot(String LoadShapeName);
-	
+
 	void doDI_Plot(String CaseName, int CaseYear, int[] iRegisters, boolean PeakDay, String MeterName);
-	
+
 	void doCompareCases(String CaseName1, String CaseName2, String WhichFile, int Reg);
-	
+
 	void doYearlyCurvePlot(ArrayList<String> caseNames, String WhichFile, int[] iRegisters);
-	
+
 	void doVisualizationPlot(CktElement Element, int Quantity);
 
 }

@@ -1,60 +1,61 @@
 package com.epri.dss.executive.impl;
 
-import java.io.File;
-import java.io.PrintStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.impl.DSSClassDefs;
+import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
-import com.epri.dss.executive.IExecCommands;
-import com.epri.dss.executive.ExecOptions;
 import com.epri.dss.executive.Executive;
-import com.epri.dss.shared.impl.CommandListImpl;
+import com.epri.dss.parser.impl.Parser;
 
 public class DSSExecutive implements Executive {
-	
+
 	private static Executive DSSExecutive;
 
 	private boolean RecorderOn;
 	private String RecorderFile;
+	private FileWriter RecorderFileWriter;
 
 	public DSSExecutive() {
 		super();
-		
-		IExecCommands.CommandList = null;
-		
-		ExecOptions.OptionList = null;
-		
+
+		ExecCommands.getInstance().setCommandList(null);
+
+		ExecOptions.getInstance().setOptionList(null);
+
 		/* Instantiate All DSS Classe Definitions, Intrinsic and User-defined */
 		DSSClassDefs.createDSSClasses();
-		
+
 		DSSGlobals.getInstance().setCircuits(new ArrayList<Circuit>(2));  // default buffer for 2 active circuits
 		DSSGlobals.getInstance().setNumCircuits(0);
 		DSSGlobals.getInstance().setActiveCircuit(null);
-		
-		Parser.INSTANCE = new Parser();  // Create global parser object
-		
-		IExecCommands.LastCmdLine = "";
-		IExecCommands.RedirFile = "";
-		
+
+		Parser.getInstance();  // Create global parser object
+
+		ExecCommands.getInstance().setLastCmdLine("");
+		ExecCommands.getInstance().setRedirFile("");
+
 		this.RecorderOn = false;
 		this.RecorderFile = "";
-		
+
 		DSSGlobals.getInstance().readDSS_Registry();
 	}
 
 	protected void finalize() throws Throwable {
 		DSSGlobals.getInstance().writeDSS_Registry();
-		
+
 		DSSGlobals.getInstance().clearAllCircuits();
-		
-		IExecCommands.CommandList = null;
-		ExecOptions.OptionList = null;
+
+		ExecCommands.getInstance().setCommandList(null);
+		ExecOptions.getInstance().setOptionList(null);
 		DSSGlobals.getInstance().setCircuits(null);
-		
-		Parser.INSTANCE = null;
-		
+
+		Parser.getInstance();
+
 		DSSClassDefs.disposeDSSClasses();
 	}
 
@@ -90,11 +91,11 @@ public class DSSExecutive implements Executive {
 	}
 
 	public String getCommand() {
-		return IExecCommands.getLastCmdLine();
+		return ExecCommands.getInstance().getLastCmdLine();
 	}
 
 	public void setCommand(String Value) {
-		IExecCommands.processCommand(Value);
+		ExecCommands.getInstance().processCommand(Value);
 	}
 
 	public void clear() {
@@ -106,18 +107,22 @@ public class DSSExecutive implements Executive {
 			/* Now, Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
-			DSSForms.rebuildHelpForm(true); // because class strings have changed
+			DSSForms.setRebuildHelpForm(true);  // because class strings have changed
 		}
 	}
 
 	public void setRecorderOn(boolean Value) {
-		if (Value) {
-			if (!RecorderOn) {
-				RecorderFile = DSSGlobals.getInstance().getDSSDataDirectory() + "DSSRecorder.dss";
-				File RecorderFile = new File(this.RecorderFile);
+		try {
+			if (Value) {
+				if (!RecorderOn) {
+					RecorderFile = DSSGlobals.getInstance().getDSSDataDirectory() + "DSSRecorder.dss";
+					RecorderFileWriter = new FileWriter(RecorderFile);
+				}
+			} else if (RecorderOn) {
+				RecorderFileWriter.close();
 			}
-		} else if (RecorderOn) {
-			RecorderFile.close();
+		} catch (IOException e) {
+			// TODO: handle exception
 		}
 		DSSGlobals.getInstance().setGlobalResult(RecorderFile);
 		RecorderOn = Value;
@@ -128,7 +133,7 @@ public class DSSExecutive implements Executive {
 	}
 
 	public void writeToRecorderFile(String S) {
-		RecorderFile.println(S);
+		new PrintWriter(RecorderFileWriter).println(S);
 	}
 
 	public static void setDSSExecutive(Executive dSSExecutive) {
