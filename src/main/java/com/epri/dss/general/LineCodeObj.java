@@ -5,21 +5,21 @@ import com.epri.dss.shared.CMatrix;
 /**
  * The LineCode object is a general DSS object used by all circuits
  * as a reference for obtaining line impedances.
- * 
+ *
  * The values are set by the normal New and Edit procedures for any DSS object.
- * 
+ *
  * The values are retrieved by setting the Code Property in the LineCode Class.
  * This sets the active LineCode object to be the one referenced by the Code Property;
- * 
+ *
  * Then the values of that code can be retrieved via the public variables.
  *
  */
 public interface LineCodeObj extends DSSObject {
 
 	void setNPhases(int Value);
-	
+
 	int getNPhases();
-	
+
 	void calcMatricesFromZ1Z0();
 
 	boolean isSymComponentsModel();
@@ -105,4 +105,15 @@ public interface LineCodeObj extends DSSObject {
 	int getUnits();
 
 	void setUnits(int units);
+
+
+	// FIXME Private method in OpenDSS
+	void doKronReduction();
+
+
+	// FIXME Private members in OpenDSS
+
+	int getNeutralConductor();
+
+	void setNeutralConductor(int neutralConductor);
 }

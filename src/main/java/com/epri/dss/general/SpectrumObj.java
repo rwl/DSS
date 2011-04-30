@@ -13,7 +13,10 @@ public interface SpectrumObj extends DSSObject {
 	int getNumHarm();
 
 	void setNumHarm(int numHarm);
-	
+
+	// FIXME Private method in OpenDSS
+	void setMultArray();
+
 	// FIXME Private members in OpenDSS
 
 	double[] getHarmArray();
@@ -33,5 +36,5 @@ public interface SpectrumObj extends DSSObject {
 	Complex[] getMultArray();
 
 	void setMultArray(Complex[] multArray);
-	
+
 }

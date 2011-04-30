@@ -44,17 +44,17 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 			switch (i) {
 			case 1:  // TODO Check zero based indexing
 				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
-				for (j = 0; j < NumHarm; j++) 
+				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", HarmArray[j]);
 				F.println(")");
 			case 2:
 				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
-				for (j = 0; j < NumHarm; j++) 
+				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", puMagArray[j] * 100.0);
 				F.println(")");
 			case 3:
 				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
-				for (j = 0; j < NumHarm; j++) 
+				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", AngleArray[j]);
 				F.println(")");
 			default:
@@ -76,8 +76,8 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	public Complex getMult(double h) {
 		/* Search list for harmonic (nearest 0.01 harmonic) and return multiplier */
-		for (int i = 0; i < NumHarm; i++) 
-			if (Math.abs(h - HarmArray[i]) < 0.01) 
+		for (int i = 0; i < NumHarm; i++)
+			if (Math.abs(h - HarmArray[i]) < 0.01)
 				return MultArray[i];
 
 		/* None found, return zero */
@@ -87,7 +87,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	public String getPropertyValue(int Index) {
 		int i;
 		String Result;
-		
+
 		switch (Index) {
 		case 1:  // TODO Check zero based indexing
 			Result = "(";
@@ -98,12 +98,12 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		default:
 			Result = "";
 		}
-		
+
 		switch (Index) {
 		case 0:
 			Result = String.valueOf(NumHarm);
 		case 1:
-			for (i = 0; i < NumHarm; i++) 
+			for (i = 0; i < NumHarm; i++)
 				Result = Result + String.format("%-g, ", HarmArray[i]);
 		case 2:
 			for (i = 0; i < NumHarm; i++)
@@ -123,7 +123,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		case 3:
 			Result = ")";
 		}
-		
+
 		return Result;
 	}
 
@@ -141,10 +141,11 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	/**
 	 * Rotate all phase angles so that the fundamental is at zero.
 	 */
-	private void setMultArray() {
+	// FIXME Private method in OpenDSS
+	public void setMultArray() {
 		int i;
 		double FundAngle;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
@@ -157,7 +158,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 			}
 
 			MultArray = (Complex[]) Utilities.resizeArray(MultArray, NumHarm);
-			for (i = 0; i < NumHarm; i++) 
+			for (i = 0; i < NumHarm; i++)
 				MultArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (AngleArray[i] - HarmArray[i] * FundAngle));
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check Definition. Aborting", 655);
@@ -181,7 +182,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	public void setHarmArray(double[] harmArray) {
 		HarmArray = harmArray;
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public double[] getPuMagArray() {

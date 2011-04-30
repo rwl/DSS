@@ -3,13 +3,14 @@ package com.epri.dss.general.impl;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.LineUnits;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.general.OHLineConstants;
 import com.epri.dss.shared.CMatrix;
 
 public class OHLineConstantsImpl implements OHLineConstants {
-	
+
 	private static final Complex C1_j1 = new Complex(1.0, 1.0);
 	private static final double b1 = 1.0 / (3.0 * Math.sqrt(2.0));
 	private static final double b2 = 1.0 / 16.0;
@@ -19,7 +20,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	private static final double d4 = b4 * Math.PI / 4.0;
 	private static final double c2 = 1.3659315;
 	private static final double c4 = c2 + 1.0 / 4.0 + 1.0 / 6.0;
-	
+
 	private int NumConds;
 	private int NumPhases;
 	private double[] X;
@@ -33,8 +34,8 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	private CMatrix YCmatrix;   // siemens/m   --- jwC
 
 	/* These two do not exist until Kron Reduction is executed */
-	private CMatrix Zreduced;  
-	private CMatrix YCreduced;  
+	private CMatrix Zreduced;
+	private CMatrix YCreduced;
 
 	private double Frequency;  // Frequency for which impedances are computed
 	private double w;  // 2piF
@@ -71,10 +72,10 @@ public class OHLineConstantsImpl implements OHLineConstants {
 		this.Zreduced = null;
 		this.YCreduced = null;
 	}
-	
+
 	/**
 	 * Force a calc of impedances.
-	 * 
+	 *
 	 * Compute base Z and YC matrices in ohms/m for this frequency and earth impedance.
 	 */
 	public void calc(double f) {
@@ -88,13 +89,13 @@ public class OHLineConstantsImpl implements OHLineConstants {
 		// RhoEarth = rho;
 		Frequency = f;  // this has side effects
 
-		if (Zreduced != null) { 
+		if (Zreduced != null) {
 			ReducedSize = Zreduced.getNOrder();
 			Zreduced = null;
 		} else {
 			ReducedSize = 0;
 		}
-		
+
 		if (YCreduced != null)
 			YCreduced = null;
 		Zreduced = null;
@@ -141,7 +142,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 
 		/* Construct P matrix and then invert */
 
-		for (i = 0; i < NumConds; i++) 
+		for (i = 0; i < NumConds; i++)
 			YCmatrix.setElement(i, i, new Complex(0.0, Pfactor * Math.log(2.0 * Y[i] / radius[i])));
 
 		for (i = 0; i < NumConds; i++) {
@@ -161,7 +162,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 
 		RhoChanged = false;
 	}
-	
+
 	public boolean conductorsInSameSpace(String ErrorMessage) {
 		int i, j;
 		double Dij;
@@ -189,38 +190,38 @@ public class OHLineConstantsImpl implements OHLineConstants {
 				}
 			}
 		}
-			
+
 		return Result;
 	}
-	
+
 	public double getGMR(int i, int units) {
 		return GMR[i] * LineUnits.fromMeters(units);
 	}
-	
+
 	public double getRac(int i, int units) {
 		return Rac[i] * LineUnits.fromPerMeter(units);
 	}
-	
+
 	public double getRadius(int i, int units) {
 		return radius[i] * LineUnits.fromMeters(units);
 	}
-	
+
 	public double getRdc(int i, int units) {
 		return Rdc[i] * LineUnits.fromPerMeter(units);
 	}
-	
+
 	public double getX(int i, int units) {
 		return X[i] * LineUnits.fromMeters(units);
 	}
-	
+
 	public double getY(int i, int units) {
 		return Y[i] * LineUnits.fromMeters(units);
 	}
-	
+
 	/**
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
-	 * 
+	 *
 	 * Makes a new YCmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
@@ -242,17 +243,17 @@ public class OHLineConstantsImpl implements OHLineConstants {
 		Result.copyFrom(YC);
 		YCValues = Result.asArray(NewSize);
 		UnitLengthConversion = LineUnits.fromPerMeter(Units) * Lngth;
-		for (int i = 0; i < NewSize * NewSize; i++) 
+		for (int i = 0; i < NewSize * NewSize; i++)
 			YCValues[i] = YCValues[i].multiply(UnitLengthConversion);  // a=a*b
 
 		return Result;
 	}
-	
+
 	/**
 	 * Earth return impedance at present frequency for ij element.
 	 */
 	public Complex getZe(int i, int j) {
-		Complex LnArg, hterm, xterm, Result;
+		Complex LnArg, hterm, xterm, Result = null;
 		double mij , thetaij, Dij;
 		double term1, term2, term3, term4, term5;
 
@@ -295,15 +296,15 @@ public class OHLineConstantsImpl implements OHLineConstants {
 				Result = new Complex(0.0, w * mu0 / TwoPi).multiply( hterm.multiply(2.0).log() );
 			}
 		}
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Internal impedance of i-th conductor for present frequency.
 	 */
 	public Complex getZint(int i) {
-		Complex Alpha, I0I1, Result;
+		Complex Alpha, I0I1, Result = null;
 
 		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
 		case DSSGlobals.SIMPLECARSON:
@@ -316,7 +317,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 			if (Alpha.abs() > 35.0) {
 				I0I1 = Complex.ONE;
 			} else {
-				I0I1 = MathUtil.Bessel_I0(Alpha).divide( MathUtil.Bessel_I1(Alpha)) );
+				I0I1 = MathUtil.Bessel_I0(Alpha).divide( MathUtil.Bessel_I0(Alpha) );
 			}
 			Result = C1_j1.multiply(I0I1).multiply( Math.sqrt(Rdc[i] * Frequency * mu0) / 2.0 );
 		}
@@ -327,7 +328,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 	/**
 	 * Will auto recalc the impedance matrices if frequency is different
 	 * Converts to desired units when executed.
-	 * 
+	 *
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
@@ -353,12 +354,12 @@ public class OHLineConstantsImpl implements OHLineConstants {
 		ZValues = Result.asArray(NewSize);  // ptr to the values in the new copy
 		/* Convert the values by units and length */
 		UnitLengthConversion = LineUnits.fromPerMeter(Units) * Lngth;
-		for (i = 0; i < NewSize * NewSize; i++) 
+		for (i = 0; i < NewSize * NewSize; i++)
 			ZValues[i] = ZValues[i].multiply(UnitLengthConversion);  // a=a*b
 
 		return null;
 	}
-	
+
 	/**
 	 * Performs a Kron reduction leaving first Norder rows.
 	 */
@@ -391,24 +392,24 @@ public class OHLineConstantsImpl implements OHLineConstants {
 
 				FirstTime = false;
 			}
-			
+
 			/* Left with reduced matrix */
 		}
 	}
-	
+
 	/**
 	 * Kron reduce to NumPhases only.
 	 */
 	public void reduce() {
 		Kron(NumPhases);
 	}
-	
+
 	private void setFrequency(double Value) {
 		Frequency = Value;
 		w = TwoPi * Frequency;
 		me = new Complex(0.0, w * mu0 / rhoEarth).sqrt();
 	}
-	
+
 	public void setRhoEarth(double Value) {
 		if (Value != rhoEarth)
 			RhoChanged = true;
@@ -416,7 +417,7 @@ public class OHLineConstantsImpl implements OHLineConstants {
 		if (Frequency >= 0.0)
 			me = new Complex(0.0, w * mu0 / rhoEarth).sqrt();
 	}
-	
+
 	public void setGMR(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds)) {  // TODO Check zero based indexing
 			GMR[i] = Value * LineUnits.toMeters(units);
@@ -424,16 +425,16 @@ public class OHLineConstantsImpl implements OHLineConstants {
 				radius[i] = GMR[i] / 0.7788;  // equivalent round conductor
 		}
 	}
-	
+
 	public void setNPhases(int Value) {
 		NumPhases = Value;
 	}
-	
+
 	public void setRac(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds))  // TODO Check zero based indexing
 			Rac[i] = Value * LineUnits.toPerMeter(units);
 	}
-	
+
 	public void setRadius(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds)) {  // TODO Check zero based indexing
 			radius[i] = Value * LineUnits.toMeters(units);
@@ -441,30 +442,30 @@ public class OHLineConstantsImpl implements OHLineConstants {
 				GMR[i] = radius[i] * 0.7788; // Default to round conductor
 		}
 	}
-	
+
 	public void setRdc(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds))
 			Rdc[i] = Value * LineUnits.toPerMeter(units);
 	}
-	
+
 	public void setX(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds))
 			X[i] = Value * LineUnits.toMeters(units);
 	}
-	
+
 	public void setY(int i, int units, double Value) {
 		if ((i > 0) && (i <= NumConds))
 			Y[i] = Value * LineUnits.toMeters(units);
 	}
-	
+
 	public double getRhoEarth() {
 		return rhoEarth;
 	}
-	
+
 	private double getFrequency() {
 		return Frequency;
 	}
-	
+
 	public int getNPhases() {
 		return NumPhases;
 	}

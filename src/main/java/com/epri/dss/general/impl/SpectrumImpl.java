@@ -6,27 +6,24 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-import javax.crypto.spec.PSource.PSpecified;
-
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.Spectrum;
 import com.epri.dss.general.SpectrumObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SpectrumImpl extends DSSClassImpl implements Spectrum {
-	
+
 	private static SpectrumObj ActiveSpectrumObj;
 
 	public SpectrumImpl() {
 		super();
 		this.Class_Name = "Spectrum";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;	
+		this.ActiveElement = 0;
 
 		defineProperties();
 
@@ -38,7 +35,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
-		
+
 		NumProperties = Spectrum.NumPropsThisClass;
 		countProperties();  // Get inherited property count
 		allocatePropertyArrays();
@@ -72,7 +69,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.setActiveDSSObject(new SpectrumObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
@@ -80,11 +77,11 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	@Override
 	public int edit() {
 		Parser parser = Parser.getInstance();
-		
+
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveSpectrumObj(ElementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject((DSSObject) getActiveSpectrumObj());
+		setActiveSpectrumObj((SpectrumObj) ElementList.getActive());
+		DSSGlobals.getInstance().setActiveDSSObject(getActiveSpectrumObj());
 
 		SpectrumObj aso = getActiveSpectrumObj();
 
@@ -97,16 +94,16 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))  // TODO Check zero based indexing 
+				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))  // TODO Check zero based indexing
 					aso.setPropertyValue(ParamPointer, Param);
-				
+
 				switch (ParamPointer) {
 				case 0:
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \""+ParamName+"\" for Object \""+getName()+"\"", 650);
 				case 1:
 					aso.setNumHarm(parser.makeInteger());
 					aso.setAngleArray( (double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // Make a dummy angle array
-					for (int i = 0; i < aso.getNumHarm(); i++) 
+					for (int i = 0; i < aso.getNumHarm(); i++)
 						aso.getAngleArray()[i] = 0.0;
 				case 2:
 					aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
@@ -114,7 +111,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				case 3:
 					aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
 					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getPuMagArray());
-					for (int i = 0; i < aso.getNumHarm(); i++) 
+					for (int i = 0; i < aso.getNumHarm(); i++)
 						aso.getPuMagArray()[i] = aso.getPuMagArray()[i] * 0.01;  // convert to per unit
 				case 4:
 					aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
@@ -140,10 +137,10 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	@Override
 	protected int makeLike(String Name) {
 		SpectrumObj OtherSpectrum;
-	
+
 		int Result = 0;
 		/* See if we can find this line code in the present collection */
-		OtherSpectrum = find(Name);
+		OtherSpectrum = (SpectrumObj) find(Name);
 		if (OtherSpectrum != null) {
 			SpectrumObj aso = getActiveSpectrumObj();
 
@@ -158,7 +155,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				aso.getPuMagArray()[i] = OtherSpectrum.getPuMagArray()[i];
 				aso.getAngleArray()[i] = OtherSpectrum.getAngleArray()[i];
 			}
-			
+
 			for (int i = 0; i < aso.getParentClass().getNumProperties(); i++) {
 				aso.setPropertyValue(i, OtherSpectrum.getPropertyValue(i));
 				Result = 1;
@@ -199,29 +196,22 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		DataInputStream dataStream;
 		BufferedReader reader;
 		String s;
-		
+
 		Parser parser;
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		try {
 			fileStream = new FileInputStream(FileName);
 			dataStream = new DataInputStream(fileStream);
 			reader = new BufferedReader(new InputStreamReader(dataStream));
-		} catch (Exception e) {
-			Globals.doSimpleMsg("Error Opening File: \"" + FileName, 653);
-			fileStream.close();
-			dataStream.close();
-			reader.close();
-			return;
-		}
 
-		try {
+
 			SpectrumObj aso = getActiveSpectrumObj();
 
 			aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
 			aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
 			aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
-			
+
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < aso.getNumHarm()) {  // TODO: Check zero based indexing
 				i += 1;
@@ -240,6 +230,11 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			reader.close();
 			if (i != aso.getNumHarm())
 				aso.setNumHarm(i);   // reset number of points
+
+
+			fileStream.close();
+			dataStream.close();
+			reader.close();
 		} catch (IOException e) {
 			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 654);
 			return;

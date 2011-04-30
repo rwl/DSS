@@ -6,12 +6,13 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.LineGeometry;
 import com.epri.dss.general.LineGeometryObj;
-import com.epri.dss.general.WireData;
+import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
+import com.epri.dss.shared.impl.LineUnits;
 
 public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
-	
+
 	private static LineGeometryObj ActiveLineGeometryObj;
 
 	public LineGeometryImpl() {
@@ -27,10 +28,10 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
-		
+
 		NumProperties = LineGeometry.NumPropsThisClass;
 		countProperties();  // Get inherited property count
 		allocatePropertyArrays();
@@ -68,43 +69,43 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 							"Must be used in conjunction with the Spacing property.";
 
 		ActiveProperty = LineGeometry.NumPropsThisClass;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list		
+		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	/**
 	 * Create a new object of this class and add to list.
 	 */
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.setActiveDSSObject(new LineGeometryObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	@Override
 	public int edit() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		LineGeometryObj alg = getActiveLineGeometryObj();
-		
+
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveLineGeometryObj(ElementList.getActive());
-		Globals.setActiveDSSObject((DSSObjectImpl) alg);
+		setActiveLineGeometryObj((LineGeometryObj) ElementList.getActive());
+		Globals.setActiveDSSObject(alg);
 
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
-		
+
 		while (Param.length() > 0) {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties)) 
+				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 					alg.setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -112,7 +113,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name + "." + alg.getName() + "\"", 10101);
 				case 1:
 					alg.setNconds(parser.makeInteger());  // Use property value to force reallocations
-				case 2: 
+				case 2:
 					alg.setNphases(parser.makeInteger());
 				case 3:
 					alg.setActiveCond(parser.makeInteger());
@@ -125,7 +126,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 7:
 					alg.getUnits()[alg.getActiveCond()] = LineUnits.getUnitsCode(Param);
 					alg.setLastUnit( alg.getUnits()[alg.getActiveCond()] );
-				case 8: 
+				case 8:
 					alg.setNormAmps(parser.makeDouble());
 				case 9:
 					alg.setEmergAmps(parser.makeDouble());
@@ -134,12 +135,12 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 11:
 					alg.setSpacingType(parser.makeString());
 					if (Globals.getLineSpacingClass().setActive(alg.getSpacingType())) {
-						LineSpacing.setActiveLineSpacingObj(Globals.getLineSpacingClass().getActiveObj());
-						if (alg.getNconds() == LineSpacing.getActiveLineSpacingObj().getNWires()) {
-							LineSpacing.setLastUnit(LineSpacing.getActiveLineSpacingObj().getUnits());
+						LineSpacingImpl.setActiveLineSpacingObj((LineSpacingObj) Globals.getLineSpacingClass().getActiveObj());
+						if (alg.getNconds() == LineSpacingImpl.getActiveLineSpacingObj().getNWires()) {
+							alg.setLastUnit(LineSpacingImpl.getActiveLineSpacingObj().getUnits());
 							for (int i = 0; i < alg.getNconds(); i++) {
-								alg.getX()[i] = LineSpacing.getActiveLineSpacingObj().getXcoord()[i];
-								alg.getY()[i] = LineSpacing.getActiveLineSpacingObj().getYcoord()[i];
+								alg.getX()[i] = LineSpacingImpl.getActiveLineSpacingObj().getXcoord(i);
+								alg.getY()[i] = LineSpacingImpl.getActiveLineSpacingObj().getYcoord(i);
 								alg.getUnits()[i] = getActiveLineGeometryObj().getLastUnit();
 							}
 						} else {
@@ -154,13 +155,13 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 						Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 						alg.getCondType()[i] = Globals.getAuxParser().makeString();
 						Globals.getWireDataClass().setCode(alg.getCondType()[i]);
-						if (WireData.getActiveWireDataObj() != null) {
-							alg.getWireData()[i] = WireData.getActiveWireDataObj();
+						if (WireDataImpl.getActiveWireDataObj() != null) {
+							alg.getWireData()[i] = WireDataImpl.getActiveWireDataObj();
 							if (i == 1) {  // TODO Check zero based indexing
-								if (WireData.getActiveWireDataObj().getNormAmps() > 0.0)
-									alg.setNormAmps( Wiredata.getActiveWireDataObj().getNormAmps() );
-								if (WireData.getActiveWireDataObj().getEmergAmps() > 0.0)
-									alg.setEmergAmps( WireData.getActiveWireDataObj().getEmergAmps() );
+								if (WireDataImpl.getActiveWireDataObj().getNormAmps() > 0.0)
+									alg.setNormAmps( WireDataImpl.getActiveWireDataObj().getNormAmps() );
+								if (WireDataImpl.getActiveWireDataObj().getEmergAmps() > 0.0)
+									alg.setEmergAmps( WireDataImpl.getActiveWireDataObj().getEmergAmps() );
 							}
 						} else {
 							Globals.doSimpleMsg("WireData Object \"" + alg.getCondType()[i] + "\" not defined. Must be previously defined.", 10103);
@@ -168,7 +169,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					}
 				default:
 					// Inherited parameters
-					classEdit(getActiveLineGeometryObj(), ParamPointer - LineGeometry.NumPropsThisClass)
+					classEdit(getActiveLineGeometryObj(), ParamPointer - LineGeometry.NumPropsThisClass);
 				}
 
 				/* Set defaults */
@@ -179,16 +180,16 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 3:
 					if ((alg.getActiveCond() < 1) || (alg.getActiveCond() > alg.getNconds()))
 						Globals.doSimpleMsg("Illegal cond= specification in Line Geometry:" + DSSGlobals.CRLF + parser.getCmdString(), 10102);
-				case 4: 
+				case 4:
 					Globals.getWireDataClass().setCode(Param);
-					if (WireData.getActiveWireDataObj() != null) {
-						alg.getWireData()[alg.getActiveCond()] = WireData.getActiveWireDataObj();
+					if (WireDataImpl.getActiveWireDataObj() != null) {
+						alg.getWireData()[alg.getActiveCond()] = WireDataImpl.getActiveWireDataObj();
 						/* Default the current ratings for this geometry to the rating of the first conductor */
 						if (alg.getActiveCond() == 1) {
-							if (WireData.getActiveWireDataObj().getNormAmps() > 0.0)
-								alg.setNormAmps(WireData.getActiveWireDataObj().getNormAmps());
-							if (WireData.getActiveWireDataObj().getEmergAmps() > 0.0)
-								alg.setEmergAmps(WireData.getActiveWireDataObj().getEmergAmps());
+							if (WireDataImpl.getActiveWireDataObj().getNormAmps() > 0.0)
+								alg.setNormAmps(WireDataImpl.getActiveWireDataObj().getNormAmps());
+							if (WireDataImpl.getActiveWireDataObj().getEmergAmps() > 0.0)
+								alg.setEmergAmps(WireDataImpl.getActiveWireDataObj().getEmergAmps());
 						}
 					} else {
 						Globals.doSimpleMsg("WireData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
@@ -218,29 +219,29 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		}
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String LineName) {
 
 		int i, Result = 0;
 		/* See if we can find this line code in the present collection */
-		LineGeometryObj OtherLineGeometry = find(LineName);
+		LineGeometryObj OtherLineGeometry = (LineGeometryObj) find(LineName);
 		if (OtherLineGeometry != null) {
-	
+
 			LineGeometryObj alg = getActiveLineGeometryObj();
 
 			alg.setNconds(OtherLineGeometry.getNWires());   // allocates
 			alg.setNphases(OtherLineGeometry.getNphases());
 			alg.setSpacingType(OtherLineGeometry.getSpacingType());
-			for (i = 0; i < alg.getNconds(); i++) 
+			for (i = 0; i < alg.getNconds(); i++)
 				alg.getCondType()[i] = OtherLineGeometry.getCondType()[i];
-			for (i = 0; i < alg.getNconds(); i++) 
+			for (i = 0; i < alg.getNconds(); i++)
 				alg.getWireData()[i] = OtherLineGeometry.getWireData()[i];
-			for (i = 0; i < alg.getNconds(); i++) 
+			for (i = 0; i < alg.getNconds(); i++)
 				alg.getX()[i] = OtherLineGeometry.getX()[i];
-			for (i = 0; i < alg.getNconds(); i++) 
+			for (i = 0; i < alg.getNconds(); i++)
 				alg.getY()[i] = OtherLineGeometry.getY()[i];
-			for (i = 0; i < alg.getNconds(); i++) 
+			for (i = 0; i < alg.getNconds(); i++)
 				alg.getUnits()[i] = OtherLineGeometry.getUnits()[i];
 			alg.setDataChanged(true);
 			alg.setNormAmps(OtherLineGeometry.getNormAmps());
@@ -248,30 +249,30 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 			alg.updateLineGeometryData(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
 
-			for (i = 0; i < alg.getParentClass().getNumProperties(); i++) 
+			for (i = 0; i < alg.getParentClass().getNumProperties(); i++)
 				alg.setPropertyValue(i, OtherLineGeometry.getPropertyValue(i));
 			Result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in LineGeometry MakeLike: \"" + LineName + "\" Not Found.", 102);
 		}
-	
+
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement LineGeometry.init()", -1);
 		return 0;
 	}
-	
+
 	public String getCode() {
 		LineGeometryObj active = (LineGeometryObj) ElementList.getActive();
 		return active.getName();
 	}
-	
+
 	public void setCode(String Value) {
 		setActiveLineGeometryObj(null);
-		
+
 		for (int i = 0; i < ElementList.size(); i++) {
 			LineGeometryObj pLineGeo = (LineGeometryObj) ElementList.get(i);
 			if (pLineGeo.getName().equals(Value)) {

@@ -2,9 +2,8 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
-import org.apache.commons.math.util.MathUtils;
-
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.Utilities;
@@ -23,7 +22,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	/* Time values (hr) if Interval > 0.0 */
 	protected double[] Hours;
 	protected double[] PMultipliers, QMultipliers;
-	
+
 	protected double MaxP, MaxQ;
 
 	protected boolean UseActual;
@@ -55,7 +54,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		initPropertyValues(0);
 	}
-	
+
 	/** Set imaginary part of Result when Qmultipliers not defined. */
 	private double setResultIm(double realpart) {
 		// if actual, assume zero, same as real otherwise
@@ -64,7 +63,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	/**
 	 * Get multiplier at specified time.
-	 * 
+	 *
 	 * This function returns a multiplier for the given hour.
 	 * If no points exist in the curve, the result is 1.0.
 	 * If there are fewer points than requested, the curve is simply assumed to repeat
@@ -75,7 +74,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	 */
 	public Complex getMult(double hr) {
 		int Index;
-	
+
 		//Complex Result = new Complex(1.0, 1.0);  // default return value if no points in curve
 		double[] Result = new double[] {1.0, 1.0};
 
@@ -108,7 +107,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 					 */
 
 					/* Normalize Hr to max hour in curve to get wraparound */
-					if (hr > Hours[NumPoints]) 
+					if (hr > Hours[NumPoints])
 						hr = hr - (hr / Hours[NumPoints]) * Hours[NumPoints];
 
 					if (Hours[LastValueAccessed] > hr)
@@ -153,9 +152,9 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		return new Complex(Result[0], Result[1]);
 	}
-	
+
 	private double MaxMult;
-	
+
 	private void doNormalize(double[] Multipliers) {
 		int i;
 		if (NumPoints > 0) {
@@ -164,7 +163,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 				MaxMult = Math.max(MaxMult, Math.abs(Multipliers[i]));
 			if (MaxMult == 0.0)
 				MaxMult = 1.0;  // Avoid divide by zero
-			for (i = 0; i < NumPoints; i++) 
+			for (i = 0; i < NumPoints; i++)
 				Multipliers[i] = Multipliers[i] / MaxMult;
 		}
 	}
@@ -180,13 +179,13 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	}
 
 	public void calcMeanAndStdDev() {
-		if (NumPoints > 0) 
+		if (NumPoints > 0)
 			if (Interval > 0.0) {
 				MathUtil.RCDMeanandStdDev(PMultipliers, NumPoints, Mean, StdDev);
 			} else {
 				MathUtil.curveMeanAndStdDev(PMultipliers, Hours, NumPoints, Mean, StdDev);
 			}
-		
+
 		// TODO Check indenting
 		PropertyValue[4] = String.format("%.8g", Mean);  // TODO Check zero based indexing.
 		PropertyValue[5] = String.format("%.8g", StdDev);
@@ -265,7 +264,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public String getPropertyValue(int Index) {
 		String Result;
-		
+
 		switch (Index) {
 		case 2:
 			Result = "(";
@@ -274,14 +273,14 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		default:
 			Result = "";
 		}
-		
+
 		switch (Index) {
 		case 2:
 			for (int i = 0; i < NumPoints; i++)
 				Result = Result + String.format("%-g, ", PMultipliers[i]);
 		case 3:
 			if (Hours != null)
-				for (int i = 0; i < NumPoints; i++) 
+				for (int i = 0; i < NumPoints; i++)
 					Result = Result + String.format("%-g, ", Hours[i]);
 		case 4:
 			Result = String.format("%.8g", Mean);
@@ -290,7 +289,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		case 10:
 			if (QMultipliers != null) {
 				Result = "(";
-				for (int i = 0; i < NumPoints; i++) 
+				for (int i = 0; i < NumPoints; i++)
 					Result = Result + String.format("%-g,", QMultipliers[i]);
 				Result = Result + ")";
 			}
@@ -314,12 +313,12 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		case 4:
 			Result = Result + ")";
 		}
-		
+
 		return Result;
 	}
 
 	public void initPropertyValues(int ArrayOffset) {
-		
+
 		PropertyValue[0] = "0";  // Number of points to expect
 		PropertyValue[1] = "1";  // default = 1.0;
 		PropertyValue[2] = "";   // vector of multiplier values
@@ -337,22 +336,25 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		super.initPropertyValues(LoadShape.NumPropsThisClass);
 	}
-	
+
 	// TODO Implement TOPExport method
 
-	private void saveToDblFile() {
+	// FIXME Private method in OpenDSS
+	public void saveToDblFile() {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
-	private void saveToSngFile() {
+	// FIXME Private method in OpenDSS
+	public void saveToSngFile() {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
-	
-	private void setMaxPandQ() {
+
+	// FIXME Private method in OpenDSS
+	public void setMaxPandQ() {
 		iMaxP = Utilities.iMaxAbsdblArrayValue(NumPoints, PMultipliers);
-		
+
 		if (iMaxP >= 0) {  // TODO Check zero based indexing
 			MaxP = PMultipliers[iMaxP];
 			if (QMultipliers != null) {
@@ -441,6 +443,21 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setUseActual(boolean useActual) {
 		UseActual = useActual;
+	}
+
+	// Protected member in OpenDSS.
+
+	public boolean isStdDevCalculated() {
+		return StdDevCalculated;
+	}
+
+	public void setStdDevCalculated(boolean stdDevCalculated) {
+		StdDevCalculated = stdDevCalculated;
+	}
+
+	// Private member in OpenDSS.
+	public void setArrayPropertyIndex(int i) {
+		ArrayPropertyIndex = i;
 	}
 
 }

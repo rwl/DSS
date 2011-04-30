@@ -9,11 +9,12 @@ import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.LineUnits;
 
 public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
-	
+
 	private int NeutralConductor;
-	
+
 	protected int NPhases;
 
 	protected boolean SymComponentsModel, ReduceByKron;
@@ -64,46 +65,46 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 		initPropertyValues(0);
 	}
-	
+
 	private String getRMatrix() {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				Result = Result + String.format("%12.8f ", Z.getElement(i, j).getReal());
-			if (i < NPhases)  // TODO Check zero based indexing 
+			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
 		return Result + "]";
 	}
-	
+
 	private String getXMatrix() {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				Result = Result + String.format("%12.8f ", Z.getElement(i, j).getImaginary());
-			if (i < NPhases)  // TODO Check zero based indexing 
+			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
 		return Result + "]";
 	}
-	
+
 	private String getCMatrix() {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				Result = Result + String.format("%12.8f ", Yc.getElement(i, j).getImaginary() / DSSGlobals.TwoPi / BaseFrequency * 1.e9);
-			if (i < NPhases)  // TODO Check zero based indexing 
+			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
 		return Result + "]";
 	}
-	
+
 	/**
 	 * Set the number of phases and reallocate phase-sensitive arrays.
 	 * Need to preserve values in Z matrices.
 	 */
 	public void setNPhases(int Value) {
-		if (Value > 0) 
+		if (Value > 0)
 			if (NPhases != Value) {  // If size is no different, we don't need to do anything
 				NPhases = Value;
 				NeutralConductor = NPhases;  // Init to last conductor
@@ -111,11 +112,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				calcMatricesFromZ1Z0();  // reallocs matrices
 			}
 	}
-	
+
 	public int getNPhases() {
 		return NPhases;
 	}
-	
+
 	public void calcMatricesFromZ1Z0() {
 		Complex Zs, Zm, Ys, Ym, Ztemp;
 		int i, j;
@@ -156,7 +157,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Zinv.copyFrom(Z);
 		Zinv.invert();
 	}
-	
+
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
@@ -171,29 +172,29 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.println("~ " + ParentClass.getPropertyName()[8] + "=" + PropertyValue[8]);
 		F.print("~ " + ParentClass.getPropertyName()[9] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				F.print(Z.getElement(i, j).getReal() + " ");
 			F.print("|");
 		}
 		F.println("\"");
-		
+
 		F.print("~ " + ParentClass.getPropertyName()[10] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				F.print(Z.getElement(i, j).getImaginary() + " ");
 			F.print("|");
 		}
 		F.println("\"");
-		
+
 		F.print("~ " + ParentClass.getPropertyName()[11] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
-			for (int j = 0; j < NPhases; j++) 
+			for (int j = 0; j < NPhases; j++)
 				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TwoPi / BaseFrequency * 1.e9) + " ");
 			F.print("|");
 		}
 		F.println("\"");
 
-		for (int i = 12; i < 21; i++) 
+		for (int i = 12; i < 21; i++)
 			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
 
 		F.println(String.format("~ %s=%d", ParentClass.getPropertyName()[22], NeutralConductor));
@@ -233,14 +234,14 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		case 20:
 			return String.format("%.5g", Xg);
 		case 21:
-			return String.format("%.5g", rho); 
+			return String.format("%.5g", rho);
 		case 22:
 			return String.valueOf(NeutralConductor);
 		default:
 			return super.getPropertyValue(Index);
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
@@ -267,10 +268,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		PropertyValue[20] = "100"; // "rho";
 		PropertyValue[21] = "3"; // "Neutral";
 
-		super.initPropertyValues(LineCode.NumPropsThisClass);	
+		super.initPropertyValues(LineCode.NumPropsThisClass);
 	}
-	
-	private void doKronReduction() {
+
+	// FIXME Private method in OpenDSS
+	public void doKronReduction() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		if (NeutralConductor == 0)  // TODO Check zero based indexing
@@ -278,7 +280,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 		CMatrix NewZ = null;
 		CMatrix NewYc = null;
-		
+
 		if (NPhases > 1) {
 			try {
 				NewZ = Z.kron(NeutralConductor);       // Perform Kron Reductions into temp space
@@ -489,5 +491,16 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	public void setUnits(int units) {
 		Units = units;
 	}
-	
+
+
+	// FIXME Private members in OpenDSS
+
+	public int getNeutralConductor() {
+		return NeutralConductor;
+	}
+
+	public void setNeutralConductor(int neutralConductor) {
+		NeutralConductor = neutralConductor;
+	}
+
 }

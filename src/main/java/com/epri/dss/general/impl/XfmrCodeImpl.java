@@ -11,9 +11,9 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
-	
+
 	private enum WdgParmChoice {Conn, kV, kVA, R, Tap};
-	
+
 	private static XfmrCodeObj ActiveXfmrCodeObj;
 
 	public XfmrCodeImpl() {
@@ -29,7 +29,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
@@ -142,29 +142,29 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.setActiveDSSObject(new XfmrCodeObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void setActiveWinding(int w) {
 		XfmrCodeObj axc = getActiveXfmrCodeObj();
-		
+
 		if ((w > 0) && (w <= axc.getNumWindings())) {
 			axc.setActiveWinding(w);
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Wdg parameter invalid for \"" + getActiveXfmrCodeObj().getName() + "\"", 112);
 		}
 	}
-	
+
 	private void interpretWindings(String S, WdgParmChoice which) {
 		String Str;
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.getAuxParser().setCmdString(S);
 		XfmrCodeObj axc = getActiveXfmrCodeObj();
 		for (int i = 0; i < axc.getNumWindings(); i++) {
@@ -177,7 +177,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 					axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(Str));
 				case kV:
 					axc.getWinding()[axc.getActiveWinding()].setKvll(Globals.getAuxParser().makeDouble());
-				case kVA: 
+				case kVA:
 					axc.getWinding()[axc.getActiveWinding()].setKva(Globals.getAuxParser().makeDouble());
 				case R:
 					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * Globals.getAuxParser().makeDouble());
@@ -187,16 +187,16 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 			}
 		}
 	}
-	
+
 	@Override
 	public int edit() {
-		setActiveXfmrCodeObj(ElementList.getActive());
+		setActiveXfmrCodeObj((XfmrCodeObj) ElementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveXfmrCodeObj());
 		boolean UpdateXsc = false;
 
 		Parser parser = Parser.getInstance();
 		XfmrCodeObj axc = getActiveXfmrCodeObj();
-		
+
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
@@ -209,7 +209,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 				axc.setPropertyValue(ParamPointer, Param);
-			
+
 			switch (ParamPointer) {
 			case 0:  // TODO Check zero based indexing
 				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"XfmrCode." + axc.getName() + "\"", 110);
@@ -295,7 +295,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 					axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
 					axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
 				} else {
-					if (axc.getNumWindings() == 2) 
+					if (axc.getNumWindings() == 2)
 						axc.getWinding()[0].setKva(axc.getWinding()[1].getKva());  // For 2-winding, force both kVAs to be same
 				}
 				// Update LoadLosskW if winding %r changed. Using only windings 1 and 2
@@ -311,7 +311,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 			case 17:
 				UpdateXsc = true;
 			case 18:
-				for (int i = 0; i < ((axc.getNumWindings() - 1) * axc.getNumWindings() / 2); i++) 
+				for (int i = 0; i < ((axc.getNumWindings() - 1) * axc.getNumWindings() / 2); i++)
 					axc.getXSC()[i] = axc.getXSC()[i] * 0.01;  // Convert to per unit
 			case 24:  // Assume load loss is split evenly  between windings 1 and 2
 				axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
@@ -339,7 +339,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 		return 0;
 	}
-	
+
 	@Override
 	protected int makeLike(String Name) {
 		int i;
@@ -348,12 +348,12 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		XfmrCodeObj Other = (XfmrCodeObj) find(Name);
 		if (Other != null) {
 			XfmrCodeObj axc = getActiveXfmrCodeObj();
-			
+
 			axc.setNPhases(Other.getNPhases());
 			axc.setNumWindings(Other.getNumWindings());
 			for (i = 0; i < axc.getNumWindings(); i++) {
 				Winding wdg = axc.getWinding()[i];
-				
+
 				wdg.setConnection(Other.getWinding()[i].getConnection());
 				wdg.setKvll(Other.getWinding()[i].getKvll());
 				wdg.setVBase(Other.getWinding()[i].getVBase());
@@ -370,7 +370,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 			axc.setXHL(Other.getXHL());
 			axc.setXHT(Other.getXHT());
 			axc.setXLT(Other.getXLT());
-			for (i = 0; i < (axc.getNumWindings() * (axc.getNumWindings() - 1) / 2); i++) 
+			for (i = 0; i < (axc.getNumWindings() * (axc.getNumWindings() - 1) / 2); i++)
 				axc.getXSC()[i] = Other.getXSC()[i];
 			axc.setThermalTimeConst(Other.getThermalTimeConst());
 			axc.setN_thermal(Other.getN_thermal());
@@ -391,21 +391,21 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		}
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement XfmrCode.init", -1);
 		return 0;
 	}
-	
+
 	public String getCode() {
 		XfmrCodeObj pXfmrCode = (XfmrCodeObj) ElementList.getActive();
 		return pXfmrCode.getName();
 	}
-	
+
 	public void setCode(String Value) {
 		XfmrCodeObj pXfmrCode;
-		
+
 		setActiveXfmrCodeObj(null);
 		for (int i = 0; i < ElementList.size(); i++) {
 			pXfmrCode = (XfmrCodeObj) ElementList.get(i);

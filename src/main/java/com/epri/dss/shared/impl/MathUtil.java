@@ -41,4 +41,19 @@ public abstract class MathUtil {
 
 	}
 
+	public static void RCDMeanandStdDev(double[] pMultipliers, int numPoints, double mean, double stdDev) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static void curveMeanAndStdDev(double[] pMultipliers, double[] hours, int numPoints, double mean, double stdDev) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public static Complex Bessel_I0(Complex alpha) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

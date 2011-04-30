@@ -71,7 +71,7 @@ public interface LoadShapeObj extends DSSObject {
 	void initPropertyValues(int ArrayOffset);
 
 	void dumpProperties(PrintStream F, boolean Complete);
-	
+
 	double[] getHours();
 
 	void setHours(double[] hours);
@@ -105,4 +105,24 @@ public interface LoadShapeObj extends DSSObject {
 	boolean isUseActual();
 
 	void setUseActual(boolean useActual);
+
+	// FIXME Private methods in OpenDSS
+
+	void saveToDblFile();
+
+	void saveToSngFile();
+
+	void setMaxPandQ();
+
+
+	// Private member in OpenDSS.
+	void setArrayPropertyIndex(int i);
+
+
+	// Protected member in OpenDSS.
+
+	boolean isStdDevCalculated();
+
+	void setStdDevCalculated(boolean stdDevCalculated);
+
 }

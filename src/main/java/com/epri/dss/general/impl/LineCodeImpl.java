@@ -1,10 +1,5 @@
 package com.epri.dss.general.impl;
 
-import java.io.PrintStream;
-import java.util.UUID;
-
-import com.epri.dss.common.Circuit;
-import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
@@ -12,15 +7,15 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.LineUnits;
 
 public class LineCodeImpl extends DSSClassImpl implements LineCode {
-	
+
 	private static LineCodeObj ActiveLineCodeObj;
-	
+
 	private boolean SymComponentsChanged;
 
 	private boolean MatrixChanged;
@@ -38,7 +33,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		NumProperties = LineCode.NumPropsThisClass;
 		countProperties();   // Get inherited property count
@@ -113,9 +108,9 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 							"will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix.";
 
 		ActiveProperty = LineCode.NumPropsThisClass;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list	
+		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	/**
 	 * Create a new object of this class and add to list.
 	 */
@@ -125,7 +120,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		Globals.setActiveDSSObject(new LineCodeObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	/**
 	 * Decodes the units string and sets the units variable.
 	 */
@@ -138,9 +133,9 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 */
 	private void setZ1Z0(int i, double Value) {
 		SymComponentsChanged = true;
-		
+
 		getActiveLineCodeObj().setSymComponentsModel(true);
-		
+
 		switch (i) {
 		case 1:  // TODO Check zero based indexing
 			getActiveLineCodeObj().setR1(Value);
@@ -167,7 +162,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		double Factor;
 
 		int np2 = getActiveLineCodeObj().getNPhases() * getActiveLineCodeObj().getNPhases();
-		
+
 		MatrixChanged = true;
 		MatBuffer = new double[np2];
 		OrderFound = Parser.getInstance().parseAsSymMatrix(getActiveLineCodeObj().getNPhases(), MatBuffer);
@@ -177,37 +172,37 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			case 1:  // R
 				ZValues = getActiveLineCodeObj().getZ().asArray(Norder);  // TODO Check nOrder is set
 				if (Norder == getActiveLineCodeObj().getNPhases())
-					for (j = 0; j < np2; j++) 
+					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
 			case 2:  // X
 				ZValues = getActiveLineCodeObj().getZ().asArray(Norder);
-				if (Norder == getActiveLineCodeObj().getNPhases()) 
-					for (j = 0; j < np2; j++) 
+				if (Norder == getActiveLineCodeObj().getNPhases())
+					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
 			case 3:  // YC Matrix
 				Factor = DSSGlobals.TwoPi * getActiveLineCodeObj().getBaseFrequency() * 1.0e-9;
 				ZValues = getActiveLineCodeObj().getYC().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
-					for (j = 0; j < np2; j++) 
+					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), Factor * MatBuffer[j]);
 			}
 		}
 
-		MatBuffer = null;	
+		MatBuffer = null;
 	}
-	
+
 	/**
 	 * Uses global parser.
 	 */
 	@Override
 	public int edit() {
 		int Result = 0;
-		
+
 		Parser parser = Parser.getInstance();
-		
+
 		// continue parsing with contents of parser
-		setActiveLineCodeObj(ElementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject((DSSObjectImpl) getActiveLineCodeObj());
+		setActiveLineCodeObj((LineCodeObj) ElementList.getActive());
+		DSSGlobals.getInstance().setActiveDSSObject(getActiveLineCodeObj());
 		SymComponentsChanged = false;
 		MatrixChanged = false;
 		getActiveLineCodeObj().setReduceByKron(false);  // Allow all matrices to be computed it raw form
@@ -221,7 +216,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties)) 
+				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 					getActiveLineCodeObj().setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -230,7 +225,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				case 1:
 					getActiveLineCodeObj().setNPhases(parser.makeInteger());  // Use property value to force reallocations
 				case 2:
-					setZ1Z0(1, parser.makeDouble());  // R1 
+					setZ1Z0(1, parser.makeDouble());  // R1
 				case 3:
 					setZ1Z0(2, parser.makeDouble());  // X0
 				case 4:
@@ -287,7 +282,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 						getActiveLineCodeObj().doKronReduction();
 				}
 
-			
+
 				ParamName = parser.getNextParam();
 				Param = parser.makeString();
 			}
@@ -299,10 +294,10 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				getActiveLineCodeObj().getZinv().invert();
 			}
 		}
-	
+
 		return 0;
 	}
-	
+
 	@Override
 	protected int makeLike(String LineName) {
 
@@ -346,7 +341,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			getActiveLineCodeObj().setPctPerm(OtherLineCode.getPctPerm());
 			getActiveLineCodeObj().setHrsToRepair(OtherLineCode.getHrsToRepair());
 
-			for (int i = 0; i < getActiveLineCodeObj().getParentClass().getNumProperties(); i++) 
+			for (int i = 0; i < getActiveLineCodeObj().getParentClass().getNumProperties(); i++)
 				getActiveLineCodeObj().setPropertyValue(i, OtherLineCode.getPropertyValue(i));
 			Result = 1;
 		} else {
@@ -355,7 +350,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement LineCode.init()", -1);
@@ -369,7 +364,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		LineCodeObj active = (LineCodeObj) ElementList.getActive();
 		return active.getName();
 	}
-	
+
 	/**
 	 * Sets the active linecode.
 	 */

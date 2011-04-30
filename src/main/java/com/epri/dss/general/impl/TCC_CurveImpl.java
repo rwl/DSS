@@ -10,7 +10,7 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
 
 public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
-	
+
 	private static TCC_CurveObj ActiveTCC_CurveObj;
 
 	public TCC_CurveImpl() {
@@ -27,10 +27,10 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);
 	}
-	
+
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
-		
+
 		NumProperties = TCC_Curve.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
@@ -53,31 +53,31 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		ActiveProperty = TCC_Curve.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
-	
+
 	@Override
 	public int newObject(String ObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		Globals.setActiveDSSObject(new TCC_CurveObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
-	
+
 	private void calcLogPoints(double[] X, double[] LogX, int N) {
-		for (int i = 0; i < N; i++) 
+		for (int i = 0; i < N; i++)
 			if (X[i] > 0.0) {
 				LogX[i] = Math.log(X[i]);
 			} else {
 				LogX[i] = Math.log(0.001);
 			}
 	}
-	
+
 	@Override
 	public int edit() {
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveTCC_CurveObj(ElementList.getActive());
+		setActiveTCC_CurveObj((TCC_CurveObj) ElementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveTCC_CurveObj());
-		
+
 		Parser parser = Parser.getInstance();
 
 		TCC_CurveObj atc = getActiveTCC_CurveObj();
@@ -91,7 +91,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			} else {
 				ParamPointer = CommandList.getCommand(ParamName);
 			}  // FIXME Check indenting of other edit methods at this point.
-	
+
 			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
 				atc.setPropertyValue(ParamPointer, Param);
 
@@ -124,10 +124,10 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
 		}
-	
+
 		return Result;
 	}
-	
+
 	@Override
 	protected int makeLike(String Name) {
 		int i, Result = 0;
@@ -140,16 +140,16 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNpts()) );
 			atc.setT_values( (double[]) Utilities.resizeArray(atc.getT_values(), atc.getNpts()) );
 			atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNpts()) );
-			for (i = 0; i < atc.getNpts(); i++) 
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getC_values()[i] = OtherTCC_Curve.getC_values()[i];
-			for (i = 0; i < atc.getNpts(); i++) 
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getT_values()[i] = OtherTCC_Curve.getT_values()[i];
-			for (i = 0; i < atc.getNpts(); i++) 
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getLogC()[i] = OtherTCC_Curve.getLogC()[i];
-			for (i = 0; i < atc.getNpts(); i++) 
+			for (i = 0; i < atc.getNpts(); i++)
 				atc.getLogT()[i] = OtherTCC_Curve.getLogT()[i];
 
-			for (i = 0; i < atc.getParentClass().getNumProperties(); i++) 
+			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)
 				atc.setPropertyValue(i, OtherTCC_Curve.getPropertyValue(i));
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + Name + "\" Not Found.", 421);
@@ -157,23 +157,23 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 		return Result;
 	}
-	
+
 	@Override
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement TCC_Curve.init()", -1);
 		return 0;
 	}
-	
+
 	public String getCode() {
 		TCC_CurveObj pCurve = (TCC_CurveObj) ElementList.getActive();
 		return pCurve.getName();
 	}
-	
+
 	public void setCode(String Value) {
 		setActiveTCC_CurveObj(null);
 		TCC_CurveObj pCurve;
 		for (int i = 0; i < ElementList.size(); i++) {
-			pCurve = ElementList.get(i);
+			pCurve = (TCC_CurveObj) ElementList.get(i);
 			if (pCurve.getName().equals(Value)) {
 				setActiveTCC_CurveObj(pCurve);
 				return;

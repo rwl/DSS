@@ -7,13 +7,10 @@
 
 package com.epri.dss.general.impl;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import com.epri.dss.common.DSSClass;
-import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.DSSObject;
 
