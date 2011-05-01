@@ -75,7 +75,7 @@ public class CktTreeImpl implements CktTree {
 			FirstNode = PresentBranch;
 	}
 
-	public void addNewChild(Object Value, int BusRef, int TerminalNo) {
+	public void addNewChild(DSSObject Value, int BusRef, int TerminalNo) {
 		if (PresentBranch == null) {
 			setNew(Value);
 		} else {
@@ -375,7 +375,7 @@ public class CktTreeImpl implements CktTree {
 		return BranchList;
 	}
 
-	public static void buildActiveBusAdjacencyLists(List[] lstPD, List[] lstPC) {
+	public static void buildActiveBusAdjacencyLists(List<PDElement>[] lstPD, List<PCElement>[] lstPC) {
 		int i, j, nBus;
 //		CktElement pCktElement;
 
@@ -393,7 +393,7 @@ public class CktTreeImpl implements CktTree {
 		for (CktElement pCktElement : ckt.getPCElements()) {
 			if (pCktElement.isEnabled()) {
 				i = pCktElement.getTerminals()[0].getBusRef();
-				lstPC[i].add(pCktElement);
+				lstPC[i].add((PCElement) pCktElement);
 			}
 		}
 
@@ -402,11 +402,11 @@ public class CktTreeImpl implements CktTree {
 			if (pCktElement.isEnabled()) {
 				if (Utilities.isShuntElement(pCktElement)) {
 					i = pCktElement.getTerminals()[0].getBusRef();
-					lstPC[i].add(pCktElement);
+					lstPC[i].add((PCElement) pCktElement);
 				} else if (Utilities.allTerminalsClosed(pCktElement))
 					for (j = 0; j < pCktElement.getNTerms(); j++) {
 						i = pCktElement.getTerminals()[j].getBusRef();
-						lstPD[i].add(pCktElement);
+						lstPD[i].add((PDElement) pCktElement);
 					}
 			}
 		}

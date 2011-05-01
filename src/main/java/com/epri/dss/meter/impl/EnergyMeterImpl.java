@@ -27,8 +27,8 @@ import com.epri.dss.shared.impl.CommandListImpl;
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	// Adjacency lists for PC and PD elements at each bus, built for faster searches
-	public static List<CktElement>[] BusAdjPC; // Also includes shunt PD elements
-	public static List<CktElement>[] BusAdjPD;
+	public static List<PCElement>[] BusAdjPC; // Also includes shunt PD elements
+	public static List<PDElement>[] BusAdjPD;
 
 	private static EnergyMeterObj ActiveEnergyMeterObj;
 

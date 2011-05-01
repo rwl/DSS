@@ -309,4 +309,9 @@ public abstract class MathUtil {
 		return Result;
 	}
 
+	public static double pctNemaUnbalance(Complex[] vph) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -80,7 +80,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	/* topology from the first source, lazy evaluation */
 	private CktTree Branch_List;
 	/* bus adjacency lists of PD and PC elements */
-	private List<Object>[] BusAdjPC, BusAdjPD;
+	private List<PCElement>[] BusAdjPC;
+	private List<PDElement>[] BusAdjPD;
 
 	protected String CaseName;
 
@@ -1726,12 +1727,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
-	public List<Object>[] getBusAdjacentPDLists() {
+	public List<PDElement>[] getBusAdjacentPDLists() {
 		if (BusAdjPD == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPD;
 	}
 
-	public List<Object>[] getBusAdjacentPCLists() {
+	public List<PCElement>[] getBusAdjacentPCLists() {
 		if (BusAdjPC == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPC;
 	}

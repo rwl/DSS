@@ -1,5 +1,6 @@
 package com.epri.dss.shared;
 
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.impl.CktTreeImpl.ZoneEndsList;
 
 public interface CktTree {
@@ -13,15 +14,15 @@ public interface CktTree {
 	void setZoneEndsList(ZoneEndsList zoneEndsList);
 
 	/* Adds a pointer to an object to be associated with the current node */
-	void setNewObject(Object Value);
+	void setNewObject(DSSObject Value);
 
 	/* Start Forward Search at the present location (can also use active) */
 	void startHere();
 
-	void addNewChild(Object Value, int BusRef, int TerminalNo);
+	void addNewChild(DSSObject Value, int BusRef, int TerminalNo);
 
-	/* Adds Child and makes it present */
-	void setNew(Object Value);
+	/* Adds child and makes it present */
+	void setNew(DSSObject Value);
 
 	/* Returns pointer to first cktobject */
 	Object getFirst();
@@ -38,7 +39,7 @@ public interface CktTree {
 
 	Object getActive();
 
-	void setActive(Object Value);
+	void setActive(DSSObject Value);
 
 	/* Get lexical level of present node */
 	int getLevel();

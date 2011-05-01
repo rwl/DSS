@@ -736,7 +736,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* This algorithm could be made more efficient with a sequence list */
 
 		for (i = 0; i < BranchList.getZoneEndsList().getNumEnds(); i++) {
-			/*Busref = */BranchList.getZoneEndsList().Get(i, PresentNode);
+			/*Busref = */BranchList.getZoneEndsList().get(i, PresentNode);
 			if (PresentNode != null) {
 				CktElem = (PDElement) PresentNode.getCktObject();
 				if (!CktElem.isChecked()) {  // don't do a zone end element more than once
@@ -770,7 +770,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		LoadObj pLoad;
 		boolean IsFeederEnd;
 //		String S;
-		List<CktElement> adjLst;
+		List<PCElement> adjLstPC;
+		List<PDElement> adjLstPD;
 
 		ZoneListCounter = 0;
 		VBaseCount      = 0;  /* Build the voltage base list over in case a base added or deleted */
@@ -844,9 +845,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						ckt.getBuses()[TestBusNum].setDistFromMeter( ckt.getBuses()[BranchList.getPresentBranch().getFromBusReference()].getDistFromMeter() );
 					}
 
-					adjLst = EnergyMeterImpl.BusAdjPC[TestBusNum];
-					for (iPC = 0; iPC < adjLst.size(); iPC++) {
-						pC = (PCElement) adjLst.get(iPC);
+					adjLstPC = EnergyMeterImpl.BusAdjPC[TestBusNum];
+					for (iPC = 0; iPC < adjLstPC.size(); iPC++) {
+						pC = (PCElement) adjLstPC.get(iPC);
 						if (pC.isChecked()) continue;  // skip ones we already checked
 						BranchList.getPresentBranch().setIsDangling(false);  // Something is connected here
 						// Is this a load or a generator or a Capacitor or reactor?
@@ -876,9 +877,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 					if (DefinedZoneListSize == 0) {  // Search tree for connected branches (default)
 						IsFeederEnd = true;
-						adjLst = EnergyMeterImpl.BusAdjPD[TestBusNum];
-						for (iPD = 0; iPD < adjLst.size(); iPD++) {
-							TestElement = (PDElement) adjLst.get(iPD);  // Only enabled objects are in this list
+						adjLstPD = EnergyMeterImpl.BusAdjPD[TestBusNum];
+						for (iPD = 0; iPD < adjLstPD.size(); iPD++) {
+							TestElement = (PDElement) adjLstPD.get(iPD);  // Only enabled objects are in this list
 							// See resetMeterZonesAll()
 							if (!(TestElement == ActiveBranch)) {  // Skip self
 								if (!TestElement.hasEnergyMeter()) {  // Stop at other meters  so zones don't interfere
@@ -912,7 +913,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 							}
 						}  /* for iPD */
 						if (IsFeederEnd)
-							BranchList.getZoneEndsList().Add(BranchList.getPresentBranch(), TestBusNum);
+							BranchList.getZoneEndsList().add(BranchList.getPresentBranch(), TestBusNum);
 						/* This is an end of the feeder and testbusnum is the end bus */
 					} else {  // Zone is manually specified; Just add next element in list as a child
 						ZoneListCounter += 1;
@@ -1249,7 +1250,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 
 		for (i = 0; i < BranchList.getZoneEndsList().getNumEnds(); i++) {
-			BusRef = BranchList.getZoneEndsList().Get(i, PresentNode);
+			BusRef = BranchList.getZoneEndsList().get(i, PresentNode);
 
 			FirstCoordRef = BusRef;
 			SecondCoordRef = FirstCoordRef;  /* so compiler won't issue warning */
