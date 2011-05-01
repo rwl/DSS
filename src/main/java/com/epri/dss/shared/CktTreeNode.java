@@ -1,5 +1,7 @@
 package com.epri.dss.shared;
 
+import com.epri.dss.general.DSSObject;
+
 public interface CktTreeNode {
 
 	CktTreeNode getFirstChild();
@@ -8,9 +10,9 @@ public interface CktTreeNode {
 
 	CktTreeNode getParent();
 
-	void setAddChild(CktTreeNode Value);
+	void addChild(CktTreeNode Value);
 
-	void setAddObject(Object Value);
+	void addObject(DSSObject Value);
 
 	/**
 	 * Number of children at present node.
@@ -26,16 +28,16 @@ public interface CktTreeNode {
 
 	void setToBusReference(int Value);
 
-	Object getFirstObject();
+	DSSObject getFirstObject();
 
-	Object getNextObject();
+	DSSObject getNextObject();
 
 	void resetToBusList();
 
 
-	Object getCktObject();
+	DSSObject getCktObject();
 
-	void setCktObject(Object cktObject);
+	void setCktObject(DSSObject cktObject);
 
 	int getFromBusReference();
 
@@ -64,5 +66,15 @@ public interface CktTreeNode {
 	Object getLoopLineObj();
 
 	void setLoopLineObj(Object loopLineObj);
+
+	// FIXME Protected members in OpenDSS
+
+	boolean isChildAdded();
+
+	void setChildAdded(boolean childAdded);
+
+	int getLexicalLevel();
+
+	void setLexicalLevel(int lexicalLevel);
 
 }

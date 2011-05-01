@@ -1,20 +1,20 @@
 package com.epri.dss.shared.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.CktTreeNode;
+import com.epri.dss.shared.PointerList;
 
 public class CktTreeNodeImpl implements CktTreeNode {
 
-	private List<Object> ChildBranches;
+	private PointerList ChildBranches;  // TODO Replace with List and Iterator
 	private int NumToBuses, ToBusPtr;
 	private int[] ToBusList;
 
 	protected boolean ChildAdded;
 	protected int LexicalLevel;
 	protected CktTreeNode ParentBranch;
-	protected List<Object> ShuntObjects;  // Generic objects attached to the tree at this node
+	protected PointerList ShuntObjects;  // Generic objects attached to the tree at this node
 
 
 	protected Object CktObject;    // Pointer to the circuit object referenced
@@ -26,69 +26,104 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 
 	public CktTreeNodeImpl(CktTreeNode pParent, Object pSelfObj) {
-		// TODO Auto-generated constructor stub
+		super();
+		this.CktObject = pSelfObj;
+		this.ParentBranch = pParent;
+		if (this.ParentBranch != null) {
+			LexicalLevel = this.ParentBranch.getLexicalLevel() + 1;
+		} else {
+			LexicalLevel = 0;
+		}
+		this.ChildBranches   = new PointerListImpl(2);
+		this.ShuntObjects    = new PointerListImpl(1);
+		this.FromBusReference = 0;
+		this.VoltBaseIndex    = 0; // Index to voltage base list used by energymeter and maybe others
+		this.NumToBuses = 0;
+		this.ToBusList = null;
+		this.ToBusPtr = 0;
+		this.ChildAdded = false;
+		// TEMc - initialize some topology variables, 10/2009
+		this.IsDangling = true;
+		this.IsLoopedHere = false;
+		this.IsParallel = false;
+		this.LoopLineObj = null;
+	}
+
+	public void addChild(CktTreeNode Value) {
+		ChildBranches.add(Value);
+		ChildAdded = true;
+	}
+
+	public void addObject(DSSObject Value) {
+		ShuntObjects.add(Value);
 	}
 
 	public CktTreeNode getFirstChild() {
-		return null;
+		return (CktTreeNode) ChildBranches.getFirst();
 	}
 
 	public CktTreeNode getNextChild() {
-		return null;
+		return (CktTreeNode) ChildBranches.getNext();
 	}
 
 	public CktTreeNode getParent() {
-		return null;
-	}
-
-	public void setAddChild(CktTreeNode Value) {
-
-	}
-
-	public void setAddObject(Object Value) {
-
+		return ParentBranch;
 	}
 
 	/**
 	 * Number of children at present node.
 	 */
 	public int getNumChildren() {
-		return 0;
+		return ChildBranches.size();
 	}
 
 	/**
 	 * Number of objects at present node.
 	 */
 	public int getNumObjects() {
-		return 0;
+		return ShuntObjects.size();
 	}
 
+	/**
+	 * Sequentially access the To Bus list if more than one with each invocation of the property.
+	 */
 	public int getToBusReference() {
-		return 0;
+		if (NumToBuses == 1)  {
+			return ToBusList[0];  // Always return the first
+		} else {
+			ToBusPtr += 1;
+			if (ToBusPtr >= NumToBuses) {  // TODO Check zero based indexing
+				ToBusPtr = 0;  // Ready for next sequence of access
+				return -1;
+			} else {
+				return ToBusList[ToBusPtr];
+			}
+		}
 	}
 
 	public void setToBusReference(int Value) {
-
-	}
-
-	public Object getFirstObject() {
-		return null;
-	}
-
-	public Object getNextObject() {
-		return null;
+		NumToBuses += 1;
+		ToBusList = (int[]) Utilities.resizeArray(ToBusList, NumToBuses);
+		ToBusList[NumToBuses] = Value;
 	}
 
 	public void resetToBusList() {
-
+		ToBusPtr = 0;  // TODO Check zero based indexing
 	}
 
-
-	public Object getCktObject() {
-		return CktObject;
+	public DSSObject getFirstObject() {
+		return (DSSObject) ShuntObjects.getFirst();  // TODO Make generic
 	}
 
-	public void setCktObject(Object cktObject) {
+	public DSSObject getNextObject() {
+		return (DSSObject) ShuntObjects.getNext();
+	}
+
+	public DSSObject getCktObject() {
+		return (DSSObject) CktObject;
+	}
+
+	public void setCktObject(DSSObject cktObject) {
 		CktObject = cktObject;
 	}
 
@@ -146,6 +181,24 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 	public void setLoopLineObj(Object loopLineObj) {
 		LoopLineObj = loopLineObj;
+	}
+
+	// FIXME Protected members in OpenDSS
+
+	public boolean isChildAdded() {
+		return ChildAdded;
+	}
+
+	public void setChildAdded(boolean childAdded) {
+		ChildAdded = childAdded;
+	}
+
+	public int getLexicalLevel() {
+		return LexicalLevel;
+	}
+
+	public void setLexicalLevel(int lexicalLevel) {
+		LexicalLevel = lexicalLevel;
 	}
 
 }
