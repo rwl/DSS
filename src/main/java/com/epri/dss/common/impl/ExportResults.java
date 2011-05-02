@@ -502,18 +502,103 @@ public class ExportResults {
 	}
 
 	public static void exportLosses(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex S_total = null, S_Load = null, S_NoLoad = null;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			FPrinter.println("Element,  Total(W), Total(var),  I2R(W), I2X(var), No-load(W), No-load(var)");
+			for (PDElement PDElem : Globals.getActiveCircuit().getPDElements()) {
+				if (PDElem.isEnabled()) {
+					PDElem.getLosses(S_total, S_Load, S_NoLoad);
+					FPrinter.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g", PDElem.getParentClass().getName(), PDElem.getName(), S_total.getReal(), S_total.getImaginary(), S_Load.getReal(), S_Load.getImaginary(), S_NoLoad.getReal(), S_NoLoad.getImaginary());
+					FPrinter.println();
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	/**
+	 * Export powers by phase.
+	 *
+	 * opt = 0: kVA
+	 * opt = 1: MVA
+	 */
+	public static void exportPbyphase(String FileNm, int opt) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i;
+		Complex S;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			switch (opt) {
+			case 1:
+				FPrinter.println("Element, NumTerminals, NumConductors, NumPhases, MW1, Mvar1, MW2, Mvar2, MW3, Mvar3, ... ");
+			default:
+				FPrinter.println("Element, NumTerminals, NumConductors, NumPhases, kW1, kvar1, kW2, kvar2, kW3, kvar3, ... ");
+			}
+
+			// PD elements first
+			for (PDElement PDElem : Globals.getActiveCircuit().getPDElements()) {
+				if (PDElem.isEnabled()) {
+					PDElem.computeIterminal();
+					PDElem.computeVterminal();
+					FPrinter.printf("\"%s.%s\", %d, %d, %d", PDElem.getDSSClassName(), PDElem.getName(), PDElem.getNTerms(), PDElem.getNConds(), PDElem.getNPhases());
+					for (i = 0; i < PDElem.getYorder(); i++) {
+						S = PDElem.getVterminal()[i].multiply( PDElem.getIterminal()[i].conjugate() ).multiply(0.001);
+						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
+						FPrinter.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
+					}
+					FPrinter.println();
+				}
+			}
+
+			// PC elements next
+			for (PCElement PCElem : Globals.getActiveCircuit().getPCElements()) {
+				if (PCElem.isEnabled()) {
+					PCElem.computeIterminal();
+					PCElem.computeVterminal();
+					FPrinter.printf("\"%s.%s\", %d, %d, %d", PCElem.getDSSClassName(), PCElem.getName(), PCElem.getNTerms(), PCElem.getNConds(), PCElem.getNPhases());
+					for (i = 0; i < PCElem.getYorder(); i++) {
+						S = PCElem.getVterminal()[i].multiply( PCElem.getIterminal()[i].conjugate() ).multiply(0.001);
+						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
+						FPrinter.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
+					}
+					FPrinter.println();
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	public static void exportSeqPowers(String FileNm, int opt) {
 
 	}
 
 	public static void exportEstimation(String FileNm) {
-
-	}
-
-	public static void exportPbyphase(String FileNm, int opt) {
-
-	}
-
-	public static void exportSeqPowers(String FileNm, int opt) {
 
 	}
 
