@@ -10,6 +10,8 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -594,15 +596,274 @@ public class ExportResults {
 		}
 	}
 
+	/**
+	 * opt = 0: kVA
+	 * opt = 1: MVA
+	 */
 	public static void exportSeqPowers(String FileNm, int opt) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex[] cBuffer;
+		int NCond, Nterm, i, j, k;
+//		PDElement PDElem;
+//		PCElement PCElem;
+		Complex Volts;
+		Complex S;
+		int nref;
+		Complex[] Vph = new Complex[3];
+		Complex[] V012 = new Complex[3];
+		Complex[] Iph = new Complex[3];
+		Complex[] I012 = new Complex[3];
+		String Separator = ", ";
 
-	}
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-	public static void exportEstimation(String FileNm) {
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
 
+			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+
+			switch (opt) {
+			case 1:
+				FPrinter.println("Element, Terminal, P1(MW), Q1(Mvar), P2, Q2, P0, Q0, P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+			default:
+				FPrinter.println("Element, Terminal, P1(kW), Q1(kvar), P2, Q2, P0, Q0, P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+			}
+
+			// PD elements first
+			for (PDElement PDElem : ckt.getPDElements()) {
+				if (PDElem.isEnabled()) {
+					NCond = PDElem.getNConds();
+					Nterm = PDElem.getNTerms();
+					PDElem.getCurrents(cBuffer);
+
+					for (j = 0; j < Nterm; j++) {
+						FPrinter.print(Utilities.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName()+"\"", 24) + Separator + j);
+						for (i = 0; i < PDElem.getNPhases(); i++) {
+							k = (j - 1) * NCond + i;
+							nref = PDElem.getNodeRef()[k];
+							Volts = ckt.getSolution().getNodeV()[nref];
+							Iph[i] = cBuffer[k];
+							Vph[i] = Volts;
+						}
+						if (PDElem.getNPhases() >= 3) {
+							MathUtil.phase2SymComp(Iph, I012);
+							MathUtil.phase2SymComp(Vph, V012);
+						} else {
+							V012[0] = Complex.ZERO;
+							I012[0] = Complex.ZERO;
+							V012[2] = Complex.ZERO;
+							I012[2] = Complex.ZERO;
+							if (ckt.isPositiveSequence()) {
+								V012[1] = Vph[0];
+								I012[1] = Iph[0];
+							} else {
+								V012[1] = Complex.ZERO;
+								I012[1] = Complex.ZERO;
+							}
+						}
+
+						S = V012[1].multiply( I012[1].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						S = V012[2].multiply( I012[2].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						S = V012[0].multiply( I012[0].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						if (j == 0) {
+							S = PDElem.getExcessKVANorm(0);
+							if (opt == 1) S = S.multiply(0.001);
+							FPrinter.print(Separator + Math.abs(S.getReal()));
+							FPrinter.print(Separator + Math.abs(S.getImaginary()));
+							S = PDElem.getExcessKVAEmerg(0);
+							if (opt == 1) S = S.multiply(0.001);
+							FPrinter.print(Separator + Math.abs(S.getReal()));
+							FPrinter.print(Separator + Math.abs(S.getImaginary()));
+						}
+						FPrinter.println();
+					}
+				}
+			}
+
+			// PC elements next
+			for (PCElement PCElem : ckt.getPCElements()) {
+				if (PCElem.isEnabled()) {
+					NCond = PCElem.getNConds();
+					Nterm = PCElem.getNTerms();
+					PCElem.getCurrents(cBuffer);
+
+					for (j = 0; j < Nterm; j++) {
+						FPrinter.print(Utilities.pad("\""+PCElem.getDSSClassName() + "." + PCElem.getName()+"\"", 24) + Separator + j);
+						for (i = 0; i < PCElem.getNPhases(); i++) {
+							k = (j - 1) * NCond + i;
+							nref = PCElem.getNodeRef()[k];
+							Volts = ckt.getSolution().getNodeV()[nref];
+							Iph[i] = cBuffer[k];
+							Vph[i] = Volts;
+						}
+						if (PCElem.getNPhases() >= 3) {
+							MathUtil.phase2SymComp(Iph, I012);
+							MathUtil.phase2SymComp(Vph, V012);
+						} else {
+							V012[0] = Complex.ZERO;
+							I012[0] = Complex.ZERO;
+							V012[2] = Complex.ZERO;
+							I012[2] = Complex.ZERO;
+							if (ckt.isPositiveSequence()) {
+								V012[1] = Vph[0];
+								I012[2] = Iph[0];
+							} else {
+								V012[1] = Complex.ZERO;
+								I012[1] = Complex.ZERO;
+							}
+						}
+
+						S = V012[1].multiply( I012[1].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						S = V012[2].multiply( I012[2].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						S = V012[0].multiply( I012[0].conjugate() );
+						if (opt == 1) S = S.multiply(0.001);
+						FPrinter.print(Separator + S.getReal() * 0.003);
+						FPrinter.print(Separator + S.getImaginary() * 0.003);
+
+						FPrinter.println();
+					}
+				}
+			}
+
+			DSSGlobals.getInstance().setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportFaultStudy(String FileNm) {
+		int i, iBus, iphs;
+		CMatrix YFault;
+		Complex[] Vfault;  /* Big temp array */
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex GFault;
+		final String Separator = ", ";
+		double MaxCurr, CurrMag;
+		Bus bus;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			/* Set source voltage injection currents */
+
+			/* All Phase Faults */
+			FPrinter.println("Bus,  3-Phase,  1-Phase,  L-L");
+			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
+				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				bus = ckt.getBuses()[iBus];
+				FPrinter.print(Utilities.pad(ckt.getBusList().get(iBus), 12));
+				MaxCurr = 0.0;
+				for (i = 0; i < bus.getNumNodesThisBus(); i++) {
+					if (MaxCurr < bus.getBusCurrent()[i].abs())
+						MaxCurr = bus.getBusCurrent()[i].abs();
+				}
+				FPrinter.print(Separator + MaxCurr);
+
+				/* One Phase Faults */
+
+				/* Solve for Fault Injection Currents */
+
+				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
+				Vfault = new Complex[bus.getNumNodesThisBus()];
+
+				/* Build YscTemp */
+
+				GFault = new Complex(10000.0, 0.0);
+
+				MaxCurr = 0.0;
+
+				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
+					YFault.copyFrom(bus.getYsc());
+					YFault.addElement(iphs, iphs, GFault);
+
+					/* Solve for Injection Currents */
+					YFault.invert();
+					YFault.MVMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+
+					CurrMag = Vfault[iphs].multiply(GFault).abs();
+					if (CurrMag > MaxCurr) MaxCurr = CurrMag;
+
+				}
+				/* Now, Stuff it in the Css Array where it belongs */
+				FPrinter.print(Separator + MaxCurr);
+
+				Vfault = null;
+				YFault = null;
+
+				/* Node-Node Faults */
+
+				/* Bus Norton Equivalent Current, Isc has been previously computed */
+
+				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
+				Vfault = new Complex[bus.getNumNodesThisBus()];
+
+				GFault = new Complex(10000.0, 0.0);
+
+				MaxCurr = 0.0;
+
+				for (iphs = 0; iphs < bus.getNumNodesThisBus(); iphs++) {
+					YFault.copyFrom(bus.getYsc());
+					YFault.addElement(iphs, iphs, GFault);
+					YFault.addElement(iphs + 1, iphs + 1, GFault);
+					YFault.addElemSym(iphs, iphs + 1, GFault.negate());
+
+					/* Solve for Injection Currents */
+					YFault.invert();
+					YFault.MVMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+
+					CurrMag = Vfault[iphs].subtract( Vfault[iphs + 1] ).multiply(GFault).abs();
+					if (CurrMag > MaxCurr) MaxCurr = CurrMag;
+				}
+				/* Now, Stuff it in the Css Array where it belongs */
+
+				FPrinter.print(Separator + MaxCurr);
+
+				Vfault = null;
+				YFault = null;
+
+				FPrinter.println();
+			}
+
+			DSSGlobals.getInstance().setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	public static void exportEstimation(String FileNm) {
 
 	}
 
