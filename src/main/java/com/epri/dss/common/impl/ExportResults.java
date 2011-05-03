@@ -9,6 +9,9 @@ import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.conversion.Generator;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.meter.EnergyMeter;
@@ -1123,20 +1126,322 @@ public class ExportResults {
 		}
 	}
 
+	private static void writeMultipleGenMeterFiles() {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i, j;
+		Generator GeneratorClass;
+		String FileNm;
+		final String Separator = ", ";
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		GeneratorClass = (Generator) DSSClassDefs.getDSSClass("generator");
+		if (GeneratorClass == null)
+			return;
+
+		for (GeneratorObj pElem : ckt.getGenerators()) {
+			if (pElem.isEnabled()) {
+				try {
+					FileNm = Globals.getDSSDataDirectory() + "EXP_GEN_" + pElem.getName() + ".csv";
+
+					if (!new File(FileNm).exists()) {
+						F = new FileWriter(FileNm);
+						FPrinter = new PrintWriter(F);
+						/* Write New Header */
+						FPrinter.print("Year, LDCurve, Hour, Generator");
+						for (i = 0; i < Generator.NumGenRegisters; i++)
+							FPrinter.print(Separator + "\"" + GeneratorClass.getRegisterNames()[i]+"\"");
+						FPrinter.println();
+
+						FPrinter.close();
+						F.close();
+					}
+
+					F = new FileWriter(FileNm, true);  // append
+					FPrinter = new PrintWriter(F);
+					FPrinter.print(ckt.getSolution().getYear() + Separator);
+					FPrinter.print(ckt.getLoadDurCurve() + Separator);
+					FPrinter.print(ckt.getSolution().getIntHour() + Separator);
+					FPrinter.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
+					for (j = 0; j < Generator.NumGenRegisters; j++)
+						FPrinter.print(Separator + pElem.getRegisters()[j]);
+					FPrinter.println();
+
+					Globals.setGlobalResult(FileNm);
+
+					FPrinter.close();
+					F.close();
+				} catch (IOException e) {
+					// TODO: handle exception
+				}
+			}
+		}
+	}
+
+	private static void writeSingleGenMeterFile(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i, j;
+		Generator GeneratorClass;
+		String TestStr;
+		final String Separator = ", ";
+		boolean ReWriteFile;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		GeneratorClass = (Generator) DSSClassDefs.getDSSClass("generator");
+		if (GeneratorClass == null)
+			return;
+
+		try {
+			if (new File(FileNm).exists()) {
+				// See if it has already been written on
+//				F = new FileWriter(FileNm);
+//				FPrinter = new PrintWriter(F);
+//
+//				IF  Not EOF(F)
+//				THEN Begin
+//					Read(F, TestStr);
+//					{See if it likely that the file is OK}
+//					IF  CompareText(Copy(TestStr,1,4), 'Year')=0
+//					THEN RewriteFile := FALSE       // Assume the file is OK
+//					ELSE RewriteFile := TRUE;
+//				End
+//				ELSE RewriteFile := TRUE;
+//
+//				CloseFile(F);
+
+				ReWriteFile = false;  // FIXME See if it likely that the file is OK
+			} else {
+				ReWriteFile = true;
+			}
+
+			/* Either open or append the file */
+			if (ReWriteFile) {
+				F = new FileWriter(FileNm);
+				FPrinter = new PrintWriter(F);
+				/* Write New Header */
+				FPrinter.print("Year, LDCurve, Hour, Generator");
+				for (i = 0; i < Generator.NumGenRegisters; i++)
+					FPrinter.print(Separator + "\""+ GeneratorClass.getRegisterNames()[i]+"\"");
+				FPrinter.println();
+			} else {
+				F = new FileWriter(FileNm, true);  // append
+				FPrinter = new PrintWriter(F);
+			}
+
+			for (GeneratorObj pElem : ckt.getGenerators()) {
+				if (pElem.isEnabled()) {
+					FPrinter.print(ckt.getSolution().getYear() + Separator);
+					FPrinter.print(ckt.getLoadDurCurve() + Separator);
+					FPrinter.print(ckt.getSolution().getIntHour() + Separator);
+					FPrinter.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
+					for (j = 0; j < Generator.NumGenRegisters; j++)
+						FPrinter.print(Separator + pElem.getRegisters()[j]);
+					FPrinter.println();
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	/**
+	 * Export values of generator meter elements.
+	 * If switch /m is specified, a separate file is created for each
+	 * generator using the generator's name.
+	 */
 	public static void exportGenMeters(String FileNm) {
-
+		if (FileNm.substring(0, 2).toLowerCase() == "/m") {
+			writeMultipleGenMeterFiles();
+		} else {
+			writeSingleGenMeterFile(FileNm);
+		}
 	}
 
+	/**
+	 * Export loads to view present allocation.
+	 */
 	public static void exportLoads(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		final String Separator = ", ";
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+			/* Write Header */
+			FPrinter.println("Load, Connected KVA, Allocation Factor, Phases, kW, kvar, PF, Model");
+
+			for (LoadObj pElem : ckt.getLoads()) {
+				if (pElem.isEnabled()) {
+					FPrinter.print(pElem.getName());
+					FPrinter.print(Separator + pElem.getConnectedkVA());
+					FPrinter.print(Separator + pElem.getkVAAllocationFactor());
+					FPrinter.print(Separator + pElem.getNPhases());
+					FPrinter.print(Separator + pElem.getkWBase());
+					FPrinter.print(Separator + pElem.getKvarBase());
+					FPrinter.print(Separator + pElem.getPFNominal());
+					FPrinter.print(Separator + pElem.getLoadModel());
+				}
+				FPrinter.println();
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Similar to export currents except does only max of the phases and
+	 * compares that to the NormAmps and EmergAmps rating.
+	 */
 	public static void exportCapacity(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex[] cBuffer;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+
+			FPrinter.println("Name, Imax, %normal, %emergency, kW, kvar, NumCustomers, TotalCustomers, NumPhases, kVBase");
+
+			// PD elements only
+			for (PDElement pElem : ckt.getPDElements()) {
+				if (pElem.isEnabled()) {
+					pElem.getCurrents(cBuffer);
+					calcAndWriteMaxCurrents(FPrinter, pElem, cBuffer);
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportOverloads(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex[] cBuffer;  // Allocate to max total conductors
+		int NCond, i, j;
+		Complex[] Iph = new Complex[3];
+		Complex[] I012 = new Complex[3];
+		double I0, I1, I2;
+		double iNormal, iEmerg, Cmax;
+		final String Separator = ", ";
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			/* Allocate cBuffer big enough for largest circuit element */
+			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+
+			/* Sequence Currents */
+			FPrinter.println("Element, Terminal,  I1, %Normal, %Emergency, I2, %I2/I1, I0, %I0/I1");
+
+			// PD elements only
+			for (PDElement PDElem : ckt.getPDElements()) {
+				if (PDElem.isEnabled()) {
+					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore caps
+						NCond = PDElem.getNConds();
+						PDElem.getCurrents(cBuffer);
+
+						for (j = 0; j < 1; j++) {  // only for terminal 1
+							Cmax = 0.0;
+							for (i = 0; i < Math.min(PDElem.getNPhases(), 3); i++) {  // check only first 3 phases
+								Iph[i] = cBuffer[(j - 1) * NCond + i];
+								Cmax = Math.max(Cmax, Iph[i].abs());
+							}
+							if (PDElem.getNPhases() >= 3) {
+								// Report symmetrical component currents for
+								MathUtil.phase2SymComp(Iph, I012);
+								I0 = I012[0].abs();  // Get abs values to report
+								I1 = I012[1].abs();
+								I2 = I012[2].abs();
+							} else {
+								// Other than 3-phase
+								I0 = 0.0;
+								I1 = Iph[0].abs();  // Ambiguous: Report only first phase
+								I2 = 0.0;
+								Cmax = I1;
+							}
+
+							if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
+								if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
+									FPrinter.print(Utilities.pad("\""+PDElem.getDSSClassName() + "." + PDElem.getName()+"\"", 22) + Separator + j);
+									FPrinter.print(Separator + I1);
+									if (j == 0) {  // Only for 1st Terminal
+										iNormal = PDElem.getNormAmps();
+										if (iNormal > 0.0) {
+											FPrinter.print(Separator + Cmax / iNormal * 100.0);
+										} else {
+											FPrinter.print(Separator + "     0.0");
+										}
+										iEmerg = PDElem.getEmergAmps();
+										if (iEmerg > 0.0) {
+											FPrinter.print(Separator + Cmax / iEmerg * 100.0);
+										} else {
+											FPrinter.print(Separator + "     0.0");
+										}
+									} else {
+										FPrinter.print(Separator + "       0" + Separator + "       0");
+									}
+									FPrinter.print(Separator + I2);
+									if (I1 > 0.0) {
+										FPrinter.print(Separator + 100.0 * I2 / I1);
+									} else {
+										FPrinter.print(Separator + "0.0");
+									}
+									FPrinter.print(Separator + I0);
+									if (I1 > 0.0) {
+										FPrinter.print(Separator + 100.0 * I0 / I1);
+									} else {
+										FPrinter.print(Separator + "0.0");
+									}
+									FPrinter.println();
+								}
+							}
+						}
+					}
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportUnserved(String FileNm, boolean UE_Only) {
