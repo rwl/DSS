@@ -1,5 +1,6 @@
 package com.epri.dss.common.impl;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,6 +11,9 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.EnergyMeterObj;
+import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
@@ -863,12 +867,260 @@ public class ExportResults {
 		}
 	}
 
+	private static void zeroTempXArray(double[] TempX) {
+		for (int ii = 0; ii < 3; ii++)
+			TempX[ii] = 0;
+	}
 	public static void exportEstimation(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i;
+//		EnergyMeterObj pEnergyMeterObj;
+//		SensorObj pSensorObj;
+		double[] TempX = new double[3];  // temp number buffer
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			/* Do the energy meters first */
+			FPrinter.println("\"Energy Meters\" ");
+			FPrinter.println("\"energyMeter\", \"I1 Target\", \"I2 Target\", \"I3 Target\", \"I1 Calc\", \"I2 Calc\", \"I3 Calc\", \"I1 %Err\", \"I2 %Err\", \"I3 %Err\""/*, \"I1 Factor\", \"I2 Factor\", \"I3 Factor\""*/);
+
+			for (EnergyMeterObj pEnergyMeterObj : ckt.getEnergyMeters()) {
+				if (pEnergyMeterObj.isEnabled()) {
+					FPrinter.printf("\"Energymeter.%s\"", pEnergyMeterObj.getName());
+					/* Sensor currents (Target) */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+						TempX[i] = pEnergyMeterObj.getSensorCurrent()[i];
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Calculated Currents */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+						TempX[i] = pEnergyMeterObj.getCalculatedCurrent()[i].abs();
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Percent Error */
+					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pEnergyMeterObj.getSensorCurrent()[i])) * 100.0;
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+
+					/****  Not all that useful
+					// Allocation Factors
+					zeroTempXArray(TempX);
+					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
+						TempX[i] = pEnergyMeterObj.getPhsAllocationFactor()[i];
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(" %.6g,", TempX[i]);
+					*****/
+
+					FPrinter.println();
+				}
+			}
+
+			/* Do the sensors next */
+			FPrinter.println();
+			FPrinter.println("\"Sensors\" ");
+			FPrinter.print("\"Sensor\", \"I1 Target\", \"I2 Target\", \"I3 Target\", \"I1 Calc\", \"I2 Calc\", \"I3 Calc\", \"I1 %Err\", \"I2 %Err\", \"I3 %Err\",");
+			FPrinter.println(" \"V1 Target\", \"V2 Target\", \"V3 Target\", \"V1 Calc\", \"V2 Calc\", \"V3 Calc\", \"V1 %Err\", \"V2 %Err\", \"V3 %Err\", \"WLS Voltage Err\", \"WLS Current Err\"");
+
+			for (SensorObj pSensorObj : ckt.getSensors()) {
+				if (pSensorObj.isEnabled()) {
+					FPrinter.printf("\"Sensor.%s\"", pSensorObj.getName());
+					/* Sensor currents (Target) */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = pSensorObj.getSensorCurrent()[i];
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Calculated Currents */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = pSensorObj.getCalculatedCurrent()[i].abs();
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Percent Error */
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pSensorObj.getSensorCurrent()[i])) * 100.0;
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Sensor Voltage (Target) */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = pSensorObj.getSensorVoltage()[i];
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Calculated Voltage */
+					zeroTempXArray(TempX);
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = pSensorObj.getCalculatedVoltage()[i].abs();
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* Percent Error */
+					for (i = 0; i < pSensorObj.getNPhases(); i++)
+						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pSensorObj.getSensorVoltage()[i])) * 100.0;
+					for (i = 0; i < 3; i++)
+						FPrinter.printf(", %.6g", TempX[i]);
+					/* WLS Errors */
+					zeroTempXArray(TempX);
+					FPrinter.printf(", %.6g, %.6g", pSensorObj.getWLSVoltageError(), pSensorObj.getWLSCurrentError());
+
+					FPrinter.println();
+				}
+			}
+
+			DSSGlobals.getInstance().setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
-	public static void exportMeters(String FileNm) {
+	private static void writeMultipleMeterFiles() {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i, j;
+		EnergyMeter MeterClass;
+		String FileNm;
+		final String Separator = ", ";
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		MeterClass = ((EnergyMeter) DSSClassDefs.getDSSClass("Energymeter"));
+		if (MeterClass == null) return;
+
+		for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
+			if (pElem.isEnabled()) {
+				try {
+					FileNm = Globals.getDSSDataDirectory() + "EXP_MTR_"+pElem.getName()+".csv";
+
+					if (!new File(FileNm).exists()) {
+						F = new FileWriter(FileNm);
+						FPrinter = new PrintWriter(F);
+
+						/* Write New Header */
+						FPrinter.print("Year, LDCurve, Hour, Meter");
+						for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+							FPrinter.write(Separator + "\""+ pElem.getRegisterNames()[i]+"\"");
+						FPrinter.println();
+
+						FPrinter.close();
+						F.close();
+					}
+
+					F = new FileWriter(FileNm, true);  // append
+					FPrinter = new PrintWriter(F);
+
+					FPrinter.print(ckt.getSolution().getYear() + Separator);
+					FPrinter.print(ckt.getLoadDurCurve() + Separator);
+					FPrinter.print(ckt.getSolution().getIntHour() + Separator);
+					FPrinter.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
+					for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+						FPrinter.print(Separator + pElem.getRegisters()[j]);
+					FPrinter.println();
+
+					Globals.setGlobalResult(FileNm);
+
+					FPrinter.close();
+					F.close();
+				} catch (IOException e) {
+					// TODO: handle exception
+				}
+			}
+		}
+	}
+
+	private static void writeSingleMeterFile(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i, j;
+		String TestStr;
+		final String Separator = ", ";
+		boolean ReWriteFile;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			if (new File(FileNm).exists()) {
+				// See if it has already been written on
+//				F = new FileWriter(FileNm);
+//				FPrinter = new PrintWriter(F);
+//
+//				IF  Not EOF(F)
+//				THEN Begin
+//					Read(F, TestStr);
+//					{See if it likely that the file is OK}
+//					IF  CompareText(Copy(TestStr,1,4), 'Year')=0
+//					THEN RewriteFile := FALSE       // Assume the file is OK
+//					ELSE RewriteFile := TRUE;
+//				End
+//				ELSE RewriteFile := TRUE;
+//
+//				CloseFile(F);
+
+				ReWriteFile = false;  // FIXME See if it likely that the file is OK
+			} else {
+				ReWriteFile = true;
+			}
+
+			/* Either open or append the file */
+			if (ReWriteFile) {
+				F = new FileWriter(FileNm);
+				FPrinter = new PrintWriter(F);
+				/* Write New Header */
+				EnergyMeterObj pElem = ckt.getEnergyMeters().get(0);
+				FPrinter.print("Year, LDCurve, Hour, Meter");
+				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					FPrinter.print(Separator + "\""+ pElem.getRegisterNames()[i]+"\"");
+				FPrinter.println();
+			} else {
+				F = new FileWriter(FileNm, true);
+				FPrinter = new PrintWriter(F);
+			}
+
+			for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
+				if (pElem.isEnabled()) {
+					FPrinter.print(ckt.getSolution().getYear() + Separator);
+					FPrinter.print(ckt.getLoadDurCurve() + Separator);
+					FPrinter.print(ckt.getSolution().getIntHour() + Separator);
+					FPrinter.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
+					for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+						FPrinter.printf(Separator + pElem.getRegisters()[j]);
+					FPrinter.println();
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	/**
+	 * Export values of meter elements.
+	 * These records are appended to an existing file so a running account is
+	 * kept for some kinds of simulations.
+	 * If switch /m is specified, a separate file is created for each meter
+	 * using the meter's name.
+	 */
+	public static void exportMeters(String FileNm) {
+		if (FileNm.substring(0, 2).toLowerCase() == "/m") {
+			writeMultipleMeterFiles();
+		} else {
+			writeSingleMeterFile(FileNm);
+		}
 	}
 
 	public static void exportGenMeters(String FileNm) {
