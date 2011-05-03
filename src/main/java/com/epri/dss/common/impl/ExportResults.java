@@ -4,16 +4,24 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.general.LineCode;
+import com.epri.dss.general.LineGeometry;
+import com.epri.dss.general.NamedObject;
+import com.epri.dss.general.WireData;
+import com.epri.dss.general.XfmrCode;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.SensorObj;
@@ -513,7 +521,7 @@ public class ExportResults {
 	public static void exportLosses(String FileNm) {
 		FileWriter F;
 		PrintWriter FPrinter;
-		Complex S_total = null, S_Load = null, S_NoLoad = null;
+		Complex S_total = Complex.ZERO, S_Load = Complex.ZERO, S_NoLoad = Complex.ZERO;
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
@@ -775,7 +783,6 @@ public class ExportResults {
 		Bus bus;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		SolutionObj sol = ckt.getSolution();
 
 		try {
 			F = new FileWriter(FileNm);
@@ -1045,7 +1052,7 @@ public class ExportResults {
 		FileWriter F;
 		PrintWriter FPrinter;
 		int i, j;
-		String TestStr;
+//		String TestStr;
 		final String Separator = ", ";
 		boolean ReWriteFile;
 
@@ -1185,7 +1192,7 @@ public class ExportResults {
 		PrintWriter FPrinter;
 		int i, j;
 		Generator GeneratorClass;
-		String TestStr;
+//		String TestStr;
 		final String Separator = ", ";
 		boolean ReWriteFile;
 
@@ -1445,35 +1452,418 @@ public class ExportResults {
 	}
 
 	public static void exportUnserved(String FileNm, boolean UE_Only) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		boolean DoIt;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			FPrinter.println("Load, Bus, kW, EEN_Factor,  UE_Factor");
+
+			// Load
+			for (LoadObj pLoad : ckt.getLoads()) {
+				if (pLoad.isEnabled()) {
+					DoIt = false;
+					if (UE_Only) {
+						if (pLoad.getUnserved()) DoIt = true;
+					} else {
+						if (pLoad.getExceedsNormal()) DoIt = true;
+					}
+
+					if (DoIt) {
+						FPrinter.print(pLoad.getName() + ", ");
+						FPrinter.print(pLoad.getBus(1) + ", ");  // TODO Check zero based indexing
+						FPrinter.print(pLoad.getkWBase() + ", ");
+						FPrinter.print(pLoad.getEEN_Factor() + ", ");
+						FPrinter.print(pLoad.getUE_Factor());
+						FPrinter.println();
+					}
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Exports YPrim matrices for all circuit elements.
+	 */
 	public static void exportYprim(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i, j, k;
+		Complex[] cValues;
+		CktElement cktElem;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		if (ckt == null) return;
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			for (k = 0; k < ckt.getNumDevices(); k++) {
+				ckt.setActiveCktElement( ckt.getCktElements().get(k) );
+				if (ckt.getActiveCktElement().isEnabled()) {
+					if ((ckt.getActiveCktElement() instanceof PDElement) || (ckt.getActiveCktElement() instanceof PCElement)) {
+						cktElem = ckt.getActiveCktElement();
+						FPrinter.println(cktElem.getParentClass().getName() + "." + cktElem.getName());
+						cValues = cktElem.getYPrimValues(DSSGlobals.ALL_YPRIM);
+						for (i = 0; i < cktElem.getYorder(); i++) {
+							for (j = 0; j < cktElem.getYorder(); j++)
+								FPrinter.printf("%-13.10g, %-13.10g, ", cValues[i + (j - 1) * cktElem.getYorder()].getReal(), cValues[i + (j - 1) * cktElem.getYorder()].getImaginary());
+							FPrinter.println();
+						}
+					}
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Exports system Y matrix in node order.
+	 */
 	public static void exportY(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		long i, j, p;
+		CMatrix Y;
+		long nBus = 0, nNZ = 0;
+		long[] ColPtr, RowIdx;
+		Complex[] cVals;
+		double re, im;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		if (ckt == null) return;
+		Y = ckt.getSolution().getY();
+		if (Y == null) {
+			Globals.doSimpleMsg("Y Matrix not Built.", 222);
+			return;
+		}
+		// this compresses the entries if necessary - no extra work if already solved
+//		KLU.factorSparseMatrix(Y);
+//		KLU.getNNZ(Y, nNZ);
+//		KLU.getSize(Y, nBus);  // we should already know this
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			ColPtr = new long[(int) (nBus + 1)];
+			RowIdx = new long[(int) nNZ];
+			cVals  = new Complex[(int) nNZ];
+//			KLU.getCompressedMatrix(Y, nBus + 1, nNZ, ColPtr[0], RowIdx[0], cVals[0]);
+
+			/* Write out fully qualified bus names */
+
+			FPrinter.printf("%d, ", ckt.getNumNodes());
+			FPrinter.println();
+			/*for (i = 0; i < ckt.getNumNodes(); i++) {
+				j = ckt.getMapNodeToBus()[i].BusRef;
+				FPrinter.printf("%s.%-d, +j,", ckt.getBusList().get(j), ckt.getMapNodeToBus()[i].NodeNum);
+			}
+			FPrinter.println();*/
+
+			for (i = 0; i < ckt.getNumNodes(); i++) {
+				j =  ckt.getMapNodeToBus()[(int) i].BusRef;
+				FPrinter.printf("%s.%-d, ", ckt.getBusList().get((int) j), ckt.getMapNodeToBus()[(int) i].NodeNum);
+				for (j = 0; j < ckt.getNumNodes(); j++) {
+					re = 0.0;
+					im = 0.0;
+					// search for a non-zero element [i, j]
+					// DSS indices are 1-based, KLU indices are 0-based
+					for (p = ColPtr[(int) (j - 1)]; p < ColPtr[(int) j] - 1; p++) {
+						if (RowIdx[(int) p] + 1 == i) {
+							re = cVals[(int) p].getReal();
+							im = cVals[(int) p].getImaginary();
+						}
+					}
+					FPrinter.printf("%-13.10g, +j %-13.10g,", re, im);
+				}
+				FPrinter.println();
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Export symmetrical component impedances at each bus.
+	 */
 	public static void exportSeqZ(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i;
+		Complex Z1, Z0;
+		double X1R1, X0R0;
 
-	}
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
 
-	public static void exportBusCoords(String FileNm) {
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
 
+			FPrinter.println("Bus,  NumNodes, R1, X1, R0, X0, Z1, Z0, \"X1/R1\", \"X0/R0\"");
+
+			for (i = 0; i < ckt.getNumBuses(); i++) {
+				Z1 = ckt.getBuses()[i].getZsc1();
+				Z0 = ckt.getBuses()[i].getZsc0();
+				if (Z1.getReal() != 0.0) {
+					X1R1 = Z1.getImaginary() / Z1.getReal();
+				} else {
+					X1R1 = 1000.0;
+				}
+				if (Z0.getReal() != 0.0) {
+					X0R0 = Z0.getImaginary() / Z0.getReal();
+				} else {
+					X0R0 = 1000.0;
+				}
+
+				FPrinter.printf("\"%s\", %d, %10.6g, %10.6g, %10.6g, %10.6g, %10.6g, %10.6g, %8.4g, %8.4g",
+						ckt.getBusList().get(i), ckt.getBuses()[i].getNumNodesThisBus(),
+						Z1.getReal(), Z1.getImaginary(), Z0.getReal(), Z0.getImaginary(), Z1.abs(), Z0.abs(), X1R1, X0R0);
+				FPrinter.println();
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportUUIDs(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		LineCode clsCode;
+		LineGeometry clsGeom;
+		WireData clsWire;
+		XfmrCode clsXfmr;
+		NamedObject pName;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			clsCode = (LineCode)     Globals.getDSSClassList().get(Globals.getClassNames().find("linecode"));
+			clsWire = (WireData)     Globals.getDSSClassList().get(Globals.getClassNames().find("wiredata"));
+			clsGeom = (LineGeometry) Globals.getDSSClassList().get(Globals.getClassNames().find("linegeometry"));
+			clsXfmr = (XfmrCode)     Globals.getDSSClassList().get(Globals.getClassNames().find("xfmrcode"));
+
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			FPrinter.printf("%s.%s %s", ckt.getDSSClassName(), ckt.getLocalName(), ckt.getID());
+			FPrinter.println();
+
+			for (NamedObject pNamed : ckt.getCktElements()) {
+				FPrinter.printf("%s.%s %s", pNamed.getDSSClassName(), pNamed.getLocalName(), pNamed.getID());
+				FPrinter.println();
+			}
+
+			pName = (NamedObject) clsCode.getElementList().getFirst();  // FIXME Make generic
+			while (pName != null) {
+				FPrinter.printf("%s.%s %s", pName.getDSSClassName(), pName.getLocalName(), pName.getID());
+				FPrinter.println();
+				pName = (NamedObject) clsCode.getElementList().getNext();
+			}
+
+			pName = (NamedObject) clsWire.getElementList().getFirst();  // FIXME Make generic
+			while (pName != null) {
+				FPrinter.printf("%s.%s %s", pName.getDSSClassName(), pName.getLocalName(), pName.getID());
+				FPrinter.println();
+				pName = (NamedObject) clsWire.getElementList().getNext();
+			}
+
+			pName = (NamedObject) clsGeom.getElementList().getFirst();  // FIXME Make generic
+			while (pName != null) {
+				FPrinter.printf("%s.%s %s", pName.getDSSClassName(), pName.getLocalName(), pName.getID());
+				FPrinter.println();
+				pName = (NamedObject) clsGeom.getElementList().getNext();
+			}
+
+			pName = (NamedObject) clsXfmr.getElementList().getFirst();  // FIXME Make generic
+			while (pName != null) {
+				FPrinter.printf("%s.%s %s", pName.getDSSClassName(), pName.getLocalName(), pName.getID());
+				FPrinter.println();
+				pName = (NamedObject) clsXfmr.getElementList().getNext();
+			}
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportCounts(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			FPrinter.println("Format: DSS Class Name = Instance Count");
+			FPrinter.println();
+			for (DSSClass cls : Globals.getDSSClassList()) {
+				FPrinter.printf("%s = %d", cls.getName(), cls.getElementCount());
+				FPrinter.println();
+			}
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportSummary(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		Complex cPower, cLosses;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			if (new File(FileNm).exists()) {
+				F = new FileWriter(FileNm, true);  // append
+				FPrinter = new PrintWriter(F);
+			} else {
+				F = new FileWriter(FileNm);
+				FPrinter = new PrintWriter(F);
+				// Create and write the header
+				FPrinter.print("DateTime, CaseName, ");
+				FPrinter.print("Status, Mode, Number, LoadMult, NumDevices, NumBuses, NumNodes");
+				FPrinter.print(", Iterations, ControlMode, ControlIterations");
+				FPrinter.print(", MostIterationsDone");
+				if (ckt != null) {
+					if (ckt.isSolved() && !ckt.isBusNameRedefined()) {
+						FPrinter.print(", Year, Hour, MaxPuVoltage, MinPuVoltage, TotalMW, TotalMvar");
+						FPrinter.print(", kWLosses, pctLosses, kvarLosses, Frequency");
+					}
+				}
+				FPrinter.println();
+			}
+
+			Calendar cal = Calendar.getInstance();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+			FPrinter.printf("\"%s\", ", sdf.format( cal.getTime() ));
+			if (ckt != null) {
+				FPrinter.printf("%s, ", ckt.getCaseName());
+			} else {
+				FPrinter.print("NONE, ");
+			}
+
+			if (ckt.isSolved()) {
+				FPrinter.print("SOLVED");
+			} else {
+				FPrinter.print("UnSolved");
+			}
+
+			FPrinter.printf(", %s",    Utilities.getSolutionModeID());
+			FPrinter.printf(", %d",    ckt.getSolution().getNumberOfTimes());
+			FPrinter.printf(", %8.3f", ckt.getLoadMultiplier());
+			FPrinter.printf(", %d",    ckt.getNumDevices());
+			FPrinter.printf(", %d",    ckt.getNumBuses());
+			FPrinter.printf(", %d",    ckt.getNumNodes());
+			FPrinter.printf(", %d",    ckt.getSolution().getIteration());
+			FPrinter.printf(", %s",    Utilities.getControlModeID());
+			FPrinter.printf(", %d",    ckt.getSolution().getControlIteration());
+			FPrinter.printf(", %d",    ckt.getSolution().getMostIterationsDone());
+			if (ckt != null) {
+				if (ckt.isSolved() && !ckt.isBusNameRedefined()) {
+					FPrinter.printf(", %d",    ckt.getSolution().getYear());
+					FPrinter.printf(", %d",    ckt.getSolution().getIntHour());
+					FPrinter.printf(", %-.5g", Utilities.getMaxPUVoltage());
+					FPrinter.printf(", %-.5g", Utilities.getMinPUVoltage(true));
+					cPower = Utilities.getTotalPowerFromSources().multiply(0.000001);  // MVA
+					FPrinter.printf(", %-.6g", cPower.getReal());
+					FPrinter.printf(", %-.6g", cPower.getImaginary());
+					cLosses = ckt.getLosses().multiply(0.000001);
+					if (cPower.getReal() != 0.0) {
+						FPrinter.printf(", %-.6g, %-.4g", cLosses.getReal(), cLosses.getReal() / cPower.getReal() * 100.0);
+					} else {
+						FPrinter.printf("Total Active Losses:   ****** MW, (**** %%)");
+					}
+					FPrinter.printf(", %-.6g", cLosses.getImaginary());
+					FPrinter.printf(", %-g", ckt.getSolution().getFrequency());
+				}
+			}
+
+			FPrinter.println();
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	/**
+	 * Export bus x, y coordinates.
+	 */
+	public static void exportBusCoords(String FileNm) {
+		FileWriter F;
+		PrintWriter FPrinter;
+		int i;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+
+			for (i = 0; i < ckt.getNumBuses(); i++) {
+				if (ckt.getBuses()[i].isCoordDefined()) {
+					FPrinter.printf("%s, %-13.11g, %-13.11g", Utilities.checkForBlanks(ckt.getBusList().get(i)), ckt.getBuses()[i].getX(), ckt.getBuses()[i].getY());
+					FPrinter.println();
+				}
+			}
+
+			Globals.setGlobalResult(FileNm);
+
+			FPrinter.close();
+			F.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void exportCDPSM_UnBal(String fileName) {
