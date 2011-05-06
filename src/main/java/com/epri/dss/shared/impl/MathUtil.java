@@ -314,4 +314,9 @@ public abstract class MathUtil {
 		return 0;
 	}
 
+	public static String getXR(Complex divide) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -19,18 +19,20 @@ package com.epri.dss.shared.impl;
 
 import org.apache.commons.math.MathRuntimeException;
 
+import com.epri.dss.shared.Polar;
+
 public class ComplexUtil {
-	
+
 	private ComplexUtil() {
 		super();
 	}
-	
+
 	public static Complex pclx(double magn, double angle) {
 		return new Complex(magn * Math.cos(angle), magn * Math.sin(angle));
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param r the modulus of the complex number to create
 	 * @param theta the argument of the complex number to create IN DEGREES
 	 */
@@ -70,6 +72,10 @@ public class ComplexUtil {
 				"negative complex module {0}", r);
 		}
 		return new Complex(r * Math.cos(theta), r * Math.sin(theta));
+	}
+
+	public static Polar complexToPolarDeg(Complex a) {
+		return new PolarImpl(a.abs(), a.degArg());
 	}
 
 }
