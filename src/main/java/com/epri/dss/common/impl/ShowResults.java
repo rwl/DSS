@@ -9,13 +9,28 @@ import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.control.RegControlObj;
+import com.epri.dss.conversion.Generator;
+import com.epri.dss.conversion.GeneratorObj;
+import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.delivery.PDElement;
+import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.delivery.impl.LineImpl;
+import com.epri.dss.general.LineGeometry;
+import com.epri.dss.general.LineGeometryObj;
+import com.epri.dss.meter.EnergyMeter;
+import com.epri.dss.meter.EnergyMeterObj;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.CktTree;
+import com.epri.dss.shared.CktTreeNode;
 import com.epri.dss.shared.Polar;
 import com.epri.dss.shared.impl.CMatrixImpl;
+import com.epri.dss.shared.impl.CktTreeImpl;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
+import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
 
 public abstract class ShowResults {
@@ -1554,55 +1569,1160 @@ public abstract class ShowResults {
 	 * Show bus names and nodes in uses.
 	 */
 	public static void showBuses(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i, j;
+		Bus pBus;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			setMaxBusNameLength();
+			MaxBusNameLength += 2;
+
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("BUSES AND NODES IN ACTIVE CIRCUIT: " + ckt.getName());
+			F.println();
+			F.println(Utilities.pad("     ", MaxBusNameLength) + "                         Coord                        Number of     Nodes ");
+			F.println(Utilities.pad("  Bus", MaxBusNameLength) + "    Base kV             (x, y)            Keep?       Nodes      connected ...");
+			F.println();
+			for (i = 0; i < ckt.getNumBuses(); i++) {
+				F.print(Utilities.pad(Utilities.encloseQuotes(ckt.getBusList().get(i)), MaxBusNameLength) + " ");
+				pBus = ckt.getBuses()[i];
+				if (pBus.getkVBase() > 0.0) {
+					F.print(pBus.getkVBase() * DSSGlobals.SQRT3);
+				} else {
+					F.print("   NA ");
+				}
+				F.print("          (");
+				if (pBus.isCoordDefined()) {
+					F.printf(" %-13.11g, %-13.11g)", pBus.getX(), pBus.getY());
+				} else {
+					F.print("           NA,            NA )");
+				}
+				if (pBus.isKeep()) {
+					F.print("     Yes  ");
+				} else {
+					F.print("     No  ");
+				}
+				F.print("     ");
+				F.print(pBus.getNumNodesThisBus());
+				F.print("       ");
+				for (j = 0; j < pBus.getNumNodesThisBus(); j++) {
+					F.print(pBus.getNum(j) + " ");
+				}
+				F.println();
+			}
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Show values of meter elements.
+	 */
 	public static void showMeters(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i, j;
+		EnergyMeter MeterClass;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("ENERGY METER VALUES");
+			F.println();
+			F.println("Registers:");
+			MeterClass = (EnergyMeter) DSSClassDefs.getDSSClass("Energymeter");
+			if (MeterClass == null)
+				return;
+			if (MeterClass.getElementCount() == 0) {
+				F.println("No Energymeter Elements Defined.");
+			} else {
+				EnergyMeterObj pMeter = ckt.getEnergyMeters().get(0);  // write registernames for first meter only
+				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					F.println("Reg " + String.valueOf(i) + " = " + pMeter.getRegisterNames()[i]);
+				F.println();
+
+				if (pMeter != null) {
+					F.print("Meter        ");
+					for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+						F.print(Utilities.pad("   Reg " + String.valueOf(i), 11));
+					F.println();
+					F.println();
+				}
+
+				for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
+					if (pElem != null) {
+						if (pElem.isEnabled()) {
+							F.print(Utilities.pad(pElem.getName(), 12));
+							for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+								F.print(pElem.getRegisters()[j] + " ");
+						}
+					}
+					F.println();
+				}
+			}
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Show values of generator meter elements
+	 */
 	public static void showGenMeters(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i, j;
+		Generator GeneratorClass;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("GENERATOR ENERGY METER VALUES");
+			F.println();
+
+			GeneratorObj pGen = ckt.getGenerators().get(0);
+			if (pGen != null) {
+				GeneratorClass = (Generator) pGen.getParentClass();
+				F.print("Generator          ");
+				for (i = 0; i < Generator.NumGenRegisters; i++)
+					F.print(Utilities.pad(GeneratorClass.getRegisterNames()[i], 11));
+				F.println();
+				F.println();
+			}
+
+			for (GeneratorObj pElem : ckt.getGenerators()) {
+				if (pElem != null) {
+					if (pElem.isEnabled()) {
+						F.print(Utilities.pad(pElem.getName(), 12));
+						for (j = 0; j < Generator.NumGenRegisters; j++) {
+							F.print(pElem.getRegisters()[j] + " ");
+						}
+					}
+				}
+				F.println();
+			}
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
-	public static void showMeterZone(String FileNm) {
-
-	}
-
-	public static void showLosses(String FileNm) {
-
+	/**
+	 * Assumes 0 is 1.0 per unit tap.
+	 */
+	private static int tapPosition(TransformerObj Transformer, int iWind) {
+		return (int) Math.round((Transformer.getPresentTap(iWind) - 1.0) / Transformer.getTapIncrement(iWind));
 	}
 
 	public static void showRegulatorTaps(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+//		RegControlObj pReg;
+		int iWind;
 
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("CONTROLLED TRANSFORMER TAP SETTINGS");
+			F.println();
+			F.println("Name            Tap      Min       Max     Step  Position");
+			F.println();
+
+			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+			for (RegControlObj pReg : ckt.getRegControls()) {
+				TransformerObj t = pReg.getTransformer();
+				iWind = pReg.getWinding();
+				F.print(Utilities.pad(t.getName(), 12) + " ");
+				F.printf("%8.5f %8.5f %8.5f %8.5f     %d", t.getPresentTap(iWind), t.getMinTap(iWind), t.getMaxTap(iWind), t.getTapIncrement(iWind), tapPosition(pReg.getTransformer(), iWind));
+				F.println();
+			};
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	public static void showMeterZone(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i;
+		EnergyMeterObj pMtr;
+		EnergyMeter pMtrClass;
+		PDElement PDElem;
+		LoadObj LoadElem;
+		String ParamName;
+		String Param;
+
+		// Singletons
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Parser parser = Parser.getInstance();
+
+		try {
+			FileNm = Utilities.stripExtension(FileNm);
+			ParamName = parser.getNextParam();
+			Param = parser.makeString();
+
+			FileNm = FileNm+"_"+Param+".txt";
+
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			Globals.setGlobalResult(FileNm);
+
+			pMtrClass = (EnergyMeter) Globals.getDSSClassList().get(Globals.getClassNames().find("energymeter"));
+
+			if (Param.length() > 0) {
+				pMtr = (EnergyMeterObj) pMtrClass.find(Param);  // FIXME make generic
+				if (pMtr == null) {
+					Globals.doSimpleMsg("EnergyMeter \"" + Param + "\" not found.", 220);
+				} else {
+					if (pMtr.getBranchList() != null) {
+						F.println("Branches and Load in Zone for EnergyMeter " + Param);
+						F.println();
+
+						PDElem = (PDElement) pMtr.getBranchList().getFirst();
+						while (PDElem != null) {
+							for (i = 0; i < pMtr.getBranchList().getLevel(); i++)
+								F.print(TABCHAR);
+							//F.print(pMtr.getBranchList().getLevel() +" ");
+							F.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
+							CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
+							if (pb.isIsParallel())
+								F.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName()+")");
+							if (pb.isIsLoopedHere())
+								F.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
+
+							if (PDElem.getSensorObj() != null) {
+								F.printf(" (Sensor: %s.%s) ", PDElem.getSensorObj().getParentClass().getName(), PDElem.getSensorObj().getName());
+							} else {
+								F.print(" (Sensor: NIL)");
+							}
+							F.println();
+							LoadElem = (LoadObj) pMtr.getBranchList().getFirstObject();
+							while (LoadElem != null) {
+								for (i = 0; i < pMtr.getBranchList().getLevel() + 1; i++)
+									F.print(TABCHAR);
+								F.print(LoadElem.getParentClass().getName() + "." + LoadElem.getName());
+								if (LoadElem.getSensorObj() != null) {
+									F.printf(" (Sensor: %s.%s) ", LoadElem.getSensorObj().getParentClass().getName(), LoadElem.getSensorObj().getName());
+								} else {
+									F.print(" (Sensor: NIL)");
+								}
+								F.println();
+								LoadElem = (LoadObj) pMtr.getBranchList().getNextObject();
+							}
+							PDElem = (PDElement) pMtr.getBranchList().GoForward();
+						}
+					}
+				}
+			} else {
+				Globals.doSimpleMsg("Meter Name Not Specified."+ DSSGlobals.CRLF + parser.getCmdString(), 221);
+			}
+
+			F.close();
+			FWriter.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		} finally {
+			ParamName = parser.getNextParam();
+			Param = parser.makeString();
+
+			switch (Param.length()) {
+			case 0:
+				Utilities.fireOffEditor(FileNm);
+			default:
+				DSSForms.showTreeView(FileNm);
+			}
+		}
 	}
 
 	public static void showOverloads(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		Complex[] cBuffer;  // Allocate to max total conductors
+		int NCond, i, j, k;
+//		PDElement PDElem;
+		Complex[] Iph = new Complex[3];
+		Complex[] I012 = new Complex[3];
+		double I0, I1, I2, Cmag, Cmax;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		setMaxDeviceNameLength();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			/* Allocate c_Buffer big enough for largest circuit element */
+			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
+
+			/* Sequence Currents */
+			F.println();
+			F.println("Power Delivery Element Overload Report");
+			F.println();
+			F.println("SYMMETRICAL COMPONENT CURRENTS BY CIRCUIT ELEMENT ");
+			F.println();
+			F.println("Element                      Term    I1      I2    %I2/I1    I0    %I0/I1 %Normal   %Emergency");
+			F.println();
+
+			// PD elements
+			for (PDElement PDElem : ckt.getPDElements()) {
+				if (PDElem.isEnabled())
+					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // Ignore capacitors
+						NCond = PDElem.getNConds();
+						PDElem.getCurrents(cBuffer);
+
+						for (j = 0; j < 1; j++) {  // Check only terminal 1 for overloads
+							if (PDElem.getNPhases() >= 3) {
+								Cmax = 0.0;
+								for (i = 0; i < 3; i++) {
+									k = (j - 1) * NCond + i;
+									Iph[i] = cBuffer[k];
+									Cmag = Iph[i].abs();
+									if (Cmag > Cmax)
+										Cmax = Cmag;
+								}
+								MathUtil.phase2SymComp(Iph, I012);
+								I0 = I012[0].abs();
+								I1 = I012[1].abs();
+								I2 = I012[2].abs();
+							} else {
+								I0 = 0.0;
+								I1 = cBuffer[1 + (j - 1) * NCond].abs();
+								I2 = 0.0;
+								Cmax = I1;
+							}
+
+							if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
+								if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
+									F.print(Utilities.pad(Utilities.fullName(PDElem), MaxDeviceNameLength + 2) + j);
+									F.print(I1);
+									F.print(I2);
+									if (I1 > 0.0) {
+										F.print(100.0 * I2 / I1);
+									} else {
+										F.print("     0.0");
+									}
+									F.print(I0);
+									if (I1 > 0.0) {
+										F.print(100.0 * I0 / I1);
+									} else {
+										F.print("     0.0");
+									}
+									if (PDElem.getNormAmps() > 0.0) {
+										F.print(Cmax / PDElem.getNormAmps() * 100.0);
+									} else {
+										F.print("     0.0");
+									}
+									if (PDElem.getEmergAmps() > 0.0) {
+										F.print(Cmax / PDElem.getEmergAmps() * 100.0);
+									} else {
+										F.print("     0.0");
+									}
+									F.println();
+								}
+							}
+						}
+					}
+			}
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showUnserved(String FileNm, boolean UE_Only) {
+		FileWriter FWriter;
+		PrintWriter F;
+//		LoadObj PLoad;
+		boolean DoIt;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("UNSERVED  LOAD  REPORT");
+			F.println();
+			F.println("Load Element        Bus        Load kW  EEN Factor  UE Factor");
+			F.println();
+
+			// Load
+			for (LoadObj pLoad : ckt.getLoads()) {
+				if (pLoad.isEnabled()) {
+					DoIt = false;
+					if (UE_Only) {
+						if (pLoad.getUnserved())
+							DoIt = true;
+					} else {
+						if (pLoad.getExceedsNormal())
+							DoIt = true;
+					}
+
+					if (DoIt) {
+						F.print(Utilities.pad(pLoad.getName(), 20));
+						F.print(Utilities.pad(pLoad.getBus(1), 10));
+						F.print(pLoad.getkWBase());
+						F.print(pLoad.getEEN_Factor());
+						F.print(pLoad.getUE_Factor());
+						F.println();
+					}
+				}
+			}
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	public static void showLosses(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+//		PDElement PDElem;
+//		PCElement PCElem;
+
+		Complex kLosses,
+			TotalLosses,
+			LineLosses,
+			TransLosses,
+			TermPower,
+			LoadPower;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		setMaxDeviceNameLength();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			/* Sequence Currents */
+			F.println();
+			F.println("LOSSES REPORT");
+			F.println();
+			F.println("Power Delivery Element Loss Report");
+			F.println();
+			F.println("Element                  kW Losses    % of Power   kvar Losses");
+			F.println();
+
+			TotalLosses = Complex.ZERO;
+			LineLosses  = Complex.ZERO;
+			TransLosses = Complex.ZERO;
+
+			// PD elements
+			for (PDElement PDElem : ckt.getPDElements()) {
+				if (PDElem.isEnabled()) {
+					/*if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {*/    // Ignore capacitors
+					kLosses = PDElem.getLosses().multiply(0.001);   // kW Losses in element
+					TotalLosses = TotalLosses.add(kLosses);
+					TermPower = PDElem.getPower(1).multiply(0.001);  // Terminal 1 power  TODO Check zero based indexing
+
+					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) == DSSClassDefs.XFMR_ELEMENT)
+						TransLosses = TransLosses.add(kLosses);
+					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) == DSSClassDefs.LINE_ELEMENT)
+						LineLosses = LineLosses.add(kLosses);
+
+					F.print(Utilities.pad(Utilities.fullName(PDElem), MaxDeviceNameLength + 2));
+					F.printf("%10.5f, ", kLosses.getReal());
+					if ((TermPower.getReal() > 0.0) && (kLosses.getReal() > 0.0009)) {
+						F.print(kLosses.getReal() / Math.abs(TermPower.getReal()) * 100.0);
+					} else {
+						F.print(Complex.ZERO.getReal());
+					}
+					F.printf("     %.6g", kLosses.getImaginary());
+					F.println();
+				}
+			}
+
+			F.println();
+			F.println(Utilities.pad("LINE LOSSES=", 30) + LineLosses.getReal() + " kW");
+			F.println(Utilities.pad("TRANSFORMER LOSSES=", 30) + TransLosses.getReal() + " kW");
+			F.println();
+			F.println(Utilities.pad("TOTAL LOSSES=", 30) + TotalLosses.getReal() + " kW");
+
+			LoadPower = Complex.ZERO;
+			// Sum the total load kW being served in the Ckt Model
+			for (PCElement PCElem : ckt.getLoads()) {
+				if (PCElem.isEnabled()) {
+					LoadPower = LoadPower.add(PCElem.getPower(1));
+				}
+			}
+			LoadPower = LoadPower.multiply(0.001);
+
+			F.println();
+			F.println(Utilities.pad("TOTAL LOAD POWER = ", 30) + Math.abs(LoadPower.getReal()) + " kW");
+			F.print(Utilities.pad("Percent Losses for Circuit = ", 30));
+			if (LoadPower.getReal() != 0.0)
+				F.println(Math.abs(TotalLosses.getReal() / LoadPower.getReal()) * 100.0 + " %");
+
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showVariables(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			/* Sequence Currents */
+			F.println();
+			F.println("VARIABLES REPORT");
+			F.println();
+			F.println("Present values of all variables in PC Elements in the circuit.");
+			F.println();
+
+			for (PCElement PCElem : ckt.getPCElements()) {
+				if (PCElem.isEnabled() && (PCElem.numVariables() > 0)) {
+					F.println("ELEMENT: " + PCElem.getParentClass().getName() + "." + PCElem.getName());
+					F.println("No. of variables: " + PCElem.numVariables());
+					for (i = 0; i < PCElem.numVariables(); i++)
+						F.println("  " + PCElem.variableName(i) + " = " + String.format("%-.6g", PCElem.getVariable(i)));
+					F.println();
+				}
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Show isolated buses/branches in present circuit.
+	 */
 	public static void showIsolated(String FileNm) {
+		CktTree Branch_List,
+				SubArea;  // Pointers to all circuit elements
 
+		FileWriter FWriter;
+		PrintWriter F;
+		CktElement TestElem, TestBranch, pElem;
+
+		int i, j;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		// Make sure bus list is built
+		if (ckt.isBusNameRedefined()) ckt.reProcessBusDefs();
+		/* Initialize all circuit elements to not checked */
+		for (CktElement TestElement : ckt.getCktElements()) {
+			TestElement.setChecked(false);
+			for (i = 0; i < TestElement.getNTerms(); i++) {
+				TestElement.getTerminals()[i].setChecked(false);
+			}
+		}
+
+		// Initialize the checked flag for all buses
+		for (j = 0; j < ckt.getNumBuses(); j++)
+			ckt.getBuses()[j].setBusChecked(false);
+
+		// Get Started at main voltage source
+		TestElem = ckt.getSources().get(0);
+		Branch_List = CktTreeImpl.getIsolatedSubArea(TestElem);
+
+		/* Show Report of Elements connected and not connected */
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println();
+			F.println("ISOLATED CIRCUIT ELEMENT REPORT");
+			F.println();
+			F.println();
+			F.println("***  THE FOLLOWING BUSES HAVE NO CONNECTION TO THE SOURCE ***");
+			F.println();
+
+			for (j = 0; j < ckt.getNumBuses(); j++) {
+				if (!ckt.getBuses()[j].isBusChecked())
+					F.println(Utilities.encloseQuotes(ckt.getBusList().get(j)));
+			}
+
+			F.println();
+			F.println("***********  THE FOLLOWING SUB NETWORKS ARE ISOLATED ************");
+			F.println();
+
+			for (CktElement TestElement : ckt.getCktElements()) {
+				if (TestElement.isEnabled())
+					if (!TestElement.isChecked())
+						if ((TestElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) == DSSClassDefs.PD_ELEMENT) {
+							SubArea = CktTreeImpl.getIsolatedSubArea(TestElement);
+							F.println("*** START SUBAREA ***");
+
+							TestBranch = (CktElement) SubArea.getFirst();  // TODO Implement
+							while (TestBranch != null) {
+								F.println("(" + SubArea.getLevel() + ") " + TestBranch.getParentClass().getName() + "." + TestBranch.getName());
+								pElem = (CktElement) SubArea.getFirstObject();
+								while (pElem != null) {
+									F.println("[SHUNT], " + pElem.getParentClass().getName() + "." + pElem.getName());
+									pElem = (CktElement) SubArea.getNextObject();
+								}
+								TestBranch = (CktElement) SubArea.GoForward();
+							}
+							SubArea = null;
+							F.println();
+						}
+			}
+
+			F.println();
+			F.println("***********  THE FOLLOWING ENABLED ELEMENTS ARE ISOLATED ************");
+			F.println();
+
+			/* Mark all controls, energy meters and monitors as checked so they don"t show up */
+
+			for (i = 0; i < ckt.getDSSControls().size(); i++)
+				((CktElement) ckt.getDSSControls().get(i)).setChecked(true);
+			for (i = 0; i < ckt.getMeterElements().size(); i++)
+				((CktElement) ckt.getMeterElements().get(i)).setChecked(true);
+
+			for (CktElement TestElement : ckt.getCktElements()) {
+				if (TestElement.isEnabled()) {
+					if (!TestElement.isChecked()) {
+						F.print("\"" + TestElement.getParentClass().getName() + "." + TestElement.getName() + "\"");
+						F.print("  Buses:");
+						for (j = 0; j < TestElement.getNTerms(); j++)
+							F.print("  \"" + TestElement.getBus(j) + "\"");
+						F.println();
+					}
+				}
+			}
+
+			F.println();
+			F.println("***  THE FOLLOWING BUSES ARE NOT CONNECTED TO ANY POWER DELIVERY ELEMENT ***");
+			F.println();
+
+			for (j = 0; j < ckt.getNumBuses(); j++) {
+				if (!ckt.getBuses()[j].isBusChecked())
+					F.println(Utilities.encloseQuotes(ckt.getBusList().get(j)));
+			}
+
+			F.println();
+			F.println("***********  CONNECTED CIRCUIT ELEMENT TREE ************");
+			F.println();
+			F.println("(Lexical Level) Element name");
+			F.println();
+
+			TestBranch = (CktElement) Branch_List.getFirst();  // FIXME Make generic
+			while (TestBranch != null) {
+				F.println("(" + Branch_List.getLevel() + ") " + TestBranch.getParentClass().getName() + "." + TestBranch.getName());
+				TestElem = (CktElement) Branch_List.getFirstObject();
+				while (TestElem != null) {
+					F.println("[SHUNT], " + TestElem.getParentClass().getName() + "." + TestElem.getName());
+					TestElem = (CktElement) Branch_List.getNextObject();
+				}
+				TestBranch = (CktElement) Branch_List.GoForward();
+			}
+
+			Branch_List = null;
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showRatings(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+//		PDElement PDElem;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println("Power Delivery Elements Normal and Emergency (max) Ratings");
+			F.println();
+
+			for (PDElement PDElem : ckt.getPDElements()) {
+				F.print("\"" + PDElem.getParentClass().getName() + "." + PDElem.getName() + "\" normamps=");
+				F.printf("%-.4g,  %-.4g  !Amps", PDElem.getNormAmps(), PDElem.getEmergAmps());
+				F.println();
+
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
+	/**
+	 * Show loops and paralleled branches in meter zones.
+	 */
 	public static void showLoops(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		PDElement PDElem;
+		int hMeter;
+		EnergyMeterObj pMtr;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println("Loops and Paralleled Lines in all EnergyMeter Zones");
+			F.println();
+
+			hMeter = Globals.getEnergyMeterClass().getFirst();
+
+			while (hMeter > 0) {
+
+				pMtr = (EnergyMeterObj) Globals.getActiveDSSObject();
+
+				if (pMtr.getBranchList() != null) {
+
+					PDElem = (PDElement) pMtr.getBranchList().getFirst();
+					while (PDElem != null) {
+
+						CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
+						if (pb.isIsParallel())
+							F.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName() +": PARALLEL WITH " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
+						if (pb.isIsLoopedHere())
+							F.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName() + ": LOOPED TO     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
+
+						PDElem = (PDElement) pMtr.getBranchList().GoForward();
+					}
+				}
+
+				hMeter = Globals.getEnergyMeterClass().getNext();
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+	}
+
+	private static void topoLevelTabs(PrintWriter F, int nLevel) {
+		int nTabs, i;
+
+		nTabs = 30;
+		if (nLevel < nTabs) nTabs = nLevel;
+		for (i = 0; i < nTabs; i++)
+			F.print(TABCHAR);
+		if (nLevel > nTabs)
+			F.printf("(* %d *)", nLevel);
+	}
+
+	public static void showTopology(String FileRoot) {
+		FileWriter FWriter;
+		PrintWriter F;
+		FileWriter FTreeWriter;
+		PrintWriter FTree;
+		String FileNm, TreeNm;
+		PDElement PDElem;
+		LoadObj LoadElem;
+		CktTree topo;
+		int nLoops, nParallel, nLevels, nIsolated, nSwitches;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FileNm = FileRoot + "TopoSumm.Txt";
+			TreeNm = FileRoot + "TopoTree.Txt";
+
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+			F.println("Topology analysis for switch control algorithms");
+			F.println();
+
+			FTreeWriter = new FileWriter(TreeNm);
+			FTree = new PrintWriter(FTreeWriter);
+			FTree.println("Branches and Loads in Circuit " + ckt.getName());
+			FTree.println();
+
+			topo = ckt.getTopology();
+			nLoops = 0;
+			nParallel = 0;
+			nLevels = 0;
+			nIsolated = 0;
+			nSwitches = 0;
+
+			if (topo != null) {
+				PDElem = (PDElement) topo.getFirst();
+				if (topo.getLevel() > nLevels)
+					nLevels = topo.getLevel();
+				topoLevelTabs(FTree, topo.getLevel());
+				FTree.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
+				CktTreeNode pb = topo.getPresentBranch();
+				if (pb.isIsParallel()) {
+					nParallel += 1;
+					FTree.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName() + ")");
+				}
+				if (pb.isIsLoopedHere()) {
+					nLoops++;
+					FTree.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()
+					+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
+				}
+				if (PDElem.hasSensorObj()) {
+					FTree.printf(" (Sensor: %s.%s) ",
+							PDElem.getSensorObj().getParentClass().getName(), PDElem.getSensorObj().getName());
+				}
+				if (PDElem.hasControl()) {
+					FTree.printf(" (Control: %s.%s) ",
+							PDElem.getControlElement().getParentClass().getName(), PDElem.getControlElement().getName());
+					if ((PDElem.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+						nSwitches++;
+				}
+				if (PDElem.hasEnergyMeter())
+					FTree.printf(" (Meter: %s) ", PDElem.getMeterObj().getName());
+				FTree.println();
+
+				LoadElem = (LoadObj) topo.getFirstObject();
+				while (LoadElem != null) {
+					topoLevelTabs(FTree, topo.getLevel() + 1);
+					FTree.print(LoadElem.getParentClass().getName() + "." + LoadElem.getName());
+					if (LoadElem.hasSensorObj())
+						FTree.printf(" (Sensor: %s.%s) ",
+								LoadElem.getSensorObj().getParentClass().getName(), LoadElem.getSensorObj().getName());
+					if (LoadElem.hasControl()) {
+						FTree.printf(" (Control: %s.%s) ",
+								LoadElem.getControlElement().getParentClass().getName(), LoadElem.getControlElement().getName());
+						if ((LoadElem.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+							nSwitches++;
+					}
+					if (LoadElem.hasEnergyMeter()) {
+						FTree.printf(" (Meter: %s) ", LoadElem.getMeterObj().getName());
+						FTree.println();
+						LoadElem = (LoadObj) topo.getNextObject();
+					}
+
+					PDElem = (PDElement) topo.GoForward();
+				}
+			}
+
+			for (PDElement PDElemt : ckt.getPDElements()) {
+				if (PDElemt.isIsolated()) {
+					FTree.printf("Isolated: %s.%s", PDElemt.getParentClass().getName(), PDElemt.getName());
+					if (PDElemt.hasSensorObj()) {
+						FTree.printf(" (Sensor: %s.%s) ",
+								PDElemt.getSensorObj().getParentClass().getName(), PDElemt.getSensorObj().getName());
+					}
+					if (PDElemt.hasControl()) {
+						FTree.printf(" (Control: %s.%s) ",
+								PDElemt.getControlElement().getParentClass().getName(), PDElemt.getControlElement().getName());
+
+						if ((PDElemt.getControlElement().getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.SWT_CONTROL)
+							nSwitches++;
+					}
+					if (PDElemt.hasEnergyMeter()) {
+						FTree.printf(" (Meter: %s) ", PDElemt.getMeterObj().getName());
+						FTree.println();
+						nIsolated += 1;
+					}
+				}
+			}
+
+			nLoops = nLoops / 2;  // TODO, see if parallel lines also counted twice
+			F.println(String.format("%d Levels Deep", nLevels));
+			F.println(String.format("%d Loops", nLoops));
+			F.println(String.format("%d Parallel PD elements", nParallel));
+			F.println(String.format("%d Isolated PD components", nIsolated));
+			F.println(String.format("%d Controlled Switches", nSwitches));
+
+			F.close();
+			FWriter.close();
+			FTree.close();
+			FTreeWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+			DSSForms.showTreeView(TreeNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showLineConstants(String FileNm, double Freq, int Units, double Rho) {
+		FileWriter FWriter;
+		PrintWriter F;
+		FileWriter F2Writer;
+		PrintWriter F2;
+		int p;
+		LineGeometryObj pElem;
+		CMatrix Z, YC;
+		int i, j;
+		double w;
+		Complex Zs, Zm,	Z1, Z0;
+		double CS, CM;
+		double C1, C0;
+		Complex YCM;
+		double XCM;
+		double CCM;  // Common mode capacitance
+		String LineCodesFileNm;
 
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println("LINE CONSTANTS");
+			F.println(String.format("Frequency = %.6g Hz, Earth resistivity = %.6g ohm-m", Freq, Rho));
+			F.println("Earth Model = " + Utilities.getEarthModel(Globals.getDefaultEarthModel()));
+			F.println();
+
+			LineCodesFileNm = "LineConstantsCode.dss";
+			F2Writer = new FileWriter(LineCodesFileNm);
+			F2 = new PrintWriter(F2Writer);
+
+			F2.println("!--- OpenDSS Linecodes file generated from Show LINECONSTANTS command");
+			F2.println(String.format("!--- Frequency = %.6g Hz, Earth resistivity = %.6g ohm-m", Freq, Rho));
+			F2.println("!--- Earth Model = " + Utilities.getEarthModel(Globals.getDefaultEarthModel()));
+
+			LineImpl.setLineGeometryClass( (LineGeometry) Globals.getDSSClassList().get(Globals.getClassNames().find("LineGeometry")) );
+			Z = null;
+			YC = null;
+
+			Globals.setActiveEarthModel(Globals.getDefaultEarthModel());
+
+			p = LineImpl.getLineGeometryClass().getFirst();
+			while (p > 0) {
+				pElem = (LineGeometryObj) LineImpl.getLineGeometryClass().getActiveObj();
+				Z = null;
+				YC = null;
+
+				try {
+					// Get impedances per unit length
+					pElem.setRhoEarth(Rho);
+					Z  = pElem.getZmatrix(Freq, 1.0, Units);
+					YC = pElem.getYCmatrix(Freq, 1.0, Units);
+				} catch (Exception e) {
+					Globals.doSimpleMsg("Error computing line constants for LineGeometry." + pElem.getName() +
+							"; Error message: " + e.getMessage(), 9934);
+				}
+
+				F.println();
+				F.println("--------------------------------------------------");
+				F.println("Geometry Code = " + pElem.getName());
+				F.println();
+				F.println("R MATRIX, ohms per " + LineUnits.lineUnitsStr(Units));
+				for (i = 0; i < Z.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F.printf("%.6g, ", Z.getElement(i, j).getReal());
+					F.println();
+				}
+
+				F.println();
+				F.println("jX MATRIX, ohms per " + LineUnits.lineUnitsStr(Units));
+				for (i = 0; i < Z.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F.printf("%.6g, ", Z.getElement(i, j).getImaginary());
+					F.println();
+				}
+
+				F.println();
+				F.println("Susceptance (jB) MATRIX, S per " + LineUnits.lineUnitsStr(Units));
+				for (i = 0; i < YC.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F.printf("%.6g, ", YC.getElement(i, j).getImaginary());
+					F.println();
+				}
+
+				w = Freq * DSSGlobals.TwoPi / 1.e3;
+				F.println();
+				F.println("L MATRIX, mH per " + LineUnits.lineUnitsStr(Units));
+				for (i = 0; i < Z.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F.printf("%.6g, ", Z.getElement(i, j).getImaginary() / w);
+					F.println();
+				}
+
+				w = Freq * DSSGlobals.TwoPi / 1.e9;
+				F.println();
+				F.println("C MATRIX, nF per " + LineUnits.lineUnitsStr(Units));
+				for (i = 0; i < YC.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F.printf("%.6g, ", YC.getElement(i, j).getImaginary() / w);
+					F.println();
+				}
+
+				/* Write DSS LineCode record */
+				//F.println();
+				//F.println(,"-------------------------------------------------------------------");
+				//F.println(,"-------------------DSS Linecode Definition-------------------------");
+				//F.println(,"-------------------------------------------------------------------");
+				F2.println();
+
+				F2.println(String.format("New Linecode.%s nphases=%d  Units=%s", pElem.getName(), Z.getNOrder(), LineUnits.lineUnitsStr(Units)));
+
+				F2.print("~ Rmatrix=[");
+				for (i = 0; i < Z.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F2.printf("%.6g  ", Z.getElement(i, j).getReal());
+					if (i < Z.getNOrder()) F2.print("|");
+				}
+				F2.println("]");
+
+				F2.print("~ Xmatrix=[");
+				for (i = 0; i < Z.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F2.printf("%.6g  ", Z.getElement(i, j).getImaginary());
+					if (i < Z.getNOrder()) F2.print("|");
+				}
+				F2.println("]");
+
+				w = Freq * DSSGlobals.TwoPi /1.e9;
+				F2.print("~ Cmatrix=[");
+				for (i = 0; i < YC.getNOrder(); i++) {
+					for (j = 0; j < i; j++)
+						F2.printf("%.6g  ", YC.getElement(i, j).getImaginary() / w);
+					if (i < YC.getNOrder()) F2.print("|");
+				}
+				F2.println("]");
+
+				/* Add pos- and zero-sequence approximation here
+				 * Kron reduce to 3 phases first
+				 * Average diagonals and off-diagonals
+				 */
+
+				Zs = Complex.ZERO;
+				Zm = Complex.ZERO;
+				CS = 0.0;
+				CM = 0.0;
+
+				if (Z.getNOrder() == 3) {
+					F.println();
+					F.println("-------------------------------------------------------------------");
+					F.println("-------------------Equiv Symmetrical Component --------------------");
+					F.println("-------------------------------------------------------------------");
+					F.println();
+					for (i = 0; i < 3; i++)
+						Zs = Zs.add( Z.getElement(i, i) );
+					for (i = 0; i < 3; i++)
+						for (j = 0; j < i-1; j++)  // TODO Check zero based indexing
+							Zm = Zm.add( Z.getElement(i, j) );
+
+					Z1 = Zs.subtract(Zm).divide(3.0);
+					Z0 = Zm.multiply(2.0).add(Zs).divide(3.0);
+					w = Freq * DSSGlobals.TwoPi / 1000.0;
+					F.println();
+					F.println("Z1, ohms per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g + j %.6g (L1 = %.6g mH) ", Z1.getReal(), Z1.getImaginary(), Z1.getImaginary() / w));
+					F.println("Z0, ohms per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g + j %.6g (L0 = %.6g mH) ", Z0.getReal(), Z0.getImaginary(), Z0.getImaginary() / w));
+					F.println();
+
+					/* Compute Common Mode Series Impedance */
+					Z.invert();
+					YCM = Complex.ZERO;
+					for (i = 0; i < 3; i++)
+						for (j = 0; j < 3; j++)
+							YCM = YCM.add(Z.getElement(i, j));
+					XCM = YCM.invert().getImaginary();
+
+					w = Freq * DSSGlobals.TwoPi /1.e9;
+					/* Capacitance */
+					for (i = 0; i < 3; i++)
+						CS = CS + YC.getElement(i, i).getImaginary();
+					for (i = 0; i < 3; i++)
+						for (j = 0; j < i - 1; j++)
+							CM = CM + YC.getElement(i, j).getImaginary();
+
+					C1 = (CS - CM) / 3.0 / w;   // nF
+					C0 = (CS + 2.0 * CM) / 3.0 / w;
+
+					/* Compute Common Mode Shunt Capacitance */
+					YCM = Complex.ZERO;
+					for (i = 0; i < 3; i++)  // Add up all elements of Z inverse
+						for (j = 0; j < 3; j++)
+							YCM = YCM.add(YC.getElement(i, j));
+					CCM = YCM.getImaginary() / w;
+
+					F.println("C1, nF per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g", C1));
+					F.println("C0, nF per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g", C0));
+					F.println();
+
+					w = Freq * DSSGlobals.TwoPi;
+					F.println("Surge Impedance:");
+					F.println(String.format("  Positive sequence = %.6g ohms", Math.sqrt(Z1.getImaginary() / w / (C1 * 1.0e-9))));
+					F.println(String.format("  Zero sequence     = %.6g ohms", Math.sqrt(Z0.getImaginary() / w / (C0 * 1.0e-9))));
+					F.println(String.format("  Common Mode       = %.6g ohms", Math.sqrt(XCM / w / (CCM * 1.0e-9))));
+					F.println();
+
+					F.println("Propagation Velocity (Percent of speed of light):");
+					F.println(String.format("  Positive sequence = %.6g ", 1.0 / (Math.sqrt(Z1.getImaginary() / w * (C1 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(Units) * 100.0));
+					F.println(String.format("  Zero sequence     = %.6g ", 1.0 / (Math.sqrt(Z0.getImaginary() / w * (C0 * 1.0e-9))) / 299792458.0 / LineUnits.toPerMeter(Units) * 100.0));
+					F.println();
+				}
+
+				p = LineImpl.getLineGeometryClass().getNext();
+			}
+			F.close();
+			FWriter.close();
+			F2.close();
+			F2Writer.close();
+
+			Utilities.fireOffEditor(FileNm);
+			Utilities.fireOffEditor(LineCodesFileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showYPrim(String FileNm) {
@@ -1610,10 +2730,6 @@ public abstract class ShowResults {
 	}
 
 	public static void showY(String FileNm) {
-
-	}
-
-	public static void showTopology(String FileRoot) {
 
 	}
 
