@@ -37,8 +37,8 @@ public abstract class ShowResults {
 
 	private static final char TABCHAR = '\u0009';
 
-	private static int MaxBusNameLength;
-	private static int MaxDeviceNameLength;
+	private static int MaxBusNameLength = 12;
+	private static int MaxDeviceNameLength = 30;
 
 	private static void setMaxBusNameLength() {
 		MaxBusNameLength = 4;
@@ -2726,24 +2726,365 @@ public abstract class ShowResults {
 	}
 
 	public static void showYPrim(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		Complex[] cValues;
+		int i, j;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		if (ckt != null) {
+			if (ckt.getActiveCktElement() != null) {
+				try {
+					FWriter = new FileWriter(FileNm);
+					F = new PrintWriter(FWriter);
+
+					CktElement ace = ckt.getActiveCktElement();
+
+					F.println("Yprim of active circuit element: " + ace.getParentClass().getName() + "." + ace.getName());
+					F.println();
+
+					cValues = ace.getYPrimValues(DSSGlobals.ALL_YPRIM);
+					if (cValues != null) {
+						F.println();
+						F.println("G matrix (conductance), S");
+						F.println();
+
+						for (i = 0; i < ace.getYorder(); i++) {
+							for (j = 0; j < i; j++)
+								F.printf("%13.10g ", cValues[i + (j - 1) * ace.getYorder()].getReal());
+							F.println();
+						}
+
+						F.println();
+						F.println("jB matrix (Susceptance), S") ;
+						F.println();
+
+						for (i = 0; i < ace.getYorder(); i++) {
+							for (j = 0; j < i; j++)
+								F.printf("%13.10g ", cValues[i + (j - 1) * ace.getYorder()].getImaginary());
+							F.println();
+						}
+					} else {
+						F.println("Yprim matrix is nil");
+					}
+					F.close();
+					FWriter.close();
+
+					Utilities.fireOffEditor(FileNm);
+				} catch (IOException e) {
+					// TODO: handle exception
+				}
+			}
+		}
 	}
 
+	/**
+	 * Shows how to retrieve the system Y in triplet form.
+	 */
 	public static void showY(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		CMatrix hY;
+		long nNZ, nBus;
+		long i, row, col;
+		double re, im;
+		long[] ColIdx, RowIdx;
+		Complex[] cVals;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		if (ckt == null)
+			return;
+
+		hY = ckt.getSolution().getY();
+		if (hY == null) {
+			DSSGlobals.getInstance().doSimpleMsg("Y Matrix not Built.", 222);
+			return;
+		}
+
+		// print lower triangle of G and B using new functions
+		// this compresses the entries if necessary - no extra work if already solved
+//		KLU.factorSparseMatrix(hY);
+//		KLU.getNNZ(hY, nNZ);
+//		KLU.getSize(hY, nBus);  // we should already know this
+
+		try {
+//			ColIdx = new long[nNZ];
+//			RowIdx = new long[nNZ];
+//			cVals = new Complex[nNZ];
+//			KLU.getTripletMatrix(hY, nNZ, RowIdx[0], ColIdx[0], cVals[0]);
+
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			F.println("System Y Matrix (Lower Triangle by Columns)");
+			F.println();
+			F.println("  Row  Col               G               B");
+			F.println();
+
+			// shows how to easily traverse the triplet format
+//			for (i = 0; i < nNZ - 1; i++) {  // TODO Check zero based indexing
+//				col = ColIdx[i] + 1;
+//				row = RowIdx[i] + 1;
+//				if (row >= col) {
+//					re = cVals[i].getReal();
+//					im = cVals[i].getImaginary();
+//					F.println(String.format("[%4d,%4d] = %13.10g + j%13.10g", row, col, re, im));
+//				}
+//			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
-	/* Summary and tree-view to separate files */
+	/**
+	 * Summary and tree-view to separate files.
+	 */
 	public static void showNodeCurrentSum(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+		int i, j;
+		int nRef;
+		String BName;
 
+//		CktElement pCktElement;
+		double[] MaxNodeCurrent = new double[100];
+		Complex Ctemp;
+		String pctError;
+		double dTemp;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		MaxNodeCurrent = null;
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			// Zero out the nodal current array
+			for (i = 0; i < ckt.getNumNodes(); i++)
+				sol.getCurrents()[i] = Complex.ZERO;
+			// Make temp storage for max current at node
+			MaxNodeCurrent = new double[ckt.getNumNodes() + 1];
+			for (i = 0; i < ckt.getNumNodes(); i++)
+				MaxNodeCurrent[i] = 0.0;
+			// Now Sum in each device current, keep track of the largest current at a node.
+			for (CktElement pCktElement : ckt.getCktElements()) {
+				if (pCktElement.isEnabled()) {
+					pCktElement.computeIterminal();
+					for (i = 0; i < pCktElement.getYorder(); i++) {
+						Ctemp =  pCktElement.getIterminal()[i];
+						nRef  =  pCktElement.getNodeRef()[i];
+						sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add(Ctemp);  // Noderef = 0 is OK  TODO Check
+						if (Ctemp.abs() > MaxNodeCurrent[nRef])
+							MaxNodeCurrent[nRef] = Ctemp.abs();
+					}
+				}
+			}
+
+			// Now write report
+
+			setMaxBusNameLength();
+			MaxBusNameLength = MaxBusNameLength + 2;
+			F.println();
+			F.println("Node Current Mismatch Report");
+			F.println();
+			F.println();
+			F.println(Utilities.pad("Bus,", MaxBusNameLength) + " Node, \"Current Sum (A)" + "%error" + "Max Current (A)\"");
+
+			// Ground Bus
+			nRef = 0;
+			dTemp = sol.getCurrents()[nRef].abs();
+			if ((MaxNodeCurrent[nRef] == 0.0) || (MaxNodeCurrent[nRef] == dTemp)) {
+				pctError = String.format("%10.1f", 0.0);
+			} else {
+				pctError = String.format("%10.6f", dTemp / MaxNodeCurrent[nRef] * 100.0);
+			}
+			BName = Utilities.pad("\"System Ground\"", MaxBusNameLength);
+			F.println(String.format("%s, %2d, %10.5f,       %s, %10.5f", BName, nRef, dTemp, pctError, MaxNodeCurrent[nRef]));
+
+			for (i = 0; i < ckt.getNumBuses(); i++) {
+				for (j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
+					nRef = ckt.getBuses()[i].getRef(j);
+					dTemp = sol.getCurrents()[nRef].abs();
+					if ((MaxNodeCurrent[nRef] == 0.0) || (MaxNodeCurrent[nRef] == dTemp)) {
+						pctError = String.format("%10.1f", 0.0);
+					} else {
+						pctError = String.format("%10.6f", dTemp / MaxNodeCurrent[nRef] * 100.0);
+					}
+					if (j == 0) {
+						BName = Utilities.padDots(Utilities.encloseQuotes(ckt.getBusList().get(i)), MaxBusNameLength);
+					} else {
+						BName = Utilities.pad("\"   -\"", MaxBusNameLength);
+					}
+					F.println(String.format("%s, %2d, %10.5f,       %s, %10.5f", BName, ckt.getBuses()[i].getNum(j), dTemp, pctError, MaxNodeCurrent[nRef]));
+				}
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+
+			MaxNodeCurrent = null;
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showkVBaseMismatch(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
 
+//		LoadObj pLoad;
+//		GeneratorObj pGen;
+		Bus pBus;
+		double BuskV;
+		String BusName;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			/* Check Loads */
+			if (ckt.getLoads().size() > 0) {
+				F.println();
+				F.println("!!!  LOAD VOLTAGE BASE MISMATCHES");
+				F.println();
+			}
+
+			for (LoadObj pLoad : ckt.getLoads()) {
+				/* Find Bus To Which Load Connected */
+				pBus = ckt.getBuses()[ pLoad.getTerminals()[0].BusRef ];
+				BusName = ckt.getBusList().get( pLoad.getTerminals()[0].BusRef );
+				if (pBus.getkVBase() != 0.0) {
+					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
+						if (Math.abs(pLoad.getkVLoadBase() - pBus.getkVBase()) > 0.10 * pBus.getkVBase()) {
+							F.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), pBus.getkVBase()));
+							F.println(String.format("!setkvbase %s kVLN=%.6g", BusName, pLoad.getkVLoadBase()));
+							F.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), pBus.getkVBase()));
+						}
+					} else {
+						BuskV = pBus.getkVBase() * DSSGlobals.SQRT3;
+						if (Math.abs(pLoad.getkVLoadBase() - BuskV) > 0.10 * BuskV) {
+							F.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), BuskV));
+							F.println(String.format("!setkvbase %s kVLL=%.6g", BusName, pLoad.getkVLoadBase()));
+							F.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), BuskV));
+						}
+					}
+				}
+			}
+
+
+			/* Check Generators */
+
+			if (ckt.getGenerators().size() > 0) {
+				F.println();
+				F.println("!!!  GENERATOR VOLTAGE BASE MISMATCHES");
+				F.println();
+			}
+
+			for (GeneratorObj pGen : ckt.getGenerators()) {
+				/* Find Bus To Which Generator Connected */
+				pBus = ckt.getBuses()[ pGen.getTerminals()[0].BusRef ];
+				BusName = ckt.getBusList().get( pGen.getTerminals()[0].BusRef );
+				if (pBus.getkVBase() != 0.0) {
+					if ((pGen.getNPhases() == 1) && (pGen.getConnection() == 0)) {
+						if (Math.abs(pGen.getGenVars().kVGeneratorBase - pBus.getkVBase()) > 0.10 * pBus.getkVBase()) {
+							F.println(String.format("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pGen.getName(), pGen.getGenVars().kVGeneratorBase, pGen.getBus(1), pBus.getkVBase()));
+							F.println(String.format("!setkvbase %s kVLN=%.6g", BusName, pGen.getGenVars().kVGeneratorBase));
+							F.println(String.format("!Generator.%s.kV=%.6g", pGen.getName(), pBus.getkVBase()));
+						}
+					} else {
+						BuskV = pBus.getkVBase() * DSSGlobals.SQRT3;
+						if (Math.abs(pGen.getGenVars().kVGeneratorBase - BuskV) > 0.10 * BuskV) {
+							F.println(String.format("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s kvBase = %.6g", pGen.getName(), pGen.getGenVars().kVGeneratorBase, pGen.getBus(1), BuskV));
+							F.println(String.format("!setkvbase %s kVLL=%.6g", BusName, pGen.getGenVars().kVGeneratorBase));
+							F.println(String.format("!Generator.%s.kV=%.6g", pGen.getName(), BuskV));
+						}
+					}
+				}
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 	public static void showDeltaV(String FileNm) {
+		FileWriter FWriter;
+		PrintWriter F;
+//		CktElement pElem;
 
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+
+		try {
+			FWriter = new FileWriter(FileNm);
+			F = new PrintWriter(FWriter);
+
+			setMaxDeviceNameLength();
+
+			F.println();
+			F.println("VOLTAGES ACROSS CIRCUIT ELEMENTS WITH 2 TERMINALS");
+			F.println();
+			F.println("Source Elements");
+			F.println();
+			F.println(Utilities.pad("Element,", MaxDeviceNameLength) + " Conductor,     Volts,   Percent,           kVBase,  Angle");
+			F.println();
+
+			// Sources first
+			for (CktElement pElem : ckt.getSources()) {
+				if (pElem.isEnabled() && (pElem.getNTerms() == 2)) {
+					writeElementDeltaVoltages(F, pElem);
+					F.println();
+				}
+			}
+
+			F.println();
+			F.println("Power Delivery Elements");
+			F.println();
+			F.println(Utilities.pad("Element,", MaxDeviceNameLength) + " Conductor,     Volts,   Percent,           kVBase,  Angle");
+			F.println();
+
+
+			// PD elements next
+			for (CktElement pElem : ckt.getPDElements()) {
+				if (pElem.isEnabled() && (pElem.getNTerms() == 2)) {
+					writeElementDeltaVoltages(F, pElem);
+					F.println();
+				}
+			}
+
+			F.println("= = = = = = = = = = = = = = = = = = =  = = = = = = = = = = =  = =");
+			F.println();
+			F.println("Power Conversion Elements");
+			F.println();
+			F.println(Utilities.pad("Element,", MaxDeviceNameLength) + " Conductor,     Volts,   Percent,           kVBase,  Angle");
+			F.println();
+
+			// PC elements next
+			for (CktElement pElem : ckt.getPCElements()) {
+				if (pElem.isEnabled() && (pElem.getNTerms() == 2)) {
+					writeElementDeltaVoltages(F, pElem);
+					F.println();
+				}
+			}
+			F.close();
+			FWriter.close();
+
+			Utilities.fireOffEditor(FileNm);
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
 	}
 
 }
