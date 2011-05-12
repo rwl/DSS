@@ -25,6 +25,8 @@ import com.epri.dss.control.SwtControlObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
+import com.epri.dss.conversion.PVSystem;
+import com.epri.dss.conversion.PVSystemObj;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.delivery.FaultObj;
@@ -33,6 +35,7 @@ import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.general.PriceShapeObj;
 import com.epri.dss.general.impl.NamedObjectImpl;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MeterElement;
@@ -110,6 +113,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected ArrayList<EnergyMeterObj> EnergyMeters;
 	protected ArrayList<GeneratorObj> Generators;
 	protected ArrayList<StorageObj> StorageElements;
+	protected ArrayList<PVSystemObj> PVSystems;
 	protected ArrayList<DSSObject> Substations;
 	protected ArrayList<TransformerObj> Transformers;
 	protected ArrayList<CapControlObj> CapControls;
@@ -139,7 +143,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected String LoadDurCurve;
 	protected LoadShapeObj LoadDurCurveObj;
 	protected String PriceCurve;
-	protected LoadShapeObj PriceCurveObj;
+	protected PriceShapeObj PriceCurveObj;
 
 	protected int NumDevices, NumBuses, NumNodes;
 	protected int MaxDevices, MaxBuses, MaxNodes;
@@ -239,6 +243,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.Sensors      = new ArrayList<SensorObj>(5);
 		this.Generators   = new ArrayList<GeneratorObj>(5);
 		this.StorageElements = new ArrayList<StorageObj>(5);
+		this.PVSystems    = new ArrayList<PVSystemObj>(5);
 		this.Feeders      = new ArrayList<FeederObj>(10);
 		this.Substations  = new ArrayList<DSSObject>(5);
 		this.Transformers = new ArrayList<TransformerObj>(10);
@@ -495,6 +500,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		StorageElements = storageElements;
 	}
 
+	public ArrayList<PVSystemObj> getPVSystems() {
+		return PVSystems;
+	}
+
+	public void setPVSystems(ArrayList<PVSystemObj> pVSystems) {
+		PVSystems = pVSystems;
+	}
+
 	public ArrayList<DSSObject> getSubstations() {
 		return Substations;
 	}
@@ -695,11 +708,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		PriceCurve = priceCurve;
 	}
 
-	public LoadShapeObj getPriceCurveObj() {
+	public PriceShapeObj getPriceCurveObj() {
 		return PriceCurveObj;
 	}
 
-	public void setPriceCurveObj(LoadShapeObj priceCurveObj) {
+	public void setPriceCurveObj(PriceShapeObj priceCurveObj) {
 		PriceCurveObj = priceCurveObj;
 	}
 
@@ -1382,6 +1395,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			Feeders.add((FeederObj) ActiveCktElement);
 		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
 			StorageElements.add((StorageObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PVSYSTEM_ELEMENT) {
+			PVSystems.add((PVSystemObj) ActiveCktElement);
 		}
 
 		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
@@ -1503,13 +1518,15 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 //			DSSClass(cls).setSaved(false);
 
 		// Ignore Feeder Class -- gets saved with Energymeters
-		DSSGlobals.getInstance().getFeederClass().setSaved(true);
+		//DSSGlobals.getInstance().getFeederClass().setSaved(true);
 
 		// Define voltage sources first
 		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
 		// Write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);

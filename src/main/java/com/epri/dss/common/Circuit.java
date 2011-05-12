@@ -16,6 +16,7 @@ import com.epri.dss.control.SwtControlObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
+import com.epri.dss.conversion.PVSystemObj;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.delivery.FaultObj;
@@ -25,6 +26,7 @@ import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.NamedObject;
+import com.epri.dss.general.PriceShapeObj;
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.MeterElement;
 import com.epri.dss.meter.MonitorObj;
@@ -109,6 +111,10 @@ public interface Circuit extends NamedObject {
 	ArrayList<StorageObj> getStorageElements();
 
 	void setStorageElements(ArrayList<StorageObj> storageElements);
+
+	ArrayList<PVSystemObj> getPVSystems();
+
+	void setPVSystems(ArrayList<PVSystemObj> pVSystems);
 
 	ArrayList<DSSObject> getSubstations();
 
@@ -210,9 +216,9 @@ public interface Circuit extends NamedObject {
 
 	void setPriceCurve(String priceCurve);
 
-	LoadShapeObj getPriceCurveObj();
+	PriceShapeObj getPriceCurveObj();
 
-	void setPriceCurveObj(LoadShapeObj priceCurveObj);
+	void setPriceCurveObj(PriceShapeObj priceCurveObj);
 
 	int getNumDevices();
 

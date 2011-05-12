@@ -73,6 +73,7 @@ public class DSSClassDefs {
 	public static final int STORAGE_ELEMENT  = 21 * 8;
 	public static final int STORAGE_CONTROL  = 22 * 8;
 	public static final int SWT_CONTROL      = 23 * 8;
+	public static final int PVSYSTEM_ELEMENT = 24 * 8;
 
 	private static int NumIntrinsicClasses;
 	private static int NumUserClasses;
