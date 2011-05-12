@@ -30,8 +30,12 @@ public interface StorageController extends ControlClass {
 	static final int propEVENTLOG      = 25;
 	static final int propVARDISPATCH   = 26;
 	static final int propINHIBITTIME   = 27;
+	static final int propTUPRAMP       = 28;
+	static final int propTFLAT         = 29;
+	static final int propTDNRAMP       = 30;
+	static final int propKWTHRESHOLD   = 31;
 
-	static final int NumPropsThisClass = 28;
+	static final int NumPropsThisClass = 32;
 
 	/* CONTROL MODES */
 	static final int MODEFOLLOW      = 1;
@@ -39,6 +43,7 @@ public interface StorageController extends ControlClass {
 	static final int MODESUPPORT     = 3;
 	static final int MODETIME        = 4;
 	static final int MODEPEAKSHAVE   = 5;
+	static final int MODESCHEDULE    = 6;
 
 	/* OTHER CONSTANTS */
 	static final int RELEASE_INHIBIT = 999;

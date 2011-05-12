@@ -62,6 +62,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		PropertyName[StorageController.propEVENTLOG]               = "EventLog";
 		PropertyName[StorageController.propVARDISPATCH]            = "VarDispatch";
 		PropertyName[StorageController.propINHIBITTIME]            = "InhibitTime";
+		PropertyName[StorageController.propTUPRAMP]                = "Tup";
+		PropertyName[StorageController.propTFLAT]                  = "TFlat";
+		PropertyName[StorageController.propTDNRAMP]                = "Tdn";
+		PropertyName[StorageController.propKWTHRESHOLD]            = "kWThreshold";
 
 
 		PropertyHelp[StorageController.propELEMENT] =
@@ -90,14 +94,16 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"The needed kW or kvar to get back to center band is dispatched to each storage element according to these weights. " +
 				"Default is to set all weights to 1.0.";
 		PropertyHelp[StorageController.propMODEDISCHARGE] =
-				"{PeakShave* | Follow | Support | Loadshape | Time} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
+				"{PeakShave* | Follow | Support | Loadshape | Time | Schedule} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
 				"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
 				"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
 				"It then attempts to discharge storage to keep power in the monitored element below the new kWTarget. See TimeDischargeTrigger." +
 				"In Support mode, the control operates oppositely of PeakShave mode: storage is discharged to keep kW power output up near the target. " +
 				"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
 				"Storage is discharged when the loadshape value is positive. " +
-				"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours.";
+				"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
+				"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
+				"The schedule start time is set by TimeDischargeTrigger and the rate of discharge for the flat part is determined by RatekW.";
 		PropertyHelp[StorageController.propMODECHARGE] =
 				"{Loadshape | Time*} Mode of operation for the CHARGE FUNCTION of this controller. " +
 				"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
@@ -148,6 +154,13 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"{Yes/True | No/False} Default is No. Flag to indicate whether or not to disatch vars as well as watts.";
 		PropertyHelp[StorageController.propINHIBITTIME] =
 				"Hours (integer) to inhibit Discharging after going into Charge mode. Default is 5";
+
+		PropertyHelp[StorageController.propTUPRAMP]  = "Duration, hrs, of upramp part for SCHEDULE mode. Default is 0.25.";
+		PropertyHelp[StorageController.propTFLAT]    = "Duration, hrs, of flat part for SCHEDULE mode. Default is 2.0.";
+		PropertyHelp[StorageController.propTDNRAMP]  = "Duration, hrs, of downramp part for SCHEDULE mode. Default is 0.25.";
+		PropertyHelp[StorageController.propKWTHRESHOLD] = "Threshold, kW, for Follow mode. kW has to be above this value for the Storage element " +
+				"to be dispatched on. Defaults to 75% of the kWTarget value. Must reset this property after " +
+				"setting kWTarget if you want a different value.";
 
 		ActiveProperty = StorageController.NumPropsThisClass -1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
@@ -250,6 +263,14 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setDispatchVars(Utilities.interpretYesNo(Param));
 			case StorageController.propINHIBITTIME:
 				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >=1
+			case StorageController.propTUPRAMP:
+				asc.setUpRamptime(parser.makeDouble());
+			case StorageController.propTFLAT:
+				asc.setFlatTime(parser.makeDouble());
+			case StorageController.propTDNRAMP:
+				asc.setDnrampTime(parser.makeDouble());
+			case StorageController.propKWTHRESHOLD:
+				asc.setkWThreshold(parser.makeDouble());
 			default:
 				// Inherited parameters
 				classEdit(ActiveStorageControllerObj, ParamPointer - StorageController.NumPropsThisClass);
@@ -261,6 +282,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setHalfkWBand( asc.getPctkWBand() / 200.0 * asc.getkWTarget() );
 			case propKWBAND:
 				asc.setHalfkWBand( asc.getPctkWBand() / 200.0 * asc.getkWTarget() );
+				asc.setkWThreshold( asc.getkWTarget() * 0.75 );
 			case propPFBAND:
 				asc.setHalfPFBand(asc.getPFBand() / 2.0);
 			case propMODEDISCHARGE:
@@ -317,6 +339,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			asc.setElementTerminal(OtherStorageController.getElementTerminal());
 
 			asc.setkWTarget(OtherStorageController.getkWTarget());
+			asc.setkWThreshold(OtherStorageController.getkWThreshold());
 			asc.setPctkWBand(OtherStorageController.getPctkWBand());
 			asc.setPFTarget(OtherStorageController.getPFTarget());
 			asc.setPFBand(OtherStorageController.getPFBand());
@@ -347,6 +370,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			asc.setDispatchVars(OtherStorageController.isDispatchVars());
 			asc.setShowEventLog(OtherStorageController.isShowEventLog());
 			asc.setInhibitHrs(OtherStorageController.getInhibitHrs());
+
+			asc.setUpRamptime(OtherStorageController.getUpRamptime());
+			asc.setFlatTime(OtherStorageController.getFlatTime());
+			asc.setDnrampTime(OtherStorageController.getDnrampTime());
 
 			// Fill in private properties
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)

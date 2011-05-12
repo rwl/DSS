@@ -10,6 +10,7 @@ import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
@@ -24,6 +25,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
 
 	private double kWTarget,
+		kWThreshold,
 		pctkWBand,
 		HalfkWBand,
 		PFTarget,    // Range on this is 0..2 where 1..2 is leading
@@ -56,6 +58,12 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	private boolean DischargeInhibited;
 	private boolean OutOfOomph;
 	private int InhibitHrs;
+	private double UpRamptime;
+	private double FlatTime;
+	private double DnrampTime;
+	private double UpPlusFlat;
+	private double UpPlusFlatPlusDn;
+	private double LastpctDischargeRate;
 
 	private double TotalKWCapacity;
 	private double TotalKWhCapacity;
@@ -91,6 +99,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		this.FleetSize        = 0;
 		this.FleetState       = Storage.STORE_IDLING;
 		this.kWTarget         = 8000.0;
+		this.kWThreshold      = 6000.0;
 		this.pctkWBand        = 2.0;
 		this.TotalWeight      = 1.0;
 		this.HalfkWBand       = this.pctkWBand / 200.0 * this.kWTarget;
@@ -117,6 +126,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		this.DischargeInhibited   = false;
 		this.OutOfOomph           = false;
 		this.InhibitHrs           = 5;   // No. Hours to inhibit discharging after going into charge mode
+
+		this.UpRamptime = 0.25;  // hr
+		this.FlatTime   = 2.0;
+		this.DnrampTime = 0.25;
+		this.LastpctDischargeRate = 0.0;
 
 		initPropertyValues(0);
 	}
@@ -150,6 +164,10 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		setPropertyValue(StorageController.propDUTY, "");
 		setPropertyValue(StorageController.propEVENTLOG, "No");
 		setPropertyValue(StorageController.propINHIBITTIME, "5");
+		setPropertyValue(StorageController.propTUPRAMP, "0.25");
+		setPropertyValue(StorageController.propTFLAT, "2.0");
+		setPropertyValue(StorageController.propTDNRAMP, "0.25");
+		setPropertyValue(StorageController.propKWTHRESHOLD, "4000");
 
 		super.initPropertyValues(StorageController.NumPropsThisClass);
 	}
@@ -217,6 +235,14 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			}
 		case StorageController.propINHIBITTIME:
 			return String.format("%d", InhibitHrs);
+		case StorageController.propTUPRAMP:
+			return String.format("%.6g", UpRamptime);
+		case StorageController.propTFLAT:
+			return String.format("%.6g", FlatTime);
+		case StorageController.propTDNRAMP:
+			return String.format("%.6g", DnrampTime);
+		case StorageController.propKWTHRESHOLD:
+			return String.format("%.6g", kWThreshold);
 		default:  // take the generic handler
 			return super.getPropertyValue(Index);
 		}
@@ -288,6 +314,9 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			setFleetToExternal();
 			setAllFleetValues();
 		}
+
+		UpPlusFlat = UpRamptime + FlatTime;
+		UpPlusFlatPlusDn = UpPlusFlat + DnrampTime;
 	}
 
 	/**
@@ -322,23 +351,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	}
 
 	private String getkWActual() {
-		StorageObj pStorage;
-		double Sum = 0;
-		for (int i = 0; i < FleetPointerList.size(); i++) {
-			pStorage = (StorageObj) FleetPointerList.get(i);
-			Sum = Sum + pStorage.getPresentkW();
-		}
-		return String.format("%-.8g", Sum);
+		return String.format("%-.8g", getFleetkW());
 	}
 
 	private String getkWhActual() {
-		StorageObj pStorage;
-		double Sum = 0;
-		for (int i = 0; i < FleetPointerList.size(); i++) {
-			pStorage = (StorageObj) FleetPointerList.get(i);
-			Sum = Sum + pStorage.getkWhStored();
-		}
-		return String.format("%-.8g", Sum);
+		return String.format("%-.8g", getFleetkWh());
 	}
 
 	private String getkWhTotal(double Sum) {
@@ -421,6 +438,79 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	}
 
 	/**
+	 * In SCHEDULE mode we ramp up the storage from zero to the specified pctkWRate.
+	 * This value is held for the flattime or until they  turn themselves
+	 * off when they are either fully discharged, or ramped down
+	 *
+	 * The discharge trigger time must be greater than 0
+	 */
+	private void doScheduleMode() {
+		double TDiff;
+		double pctDischargeRate = 0.0;  // init for test
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		if (DischargeTriggerTime > 0.0) {
+			// turn on if time within 1/2 time step
+			if (!(FleetState == Storage.STORE_DISCHARGING)) {
+				ChargingAllowed = true;
+				TDiff = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - DischargeTriggerTime;
+				if (Math.abs(TDiff) < sol.getDynaVars().h / 7200.0) {
+					/* Time is within 1 time step of the trigger time */
+					if (ShowEventLog)
+						Utilities.appendToEventLog("StorageController." + getName(), "Fleet Set to Discharging (up ramp)by Schedule");
+					setFleetToDisCharge();
+					ChargingAllowed = false;
+					pctDischargeRate = Math.min(pctKWRate, Math.max(pctKWRate * TDiff / UpRamptime, 0.0));
+					setFleetkWRate(pctDischargeRate);
+					DischargeInhibited = false;
+
+					sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
+					// Push present time onto control queue to force re solve at new dispatch value
+					ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.STORE_DISCHARGING, 0, this);
+				}
+			} else {  // fleet is already discharging
+				TDiff = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - DischargeTriggerTime;
+				if (TDiff < UpRamptime) {
+					pctDischargeRate = Math.min(pctKWRate, Math.max(pctKWRate * TDiff / UpRamptime, 0.0));
+					setFleetkWRate(pctDischargeRate);
+				} else {
+					if (TDiff < UpPlusFlat) {
+
+						pctDischargeRate = pctKWRate;
+						if (pctDischargeRate != LastpctDischargeRate)
+							setFleetkWRate(pctKWRate);  // on the flat part
+
+					} else if (TDiff > UpPlusFlatPlusDn) {
+
+						setFleetToIdle();
+						ChargingAllowed = true;
+						pctDischargeRate = 0.0;
+						if (ShowEventLog)
+							Utilities.appendToEventLog("StorageController." + getName(), "Fleet Set to Idling by Schedule");
+
+					} else {  // We're on the down ramp
+
+						TDiff = UpPlusFlatPlusDn - TDiff;
+						pctDischargeRate = Math.max(0.0, Math.min(pctKWRate * TDiff / DnrampTime, pctKWRate));
+						setFleetkWRate(pctDischargeRate);
+
+					}
+
+				}
+
+				if (pctDischargeRate != LastpctDischargeRate) {
+					sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
+					// Push present time onto control queue to force re solve at new dispatch value
+					ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, Storage.STORE_DISCHARGING, 0, this);
+				}
+			}
+		}
+		LastpctDischargeRate = pctDischargeRate;   // remember this value
+	}
+
+	/**
 	 * In Time mode we need to only turn the storage elements on. They will turn themselves
 	 * off when they are either fully discharged, fully charged, or receive another command
 	 * from the controller.
@@ -439,7 +529,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						if (ShowEventLog)
 							Utilities.appendToEventLog("StorageController." + getName(), "Fleet Set to Discharging by Time Trigger");
 						setFleetToDisCharge();
-						setFleetkWRate();
+						setFleetkWRate(pctKWRate);
 						DischargeInhibited = false;
 						if (DischargeMode == StorageController.MODEFOLLOW) {
 							DischargeTriggeredByTime = true;
@@ -524,7 +614,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					if (ShowEventLog)
 						Utilities.appendToEventLog("StorageController." + getName(),
 								String.format("Fleet Set to Discharging by Time Trigger; Old kWTarget = %-.6g; New = 5-.6g", kWTarget, S.getReal() * 0.001));
-					kWTarget = S.getReal() * 0.001;  // Capture present kW and reset target
+					kWTarget = Math.max(kWThreshold, S.getReal() * 0.001);  // Capture present kW and reset target
 					DischargeTriggeredByTime = false;  // so we don't come back in here right away
 					setFleetToIdle();
 				}
@@ -591,11 +681,12 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 							pStorage = (StorageObj) FleetPointerList.get(i);
 							// compute new dispatch value for this storage element ...
 							DispatchkW = Math.min(pStorage.getkWrating(), (pStorage.getPresentkW() + PDiff *(Weights[i] / TotalWeight)));
-							if (DispatchkW != pStorage.getPresentkW()) {
-								// Attempt to set discharge kW;  Storage element will revert to idling if out of capacity
-								pStorage.setPresentKW(DispatchkW);
-								StorekWChanged = true;
-							}
+							if (DispatchkW != pStorage.getPresentkW())  // redispatch only if change requested
+								if (pStorage.getkWhStored() > pStorage.getkWhReserve()) {
+									// Attempt to set discharge kW;  Storage element will revert to idling if out of capacity
+									pStorage.setPresentKW(DispatchkW);
+									StorekWChanged = true;  // This is what keeps the control iterations going
+								}
 						}
 					}
 				} else {
@@ -665,6 +756,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			doTimeMode(1);
 		case StorageController.MODEPEAKSHAVE:
 			doLoadFollowMode();
+		case StorageController.MODESCHEDULE:
+			doScheduleMode();
 		default:
 			DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid DisCharging Mode: %d", DischargeMode), 14408);
 		}
@@ -748,8 +841,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				RateChanged = true;
 			pctKWRate   = NewkWRate;
 			pctkvarRate = NewkvarRate;
-			setFleetkWRate();
-			setFleetkvarRate();
+			setFleetkWRate(pctKWRate);
+			setFleetkvarRate(pctkvarRate);
 			setFleetToDisCharge();
 			sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
 		}
@@ -779,7 +872,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		}
 	}
 
-	private void setFleetkvarRate() {
+	private void setFleetkvarRate(double pctkvar) {
 		StorageObj pStorage;
 		/* For side effects see pctKVArOut property of storage element */
 		for (int i = 0; i < FleetPointerList.size(); i++) {
@@ -788,11 +881,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		}
 	}
 
-	private void setFleetkWRate() {
+	private void setFleetkWRate(double pctkw) {
 		StorageObj pStorage;
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
-			pStorage.setPctKWout(pctKWRate);
+			pStorage.setPctKWout(pctkw);
 		}
 	}
 
@@ -861,7 +954,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case 'p':
 				return StorageController.MODEPEAKSHAVE;
 			case 's':
-				return StorageController.MODESUPPORT;
+				if (S.toLowerCase().charAt(1) == 'c') {
+					return StorageController.MODESCHEDULE;
+				} else {
+					return StorageController.MODESUPPORT;
+				}
 			case 't':
 				return StorageController.MODETIME;
 			default:
@@ -987,6 +1084,14 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		this.kWTarget = kWTarget;
 	}
 
+
+	public void setkWThreshold(double kWThreshold) {
+		this.kWThreshold = kWThreshold;
+	}
+
+	public double getkWThreshold() {
+		return kWThreshold;
+	}
 
 	public double getPctkWBand() {
 		return pctkWBand;
@@ -1267,6 +1372,53 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		InhibitHrs = inhibitHrs;
 	}
 
+	public double getUpRamptime() {
+		return UpRamptime;
+	}
+
+	public void setUpRamptime(double upRamptime) {
+		UpRamptime = upRamptime;
+	}
+
+	public double getFlatTime() {
+		return FlatTime;
+	}
+
+	public void setFlatTime(double flatTime) {
+		FlatTime = flatTime;
+	}
+
+	public double getDnrampTime() {
+		return DnrampTime;
+	}
+
+	public void setDnrampTime(double dnrampTime) {
+		DnrampTime = dnrampTime;
+	}
+
+	public double getUpPlusFlat() {
+		return UpPlusFlat;
+	}
+
+	public void setUpPlusFlat(double upPlusFlat) {
+		UpPlusFlat = upPlusFlat;
+	}
+
+	public double getUpPlusFlatPlusDn() {
+		return UpPlusFlatPlusDn;
+	}
+
+	public void setUpPlusFlatPlusDn(double upPlusFlatPlusDn) {
+		UpPlusFlatPlusDn = upPlusFlatPlusDn;
+	}
+
+	public double getLastpctDischargeRate() {
+		return LastpctDischargeRate;
+	}
+
+	public void setLastpctDischargeRate(double lastpctDischargeRate) {
+		LastpctDischargeRate = lastpctDischargeRate;
+	}
 
 	public double getTotalKWCapacity() {
 		return TotalKWCapacity;

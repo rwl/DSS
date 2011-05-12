@@ -42,6 +42,10 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setkWTarget(double kWTarget);
 
+	void setkWThreshold(double kWThreshold);
+
+	double getkWThreshold();
+
 	double getPctkWBand();
 
 	void setPctkWBand(double pctkWBand);
@@ -153,6 +157,26 @@ public interface StorageControllerObj extends ControlElem {
 	int getInhibitHrs();
 
 	void setInhibitHrs(int inhibitHrs);
+
+	double getUpRamptime();
+
+	void setUpRamptime(double upRamptime);
+
+	double getFlatTime();
+
+	void setFlatTime(double flatTime);
+
+	double getDnrampTime();
+
+	void setDnrampTime(double dnrampTime);
+
+	double getUpPlusFlat();
+
+	void setUpPlusFlat(double upPlusFlat);
+
+	double getUpPlusFlatPlusDn();
+
+	void setUpPlusFlatPlusDn(double upPlusFlatPlusDn);
 
 	double getTotalKWCapacity();
 
