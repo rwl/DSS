@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
@@ -27,7 +28,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	private Complex[] InjCurrent;
 
-	public PCElementImpl(DSSClassImpl ParClass) {
+	public PCElementImpl(DSSClass ParClass) {
 		super(ParClass);
 		this.Spectrum = "default";
 		this.SpectrumObj = null;  // have to allocate later because not guaranteed there will be one now.
@@ -35,19 +36,19 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		this.MeterObj    = null;
 		this.InjCurrent  = null;
 		this.IterminalUpdated = false;
-		
+
 		this.DSSObjType = DSSClassDefs.PC_ELEMENT;
 	}
 
 	/**
 	 * Add injection currents into System currents array.
 	 */
-	public int injCurrents() {		
+	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
-		for (int i = 0; i < Yorder; i++) 
+
+		for (int i = 0; i < Yorder; i++)
 			sol.getCurrents()[NodeRef[i]] = sol.getCurrents()[NodeRef[i]].add( InjCurrent[i] );
-		
+
 		return 0;
 	}
 
@@ -61,17 +62,17 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	/**
 	 * This is called only if we need to compute the terminal currents from the inj currents.
-	 * 
+	 *
 	 * Such as for Harmonic model.
 	 */
 	protected void getTerminalCurrents(Complex[] Curr) {
 		if (getITerminalUpdated()) {  // Just copy iTerminal unless iTerminal=Curr
-			if (Curr != getIterminal()) 
-				for (int i = 0; i < Yorder; i++) 
+			if (Curr != getIterminal())
+				for (int i = 0; i < Yorder; i++)
 					Curr[i] = getIterminal()[i];
 		} else {
 			YPrim.MVMult(Curr, getVterminal());
-			for (int i = 0; i < Yorder; i++) 
+			for (int i = 0; i < Yorder; i++)
 				Curr[i] = Curr[i].add( getInjCurrent()[i].negate() );
 			setITerminalUpdated(true);
 		}
@@ -80,17 +81,17 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	/**
 	 * Get present values of terminal.
-	 * 
+	 *
 	 * Gets total currents going into a devices terminals.
 	 */
 	public void getCurrents(Complex[] Curr) {
-		try {	
+		try {
 			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
+
 			if (isEnabled()) {
 
 				if ( sol.isLastSolutionWasDirect() && (! (sol.isIsDynamicModel() || sol.isIsHarmonicModel())) ) {
-			
+
 					// Take a short cut and get Currents from YPrim only
 					// For case where model is entirely in Y matrix
 
@@ -191,7 +192,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	public void computeIterminal() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-		
+
 		if (IterminalSolutionCount != ckt.getSolution().getSolutionCount()) {
 			getCurrents(Iterminal);
 			IterminalSolutionCount = ckt.getSolution().getSolutionCount();

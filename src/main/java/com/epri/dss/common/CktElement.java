@@ -68,7 +68,7 @@ public interface CktElement extends DSSObject {
 	void setTerminals(PowerTerminal[] terminals);
 
 	void setActiveTerminal(PowerTerminal activeTerminal);
-	
+
 	PowerTerminal getActiveTerminal();
 
 	void setYprimFreq(double Value);
