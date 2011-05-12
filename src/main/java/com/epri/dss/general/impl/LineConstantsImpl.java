@@ -36,52 +36,52 @@ public class LineConstantsImpl implements LineConstants {
 
 	}
 
-	public double[] getX() {
-		return X;
+	public double getGMR(int i, int units) {
+		return 0;
 	}
 
-	public void setX(double[] x) {
-		X = x;
+	public void setGMR(int i, int units, double value) {
+
 	}
 
-	public double[] getY() {
-		return Y;
+	public double getRadius(int i, int units) {
+		return 0;
 	}
 
-	public void setY(double[] y) {
-		Y = y;
+	public void setRadius(int i, int units, double value) {
+
 	}
 
-	public double[] getRdc() {
-		return Rdc;
+	public double getRdc(int i, int units) {
+		return 0;
 	}
 
-	public void setRdc(double[] rdc) {
-		Rdc = rdc;
+	public void setRdc(int i, int units, double value) {
+
 	}
 
-	public double[] getRac() {
-		return Rac;
+	public double getRac(int i, int units) {
+		return 0;
 	}
 
-	public void setRac(double[] rac) {
-		Rac = rac;
+	public void setRac(int i, int units, double value) {
+
 	}
 
-	public double[] getGMR() {
-		return GMR;
+	public double getX(int i, int units) {
+		return 0;
 	}
 
-	public void setGMR(double[] gMR) {
-		GMR = gMR;
+	public void setX(int i, int units, double value) {
+
 	}
 
-	public double[] getRadius() {
-		return radius;
+	public double getY(int i, int units) {
+		return 0;
 	}
 
-	public void setRadius(double[] radius) {
-		this.radius = radius;
+	public void setY(int i, int units, double value) {
+
 	}
 
 	protected double getFrequency() {
@@ -104,7 +104,7 @@ public class LineConstantsImpl implements LineConstants {
 	 * These two properties will auto recalc the impedance matrices if frequency is different.
 	 * Converts to desired units when executed; Returns pointer to working version.
 	 */
-	public CMatrix getZmatrix() {
+	public CMatrix getZmatrix(double f, double Lngth, int Units) {
 		return Zmatrix;
 	}
 
@@ -112,8 +112,16 @@ public class LineConstantsImpl implements LineConstants {
 		return YCmatrix;
 	}
 
-	protected void setNumPhases(int numPhases) {
+	protected int getNumPhases() {
+		return 0;
+	}
+
+	public void setNumPhases(int numPhases) {
 		NumPhases = numPhases;
+	}
+
+	public double getRhoEarth() {
+		return 0;
 	}
 
 	public void setRhoEarth(double rhoEarth) {
