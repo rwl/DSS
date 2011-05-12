@@ -8,6 +8,7 @@ import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.general.PriceShapeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.impl.CommandListImpl;
@@ -268,10 +269,10 @@ public class ExecOptions {
 		OptionHelp[47] = "Sets the connected kVA allocation factors for all loads in the active circuit to the value given.";
 		OptionHelp[48] = "{Multiphase | Positive}  Default = Multiphase.  Designates whether circuit model is to interpreted as a normal multi-phase "+
 							"model or a positive-sequence only model";
-		OptionHelp[49] = "Sets the price signal ($/MWh) for the circuit.  Initial value is 25.";
-		OptionHelp[50] = "Sets the curve to use to obtain for price signal. Default is none (null string). If none, " +
-							"price signal either remains constant or is set by an external process. " +
-							"Curve is defined as a loadshape (not normalized) and should correspond to " +
+		OptionHelp[49] = "Sets the present price signal ($/MWh) for the circuit.  Default value is 25.";
+		OptionHelp[50] = "Sets the PRICESHAPE object to use to obtain for price signal. Default is none (null string). If none, " +
+							"price signal either remains constant or is set by an external process using Set Price= option. " +
+							"Curve is defined as a PRICESHAPE in actual values (not normalized) and should be defined to correspond to " +
 							"the type of analysis being performed (daily, yearly, load-duration, etc.).";
 		OptionHelp[51] = "Set the active terminal of the active circuit element. May also be done with Select command.";
 		OptionHelp[52] = "Default = 60. Set the fundamental frequency for harmonic solution and the default base frequency for all impedance quantities. " +
@@ -559,9 +560,9 @@ public class ExecOptions {
 			case 50:
 				ckt = Globals.getActiveCircuit();
 				ckt.setPriceCurve(Param);
-				ckt.setPriceCurveObj((LoadShapeObj) Globals.getLoadShapeClass().find(Param));
+				ckt.setPriceCurveObj((PriceShapeObj) Globals.getLoadShapeClass().find(Param));
 				if (ckt.getPriceCurveObj() == null)
-					Globals.doSimpleMsg("Price Curve: \"" +Param+ "\" not found.", 132);
+					Globals.doSimpleMsg("Priceshape: \"" +Param+ "\" not found.", 132);
 			case 51:
 				ckt = Globals.getActiveCircuit();
 				if (ckt.getActiveCktElement() != null) {

@@ -1,5 +1,6 @@
 package com.epri.dss.executive.impl;
 
+import com.epri.dss.common.impl.CIMProfileChoice;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.ExportResults;
 import com.epri.dss.common.impl.Utilities;
@@ -61,13 +62,18 @@ public class ExportOptions {
 		ExportOption[16] = "Y";
 		ExportOption[17] = "seqz";
 		ExportOption[18] = "P_byphase";
-		ExportOption[19] = "CDPSM";
-		ExportOption[20] = "CDPSMConnect";
-		ExportOption[21] = "CDPSMBalanced";
+		ExportOption[19] = "CDPSMCombined";
+		ExportOption[20] = "CDPSMFunc";
+		ExportOption[21] = "CDPSMAsset";
 		ExportOption[22] = "Buscoords";
 		ExportOption[23] = "Losses";
 		ExportOption[24] = "Guids";
 		ExportOption[25] = "Counts";
+		ExportOption[26] = "Summary";
+		ExportOption[27] = "CDPSMElec";
+		ExportOption[28] = "CDPSMGeo";
+		ExportOption[29] = "CDPSMTopo";
+		ExportOption[30] = "CDPSMStateVar";
 
 		ExportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
 		ExportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
@@ -97,6 +103,11 @@ public class ExportOptions {
 		ExportHelp[23] = "[Default file = EXP_LOSSES.CSV] Losses for each element.";
 		ExportHelp[24] = "[Default file = EXP_GUIDS.CSV] Guids for each element.";
 		ExportHelp[25] = "[Default file = EXP_Counts.CSV] (instance counts for each class)";
+		ExportHelp[26] = "[Default file = EXP_Summary.CSV] Solution summary.";
+		ExportHelp[27] = "(Default file = CDPSM_ElectricalProperties.XML) (IEC 61968-13, CDPSM Electrical Properties profile)";
+		ExportHelp[28] = "(Default file = CDPSM_Geographical.XML) (IEC 61968-13, CDPSM Geographical profile)";
+		ExportHelp[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
+		ExportHelp[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
 
 	}
 
@@ -169,14 +180,18 @@ public class ExportOptions {
 			case 16: FileName = "EXP_Y.CSV";
 			case 17: FileName = "EXP_SEQZ.CSV";
 			case 18: FileName = "EXP_P_BYPHASE.CSV";
-			case 19: FileName = "CDPSM_Unbalanced.XML";
-			case 20: FileName = "CDPSM_Connect.XML";
-			case 21: FileName = "CDPSM_Balanced.XML";
+			case 19: FileName = "CDPSM_Combined.XML";
+			case 20: FileName = "CDPSM_Functional.XML";
+			case 21: FileName = "CDPSM_Asset.XML";
 			case 22: FileName = "EXP_BUSCOORDS.CSV";
 			case 23: FileName = "EXP_LOSSES.CSV";
 			case 24: FileName = "EXP_GUIDS.CSV";
 			case 25: FileName = "EXP_Counts.CSV";
 			case 26: FileName = "EXP_Summary.CSV";
+			case 27: FileName = "CDPSM_ElectricalProperties.XML";
+			case 28: FileName = "CDPSM_Geographical.XML";
+			case 29: FileName = "CDPSM_Topology.XML";
+			case 30: FileName = "CDPSM_StateVariables.XML";
 			default:
 				FileName = "EXP_VOLTAGES.CSV";
 			}
@@ -203,6 +218,7 @@ public class ExportOptions {
 				pMon = (MonitorObj) Globals.getMonitorClass().find(Parm2);
 				if (pMon != null) {
 					pMon.translateToCSV(false);
+					FileName = Globals.getGlobalResult();
 				} else {
 					Globals.doSimpleMsg("Monitor \""+Parm2+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 250);
 				}
@@ -213,9 +229,9 @@ public class ExportOptions {
 		case 16: ExportResults.exportY(FileName);
 		case 17: ExportResults.exportSeqZ(FileName);
 		case 18: ExportResults.exportPbyphase(FileName, MVAOpt);
-		case 19: ExportResults.exportCDPSM_UnBal(FileName);        // defaults to a load-flow model
-		case 20: ExportResults.exportCDPSM_UnBal(FileName, false); // not a load-flow model
-		case 21: ExportResults.exportCDPSM_Bal(FileName);
+		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined);        // defaults to a load-flow model
+		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Functional);
+		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Asset);
 		case 22: ExportResults.exportBusCoords(FileName);
 		case 23: ExportResults.exportLosses(FileName);
 		case 24: ExportResults.exportUUIDs(FileName);

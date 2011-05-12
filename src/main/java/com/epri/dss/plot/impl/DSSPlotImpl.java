@@ -27,7 +27,9 @@ public class DSSPlotImpl implements DSSPlot {
 		DaisyPlot,
 		MeterZones,
 		LoadShape,
-		Profile
+		Profile,
+		PriceShape,
+		TShape
 	}
 
 	public enum PlotQuantity {

@@ -335,8 +335,8 @@ public class ExecCommands {
 							"Energymeter objects actually perform the reduction.  \"All\" causes all meters to reduce their zones.";
 		CommandHelp[61] = "{All | MeterName}  Default is \"All\". Interpolates coordinates for missing bus coordinates in meter zone";
 		CommandHelp[62] = "Alignfile [file=]filename.  Aligns DSS script files in columns for easier reading.";
-		CommandHelp[63] = "[class=]{Loadshape | Monitor  } [object=]{ALL (Loadshapes only) | objectname}. " +
-							"Send specified object to TOP.  Loadshapes must be hourly fixed interval. ";
+		CommandHelp[63] = "[class=]{Loadshape | TShape | Monitor  } [object=]{ALL (Loadshapes only) | objectname}. " +
+							"Send specified object to TOP.  Loadshapes and TShapes must be hourly fixed interval. ";
 		CommandHelp[64] = "Usage: Rotate [angle=]nnn.  Rotate circuit plotting coordinates by specified angle (degrees). ";
 		CommandHelp[65] = "Displays the difference between the present solution and the last on saved using the SAVE VOLTAGES command.";
 		CommandHelp[66] = "Returns a power flow summary of the most recent solution in the global result string.";

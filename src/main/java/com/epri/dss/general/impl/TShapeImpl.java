@@ -67,6 +67,10 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		return null;
 	}
 
+	public void TOPExport(String ObjName) {
+		// can export this to top for plotting
+	}
+
 	public static void setActiveTShapeObj(TShapeObj activeTShapeObj) {
 		ActiveTShapeObj = activeTShapeObj;
 	}

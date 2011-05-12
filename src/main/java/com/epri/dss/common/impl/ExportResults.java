@@ -1866,19 +1866,8 @@ public class ExportResults {
 		}
 	}
 
-	public static void exportCDPSM_UnBal(String fileName) {
+	public static void exportCDPSM(String fileName, CIMProfileChoice Profile) {
 		// TODO Auto-generated method stub
 
 	}
-
-	public static void exportCDPSM_UnBal(String fileName, boolean b) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public static void exportCDPSM_Bal(String fileName) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

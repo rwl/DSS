@@ -1839,7 +1839,9 @@ public class ExecHelper {
 
 		switch (Param.charAt(0)) {
 		case 'L':
-			DSSGlobals.getInstance().getLoadShapeClass().tOPExport(ObjName);
+			DSSGlobals.getInstance().getLoadShapeClass().TOPExport(ObjName);
+		case 'T':
+			DSSGlobals.getInstance().getTShapeClass().TOPExport(ObjName);
 //		case 'G':
 //			DSSGlobals.getInstance().getGrowthShapeClass().tOPExportAll();
 //		case 'T':

@@ -63,11 +63,16 @@ public class PlotOptions {
 		this.PlotOption[14] = "subs";
 		this.PlotOption[15] = "thickness";
 		this.PlotOption[16] = "buslist";
+		this.PlotOption[17] = "min";
+		this.PlotOption[18] = "3phLinestyle";
+		this.PlotOption[19] = "1phLinestyle";
+		this.PlotOption[20] = "phases";
 
 
 		this.PlotHelp = new String[NumPlotOptions];
 
-		this.PlotHelp[ 0] = "One of {Circuit | Monitor | Daisy | Zones | AutoAdd | General (bus data) | Loadshape } " +
+		this.PlotHelp[ 0] = "One of {Circuit | Monitor | Daisy | Zones | AutoAdd | "+ CRLF +
+							"General (bus data) | Loadshape Tshape | Priceshape | Profile} " + CRLF +
 							"A \"Daisy\" plot is a special circuit plot that places a marker at each Generator location " +
 							"or at buses in the BusList property, if defined. " +
 							"A Zones plot shows the meter zones (see help on Object). " +
@@ -79,7 +84,11 @@ public class PlotOptions {
 							"Plot Circuit quantity=3 object=mybranchdata.csv" +CRLF+
 							"Plot daisy power max=5000 dots=N Buslist=[file=MyBusList.txt]" +CRLF+
 							"Plot General quantity=1 object=mybusdata.csv" +CRLF+
-							"Plot Loadshape object=myloadshape" ;
+							"Plot Loadshape object=myloadshape" +CRLF+
+							"Plot Tshape object=mytemperatureshape" +CRLF+
+							"Plot Priceshape object=mypriceshape" +CRLF+
+							"Plot Profile" +CRLF+
+							"Plot Profile Phases=Primary";
 		this.PlotHelp[ 1] = "One of {Voltage | Current | Power | Losses | Capacity | (Value Index for General, AutoAdd, or Circuit[w/ file]) }";
 		this.PlotHelp[ 2] = "Enter 0 or the value corresponding to max scale or line thickness in the circuit plots. "+
 							"Power and Losses in kW.";
@@ -107,6 +116,18 @@ public class PlotOptions {
 							"A \"daisy\" marker is plotted for " +
 							"each bus in the list. Bus name may be repeated, which results in multiple markers distributed around the bus location. " +
 							"This gives the appearance of a daisy if there are several symbols at a bus. Not needed for plotting active generators.";
+		this.PlotHelp[17] = "Enter 0 (the default value) or the value corresponding to min value corresponding to color C1 in General bus data plots.";
+		this.PlotHelp[18] = "Line style for drawing 3-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
+		this.PlotHelp[19] = "Line style for drawing 1-phase lines. A number in the range of [1..7].Default is 1 (solid). Use 3 for dotted; 2 for dashed.";
+		this.PlotHelp[20] = "{default* | ALL | PRIMARY | LL3ph | LLALL | LLPRIMARY | (phase number)} For Profile plot. Specify which phases you want plotted." + CRLF+CRLF+
+				"default = plot only nodes 1-3 at 3-phase buses (default)" +CRLF+
+				"ALL = plot all nodes" +CRLF+
+				"PRIMARY = plot all nodes -- primary only (voltage > 1kV)" +CRLF+
+				"LL3ph = 3-ph buses only -- L-L voltages)" +CRLF+
+				"LLALL = plot all nodes -- L-L voltages)" +CRLF+
+				"LLPRIMARY = plot all nodes -- L-L voltages primary only)" +CRLF+
+				"(phase number) = plot all nodes on selected phase"+CRLF+CRLF+
+				"Note: Only nodes downline from an energy meter are plotted.";
 
 	}
 
@@ -159,11 +180,18 @@ public class PlotOptions {
 					plot.setPlotType(PlotType.LoadShape);
 				case 'M':
 					plot.setPlotType(PlotType.MonitorPlot);
-				/*case 'P':
-					plot.setPlotType(PlotType.Profile);*/
+				case 'P':
+
+					if (Utilities.compareTextShortest("pro", Param) == 0) {
+						plot.setPlotType(PlotType.Profile);
+					} else {
+						plot.setPlotType(PlotType.PriceShape);
+					}
+				case 'T':
+					plot.setPlotType(PlotType.TShape);
 				case 'D':
 					plot.setPlotType(PlotType.DaisyPlot);
-//					plot.getDaisyBusList().clear();
+					plot.getDaisyBusList().clear();
 				case 'Z':
 					plot.setPlotType(PlotType.MeterZones);
 				}

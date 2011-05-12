@@ -10,4 +10,6 @@ public interface TShape extends DSSClass {
 
 	void setCode(String Value);
 
+	void TOPExport(String ObjName);
+
 }

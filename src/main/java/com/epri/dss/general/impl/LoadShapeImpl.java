@@ -366,7 +366,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		throw new UnsupportedOperationException();
 	}
 
-	public void tOPExport(String ObjName) {
+	public void TOPExport(String ObjName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
