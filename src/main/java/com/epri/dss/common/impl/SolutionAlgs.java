@@ -61,7 +61,7 @@ public class SolutionAlgs {
 					sol.incrementTime();
 					ckt.setDefaultHourMult(ckt.getDefaultYearlyShapeObj().getMult(sol.getDblHour()));
 					if (ckt.getPriceCurveObj() != null)
-						ckt.setPriceSignal(ckt.getPriceCurveObj().getMult(sol.getDblHour()).getReal());
+						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
 					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
 					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
@@ -107,7 +107,7 @@ public class SolutionAlgs {
 					sol.incrementTime();
 					ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 					if (ckt.getPriceCurveObj() != null)
-						ckt.setPriceSignal(ckt.getPriceCurveObj().getMult(sol.getDblHour()).getReal());
+						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
 					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
 					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
@@ -155,7 +155,7 @@ public class SolutionAlgs {
 					sol.incrementTime();
 					ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 					if (ckt.getPriceCurveObj() != null)
-						ckt.setPriceSignal(ckt.getPriceCurveObj().getMult(sol.getDblHour()).getReal());
+						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
 					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
 					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
@@ -422,7 +422,7 @@ public class SolutionAlgs {
 
 			ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 			if (ckt.getPriceCurveObj() != null)
-				ckt.setPriceSignal(ckt.getPriceCurveObj().getMult(sol.getDblHour()).getReal());
+				ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
 				if (!Globals.isSolutionAbort()) {
@@ -506,7 +506,7 @@ public class SolutionAlgs {
 
 						// Price curve must correspond to load-duration curve
 						if (ckt.getPriceCurveObj() != null)
-							ckt.setPriceSignal(ckt.getPriceCurveObj().mult(N));
+							ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(N) );
 
 						sol.solveSnap();
 
@@ -576,7 +576,7 @@ public class SolutionAlgs {
 
 				// Price curve must correspond to load-duration curve
 				if (ckt.getPriceCurveObj() != null)
-					ckt.setPriceSignal(ckt.getPriceCurveObj().mult(N));
+					ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(N) );
 
 				sol.solveSnap();
 

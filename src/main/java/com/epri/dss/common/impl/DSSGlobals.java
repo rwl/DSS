@@ -13,15 +13,21 @@ import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.Feeder;
+import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.Storage;
 import com.epri.dss.executive.impl.DSSExecutive;
+import com.epri.dss.general.CNData;
 import com.epri.dss.general.DSSObject;
 import com.epri.dss.general.GrowthShape;
 import com.epri.dss.general.LineSpacing;
 import com.epri.dss.general.LoadShape;
+import com.epri.dss.general.PriceShape;
 import com.epri.dss.general.Spectrum;
 import com.epri.dss.general.TCC_Curve;
+import com.epri.dss.general.TSData;
+import com.epri.dss.general.TShape;
 import com.epri.dss.general.WireData;
+import com.epri.dss.general.XYCurve;
 import com.epri.dss.meter.EnergyMeter;
 import com.epri.dss.meter.Monitor;
 import com.epri.dss.meter.Sensor;
@@ -142,17 +148,23 @@ public class DSSGlobals {
 
 	// Some commonly used classes   so we can find them easily
 	private LoadShape LoadShapeClass;
+	private TShape TShapeClass;
+	private PriceShape PriceShapeClass;
+	private XYCurve XYCurveClass;
 	private GrowthShape GrowthShapeClass;
 	private Spectrum SpectrumClass;
 	private DSSClass SolutionClass;
 	private EnergyMeter EnergyMeterClass;
-	private Feeder FeederClass;
+	//private Feeder FeederClass;
 	private Monitor MonitorClass;
 	private Sensor SensorClass;
 	private TCC_Curve TCC_CurveClass;
 	private WireData WireDataClass;
+	private CNData CNDataClass;
+	private TSData TSDataClass;
 	private LineSpacing LineSpacingClass;
 	private Storage StorageClass;
+	private PVSystem PVSystemClass;
 
 	private List<String> EventStrings;
 	private List<String> SavedFileList;
@@ -569,13 +581,13 @@ public class DSSGlobals {
 		EnergyMeterClass = energyMeterClass;
 	}
 
-	public Feeder getFeederClass() {
-		return FeederClass;
-	}
-
-	public void setFeederClass(Feeder feederClass) {
-		FeederClass = feederClass;
-	}
+//	public Feeder getFeederClass() {
+//		return FeederClass;
+//	}
+//
+//	public void setFeederClass(Feeder feederClass) {
+//		FeederClass = feederClass;
+//	}
 
 	public Monitor getMonitorClass() {
 		return MonitorClass;
@@ -623,6 +635,54 @@ public class DSSGlobals {
 
 	public void setStorageClass(Storage storageClass) {
 		StorageClass = storageClass;
+	}
+
+	public TShape getTShapeClass() {
+		return TShapeClass;
+	}
+
+	public void setTShapeClass(TShape tShapeClass) {
+		TShapeClass = tShapeClass;
+	}
+
+	public PriceShape getPriceShapeClass() {
+		return PriceShapeClass;
+	}
+
+	public void setPriceShapeClass(PriceShape priceShapeClass) {
+		PriceShapeClass = priceShapeClass;
+	}
+
+	public XYCurve getXYCurveClass() {
+		return XYCurveClass;
+	}
+
+	public void setXYCurveClass(XYCurve xYCurveClass) {
+		XYCurveClass = xYCurveClass;
+	}
+
+	public CNData getCNDataClass() {
+		return CNDataClass;
+	}
+
+	public void setCNDataClass(CNData cNDataClass) {
+		CNDataClass = cNDataClass;
+	}
+
+	public TSData getTSDataClass() {
+		return TSDataClass;
+	}
+
+	public void setTSDataClass(TSData tSDataClass) {
+		TSDataClass = tSDataClass;
+	}
+
+	public PVSystem getPVSystemClass() {
+		return PVSystemClass;
+	}
+
+	public void setPVSystemClass(PVSystem pVSystemClass) {
+		PVSystemClass = pVSystemClass;
 	}
 
 	public List<String> getEventStrings() {

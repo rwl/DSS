@@ -15,7 +15,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	public SolutionImpl() {
 		super();
 		this.Class_Name = "Solution";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.DSSClassType = DSSClassDefs.DSS_OBJECT + DSSClassDefs.HIDDEN_ELEMENT;
 
 		ActiveElement = 0;
 

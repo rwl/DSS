@@ -13,6 +13,7 @@ import com.epri.dss.control.impl.SwtControlImpl;
 import com.epri.dss.conversion.impl.GeneratorImpl;
 import com.epri.dss.conversion.impl.ISourceImpl;
 import com.epri.dss.conversion.impl.LoadImpl;
+import com.epri.dss.conversion.impl.PVSystemImpl;
 import com.epri.dss.conversion.impl.StorageImpl;
 import com.epri.dss.conversion.impl.VSourceImpl;
 import com.epri.dss.delivery.impl.CapacitorImpl;
@@ -22,14 +23,19 @@ import com.epri.dss.delivery.impl.LineImpl;
 import com.epri.dss.delivery.impl.ReactorImpl;
 import com.epri.dss.delivery.impl.TransformerImpl;
 import com.epri.dss.general.DSSObject;
+import com.epri.dss.general.impl.CNDataImpl;
 import com.epri.dss.general.impl.GrowthShapeImpl;
 import com.epri.dss.general.impl.LineCodeImpl;
 import com.epri.dss.general.impl.LineGeometryImpl;
 import com.epri.dss.general.impl.LineSpacingImpl;
 import com.epri.dss.general.impl.LoadShapeImpl;
+import com.epri.dss.general.impl.PriceShapeImpl;
 import com.epri.dss.general.impl.SpectrumImpl;
 import com.epri.dss.general.impl.TCC_CurveImpl;
+import com.epri.dss.general.impl.TSDataImpl;
+import com.epri.dss.general.impl.TShapeImpl;
 import com.epri.dss.general.impl.WireDataImpl;
+import com.epri.dss.general.impl.XYCurveImpl;
 import com.epri.dss.general.impl.XfmrCodeImpl;
 import com.epri.dss.meter.impl.EnergyMeterImpl;
 import com.epri.dss.meter.impl.MonitorImpl;
@@ -48,6 +54,7 @@ public class DSSClassDefs {
 	public static final int PC_ELEMENT    = 3;
 	public static final int CTRL_ELEMENT  = 4;
 	public static final int METER_ELEMENT = 5;
+	public static final int HIDDEN_ELEMENT= 6;
 
 	/* Specific element Types */
 	public static final int MON_ELEMENT  =  1 * 8;
@@ -112,6 +119,14 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( new LineCodeImpl() );
 		Globals.setLoadShapeClass(new LoadShapeImpl());
 		DSSClassImpl.getDSSClasses().setNew( Globals.getLoadShapeClass() );
+
+		Globals.setTShapeClass( new TShapeImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getTShapeClass() );
+		Globals.setPriceShapeClass( new PriceShapeImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getPriceShapeClass() );
+		Globals.setXYCurveClass( new XYCurveImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getXYCurveClass() );
+
 		Globals.setGrowthShapeClass(new GrowthShapeImpl());
 		DSSClassImpl.getDSSClasses().setNew( Globals.getGrowthShapeClass() );
 		Globals.setTCC_CurveClass(new TCC_CurveImpl());
@@ -120,6 +135,12 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( Globals.getSpectrumClass() );
 		Globals.setWireDataClass(new WireDataImpl());
 		DSSClassImpl.getDSSClasses().setNew( Globals.getWireDataClass() );
+
+		Globals.setCNDataClass( new CNDataImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getCNDataClass() );
+		Globals.setTSDataClass( new TSDataImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getTSDataClass() );
+
 		DSSClassImpl.getDSSClasses().setNew( new LineGeometryImpl() );
 		Globals.setLineSpacingClass(new LineSpacingImpl());
 		DSSClassImpl.getDSSClasses().setNew( Globals.getLineSpacingClass() );
@@ -144,9 +165,11 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( new RelayImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new RecloserImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new FuseImpl() );
-		Globals.setFeederClass(new FeederImpl());
-		DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
+//		Globals.setFeederClass(new FeederImpl());
+//		DSSClassImpl.getDSSClasses().setNew( Globals.getFeederClass() );
 		DSSClassImpl.getDSSClasses().setNew( new SwtControlImpl() );
+		Globals.setPVSystemClass( new PVSystemImpl() );
+		DSSClassImpl.getDSSClasses().setNew( Globals.getPVSystemClass() );
 
 		Globals.setMonitorClass(new MonitorImpl() );       // Have to do this after Generator
 		DSSClassImpl.getDSSClasses().setNew( Globals.getMonitorClass() );
