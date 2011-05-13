@@ -323,6 +323,10 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
+	public static CktTree getIsolatedSubArea(CktElement StartElement) {
+		return getIsolatedSubArea(StartElement, false);
+	}
+
 	/**
 	 * Build a tree of connected elements beginning at StartElement.
 	 * Analyze = true; will check for loops, isolated components, and parallel lines (takes longer)
