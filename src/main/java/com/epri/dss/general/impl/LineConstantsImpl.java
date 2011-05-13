@@ -132,7 +132,7 @@ public class LineConstantsImpl implements LineConstants {
 		return NumConds;
 	}
 
-	public boolean conductorsInSameSpace(String ErrorMessage) {
+	public boolean conductorsInSameSpace(StringBuffer ErrorMessage) {
 		return false;
 	}
 

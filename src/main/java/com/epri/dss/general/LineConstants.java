@@ -81,7 +81,7 @@ public interface LineConstants {
 
 	int getNumConds();
 
-	boolean conductorsInSameSpace(String ErrorMessage);
+	boolean conductorsInSameSpace(StringBuffer ErrorMessage);
 
 	/**
 	 * Force a calc of impedances.
