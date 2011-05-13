@@ -219,7 +219,9 @@ public class Parser {
 		return (QuoteIndex >= 0);
 	}
 
-	private String getToken(String lineBuffer, int linePos) {
+	private String getToken(String buffer, int pos) {
+		LineBuffer = buffer;
+		LinePos = pos;
 
 		CmdBufLength = LineBuffer.length();
 		if (LinePos <= CmdBufLength) {
@@ -233,7 +235,7 @@ public class Parser {
 				while ((LinePos < CmdBufLength) && (!isDelimiter(LineBuffer, LinePos)))
 					LinePos += 1;
 
-				System.arraycopy(LineBuffer, TokenStart, Result, 0, LinePos-TokenStart);  // TODO Double-check translation
+				Result = LineBuffer.substring(0, LinePos - TokenStart);
 			}
 
 			/* Check for stop on comment */
