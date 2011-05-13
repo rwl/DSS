@@ -27,7 +27,7 @@ public class DSSExecutive implements Executive {
 
 		ExecOptions.getInstance().setOptionList(null);
 
-		/* Instantiate All DSS Classe Definitions, Intrinsic and User-defined */
+		/* Instantiate all DSS class definitions, intrinsic and user-defined */
 		DSSClassDefs.createDSSClasses();
 
 		DSSGlobals.getInstance().setCircuits(new ArrayList<Circuit>(2));  // default buffer for 2 active circuits
@@ -42,7 +42,7 @@ public class DSSExecutive implements Executive {
 		this.RecorderOn = false;
 		this.RecorderFile = "";
 
-		DSSGlobals.getInstance().readDSS_Registry();
+		//DSSGlobals.getInstance().readDSS_Registry();
 	}
 
 	protected void finalize() throws Throwable {
