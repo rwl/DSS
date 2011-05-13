@@ -5,6 +5,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.parser.impl.Parser;
+
 import jline.Completor;
 
 public class DSSCompletor implements Completor {
@@ -28,7 +31,7 @@ public class DSSCompletor implements Completor {
 		} else if (candidates.size() == 1) {
 			clist.add(candidates.iterator().next());
 
-			clist.set(0, ((String) clist.get(0)) + " ");
+//			clist.set(0, ((String) clist.get(0)) + " ");
 		} else {
 			clist.addAll(candidates);
 		}
@@ -39,11 +42,25 @@ public class DSSCompletor implements Completor {
 	}
 
 	private Set<String> locateCandidates(String buffer) {
+		Parser parser = DSSGlobals.getInstance().getAuxParser();
 
 		Set<String> candidates = new TreeSet<String>();
 
+		parser.setCmdString(buffer);
+
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+
 		System.out.println();
 		System.out.println("Buffer: " + buffer);
+		System.out.println("Param Name: " + paramName);
+		System.out.println("Param: " + param);
+
+		paramName = parser.getNextParam();
+		param = parser.makeString();
+
+		System.out.println("Param Name: " + paramName);
+		System.out.println("Param: " + param);
 
 		candidates.add(buffer);
 
