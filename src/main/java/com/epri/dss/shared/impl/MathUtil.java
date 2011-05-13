@@ -319,4 +319,8 @@ public abstract class MathUtil {
 		return null;
 	}
 
+	public static double sqr(double a) {
+		return Math.pow(a, 2);
+	}
+
 }

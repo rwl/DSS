@@ -2,20 +2,20 @@ package com.epri.dss.general;
 
 public interface CNLineConstants extends CableConstants {
 
-	int[] getkStrand();
+	int getkStrand(int i);
 
-	void setkStrand(int[] kStrand);
+	void setkStrand(int i, int kStrand);
 
-	double[] getDiaStrand();
+	double getDiaStrand(int i);
 
-	void setDiaStrand(double[] diaStrand);
+	void setDiaStrand(int i, int units, double diaStrand);
 
-	double[] getGmrStrand();
+	double getGmrStrand(int i);
 
-	void setGmrStrand(double[] gmrStrand);
+	void setGmrStrand(int i, int units, double gmrStrand);
 
-	double[] getRStrand();
+	double getRStrand(int i);
 
-	void setRStrand(double[] rStrand);
+	void setRStrand(int i, int units, double rStrand);
 
 }
