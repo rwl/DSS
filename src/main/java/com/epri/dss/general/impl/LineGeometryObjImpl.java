@@ -395,7 +395,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	 * Called from a Line object that has its own spacing and wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases.
 	 */
-	public void LoadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires) {
+	public void loadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires) {
 		int i;
 		ConductorChoice newPhaseChoice;
 
@@ -436,6 +436,10 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		}
 	}
 
+	public int getUnits(int i) {
+		return Units[i];
+	}
+
 	public int getNphases() {
 		return NConds;
 	}
@@ -470,7 +474,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		return CondName;
 	}
 
-	public void setCondname(String[] condName) {
+	public void setCondName(String[] condName) {
 		this.CondName = condName;
 	}
 
@@ -498,9 +502,9 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		Y = y;
 	}
 
-//	public int[] getUnits() {
-//		return Units;
-//	}
+	public int[] getUnits() {
+		return Units;
+	}
 
 	public void setUnits(int[] units) {
 		Units = units;

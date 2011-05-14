@@ -207,7 +207,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 						}
 
 						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-							alg.getWireData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
 							if (i == 0) {
 								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
 									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
@@ -247,7 +247,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					}
 
 					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-						alg.getWireData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
 						/* Default the current ratings for this geometry to the rating of the first conductor */
 						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
 							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
@@ -313,7 +313,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 			for (i = 0; i < alg.getNconds(); i++)
 				alg.getCondName()[i] = OtherLineGeometry.getCondName()[i];
 			for (i = 0; i < alg.getNconds(); i++)
-				alg.getWireData()[i] = OtherLineGeometry.getWireData()[i];
+				alg.getConductorData()[i] = OtherLineGeometry.getConductorData()[i];
 			for (i = 0; i < alg.getNconds(); i++)
 				alg.getX()[i] = OtherLineGeometry.getX()[i];
 			for (i = 0; i < alg.getNconds(); i++)

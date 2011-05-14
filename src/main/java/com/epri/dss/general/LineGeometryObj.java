@@ -45,9 +45,9 @@ public interface LineGeometryObj extends DSSObject {
 
 	double getYcoord(int i);
 
-	String getWireName(int i);
+	String getConductorName(int i);
 
-	WireDataObj getWireData (int i);
+	ConductorDataObj getConductorData(int i);
 
 	int getNWires();
 
@@ -55,7 +55,7 @@ public interface LineGeometryObj extends DSSObject {
 	 * called from a Line object that has its own Spacing and Wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases
 	 */
-	void LoadSpacingAndWires(LineSpacingObj Spc, WireDataObj[] Wires);
+	void loadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires);
 
 	double getNormAmps();
 
@@ -77,9 +77,9 @@ public interface LineGeometryObj extends DSSObject {
 
 	void setCondName(String[] condName);
 
-	ConductorDataObj[] getWireData();
+	ConductorDataObj[] getConductorData();
 
-	void setWireData(ConductorDataObj[] wireData);
+	void setConductorData(ConductorDataObj[] wireData);
 
 	double[] getX();
 
