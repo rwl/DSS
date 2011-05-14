@@ -1,9 +1,16 @@
 package com.epri.dss.general.impl;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.PriceShape;
 import com.epri.dss.general.PriceShapeObj;
 import com.epri.dss.parser.impl.Parser;
@@ -262,11 +269,55 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	}
 
 	private void doCSVFile(String FileName) {
-		throw new UnsupportedOperationException();  // FIXME
+		FileInputStream fileStream;
+		DataInputStream dataStream;
+		BufferedReader reader;
+
+		String s;
+		Parser parser;
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		try {
+			fileStream = new FileInputStream(FileName);
+			dataStream = new DataInputStream(fileStream);
+			reader = new BufferedReader(new InputStreamReader(dataStream));
+
+			PriceShapeObj aps = getActivePriceShapeObj();
+
+			aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+
+			if (aps.getInterval() == 0.0)
+				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+			int i = 0;
+			while (((s = reader.readLine()) != null) && i < aps.getNumPoints()) {  // TODO: Check zero based indexing
+				i += 1;
+				/* AuxParser allows commas or white space */
+				parser = Globals.getAuxParser();
+				parser.setCmdString(s);
+				if (aps.getInterval() == 0.0) {
+					parser.getNextParam();
+					aps.getHours()[i] = parser.makeDouble();
+				}
+				parser.getNextParam();
+				aps.getPriceValues()[i] = parser.makeDouble();
+			}
+			fileStream.close();
+			dataStream.close();
+			reader.close();
+			if (i != aps.getNumPoints())  // TODO: Check zero based indexing
+				aps.setNumPoints(i);
+
+			fileStream.close();
+			dataStream.close();
+			reader.close();
+		} catch (IOException e) {
+			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 604);
+			return;
+		}
 	}
 
 	private void doSngFile(String FileName) {
-		throw new UnsupportedOperationException();
+		throw new UnsupportedOperationException();  // FIXME
 	}
 
 	private void doDblFile(String FileName) {
