@@ -66,13 +66,13 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 		}
 
 		for (i = 0; i < getNumConds(); i++) {
-			if (i <= getNumPhases()) {
+			if (i <= getNPhases()) {
 				Ri = radius[i];
 			} else {
 				Ri = 0.5 * DiaCable[i];
 			}
 			for (j = i; j < getNumConds(); j++) {  // TODO Check zero based indexing
-				if (j <= getNumPhases()) {
+				if (j <= getNPhases()) {
 					Rj = radius[j];
 				} else {
 					Rj = 0.5 * DiaCable[j];

@@ -18,19 +18,19 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 
 	}
 
-	public double getDiaShield(int i) {
+	public double getDiaShield(int i, int units) {
 		return DiaShield[i];
 	}
 
-	public void setDiaShield(int i, double diaShield) {
+	public void setDiaShield(int i, int units, double diaShield) {
 		DiaShield[i] = diaShield;
 	}
 
-	public double getTapeLayer(int i) {
+	public double getTapeLayer(int i, int units) {
 		return TapeLayer[i];
 	}
 
-	public void setTapeLayer(int i, double tapeLayer) {
+	public void setTapeLayer(int i, int units, double tapeLayer) {
 		TapeLayer[i] = tapeLayer;
 	}
 

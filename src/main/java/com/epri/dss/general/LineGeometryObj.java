@@ -1,5 +1,7 @@
 package com.epri.dss.general;
 
+import com.epri.dss.general.impl.ConductorChoice;
+import com.epri.dss.general.impl.LineGeometryObjImpl.LineGeometryProblem;
 import com.epri.dss.shared.CMatrix;
 
 /**
@@ -16,6 +18,8 @@ import com.epri.dss.shared.CMatrix;
  *
  */
 public interface LineGeometryObj extends DSSObject {
+
+	void changeLineConstantsType(ConductorChoice newPhaseChoice);
 
 	void setNconds(int Value);
 
@@ -61,19 +65,21 @@ public interface LineGeometryObj extends DSSObject {
 
 	void setEmergAmps(double emergAmps);
 
+	ConductorChoice getPhaseChoice();
+
 	// FIXME Private method in OpenDSS
-	void updateLineGeometryData(double f);
+	void updateLineGeometryData(double f) throws LineGeometryProblem;
 
 
 	// FIXME Private members in OpenDSS.
 
-	String[] getCondType();
+	String[] getCondName();
 
-	void setCondType(String[] condType);
+	void setCondName(String[] condName);
 
-	WireDataObj[] getWireData();
+	ConductorDataObj[] getWireData();
 
-	void setWireData(WireDataObj[] wireData);
+	void setWireData(ConductorDataObj[] wireData);
 
 	double[] getX();
 
@@ -103,8 +109,10 @@ public interface LineGeometryObj extends DSSObject {
 
 	void setSpacingType(String spacingType);
 
-	OHLineConstants getLineData();
+	LineConstants getLineData();
 
-	void setLineData(OHLineConstants lineData);
+	void setLineData(LineConstants lineData);
+
+	void setPhaseChoice(ConductorChoice phaseChoice);
 
 }

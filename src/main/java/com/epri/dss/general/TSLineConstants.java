@@ -4,13 +4,13 @@ public interface TSLineConstants extends CableConstants {
 
 	static final double RhoTS = 2.3718e-8;  // for copper tape shield
 
-	double getDiaShield(int i);
+	double getDiaShield(int i, int units);
 
-	void setDiaShield(int i, double diaShield);
+	void setDiaShield(int i, int units, double diaShield);
 
-	double getTapeLayer(int i);
+	double getTapeLayer(int i, int units);
 
-	void setTapeLayer(int i, double tapeLayer);
+	void setTapeLayer(int i, int units, double tapeLayer);
 
 	double getTapeLap(int i);
 

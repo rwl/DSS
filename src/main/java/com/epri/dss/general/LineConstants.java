@@ -71,9 +71,11 @@ public interface LineConstants {
 	 */
 	CMatrix getZmatrix(double f, double Lngth, int Units);
 
-	CMatrix getYCmatrix();
+	CMatrix getYCmatrix(double f, double Lngth, int Units);
 
-	void setNumPhases(int numPhases);
+	int getNPhases();
+
+	void setNPhases(int numPhases);
 
 	double getRhoEarth();
 

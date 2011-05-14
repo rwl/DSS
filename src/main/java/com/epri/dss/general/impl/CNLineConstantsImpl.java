@@ -57,7 +57,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		YCmatrix.clear();
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
-		N = getNumConds() + getNumPhases();
+		N = getNumConds() + getNPhases();
 		Zmat = new CMatrixImpl(N);
 
 		/* For less than 1 kHz use GMR to better match published data */
@@ -81,7 +81,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		}
 
 		// CN self impedances
-		for (i = 0; i < getNumPhases(); i++) {
+		for (i = 0; i < getNPhases(); i++) {
 			ResCN = RStrand[i] / kStrand[i];
 			RadCN = 0.5 * (DiaCable[i] - DiaStrand[i]);
 			GmrCN = Math.pow(GmrStrand[i] * kStrand[i] * Math.pow(RadCN, kStrand[i] - 1.0),
@@ -101,7 +101,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		}
 
 		// Mutual Impedances - CN to other CN, cores, and bare neutrals
-		for (i = 0; i < getNumPhases(); i++) {
+		for (i = 0; i < getNPhases(); i++) {
 			idxi = i + getNumConds();
 			for (j = 0; j < i - 1; j++) {  // CN to other CN
 				idxj = j + getNumConds();
@@ -132,7 +132,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		Zmat = null;
 
 		// for shielded cables, build the capacitance matrix directly
-		for (i = 0; i < getNumPhases(); i++) {
+		for (i = 0; i < getNPhases(); i++) {
 			Yfactor = LineConstants.TwoPI * LineConstants.e0 * EpsR[i] * w;  // includes frequency so C==>Y
 			RadCN = 0.5 * (DiaCable[i] - DiaStrand[i]);
 			RadIn = radius[i];  // per Kersting, could make it the inside of insulating layer
