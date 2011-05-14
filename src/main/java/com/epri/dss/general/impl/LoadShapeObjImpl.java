@@ -275,6 +275,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		}
 
 		switch (Index) {
+		case 1:
+			Result = String.format("%.8g", Interval);
 		case 2:
 			for (int i = 0; i < NumPoints; i++)
 				Result = Result + String.format("%-g, ", PMultipliers[i]);
@@ -303,6 +305,10 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			Result = String.format("%.8g", MaxP);
 		case 13:
 			Result = String.format("%.8g", MaxQ);
+		case 14:
+			Result = String.format("%.8g", Interval * 3600.0);
+		case 15:
+			Result = String.format("%.8g", Interval * 60.0);
 		default:
 			Result = super.getPropertyValue(Index);
 		}
@@ -320,7 +326,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public void initPropertyValues(int ArrayOffset) {
 
 		PropertyValue[0] = "0";  // Number of points to expect
-		PropertyValue[1] = "1";  // default = 1.0;
+		PropertyValue[1] = "1";  // default = 1.0 hr;
 		PropertyValue[2] = "";   // vector of multiplier values
 		PropertyValue[3] = "";   // vector of hour values
 		PropertyValue[4] = "0";  // set the mean (otherwise computed)
@@ -333,6 +339,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		PropertyValue[11] = "No";
 		PropertyValue[12] = "0";
 		PropertyValue[13] = "0";
+		PropertyValue[14] = "3600";   // seconds
+		PropertyValue[15] = "60";     // minutes
 
 		super.initPropertyValues(LoadShape.NumPropsThisClass);
 	}

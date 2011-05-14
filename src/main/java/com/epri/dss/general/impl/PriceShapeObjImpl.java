@@ -22,14 +22,6 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 		// TODO Auto-generated constructor stub
 	}
 
-	private void saveToDblFile() {
-
-	}
-
-	private void saveToSngFile() {
-
-	}
-
 	private void calcMeanandStdDev() {
 
 	}
@@ -112,6 +104,46 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 
+	}
+
+	// FIXME Private methods in OpenDSS
+
+	public void saveToDblFile() {
+
+	}
+
+	public void saveToSngFile() {
+
+	}
+
+	// FIXME Private members in OpenDSS
+
+	public int getLastValueAccessed() {
+		return LastValueAccessed;
+	}
+
+	public void setLastValueAccessed(int lastValueAccessed) {
+		LastValueAccessed = lastValueAccessed;
+	}
+
+	public int getArrayPropertyIndex() {
+		return ArrayPropertyIndex;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		ArrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public boolean isStdDevCalculated() {
+		return StdDevCalculated;
+	}
+
+	public void setStdDevCalculated(boolean stdDevCalculated) {
+		StdDevCalculated = stdDevCalculated;
+	}
+
+	public void setInterval(double interval) {
+		Interval = interval;
 	}
 
 }

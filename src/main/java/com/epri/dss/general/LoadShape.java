@@ -4,7 +4,7 @@ import com.epri.dss.common.DSSClass;
 
 public interface LoadShape extends DSSClass {
 
-	static final int NumPropsThisClass = 14;
+	static final int NumPropsThisClass = 16;
 
 	/* Returns active LoadShape string */
 	String getCode();

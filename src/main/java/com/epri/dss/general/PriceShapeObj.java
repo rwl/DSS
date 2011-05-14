@@ -72,4 +72,26 @@ public interface PriceShapeObj extends DSSObject {
 	 */
 	double getHour(int i);
 
+	// FIXME Private methods in OpenDSS
+
+	void saveToDblFile();
+
+	void saveToSngFile();
+
+	// FIXME Private members in OpenDSS
+
+	int getLastValueAccessed();
+
+	void setLastValueAccessed(int lastValueAccessed);
+
+	int getArrayPropertyIndex();
+
+	void setArrayPropertyIndex(int arrayPropertyIndex);
+
+	boolean isStdDevCalculated();
+
+	void setStdDevCalculated(boolean stdDevCalculated);
+
+	void setInterval(double interval);
+
 }

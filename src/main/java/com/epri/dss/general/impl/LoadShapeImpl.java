@@ -58,12 +58,15 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		PropertyName[11] = "UseActual"; // Flag to signify to use actual value
 		PropertyName[12] = "Pmax";    // MaxP value
 		PropertyName[13] = "Qmax";    // MaxQ
+		PropertyName[14] = "sinterval"; // Interval in seconds
+		PropertyName[15] = "minterval"; // Interval in minutes
 
 		// define property help values
 
 		PropertyHelp[0] = "Max number of points to expect in load shape vectors. This gets reset to the number of multiplier values found (in files only) if less than specified.";     // Number of points to expect
-		PropertyHelp[1] = "Time interval for fixed interval data. (hrs) Default = 1. "+
-				"If set = 0 then time data (in hours) is expected using either the Hour property or input files."; // default = 1.0;
+		PropertyHelp[1] = "Time interval for fixed interval data (hrs). Default = 1. "+
+				"If set = 0 then time data (in hours) is expected using either the Hour property or input files. " +CRLF+CRLF+
+				"See also \"sinterval\" and \"minterval\"."; // default = 1.0;
 		PropertyHelp[2] = "Array of multiplier values for active power (P).  You can also use the syntax: "+CRLF+
 				"mult = (file=filename)     !for text file one value per line"+CRLF+
 				"mult = (dblfile=filename)  !for packed file of doubles"+CRLF+
@@ -107,6 +110,9 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				"Use this property to override the value automatically computed or to retrieve the value computed.";
 		PropertyHelp[13] = "kvar value at the time of max kW power. Is automatically set upon reading in a loadshape. "+
 				"Use this property to override the value automatically computed or to retrieve the value computed.";
+		PropertyHelp[14] = "Specify fixed interval in SECONDS. Alternate way to specify Interval property.";
+		PropertyHelp[15] = "Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
+
 
 
 		ActiveProperty = LoadShape.NumPropsThisClass;
@@ -185,6 +191,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					als.setMaxP(parser.makeDouble());
 				case 13:
 					als.setMaxQ(parser.makeDouble());
+				case 14:
+					als.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+				case 15:
+					als.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
 				default:
 					// Inherited parameters
 					classEdit(ActiveLoadShapeObj, ParamPointer - LoadShape.NumPropsThisClass);
