@@ -30,10 +30,26 @@ public interface ConductorDataObj extends DSSObject {
 
 	double getRadius();
 
-	double getGMRUnits();
+	int getGMRUnits();
 
-	double getResistanceUnits();
+	int getResistanceUnits();
 
-	double getRadiusUnits();
+	int getRadiusUnits();
+
+	// FIXME Private members in OpenDSS.
+
+	void setRDC(double rDC);
+
+	void setR60(double r60);
+
+	void setGMR60(double gMR60);
+
+	void setRadius(double radius);
+
+	void setGMRUnits(int gMRUnits);
+
+	void setResistanceUnits(int resistanceUnits);
+
+	void setRadiusUnits(int radiusUnits);
 
 }
