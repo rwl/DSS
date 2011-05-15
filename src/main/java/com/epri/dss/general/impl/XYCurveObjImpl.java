@@ -15,7 +15,21 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
 	public XYCurveObjImpl(DSSClass ParClass, String XYCurveName) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
+		setName(XYCurveName.toLowerCase());
+		this.DSSObjType = ParClass.getDSSClassType();
+
+		this.LastValueAccessed = 0;
+
+		this.NumPoints   = 0;
+		this.XValues     = null;
+		this.YValues     = null;
+
+		this.X = 0.0;
+		this.Y = 0.0;
+
+		ArrayPropertyIndex = -1;
+
+		initPropertyValues(0);
 	}
 
 	private double interpolatePoints(int i, int j, double X, double[] Xarray, double[] Yarray) {
@@ -71,6 +85,56 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 
+	}
+
+	// FIXME Private members in OpenDSS
+
+	public int getLastValueAccessed() {
+		return LastValueAccessed;
+	}
+
+	public void setLastValueAccessed(int lastValueAccessed) {
+		LastValueAccessed = lastValueAccessed;
+	}
+
+	public int getArrayPropertyIndex() {
+		return ArrayPropertyIndex;
+	}
+
+	public void setArrayPropertyIndex(int arrayPropertyIndex) {
+		ArrayPropertyIndex = arrayPropertyIndex;
+	}
+
+	public double getX() {
+		return X;
+	}
+
+	public void setX(double x) {
+		X = x;
+	}
+
+	public double getY() {
+		return Y;
+	}
+
+	public void setY(double y) {
+		Y = y;
+	}
+
+	public double[] getXValues() {
+		return XValues;
+	}
+
+	public void setXValues(double[] xValues) {
+		XValues = xValues;
+	}
+
+	public double[] getYValues() {
+		return YValues;
+	}
+
+	public void setYValues(double[] yValues) {
+		YValues = yValues;
 	}
 
 }
