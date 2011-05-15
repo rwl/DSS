@@ -50,9 +50,9 @@ public interface TShapeObj extends DSSObject {
 
 	void setInterval(double interval);
 
-	double getHours();
+	double[] getHours();
 
-	void setHours(double hours);
+	void setHours(double[] hours);
 
 	double[] getTValues();
 
@@ -72,5 +72,25 @@ public interface TShapeObj extends DSSObject {
 	 * Get hour corresponding to point index.
 	 */
 	double getHour(int i);
+
+	// FIXME Private methods in OpenDSS
+
+	void saveToDblFile();
+
+	void saveToSngFile();
+
+	// FIXME Private members in OpenDSS
+
+	int getLastValueAccessed();
+
+	void setLastValueAccessed(int lastValueAccessed);
+
+	int getArrayPropertyIndex();
+
+	void setArrayPropertyIndex(int arrayPropertyIndex);
+
+	boolean isStdDevCalculated();
+
+	void setStdDevCalculated(boolean stdDevCalculated);
 
 }
