@@ -3,7 +3,7 @@ package com.epri.dss.conversion;
 public interface Storage extends PCClass {
 
 	static int NumStorageRegisters = 6;
-	static int NumStorageVariables = 4;
+	static int NumStorageVariables = 5;
 
 	static int STORE_CHARGING    = -1;
 	static int STORE_IDLING      =  0;
@@ -14,6 +14,7 @@ public interface Storage extends PCClass {
 	static int STORE_LOADMODE = 1;
 	static int STORE_PRICEMODE = 2;
 	static int STORE_EXTERNALMODE = 3;
+	static int STORE_FOLLOW = 4;
 
 	/*
 	 * To add a property,

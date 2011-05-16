@@ -79,7 +79,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	/* User-Written Models */
 	private StoreUserModel UserModel;
 
-	private double varBase; // Base vars per phase
+	private double kvarBase; // Base vars per phase
 	private double VBase;  // Base volts suitable for computing currents
 	private double VBase105;
 	private double VBase95;
@@ -272,6 +272,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (imode) {
 		case Storage.STORE_EXTERNALMODE:
 			return "External";
+		case Storage.STORE_FOLLOW:
+			return "Follow";
 		case Storage.STORE_LOADMODE:
 			return "Loadshape";
 		case Storage.STORE_PRICEMODE:
@@ -403,11 +405,17 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (State) {
 		case Storage.STORE_CHARGING:
 			if (kWhStored < kWhRating) {
-				kW_out = -kWrating * pctKWin / 100.0;
-				if (PFNominal == 1.0) {
-					kvar_out = 0.0;
-				} else {
-					kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				switch (DispatchMode) {
+				case Storage.STORE_FOLLOW:
+					kW_out   = kWrating * ShapeFactor.getReal();
+					kvar_out = kvarBase * ShapeFactor.getImaginary();    // ???
+				default:
+					kW_out = -kWrating * pctKWin / 100.0;
+					if (PFNominal == 1.0) {
+						kvar_out = 0.0;
+					} else {
+						syncUpPowerQuantities();  // computes kvar_out from PF
+					}
 				}
 			} else {
 				State = Storage.STORE_IDLING;   // all charged up
@@ -415,11 +423,17 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		case Storage.STORE_DISCHARGING:
 			if (kWhStored > kWhReserve) {
-				kW_out = kWrating * pctKWout / 100.0;
-				if (PFNominal == 1.0) {
-					kvar_out = 0.0;
-				} else {
-					kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
+				switch (DispatchMode) {
+				case Storage.STORE_FOLLOW:
+					kW_out   = kWrating * ShapeFactor.getReal();
+					kvar_out = kvarBase * ShapeFactor.getImaginary();
+				default:
+					kW_out = kWrating * pctKWout / 100.0;
+					if (PFNominal == 1.0) {
+						kvar_out = 0.0;
+					} else {
+						syncUpPowerQuantities();  // computes kvar_out from PF
+					}
 				}
 			} else {
 				State = Storage.STORE_IDLING;  // not enough storage to discharge
@@ -531,7 +545,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VBase95  = Vminpu * VBase;
 		VBase105 = Vmaxpu * VBase;
 
-		varBase = 1000.0 * kvar_out / nPhases;
+		kvarBase = 1000.0 * kvar_out / nPhases;  // remember this for Follow Mode
 
 		// values in ohms for thevenin equivalents
 		RThev = pctR * 0.01 * Math.pow(getPresentKV(), 2) / kVArating * 1000.0;
@@ -680,38 +694,52 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	private void checkStateTriggerLevel(double Level) {
 
 		StateChanged = false;
-		if ((ChargeTrigger == 0.0) && (DischargeTrigger == 0.0))
-			return;
 
 		int OldState = State;
-		// First see If we want to turn off Charging or Discharging State
-		switch (State) {
-		case Storage.STORE_CHARGING:
-			if (ChargeTrigger != 0.0)
-				if ((ChargeTrigger < Level) || (kWhStored >= kWhRating))
-					State = Storage.STORE_IDLING;
-		case Storage.STORE_DISCHARGING:
-			if (DischargeTrigger != 0.0)
-				if ((DischargeTrigger > Level) || (kWhStored <= kWhReserve))
-					State = Storage.STORE_IDLING;
-		}
 
-		// Now check to see If we want to turn on the opposite state
-		switch (State) {
-		case Storage.STORE_IDLING:
-			if ((DischargeTrigger != 0.0) && (DischargeTrigger < Level) && (kWhStored > kWhReserve)) {
-				State = Storage.STORE_DISCHARGING;
-			} else if ((ChargeTrigger != 0.0) && (ChargeTrigger > Level) && (kWhStored < kWhRating)) {
-				State = Storage.STORE_CHARGING;
+		if (DispatchMode == Storage.STORE_FOLLOW) {
+
+			// set charge and discharge modes based on sign of loadshape
+			if ((Level > 0.0) && (kWhStored > kWhReserve)) {
+				setState(Storage.STORE_DISCHARGING);
+			} else if ((Level < 0.0) && (kWhStored < kWhRating)) {
+				setState(Storage.STORE_CHARGING);
+			} else {
+				setState(Storage.STORE_IDLING);
+			}
+		} else {
+			// All other dispatch modes, just compare to trigger value
+
+			if ((ChargeTrigger == 0.0) && (DischargeTrigger == 0.0)) return;
+
+			// First see If we want to turn off Charging or Discharging State
+			switch (getState()) {
+			case Storage.STORE_CHARGING:
+				if (ChargeTrigger != 0.0)
+					if ((ChargeTrigger < Level) || (kWhStored >= kWhRating))
+						setState(Storage.STORE_IDLING);
+			case Storage.STORE_DISCHARGING:
+				if (DischargeTrigger != 0.0)
+					if ((DischargeTrigger > Level) || (kWhStored <= kWhReserve))
+						setState(Storage.STORE_IDLING);
 			}
 
-			// Check to see If it is time to turn the charge cycle on If it is not already on.
-			if (! (State == Storage.STORE_CHARGING)) {
-				if (ChargeTime > 0.0) {
-					SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-					if (Math.abs( normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTime) < sol.getDynaVars().h / 3600.0)
-						State = Storage.STORE_CHARGING;
+			// Now check to see if we want to turn on the opposite state
+			switch (getState()) {
+			case Storage.STORE_IDLING:
+				if ((DischargeTrigger != 0.0) && (DischargeTrigger < Level) && (kWhStored > kWhReserve)) {
+					setState(Storage.STORE_DISCHARGING);
+				} else if ((ChargeTrigger != 0.0) && (ChargeTrigger > Level) && (kWhStored < kWhRating)) {
+					setState(Storage.STORE_CHARGING);
 				}
+
+				// Check to see if it is time to turn the charge cycle on If it is not already on.
+				if (!(getState() == Storage.STORE_CHARGING))
+					if (ChargeTime > 0.0) {
+						SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTime) < sol.getDynaVars().h / 3600.0)
+							setState(Storage.STORE_CHARGING);
+					}
 			}
 		}
 
@@ -1165,7 +1193,23 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	public double getPresentkW() {
-		return PNominalPerPhase * 0.001 * nPhases;
+		return kW_out; //PNominalPerPhase * 0.001 * nPhases;
+	}
+
+	public double getkWChargeLosses() {
+		switch (getState()) {
+		case Storage.STORE_CHARGING:
+			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0);  // kW
+		case Storage.STORE_IDLING:
+			return getkWIdlingLosses();
+		case Storage.STORE_DISCHARGING:
+			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0);  // kW
+		}
+		return 0;
+	}
+
+	public double getkWIdlingLosses() {
+		return pctIdlekW * kWrating / 100.0;
 	}
 
 	public double getPresentKV() {
@@ -1173,7 +1217,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	public double getPresentKVar() {
-		return QNominalPerPhase * 0.001 * nPhases;
+		return kvar_out;  // QNominalPerPhase * 0.001 * nPhases;
 	}
 
 	@Override
@@ -1305,6 +1349,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			pctKWout = Value;
 		case 3:
 			pctKWin = Value;
+		case 4:
+			/* Do Nothing; read only */
+		case 5:
+			/* Do Nothing; read only */
 		default:
 			if (UserModel.exists()) {
 				N = UserModel.numVars();
@@ -1351,9 +1399,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		case 1:
 			return "Storage State Flag";
 		case 2:
-			return "% discharge level";
+			return "kW Discharging";
 		case 3:
-			return "% charge level";
+			return "kW Charging";
+		case 4:
+			return "kW Losses";
+		case 5:
+			return "kW Idling Losses";
 		default:
 			if (UserModel.exists()) {
 				pName = 0;
@@ -1437,6 +1489,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
+	/**
+	 * Set the kvar to requested value within rating of inverter
+	 */
 	public void setPresentKVar(double Value) {
 		double kVA_Gen;
 
@@ -1467,14 +1522,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	// FIXME Private method in OpenDSS
 	public void syncUpPowerQuantities() {
+		if (kVANotSet) kVArating = kWrating;
+		kvar_out = 0.0;
 		// keep kvar nominal up to date with kW and PF
 		if (PFNominal != 0.0) {
 			kvar_out = kW_out * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
-			QNominalPerPhase = 1000.0 * kvar_out / nPhases;
 			if (PFNominal < 0.0)
 				kvar_out = -kvar_out;
-			if (kVANotSet)
-				kVArating = kWrating;
 		}
 	}
 
@@ -1989,12 +2043,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		TraceFile = traceFile;
 	}
 
-	public double getVarBase() {
-		return varBase;
+	public double getkVarBase() {
+		return kvarBase;
 	}
 
-	public void setVarBase(double varBase) {
-		this.varBase = varBase;
+	public void setkVarBase(double kvarBase) {
+		this.kvarBase = kvarBase;
 	}
 
 	public double getVBase() {

@@ -63,7 +63,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		addProperty("kv", propKV,
 				"Nominal rated (1.0 per unit) voltage, kV, for Storage element. For 2- and 3-phase Storage elements, specify phase-phase kV. "+
 				"Otherwise, specify actual kV across each branch of the Storage element. "+
-				"If wye (star), specify phase-neutral kV. "+
+				"If wye (star), specify phase-neutral kV. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"If delta or phase-phase connected, specify phase-phase kV.");  // line-neutral voltage//  base voltage
 		addProperty("kW", propKW,
 				"Get/set the present kW value.  A positive value denotes power coming OUT of the element, "+DSSGlobals.CRLF+
@@ -73,8 +73,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"Nominally, the power factor for discharging (acting as a generator). Default is 1.0. " +
 				"Setting this property will also set the kvar property." +
 				"Enter negative for leading powerfactor "+
-				"(when kW and kvar have opposite signs.)"+DSSGlobals.CRLF+
-				"A positive power factor for a generator signifies that the Storage element produces vars " + DSSGlobals.CRLF +
+				"(when kW and kvar have opposite signs.)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"A positive power factor for a generator signifies that the Storage element produces vars " +
 				"as is typical for a generator.  ");
 		addProperty("conn", propCONNECTION,
 				"={wye|LN|delta|LL}.  Default is wye.");
@@ -84,7 +84,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		addProperty("kVA", propKVA,
 				"kVA rating of power output. Defaults to rated kW. Used as the base for Dynamics mode and Harmonics mode values.");
 		addProperty("kWrated", propKWRATED,
-				"kW rating of power output. Side effect: Set KVA property.");
+				"kW rating of power output. Base for Loadshapes when DispMode=Follow. Side effect: Set KVA property.");
 
 		addProperty("kWhrated", propKWHRATED,
 				"Rated storage capacity in kWh. Default is 50.");
@@ -127,7 +127,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				" for harmonics and dynamics modes. (Limits fault current to 2 pu.) " +
 				"Use %Idlekvar and kvar properties to account for any reactive power during power flow solutions.");
 		addProperty("model", propMODEL,
-				"Integer code for the model to use for powet output variation with voltage. "+
+				"Integer code (default=1) for the model to use for powet output variation with voltage. "+
 				"Valid values are:" +DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"1:Storage element injects a CONSTANT kW at specified power factor."+DSSGlobals.CRLF+
 				"2:Storage element is modeled as a CONSTANT ADMITTANCE."  +DSSGlobals.CRLF+
@@ -141,7 +141,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"Above this value, the load model reverts to a constant impedance model.");
 		addProperty("yearly", propYEARLY,
 				"Dispatch shape to use for yearly simulations.  Must be previously defined "+
-				"as a Loadshape object. If this is not specified, the Daily dispatch shape, If any, is repeated "+
+				"as a Loadshape object. If this is not specified, the Daily dispatch shape, if any, is repeated "+
 				"during Yearly solution modes. In the default dispatch mode, " +
 				"the Storage element uses this loadshape to trigger State changes.");
 		addProperty("daily", propDAILY,
@@ -150,24 +150,26 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"the Storage element uses this loadshape to trigger State changes."); // daily dispatch (hourly)
 		addProperty("duty", propDUTY,
 				"Load shape to use for duty cycle dispatch simulations such as for solar ramp rate studies. " +
-				"Must be previously defined as a Loadshape object. "+
-				"Typically would have time intervals of 1-5 seconds. "+
+				"Must be previously defined as a Loadshape object. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"Typically would have time intervals of 1-5 seconds. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Designate the number of points to solve using the Set Number=xxxx command. "+
 				"If there are fewer points in the actual shape, the shape is assumed to repeat.");  // as for wind generation
-		addProperty("dispmode", propDISPMODE,
-				"{DEFAULT | EXTERNAL | LOADLEVEL | PRICE } Default = \"DEFAULT\". Dispatch mode. "+
-				"In DEFAULT mode, Storage element state is triggered by the loadshape curve corresponding to the solution mode. "+
-				"In EXTERNAL mode, Storage element state is controlled by an external Storage controller. "+
-				"This mode is automatically set if this Storage element is included in the element list of a StorageController element. " +
-				"For the other two dispatch modes, the Storage element state is controlled by either the global default Loadlevel value or the price level. ");
-		addProperty("dischargetrigger", propDISPOUTTRIG,
+		addProperty("DispMode", propDISPMODE,
+				"{DEFAULT | FOLLOW | EXTERNAL | LOADLEVEL | PRICE } Default = \"DEFAULT\". Dispatch mode. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"In DEFAULT mode, Storage element state is triggered to discharge or charge at the specified rate by the " +
+				"loadshape curve corresponding to the solution mode. "+ DSSGlobals.CRLF + DSSGlobals.CRLF +
+				"In FOLLOW mode the kW and kvar output of the STORAGE element follows the active loadshape multipliers " +
+				"until storage is either exhausted or full. " +
+				"The element discharges for positive values and charges for negative values.  The loadshapes are based on the kW and kvar " +
+				"values in the most recent definition of kW and PF or kW and kvar properties. " + DSSGlobals.CRLF + DSSGlobals.CRLF);
+		addProperty("DischargeTrigger", propDISPOUTTRIG,
 				"Dispatch trigger value for discharging the storage. "+DSSGlobals.CRLF+
 				"If = 0.0 the Storage element state is changed by the State command or by a StorageController object. " +DSSGlobals.CRLF+
 				"If <> 0  the Storage element state is set to DISCHARGING when this trigger level is EXCEEDED by either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
 		addProperty("Chargetrigger", propDISPINTRIG,
-				"Dispatch trigger value for charging the storage. "+DSSGlobals.CRLF+
-				"If = 0.0 the Storage element state is changed by the State command or StorageController object.  " +DSSGlobals.CRLF+
+				"Dispatch trigger value for charging the storage. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"If = 0.0 the Storage element state is changed by the State command or StorageController object.  " +DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"If <> 0  the Storage element state is set to CHARGING when this trigger level is GREATER than either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
 		addProperty("TimeChargeTrig", propCHARGETIME,
@@ -279,6 +281,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'e':
 			return STORE_EXTERNALMODE;
+		case 'f':
+			return STORE_FOLLOW;
 		case 'l':
 			return STORE_LOADMODE;
 		case 'p':
@@ -541,7 +545,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherStorageObjName + "\" Not Found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + OtherStorageObjName + "\" Not Found.", 562);
 		}
 
 		return Result;

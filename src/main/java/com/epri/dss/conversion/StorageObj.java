@@ -27,6 +27,10 @@ import com.epri.dss.shared.impl.Complex;
  */
 public interface StorageObj extends PCElement {
 
+	double getkWChargeLosses();
+
+	double getkWIdlingLosses();
+
 	double getPresentkW();
 
 	double getPresentKVar();
@@ -320,9 +324,9 @@ public interface StorageObj extends PCElement {
 
 	void setTraceFile(File traceFile);
 
-	double getVarBase();
+	double getkVarBase();
 
-	void setVarBase(double varBase);
+	void setkVarBase(double kvarBase);
 
 	double getVBase();
 
