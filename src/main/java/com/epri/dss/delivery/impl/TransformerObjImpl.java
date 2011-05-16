@@ -1165,8 +1165,6 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			// set sizes and copy parameters
 			nPhases = Obj.getNPhases();
 			setNumWindings(Obj.getNumWindings());
-			setPropertyValue(0, String.valueOf(nPhases));  // synch up property values
-			setPropertyValue(1, String.valueOf(NumWindings));
 			nConds = nPhases + 1; // forces reallocation of terminals and conductors
 			for (i = 0; i < NumWindings; i++) {
 				Winding W = Winding[i];

@@ -15,14 +15,16 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.delivery.Line;
 import com.epri.dss.delivery.LineObj;
+import com.epri.dss.general.ConductorDataObj;
 import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.general.LineGeometry;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.WireDataObj;
+import com.epri.dss.general.impl.ConductorChoice;
+import com.epri.dss.general.impl.ConductorDataImpl;
 import com.epri.dss.general.impl.LineGeometryObjImpl;
-import com.epri.dss.general.impl.WireDataImpl;
 import com.epri.dss.shared.CMatrix;
 
 public class LineObjImpl extends PDElementImpl implements LineObj {
@@ -33,10 +35,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	private double UnitsConvert; // conversion factor
 	private LineGeometryObj LineGeometryObj;
 	private LineSpacingObj LineSpacingObj;
-	private WireDataObj[] WireData;
+	private ConductorDataObj[] WireData;
+	private ConductorChoice PhaseChoice;
 	private boolean rhoSpecified;
 	private boolean LineCodeSpecified;
 	private int EarthModel;
+	private boolean CapSpecified;  // To make sure user specifies C in some form
 
 	protected CMatrix Zinv;
 
@@ -90,6 +94,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		this.rho = 100.0;
 		this.KXg = this.Xg / Math.log(658.5 * Math.sqrt(this.rho / this.BaseFrequency));
 		this.rhoSpecified = false;
+		this.CapSpecified = false;
 
 		/*Basefrequency = 60.0;*/  // set in base class
 		setNormAmps(400.0);
@@ -112,6 +117,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		this.SpacingSpecified = false;
 		this.LineSpacingObj = null;
 		this.WireData = null;
+		this.PhaseChoice = ConductorChoice.Unknown;
 		this.SpacingCode = "";
 
 		this.ZFrequency = -1.0; // indicate Z not computed.
@@ -290,8 +296,16 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Circuit ckt = Globals.getActiveCircuit();
 
-		if (SymComponentsChanged)
+		if (SymComponentsChanged) {
+			/* Try to catch inadvertent user error when they forget to specify C1 and C0 */
+			/* Check to see if user has spec'd C1 and C0. If not, adjust default values for new length units */
+			if (!CapSpecified) {
+				C1 = C1 / LineUnits.convertLineUnits(LineUnits.UNITS_KFT, LengthUnits);  // were defined in kft
+				C0 = C0 / LineUnits.convertLineUnits(LineUnits.UNITS_KFT, LengthUnits);
+				CapSpecified = true;   // so we don't do it again
+			}
 			recalcElementData();
+		}
 
 		clearYPrim();
 
@@ -952,20 +966,75 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public void fetchWireList(String Code) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		LineCodeSpecified = false;
-		killGeometrySpecified();
+		int i, istart;
+
 		if (getLineSpacingObj() == null)
 			Globals.doSimpleMsg("Must assign the LineSpacing before wires.", 181);
 
-		WireData = new WireDataObj[getLineSpacingObj().getNWires()];
+		if (PhaseChoice == ConductorChoice.Unknown) {  // it's an overhead line
+			LineCodeSpecified = false;
+			killGeometrySpecified();
+			WireData = new ConductorDataObj[LineSpacingObj.getNWires()];
+			istart = 1;
+			PhaseChoice = ConductorChoice.Overhead;
+		} else {  // adding bare neutrals to an underground line - TODO what about repeat invocation?
+			istart = LineSpacingObj.getNPhases() + 1;
+		}
+
 		Globals.getAuxParser().setCmdString(Code);
-		for (int i = 0; i < getLineSpacingObj().getNWires(); i++) {
+		for (i = istart; i < LineSpacingObj.getNWires(); i++) {
 			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			Globals.getWireDataClass().setCode(Globals.getAuxParser().makeString());
-			if (WireDataImpl.getActiveWireDataObj() != null) {
-				WireData[i] = WireDataImpl.getActiveWireDataObj();
+			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+				WireData[i] = ConductorDataImpl.getActiveConductorDataObj();
 			} else {
 				Globals.doSimpleMsg("Wire " + Globals.getAuxParser().makeString() + " was not defined first.", 181);
+			}
+		}
+	}
+
+	public void fetchCNCableList(String Code) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int i;
+
+		LineCodeSpecified = false;
+		killGeometrySpecified();
+		if (LineSpacingObj == null)
+			Globals.doSimpleMsg("Must assign the LineSpacing before CN cables.", 181);
+
+		PhaseChoice = ConductorChoice.ConcentricNeutral;
+		WireData = new ConductorDataObj[LineSpacingObj.getNWires()];
+		Globals.getAuxParser().setCmdString(Code);
+		for (i = 0; i < LineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
+			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			Globals.getCNDataClass().setCode(Globals.getAuxParser().makeString());
+			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+				WireData[i] = ConductorDataImpl.getActiveConductorDataObj();
+			} else {
+				Globals.doSimpleMsg("CN cable " + Globals.getAuxParser().makeString() + " was not defined first.", 181);
+			}
+		}
+	}
+
+	public void fetchTSCableList(String Code) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		int i;
+
+		LineCodeSpecified = false;
+		killGeometrySpecified();
+		if (LineSpacingObj == null)
+			Globals.doSimpleMsg("Must assign the LineSpacing before TS cables.", 181);
+
+		PhaseChoice = ConductorChoice.TapeShield;
+		WireData = new ConductorDataObj[LineSpacingObj.getNWires()];
+		Globals.getAuxParser().setCmdString(Code);
+		for (i = 0; i < LineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
+			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			Globals.getTSDataClass().setCode(Globals.getAuxParser().makeString());
+			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+				WireData[i] = ConductorDataImpl.getActiveConductorDataObj();
+			} else {
+				Globals.doSimpleMsg("TS cable " + Globals.getAuxParser().makeString() + " was not defined first.", 181);
 			}
 		}
 	}
@@ -1049,7 +1118,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (LineImpl.getLineGeometryClass() == null)
 			LineImpl.setLineGeometryClass( (LineGeometry) Globals.getDSSClassList().get(Globals.getClassNames().find("LineGeometry")) );
 		LineGeometryObj pGeo = new LineGeometryObjImpl(LineImpl.getLineGeometryClass(), "==");
-		pGeo.LoadSpacingAndWires(getLineSpacingObj(), getWireData());
+		pGeo.loadSpacingAndWires(getLineSpacingObj(), getWireData());  // this sets OH, CN, or TS
 
 		if (rhoSpecified)
 			pGeo.setRhoEarth(rho);
@@ -1087,6 +1156,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (SpacingSpecified) {
 			LineSpacingObj = null;
 			WireData = new WireDataObj[0];
+			PhaseChoice = ConductorChoice.Unknown;
 			ZFrequency = -1.0;
 			SpacingSpecified = false;
 		}
@@ -1118,12 +1188,27 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		LengthUnits  = LineUnits.UNITS_NONE;
 	}
 
+	private int numConductorData() {
+		if (WireData != null) return LineSpacingObj.getNWires();
+		if (LineGeometryObj != null) return LineGeometryObj.getNWires();
+		return 0;
+	}
+
+	private ConductorDataObj fetchConductorData(int i) {
+		if (WireData != null) {
+			if (i <= LineSpacingObj.getNWires()) return WireData[i];
+		} else if (LineGeometryObj != null) {
+			if (i <= LineGeometryObj.getNWires()) return LineGeometryObj.getConductorData(i);
+		}
+		return null;
+	}
+
 	private void updatePDProperties() {
-		PropertyValue[Line.NumPropsThisClass + 1] = String.format("%-g", getNormAmps());
-		PropertyValue[Line.NumPropsThisClass + 2] = String.format("%-g", getEmergAmps());
-		PropertyValue[Line.NumPropsThisClass + 3] = String.format("%-g", getFaultRate());
-		PropertyValue[Line.NumPropsThisClass + 4] = String.format("%-g", getPctPerm());
-		PropertyValue[Line.NumPropsThisClass + 5] = String.format("%-g", getHrsToRepair());
+		setPropertyValue(Line.NumPropsThisClass + 0, String.format("%-g", getNormAmps()));
+		setPropertyValue(Line.NumPropsThisClass + 1, String.format("%-g", getEmergAmps()));
+		setPropertyValue(Line.NumPropsThisClass + 2, String.format("%-g", getFaultRate()));
+		setPropertyValue(Line.NumPropsThisClass + 3, String.format("%-g", getPctPerm()));
+		setPropertyValue(Line.NumPropsThisClass + 4, String.format("%-g", getHrsToRepair()));
 	}
 
 	public CMatrix getZ() {
@@ -1314,6 +1399,18 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		return LineCodeSpecified;
 	}
 
+	public ConductorChoice getPhaseChoice() {
+		return PhaseChoice;
+	}
+
+	public int numConductorsAvailable() {
+		return numConductorData();
+	}
+
+	public ConductorDataObj getConductorData(int i) {
+		return fetchConductorData(i);
+	}
+
 	// FIXME Private members in OpenDSS
 
 	public double getZFrequency() {
@@ -1356,11 +1453,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		LineSpacingObj = lineSpacingObj;
 	}
 
-	public WireDataObj[] getWireData() {
+	public ConductorDataObj[] getWireData() {
 		return WireData;
 	}
 
-	public void setWireData(WireDataObj[] wireData) {
+	public void setWireData(ConductorDataObj[] wireData) {
 		WireData = wireData;
 	}
 
@@ -1390,6 +1487,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 	public void setZinv(CMatrix zinv) {
 		Zinv = zinv;
+	}
+
+	public boolean isCapSpecified() {
+		return CapSpecified;
+	}
+
+	public void setCapSpecified(boolean capSpecified) {
+		CapSpecified = capSpecified;
 	}
 
 }

@@ -68,6 +68,8 @@ public class LineImpl extends PDClassImpl implements Line {
 		PropertyName[20] = "spacing";
 		PropertyName[21] = "wires";
 		PropertyName[22] = "EarthModel";
+		PropertyName[23] = "cncables";
+		PropertyName[24] = "tscables";
 
 		// define Property help values
 
@@ -125,11 +127,21 @@ public class LineImpl extends PDClassImpl implements Line {
 							"Must be used in conjunction with the Wires property." + DSSGlobals.CRLF +
 							"Specify this before the wires property.";
 		PropertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSSGlobals.CRLF +
-							"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
-							"Specify the Spacing first.";
+				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
+				"Specify the Spacing first, and \"ncond\" wires." + DSSGlobals.CRLF +
+				"May also be used to specify bare neutrals with cables, using \"ncond-nphase\" wires.";
 		PropertyHelp[22] = "One of {Carson | FullCarson | Deri}. Default is the global value established with the Set EarthModel command. " +
 							"See the Options Help on EarthModel option. This is used to override the global value for this line. This " +
 							"option applies only when the \"geometry\" property is used.";
+		PropertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSSGlobals.CRLF +
+				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
+				"Specify the Spacing first, using \"nphases\" cncables." + DSSGlobals.CRLF +
+				"You may later specify \"nconds-nphases\" wires for separate neutrals";
+		PropertyHelp[24] = "Array of TSData names for use in a cable constants calculation." + DSSGlobals.CRLF +
+				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
+				"Specify the Spacing first, using \"nphases\" tscables." + DSSGlobals.CRLF +
+				"You may later specify \"nconds-nphases\" wires for separate neutrals";
+
 
 		ActiveProperty = Line.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
@@ -307,6 +319,10 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.fetchWireList(Param);
 			case 22:
 				al.setEarthModel(Utilities.interpretEarthModel(Param));
+			case 24:
+				al.fetchCNCableList(Param);
+			case 25:
+				al.fetchTSCableList(Param);
 			default:
 				// Inherited Property Edits
 				classEdit(getActiveLineObj(), ParamPointer - Line.NumPropsThisClass);
@@ -434,6 +450,15 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.getLineGeometryObj().setRhoEarth(al.getRho());
 			}
 
+			switch (ParamPointer) {
+			case 9:
+				al.setCapSpecified(true);
+			case 10:
+				al.setCapSpecified(true);
+			case 13:
+				al.setCapSpecified(true);
+			}
+
 			ParamName = parser.getNextParam();
 			Param     = parser.makeString();
 		}
@@ -482,6 +507,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			al.setC0(OtherLine.getC0());
 			al.setLen(OtherLine.getLen());
 			al.setSymComponentsModel(OtherLine.isSymComponentsModel());
+			al.setCapSpecified(OtherLine.isCapSpecified());
 
 			classMakeLike(OtherLine);  // Take care of inherited class properties
 

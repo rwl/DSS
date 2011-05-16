@@ -1,122 +1,133 @@
 package com.epri.dss.delivery;
 
+import com.epri.dss.general.ConductorDataObj;
 import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.LineSpacingObj;
-import com.epri.dss.general.WireDataObj;
+import com.epri.dss.general.impl.ConductorChoice;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.shared.CMatrix;
 
 public interface LineObj extends PDElement {
 
-	public CMatrix getZ();
+	void fetchTSCableList(String Code);
 
-	public void setZ(CMatrix z);
+	void fetchCNCableList(String Code);
 
-	public CMatrix getYc();
+	CMatrix getZ();
 
-	public void setYc(CMatrix yc);
+	void setZ(CMatrix z);
 
-	public double getR1();
+	CMatrix getYc();
 
-	public void setR1(double r1);
+	void setYc(CMatrix yc);
 
-	public double getX1();
+	double getR1();
 
-	public void setX1(double x1);
+	void setR1(double r1);
 
-	public double getR0();
+	double getX1();
 
-	public void setR0(double r0);
+	void setX1(double x1);
 
-	public double getX0();
+	double getR0();
 
-	public void setX0(double x0);
+	void setR0(double r0);
 
-	public double getC1();
+	double getX0();
 
-	public void setC1(double c1);
+	void setX0(double x0);
 
-	public double getC0();
+	double getC1();
 
-	public void setC0(double c0);
+	void setC1(double c1);
 
-	public double getLen();
+	double getC0();
 
-	public void setLen(double len);
+	void setC0(double c0);
 
-	public int getLengthUnits();
+	double getLen();
 
-	public void setLengthUnits(int lengthUnits);
+	void setLen(double len);
 
-	public double getRg();
+	int getLengthUnits();
 
-	public void setRg(double rg);
+	void setLengthUnits(int lengthUnits);
 
-	public double getXg();
+	double getRg();
 
-	public void setXg(double xg);
+	void setRg(double rg);
 
-	public double getKXg();
+	double getXg();
 
-	public void setKXg(double kXg);
+	void setXg(double xg);
 
-	public double getRho();
+	double getKXg();
 
-	public void setRho(double rho);
+	void setKXg(double kXg);
 
-	public double getGeneralPlotQuantity();
+	double getRho();
 
-	public void setGeneralPlotQuantity(double generalPlotQuantity);
+	void setRho(double rho);
 
-	public String getCondCode();
+	double getGeneralPlotQuantity();
 
-	public void setCondCode(String condCode);
+	void setGeneralPlotQuantity(double generalPlotQuantity);
 
-	public String getGeometryCode();
+	String getCondCode();
 
-	public void setGeometryCode(String geometryCode);
+	void setCondCode(String condCode);
 
-	public String getSpacingCode();
+	String getGeometryCode();
 
-	public void setSpacingCode(String spacingCode);
+	void setGeometryCode(String geometryCode);
 
-	public boolean isGeometrySpecified();
+	String getSpacingCode();
 
-	public void setGeometrySpecified(boolean geometrySpecified);
+	void setSpacingCode(String spacingCode);
 
-	public boolean isSpacingSpecified();
+	boolean isGeometrySpecified();
 
-	public void setSpacingSpecified(boolean spacingSpecified);
+	void setGeometrySpecified(boolean geometrySpecified);
 
-	public boolean isSymComponentsChanged();
+	boolean isSpacingSpecified();
 
-	public void setSymComponentsChanged(boolean symComponentsChanged);
+	void setSpacingSpecified(boolean spacingSpecified);
 
-	public boolean isSymComponentsModel();
+	boolean isSymComponentsChanged();
 
-	public void setSymComponentsModel(boolean symComponentsModel);
+	void setSymComponentsChanged(boolean symComponentsChanged);
 
-	public boolean isIsSwitch();
+	boolean isSymComponentsModel();
 
-	public void setIsSwitch(boolean isSwitch);
+	void setSymComponentsModel(boolean symComponentsModel);
 
-	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
+	boolean isIsSwitch();
+
+	void setIsSwitch(boolean isSwitch);
+
+	void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
 			Complex ZeroSeqLosses);
 
-	public boolean mergeWith(LineObj OtherLine, boolean Series);
+	boolean mergeWith(LineObj OtherLine, boolean Series);
 
-	public void updateControlElements(String NewName, String OldName);
+	void updateControlElements(String NewName, String OldName);
 
-	public void fetchLineCode(String Code);
+	void fetchLineCode(String Code);
 
-	public void fetchGeometryCode(String Code);
+	void fetchGeometryCode(String Code);
 
-	public void fetchLineSpacing(String Code);
+	void fetchLineSpacing(String Code);
 
-	public void fetchWireList(String Code);
+	void fetchWireList(String Code);
 
-	public boolean isLineCodeSpecified();
+	boolean isLineCodeSpecified();
+
+	ConductorChoice getPhaseChoice();
+
+	int numConductorsAvailable();
+
+	ConductorDataObj getConductorData(int i);
 
 	// FIXME Private method in OpenDSS
 	void killGeometrySpecified();
@@ -125,7 +136,7 @@ public interface LineObj extends PDElement {
 	void killSpacingSpecified();
 
 	// FIXME Private method in OpenDSS
-	public void resetLengthUnits();
+	void resetLengthUnits();
 
 
 	// FIXME Private members in OpenDSS
@@ -150,9 +161,9 @@ public interface LineObj extends PDElement {
 
 	void setLineSpacingObj(LineSpacingObj lineSpacingObj);
 
-	WireDataObj[] getWireData();
+	ConductorDataObj[] getWireData();
 
-	void setWireData(WireDataObj[] wireData);
+	void setWireData(ConductorDataObj[] wireData);
 
 	boolean getRhoSpecified();
 
@@ -167,4 +178,9 @@ public interface LineObj extends PDElement {
 	CMatrix getZinv();
 
 	void setZinv(CMatrix zinv);
+
+	boolean isCapSpecified();
+
+	void setCapSpecified(boolean capSpecified);
+
 }

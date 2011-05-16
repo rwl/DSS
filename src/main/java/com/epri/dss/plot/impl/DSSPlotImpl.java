@@ -20,16 +20,16 @@ public class DSSPlotImpl implements DSSPlot {
 
 	public enum PlotType {
 		AutoAddLogPlot,
-		CircuitPlot,
+		Circuitplot,
 		GeneralDataPlot,
 		GeneralCircuitPlot,
 		MonitorPlot,
 		DaisyPlot,
 		MeterZones,
 		LoadShape,
-		Profile,
+		TShape,
 		PriceShape,
-		TShape
+		Profile
 	}
 
 	public enum PlotQuantity {
@@ -383,6 +383,14 @@ public class DSSPlotImpl implements DSSPlot {
 	}
 
 	public void doLoadShapePlot(String LoadShapeName) {
+
+	}
+
+	public void doTempShapePlot(String TempShapeName) {
+
+	}
+
+	public void doPriceShapePlot(String PriceShapeName) {
 
 	}
 

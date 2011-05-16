@@ -16,6 +16,9 @@ public interface DSSPlot {
 	static final int PROFILE3PH = 9999; // some big number > likely no. of phases
 	static final int PROFILEALL = 9998;
 	static final int PROFILEALLPRI = 9997;
+	static final int PROFILELLALL = 9996;
+	static final int PROFILELLPRI = 9995;
+	static final int PROFILELL    = 9994;
 
 	void setMaxLineThickness(int Value);
 
@@ -118,6 +121,10 @@ public interface DSSPlot {
 	void setDefaults();
 
 	void doLoadShapePlot(String LoadShapeName);
+
+	void doTempShapePlot(String TempShapeName);
+
+	void doPriceShapePlot(String PriceShapeName);
 
 	void doDI_Plot(String CaseName, int CaseYear, int[] iRegisters, boolean PeakDay, String MeterName);
 
