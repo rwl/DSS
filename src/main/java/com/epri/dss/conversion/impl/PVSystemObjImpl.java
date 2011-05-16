@@ -2,7 +2,13 @@ package com.epri.dss.conversion.impl;
 
 import java.io.FileWriter;
 import java.io.PrintStream;
+
+import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
+import com.epri.dss.common.impl.YMatrix;
 import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.PVSystemObj;
 import com.epri.dss.conversion.PVSystemUserModel;
@@ -10,9 +16,16 @@ import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.TShapeObj;
 import com.epri.dss.general.XYCurveObj;
 import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.Dynamics;
+import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.MathUtil;
 
 public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
+
+	private static final Complex CDOUBLEONE = new Complex(1.0, 1.0);
+
+	private Complex[] cBuffer = new Complex[24];
 
 	private Complex YEQ;     // at nominal
 	private Complex YEQ95;   // at Vmin
@@ -104,44 +117,625 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	private double[] Registers = new double[PVSystem.NumPVSystemRegisters];
 	private double[] Derivatives = new double[PVSystem.NumPVSystemRegisters];
 
-	public PVSystemObjImpl(DSSClass ParClass, String SourceName) {
+	public PVSystemObjImpl(DSSClass ParClass, String PVSystemName) {
 		super(ParClass);
-		// TODO Auto-generated constructor stub
+
+		setName(PVSystemName.toLowerCase());
+		this.DSSObjType = ParClass.getDSSClassType();  // + PVSystem_ELEMENT;  // In both PCelement and PVSystemelement list
+
+		this.nPhases = 3;
+		this.nConds  = 4;  // defaults to wye
+		this.Yorder  = 0;  // To trigger an initial allocation
+		this.nTerms  = 1;  // forces allocations
+
+		this.YearlyShape        = "";
+		this.YearlyShapeObj     = null;  // if YearlyShapeobj = null Then the Irradiance alway stays nominal
+		this.DailyShape         = "";
+		this.DailyShapeObj      = null;  // if DaillyShapeobj = null Then the Irradiance alway stays nominal
+		this.DutyShape          = "";
+		this.DutyShapeObj       = null;  // if DutyShapeobj = null Then the Irradiance alway stays nominal
+
+		this.YearlyTShape       = "";
+		this.YearlyTShapeObj    = null;  // if YearlyShapeobj = null Then the Temperature always stays nominal
+		this.DailyTShape        = "";
+		this.DailyTShapeObj     = null;  // if DaillyShapeobj = null Then the Temperature always stays nominal
+		this.DutyTShape         = "";
+		this.DutyTShapeObj      = null;  // if DutyShapeobj = null Then the Temperature always stays nominal
+
+		this.InverterCurveObj   = null;
+		this.Power_TempCurveObj = null;
+		this.InverterCurve      = "";
+		this.Power_TempCurve    = "";
+
+		this.Connection         = 0;  // Wye (star, L-N)
+		this.VoltageModel       = 1;  // Typical fixed kW negative load
+		this.FClass             = 1;
+
+		this.PVSystemSolutionCount     = -1;  // For keep track of the present solution in Injcurrent calcs
+		this.OpenPVSystemSolutionCount = -1;
+		this.YPrimOpenCond             = null;
+
+		this.kVPVSystemBase   = 12.47;
+		this.VBase            = 7200.0;
+		this.Vminpu           = 0.90;
+		this.Vmaxpu           = 1.10;
+		this.VBase95          = this.Vminpu  * this.VBase;
+		this.VBase105         = this.Vmaxpu  * this.VBase;
+		this.Yorder           = this.nTerms * this.nConds;
+		this.RandomMult       = 1.0 ;
+
+		this.PFSpecified      = true;
+		this.kvarSpecified    = false;
+		this.InverterON       = true; // start with inverterON
+
+		this.Temperature     = 25.0;
+		this.Irradiance      = 1.0;  // kW/sq-m
+		this.pctCutIn        = 20.0;
+		this.pctCutOut       = 20.0;
+
+		/* Output rating stuff */
+		this.kW_out       = 500.0;
+		this.kvar_out     = 0.0;
+		this.PFnominal    = 1.0;
+		this.kVArating    = 500.0;
+		this.Pmpp        = 500.0;
+
+		this.pctR         = 0.0;;
+		this.pctX         = 50.0;
+
+		this.UserModel  = new PVSystemUserModelImpl();
+
+		this.Reg_kWh    = 0;
+		this.Reg_kvarh  = 1;
+		this.Reg_MaxkW  = 2;
+		this.Reg_MaxkVA = 3;
+		this.Reg_Hours  = 4;
+		this.Reg_Price  = 5;
+
+		this.DebugTrace = false;
+		this.PVsystemObjSwitchOpen = false;
+		setSpectrum("");  // override base class
+		setSpectrumObj(null);
+
+		initPropertyValues(0);
+		recalcElementData();
+	}
+
+	@Override
+	public void initPropertyValues(int ArrayOffset) {
+		setPropertyValue(0, "3");         // "phases";
+		setPropertyValue(1, getBus(1));   // "bus1";
+
+		setPropertyValue(PVSystem.propKV, String.format("%-g", kVPVSystemBase));
+		setPropertyValue(PVSystem.propIrradiance, String.format("%-g", Irradiance));
+		setPropertyValue(PVSystem.propPF, String.format("%-g", PFnominal));
+		setPropertyValue(PVSystem.propMODEL, "1");
+		setPropertyValue(PVSystem.propYEARLY, "");
+		setPropertyValue(PVSystem.propDAILY, "");
+		setPropertyValue(PVSystem.propDUTY, "");
+		setPropertyValue(PVSystem.propTYEARLY, "");
+		setPropertyValue(PVSystem.propTDAILY, "");
+		setPropertyValue(PVSystem.propTDUTY, "");
+		setPropertyValue(PVSystem.propCONNECTION, "wye");
+		setPropertyValue(PVSystem.propKVAR, String.format("%-g", getPresentkvar()));
+
+		setPropertyValue(PVSystem.propPCTR, String.format("%-g", pctR));
+		setPropertyValue(PVSystem.propPCTX, String.format("%-g", pctX));
+
+		setPropertyValue(PVSystem.propCLASS, "1"); //"class"
+
+		setPropertyValue(PVSystem.propInvEffCurve, "");
+		setPropertyValue(PVSystem.propTemp, String.format("%-g", Temperature));
+		setPropertyValue(PVSystem.propPmpp, String.format("%-g", Pmpp));
+		setPropertyValue(PVSystem.propP_T_Curve, "");
+		setPropertyValue(PVSystem.propCutin, "20");
+		setPropertyValue(PVSystem.propCutout, "20");
+
+		setPropertyValue(PVSystem.propVMINPU, "0.90");
+		setPropertyValue(PVSystem.propVMAXPU, "1.10");
+		setPropertyValue(PVSystem.propKVA, String.format("%-g", kVArating));
+
+		setPropertyValue(PVSystem.propUSERMODEL, "");  // Usermodel
+		setPropertyValue(PVSystem.propUSERDATA, "");  // Userdata
+		setPropertyValue(PVSystem.propDEBUGTRACE, "NO");
+
+		super.initPropertyValues(PVSystem.NumPropsThisClass);
+	}
+
+	@Override
+	public String getPropertyValue(int Index) {
+		switch (Index) {
+		case PVSystem.propKV         : return String.format("%.6g", kVPVSystemBase);
+		case PVSystem.propIrradiance : return String.format("%.6g", Irradiance);
+		case PVSystem.propPF         : return String.format("%.6g", PFnominal);
+		case PVSystem.propMODEL      : return String.format("%d",   VoltageModel);
+		case PVSystem.propYEARLY     : return YearlyShape;
+		case PVSystem.propDAILY      : return DailyShape;
+		case PVSystem.propDUTY       : return DutyShape;
+
+		case PVSystem.propTYEARLY    : return YearlyTShape;
+		case PVSystem.propTDAILY     : return DailyTShape;
+		case PVSystem.propTDUTY      : return DutyTShape;
+
+		/*case PVSystem.propCONNECTION :;*/
+		case PVSystem.propKVAR       : return String.format("%.6g", kvar_out);
+		case PVSystem.propPCTR       : return String.format("%.6g", pctR);
+		case PVSystem.propPCTX       : return String.format("%.6g", pctX);
+		/*case PVSystem.propCLASS      = 17;*/
+		case PVSystem.propInvEffCurve: return InverterCurve;
+		case PVSystem.propTemp       : return String.format("%.6g", Temperature);
+		case PVSystem.propPmpp       : return String.format("%.6g", Pmpp);
+		case PVSystem.propP_T_Curve  : return Power_TempCurve;
+		case PVSystem.propCutin      : return String.format("%.6g", pctCutIn);
+		case PVSystem.propCutout     : return String.format("%.6g", pctCutOut);
+		case PVSystem.propVMINPU     : return String.format("%.6g", Vminpu);
+		case PVSystem.propVMAXPU     : return String.format("%.6g", Vmaxpu);
+		case PVSystem.propKVA        : return String.format("%.6g", kVArating);
+
+		case PVSystem.propUSERMODEL  : return UserModel.getName();
+		case PVSystem.propUSERDATA   : return "(" + super.getPropertyValue(Index) + ")";
+		/*case PVSystem.propDEBUGTRACE = 33;*/
+
+		default:  // take the generic handler
+			return super.getPropertyValue(Index);
+		}
+	}
+
+	/**
+	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
+	 */
+	public void randomize(int Opt) {
+		switch (Opt) {
+		case 0:
+			RandomMult = 1.0;
+		case DSSGlobals.GAUSSIAN:
+			RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
+		case DSSGlobals.UNIFORM:
+			RandomMult = Math.random();  // number between 0 and 1.0
+		case DSSGlobals.LOGNORMAL:
+			RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
+		}
 	}
 
 	private void calcDailyMult(double Hr) {
-
-	}
-
-	private void calcDutyMult(double Hr) {
-
-	}
-
-	private void calcYearlyMult(double Hr) {
-
+		if (DailyShapeObj != null) {
+			ShapeFactor = DailyShapeObj.getMult(Hr);
+		} else {
+			ShapeFactor = CDOUBLEONE;  // Default to no variation
+		}
 	}
 
 	private void calcDailyTemperature(double Hr) {
+		if (DailyTShapeObj != null) {
+			TShapeValue = DailyTShapeObj.getTemperature(Hr);
+		} else {
+			TShapeValue = 1.0;  // Default to no variation
+		}
+	}
 
+	private void calcDutyMult(double Hr) {
+		if (DutyShapeObj != null) {
+			ShapeFactor = DutyShapeObj.getMult(Hr);
+		} else {
+			calcDailyMult(Hr);  // Default to daily mult if no duty curve specified
+		}
 	}
 
 	private void calcDutyTemperature(double Hr) {
+		if (DutyTShapeObj != null) {
+			TShapeValue = DutyTShapeObj.getTemperature(Hr);
+		} else {
+			calcDailyTemperature(Hr);  // Default to daily mult if no duty curve specified
+		}
+	}
 
+	private void calcYearlyMult(double Hr) {
+		if (YearlyShapeObj != null) {
+			ShapeFactor = YearlyShapeObj.getMult(Hr) ;
+		} else {
+			calcDailyMult(Hr);  // Defaults to daily curve
+		}
 	}
 
 	private void calcYearlyTemperature(double Hr) {
-
+		if (YearlyTShapeObj != null) {
+			TShapeValue = YearlyTShapeObj.getTemperature(Hr) ;
+		} else {
+			calcDailyTemperature(Hr);  // Defaults to daily curve
+		}
 	}
 
-	private void computePanelPower() {
+	public void setNominalPVSystemOuput() {
+		ShapeFactor  = CDOUBLEONE;  // init here; changed by curve routine
+		TShapeValue  = 25.0;  // init here; changed by curve routine
 
+		// Check to make sure the PVSystem element is ON
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		if (!(sol.isIsDynamicModel() || sol.isIsHarmonicModel())) {
+			// Leave PVSystem element in whatever state it was prior to entering Dynamic mode
+
+			// Check dispatch to see what state the PVSystem element should be in
+			switch (sol.getMode()) {
+			case Dynamics.SNAPSHOT:
+				/* Just solve for the present kW, kvar */  // Don"t check for state change
+			case Dynamics.DAILYMODE:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+			case Dynamics.YEARLYMODE:
+				calcYearlyMult(sol.getDblHour());
+				calcYearlyTemperature(sol.getDblHour());
+			case Dynamics.MONTECARLO1:
+				// do nothing yet
+			case Dynamics.MONTEFAULT:
+				// do nothing yet
+			case Dynamics.FAULTSTUDY:
+				// do nothing yet
+			case Dynamics.DYNAMICMODE:
+				// do nothing yet
+
+				// Assume daily curve, if any, for the following
+			case Dynamics.MONTECARLO2:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+			case Dynamics.MONTECARLO3:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+			case Dynamics.LOADDURATION1:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+			case Dynamics.LOADDURATION2:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+			case Dynamics.PEAKDAY:
+				calcDailyMult(sol.getDblHour());
+				calcDailyTemperature(sol.getDblHour());
+
+			case Dynamics.DUTYCYCLE:
+				calcDutyMult(sol.getDblHour());
+				calcDutyTemperature(sol.getDblHour());
+			case Dynamics.AUTOADDFLAG:
+				// do nothing
+			}
+
+			computekWkvar();
+			Pnominalperphase   = 1000.0 * kW_out    / getNPhases();
+			Qnominalperphase   = 1000.0 * kvar_out  / getNPhases();
+
+			switch (VoltageModel) {
+			case 3:
+				//****  Fix this when user model gets connected in
+				//YEQ = new Complex(0.0, -StoreVARs.Xd).invert();  // Gets negated in CalcYPrim
+
+			default:
+				YEQ = new Complex(Pnominalperphase, -Qnominalperphase).divide( MathUtil.sqr(VBase) );  // Vbase must be L-N for 3-phase
+
+				if (Vminpu != 0.0) {
+					YEQ95 = YEQ.divide( MathUtil.sqr(Vminpu));  // at 95% voltage
+				} else {
+					YEQ95 = YEQ; // Always a constant Z model
+				}
+
+				if (Vmaxpu != 0.0) {
+					YEQ105 = YEQ.divide(MathUtil.sqr(Vmaxpu));  // at 105% voltage
+				} else {
+					YEQ105 = YEQ;
+				}
+			}
+			/* When we leave here, all the YEQ"s are in L-N values */
+		}
+	}
+
+	@Override
+	public void recalcElementData() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		VBase95 = Vminpu * VBase;
+		VBase105 = Vmaxpu * VBase;
+
+		varBase = 1000.0 * kvar_out / nPhases;
+
+		// values in ohms for thevenin equivalents
+		RThev = pctR * 0.01 * MathUtil.sqr(getPresentkV()) / kVArating * 1000.0;
+		XThev = pctX * 0.01 * MathUtil.sqr(getPresentkV()) / kVArating * 1000.0;
+
+		CutInkW  = pctCutIn  * kVArating / 100.0;
+		CutOutkW = pctCutOut * kVArating / 100.0;
+
+		setNominalPVSystemOuput();
+
+		/* Now check for errors.  if any of these came out nil and the string was not nil, give warning */
+		if (YearlyShapeObj == null)
+			if (YearlyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Yearly load shape: \""+ YearlyShape +"\" Not Found.", 563);
+		if (DailyShapeObj == null)
+			if (DailyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Daily load shape: \""+ DailyShape +"\" Not Found.", 564);
+		if (DutyShapeObj == null)
+			if (DutyShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Duty load shape: \""+ DutyShape +"\" Not Found.", 565);
+		if (YearlyTShapeObj == null)
+			if (YearlyTShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Yearly temperature shape: \""+ YearlyTShape +"\" Not Found.", 5631);
+		if (DailyTShapeObj == null)
+			if (DailyTShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Daily temperature shape: \""+ DailyTShape +"\" Not Found.", 5641);
+		if (DutyTShapeObj == null)
+			if (DutyTShape.length() > 0)
+				Globals.doSimpleMsg("WARNING! Duty temperature shape: \""+ DutyTShape +"\" Not Found.", 5651);
+
+		if (getSpectrum().length() > 0) {
+			setSpectrumObj( (com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()) );
+			if (getSpectrumObj() == null)
+				Globals.doSimpleMsg("ERROR! Spectrum \""+getSpectrum()+"\" Not Found.", 566);
+		} else {
+			setSpectrumObj(null);
+		}
+
+		// Initialize to zero - defaults to PQ PVSystem element
+		// Solution object will reset after circuit modifications
+
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+
+		/* Update any user-written models */
+		if (UserModel.exists())
+			UserModel.updateModel();
+	}
+
+	private void calcYPrimMatrix(CMatrix Ymatrix) {
+		Complex Y, Yij;
+		int i, j;
+		double FreqMultiplier;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		YprimFreq = sol.getFrequency();
+		FreqMultiplier = YprimFreq / BaseFrequency;
+
+		if (/*sol.isDynamicModel() ||*/ sol.isIsHarmonicModel()) {
+			/* YEQ is computed from %R and %X -- inverse of Rthev + j Xthev */
+			Y = YEQ;  // L-N value computed in initialization routines
+
+			if (Connection == 1)
+				Y = Y.divide(3.0);  // Convert to delta impedance
+			Y = new Complex(Y.getReal(), Y.getImaginary() / FreqMultiplier);
+			Yij = Y.negate();
+			for (i = 0; i < nPhases; i++) {
+				switch (Connection) {
+				case 0:
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(nConds, nConds, Y);
+					Ymatrix.setElemSym(i, nConds, Yij);
+				case 1:  /* Delta connection */
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(i, i, Y);  // put it in again
+					for (j = 0; j < i; j++)  // TODO Check zero based indexing
+						Ymatrix.setElemSym(i, j, Yij);
+				}
+			}
+		} else {
+			//  Regular power flow PVSystem element model
+
+			/* YEQ is always expected as the equivalent line-neutral admittance */
+
+			Y = YEQ.negate();  // negate for generation    YEQ is L-N quantity
+
+			// ****** Need to modify the base admittance for real harmonics calcs
+			Y = new Complex(Y.getReal(), Y.getImaginary() / FreqMultiplier);
+
+			switch (Connection) {
+			case 0:  // Wye
+				Yij = Y.negate();
+				for (i = 0; i < nPhases; i++) {
+					Ymatrix.setElement(i, i, Y);
+					Ymatrix.addElement(nConds, nConds, Y);
+					Ymatrix.setElemSym(i, nConds, Yij);
+				}
+			case 1:  // Delta  or L-L
+				Y   = Y.divide(3.0); // Convert to delta impedance
+				Yij = Y.negate();
+				for (i = 0; i < nPhases; i++) {
+					j = i + 1;  // TODO Check zero based indexing
+					if (j >= nConds)
+						j = 0;  // wrap around for closed connections
+					Ymatrix.addElement(i, i, Y);
+					Ymatrix.addElement(j, j, Y);
+					Ymatrix.addElemSym(i, j, Yij);
+				}
+			}
+		}
 	}
 
 	private void computeInverterPower() {
+		double kVA_Gen;
+		double EffFactor = 1.0;
+		double kW_Out = 0.0;
 
+		// Determine state of the inverter
+		if (InverterON) {
+			if (PanelkW < CutOutkW)
+				InverterON = false;
+		} else {
+			if (PanelkW >= CutInkW)
+				InverterON = true;
+		}
+
+		// Set inverter output. Defaults to 100% of the panelkW if no efficiency curve spec'd
+		if (InverterON) {
+			if (InverterCurveObj != null)
+				EffFactor = InverterCurveObj.getYValue(PanelkW / kVArating);  // pu eff vs pu power
+			kW_Out = PanelkW * EffFactor;
+		} else {
+			kW_Out = 0.0;
+		}
+
+		// kvar value
+		if (PFSpecified) {
+			if (PFnominal == 1.0) {
+				kvar_out = 0.0;
+			} else {
+				kvar_out = kW_out * Math.sqrt(1.0 / MathUtil.sqr(PFnominal) - 1.0) * Math.signum(PFnominal);
+				// if pf is negative, make sure kvar has opposite sign of kW
+				// kW will always be positive
+			}
+		} else {  // kvar is specified
+			kvar_out = kvarRequested;
+		}
+
+		// Limit kvar so that kVA of inverter is not exceeded
+		kVA_Gen = Math.sqrt(MathUtil.sqr(kW_out) + MathUtil.sqr(kvar_out));
+		if (kVA_Gen > kVArating) {
+			if (kW_out > kVArating) {
+				kW_out   = kVArating;
+				kvar_out = 0.0;
+			} else {
+				kvar_out = Math.sqrt(MathUtil.sqr(kVArating) - MathUtil.sqr(kW_Out)) * Math.signum(kvar_out);
+			}
+		}
 	}
 
 	private void computekWkvar() {
+		computePanelPower();  // apply irradiance
+		computeInverterPower();  // apply inverter eff after checking for cutin/cutout
+	}
+
+	private void computePanelPower() {
+		TempFactor = 1.0;
+		if (Power_TempCurveObj != null)
+			TempFactor = Power_TempCurveObj.getYValue(TShapeValue);  // pu Pmpp vs T (actual)
+
+		PanelkW = Irradiance * ShapeFactor.getReal() * Pmpp * TempFactor;
+	}
+
+	@Override
+	public void calcYPrim() {
+		// Build only shunt Yprim
+		// Build a dummy Yprim Series so that CalcV Does not fail
+		if (isYprimInvalid()) {
+			if (YPrim_Shunt != null) YPrim_Shunt = null;
+			YPrim_Shunt = new CMatrixImpl(Yorder);
+			if (YPrim_Series != null) YPrim_Series = null;
+			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrim != null) YPrim = null;
+			YPrim = new CMatrixImpl(Yorder);
+		} else {
+			YPrim_Shunt.clear();
+			YPrim_Series.clear();
+			YPrim.clear();
+		}
+
+		setNominalPVSystemOuput();
+		calcYPrimMatrix(YPrim_Shunt);
+
+		// Set YPrim_Series based on diagonals of YPrim_shunt so that calcVoltages doesn't fail
+		for (int i = 0; i < Yorder; i++)
+			YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+
+		YPrim.copyFrom(YPrim_Shunt);
+
+		// Account for open conductors
+		super.calcYPrim();
+	}
+
+	/**
+	 * Add the current into the proper location according to connection.
+	 *
+	 * Reverse of similar routine in load (complex negates are switched).
+	 */
+	private void stickCurrInTerminalArray(Complex[] TermArray, Complex Curr, int i) {
+		switch (Connection) {
+		case 0:  // Wye
+			TermArray[i] = TermArray[i].add(Curr);
+			TermArray[nConds] = TermArray[nConds].add(Curr.negate());  // neutral
+		case 1:  // delta
+			TermArray[i] = TermArray[i].add(Curr);
+			int j = i + 1;
+			if (j >= nConds) j = 0;  // wrap
+			TermArray[j] = TermArray[j].add(Curr.negate());
+		}
+	}
+
+	private void writeTraceRecord(String s) {
+
+	}
+
+	@Override
+	public void setConductorClosed(int Index, boolean Value) {
+
+	}
+
+	@Override
+	public void getTerminalCurrents(Complex[] Curr) {
+
+	}
+
+	@Override
+	public int injCurrents() {
+		return 0;
+	}
+
+	@Override
+	public void getInjCurrents(Complex[] Curr) {
+
+	}
+
+	@Override
+	public int numVariables() {
+		return 0;
+	}
+
+	@Override
+	public void getAllVariables(double[] States) {
+
+	}
+
+	@Override
+	public double getVariable(int i) {
+		return 0.0;
+	}
+
+	@Override
+	public void setVariable(int i, double Value) {
+
+	}
+
+	@Override
+	public String variableName(int i) {
+		return null;
+	}
+
+	public void resetRegisters() {
+
+	}
+
+	public void takeSample() {
+
+	}
+
+	@Override
+	public void initStateVars() {
+
+	}
+
+	@Override
+	public void integrateStates() {
+
+	}
+
+	@Override
+	public void initHarmonics() {
+
+	}
+
+	@Override
+	public void makePosSequence() {
+		// Make a positive Sequence Model
+	}
+
+	@Override
+	public void dumpProperties(PrintStream F, boolean Complete) {
 
 	}
 
@@ -155,10 +749,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	/*private void calcVterminal()*/
 	private void calcVTerminalPhase() {
-
-	}
-
-	private void calcYPrimMatrix(CMatrix Ymatrix) {
 
 	}
 
@@ -187,14 +777,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	}
 
 	private void setDragHandRegister(int Reg, double Value) {
-
-	}
-
-	private void stickCurrInTerminalArray(Complex[] TermArray, Complex Curr, int i) {
-
-	}
-
-	private void writeTraceRecord(String s) {
 
 	}
 
@@ -238,112 +820,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	public void setPresentIrradiance(double Value) {
 
-	}
-
-	@Override
-	public void setConductorClosed(int Index, boolean Value) {
-
-	}
-
-	@Override
-	public void getTerminalCurrents(Complex[] Curr) {
-
-	}
-
-	@Override
-	public void recalcElementData() {
-
-	}
-
-	@Override
-	public void calcYPrim() {
-
-	}
-
-	@Override
-	public int injCurrents() {
-		return 0;
-	}
-
-	@Override
-	public void getInjCurrents(Complex[] Curr) {
-
-	}
-
-	@Override
-	public int numVariables() {
-		return 0;
-	}
-
-	@Override
-	public void getAllVariables(double[] States) {
-
-	}
-
-	@Override
-	public double getVariable(int i) {
-		return 0.0;
-	}
-
-	@Override
-	public void setVariable(int i, double Value) {
-
-	}
-
-	@Override
-	public String variableName(int i) {
-		return null;
-	}
-
-	public void setNominalPVSystemOuput() {
-
-	}
-
-	public void randomize(int Opt) {
-		// 0 = reset to 1.0; 1 = Gaussian around mean and std Dev  ;  // 2 = uniform
-	}
-
-	public void resetRegisters() {
-
-	}
-
-	public void takeSample() {
-
-	}
-
-	@Override
-	public void initStateVars() {
-
-	}
-
-	@Override
-	public void integrateStates() {
-
-	}
-
-	@Override
-	public void initHarmonics() {
-
-	}
-
-	@Override
-	public void makePosSequence() {
-		// Make a positive Sequence Model
-	}
-
-	@Override
-	public void initPropertyValues(int ArrayOffset) {
-
-	}
-
-	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-
-	}
-
-	@Override
-	public String getPropertyValue(int Index) {
-		return null;
 	}
 
 	public int getConnection() {
