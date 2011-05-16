@@ -279,7 +279,14 @@ public class DSSClassImpl implements DSSClass {
 		return Result;
 	}
 
-	/* Helper routine for building Property strings */
+	/**
+	 * Helper routine for building Property strings.
+	 *
+	 * Using the addProperty FUNCTION, you can list the properties here in the order you want
+	 * them to appear when properties are accessed sequentially without tags.   Syntax:
+	 *
+	 * addProperty( <name of property>, <index in the EDIT Case statement>, <help text>);
+	 */
 	public void addProperty(String PropName, int CmdMapIndex, String HelpString) {
 		ActiveProperty += 1;
 

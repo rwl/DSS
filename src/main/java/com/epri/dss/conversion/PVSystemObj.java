@@ -1,5 +1,13 @@
 package com.epri.dss.conversion;
 
+import java.io.FileWriter;
+
+import com.epri.dss.general.LoadShapeObj;
+import com.epri.dss.general.TShapeObj;
+import com.epri.dss.general.XYCurveObj;
+import com.epri.dss.shared.CMatrix;
+import com.epri.dss.shared.impl.Complex;
+
 /**
  * The PVsystem element is essentially a generator that consists of a PV panel and an inverter.
  *
@@ -16,34 +24,339 @@ package com.epri.dss.conversion;
  */
 public interface PVSystemObj extends PCElement {
 
-	static final int propKV         =  2;
-	static final int propIrradiance =  3;
-	static final int propPF         =  4;
-	static final int propMODEL      =  5;
-	static final int propYEARLY     =  6;
-	static final int propDAILY      =  7;
-	static final int propDUTY       =  8;
-	static final int propTYEARLY    =  9;
-	static final int propTDAILY     = 10;
-	static final int propTDUTY      = 11;
-	static final int propCONNECTION = 12;
-	static final int propKVAR       = 13;
-	static final int propPCTR       = 14;
-	static final int propPCTX       = 15;
-	static final int propCLASS      = 16;
-	static final int propInvEffCurve= 17;
-	static final int propTemp       = 18;
-	static final int propPmpp       = 19;
-	static final int propP_T_Curve  = 20;
-	static final int propCutin      = 21;
-	static final int propCutout     = 22;
-	static final int propVMINPU     = 23;
-	static final int propVMAXPU     = 24;
-	static final int propKVA        = 25;
-	static final int propUSERMODEL  = 26;
-	static final int propUSERDATA   = 27;
-	static final int propDEBUGTRACE = 28;
+	void setNominalPVSystemOuput();
 
-	static final int NumPropsThisClass = 29;
+	/**
+	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
+	 */
+	void randomize(int Opt);
+
+	void resetRegisters();
+
+	void takeSample();
+
+	int getConnection();
+
+	void setConnection(int connection);
+
+	String getDailyShape();
+
+	void setDailyShape(String dailyShape);
+
+	LoadShapeObj getDailyShapeObj();
+
+	void setDailyShapeObj(LoadShapeObj dailyShapeObj);
+
+	String getDutyShape();
+
+	void setDutyShape(String dutyShape);
+
+	LoadShapeObj getDutyShapeObj();
+
+	void setDutyShapeObj(LoadShapeObj dutyShapeObj);
+
+	String getYearlyShape();
+
+	void setYearlyShape(String yearlyShape);
+
+	LoadShapeObj getYearlyShapeObj();
+
+	void setYearlyShapeObj(LoadShapeObj yearlyShapeObj);
+
+	String getDailyTShape();
+
+	void setDailyTShape(String dailyTShape);
+
+	TShapeObj getDailyTShapeObj();
+
+	void setDailyTShapeObj(TShapeObj dailyTShapeObj);
+
+	String getDutyTShape();
+
+	void setDutyTShape(String dutyTShape);
+
+	TShapeObj getDutyTShapeObj();
+
+	void setDutyTShapeObj(TShapeObj dutyTShapeObj);
+
+	String getYearlyTShape();
+
+	void setYearlyTShape(String yearlyTShape);
+
+	TShapeObj getYearlyTShapeObj();
+
+	void setYearlyTShapeObj(TShapeObj yearlyTShapeObj);
+
+	String getInverterCurve();
+
+	void setInverterCurve(String inverterCurve);
+
+	XYCurveObj getInverterCurveObj();
+
+	void setInverterCurveObj(XYCurveObj inverterCurveObj);
+
+	String getPower_TempCurve();
+
+	void setPower_TempCurve(String power_TempCurve);
+
+	XYCurveObj getPower_TempCurveObj();
+
+	void setPower_TempCurveObj(XYCurveObj power_TempCurveObj);
+
+	int getFClass();
+
+	void setFClass(int fClass);
+
+	int getVoltageModel();
+
+	void setVoltageModel(int voltageModel);
+
+	double getPresentkW();
+
+	double getPresentkvar();
+
+	double getPresentkV();
+
+	double getPresentIrradiance();
+
+	void setPresentkV(double Value);
+
+	void setPresentkvar(double Value);
+
+	void setPowerFactor(double Value);
+
+	double getPowerFactor();  // FIXME Check interface for properties
+
+	public void setPresentIrradiance(double Value);
+
+	double getPFnominal();
+
+	void setPFnominal(double pFnominal);
+
+	double[] getRegisters();
+
+	void setRegisters(double[] registers);
+
+	double[] getDerivatives();
+
+	void setDerivatives(double[] derivatives);
+
+	// FIXME Private methods in OpenDSS
+	void updatePVSystem();
+
+
+	// FIXME Private members in OpenDSS.
+
+	Complex getYEQ();
+
+	void setYEQ(Complex yEQ);
+
+	Complex getYEQ95();
+
+	void setYEQ95(Complex yEQ95);
+
+	Complex getYEQ105();
+
+	void setYEQ105(Complex yEQ105);
+
+	boolean isDebugTrace();
+
+	void setDebugTrace(boolean debugTrace);
+
+	int getPVSystemSolutionCount();
+
+	void setPVSystemSolutionCount(int pVSystemSolutionCount);
+
+	double getPVSystemFundamental();
+
+	void setPVSystemFundamental(double pVSystemFundamental);
+
+	boolean isPVsystemObjSwitchOpen();
+
+	void setPVsystemObjSwitchOpen(boolean pVsystemObjSwitchOpen);
+
+	boolean isFirstSampleAfterReset();
+
+	void setFirstSampleAfterReset(boolean firstSampleAfterReset);
+
+	boolean isPFSpecified();
+
+	void setPFSpecified(boolean pFSpecified);
+
+	boolean isKvarSpecified();
+
+	void setKvarSpecified(boolean kvarSpecified);
+
+	double getkVArating();
+
+	void setkVArating(double kVArating);
+
+	double getkVPVSystemBase();
+
+	void setkVPVSystemBase(double kVPVSystemBase);
+
+	double getKvar_out();
+
+	void setKvar_out(double kvar_out);
+
+	double getkW_out();
+
+	void setkW_out(double kW_out);
+
+	double getPanelkW();
+
+	void setPanelkW(double panelkW);
+
+	double getIrradiance();
+
+	void setIrradiance(double irradiance);
+
+	double getKvarRequested();
+
+	void setKvarRequested(double kvarRequested);
+
+	double getTemperature();
+
+	void setTemperature(double temperature);
+
+	double getPmpp();
+
+	void setPmpp(double pmpp);
+
+	double getEffFactor();
+
+	void setEffFactor(double effFactor);
+
+	double getTempFactor();
+
+	void setTempFactor(double tempFactor);
+
+	boolean isInverterON();
+
+	void setInverterON(boolean inverterON);
+
+	double getPctCutIn();
+
+	void setPctCutIn(double pctCutIn);
+
+	double getPctCutOut();
+
+	void setPctCutOut(double pctCutOut);
+
+	double getCutInkW();
+
+	void setCutInkW(double cutInkW);
+
+	double getCutOutkW();
+
+	void setCutOutkW(double cutOutkW);
+
+	double getPctR();
+
+	void setPctR(double pctR);
+
+	double getPctX();
+
+	void setPctX(double pctX);
+
+	int getOpenPVSystemSolutionCount();
+
+	void setOpenPVSystemSolutionCount(int openPVSystemSolutionCount);
+
+	double getPnominalperphase();
+
+	void setPnominalperphase(double pnominalperphase);
+
+	double getQnominalperphase();
+
+	void setQnominalperphase(double qnominalperphase);
+
+	double getRandomMult();
+
+	void setRandomMult(double randomMult);
+
+	int getReg_Hours();
+
+	void setReg_Hours(int reg_Hours);
+
+	int getReg_kvarh();
+
+	void setReg_kvarh(int reg_kvarh);
+
+	int getReg_kWh();
+
+	void setReg_kWh(int reg_kWh);
+
+	int getReg_MaxkVA();
+
+	void setReg_MaxkVA(int reg_MaxkVA);
+
+	int getReg_MaxkW();
+
+	void setReg_MaxkW(int reg_MaxkW);
+
+	int getReg_Price();
+
+	void setReg_Price(int reg_Price);
+
+	Complex getShapeFactor();
+
+	void setShapeFactor(Complex shapeFactor);
+
+	double getTShapeValue();
+
+	void setTShapeValue(double tShapeValue);
+
+	double getThetaharm();
+
+	void setThetaharm(double thetaharm);
+
+	FileWriter getTracefile();
+
+	void setTracefile(FileWriter tracefile);
+
+	PVSystemUserModel getUserModel();
+
+	void setUserModel(PVSystemUserModel userModel);
+
+	double getVarBase();
+
+	void setVarBase(double varBase);
+
+	double getVBase();
+
+	void setVBase(double vBase);
+
+	double getVBase105();
+
+	void setVBase105(double vBase105);
+
+	double getVBase95();
+
+	void setVBase95(double vBase95);
+
+	double getVmaxpu();
+
+	void setVmaxpu(double vmaxpu);
+
+	double getVminpu();
+
+	void setVminpu(double vminpu);
+
+	double getVthevharm();
+
+	void setVthevharm(double vthevharm);
+
+	CMatrix getYPrimOpenCond();
+
+	void setYPrimOpenCond(CMatrix yPrimOpenCond);
+
+	double getRThev();
+
+	void setRThev(double rThev);
+
+	double getXThev();
+
+	void setXThev(double xThev);
 
 }

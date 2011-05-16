@@ -1738,11 +1738,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		if (MeteredElement != null) {
-			Globals.getFeederClass().newObject(getName());  // newObject creates only if not existent else inits and desynchs
-			setFeederObj( (FeederObj) Globals.getActiveCircuit().getActiveCktElement() );
-			getFeederObj().setBus(1, MeteredElement.getBus(MeteredTerminal));  // TODO Check zero based indexing
-			getFeederObj().setNPhases(MeteredElement.getNPhases());
-			getFeederObj().setNConds(MeteredElement.getNConds());
+//			Globals.getFeederClass().newObject(getName());  // newObject creates only if not existent else inits and desynchs
+//			setFeederObj( (FeederObj) Globals.getActiveCircuit().getActiveCktElement() );
+//			getFeederObj().setBus(1, MeteredElement.getBus(MeteredTerminal));  // TODO Check zero based indexing
+//			getFeederObj().setNPhases(MeteredElement.getNPhases());
+//			getFeederObj().setNConds(MeteredElement.getNConds());
 			//getFeederObj().setEnabled(Globals.getActiveCircuit().isRadialSolution());
 		} else {
 			Globals.doSimpleMsg("Error: Attempted to make Feeder Obj without instantiating Metered Element in Energymeter."+getName(), 544);

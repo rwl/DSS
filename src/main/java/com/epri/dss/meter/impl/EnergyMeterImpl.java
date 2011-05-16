@@ -680,8 +680,9 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			MeterTotalsBuffer.write("Name");
 			mtr = ckt.getEnergyMeters().get(0);
-			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
-				MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
+			if (mtr != null)
+				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
 			MeterTotalsBuffer.newLine();
 
 			MeterTotalsBuffer.close();
