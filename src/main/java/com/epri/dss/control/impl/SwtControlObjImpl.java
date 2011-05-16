@@ -42,6 +42,8 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		int DevIndex = Utilities.getCktElementIndex(ElementName);
 		if (DevIndex >= 0) {
 			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
+			nPhases = getControlledElement().getNPhases();
+			nConds  = nPhases;
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);
 			if (!Locked) {
 				switch (PresentState) {

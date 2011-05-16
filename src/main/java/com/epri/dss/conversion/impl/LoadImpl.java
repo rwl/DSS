@@ -50,26 +50,27 @@ public class LoadImpl extends PCClassImpl implements Load {
 		PropertyName[9] = "growth";
 		PropertyName[10] = "conn";
 		PropertyName[11] = "kvar";
-		PropertyName[12] = "Rneut"; // IF entered -, assume open
+		PropertyName[12] = "Rneut";  // if entered -, assume open
 		PropertyName[13] = "Xneut";
-		PropertyName[14] = "status";  // fixed or variable
-		PropertyName[15] = "class";  // integer
-		PropertyName[16] = "Vminpu";  // Min pu voltage FOR which model applies
-		PropertyName[17] = "Vmaxpu";  // Max pu voltage FOR which model applies
+		PropertyName[14] = "status";    // fixed or variable
+		PropertyName[15] = "class";     // integer
+		PropertyName[16] = "Vminpu";    // Min pu voltage FOR which model applies
+		PropertyName[17] = "Vmaxpu";    // Max pu voltage FOR which model applies
 		PropertyName[18] = "Vminnorm";  // Min pu voltage normal load
-		PropertyName[19] = "Vminemerg";  // Min pu voltage emergency rating
-		PropertyName[20] = "xfkVA";  // Service transformer rated kVA
+		PropertyName[19] = "Vminemerg"; // Min pu voltage emergency rating
+		PropertyName[20] = "xfkVA";     // Service transformer rated kVA
 		PropertyName[21] = "allocationfactor";  // allocation factor  for xfkVA
-		PropertyName[22] = "kVA";  // specify load in kVA and PF
-		PropertyName[23] = "%mean";  // per cent default mean
-		PropertyName[24] = "%stddev";  // per cent default standard deviation
+		PropertyName[22] = "kVA";       // specify load in kVA and PF
+		PropertyName[23] = "%mean";     // per cent default mean
+		PropertyName[24] = "%stddev";   // per cent default standard deviation
 		PropertyName[25] = "CVRwatts";  // Percent watts reduction per 1% reduction in voltage from nominal
-		PropertyName[26] = "CVRvars";  // Percent vars reduction per 1% reduction in voltage from nominal
-		PropertyName[27] = "kwh";   // kwh billing
+		PropertyName[26] = "CVRvars";   // Percent vars reduction per 1% reduction in voltage from nominal
+		PropertyName[27] = "kwh";       // kwh billing
 		PropertyName[28] = "kwhdays";   // kwh billing period (24-hr days)
 		PropertyName[29] = "Cfactor";   // multiplier from kWh avg to peak kW
-		PropertyName[30] = "CVRcurve";   // name of curve to use for yearly CVR simulations
+		PropertyName[30] = "CVRcurve";  // name of curve to use for yearly CVR simulations
 		PropertyName[31] = "NumCust";   // Number of customers, this load
+		PropertyName[32] = "ZIPV";      // array of 7 coefficients
 
 
 		// Define property help values
@@ -96,7 +97,8 @@ public class LoadImpl extends PCClassImpl implements Load {
 				"4:Nominal Linear P, Quadratic Q (feeder mix). Use this with CVRfactor."+DSSGlobals.CRLF+
 				"5:Constant Current Magnitude"+DSSGlobals.CRLF+
 				"6:Const P, Fixed Q"+DSSGlobals.CRLF+
-				"7:Const P, Fixed Impedance Q"+DSSGlobals.CRLF+DSSGlobals.CRLF+
+				"7:Const P, Fixed Impedance Q"+DSSGlobals.CRLF+
+				"8:ZIPV (7 values)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"For Types 6 and 7, only the P is modified by load multipliers.";
 		PropertyHelp[6] = "Load shape to use for yearly simulations.  Must be previously defined "+
 				"as a Loadshape object. Defaults to Daily load shape " +
@@ -174,6 +176,12 @@ public class LoadImpl extends PCClassImpl implements Load {
 				"Define a Loadshape to agree with yearly or daily curve according to the type of analysis being done. " +
 				"If NONE, the CVRwatts and CVRvars factors are used and assumed constant.";
 		PropertyHelp[31] = "Number of customers, this load. Default is 1.";
+		PropertyHelp[32] = "Array of 7 coefficients:" + DSSGlobals.CRLF +
+				" First 3 are ZIP weighting factors for real power (should sum to 1)" + DSSGlobals.CRLF +
+				" Next 3 are ZIP weighting factors for reactive power (should sum to 1)" + DSSGlobals.CRLF +
+				" Last 1 is cut-off voltage in p.u. of base kV; load is 0 below this cut-off" + DSSGlobals.CRLF +
+				" No defaults; all coefficients must be specified if using model=8.";
+
 
 		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
@@ -357,6 +365,9 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setCVRshape(Param);
 			case 31:
 				al.setNumCustomers(parser.makeInteger());
+			case 32:
+				al.setZIPVSize(7);
+				parser.parseAsVector(7, al.getZIPV());
 			default:
 				// Inherited edits
 				classEdit(getActiveLoadObj(), ParamPointer - Load.NumPropsThisClass);
@@ -470,6 +481,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setCVRwattFactor(OtherLoad.getCVRwattFactor());
 			al.setCVRvarFactor(OtherLoad.getCVRvarFactor());
 			al.setShapeIsActual(OtherLoad.isShapeIsActual());
+
+			al.setZIPVSize(OtherLoad.getnZIPV());
+			for (int i = 0; i < al.getnZIPV(); i++)
+				al.getZIPV()[i] = OtherLoad.getZIPV()[i];
 
 			classMakeLike(OtherLoad);  // Take care of inherited class properties
 

@@ -163,7 +163,7 @@ public interface LoadObj extends PCElement {
 	void setAllocationFactor(double Value);
 
 	double getAllocationFactor();
-	
+
 	void setkWkvar(double PkW, double Qkvar);
 
 	void recalcElementData();
@@ -195,7 +195,10 @@ public interface LoadObj extends PCElement {
 	void dumpProperties(PrintStream F, boolean Complete);
 
 	void updateVoltageBases();
-	
+
+	// FIXME Private method in OpenDSS
+	void setZIPVSize(int n);
+
 	// FIXME Private members in OpenDSS.
 
 	boolean isPFChanged();
@@ -321,4 +324,13 @@ public interface LoadObj extends PCElement {
 	boolean isShapeIsActual();
 
 	void setShapeIsActual(boolean shapeIsActual);
+
+	double[] getZIPV();
+
+	void setZIPV(double[] zIPV);
+
+	void setnZIPV(int nZIPV);
+
+	int getnZIPV();
+
 }

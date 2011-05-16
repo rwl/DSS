@@ -61,8 +61,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private Complex Yneut;
 	/* To handle cases where one conductor of load is open */
 	private CMatrix YPrimOpenCond;
-	/* Fixed value of y FOR type 7 load */
+	/* Fixed value of y for type 7 load */
 	private double YQFixed;
+	private double[] ZIPV;
+	private int nZIPV;
 
 	// formerly private, now read-only properties for COM access
 	protected double puMean;
@@ -125,9 +127,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * 5 = Constant |I|
 	 * 6 = Constant P (Variable); Q is fixed value (not variable)
 	 * 7 = Constant P (Variable); Q is fixed Z (not variable)
+	 * 8 = ZIPV (3 real power coefficients, 3 reactive, Vcutoff)
 	 */
 	protected int LoadModel;
-
 
 	public LoadObjImpl(DSSClassImpl ParClass, String SourceName) {
 		super(ParClass);
@@ -199,10 +201,18 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		setSpectrum("defaultload");  // override base class definition
 		this.HarmMag    = null;
 		this.HarmAng    = null;
+		this.ZIPV       = null;
+		this.setZIPVSize(0);
 
 		initPropertyValues(0);
 
 		recalcElementData();
+	}
+
+	// FIXME Private method in OpenDSS
+	public void setZIPVSize(int n) {
+		nZIPV = n;
+		ZIPV = (double[]) Utilities.resizeArray(ZIPV, nZIPV);
 	}
 
 	/**
@@ -729,6 +739,44 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
+	private void doZIPVModel() {
+		int i;
+		Complex Curr, CurrZ, CurrI, CurrP, V;
+		double VMag, vx, evx, yv;
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // get actual voltage across each phase of the load
+		zeroITerminal();
+
+		for (i = 0; i < nPhases; i++) {
+			V    = Vterminal[i];
+			VMag = V.abs();
+
+			if (VMag <= VBase95) {
+				Curr = Yeq95.multiply(V);
+			} else if (VMag > VBase105) {
+				Curr = Yeq105.multiply(V);
+			} else {
+				CurrZ = new Complex(Yeq.getReal() * ZIPV[0], Yeq.getImaginary() * ZIPV[3]).multiply( Vterminal[i] );
+				CurrI = new Complex(WNominal * ZIPV[1], varNominal * ZIPV[4]).divide( V.divide(V.abs()).multiply(VBase) ).conjugate();
+				CurrP = new Complex(WNominal * ZIPV[2], varNominal * ZIPV[5]).divide(V).conjugate();
+				Curr  = CurrZ.add(CurrI.add(CurrP));
+			}
+
+			// low-voltage drop-out
+			if (ZIPV[6] > 0.0) {
+				vx = 500.0 * (VMag / VBase - ZIPV[6]);
+				evx = Math.exp(2 * vx);
+				yv = 0.5 * (1 + (evx - 1) / (evx + 1));
+				Curr = Curr.multiply(yv);
+			}
+
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
+	}
+
 	/**
 	 * Linear P, quadratic Q.
 	 */
@@ -926,6 +974,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				doFixedQ();         // Fixed Q
 			case 7:
 				doFixedQZ();        // Fixed, constant Z Q
+			case 8:
+				doZIPVModel();
 			default:
 				doConstantZLoad();     // FOR now, until we implement the other models.
 			}
@@ -1157,6 +1207,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVAAllocationFactor);
 			case 22:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVABase);
+			case 32:
+				F.print("~ " + getParentClass().getPropertyName()[i] + "=");
+				for (int j = 0; j < nZIPV; j++)
+					F.print(ZIPV[j] + " ");
+				F.println("\"");
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 			}
@@ -1299,6 +1354,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		PropertyValue[29] = "4";  // Cfactor
 		PropertyValue[30] = "";  // CVRCurve
 		PropertyValue[31] = "1";  // NumCust
+		PropertyValue[32] = "";  // ZIPV coefficient array
 
 		super.initPropertyValues(Load.NumPropsThisClass);
 	}
@@ -1357,6 +1413,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			return String.format("%-g", kVABase);
 		case 29:
 			return String.format("%-.3g", CFactor);
+		case 32:
+			String Result = "";
+			for (int i = 0; i < nZIPV; i++)
+				Result = Result + String.format(" %-g", ZIPV[i]);
+			return Result;
 		default:
 			return super.getPropertyValue(Index);
 		}
@@ -1874,6 +1935,22 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void setShapeIsActual(boolean shapeIsActual) {
 		ShapeIsActual = shapeIsActual;
+	}
+
+	public double[] getZIPV() {
+		return ZIPV;
+	}
+
+	public void setZIPV(double[] zIPV) {
+		ZIPV = zIPV;
+	}
+
+	public void setnZIPV(int nZIPV) {
+		this.nZIPV = nZIPV;
+	}
+
+	public int getnZIPV() {
+		return nZIPV;
 	}
 
 }
