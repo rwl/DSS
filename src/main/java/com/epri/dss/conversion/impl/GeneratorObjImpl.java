@@ -657,7 +657,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				TraceStream.close();
 			}
 		} catch (Exception e) {
-
+			// FIXME handle exception
 		}
 	}
 
@@ -1739,7 +1739,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	@Override
 	public String variableName(int i) {
-		int BuffSize = 255;
+		final int BuffSize = 255;
 
 		int n, i2;
 		//char[] Buff = new char[BuffSize];

@@ -1,6 +1,6 @@
 package com.epri.dss.conversion;
 
-import java.io.FileWriter;
+import java.io.File;
 
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.TShapeObj;
@@ -311,9 +311,9 @@ public interface PVSystemObj extends PCElement {
 
 	void setThetaharm(double thetaharm);
 
-	FileWriter getTracefile();
+	File getTracefile();
 
-	void setTracefile(FileWriter tracefile);
+	void setTracefile(File tracefile);
 
 	PVSystemUserModel getUserModel();
 

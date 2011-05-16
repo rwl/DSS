@@ -1,5 +1,7 @@
 package com.epri.dss.conversion.impl;
 
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
@@ -15,6 +17,7 @@ import com.epri.dss.conversion.PVSystemUserModel;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.TShapeObj;
 import com.epri.dss.general.XYCurveObj;
+import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.CMatrixImpl;
@@ -75,7 +78,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	private Complex ShapeFactor;
 	private double TShapeValue;
 	private double Thetaharm;  /* Thevinen equivalent voltage mag and angle reference for Harmonic model */
-	private FileWriter Tracefile;
+	private File Tracefile;
 	private PVSystemUserModel UserModel;  /* User-Written Models */
 
 	private double varBase;  // Base vars per phase
@@ -658,168 +661,625 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	}
 
 	private void writeTraceRecord(String s) {
+		int i;
+		DSSGlobals Globals = DSSGlobals.getInstance();
 
+		try {
+			if (!Globals.isInShowResults()) {
+				FileWriter TraceStream = new FileWriter(Tracefile, true);
+				BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
+				TraceBuffer.write(String.format("%-.g, %d, %-.g, ",
+						Globals.getActiveCircuit().getSolution().getDynaVars().t,
+						Globals.getActiveCircuit().getSolution().getIteration(),
+						Globals.getActiveCircuit().getLoadMultiplier()) +
+						Utilities.getSolutionModeID() + ", " +
+						Utilities.getLoadModel() + ", " +
+						VoltageModel + ", " +
+						(Qnominalperphase * 3.0 / 1.0e6) + ", " +
+						(Pnominalperphase * 3.0 / 1.0e6) + ", " +
+						s + ", ");
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write(getInjCurrent()[i].abs() + ", ");
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write(getIterminal()[i].abs() + ", ");
+				for (i = 0; i < nPhases; i++)
+					TraceBuffer.write(getVterminal()[i].abs() + ", ");
+
+				TraceBuffer.newLine();
+				TraceBuffer.close();
+				TraceStream.close();
+			}
+		} catch (Exception e) {
+			// FIXME handle exception
+		}
 	}
 
-	@Override
-	public void setConductorClosed(int Index, boolean Value) {
+	/**
+	 * Compute total terminal current for constant PQ.
+	 */
+	private void doConstantPQPVsystemObj() {
+		int i;
+		Complex Curr = null, V;
+		double VMag;
 
+		// Treat this just like the Load model
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		zeroITerminal();
+
+		calcVTerminalPhase();  // get actual voltage across each phase of the load
+		for (i = 0; i < getNPhases(); i++) {
+			V    = Vterminal[i];
+			VMag = V.abs();
+
+			switch (Connection) {
+			case 0:  /* Wye */
+				if (VMag <= VBase95) {
+					Curr = YEQ95.multiply(V);  // Below 95% use an impedance model
+				} else if (VMag > VBase105) {
+					Curr = YEQ105.multiply(V);  // above 105% use an impedance model
+				} else {
+					Curr = new Complex(Pnominalperphase, Qnominalperphase).divide(V).conjugate();  // Between 95% -105%, constant PQ
+				}
+
+			case 1:  /* Delta */
+				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
+				if (VMag <= VBase95) {
+					Curr = YEQ95.divide(3.0).multiply(V);  // Below 95% use an impedance model
+				} else if (VMag > VBase105) {
+					Curr = YEQ105.divide(3.0).multiply(V);  // above 105% use an impedance model
+				} else {
+					Curr = new Complex(Pnominalperphase, Qnominalperphase).divide(V).conjugate();  // Between 95% -105%, constant PQ
+				}
+			}
+
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
+		}
 	}
 
+	/**
+	 * Constant Z model
+	 */
+	private void doConstantZPVsystemObj() {
+		int i;
+		Complex Curr, YEQ2;
+
+		// Assume YEQ is kept up to date
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+		calcVTerminalPhase();  // get actual voltage across each phase of the load
+		zeroITerminal();
+		if (Connection == 0) {
+			YEQ2 = YEQ;
+		} else {
+			YEQ2 = YEQ.divide(3.0);
+		}
+
+		for (i = 0; i < getNPhases(); i++) {
+			Curr = YEQ2.multiply(Vterminal[i]);   // YEQ is always line to neutral
+			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into terminal array taking into account connection
+			setITerminalUpdated(true);
+			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into terminal array taking into account connection
+		}
+	}
+
+	/**
+	 * Compute total terminal current from User-written model
+	 */
+	private void doUserModel() {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		calcYPrimContribution(getInjCurrent());  // Init InjCurrent Array
+
+		if (UserModel.exists()) {  // Check automatically selects the usermodel If true
+			UserModel.calc(Vterminal, Iterminal);
+			setITerminalUpdated(true);
+			// Negate currents from user model for power flow PVSystem element model
+			for (int i = 0; i < nConds; i++)
+				getInjCurrent()[i] = getInjCurrent()[i].add( Iterminal[i].negate() );
+		} else {
+			Globals.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+		}
+	}
+
+	/**
+	 * Compute Total Current and add into InjTemp
+	 *
+	 * For now, just assume the PVSystem element is constant power
+	 * for the duration of the dynamic simulation.
+	 */
+	private void doDynamicMode() {
+		doConstantPQPVsystemObj();
+	}
+
+	/**
+	 * Compute Injection Current Only when in harmonics mode
+	 *
+	 * Assumes spectrum is a voltage source behind subtransient reactance and YPrim has been built
+	 * Vd is the fundamental frequency voltage behind Xd' for phase 1
+	 */
+	private void doHarmonicMode() {
+		int i;
+		Complex E;
+		double PVSystemHarmonic;
+
+		computeVterminal();
+
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		PVSystemHarmonic = sol.getFrequency() / PVSystemFundamental;
+		if (getSpectrumObj() != null) {
+			E = getSpectrumObj().getMult(PVSystemHarmonic).multiply(Vthevharm);  // Get base harmonic magnitude
+		} else {
+			E = Complex.ZERO;
+		}
+
+		Utilities.rotatePhasorRad(E, PVSystemHarmonic, Thetaharm);  // Time shift by fundamental frequency phase shift
+		for (i = 0; i < nPhases; i++) {
+			cBuffer[i] = E;
+			if (i < nPhases)  // TODO Check zero based indexing
+				Utilities.rotatePhasorDeg(E, PVSystemHarmonic, -120.0);  // Assume 3-phase PVSystem element
+		}
+
+		/* Handle Wye Connection */
+		if (Connection == 0)
+			cBuffer[nConds] = Vterminal[nConds];  // assume no neutral injection voltage
+
+		/* Inj currents = Yprim (E) */
+		YPrim.MVMult(getInjCurrent(), cBuffer);
+	}
+
+	private void calcVTerminalPhase() {
+		int i, j;
+
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		/* Establish phase voltages and stick in Vterminal */
+		switch (Connection) {
+		case 0:
+			for (i = 0; i < nPhases; i++)
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+
+		case 1:
+			for (i = 0; i < nPhases; i++) {
+				j = i + 1;  // TODO Check zero based indexing
+				if (j >= nConds) j = 0;
+				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
+			}
+		}
+
+		PVSystemSolutionCount = sol.getSolutionCount();
+	}
+
+	/*private void calcVterminal()*/
+
+	/**
+	 * This is where the power gets computed.
+	 *
+	 * Calculates PVSystem element current and adds it properly into the injcurrent array
+	 * routines may also compute ITerminal (ITerminalUpdated flag)
+	 */
+	private void calcPVSystemModelContribution() {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		setITerminalUpdated(false);
+
+		if (sol.isIsDynamicModel()) {
+			doDynamicMode();
+		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+			doHarmonicMode();
+		} else {
+			// compute currents and put into InjTemp array;
+			switch (VoltageModel) {
+			case 1:
+				doConstantPQPVsystemObj();
+			case 2:
+				doConstantZPVsystemObj();
+			case 3:
+				doUserModel();
+			default:
+				doConstantPQPVsystemObj();  // for now, until we implement the other models.
+			}
+		}
+
+		/* When this is done, ITerminal is up to date */
+	}
+
+	/**
+	 * Difference between currents in YPrim and total current.
+	 */
+	private void calcInjCurrentArray() {
+		// now get injection currents
+		if (PVsystemObjSwitchOpen) {
+			zeroInjCurrent();
+		} else {
+			calcPVSystemModelContribution();
+		}
+	}
+
+	/**
+	 * Compute total currents.
+	 */
 	@Override
 	public void getTerminalCurrents(Complex[] Curr) {
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
+		if (IterminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
+			if (!PVsystemObjSwitchOpen)
+				calcPVSystemModelContribution();  // Adds totals in Iterminal as a side effect
+		}
+		super.getTerminalCurrents(Curr);
+
+		if (DebugTrace)
+			writeTraceRecord("TotalCurrent");
 	}
 
 	@Override
 	public int injCurrents() {
-		return 0;
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		if (sol.isLoadsNeedUpdating())
+			setNominalPVSystemOuput();  // Set the nominal kW, etc for the type of solution being Done
+
+		calcInjCurrentArray();          // Difference between currents in YPrim and total terminal current
+
+		if (DebugTrace)
+			writeTraceRecord("Injection");
+
+		// Add into System Injection Current Array
+
+		return super.injCurrents();
 	}
 
+	/**
+	 * Gives the currents for the last solution performed.
+	 *
+	 * Do not call setNominal, as that may change the load values.
+	 */
 	@Override
 	public void getInjCurrents(Complex[] Curr) {
 
-	}
+		calcInjCurrentArray();  // Difference between currents in YPrim and total current
 
-	@Override
-	public int numVariables() {
-		return 0;
-	}
-
-	@Override
-	public void getAllVariables(double[] States) {
-
-	}
-
-	@Override
-	public double getVariable(int i) {
-		return 0.0;
-	}
-
-	@Override
-	public void setVariable(int i, double Value) {
-
-	}
-
-	@Override
-	public String variableName(int i) {
-		return null;
+		try {
+			// Copy into buffer array
+			for (int i = 0; i < Yorder; i++)
+				Curr[i] = getInjCurrent()[i];
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doErrorMsg("PVSystem Object: \"" + getName() + "\" in getInjCurrents method.",
+					e.getMessage(), "Current buffer not big enough.", 568);
+		}
 	}
 
 	public void resetRegisters() {
-
+		int i;
+		for (i = 0; i < PVSystem.NumPVSystemRegisters; i++)
+			Registers[i] = 0.0;
+		for (i = 0; i < PVSystem.NumPVSystemRegisters; i++)
+			Derivatives[i] = 0.0;
+		FirstSampleAfterReset = true;  // initialize for trapezoidal integration
 	}
 
-	public void takeSample() {
+	private void integrate(int Reg, double Deriv, double Interval) {
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
+		if (ckt.isTrapezoidalIntegration()) {
+			/* Trapezoidal Rule Integration */
+			if (!FirstSampleAfterReset)
+				Registers[Reg] = Registers[Reg] + 0.5 * Interval * (Deriv + Derivatives[Reg]);
+		} else {  /* Plain Euler integration */
+			Registers[Reg] = Registers[Reg] + Interval * Deriv;
+		}
+
+		Derivatives[Reg] = Deriv;
+	}
+
+	/**
+	 * Update energy from metered zone
+	 */
+	public void takeSample() {
+		Complex S;
+		double Smag;
+		double HourValue;
+
+		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		SolutionObj sol = ckt.getSolution();
+
+		// Compute energy in PVSystem element branch
+		if (isEnabled()) {
+			S = new Complex(getPresentkW(), getPresentkvar());
+			Smag = S.abs();
+			HourValue = 1.0;
+
+			if (ckt.isTrapezoidalIntegration()) {
+				/* Make sure we always integrate for Trapezoidal case
+				 * Don't need to for Gen Off and normal integration.
+				 */
+				if (ckt.isPositiveSequence()) {
+					S    = S.multiply(3.0);
+					Smag = 3.0 * Smag;
+				}
+				integrate            (Reg_kWh,   S.getReal(), sol.getIntervalHrs());   // Accumulate the power
+				integrate            (Reg_kvarh, S.getImaginary(), sol.getIntervalHrs());
+				setDragHandRegister  (Reg_MaxkW, Math.abs(S.getReal()));
+				setDragHandRegister  (Reg_MaxkVA, Smag);
+				integrate            (Reg_Hours, HourValue, sol.getIntervalHrs());  // Accumulate Hours in operation
+				integrate            (Reg_Price, S.getReal() * ckt.getPriceSignal(), sol.getIntervalHrs());  // Accumulate Hours in operation
+				FirstSampleAfterReset = false;
+			}
+		}
+	}
+
+	// private void setKWandKvarOut()
+
+	/**
+	 * Update PVSystem elements based on present kW and IntervalHrs variable.
+	 */
+	// FIXME Private method in OpenDSS
+	public void updatePVSystem() {
+		// do nothing
+	}
+
+	public double getPresentkW() {
+		return Pnominalperphase * 0.001 * nPhases;
+	}
+
+	public double getPresentIrradiance() {
+		return Irradiance * ShapeFactor.getReal();
+	}
+
+	public double getPresentkV() {
+		return kVPVSystemBase;
+	}
+
+	public double getPresentkvar() {
+		return Qnominalperphase * 0.001 * nPhases;
 	}
 
 	@Override
-	public void initStateVars() {
+	public void dumpProperties(PrintStream F, boolean Complete) {
+		int i, idx;
 
+		super.dumpProperties(F, Complete);
+
+		for (i = 0; i < getParentClass().getNumProperties(); i++) {
+			idx = getParentClass().getPropertyIdxMap()[i];
+			switch (idx) {
+			case PVSystem.propUSERDATA:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(idx) + ")");
+			default:
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(idx));
+			}
+		}
+		F.println();
 	}
 
+	/**
+	 * This routine makes a thevenin equivalent behis the reactance spec'd in %R and %X.
+	 */
+	@Override
+	public void initHarmonics() {
+		Complex E, Va = null;  // FIXME Implement connection enum
+
+		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+
+		setYprimInvalid(true);  // Force rebuild of YPrims
+		PVSystemFundamental = sol.getFrequency();  // Whatever the frequency is when we enter here.
+
+		YEQ = new Complex(RThev, XThev).invert();      // used for current calcs  Always L-N
+
+		/* Compute reference Thevinen voltage from phase 1 current */
+
+		computeIterminal();  // Get present value of current
+
+		switch (Connection) {
+		case 0:  /* wye - neutral is explicit */
+			Va = sol.getNodeV()[ NodeRef[0] ].subtract(sol.getNodeV()[ NodeRef[nConds] ]);
+		case 1:  /*delta -- assume neutral is at zero */
+			Va = sol.getNodeV()[ NodeRef[0] ];
+		}
+
+		E = Va.subtract( Iterminal[0].multiply(new Complex(RThev, XThev)) );
+		Vthevharm = E.abs();   // establish base mag and angle
+		Thetaharm = E.getArgument();
+	}
+
+	/**
+	 * For going into dynamics mode
+	 */
+	@Override
+	public void initStateVars() {
+		setYprimInvalid(true);  // Force rebuild of YPrims
+	}
+
+	/**
+	 * Dynamics mode integration routine
+	 */
 	@Override
 	public void integrateStates() {
 
 	}
 
+	/**
+	 * Return variables one at a time
+	 */
 	@Override
-	public void initHarmonics() {
+	public double getVariable(int i) {
+		int N, k;
 
+		if (i < 0) return -9999.0;  // error return value; no state fars  FIXME throw exception
+
+		// for now, report kWhstored and mode
+		switch (i) {
+		case 0:
+			return getPresentIrradiance();
+		case 1:
+			return getPanelkW();
+		case 2:
+			return getTempFactor();
+		case 3:
+			return getEffFactor();
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.numVars();
+				k = i - PVSystem.NumPVSystemVariables;  // TODO Check zero based indexing
+				if (k < N)
+					return UserModel.getVariable(k);
+			}
+		}
+		return -9999.0;
 	}
 
+	@Override
+	public void setVariable(int i, double Value) {
+		int N, k;
+
+		if (i < 0) return;  // No variables to set
+
+		switch (i) {
+		case 0:
+			setIrradiance(Value);
+		case 1:
+			// Setting this has no effect Read only
+		case 2:
+			// Setting this has no effect Read only
+		case 3:
+			// Setting this has no effect Read only
+		default:
+			if (UserModel.exists()) {
+				N = UserModel.numVars();
+				k = (i - PVSystem.NumPVSystemVariables) ;
+				if (k < N) {  // TODO Check zero based indexing
+					UserModel.setVariable(k, Value);
+					return;
+				}
+			}
+		}
+	}
+
+	@Override
+	public void getAllVariables(double[] States) {
+		for (int i = 0; i < PVSystem.NumPVSystemVariables; i++)
+			States[i] = getVariable(i);
+
+		if (UserModel.exists())
+			UserModel.getAllVars(States[PVSystem.NumPVSystemVariables + 1]);
+	}
+
+	@Override
+	public int numVariables() {
+		int Result = PVSystem.NumPVSystemVariables;
+		if (UserModel.exists())
+			Result = Result + UserModel.numVars();
+		return Result;
+	}
+
+	@Override
+	public String variableName(int i) {
+		final int BuffSize = 255;
+
+		int n, i2;
+		//char[] Buff = new char[BuffSize];
+		int pName;
+		String Result = "";
+
+		if (i < 0) return Result;
+
+		switch (i) {
+		case 0:
+			return "Irradiance";
+		case 1:
+			return "PanelkW";
+		case 2:
+			return "P_TFactor";
+		case 3:
+			return "Efficiency";
+		default:
+			if (UserModel.exists()) {
+				pName = 0;
+				n = UserModel.numVars();
+				i2 = i - PVSystem.NumPVSystemVariables;
+				if (i2 < n) {
+					UserModel.getVarName(i2, pName, BuffSize);
+					return String.valueOf(pName);
+				}
+			}
+		}
+		return Result;
+	}
+
+	/**
+	 * Make a positive sequence model
+	 */
 	@Override
 	public void makePosSequence() {
-		// Make a positive Sequence Model
+		String S;
+		double V;
+
+		S = "Phases=1 conn=wye";
+
+		// Make sure voltage is line-neutral
+		if ((nPhases > 1) || (Connection != 0)) {
+			V = kVPVSystemBase / DSSGlobals.SQRT3;
+		} else {
+			V = kVPVSystemBase;
+		}
+
+		S = S + String.format(" kV=%-.5g", V);
+
+		if (nPhases > 1)
+			S = S + String.format(" kva=%-.5g  PF=%-.5g", kVArating / nPhases, PFnominal);
+
+		Parser.getInstance().setCmdString(S);
+		edit();
+
+		super.makePosSequence();  // write out other properties
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-
-	}
-
-	private void calcPVSystemModelContribution() {
-		// This is where the power gets computed
-	}
-
-	private void calcInjCurrentArray() {
-
-	}
-
-	/*private void calcVterminal()*/
-	private void calcVTerminalPhase() {
-
-	}
-
-	private void doConstantPQPVsystemObj() {
-
-	}
-
-	private void doConstantZPVsystemObj() {
-
-	}
-
-	private void doDynamicMode() {
-
-	}
-
-	private void doHarmonicMode() {
-
-	}
-
-	private void doUserModel() {
-
-	}
-
-	private void integrate(int Reg, double Deriv, double Interval) {
-
-	}
-
-	private void setDragHandRegister(int Reg, double Value) {
-
-	}
-
-	// private void setKWandKvarOut()
-	// FIXME Private method in OpenDSS
-	public void updatePVSystem() {
-		// Update PVSystem elements based on present kW and IntervalHrs variable
-	}
-
-	public double getPresentkW() {
-		return 0;
-	}
-
-	public double getPresentkvar() {
-		return 0;
-	}
-
-	public double getPresentkV() {
-		return 0;
-	}
-
-	public double getPresentIrradiance() {
-		return 0;
-	}
-
-	public void setPresentkV(double Value) {
-
-	}
-
-	public void setPresentkvar(double Value) {
-
+	public void setConductorClosed(int Index, boolean Value) {
+		// Just turn PVSystem element on or off
+		if (Value) {
+			PVsystemObjSwitchOpen = false;
+		} else {
+			PVsystemObjSwitchOpen = true;
+		}
 	}
 
 	public void setPowerFactor(double Value) {
+		PFnominal = Value;
+		PFSpecified = true;
+	}
 
+	public void setPresentIrradiance(double Value) {
+		Irradiance = Value;
+	}
+
+	public void setPresentkV(double Value) {
+		kVPVSystemBase = Value;
+		switch (nPhases) {
+		case 2:
+			VBase = kVPVSystemBase * DSSGlobals.InvSQRT3x1000;
+		case 3:
+			VBase = kVPVSystemBase * DSSGlobals.InvSQRT3x1000;
+		default:
+			VBase = kVPVSystemBase * 1000.0 ;
+		}
+	}
+
+	public void setPresentkvar(double Value) {
+		kvarRequested = Value;
+	}
+
+	private void setDragHandRegister(int Reg, double Value) {
+		if (Value > Registers[Reg])
+			Registers[Reg] = Value;
 	}
 
 	public double getPowerFactor() {
 		return PFnominal;
-	}
-
-	public void setPresentIrradiance(double Value) {
-
 	}
 
 	public int getConnection() {
@@ -1329,11 +1789,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Thetaharm = thetaharm;
 	}
 
-	public FileWriter getTracefile() {
+	public File getTracefile() {
 		return Tracefile;
 	}
 
-	public void setTracefile(FileWriter tracefile) {
+	public void setTracefile(File tracefile) {
 		Tracefile = tracefile;
 	}
 
