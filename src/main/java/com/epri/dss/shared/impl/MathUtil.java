@@ -309,14 +309,45 @@ public abstract class MathUtil {
 		return Result;
 	}
 
-	public static double pctNemaUnbalance(Complex[] vph) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 *
+	 * @return Nema unbalance
+	 */
+	public static double pctNemaUnbalance(Complex[] Vph) {
+		int i;
+		double Vavg;
+		double MaxDiff;
+		double[] VMag = new double[3];
+
+		for (i = 0; i < 3; i++)
+			VMag[i] = Vph[i].abs();
+
+		Vavg = 0.0;
+		for (i = 0; i < 3; i++)
+			Vavg = Vavg + VMag[i];
+		Vavg = Vavg / 3.0;
+
+		MaxDiff = 0.0;
+		for (i = 0; i < 3; i++)
+			MaxDiff = Math.max(MaxDiff, Math.abs( VMag[i] - Vavg ));
+
+		if (Vavg != 0.0) {
+			return MaxDiff / Vavg * 100.0;  // pct difference
+		} else {
+			return 0;
+		}
 	}
 
-	public static String getXR(Complex divide) {
-		// TODO Auto-generated method stub
-		return null;
+	public static double getXR(Complex A) {
+		double Result;
+		if (A.getReal() != 0.0) {
+			Result = A.getImaginary() / A.getReal();
+			if (Math.abs(Result) > 9999.0)
+				Result = 9999.0;
+		} else{
+			Result = 9999.0;;
+		}
+		return Result;
 	}
 
 	public static double sqr(double a) {

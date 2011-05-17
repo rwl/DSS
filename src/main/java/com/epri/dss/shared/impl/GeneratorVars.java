@@ -41,4 +41,6 @@ public class GeneratorVars {
 	/* 0 = wye; 1 = Delta */
 	public int Conn;
 
+	// FIXME Generate getters and setters
+
 }

@@ -16,4 +16,6 @@ public class DynamicsRec {
 	/* PEAKSNAP, DAILYMODE, YEARLYMODE, MONTECARLO, etc. (see DSSGlobals) */
 	public int SolutionMode;
 
+	// FIXME Generate getters and setters
+
 }

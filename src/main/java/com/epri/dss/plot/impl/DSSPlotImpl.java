@@ -20,7 +20,7 @@ public class DSSPlotImpl implements DSSPlot {
 
 	public enum PlotType {
 		AutoAddLogPlot,
-		Circuitplot,
+		CircuitPlot,
 		GeneralDataPlot,
 		GeneralCircuitPlot,
 		MonitorPlot,

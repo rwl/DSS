@@ -2,6 +2,7 @@ package com.epri.dss.shared.impl;
 
 import com.epri.dss.shared.Polar;
 
+// FIXME Replace with double[]
 public class PolarImpl implements Polar {
 
 	private double mag;

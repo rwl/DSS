@@ -176,21 +176,14 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 13:
 					alg.getCondName()[alg.getActiveCond()] = Param;
 					alg.changeLineConstantsType(ConductorChoice.TapeShield);
-				case 11,14,15:
+				case 11:
 					istart = 0;
 					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
-					if (ParamPointer == 14) {
-						alg.changeLineConstantsType(ConductorChoice.ConcentricNeutral);
-						istop = alg.getNphases() - 1;  // TODO Check zero based indexing
-					} else if (ParamPointer == 15) {
-						alg.changeLineConstantsType(ConductorChoice.TapeShield);
-						istop = alg.getNphases();  // TODO Check zero based indexing
-					} else if (ParamPointer == 11) {
-						if (alg.getPhaseChoice() == ConductorChoice.Unknown) {
-							alg.changeLineConstantsType(ConductorChoice.Overhead);
-						} else {  // these are buried neutral wires
-							istart = alg.getNphases();  // TODO Check zero based indexing
-						}
+
+					if (alg.getPhaseChoice() == ConductorChoice.Unknown) {
+						alg.changeLineConstantsType(ConductorChoice.Overhead);
+					} else {  // these are buried neutral wires
+						istart = alg.getNphases();  // TODO Check zero based indexing
 					}
 
 					Globals.getAuxParser().setCmdString(parser.makeString());
@@ -198,13 +191,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 						Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 						alg.getCondName()[i] = Globals.getAuxParser().makeString();
 
-						if (ParamPointer == 14) {
-							Globals.getCNDataClass().setCode(alg.getCondName()[i]);
-						} else if (ParamPointer == 15) {
-							Globals.getTSDataClass().setCode(alg.getCondName()[i]);
-						} else {
-							Globals.getWireDataClass().setCode(alg.getCondName()[i]);
-						}
+						Globals.getWireDataClass().setCode(alg.getCondName()[i]);
 
 						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
 							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
@@ -215,13 +202,59 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 							}
 						} else {
-							if (ParamPointer == 14) {
-								Globals.doSimpleMsg("CNData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
-							} else if (ParamPointer == 15) {
-								Globals.doSimpleMsg("TSData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
-							} else {
-								Globals.doSimpleMsg("WireData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+							Globals.doSimpleMsg("WireData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+						}
+					}
+				case 14:
+					istart = 0;
+					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
+
+					alg.changeLineConstantsType(ConductorChoice.ConcentricNeutral);
+					istop = alg.getNphases() - 1;  // TODO Check zero based indexing
+
+					Globals.getAuxParser().setCmdString(parser.makeString());
+					for (int i = istart; i < istop + 1; i++) {
+						Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+						alg.getCondName()[i] = Globals.getAuxParser().makeString();
+
+						Globals.getCNDataClass().setCode(alg.getCondName()[i]);
+
+						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+							if (i == 0) {
+								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
+									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
+								if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
+									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 							}
+						} else {
+							Globals.doSimpleMsg("CNData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+						}
+					}
+				case 15:
+					istart = 0;
+					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
+
+					alg.changeLineConstantsType(ConductorChoice.TapeShield);
+					istop = alg.getNphases();  // TODO Check zero based indexing
+
+					Globals.getAuxParser().setCmdString(parser.makeString());
+					for (int i = istart; i < istop + 1; i++) {
+						Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+						alg.getCondName()[i] = Globals.getAuxParser().makeString();
+
+						Globals.getTSDataClass().setCode(alg.getCondName()[i]);
+
+						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+							if (i == 0) {
+								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
+									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
+								if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
+									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+							}
+						} else {
+							Globals.doSimpleMsg("TSData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
 				default:
@@ -237,14 +270,8 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 2:
 					if ((alg.getActiveCond() < 1) || (alg.getActiveCond() > alg.getNconds()))
 						Globals.doSimpleMsg("Illegal cond= specification in Line Geometry:" + DSSGlobals.CRLF + parser.getCmdString(), 10102);
-				case 3,12,13:
-					if (ParamPointer == 3) {
-						Globals.getWireDataClass().setCode(Param);
-					} else if (ParamPointer == 12) {
-						Globals.getCNDataClass().setCode(Param);
-					} else {
-						Globals.getTSDataClass().setCode(Param);
-					}
+				case 3:
+					Globals.getWireDataClass().setCode(Param);
 
 					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
 						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
@@ -255,10 +282,36 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
 								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 						}
-					} else if (ParamPointer == 3) {
+					} else {
 						Globals.doSimpleMsg("WireData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
-					} else if (ParamPointer == 12) {
+					}
+				case 12:
+					Globals.getCNDataClass().setCode(Param);
+
+					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+						/* Default the current ratings for this geometry to the rating of the first conductor */
+						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
+							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
+								alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
+							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
+								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+						}
+					} else {
 						Globals.doSimpleMsg("CNData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
+					}
+				case 13:
+					Globals.getTSDataClass().setCode(Param);
+
+					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+						/* Default the current ratings for this geometry to the rating of the first conductor */
+						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
+							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
+								alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
+							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
+								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+						}
 					} else {
 						Globals.doSimpleMsg("TSData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
