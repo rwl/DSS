@@ -8,7 +8,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExecCommands {
 
-	public static final int NumExecCommands = 91;
+	public static final int NumExecCommands = 92;
 
 	private String[] ExecCommand;
 	private String[] CommandHelp;
@@ -134,6 +134,10 @@ public class ExecCommands {
 		ExecCommand[85] = "Guids";
 		ExecCommand[86] = "SetLoadAndGenKV";
 		ExecCommand[87] = "CvrtLoadshapes";
+	    ExecCommand[88] = "NodeDiff";
+	    ExecCommand[89] = "Rephase";
+	    ExecCommand[90] = "SetBusXY";
+	    ExecCommand[91] = "UpdateStorage";
 
 
 		CommandHelp = new String[NumExecCommands];
@@ -391,11 +395,21 @@ public class ExecCommands {
 		CommandHelp[85] = "Read GUIDS for class names. Tab or comma-delimited file with full object name and GUID";
 		CommandHelp[86] = "Set load and generator object kv from bus voltage base and connection type.";
 		CommandHelp[87] = "Convert all Loadshapes presently loaded into either files of single or files of double. "+
-							"Usually files of singles are adequate precision for loadshapes.  Syntax:"+CRLF+CRLF+
-							"cvrtloadshapes type=sng  (this is the default)"+CRLF+
-							"cvrtloadshapes type=dbl"+CRLF+CRLF+
-							"A DSS script for loading the loadshapes from the created files is produced and displayed in the default editor. ";
-
+				"Usually files of singles are adequate precision for loadshapes.  Syntax:"+CRLF+CRLF+
+				"cvrtloadshapes type=sng  (this is the default)"+CRLF+
+				"cvrtloadshapes type=dbl"+CRLF+CRLF+
+				"A DSS script for loading the loadshapes from the created files is produced and displayed in the default editor. ";
+		CommandHelp[88] = "Global result is set to voltage difference, volts and degrees, (Node1 - Node2) between any two nodes. Syntax:" +CRLF+CRLF+
+				"   NodeDiff Node1=MyBus.1 Node2=MyOtherBus.1";
+		CommandHelp[89] = "Generates a script to change the phase designation of all lines downstream from a start in line. Useful for such things as moving a single-phase " +
+		        "lateral from one phase to another and keep the phase designation consistent for reporting functions that need it to be " +
+		        "(not required for simply solving). "+CRLF+CRLF+
+		        "StartLine=... PhaseDesignation=\"...\"  EditString=\"...\" ScriptFileName=... StopAtTransformers=Y/N/T/F" +CRLF+CRLF+
+		        "Enclose the PhaseDesignation in quotes since it contains periods (dots)." + CRLF +
+		        "You may add and optional EditString to edit any other line properties."+CRLF+CRLF+
+		        "Rephase StartLine=Line.L100  PhaseDesignation=\".2\"  EditString=\"phases=1\" ScriptFile=Myphasechangefile.DSS  Stop=No";
+		CommandHelp[90] = "Bus=...  X=...  Y=... Set the X, Y coordinates for a single bus. Prerequisite: Bus must exist as a result of a Solve, CalcVoltageBases, or MakeBusList command.";
+		CommandHelp[91] = "Update Storage elements based on present solution and time interval. ";
 	}
 
 	public String getLastCmdLine() {
@@ -725,6 +739,8 @@ public class ExecCommands {
 				Globals.setCmdResult(ExecHelper.doRephaseCmd());
 			case 90:
 				Globals.setCmdResult(ExecHelper.doSetBusXYCmd());
+			case 91:
+				Globals.setCmdResult(ExecHelper.doUpdateStorageCmd());
 			default:
 				// Ignore excess parameters
 			}

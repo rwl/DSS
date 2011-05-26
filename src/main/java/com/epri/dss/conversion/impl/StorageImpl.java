@@ -585,7 +585,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	}
 
 	/**
-	 * Force all EnergyMeters in the circuit to take a sample.
+	 * Force all Storage elements in the circuit to take a sample.
 	 */
 	public void sampleAll() {
 		StorageObj pElem;

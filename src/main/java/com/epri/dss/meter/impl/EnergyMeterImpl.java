@@ -455,7 +455,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		// Sample generator and storage objects, too
 		GeneratorClass.sampleAll();
-		Globals.getStorageClass().sampleAll();
+		Globals.getStorageClass().sampleAll();  // samples energymeter part of storage elements (not update)
 	}
 
 	/**

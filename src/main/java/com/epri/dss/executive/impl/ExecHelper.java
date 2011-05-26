@@ -336,17 +336,10 @@ public class ExecHelper {
 	 * Force all monitors and meters in active circuit to take a sample.
 	 */
 	public static int doSampleCmd() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		DSSGlobals.getInstance().getMonitorClass().sampleAll();
 
-		for (MonitorObj mon : ckt.getMonitors())
-			mon.takeSample();
-
-		for (EnergyMeterObj meter : ckt.getEnergyMeters())
-			meter.takeSample();
-
-		for (GeneratorObj gen : ckt.getGenerators())
-			gen.takeSample();
-
+		DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();  // gets generators too
+		
 		return 0;
 	}
 
@@ -2728,6 +2721,11 @@ public class ExecHelper {
 		}
 
 		return Result;
+	}
+	
+	public static int doUpdateStorageCmd() {
+		DSSGlobals.getInstance().getStorageClass().updateAll();
+		return 0;
 	}
 
 }
