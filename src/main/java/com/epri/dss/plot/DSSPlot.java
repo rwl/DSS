@@ -13,12 +13,6 @@ public interface DSSPlot {
 	static final int vizCURRENT = 1;
 	static final int vizVOLTAGE = 2;
 	static final int vizPOWER   = 3;
-	static final int PROFILE3PH = 9999; // some big number > likely no. of phases
-	static final int PROFILEALL = 9998;
-	static final int PROFILEALLPRI = 9997;
-	static final int PROFILELLALL = 9996;
-	static final int PROFILELLPRI = 9995;
-	static final int PROFILELL    = 9994;
 
 	void setMaxLineThickness(int Value);
 

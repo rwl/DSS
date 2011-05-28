@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExportOptions {
 
-	private static final int NumExportOptions = 26;
+	private static final int NumExportOptions = 32;
 
 	private String[] ExportOption;
 	private String[] ExportHelp;
@@ -74,6 +74,7 @@ public class ExportOptions {
 		ExportOption[28] = "CDPSMGeo";
 		ExportOption[29] = "CDPSMTopo";
 		ExportOption[30] = "CDPSMStateVar";
+		ExportOption[31] = "Profile";
 
 		ExportHelp[ 0] = "(Default file = EXP_VOLTAGES.CSV) Voltages to ground by bus/node.";
 		ExportHelp[ 1] = "(Default file = EXP_SEQVOLTAGES.CSV) Sequence voltages.";
@@ -108,12 +109,15 @@ public class ExportOptions {
 		ExportHelp[28] = "(Default file = CDPSM_Geographical.XML) (IEC 61968-13, CDPSM Geographical profile)";
 		ExportHelp[29] = "(Default file = CDPSM_Topology.XML) (IEC 61968-13, CDPSM Topology profile)";
 		ExportHelp[30] = "(Default file = CDPSM_StateVariables.XML) (IEC 61968-13, CDPSM State Variables profile)";
+		ExportHelp[31] = "[Default file = EXP_Profile.CSV] Coordinates, color of each line section in Profile plot. Same options as Plot Profile Phases property." + DSSGlobals.CRLF + DSSGlobals.CRLF +
+        		"Example:  Export Profile Phases=All [optional file name]";
 
 	}
 
 	public int doExportCmd() {
 		String Parm2 = "", FileName;
 		MonitorObj pMon;
+		int PhasesToPlot;
 
 		Parser parser = Parser.getInstance();
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -124,6 +128,7 @@ public class ExportOptions {
 
 		int MVAOpt = 0;
 		boolean UEonlyOpt = false;
+		PhasesToPlot = DSSGlobals.PROFILE3PH;  // init this to get rid of compiler warning
 
 		switch (ParamPointer) {
 		case 8:  // Trap export powers command and look for MVA/kVA option
@@ -150,6 +155,25 @@ public class ExportOptions {
 		case 14:  // Get monitor name for export monitors command
 			parser.getNextParam();
 			Parm2 = parser.makeString();
+		case 31:  /* Get phases to plot */
+			parser.getNextParam();
+			Parm2 = parser.makeString();
+			PhasesToPlot = DSSGlobals.PROFILE3PH;  // the default
+			if (Utilities.compareTextShortest(Parm2, "default") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILE3PH;
+			} else if (Utilities.compareTextShortest(Parm2, "all") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILEALL;
+			} else if (Utilities.compareTextShortest(Parm2, "primary") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILEALLPRI;
+			} else if (Utilities.compareTextShortest(Parm2, "ll3ph") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILELL;
+			} else if (Utilities.compareTextShortest(Parm2, "llall") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILELLALL;
+			} else if (Utilities.compareTextShortest(Parm2, "llprimary") == 0) {
+				PhasesToPlot = DSSGlobals.PROFILELLPRI;
+			} else if (Parm2.length() == 1) {
+				PhasesToPlot = parser.makeInteger();
+			}
 		}
 
 		/* Pick up last parameter on line, alternate file name, if any */
@@ -192,6 +216,7 @@ public class ExportOptions {
 			case 28: FileName = "CDPSM_Geographical.XML";
 			case 29: FileName = "CDPSM_Topology.XML";
 			case 30: FileName = "CDPSM_StateVariables.XML";
+			case 31: FileName = "EXP_Profile.CSV";
 			default:
 				FileName = "EXP_VOLTAGES.CSV";
 			}
@@ -237,6 +262,11 @@ public class ExportOptions {
 		case 24: ExportResults.exportUUIDs(FileName);
 		case 25: ExportResults.exportCounts(FileName);
 		case 26: ExportResults.exportSummary(FileName);
+		case 27: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ElectricalProperties);
+		case 28: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Geographical);
+		case 29: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Topology);
+		case 30: ExportResults.exportCDPSM(FileName, CIMProfileChoice.StateVariables);
+		case 31: ExportResults.exportProfile(FileName, PhasesToPlot);
 		default:
 			ExportResults.exportVoltages(FileName);
 		}

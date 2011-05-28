@@ -3,6 +3,7 @@ package com.epri.dss.common.impl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,6 +12,7 @@ import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.Generator;
 import com.epri.dss.conversion.GeneratorObj;
@@ -1070,10 +1072,10 @@ public class ExportResults {
 //					Read(F, TestStr);
 //					{See if it likely that the file is OK}
 //					IF  CompareText(Copy(TestStr,1,4), 'Year')=0
-//					THEN RewriteFile := FALSE       // Assume the file is OK
-//					ELSE RewriteFile := TRUE;
+//					THEN RewriteFile = FALSE       // Assume the file is OK
+//					ELSE RewriteFile = TRUE;
 //				End
-//				ELSE RewriteFile := TRUE;
+//				ELSE RewriteFile = TRUE;
 //
 //				CloseFile(F);
 
@@ -1214,10 +1216,10 @@ public class ExportResults {
 //					Read(F, TestStr);
 //					{See if it likely that the file is OK}
 //					IF  CompareText(Copy(TestStr,1,4), 'Year')=0
-//					THEN RewriteFile := FALSE       // Assume the file is OK
-//					ELSE RewriteFile := TRUE;
+//					THEN RewriteFile = FALSE       // Assume the file is OK
+//					ELSE RewriteFile = TRUE;
 //				End
-//				ELSE RewriteFile := TRUE;
+//				ELSE RewriteFile = TRUE;
 //
 //				CloseFile(F);
 
@@ -1870,4 +1872,192 @@ public class ExportResults {
 		// TODO Auto-generated method stub
 
 	}
+	
+	private static void writeNewLine(PrintWriter F,
+			final String CktElementName, double DistFromMeter1, double puV1, double DistFromMeter2, double puV2,
+			int ColorCode, int Thickness, int LineType,
+			int MarkCenter,
+			int CenterMarkerCode, int NodeMarkerCode, int NodeMarkerWidth) {
+		
+		F.printf("%s, %.6g, %.6g, %.6g, %.6g,", CktElementName, DistFromMeter1, puV1, DistFromMeter2, puV2);
+		F.printf("%d, %d, %d, ", ColorCode, Thickness, LineType);
+		F.printf("%d, ", MarkCenter);
+		F.printf("%d, %d, %d", CenterMarkerCode,  NodeMarkerCode, NodeMarkerWidth);
+		F.println();
+	}
+	
+	public static void exportProfile(String FileNm, int PhasesToPlot) {
+		int iEnergyMeter;
+		EnergyMeterObj ActiveEnergyMeter;
+		CktElement PresentCktElement;
+		Bus Bus1, Bus2;
+		double puV1 = 0, puV2 = 0;
+		int iphs;
+		int iphs2;
+		String S;
+		FileWriter F;
+		PrintWriter FPrinter;
+		int Linetype = 0;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Circuit ckt = Globals.getActiveCircuit();
+
+		try {
+			F = new FileWriter(FileNm);
+			FPrinter = new PrintWriter(F);
+			
+			FPrinter.print("Name, Distance1, puV1, Distance2, puV2, Color, Thickness, Linetype, Markcenter, Centercode, NodeCode, NodeWidth,");
+
+			/* New graph created before this routine is entered */
+			switch (PhasesToPlot) {
+			case DSSGlobals.PROFILELL:
+				S  = "L-L Voltage Profile";
+			case DSSGlobals.PROFILELLALL:
+				S  = "L-L Voltage Profile";
+			case DSSGlobals.PROFILELLPRI:
+				S  = "L-L Voltage Profile";
+			default:
+				S  = "L-N Voltage Profile";
+			}
+
+			FPrinter.println("Title=" + S + ", Distance in km");
+
+			iEnergyMeter = Globals.getEnergyMeterClass().getFirst();
+			while (iEnergyMeter >= 0) {
+
+				ActiveEnergyMeter = (EnergyMeterObj) Globals.getEnergyMeterClass().getActiveObj();
+				/* Go down each branch list and draw a line */
+				PresentCktElement = (CktElement) ActiveEnergyMeter.getBranchList().getFirst();
+				while (PresentCktElement != null) {
+					if (Utilities.isLineElement(PresentCktElement)) {
+						Bus1 = ckt.getBuses()[PresentCktElement.getTerminals()[0].BusRef];
+						Bus2 = ckt.getBuses()[PresentCktElement.getTerminals()[1].BusRef];
+						/* Now determin which phase to plot */
+						if ((Bus1.getkVBase() > 0.0) && (Bus2.getkVBase() > 0.0)) {
+							switch (PhasesToPlot) {
+							/* 3ph only */
+							case DSSGlobals.PROFILE3PH:
+								if ((PresentCktElement.getNPhases() >= 3) && (Bus1.getkVBase() > 1.0))
+									for (iphs = 0; iphs < 3; iphs++) {
+										puV1 = ckt.getSolution().getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].abs() / Bus1.getkVBase() / 1000.0;
+										puV2 = ckt.getSolution().getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].abs() / Bus2.getkVBase() / 1000.0;
+										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+												iphs, 2, 0, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+									}
+							/* Plot all phases present (between 1 and 3) */
+							case DSSGlobals.PROFILEALL: 
+								for (iphs = 0; iphs < 3; iphs++) 
+									if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0)) {
+										if (Bus1.getkVBase() < 1.0) {
+											Linetype = 2;
+										} else {
+											Linetype = 0;
+										}
+										puV1 = ckt.getSolution().getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].abs() / Bus1.getkVBase() / 1000.0;
+										puV2 = ckt.getSolution().getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].abs() / Bus2.getkVBase() / 1000.0;
+										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+									}
+							/* Plot all phases present (between 1 and 3) for Primary only */
+							case DSSGlobals.PROFILEALLPRI:
+								if (Bus1.getkVBase() > 1.0)
+									for (iphs = 0; iphs < 3; iphs++)
+										if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0)) {
+											if (Bus1.getkVBase() < 1.0) {
+												Linetype = 2;
+											} else {
+												Linetype = 0;
+											}
+											puV1 = ckt.getSolution().getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].abs() / Bus1.getkVBase() / 1000.0;
+		                                    puV2 = ckt.getSolution().getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].abs() / Bus2.getkVBase() / 1000.0;
+		                                    writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+		                                    		iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+										}
+							case DSSGlobals.PROFILELL:
+								if (PresentCktElement.getNPhases() >= 3)
+									for (iphs = 0; iphs < 3; iphs++) {
+										iphs2 = iphs + 1;
+										if (iphs2 >= 3) iphs2 = 1;  // TODO Check zero based indexing
+										if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0) &&
+												(Bus1.findIdx(iphs2) >= 0) && (Bus2.findIdx(iphs2) >= 0)) {
+											if (Bus1.getkVBase() < 1.0) {
+												Linetype = 2;
+											} else {
+												Linetype = 0;
+											}
+											SolutionObj sol = ckt.getSolution();
+											puV1 = sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].subtract( sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs2))] ).abs() / Bus1.getkVBase() / 1732.0;
+											puV2 = sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].subtract( sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs2))] ).abs() / Bus2.getkVBase() / 1732.0;
+										}
+										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+									}
+							case DSSGlobals.PROFILELLALL: 
+								for (iphs = 0; iphs < 3; iphs++) {
+									iphs2 = iphs + 1;
+									if (iphs2 >= 3) iphs2 = 0;  // TODO Check zero based indexing
+									if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0) &&
+											(Bus1.findIdx(iphs2) >= 0) && (Bus2.findIdx(iphs2) >= 0)) {
+										if (Bus1.getkVBase() < 1.0) {
+											Linetype = 2;
+										} else {
+											Linetype = 0;
+										}
+										SolutionObj sol = ckt.getSolution();
+										puV1 = sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].subtract( sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs2))] ).abs() / Bus1.getkVBase() / 1732.0;
+										puV2 = sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].subtract( sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs2))] ).abs() / Bus2.getkVBase() / 1732.0;
+									}
+									writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+								}
+							case DSSGlobals.PROFILELLPRI: 
+								if (Bus1.getkVBase() > 1.0)
+									for (iphs = 0; iphs < 3; iphs++) {
+										iphs2 = iphs + 1;
+										if (iphs2 >= 3) iphs2 = 0;  // TODO Check zero based indexing
+										if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0) &&
+												(Bus1.findIdx(iphs2) >= 0) && (Bus2.findIdx(iphs2) >= 0)) {
+											if (Bus1.getkVBase() < 1.0) {
+												Linetype = 2;
+											} else {
+												Linetype = 0;
+											}
+											SolutionObj sol = ckt.getSolution();
+											puV1 = sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].subtract( sol.getNodeV()[Bus1.getRef(Bus1.findIdx(iphs2))] ).abs() / Bus1.getkVBase() / 1732.0;
+											puV2 = sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].subtract( sol.getNodeV()[Bus2.getRef(Bus2.findIdx(iphs2))] ).abs() / Bus2.getkVBase() / 1732.0;
+										}
+										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+									}
+							default:  // plot just the selected phase
+								iphs = PhasesToPlot;
+								if ((Bus1.findIdx(iphs) > 0) && (Bus2.findIdx(iphs) > 0)) {
+									if (Bus1.getkVBase() < 1.0) {
+										Linetype = 2;
+									} else {
+										Linetype = 0;
+									}
+									puV1 = ckt.getSolution().getNodeV()[Bus1.getRef(Bus1.findIdx(iphs))].abs() / Bus1.getkVBase() / 1000.0;
+									puV2 = ckt.getSolution().getNodeV()[Bus2.getRef(Bus2.findIdx(iphs))].abs() / Bus2.getkVBase() / 1000.0;
+									writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
+											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
+								}
+							}
+						}
+					}
+					PresentCktElement = (CktElement) ActiveEnergyMeter.getBranchList().GoForward();
+				}
+				iEnergyMeter = Globals.getEnergyMeterClass().getNext();
+			}
+			
+			Globals.setGlobalResult(FileNm);
+
+			F.close();
+			FPrinter.close();
+		} catch (IOException e) {
+			// TODO: handle exception
+		}
+		
+	}
+	
 }
