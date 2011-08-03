@@ -742,12 +742,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				if (!CktElem.isChecked()) {  // don't do a zone end element more than once
 					CktElem.setChecked(true);
 					Accumulator = CktElem.getNumCustomers();
-					while (true) {  /* Go back to the source */
+					while (true) {  /* Trace back to the source */
 						CktElem.setTotalCustomers( CktElem.getTotalCustomers() + Accumulator );
 						PresentNode = PresentNode.getParent();
 						if (PresentNode == null) break;
 						CktElem = (PDElement) PresentNode.getCktObject();
-						Accumulator = Accumulator + CktElem.getNumCustomers();
+						if (!CktElem.isChecked()) {  // avoid double counting
+							Accumulator = Accumulator + CktElem.getNumCustomers();
+							CktElem.setChecked(true);
+						}
 					}
 				}
 			}

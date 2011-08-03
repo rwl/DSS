@@ -2,6 +2,7 @@ package com.epri.dss.executive.impl;
 
 import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
+import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.impl.CommandListImpl;
@@ -413,7 +414,6 @@ public class ExecCommands {
 		CommandHelp[91] = "Update Storage elements based on present solution and time interval. ";
 		CommandHelp[92] = "Change Bus and circuit element names to generic values to remove identifying names. Generally, " +
                 "you will follow this command immediately by a \"Save Circuit Dir=MyDirName\" command.";
-
 	}
 
 	public String getLastCmdLine() {
@@ -746,7 +746,7 @@ public class ExecCommands {
 			case 91:
 				Globals.setCmdResult(ExecHelper.doUpdateStorageCmd());
 			case 92:
-				ExecHelper.Obfuscate();
+				Utilities.Obfuscate();
 			default:
 				// Ignore excess parameters
 			}

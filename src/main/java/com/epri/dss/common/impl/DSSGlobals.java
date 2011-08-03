@@ -81,6 +81,14 @@ public class DSSGlobals {
 	public static final int FULLCARSON    = 2;
 	public static final int DERI          = 3;
 
+    /* Profile Plot Constants */
+	public static final int PROFILE3PH    = 9999;  // some big number > likely no. of phases
+	public static final int PROFILEALL    = 9998;
+	public static final int PROFILEALLPRI = 9997;
+	public static final int PROFILELLALL  = 9996;
+	public static final int PROFILELLPRI  = 9995;
+	public static final int PROFILELL     = 9994;
+
 	/* 120-degree shift constant */
 	public static final Complex CALPHA = new Complex(-0.5, -0.866025);
 	public static final double SQRT2 = Math.sqrt(2.0);
