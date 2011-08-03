@@ -28,8 +28,10 @@ public class CableDataImpl extends ConductorDataImpl implements CableData {
 		PropertyName[ActiveProperty + 3] = "DiaCable";
 
 		PropertyHelp[ActiveProperty + 0] = "Insulation layer relative permittivity; default is 2.3.";
-		PropertyHelp[ActiveProperty + 1] = "Insulation layer thickness; same units as radius; no default.";
-		PropertyHelp[ActiveProperty + 2] = "Diameter over insulation layer; same units as radius; no default.";
+		PropertyHelp[ActiveProperty + 1] = "Insulation layer thickness; same units as radius; no default. " +
+				"With DiaIns, establishes inner radius for capacitance calculation.";
+		PropertyHelp[ActiveProperty + 2] = "Diameter over insulation layer; same units as radius; no default." +
+                "Establishes outer radius for capacitance calculation.";
 		PropertyHelp[ActiveProperty + 3] = "Diameter over cable; same units as radius; no default.";
 
 		ActiveProperty = ActiveProperty + NumCableClassProps;

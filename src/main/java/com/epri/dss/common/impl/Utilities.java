@@ -14,12 +14,14 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
+import com.epri.dss.shared.impl.HashListImpl;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
@@ -40,8 +42,10 @@ import com.epri.dss.delivery.ReactorObj;
 import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.executive.impl.ExecCommands;
 import com.epri.dss.executive.impl.ExecOptions;
+import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
+import com.epri.dss.shared.HashList;
 
 public class Utilities {
 
@@ -2214,6 +2218,192 @@ public class Utilities {
 	public static void setCurrentDir(String currDir) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public static String MakeNewCktElemName(final String OldName) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Globals.setObject(OldName);  // set object active
+		DSSObject obj = Globals.getActiveDSSObject();
+	    return String.format("%s.%s%d", obj.getParentClass().getName(),
+	    		obj.getParentClass().getName().substring(0, 3),
+	    		obj.getClassIndex());
+	}
+
+	private static void RenameCktElem(CktElement pElem) {
+		pElem.setName( String.format("%s%d",
+				pElem.getParentClass().getName().substring(0, 3),
+				pElem.getClassIndex()) );
+		// Make a new device list corresponding to the CktElements List
+		DSSGlobals.getInstance().getActiveCircuit().getDeviceList().add(pElem.getName());
+		pElem.setChecked(true);
+	}
+
+	/**
+	 * Rename Buses and element names to generic names to remove identifiable
+	 * names.
+	 */
+	public static void Obfuscate() {
+		int i, bref;
+		int dotpos;
+		int DevListSize;
+		HashList TempBusList;
+		CktElement pCtrlElem;
+		String S, Nodes;
+		String OldBusName;
+		String NewBusName;
+		int BaseClass;
+		int ElemClass;
+		List<String> ControlUpDateStrings;
+		List<CktElement> ControlUpDatePtrs;
+
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		Parser parser = Parser.getInstance();
+
+		/* Make sure buslist exists */
+
+		if (Globals.getActiveCircuit() == null)
+			return;
+		if (Globals.getActiveCircuit().getBusList().listSize() <= 0)
+			return;
+
+		Circuit ckt = Globals.getActiveCircuit();
+
+	    TempBusList = new HashListImpl(ckt.getBusList().listSize());
+
+	    /* Rename Buses */
+	    for (i = 0; i < ckt.getBusList().listSize(); i++)
+			TempBusList.add(String.format("B_%d", i));
+
+	    ckt.setBusList(null);
+	    ckt.setBusList(TempBusList);  // Reassign
+
+	    /* Rename the bus names in each circuit element before renaming the
+	     * elements */
+	    for (CktElement pCktElem : ckt.getCktElements()) {
+	    	BaseClass = (pCktElem.getDSSObjType() & DSSClassDefs.BASECLASSMASK);
+	    	if ((BaseClass == DSSClassDefs.PC_ELEMENT) ||
+	    			(BaseClass == DSSClassDefs.PD_ELEMENT)) {
+	    		S = "";
+	    		for (i = 0; i < pCktElem.getNTerms(); i++) {
+					OldBusName = pCktElem.getBus(i);
+					dotpos     = OldBusName.indexOf('.');
+					if (dotpos == -1) {
+						Nodes = "";
+					} else {
+						// preserve node designations if any
+						Nodes = OldBusName.substring(dotpos);
+					}
+					bref  = pCktElem.getTerminals()[i].BusRef;
+					NewBusName = String.format("B_%d%s", bref, Nodes);
+					// Check for Transformer because that will be an exception
+					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+					case DSSClassDefs.XFMR_ELEMENT:
+						S = S + String.format("Wdg=%d Bus=%s ", i, NewBusName);
+					default:
+						S = S + String.format("Bus%d=%s ", i, NewBusName);
+					}
+	    		}
+				parser.setCmdString(S);
+				pCktElem.edit();
+	    	}
+	    }
+
+	    /* Rename the circuit elements to generic values */
+	    /* Have to catch the control elements and edit some of their
+	     * parameters */
+
+	    /* first, make scripts to change the monitored element names in the
+	     * controls to what they will be */
+	    ControlUpDateStrings = new ArrayList<String>();
+	    ControlUpDatePtrs    = new ArrayList<CktElement>();
+
+	    for (CktElement pCktElem : ckt.getCktElements()) {
+	    	switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
+			case DSSClassDefs.CAP_CONTROL:
+				S = String.format("Element=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+				ControlUpDateStrings.add (S + String.format("Capacitor=%s ",
+						MakeNewCktElemName("capacitor." + pCktElem.getPropertyValue(2)).substring(10, 99)));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.REG_CONTROL:
+				// handled below
+			case DSSClassDefs.RELAY_CONTROL:
+				S = String.format("MonitoredObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.RECLOSER_CONTROL:
+				S = String.format("MonitoredObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.FUSE_CONTROL:
+				S = String.format("MonitoredObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
+				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.GEN_CONTROL:
+				ControlUpDateStrings.add (String.format("Element=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.STORAGE_CONTROL:
+				ControlUpDateStrings.add (String.format("Element=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+				ControlUpDatePtrs.add(pCktElem);
+
+			case DSSClassDefs.SWT_CONTROL:
+				ControlUpDateStrings.add (String.format("SwitchedObj=%s ",
+						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
+				ControlUpDatePtrs.add(pCktElem);
+
+	    	}
+	    }
+
+	    for (CktElement pCktElem : ckt.getCktElements())
+			pCktElem.setChecked(false);     // Initialize to not checked
+
+	    DevListSize = ckt.getDeviceList().listSize();
+	    ckt.setDeviceList(null);
+	    ckt.setDeviceList( new HashListImpl(DevListSize) );
+
+	    for (CktElement pCktElem : ckt.getCktElements()) {
+			if (!pCktElem.isChecked()) {
+				ElemClass = (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK);
+	            RenameCktElem(pCktElem);
+	            switch (ElemClass) {
+				case DSSClassDefs.XFMR_ELEMENT:
+					if (pCktElem.hasControl()) {
+						pCtrlElem = pCktElem.getControlElement();
+	                    if (pCtrlElem != null) {
+	                    	parser.setCmdString(String.format("Transformer=%s",
+	                    			pCktElem.getName()));
+	                    	pCtrlElem.edit();
+	                    }
+					}
+	            default:
+	            }
+			}
+	    }
+
+
+	    /* Run the control update scripts now that everything is renamed */
+	    CktElement pCktElem;
+	    for (i = 0; i < ControlUpDatePtrs.size() - 1; i++) {
+			pCktElem         = ControlUpDatePtrs.get(i);
+			parser.setCmdString( ControlUpDateStrings.get(i) );
+			pCktElem.edit();
+	    }
+
+	    ControlUpDateStrings = null;
+	    ControlUpDatePtrs = null;
 	}
 
 }

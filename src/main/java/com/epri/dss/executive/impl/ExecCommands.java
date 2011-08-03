@@ -8,7 +8,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ExecCommands {
 
-	public static final int NumExecCommands = 91;
+	public static final int NumExecCommands = 93;
 
 	private String[] ExecCommand;
 	private String[] CommandHelp;
@@ -134,6 +134,11 @@ public class ExecCommands {
 		ExecCommand[85] = "Guids";
 		ExecCommand[86] = "SetLoadAndGenKV";
 		ExecCommand[87] = "CvrtLoadshapes";
+		ExecCommand[88] = "NodeDiff";
+		ExecCommand[89] = "Rephase";
+		ExecCommand[90] = "SetBusXY";
+		ExecCommand[91] = "UpdateStorage";
+		ExecCommand[92] = "Obfuscate";
 
 
 		CommandHelp = new String[NumExecCommands];
@@ -395,6 +400,19 @@ public class ExecCommands {
 							"cvrtloadshapes type=sng  (this is the default)"+CRLF+
 							"cvrtloadshapes type=dbl"+CRLF+CRLF+
 							"A DSS script for loading the loadshapes from the created files is produced and displayed in the default editor. ";
+		CommandHelp[88] = "Global result is set to voltage difference, volts and degrees, (Node1 - Node2) between any two nodes. Syntax:" +CRLF+CRLF+
+                "   NodeDiff Node1=MyBus.1 Node2=MyOtherBus.1";
+		CommandHelp[89] = "Generates a script to change the phase designation of all lines downstream from a start in line. Useful for such things as moving a single-phase " +
+                "lateral from one phase to another and keep the phase designation consistent for reporting functions that need it to be " +
+                "(not required for simply solving). "+CRLF+CRLF+
+                "StartLine=... PhaseDesignation=\"...\"  EditString=\"...\" ScriptFileName=... StopAtTransformers=Y/N/T/F" +CRLF+CRLF+
+                "Enclose the PhaseDesignation in quotes since it contains periods (dots)." + CRLF +
+                "You may add and optional EditString to edit any other line properties."+CRLF+CRLF+
+                "Rephase StartLine=Line.L100  PhaseDesignation=\".2\"  EditString=\"phases=1\" ScriptFile=Myphasechangefile.DSS  Stop=No";
+		CommandHelp[90] = "Bus=...  X=...  Y=... Set the X, Y coordinates for a single bus. Prerequisite: Bus must exist as a result of a Solve, CalcVoltageBases, or MakeBusList command.";
+		CommandHelp[91] = "Update Storage elements based on present solution and time interval. ";
+		CommandHelp[92] = "Change Bus and circuit element names to generic values to remove identifying names. Generally, " +
+                "you will follow this command immediately by a \"Save Circuit Dir=MyDirName\" command.";
 
 	}
 
@@ -725,6 +743,10 @@ public class ExecCommands {
 				Globals.setCmdResult(ExecHelper.doRephaseCmd());
 			case 90:
 				Globals.setCmdResult(ExecHelper.doSetBusXYCmd());
+			case 91:
+				Globals.setCmdResult(ExecHelper.doUpdateStorageCmd());
+			case 92:
+				ExecHelper.Obfuscate();
 			default:
 				// Ignore excess parameters
 			}

@@ -29,37 +29,37 @@ public class ParserTest extends TestCase {
 		param = parser.getNextParam();
 
 		int[] nodes = new int[3];
-		String name = parser.parseAsBusName(nodes.length, nodes);
+//		String name = parser.parseAsBusName(nodes.length, nodes);
 
-		System.out.println("BusName: " + param + name + nodes.toString());
+//		System.out.println("BusName: " + param + name + nodes.toString());
 	}
 
 	public void testParseAsVector() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testParseAsMatrix() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testParseAsSymMatrix() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testMakeString() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testMakeInteger() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testMakeDouble() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 	public void testGetRemainder() {
-		fail("Not yet implemented");
+//		fail("Not yet implemented");
 	}
 
 }

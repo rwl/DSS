@@ -63,7 +63,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		CMatrix Zmat, Ztemp;
 		double ResTS, RadTS;
 		double GmrTS;
-		double Denom, RadIn;
+		double Denom, RadIn, RadOut;
 
 		Frequency = f;  // TODO Check this has side effects
 
@@ -155,11 +155,12 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		Zmat = null;
 
 		// for shielded cables, build the capacitance matrix directly
+		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < NumPhases; i++) {
 			Yfactor = TwoPI * e0 * EpsR[i] * w;  // includes frequency so C==>Y
-			RadTS = 0.5 * DiaShield[i] - TapeLayer[i];
-			RadIn = radius[i];  // per Kersting, could make it the inside of insulating layer
-			Denom = Math.log(RadTS / RadIn);
+		    RadOut = 0.5 * DiaIns[i];
+		    RadIn  = RadOut - InsLayer[i];
+		    Denom  = Math.log(RadOut / RadIn);
 			YCmatrix.setElement(i, i, new Complex(0.0, Yfactor / Denom));
 		}
 

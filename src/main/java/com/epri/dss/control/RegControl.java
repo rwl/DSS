@@ -6,6 +6,9 @@ public interface RegControl extends ControlClass {
 	static final int MAXPHASE  = -2;
 	static final int MINPHASE  = -3;
 
-	static final int NumPropsThisClass = 22;
+	static final int ACTION_TAPCHANGE = 0;
+	static final int ACTION_REVERSE   = 1;
+
+	static final int NumPropsThisClass = 25;
 
 }

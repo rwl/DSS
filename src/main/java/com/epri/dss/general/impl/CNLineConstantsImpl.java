@@ -39,7 +39,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		CMatrix Zmat, Ztemp;
 		double ResCN, RadCN;
 		double GmrCN;
-		double Denom, RadIn;
+		double Denom, RadIn, RadOut;
 
 		Frequency = f;  // this has side effects
 
@@ -132,11 +132,12 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		Zmat = null;
 
 		// for shielded cables, build the capacitance matrix directly
+		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < getNPhases(); i++) {
 			Yfactor = LineConstants.TwoPI * LineConstants.e0 * EpsR[i] * w;  // includes frequency so C==>Y
-			RadCN = 0.5 * (DiaCable[i] - DiaStrand[i]);
-			RadIn = radius[i];  // per Kersting, could make it the inside of insulating layer
-			Denom = Math.log(RadCN / RadIn) - (1.0 / kStrand[i]) * Math.log(kStrand[i] * 0.5 * DiaStrand[i] / RadCN);
+		    RadOut = 0.5 * DiaIns[i];
+		    RadIn = RadOut - InsLayer[i];
+		    Denom = Math.log(RadOut / RadIn);
 			YCmatrix.setElement(i, i, new Complex(0.0, Yfactor / Denom));
 		}
 

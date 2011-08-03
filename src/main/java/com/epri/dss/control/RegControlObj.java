@@ -168,4 +168,20 @@ public interface RegControlObj extends ControlElem {
 
 	void setTapDelay(double tapDelay);
 
+	void setkWRevPowerThreshold(double kWRevPowerThreshold);
+
+	double getkWRevPowerThreshold();
+
+	void setRevDelay(double revDelay);
+
+	void setReverseNeutral(boolean reverseNeutral);
+
+	void setRevPowerThreshold(double revPowerThreshold);
+
+	double getRevPowerThreshold();
+
+	double getRevDelay();
+
+	boolean isReverseNeutral();
+
 }

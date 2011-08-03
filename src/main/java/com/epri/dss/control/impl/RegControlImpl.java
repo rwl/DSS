@@ -61,6 +61,9 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		PropertyName[19] = "tapwinding";
 		PropertyName[20] = "vlimit";
 		PropertyName[21] = "PTphase";
+		PropertyName[22] = "revThreshold";
+		PropertyName[23] = "revDelay";
+		PropertyName[24] = "revNeutral";
 
 		PropertyHelp[0] = "Name of Transformer element to which the RegControl is connected. "+
 				"Do not specify the full object name; \"Transformer\" is assumed for "  +
@@ -89,7 +92,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		PropertyHelp[9] = "Time delay, in seconds, from when the voltage goes out of band to when the tap changing begins. " +
 				"This is used to determine which regulator control will act first. Default is 15.  You may specify any "+
 				"floating point number to achieve a model of whatever condition is necessary.";
-		PropertyHelp[10] = "{Yes |No} Indicates whether or not the regulator can be switched to regulate in the reverse direction. Default is No." +
+		PropertyHelp[10] = "{Yes | No*} Indicates whether or not the regulator can be switched to regulate in the reverse direction. Default is No." +
 				"Typically applies only to line regulators and not to LTC on a substation transformer.";
 		PropertyHelp[11] = "Voltage setting in volts for operation in the reverse direction.";
 		PropertyHelp[12] = "Bandwidth for operating in the reverse direction.";
@@ -97,17 +100,21 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		PropertyHelp[14] = "X line drop compensator setting for reverse direction.";
 		PropertyHelp[15] = "Delay in sec between tap changes. Default is 2. This is how long it takes between changes " +
 				"after the first change.";
-		PropertyHelp[16] = "{Yes | No }  Default is no.  Turn this on to capture the progress of the regulator model " +
+		PropertyHelp[16] = "{Yes | No*}  Default is no.  Turn this on to capture the progress of the regulator model " +
 				"for each control iteration.  Creates a separate file for each RegControl named \"REG_name.CSV\"." ;
 		PropertyHelp[17] = "Maximum allowable tap change per control iteration in STATIC control mode.  Default is 16. " + DSSGlobals.CRLF+ DSSGlobals.CRLF +
 				"Set this to 1 to better approximate actual control action. " + DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Set this to 0 to fix the tap in the current position.";
-		PropertyHelp[18] = "{Yes | No } Default is no.  The time delay is adjusted inversely proportional to the amount the voltage is outside the band down to 10%.";
+		PropertyHelp[18] = "{Yes | No*} Default is no.  The time delay is adjusted inversely proportional to the amount the voltage is outside the band down to 10%.";
 		PropertyHelp[19] = "Winding containing the actual taps, if different than the WINDING property. Defaults to the same winding as specified by the WINDING property.";
 		PropertyHelp[20] = "Voltage Limit for bus to which regulated winding is connected (e.g. first customer). Default is 0.0. " +
 				"Set to a value greater then zero to activate this function.";
 		PropertyHelp[21] = "For multi-phase transformers, the number of the phase being monitored or one of { MAX | MIN} for all phases. Default=1. " +
 				"Must be less than or equal to the number of phases. Ignored for regulated bus.";
+		PropertyHelp[22] = "kW reverse power threshold for reversing the direction of the regulator. Default is 100.0 kw.";
+		PropertyHelp[23] = "Time Delay in seconds (s) for executing the reversing action once the threshold for reversing has been exceeded. Default is 60 s.";
+		PropertyHelp[24] = "{Yes | No*} Default is no. Set this to Yes if you want the regulator to go to neutral in the reverse direction.";
+
 
 		ActiveProperty = RegControl.NumPropsThisClass;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
@@ -205,6 +212,12 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				} else {
 					arc.setPTphase(Math.max(1, parser.makeInteger()));
 				}
+			case 22:
+				arc.setkWRevPowerThreshold(parser.makeDouble());
+			case 23:
+				arc.setRevDelay(parser.makeDouble());
+			case 24:
+				arc.setReverseNeutral(Utilities.interpretYesNo(Param));
 			default:
 				// Inherited parameters
 				classEdit(ActiveRegControlObj, ParamPointer - RegControl.NumPropsThisClass);
@@ -229,6 +242,8 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 						// TODO: handle exception
 					}
 				}
+			case 23:
+				arc.setRevPowerThreshold(arc.getkWRevPowerThreshold() * 1000.0);
 			}
 
 			ParamName = parser.getNextParam();
@@ -270,9 +285,14 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			arc.setRevR(OtherRegControl.getRevR());
 			arc.setRevX(OtherRegControl.getRevX());
 			arc.setTapDelay(OtherRegControl.getTapDelay());
-			arc.setTapLimitPerChange(OtherRegControl.getTapLimitPerChange());
 			arc.setTapWinding(OtherRegControl.getTapWinding());
 			arc.setInversetime(OtherRegControl.isInversetime());
+			arc.setTapLimitPerChange(OtherRegControl.getTapLimitPerChange());
+	        arc.setTapLimitPerChange(OtherRegControl.getTapLimitPerChange());
+			arc.setkWRevPowerThreshold(OtherRegControl.getkWRevPowerThreshold());
+			arc.setRevPowerThreshold(OtherRegControl.getRevPowerThreshold());
+			arc.setRevDelay(OtherRegControl.getRevDelay());
+			arc.setReverseNeutral(OtherRegControl.isReverseNeutral());
 			//arc.setDebugTrace(OtherRegControl.isDebugTrace();  Always default to NO
 
 			arc.setPTphase(OtherRegControl.getPTphase());
