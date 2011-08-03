@@ -1454,7 +1454,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				FCapsBuffer = new PrintWriter(FCapsStream);
 				NCaps = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Generators.dss for Energymeter: " + getName() + ". " + e.getMessage(), 534);
+				Globals.doSimpleMsg("Error creating Capacitors.dss for Energymeter: " + getName() + ". " + e.getMessage(), 534);
 				return;
 			}
 

@@ -10,6 +10,7 @@ import com.epri.dss.control.impl.RegControlImpl;
 import com.epri.dss.control.impl.RelayImpl;
 import com.epri.dss.control.impl.StorageControllerImpl;
 import com.epri.dss.control.impl.SwtControlImpl;
+import com.epri.dss.conversion.impl.GICLineImpl;
 import com.epri.dss.conversion.impl.GeneratorImpl;
 import com.epri.dss.conversion.impl.ISourceImpl;
 import com.epri.dss.conversion.impl.LoadImpl;
@@ -182,7 +183,7 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( Globals.getSensorClass() );
 
 		DSSClassImpl.getDSSClasses().setNew( new GICTransformerImpl() );
-		DSSClassImpl.getDSSClasses().setNew( new GICLine() );
+		DSSClassImpl.getDSSClasses().setNew( new GICLineImpl() );
 
 
 
