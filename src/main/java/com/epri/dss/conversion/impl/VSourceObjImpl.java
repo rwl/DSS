@@ -28,6 +28,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	private double X0R0;
 
 	private int ScanType;
+	private int SequenceType;
 
 	protected CMatrix Z;  // Base Frequency Series Z matrix
 	protected CMatrix Zinv;
@@ -66,6 +67,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		this.SrcFrequency = this.BaseFrequency;
 		this.Angle    = 0.0;
 		this.ScanType = 1;
+		this.SequenceType = 1;
 
 		setSpectrum("defaultvsource");
 
@@ -293,7 +295,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 					VMag = 0.0;  // Solution Frequency and Source Frequency don't match!
 				/* NOTE: RE-uses VTerminal space */
 				for (i = 0; i < nPhases; i++) {
-					switch (ScanType) {
+					switch (SequenceType) {
+					case -1:
+						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));   // neg seq
 					case 0:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));   // all the same for zero sequence
 					default:
@@ -403,7 +407,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		PropertyValue[15] = "1.9";
 		PropertyValue[16] = "5.7";
 		PropertyValue[17] = "Pos";
-		PropertyValue[18] = getBus(2);
+		PropertyValue[18] = "Pos";
+		PropertyValue[19] = getBus(2);
 
 		super.initPropertyValues(VSource.NumPropsThisClass);
 	}
@@ -429,7 +434,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			return String.format("%-.5g", R0);
 		case 15:
 			return String.format("%-.5g", X0);
-		case 17:
+		case 18:
 			return getBus(2);
 		default:
 			return super.getPropertyValue(Index);
@@ -604,6 +609,14 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 	public void setScanType(int scanType) {
 		ScanType = scanType;
+	}
+
+	public int getSequenceType() {
+		return SequenceType;
+	}
+
+	public void setSequenceType(int sequenceType) {
+		SequenceType = sequenceType;
 	}
 
 }

@@ -3,7 +3,7 @@ package com.epri.dss.conversion;
 import com.epri.dss.shared.CMatrix;
 
 public interface VSourceObj extends PCElement {
-	
+
 	CMatrix getZ();
 
 	void setZ(CMatrix z);
@@ -31,7 +31,7 @@ public interface VSourceObj extends PCElement {
 	double getSrcFrequency();
 
 	void setSrcFrequency(double srcFrequency);
-	
+
 	// FIXME Private members in OpenDSS
 
 	double getMVAsc3();
@@ -81,5 +81,9 @@ public interface VSourceObj extends PCElement {
 	int getScanType();
 
 	void setScanType(int scanType);
+
+	int getSequenceType();
+
+	void setSequenceType(int sequenceType);
 
 }

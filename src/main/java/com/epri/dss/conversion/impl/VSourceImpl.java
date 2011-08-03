@@ -52,7 +52,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		PropertyName[14] = "R0";
 		PropertyName[15] = "X0";
 		PropertyName[16] = "ScanType";
-		PropertyName[17]  = "bus2";
+	    PropertyName[17] = "Sequence";
+		PropertyName[18]  = "bus2";
 
 		// define Property help values
 		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
@@ -86,7 +87,9 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				"Zero-sequence reactance, ohms.  Default is 5.7.";
 		PropertyHelp[16] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
-		PropertyHelp[17] = "Name of bus to which 2nd terminal is connected."+DSSGlobals.CRLF+"bus2=busname"+DSSGlobals.CRLF+"bus2=busname.1.2.3" +
+		PropertyHelp[17] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+                 "Default is positive sequence. ";
+		PropertyHelp[18] = "Name of bus to which 2nd terminal is connected."+DSSGlobals.CRLF+"bus2=busname"+DSSGlobals.CRLF+"bus2=busname.1.2.3" +
 				DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Default is Bus1.0.0.0 (grounded wye connection)";
 
@@ -206,6 +209,17 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ avs.getName() + "\": "+Param, 321);
 				}
 			case 17:
+				switch (Param.toUpperCase().charAt(0)) {
+				case 'P':
+					avs.setSequenceType(1);
+				case 'Z':
+					avs.setSequenceType(0);
+				case 'N':
+					avs.setSequenceType(-1);
+				default:
+					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ getName() + "\": "+Param, 321);
+				}
+			case 18:
 				avs.setBus(2, Param);  // TODO Check zero based indexing
 			default:
 				classEdit(ActiveVsourceObj, ParamPointer - VSource.NumPropsThisClass);
@@ -276,6 +290,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			avs.setMVAsc1(OtherVSource.getMVAsc1());
 			avs.setX1R1(OtherVSource.getX1R1());
 			avs.setX0R0(OtherVSource.getX0R0());
+			avs.setScanType(OtherVSource.getScanType());
+			avs.setSequenceType(OtherVSource.getSequenceType());
 
 			classMakeLike(OtherVSource);
 

@@ -40,7 +40,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		PropertyName[3] = "frequency";
 		PropertyName[4] = "phases";
 		PropertyName[5] = "scantype";
-		//PropertyName[5] = "spectrum";
+	    PropertyName[6] = "sequence";
 
 		// Define property help values
 		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
@@ -52,6 +52,8 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		PropertyHelp[4] = "Number of phases.  Defaults to 3. For 3 or less, phase shift is 120 degrees.";
 		PropertyHelp[5] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
+	    PropertyHelp[6] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+                 "Default is positive sequence.";
 
 
 		ActiveProperty = ISource.NumPropsThisClass - 1;  // TODO Check zero based indexing
@@ -130,6 +132,17 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				default:
 					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
 				}
+			case 6:
+				switch (Param.toUpperCase().charAt(0)) {
+				case 'P':
+					ais.setSequenceType(1);
+				case 'Z':
+					ais.setSequenceType(0);
+				case 'N':
+					ais.setSequenceType(-1);
+				default:
+					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
+				}
 			default:
 				classEdit(getActiveISourceObj(), ParamPointer - ISource.NumPropsThisClass);
 			}
@@ -165,6 +178,8 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 			ais.setAmps(OtherIsource.getAmps());
 			ais.setAngle(OtherIsource.getAngle());
 			ais.setSrcFrequency(OtherIsource.getSrcFrequency());
+			ais.setScanType(OtherIsource.getScanType());
+			ais.setSequenceType(OtherIsource.getSequenceType());
 
 			classMakeLike(OtherIsource); // set spectrum,  base frequency
 

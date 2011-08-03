@@ -15,15 +15,17 @@ import com.epri.dss.conversion.ISource;
 import com.epri.dss.conversion.ISourceObj;
 
 public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
-	
+
 	private double Amps;
 
 	private double Angle;
 
 	private double PhaseShift;
-	
+
 	private int ScanType;
-	
+
+	private int SequenceType;
+
 	protected double SrcFrequency;
 
 	public ISourceObjImpl(DSSClassImpl ParClass, String SourceName) {
@@ -40,18 +42,19 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		this.Angle    = 0.0;
 		this.SrcFrequency     = BaseFrequency;
 		this.PhaseShift = 120.0;
-		this.ScanType = 1;  // POs Sequence
+		this.ScanType = 1;  // Pos Sequence
+		this.SequenceType = 1;
 
 		initPropertyValues(0);
 
 		this.Yorder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
-	
+
 	@Override
 	public void recalcElementData() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		setSpectrumObj( (com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()) );
 
 		if (getSpectrumObj() == null)
@@ -59,7 +62,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
 	}
-	
+
 	@Override
 	public void calcYPrim() {
 
@@ -86,16 +89,16 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		setYprimInvalid(false);
 	}
-	
+
 	private Complex getBaseCurr() {
 		double SrcHarmonic;
 		Complex Result = null;
-		
+
 		DSSGlobals Globals = DSSGlobals.getInstance();
-		
+
 		try {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
-			
+
 			/* Get first phase current */
 			if (sol.isIsHarmonicModel()) {
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
@@ -113,10 +116,10 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			if (Globals.isIn_Redirect())
 				Globals.setRedirect_Abort(true);
 		}
-	
+
 		return Result;
 	}
-	
+
 	/**
 	 * Sum currents directly into solution array.
 	 */
@@ -126,7 +129,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		return super.injCurrents();  // Adds into system array
 	}
-	
+
 	/**
 	 * Total currents into a device.
 	 */
@@ -142,35 +145,48 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 					"Inadequate storage allotted for circuit element?", 335);
 		}
 	}
-	
+
 	/**
 	 * Fill up an array of injection currents.
 	 */
 	@Override
 	public void getInjCurrents(Complex[] Curr) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
-		
-		Complex BaseCurr = getBaseCurr();
+
+		Complex BaseCurr = getBaseCurr();  // this func applies spectrum if needed
 
 		for (int i = 0; i < getNPhases(); i++) {
 			Curr[i] = BaseCurr;
-			if (i < getNPhases())
-				switch (ScanType) {
-				case 1:
-					Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
-				case 0:
-					// Do not rotate for zero sequence
-				default:
-					Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());
+			if (i < getNPhases()) {
+				if (sol.isIsHarmonicModel()) {
+					switch (ScanType) {
+					case 1:
+						Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
+					case 0:
+						// Do not rotate for zero sequence
+					default:
+						Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
+						/* Harmonic 1 will be pos; 2 is neg; 3 is zero, and so on. */
+					}
+				} else {
+					switch (SequenceType) {
+					case -1:
+						Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // Neg seq
+					case 0:
+						// Do not rotate for zero sequence
+					default:
+						Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // Maintain pos seq
+					}
 				}
+			}
 		}
 	}
-	
-	@Override 
+
+	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < getParentClass().getNumProperties(); i++) 
+		for (int i = 0; i < getParentClass().getNumProperties(); i++)
 			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		if (Complete) {
@@ -178,20 +194,21 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			F.println();
 		}
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[1]  = getBus(1);  // TODO Check zero based indexing
-		PropertyValue[2]  = "0";
-		PropertyValue[3]  = "0";
-		PropertyValue[4]  = String.format("%-.6g", SrcFrequency);
-		PropertyValue[5]  = "3";
-		PropertyValue[6]  = "pos";
+		setPropertyValue(0, getBus(1));
+		setPropertyValue(1, "0");
+		setPropertyValue(2, "0");
+		setPropertyValue(3, String.format("%-.6g", SrcFrequency));
+		setPropertyValue(4, "3");
+		setPropertyValue(5, "pos");
+		setPropertyValue(6, "pos");
 
 		super.initPropertyValues(ISource.NumPropsThisClass);
 	}
-	
+
 	/**
 	 * Make a positive sequence model.
 	 */
@@ -201,7 +218,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			Parser.getInstance().setCmdString("phases=1");
 			edit();
 		}
-		super.makePosSequence();	
+		super.makePosSequence();
 	}
 
 	public double getSrcFrequency() {
@@ -211,7 +228,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	public void setSrcFrequency(double srcFrequency) {
 		SrcFrequency = srcFrequency;
 	}
-	
+
 	// FIXME Private members in OpenDSS
 
 	public double getAmps() {
@@ -244,6 +261,14 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 	public void setScanType(int scanType) {
 		ScanType = scanType;
+	}
+
+	public int getSequenceType() {
+		return SequenceType;
+	}
+
+	public void setSequenceType(int sequenceType) {
+		SequenceType = sequenceType;
 	}
 
 }
