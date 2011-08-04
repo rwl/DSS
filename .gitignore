@@ -1,4 +1,4 @@
 *~
 *.class
 
-target/classes/javapyler.cfg
+target/*
