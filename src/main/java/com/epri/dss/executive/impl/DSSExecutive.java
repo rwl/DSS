@@ -11,6 +11,7 @@ import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.executive.Executive;
 import com.epri.dss.parser.impl.Parser;
+import com.epri.dss.shared.impl.CommandListImpl;
 
 public class DSSExecutive implements Executive {
 
@@ -23,9 +24,11 @@ public class DSSExecutive implements Executive {
 	public DSSExecutive() {
 		super();
 
-		ExecCommands.getInstance().setCommandList(null);
+		ExecCommands execCmd = ExecCommands.getInstance();
+		execCmd.setCommandList(new CommandListImpl(execCmd.getExecCommand()));
 
-		ExecOptions.getInstance().setOptionList(null);
+		ExecOptions execOpts = ExecOptions.getInstance();
+		execOpts.setOptionList(execOpts.getOptionList());
 
 		/* Instantiate all DSS class definitions, intrinsic and user-defined */
 		DSSClassDefs.createDSSClasses();

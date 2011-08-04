@@ -39,7 +39,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		defineProperties();
 
-		String[] Commands = new String[0];
+		String[] Commands = new String[this.NumProperties];
 		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
 		this.CommandList = new CommandListImpl(Commands);
 		this.CommandList.setAbbrevAllowed(true);

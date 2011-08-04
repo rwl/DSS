@@ -40,7 +40,7 @@ public class HashListImpl implements HashList {
 		super();
 		this.NumElements = 0;
 		this.InitialAllocation = Nelements;
-		this.StringArray = null;  // new String[Nelements];
+		this.StringArray = new String[this.NumElements];
 
 		this.NumLists = (int) Math.round(Math.sqrt(Nelements));
 		int ElementsPerList = Nelements / NumLists + 1;
@@ -48,11 +48,12 @@ public class HashListImpl implements HashList {
 		if (this.NumLists < 1) this.NumLists = 1;  // make sure at least one list
 		this.ListArray = new SubList[NumLists];
 		for (int i = 0; i < this.NumLists; i++) {
+			this.ListArray[i] = new SubList();
 			/* Allocate initial Sublists to zero; allocated on demand */
-			ListArray[i].str = null;
-			ListArray[i].idx = null;
-			ListArray[i].nAllocated = 0;
-			ListArray[i].nElem = 0;
+			this.ListArray[i].str = new String[0];
+			this.ListArray[i].idx = new int[0];
+			this.ListArray[i].nAllocated = 0;
+			this.ListArray[i].nElem = 0;
 		}
 		this.NumElementsAllocated = 0;
 		this.LastFind = 0;
@@ -76,12 +77,18 @@ public class HashListImpl implements HashList {
 		// resize by reasonable amount
 		int OldAllocation = subList.nAllocated;
 		subList.nAllocated = OldAllocation + AllocationInc;
-		subList.str = (String[]) Utilities.resizeArray(subList.str, subList.nAllocated);		
+		subList.str = (String[]) Utilities.resizeArray(subList.str, subList.nAllocated);
 		subList.idx = (int[]) Utilities.resizeArray(subList.idx, subList.nAllocated);
 	}
 
 	private int hash(String S) {
-		return S.hashCode();
+//		int HashValue = 0;//S.hashCode();
+//		for (int i = 0; i < S.length(); i++) {
+//			HashValue = ((HashValue << 5) | (HashValue >> 27)) ^ S.charAt(i);
+//		}
+
+		int HashValue = S.hashCode();
+		return Math.abs(HashValue % NumLists);  // FIXME: negative modulus
 	}
 
 	/** Makes the linear string list larger. */
@@ -93,7 +100,7 @@ public class HashListImpl implements HashList {
 	public int add(String S) {
 		int HashNum;
 		String SS;
-		
+
 		SS = S.toLowerCase();
 		HashNum = hash(SS);
 
@@ -106,12 +113,12 @@ public class HashListImpl implements HashList {
 			resizeSubList(ListArray[HashNum]);
 
 		// make copy of whole string, lower case
-		ListArray[HashNum].str[ListArray[HashNum].nElem] = SS;
+		ListArray[HashNum].str[ListArray[HashNum].nElem - 1] = SS;
 		// increments count to string
-		StringArray[NumElements] = SS;
-		
-		ListArray[HashNum].idx[ListArray[HashNum].nElem] = NumElements;
-	
+		StringArray[NumElements - 1] = SS;
+
+		ListArray[HashNum].idx[ListArray[HashNum].nElem - 1] = NumElements;
+
 		return NumElements;
 	}
 
@@ -119,22 +126,22 @@ public class HashListImpl implements HashList {
 	 * Repeat find for duplicate string in same hash list
 	 */
 	public int find(String S) {
-		
+
 		LastSearchString = S.toLowerCase();
 		LastHash = hash(LastSearchString);
 		int Result = 0;  // TODO: Check zero indexing.
 		LastFind = 0;
 
-		for (int i = 0; i < ListArray[LastHash].nElem; i++) 
+		for (int i = 0; i < ListArray[LastHash].nElem; i++)
 			if (LastSearchString.equals(ListArray[LastHash].str[i])) {
 				Result = ListArray[LastHash].idx[i];
 				LastFind = i;
 				break;
 			}
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Begins search in same list as last
 	 */
@@ -144,14 +151,14 @@ public class HashListImpl implements HashList {
 		LastFind += 1;   // Start with next item in hash list
 
 		if ((LastHash > 0) && (LastHash <= NumLists)) {
-			for (int i = LastFind; i < ListArray[LastHash].nElem; i++) 
+			for (int i = LastFind; i < ListArray[LastHash].nElem; i++)
 				if (LastSearchString.equals(ListArray[LastHash].str[i])) {
 					Result = ListArray[LastHash].idx[i];
 					LastFind = i;
 					break;
 				}
 		}
-		
+
 		return Result;
 	}
 
@@ -173,7 +180,7 @@ public class HashListImpl implements HashList {
 				}
 			}
 		}
-			
+
 		return Result;
 	}
 
@@ -184,7 +191,7 @@ public class HashListImpl implements HashList {
 
 	/**
 	 * Expands number of elements.
-	 * 
+	 *
 	 * Creates a new set of string lists and copies the old strings
 	 * into the new, hashing for the new number of lists.
 	 */
@@ -226,7 +233,7 @@ public class HashListImpl implements HashList {
 				if (NewListArray[HashNum].nElem > NewListArray[HashNum].nAllocated) {
 					resizeSubList(NewListArray[HashNum]);
 				}
-				
+
 				NewListArray[HashNum].str[NewListArray[HashNum].nElem] = S;
 				NewStringArray[NumElements] = NewListArray[HashNum].str[NewListArray[HashNum].nElem];
 				NewListArray[HashNum].idx[NewListArray[HashNum].nElem] = i;
@@ -250,21 +257,21 @@ public class HashListImpl implements HashList {
 
 			F.println();
 			F.println("Hash List Distribution");
-			for (int i = 0; i < NumLists; i++) 
+			for (int i = 0; i < NumLists; i++)
 				F.println(String.format("List = %d, Number of elements = %d", i, ListArray[i].nElem));
 			F.println();
 
 			for (int i = 0; i < NumLists; i++) {
 				F.println(String.format("List = %d, Number of elements = %d", i, ListArray[i].nElem));
-				for (int j = 0; j < ListArray[i].nElem; j++) 
+				for (int j = 0; j < ListArray[i].nElem; j++)
 					F.println("\"" + ListArray[i].str[j] + "\"  Idx= " + ListArray[i].idx[j]);
 				F.println();
 			}
-		
+
 			F.println("LINEAR LISTING...");
-			for (int i = 0; i < NumElements; i++) 
+			for (int i = 0; i < NumElements; i++)
 				F.println(i + " = \"" + StringArray[i] + "\"");
-			
+
 			F.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -274,11 +281,11 @@ public class HashListImpl implements HashList {
 	public void clear() {
 		for (int i = 0; i < NumLists; i++) {
 			ListArray[i].nElem = 0;
-			for (int j = 0; j < ListArray[i].nAllocated; j++) 
+			for (int j = 0; j < ListArray[i].nAllocated; j++)
 				ListArray[i].str[j] = "";
 		}
-		
-		for (int i = 0; i < NumElementsAllocated; i++) 
+
+		for (int i = 0; i < NumElementsAllocated; i++)
 			StringArray[i] = "";
 
 		NumElements = 0;

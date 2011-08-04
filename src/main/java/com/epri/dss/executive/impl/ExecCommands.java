@@ -11,8 +11,8 @@ public class ExecCommands {
 
 	public static final int NumExecCommands = 93;
 
-	private String[] ExecCommand;
-	private String[] CommandHelp;
+	private String[] ExecCommand = new String[NumExecCommands];
+	private String[] CommandHelp = new String[NumExecCommands];
 
 	private CommandList CommandList;
 
