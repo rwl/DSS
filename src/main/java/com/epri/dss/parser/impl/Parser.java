@@ -224,7 +224,7 @@ public class Parser {
 		LinePos = pos;
 
 		CmdBufLength = LineBuffer.length();
-		if (LinePos <= CmdBufLength) {
+		if (LinePos < CmdBufLength) {
 
 			/* Handle Quotes and Parentheses around tokens */
 			IsQuotedString= false;
@@ -260,7 +260,7 @@ public class Parser {
 	}
 
 	public String getNextParam() {
-		if (Position <= CmdBuffer.length()) {
+		if (Position < CmdBuffer.length()) {
 			LastDelimiter = ' ';
 			TokenBuffer = getToken(CmdBuffer, Position); // Get entire token and put in token Buffer
 			if (LastDelimiter == '=') {
@@ -534,7 +534,7 @@ public class Parser {
 		case CommentChar:
 			return true;
 		case '/':
-			if ((LineBuffer.length() > LinePos) && (LineBuffer.charAt(LinePos + 1) == '/')) {
+			if ((LineBuffer.length() - 1 > LinePos) && (LineBuffer.charAt(LinePos + 1) == '/')) {
 				return true;
 			} else {
 				return false;
