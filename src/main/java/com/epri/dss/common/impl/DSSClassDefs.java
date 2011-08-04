@@ -20,6 +20,7 @@ import com.epri.dss.conversion.impl.VSourceImpl;
 import com.epri.dss.delivery.impl.CapacitorImpl;
 import com.epri.dss.delivery.impl.FaultImpl;
 import com.epri.dss.delivery.impl.FuseImpl;
+import com.epri.dss.delivery.impl.GICTransformerImpl;
 import com.epri.dss.delivery.impl.LineImpl;
 import com.epri.dss.delivery.impl.ReactorImpl;
 import com.epri.dss.delivery.impl.TransformerImpl;
