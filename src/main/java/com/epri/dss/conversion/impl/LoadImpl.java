@@ -186,7 +186,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
-		PropertyHelp[NumPropsThisClass] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
+		PropertyHelp[NumPropsThisClass - 1] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
 	}
 
 	@Override

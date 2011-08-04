@@ -86,7 +86,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		PropertyHelp[7] = "Enter an value and then retrieve the interpolated Y value from the Y property.";
 		PropertyHelp[8] = "Enter an value and then retrieve the interpolated X value from the X property.";
 
-		ActiveProperty = XYCurve.NumPropsThisClass;
+		ActiveProperty = XYCurve.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

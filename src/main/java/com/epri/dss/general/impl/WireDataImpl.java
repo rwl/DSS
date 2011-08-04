@@ -14,7 +14,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		super();
 		this.Class_Name = "WireData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -29,7 +29,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		countProperties();   // Get inherited property count
 		allocatePropertyArrays();
 
-		ActiveProperty = WireData.NumPropsThisClass;
+		ActiveProperty = WireData.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

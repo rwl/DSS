@@ -17,7 +17,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		this.Class_Name = "Fault";
 		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // Only in Fault object class
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -68,7 +68,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		PropertyHelp[8] = "Minimum amps that can sustain a temporary fault. Default is 5.";
 
 
-		ActiveProperty = Fault.NumPropsThisClass;
+		ActiveProperty = Fault.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

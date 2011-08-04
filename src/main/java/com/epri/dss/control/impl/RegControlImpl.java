@@ -116,7 +116,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		PropertyHelp[24] = "{Yes | No*} Default is no. Set this to Yes if you want the regulator to go to neutral in the reverse direction.";
 
 
-		ActiveProperty = RegControl.NumPropsThisClass;
+		ActiveProperty = RegControl.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

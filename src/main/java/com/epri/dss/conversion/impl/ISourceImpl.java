@@ -60,7 +60,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 		// Override help string
-		PropertyHelp[ISource.NumPropsThisClass] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
+		PropertyHelp[ISource.NumPropsThisClass - 1] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
 	}
 
 	@Override

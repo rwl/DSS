@@ -69,7 +69,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		PropertyHelp[5] = "{Yes/True | No/False} Default = YES. Report voltage and current in polar form (Mag/Angle). (default)  Otherwise, it will be real and imaginary.";
 		PropertyHelp[6] = "{Yes/True | No/False} Default = YES. Report power in Apparent power, S, in polar form (Mag/Angle).(default)  Otherwise, is P and Q";
 
-		ActiveProperty = Monitor.NumPropsThisClass;
+		ActiveProperty = Monitor.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

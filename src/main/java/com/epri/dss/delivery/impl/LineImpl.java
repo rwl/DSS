@@ -25,7 +25,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		this.Class_Name = "Line";
 		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PDElement list and LineSection lists
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 		LineCodeClass = null;
 		LineGeometryClass = null;
 
@@ -143,7 +143,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
 
 
-		ActiveProperty = Line.NumPropsThisClass;
+		ActiveProperty = Line.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

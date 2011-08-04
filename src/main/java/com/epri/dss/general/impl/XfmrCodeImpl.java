@@ -20,7 +20,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		super();
 		this.Class_Name = "XfmrCode";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -138,7 +138,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 							"New Transformer.T1 buses=\"Hibus, lowbus\" "+
 							"~ %Rs=(0.2  0.3)";
 
-		ActiveProperty = NumPropsThisClass;
+		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 	}

@@ -38,7 +38,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		PropertyHelp[1] = "Tape shield thickness; same units as radius; no default.";
 		PropertyHelp[2] = "Tape Lap in percent; default 20.0";
 
-		ActiveProperty = TSData.NumPropsThisClass;
+		ActiveProperty = TSData.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

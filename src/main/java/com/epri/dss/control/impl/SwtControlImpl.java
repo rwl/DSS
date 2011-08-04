@@ -49,7 +49,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 				"Switch will not respond to either manual (Action) or automatic (COM interface) control until this Lock is removed.";
 		PropertyHelp[4] = "Operating time delay (sec) of the switch. Defaults to 120.";
 
-		ActiveProperty = SwtControl.NumPropsThisClass;
+		ActiveProperty = SwtControl.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

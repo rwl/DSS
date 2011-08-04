@@ -96,7 +96,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				"Setting action=DblSave or SngSave will cause the present \"Temp\" values to be written to " +
 				"either a packed file of double or single. The filename is the TShape name. ";  // Action
 
-		ActiveProperty = TShape.NumPropsThisClass;
+		ActiveProperty = TShape.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

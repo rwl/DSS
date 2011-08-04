@@ -162,7 +162,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"to be dispatched on. Defaults to 75% of the kWTarget value. Must reset this property after " +
 				"setting kWTarget if you want a different value.";
 
-		ActiveProperty = StorageController.NumPropsThisClass -1;
+		ActiveProperty = StorageController.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

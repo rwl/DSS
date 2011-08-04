@@ -84,7 +84,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 							"\"Trip\" or \"Open\" causes the controlled element to open and lock out. " +
 							"\"Close\" causes the controlled element to close and the Fuse to reset.";
 
-		ActiveProperty  = Fuse.NumPropsThisClass;
+		ActiveProperty  = Fuse.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

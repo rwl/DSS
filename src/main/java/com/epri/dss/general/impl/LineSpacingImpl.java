@@ -20,7 +20,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 		this.Class_Name    = "LineSpacing";
 		this.DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -51,7 +51,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		PropertyHelp[3] = "Array of wire Heights.";
 		PropertyHelp[4] = "Units for x and h: {mi|kft|km|m|Ft|in|cm } Initial default is \"ft\", but defaults to last unit defined";
 
-		ActiveProperty = LineSpacing.NumPropsThisClass;
+		ActiveProperty = LineSpacing.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

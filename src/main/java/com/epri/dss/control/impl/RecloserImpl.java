@@ -114,7 +114,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		PropertyHelp[20] = "Time dial for Phase Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
 		PropertyHelp[21] = "Time dial for Ground Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
 
-		ActiveProperty = Recloser.NumPropsThisClass;  // TODO Check zero based indexing
+		ActiveProperty = Recloser.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

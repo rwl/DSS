@@ -17,7 +17,7 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		this.Class_Name = "Solution";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT + DSSClassDefs.HIDDEN_ELEMENT;
 
-		ActiveElement = 0;
+		ActiveElement = -1;
 
 		defineProperties();
 
@@ -29,16 +29,16 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 
 	protected void defineProperties() {
 		NumProperties = NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define Property names
+		// define Property names
 		PropertyName[0] = "-------";
 
 		// define Property help values
 		PropertyHelp[0] = "Use Set Command to set Solution properties.";
 
-		ActiveProperty = NumPropsThisClass;
+		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

@@ -17,7 +17,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		this.Class_Name = "Equivalent";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 

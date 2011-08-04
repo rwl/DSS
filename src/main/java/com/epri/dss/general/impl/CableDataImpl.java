@@ -22,17 +22,17 @@ public class CableDataImpl extends ConductorDataImpl implements CableData {
 	}
 
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 0] = "EpsR";
-		PropertyName[ActiveProperty + 1] = "InsLayer";
-		PropertyName[ActiveProperty + 2] = "DiaIns";
-		PropertyName[ActiveProperty + 3] = "DiaCable";
+		PropertyName[ActiveProperty + 1] = "EpsR";
+		PropertyName[ActiveProperty + 2] = "InsLayer";
+		PropertyName[ActiveProperty + 3] = "DiaIns";
+		PropertyName[ActiveProperty + 4] = "DiaCable";
 
-		PropertyHelp[ActiveProperty + 0] = "Insulation layer relative permittivity; default is 2.3.";
-		PropertyHelp[ActiveProperty + 1] = "Insulation layer thickness; same units as radius; no default. " +
+		PropertyHelp[ActiveProperty + 1] = "Insulation layer relative permittivity; default is 2.3.";
+		PropertyHelp[ActiveProperty + 2] = "Insulation layer thickness; same units as radius; no default. " +
 				"With DiaIns, establishes inner radius for capacitance calculation.";
-		PropertyHelp[ActiveProperty + 2] = "Diameter over insulation layer; same units as radius; no default." +
+		PropertyHelp[ActiveProperty + 3] = "Diameter over insulation layer; same units as radius; no default." +
                 "Establishes outer radius for capacitance calculation.";
-		PropertyHelp[ActiveProperty + 3] = "Diameter over cable; same units as radius; no default.";
+		PropertyHelp[ActiveProperty + 4] = "Diameter over cable; same units as radius; no default.";
 
 		ActiveProperty = ActiveProperty + NumCableClassProps;
 		super.defineProperties();

@@ -23,7 +23,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		this.Class_Name = "GrowthShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -67,7 +67,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		PropertyHelp[5] = "Switch input of growth curve data to a binary file of doubles "+
 				"containing (year, mult) points, packed one after another.";
 
-		ActiveProperty = GrowthShape.NumPropsThisClass;
+		ActiveProperty = GrowthShape.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

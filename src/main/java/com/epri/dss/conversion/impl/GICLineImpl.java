@@ -19,7 +19,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		this.Class_Name   = "GICLine";
 		this.DSSClassType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -71,7 +71,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		PropertyHelp[10] = "{pos | neg | zero*} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
 		                    "Default is ZERO sequence. ";
 
-		ActiveProperty = NumPropsThisClass;
+		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 		// Override help string

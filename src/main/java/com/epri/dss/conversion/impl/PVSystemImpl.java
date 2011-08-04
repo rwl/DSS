@@ -19,7 +19,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	private static PVSystemObj ActivePVsystemObj;
 
-	private String[] RegisterNames;
+	private String[] RegisterNames = new String[NumPVSystemRegisters];
 
 	public PVSystemImpl() {
 		super();
@@ -169,7 +169,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the PVSystem model " +
 				"for each iteration.  Creates a separate file for each PVSystem element named \"PVSystem_name.csv\"." );
 
-		ActiveProperty = PVSystem.NumPropsThisClass;
+		ActiveProperty = PVSystem.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 		// Override default help string

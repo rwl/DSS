@@ -17,7 +17,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		this.Class_Name = "Reactor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.REACTOR_ELEMENT;
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -69,7 +69,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		PropertyHelp[10] = "Reactance, each phase, ohms at base frequency.";
 		PropertyHelp[11] = "Resistance in parallel with R and X (the entire branch). Assumed infinite if not specified.";
 
-		ActiveProperty = Reactor.NumPropsThisClass;
+		ActiveProperty = Reactor.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

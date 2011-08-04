@@ -18,7 +18,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		this.Class_Name = "TCC_Curve";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -50,7 +50,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 					"t_array =  (file=filename)"+CRLF+CRLF+
 					"The specified file has one value per line.";
 
-		ActiveProperty = TCC_Curve.NumPropsThisClass;
+		ActiveProperty = TCC_Curve.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

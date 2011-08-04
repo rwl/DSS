@@ -9,7 +9,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FeederImpl extends PCClassImpl implements Feeder {
 
-	private static int NumPropsThisClass;
+	private static int NumPropsThisClass = 0;
 
 	private static FeederObj ActiveFeederObj;
 
@@ -18,7 +18,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		this.Class_Name = "Feeder";
 		this.DSSClassType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -44,7 +44,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 //		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
 
 
-		ActiveProperty = NumPropsThisClass;
+		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

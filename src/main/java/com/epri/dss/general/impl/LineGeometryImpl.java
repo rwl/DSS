@@ -20,7 +20,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		super();
 		Class_Name    = "LineGeometry";
 		DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		ActiveElement = 0;
+		ActiveElement = -1;
 
 		defineProperties();
 
@@ -87,7 +87,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
 
 
-		ActiveProperty = LineGeometry.NumPropsThisClass;
+		ActiveProperty = LineGeometry.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

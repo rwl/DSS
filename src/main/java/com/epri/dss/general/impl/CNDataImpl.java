@@ -39,7 +39,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 		PropertyHelp[2] = "Geometric mean radius of a concentric neutral strand; same units as core conductor GMR; defaults to 0.7788 * CN strand radius.";
 		PropertyHelp[3] = "AC resistance of a concentric neutral strand; same units as core conductor resistance; no default.";
 
-		ActiveProperty = CNData.NumPropsThisClass;
+		ActiveProperty = CNData.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

@@ -21,7 +21,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		this.Class_Name   = "Transformer";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.XFMR_ELEMENT; // override PDElement   (kept in both actually)
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -159,7 +159,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		PropertyHelp[37] = "Name of the bank this transformer is part of, for CIM, MultiSpeak, and other interfaces.";
 		PropertyHelp[38] = "Name of a library entry for transformer properties. The named XfmrCode must already be defined.";
 
-		ActiveProperty = Transformer.NumPropsThisClass;
+		ActiveProperty = Transformer.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

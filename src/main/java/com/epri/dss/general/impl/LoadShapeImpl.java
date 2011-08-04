@@ -25,7 +25,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		Class_Name = "LoadShape";
 		DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		ActiveElement = 0;
+		ActiveElement = -1;
 
 		defineProperties();
 
@@ -115,7 +115,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 
 
-		ActiveProperty = LoadShape.NumPropsThisClass;
+		ActiveProperty = LoadShape.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

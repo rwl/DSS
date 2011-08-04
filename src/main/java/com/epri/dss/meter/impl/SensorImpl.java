@@ -76,7 +76,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				"quantity vs the sensor value. Actual values - convert to per unit in calling program.  "+DSSGlobals.CRLF+
 				"Value reported in result window/result variable.";
 
-		ActiveProperty = Sensor.NumPropsThisClass;
+		ActiveProperty = Sensor.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

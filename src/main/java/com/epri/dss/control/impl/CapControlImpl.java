@@ -97,7 +97,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				"If delta or L-L connection, enter the first or the two phases being monitored [1-2, 2-3, 3-1]. " +
 				"Must be less than the number of phases. Does not apply to kvar control which uses all phases by default.";
 
-		ActiveProperty = CapControl.NumPropsThisClass;
+		ActiveProperty = CapControl.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

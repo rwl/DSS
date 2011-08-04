@@ -217,11 +217,12 @@ public class DSSClassImpl implements DSSClass {
 	 * Add Properties of this class to propName.
 	 */
 	protected void defineProperties() {
-		this.ActiveProperty = this.ActiveProperty + 1;
+		ActiveProperty += 1;
 
-		this.PropertyName[ActiveProperty] = "like";
-		this.PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" + DSSGlobals.CRLF + DSSGlobals.CRLF +
-						"New Capacitor.C2 like=c1  ...";
+		PropertyName[ActiveProperty] = "like";
+		PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" +
+				DSSGlobals.CRLF + DSSGlobals.CRLF +
+				"New Capacitor.C2 like=c1  ...";
 	}
 
 	protected int classEdit(Object ActiveObj, int ParamPointer) {
@@ -301,7 +302,9 @@ public class DSSClassImpl implements DSSClass {
 		PropertyHelp = new String[NumProperties];
 		PropertyIdxMap = new int[NumProperties];
 		RevPropertyIdxMap = new int[NumProperties];
-		ActiveProperty = 0;    // initialize for AddProperty
+
+		ActiveProperty = -1;    // initialize for addProperty
+
 		/* initialize PropertyIdxMap to take care of legacy items */
 		for (int i = 0; i < NumProperties; i++) PropertyIdxMap[i] = i;
 		for (int i = 0; i < NumProperties; i++) RevPropertyIdxMap[i] = i;

@@ -24,7 +24,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		this.Class_Name = "Generator";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // In both PCelement and Genelement list
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		// Set Register names
 		this.RegisterNames[0]  = "kWh";
@@ -145,11 +145,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 							"for each iteration.  Creates a separate file for each generator named \"GEN_name.CSV\"." );
 
 
-		ActiveProperty = NumPropsThisClass;
+		ActiveProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 		// Override default help string
-		PropertyHelp[Generator.NumPropsThisClass + 1] = "Name of harmonic voltage or current spectrum for this generator. " +
+		PropertyHelp[Generator.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this generator. " +
 							"Voltage behind Xd' for machine - default. Current injection for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}

@@ -117,7 +117,7 @@ public class HashListImpl implements HashList {
 		// increments count to string
 		StringArray[NumElements - 1] = SS;
 
-		ListArray[HashNum].idx[ListArray[HashNum].nElem - 1] = NumElements;
+		ListArray[HashNum].idx[ListArray[HashNum].nElem - 1] = NumElements - 1;
 
 		return NumElements;
 	}
@@ -129,8 +129,8 @@ public class HashListImpl implements HashList {
 
 		LastSearchString = S.toLowerCase();
 		LastHash = hash(LastSearchString);
-		int Result = 0;  // TODO: Check zero indexing.
-		LastFind = 0;
+		int Result = -1;  // TODO: Check zero indexing.
+		LastFind = -1;
 
 		for (int i = 0; i < ListArray[LastHash].nElem; i++)
 			if (LastSearchString.equals(ListArray[LastHash].str[i])) {
@@ -147,7 +147,7 @@ public class HashListImpl implements HashList {
 	 */
 	public int findNext() {
 		// TODO: Check zero indexing.
-		int Result = 0;  // Default return
+		int Result = -1;  // Default return
 		LastFind += 1;   // Start with next item in hash list
 
 		if ((LastHash > 0) && (LastHash <= NumLists)) {

@@ -97,7 +97,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				"Setting action=DblSave or SngSave will cause the present \"Price\" values to be written to " +
 				"either a packed file of double or single. The filename is the PriceShape name. ";  // Action
 
-		ActiveProperty = PriceShape.NumPropsThisClass;
+		ActiveProperty = PriceShape.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

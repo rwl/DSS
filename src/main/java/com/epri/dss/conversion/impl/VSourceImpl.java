@@ -93,11 +93,11 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Default is Bus1.0.0.0 (grounded wye connection)";
 
-		ActiveProperty = VSource.NumPropsThisClass;
+		ActiveProperty = VSource.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 
 		// Override help string
-		PropertyHelp[VSource.NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		PropertyHelp[VSource.NumPropsThisClass - 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override

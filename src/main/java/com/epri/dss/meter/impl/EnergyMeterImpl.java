@@ -158,7 +158,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				"the energymeter.  Feeder is enabled if Radial=Yes; diabled if Radial=No.  Feeder is " +
 				"synched automatically with the meter zone.  Do not create feeders for zones in meshed transmission systems.";*/
 
-		ActiveProperty = EnergyMeter.NumPropsThisClass;
+		ActiveProperty = EnergyMeter.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

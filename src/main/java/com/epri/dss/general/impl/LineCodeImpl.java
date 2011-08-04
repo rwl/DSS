@@ -24,7 +24,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		super();
 		this.Class_Name = "LineCode";
 		this.DSSClassType= DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -36,7 +36,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 	protected void defineProperties() {
 		NumProperties = LineCode.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0] = "nphases";
@@ -107,7 +107,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 							"Default is the last conductor (nphases value). After Kron reduction is set to 0. Subsequent issuing of Kron=Yes " +
 							"will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix.";
 
-		ActiveProperty = LineCode.NumPropsThisClass;
+		ActiveProperty = LineCode.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

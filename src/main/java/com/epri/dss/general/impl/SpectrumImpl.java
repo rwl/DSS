@@ -23,7 +23,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		super();
 		this.Class_Name = "Spectrum";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -62,7 +62,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		PropertyHelp[4] = "File of spectrum points with (harmonic, magnitude-percent, angle-degrees) values, one set of 3 per line, in CSV format. "+
 			"If fewer than NUMHARM frequencies found in the file, NUMHARM is set to the smaller value.";
 
-		ActiveProperty = Spectrum.NumPropsThisClass;
+		ActiveProperty = Spectrum.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

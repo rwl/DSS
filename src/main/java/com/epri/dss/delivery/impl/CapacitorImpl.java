@@ -17,7 +17,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		this.Class_Name = "Capacitor";
 		this.DSSClassType = DSSClassType + DSSClassDefs.CAP_ELEMENT;
 
-		this.ActiveElement = 0;
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -77,7 +77,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		PropertyHelp[12] = "ARRAY of integers {1|0} states representing the state of each step (on|off). Defaults to 1 when reallocated (on). "+
 							"Capcontrol will modify this array as it turns steps on or off.";
 
-		ActiveProperty = Capacitor.NumPropsThisClass;
+		ActiveProperty = Capacitor.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

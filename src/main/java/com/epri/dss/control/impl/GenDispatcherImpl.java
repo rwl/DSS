@@ -55,7 +55,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				" The needed kW to get back to center band is dispatched to each generator according to these weights. " +
 				"Default is to set all weights to 1.0.";
 
-		ActiveProperty = GenDispatcher.NumPropsThisClass;
+		ActiveProperty = GenDispatcher.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 

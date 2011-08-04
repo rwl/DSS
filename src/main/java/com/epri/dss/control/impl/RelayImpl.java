@@ -112,7 +112,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				"\"Trip\" or \"Open\" causes the controlled element to open and lock out. " +
 				"\"Close\" causes the controlled element to close and the relay to reset to its first operation.");
 
-		ActiveProperty = Relay.NumPropsThisClass;
+		ActiveProperty = Relay.NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 
