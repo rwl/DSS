@@ -15,13 +15,14 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class DSSExecutive implements Executive {
 
-	private static Executive DSSExecutive;
+//	private static Executive DSSExecutive;
 
 	private boolean RecorderOn;
 	private String RecorderFile;
 	private FileWriter RecorderFileWriter;
 
-	public DSSExecutive() {
+	// Private constructor prevents instantiation from other classes
+	private DSSExecutive() {
 		super();
 
 		ExecCommands execCmd = ExecCommands.getInstance();
@@ -46,6 +47,14 @@ public class DSSExecutive implements Executive {
 		this.RecorderFile = "";
 
 		//DSSGlobals.getInstance().readDSS_Registry();
+	}
+
+	private static class DSSExecutiveHolder {
+		public static final DSSExecutive INSTANCE = new DSSExecutive();
+	}
+
+	public static DSSExecutive getInstance() {
+		return DSSExecutiveHolder.INSTANCE;
 	}
 
 	protected void finalize() throws Throwable {
@@ -139,12 +148,12 @@ public class DSSExecutive implements Executive {
 		new PrintWriter(RecorderFileWriter).println(S);
 	}
 
-	public static void setDSSExecutive(Executive dSSExecutive) {
-		DSSExecutive = dSSExecutive;
-	}
-
-	public static Executive getDSSExecutive() {
-		return DSSExecutive;
-	}
+//	public static void setDSSExecutive(Executive dSSExecutive) {
+//		DSSExecutive = dSSExecutive;
+//	}
+//
+//	public static Executive getDSSExecutive() {
+//		return DSSExecutive;
+//	}
 
 }

@@ -323,7 +323,7 @@ public class ExecHelper {
 	}
 
 	public static int doClearCmd() {
-		DSSExecutive.getDSSExecutive().clear();
+		DSSExecutive.getInstance().clear();
 		return 0;
 	}
 
@@ -339,7 +339,7 @@ public class ExecHelper {
 		DSSGlobals.getInstance().getMonitorClass().sampleAll();
 
 		DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();  // gets generators too
-		
+
 		return 0;
 	}
 
@@ -2287,8 +2287,8 @@ public class ExecHelper {
 
 		/* Let's look to see how well we did */
 		if (!DSSGlobals.getInstance().isAutoShowExport())
-			DSSExecutive.getDSSExecutive().setCommand("Set showexport=yes");
-		DSSExecutive.getDSSExecutive().setCommand("Export Estimation");
+			DSSExecutive.getInstance().setCommand("Set showexport=yes");
+		DSSExecutive.getInstance().setCommand("Export Estimation");
 
 		return 0;
 	}
@@ -2722,7 +2722,7 @@ public class ExecHelper {
 
 		return Result;
 	}
-	
+
 	public static int doUpdateStorageCmd() {
 		DSSGlobals.getInstance().getStorageClass().updateAll();
 		return 0;

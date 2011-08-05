@@ -487,18 +487,18 @@ public class ExecCommands {
 			// Check first for Compile or Redirect and get outta here
 			switch (ParamPointer) {
 			case 13:
-				if (DSSExecutive.getDSSExecutive().isRecorderOn())
-					DSSExecutive.getDSSExecutive().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
+				if (DSSExecutive.getInstance().isRecorderOn())
+					DSSExecutive.getInstance().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(true));
 				return;
 			case 19:
-				if (DSSExecutive.getDSSExecutive().isRecorderOn())
-					DSSExecutive.getDSSExecutive().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
+				if (DSSExecutive.getInstance().isRecorderOn())
+					DSSExecutive.getInstance().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+CmdLine);
 				Globals.setCmdResult(ExecHelper.doRedirect(false));
 				return;
 			default:  // Write everything direct to recorder, if ON
-				if (DSSExecutive.getDSSExecutive().isRecorderOn())
-					DSSExecutive.getDSSExecutive().writeToRecorderFile(CmdLine);
+				if (DSSExecutive.getInstance().isRecorderOn())
+					DSSExecutive.getInstance().writeToRecorderFile(CmdLine);
 			}
 
 			// Things that are OK to do before a circuit is defined

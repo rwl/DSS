@@ -417,7 +417,7 @@ public class AutoAddImpl implements AutoAdd {
 			sol.setUseAuxCurrents(false);
 
 			if (MinLossBus > 0) {
-				Executive exec = DSSExecutive.getDSSExecutive();
+				Executive exec = DSSExecutive.getInstance();
 
 				if (MinBusPhases >= 3) {
 					kVrat = ckt.getBuses()[MinLossBus].getkVBase() * DSSGlobals.SQRT3;
@@ -534,7 +534,7 @@ public class AutoAddImpl implements AutoAdd {
 			sol.setUseAuxCurrents(false);
 
 			if (MinLossBus > 0) {
-				Executive exec = DSSExecutive.getDSSExecutive();
+				Executive exec = DSSExecutive.getInstance();
 
 				if (MinBusPhases >= 3) {
 					kVrat = ckt.getBuses()[MinLossBus].getkVBase() * DSSGlobals.SQRT3;

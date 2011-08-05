@@ -396,7 +396,7 @@ public class ExecOptions {
 			case 56:
 				Globals.setDataPath(Param);  // Set a legal data path
 			case 66:
-				DSSExecutive.getDSSExecutive().setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(Param));
 			case 72:
 				Globals.setDefaultBaseFreq(parser.makeDouble());
 			default:
@@ -601,7 +601,7 @@ public class ExecOptions {
 			case 65:
 				Globals.getActiveCircuit().setLogEvents(Utilities.interpretYesNo(Param));
 			case 66:
-				DSSExecutive.getDSSExecutive().setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(Param));
 			case 67:
 				Globals.getEnergyMeterClass().setDo_OverloadReport(Utilities.interpretYesNo(Param));
 			case 68:
@@ -866,7 +866,7 @@ public class ExecOptions {
 						Globals.appendGlobalResult("No");
 					}
 				case 66:
-					if (DSSExecutive.getDSSExecutive().isRecorderOn()) {
+					if (DSSExecutive.getInstance().isRecorderOn()) {
 						Globals.appendGlobalResult("Yes");
 					} else {
 						Globals.appendGlobalResult("No");

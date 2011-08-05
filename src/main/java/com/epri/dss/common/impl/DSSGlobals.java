@@ -861,7 +861,7 @@ public class DSSGlobals {
 			SolutionAbort = false;
 			/* Voltage source named "source" connected to SourceBus */
 			// Load up the parser as if it were read in
-			DSSExecutive.getDSSExecutive().setCommand("New object=vsource.source Bus1=SourceBus " + S);
+			DSSExecutive.getInstance().setCommand("New object=vsource.source Bus1=SourceBus " + S);
 		} else {
 			doErrorMsg("MakeNewCircuit",
 					"Cannot create new circuit.",

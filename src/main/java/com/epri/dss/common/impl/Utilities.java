@@ -1538,8 +1538,8 @@ public class Utilities {
 	}
 
 	public static int doExecutiveCommand(String s) {
-		DSSExecutive.getDSSExecutive().setCommand(s);
-		return DSSExecutive.getDSSExecutive().getErrorResult();
+		DSSExecutive.getInstance().setCommand(s);
+		return DSSExecutive.getInstance().getErrorResult();
 	}
 
 	/**
