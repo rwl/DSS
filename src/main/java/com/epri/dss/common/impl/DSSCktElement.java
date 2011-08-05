@@ -323,11 +323,18 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				"Should not be able to get here. Probable Programming Error.", 752);
 	}
 
-	public void getLosses(Complex TotalLosses, Complex LoadLosses,
-			Complex NoLoadLosses) {
-		TotalLosses = getLosses();  // Watts, vars
-		LoadLosses = TotalLosses;
-		NoLoadLosses = Complex.ZERO;
+	public void getLosses(double[] TotalLosses, double[] LoadLosses,
+			double[] NoLoadLosses) {
+		Complex totalLosses = getLosses();  // Watts, vars
+
+		TotalLosses[0] = totalLosses.getReal();
+		TotalLosses[1] = totalLosses.getImaginary();
+
+		LoadLosses[0] = totalLosses.getReal();
+		LoadLosses[1] = totalLosses.getImaginary();
+
+		NoLoadLosses[0] = 0;
+		NoLoadLosses[1] = 0;
 	}
 
 	/**
@@ -698,11 +705,14 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 *
 	 * Derived classes have to supply appropriate function.
 	 */
-	public void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
-			Complex ZeroModeLosses) {
-		PosSeqLosses = Complex.ZERO;
-		NegSeqLosses = Complex.ZERO;
-		ZeroModeLosses = Complex.ZERO;
+	public void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
+			double[] ZeroModeLosses) {
+		PosSeqLosses[0] = 0;
+		PosSeqLosses[1] = 0;
+		NegSeqLosses[0] = 0;
+		NegSeqLosses[1] = 0;
+		ZeroModeLosses[0] = 0;
+		ZeroModeLosses[1] = 0;
 	}
 
 	private boolean isGroundBus(String S) {

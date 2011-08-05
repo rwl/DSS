@@ -523,7 +523,9 @@ public class ExportResults {
 	public static void exportLosses(String FileNm) {
 		FileWriter F;
 		PrintWriter FPrinter;
-		Complex S_total = Complex.ZERO, S_Load = Complex.ZERO, S_NoLoad = Complex.ZERO;
+		double[] S_total = new double[2];
+		double[] S_Load = new double[2];
+		double[] S_NoLoad = new double[2];
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
@@ -535,7 +537,7 @@ public class ExportResults {
 			for (PDElement PDElem : Globals.getActiveCircuit().getPDElements()) {
 				if (PDElem.isEnabled()) {
 					PDElem.getLosses(S_total, S_Load, S_NoLoad);
-					FPrinter.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g", PDElem.getParentClass().getName(), PDElem.getName(), S_total.getReal(), S_total.getImaginary(), S_Load.getReal(), S_Load.getImaginary(), S_NoLoad.getReal(), S_NoLoad.getImaginary());
+					FPrinter.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g", PDElem.getParentClass().getName(), PDElem.getName(), S_total[0], S_total[1], S_Load[0], S_Load[1], S_NoLoad[0], S_NoLoad[1]);
 					FPrinter.println();
 				}
 			}
@@ -1872,20 +1874,20 @@ public class ExportResults {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private static void writeNewLine(PrintWriter F,
 			final String CktElementName, double DistFromMeter1, double puV1, double DistFromMeter2, double puV2,
 			int ColorCode, int Thickness, int LineType,
 			int MarkCenter,
 			int CenterMarkerCode, int NodeMarkerCode, int NodeMarkerWidth) {
-		
+
 		F.printf("%s, %.6g, %.6g, %.6g, %.6g,", CktElementName, DistFromMeter1, puV1, DistFromMeter2, puV2);
 		F.printf("%d, %d, %d, ", ColorCode, Thickness, LineType);
 		F.printf("%d, ", MarkCenter);
 		F.printf("%d, %d, %d", CenterMarkerCode,  NodeMarkerCode, NodeMarkerWidth);
 		F.println();
 	}
-	
+
 	public static void exportProfile(String FileNm, int PhasesToPlot) {
 		int iEnergyMeter;
 		EnergyMeterObj ActiveEnergyMeter;
@@ -1905,7 +1907,7 @@ public class ExportResults {
 		try {
 			F = new FileWriter(FileNm);
 			FPrinter = new PrintWriter(F);
-			
+
 			FPrinter.print("Name, Distance1, puV1, Distance2, puV2, Color, Thickness, Linetype, Markcenter, Centercode, NodeCode, NodeWidth,");
 
 			/* New graph created before this routine is entered */
@@ -1945,8 +1947,8 @@ public class ExportResults {
 												iphs, 2, 0, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
 							/* Plot all phases present (between 1 and 3) */
-							case DSSGlobals.PROFILEALL: 
-								for (iphs = 0; iphs < 3; iphs++) 
+							case DSSGlobals.PROFILEALL:
+								for (iphs = 0; iphs < 3; iphs++)
 									if ((Bus1.findIdx(iphs) >= 0) && (Bus2.findIdx(iphs) >= 0)) {
 										if (Bus1.getkVBase() < 1.0) {
 											Linetype = 2;
@@ -1992,7 +1994,7 @@ public class ExportResults {
 										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
-							case DSSGlobals.PROFILELLALL: 
+							case DSSGlobals.PROFILELLALL:
 								for (iphs = 0; iphs < 3; iphs++) {
 									iphs2 = iphs + 1;
 									if (iphs2 >= 3) iphs2 = 0;  // TODO Check zero based indexing
@@ -2010,7 +2012,7 @@ public class ExportResults {
 									writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}
-							case DSSGlobals.PROFILELLPRI: 
+							case DSSGlobals.PROFILELLPRI:
 								if (Bus1.getkVBase() > 1.0)
 									for (iphs = 0; iphs < 3; iphs++) {
 										iphs2 = iphs + 1;
@@ -2049,7 +2051,7 @@ public class ExportResults {
 				}
 				iEnergyMeter = Globals.getEnergyMeterClass().getNext();
 			}
-			
+
 			Globals.setGlobalResult(FileNm);
 
 			F.close();
@@ -2057,7 +2059,7 @@ public class ExportResults {
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
-		
+
 	}
-	
+
 }

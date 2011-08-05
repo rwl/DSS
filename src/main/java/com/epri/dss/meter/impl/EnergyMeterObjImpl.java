@@ -366,10 +366,17 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void takeSample() {
 		int i, j;
 
+		/* pass by reference */
+		double[] mS_Totallosses = new double[2],
+				mS_LoadLosses = new double[2],
+				mS_NoLoadLosses = new double[2],
+				mS_PosSeqLosses = new double[2],
+				mS_ZeroSeqLosses = new double[2],
+				mS_NegSeqLosses = new double[2];
 		Complex S_Local,
-		S_Totallosses = null,
-		S_LoadLosses = null,
-		S_NoLoadLosses = null,
+		S_Totallosses,
+		S_LoadLosses,
+		S_NoLoadLosses,
 		TotalLoadLosses,
 		TotalNoLoadLosses,
 		TotalLineLosses,
@@ -400,9 +407,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		GenkVA,
 		S_Local_kVA,
 		Load_kW;
-		Complex S_PosSeqLosses = null;
-		Complex S_ZeroSeqLosses = null;
-		Complex S_NegSeqLosses = null;
+		Complex S_PosSeqLosses;
+		Complex S_ZeroSeqLosses;
+		Complex S_NegSeqLosses;
 
 		double puV;
 
@@ -559,7 +566,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			if (Losses) {  // Compute and report losses
 
 				/* Get losses from the present circuit element */
-				CktElem.getLosses(S_Totallosses, S_LoadLosses, S_NoLoadLosses);  // returns watts, vars
+				CktElem.getLosses(mS_Totallosses, mS_LoadLosses, mS_NoLoadLosses);  // returns watts, vars
+				S_Totallosses = new Complex(mS_Totallosses[0], mS_Totallosses[1]);
+				S_LoadLosses = new Complex(mS_LoadLosses[0], mS_LoadLosses[1]);
+				S_NoLoadLosses = new Complex(mS_NoLoadLosses[0], mS_NoLoadLosses[1]);
+
 				/* Convert to kW */
 				S_Totallosses = S_Totallosses.multiply(0.001);
 				S_LoadLosses = S_LoadLosses.multiply(0.001);
@@ -573,7 +584,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				if (Utilities.isLineElement(CktElem) && LineLosses) {
 					TotalLineLosses = TotalLineLosses.add(S_Totallosses);  // Accumulate total losses in meter zone
 					if (SeqLosses) {
-						CktElem.getSeqLosses(S_PosSeqLosses, S_NegSeqLosses, S_ZeroSeqLosses);
+						CktElem.getSeqLosses(mS_PosSeqLosses, mS_NegSeqLosses, mS_ZeroSeqLosses);
+						S_PosSeqLosses = new Complex(mS_PosSeqLosses[0], mS_PosSeqLosses[1]);
+						S_NegSeqLosses = new Complex(mS_NegSeqLosses[0], mS_NegSeqLosses[1]);
+						S_ZeroSeqLosses = new Complex(mS_ZeroSeqLosses[0], mS_ZeroSeqLosses[1]);
+
 						S_PosSeqLosses = S_PosSeqLosses.add(S_NegSeqLosses);  // add line modes together
 						S_PosSeqLosses = S_PosSeqLosses.multiply(0.001);  // convert to kW
 						S_ZeroSeqLosses = S_ZeroSeqLosses.multiply(0.001);

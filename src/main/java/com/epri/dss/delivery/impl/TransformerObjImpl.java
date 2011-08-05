@@ -3,6 +3,8 @@ package com.epri.dss.delivery.impl;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.Complex;
@@ -644,23 +646,33 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	@Override
-	public void getLosses(Complex TotalLosses, Complex LoadLosses, Complex NoLoadLosses) {
+	public void getLosses(double[] TotalLosses, double[] LoadLosses, double[] NoLoadLosses) {
+		Complex totalLosses, loadLosses, noLoadLosses;
 
 		/* Calculates losses in watts, vars */
-		TotalLosses = getLosses();  // Side effect: computes Iterminal
+		totalLosses = getLosses();  // Side effect: computes Iterminal
 
 		/* Compute No load losses in Yprim_Shunt */
 		Complex[] cTempIterminal = new Complex[Yorder];
 		computeVterminal();
 		YPrim_Shunt.MVMult(cTempIterminal, Vterminal);
 		/* No Load Losses are sum of all powers coming into YPrim_Shunt from each terminal */
-		NoLoadLosses = Complex.ZERO;
+		noLoadLosses = Complex.ZERO;
 		for (int i = 0; i < Yorder; i++)
-			NoLoadLosses = NoLoadLosses.add( Vterminal[i].multiply(cTempIterminal[i].conjugate()) );
+			noLoadLosses = noLoadLosses.add( Vterminal[i].multiply(cTempIterminal[i].conjugate()) );
 
-		LoadLosses = TotalLosses.subtract(NoLoadLosses);
+		loadLosses = totalLosses.subtract(noLoadLosses);
+
+		/* handle pass by reference */
+		TotalLosses[0] = totalLosses.getReal();
+		TotalLosses[1] = totalLosses.getImaginary();
+		LoadLosses[0] = loadLosses.getReal();
+		LoadLosses[1] = loadLosses.getImaginary();
+		NoLoadLosses[0] = noLoadLosses.getReal();
+		NoLoadLosses[1] = noLoadLosses.getImaginary();
 
 		cTempIterminal = null;
+
 	}
 
 	/**
@@ -853,7 +865,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	 */
 	@Override
 	public void makePosSequence() {
-		int iW, i, N = 0;
+		int iW, i;
+		MutableInt N = new MutableInt();
 		String S;
 		int[] Nodes = new int[5];  // integer buffer
 		boolean OnPhase1;
@@ -868,9 +881,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				Globals.getAuxParser().setCmdString(getBus(iW));
 				Globals.getAuxParser().getNextParam();
 				S = Globals.getAuxParser().parseAsBusName(N, Nodes);  // TODO Check N gets set
-				if (N == 0)
+				if (N.intValue() == 0)
 					OnPhase1 = true;
-				for (i = 0; i < N; i++)
+				for (i = 0; i < N.intValue(); i++)
 					if (Nodes[i] == 1)
 						OnPhase1 = true;
 				if (!OnPhase1) {

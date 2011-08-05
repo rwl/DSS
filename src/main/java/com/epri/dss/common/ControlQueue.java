@@ -1,5 +1,8 @@
 package com.epri.dss.common;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.impl.ControlAction;
 
@@ -18,7 +21,7 @@ public interface ControlQueue {
 	void doAllActions();
 
 	/* Do only actions with lowest time */
-	boolean doNearestActions(int Hour, double Sec);
+	boolean doNearestActions(MutableInt Hour, MutableDouble Sec);
 
 	/* Do actions with time <= t */
 	boolean doActions(int Hour, double sec);

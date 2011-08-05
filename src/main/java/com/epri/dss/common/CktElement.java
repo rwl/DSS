@@ -162,11 +162,11 @@ public interface CktElement extends DSSObject {
 
 	void getPhaseLosses(int Num_Phases, Complex[] LossBuffer);
 
-	void getLosses(Complex TotalLosses, Complex LoadLosses,
-			Complex NoLoadLosses);
+	void getLosses(double[] TotalLosses, double[] LoadLosses,
+			double[] NoLoadLosses);
 
-	void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
-			Complex ZeroModeLosses);
+	void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
+			double[] ZeroModeLosses);
 
 	String getPropertyValue(int Index);
 

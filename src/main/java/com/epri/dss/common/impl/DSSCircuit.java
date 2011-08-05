@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Bus;
@@ -346,6 +348,684 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.Branch_List = null;
 		this.BusAdjPC = null;
 		this.BusAdjPD = null;
+	}
+
+	private void addDeviceHandle(int Handle) {
+		if (NumDevices > MaxDevices) {
+			MaxDevices = MaxDevices + IncDevices;
+			DeviceRef = (CktElementDef[]) Utilities.resizeArray(DeviceRef, MaxDevices);
+		}
+		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
+		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
+	}
+
+	private void addABus() {
+		if (NumBuses > MaxBuses) {
+			MaxBuses += IncBuses;
+			Buses = (Bus[]) Utilities.resizeArray(Buses, MaxBuses);
+		}
+	}
+
+	private void addANodeBus() {
+		if (NumNodes > MaxNodes) {
+			MaxNodes += IncNodes;
+			MapNodeToBus = (NodeBus[]) Utilities.resizeArray(MapNodeToBus, MaxNodes);
+		}
+	}
+
+	private int addBus(final String BusName, int NNodes) {
+
+		if (BusName.length() == 0) {  // Error in busname
+			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
+					"Error in definition of object.", 424);
+			for (int i = 0; i < ActiveCktElement.getNConds(); i++) NodeBuffer[i] = 0;
+			return 0;
+		}
+
+		int Result = BusList.find(BusName);
+		if (Result == 0) {
+			Result = BusList.add(BusName);    // Result is index of bus
+			NumBuses += 1;
+			addABus();   // Allocates more memory if necessary
+			Buses[NumBuses] = new DSSBus();
+		}
+
+		/* Define nodes belonging to the bus */
+		/* Replace NodeBuffer values with global reference number */
+		int NodeRef;
+		for (int i = 0; i < NNodes; i++) {
+			NodeRef = Buses[Result].add(NodeBuffer[i]);
+			if (NodeRef == NumNodes) { // This was a new node so Add a NodeToBus element ????
+				addANodeBus();   // Allocates more memory if necessary
+				MapNodeToBus[NumNodes].BusRef  = Result;
+				MapNodeToBus[NumNodes].NodeNum = NodeBuffer[i];
+			}
+			NodeBuffer[i] = NodeRef;  //  Swap out in preparation to setnoderef call
+		}
+		return Result;
+	}
+
+	public void setActiveCktElement(CktElement Value) {
+		ActiveCktElement = Value;
+		DSSGlobals.getInstance().setActiveDSSObject(Value);
+	}
+
+	public CktElement getActiveCktElement() {
+		return ActiveCktElement;
+	}
+
+	public void setBusNameRedefined(boolean Value) {
+		BusNameRedefined = Value;
+
+		if (Value) {
+			// Force Rebuilding of SystemY if bus def has changed
+			Solution.setSystemYChanged(true);
+			// So controls will know buses redefined
+			Control_BusNameRedefined = true;
+		}
+	}
+
+	public boolean isBusNameRedefined() {
+		return BusNameRedefined;
+	}
+
+	/* Total Circuit PD Element losses */
+	public Complex getLosses() {
+		Complex Result = Complex.ZERO;
+		for (PDElement pdElem : PDElements) {
+			if (pdElem.isEnabled()) {
+				/* Ignore Shunt Elements */
+				if (!pdElem.isShunt())
+					Result = Result.add(pdElem.getLosses());
+			}
+		}
+		return Result;
+	}
+
+	public void setLoadMultiplier(double Value) {
+		if (Value != LoadMultiplier) {
+			// We may have to change the Y matrix if the load multiplier  has changed
+			switch (Solution.getLoadModel()) {
+			case DSSGlobals.ADMITTANCE:
+				invalidateAllPCElements();
+			}
+		}
+		LoadMultiplier = Value;
+	}
+
+	public double getLoadMultiplier() {
+		return 0.0;
+	}
+
+	private void saveBusInfo() {
+		/* Save existing bus definitions and names for info that needs to be restored */
+		SavedBuses = new DSSBus[NumBuses];
+		SavedBusNames = new String[NumBuses];
+
+		for (int i = 0; i < NumBuses; i++) {
+			SavedBuses[i] = Buses[i];
+			SavedBusNames[i] = BusList.get(i);
+		}
+		SavedNumBuses = NumBuses;
+	}
+
+	private void restoreBusInfo() {
+		Bus bus;
+		/* Restore  kV bases, other values to buses still in the list */
+		for (int i = 0; i < SavedNumBuses; i++) {
+			int idx = BusList.find(SavedBusNames[i]);
+			if (idx != -1) {
+				bus = SavedBuses[i];
+				Buses[idx].setkVBase(bus.getkVBase());
+				Buses[idx].setX(bus.getX());
+				Buses[idx].setY(bus.getY());
+				Buses[idx].setCoordDefined(bus.isCoordDefined());
+				Buses[idx].setKeep(bus.isKeep());
+				/* Restore Voltages in new bus def that existed in old bus def */
+				if (bus.getVBus() != null) {
+					for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
+						// Find index in new bus for j-th node  in old bus
+						int jdx = Buses[idx].findIdx(bus.getNum(j));
+						if (jdx > -1) Buses[idx].getVBus()[jdx] = bus.getVBus()[j];
+					}
+				}
+			}
+			SavedBusNames[i] = ""; // De-allocate string
+		}
+
+		if (SavedBuses != null)
+			for (int i = 0; i < SavedNumBuses; i++)
+				SavedBuses[i] = null;  // gets rid of old bus voltages, too
+
+		SavedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
+		SavedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
+	}
+
+	private boolean saveMasterFile() {
+		boolean Result = false;
+		try {
+			File FD = new File("Master.DSS");
+			PrintStream F = new PrintStream(FD);
+
+			F.println("Clear");
+			F.println("New Circuit." + getName());
+			F.println();
+			if (PositiveSequence) F.println("Set Cktmodel=Positive");
+			if (DuplicatesAllowed) F.println("set allowdup=yes");
+			F.println();
+
+			// Write Redirect for all populated DSS Classes  Except Solution Class
+			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
+				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
+
+			if (new File("buscoords.dss").exists()) {
+				F.println("MakeBusList");
+				F.println("Buscoords buscoords.dss");
+			}
+
+			F.close();
+			Result = true;
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
+		}
+
+		return Result;
+	}
+
+	private boolean saveDSSObjects() {
+		// Write Files for all populated DSS Classes  Except Solution Class
+		for (DSSClass DSS_Class : DSSGlobals.getInstance().getDSSClassList()) {
+			if ((DSS_Class == DSSGlobals.getInstance().getSolutionClass()) || DSS_Class.isSaved())
+				continue;   // Cycle to next
+			/* use default filename=classname */
+			if (!Utilities.writeClassFile(DSS_Class, "", (DSS_Class instanceof CktElementClass) ))
+				return false;  // bail on error
+			DSS_Class.setSaved(true);
+		}
+		return true;
+	}
+
+	private boolean saveFeeders() {
+		String CurrDir;
+//		EnergyMeter Meter;
+
+		boolean Result = true;
+		/* Write out all energy meter  zones to separate subdirectories */
+//		String SaveDir = System.getProperty("user.dir");
+		for (EnergyMeterObj Meter : EnergyMeters) {
+			CurrDir = Meter.getName();
+			if (new File(CurrDir).mkdir()) {
+//				SetCurrentDir(CurrDir);  FIXME: Set cwd
+				Meter.saveZone(CurrDir);
+//				SetCurrentDir(SaveDir);  FIXME: Set cwd
+			} else {
+				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
+				Result = false;
+//				SetCurrentDir(SaveDir);  FIXME: Set cwd // back to whence we came
+				break;
+			}
+		}
+		return Result;
+	}
+
+	private boolean saveBusCoords() {
+		boolean Result = false;
+
+		try {
+			File FD = new File("BusCoords.dss");
+			PrintStream F = new PrintStream(FD);
+
+			for (int i = 0; i < NumBuses; i++)
+				if (Buses[i].isCoordDefined())
+					F.println(Utilities.checkForBlanks(BusList.get(i)) + String.format(", %-g, %-g", Buses[i].getX(), Buses[i].getY()));
+
+			F.close();
+
+			Result = true;
+		} catch (Exception e) {
+			DSSGlobals.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
+		}
+
+		return Result;
+	}
+
+	/* Reallocate the device list to improve the performance of searches */
+	private void reallocDeviceList() {
+		if (LogEvents) Utilities.logThisEvent("Reallocating Device List");
+		HashListImpl TempList = new HashListImpl(2 * NumDevices);
+
+		for (int i = 0; i < DeviceList.listSize(); i++)
+			TempList.add(DeviceList.get(i));
+
+		DeviceList = TempList;
+	}
+
+	public void setCaseName(final String Value) {
+		CaseName = Value;
+		DSSGlobals.getInstance().setCircuitName_(Value + "_");
+	}
+
+	public String getCaseName() {
+		return CaseName;
+	}
+
+	public String getName() {
+		return getLocalName();
+	}
+
+	/* Adds last DSS object created to circuit */
+	public void addCktElement(int Handle) {
+		// Update lists that keep track of individual circuit elements
+		NumDevices += 1;
+
+		// Resize DeviceList if no. of devices greatly exceeds allocation
+		if (NumDevices > 2 * DeviceList.getInitialAllocation())
+			reallocDeviceList();
+		DeviceList.add(ActiveCktElement.getName());
+		CktElements.add(ActiveCktElement);
+
+		/* Build Lists of PC and PD elements */
+		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
+			PDElements.add((PDElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
+			PCElements.add((PCElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CTRL_ELEMENT) {
+			DSSControls.add((ControlElem) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.METER_ELEMENT) {
+			MeterElements.add((MeterElement) ActiveCktElement);
+		}
+
+		/* Build  lists of Special elements and generic types */
+		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
+			Monitors.add((MonitorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
+			EnergyMeters.add((EnergyMeterObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SENSOR_ELEMENT) {
+			Sensors.add((SensorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.GEN_ELEMENT) {
+			Generators.add((GeneratorObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SOURCE) {
+			Sources.add((PCElement) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_CONTROL) {
+			CapControls.add((CapControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SWT_CONTROL) {
+			SwtControls.add((SwtControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.REG_CONTROL) {
+			RegControls.add((RegControlObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LOAD_ELEMENT) {
+			Loads.add((LoadObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
+			ShuntCapacitors.add((CapacitorObj) ActiveCktElement);
+		}
+		/* Keep Lines, Transformer, and Lines and Faults in PDElements and
+		separate lists so we can find them quickly. */
+		else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
+			Transformers.add((TransformerObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
+			Lines.add((LineObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FAULTOBJECT) {
+			Faults.add((FaultObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FEEDER_ELEMENT) {
+			Feeders.add((FeederObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
+			StorageElements.add((StorageObj) ActiveCktElement);
+		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PVSYSTEM_ELEMENT) {
+			PVSystems.add((PVSystemObj) ActiveCktElement);
+		}
+
+		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
+		addDeviceHandle(CktElements.size()); // Handle is global index into CktElements
+		ActiveCktElement.setHandle(CktElements.size());
+	}
+
+	/**
+	 * Totalize all energy meters in the problem.
+	 */
+	public void totalizeMeters() {
+		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++)
+			RegisterTotals[i] = 0.0;
+
+		for (int i = 0; i < EnergyMeters.size(); i++) {
+			EnergyMeterObj Meter = EnergyMeters.get(i);
+			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++)
+				RegisterTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
+		}
+	}
+
+	private double sumSelectedRegisters(double[] mtrRegisters, int[] Regs, int count) {
+		double Result = 0.0;
+		for (int i = 0; i < count; i++)
+			Result += mtrRegisters[Regs[i]];
+		return Result;
+	}
+	public boolean computeCapacity() {
+		boolean Result = false;
+		if (EnergyMeters.size() == 0) {
+			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
+			return Result;
+		}
+
+		if (NumUERegs == 0) {
+			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
+			return Result;
+		}
+
+		Solution.setMode(Dynamics.SNAPSHOT);
+		LoadMultiplier = CapacityStart;
+		boolean CapacityFound = false;
+
+		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
+			DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
+			Solution.solve();
+			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
+			totalizeMeters();
+
+			// Check for non-zero in UEregs
+			if (sumSelectedRegisters(RegisterTotals, UERegs, NumUERegs) != 0.0)
+				CapacityFound = true;
+			// LoadMultiplier is a property ...
+			if (!CapacityFound)
+				LoadMultiplier += CapacityIncrement;
+		}
+
+		if (LoadMultiplier > 1.0) LoadMultiplier = 1.0;
+		Result = true;
+
+		return Result;
+	}
+
+	public boolean save(String Dir) {
+		// Make a new subfolder in the present folder based on the circuit
+		// name and a unique sequence number.
+		boolean Result = false;
+//		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
+		String CurrDir;
+
+		boolean Success = false;
+		if (Dir.length() == 0) {
+			Dir = getName();
+
+			CurrDir = Dir;
+			for (int i = 0; i < 999; i++) {  // Find a unique dir name
+				File F = new File(CurrDir);
+				if (!F.exists()) {
+					if (F.mkdir()) {
+//		            	SetCurrentDir(CurrDir);
+						Success = true;
+						break;
+					}
+				}
+				CurrDir = Dir + String.format("%.3d", i);
+			}
+		} else {
+			File F = new File(Dir);
+			if (!F.exists()) {
+				CurrDir = Dir;
+				F = new File(CurrDir);
+				if (F.mkdir()) {
+//		            SetCurrentDir(CurrDir);
+					Success = true;
+				}
+			} else {  // Exists - overwrite
+				CurrDir = Dir;
+//		        SetCurrentDir(CurrDir);
+				Success = true;
+			}
+		}
+
+		if (!Success) {
+			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
+			return Result;
+		}
+
+		// This list keeps track of all files saved
+		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
+
+		// Initialize so we will know when we have saved the circuit elements
+		for (CktElement elem : CktElements)
+			elem.setHasBeenSaved(false);
+//			DSSCktElement(elem).setHasBeenSaved(false);
+
+		// Initialize so we don't save a class twice
+		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
+			cls.setSaved(false);
+//			DSSClass(cls).setSaved(false);
+
+		// Ignore Feeder Class -- gets saved with Energymeters
+		//DSSGlobals.getInstance().getFeederClass().setSaved(true);
+
+		// Define voltage sources first
+		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
+		// Write library files so that they will be available to lines, loads, etc
+		/* Use default filename=classname */
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
+		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
+		if (Success) Success = saveFeeders(); // Save feeders first
+		if (Success) Success = saveDSSObjects();  // Save rest ot the objects
+		if (Success) Success = saveBusCoords();
+		if (Success) Success = saveMasterFile();
+
+		if (Success) {
+			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + System.getProperty("user.dir"), 433);
+		} else {
+			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + System.getProperty("user.dir"), 434);
+		}
+		// Return to Original directory
+//		SetCurrentDir(SaveDir);  FIXME: Set cwd
+
+		return true;
+	}
+
+	public void processBusDefs() {
+		String BusName;
+		MutableInt NNodes = new MutableInt();
+		int np = ActiveCktElement.getNPhases();
+		int NCond = ActiveCktElement.getNConds();
+
+		// use parser functions to decode
+		Parser.getInstance().setToken(ActiveCktElement.getFirstBus());
+
+		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
+			boolean NodesOK = true;
+			// Assume normal phase rotation  for default
+			for (int i = 0; i < np; i++)
+				NodeBuffer[i] = i; // set up buffer with defaults
+
+			// Default all other conductors to a ground connection
+			// If user wants them ungrounded, must be specified explicitly!
+			for (int i = np + 1; i < NCond; i++)
+				NodeBuffer[i] = 0;
+
+			// Parser will override bus connection if any specified
+			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer); // TODO: Check NNodes gets set.
+
+			// Check for error in node specification
+			for (int j = 0; j < NNodes.intValue(); j++) {
+				if (NodeBuffer[j] < 0) {
+					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in Node specification for Element: \""
+						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
+						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
+					NodesOK = false;
+					if (retval == -1) {
+						AbortBusProcess = true;
+						DSSGlobals.getInstance().appendGlobalResult("Aborted bus process.");
+						return;
+					}
+					break;
+				}
+			}
+
+			// Node -Terminal Connnections
+			// Caution: Magic -- AddBus replaces values in nodeBuffer to correspond
+			// with global node reference number.
+			if (NodesOK) {
+				ActiveCktElement.setActiveTerminalIdx(iTerm);
+				ActiveCktElement.getActiveTerminal().setBusRef(addBus(BusName, NCond));
+				ActiveCktElement.setNodeRef(iTerm, NodeBuffer);  // for active circuit
+			}
+			Parser.getInstance().setToken(ActiveCktElement.getNextBus());
+		}
+	}
+
+	/**
+	 * Redo all BusLists, NodeLists
+	 */
+	public void reProcessBusDefs() {
+		if (LogEvents) Utilities.logThisEvent("Reprocessing Bus Definitions");
+
+		AbortBusProcess = false;
+		saveBusInfo();  // So we don't have to keep re-doing this
+		// Keeps present definitions of bus objects until new ones created
+
+		// get rid of old bus lists
+//		BusList.Free();  // Clears hash list of Bus names for adding more
+		BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
+
+		NumBuses = 0;  // Leave allocations same, but start count over
+		NumNodes = 0;
+
+		// Now redo all enabled circuit elements
+		CktElement CktElementSave = ActiveCktElement;
+		for (int i = 0; i < CktElements.size(); i++) {
+			ActiveCktElement = CktElements.get(i);
+			if (ActiveCktElement.isEnabled()) processBusDefs();
+			if (AbortBusProcess) return;
+		}
+
+		ActiveCktElement = CktElementSave;  // restore active circuit element
+
+		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
+		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
+
+		restoreBusInfo();     // frees old bus info, too
+		doResetMeterZones();  // Fix up meter zones to correspond
+
+		BusNameRedefined = false;  // Get ready for next time
+	}
+
+	public void doResetMeterZones() {
+		/* Do this only if meterzones unlocked .  Normally, Zones will remain
+		unlocked so that all changes to the circuit will result in rebuilding
+		the lists */
+		if (!MeterZonesComputed || !ZonesLocked) {
+			if (LogEvents) Utilities.logThisEvent("Resetting Meter Zones");
+			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
+			MeterZonesComputed = true;
+			if (LogEvents) Utilities.logThisEvent("Done Resetting Meter Zones");
+		}
+
+		freeTopology();
+	}
+
+	public int setElementActive(String FullObjectName) {
+		int Result = 0;
+		String DevType = "", DevName = "";
+
+		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);  // TODO: Check DevType and DevName get set.
+		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType);
+		if (DevClassIndex == 0)
+			DevClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
+		int DevIndex = DeviceList.find(DevName);
+		while (DevIndex >= 0) {
+			if (DeviceRef[DevIndex].CktElementClass == DevClassIndex) {  // we got a match
+				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(DevClassIndex));
+				DSSGlobals.getInstance().setLastClassReferenced(DevClassIndex);
+				Result = DeviceRef[DevIndex].devHandle;
+				// ActiveDSSClass.Active = Result;
+				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
+				ActiveCktElement = CktElements.get(Result);
+				break;
+			}
+			DevIndex = DeviceList.findNext();   // Could be duplicates
+		}
+
+		DSSGlobals.getInstance().setCmdResult(Result);
+
+		return Result;
+	}
+
+	public void invalidateAllPCElements() {
+		for (PCElement p : PCElements)
+			p.setYprimInvalid(true);
+
+		// Force rebuild of matrix on next solution
+		Solution.setSystemYChanged(true);
+	}
+
+	public void debugDump(PrintStream F) {
+		F.println("NumBuses= " + NumBuses);
+		F.println("NumNodes= " + NumNodes);
+		F.println("NumDevices= " + NumDevices);
+		F.println("BusList:");
+		for (int i = 0; i < NumBuses; i++) {
+			F.printf("  %12s", BusList.get(i));
+			F.printf(" (" + Buses[i].getNumNodesThisBus() + " Nodes)");
+			for (int j = 0; j < Buses[i].getNumNodesThisBus(); j++) {
+				F.print(" " + Buses[i].getNum(j));
+			}
+			F.println();
+		}
+		F.println("DeviceList:");
+		for (int i = 0; i < NumDevices; i++) {
+			F.printf("  %12s%s", DeviceList.get(i), DSSGlobals.CRLF);
+			ActiveCktElement = CktElements.get(i);
+			if (!ActiveCktElement.isEnabled())
+				F.print("  DISABLED");
+			F.println();
+		}
+		F.println("NodeToBus Array:");
+		for (int i = 0; i < NumNodes; i++) {
+			int j = MapNodeToBus[i].BusRef;
+			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].NodeNum + ")");
+			F.println();
+		}
+	}
+
+	/* Access to topology from the first source */
+	public CktTree getTopology() {
+//		DSSCktElement Elem;
+
+		if (Branch_List == null) {
+			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
+			for (CktElement elem : CktElements) {
+				elem.setChecked(false);
+				for (int i = 0; i < elem.getNTerms(); i++)
+					elem.getTerminals()[i].setChecked(false);
+				elem.setIsIsolated(true); // till proven otherwise
+			}
+
+			for (int i = 0; i < NumBuses; i++)
+				Buses[i].setBusChecked(false);
+
+			Branch_List = CktTreeImpl.getIsolatedSubArea(Sources.get(0), true);  // calls back to build adjacency lists
+		}
+		return Branch_List;
+	}
+
+	public void freeTopology() {
+//		if (Branch_List != null) Branch_List.Free();
+		Branch_List = null;
+		if (BusAdjPC != null)
+			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
+	}
+
+	public List<PDElement>[] getBusAdjacentPDLists() {
+		if (BusAdjPD == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		return BusAdjPD;
+	}
+
+	public List<PCElement>[] getBusAdjacentPCLists() {
+		if (BusAdjPC == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		return BusAdjPC;
 	}
 
 	public int getActiveBusIndex() {
@@ -1074,684 +1754,6 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setActiveLoadShapeClass(int activeLoadShapeClass) {
 		ActiveLoadShapeClass = activeLoadShapeClass;
-	}
-
-	private void addDeviceHandle(int Handle) {
-		if (NumDevices > MaxDevices) {
-			MaxDevices = MaxDevices + IncDevices;
-			DeviceRef = (CktElementDef[]) Utilities.resizeArray(DeviceRef, MaxDevices);
-		}
-		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
-		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
-	}
-
-	private void addABus() {
-		if (NumBuses > MaxBuses) {
-			MaxBuses += IncBuses;
-			Buses = (Bus[]) Utilities.resizeArray(Buses, MaxBuses);
-		}
-	}
-
-	private void addANodeBus() {
-		if (NumNodes > MaxNodes) {
-			MaxNodes += IncNodes;
-			MapNodeToBus = (NodeBus[]) Utilities.resizeArray(MapNodeToBus, MaxNodes);
-		}
-	}
-
-	private int addBus(String BusName, int NNodes) {
-
-		if (BusName.length() == 0) {  // Error in busname
-			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
-					"Error in definition of object.", 424);
-			for (int i = 0; i < ActiveCktElement.getNConds(); i++) NodeBuffer[i] = 0;
-			return 0;
-		}
-
-		int Result = BusList.find(BusName);
-		if (Result == 0) {
-			Result = BusList.add(BusName);    // Result is index of bus
-			NumBuses += 1;
-			addABus();   // Allocates more memory if necessary
-			Buses[NumBuses] = new DSSBus();
-		}
-
-		/* Define nodes belonging to the bus */
-		/* Replace NodeBuffer values with global reference number */
-		int NodeRef;
-		for (int i = 0; i < NNodes; i++) {
-			NodeRef = Buses[Result].add(NodeBuffer[i]);
-			if (NodeRef == NumNodes) { // This was a new node so Add a NodeToBus element ????
-				addANodeBus();   // Allocates more memory if necessary
-				MapNodeToBus[NumNodes].BusRef  = Result;
-				MapNodeToBus[NumNodes].NodeNum = NodeBuffer[i];
-			}
-			NodeBuffer[i] = NodeRef;  //  Swap out in preparation to setnoderef call
-		}
-		return Result;
-	}
-
-	public void setActiveCktElement(CktElement Value) {
-		ActiveCktElement = Value;
-		DSSGlobals.getInstance().setActiveDSSObject(Value);
-	}
-
-	public CktElement getActiveCktElement() {
-		return ActiveCktElement;
-	}
-
-	public void setBusNameRedefined(boolean Value) {
-		BusNameRedefined = Value;
-
-		if (Value) {
-			// Force Rebuilding of SystemY if bus def has changed
-			Solution.setSystemYChanged(true);
-			// So controls will know buses redefined
-			Control_BusNameRedefined = true;
-		}
-	}
-
-	public boolean isBusNameRedefined() {
-		return BusNameRedefined;
-	}
-
-	/* Total Circuit PD Element losses */
-	public Complex getLosses() {
-		Complex Result = Complex.ZERO;
-		for (PDElement pdElem : PDElements) {
-			if (pdElem.isEnabled()) {
-				/* Ignore Shunt Elements */
-				if (!pdElem.isShunt())
-					Result = Result.add(pdElem.getLosses());
-			}
-		}
-		return Result;
-	}
-
-	public void setLoadMultiplier(double Value) {
-		if (Value != LoadMultiplier) {
-			// We may have to change the Y matrix if the load multiplier  has changed
-			switch (Solution.getLoadModel()) {
-			case DSSGlobals.ADMITTANCE:
-				invalidateAllPCElements();
-			}
-		}
-		LoadMultiplier = Value;
-	}
-
-	public double getLoadMultiplier() {
-		return 0.0;
-	}
-
-	private void saveBusInfo() {
-		/* Save existing bus definitions and names for info that needs to be restored */
-		SavedBuses = new DSSBus[NumBuses];
-		SavedBusNames = new String[NumBuses];
-
-		for (int i = 0; i < NumBuses; i++) {
-			SavedBuses[i] = Buses[i];
-			SavedBusNames[i] = BusList.get(i);
-		}
-		SavedNumBuses = NumBuses;
-	}
-
-	private void restoreBusInfo() {
-		Bus bus;
-		/* Restore  kV bases, other values to buses still in the list */
-		for (int i = 0; i < SavedNumBuses; i++) {
-			int idx = BusList.find(SavedBusNames[i]);
-			if (idx != -1) {
-				bus = SavedBuses[i];
-				Buses[idx].setkVBase(bus.getkVBase());
-				Buses[idx].setX(bus.getX());
-				Buses[idx].setY(bus.getY());
-				Buses[idx].setCoordDefined(bus.isCoordDefined());
-				Buses[idx].setKeep(bus.isKeep());
-				/* Restore Voltages in new bus def that existed in old bus def */
-				if (bus.getVBus() != null) {
-					for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
-						// Find index in new bus for j-th node  in old bus
-						int jdx = Buses[idx].findIdx(bus.getNum(j));
-						if (jdx > -1) Buses[idx].getVBus()[jdx] = bus.getVBus()[j];
-					}
-				}
-			}
-			SavedBusNames[i] = ""; // De-allocate string
-		}
-
-		if (SavedBuses != null)
-			for (int i = 0; i < SavedNumBuses; i++)
-				SavedBuses[i] = null;  // gets rid of old bus voltages, too
-
-		SavedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
-		SavedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
-	}
-
-	private boolean saveMasterFile() {
-		boolean Result = false;
-		try {
-			File FD = new File("Master.DSS");
-			PrintStream F = new PrintStream(FD);
-
-			F.println("Clear");
-			F.println("New Circuit." + getName());
-			F.println();
-			if (PositiveSequence) F.println("Set Cktmodel=Positive");
-			if (DuplicatesAllowed) F.println("set allowdup=yes");
-			F.println();
-
-			// Write Redirect for all populated DSS Classes  Except Solution Class
-			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
-				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
-
-			if (new File("buscoords.dss").exists()) {
-				F.println("MakeBusList");
-				F.println("Buscoords buscoords.dss");
-			}
-
-			F.close();
-			Result = true;
-		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
-		}
-
-		return Result;
-	}
-
-	private boolean saveDSSObjects() {
-		// Write Files for all populated DSS Classes  Except Solution Class
-		for (DSSClass DSS_Class : DSSGlobals.getInstance().getDSSClassList()) {
-			if ((DSS_Class == DSSGlobals.getInstance().getSolutionClass()) || DSS_Class.isSaved())
-				continue;   // Cycle to next
-			/* use default filename=classname */
-			if (!Utilities.writeClassFile(DSS_Class, "", (DSS_Class instanceof CktElementClass) ))
-				return false;  // bail on error
-			DSS_Class.setSaved(true);
-		}
-		return true;
-	}
-
-	private boolean saveFeeders() {
-		String CurrDir;
-//		EnergyMeter Meter;
-
-		boolean Result = true;
-		/* Write out all energy meter  zones to separate subdirectories */
-//		String SaveDir = System.getProperty("user.dir");
-		for (EnergyMeterObj Meter : EnergyMeters) {
-			CurrDir = Meter.getName();
-			if (new File(CurrDir).mkdir()) {
-//				SetCurrentDir(CurrDir);  FIXME: Set cwd
-				Meter.saveZone(CurrDir);
-//				SetCurrentDir(SaveDir);  FIXME: Set cwd
-			} else {
-				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
-				Result = false;
-//				SetCurrentDir(SaveDir);  FIXME: Set cwd // back to whence we came
-				break;
-			}
-		}
-		return Result;
-	}
-
-	private boolean saveBusCoords() {
-		boolean Result = false;
-
-		try {
-			File FD = new File("BusCoords.dss");
-			PrintStream F = new PrintStream(FD);
-
-			for (int i = 0; i < NumBuses; i++)
-				if (Buses[i].isCoordDefined())
-					F.println(Utilities.checkForBlanks(BusList.get(i)) + String.format(", %-g, %-g", Buses[i].getX(), Buses[i].getY()));
-
-			F.close();
-
-			Result = true;
-		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
-		}
-
-		return Result;
-	}
-
-	/* Reallocate the device list to improve the performance of searches */
-	private void reallocDeviceList() {
-		if (LogEvents) Utilities.logThisEvent("Reallocating Device List");
-		HashListImpl TempList = new HashListImpl(2 * NumDevices);
-
-		for (int i = 0; i < DeviceList.listSize(); i++)
-			TempList.add(DeviceList.get(i));
-
-		DeviceList = TempList;
-	}
-
-	public void setCaseName(String Value) {
-		CaseName = Value;
-		DSSGlobals.getInstance().setCircuitName_(Value + "_");
-	}
-
-	public String getCaseName() {
-		return CaseName;
-	}
-
-	public String getName() {
-		return getLocalName();
-	}
-
-	/* Adds last DSS object created to circuit */
-	public void addCktElement(int Handle) {
-		// Update lists that keep track of individual circuit elements
-		NumDevices += 1;
-
-		// Resize DeviceList if no. of devices greatly exceeds allocation
-		if (NumDevices > 2 * DeviceList.getInitialAllocation())
-			reallocDeviceList();
-		DeviceList.add(ActiveCktElement.getName());
-		CktElements.add(ActiveCktElement);
-
-		/* Build Lists of PC and PD elements */
-		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
-			PDElements.add((PDElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
-			PCElements.add((PCElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CTRL_ELEMENT) {
-			DSSControls.add((ControlElem) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.METER_ELEMENT) {
-			MeterElements.add((MeterElement) ActiveCktElement);
-		}
-
-		/* Build  lists of Special elements and generic types */
-		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
-			Monitors.add((MonitorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
-			EnergyMeters.add((EnergyMeterObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SENSOR_ELEMENT) {
-			Sensors.add((SensorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.GEN_ELEMENT) {
-			Generators.add((GeneratorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SOURCE) {
-			Sources.add((PCElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_CONTROL) {
-			CapControls.add((CapControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SWT_CONTROL) {
-			SwtControls.add((SwtControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.REG_CONTROL) {
-			RegControls.add((RegControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LOAD_ELEMENT) {
-			Loads.add((LoadObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
-			ShuntCapacitors.add((CapacitorObj) ActiveCktElement);
-		}
-		/* Keep Lines, Transformer, and Lines and Faults in PDElements and
-		separate lists so we can find them quickly. */
-		else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
-			Transformers.add((TransformerObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
-			Lines.add((LineObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FAULTOBJECT) {
-			Faults.add((FaultObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FEEDER_ELEMENT) {
-			Feeders.add((FeederObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
-			StorageElements.add((StorageObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PVSYSTEM_ELEMENT) {
-			PVSystems.add((PVSystemObj) ActiveCktElement);
-		}
-
-		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
-		addDeviceHandle(CktElements.size()); // Handle is global index into CktElements
-		ActiveCktElement.setHandle(CktElements.size());
-	}
-
-	/**
-	 * Totalize all energy meters in the problem.
-	 */
-	public void totalizeMeters() {
-		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++)
-			RegisterTotals[i] = 0.0;
-
-		for (int i = 0; i < EnergyMeters.size(); i++) {
-			EnergyMeterObj Meter = EnergyMeters.get(i);
-			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++)
-				RegisterTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
-		}
-	}
-
-	private double sumSelectedRegisters(double[] mtrRegisters, int[] Regs, int count) {
-		double Result = 0.0;
-		for (int i = 0; i < count; i++)
-			Result += mtrRegisters[Regs[i]];
-		return Result;
-	}
-	public boolean computeCapacity() {
-		boolean Result = false;
-		if (EnergyMeters.size() == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
-			return Result;
-		}
-
-		if (NumUERegs == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
-			return Result;
-		}
-
-		Solution.setMode(Dynamics.SNAPSHOT);
-		LoadMultiplier = CapacityStart;
-		boolean CapacityFound = false;
-
-		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
-			DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
-			Solution.solve();
-			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
-			totalizeMeters();
-
-			// Check for non-zero in UEregs
-			if (sumSelectedRegisters(RegisterTotals, UERegs, NumUERegs) != 0.0)
-				CapacityFound = true;
-			// LoadMultiplier is a property ...
-			if (!CapacityFound)
-				LoadMultiplier += CapacityIncrement;
-		}
-
-		if (LoadMultiplier > 1.0) LoadMultiplier = 1.0;
-		Result = true;
-
-		return Result;
-	}
-
-	public boolean save(String Dir) {
-		// Make a new subfolder in the present folder based on the circuit
-		// name and a unique sequence number.
-		boolean Result = false;
-//		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
-		String CurrDir;
-
-		boolean Success = false;
-		if (Dir.length() == 0) {
-			Dir = getName();
-
-			CurrDir = Dir;
-			for (int i = 0; i < 999; i++) {  // Find a unique dir name
-				File F = new File(CurrDir);
-				if (!F.exists()) {
-					if (F.mkdir()) {
-//		            	SetCurrentDir(CurrDir);
-						Success = true;
-						break;
-					}
-				}
-				CurrDir = Dir + String.format("%.3d", i);
-			}
-		} else {
-			File F = new File(Dir);
-			if (!F.exists()) {
-				CurrDir = Dir;
-				F = new File(CurrDir);
-				if (F.mkdir()) {
-//		            SetCurrentDir(CurrDir);
-					Success = true;
-				}
-			} else {  // Exists - overwrite
-				CurrDir = Dir;
-//		        SetCurrentDir(CurrDir);
-				Success = true;
-			}
-		}
-
-		if (!Success) {
-			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
-			return Result;
-		}
-
-		// This list keeps track of all files saved
-		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
-
-		// Initialize so we will know when we have saved the circuit elements
-		for (CktElement elem : CktElements)
-			elem.setHasBeenSaved(false);
-//			DSSCktElement(elem).setHasBeenSaved(false);
-
-		// Initialize so we don't save a class twice
-		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
-			cls.setSaved(false);
-//			DSSClass(cls).setSaved(false);
-
-		// Ignore Feeder Class -- gets saved with Energymeters
-		//DSSGlobals.getInstance().getFeederClass().setSaved(true);
-
-		// Define voltage sources first
-		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
-		// Write library files so that they will be available to lines, loads, etc
-		/* Use default filename=classname */
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
-		if (Success) Success = saveFeeders(); // Save feeders first
-		if (Success) Success = saveDSSObjects();  // Save rest ot the objects
-		if (Success) Success = saveBusCoords();
-		if (Success) Success = saveMasterFile();
-
-		if (Success) {
-			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + System.getProperty("user.dir"), 433);
-		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + System.getProperty("user.dir"), 434);
-		}
-		// Return to Original directory
-//		SetCurrentDir(SaveDir);  FIXME: Set cwd
-
-		return true;
-	}
-
-	public void processBusDefs() {
-		String BusName;
-		int NNodes = 0;
-		int np = ActiveCktElement.getNPhases();
-		int NCond = ActiveCktElement.getNConds();
-
-		// use parser functions to decode
-		Parser.getInstance().setToken(ActiveCktElement.getFirstBus());
-
-		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
-			boolean NodesOK = true;
-			// Assume normal phase rotation  for default
-			for (int i = 0; i < np; i++)
-				NodeBuffer[i] = i; // set up buffer with defaults
-
-			// Default all other conductors to a ground connection
-			// If user wants them ungrounded, must be specified explicitly!
-			for (int i = np + 1; i < NCond; i++)
-				NodeBuffer[i] = 0;
-
-			// Parser will override bus connection if any specified
-			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer); // TODO: Check NNodes gets set.
-
-			// Check for error in node specification
-			for (int j = 0; j < NNodes; j++) {
-				if (NodeBuffer[j] < 0) {
-					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in Node specification for Element: \""
-						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
-						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
-					NodesOK = false;
-					if (retval == -1) {
-						AbortBusProcess = true;
-						DSSGlobals.getInstance().appendGlobalResult("Aborted bus process.");
-						return;
-					}
-					break;
-				}
-			}
-
-			// Node -Terminal Connnections
-			// Caution: Magic -- AddBus replaces values in nodeBuffer to correspond
-			// with global node reference number.
-			if (NodesOK) {
-				ActiveCktElement.setActiveTerminalIdx(iTerm);
-				ActiveCktElement.getActiveTerminal().setBusRef(addBus(BusName, NCond));
-				ActiveCktElement.setNodeRef(iTerm, NodeBuffer);  // for active circuit
-			}
-			Parser.getInstance().setToken(ActiveCktElement.getNextBus());
-		}
-	}
-
-	/**
-	 * Redo all BusLists, NodeLists
-	 */
-	public void reProcessBusDefs() {
-		if (LogEvents) Utilities.logThisEvent("Reprocessing Bus Definitions");
-
-		AbortBusProcess = false;
-		saveBusInfo();  // So we don't have to keep re-doing this
-		// Keeps present definitions of bus objects until new ones created
-
-		// get rid of old bus lists
-//		BusList.Free();  // Clears hash list of Bus names for adding more
-		BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
-
-		NumBuses = 0;  // Leave allocations same, but start count over
-		NumNodes = 0;
-
-		// Now redo all enabled circuit elements
-		CktElement CktElementSave = ActiveCktElement;
-		for (int i = 0; i < CktElements.size(); i++) {
-			ActiveCktElement = CktElements.get(i);
-			if (ActiveCktElement.isEnabled()) processBusDefs();
-			if (AbortBusProcess) return;
-		}
-
-		ActiveCktElement = CktElementSave;  // restore active circuit element
-
-		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
-		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
-
-		restoreBusInfo();     // frees old bus info, too
-		doResetMeterZones();  // Fix up meter zones to correspond
-
-		BusNameRedefined = false;  // Get ready for next time
-	}
-
-	public void doResetMeterZones() {
-		/* Do this only if meterzones unlocked .  Normally, Zones will remain
-		unlocked so that all changes to the circuit will result in rebuilding
-		the lists */
-		if (!MeterZonesComputed || !ZonesLocked) {
-			if (LogEvents) Utilities.logThisEvent("Resetting Meter Zones");
-			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
-			MeterZonesComputed = true;
-			if (LogEvents) Utilities.logThisEvent("Done Resetting Meter Zones");
-		}
-
-		freeTopology();
-	}
-
-	public int setElementActive(String FullObjectName) {
-		int Result = 0;
-		String DevType = "", DevName = "";
-
-		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);  // TODO: Check DevType and DevName get set.
-		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType);
-		if (DevClassIndex == 0)
-			DevClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
-		int DevIndex = DeviceList.find(DevName);
-		while (DevIndex >= 0) {
-			if (DeviceRef[DevIndex].CktElementClass == DevClassIndex) {  // we got a match
-				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(DevClassIndex));
-				DSSGlobals.getInstance().setLastClassReferenced(DevClassIndex);
-				Result = DeviceRef[DevIndex].devHandle;
-				// ActiveDSSClass.Active = Result;
-				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
-				ActiveCktElement = CktElements.get(Result);
-				break;
-			}
-			DevIndex = DeviceList.findNext();   // Could be duplicates
-		}
-
-		DSSGlobals.getInstance().setCmdResult(Result);
-
-		return Result;
-	}
-
-	public void invalidateAllPCElements() {
-		for (PCElement p : PCElements)
-			p.setYprimInvalid(true);
-
-		// Force rebuild of matrix on next solution
-		Solution.setSystemYChanged(true);
-	}
-
-	public void debugDump(PrintStream F) {
-		F.println("NumBuses= " + NumBuses);
-		F.println("NumNodes= " + NumNodes);
-		F.println("NumDevices= " + NumDevices);
-		F.println("BusList:");
-		for (int i = 0; i < NumBuses; i++) {
-			F.printf("  %12s", BusList.get(i));
-			F.printf(" (" + Buses[i].getNumNodesThisBus() + " Nodes)");
-			for (int j = 0; j < Buses[i].getNumNodesThisBus(); j++) {
-				F.print(" " + Buses[i].getNum(j));
-			}
-			F.println();
-		}
-		F.println("DeviceList:");
-		for (int i = 0; i < NumDevices; i++) {
-			F.printf("  %12s%s", DeviceList.get(i), DSSGlobals.CRLF);
-			ActiveCktElement = CktElements.get(i);
-			if (!ActiveCktElement.isEnabled())
-				F.print("  DISABLED");
-			F.println();
-		}
-		F.println("NodeToBus Array:");
-		for (int i = 0; i < NumNodes; i++) {
-			int j = MapNodeToBus[i].BusRef;
-			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].NodeNum + ")");
-			F.println();
-		}
-	}
-
-	/* Access to topology from the first source */
-	public CktTree getTopology() {
-//		DSSCktElement Elem;
-
-		if (Branch_List == null) {
-			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
-			for (CktElement elem : CktElements) {
-				elem.setChecked(false);
-				for (int i = 0; i < elem.getNTerms(); i++)
-					elem.getTerminals()[i].setChecked(false);
-				elem.setIsIsolated(true); // till proven otherwise
-			}
-
-			for (int i = 0; i < NumBuses; i++)
-				Buses[i].setBusChecked(false);
-
-			Branch_List = CktTreeImpl.getIsolatedSubArea(Sources.get(0), true);  // calls back to build adjacency lists
-		}
-		return Branch_List;
-	}
-
-	public void freeTopology() {
-//		if (Branch_List != null) Branch_List.Free();
-		Branch_List = null;
-		if (BusAdjPC != null)
-			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
-	}
-
-	public List<PDElement>[] getBusAdjacentPDLists() {
-		if (BusAdjPD == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
-		return BusAdjPD;
-	}
-
-	public List<PCElement>[] getBusAdjacentPCLists() {
-		if (BusAdjPC == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
-		return BusAdjPC;
 	}
 
 }

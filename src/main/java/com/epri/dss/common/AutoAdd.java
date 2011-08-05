@@ -39,7 +39,7 @@ public interface AutoAdd {
 
 	void makeBusList();
 
-	void appendToFile(String WhichFile, String S);
+	void appendToFile(final String WhichFile, final String S);
 
 	void addCurrents(int SolveType);
 

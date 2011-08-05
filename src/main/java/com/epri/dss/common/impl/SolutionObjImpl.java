@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.DynamicsRec;
 
@@ -856,8 +859,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	public void doControlActions() {
-		int xHour = 0;
-		double xSec = 0.0;
+		MutableInt xHour = new MutableInt();
+		MutableDouble xSec = new MutableDouble();
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
@@ -868,10 +871,14 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				ControlActionsDone = true;
 			} else {
 				ckt.getControlQueue().doNearestActions(xHour, xSec); // ignore time advancement
-				// TODO Check xHour and xSec are updated
 			}
 		case DSSGlobals.EVENTDRIVEN:
-			if (!ckt.getControlQueue().doNearestActions(intHour, DynaVars.t))  // Advances time
+			MutableInt mHour = new MutableInt();
+			MutableDouble mSec = new MutableDouble();
+			boolean succ = ckt.getControlQueue().doNearestActions(mHour, mSec);  // advances time
+			intHour = mHour.intValue();
+			DynaVars.t = mSec.doubleValue();
+			if (!succ)
 				ControlActionsDone = true;
 		case DSSGlobals.TIMEDRIVEN:
 			if (!ckt.getControlQueue().doActions(intHour, DynaVars.t))

@@ -322,7 +322,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	}
 
 	@Override
-	public void getLosses(Complex TotalLosses, Complex LoadLosses, Complex NoLoadLosses) {
+	public void getLosses(double[] TotalLosses, double[] LoadLosses, double[] NoLoadLosses) {
+		Complex totLosses, noLoadLosses, loadLosses;
 
 		/* Only report No Load Losses if Rp defined and Reactor is a shunt device;
 		 * else do default behavior.
@@ -330,21 +331,29 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		if (RpSpecified && isShunt() && (Rp != 0.0)) {
 
-			TotalLosses = getLosses();  // Side effect: computes Iterminal and Vterminal
+			totLosses = getLosses();  // Side effect: computes Iterminal and Vterminal
 			/* Compute losses in Rp Branch from voltages across shunt element -- node to ground */
-			NoLoadLosses = Complex.ZERO;
+			noLoadLosses = Complex.ZERO;
 			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 			for (int i = 0; i < nPhases; i++) {
 				Complex V = sol.getNodeV()[NodeRef[i]];
-				NoLoadLosses = NoLoadLosses.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
+				noLoadLosses = noLoadLosses.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
 			}
 
 			if (DSSGlobals.getInstance().getActiveCircuit().isPositiveSequence())
-				NoLoadLosses = NoLoadLosses.multiply(3.0);
-			LoadLosses = TotalLosses.subtract(NoLoadLosses);  // Subtract no load losses from total losses
+				noLoadLosses = noLoadLosses.multiply(3.0);
+			loadLosses = totLosses.subtract(noLoadLosses);  // Subtract no load losses from total losses
 
+			/* handle pass by reference */
+			TotalLosses[0] = totLosses.getReal();
+			TotalLosses[1] = totLosses.getImaginary();
+			LoadLosses[0] = loadLosses.getReal();
+			LoadLosses[1] = loadLosses.getImaginary();
+			NoLoadLosses[0] = noLoadLosses.getReal();
+			NoLoadLosses[1] = noLoadLosses.getImaginary();
 		} else {
-			super.getLosses();  /* do the default Cktelement behaviors */
+			/* do the default Cktelement behaviors */
+			super.getLosses(TotalLosses, LoadLosses, NoLoadLosses);
 		}
 	}
 

@@ -479,9 +479,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 * Placeholder for Line module No Load Loss procedure.
 	 */
 	@Override
-	public void getLosses(Complex TotalLosses, Complex LoadLosses, Complex NoLoadLosses) {
+	public void getLosses(double[] TotalLosses, double[] LoadLosses, double[] NoLoadLosses) {
 		// For now, we'll just do the default behaviour until we implement shunt losses
-		super.getLosses();
+		super.getLosses(TotalLosses, LoadLosses, NoLoadLosses);
 	}
 
 	@Override

@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.common.ControlQueue;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.impl.ControlAction;
@@ -30,7 +33,7 @@ public class ControlQueueImpl implements ControlQueue {
 	private FileWriter TraceFile;
 	private int ctrlHandle;
 
-	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl, ControlElem Owner) {
+	public int push(int Hour, double Sec, ControlAction Code, int ProxyHdl, final ControlElem Owner) {
 
 		return push(Hour, Sec, Code.code(), ProxyHdl, Owner);
 	}
@@ -40,7 +43,7 @@ public class ControlQueueImpl implements ControlQueue {
 	 *
 	 * @return handle to the action
 	 */
-	public int push(int Hour, double Sec, int Code, int ProxyHdl, ControlElem Owner) {
+	public int push(int Hour, double Sec, int Code, int ProxyHdl, final ControlElem Owner) {
 		int Hr;
 		double ThisActionTime, S;
 		TimeRec TRec = null;
@@ -115,22 +118,24 @@ public class ControlQueueImpl implements ControlQueue {
 	/**
 	 * Do only those actions with the same delay time as the first action return time.
 	 */
-	public boolean doNearestActions(int Hour, double Sec) {
+	public boolean doNearestActions(MutableInt Hour, MutableDouble Sec) {
 		ControlElem pElem;
 		TimeRec t;
-		int Code = 0, hdl = 0, ProxyHdl = 0;
+		MutableInt Code = new MutableInt();
+		MutableInt hdl = new MutableInt();
+		MutableInt ProxyHdl = new MutableInt();
 
 		boolean Result = false;
 		if (ActionList.size() > 0) {
 			t = ActionList.get(0).ActionTime;
-			Hour = t.Hour;
-			Sec  = t.Sec;
-			pElem = pop(t, Code, ProxyHdl, hdl);  // TODO Check Code, ProxyHdl and hdl get set
+			Hour.setValue(t.Hour);
+			Sec.setValue(t.Sec);
+			pElem = pop(t, Code, ProxyHdl, hdl);
 			while (pElem != null) {
 				if (DebugTrace)
-					writeTraceRecord(pElem.getName(), Code, pElem.getDblTraceParameter(),
+					writeTraceRecord(pElem.getName(), Code.intValue(), pElem.getDblTraceParameter(),
 							String.format("Pop Handle %d Do Nearest Action", hdl));
-				pElem.doPendingAction(Code, ProxyHdl);
+				pElem.doPendingAction(Code.intValue(), ProxyHdl.intValue());
 				Result = true;
 				pElem = pop(t, Code, ProxyHdl, hdl);
 			}
@@ -149,7 +154,7 @@ public class ControlQueueImpl implements ControlQueue {
 	/**
 	 * Pop off next control action with an action time <= ActionTime (sec).
 	 */
-	private ControlElem pop(TimeRec ActionTime, int Code, int ProxyHdl, int Hdl) {
+	private ControlElem pop(TimeRec ActionTime, MutableInt Code, MutableInt ProxyHdl, MutableInt Hdl) {
 		ControlElem Result = null;
 
 		double t = timeRecToTime(ActionTime);
@@ -158,9 +163,9 @@ public class ControlQueueImpl implements ControlQueue {
 			ActionRecord action = ActionList.get(i);
 			if (timeRecToTime(action.ActionTime) <= t) {
 				Result   = action.ControlElement;
-				Code     = action.ActionCode;
-				ProxyHdl = action.ProxyHandle;
-				Hdl      = action.ActionHandle;
+				Code.setValue(action.ActionCode);
+				ProxyHdl.setValue(action.ProxyHandle);
+				Hdl.setValue(action.ActionHandle);
 				deleteFromQueue(i, true);
 				break;
 			}
@@ -197,7 +202,9 @@ public class ControlQueueImpl implements ControlQueue {
 	 */
 	public boolean doActions(int Hour, double Sec) {
 		TimeRec t = new TimeRec();
-		int Code = 0, hdl = 0, ProxyHdl = 0;
+		MutableInt Code = new MutableInt();
+		MutableInt hdl = new MutableInt();
+		MutableInt ProxyHdl = new MutableInt();
 
 		boolean Result = false;
 		if (ActionList.size() > 0) {
@@ -207,9 +214,9 @@ public class ControlQueueImpl implements ControlQueue {
 		ControlElem pElem = pop(t, Code, ProxyHdl, hdl);
 		while (pElem != null) {
 			if (DebugTrace)
-				writeTraceRecord(pElem.getName(), Code, pElem.getDblTraceParameter(),
+				writeTraceRecord(pElem.getName(), Code.intValue(), pElem.getDblTraceParameter(),
 						String.format("Pop Handle %d Do Action", hdl));
-			pElem.doPendingAction(Code, ProxyHdl);
+			pElem.doPendingAction(Code.intValue(), ProxyHdl.intValue());
 			Result = true;
 			pElem = pop(t, Code, ProxyHdl, hdl);
 		}
@@ -222,7 +229,7 @@ public class ControlQueueImpl implements ControlQueue {
 		return TRec.Hour * 3600.0 + TRec.Sec;
 	}
 
-	public void setTrace(boolean Value) {
+	public void setTrace(final boolean Value) {
 		DebugTrace = Value;
 
 		if (DebugTrace) {
@@ -271,8 +278,7 @@ public class ControlQueueImpl implements ControlQueue {
 		}
 	}
 
-	private void writeTraceRecord(String ElementName, int Code,
-			double TraceParameter, String S) {
+	private void writeTraceRecord(String ElementName, int Code, double TraceParameter, String S) {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
