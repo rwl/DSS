@@ -1,7 +1,6 @@
 package com.epri.dss.executive.impl;
 
 import com.epri.dss.common.CktElement;
-import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.ShowResults;
 import com.epri.dss.common.impl.Utilities;
@@ -243,7 +242,7 @@ public class ShowOptions {
 				Globals.doSimpleMsg("Monitor Name Not Specified." + DSSGlobals.CRLF + parser.getCmdString(), 249);
 			}
 		case 10:
-			DSSForms.showControlPanel();
+			Globals.getDSSForms().showControlPanel();
 		case 11:
 			ShowOptionCode = 0;
 			MVAopt = 0;
@@ -320,7 +319,7 @@ public class ShowOptions {
 				ShowResults.showUnserved(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Unserved.txt", false);
 			}
 		case 17:
-			DSSForms.showMessageForm(Globals.getEventStrings());
+			Globals.getDSSForms().showMessageForm(Globals.getEventStrings());
 		case 18:
 			ShowResults.showVariables(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Variables.txt");
 		case 19:

@@ -1866,7 +1866,7 @@ public abstract class ShowResults {
 			case 0:
 				Utilities.fireOffEditor(FileNm);
 			default:
-				DSSForms.showTreeView(FileNm);
+				Globals.getDSSForms().showTreeView(FileNm);
 			}
 		}
 	}
@@ -2494,7 +2494,7 @@ public abstract class ShowResults {
 			FTreeWriter.close();
 
 			Utilities.fireOffEditor(FileNm);
-			DSSForms.showTreeView(TreeNm);
+			DSSGlobals.getInstance().getDSSForms().showTreeView(TreeNm);
 		} catch (IOException e) {
 			// TODO: handle exception
 		}

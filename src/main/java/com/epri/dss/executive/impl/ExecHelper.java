@@ -18,7 +18,6 @@ import com.epri.dss.common.impl.DSSCircuit.ReductionStrategyType;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
-import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.SolutionAlgs;
 import com.epri.dss.common.impl.SolutionImpl;
@@ -233,9 +232,9 @@ public class ExecHelper {
 				br.close();
 				in.close();
 			} catch (Exception e) {
-				Globals.doErrorMsg("DoRedirect"+DSSGlobals.CRLF+"Error Processing Input Stream in Compile/Redirect.",
+				Globals.doErrorMsg("DoRedirect"+DSSGlobals.CRLF+"Error processing input stream in Compile/Redirect.",
 							e.getMessage(),
-							"Error in File: \"" + ExecCommands.getInstance().getRedirFile() + "\" or Filename itself.", 244);
+							"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
 			} finally {
 				Globals.setIn_Redirect(false);
 				if (IsCompile) {
@@ -328,7 +327,7 @@ public class ExecHelper {
 	}
 
 	public static int doHelpCmd() {
-		DSSForms.showHelpForm();
+		DSSGlobals.getInstance().getDSSForms().showHelpForm();
 		return 0;
 	}
 
@@ -817,8 +816,9 @@ public class ExecHelper {
 	}
 
 	public static void doAboutBox() {
-		if (DSSGlobals.getInstance().isNoFormsAllowed()) return;
-		DSSForms.showAboutBox();
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		if (Globals.isNoFormsAllowed()) return;
+		Globals.getDSSForms().showAboutBox();
 	}
 
 	public static int addObject(String ObjType, String name) {
@@ -1495,15 +1495,17 @@ public class ExecHelper {
 	}
 
 	public static int doFormEditCmd() {
-		if (DSSGlobals.getInstance().isNoFormsAllowed())
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (Globals.isNoFormsAllowed())
 			return 0;
 
 		doSelectCmd();  // Select ActiveObject
 
-		if (DSSGlobals.getInstance().getActiveDSSObject() != null) {
-			DSSForms.showPropEditForm();
+		if (Globals.getActiveDSSObject() != null) {
+			Globals.getDSSForms().showPropEditForm();
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Element Not Found.", 272);
+			Globals.doSimpleMsg("Element Not Found.", 272);
 		}
 
 		return 1;

@@ -12,6 +12,7 @@ import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.DSSClass;
+import com.epri.dss.common.DSSForms;
 import com.epri.dss.common.Feeder;
 import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.Storage;
@@ -95,6 +96,9 @@ public class DSSGlobals {
 	public static final double SQRT3 = Math.sqrt(3.0);
 	public static final double InvSQRT3 = 1.0 / SQRT3;
 	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
+
+	/** DSS Forms */
+	DSSForms Forms = CommandLineDSSForms.getInstance();
 
 	/** Variables */
 	private boolean DLLFirstTime = true;
@@ -726,17 +730,17 @@ public class DSSGlobals {
 	}
 
 	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
-		String Msg = String.format("Error %d Reported From DSS Intrinsic Function: ", ErrNum)+ CRLF  + S
-		+ CRLF   + CRLF + "Error Description: " + CRLF + Emsg
-		+ CRLF   + CRLF + "Probable Cause: " + CRLF + ProbCause;
+		String Msg = String.format("Error %d reported from DSS function: ", ErrNum) + S
+		+ CRLF + "Error description: " + CRLF + Emsg
+		+ CRLF + "Probable cause: " + CRLF + ProbCause;
 
 		if (!NoFormsAllowed) {
 			if (In_Redirect) {
-				int RetVal = DSSForms.messageDlg(Msg, false);
+				int RetVal = Forms.messageDlg(Msg, false);
 				if (RetVal == -1)
 					Redirect_Abort = true;
 			} else {
-				DSSForms.messageDlg(Msg, true);
+				Forms.messageDlg(Msg, true);
 			}
 		}
 
@@ -748,11 +752,11 @@ public class DSSGlobals {
 	public void doSimpleMsg(String S, int ErrNum) {
 		if (!NoFormsAllowed) {
 			if (In_Redirect) {
-				int RetVal = DSSForms.messageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
+				int RetVal = Forms.messageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
 				if (RetVal == -1)
 					Redirect_Abort = true;
 			} else {
-				DSSForms.infoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
+				Forms.infoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
 			}
 		}
 
@@ -922,6 +926,14 @@ public class DSSGlobals {
 	public String getDSSVersion() {
 		// TODO: Implement GetDSSVersion()
 		return "Unknown.";
+	}
+
+	public DSSForms getDSSForms() {
+		return Forms;
+	}
+
+	public void setDSSForms(DSSForms forms) {
+		Forms = forms;
 	}
 
 }

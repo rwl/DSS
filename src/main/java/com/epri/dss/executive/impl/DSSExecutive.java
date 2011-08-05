@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.impl.DSSClassDefs;
-import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.executive.Executive;
 import com.epri.dss.parser.impl.Parser;
@@ -111,7 +110,9 @@ public class DSSExecutive implements Executive {
 	}
 
 	public void clear() {
-		if (DSSGlobals.getInstance().getNumCircuits() > 0) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
+		if (Globals.getNumCircuits() > 0) {
 			/* First get rid of all existing stuff */
 			DSSGlobals.getInstance().clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
@@ -119,7 +120,7 @@ public class DSSExecutive implements Executive {
 			/* Now, Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
-			DSSForms.setRebuildHelpForm(true);  // because class strings have changed
+			Globals.getDSSForms().setRebuildHelpForm(true);  // because class strings have changed
 		}
 	}
 

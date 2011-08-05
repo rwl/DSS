@@ -1577,7 +1577,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			// Check for error in node specification
 			for (int j = 0; j < NNodes; j++) {
 				if (NodeBuffer[j] < 0) {
-					int retval = DSSForms.messageDlg("Error in Node specification for Element: \""
+					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in Node specification for Element: \""
 						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					NodesOK = false;

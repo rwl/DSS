@@ -337,12 +337,12 @@ public class AutoAddImpl implements AutoAdd {
 			MinBusPhases = 3;
 
 			/* Progress meter */
-			DSSForms.progressCaption("AutoAdding Generators");
+			Globals.getDSSForms().progressCaption("AutoAdding Generators");
 			ProgressMax = BusIdxListSize;
 			ProgressCount = 0;
 
-			DSSForms.progressFormCaption(String.format("Testing %d buses. Please Wait... ", BusIdxListSize));
-			DSSForms.showPctProgress(0);
+			Globals.getDSSForms().progressFormCaption(String.format("Testing %d buses. Please Wait... ", BusIdxListSize));
+			Globals.getDSSForms().showPctProgress(0);
 
 			for (int i = 0; i < BusIdxListSize; i++) {
 
@@ -355,8 +355,8 @@ public class AutoAddImpl implements AutoAdd {
 					TestBus = ckt.getBusList().get(BusIndex);
 					//DSSForms.progressFormCaption("Testing bus" + TestBus);
 					if ((ProgressCount % 20 == 0) || (i == BusIdxListSize)) {
-						DSSForms.progressFormCaption(String.format("Testing bus %d/%d. ", i, BusIdxListSize));
-						DSSForms.showPctProgress((100 * ProgressCount) / ProgressMax);
+						Globals.getDSSForms().progressFormCaption(String.format("Testing bus %d/%d. ", i, BusIdxListSize));
+						Globals.getDSSForms().showPctProgress((100 * ProgressCount) / ProgressMax);
 					}
 
 					Globals.getEnergyMeterClass().resetAll();
@@ -444,7 +444,7 @@ public class AutoAddImpl implements AutoAdd {
 			Globals.setGlobalResult(ckt.getBusList().get(MinLossBus) +
 					String.format(", %-g", MaxLossImproveFactor));
 
-			DSSForms.progressHide();
+			Globals.getDSSForms().progressHide();
 
 			// note that the command that added the generator can be
 			// picked up from the Command property of the COM interface.
@@ -461,7 +461,7 @@ public class AutoAddImpl implements AutoAdd {
 			}
 
 			/* Progress meter */
-			DSSForms.progressCaption("AutoAdding Capacitors");
+			Globals.getDSSForms().progressCaption("AutoAdding Capacitors");
 			ProgressMax = BusIdxListSize;
 			ProgressCount = 0;
 
@@ -471,8 +471,8 @@ public class AutoAddImpl implements AutoAdd {
 				BusIndex = BusIdxList[i];
 				if (BusIndex > 0) {
 					TestBus = ckt.getBusList().get(BusIndex);
-					DSSForms.progressFormCaption("Testing bus " + TestBus);
-					DSSForms.showPctProgress((100 * ProgressCount) / ProgressMax);
+					Globals.getDSSForms().progressFormCaption("Testing bus " + TestBus);
+					Globals.getDSSForms().showPctProgress((100 * ProgressCount) / ProgressMax);
 
 					Globals.getEnergyMeterClass().resetAll();
 

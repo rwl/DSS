@@ -172,7 +172,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		Globals.getActiveCircuit().setIsSolved(false);
 		Globals.setSolutionWasAttempted(true);
 
-		DSSForms.initProgressForm(); // initialize Progress Form;
+		Globals.getDSSForms().initProgressForm(); // initialize Progress Form;
 
 		/* Check of some special conditions that must be met before executing solutions */
 

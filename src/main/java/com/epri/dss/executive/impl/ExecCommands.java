@@ -1,6 +1,5 @@
 package com.epri.dss.executive.impl;
 
-import com.epri.dss.common.impl.DSSForms;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.parser.impl.Parser;
@@ -516,9 +515,9 @@ public class ExecCommands {
 				Globals.setCmdResult(ExecHelper.doHelpCmd());
 			case 21:
 				if (!Globals.isDLL())
-					DSSForms.exitControlPanel();  // Quit in Stand alone version
+					Globals.getDSSForms().exitControlPanel();  // Quit in Stand alone version
 			case 24:
-				DSSForms.showControlPanel();
+				Globals.getDSSForms().showControlPanel();
 			case 26:
 				ExecHelper.doClearCmd();
 			case 27:

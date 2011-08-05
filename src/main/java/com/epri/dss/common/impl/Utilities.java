@@ -1922,7 +1922,7 @@ public class Utilities {
 
 	public static void showMessageBeep(String s) {
 		Toolkit.getDefaultToolkit().beep();
-		DSSForms.infoMessageDlg(s);
+		DSSGlobals.getInstance().getDSSForms().infoMessageDlg(s);
 	}
 
 	public static boolean isPathBetween(PDElement FromLine, PDElement ToLine) {
