@@ -1,5 +1,7 @@
 package com.epri.dss.parser.impl;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.parser.RPNCalc;
 
@@ -121,10 +123,14 @@ public class Parser {
 		return Result;
 	}
 
-	public void setCmdString(String Value) {
+	public void setCmdString(final String Value) {
+		MutableInt mPosition;
+
 		CmdBuffer = Value + " ";  // add some white space at end to get last param
-		Position  = 0;
-		skipWhiteSpace(CmdBuffer, Position);   // position at first non whitespace character
+
+		mPosition = new MutableInt(0);
+		skipWhiteSpace(CmdBuffer, mPosition);   // position at first non whitespace character
+		Position = mPosition.intValue();  // passed by reference
 	}
 
 	/**
@@ -145,7 +151,7 @@ public class Parser {
 		return false;
 	}
 
-	private boolean isDelimiter(String LineBuffer, int LinePos) {
+	private boolean isDelimiter(final String LineBuffer, MutableInt LinePos) {
 		int i;
 		char ch;
 
@@ -157,7 +163,7 @@ public class Parser {
 			return Result;
 		}
 
-		ch = LineBuffer.charAt(LinePos);
+		ch = LineBuffer.charAt(LinePos.intValue());
 
 		for (i = 0; i < DelimChars.length(); i++) {
 			if (ch == DelimChars.charAt(i)) {
@@ -184,9 +190,9 @@ public class Parser {
 		return false;
 	}
 
-	private void skipWhiteSpace(String LineBuffer, int LinePos) {
-		while ((LinePos < LineBuffer.length()) && isWhiteSpace(LineBuffer.charAt(LinePos)))
-			LinePos += 1;
+	private void skipWhiteSpace(final String LineBuffer, MutableInt LinePos) {
+		while ((LinePos.intValue() < LineBuffer.length()) && isWhiteSpace(LineBuffer.charAt(LinePos.intValue())))
+			LinePos.increment();
 	}
 
 
@@ -218,40 +224,38 @@ public class Parser {
 		return (QuoteIndex >= 0);
 	}
 
-	private String getToken(String buffer, int pos) {
-		LineBuffer = buffer;
-		LinePos = pos;
+	private String getToken(final String LineBuffer, MutableInt LinePos) {
 
 		CmdBufLength = LineBuffer.length();
-		if (LinePos < CmdBufLength) {
+		if (LinePos.intValue() < CmdBufLength) {
 
 			/* Handle Quotes and Parentheses around tokens */
 			IsQuotedString= false;
-			if (_isBeginQuote(LineBuffer.charAt(LinePos))) {
+			if (_isBeginQuote(LineBuffer.charAt(LinePos.intValue()))) {
 				_parseToEndQuote();
 			} else {  /* Copy to next delimiter or whitespace */
-				TokenStart = LinePos;
-				while ((LinePos < CmdBufLength) && (!isDelimiter(LineBuffer, LinePos)))
-					LinePos += 1;
+				TokenStart = LinePos.intValue();
+				while ((LinePos.intValue() < CmdBufLength) && (!isDelimiter(LineBuffer, LinePos)))
+					LinePos.increment();
 
-				Result = LineBuffer.substring(0, LinePos - TokenStart);
+				Result = LineBuffer.substring(0, LinePos.intValue() - TokenStart);
 			}
 
 			/* Check for stop on comment */
 
 			// if stop on comment, ignore rest of line.
 			if (LastDelimiter == CommentChar) {
-				LinePos = LineBuffer.length() + 1;
+				LinePos.setValue(LineBuffer.length() + 1);
 			} else {
 
 				/* Get Rid of Trailing White Space */
 				if (LastDelimiter == ' ')
-					skipWhiteSpace(LineBuffer,LinePos);
-				if (isDelimChar(LineBuffer.charAt(LinePos))) {
-					LastDelimiter = LineBuffer.charAt(LinePos);
-					LinePos += 1;  // Move past terminating delimiter
+					skipWhiteSpace(LineBuffer, LinePos);
+				if (isDelimChar(LineBuffer.charAt(LinePos.intValue()))) {
+					LastDelimiter = LineBuffer.charAt(LinePos.intValue());
+					LinePos.increment();  // Move past terminating delimiter
 				}
-				skipWhiteSpace(LineBuffer,LinePos);
+				skipWhiteSpace(LineBuffer, LinePos);
 			}
 		}
 
@@ -259,15 +263,21 @@ public class Parser {
 	}
 
 	public String getNextParam() {
+		MutableInt mPosition;
+
 		if (Position < CmdBuffer.length()) {
+			mPosition = new MutableInt(Position);  // pass by reference
 			LastDelimiter = ' ';
-			TokenBuffer = getToken(CmdBuffer, Position); // Get entire token and put in token Buffer
+			// get entire token and put in token buffer
+			TokenBuffer = getToken(CmdBuffer, mPosition);
 			if (LastDelimiter == '=') {
 				ParameterBuffer = TokenBuffer;
-				TokenBuffer = getToken(CmdBuffer, Position);
+				TokenBuffer = getToken(CmdBuffer, mPosition);
 			} else {
-				ParameterBuffer = "";  // init to null string
+				// init to null string
+				ParameterBuffer = "";
 			}
+			Position = mPosition.intValue();
 		} else {
 			ParameterBuffer = "";
 			TokenBuffer = "";
@@ -279,14 +289,15 @@ public class Parser {
 	 * Looking for "BusName.1.2.3" in the TokenBuffer.
 	 * Assumes NodeArray is big enough to hold the numbers.
 	 */
-	public String parseAsBusName(int NumNodes, int[] NodeArray) {
-		int DotPos, NodeBufferPos;
+	public String parseAsBusName(MutableInt NumNodes, int[] NodeArray) {
+		int DotPos;
 		String NodeBuffer, DelimSave, TokenSave, Result;
+		MutableInt NodeBufferPos;
 
 		if (AutoIncrement)
 			getNextParam();
 
-		NumNodes = 0;
+		NumNodes.setValue(0);
 		DotPos = TokenBuffer.indexOf('.');
 		if (DotPos == -1) {
 			return TokenBuffer;
@@ -296,16 +307,16 @@ public class Parser {
 			/* now get nodes */
 			NodeBuffer = TokenBuffer.substring(DotPos, TokenBuffer.length() - DotPos) + " ";
 
-			NodeBufferPos = 0;
+			NodeBufferPos = new MutableInt(0);
 			DelimSave = DelimChars;
 			DelimChars = ".";
 			TokenBuffer = getToken(NodeBuffer, NodeBufferPos);
 			try {
 				while (TokenBuffer.length() > 0) {
-					NumNodes += 1;
-					NodeArray[NumNodes] = makeInteger();
+					NumNodes.increment();
+					NodeArray[NumNodes.intValue()] = makeInteger();
 					if (ConvertError)
-						NodeArray[NumNodes] = -1;  // Indicate an error
+						NodeArray[NumNodes.intValue()] = -1;  // indicate an error
 					TokenBuffer = getToken(NodeBuffer, NodeBufferPos);
 				}
 			} catch (Exception e) {
@@ -319,8 +330,9 @@ public class Parser {
 	}
 
 	public int parseAsVector(int ExpectedSize, double[] VectorBuffer) {
-		int ParseBufferPos = 0, NumElements, i;
+		int NumElements, i;
 		String ParseBuffer = null, DelimSave = null;
+		MutableInt ParseBufferPos = new MutableInt();
 
 		if (AutoIncrement)
 			getNextParam();
@@ -334,9 +346,9 @@ public class Parser {
 			/* now get vector values */
 			ParseBuffer = TokenBuffer + " ";
 
-			ParseBufferPos = 0;
-			DelimSave      = DelimChars;
-			DelimChars     = DelimChars + MatrixRowTerminator;
+			ParseBufferPos.setValue(0);
+			DelimSave  = DelimChars;
+			DelimChars = DelimChars + MatrixRowTerminator;
 
 			skipWhiteSpace(ParseBuffer, ParseBufferPos);
 			TokenBuffer = getToken(ParseBuffer, ParseBufferPos);
@@ -355,7 +367,7 @@ public class Parser {
 		}
 
 		DelimChars  = DelimSave;   // restore to original delimiters
-		TokenBuffer = ParseBuffer.substring(ParseBufferPos, ParseBuffer.length());  // prepare for next trip
+		TokenBuffer = ParseBuffer.substring(ParseBufferPos.intValue(), ParseBuffer.length());  // prepare for next trip
 
 		return Result;
 	}
@@ -445,8 +457,9 @@ public class Parser {
 
 	public int makeInteger() {
 		// Hex integers must be preceeded by "$"
-		int Code = 0, Result = 0;
+		int Result = 0;
 		double Temp = 0;
+		MutableInt Code = new MutableInt();
 
 		ConvertError = false;
 		if (AutoIncrement)
@@ -461,21 +474,21 @@ public class Parser {
 			} else {
 				try {
 					Result = Integer.valueOf(TokenBuffer);  // Try direct conversion to integer
-					Code = 1;
+					Code.setValue(1);
 				} catch (NumberFormatException e) {
-					Code = 0;
+					Code.setValue(0);
 				}
 			}
 
-			if (Code != 0) {  // on error for integer conversion
+			if (Code.intValue() != 0) {  // on error for integer conversion
 				// Try again with an double result in case value specified in decimal or some other technique
 				try {
 					Temp = Double.valueOf(TokenBuffer);
-					Code = 1;
+					Code.setValue(1);
 				} catch (NumberFormatException e) {
-					Code = 0;
+					Code.setValue(0);
 				}
-				if (Code != 0) {
+				if (Code.intValue() != 0) {
 					// not needed with throw ...  Result = 0;
 					ConvertError = true;
 //					throw new ParserProblem("Integer number conversion error for string: \""+TokenBuffer+"\"");
@@ -490,7 +503,7 @@ public class Parser {
 	}
 
 	public double makeDouble() {
-		int Code = 0;
+		MutableInt Code = new MutableInt();
 		double Result = 0;
 
 		if (AutoIncrement)
@@ -504,13 +517,13 @@ public class Parser {
 			} else {
 				try {
 					Result = Double.valueOf(TokenBuffer);
-					Code = 1;
+					Code.setValue(1);
 				} catch (NumberFormatException e) {
-					Code = 0;
+					Code.setValue(0);
 				}
 			}
 
-			if (Code != 0) {
+			if (Code.intValue() != 0) {
 				// not needed with throw ...  Result = 0.0;
 				ConvertError = true;
 //				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
@@ -528,12 +541,12 @@ public class Parser {
 	/**
 	 * Checks for CommentChar and '//'.
 	 */
-	private boolean isCommentChar(String LineBuffer, int LinePos) {
-		switch (LineBuffer.charAt(LinePos)) {
+	private boolean isCommentChar(final String LineBuffer, MutableInt LinePos) {
+		switch (LineBuffer.charAt(LinePos.intValue())) {
 		case CommentChar:
 			return true;
 		case '/':
-			if ((LineBuffer.length() - 1 > LinePos) && (LineBuffer.charAt(LinePos + 1) == '/')) {
+			if ((LineBuffer.length() - 1 > LinePos.intValue()) && (LineBuffer.charAt(LinePos.intValue() + 1) == '/')) {
 				return true;
 			} else {
 				return false;
@@ -543,13 +556,13 @@ public class Parser {
 		}
 	}
 
-	private double interpretRPNString(int Code) {
-		int ParseBufferPos;
+	private double interpretRPNString(MutableInt Code) {
+		MutableInt ParseBufferPos;
 		String ParseBuffer;
 
-		Code = 0;
+		Code.setValue(0);
 		ParseBuffer = TokenBuffer + " ";
-		ParseBufferPos = 0;
+		ParseBufferPos = new MutableInt(0);
 
 		skipWhiteSpace(ParseBuffer, ParseBufferPos);
 		TokenBuffer = getToken(ParseBuffer, ParseBufferPos);
@@ -557,10 +570,10 @@ public class Parser {
 		while (TokenBuffer.length() > 0) {
 
 			try {
-				Code = processRPNCommand(TokenBuffer, RPNCalculator);
+				Code.setValue( processRPNCommand(TokenBuffer, RPNCalculator) );
 			} catch (ParserProblem e) {
 				DSSGlobals.getInstance().doErrorMsg("", e.getMessage(), "", 0);
-				if (Code > 0)
+				if (Code.intValue() > 0)
 					break;  // Stop on any floating point error
 			}
 
@@ -569,7 +582,8 @@ public class Parser {
 
 		double Result = RPNCalculator.getX();
 
-		TokenBuffer = ParseBuffer.substring(ParseBufferPos, ParseBuffer.length());  // prepare for next trip
+		// prepare for next trip
+		TokenBuffer = ParseBuffer.substring(ParseBufferPos.intValue(), ParseBuffer.length());
 
 		return Result;
 	}

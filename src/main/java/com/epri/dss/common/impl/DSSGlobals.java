@@ -152,8 +152,9 @@ public class DSSGlobals {
 	private String DSSFileName;// = GetDSSExeFile();     // Name of current exe or DLL
 	private String DSSDirectory;// = new File(DSSFileName).getParent();     // where the current exe resides
 	private String StartupDirectory = System.getProperty("user.dir") + "/";  // Where we started
-	private String DSSDataDirectory;// = StartupDirectory;
+	private String DSSDataDirectory = StartupDirectory;
 	private String CircuitName_;     // Name of Circuit with a "_" appended
+	private String CurrentDirectory = StartupDirectory;  // current working directory
 
 	private double DefaultBaseFreq = 60.0;
 	private double DaisySize = 1.0;
@@ -199,6 +200,188 @@ public class DSSGlobals {
 
 	public static DSSGlobals getInstance() {
 		return DSSGlobalsHolder.INSTANCE;
+	}
+
+	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
+		String Msg = String.format("Error %d reported from DSS function: ", ErrNum) + S
+		+ CRLF + "Error description: " + CRLF + Emsg
+		+ CRLF + "Probable cause: " + CRLF + ProbCause;
+
+		if (!NoFormsAllowed) {
+			if (In_Redirect) {
+				int RetVal = Forms.messageDlg(Msg, false);
+				if (RetVal == -1)
+					Redirect_Abort = true;
+			} else {
+				Forms.messageDlg(Msg, true);
+			}
+		}
+
+		LastErrorMessage = Msg;
+		ErrorNumber = ErrNum;
+		appendGlobalResult(Msg);
+	}
+
+	public void doSimpleMsg(String S, int ErrNum) {
+		if (!NoFormsAllowed) {
+			if (In_Redirect) {
+				int RetVal = Forms.messageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
+				if (RetVal == -1)
+					Redirect_Abort = true;
+			} else {
+				Forms.infoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
+			}
+		}
+
+		LastErrorMessage = S;
+		ErrorNumber = ErrNum;
+		appendGlobalResult(S);
+	}
+
+	public void clearAllCircuits() {
+		ActiveCircuit = null;
+		Circuits = new ArrayList<Circuit>(2);   // Make a new list of circuits
+		NumCircuits = 0;
+	}
+
+	/* Set object active by name */
+	public void setObject(String Param) {
+		String ObjName, ObjClass;
+
+		// Split off Obj class and name
+		int dotpos = Param.indexOf(".");
+		switch (dotpos) {
+		case 0:
+			// assume it is all name; class defaults
+			ObjName = Param;
+		default:
+			ObjClass = Param.substring(0, dotpos - 1);
+			ObjName = Param.substring(dotpos + 1, Param.length());
+		}
+
+		if (ObjClass.length() > 0)
+			DSSClassDefs.setObjectClass(ObjClass);
+
+		ActiveDSSClass = DSSClassList.get(LastClassReferenced);
+		if (ActiveDSSClass != null) {
+			if (!ActiveDSSClass.setActive(ObjName)) {
+				// scroll through list of objects untill a match
+				doSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
+			} else {
+				switch (ActiveDSSObject.getDSSObjType()) {
+				case DSSClassDefs.DSS_OBJECT:
+					// do nothing for general DSS object
+				default:
+					// for circuit types, set ActiveCircuit Element, too
+					ActiveCircuit.setActiveCktElement((DSSCktElement) ActiveDSSClass.getActiveObj());
+				}
+			}
+		} else {
+			doSimpleMsg("Error! Active object type/class is not set.", 905);
+		}
+	}
+
+	/** Finds the bus and sets it active. */
+	public int setActiveBus(String BusName) {
+		int Result = 0;
+
+		if (ActiveCircuit.getBusList().listSize() == 0)
+			return Result;   // BusList not yet built
+
+		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
+
+		if (ActiveCircuit.getActiveBusIndex() == 0) {
+			Result = 1;
+			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
+		}
+
+		return Result;
+	}
+
+	/** Pathname may be null */
+	public void setDataPath(String PathName) {
+		File F = new File(PathName);
+
+		if ((PathName.length() > 0) && !F.exists()) {
+
+			// Try to create the directory
+			if (F.mkdir()) {
+				doSimpleMsg("Cannot create " + PathName + " directory.", 907);
+				System.exit(0);
+			}
+
+		}
+
+		DSSDataDirectory = PathName;
+
+		// Put a \ on the end if not supplied. Allow a null specification.
+		if (DSSDataDirectory.length() > 0) {
+			// FIXME: change directory
+//	    	cd(DSSDataDirectory);   // Change to specified directory
+			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
+					DSSDataDirectory = DSSDataDirectory + "\\";
+			}
+		}
+	}
+
+
+	public void makeNewCircuit(String Name) {
+		if (NumCircuits <= MaxCircuits - 1) {
+			ActiveCircuit = new DSSCircuit(Name);
+			ActiveDSSObject = SolutionImpl.getActiveSolutionObj();
+			/*Handle = */ Circuits.add(ActiveCircuit);
+			NumCircuits += 1;
+			// Pass remainder of string on to vsource.
+			String S = Parser.getInstance().getRemainder();
+
+			/* Create a default Circuit */
+			SolutionAbort = false;
+			/* Voltage source named "source" connected to SourceBus */
+			// Load up the parser as if it were read in
+			DSSExecutive.getInstance().setCommand("New object=vsource.source Bus1=SourceBus " + S);
+		} else {
+			doErrorMsg("MakeNewCircuit",
+					"Cannot create new circuit.",
+					"Max. Circuits Exceeded." + CRLF +
+					"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
+		}
+	}
+
+	/* Append a string to Global result, separated by commas */
+	public void appendGlobalResult(String S) {
+		if (GlobalResult.length() == 0) {
+			GlobalResult = S;
+		} else {
+			GlobalResult = GlobalResult + ", " + S;
+		}
+	}
+
+	/* Separate by CRLF */
+	public void appendGlobalResultCRLF(String S) {
+		if (GlobalResult.length() > 0) {
+			GlobalResult += CRLF + S;
+		} else {
+			GlobalResult = S;
+		}
+	}
+
+	public void WriteDLLDebugFile(String S) {
+		boolean Append;
+		if (DLLFirstTime) {
+			Append = false;
+			DLLFirstTime = false;
+		} else {
+			Append = true;
+		}
+		FileWriter Writer;
+		try {
+			Writer = new FileWriter(DSSDataDirectory + "DSSDLLDebug.txt", Append);
+			BufferedWriter DLLDebugFile = new BufferedWriter(Writer);
+			DLLDebugFile.write(S + CRLF);
+			DLLDebugFile.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
 	}
 
 	public boolean isDLLFirstTime() {
@@ -729,188 +912,6 @@ public class DSSGlobals {
 		ClassNames = classNames;
 	}
 
-	public void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum) {
-		String Msg = String.format("Error %d reported from DSS function: ", ErrNum) + S
-		+ CRLF + "Error description: " + CRLF + Emsg
-		+ CRLF + "Probable cause: " + CRLF + ProbCause;
-
-		if (!NoFormsAllowed) {
-			if (In_Redirect) {
-				int RetVal = Forms.messageDlg(Msg, false);
-				if (RetVal == -1)
-					Redirect_Abort = true;
-			} else {
-				Forms.messageDlg(Msg, true);
-			}
-		}
-
-		LastErrorMessage = Msg;
-		ErrorNumber = ErrNum;
-		appendGlobalResult(Msg);
-	}
-
-	public void doSimpleMsg(String S, int ErrNum) {
-		if (!NoFormsAllowed) {
-			if (In_Redirect) {
-				int RetVal = Forms.messageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S), false);
-				if (RetVal == -1)
-					Redirect_Abort = true;
-			} else {
-				Forms.infoMessageDlg(String.format("(%d) %s%s", ErrNum, CRLF, S));
-			}
-		}
-
-		LastErrorMessage = S;
-		ErrorNumber = ErrNum;
-		appendGlobalResult(S);
-	}
-
-	public void clearAllCircuits() {
-		ActiveCircuit = null;
-		Circuits = new ArrayList<Circuit>(2);   // Make a new list of circuits
-		NumCircuits = 0;
-	}
-
-	/* Set object active by name */
-	public void setObject(String Param) {
-		String ObjName, ObjClass;
-
-		// Split off Obj class and name
-		int dotpos = Param.indexOf(".");
-		switch (dotpos) {
-		case 0:
-			// assume it is all name; class defaults
-			ObjName = Param;
-		default:
-			ObjClass = Param.substring(0, dotpos - 1);
-			ObjName = Param.substring(dotpos + 1, Param.length());
-		}
-
-		if (ObjClass.length() > 0)
-			DSSClassDefs.setObjectClass(ObjClass);
-
-		ActiveDSSClass = DSSClassList.get(LastClassReferenced);
-		if (ActiveDSSClass != null) {
-			if (!ActiveDSSClass.setActive(ObjName)) {
-				// scroll through list of objects untill a match
-				doSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
-			} else {
-				switch (ActiveDSSObject.getDSSObjType()) {
-				case DSSClassDefs.DSS_OBJECT:
-					// do nothing for general DSS object
-				default:
-					// for circuit types, set ActiveCircuit Element, too
-					ActiveCircuit.setActiveCktElement((DSSCktElement) ActiveDSSClass.getActiveObj());
-				}
-			}
-		} else {
-			doSimpleMsg("Error! Active object type/class is not set.", 905);
-		}
-	}
-
-	/** Finds the bus and sets it active. */
-	public int setActiveBus(String BusName) {
-		int Result = 0;
-
-		if (ActiveCircuit.getBusList().listSize() == 0)
-			return Result;   // BusList not yet built
-
-		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
-
-		if (ActiveCircuit.getActiveBusIndex() == 0) {
-			Result = 1;
-			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
-		}
-
-		return Result;
-	}
-
-	/** Pathname may be null */
-	public void setDataPath(String PathName) {
-		File F = new File(PathName);
-
-		if ((PathName.length() > 0) && !F.exists()) {
-
-			// Try to create the directory
-			if (F.mkdir()) {
-				doSimpleMsg("Cannot create " + PathName + " directory.", 907);
-				System.exit(0);
-			}
-
-		}
-
-		DSSDataDirectory = PathName;
-
-		// Put a \ on the end if not supplied. Allow a null specification.
-		if (DSSDataDirectory.length() > 0) {
-			// FIXME: change directory
-//	    	cd(DSSDataDirectory);   // Change to specified directory
-			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
-					DSSDataDirectory = DSSDataDirectory + "\\";
-			}
-		}
-	}
-
-
-	public void makeNewCircuit(String Name) {
-		if (NumCircuits <= MaxCircuits - 1) {
-			ActiveCircuit = new DSSCircuit(Name);
-			ActiveDSSObject = SolutionImpl.getActiveSolutionObj();
-			/*Handle = */ Circuits.add(ActiveCircuit);
-			NumCircuits += 1;
-			// Pass remainder of string on to vsource.
-			String S = Parser.getInstance().getRemainder();
-
-			/* Create a default Circuit */
-			SolutionAbort = false;
-			/* Voltage source named "source" connected to SourceBus */
-			// Load up the parser as if it were read in
-			DSSExecutive.getInstance().setCommand("New object=vsource.source Bus1=SourceBus " + S);
-		} else {
-			doErrorMsg("MakeNewCircuit",
-					"Cannot create new circuit.",
-					"Max. Circuits Exceeded." + CRLF +
-					"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
-		}
-	}
-
-	/* Append a string to Global result, separated by commas */
-	public void appendGlobalResult(String S) {
-		if (GlobalResult.length() == 0) {
-			GlobalResult = S;
-		} else {
-			GlobalResult = GlobalResult + ", " + S;
-		}
-	}
-
-	/* Separate by CRLF */
-	public void appendGlobalResultCRLF(String S) {
-		if (GlobalResult.length() > 0) {
-			GlobalResult += CRLF + S;
-		} else {
-			GlobalResult = S;
-		}
-	}
-
-	public void WriteDLLDebugFile(String S) {
-		boolean Append;
-		if (DLLFirstTime) {
-			Append = false;
-			DLLFirstTime = false;
-		} else {
-			Append = true;
-		}
-		FileWriter Writer;
-		try {
-			Writer = new FileWriter(DSSDataDirectory + "DSSDLLDebug.txt", Append);
-			BufferedWriter DLLDebugFile = new BufferedWriter(Writer);
-			DLLDebugFile.write(S + CRLF);
-			DLLDebugFile.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-		}
-	}
-
 	public void readDSS_Registry() {
 		throw new UnsupportedOperationException();
 	}
@@ -934,6 +935,14 @@ public class DSSGlobals {
 
 	public void setDSSForms(DSSForms forms) {
 		Forms = forms;
+	}
+
+	public String getCurrentDirectory() {
+		return CurrentDirectory;
+	}
+
+	public void setCurrentDirectory(String currentDirectory) {
+		CurrentDirectory = currentDirectory;
 	}
 
 }

@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
@@ -174,10 +176,11 @@ public class ExecHelper {
 
 		// Get next parm and try to interpret as a file name
 		ParamName = Parser.getInstance().getNextParam();
-		ExecCommands.getInstance().setRedirFile( Utilities.expandFileName(Parser.getInstance().makeString()) );
+		ExecCommands.getInstance().setRedirFile(
+				Utilities.expandFileName(Parser.getInstance().makeString()));
 
 		if (!ExecCommands.getInstance().getRedirFile().equals("")) {
-			SaveDir = System.getProperty("user.dir");
+			SaveDir = Globals.getCurrentDirectory();
 
 			try {
 				Fin = new File(ExecCommands.getInstance().getRedirFile());
@@ -2564,7 +2567,7 @@ public class ExecHelper {
 		int iBusIdx;
 		int B1ref;
 		int B2ref;
-		int NumNodes = 0;
+		MutableInt NumNodes = new MutableInt();
 		int[] NodeBuffer = new int[50];
 
 		DSSGlobals Globals = DSSGlobals.getInstance();

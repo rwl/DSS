@@ -49,15 +49,18 @@ import com.epri.dss.shared.HashList;
 
 public class Utilities {
 
-	private static final String padString = "                                                  "; // 50 blanks
-	private static final String padDotsString = " ................................................."; // 50 dots
+	private static final String padString =
+			"                                                  "; // 50 blanks
+	private static final String padDotsString =
+			" ................................................."; // 50 dots
 
 	private Utilities() {
 	}
 
 	public static String expandFileName(String child) {
 		try {
-			return new File(System.getProperty("user.dir"), child).getCanonicalPath();
+			return new File(DSSGlobals.getInstance().getCurrentDirectory(),
+					child).getCanonicalPath();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
