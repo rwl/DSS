@@ -466,21 +466,21 @@ public class ExecCommands {
 
 		try {
 			Globals.setCmdResult(0);
-			Globals.setErrorNumber(0);  // Reset Error number
+			Globals.setErrorNumber(0);  // reset error number
 			Globals.setGlobalResult("");
 
 			/* Load up the parser and process the first parameter only */
 			LastCmdLine = CmdLine;
-			Parser.setCmdString(LastCmdLine);  // Load up command parser
+			Parser.setCmdString(LastCmdLine);  // load up command parser
 			Globals.setLastCommandWasCompile(false);
 
 			ParamPointer = 0;
 			ParamName = Parser.getNextParam();
 			Param = Parser.makeString();
-			if (Param.length() == 0) return;  // Skip blank line
+			if (Param.length() == 0) return;  // skip blank line
 
-			// Check for Command verb or Property Value
-			// Commands do not have equal signs so ParamName must be zero
+			// check for command verb or property value
+			// commands do not have equal signs so ParamName must be zero
 			if (ParamName.length() == 0)
 				ParamPointer = CommandList.getCommand(Param);
 

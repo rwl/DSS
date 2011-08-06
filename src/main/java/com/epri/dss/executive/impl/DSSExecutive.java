@@ -14,8 +14,6 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class DSSExecutive implements Executive {
 
-//	private static Executive DSSExecutive;
-
 	private boolean RecorderOn;
 	private String RecorderFile;
 	private FileWriter RecorderFileWriter;
@@ -33,11 +31,12 @@ public class DSSExecutive implements Executive {
 		/* Instantiate all DSS class definitions, intrinsic and user-defined */
 		DSSClassDefs.createDSSClasses();
 
-		DSSGlobals.getInstance().setCircuits(new ArrayList<Circuit>(2));  // default buffer for 2 active circuits
+		// default buffer for 2 active circuits
+		DSSGlobals.getInstance().setCircuits(new ArrayList<Circuit>(2));
 		DSSGlobals.getInstance().setNumCircuits(0);
 		DSSGlobals.getInstance().setActiveCircuit(null);
 
-		Parser.getInstance();  // Create global parser object
+		Parser.getInstance();  // create global parser object
 
 		ExecCommands.getInstance().setLastCmdLine("");
 		ExecCommands.getInstance().setRedirFile("");
@@ -117,7 +116,7 @@ public class DSSExecutive implements Executive {
 			DSSGlobals.getInstance().clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
 
-			/* Now, Start over */
+			/* Now, start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
 			Globals.getDSSForms().setRebuildHelpForm(true);  // because class strings have changed
@@ -125,17 +124,20 @@ public class DSSExecutive implements Executive {
 	}
 
 	public void setRecorderOn(boolean Value) {
+		DSSGlobals Globals = DSSGlobals.getInstance();
+
 		try {
 			if (Value) {
 				if (!RecorderOn) {
-					RecorderFile = DSSGlobals.getInstance().getDSSDataDirectory() + "DSSRecorder.dss";
+					RecorderFile = Globals.getDSSDataDirectory() + "DSSRecorder.dss";
 					RecorderFileWriter = new FileWriter(RecorderFile);
 				}
 			} else if (RecorderOn) {
 				RecorderFileWriter.close();
 			}
 		} catch (IOException e) {
-			// TODO: handle exception
+			Globals.doErrorMsg("setRecorderOn", e.getMessage(),
+					"Lack of write access", 678);
 		}
 		DSSGlobals.getInstance().setGlobalResult(RecorderFile);
 		RecorderOn = Value;
@@ -148,13 +150,5 @@ public class DSSExecutive implements Executive {
 	public void writeToRecorderFile(String S) {
 		new PrintWriter(RecorderFileWriter).println(S);
 	}
-
-//	public static void setDSSExecutive(Executive dSSExecutive) {
-//		DSSExecutive = dSSExecutive;
-//	}
-//
-//	public static Executive getDSSExecutive() {
-//		return DSSExecutive;
-//	}
 
 }

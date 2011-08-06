@@ -5,6 +5,8 @@ import java.io.DataInputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -169,12 +171,15 @@ public class ExecHelper {
 	 * If not Compile (is simple redirect), return to where we started.
 	 */
 	public static int doRedirect(boolean IsCompile) {
-		File Fin;
-		String ParamName, InputLine, CurrDir = "", SaveDir;
+		FileReader Fin;
+		BufferedReader br;
+		@SuppressWarnings("unused")
+		String ParamName;
+		String InputLine, CurrDir = "", SaveDir;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		int Result = 0;
 
-		// Get next parm and try to interpret as a file name
+		// get next parm and try to interpret as a file name
 		ParamName = Parser.getInstance().getNextParam();
 		ExecCommands.getInstance().setRedirFile(
 				Utilities.expandFileName(Parser.getInstance().makeString()));
@@ -183,49 +188,47 @@ public class ExecHelper {
 			SaveDir = Globals.getCurrentDirectory();
 
 			try {
-				Fin = new File(ExecCommands.getInstance().getRedirFile());
+				Fin = new FileReader(ExecCommands.getInstance().getRedirFile());
 				if (IsCompile)
 					Globals.setLastFileCompiled(ExecCommands.getInstance().getRedirFile());
-			} catch (Exception e) {
-				// Couldn't find file  Try appending a '.dss' to the file name
-				// If it doesn't already have an extension
+			} catch (FileNotFoundException e) {
+				// couldn't find fil. Try appending '.dss' to the file name.
+				// If it doesn't already have an extension.
 				if (ExecCommands.getInstance().getRedirFile().indexOf('.') == -1) {
 					ExecCommands.getInstance().setRedirFile(ExecCommands.getInstance().getRedirFile() + ".dss");
 					try {
-						Fin = new File(ExecCommands.getInstance().getRedirFile());
-					} catch (Exception ex) {
-						Globals.doSimpleMsg("Redirect File: \"" + ExecCommands.getInstance().getRedirFile() + "\" Not Found.", 242);
+						Fin = new FileReader(ExecCommands.getInstance().getRedirFile());
+					} catch (FileNotFoundException ex) {
+						Globals.doSimpleMsg("Redirect file: \"" + ExecCommands.getInstance().getRedirFile() + "\" not found.", 242);
 						Globals.setSolutionAbort(true);
 						return Result;
 					}
 				} else {
-					Globals.doSimpleMsg("Redirect File: \""+ExecCommands.getInstance().getRedirFile()+"\" Not Found.", 243);
+					Globals.doSimpleMsg("Redirect file: \""+ExecCommands.getInstance().getRedirFile()+"\" not found.", 243);
 					Globals.setSolutionAbort(true);
-					return Result;  // Already had an extension, so just Bail
+					return Result;  // already had an extension, so just bail
 				}
 			}
 
 			// OK, we finally got one open, so we're going to continue
 			try {
-				// Change Directory to path specified by file in CASE that
+				// change directory to path specified by file in case that
 				// loads in more files
 				CurrDir = Utilities.extractFileDir(ExecCommands.getInstance().getRedirFile());
-				Utilities.setCurrentDir(CurrDir);
+				Globals.setCurrentDirectory(CurrDir);
 				if (IsCompile)
-					Globals.setDataPath(CurrDir);  // change DSSDataDirectory
+					Globals.setDataPath(CurrDir);  // change DSS data directory
 
 				Globals.setRedirect_Abort(false);
 				Globals.setIn_Redirect(true);
 
-				FileInputStream fstream = new FileInputStream(Fin);
-				DataInputStream in = new DataInputStream(fstream);
-				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				br = new BufferedReader(Fin);
 
 				while (((InputLine = br.readLine()) != null) || Globals.isRedirect_Abort()) {
 					if (!Globals.isSolutionAbort()) {
 						ExecCommands.getInstance().processCommand(InputLine);
 					} else {
-						Globals.setRedirect_Abort(true);  // Abort file if solution was aborted
+						Globals.setRedirect_Abort(true);  // abort file if solution was aborted
 					}
 				}
 
@@ -233,8 +236,8 @@ public class ExecHelper {
 					Globals.getActiveCircuit().setCurrentDirectory(CurrDir + "\"");
 
 				br.close();
-				in.close();
-			} catch (Exception e) {
+				Fin.close();
+			} catch (IOException e) {
 				Globals.doErrorMsg("DoRedirect"+DSSGlobals.CRLF+"Error processing input stream in Compile/Redirect.",
 							e.getMessage(),
 							"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
@@ -244,10 +247,10 @@ public class ExecHelper {
 					Globals.setDataPath(CurrDir); // change DSSDataDirectory
 					Globals.setLastCommandWasCompile(true);
 				} else {
-	//				setCurrentDir(SaveDir);    // set back to where we were for redirect, but not compile
+					Globals.setCurrentDirectory(SaveDir);    // set back to where we were for redirect, but not compile
 				}
 			}
-		} // else ignore altogether IF null filename
+		} // else ignore altogether if null filename
 
 		return Result;
 	}

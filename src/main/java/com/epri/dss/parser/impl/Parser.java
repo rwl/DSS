@@ -196,70 +196,84 @@ public class Parser {
 	}
 
 
-	private int TokenStart;
-	private int CmdBufLength;
-	private int QuoteIndex;  // value of quote character found
-	private String LineBuffer;
-	private int LinePos;
-	private String Result = "";  // if it doesn't find anything, return null string
+	private int _TokenStart;
+	private int _CmdBufLength;
+	private int _QuoteIndex;  // value of quote character found
+	private String _LineBuffer;
+	private int _LinePos;
+	private String _Result;
 
 	private void _parseToEndChar(char EndChar) {
-		LinePos += 1;
-		TokenStart = LinePos;
-		while ((LinePos < CmdBufLength - 1) && (LineBuffer.charAt(LinePos) != EndChar))
-			LinePos += 1;
+		_LinePos += 1;
+		_TokenStart = _LinePos;
+		while ((_LinePos < _CmdBufLength - 1) && (_LineBuffer.charAt(_LinePos) != EndChar))
+			_LinePos += 1;
 
-		Result = LineBuffer.substring(TokenStart, LinePos - TokenStart);
-		if (LinePos < CmdBufLength)
-			LinePos += 1;  // Increment past endchar
+		_Result = _LineBuffer.substring(_TokenStart, _LinePos);
+		if (_LinePos < _CmdBufLength)
+			_LinePos += 1;  // Increment past endchar
 	}
 
 	private void _parseToEndQuote() {
-		_parseToEndChar(EndQuoteChars.charAt(QuoteIndex));
+		_parseToEndChar(EndQuoteChars.charAt(_QuoteIndex));
 		IsQuotedString = true;
 	}
 
 	private boolean _isBeginQuote(char ch) {
-		QuoteIndex = BeginQuoteChars.indexOf(ch);
-		return (QuoteIndex >= 0);
+		_QuoteIndex = BeginQuoteChars.indexOf(ch);
+		return (_QuoteIndex >= 0);
 	}
 
-	private String getToken(final String LineBuffer, MutableInt LinePos) {
+	private String getToken(final String LineBuffer, MutableInt linePos) {
+		MutableInt mLinePos;
+		_LineBuffer = LineBuffer;
+		_LinePos = linePos.intValue();
 
-		CmdBufLength = LineBuffer.length();
-		if (LinePos.intValue() < CmdBufLength) {
+		_Result = "";  // if it doesn't find anything, return null string
+
+		_CmdBufLength = _LineBuffer.length();
+		if (_LinePos < _CmdBufLength) {
 
 			/* Handle Quotes and Parentheses around tokens */
-			IsQuotedString= false;
-			if (_isBeginQuote(LineBuffer.charAt(LinePos.intValue()))) {
+			IsQuotedString = false;
+			if (_isBeginQuote(_LineBuffer.charAt(_LinePos))) {
 				_parseToEndQuote();
 			} else {  /* Copy to next delimiter or whitespace */
-				TokenStart = LinePos.intValue();
-				while ((LinePos.intValue() < CmdBufLength) && (!isDelimiter(LineBuffer, LinePos)))
-					LinePos.increment();
+				_TokenStart = _LinePos;
+				mLinePos = new MutableInt(_LinePos);
+				while ((mLinePos.intValue() < _CmdBufLength) && (!isDelimiter(_LineBuffer, mLinePos)))
+					mLinePos.increment();
+				_LinePos = mLinePos.intValue();
 
-				Result = LineBuffer.substring(0, LinePos.intValue() - TokenStart);
+				_Result = _LineBuffer.substring(_TokenStart, _LinePos);
 			}
 
 			/* Check for stop on comment */
 
 			// if stop on comment, ignore rest of line.
 			if (LastDelimiter == CommentChar) {
-				LinePos.setValue(LineBuffer.length() + 1);
+				_LinePos = _LineBuffer.length() + 1;
 			} else {
 
 				/* Get Rid of Trailing White Space */
-				if (LastDelimiter == ' ')
-					skipWhiteSpace(LineBuffer, LinePos);
-				if (isDelimChar(LineBuffer.charAt(LinePos.intValue()))) {
-					LastDelimiter = LineBuffer.charAt(LinePos.intValue());
-					LinePos.increment();  // Move past terminating delimiter
+				if (LastDelimiter == ' ') {
+					mLinePos = new MutableInt(_LinePos);
+					skipWhiteSpace(_LineBuffer, mLinePos);
+					_LinePos = mLinePos.intValue();
 				}
-				skipWhiteSpace(LineBuffer, LinePos);
+				if (isDelimChar(_LineBuffer.charAt(_LinePos))) {
+					LastDelimiter = _LineBuffer.charAt(_LinePos);
+					_LinePos += 1;  // move past terminating delimiter
+				}
+				mLinePos = new MutableInt(_LinePos);
+				skipWhiteSpace(_LineBuffer, mLinePos);
+				_LinePos = mLinePos.intValue();
 			}
 		}
 
-		return Result;
+		linePos.setValue(_LinePos);
+
+		return _Result;
 	}
 
 	public String getNextParam() {

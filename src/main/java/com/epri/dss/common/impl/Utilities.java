@@ -61,6 +61,9 @@ public class Utilities {
 
 	public static String expandFileName(String child) {
 		if (child.length() == 0)
+			return "";
+
+		if (new File(child).isAbsolute())
 			return child;
 
 		try {
@@ -71,6 +74,16 @@ public class Utilities {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static String extractFileDir(String path) {
+		try {
+			return new File(path).getParentFile().getCanonicalPath();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return path;
 	}
 
 	/**
@@ -2217,16 +2230,6 @@ public class Utilities {
 
 	public static Color interpretColor(String S) {
 		return null;
-	}
-
-	public static String extractFileDir(String redirFile) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public static void setCurrentDir(String currDir) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static String MakeNewCktElemName(final String OldName) {

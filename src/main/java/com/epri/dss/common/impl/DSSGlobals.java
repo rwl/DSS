@@ -316,11 +316,10 @@ public class DSSGlobals {
 
 		// Put a \ on the end if not supplied. Allow a null specification.
 		if (DSSDataDirectory.length() > 0) {
-			// FIXME: change directory
-//	    	cd(DSSDataDirectory);   // Change to specified directory
-			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
-					DSSDataDirectory = DSSDataDirectory + "\\";
-			}
+	    	setCurrentDirectory(DSSDataDirectory);   // change to specified directory
+//			if (DSSDataDirectory.charAt(DSSDataDirectory.length()) != '\\') {
+//					DSSDataDirectory = DSSDataDirectory + "\\";
+//			}
 		}
 	}
 
