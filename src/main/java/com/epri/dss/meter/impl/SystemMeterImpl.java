@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
@@ -18,13 +20,16 @@ public class SystemMeterImpl implements SystemMeter {
 
 	private static double[] RegisterArray = new double[EnergyMeter.NumEMRegisters];
 
-	private double kWh, dkWh,
-		kvarh, dkvarh,
-		peakkW,
-		peakkVA,
-		Losseskwh,  dLosseskWh,
-		Losseskvarh, dlosseskvarh,
-		PeakLosseskW;
+	private MutableDouble kWh = new MutableDouble();
+	private MutableDouble dkWh = new MutableDouble();
+	private MutableDouble kvarh = new MutableDouble();
+	private MutableDouble dkvarh = new MutableDouble();
+	private MutableDouble Losseskwh = new MutableDouble();
+	private MutableDouble dLosseskWh = new MutableDouble();
+	private MutableDouble Losseskvarh = new MutableDouble();
+	private MutableDouble dlosseskvarh = new MutableDouble();
+
+	private double peakkW, peakkVA, PeakLosseskW;
 	private boolean FirstSampleAfterReset, This_Meter_DIFileIsOpen;
 	private FileWriter SystemDIFile;
 	private Complex cPower, cLosses;
@@ -62,17 +67,17 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	private void clear() {
-		kWh = 0.0;
-		kvarh = 0.0;
+		kWh.setValue(0.0);
+		kvarh.setValue(0.0);
 		peakkW = 0.0;
 		peakkVA = 0.0;
-		Losseskwh = 0.0;
-		Losseskvarh = 0.0;
+		Losseskwh.setValue(0.0);
+		Losseskvarh.setValue(0.0);
 		PeakLosseskW = 0.0;
-		dkWh = 0.0;
-		dkvarh = 0.0;
-		dLosseskWh = 0.0;
-		dlosseskvarh = 0.0;
+		dkWh.setValue(0.0);
+		dkvarh.setValue(0.0);
+		dLosseskWh.setValue(0.0);
+		dlosseskvarh.setValue(0.0);
 		FirstSampleAfterReset = true;
 	}
 
@@ -88,19 +93,19 @@ public class SystemMeterImpl implements SystemMeter {
 		}
 	}
 
-	private void integrate(double Reg, double Value, double Deriv) {
+	private void integrate(MutableDouble Reg, double Value, MutableDouble Deriv) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
 			if (!FirstSampleAfterReset)
-				Reg = Reg + 0.5 * ckt.getSolution().getIntervalHrs() * (Value + Deriv);
+				Reg.add(0.5 * ckt.getSolution().getIntervalHrs() * (Value + Deriv.doubleValue()));
 		} else {
 			/* Plain Euler integration */
-			Reg = Reg + ckt.getSolution().getIntervalHrs() * Value;
+			Reg.add(ckt.getSolution().getIntervalHrs() * Value);
 		}
 
-		Deriv = Value;
+		Deriv.setValue(Value);
 	}
 
 	// FIXME Protected method in OpenDSS
@@ -212,12 +217,12 @@ public class SystemMeterImpl implements SystemMeter {
 
 	private void writeRegisters(PrintWriter F) {
 
-		F.printf(", %-g", kWh);
-		F.printf(", %-g", kvarh);
+		F.printf(", %-g", kWh.doubleValue());
+		F.printf(", %-g", kvarh.doubleValue());
 		F.printf(", %-g", peakkW);
 		F.printf(", %-g", peakkVA);
-		F.printf(", %-g", Losseskwh);
-		F.printf(", %-g", Losseskvarh);
+		F.printf(", %-g", Losseskwh.doubleValue());
+		F.printf(", %-g", Losseskvarh.doubleValue());
 		F.printf(", %-g", PeakLosseskW);
 	}
 

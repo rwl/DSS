@@ -2,6 +2,8 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -30,8 +32,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	protected int iMaxP;
 
 	protected boolean StdDevCalculated;
-	protected double Mean;
-	protected double StdDev;
+	protected MutableDouble Mean = new MutableDouble();
+	protected MutableDouble StdDev = new MutableDouble();
 
 	public LoadShapeObjImpl(DSSClass ParClass, String LoadShapeName) {
 		super(ParClass);
@@ -187,8 +189,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			}
 
 		// TODO Check indenting
-		PropertyValue[4] = String.format("%.8g", Mean);  // TODO Check zero based indexing.
-		PropertyValue[5] = String.format("%.8g", StdDev);
+		PropertyValue[4] = String.format("%.8g", Mean.doubleValue());  // TODO Check zero based indexing.
+		PropertyValue[5] = String.format("%.8g", StdDev.doubleValue());
 
 		StdDevCalculated = true;
 		/* No Action is taken on Q multipliers */
@@ -209,13 +211,13 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public double getMean() {
 		if (!StdDevCalculated)
 			calcMeanAndStdDev();
-		return Mean;
+		return Mean.doubleValue();
 	}
 
 	public double getStdDev() {
 		if (!StdDevCalculated)
 			calcMeanAndStdDev();
-		return StdDev;
+		return StdDev.doubleValue();
 	}
 
 	/**
@@ -285,9 +287,9 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 				for (int i = 0; i < NumPoints; i++)
 					Result = Result + String.format("%-g, ", Hours[i]);
 		case 4:
-			Result = String.format("%.8g", Mean);
+			Result = String.format("%.8g", Mean.doubleValue());
 		case 5:
-			Result = String.format("%.8g", StdDev);
+			Result = String.format("%.8g", StdDev.doubleValue());
 		case 10:
 			if (QMultipliers != null) {
 				Result = "(";
@@ -375,7 +377,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setMean(double mean) {
 		StdDevCalculated = true;
-		Mean = mean;
+		Mean.setValue(mean);
 	}
 
 	public void setNumPoints(int Value) {
@@ -394,7 +396,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setStdDev(double stdDev) {
 		StdDevCalculated = true;
-		StdDev = stdDev;
+		StdDev.setValue(stdDev);
 	}
 
 	public int getNumPoints() {

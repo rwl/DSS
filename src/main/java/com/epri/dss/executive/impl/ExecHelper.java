@@ -733,21 +733,32 @@ public class ExecHelper {
 	 *     2. Objectname.Property            (classname omitted)
 	 *     3. Property                       (classname and objectname omitted
 	 */
-	public static void parseObjName(String fullName, String objName, String propName) {
+	public static void parseObjName(String fullName, StringBuffer objName, StringBuffer propName) {
+		String tmpName;
 		int DotPos1 = fullName.indexOf(".");
 		switch (DotPos1) {
 		case -1:
-			objName = "";
-			propName = fullName;
+			objName.delete(0, objName.length());
+			propName.setLength(fullName.length());
+			propName.replace(0, fullName.length(), fullName);
 		default:
-			propName = fullName.substring(DotPos1 + 1, (fullName.length() - DotPos1));  // TODO Check indexing.
+			tmpName = fullName.substring(DotPos1 + 1, (fullName.length() - DotPos1));  // TODO check indexing
+			propName.setLength(tmpName.length());
+			propName.replace(0, tmpName.length(), tmpName);
 			int DotPos2 = propName.indexOf(".");
 			switch (DotPos2) {
 			case -1:
-				objName = fullName.substring(0, DotPos1 - 1);
+				tmpName = fullName.substring(0, DotPos1 - 1);
+				objName.setLength(tmpName.length());
+				objName.replace(0, tmpName.length(), tmpName);
 			default:
-				objName  = fullName.substring(0, DotPos1 + DotPos2 - 1);
-				propName = propName.substring(DotPos2 + 1, propName.length() - DotPos2);
+				tmpName = fullName.substring(0, DotPos1 + DotPos2 - 1);
+				objName.setLength(tmpName.length());
+				objName.replace(0, tmpName.length(), tmpName);
+
+				tmpName = propName.substring(DotPos2 + 1, propName.length() - DotPos2);
+				propName.setLength(tmpName.length());
+				propName.replace(0, tmpName.length(), tmpName);
 			}
 		}
 	}
@@ -757,7 +768,8 @@ public class ExecHelper {
 	 * Syntax:  ? Line.Line1.R1
 	 */
 	public static int doQueryCmd() {
-		String ObjName = "", PropName = "";
+		StringBuffer ObjName = new StringBuffer();
+		StringBuffer PropName = new StringBuffer();
 		int Result = 0;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
@@ -776,7 +788,7 @@ public class ExecHelper {
 		}
 
 		// Put property value in global VARiable
-		int PropIndex = Globals.getActiveDSSClass().propertyIndex(PropName);
+		int PropIndex = Globals.getActiveDSSClass().propertyIndex(PropName.toString());
 		if (PropIndex > 0) {
 			Globals.setGlobalPropertyValue(Globals.getActiveDSSObject().getPropertyValue(PropIndex));
 		} else {

@@ -275,18 +275,18 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // Base voltage for this harmonic
-				Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // Rotate for phase 1 shift
+				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // Rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
 					Vterminal[i + nPhases] = Complex.ZERO;
 					if (i < nPhases)
 						switch (ScanType) {
 						case 1:
-							Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0 / nPhases); // maintain pos seq
+							Vharm = Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0 / nPhases); // maintain pos seq
 						case 0:
 							// Do nothing for Zero Sequence; All the same.
 						default:
-							Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0 / nPhases); // normal rotation
+							Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0 / nPhases); // normal rotation
 						}
 				}
 			} else {

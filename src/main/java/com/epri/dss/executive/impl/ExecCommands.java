@@ -459,7 +459,8 @@ public class ExecCommands {
 		int ParamPointer;
 		String ParamName;
 		String Param;
-		String ObjName = "", PropName = "";
+		StringBuffer ObjName = new StringBuffer();
+		StringBuffer PropName = new StringBuffer();
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser Parser = com.epri.dss.parser.impl.Parser.getInstance();
 
@@ -566,7 +567,7 @@ public class ExecCommands {
 				} else {
 					ExecHelper.parseObjName(ParamName, ObjName, PropName);  // TODO: Check ObjName and PropName get set.
 					if (ObjName.length() > 0)
-						Globals.setObject(ObjName);  // Set active element
+						Globals.setObject(ObjName.toString());  // Set active element
 					if (Globals.getActiveDSSObject() != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted OK after rebuild

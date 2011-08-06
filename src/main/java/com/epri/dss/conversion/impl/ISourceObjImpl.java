@@ -103,7 +103,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			if (sol.isIsHarmonicModel()) {
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				Result = getSpectrumObj().getMult(SrcHarmonic).multiply(Amps);  // Base current for this harmonic
-				Utilities.rotatePhasorDeg(Result, SrcHarmonic, Angle);
+				Result = Utilities.rotatePhasorDeg(Result, SrcHarmonic, Angle);
 			} else {
 				if (Math.abs(sol.getFrequency() - SrcFrequency) < DSSGlobals.EPSILON2) {
 					Result = ComplexUtil.polarDeg2Complex(Amps, Angle);
@@ -161,21 +161,21 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 				if (sol.isIsHarmonicModel()) {
 					switch (ScanType) {
 					case 1:
-						Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
 					case 0:
 						// Do not rotate for zero sequence
 					default:
-						Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
 						/* Harmonic 1 will be pos; 2 is neg; 3 is zero, and so on. */
 					}
 				} else {
 					switch (SequenceType) {
 					case -1:
-						Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // Neg seq
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // Neg seq
 					case 0:
 						// Do not rotate for zero sequence
 					default:
-						Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // Maintain pos seq
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // Maintain pos seq
 					}
 				}
 			}

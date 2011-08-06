@@ -1061,11 +1061,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 		GenHarmonic = sol.getFrequency() / GenFundamental;
 		E = getSpectrumObj().getMult(GenHarmonic).multiply(VThevHarm); // Get base harmonic magnitude
-		Utilities.rotatePhasorRad(E, GenHarmonic, ThetaHarm);  // Time shift by fundamental frequency phase shift
+		E = Utilities.rotatePhasorRad(E, GenHarmonic, ThetaHarm);  // Time shift by fundamental frequency phase shift
 		for (i = 0; i < nPhases; i++) {
 			cBuffer[i] = E;
 			if (i < nPhases)
-				Utilities.rotatePhasorDeg(E, GenHarmonic, -120.0);  // Assume 3-phase generator
+				E = Utilities.rotatePhasorDeg(E, GenHarmonic, -120.0);  // Assume 3-phase generator
 		}
 
 		/* Handle wye connection */

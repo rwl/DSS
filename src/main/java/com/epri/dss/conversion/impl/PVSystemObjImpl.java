@@ -815,11 +815,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			E = Complex.ZERO;
 		}
 
-		Utilities.rotatePhasorRad(E, PVSystemHarmonic, Thetaharm);  // Time shift by fundamental frequency phase shift
+		E = Utilities.rotatePhasorRad(E, PVSystemHarmonic, Thetaharm);  // Time shift by fundamental frequency phase shift
 		for (i = 0; i < nPhases; i++) {
 			cBuffer[i] = E;
 			if (i < nPhases)  // TODO Check zero based indexing
-				Utilities.rotatePhasorDeg(E, PVSystemHarmonic, -120.0);  // Assume 3-phase PVSystem element
+				E = Utilities.rotatePhasorDeg(E, PVSystemHarmonic, -120.0);  // Assume 3-phase PVSystem element
 		}
 
 		/* Handle Wye Connection */

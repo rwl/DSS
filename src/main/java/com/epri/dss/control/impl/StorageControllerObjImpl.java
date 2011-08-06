@@ -4,6 +4,8 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.Complex;
 
@@ -65,8 +67,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	private double UpPlusFlatPlusDn;
 	private double LastpctDischargeRate;
 
-	private double TotalKWCapacity;
-	private double TotalKWhCapacity;
+	private MutableDouble TotalKWCapacity = new MutableDouble();
+	private MutableDouble TotalKWhCapacity = new MutableDouble();
 
 	private String YearlyShape;  // ="fixed" means no variation  on all the time
 	private LoadShapeObj YearlyShapeObj;  // Shape for this Storage element
@@ -358,22 +360,24 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		return String.format("%-.8g", getFleetkWh());
 	}
 
-	private String getkWhTotal(double Sum) {
+	private String getkWhTotal(MutableDouble Sum) {
+		// FIXME return total as double
 		StorageObj pStorage;
-		Sum = 0;
+		Sum.setValue(0);
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
-			Sum = Sum + pStorage.getkWhRating();
+			Sum.add(pStorage.getkWhRating());
 		}
 		return String.format("%-.8g", Sum);
 	}
 
-	private String getkWTotal(double Sum) {
+	private String getkWTotal(MutableDouble Sum) {
+		// FIXME return total as double
 		StorageObj pStorage;
-		Sum = 0;
+		Sum.setValue(0);
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
-			Sum = Sum + pStorage.getkWrating();
+			Sum.add(pStorage.getkWrating());
 		}
 		return String.format("%-.8g", Sum);
 	}
@@ -1421,22 +1425,22 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	}
 
 	public double getTotalKWCapacity() {
-		return TotalKWCapacity;
+		return TotalKWCapacity.doubleValue();
 	}
 
 
 	public void setTotalKWCapacity(double totalKWCapacity) {
-		TotalKWCapacity = totalKWCapacity;
+		TotalKWCapacity.setValue(totalKWCapacity);
 	}
 
 
 	public double getTotalKWhCapacity() {
-		return TotalKWhCapacity;
+		return TotalKWhCapacity.doubleValue();
 	}
 
 
 	public void setTotalKWhCapacity(double totalKWhCapacity) {
-		TotalKWhCapacity = totalKWhCapacity;
+		TotalKWhCapacity.setValue(totalKWhCapacity);
 	}
 
 

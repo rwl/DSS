@@ -209,11 +209,11 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			if (sol.isIsHarmonicModel()) {
 				EquivHarm = sol.getFrequency() / EquivFrequency ;
 				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // Base voltage for this harmonic
-				Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // Rotate for phase 1 shift
+				Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // Rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
 					if (i < nPhases)
-						Utilities.rotatePhasorDeg(Vharm, EquivHarm, -360.0 / nPhases);
+						Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, -360.0 / nPhases);
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)

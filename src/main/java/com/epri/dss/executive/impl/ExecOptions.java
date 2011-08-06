@@ -1,5 +1,10 @@
 package com.epri.dss.executive.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
 import com.epri.dss.common.Solution;
@@ -419,6 +424,7 @@ public class ExecOptions {
 	 */
 	public int doSetCmd(int SolveOption) {
 		LoadShapeObj TestLoadShapeObj;
+		MutableInt NumRegs;
 
 		Parser parser = Parser.getInstance();
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -524,9 +530,17 @@ public class ExecOptions {
 			case 35:
 				Globals.getActiveCircuit().setLossWeight(parser.makeDouble());
 			case 36:
-				Utilities.parseIntArray(Globals.getActiveCircuit().getUERegs(), Globals.getActiveCircuit().getNumUERegs(), Param);
+				NumRegs = new MutableInt();
+				Globals.getActiveCircuit().setUERegs(
+						Utilities.parseIntArray(Globals.getActiveCircuit().getUERegs(), NumRegs, Param)
+				);
+				Globals.getActiveCircuit().setNumUERegs(NumRegs.intValue());
 			case 37:
-				Utilities.parseIntArray(Globals.getActiveCircuit().getLossRegs(), Globals.getActiveCircuit().getNumLossRegs(), Param);
+				NumRegs = new MutableInt();
+				Globals.getActiveCircuit().setLossRegs(
+						Utilities.parseIntArray(Globals.getActiveCircuit().getLossRegs(), NumRegs, Param)
+				);
+				Globals.getActiveCircuit().setNumLossRegs(NumRegs.intValue());
 			case 38:
 				ExecHelper.doLegalVoltageBases();
 			case 39:

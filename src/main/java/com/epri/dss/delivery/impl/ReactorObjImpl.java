@@ -2,6 +2,8 @@ package com.epri.dss.delivery.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
@@ -68,7 +70,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	@Override
 	public void recalcElementData() {
 		double KvarPerPhase, PhasekV;
-		int i, CheckError = 0;
+		int i;
+		MutableInt CheckError = new MutableInt();
 
 		switch (SpecType) {
 		case 1:  // kvar
@@ -111,7 +114,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			for (i = 0; i < nPhases * nPhases; i++)
 				Gmatrix[i] = Rmatrix[i];
 			MathUtil.ETKInvert(Rmatrix, nPhases, CheckError);
-			if (CheckError > 0) {  // TODO Check zero based indexing
+			if (CheckError.intValue() > 0) {  // TODO Check zero based indexing
 				DSSGlobals.getInstance().doSimpleMsg("Error inverting R Matrix for Reactor."+getName()+" - G is zeroed.", 232);
 				for (i = 0; i < nPhases * nPhases; i++)
 					Gmatrix[i] = 0.0;
@@ -121,7 +124,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			for (i = 0; i < nPhases * nPhases; i++) {
 				Bmatrix[i] = -XMatrix[i];
 				MathUtil.ETKInvert(Bmatrix, nPhases, CheckError);
-				if (CheckError > 0) {
+				if (CheckError.intValue() > 0) {
 					DSSGlobals.getInstance().doSimpleMsg("Error inverting X Matrix for Reactor."+getName()+" - B is zeroed.", 233);
 					for (i = 0; i < nPhases * nPhases; i++)
 						Gmatrix[i] = 0.0;

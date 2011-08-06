@@ -183,7 +183,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 				// Base voltage for this harmonic
 				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(Vmag);
 				// Rotate for phase 1 shift
-				Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);
+				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] =  Vharm;
 	                Vterminal[i+nPhases] = Complex.ZERO;
@@ -191,12 +191,12 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	                	switch (ScanType) {
 						case 1:
 							// maintain pos seq
-							Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0/nPhases);
+							Vharm = Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0/nPhases);
 						case 0:
 							// Do nothing for zero Sequence; All the same
 	                    default:
 	                    	// normal rotation
-	                    	Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0/nPhases);
+	                    	Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0/nPhases);
 	                	}
 	                }
 				}

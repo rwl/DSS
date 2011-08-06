@@ -1,5 +1,8 @@
 package com.epri.dss.shared.impl;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.shared.CMatrix;
 
 public abstract class MathUtil {
@@ -99,19 +102,19 @@ public abstract class MathUtil {
 	 * stuff.
 	 *
 	 */
-	public static void ETKInvert(double[] A, int Norder, int Error) {  // TODO Check zero based indexing
+	public static void ETKInvert(double[] A, int Norder, MutableInt Error) {  // TODO Check zero based indexing
 
 		int j, k, LL, M, i;
 		int[] LT;
 		double RMY, T1;
 
 		L = Norder;
-		Error = 0;
+		Error.setValue(0);
 
 		/* Allocate LT */
 		LT = new int[L];
 		if (LT.length == 0) {
-			Error = 1;
+			Error.setValue(1);
 			return;
 		}
 
@@ -138,7 +141,7 @@ public abstract class MathUtil {
 			/* Error Check. If RMY ends up zero, matrix is non-inversible */
 			RMY = Math.abs(T1);
 			if (RMY == 0.0) {
-				Error = 2;
+				Error.setValue(2);
 				return;
 			}
 
@@ -227,45 +230,45 @@ public abstract class MathUtil {
 		return sum;
 	}
 
-	public static void RCDMeanandStdDev(double[] pData, int nData, double mean, double stdDev) {
+	public static void RCDMeanandStdDev(double[] pData, int nData, MutableDouble mean, MutableDouble stdDev) {
 		double[] Data = new double[100];
 		double S;
 
 		Data = pData;  // make a double pointer
 		if (nData == 1) {
-			mean = Data[0];
-			stdDev = Data[0];
+			mean.setValue(Data[0]);
+			stdDev.setValue(Data[0]);
 			return;
 		}
-		mean = sum(Data, (nData)) / nData;
+		mean.setValue(sum(Data, (nData)) / nData);
 		S = 0;               // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
-			S = S + Math.pow(mean - Data[i], 2);
-		stdDev = Math.sqrt(S / (nData - 1));
+			S = S + Math.pow(mean.doubleValue() - Data[i], 2);
+		stdDev.setValue(Math.sqrt(S / (nData - 1)));
 	}
 
-	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, double Mean, double StdDev) {
+	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, MutableDouble Mean, MutableDouble StdDev) {
 		double s, dy1, dy2;
 		int i;
 
 		if (N == 1) {
-			Mean = pY[0];
-			StdDev = pY[0];
+			Mean.setValue(pY[0]);
+			StdDev.setValue(pY[0]);
 			return;
 		}
 		s = 0;
 		for (i = 0; i < N - 1; i++)
 			s += 0.5 * (pY[i] + pY[i + 1]) * (pX[i + 1] - pX[i]);
-		Mean = s / (pX[N] - pX[0]);  // TODO Check zero based indexing
+		Mean.setValue(s / (pX[N] - pX[0]));  // TODO Check zero based indexing
 
 		s = 0;               // sum differences from the mean, for greater accuracy
 		for (i = 0; i < N - 1; i++) {
-			dy1 = (pY[i] - Mean);
-			dy2 = (pY[i + 1] - Mean);
+			dy1 = (pY[i] - Mean.doubleValue());
+			dy2 = (pY[i + 1] - Mean.doubleValue());
 			s += 0.5 * (dy1 * dy1 + dy2 * dy2) * (pX[i + 1] - pX[i]);
 		}
-		StdDev = Math.sqrt(s / (pX[N] - pX[0]));
 
+		StdDev.setValue(Math.sqrt(s / (pX[N] - pX[0])));
 	}
 
 	/**

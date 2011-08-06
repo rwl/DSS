@@ -2,6 +2,8 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
+import org.apache.commons.lang.mutable.MutableDouble;
+
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.Circuit;
@@ -197,31 +199,32 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	/**
 	 * Get current to control on based on type of control specified.
 	 */
-	private void getControlCurrent(double ControlCurrent) {
+	private void getControlCurrent(MutableDouble ControlCurrent) {
+		// FIXME: return double
 		int i;
 
 		switch (CTPhase) {
 		case CapControl.AVGPHASES:
-			ControlCurrent = 0.0;  // Get avg of all phases
+			ControlCurrent.setValue(0.0);  // Get avg of all phases
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)  // TODO Check zero based indexing
-				ControlCurrent = ControlCurrent + cBuffer[i].abs();
-			ControlCurrent = ControlCurrent / nPhases / CTRatio;
+				ControlCurrent.add(cBuffer[i].abs());
+			ControlCurrent.setValue(ControlCurrent.doubleValue() / nPhases / CTRatio);
 
 		case CapControl.MAXPHASE:
-			ControlCurrent = 0.0;  // Get max of all phases
+			ControlCurrent.setValue(0.0);  // Get max of all phases
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
-				ControlCurrent = Math.max(ControlCurrent, cBuffer[i].abs());
-			ControlCurrent = ControlCurrent / CTRatio;
+				ControlCurrent.setValue(Math.max(ControlCurrent.doubleValue(), cBuffer[i].abs()));
+			ControlCurrent.setValue(ControlCurrent.doubleValue() / CTRatio);
 
 		case CapControl.MINPHASE:
-			ControlCurrent = 1.0e50;  // Get min of all phases
+			ControlCurrent.setValue(1.0e50);  // Get min of all phases
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
-				ControlCurrent = Math.min(ControlCurrent, cBuffer[i].abs());
-			ControlCurrent = ControlCurrent / CTRatio;
+				ControlCurrent.setValue(Math.min(ControlCurrent.doubleValue(), cBuffer[i].abs()));
+			ControlCurrent.setValue(ControlCurrent.doubleValue() / CTRatio);
 
 		default:
 			/* Just use one phase because that's what most controls do. */
-			ControlCurrent = cBuffer[CTPhase].abs() / CTRatio;  // monitored phase only
+			ControlCurrent.setValue(cBuffer[CTPhase].abs() / CTRatio);  // monitored phase only
 		}
 	}
 
@@ -311,27 +314,28 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	/**
 	 * Get Voltage used for voltage control based on specified options.
 	 */
-	private void getControlVoltage(double ControlVoltage) {
+	private void getControlVoltage(MutableDouble ControlVoltage) {
+		// FIXME: return double
 		int i;
 
 		switch (PTPhase) {
 		case CapControl.AVGPHASES:
-			ControlVoltage = 0.0;
+			ControlVoltage.setValue(0.0);
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
-				ControlVoltage = ControlVoltage + cBuffer[i].abs();
-			ControlVoltage = ControlVoltage / MonitoredElement.getNPhases() / PTRatio;
+				ControlVoltage.add(cBuffer[i].abs());
+			ControlVoltage.setValue(ControlVoltage.doubleValue() / MonitoredElement.getNPhases() / PTRatio);
 
 		case CapControl.MAXPHASE:
-			ControlVoltage = 0.0;
+			ControlVoltage.setValue(0.0);
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
-				ControlVoltage = Math.max(ControlVoltage, cBuffer[i].abs());
-			ControlVoltage = ControlVoltage / PTRatio;
+				ControlVoltage.setValue(Math.max(ControlVoltage.doubleValue(), cBuffer[i].abs()));
+			ControlVoltage.setValue(ControlVoltage.doubleValue() / PTRatio);
 
 		case CapControl.MINPHASE:
-			ControlVoltage = 1.0E50;
+			ControlVoltage.setValue(1.0e50);
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
-				ControlVoltage = Math.min(ControlVoltage, cBuffer[i].abs());
-			ControlVoltage = ControlVoltage / PTRatio;
+				ControlVoltage.setValue(Math.min(ControlVoltage.doubleValue(), cBuffer[i].abs()));
+			ControlVoltage.setValue(ControlVoltage.doubleValue() / PTRatio);
 
 		default:
 			/* Just use one phase because that's what most controls do. */
@@ -339,9 +343,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			CapacitorObj pElem = (CapacitorObj) getControlledElement();
 			switch (pElem.getConnection()) {
 			case 1:
-				ControlVoltage = cBuffer[PTPhase].subtract( cBuffer[nextDeltaPhase(PTPhase)] ).abs() / PTRatio;   // Delta
+				ControlVoltage.setValue( cBuffer[PTPhase].subtract( cBuffer[nextDeltaPhase(PTPhase)] ).abs() / PTRatio );   // Delta
 			default:
-				ControlVoltage = cBuffer[PTPhase].abs() / PTRatio;     // Wye - Default
+				ControlVoltage.setValue( cBuffer[PTPhase].abs() / PTRatio );     // Wye - Default
 			}
 		}
 	}
@@ -367,7 +371,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	@Override
 	public void sample() {
-		double CurrTest = 0, Vtest = 0, NormalizedTime, Q;
+		double NormalizedTime, Q;
+		MutableDouble Vtest = new MutableDouble();
+		MutableDouble CurrTest = new MutableDouble();
 		Complex S;
 		double PF;
 
@@ -389,12 +395,12 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 				switch (PresentState) {
 				case OPEN:
-					if (Vtest < Vmin) {
+					if (Vtest.doubleValue() < Vmin) {
 						PendingChange = ControlAction.CLOSE;
 						ShouldSwitch = true;
 					}
 				case CLOSE:
-					if (Vtest > Vmax) {
+					if (Vtest.doubleValue() > Vmax) {
 						PendingChange = ControlAction.OPEN;
 						ShouldSwitch = true;
 					}
@@ -414,7 +420,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 				switch (PresentState) {
 				case OPEN:
-					if (CurrTest > ON_Value) {
+					if (CurrTest.doubleValue() > ON_Value) {
 						PendingChange = ControlAction.CLOSE;
 						ShouldSwitch = true;
 					} else {
@@ -422,11 +428,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						PendingChange = ControlAction.NONE;
 					}
 				case CLOSE:
-					if (CurrTest < OFF_Value) {
+					if (CurrTest.doubleValue() < OFF_Value) {
 						PendingChange = ControlAction.OPEN;
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
-						if (CurrTest > ON_Value) {
+						if (CurrTest.doubleValue() > ON_Value) {
 							PendingChange = ControlAction.CLOSE;
 							ShouldSwitch = true;
 						}
@@ -442,7 +448,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 				switch (PresentState) {
 				case OPEN:
-					if (Vtest < ON_Value) {
+					if (Vtest.doubleValue() < ON_Value) {
 						PendingChange = ControlAction.CLOSE;
 						ShouldSwitch = true;
 					} else {
@@ -450,11 +456,11 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						PendingChange = ControlAction.NONE;
 					}
 				case CLOSE:
-					if (Vtest > OFF_Value) {
+					if (Vtest.doubleValue() > OFF_Value) {
 						PendingChange = ControlAction.OPEN;
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
-						if (Vtest < ON_Value) {
+						if (Vtest.doubleValue() < ON_Value) {
 							PendingChange = ControlAction.CLOSE;
 							ShouldSwitch = true;
 						}

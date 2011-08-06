@@ -908,7 +908,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		Mult = getSpectrumObj().getMult(LoadHarmonic);
 		for (int i = 0; i < nPhases; i++) {
 			Curr = Mult.multiply(HarmMag[i]); // Get base harmonic magnitude
-			Utilities.rotatePhasorDeg(Curr, LoadHarmonic, HarmAng[i]);   // Time shift by fundamental
+			Curr = Utilities.rotatePhasorDeg(Curr, LoadHarmonic, HarmAng[i]);   // Time shift by fundamental
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // Put into Terminal array taking into account connection
 			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
 			setITerminalUpdated(true);

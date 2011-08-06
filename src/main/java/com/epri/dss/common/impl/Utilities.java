@@ -17,6 +17,8 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.mutable.MutableInt;
+
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.Complex;
@@ -564,10 +566,9 @@ public class Utilities {
 		return Result;
 	}
 
-	public static void initStringToNull(String S) {
-		//Move(ZeroNull, S, 4);
-		S = null;
-	}
+//	public static void initStringToNull(StringBuffer S) {
+//		S.delete(0, S.length());
+//	}
 
 	/**
 	 * Get string values from an array specified either as a list on strings or
@@ -797,7 +798,7 @@ public class Utilities {
 		}
 	}
 
-	public static void parseIntArray(int[] iarray, int count, String s) {
+	public static int[] parseIntArray(int[] iarray, MutableInt count, String s) {
 		@SuppressWarnings("unused")
 		String ParamName;
 		String Param = " ";
@@ -806,23 +807,25 @@ public class Utilities {
 
 		// Parse the line once to get the count of tokens on string, S
 		Globals.getAuxParser().setCmdString(s);
-		count = 0;
+		count.setValue(0);
 		while (Param.length() > 0) {
 			ParamName = Globals.getAuxParser().getNextParam();
 			Param     = Globals.getAuxParser().makeString();
 			if (Param.length() > 0)
-				count += 1;
+				count.increment();
 		}
 
 		// reallocate iarray to new size
-		iarray = (int[]) resizeArray(iarray, count);
+		iarray = (int[]) resizeArray(iarray, count.intValue());
 
 		// Parse again for real
 		Globals.getAuxParser().setCmdString(s);
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < count.intValue(); i++) {
 			ParamName = Globals.getAuxParser().getNextParam();
 			iarray[i] = Globals.getAuxParser().makeInteger();
 		}
+
+		return iarray;
 	}
 
 	public static boolean isShuntElement(CktElement Elem) {
@@ -1121,12 +1124,12 @@ public class Utilities {
 	/**
 	 * Rotate a phasor by an angle and harmonic.
 	 */
-	public static void rotatePhasorDeg(Complex Phasor, double h, double AngleDeg) {
-		Phasor = Phasor.multiply( ComplexUtil.polar2Complex(1.0, Math.toRadians(h * AngleDeg)) );
+	public static Complex rotatePhasorDeg(Complex Phasor, double h, double AngleDeg) {
+		return Phasor.multiply( ComplexUtil.polar2Complex(1.0, Math.toRadians(h * AngleDeg)) );
 	}
 
-	public static void rotatePhasorRad(Complex Phasor, double h, double AngleRad) {
-		Phasor = Phasor.multiply( ComplexUtil.polar2Complex(1.0, h * AngleRad) );
+	public static Complex rotatePhasorRad(Complex Phasor, double h, double AngleRad) {
+		return Phasor.multiply( ComplexUtil.polar2Complex(1.0, h * AngleRad) );
 	}
 
 	private static double pFSign(Complex S) {

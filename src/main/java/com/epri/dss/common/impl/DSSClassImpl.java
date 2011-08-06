@@ -225,7 +225,7 @@ public class DSSClassImpl implements DSSClass {
 				"New Capacitor.C2 like=c1  ...";
 	}
 
-	protected int classEdit(Object ActiveObj, int ParamPointer) {
+	protected int classEdit(final Object ActiveObj, int ParamPointer) {
 		// continue parsing with contents of Parser
 		if (ParamPointer > 0) {
 //			DSSObject obj = (DSSObject) ActiveObj;

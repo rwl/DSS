@@ -956,11 +956,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			E = Complex.ZERO;
 		}
 
-		Utilities.rotatePhasorRad(E, StorageHarmonic, ThetaHarm);  // Time shift by fundamental frequency phase shift
+		E = Utilities.rotatePhasorRad(E, StorageHarmonic, ThetaHarm);  // Time shift by fundamental frequency phase shift
 		for (int i = 0; i < nPhases; i++) {
 			cBuffer[i] = E;
 			if (i < nPhases)
-				Utilities.rotatePhasorDeg(E, StorageHarmonic, -120.0);  // Assume 3-phase Storage element
+				E = Utilities.rotatePhasorDeg(E, StorageHarmonic, -120.0);  // Assume 3-phase Storage element
 		}
 
 		/* Handle Wye Connection */
