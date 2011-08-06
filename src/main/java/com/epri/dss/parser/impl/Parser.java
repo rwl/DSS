@@ -191,7 +191,7 @@ public class Parser {
 	}
 
 	private void skipWhiteSpace(final String LineBuffer, MutableInt LinePos) {
-		while ((LinePos.intValue() < LineBuffer.length()) && isWhiteSpace(LineBuffer.charAt(LinePos.intValue())))
+		while ((LinePos.intValue() < LineBuffer.length() - 1) && isWhiteSpace(LineBuffer.charAt(LinePos.intValue())))
 			LinePos.increment();
 	}
 
@@ -206,7 +206,7 @@ public class Parser {
 	private void _parseToEndChar(char EndChar) {
 		LinePos += 1;
 		TokenStart = LinePos;
-		while ((LinePos < CmdBufLength) && (LineBuffer.charAt(LinePos) != EndChar))
+		while ((LinePos < CmdBufLength - 1) && (LineBuffer.charAt(LinePos) != EndChar))
 			LinePos += 1;
 
 		Result = LineBuffer.substring(TokenStart, LinePos - TokenStart);

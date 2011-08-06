@@ -60,6 +60,9 @@ public class Utilities {
 	}
 
 	public static String expandFileName(String child) {
+		if (child.length() == 0)
+			return child;
+
 		try {
 			return new File(DSSGlobals.getInstance().getCurrentDirectory(),
 					child).getCanonicalPath();
