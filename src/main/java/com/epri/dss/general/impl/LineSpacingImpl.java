@@ -77,8 +77,10 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 				switch (which) {
 				case X:
 					als.getX()[i] = Globals.getAuxParser().makeDouble();
+					break;
 				case H:
 					als.getY()[i] = Globals.getAuxParser().makeDouble();
+					break;
 				}
 		}
 	}
@@ -109,32 +111,44 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 				switch (ParamPointer) {
 				case 0:  // TODO Check zero based indexing
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ als.getName() + "\"", 10101);
+					break;
 				case 1:
 					als.setNWires(parser.makeInteger());  // Use property value to force reallocations
+					break;
 				case 2:
 					als.setNPhases(parser.makeInteger());
+					break;
 				case 3:
 					interpretArray(Param, SpcParmChoice.X);
+					break;
 				case 4:
 					interpretArray(Param, SpcParmChoice.H);
+					break;
 				case 5:
 					als.setUnits(LineUnits.getUnitsCode(Param));
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActiveLineSpacingObj(), ParamPointer - LineSpacing.NumPropsThisClass);
+					break;
 				}
 
 				switch (ParamPointer) {
 				case 1:  // TODO Check zero based indexing
 					als.setDataChanged(true);
+					break;
 				case 2:
 					als.setDataChanged(true);
+					break;
 				case 3:
 					als.setDataChanged(true);
+					break;
 				case 4:
 					als.setDataChanged(true);
+					break;
 				case 5:
 					als.setDataChanged(true);
+					break;
 				}
 
 				ParamName = parser.getNextParam();

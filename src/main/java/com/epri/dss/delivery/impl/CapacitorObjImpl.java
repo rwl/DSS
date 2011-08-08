@@ -102,38 +102,51 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			switch (Connection) {
 			case 1:  // Line-to-Line
 				PhasekV = kvrating;
+				break;
 			default:  // line-to-neutral
 				switch (nPhases) {
 				case 2:
 					PhasekV = kvrating / DSSGlobals.SQRT3;  // Assume three phase system
+					break;
 				case 3:
 					PhasekV = kvrating / DSSGlobals.SQRT3;
+					break;
 				default:
 					PhasekV = kvrating;
+					break;
 				}
+				break;
 			}
 			for (i = 0; i < NumSteps; i++)
 				C[i] = 1.0 / (w * Math.pow(PhasekV, 2) * 1000.0 / (kvarrating[0] / nPhases));
 			for (i = 0; i < NumSteps; i++)
 				totalkvar = totalkvar + kvarrating[i];
+			break;
 		case 2:  // Cuf
 			switch (Connection) {
 			case 1:  // Line-to-Line
 				PhasekV = kvrating;
+				break;
 			default:  // line-to-neutral
 				switch (nPhases) {
 				case 2:
 					PhasekV = kvrating / DSSGlobals.SQRT3;  // Assume three phase system
+					break;
 				case 3:
 					PhasekV = kvrating / DSSGlobals.SQRT3;
+					break;
 				default:
 					PhasekV = kvrating;
+					break;
 				}
+				break;
 			}
 			for (i = 0; i < NumSteps; i++)
 				totalkvar = totalkvar + w * C[i] * Math.pow(PhasekV, 2) / 1000.0;
+			break;
 		case 3:  // Cmatrix
 			// Nothing to do
+			break;
 		}
 
 		if (doHarmonicRecalc)  // If harmonic specified, compute filter reactance
@@ -220,8 +233,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		switch (getConnection()) {
 		case 0:
 			F.println("~ " + ParentClass.getPropertyName()[5] + "=wye");
+			break;
 		case 1:
 			F.println("~ " + ParentClass.getPropertyName()[6] + "=delta");
+			break;
 		}
 		if (getCmatrix() != null) {
 			F.print(ParentClass.getPropertyName()[6] + "= (");
@@ -305,9 +320,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 				S = S + ")";
 
+				break;
 				/* Leave R as specified */
 			case 2:
 				S = "Phases=1 ";
+				break;
 			case 3:  // C Matrix
 				S = "Phases=1 ";
 				// R1
@@ -323,6 +340,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				Cm = Cm / (getNPhases() * (getNPhases() - 1.0) / 2.0);
 
 				S = S + String.format(" Cuf=%-.5g", (Cs - Cm));
+				break;
 			}
 
 			Parser.getInstance().setCmdString(S);
@@ -380,13 +398,16 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					StepSize = getTotalkvar() / Value;
 					for (i = 0; i < Value; i++)
 						getKvarrating()[i] = StepSize;
+					break;
 
 				case 2:  // Cuf   /* We'll make a multi-step bank with all the same as first */
 					for (i = 1; i < Value; i++)
 						getC()[i] = getC()[0];  // Make same as first step
+					break;
 
 				case 3:  // Cmatrix   /* We'll make a multi-step bank with all the same as first */
 					// Nothing to do since all will be the same
+					break;
 				}
 
 				switch (getSpecType()) {
@@ -395,17 +416,20 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 						getR()[i] = Rstep;
 					for (i = 0; i < Value; i++)
 						getXL()[i] = XLstep;
+					break;
 
 				case 2:  // Make R and XL same as first step
 					for (i = 1; i < Value; i++)
 						getR()[i] = getR()[0];
 					for (i = 1; i < Value; i++)
 						getXL()[i] = getXL()[0];
+					break;
 				case 3:  // Make R and XL same as first step
 					for (i = 1; i < Value; i++)
 						getR()[i] = getR()[0];
 					for (i = 1; i < Value; i++)
 						getXL()[i] = getXL()[0];
+					break;
 				}
 
 				for (i = 0; i < Value; i++)
@@ -479,6 +503,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					}
 					// Remainder of the matrix is all zero
 				}
+				break;
 			default:  // Wye
 				if (HasZL)
 					Value = ZL.add(Value.invert()).invert(); // add in ZL
@@ -488,7 +513,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
 					YprimWork.setElemSym(i, i + getNPhases(), Value2);
 				}
+				break;
 			}
+			break;
 		case 2:  // identical to case 1
 
 			Value = new Complex(0.0, getC()[iStep] * w);
@@ -503,6 +530,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					}
 					// Remainder of the matrix is all zero
 				}
+				break;
 			default:  // Wye
 				if (HasZL)
 					Value = ZL.add(Value.invert()).invert(); // add in ZL
@@ -512,7 +540,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
 					YprimWork.setElemSym(i, i + getNPhases(), Value2);
 				}
+				break;
 			}
+			break;
 		case 3:  // C matrix specified
 			for (i = 0; i < getNPhases(); i++) {
 				ioffset = (i - 1) * getNPhases();  // TODO Check zero based indexing
@@ -524,6 +554,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					YprimWork.setElemSym(i, j + getNPhases(), Value);
 				}
 			}
+			break;
 		}
 
 		/* Add line reactance for filter reactor, if any */
@@ -542,9 +573,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 						YprimWork.setElement(i, i, Value);
 					}
 					YprimWork.invert();
+					break;
 				default:  /* WYE - just put ZL in series */
 					/* Do nothing; Already in - see above */
+					break;
 				}
+				break;
 			case 2:  // identical to case 1
 
 				switch (getConnection()) {
@@ -558,9 +592,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 						YprimWork.setElement(i, i, Value);
 					}
 					YprimWork.invert();
+					break;
 				default:  /* WYE - just put ZL in series */
 					/* Do nothing; Already in - see above */
+					break;
 				}
+				break;
 			case 3:
 				YprimWork.invert();
 				for (i = 0; i < getNPhases(); i++) {
@@ -568,6 +605,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					YprimWork.setElement(i, i, Value);
 				}
 				YprimWork.invert();
+				break;
 			}
 		}
 	}
@@ -580,10 +618,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		switch (Index) {  // Special cases
 		case 0:
 			Result = getBus(1);  // TODO: Check zero based indexing
+			break;
 		case 1:
 			Result = getBus(2);  // TODO: Check zero based indexing
+			break;
 		case 3:
 			Result = Utilities.getDSSArray_Real(getNumSteps(), getKvarrating());
+			break;
 		case 7:
 			Temp = new double[getNumSteps()];
 			for (int i = 0; i < getNumSteps(); i++) {
@@ -591,16 +632,22 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			}
 			Result = Utilities.getDSSArray_Real(getNumSteps(), Temp);
 			Temp = null;  // throw away temp storage
+			break;
 		case 8:
 			Result = Utilities.getDSSArray_Real(getNumSteps(), getR());
+			break;
 		case 10:
 			Result = Utilities.getDSSArray_Real(getNumSteps(), getXL());
+			break;
 		case 11:
 			Result = Utilities.getDSSArray_Real(getNumSteps(), getHarm());
+			break;
 		case 12:
 			Result = Utilities.getDSSArray_Integer(getNumSteps(), getStates());
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 		return Result;
 	}

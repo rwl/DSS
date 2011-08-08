@@ -100,27 +100,34 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				switch (ParamPointer) {
 				case 0:
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \""+ParamName+"\" for Object \""+getName()+"\"", 650);
+					break;
 				case 1:
 					aso.setNumHarm(parser.makeInteger());
 					aso.setAngleArray( (double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // Make a dummy angle array
 					for (int i = 0; i < aso.getNumHarm(); i++)
 						aso.getAngleArray()[i] = 0.0;
+					break;
 				case 2:
 					aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
 					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getHarmArray());
+					break;
 				case 3:
 					aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
 					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getPuMagArray());
 					for (int i = 0; i < aso.getNumHarm(); i++)
 						aso.getPuMagArray()[i] = aso.getPuMagArray()[i] * 0.01;  // convert to per unit
+					break;
 				case 4:
 					aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
 					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getAngleArray());
+					break;
 				case 5:
 					doCSVFile(Param);
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActiveSpectrumObj(), ParamPointer - Spectrum.NumPropsThisClass);
+					break;
 				}
 
 				ParamName = parser.getNextParam();

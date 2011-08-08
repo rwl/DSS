@@ -107,36 +107,47 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		switch (Index) {
 		case 2:
 			Result = String.format("%d", ActiveCond);
+			break;
 		case 3:
 			Result = CondName[ActiveCond];
+			break;
 		case 12:
 			Result = CondName[ActiveCond];
+			break;
 		case 13:
 			Result = CondName[ActiveCond];
+			break;
 		case 4:
 			Result = String.format("%-g", X[ActiveCond]);
+			break;
 		case 5:
 			Result = String.format("%-g", Y[ActiveCond]);
+			break;
 		case 6:
 			Result = LineUnits.lineUnitsStr(Units[ActiveCond]);
+			break;
 		case 11:
 			Result = "[";
 			for (int i = 0; i < NConds; i++)
 				Result = Result + CondName[i] + " ";
 			Result = Result + "]";
+			break;
 		case 14:
 			Result = "[";
 			for (int i = 0; i < NConds; i++)
 				Result = Result + CondName[i] + " ";
 			Result = Result + "]";
+			break;
 		case 15:
 			Result = "[";
 			for (int i = 0; i < NConds; i++)
 				Result = Result + CondName[i] + " ";
 			Result = Result + "]";
+			break;
 		default:
 			// Inherited parameters
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		return Result;
@@ -231,32 +242,43 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				for (int i = 0; i < NConds; i++)
 					F.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
 							i, CondName[i], X[i], Y[i], LineUnits.lineUnitsStr(Units[i])));
+				break;
 			case 10:
 				for (int i = 0; i < NConds; i++)
 					F.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
 							i, CondName[i], X[i], Y[i], LineUnits.lineUnitsStr(Units[i])));
+				break;
 			case 11:
 				for (int i = 0; i < NConds; i++)
 					F.println(String.format("~ Cond=%d wire=%s X=%.7g h=%.7g units=%s",
 							i, CondName[i], X[i], Y[i], LineUnits.lineUnitsStr(Units[i])));
+				break;
 			case 3:
 				// do nothing
+				break;
 			case 4:
 				// do nothing
+				break;
 			case 5:
 				// do nothing
+				break;
 			case 6:
 				// do nothing
+				break;
 			case 7:
 				F.println(String.format("~ normamps=%.4g", NormAmps));
+				break;
 			case 8:
 				F.println(String.format("~ emergamps=%.4g", EmergAmps));
+				break;
 			case 9:
 				if (Reduce)
 					F.println("~ Reduce=Yes");
+				break;
 			default:
 				F.println(String.format("~ %s=%s",
 						ParentClass.getPropertyName()[ParentClass.getRevPropertyIdxMap()[iProp]], Utilities.checkForBlanks(PropertyValue[iProp])));
+				break;
 			}
 			iProp = getNextPropertySet(iProp);
 		}
@@ -288,10 +310,13 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 			switch (newPhaseChoice) {
 			case Overhead:
 				newLineData = new OHLineConstantsImpl(getNconds());
+				break;
 			case ConcentricNeutral:
 				newLineData = new CNLineConstantsImpl(getNconds());
+				break;
 			case TapeShield:
 				newLineData = new TSLineConstantsImpl(getNconds());
+				break;
 			}
 
 		if (newLineData != null) {

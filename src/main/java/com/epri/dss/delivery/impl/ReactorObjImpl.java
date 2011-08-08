@@ -79,24 +79,31 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			switch (Connection) {
 			case 1:  // Line-to-Line
 				PhasekV = kvrating;
+				break;
 			default:  //  line-to-neutral
 				switch (nPhases) {
 				case 2:
 					PhasekV = kvrating / DSSGlobals.SQRT3;  // Assume three phase system
+					break;
 				case 3:
 					PhasekV = kvrating / DSSGlobals.SQRT3;
+					break;
 				default:
 					PhasekV = kvrating;
+					break;
 				}
+				break;
 			}
 			X = Math.pow(PhasekV, 2) * 1000.0 / KvarPerPhase;
 			/* Leave R as specified */
 			setNormAmps(KvarPerPhase / PhasekV);
 			setEmergAmps(getNormAmps() * 1.35);
+			break;
 		case 2:  // R + j X
 			// Nothing to do
+			break;
 		case 3:  // Matrices
-
+			break;
 		}
 
 		if (RpSpecified && (Rp != 0.0)) {
@@ -190,13 +197,16 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 					// Remainder of the matrix is all zero
 				}
+				break;
 			default:  // Wye
 				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
 					YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
 					YPrimTemp.setElemSym(i, i + nPhases, Value.negate());
 				}
+				break;
 			}
+			break;
 		case 2:  /* Some form of R and X specified */
 			// Adjust for frequency
 			Value = new Complex(R, X * FreqMultiplier).invert();
@@ -215,13 +225,16 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 					// Remainder of the matrix is all zero
 				}
+				break;
 			default:  // Wye
 				for (i = 0; i < nPhases; i++) {
 					YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
 					YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
 					YPrimTemp.setElemSym(i, i + nPhases, Value.negate());
 				}
+				break;
 			}
+			break;
 		case 3:  // Z matrix specified
 			/* Compute Z matrix */
 
@@ -267,6 +280,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					ZMatrix = null;
 				}
 			}
+			break;
 		}
 
 		// Set YPrim_Series based on diagonals of YPrim_shunt  so that CalcVoltages doesn't fail
@@ -307,6 +321,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 					F.println(")");
 				}
+				break;
 			case 7:
 				if (XMatrix != null) {
 					F.print(ParentClass.getPropertyName()[k] + "= (");
@@ -320,6 +335,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				} else {
 					F.println("~ " + ParentClass.getPropertyName()[k] + "=" + getPropertyValue(k));
 				}
+				break;
 			}
 		}
 	}
@@ -406,8 +422,10 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 				S = "Phases=1 " + String.format(" kV=%-.5g kvar=%-.5g", PhasekV, kvarPerPhase);
 				/* Leave R as specified */
+				break;
 			case 2:  // R + j X
 				S = "Phases=1 ";
+				break;
 			case 3:  // Matrices
 				S = "Phases=1 ";
 				// R1
@@ -435,6 +453,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				Rm = Rm / (nPhases * (nPhases - 1.0) / 2.0);
 
 				S = S + String.format(" X=%-.5g", (Rs - Rm));
+				break;
 			}
 
 			Parser.getInstance().setCmdString(S);

@@ -91,6 +91,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 				YPrimTemp.setElement(i+nPhases, i+nPhases,Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
+			break;
 
 		case GICTransformer.SPEC_AUTO:
 
@@ -110,6 +111,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
+			break;
 
 		case GICTransformer.SPEC_YY:
 
@@ -129,6 +131,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
+			break;
 		}
 
 		YPrim.copyFrom(YPrimTemp);
@@ -154,10 +157,13 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 	    switch (SpecType) {
 		case GICTransformer.SPEC_GSU:
 			F.println("~ " + pc.getPropertyName()[6] + "= GSU");
+			break;
 		case GICTransformer.SPEC_AUTO:
 			F.println("~ " + pc.getPropertyName()[6] + "= AUTO");
+			break;
 		case GICTransformer.SPEC_YY:
 			F.println("~ " + pc.getPropertyName()[6] + "= YY");
+			break;
 	    }
 	    F.println("~ " + pc.getPropertyName()[6]+"="+(1.0/G1));
 	    F.println("~ " + pc.getPropertyName()[7]+"="+(1.0/G2));

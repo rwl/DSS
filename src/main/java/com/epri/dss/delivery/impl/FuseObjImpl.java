@@ -171,8 +171,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 					Utilities.appendToEventLog("Fuse." + getName(), "Phase "+String.valueOf(Phs)+" Blown");
 					hAction[Phs] = 0;
 				}
+				break;
 			default:
-				// Do Nothing
+				// do nothing
+				break;
 			}
 		}
 	}
@@ -183,10 +185,13 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 			switch (Action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal   TODO Check zero based indexing
+				break;
 			case 't':
 				getControlledElement().setConductorClosed(0, false);
+				break;
 			case 'c':
 				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
+				break;
 			}
 		}
 	}

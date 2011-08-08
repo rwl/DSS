@@ -106,8 +106,10 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			switch (ParamPointer) {
 			case 0:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 600);
+				break;
 			case 1:
 				pShape.setNpts(Parser.getInstance().makeInteger());
+				break;
 			case 2:
 				pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNpts()) );
 				YrBuffer = new double[pShape.getNpts()];
@@ -117,18 +119,24 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 					pShape.getYear()[i] = (int) Math.round(YrBuffer[i]);
 				pShape.setBaseYear(pShape.getYear()[0]);
 				YrBuffer = null;
+				break;
 			case 3:
 				pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
 				Utilities.interpretDblArray(Param, pShape.getNpts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
+				break;
 			case 4:
 				doCSVFile(Param);
+				break;
 			case 5:
 				doSngFile(Param);
+				break;
 			case 6:
 				doDblFile(Param);
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveGrowthShapeObj(), ParamPointer - GrowthShape.NumPropsThisClass);
+				break;
 			}
 
 			ParamName = Parser.getInstance().getNextParam();

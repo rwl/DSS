@@ -82,17 +82,23 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 101);
+				break;
 			case 0:
 				acd.setkStrand(parser.makeInteger());
+				break;
 			case 1:
 				acd.setDiaStrand(parser.makeDouble());
+				break;
 			case 2:
 				acd.setGmrStrand(parser.makeDouble());
+				break;
 			case 3:
 				acd.setRStrand(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ConductorDataImpl.getActiveConductorDataObj(), ParamPointer - CNData.NumPropsThisClass);
+				break;
 			}
 
 			/* Set defaults */
@@ -100,6 +106,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			case 1:
 				if (acd.getGmrStrand() <= 0.0)
 					acd.setGmrStrand(0.7788 * 0.5 * acd.getDiaStrand());
+				break;
 			}
 
 			/* Check for critical errors */
@@ -107,12 +114,15 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			case 0:
 				if (acd.getkStrand() < 2)
 					Globals.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
+				break;
 			case 1:
 				if (acd.getDiaStrand() <= 0.0)
 					Globals.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
+				break;
 			case 2:
 				if (acd.getGmrStrand() <= 0.0)
 					Globals.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
+				break;
 			}
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();

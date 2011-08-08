@@ -129,8 +129,10 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ xyc.getName() + "\"", 610);
+				break;
 			case 0:
 				xyc.setNumPoints(parser.makeInteger());
+				break;
 			case 1:
 				TempPointsBuffer = (double[]) Utilities.resizeArray(TempPointsBuffer, xyc.getNumPoints() * 2);
 				// Allow possible resetting (to a lower value) of num points when specifying temperatures not hours
@@ -144,39 +146,51 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
 				TempPointsBuffer = null;  // Throw away temp array
+				break;
 			case 2:
 				xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 				xyc.setNumPoints( Utilities.interpretDblArray(Param, xyc.getNumPoints(), xyc.getYValues()) );
 				xyc.setY(xyc.getYValues()[0]);
+				break;
 			case 3:
 				xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 				xyc.setNumPoints( Utilities.interpretDblArray(Param, xyc.getNumPoints(), xyc.getXValues()) );
 				xyc.setX( xyc.getXValues()[0] );
+				break;
 			case 4:
 				doCSVFile(Param);   // file of x,y points, one to a line
+				break;
 			case 5:
 				doSngFile(Param);
+				break;
 			case 6:
 				doDblFile(Param);
+				break;
 			case 7:
 				xyc.setX(parser.makeDouble());
+				break;
 			case 8:
 				xyc.setY(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveXYCurveObj(), ParamPointer - XYCurve.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			case 4:
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
+				break;
 			case 5:
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
+				break;
 			case 6:
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
+				break;
 			}
 
 			switch (ParamPointer) {
@@ -184,26 +198,32 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			case 2:
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			case 3:
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			case 4:
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			case 5:
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			case 6:
 				xyc.setArrayPropertyIndex(ParamPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

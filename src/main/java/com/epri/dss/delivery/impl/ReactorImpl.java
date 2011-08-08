@@ -109,25 +109,33 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		switch (TestS.charAt(0)) {
 		case 'y':
 			ar.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			ar.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			ar.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
 			case 'n':
 				ar.setConnection(0);
+				break;
 			case 'l':
 				ar.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		switch (ar.getConnection()) {
 		case 1:
 			ar.setNTerms(1);  // Force reallocation of terminals
+			break;
 		case 0:
 			if (ar.getNTerms() != 2)
 				ar.setNTerms(2);
+			break;
 		}
 	}
 
@@ -188,33 +196,47 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() + "\"", 230);
+				break;
 			case 0:
 				reactorSetBus1(Param);
+				break;
 			case 1:
 				ar.setBus(2, Param);  // TODO Check zero based indexing
+				break;
 			case 2:
 				/*Numphases = parser.makeInteger();*/  // see below
+				break;
 			case 3:
 				ar.setKvarrating(parser.makeDouble());
+				break;
 			case 4:
 				ar.setKvrating(parser.makeDouble());
+				break;
 			case 5:
 				interpretConnection(Param);
+				break;
 			case 6:
 				doMatrix(ar.getRmatrix());
+				break;
 			case 7:
 				doMatrix(ar.getXMatrix());
+				break;
 			case 8:
 				ar.setIsParallel(Utilities.interpretYesNo(Param));
+				break;
 			case 9:
 				ar.setR(parser.makeDouble());
+				break;
 			case 10:
 				ar.setX(parser.makeDouble());
+				break;
 			case 11:
 				ar.setRp(parser.makeDouble());
+				break;
 			default:
 				// Inherited Property Edits
 				classEdit(ActiveReactorObj, ParamPointer - Reactor.NumPropsThisClass);
+				break;
 			}
 
 			// Some specials ...
@@ -222,25 +244,33 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			case 0:
 				ar.setPropertyValue(1, ar.getBus(2));  // this gets modified   TODO Check zero based indexing
 				ar.getPrpSequence()[1] = 0;            // Reset this for save function
+				break;
 			case 1:
 				if (Utilities.stripExtension(ar.getBus(1)).equals( Utilities.stripExtension(ar.getBus(2)) ))
 					ar.setShunt(false);
+				break;
 			case 2:
 				if (ar.getNPhases() != parser.makeInteger()) {
 					ar.setNPhases(parser.makeInteger());
 					ar.setNConds(ar.getNPhases());  // Force Reallocation of terminal info
 					ar.setYorder(ar.getNTerms() * ar.getNConds());
 				}
+				break;
 			case 3:
 				ar.setSpecType(1);   // X specified by kvar, kV
+				break;
 			case 6:
 				ar.setSpecType(3);
+				break;
 			case 7:
 				ar.setSpecType(3);
+				break;
 			case 10:
 				ar.setSpecType(2);   // X specified directly
+				break;
 			case 11:
 				ar.setRpSpecified(true);
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values

@@ -205,87 +205,128 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"Transformer." + at.getName() + "\"", 110);
+				break;
 			case 0:
 				at.setNPhases(parser.makeInteger());
+				break;
 			case 1:
 				at.setNumWindings(parser.makeInteger());  // Reallocate stuff if bigger
+				break;
 			case 2:
 				at.setActiveWinding(parser.makeInteger());
+				break;
 			case 3:
 				at.setBus(at.getActiveWinding(), Param);
+				break;
 			case 4:
 				interpretConnection(Param);
+				break;
 			case 5:
 				at.getWinding()[at.getActiveWinding()].setKvll(parser.makeDouble());
+				break;
 			case 6:
 				at.getWinding()[at.getActiveWinding()].setKva(parser.makeDouble());
+				break;
 			case 7:
 				at.getWinding()[at.getActiveWinding()].setPuTap(parser.makeDouble());
+				break;
 			case 8:
 				at.getWinding()[at.getActiveWinding()].setRpu(parser.makeDouble() * 0.01);  // %R
+				break;
 			case 9:
 				at.getWinding()[at.getActiveWinding()].setRneut(parser.makeDouble());
+				break;
 			case 10:
 				at.getWinding()[at.getActiveWinding()].setXneut(parser.makeDouble());
+				break;
 			case 11:
 				interpretAllBuses(Param);
+				break;
 			case 12:
 				interpretAllConns(Param);
+				break;
 			case 13:
 				interpretAllkVRatings(Param);
+				break;
 			case 14:
 				interpretAllkVARatings(Param);
+				break;
 			case 15:
 				interpretAllTaps(Param);
+				break;
 			case 16:
 				at.setXHL(parser.makeDouble() * 0.01);
+				break;
 			case 17:
 				at.setXHT(parser.makeDouble() * 0.01);
+				break;
 			case 18:
 				at.setXLT(parser.makeDouble() * 0.01);
+				break;
 			case 19:
 				parser.parseAsVector(((at.getNumWindings() - 1) * at.getNumWindings() / 2), at.getXSC());
+				break;
 			case 20:
 				at.setThermalTimeConst(parser.makeDouble());
+				break;
 			case 21:
 				at.setN_thermal(parser.makeDouble());
+				break;
 			case 22:
 				at.setM_thermal(parser.makeDouble());
+				break;
 			case 23:
 				at.setFLrise(parser.makeDouble());
+				break;
 			case 24:
 				at.setHSrise(parser.makeDouble());
+				break;
 			case 25:
 				at.setPctLoadLoss(parser.makeDouble());
+				break;
 			case 26:
 				at.setPctNoLoadLoss(parser.makeDouble());
+				break;
 			case 27:
 				at.setNormMaxHKVA(parser.makeDouble());
+				break;
 			case 28:
 				at.setEmergMaxHKVA(parser.makeDouble());
+				break;
 			case 29:
 				at.setIsSubstation(Utilities.interpretYesNo(Param));
+				break;
 			case 30:
 				at.getWinding()[at.getActiveWinding()].setMaxTap(parser.makeDouble());
+				break;
 			case 31:
 				at.getWinding()[at.getActiveWinding()].setMinTap(parser.makeDouble());
+				break;
 			case 32:
 				at.getWinding()[at.getActiveWinding()].setNumTaps(parser.makeInteger());
+				break;
 			case 33:
 				at.setSubstationName(Param);
+				break;
 			case 34:
 				at.setPctImag(parser.makeDouble());
+				break;
 			case 35:
 				at.setPpm_FloatFactor(parser.makeDouble() * 1.0e-6);
+				break;
 			case 36:
 				interpretAllRs(Param);
+				break;
 			case 37:
 				at.setXfmrBank(Param);
+				break;
 			case 38:
 				at.fetchXfmrCode(Param);
+				break;
 			default:
 				// Inherited properties
 				classEdit(getActiveTransfObj(), ParamPointer - Transformer.NumPropsThisClass);
+				break;
 			}
 
 			/* Take care of properties that require some additional work, */
@@ -293,6 +334,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			case 0:
 				// Force redefinition of number of conductors and reallocation of matrices
 				at.setNConds(at.getNPhases() + 1);
+				break;
 			case 6:
 				// default all winding kvas to first winding so latter do not have to be specified
 				if (at.getActiveWinding() == 0) {  // TODO Check zero based indexing
@@ -305,24 +347,32 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				} else if (at.getNumWindings() == 2) {
 					at.getWinding()[0].setKva(at.getWinding()[1].getKva());  // For 2-winding, force both kVAs to be same
 				}
+				break;
 			case 8:
 				// Update LoadLosskW if winding %r changed. Using only windings 1 and 2
 				at.setPctLoadLoss( (at.getWinding()[0].getRpu() + at.getWinding()[1].getRpu()) * 100.0 );
+				break;
 			case 14:
 				at.setNormMaxHKVA(1.1 * at.getWinding()[0].getKva());    // Defaults for new winding rating.
 				at.setEmergMaxHKVA(1.5 * at.getWinding()[0].getKva());
+				break;
 			case 16:
 				at.setXHLChanged(true);
+				break;
 			case 17:
 				at.setXHLChanged(true);
+				break;
 			case 18:
 				at.setXHLChanged(true);
+				break;
 			case 19:
 				for (int i = 0; i < ((at.getNumWindings() - 1) * at.getNumWindings() / 2); i++)
 					at.getXSC()[i] = at.getXsc(i) * 0.01;  // Convert to per unit   TODO Check translation
+				break;
 			case 25:  // Assume load loss is split evenly  between windings 1 and 2
 				at.getWinding()[0].setRpu(at.getPctLoadLoss() / 2.0 / 100.0);
 				at.getWinding()[1].setRpu(at.getWinding()[0].getRpu());
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
@@ -332,12 +382,16 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				switch (ParamPointer) {
 				case 25:
 					at.setYprimInvalid(true);
+					break;
 				case 26:
 					at.setYprimInvalid(true);
+					break;
 				case 34:
 					at.setYprimInvalid(true);
+					break;
 				case 35:
 					at.setYprimInvalid(true);
+					break;
 				}
 			}
 
@@ -373,17 +427,23 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'y':
 			aw.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			aw.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			aw.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (S.toLowerCase().charAt(1)) {
 			case 'n':
 				aw.setConnection(0);
+				break;
 			case 'l':
 				aw.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		at.setYorder(at.getNConds() * at.getNTerms());

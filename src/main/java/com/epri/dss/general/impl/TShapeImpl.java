@@ -139,41 +139,57 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ats.getName() + "\"", 610);
+				break;
 			case 0:
 				ats.setNumPoints(parser.makeInteger());
+				break;
 			case 1:
 				ats.setInterval(parser.makeDouble());
+				break;
 			case 2:
 				ats.setTValues( (double[]) Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 				// Allow possible resetting (to a lower value) of num points when specifying temperatures not hours
 				ats.setNumPoints( Utilities.interpretDblArray(Param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
+				break;
 			case 3:
 				ats.setHours( (double[]) Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
 				Utilities.interpretDblArray(Param, ats.getNumPoints(), ats.getHours());   //parser.parseAsVector(Npts, Hours);
+				break;
 			case 4:
 				ats.setMean(parser.makeDouble());
+				break;
 			case 5:
 				ats.setStdDev(parser.makeDouble());
+				break;
 			case 6:
 				doCSVFile(Param);
+				break;
 			case 7:
 				doSngFile(Param);
+				break;
 			case 8:
 				doDblFile(Param);
+				break;
 			case 9:
 				ats.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+				break;
 			case 10:
 				ats.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
+				break;
 			case 11:
 				switch (Param.toLowerCase().charAt(0)) {
 				case 'd':
 					ats.saveToDblFile();
+					break;
 				case 's':
 					ats.saveToSngFile();
+					break;
 				}
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveTShapeObj(), ParamPointer - TShape.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
@@ -181,18 +197,22 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
 				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command  FIXME
+				break;
 			case 6:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
 				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				break;
 			case 7:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
 				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				break;
 			case 8:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
 				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				break;
 			}
 
 			ParamName = parser.getNextParam();

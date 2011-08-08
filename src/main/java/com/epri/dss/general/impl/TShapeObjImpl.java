@@ -163,10 +163,13 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 			switch (i) {
 			case 2:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			case 3:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 	}
@@ -177,39 +180,52 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 		switch (Index) {
 		case 2:
 			Result = "[";
+			break;
 		case 3:
 			Result = "[";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
 		case 1:
 			Result = String.format("%.8g", Interval);
+			break;
 		case 2:
 			for (int i = 0; i < NumPoints; i++)
 				Result = Result + String.format("%-g, " , TValues[i]);
+			break;
 		case 3:
 			if (Hours != null)
 				for (int i = 0; i < NumPoints; i++)
 					Result = Result + String.format("%-g, ", Hours[i]);
+			break;
 		case 4:
 			Result = String.format("%.8g", Mean.doubleValue());
+			break;
 		case 5:
 			Result = String.format("%.8g", StdDev.doubleValue());
+			break;
 		case 9:
 			Result = String.format("%.8g", Interval * 3600.0);
+			break;
 		case 10:
 			Result = String.format("%.8g", Interval * 60.0);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 2:
 			Result = Result + "]";
+			break;
 		case 3:
 			Result = Result + "]";
+			break;
 		}
 
 		return Result;

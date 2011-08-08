@@ -175,14 +175,19 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				switch (which) {
 				case Conn:
 					axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(Str));
+					break;
 				case kV:
 					axc.getWinding()[axc.getActiveWinding()].setKvll(Globals.getAuxParser().makeDouble());
+					break;
 				case kVA:
 					axc.getWinding()[axc.getActiveWinding()].setKva(Globals.getAuxParser().makeDouble());
+					break;
 				case R:
 					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * Globals.getAuxParser().makeDouble());
+					break;
 				case Tap:
 					axc.getWinding()[axc.getActiveWinding()].setPuTap(Globals.getAuxParser().makeDouble());
+					break;
 				}
 			}
 		}
@@ -213,74 +218,109 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 			switch (ParamPointer) {
 			case 0:  // TODO Check zero based indexing
 				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"XfmrCode." + axc.getName() + "\"", 110);
+				break;
 			case 1:
 				axc.setNPhases(parser.makeInteger());
+				break;
 			case 2:
 				axc.setNumWindings(parser.makeInteger()); // Reallocate stuff if bigger
+				break;
 			case 3:
 				axc.setActiveWinding(parser.makeInteger());
+				break;
 			case 4:
 				axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(Param));
+				break;
 			case 5:
 				axc.getWinding()[axc.getActiveWinding()].setKvll(parser.makeDouble());
+				break;
 			case 6:
 				axc.getWinding()[axc.getActiveWinding()].setKva(parser.makeDouble());
+				break;
 			case 7:
 				axc.getWinding()[axc.getActiveWinding()].setPuTap(parser.makeDouble());
+				break;
 			case 8:
 				axc.getWinding()[axc.getActiveWinding()].setRpu(parser.makeDouble() * 0.01);  // %R
+				break;
 			case 9:
 				axc.getWinding()[axc.getActiveWinding()].setRneut(parser.makeDouble());
+				break;
 			case 10:
 				axc.getWinding()[axc.getActiveWinding()].setXneut(parser.makeDouble());
+				break;
 			case 11:
 				interpretWindings(Param, WdgParmChoice.Conn);
+				break;
 			case 12:
 				interpretWindings(Param, WdgParmChoice.kV);
+				break;
 			case 13:
 				interpretWindings(Param, WdgParmChoice.kVA);
+				break;
 			case 14:
 				interpretWindings(Param, WdgParmChoice.Tap);
+				break;
 			case 15:
 				axc.setXHL(parser.makeDouble() * 0.01);
+				break;
 			case 16:
 				axc.setXHT(parser.makeDouble() * 0.01);
+				break;
 			case 17:
 				axc.setXLT(parser.makeDouble() * 0.01);
+				break;
 			case 18:
 				parser.parseAsVector(((axc.getNumWindings() - 1) * axc.getNumWindings() / 2), axc.getXSC());
+				break;
 			case 19:
 				axc.setThermalTimeConst(parser.makeDouble());
+				break;
 			case 20:
 				axc.setN_thermal(parser.makeDouble());
+				break;
 			case 21:
 				axc.setM_thermal(parser.makeDouble());
+				break;
 			case 22:
 				axc.setLrise(parser.makeDouble());
+				break;
 			case 23:
 				axc.setHSrise(parser.makeDouble());
+				break;
 			case 24:
 				axc.setPctLoadLoss(parser.makeDouble());
+				break;
 			case 25:
 				axc.setPctNoLoadLoss(parser.makeDouble());
+				break;
 			case 26:
 				axc.setNormMaxHKVA(parser.makeDouble());
+				break;
 			case 27:
 				axc.setEmergMaxHKVA(parser.makeDouble());
+				break;
 			case 28:
 				axc.getWinding()[axc.getActiveWinding()].setMaxTap(parser.makeDouble());
+				break;
 			case 29:
 				axc.getWinding()[axc.getActiveWinding()].setMinTap(parser.makeDouble());
+				break;
 			case 30:
 				axc.getWinding()[axc.getActiveWinding()].setNumTaps(parser.makeInteger());
+				break;
 			case 31:
 				axc.setPctImag(parser.makeDouble());
+				break;
 			case 32:
 				axc.setPpm_FloatFactor(parser.makeDouble() * 1.0e-6);
+				break;
 			case 33:
 				interpretWindings(Param, WdgParmChoice.R);
+				break;
 			default:
 				classEdit(getActiveXfmrCodeObj(), ParamPointer - XfmrCode.NumPropsThisClass);
+				break;
 			}
 
 			/* Take care of properties that require some additional work, */
@@ -299,23 +339,31 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 						axc.getWinding()[0].setKva(axc.getWinding()[1].getKva());  // For 2-winding, force both kVAs to be same
 				}
 				// Update LoadLosskW if winding %r changed. Using only windings 1 and 2
+				break;
 			case 8:
 				axc.setPctLoadLoss(axc.getWinding()[0].getRpu() + axc.getWinding()[1].getRpu() * 100.0);
+				break;
 			case 13:
 				axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKva());    // Defaults for new winding rating.
 				axc.setEmergMaxHKVA(1.5 * axc.getWinding()[0].getKva());
+				break;
 			case 15:
 				UpdateXsc = true;
+				break;
 			case 16:
 				UpdateXsc = true;
+				break;
 			case 17:
 				UpdateXsc = true;
+				break;
 			case 18:
 				for (int i = 0; i < ((axc.getNumWindings() - 1) * axc.getNumWindings() / 2); i++)
 					axc.getXSC()[i] = axc.getXSC()[i] * 0.01;  // Convert to per unit
+				break;
 			case 24:  // Assume load loss is split evenly  between windings 1 and 2
 				axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
 				axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
+				break;
 			}
 			/* Advance to next property on input line */
 			ParamName = parser.getNextParam();
@@ -328,10 +376,13 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 					switch (i) {
 					case 0:
 						axc.getXSC()[0] = axc.getXHL();
+						break;
 					case 1:
 						axc.getXSC()[1] = axc.getXHT();
+						break;
 					case 2:
 						axc.getXSC()[2] = axc.getXLT();
+						break;
 					}
 				}
 			}

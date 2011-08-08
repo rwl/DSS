@@ -88,12 +88,16 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		switch (sol.getRandomType()) {
 		case DSSGlobals.GAUSSIAN:
 			RandomMult = MathUtil.gauss(1.0, Stddev);
+			break;
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();
+			break;
 		case DSSGlobals.LOGNORMAL:
 			RandomMult = MathUtil.quasiLognormal(1.0);
+			break;
 		default:
 			RandomMult = 1.0;
+			break;
 		}
 
 		// Give the multiplier some skew to approximate more uniform/Gaussian current distributions
@@ -158,6 +162,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
 				YPrimTemp.setElemSym(i, i + nPhases, Value2);
 			}
+			break;
 		case 2:  // G matrix specified
 			for (i = 0; i < nPhases; i++) {
 				ioffset = (i - 1) * nPhases;
@@ -173,6 +178,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					YPrimTemp.setElemSym(i, j + nPhases, Value);
 				}
 			}
+			break;
 		}
 
 		YPrim.copyFrom(YPrimTemp);
@@ -225,6 +231,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		switch (ControlMode) {
 		case DSSGlobals.CTRLSTATIC:  /* Leave it however it is defined by other processes */
+			break;
 		case DSSGlobals.EVENTDRIVEN:
 			if (!Is_ON) {
 				/* Turn it on unless it has been previously cleared */
@@ -242,6 +249,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
+			break;
 		case DSSGlobals.TIMEDRIVEN:  // Identical to event driven case.
 			if (!Is_ON) {
 				/* Turn it on unless it has been previously cleared */
@@ -259,6 +267,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
+			break;
 		}
 	}
 
@@ -314,8 +323,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			}
 
 			Result = Result + ")";
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		return Result;

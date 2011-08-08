@@ -266,45 +266,65 @@ public class LineImpl extends PDClassImpl implements Line {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"Line." + al.getName() + "\"", 181);
+				break;
 			case 0:
 				al.setBus(1, Param);  // TODO Check zero based indexing
+				break;
 			case 1:
 				al.setBus(2, Param);
+				break;
 			case 2:
 				al.fetchLineCode(Param);  // Define line by conductor code
+				break;
 			case 3:
 				al.setLen(parser.makeDouble());
+				break;
 			case 4:
 				/* Nphases: See below */
+				break;
 			case 5:
 				al.setR1(parser.makeDouble());
+				break;
 			case 6:
 				al.setX1(parser.makeDouble());
+				break;
 			case 7:
 				al.setR0(parser.makeDouble());
+				break;
 			case 8:
 				al.setX0(parser.makeDouble());
+				break;
 			case 9:
 				al.setC1(parser.makeDouble() * 1.0e-9);    // Convert from nano to farads
+				break;
 			case 10:
 				al.setC0(parser.makeDouble() * 1.0e-9);
+				break;
 			case 11:
 				doRmatrix();
+				break;
 			case 12:
 				doXmatrix();
+				break;
 			case 13:
 				doCmatrix();
+				break;
 			case 14:
 				al.setIsSwitch(Utilities.interpretYesNo(Param));
+				break;
 			case 15:
 				al.setRg(parser.makeDouble());
+				break;
 			case 16:
 				al.setXg(parser.makeDouble());
+				break;
 			case 17:
 				al.setRho(parser.makeDouble());
 				al.setRhoSpecified(true);
+				break;
 			case 18:
 				al.fetchGeometryCode(Param);
+				break;
 			case 19:  // Update units conversion factor that might have been changed previously
 				NewLengthUnits = LineUnits.getUnitsCode(Param);
 				if (al.isLineCodeSpecified()) {
@@ -313,19 +333,26 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.setUnitsConvert(al.getUnitsConvert() * LineUnits.convertLineUnits(al.getLengthUnits(), NewLengthUnits));
 				}
 				al.setLengthUnits(NewLengthUnits);
+				break;
 			case 20:
 				al.fetchLineSpacing(Param);
+				break;
 			case 21:
 				al.fetchWireList(Param);
+				break;
 			case 22:
 				al.setEarthModel(Utilities.interpretEarthModel(Param));
+				break;
 			case 24:
 				al.fetchCNCableList(Param);
+				break;
 			case 25:
 				al.fetchTSCableList(Param);
+				break;
 			default:
 				// Inherited Property Edits
 				classEdit(getActiveLineObj(), ParamPointer - Line.NumPropsThisClass);
+				break;
 			}
 
 			// Side Effects ...
@@ -341,6 +368,7 @@ public class LineImpl extends PDClassImpl implements Line {
 					} else {
 						Globals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
 					}
+				break;
 			case 5:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -348,6 +376,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 6:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -355,6 +384,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 7:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -362,6 +392,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 8:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -369,6 +400,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 9:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -376,6 +408,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 10:
 				al.setLineCodeSpecified(false);
 				al.killGeometrySpecified();
@@ -383,24 +416,28 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.resetLengthUnits();
 				al.setSymComponentsChanged(true);
 				al.setSymComponentsModel(true);
+				break;
 			case 11:
 				al.setLineCodeSpecified(false);
 				al.setSymComponentsModel(false);
 				al.resetLengthUnits();
 				al.killGeometrySpecified();
 				al.killSpacingSpecified();
+				break;
 			case 12:
 				al.setLineCodeSpecified(false);
 				al.setSymComponentsModel(false);
 				al.resetLengthUnits();
 				al.killGeometrySpecified();
 				al.killSpacingSpecified();
+				break;
 			case 13:
 				al.setLineCodeSpecified(false);
 				al.setSymComponentsModel(false);
 				al.resetLengthUnits();
 				al.killGeometrySpecified();
 				al.killSpacingSpecified();
+				break;
 			case 14:
 				if (al.isIsSwitch()) {
 					al.setSymComponentsChanged(true);
@@ -416,14 +453,18 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.setLen(0.001);
 					al.resetLengthUnits();
 				}
+				break;
 			case 16:
 				al.setKXg(al.getXg() / Math.log(658.5 * Math.sqrt(al.getRho() / al.getBaseFrequency())));
+				break;
 			case 17:
 				al.setKXg(al.getXg() / Math.log(658.5 * Math.sqrt(al.getRho() / al.getBaseFrequency())));
+				break;
 			case 18:
 				al.setGeometrySpecified(true);
 				al.setSymComponentsModel(false);
 				al.setSymComponentsChanged(false);
+				break;
 			case 20:
 				if ((al.getLineSpacingObj() != null) && (al.getWireData() != null)) {
 					al.setSpacingSpecified(true);
@@ -432,6 +473,7 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.killGeometrySpecified();
 				}
 				al.setYprimInvalid(true);
+				break;
 			case 21:
 				if ((al.getLineSpacingObj() != null) && (al.getWireData() != null)) {
 					al.setSpacingSpecified(true);
@@ -440,6 +482,7 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.killGeometrySpecified();
 				}
 				al.setYprimInvalid(true);
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
@@ -453,10 +496,13 @@ public class LineImpl extends PDClassImpl implements Line {
 			switch (ParamPointer) {
 			case 9:
 				al.setCapSpecified(true);
+				break;
 			case 10:
 				al.setCapSpecified(true);
+				break;
 			case 13:
 				al.setCapSpecified(true);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

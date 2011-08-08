@@ -256,10 +256,13 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			switch (i) {
 			case 2:  // TODO Check zero based indexing
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + PropertyValue[i] + ")");
+				break;
 			case 3:
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + PropertyValue[i] + ")");
+				break;
 			default:
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
+				break;
 			}
 		}
 	}
@@ -270,26 +273,34 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		switch (Index) {
 		case 2:
 			Result = "(";
+			break;
 		case 3:
 			Result = "(";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
 		case 1:
 			Result = String.format("%.8g", Interval);
+			break;
 		case 2:
 			for (int i = 0; i < NumPoints; i++)
 				Result = Result + String.format("%-g, ", PMultipliers[i]);
+			break;
 		case 3:
 			if (Hours != null)
 				for (int i = 0; i < NumPoints; i++)
 					Result = Result + String.format("%-g, ", Hours[i]);
+			break;
 		case 4:
 			Result = String.format("%.8g", Mean.doubleValue());
+			break;
 		case 5:
 			Result = String.format("%.8g", StdDev.doubleValue());
+			break;
 		case 10:
 			if (QMultipliers != null) {
 				Result = "(";
@@ -297,29 +308,38 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 					Result = Result + String.format("%-g,", QMultipliers[i]);
 				Result = Result + ")";
 			}
+			break;
 		case 11:
 			if (UseActual) {
 				Result = "Yes";
 			} else {
 				Result = "No";
 			}
+			break;
 		case 12:
 			Result = String.format("%.8g", MaxP);
+			break;
 		case 13:
 			Result = String.format("%.8g", MaxQ);
+			break;
 		case 14:
 			Result = String.format("%.8g", Interval * 3600.0);
+			break;
 		case 15:
 			Result = String.format("%.8g", Interval * 60.0);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 3:
 			Result = Result + ")";
+			break;
 		case 4:
 			Result = Result + ")";
+			break;
 		}
 
 		return Result;

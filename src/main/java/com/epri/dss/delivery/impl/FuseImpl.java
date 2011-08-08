@@ -125,34 +125,46 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name + "." + getName() + "\"", 402);
+				break;
 			case 0:
 				af.setMonitoredElementName(Param.toLowerCase());
+				break;
 			case 1:
 				af.setMonitoredElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				af.setElementName(Param.toLowerCase());
+				break;
 			case 3:
 				af.setElementTerminal(parser.makeInteger());
+				break;
 			case 4:
 				af.setFuseCurve(getTccCurve(Param));
+				break;
 			case 5:
 				af.setRatedCurrent(parser.makeDouble());
+				break;
 			case 6:
 				af.setDelayTime(parser.makeDouble());
+				break;
 			case 7:
 				af.interpretFuseAction(Param);
+				break;
 
 			default:
 				// Inherited parameters
 				classEdit(getActiveFuseObj(), ParamPointer - Fuse.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			/* Default the controlled element to the monitored element */
 			case 0:
 				af.setElementName(af.getMonitoredElementName());
+				break;
 			case 1:
 				af.setElementTerminal(af.getMonitoredElementTerminal());
+				break;
 			}
 
 			ParamName = parser.getNextParam();

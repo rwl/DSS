@@ -80,15 +80,20 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ tsd.getName() + "\"", 101);
+				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());
+				break;
 			case 1:
 				tsd.setTapeLayer(parser.makeDouble());
+				break;
 			case 2:
 				tsd.setTapeLap(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ConductorDataImpl.getActiveConductorDataObj(), ParamPointer - NumPropsThisClass);
+				break;
 			}
 
 			/* Check for critical errors */
@@ -96,12 +101,15 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			case 0:
 				if (tsd.getDiaShield() <= 0.0)
 					Globals.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
+				break;
 			case 1:
 				if (tsd.getTapeLayer() <= 0.0)
 					Globals.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
+				break;
 			case 2:
 				if ((tsd.getTapeLap() < 0.0) || (tsd.getTapeLap() > 100.0))
 					Globals.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

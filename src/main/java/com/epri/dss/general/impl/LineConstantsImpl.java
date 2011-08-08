@@ -256,6 +256,7 @@ public class LineConstantsImpl implements LineConstants {
 		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
 		case DSSGlobals.SIMPLECARSON:
 			Result = new Complex(w * mu0 / 8.0, (w * mu0 / TwoPI) * Math.log(658.5 * Math.sqrt(rhoEarth / Frequency)));
+			break;
 		case DSSGlobals.FULLCARSON:
 			/* notation from Tleis book Power System Modelling and Fault Analysis */
 			if (i == j) {
@@ -280,6 +281,7 @@ public class LineConstantsImpl implements LineConstants {
 			Result = new Complex(Result.getReal(), Result.getImaginary() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
 
 			Result = Result.multiply(w * mu0 / Math.PI);
+			break;
 
 		case DSSGlobals.DERI:
 			if (i != j) {
@@ -291,6 +293,7 @@ public class LineConstantsImpl implements LineConstants {
 				hterm  = new Complex(Yi, 0.0).add(me.invert());
 				Result = new Complex(0.0, w * mu0 / TwoPI).multiply( hterm.multiply(2.0).log() );
 			}
+			break;
 		}
 
 		return Result;
@@ -305,8 +308,10 @@ public class LineConstantsImpl implements LineConstants {
 		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
 		case DSSGlobals.SIMPLECARSON:
 			Result = new Complex(Rac[i], w * mu0/ (8 * Math.PI));
+			break;
 		case DSSGlobals.FULLCARSON:  // no skin effect
 			Result = new Complex(Rac[i], w * mu0 / (8 * Math.PI));
+			break;
 		case DSSGlobals.DERI:  // with skin effect model
 			/* Assume round conductor */
 			Alpha = C1_j1.multiply( Math.sqrt(Frequency * mu0 / Rdc[i]) );
@@ -316,6 +321,7 @@ public class LineConstantsImpl implements LineConstants {
 				I0I1 = MathUtil.Bessel_I0(Alpha).divide( MathUtil.Bessel_I0(Alpha) );
 			}
 			Result = C1_j1.multiply(I0I1).multiply( Math.sqrt(Rdc[i] * Frequency * mu0) / 2.0 );
+			break;
 		}
 
 		return Result;

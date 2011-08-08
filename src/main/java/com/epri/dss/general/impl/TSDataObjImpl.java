@@ -33,10 +33,13 @@ public class TSDataObjImpl extends CableDataObjImpl implements TSDataObj {
 			switch (i) {
 			case 0:
 				F.println(String.format("%.6g", DiaShield));
+				break;
 			case 1:
 				F.println(String.format("%.6g", TapeLayer));
+				break;
 			case 2:
 				F.println(String.format("%.2g", TapeLap));
+				break;
 			}
 		}
 	}

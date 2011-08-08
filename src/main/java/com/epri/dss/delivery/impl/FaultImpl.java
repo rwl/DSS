@@ -151,12 +151,16 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ af.getName() + "\"", 350);
+				break;
 			case 0:
 				fltSetBus1(Param);
+				break;
 			case 1:
 				af.setBus(2, Param);  // TODO Check zero based indexing
+				break;
 			case 2:
 				//NumPhases = parser.makeInteger();  // see below
+				break;
 			case 3:
 				af.setG(parser.makeDouble());
 				if (af.getG() != 0.0) {
@@ -164,51 +168,67 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				} else {
 					af.setG(10000.0);  // Default to a low resistance
 				}
+				break;
 			case 4:
 				af.setStddev(parser.makeDouble() * 0.01);
+				break;
 			case 5:
 				doGmatrix();
+				break;
 			case 6:
 				af.setOn_Time(parser.makeDouble());
+				break;
 			case 7:
 				af.setIsTemporary(Utilities.interpretYesNo(Param));
+				break;
 			case 8:
 				af.setMinAmps(parser.makeDouble());
+				break;
 			default:
 				// Inherited
 				classEdit(getActiveFaultObj(), ParamPointer - Fault.NumPropsThisClass);
+				break;
 			}
 
 			// Some specials ...
 			switch (ParamPointer) {
 			case 0:
 				af.setPropertyValue(1, af.getBus(2));  // Bus2 gets modified if bus1 is   TODO Check zero based indexing
+				break;
 			case 1:
 				if (Utilities.stripExtension(af.getBus(1)).equals( Utilities.stripExtension(af.getBus(2)) ))
 					af.setShunt(false);
+				break;
 			case 2:
 				if (af.getNPhases() != parser.makeInteger()) {
 					af.setNPhases(parser.makeInteger());
 					af.setNConds(af.getNPhases());  // Force Reallocation of terminal info
 					Globals.getActiveCircuit().setBusNameRedefined(true);  // Set Global Flag to signal circuit to rebuild busdefs
 				}
+				break;
 			case 3:
 				af.setSpecType(1);
+				break;
 			case 5:
 				af.setSpecType(2);
+				break;
 			case 6:
 				if (af.getOn_Time() > 0.0)
 					af.setIs_ON(false);  // Assume fault will be on later
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
 			switch (ParamPointer) {
 			case 3:
 				af.setYprimInvalid(true);
+				break;
 			case 4:
 				af.setYprimInvalid(true);
+				break;
 			case 6:
 				af.setYprimInvalid(true);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

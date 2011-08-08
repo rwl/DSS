@@ -36,7 +36,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 	/**
 	 * Get multiplier for specified year.
-	 * 
+	 *
 	 * This function returns the multiplier to use for a load in the given year.
 	 * The first year specified in the curve is the base year.  The base value
 	 * is the beginning of the first year.
@@ -61,7 +61,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 			}
 
 		}
-	
+
 		return Result;
 	}
 
@@ -93,10 +93,13 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 			switch (i) {
 			case 2:  // TODO Check zero based indexing
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			case 3:
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			default:
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 	}
@@ -104,34 +107,42 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 	public String getPropertyValue(int Index) {
 		int i;
 		String Result;
-		
+
 		switch (Index) {
 		case 2:  // TODO Check zero based indexing
 			Result = "(";
+			break;
 		case 3:
 			Result = "(";
-		default: 
+			break;
+		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
 		case 2:
-			for (i = 0; i < Npts; i++) 
+			for (i = 0; i < Npts; i++)
 				Result = Result + String.format("%-d, ", Year[i]);
+			break;
 		case 3:
 			for (i = 0; i < Npts; i++)
 				Result = Result + String.format("%-g, ", Multiplier[i]);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
-		
+
 		switch (Index) {
 		case 2:
 			Result = Result + ")";
+			break;
 		case 3:
 			Result = Result + ")";
+			break;
 		}
-			
+
 		return Result;
 	}
 
@@ -146,7 +157,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 		super.initPropertyValues(GrowthShape.NumPropsThisClass);
 	}
-	
+
 
 	/* FIXME Private members in OpenDSS */
 	public int getNpts() {

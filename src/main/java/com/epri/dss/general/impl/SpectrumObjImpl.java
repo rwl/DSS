@@ -47,18 +47,22 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", HarmArray[j]);
 				F.println(")");
+				break;
 			case 2:
 				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", puMagArray[j] * 100.0);
 				F.println(")");
+				break;
 			case 3:
 				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", AngleArray[j]);
 				F.println(")");
+				break;
 			default:
 				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 
@@ -91,37 +95,49 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		switch (Index) {
 		case 1:  // TODO Check zero based indexing
 			Result = "(";
+			break;
 		case 2:
 			Result = "(";
+			break;
 		case 3:
 			Result = "(";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
 		case 0:
 			Result = String.valueOf(NumHarm);
+			break;
 		case 1:
 			for (i = 0; i < NumHarm; i++)
 				Result = Result + String.format("%-g, ", HarmArray[i]);
+			break;
 		case 2:
 			for (i = 0; i < NumHarm; i++)
 				Result = Result + String.format("%-g, ", puMagArray[i] * 100.0);
+			break;
 		case 3:
 			for (i = 0; i < NumHarm; i++)
 				Result = Result + String.format("%-g, ", AngleArray[i]);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 1:
 			Result = ")";
+			break;
 		case 2:
 			Result = ")";
+			break;
 		case 3:
 			Result = ")";
+			break;
 		}
 
 		return Result;

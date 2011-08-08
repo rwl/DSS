@@ -140,41 +140,57 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ aps.getName() + "\"", 610);
+				break;
 			case 0:
 				aps.setNumPoints(parser.makeInteger());
+				break;
 			case 1:
 				aps.setInterval(parser.makeDouble());
+				break;
 			case 2:
 				aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 				// Allow possible Resetting (to a lower value) of num points when specifying Prices not Hours
 				aps.setNumPoints( Utilities.interpretDblArray(Param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
+				break;
 			case 3:
 				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 				Utilities.interpretDblArray(Param, aps.getNumPoints(), aps.getHours());   //parser.parseAsVector(Npts, Hours);
+				break;
 			case 4:
 				aps.setMean(parser.makeDouble());
+				break;
 			case 5:
 				aps.setStdDev(parser.makeDouble());
+				break;
 			case 6:
 				doCSVFile(Param);
+				break;
 			case 7:
 				doSngFile(Param);
+				break;
 			case 8:
 				doDblFile(Param);
+				break;
 			case 9:
 				aps.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+				break;
 			case 10:
 				aps.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
+				break;
 			case 11:
 				switch (Param.toLowerCase().charAt(0)) {
 				case 'd':
 					aps.saveToDblFile();
+					break;
 				case 's':
 					aps.saveToSngFile();
+					break;
 				}
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActivePriceShapeObj(), ParamPointer - PriceShape.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
@@ -182,18 +198,22 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
 				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command  FIXME
+				break;
 			case 6:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
 				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				break;
 			case 7:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
 				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				break;
 			case 8:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
 				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -115,10 +115,13 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 			switch (i) {
 			case 2:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			case 3:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 	}
@@ -130,12 +133,16 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 		switch (Index) {
 		case 1:
 			Result = "[";
+			break;
 		case 2:
 			Result = "[";
+			break;
 		case 3:
 			Result = "[";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
@@ -146,6 +153,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 			} else {
 				Result = "0, 0";
 			}
+			break;
 		case 2:
 			if (YValues != null) {
 				for (int i = 0; i < NumPoints; i++)
@@ -153,6 +161,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 			} else {
 				Result = "0";
 			}
+			break;
 		case 3:
 			if (XValues != null) {
 				for (int i = 0; i < NumPoints; i++)
@@ -160,21 +169,28 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 			} else {
 				Result = "0";
 			}
+			break;
 		case 7:
 			Result = String.format("%.8g", getXValue(Y));
+			break;
 		case 8:
 			Result = String.format("%.8g", getYValue(X));
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 1:
 			Result = "[";
+			break;
 		case 2:
 			Result = "[";
+			break;
 		case 3:
 			Result = "[";
+			break;
 		}
 
 		return Result;

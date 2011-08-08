@@ -66,65 +66,87 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 			switch (ParamPointer) {
 			case 0:
 				cd.setRDC(parser.makeDouble());
+				break;
 			case 1:
 				cd.setR60(parser.makeDouble());
+				break;
 			case 2:
 				cd.setResistanceUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				break;
 			case 3:
 				cd.setGMR60(parser.makeDouble());
+				break;
 			case 4:
 				cd.setGMRUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				break;
 			case 5:
 				cd.setRadius(parser.makeDouble());
+				break;
 			case 6:
 				cd.setRadiusUnits( LineUnits.getUnitsCode(parser.makeString()) );
+				break;
 			case 7:
 				cd.setNormAmps(parser.makeDouble());
+				break;
 			case 8:
 				cd.setEmergAmps(parser.makeDouble());
+				break;
 			case 9:
 				cd.setRadius(parser.makeDouble() / 2.0);
+				break;
 			default:
 				super.classEdit(ActiveObj, ParamPointer - NumConductorClassProps);
+				break;
 			}
 			/* Set defaults */
 			switch (ParamPointer) {
 			case 0:
 				if (cd.getR60() < 0.0)
 					cd.setR60(1.02 * cd.getRDC());
+				break;
 			case 1:
 				if (cd.getRDC() < 0.0)
 					cd.setRDC(cd.getR60() / 1.02);
+				break;
 			case 3:
 				if (cd.getRadius() < 0.0)
 					cd.setRadius(cd.getGMR60() / 0.7788);
+				break;
 			case 4:
 				if (cd.getRadiusUnits() == 0)
 					cd.setRadiusUnits(cd.getGMRUnits());
+				break;
 			case 5:
 				if (cd.getGMR60() < 0.0)
 					cd.setGMR60(0.7788 * cd.getRadius());
+				break;
 			case 6:
 				if (cd.getGMRUnits() == 0)
 					cd.setGMRUnits(cd.getRadiusUnits());
+				break;
 			case 7:
 				if (cd.getEmergAmps() < 0.0)
 					cd.setEmergAmps(1.5 * cd.getNormAmps());
+				break;
 			case 8:
 				if (cd.getNormAmps() < 0.0)
 					cd.setNormAmps(cd.getEmergAmps() / 1.5);
+				break;
 			case 9:
 				if (cd.getGMR60() < 0.0)
 					cd.setGMR60(0.7788 * cd.getRadius());
+				break;
 			}
 			/* Check for critical errors */
 			switch (ParamPointer) {
 			case 3:
 				if (cd.getRadius() == 0.0)
 					Globals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
+				break;
 			case 5:
 				if (cd.getGMR60() == 0.0)
 					Globals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
+				break;
 			}
 		}
 

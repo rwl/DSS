@@ -167,25 +167,35 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 350);
+				break;
 			case 0:
 				GICTransSetBusH(Param);
+				break;
 			case 1:
 				agt.setBus(2, Param);
+				break;
 			case 2:
 				GICTransSetBusX(Param);
+				break;
 			case 3:
 				agt.setBus(4, Param);
+				break;
 			case 4:
 				// see below
+				break;
 			case 5:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'G':
 					agt.setSpecType(SPEC_GSU);
+					break;
 				case 'A':
 					agt.setSpecType(SPEC_AUTO);
+					break;
 				case 'Y':
 					agt.setSpecType(SPEC_YY);
+					break;
 				}
+				break;
 			case 6:
 				agt.setG1(parser.makeDouble());
 				if (agt.getG1() != 0.0) {
@@ -193,6 +203,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				} else {
 					agt.setG1(10000.0);  // Default to a low resistance
 				}
+				break;
 			case 7:
 				agt.setG2(parser.makeDouble());
 				if (agt.getG2() != 0.0) {
@@ -200,15 +211,18 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				} else {
 					agt.setG2(10000.0);  // Default to a low resistance
 				}
+				break;
 			default:
 				// Inherited
 				classEdit(getActiveGICTransformerObj(), ParamPointer - NumPropsThisClass);
+				break;
 			}
 
 			// Some specials ...
 			switch (ParamPointer) {
 			case 0:
 				agt.setPropertyValue(1, agt.getBus(2));  // Bus2 gets modified if bus1 is set
+				break;
 			case 2:
 				agt.setPropertyValue(3, agt.getBus(4));  // Bus4 gets modified if bus3(X) is set
 				if (agt.getSpecType() == SPEC_AUTO) {
@@ -216,12 +230,14 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 					agt.setBus(2, agt.getBus(3));
 					agt.setPropertyValue(1, agt.getBus(2));
 				}
+				break;
 			case 4:
 				if (agt.getNPhases() != parser.makeInteger()) {
 					agt.setNPhases(parser.makeInteger());
 					agt.setNConds(agt.getNPhases());  // Force Reallocation of terminal info if different size
 					Globals.getActiveCircuit().setBusNameRedefined(true);  // Set Global Flag to signal circuit to rebuild busdefs
 				}
+				break;
 			case 5:
 				switch (agt.getSpecType()) {
 				case SPEC_AUTO:
@@ -230,7 +246,9 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 						agt.setNConds(agt.getNPhases());
 					}
 					agt.setBus(2, agt.getBus(3));
+					break;
 				}
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values or no. of terminals

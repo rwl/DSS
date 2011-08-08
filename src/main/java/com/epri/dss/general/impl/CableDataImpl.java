@@ -49,29 +49,38 @@ public class CableDataImpl extends ConductorDataImpl implements CableData {
 			switch (ParamPointer) {
 			case 0:
 				cd.setEpsR(parser.makeDouble());
+				break;
 			case 1:
 				cd.setInsLayer(parser.makeDouble());
+				break;
 			case 2:
 				cd.setDiaIns(parser.makeDouble());
+				break;
 			case 3:
 				cd.setDiaCable(parser.makeDouble());
+				break;
 			default:
 				super.classEdit(ActiveObj, ParamPointer - NumCableClassProps);
+				break;
 			}
 			/* Check for critical errors */
 			switch (ParamPointer) {
 			case 0:
 				if (cd.getEpsR() < 1.0)
 					Globals.doSimpleMsg("Error: Insulation permittivity must be greater than one for CableData " + cd.getName(), 999);
+				break;
 			case 1:
 				if (cd.getInsLayer() <= 0.0)
 					Globals.doSimpleMsg("Error: Insulation layer thickness must be positive for CableData " + cd.getName(), 999);
+				break;
 			case 2:
 				if (cd.getDiaIns() <= 0.0)
 					Globals.doSimpleMsg("Error: Diameter over insulation layer must be positive for CableData " + cd.getName(), 999);
+				break;
 			case 3:
 				if (cd.getDiaCable() <= 0.0)
 					Globals.doSimpleMsg("Error: Diameter over cable must be positive for CableData " + cd.getName(), 999);
+				break;
 			}
 		}
 

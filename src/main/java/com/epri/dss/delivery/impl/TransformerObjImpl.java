@@ -175,10 +175,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			switch (Winding[iHVolt].getConnection()) {
 			case 0:
 				DeltaDirection = 1;
+				break;
 			case 1:
 				DeltaDirection = -1;
+				break;
 			default:
 				// ---old code --- If Winding^[2].Connection = 0 Then DeltaDirection = -1 Else DeltaDirection = 1;
+				break;
 			}
 		}
 
@@ -200,10 +203,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					switch (i) {
 					case 0:  // TODO Check zero based indexing
 						XSC[0] = XHL;
+						break;
 					case 1:
 						XSC[1] = XHT;
+						break;
 					case 3:
 						XSC[2] = XLT;
+						break;
 					}
 				}
 			XHLChanged = false;
@@ -217,13 +223,18 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				switch (nPhases) {  // Wye
 				case 2:
 					w.setVBase(w.getKvll() * DSSGlobals.InvSQRT3x1000);   // assume 3-phase for 2-phase designation
+					break;
 				case 3:
 					w.setVBase(w.getKvll() * DSSGlobals.InvSQRT3x1000);
+					break;
 				default:
 					w.setVBase(w.getKvll() * 1000.0);
+					break;
 				}
+				break;
 			case 1:
 				w.setVBase(w.getKvll() * 1000.0);     // delta
+				break;
 			}
 		}
 
@@ -238,17 +249,23 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		switch (Winding[0].getConnection()) {
 		case 0:
 			VFactor = Winding[0].getVBase() * 0.001;  // wye
+			break;
 		case 1:
 			switch (nPhases) {
 			case 1:
 				VFactor = Winding[0].getVBase() * 0.001;
+				break;
 			case 2:
 				VFactor = Winding[0].getVBase() * 0.001 / DSSGlobals.SQRT3;
+				break;
 			case 3:
 				VFactor = Winding[0].getVBase() * 0.001 / DSSGlobals.SQRT3;
+				break;
 			default:
 				VFactor = Winding[0].getVBase() * 0.001 * 0.5 / Math.sin(Math.PI / nPhases);
+				break;
 			}
+			break;
 		}
 
 		/* Divide per phase kva by voltage to neutral */
@@ -277,21 +294,29 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					F.printf(" %s=%s", ParentClass.getPropertyName()[i], getPropertyValue(i));
 				for (i = 0; i < NumWindings; i++)
 					F.printf(" wdg=%d %sR=%.7g", i, "%", Winding[i].getRpu() * 100.0);
+				break;
 			case 3:
 				/* do nothing; */  // Ignore these properties; use arrays instead
+				break;
 			case 4:
 				/* do nothing; */
+				break;
 			case 5:
 				/* do nothing; */
+				break;
 			case 6:
 				/* do nothing; */
+				break;
 			case 7:
 				/* do nothing; */
+				break;
 			case 8:
 				/* do nothing; */
+				break;
 			default:
 				F.printf(" %s=%s", ParentClass.getPropertyName()[ParentClass.getRevPropertyIdxMap()[iProp]],
 						Utilities.checkForBlanks(getPropertyValue(iProp)));
+				break;
 			}
 			iProp = getNextPropertySet(iProp);
 		}
@@ -315,6 +340,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				k += 1;
 				TermRef[k] =  j * nConds;
 			}
+			break;
 		default:
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < NumWindings; j++) {
@@ -324,14 +350,17 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 						TermRef[k] = (j - 1) * nConds + i;
 						k += 1;
 						TermRef[k] = j * nConds;
+						break;
 					/* **** WILL THIS WORK for 2-PHASE OPEN DELTA ???? Need to check this sometime */
 					case 1:  // Delta
 						TermRef[k] = (j - 1) * nConds + i;
 						k += 1;
 						TermRef[k] = (j - 1) * nConds + rotatePhases(i);  // connect to next phase in sequence
+						break;
 					}
 				}
 			}
+			break;
 		}
 	}
 
@@ -400,8 +429,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			switch (W.getConnection()) {
 			case 0:
 				F.println("~ conn=wye");
+				break;
 			case 1:
 				F.println("~ conn=delta");
+				break;
 			}
 			F.println("~ kv=" + W.getKvll());
 			F.println("~ kva=" + W.getKva());
@@ -624,9 +655,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				switch (Winding[iWind].getConnection()) {
 				case 0:  // Wye
 					VBuffer[i] = Vterminal[i + k].subtract(Vterminal[NeutTerm]);
+					break;
 				case 1:  // Delta
 					ii = rotatePhases(i);  // Get next phase in sequence
 					VBuffer[i] = Vterminal[i + k].subtract(Vterminal[ii + k]);
+					break;
 				}
 			}
 
@@ -692,89 +725,124 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		switch (Index) {
 		case 0:
 			Result = String.valueOf(nPhases);
+			break;
 		case 1:
 			Result = String.valueOf(NumWindings);
+			break;
 		case 2:
 			Result = String.valueOf(ActiveWinding);  // return active winding
+			break;
 		case 3:
 			Result = getBus(ActiveWinding);    // return bus spec for active winding
+			break;
 		case 4:
 			switch (Winding[ActiveWinding].getConnection()) {
 			case 0:
 				Result = "wye ";
+				break;
 			case 1:
 				Result = "delta ";
+				break;
 			}
+			break;
 		case 5:
 			Result = String.format("%.7g", Winding[ActiveWinding].getKvll());
+			break;
 		case 6:
 			Result = String.format("%.7g", Winding[ActiveWinding].getKva());
+			break;
 		case 7:
 			Result = String.format("%.7g", Winding[ActiveWinding].getPuTap());
+			break;
 		case 8:
 			Result = String.format("%.7g", Winding[ActiveWinding].getRpu() * 100.0);  // %R
+			break;
 		case 9:
 			Result = String.format("%.7g", Winding[ActiveWinding].getRneut());
+			break;
 		case 10:
 			Result = String.format("%.7g", Winding[ActiveWinding].getXneut());
+			break;
 
 		case 11:
 			for (i = 0; i < NumWindings; i++)
 				Result = Result + getBus(i) + ", ";
+			break;
 		case 12:
 			for (i = 0; i < NumWindings; i++)
 				switch (Winding[i].getConnection()) {
 				case 0:
 					Result = Result + "wye, ";
+					break;
 				case 1:
 					Result = Result + "delta, ";
+					break;
 				}
+			break;
 		case 13:
 			for (i = 0; i < NumWindings; i++)
 				Result = Result + String.format("%.7g, ", Winding[i].getKvll());
+			break;
 		case 14:
 			for (i = 0; i < NumWindings; i++)
 				Result = Result + String.format("%.7g, ", Winding[i].getKva());
+			break;
 		case 15:
 			for (i = 0; i < NumWindings; i++)
 				Result = Result + String.format("%.7g, ", Winding[i].getPuTap());  // InterpretAllTaps(Param);
+			break;
 		case 16:
 			Result = String.format("%.7g", XHL * 100.0);
+			break;
 		case 17:
 			Result = String.format("%.7g", XHT * 100.0);
+			break;
 		case 18:
 			Result = String.format("%.7g", XLT * 100.0);
+			break;
 		case 19:
 			for (i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)
 				Result = Result + String.format("%-g, ", XSC[i] * 100.0);// Parser.ParseAsVector(((NumWindings - 1)*NumWindings div 2), Xsc);
+			break;
 		case 25:
 			Result = String.format("%.7g", pctLoadLoss);
+			break;
 		case 26:
 			Result = String.format("%.7g", pctNoLoadLoss);
+			break;
 		case 30:
 			Result = String.format("%.7g", Winding[ActiveWinding].getMaxTap());
+			break;
 		case 31:
 			Result = String.format("%.7g", Winding[ActiveWinding].getMinTap());
+			break;
 		case 32:
 			Result = String.format("%-d", Winding[ActiveWinding].getNumTaps());
+			break;
 		case 34:
 			Result = String.format("%.7g", pctImag);
+			break;
 		case 35:
 			Result = String.format("%.7g", ppm_FloatFactor / 1.0e-6);
+			break;
 		case 36:
 			for (i = 0; i < NumWindings; i++)
 				Result = Result + String.format("%.7g, ", Winding[i].getRpu() * 100.0);
+			break;
 
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		// Overrides
 		switch (Index = Transformer.NumPropsThisClass) {
 		case 0:
 			Result = String.format("%-.5g", getNormAmps());   // Normamps
+			break;
 		case 1:
 			Result = String.format("%-.5g", getEmergAmps());  // Emergamps
+			break;
 		}
 
 		if (((Index >= 11) && (Index <= 15)) || (Index == 19) || (Index == 36))

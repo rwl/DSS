@@ -8,7 +8,7 @@ import com.epri.dss.delivery.PDElement;
 import com.epri.dss.parser.impl.Parser;
 
 public class PDClassImpl extends CktElementClassImpl implements PDClass {
-	
+
 	private int NumPDClassProps;
 
 	public PDClassImpl() {
@@ -16,12 +16,12 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		this.NumPDClassProps = 5;
 		this.DSSClassType = DSSClassDefs.PD_ELEMENT;
 	}
-	
+
 	protected void countProperties() {
 		NumProperties = NumProperties + NumPDClassProps;
 		super.countProperties();
 	}
-	
+
 	/**
 	 * Define the properties for the base power delivery element class.
 	 */
@@ -42,7 +42,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
 		super.defineProperties();
 	}
-	
+
 	protected int classEdit(Object ActivePDObj, int ParamPointer) {
 		// continue parsing with contents of parser
 		Parser parser = Parser.getInstance();
@@ -53,25 +53,31 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 			switch (ParamPointer) {
 			case 1:
 				PDElem.setNormAmps(parser.makeDouble());
+				break;
 			case 2:
 				PDElem.setEmergAmps(parser.makeDouble());
+				break;
 			case 3:
 				PDElem.setFaultRate(parser.makeDouble());
+				break;
 			case 4:
 				PDElem.setPctPerm(parser.makeDouble());
+				break;
 			case 5:
 				PDElem.setHrsToRepair(parser.makeDouble());
+				break;
 			default:
 				super.classEdit(ActivePDObj, ParamPointer - NumPDClassProps);
+				break;
 			}
 		}
 		return 0;
 	}
-	
+
 	protected void classMakeLike(Object OtherObj) {
 		PDElement OtherPDObj = (PDElement) OtherObj;
 		PDElement PDElem = (PDElement) DSSGlobals.getInstance().getActiveDSSObject();
-		
+
 		PDElem.setNormAmps(OtherPDObj.getNormAmps());
 		PDElem.setEmergAmps(OtherPDObj.getEmergAmps());
 		PDElem.setFaultRate(OtherPDObj.getFaultRate());

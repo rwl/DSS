@@ -7,7 +7,7 @@ import com.epri.dss.general.TCC_Curve;
 import com.epri.dss.general.TCC_CurveObj;
 
 public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
-	
+
 	private int LastValueAccessed,
 		Npts;  // Number of points in curve
 
@@ -17,7 +17,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 	public TCC_CurveObjImpl(DSSClass ParClass, String Name) {
 		super(ParClass);
-		
+
 		setName(Name.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
@@ -30,7 +30,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 		initPropertyValues(0);
 	}
-	
+
 	/**
 	 * This function returns the operation time for the value given.
 	 * If the value is less than the first entry, return = -1 for No operation.
@@ -78,10 +78,10 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 				LastValueAccessed = Npts - 1;  // TODO Check zero based indexing
 				Result = t_values[Npts];
 			}
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Return operating time for over-voltage relay.
 	 */
@@ -102,10 +102,10 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 				Result = t_values[i - 1];
 			}
 		}
-		
+
 		return Result;
 	}
-	
+
 	/**
 	 * Return operating time for under-voltage relay.
 	 */
@@ -128,7 +128,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		}
 		return Result;
 	}
-	
+
 	/**
 	 * Get C_Value by index.
 	 */
@@ -140,7 +140,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 			return 0.0;
 		}
 	}
-	
+
 	/**
 	 * Get time value (sec) corresponding to point index.
 	 */
@@ -152,15 +152,15 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 			return 0.0;
 		}
 	}
-	
+
 	@Override
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) 
+		for (int i = 0; i < ParentClass.getNumProperties(); i++)
 			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
 	}
-	
+
 	@Override
 	public String getPropertyValue(int Index) {
 		int i;
@@ -169,33 +169,41 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		switch (Index) {
 		case 1:
 			Result = "(";
+			break;
 		case 2:
 			Result = "(";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
 		case 2:
-			for (i = 0; i < Npts; i++) 
+			for (i = 0; i < Npts; i++)
 				Result = Result + String.format("%-g, ", c_values[i]);
+			break;
 		case 3:
-			for (i = 0; i < Npts; i++) 
+			for (i = 0; i < Npts; i++)
 				Result = Result + String.format("%-g, ", t_values[i]);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 1:
 			Result = Result + ")";
+			break;
 		case 2:
 			Result = Result + ")";
+			break;
 		}
 
 		return Result;
 	}
-	
+
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 		PropertyValue[0] = "0";     // Number of points to expect

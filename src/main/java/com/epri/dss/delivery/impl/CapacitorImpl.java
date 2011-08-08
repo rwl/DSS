@@ -120,25 +120,33 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		switch (TestS.charAt(0)) {
 		case 'y':
 			aco.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			aco.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			aco.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
 			case 'n':
 				aco.setConnection(0);
+				break;
 			case 'l':
 				aco.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		switch (aco.getConnection()) {
 		case 1:
 			aco.setNTerms(1);  // Force reallocation of terminals
+			break;
 		case 0:
 			if (aco.getNTerms() != 2)
 				aco.setNTerms(2);
+			break;
 		}
 	}
 
@@ -197,35 +205,50 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			switch (ParamPointer) {
 			case 0:
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Object \"Capacitor."+aco.getName()+"\"", 450);
+				break;
 			case 1:
 				capSetBus1(Param);
+				break;
 			case 2:
 				aco.setBus(1, Param);
+				break;
 			case 3:
 				//aco.setNumPhases(parser.makeInteger());  // see below
+				break;
 			case 4:
 				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getKvarrating());
+				break;
 			case 5:
 				aco.setKvrating(parser.makeDouble());
+				break;
 			case 6:
 				interpretConnection(Param);
+				break;
 			case 7:
 				doCmatrix();
+				break;
 			case 8:
 				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getC());
+				break;
 			case 9:
 				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getR());
+				break;
 			case 10:
 				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getXL());
+				break;
 			case 11:
 				aco.processHarmonicSpec(Param);
+				break;
 			case 12:
 				aco.setNumSteps(parser.makeInteger());
+				break;
 			case 13:
 				aco.processStatesSpec(Param);
+				break;
 			default:
 				// Inherited Property Edits
 				classEdit(getActiveCapacitorObj(), ParamPointer - Capacitor.NumPropsThisClass);
+				break;
 			}
 
 			// Some specials ...
@@ -233,49 +256,64 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			case 0:
 				aco.setPropertyValue(1, aco.getBus(1));   // this gets modified
 				aco.getPrpSequence()[1] = 0; // Reset this for save function
+				break;
 			case 1:
 				if (Utilities.stripExtension(aco.getBus(0)).equals( Utilities.stripExtension(aco.getBus(1)) ))
 					aco.setShunt(false);
+				break;
 			case 2:
 				if (aco.getNPhases() != parser.makeInteger()) {
 					aco.setNPhases(parser.makeInteger());
 					aco.setNConds(aco.getNPhases());  // Force Reallocation of terminal info
 					aco.setYorder(aco.getNTerms() * aco.getNConds());
 				}
+				break;
 			case 3:
 				aco.setSpecType(1);
+				break;
 			case 6:
 				aco.setSpecType(3);
+				break;
 			case 7:
 				aco.setSpecType(2);
 				for (int i = 0; i < aco.getNumSteps(); i++)
 					aco.getC()[i] = aco.getC()[i] * 1.0e-6;
+				break;
 			case 9:
 				for (int i = 0; i < aco.getNumSteps(); i++)
 					if (aco.getXL()[i] != 0.0)
 						if (aco.getR()[i] == 0.0)
 							aco.getR()[i] = Math.abs(aco.getXL()[i]) / 1000.0;  // put in something so it doesn't fail
 				aco.setDoHarmonicRecalc(false);  // XL is specified
+				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
 			switch (ParamPointer) {
 			case 3:
 				aco.setYprimInvalid(true);
+				break;
 			case 4:
 				aco.setYprimInvalid(true);
+				break;
 			case 5:
 				aco.setYprimInvalid(true);
+				break;
 			case 6:
 				aco.setYprimInvalid(true);
+				break;
 			case 7:
 				aco.setYprimInvalid(true);
+				break;
 			case 8:
 				aco.setYprimInvalid(true);
+				break;
 			case 12:
 				aco.setYprimInvalid(true);
+				break;
 			case 13:
 				aco.setYprimInvalid(true);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -139,16 +139,22 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		switch (i) {
 		case 1:  // TODO Check zero based indexing
 			getActiveLineCodeObj().setR1(Value);
+			break;
 		case 2:
 			getActiveLineCodeObj().setX1(Value);
+			break;
 		case 3:
 			getActiveLineCodeObj().setR0(Value);
+			break;
 		case 4:
 			getActiveLineCodeObj().setX0(Value);
+			break;
 		case 5:
 			getActiveLineCodeObj().setC1(Value);
+			break;
 		case 6:
 			getActiveLineCodeObj().setC0(Value);
+			break;
 		}
 	}
 
@@ -174,17 +180,20 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
+				break;
 			case 2:  // X
 				ZValues = getActiveLineCodeObj().getZ().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
+				break;
 			case 3:  // YC Matrix
 				Factor = DSSGlobals.TwoPi * getActiveLineCodeObj().getBaseFrequency() * 1.0e-9;
 				ZValues = getActiveLineCodeObj().getYC().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), Factor * MatBuffer[j]);
+				break;
 			}
 		}
 
@@ -222,64 +231,92 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				switch (ParamPointer) {
 				case 0:
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 101);
+					break;
 				case 1:
 					getActiveLineCodeObj().setNPhases(parser.makeInteger());  // Use property value to force reallocations
+					break;
 				case 2:
 					setZ1Z0(1, parser.makeDouble());  // R1
+					break;
 				case 3:
 					setZ1Z0(2, parser.makeDouble());  // X0
+					break;
 				case 4:
 					setZ1Z0(3, parser.makeDouble());  // R1
+					break;
 				case 5:
 					setZ1Z0(4, parser.makeDouble());  // X0
+					break;
 				case 6:
 					setZ1Z0(5, parser.makeDouble() * 1.0e-9);  // C1   // Convert from nano to farads
+					break;
 				case 7:
 					setZ1Z0(6, parser.makeDouble() * 1.0e-9);  // C0
+					break;
 				case 8:
 					setUnits(Param);
+					break;
 				case 9:  // Rmatrix
 					doMatrix(1);
+					break;
 				case 10:  // Xmatrix
 					doMatrix(2);
+					break;
 				case 11:  // Cmatrix
 					doMatrix(3);
+					break;
 				case 12:
 					getActiveLineCodeObj().setBaseFrequency(parser.makeDouble());
+					break;
 				case 13:
 					getActiveLineCodeObj().setNormAmps(parser.makeDouble());
+					break;
 				case 14:
 					getActiveLineCodeObj().setEmergAmps(parser.makeDouble());
+					break;
 				case 15:
 					getActiveLineCodeObj().setFaultRate(parser.makeDouble());
+					break;
 				case 16:
 					getActiveLineCodeObj().setPctPerm(parser.makeDouble());
+					break;
 				case 17:
 					getActiveLineCodeObj().setHrsToRepair(parser.makeDouble());
+					break;
 				case 18:
 					getActiveLineCodeObj().setReduceByKron(Utilities.interpretYesNo(Param));
+					break;
 				case 19:
 					getActiveLineCodeObj().setRg(parser.makeDouble());
+					break;
 				case 20:
 					getActiveLineCodeObj().setXg(parser.makeDouble());
+					break;
 				case 21:
 					getActiveLineCodeObj().setRho(parser.makeDouble());
+					break;
 				case 22:
 					getActiveLineCodeObj().setNeutralConductor(parser.makeInteger());
+					break;
 				default:
 					classEdit(getActiveLineCodeObj(), ParamPointer - LineCode.NumPropsThisClass);
+					break;
 				}
 
 				switch (ParamPointer) {
 				case 9:
 					getActiveLineCodeObj().setSymComponentsModel(false);
+					break;
 				case 10:
 					getActiveLineCodeObj().setSymComponentsModel(false);
+					break;
 				case 11:
 					getActiveLineCodeObj().setSymComponentsModel(false);
+					break;
 				case 18:
 					if (getActiveLineCodeObj().isReduceByKron() && !getActiveLineCodeObj().isSymComponentsModel())
 						getActiveLineCodeObj().doKronReduction();
+					break;
 				}
 
 

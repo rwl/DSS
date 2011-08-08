@@ -68,9 +68,11 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 			switch (ParamPointer) {
 			case -1:  // TODO Check zero based indexing
 				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +'.'+ acd.getName() + "\"", 101);
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveConductorDataObj(), ParamPointer - WireData.NumPropsThisClass);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

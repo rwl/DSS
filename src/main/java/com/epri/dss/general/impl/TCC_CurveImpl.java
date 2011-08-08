@@ -98,15 +98,20 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			switch (ParamPointer) {
 			case 0:
 				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ atc.getName() + "\"", 420);
+				break;
 			case 1:
 				atc.setNpts(parser.makeInteger());
+				break;
 			case 2:
 				Utilities.interpretDblArray(Param, atc.getNpts(), atc.getC_values());   // Parser.ParseAsVector(Npts, Multipliers);
+				break;
 			case 3:
 				Utilities.interpretDblArray(Param, atc.getNpts(), atc.getT_values());   // Parser.ParseAsVector(Npts, Hours);
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveTCC_CurveObj(), ParamPointer - TCC_Curve.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
@@ -115,10 +120,13 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 				atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNpts()) );
 				atc.setT_values( (double[]) Utilities.resizeArray(atc.getT_values(), atc.getNpts()) );
 				atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNpts()) );
+				break;
 			case 1:
 				calcLogPoints(atc.getC_values(), atc.getLogC(), atc.getNpts());
+				break;
 			case 2:
 				calcLogPoints(atc.getT_values(), atc.getLogT(), atc.getNpts());
+				break;
 			}
 
 			ParamName = parser.getNextParam();

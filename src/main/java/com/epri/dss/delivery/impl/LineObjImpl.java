@@ -500,48 +500,58 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		switch (Index) {
 		case 0:
 			Result = getBus(1);  // TODO Check zero based indexing
+			break;
 		case 1:
 			Result = getBus(2);
+			break;
 		case 3:
 			Result = String.format("%-.7g", Len);
+			break;
 		case 4:
 			Result = String.format("%d", nPhases);
+			break;
 		case 5:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", R1 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 6:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", X1 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 7:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", R0 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 8:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", X0 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 9:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", C1 * 1.0e9 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 10:
 			if (SymComponentsModel) {
 				Result = String.format("%-.7g", C0 * 1.0e9 / UnitsConvert);
 			} else {
 				Result = "----";
 			}
+			break;
 		case 11:
 			for (i = 0; i < getNConds(); i++) {
 				for (j = 0; j < i; j++) {
@@ -555,6 +565,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 						Result = Result + "|";
 				}
 			}
+			break;
 		case 12:
 			for (i = 0; i < getNConds(); i++) {
 				for (j = 0; j < i; j++) {
@@ -568,6 +579,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				if (i < nConds)
 					Result = Result + "|";
 			}
+			break;
 		case 13:  // CMatrix  nf
 			Factor = DSSGlobals.TwoPi * BaseFrequency * 1.0e-9;
 			for (i = 0; i < nConds; i++) {
@@ -581,22 +593,29 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				if (i < nConds)
 					Result = Result + "|";
 			}
+			break;
 		case 14:
 			if (IsSwitch) {
 				Result = "True";
 			} else {
 				Result = "False";
 			}
+			break;
 		case 15:
 			Result = String.format("%-g", Rg);
+			break;
 		case 16:
 			Result = String.format("%-g", Xg);
+			break;
 		case 17:
 			Result = String.format("%-g", rho);
+			break;
 		case 22:
 			Result = Utilities.getEarthModel(EarthModel);
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 
 		if ((Index >= 11) && (Index <= 13))
@@ -797,16 +816,22 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					switch (Common2) {
 					case 1:
 						S = "Bus1=\"" + OtherLine.getBus(2) + "\"";
+						break;
 					case 2:
 						S = "Bus1=\"" + OtherLine.getBus(1) + "\"";
+						break;
 					}
+					break;
 				case 2:
 					switch (Common2) {
 					case 1:
 						S = "Bus2=\"" + OtherLine.getBus(2) + "\"";
+						break;
 					case 2:
 						S = "Bus2=\"" + OtherLine.getBus(1) + "\"";
+						break;
 					}
+					break;
 				}
 
 				Parser.getInstance().setCmdString(S);

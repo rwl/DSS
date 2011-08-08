@@ -34,12 +34,16 @@ public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataO
 			switch (i) {
 			case 0:
 				F.println(String.format("%.3g", EpsR));
+				break;
 			case 1:
 				F.println(String.format("%.6g", InsLayer));
+				break;
 			case 2:
 				F.println(String.format("%.6g", DiaIns));
+				break;
 			case 3:
 				F.println(String.format("%.6g", DiaCable));
+				break;
 			}
 		}
 	}

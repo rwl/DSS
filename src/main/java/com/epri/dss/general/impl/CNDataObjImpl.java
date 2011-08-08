@@ -35,12 +35,16 @@ public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 			switch (i) {
 			case 0:
 				F.println(String.format("%d", kStrand));
+				break;
 			case 1:
 				F.println(String.format("%.6g", DiaStrand));
+				break;
 			case 2:
 				F.println(String.format("%.6g", GmrStrand));
+				break;
 			case 3:
 				F.println(String.format("%.6g", RStrand));
+				break;
 			}
 		}
 	}

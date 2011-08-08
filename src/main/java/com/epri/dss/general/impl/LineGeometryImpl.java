@@ -130,29 +130,40 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				switch (ParamPointer) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name + "." + alg.getName() + "\"", 10101);
+					break;
 				case 0:
 					alg.setNconds(parser.makeInteger());  // Use property value to force reallocations
+					break;
 				case 1:
 					alg.setNphases(parser.makeInteger());
+					break;
 				case 2:
 					alg.setActiveCond(parser.makeInteger());
+					break;
 				case 3:
 					alg.getCondName()[alg.getActiveCond()] = Param;
 					if (alg.getPhaseChoice() == ConductorChoice.Unknown)
 						alg.changeLineConstantsType(ConductorChoice.Overhead);
+					break;
 				case 4:
 					alg.getX()[alg.getActiveCond()] = parser.makeDouble();
+					break;
 				case 5:
 					alg.getY()[alg.getActiveCond()] = parser.makeDouble();
+					break;
 				case 6:
 					alg.getUnits()[alg.getActiveCond()] = LineUnits.getUnitsCode(Param);
 					alg.setLastUnit( alg.getUnits()[alg.getActiveCond()] );
+					break;
 				case 7:
 					alg.setNormAmps(parser.makeDouble());
+					break;
 				case 8:
 					alg.setEmergAmps(parser.makeDouble());
+					break;
 				case 9:
 					alg.setReduce(Utilities.interpretYesNo(Param));
+					break;
 				case 10:
 					alg.setSpacingType(parser.makeString());
 					if (Globals.getLineSpacingClass().setActive(alg.getSpacingType())) {
@@ -170,12 +181,15 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					} else {
 						Globals.doSimpleMsg("LineSpacing object " + alg.getSpacingType() + " has not been defined.", 10103);
 					}
+					break;
 				case 12:
 					alg.getCondName()[alg.getActiveCond()] = Param;
 					alg.changeLineConstantsType(ConductorChoice.ConcentricNeutral);
+					break;
 				case 13:
 					alg.getCondName()[alg.getActiveCond()] = Param;
 					alg.changeLineConstantsType(ConductorChoice.TapeShield);
+					break;
 				case 11:
 					istart = 0;
 					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
@@ -205,6 +219,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 							Globals.doSimpleMsg("WireData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
+					break;
 				case 14:
 					istart = 0;
 					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
@@ -231,6 +246,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 							Globals.doSimpleMsg("CNData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
+					break;
 				case 15:
 					istart = 0;
 					istop = alg.getNconds() - 1;  // TODO Check zero based indexing
@@ -257,9 +273,11 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 							Globals.doSimpleMsg("TSData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActiveLineGeometryObj(), ParamPointer - LineGeometry.NumPropsThisClass);
+					break;
 				}
 
 				/* Set defaults */
@@ -267,9 +285,11 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 1:
 					if (alg.getNphases() > alg.getNconds())
 						alg.setNphases(alg.getNconds());
+					break;
 				case 2:
 					if ((alg.getActiveCond() < 1) || (alg.getActiveCond() > alg.getNconds()))
 						Globals.doSimpleMsg("Illegal cond= specification in Line Geometry:" + DSSGlobals.CRLF + parser.getCmdString(), 10102);
+					break;
 				case 3:
 					Globals.getWireDataClass().setCode(Param);
 
@@ -285,6 +305,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					} else {
 						Globals.doSimpleMsg("WireData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
+					break;
 				case 12:
 					Globals.getCNDataClass().setCode(Param);
 
@@ -300,6 +321,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					} else {
 						Globals.doSimpleMsg("CNData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
+					break;
 				case 13:
 					Globals.getTSDataClass().setCode(Param);
 
@@ -315,31 +337,43 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					} else {
 						Globals.doSimpleMsg("TSData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
+					break;
 				}
 
 				switch (ParamPointer) {
 				case 0:
 					alg.setDataChanged(true);
+					break;
 				case 3:
 					alg.setDataChanged(true);
+					break;
 				case 4:
 					alg.setDataChanged(true);
+					break;
 				case 5:
 					alg.setDataChanged(true);
+					break;
 				case 6:
 					alg.setDataChanged(true);
+					break;
 				case 10:
 					alg.setDataChanged(true);
+					break;
 				case 11:
 					alg.setDataChanged(true);
+					break;
 				case 12:
 					alg.setDataChanged(true);
+					break;
 				case 13:
 					alg.setDataChanged(true);
+					break;
 				case 14:
 					alg.setDataChanged(true);
+					break;
 				case 15:
 					alg.setDataChanged(true);
+					break;
 				}
 
 				ParamName = parser.getNextParam();
