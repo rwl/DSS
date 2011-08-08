@@ -124,6 +124,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			}
 
 			Rm = (R0 - R1) / 3.0;
+			break;
 
 		case 2:  // Isc
 			MVAsc3 = DSSGlobals.SQRT3 * kVBase * Isc3 / 1000.0;
@@ -142,6 +143,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			}
 
 			Rm = (R0 - R1) / 3.0;
+			break;
 
 		case 3:  // Z1, Z0    Specified
 			Isc3 = kVBase * 1000.0 / DSSGlobals.SQRT3 / new Complex(R1, X1).abs();
@@ -160,6 +162,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 			Rs     = (2.0 * R1 + R0) / 3.0;
 			Rm     = (R0 - R1) / 3.0;
+			break;
 		}
 
 		/* Update property Value array */
@@ -177,8 +180,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		switch (nPhases) {
 		case 1:
 			VMag = kVBase * PerUnit * 1000.0;
+			break;
 		default:
 			VMag = kVBase * PerUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+			break;
 		}
 
 		setSpectrumObj((com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()));
@@ -265,8 +270,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			switch (nPhases) {
 			case 1:
 				VMag = kVBase * PerUnit * 1000.0;
+				break;
 			default:
 				VMag = kVBase * PerUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				break;
 			}
 
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
@@ -283,10 +290,13 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 						switch (ScanType) {
 						case 1:
 							Vharm = Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0 / nPhases); // maintain pos seq
+							break;
 						case 0:
 							// Do nothing for Zero Sequence; All the same.
+							break;
 						default:
 							Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0 / nPhases); // normal rotation
+							break;
 						}
 				}
 			} else {
@@ -298,10 +308,13 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 					switch (SequenceType) {
 					case -1:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));   // neg seq
+						break;
 					case 0:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));   // all the same for zero sequence
+						break;
 					default:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i-1) * 360.0 / nPhases));
+						break;
 					}
 					Vterminal[i + nPhases] = Complex.ZERO;    // See comments in GetInjCurrents
 				}

@@ -168,15 +168,20 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		switch (ag.getConnection()) {
 		case 0:
 			ag.setNConds(ag.getNPhases() + 1);
+			break;
 		case 1:
 			switch (ag.getNPhases()) {
 			case 1:
 				ag.setNConds(ag.getNPhases() + 1);  // L-L
+				break;
 			case 2:
 				ag.setNConds(ag.getNPhases() + 1);  // Open-delta
+				break;
 			default:
 				ag.setNConds(ag.getNPhases());
+				break;
 			}
+			break;
 		}
 	}
 
@@ -193,17 +198,23 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		switch (TestS.charAt(0)) {
 		case 'y':
 			ag.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			ag.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			ag.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
 			case 'n':
 				ag.setConnection(0);
+				break;
 			case 'l':
 				ag.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		setNcondsForConnection();
@@ -212,10 +223,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		switch (ag.getNPhases()) {
 		case 2:
 			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			break;
 		case 3:
 			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			break;
 		default:
 			ag.setVBase(ag.getGenVars().kVGeneratorBase * 1000.0);   // Just use what is supplied
+			break;
 		}
 		ag.setVBase95(ag.getVMinPU() * ag.getVBase());
 		ag.setVBase105(ag.getVMaxPU() * ag.getVBase());
@@ -267,85 +281,123 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				switch (PropertyIdxMap[ParamPointer]) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ag.getName() + "\"", 561);
+					break;
 				case 0:
 					ag.setNPhases(parser.makeInteger());  // num phases
+					break;
 				case 1:
 					ag.setBus(1, Param);  // TODO Check zero based indexing
+					break;
 				case 2:
 					ag.setPresentKV(parser.makeDouble());
+					break;
 				case 3:
 					ag.setkWBase(parser.makeDouble());
+					break;
 				case 4:
 					ag.setPFNominal(parser.makeDouble());
+					break;
 				case 5:
 					ag.setGenModel(parser.makeInteger());
+					break;
 				case 6:
 					ag.setYearlyShape(Param);
+					break;
 				case 7:
 					ag.setDailyDispShape(Param);
+					break;
 				case 8:
 					ag.setDutyShape(Param);
+					break;
 				case 9:
 					ag.setDispatchMode(interpretDispMode(Param));
+					break;
 				case 10:
 					ag.setDispatchValue(parser.makeDouble());
+					break;
 				case 11:
 					interpretConnection(Param);
+					break;
 				case 12:
 					ag.setPresentKVar(parser.makeDouble());
+					break;
 				case 13:
 					Globals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
+					break;
 				case 14:
 					Globals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
+					break;
 				case 15:
 					if (Param.toLowerCase().charAt(0) == 'f') {
 						ag.setFixed(true);
 					} else {
 						ag.setFixed(false);
 					}
+					break;
 				case 16:
 					ag.setGenClass(parser.makeInteger());
+					break;
 				case 17:
 					ag.setVpu(parser.makeDouble());
+					break;
 				case 18:
 					ag.setKvarMax(parser.makeDouble());
+					break;
 				case 19:
 					ag.setKvarMin(parser.makeDouble());
+					break;
 				case 20:
 					ag.setPVFactor(parser.makeDouble());  // declaration factor
+					break;
 				case 21:
 					ag.setDebugTrace(Utilities.interpretYesNo(Param));
+					break;
 				case 22:
 					ag.setVMinPU(parser.makeDouble());
+					break;
 				case 23:
 					ag.setVMaxPU(parser.makeDouble());
+					break;
 				case 24:
 					ag.setForcedON(Utilities.interpretYesNo(Param));
+					break;
 				case 25:
 					ag.getGenVars().kVArating = parser.makeDouble();
+					break;
 				case 26:
 					ag.getGenVars().kVArating = parser.makeDouble() * 1000.0;  // "MVA";
+					break;
 				case 27:
 					ag.getGenVars().puXd = parser.makeDouble();
+					break;
 				case 28:
 					ag.getGenVars().puXdp = parser.makeDouble();
+					break;
 				case 29:
 					ag.getGenVars().puXdpp = parser.makeDouble();
+					break;
 				case 30:
 					ag.getGenVars().Hmass = parser.makeDouble();
+					break;
 				case 31:
 					ag.getGenVars().Dpu = parser.makeDouble();
+					break;
 				case 32:
 					ag.getUserModel().setName(parser.makeString());  // Connect to user written models
+					break;
 				case 33:
 					ag.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					break;
 				case 34:
 					ag.getShaftModel().setName(parser.makeString());
+					break;
 				case 35:
 					ag.getShaftModel().edit(parser.makeString());
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActiveGeneratorObj(), ParamPointer - Generator.NumPropsThisClass);
+					break;
 				}
 			}
 
@@ -353,12 +405,15 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				switch (PropertyIdxMap[ParamPointer]) {
 				case 0:
 					setNcondsForConnection();  // Force reallocation of terminal info
+					break;
 				case 3:
 					// keep kvar nominal up to date with kW and PF
 					ag.syncUpPowerQuantities();
+					break;
 				case 4:
 					// keep kvar nominal up to date with kW and PF
 					ag.syncUpPowerQuantities();
+					break;
 				case 6:
 					/* Set shape objects;  returns nil if not valid */
 					/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
@@ -367,19 +422,21 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 						if (ag.getYearlyShapeObj().isUseActual())
 							ag.setKwKVar(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
+					break;
 				case 7:
 					ag.setDailyDispShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
 							ag.setKwKVar(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
+					break;
 				case 8:
 					ag.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
 							ag.setKwKVar(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
 					}
-
+					break;
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
@@ -405,10 +462,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 							// TODO: handle exception
 						}
 					}
+					break;
 				case 25:
 					ag.setkVANotSet(false);
+					break;
 				case 26:
 					ag.setkVANotSet(false);
+					break;
 				}
 			}
 

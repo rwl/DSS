@@ -209,22 +209,23 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)  // TODO Check zero based indexing
 				ControlCurrent.add(cBuffer[i].abs());
 			ControlCurrent.setValue(ControlCurrent.doubleValue() / nPhases / CTRatio);
-
+			break;
 		case CapControl.MAXPHASE:
 			ControlCurrent.setValue(0.0);  // Get max of all phases
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
 				ControlCurrent.setValue(Math.max(ControlCurrent.doubleValue(), cBuffer[i].abs()));
 			ControlCurrent.setValue(ControlCurrent.doubleValue() / CTRatio);
-
+			break;
 		case CapControl.MINPHASE:
 			ControlCurrent.setValue(1.0e50);  // Get min of all phases
 			for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
 				ControlCurrent.setValue(Math.min(ControlCurrent.doubleValue(), cBuffer[i].abs()));
 			ControlCurrent.setValue(ControlCurrent.doubleValue() / CTRatio);
-
+			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
 			ControlCurrent.setValue(cBuffer[CTPhase].abs() / CTRatio);  // monitored phase only
+			break;
 		}
 	}
 
@@ -273,7 +274,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 					LastOpenTime = sol.getDynaVars().t + 3600.0 * sol.getIntHour();
 				}
-
+				break;
 			default:
 				if (PresentState == ControlAction.CLOSE)  // Do this only if at least one step is closed
 					if (!ControlledCapacitor.subtractStep()) {
@@ -283,8 +284,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					} else {
 						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
 					}
+				break;
 			}
-
+			break;
 		case CLOSE:
 			if (PresentState == ControlAction.OPEN) {
 				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
@@ -295,9 +297,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				if (ControlledCapacitor.addStep())
 					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Up**");
 			}
-
+			break;
 		default:
-			/* Do Nothing for NONE if the control has reset */
+			/* Do nothing for none if the control has reset */
+			break;
 		}
 
 		ShouldSwitch = false;
@@ -324,19 +327,19 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
 				ControlVoltage.add(cBuffer[i].abs());
 			ControlVoltage.setValue(ControlVoltage.doubleValue() / MonitoredElement.getNPhases() / PTRatio);
-
+			break;
 		case CapControl.MAXPHASE:
 			ControlVoltage.setValue(0.0);
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
 				ControlVoltage.setValue(Math.max(ControlVoltage.doubleValue(), cBuffer[i].abs()));
 			ControlVoltage.setValue(ControlVoltage.doubleValue() / PTRatio);
-
+			break;
 		case CapControl.MINPHASE:
 			ControlVoltage.setValue(1.0e50);
 			for (i = 0; i < MonitoredElement.getNPhases(); i++)
 				ControlVoltage.setValue(Math.min(ControlVoltage.doubleValue(), cBuffer[i].abs()));
 			ControlVoltage.setValue(ControlVoltage.doubleValue() / PTRatio);
-
+			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
 			// Use L-L aB if capacitor is delta connected!!
@@ -344,9 +347,12 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			switch (pElem.getConnection()) {
 			case 1:
 				ControlVoltage.setValue( cBuffer[PTPhase].subtract( cBuffer[nextDeltaPhase(PTPhase)] ).abs() / PTRatio );   // Delta
+				break;
 			default:
 				ControlVoltage.setValue( cBuffer[PTPhase].abs() / PTRatio );     // Wye - Default
+				break;
 			}
+			break;
 		}
 	}
 
@@ -399,11 +405,13 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						PendingChange = ControlAction.CLOSE;
 						ShouldSwitch = true;
 					}
+					break;
 				case CLOSE:
 					if (Vtest.doubleValue() > Vmax) {
 						PendingChange = ControlAction.OPEN;
 						ShouldSwitch = true;
 					}
+					break;
 				}
 			}
 		}
@@ -427,6 +435,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				case CLOSE:
 					if (CurrTest.doubleValue() < OFF_Value) {
 						PendingChange = ControlAction.OPEN;
@@ -439,8 +448,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					} else {  // Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				}
-
+				break;
 			case VOLTAGECONTROL:  /* Voltage */
 				MonitoredElement.getTermVoltages(ElementTerminal, cBuffer);
 
@@ -455,6 +465,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				case CLOSE:
 					if (Vtest.doubleValue() > OFF_Value) {
 						PendingChange = ControlAction.OPEN;
@@ -468,8 +479,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				}
-
+				break;
 			case KVARCONTROL:  /* kvar */
 				//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = MonitoredElement.getPower(ElementTerminal);
@@ -484,6 +496,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				case CLOSE:
 					if (Q < OFF_Value) {
 						PendingChange = ControlAction.OPEN;
@@ -497,9 +510,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
-
+					break;
 				}
-
+				break;
 			case SRPCONTROL:  /* kvar modified to keep PF around .98 lead */
 				//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
 				S = MonitoredElement.getPower(ElementTerminal);
@@ -514,6 +527,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				case CLOSE:
 					if (Q < OFF_Value) {
 						PendingChange = ControlAction.OPEN;
@@ -527,8 +541,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				}
-
+				break;
 			case TIMECONTROL:  /* time */
 				SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 				NormalizedTime = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t);
@@ -552,7 +567,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 							PendingChange = ControlAction.NONE;
 						}
 					}
-
+					break;
 				case CLOSE:
 					if (OFF_Value > ON_Value) {
 						if (NormalizedTime  >= OFF_Value) {
@@ -581,6 +596,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 							PendingChange = ControlAction.NONE;
 						}
 					}
+					break;
 				}
 
 			case PFCONTROL:  /* PF */
@@ -599,6 +615,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					} else {  // Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				case CLOSE:
 					if (PF > PFOFF_Value) {
 						PendingChange = ControlAction.OPEN;
@@ -612,7 +629,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						// Reset
 						PendingChange = ControlAction.NONE;
 					}
+					break;
 				}
+				break;
 			}
 
 		}
@@ -679,8 +698,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		switch (InitialState) {
 		case OPEN:
 			getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
+			break;
 		case CLOSE:
 			getControlledElement().setConductorClosed(0, true);    // Close all phases of active terminal
+			break;
 		}
 		ShouldSwitch = false;
 		LastOpenTime = -DeadTime;

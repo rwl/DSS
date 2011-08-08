@@ -162,20 +162,26 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 					switch (ScanType) {
 					case 1:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
+						break;
 					case 0:
 						// Do not rotate for zero sequence
+						break;
 					default:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
 						/* Harmonic 1 will be pos; 2 is neg; 3 is zero, and so on. */
+						break;
 					}
 				} else {
 					switch (SequenceType) {
 					case -1:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // Neg seq
+						break;
 					case 0:
 						// Do not rotate for zero sequence
+						break;
 					default:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // Maintain pos seq
+						break;
 					}
 				}
 			}

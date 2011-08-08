@@ -191,6 +191,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 //			for (i = 0; i < Nphs; i++)
 //				Result = Result + VBuffer[i].abs();
 //			Result = Result.divide(Nphs * PTRatio);
+//			break;
 		case RegControl.MAXPHASE:
 			ControlledPhase = 1;
 			V = VBuffer[ControlledPhase].abs();
@@ -201,6 +202,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 			}
 			Result = VBuffer[ControlledPhase].divide(PTRatio);
+			break;
 		case RegControl.MINPHASE:
 			ControlledPhase = 1;
 			V = VBuffer[ControlledPhase].abs();
@@ -211,10 +213,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 			}
 			Result = VBuffer[ControlledPhase].divide(PTRatio);
+			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
 			Result = VBuffer[PTphase].divide(PTRatio);
 			ControlledPhase = PTphase;
+			break;
 		}
 		return Result;
 	}
@@ -353,7 +357,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					}
 				}
 			}
-
+			break;
 		case RegControl.ACTION_REVERSE:
 			// Toggle reverse mode flag
 			if (DebugTrace)
@@ -367,6 +371,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 				ReversePending = false;
 			}
+			break;
 		}
 	}
 
@@ -466,11 +471,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				switch (TransformerConnection) {
 				case 0:  // Wye
 					VBuffer[i] = Vterminal[i];
-
+					break;
 				case 1:  // Delta
 					// Get next phase in sequence using Transformer Obj rotate
 					ii = ControlledTransformer.rotatePhases(i);
 					VBuffer[i] = Vterminal[i].subtract( Vterminal[ii] );
+					break;
 				}
 			}
 		} else {

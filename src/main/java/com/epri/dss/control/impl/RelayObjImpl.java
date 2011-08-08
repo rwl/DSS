@@ -174,6 +174,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 						if (MonitorVarIndex < 0)
 							Globals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+MonitorVariable+"\" does not exist.", 386);
 					}
+					break;
 				}
 			}
 		}
@@ -208,8 +209,10 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		switch (nPhases) {
 		case 1:
 			Vbase = kVBase * 1000.0;
+			break;
 		default:
 			Vbase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			break;
 		}
 
 		PickupVolts47 = Vbase * PctPickup47 * 0.01;
@@ -232,8 +235,10 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		switch (nPhases) {
 		case 1:
 			Vbase = kVBase * 1000.0;
+			break;
 		default:
 			Vbase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			break;
 		}
 
 		PickupVolts47 = Vbase * PctPickup47 * 0.01;
@@ -283,6 +288,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				if (PhaseTarget) Utilities.appendToEventLog(" ", "Phase Target");
 				if (GroundTarget) Utilities.appendToEventLog(" ", "Ground Target");
 				ArmedForOpen = false;
+				break;
 			}
 		} else if (Code == ControlAction.CLOSE.code()) {
 			switch (PresentState) {
@@ -293,12 +299,14 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					Utilities.appendToEventLog("Relay."+getName(), "Closed");
 					ArmedForClose = false;
 				}
+				break;
 			}
 		} else if (Code == ControlAction.CTRL_RESET.code()) {
 			switch (PresentState) {
 			case CLOSE:
 				if (!ArmedForOpen)
 					OperationCount = 1;  // Don't reset if we just rearmed
+				break;
 			}
 		}
 	}
@@ -313,14 +321,17 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
 				LockedOut = true;
 				OperationCount = NumReclose + 1;
+				break;
 			case 't':
 				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
 				LockedOut = true;
 				OperationCount = NumReclose + 1;
+				break;
 			case 'c':
 				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
 				LockedOut = false;
 				OperationCount = 1;
+				break;
 			}
 		}
 	}
@@ -340,16 +351,22 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			switch (ControlType) {
 			case Relay.CURRENT:
 				overcurrentLogic();  /* Current */
+				break;
 			case Relay.VOLTAGE:
 				voltageLogic();   /* Reclosing Voltage Relay - definite time */
+				break;
 			case Relay.REVPOWER:
 				revPowerLogic();  /* one shot to lockout */
+				break;
 			case Relay.NEGCURRENT:
 				negSeq46Logic();  /* one shot to lockout */
+				break;
 			case Relay.NEGVOLTAGE:
 				negSeq47Logic();  /* one shot to lockout */
+				break;
 			case Relay.GENERIC:
 				genericLogic();   /* one shot to lockout */
+				break;
 			}
 		}
 	}
@@ -379,8 +396,10 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					Result = Result + String.format("%-g, " , RecloseIntervals[i]);
 				Result = Result + ")";
 			}
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 		return Result;
 	}
@@ -449,37 +468,50 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'c':
 			ControlType = Relay.CURRENT;
+			break;
 		case'v':
 			ControlType = Relay.VOLTAGE;
+			break;
 		case'r':
 			ControlType = Relay.REVPOWER;
+			break;
 		case'4':
 			switch (S.charAt(1)) {
 			case '6':
 				ControlType = Relay.NEGCURRENT;
+				break;
 			case '7':
 				ControlType = Relay.NEGVOLTAGE;
+				break;
 			}
 		case '8':
 			ControlType = Relay.GENERIC;
+			break;
 		default:
 			ControlType = Relay.CURRENT;
+			break;
 		}
 
 		/* Set Definite Time Defaults */
 		switch (S.toLowerCase().charAt(0)) {
 		case 'c':
 			Delay_Time = 0.0;
+			break;
 		case 'v':
 			Delay_Time = 0.0;
+			break;
 		case 'r':
 			Delay_Time = 0.1;
+			break;
 		case '4':
 			Delay_Time = 0.1;
+			break;
 		case '8':
 			Delay_Time = 0.1;
+			break;
 		default:
 			Delay_Time = 0.0;
+			break;
 		}
 
 		PropertyValue[23] = String.format("%-.g", Delay_Time);

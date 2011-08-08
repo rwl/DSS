@@ -49,8 +49,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 				switch (PresentState) {
 				case OPEN:
 					getControlledElement().setConductorClosed(0, false);
+					break;
 				case CLOSE:
 					getControlledElement().setConductorClosed(0, true);
+					break;
 				}
 			}
 			// Attach controller bus to the switch bus - no space allocated for monitored variables
@@ -116,8 +118,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 			switch (Action.toLowerCase().charAt(0)) {
 			case 'o':
 				PresentState = ControlAction.OPEN;
+				break;
 			case 'c':
 				PresentState = ControlAction.CLOSE;
+				break;
 			}
 
 			if (getControlledElement() != null) {
@@ -125,8 +129,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 				switch (PresentState) {
 				case OPEN:
 					getControlledElement().setConductorClosed(0, false);
+					break;
 				case CLOSE:
 					getControlledElement().setConductorClosed(0, true);
+					break;
 				}
 			}
 		}

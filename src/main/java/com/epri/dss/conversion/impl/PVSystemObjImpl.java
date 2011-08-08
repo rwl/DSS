@@ -291,12 +291,16 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		switch (Opt) {
 		case 0:
 			RandomMult = 1.0;
+			break;
 		case DSSGlobals.GAUSSIAN:
 			RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
+			break;
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();  // number between 0 and 1.0
+			break;
 		case DSSGlobals.LOGNORMAL:
 			RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
+			break;
 		}
 	}
 
@@ -363,43 +367,57 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			switch (sol.getMode()) {
 			case Dynamics.SNAPSHOT:
 				/* Just solve for the present kW, kvar */  // Don"t check for state change
+				break;
 			case Dynamics.DAILYMODE:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.YEARLYMODE:
 				calcYearlyMult(sol.getDblHour());
 				calcYearlyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.MONTECARLO1:
 				// do nothing yet
+				break;
 			case Dynamics.MONTEFAULT:
 				// do nothing yet
+				break;
 			case Dynamics.FAULTSTUDY:
 				// do nothing yet
+				break;
 			case Dynamics.DYNAMICMODE:
 				// do nothing yet
+				break;
 
 				// Assume daily curve, if any, for the following
 			case Dynamics.MONTECARLO2:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.MONTECARLO3:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.LOADDURATION1:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.LOADDURATION2:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.PEAKDAY:
 				calcDailyMult(sol.getDblHour());
 				calcDailyTemperature(sol.getDblHour());
+				break;
 
 			case Dynamics.DUTYCYCLE:
 				calcDutyMult(sol.getDblHour());
 				calcDutyTemperature(sol.getDblHour());
+				break;
 			case Dynamics.AUTOADDFLAG:
 				// do nothing
+				break;
 			}
 
 			computekWkvar();
@@ -410,6 +428,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			case 3:
 				//****  Fix this when user model gets connected in
 				//YEQ = new Complex(0.0, -StoreVARs.Xd).invert();  // Gets negated in CalcYPrim
+				break;
 
 			default:
 				YEQ = new Complex(Pnominalperphase, -Qnominalperphase).divide( MathUtil.sqr(VBase) );  // Vbase must be L-N for 3-phase
@@ -425,6 +444,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				} else {
 					YEQ105 = YEQ;
 				}
+				break;
 			}
 			/* When we leave here, all the YEQ"s are in L-N values */
 		}
@@ -511,11 +531,13 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 					Ymatrix.setElement(i, i, Y);
 					Ymatrix.addElement(nConds, nConds, Y);
 					Ymatrix.setElemSym(i, nConds, Yij);
+					break;
 				case 1:  /* Delta connection */
 					Ymatrix.setElement(i, i, Y);
 					Ymatrix.addElement(i, i, Y);  // put it in again
 					for (j = 0; j < i; j++)  // TODO Check zero based indexing
 						Ymatrix.setElemSym(i, j, Yij);
+					break;
 				}
 			}
 		} else {
@@ -536,6 +558,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 					Ymatrix.addElement(nConds, nConds, Y);
 					Ymatrix.setElemSym(i, nConds, Yij);
 				}
+				break;
 			case 1:  // Delta  or L-L
 				Y   = Y.divide(3.0); // Convert to delta impedance
 				Yij = Y.negate();
@@ -547,6 +570,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 					Ymatrix.addElement(j, j, Y);
 					Ymatrix.addElemSym(i, j, Yij);
 				}
+				break;
 			}
 		}
 	}
@@ -652,11 +676,13 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		case 0:  // Wye
 			TermArray[i] = TermArray[i].add(Curr);
 			TermArray[nConds] = TermArray[nConds].add(Curr.negate());  // neutral
+			break;
 		case 1:  // delta
 			TermArray[i] = TermArray[i].add(Curr);
 			int j = i + 1;
 			if (j >= nConds) j = 0;  // wrap
 			TermArray[j] = TermArray[j].add(Curr.negate());
+			break;
 		}
 	}
 
@@ -721,6 +747,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				} else {
 					Curr = new Complex(Pnominalperphase, Qnominalperphase).divide(V).conjugate();  // Between 95% -105%, constant PQ
 				}
+				break;
 
 			case 1:  /* Delta */
 				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
@@ -731,6 +758,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				} else {
 					Curr = new Complex(Pnominalperphase, Qnominalperphase).divide(V).conjugate();  // Between 95% -105%, constant PQ
 				}
+				break;
 			}
 
 			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
@@ -840,6 +868,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		case 0:
 			for (i = 0; i < nPhases; i++)
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+			break;
 
 		case 1:
 			for (i = 0; i < nPhases; i++) {
@@ -847,6 +876,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				if (j >= nConds) j = 0;
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
 			}
+			break;
 		}
 
 		PVSystemSolutionCount = sol.getSolutionCount();
@@ -875,12 +905,16 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			switch (VoltageModel) {
 			case 1:
 				doConstantPQPVsystemObj();
+				break;
 			case 2:
 				doConstantZPVsystemObj();
+				break;
 			case 3:
 				doUserModel();
+				break;
 			default:
 				doConstantPQPVsystemObj();  // for now, until we implement the other models.
+				break;
 			}
 		}
 
@@ -1049,8 +1083,10 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			switch (idx) {
 			case PVSystem.propUSERDATA:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(idx) + ")");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(idx));
+				break;
 			}
 		}
 		F.println();
@@ -1077,8 +1113,10 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		switch (Connection) {
 		case 0:  /* wye - neutral is explicit */
 			Va = sol.getNodeV()[ NodeRef[0] ].subtract(sol.getNodeV()[ NodeRef[nConds] ]);
+			break;
 		case 1:  /*delta -- assume neutral is at zero */
 			Va = sol.getNodeV()[ NodeRef[0] ];
+			break;
 		}
 
 		E = Va.subtract( Iterminal[0].multiply(new Complex(RThev, XThev)) );
@@ -1128,6 +1166,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				if (k < N)
 					return UserModel.getVariable(k);
 			}
+			break;
 		}
 		return -9999.0;
 	}
@@ -1141,12 +1180,16 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		switch (i) {
 		case 0:
 			setIrradiance(Value);
+			break;
 		case 1:
 			// Setting this has no effect Read only
+			break;
 		case 2:
 			// Setting this has no effect Read only
+			break;
 		case 3:
 			// Setting this has no effect Read only
+			break;
 		default:
 			if (UserModel.exists()) {
 				N = UserModel.numVars();
@@ -1156,6 +1199,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 					return;
 				}
 			}
+			break;
 		}
 	}
 
@@ -1206,6 +1250,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 					return String.valueOf(pName);
 				}
 			}
+			break;
 		}
 		return Result;
 	}
@@ -1262,10 +1307,13 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		switch (nPhases) {
 		case 2:
 			VBase = kVPVSystemBase * DSSGlobals.InvSQRT3x1000;
+			break;
 		case 3:
 			VBase = kVPVSystemBase * DSSGlobals.InvSQRT3x1000;
+			break;
 		default:
-			VBase = kVPVSystemBase * 1000.0 ;
+			VBase = kVPVSystemBase * 1000.0;
+			break;
 		}
 	}
 

@@ -139,50 +139,70 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"VSource."+agl.getName()+"\"", 320);
+				break;
 			case 0:
 				GICLineSetBus1(Param);   // special handling of Bus 1
+				break;
 			case 1:
 				agl.setBus(2, Param);
-
+				break;
 			case 2:
 				agl.setVolts(parser.makeDouble());  // basekv
+				break;
 			case 3:
 				agl.setAngle(parser.makeDouble());  // Ang
+				break;
 			case 4:
 				agl.setSrcFrequency(parser.makeDouble());  // freq
+				break;
 			case 5:
 				agl.setNPhases(parser.makeInteger());  // num phases
 				agl.setNConds(agl.getNPhases());  // Force Reallocation of terminal info
+				break;
 			case 6:
 				agl.setR(parser.makeDouble());
+				break;
 			case 7:
 				agl.setX(parser.makeDouble());
+				break;
 			case 8:
 				agl.setC(parser.makeDouble());
+				break;
 			case 9:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					agl.setScanType(1);
+					break;
 				case 'Z':
 					agl.setScanType(0);
+					break;
 				case 'N':
 					agl.setScanType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ agl.getName() + "\": "+Param, 321);
+					break;
 				}
+				break;
 			case 10:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					agl.setSequenceType(1);
+					break;
 				case 'Z':
 					agl.setSequenceType(0);
+					break;
 				case 'N':
 					agl.setSequenceType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ agl.getName() + "\": "+Param, 321);
+					break;
 				}
+				break;
 			default:
 				classEdit(getActiveGICLineObj(), ParamPointer - NumPropsThisClass);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -164,85 +164,122 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"VSource."+avs.getName()+"\"", 320);
+				break;
 			case 0:
 				vSourceSetBus1(Param);   // special handling of Bus 1
+				break;
 			case 1:
 				avs.setkVBase(parser.makeDouble());  // basekv
+				break;
 			case 2:
 				avs.setPerUnit(parser.makeDouble());  // pu
+				break;
 			case 3:
 				avs.setAngle(parser.makeDouble());  // Ang
+				break;
 			case 4:
 				avs.setSrcFrequency(parser.makeDouble()); // freq
+				break;
 			case 5:
 				avs.setNPhases(parser.makeInteger());  // num phases
-						avs.setNConds(avs.getNPhases());  // Force reallocation of terminal info
+				avs.setNConds(avs.getNPhases());  // Force reallocation of terminal info
+				break;
 			case 6:
 				avs.setMVAsc3(parser.makeDouble());  // MVAsc3
+				break;
 			case 7:
 				avs.setMVAsc1(parser.makeDouble());  // MVAsc1
+				break;
 			case 8:
 				avs.setX1R1(parser.makeDouble());  // X1/R1
+				break;
 			case 9:
 				avs.setX0R0(parser.makeDouble());  // X0/R0
+				break;
 			case 10:
 				avs.setIsc3(parser.makeDouble());
+				break;
 			case 11:
 				avs.setIsc1(parser.makeDouble());
+				break;
 			case 12:
 				avs.setR1(parser.makeDouble());
+				break;
 			case 13:
 				avs.setX1(parser.makeDouble());
+				break;
 			case 14:
 				avs.setR0(parser.makeDouble());
+				break;
 			case 15:
 				avs.setX0(parser.makeDouble());
+				break;
 			case 16:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					avs.setScanType(1);
+					break;
 				case 'Z':
 					avs.setScanType(0);
+					break;
 				case 'N':
 					avs.setScanType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ avs.getName() + "\": "+Param, 321);
+					break;
 				}
+				break;
 			case 17:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					avs.setSequenceType(1);
+					break;
 				case 'Z':
 					avs.setSequenceType(0);
+					break;
 				case 'N':
 					avs.setSequenceType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ getName() + "\": "+Param, 321);
+					break;
 				}
+				break;
 			case 18:
 				avs.setBus(2, Param);  // TODO Check zero based indexing
+				break;
 			default:
 				classEdit(ActiveVsourceObj, ParamPointer - VSource.NumPropsThisClass);
+				break;
 			}
 
 			// Set the Z spec type switch depending on which was specified.
 			switch (ParamPointer) {
 			case 6:
 				avs.setZSpecType(1);
+				break;
 			case 7:
 				avs.setZSpecType(1);
+				break;
 			case 10:
 				avs.setZSpecType(2);
+				break;
 			case 11:
 				avs.setZSpecType(2);
+				break;
 			case 12:
 				avs.setZSpecType(3);
+				break;
 			case 13:
 				avs.setZSpecType(3);
+				break;
 			case 14:
 				avs.setZSpecType(3);
+				break;
 			case 15:
 				avs.setZSpecType(3);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -105,31 +105,44 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"Equivalent."+ae.getName()+"\"", 800);
+				break;
 			case 0:
 				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));  // This will allocate a bunch of stuff
+				break;
 			case 1:
 				interpretAllBuses(Param);
+				break;
 			case 2:
 				ae.setkVBase(parser.makeDouble()); // basekv
+				break;
 			case 3:
 				ae.setPerUnit(parser.makeDouble()); // pu
+				break;
 			case 4:
 				ae.setAngle(parser.makeDouble()); // Ang
+				break;
 			case 5:
 				ae.setEquivFrequency(parser.makeDouble()); // freq
+				break;
 			case 6:
 				ae.setNPhases(parser.makeInteger()); // num phases
 				ae.setNConds(ae.getNPhases());  // Force Reallocation of terminal info
+				break;
 			case 7:
 				ae.parseDblMatrix(ae.getR1());
+				break;
 			case 8:
 				ae.parseDblMatrix(ae.getX1());
+				break;
 			case 9:
 				ae.parseDblMatrix(ae.getR0());
+				break;
 			case 10:
 				ae.parseDblMatrix(ae.getX0());
+				break;
 			default:
 				classEdit(getActiveEquivalentObj(), ParamPointer - Equivalent.NumPropsThisClass);
+				break;
 			}
 
 			if ((ParamPointer == 0) || ((ParamPointer >= 7) && (ParamPointer <= 10))) {

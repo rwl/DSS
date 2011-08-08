@@ -90,19 +90,26 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ asc.getName() + "\"", 382);
+				break;
 			case 0:
 				asc.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				asc.setElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				asc.interpretSwitchAction(Param);
+				break;
 			case 3:
 				asc.setLocked( Utilities.interpretYesNo(Param) );
+				break;
 			case 4:
 				asc.setTimeDelay(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveSwtControlObj, ParamPointer - SwtControl.NumPropsThisClass);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -364,12 +364,16 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (Opt) {
 		case 0:
 			RandomMult = 1.0;
+			break;
 		case DSSGlobals.GAUSSIAN:
 			RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
+			break;
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();  // number between 0 and 1.0
+			break;
 		case DSSGlobals.LOGNORMAL:
 			RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
+			break;
 		}
 	}
 
@@ -420,6 +424,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			} else {
 				State = Storage.STORE_IDLING;   // all charged up
 			}
+			break;
 
 		case Storage.STORE_DISCHARGING:
 			if (kWhStored > kWhReserve) {
@@ -438,6 +443,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			} else {
 				State = Storage.STORE_IDLING;  // not enough storage to discharge
 			}
+			break;
 		}
 	}
 
@@ -454,40 +460,58 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (DispatchMode) {
 			case Storage.STORE_EXTERNALMODE:
 				// Do nothing
+				break;
 			case Storage.STORE_LOADMODE:
 				checkStateTriggerLevel(ckt.getGeneratorDispatchReference());
+				break;
 			case Storage.STORE_PRICEMODE:
 				checkStateTriggerLevel(ckt.getPriceSignal());
+				break;
 
 			default:  // dispatch off element's loadshapes, If any
 
 				switch (sol.getMode()) {
 				case Dynamics.SNAPSHOT:
 					/* Just solve for the present kW, kvar */  // Don't check for state change
+					break;
 				case Dynamics.DAILYMODE:
 					calcDailyMult(sol.getDblHour()); // Daily dispatch curve
+					break;
 				case Dynamics.YEARLYMODE:
 					calcYearlyMult(sol.getDblHour());
+					break;
 				case Dynamics.MONTECARLO1:
+					break;
 				case Dynamics.MONTEFAULT:
+					break;
 				case Dynamics.FAULTSTUDY:
+					break;
 				case Dynamics.DYNAMICMODE:
 					// do nothing
-					// Assume daily curve, if any, for the following
+					break;
+				// Assume daily curve, if any, for the following
 				case Dynamics.MONTECARLO2:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case Dynamics.MONTECARLO3:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case Dynamics.LOADDURATION1:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case Dynamics.LOADDURATION2:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case Dynamics.PEAKDAY:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case Dynamics.DUTYCYCLE:
 					CalcDutyMult(sol.getDblHour());
+					break;
 				case Dynamics.AUTOADDFLAG:
+					break;
 				}
+				break;
 
 			}
 
@@ -512,6 +536,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				/*  Fix this when user model gets connected in */
 				case 3:
 					// Yeq = new Complex(0.0, -StoreVARs.Xd)).invert();  // Gets negated in calcYPrim
+					break;
 				default:
 					Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide(Math.pow(VBase, 2));   // Vbase must be L-N for 3-phase
 					if (Vminpu != 0.0) {
@@ -525,6 +550,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					} else {
 						Yeq105 = Yeq;
 					}
+					break;
 				}
 			}
 			/* When we leave here, all the Yeq's are in L-N values */
@@ -603,10 +629,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (State) {
 			case Storage.STORE_IDLING:
 				Y = YeqIdling;
+				break;
 			case Storage.STORE_DISCHARGING:
 				Y = Yeq.negate().add(YeqIdling);
+				break;
 			default:
 				Y = Yeq;  // L-N value computed in initialization routines
+				break;
 			}
 
 			if (Connection == 1)
@@ -619,11 +648,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					Ymatrix.setElement(i, i, Y);
 					Ymatrix.addElement(nConds, nConds, Y);
 					Ymatrix.setElemSym(i, nConds, Yij);
+					break;
 				case 1:  /* Delta connection */
 					Ymatrix.setElement(i, i, Y);
 					Ymatrix.addElement(i, i, Y);  // put it in again
 					for (j = 0; j < i - 1; j++)  // TODO Check zero based indexing
 						Ymatrix.setElemSym(i, j, Yij);
+					break;
 				}
 			}
 		} else {
@@ -634,8 +665,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (State) {
 			case Storage.STORE_IDLING:
 				Y = YeqIdling;
+				break;
 			default:
 				Y = Yeq.negate().add(YeqIdling);   // negate for generation    Yeq is L-N quantity
+				break;
 			}
 
 			// ****** Need to modify the base admittance for real harmonics calcs
@@ -650,6 +683,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					Ymatrix.addElement(nConds, nConds, Y);
 					Ymatrix.setElemSym(i, nConds, Yij);
 				}
+				break;
 
 			case 1:
 				// Delta  or L-L
@@ -663,6 +697,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					Ymatrix.addElement(j, j, Y);
 					Ymatrix.addElemSym(i, j, Yij);
 				}
+				break;
 			}
 		}
 	}
@@ -718,10 +753,12 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				if (ChargeTrigger != 0.0)
 					if ((ChargeTrigger < Level) || (kWhStored >= kWhRating))
 						setState(Storage.STORE_IDLING);
+				break;
 			case Storage.STORE_DISCHARGING:
 				if (DischargeTrigger != 0.0)
 					if ((DischargeTrigger > Level) || (kWhStored <= kWhReserve))
 						setState(Storage.STORE_IDLING);
+				break;
 			}
 
 			// Now check to see if we want to turn on the opposite state
@@ -740,6 +777,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTime) < sol.getDynaVars().h / 3600.0)
 							setState(Storage.STORE_CHARGING);
 					}
+				break;
 			}
 		}
 
@@ -787,12 +825,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		case 0:  // Wye
 			TermArray[i] = TermArray[i].add(Curr);
 			TermArray[nConds] = TermArray[nConds].add(Curr.negate());  // Neutral
+			break;
 		case 1:  // DELTA
 			TermArray[i] = TermArray[i].add(Curr);
 			int j = i + 1;
 			if (j >= nConds)
 				j = 0;
 			TermArray[j] = TermArray[j].add(Curr.negate());
+			break;
 		}
 	}
 
@@ -860,6 +900,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				} else {
 					Curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // Between 95% -105%, constant PQ
 				}
+				break;
 
 			case 1:  /* Delta */
 				Vmag = Vmag / DSSGlobals.SQRT3;  // L-N magnitude
@@ -870,6 +911,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				} else {
 					Curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // Between 95% -105%, constant PQ
 				}
+				break;
 			}
 
 			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // Put into Terminal array taking into account connection
@@ -980,6 +1022,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		case 0:
 			for (i = 0; i < nPhases; i++)
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+			break;
 
 		case 1:
 			for (i = 0; i < nPhases; i++) {
@@ -988,6 +1031,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					j = 0;
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
 			}
+			break;
 		}
 
 		StorageSolutionCount = sol.getSolutionCount();
@@ -1020,12 +1064,16 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (VoltageModel) {
 			case 1:
 				doConstantPQStorageObj();
+				break;
 			case 2:
 				doConstantZStorageObj();
+				break;
 			case 3:
 				doUserModel();
+				break;
 			default:
 				doConstantPQStorageObj();  // for now, until we implement the other models.
+				break;
 			}
 		}
 
@@ -1181,6 +1229,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				State = Storage.STORE_IDLING;  // It's empty Turn it off
 				StateChanged = true;
 			}
+			break;
 
 		case Storage.STORE_CHARGING:
 			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() * ChargeEff;
@@ -1189,6 +1238,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				State = Storage.STORE_IDLING;  // It's full turn it off
 				StateChanged = true;
 			}
+			break;
 		}
 	}
 
@@ -1231,8 +1281,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (idx) {
 			case Storage.propUSERDATA:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[idx]);
+				break;
 			}
 		}
 		F.println();
@@ -1260,8 +1312,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			switch (Connection) {
 			case 0:  /* wye - neutral is explicit */
 				Va = sol.getNodeV()[NodeRef[0]].subtract( sol.getNodeV()[NodeRef[nConds]] );
+				break;
 			case 1:  /* delta -- assume neutral is at zero */
 				Va = sol.getNodeV()[NodeRef[0]];
+				break;
 			}
 
 			E = Va.subtract( Iterminal[0].multiply(new Complex(RThev, XThev)) );
@@ -1329,6 +1383,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				if (k <= N)
 					return UserModel.getVariable(k);
 			}
+			break;
 		}
 		return -9999.99;
 	}
@@ -1343,16 +1398,22 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (i) {
 		case 0:
 			kWhStored = Value;
+			break;
 		case 1:
 			State = (int) Value;
+			break;
 		case 2:
 			pctKWout = Value;
+			break;
 		case 3:
 			pctKWin = Value;
+			break;
 		case 4:
 			/* Do Nothing; read only */
+			break;
 		case 5:
 			/* Do Nothing; read only */
+			break;
 		default:
 			if (UserModel.exists()) {
 				N = UserModel.numVars();
@@ -1362,6 +1423,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					return;
 				}
 			}
+			break;
 		}
 	}
 
@@ -1416,6 +1478,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					return String.valueOf(pName);
 				}
 			}
+			break;
 		}
 		return null;
 	}
@@ -1482,10 +1545,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		switch (nPhases) {
 		case 2:
 			VBase = kVStorageBase * DSSGlobals.InvSQRT3x1000;
+			break;
 		case 3:
 			VBase = kVStorageBase * DSSGlobals.InvSQRT3x1000;
+			break;
 		default:
-			VBase = kVStorageBase * 1000.0 ;
+			VBase = kVStorageBase * 1000.0;
+			break;
 		}
 	}
 

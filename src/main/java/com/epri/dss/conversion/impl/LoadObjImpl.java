@@ -224,20 +224,24 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (Opt) {
 		case 0:
 			RandomMult = 1.0;
+			break;
 		case DSSGlobals.GAUSSIAN:
 			if (YearlyShapeObj != null) {
 				RandomMult = MathUtil.gauss(YearlyShapeObj.getMean(), YearlyShapeObj.getStdDev());
 			} else {
 				RandomMult = MathUtil.gauss(puMean, puStdDev);
 			}
+			break;
 		case DSSGlobals.UNIFORM:
 			RandomMult = Math.random();  // number between 0 and 1.0
+			break;
 		case DSSGlobals.LOGNORMAL:
 			if (YearlyShapeObj != null) {
 				RandomMult = MathUtil.quasiLognormal(YearlyShapeObj.getMean());
 			} else {
 				RandomMult = MathUtil.quasiLognormal(puMean);
 			}
+			break;
 		}
 	}
 
@@ -320,27 +324,32 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				} else {
 					Factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				}
+				break;
 			case Dynamics.HARMONICMODE:
 				if (ExemptFromLDCurve) {
 					Factor = growthFactor(sol.getYear());
 				} else {
 					Factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				}
+				break;
 			case Dynamics.DAILYMODE:
 				Factor = growthFactor(sol.getYear());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
 				calcDailyMult(sol.getDblHour());
+				break;
 			case Dynamics.YEARLYMODE:
 				Factor = ckt.getLoadMultiplier() * growthFactor(sol.getYear());
 				calcYearlyMult(sol.getDblHour());
 				if (LoadModel == 4)
 					calcCVRMult(sol.getDblHour());
+				break;
 			case Dynamics.DUTYCYCLE:
 				Factor = growthFactor(sol.getYear());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
 				calcDutyMult(sol.getDblHour());
+				break;
 			case Dynamics.GENERALTIME:
 				Factor = growthFactor(sol.getYear());
 				if (!ExemptFromLDCurve)
@@ -349,13 +358,18 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				switch (ckt.getActiveLoadShapeClass()) {
 				case DSSGlobals.USEDAILY:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case DSSGlobals.USEYEARLY:
 					calcYearlyMult(sol.getDblHour());
+					break;
 				case DSSGlobals.USEDUTY:
 					calcDutyMult(sol.getDblHour());
+					break;
 				default:
 					ShapeFactor = Complex.ONE;  // default to 1 + j1 if not known
+					break;
 				}
+				break;
 			case Dynamics.DYNAMICMODE:
 				Factor = growthFactor(sol.getYear());
 				if (!ExemptFromLDCurve)
@@ -364,47 +378,58 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				switch (ckt.getActiveLoadShapeClass()) {
 				case DSSGlobals.USEDAILY:
 					calcDailyMult(sol.getDblHour());
+					break;
 				case DSSGlobals.USEYEARLY:
 					calcYearlyMult(sol.getDblHour());
+					break;
 				case DSSGlobals.USEDUTY:
 					calcDutyMult(sol.getDblHour());
+					break;
 				default:
 					ShapeFactor = Complex.ONE;  // default to 1 + j1 if not known
+					break;
 				}
+				break;
 			case Dynamics.MONTECARLO1:
 				randomize(sol.getRandomType());
 				Factor = RandomMult * growthFactor(sol.getYear());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
-
+				break;
 			case Dynamics.MONTECARLO2:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
+				break;
 			case Dynamics.MONTECARLO3:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
+				break;
 			case Dynamics.LOADDURATION1:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
+				break;
 			case Dynamics.LOADDURATION2:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
 				if (!ExemptFromLDCurve)
 					Factor = Factor * ckt.getLoadMultiplier();
-
+				break;
 			case Dynamics.PEAKDAY:
 				Factor = growthFactor(sol.getYear());
 				calcDailyMult(sol.getDblHour());
+				break;
 			case Dynamics.AUTOADDFLAG:
 				Factor = growthFactor(sol.getYear());  // Loadmult = 1.0 by default
+				break;
 			default:
 				Factor = growthFactor(sol.getYear());  // defaults to Base kW * growth
+				break;
 			}
 		}
 
@@ -444,6 +469,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			if (PFNominal < 0.0)
 				kvarBase = -kvarBase;
 			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
+			break;
 		case 1:  /* kW, kvar -- need to set PFNominal */
 			kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
 			if (kVABase > 0.0) {
@@ -454,11 +480,13 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			} else {
 				// leave it as it is
 			}
+			break;
 		case 2:  /* kVA, PF */
 			kWBase   = kVABase * Math.abs(PFNominal);
 			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kvarBase = -kvarBase;
+			break;
 		case 3:
 			if (PFChanged) {  // Recompute kvarBase
 				kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
@@ -466,6 +494,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 					kvarBase = -kvarBase;
 				kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
 			}
+			break;
 		case 4:
 			if (PFChanged) {  // Recompute kvarBase
 				kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
@@ -473,6 +502,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 					kvarBase = -kvarBase;
 				kVABase = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
 			}
+			break;
 		}
 
 		setNominalLoad();
@@ -543,6 +573,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			 */
 			if (Rneut < 0.0)
 				Ymatrix.setElement(nConds, nConds, Ymatrix.getElement(nConds, nConds).multiply(1.000001));
+			break;
 		case 1:  // Delta  or L-L
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;
@@ -552,6 +583,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				Ymatrix.addElement(j, j, Y);
 				Ymatrix.addElemSym(i, j, Yij);   // get both off-diagonal elements
 			}
+			break;
 		}
 	}
 
@@ -608,13 +640,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		case 0:  // Wye
 			TermArray[i] = TermArray[i].add(Curr.negate());
 			TermArray[nConds] = TermArray[nConds].add(Curr);  // Neutral
-
+			break;
 		case 1:  // Delta
 			TermArray[i] = TermArray[i].add(Curr.negate());
 			int j = i + 1;
 			if (j > nConds)
 				j = 0;  // rotate the phases
 			TermArray[j] = TermArray[j].add(Curr);
+			break;
 		}
 	}
 
@@ -625,15 +658,20 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (Connection) {
 		case 1:
 			al.setVBase(kVLoadBase * 1000.0);
+			break;
 		default:  /* wye*/
 			switch (nPhases) {
 			case 2:
 				al.setVBase(kVLoadBase * DSSGlobals.InvSQRT3x1000);
+				break;
 			case 3:
 				al.setVBase(kVLoadBase * DSSGlobals.InvSQRT3x1000);
+				break;
 			default:
 				al.setVBase(kVLoadBase * 1000.0);  /* 1-phase or unknown */
+				break;
 			}
+			break;
 		}
 	}
 
@@ -932,6 +970,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		case 0:
 			for (int i = 0; i < nPhases; i++)
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+			break;
 		case 1:
 			for (int i = 0; i < nPhases; i++) {
 				j = i + 1;  // TODO Check zero based indexing
@@ -939,6 +978,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 					j = 0;
 				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
 			}
+			break;
 		}
 
 		LoadSolutionCount = sol.getSolutionCount();
@@ -962,22 +1002,31 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			switch (LoadModel) {
 			case 1:
 				doConstantPQLoad();  // normal load-flow type load
+				break;
 			case 2:
 				doConstantZLoad();
+				break;
 			case 3:
 				doMotorTypeLoad();  // Constant P, Quadratic Q;
+				break;
 			case 4:
 				doCVRModel();       // mixed motor/resistive load   with CVR factors
+				break;
 			case 5:
 				doConstantILoad();
+				break;
 			case 6:
 				doFixedQ();         // Fixed Q
+				break;
 			case 7:
 				doFixedQZ();        // Fixed, constant Z Q
+				break;
 			case 8:
 				doZIPVModel();
+				break;
 			default:
 				doConstantZLoad();     // FOR now, until we implement the other models.
+				break;
 			}
 		}
 	}
@@ -1199,21 +1248,28 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			switch (i) {
 			case 3:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kWBase);
+				break;
 			case 4:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PFNominal);
+				break;
 			case 11:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kvarBase);
+				break;
 			case 21:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVAAllocationFactor);
+				break;
 			case 22:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + kVABase);
+				break;
 			case 32:
 				F.print("~ " + getParentClass().getPropertyName()[i] + "=");
 				for (int j = 0; j < nZIPV; j++)
 					F.print(ZIPV[j] + " ");
 				F.println("\"");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 	}
@@ -1239,8 +1295,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (LoadSpecType) {
 		case 3:
 			kVAAllocationFactor = Value;
+			break;
 		case 4:
 			CFactor             = Value;
+			break;
 		}
 		computeAllocatedLoad();  // update kWbase
 		HasBeenAllocated = true;
@@ -1286,12 +1344,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				if (PFNominal < 0.0)
 					kvarBase = -kvarBase;
 			}
+			break;
 		case 4:
 			AvgkW = kWh / (kWhDays * 24);
 			kWBase = AvgkW * CFactor;
 			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 			if (PFNominal < 0.0)
 				kvarBase = -kvarBase;
+			break;
 		}
 	}
 

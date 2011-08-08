@@ -192,15 +192,20 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		switch (apv.getConnection()) {
 		case 0:
 			apv.setNConds(apv.getNPhases() + 1);
+			break;
 		case 1:
 			switch (apv.getNPhases()) {
 			case 1:
 				apv.setNConds(apv.getNPhases() + 1);  // L-L
+				break;
 			case 2:
 				apv.setNConds(apv.getNPhases() + 1);  // Open-delta
+				break;
 			default:
 				apv.setNConds(apv.getNPhases());
+				break;
 			}
+			break;
 		}
 	}
 
@@ -223,17 +228,23 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'y':
 			apv.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			apv.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			apv.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (S.toLowerCase().charAt(1)) {
 			case 'n':
 				apv.setConnection(0);
+				break;
 			case 'l':
 				apv.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		setNcondsForConnection();
@@ -243,10 +254,13 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		switch (apv.getNPhases()) {
 		case 2:
 			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			break;
 		case 3:
 			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			break;
 		default:
 			apv.setVBase(apv.getkVPVSystemBase() * 1000.0);  // Just use what is supplied
+			break;
 		}
 
 		apv.setVBase95(apv.getVminpu() * apv.getVBase());
@@ -293,96 +307,135 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				switch (iCase) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ apv.getName() + "\"", 561);
+					break;
 				case 0:
 					apv.setNPhases(parser.makeInteger());  // num phases
+					break;
 				case 1:
 					apv.setBus(1, Param);  // TODO Check zero based indexing
+					break;
 				case propKV:
 					apv.setPresentkV(parser.makeDouble());
+					break;
 				case propIrradiance:
 					apv.setIrradiance(parser.makeDouble());
+					break;
 				case propPF:
 					apv.setPFSpecified(true);
 					apv.setKvarSpecified(false);
 					apv.setPFnominal(parser.makeDouble());
+					break;
 				case propMODEL:
 					apv.setVoltageModel(parser.makeInteger());
+					break;
 				case propYEARLY:
 					apv.setYearlyShape(Param);
+					break;
 				case propDAILY:
 					apv.setDailyShape(Param);
+					break;
 				case propDUTY:
 					apv.setDutyShape(Param);
+					break;
 				case propTYEARLY:
 					apv.setYearlyTShape(Param);
+					break;
 				case propTDAILY:
 					apv.setDailyTShape(Param);
+					break;
 				case propTDUTY:
 					apv.setDutyTShape(Param);
+					break;
 				case propCONNECTION:
 					interpretConnection(Param);
+					break;
 				case propKVAR:
 					apv.setKvarSpecified(true);
 					apv.setPFSpecified(false);
 					apv.setPresentkvar(parser.makeDouble());
+					break;
 				case propPCTR:
 					apv.setPctR(parser.makeDouble());
+					break;
 				case propPCTX:
 					apv.setPctX(parser.makeDouble());
+					break;
 				case propCLASS:
 					apv.setFClass(parser.makeInteger());
+					break;
 				case propInvEffCurve:
 					apv.setInverterCurve(Param);
+					break;
 				case propTemp:
 					apv.setTemperature(parser.makeDouble());
+					break;
 				case propPmpp:
 					apv.setPmpp(parser.makeDouble());
+					break;
 				case propP_T_Curve:
 					apv.setPower_TempCurve(Param);
+					break;
 				case propCutin:
 					apv.setPctCutIn(parser.makeDouble());
+					break;
 				case propCutout:
 					apv.setPctCutOut(parser.makeDouble());
+					break;
 				case propVMINPU:
 					apv.setVminpu(parser.makeDouble());
+					break;
 				case propVMAXPU:
 					apv.setVmaxpu(parser.makeDouble());
+					break;
 				case propKVA:
 					apv.setkVArating(parser.makeDouble());
+					break;
 				case propUSERMODEL:
 					apv.getUserModel().setName(parser.makeString());  // Connect to user written models
+					break;
 				case propUSERDATA:
 					apv.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					break;
 				case propDEBUGTRACE:
 					apv.setDebugTrace(Utilities.interpretYesNo(Param));
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActivePVsystemObj(), ParamPointer - NumPropsThisClass);
+					break;
 				}
 
 				switch (iCase) {
 				case 0:
 					setNcondsForConnection();  // Force Reallocation of terminal info
-
+					break;
 				/* Set loadshape objects;  returns nil If not valid */
 				case propYEARLY:
 					apv.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getYearlyShape()) );
+					break;
 				case propDAILY:
 					apv.setDailyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getDailyShape()) );
+					break;
 				case propDUTY:
 					apv.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getDutyShape()) );
+					break;
 
 				case propTYEARLY:
 					apv.setYearlyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getYearlyTShape()) );
+					break;
 				case propTDAILY:
 					apv.setDailyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getDailyTShape()) );
+					break;
 				case propTDUTY:
 					apv.setDutyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getDutyTShape()) );
+					break;
 
 				case propInvEffCurve:
 					apv.setInverterCurveObj( (XYCurveObj) Globals.getXYCurveClass().find(apv.getInverterCurve()) );
+					break;
 				case propP_T_Curve:
 					apv.setPower_TempCurveObj( (XYCurveObj) Globals.getXYCurveClass().find(apv.getPower_TempCurve()) );
+					break;
 
 				case propDEBUGTRACE:
 					if (apv.isDebugTrace()) {  // Init trace file
@@ -407,6 +460,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 							e.printStackTrace();
 						}
 					}
+					break;
 				}
 			}
 			ParamName = parser.getNextParam();

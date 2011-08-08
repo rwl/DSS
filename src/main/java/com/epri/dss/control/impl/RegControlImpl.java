@@ -157,46 +157,67 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ arc.getName() + "\"", 120);
+				break;
 			case 0:
 				arc.setElementName("Transformer." + Param.toLowerCase());
+				break;
 			case 1:
 				arc.setElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				arc.setVreg(parser.makeDouble());
+				break;
 			case 3:
 				arc.setBandwidth(parser.makeDouble());
+				break;
 			case 4:
 				arc.setPTRatio(parser.makeDouble());
+				break;
 			case 5:
 				arc.setCTRating(parser.makeDouble());
+				break;
 			case 6:
 				arc.setR(parser.makeDouble());
+				break;
 			case 7:
 				arc.setX(parser.makeDouble());
+				break;
 			case 8:
 				arc.setRegulatedBus(Param);
+				break;
 			case 9:
 				arc.setTimeDelay(parser.makeDouble());
+				break;
 			case 10:
 				arc.setIsReversible(Utilities.interpretYesNo(Param));
+				break;
 			case 11:
 				arc.setRevVreg(parser.makeDouble());
+				break;
 			case 12:
 				arc.setRevBandwidth(parser.makeDouble());
+				break;
 			case 13:
 				arc.setRevR(parser.makeDouble());
+				break;
 			case 14:
 				arc.setRevX(parser.makeDouble());
+				break;
 			case 15:
 				arc.setTapDelay(parser.makeDouble());
+				break;
 			case 16:
 				arc.setDebugTrace(Utilities.interpretYesNo(Param));
+				break;
 			case 17:
 				arc.setTapLimitPerChange(Math.max(0, parser.makeInteger()));
+				break;
 			case 18:
 				arc.setInversetime(Utilities.interpretYesNo(Param));
+				break;
 			case 19:
 				arc.setTapWinding(parser.makeInteger());
+				break;
 			case 20:
 				arc.setVlimit(parser.makeDouble());
 				if (arc.getVlimit() > 0.0) {
@@ -204,6 +225,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				} else {
 					arc.setVLimitActive(false);
 				}
+				break;
 			case 21:
 				if (Utilities.compareTextShortest(Param, "max") == 0) {
 					arc.setPTphase(MAXPHASE);
@@ -212,21 +234,27 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				} else {
 					arc.setPTphase(Math.max(1, parser.makeInteger()));
 				}
+				break;
 			case 22:
 				arc.setkWRevPowerThreshold(parser.makeDouble());
+				break;
 			case 23:
 				arc.setRevDelay(parser.makeDouble());
+				break;
 			case 24:
 				arc.setReverseNeutral(Utilities.interpretYesNo(Param));
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveRegControlObj, ParamPointer - RegControl.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			case 1:
 				arc.setTapWinding(arc.getElementTerminal());  // Resets if property re-assigned
 				arc.setPropertyValue(19, Param);
+				break;
 			case 16:
 				if (arc.isDebugTrace()) {
 					try {
@@ -242,8 +270,10 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 						// TODO: handle exception
 					}
 				}
+				break;
 			case 23:
 				arc.setRevPowerThreshold(arc.getkWRevPowerThreshold() * 1000.0);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -114,8 +114,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		switch (nPhases) {
 		case 1:
 			VMag = kVBase * PerUnit * 1000.0;
+			break;
 		default:
 			VMag = kVBase * PerUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases)* Math.PI / 180.0);
+			break;
 		}
 
 		setSpectrumObj((com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()));
@@ -200,8 +202,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			switch (nPhases) {
 			case 1:
 				VMag = kVBase * PerUnit * 1000.0;
+				break;
 			default:
 				VMag = kVBase * PerUnit * 1000.0 / 2.0 / Math.sin((180.0 / nPhases) * Math.PI / 180.0);
+				break;
 			}
 
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();

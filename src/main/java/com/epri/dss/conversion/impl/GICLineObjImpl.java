@@ -192,11 +192,14 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 						case 1:
 							// maintain pos seq
 							Vharm = Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0/nPhases);
+							break;
 						case 0:
 							// Do nothing for zero Sequence; All the same
+							break;
 	                    default:
 	                    	// normal rotation
 	                    	Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0/nPhases);
+	    					break;
 	                	}
 	                }
 				}
@@ -209,10 +212,13 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 					switch (SequenceType) {
 					case -1:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle + (i-1)* 360.0/nPhases) );  // neg seq
+						break;
 					case 0:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle) );   // all the same for zero sequence
+						break;
 					default:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle - (i-1)* 360.0/nPhases) );
+						break;
 					}
 	                Vterminal[i+nPhases] = Complex.ZERO;    // See comments in GetInjCurrents
 				}

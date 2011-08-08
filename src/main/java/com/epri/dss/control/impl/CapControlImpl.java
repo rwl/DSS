@@ -138,49 +138,71 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ acc.getName() + "\"", 352);
+				break;
 			case 0:
 				acc.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				acc.setElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				acc.setCapacitorName("capacitor." + Param);
+				break;
 			case 3:
 				switch (Param.toLowerCase().charAt(0)) {
 				case 'c':
 					acc.setControlType(CapControlType.CURRENTCONTROL);
+					break;
 				case 'v':
 					acc.setControlType(CapControlType.VOLTAGECONTROL);
+					break;
 				case 'k':
 					acc.setControlType(CapControlType.KVARCONTROL);
+					break;
 				case 't':
 					acc.setControlType(CapControlType.TIMECONTROL);
+					break;
 				case 'p':
 					acc.setControlType(CapControlType.PFCONTROL);
+					break;
 				case 's':
 					acc.setControlType(CapControlType.SRPCONTROL);
+					break;
 				default:
 					Globals.doSimpleMsg(String.format("Unrecognized CapControl Type: \"%s\" (Capcontrol.%s)", Param, acc.getName()), 352);
+					break;
 				}
+				break;
 			case 4:
 				acc.setPTRatio(parser.makeDouble());
+				break;
 			case 5:
 				acc.setCTRatio(parser.makeDouble());
+				break;
 			case 6:
 				acc.setON_Value(parser.makeDouble());
+				break;
 			case 7:
 				acc.setOFF_Value(parser.makeDouble());
+				break;
 			case 8:
 				acc.setONDelay(parser.makeDouble());
+				break;
 			case 9:
 				acc.setVOverride(Utilities.interpretYesNo(Param));
+				break;
 			case 10:
 				acc.setVmax(parser.makeDouble());
+				break;
 			case 11:
 				acc.setVmin(parser.makeDouble());
+				break;
 			case 12:
 				acc.setOFFDelay(parser.makeDouble());
+				break;
 			case 13:
 				acc.setDeadTime(parser.makeDouble());
+				break;
 			case 14:
 				if (Utilities.compareTextShortest(Param, "avg") == 0) {
 					acc.setCTPhase(CapControl.AVGPHASES);
@@ -191,6 +213,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				} else {
 					acc.setCTPhase( Math.max(1, parser.makeInteger()) );
 				}
+				break;
 			case 15:
 				if (Utilities.compareTextShortest(Param, "avg") == 0) {
 					acc.setPTPhase(CapControl.AVGPHASES);
@@ -201,10 +224,11 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				} else {
 					acc.setPTPhase( Math.max(1, parser.makeInteger()) );
 				}
-
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveCapControlObj(), ParamPointer - CapControl.NumPropsThisClass);
+				break;
 			}
 
 
@@ -214,7 +238,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				case 3:
 					acc.setPFON_Value(0.95);     // defaults
 					acc.setPFOFF_Value(1.05);
-
+					break;
 				case 6:
 					if ((acc.getON_Value() >= -1.0) && (acc.getON_Value() <= 1.0)) {
 						if (acc.getON_Value() < 0.0) {
@@ -225,7 +249,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					} else {
 						Globals.doSimpleMsg("Invalid PF ON value for CapControl."+acc.getName(), 353);
 					}
-
+					break;
 				case 7:
 					if ((acc.getOFF_Value() >= -1.0) && (acc.getOFF_Value() <= 1.0)) {
 						if (acc.getOFF_Value() < 0.0) {
@@ -236,18 +260,19 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					} else {
 						Globals.doSimpleMsg("Invalid PF OFF value for CapControl."+acc.getName(), 35301);
 					}
-
+					break;
 				case 14:
 					if (acc.getCTPhase() > acc.getNPhases()) {
 						Globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
 						acc.setCTPhase(1);
 					}
-
+					break;
 				case 15:
 					if (acc.getPTPhase() > acc.getNPhases()) {
 						Globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
 						acc.setPTPhase(1);
 					}
+					break;
 				}
 			}
 

@@ -212,15 +212,20 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		switch (as.getConnection()) {
 		case 0:
 			as.setNConds(as.getNPhases() + 1);
+			break;
 		case 1:
 			switch (as.getNPhases()) {
 			case 1:
 				as.setNConds(as.getNPhases() + 1);  // L-L
+				break;
 			case 2:
 				as.setNConds(as.getNPhases() + 1);  // Open-delta
+				break;
 			default:
 				as.setNConds(as.getNPhases());
+				break;
 			}
+			break;
 		}
 	}
 
@@ -244,17 +249,23 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		switch (TestS.charAt(0)) {
 		case 'y':
 			as.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			as.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			as.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
 			case 'n':
 				as.setConnection(0);
+				break;
 			case 'l':
 				as.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		setNcondsForConnection();
@@ -264,10 +275,13 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		switch (as.getNPhases()) {
 		case 2:
 			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);    // L-N Volts
+			break;
 		case 3:
 			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);
+			break;
 		default:
 			as.setVBase(as.getkVStorageBase() * 1000.0);   // Just use what is supplied
+			break;
 		}
 
 		as.setVBase95(as.getVminpu() * as.getVBase());
@@ -329,106 +343,153 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				switch (iCase) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ as.getName() + "\"", 561);
+					break;
 				case 0:
 					as.setNPhases(parser.makeInteger());  // num phases
+					break;
 				case 1:
 					as.setBus(1, Param);  // TODO Check zero based indexing
+					break;
 				case propKV:
 					as.setPresentKV(parser.makeDouble());
+					break;
 				case propKW:
 					as.setkW_out(parser.makeDouble());
+					break;
 				case propPF:
 					as.setPFNominal(parser.makeDouble());
+					break;
 				case propMODEL:
 					as.setVoltageModel(parser.makeInteger());
+					break;
 				case propYEARLY:
 					as.setYearlyShape(Param);
+					break;
 				case propDAILY:
 					as.setDailyShape(Param);
+					break;
 				case propDUTY:
 					as.setDutyShape(Param);
+					break;
 				case propDISPMODE:
 					as.setDispatchMode(interpretDispMode(Param));
+					break;
 				case propIDLEKVAR:
 					as.setPctIdlekvar(parser.makeDouble());
+					break;
 				case propCONNECTION:
 					interpretConnection(Param);
+					break;
 				case propKVAR:
 					as.setPresentKVar(parser.makeDouble());
+					break;
 				case propPCTR:
 					as.setPctR(parser.makeDouble());
+					break;
 				case propPCTX:
 					as.setPctX(parser.makeDouble());
+					break;
 				case propIDLEKW:
 					as.setPctIdlekW(parser.makeDouble());
+					break;
 				case propCLASS:
 					as.setStorageClass(parser.makeInteger());
+					break;
 				case propDISPOUTTRIG:
 					as.setDischargeTrigger(parser.makeDouble());
+					break;
 				case propDISPINTRIG:
 					as.setChargeTrigger(parser.makeDouble());
+					break;
 				case propCHARGEEFF:
 					as.setPctChargeEff(parser.makeDouble());
+					break;
 				case propDISCHARGEEFF:
 					as.setPctDischargeEff(parser.makeDouble());
+					break;
 				case propPCTKWOUT:
 					as.setPctKWout(parser.makeDouble());
+					break;
 				case propVMINPU:
 					as.setVminpu(parser.makeDouble());
+					break;
 				case propVMAXPU:
 					as.setVmaxpu(parser.makeDouble());
+					break;
 				case propSTATE:
 					as.setState(as.interpretState(Param));
+					break;
 				case propKVA:
 					as.setkVArating(parser.makeDouble());
+					break;
 				case propKWRATED:
 					as.setkWrating(parser.makeDouble());
+					break;
 				case propKWHRATED:
 					as.setkWhRating(parser.makeDouble());
+					break;
 				case propKWHSTORED:
 					as.setkWhStored(parser.makeDouble());
+					break;
 				case propPCTRESERVE:
 					as.setPctReserve(parser.makeDouble());
+					break;
 				case propUSERMODEL:
 					as.getUserModel().setName(parser.makeString());  // Connect to user written models
+					break;
 				case propUSERDATA:
 					as.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					break;
 				case propDEBUGTRACE:
 					as.setDebugTrace(Utilities.interpretYesNo(Param));
+					break;
 				case propPCTKWIN:
 					as.setPctKWin(parser.makeDouble());
+					break;
 				case propPCTSTORED:
 					as.setkWhStored(parser.makeDouble() * 0.01 * as.getkWhRating());
+					break;
 				case propCHARGETIME:
 					as.setChargeTime(parser.makeDouble());
+					break;
 				default:
 					// Inherited parameters
 					classEdit(getActiveStorageObj(), ParamPointer - NumPropsThisClass);
+					break;
 				}
 
 				switch (iCase) {
 				case 0:
 					setNcondsForConnection();  // Force Reallocation of terminal info
+					break;
 				case propKW:
 					as.syncUpPowerQuantities();   // keep kvar nominal up to date with kW and PF
+					break;
 				case propPF:
 					as.syncUpPowerQuantities();
+					break;
 
 					/* Set loadshape objects;  returns nil If not valid */
 				case propYEARLY:
 					as.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getYearlyShape()));
+					break;
 				case propDAILY:
 					as.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDailyShape()));
+					break;
 				case propDUTY:
 					as.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDutyShape()));
+					break;
 				case propKWRATED:
 					as.setkVArating(as.getkWrating());
+					break;
 				case propKWHRATED:
 					as.setkWhStored(as.getkWhRating());  // Assume fully charged
 					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
+					break;
 
 				case propPCTRESERVE:
 					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
+					break;
 
 				case propDEBUGTRACE:
 					if (as.isDebugTrace()) {
@@ -454,9 +515,11 @@ public class StorageImpl extends PCClassImpl implements Storage {
 							// TODO: handle exception
 						}
 					}
+					break;
 
 				case propKVA:
 					as.setkVANotSet(false);
+					break;
 				}
 			}
 

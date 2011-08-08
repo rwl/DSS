@@ -96,18 +96,25 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ agd.getName() + "\"", 364);
+				break;
 			case 0:
 				agd.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				agd.setElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				agd.setkWLimit(parser.makeDouble());
+				break;
 			case 3:
 				agd.setkWBand(parser.makeDouble());
+				break;
 			case 4:
 				agd.setKvarLimit(parser.makeDouble());
+				break;
 			case 5:
 				Utilities.interpretStringListArray(Param, agd.getGeneratorNameList());
+				break;
 			case 6:
 				agd.setListSize(agd.getGeneratorNameList().size());
 				if (agd.getListSize() > 0) {
@@ -115,20 +122,24 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 					Utilities.interpretDblArray(Param, agd.getListSize(), agd.getWeights());
 				}
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveGenDispatcherObj, ParamPointer - GenDispatcher.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			case 3:
 				agd.setHalfkWBand(agd.getkWBand() / 2.0);
+				break;
 			case 5:  // levelize the list
 				agd.getGenPointerList().clear();  // clear this for resetting on first sample
 				agd.setListSize(agd.getGeneratorNameList().size());
 				agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
 				for (int i = 0; i < agd.getListSize(); i++)
 					agd.getWeights()[i] = 1.0;
+				break;
 			}
 
 			ParamName = parser.getNextParam();

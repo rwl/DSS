@@ -203,92 +203,128 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ asc.getName() + "\"", 14407);
+				break;
 			case StorageController.propELEMENT:
 				asc.setElementName(Param.toLowerCase());
+				break;
 			case StorageController.propTERMINAL:
 				asc.setElementTerminal(parser.makeInteger());
+				break;
 			case StorageController.propKWTARGET:
 				asc.setkWTarget(parser.makeDouble());
+				break;
 			case StorageController.propKWBAND:
 				asc.setPctkWBand(parser.makeDouble());
+				break;
 			case StorageController.propPFTARGET:
 				asc.setPFTarget( Utilities.convertPFToPFRange2(parser.makeDouble()) );
+				break;
 			case StorageController.propPFBAND:
 				asc.setPFBand(parser.makeDouble());
+				break;
 			case StorageController.propELEMENTLIST:
 				Utilities.interpretStringListArray(Param, asc.getStorageNameList());
+				break;
 			case StorageController.propWEIGHTS:
 				asc.setFleetSize(asc.getStorageNameList().size());
 				if (asc.getFleetSize() > 0) {
 					asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 					Utilities.interpretDblArray(Param, asc.getFleetSize(), asc.getWeights());
 				}
+				break;
 			case StorageController.propMODEDISCHARGE:
 				asc.setDischargeMode(asc.interpretMode(propMODEDISCHARGE, Param));
+				break;
 			case StorageController.propMODECHARGE:
 				asc.setChargeMode(asc.interpretMode(propMODECHARGE, Param));
+				break;
 			case StorageController.propTIMEDISCHARGETRIGGER:
 				asc.setDischargeTriggerTime(parser.makeDouble());
+				break;
 			case StorageController.propTIMECHARGETRIGGER:
 				asc.setChargeTriggerTime(parser.makeDouble());
+				break;
 			case StorageController.propRATEKW:
 				asc.setPctKWRate(parser.makeDouble());
+				break;
 			case StorageController.propRATEKVAR:
 				asc.setPctkvarRate(parser.makeDouble());
+				break;
 			case StorageController.propRATECHARGE:
 				asc.setPctChargeRate(parser.makeDouble());
+				break;
 			case StorageController.propRESERVE:
 				asc.setPctFleetReserve(parser.makeDouble());
+				break;
 			case StorageController.propKWHTOTAL:
 				// Do nothing (read only)
+				break;
 			case StorageController.propKWTOTAL:
 				// Do nothing (Read only)
+				break;
 			case StorageController.propKWHACTUAL:
 				// Do nothing (Read only)
+				break;
 			case StorageController.propKWACTUAL:
 				// Do nothing (Read only)
+				break;
 			case StorageController.propKWNEED:
 				// Do nothing (Read only)
+				break;
 			case StorageController.propPARTICIPATION:
-
+				break;
 			case StorageController.propYEARLY:
 				asc.setYearlyShape(Param);
+				break;
 			case StorageController.propDAILY:
 				asc.setDailyShape(Param);
+				break;
 			case StorageController.propDUTY:
 				asc.setDutyShape(Param);
+				break;
 			case StorageController.propEVENTLOG:
 				asc.setShowEventLog(Utilities.interpretYesNo(Param));
+				break;
 			case StorageController.propVARDISPATCH:
 				asc.setDispatchVars(Utilities.interpretYesNo(Param));
+				break;
 			case StorageController.propINHIBITTIME:
 				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >=1
+				break;
 			case StorageController.propTUPRAMP:
 				asc.setUpRamptime(parser.makeDouble());
+				break;
 			case StorageController.propTFLAT:
 				asc.setFlatTime(parser.makeDouble());
+				break;
 			case StorageController.propTDNRAMP:
 				asc.setDnrampTime(parser.makeDouble());
+				break;
 			case StorageController.propKWTHRESHOLD:
 				asc.setkWThreshold(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveStorageControllerObj, ParamPointer - StorageController.NumPropsThisClass);
+				break;
 			}
 
 			// Side effects of setting properties above
 			switch (ParamPointer) {
 			case propKWTARGET:
 				asc.setHalfkWBand( asc.getPctkWBand() / 200.0 * asc.getkWTarget() );
+				break;
 			case propKWBAND:
 				asc.setHalfkWBand( asc.getPctkWBand() / 200.0 * asc.getkWTarget() );
 				asc.setkWThreshold( asc.getkWTarget() * 0.75 );
+				break;
 			case propPFBAND:
 				asc.setHalfPFBand(asc.getPFBand() / 2.0);
+				break;
 			case propMODEDISCHARGE:
 				if (asc.getDischargeMode() == StorageController.MODEFOLLOW)
 					asc.setDischargeTriggerTime(12.0);  // Noon
-
+				break;
 			case propELEMENTLIST:
 				// levelize the list
 				asc.getFleetPointerList().clear();  // clear this for resetting on first sample
@@ -299,18 +335,22 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = 1.0;
+				break;
 			case propYEARLY:
 				asc.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(asc.getYearlyShape()) );
 				if (asc.getYearlyShapeObj() == null)
 					Globals.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
+				break;
 			case propDAILY:
 				asc.setDailyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(asc.getDailyShape()) );
 				if (asc.getDailyShapeObj() == null)
 					Globals.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
+				break;
 			case propDUTY:
 				asc.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(asc.getDutyShape()) );
 				if (asc.getDutyShapeObj() == null)
 					Globals.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

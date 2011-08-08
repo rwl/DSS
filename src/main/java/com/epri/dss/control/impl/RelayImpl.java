@@ -168,71 +168,102 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				/* internal relay property commands */
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() + "\"", 382);
+					break;
 				case 0:
 					ar.setMonitoredElementName(Param.toLowerCase());
+					break;
 				case 1:
 					ar.setMonitoredElementTerminal(parser.makeInteger());
+					break;
 				case 2:
 					ar.setElementName(Param.toLowerCase());
+					break;
 				case 3:
 					ar.setElementTerminal(parser.makeInteger());
+					break;
 				case 4:
 					ar.interpretRelayType(Param);
+					break;
 				case 5:
 					ar.setPhaseCurve(getTccCurve(Param));
+					break;
 				case 6:
 					ar.setGroundCurve(getTccCurve(Param));
+					break;
 				case 7:
 					ar.setPhaseTrip(parser.makeDouble());
+					break;
 				case 8:
 					ar.setGroundTrip(parser.makeDouble());
+					break;
 				case 9:
 					ar.setPhaseInst(parser.makeDouble());
+					break;
 				case 10:
 					ar.setGroundInst(parser.makeDouble());
+					break;
 				case 11:
 					ar.setResetTime(parser.makeDouble());
+					break;
 				case 12:
 					ar.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
+					break;
 				case 13:
 					if (Param.equals("NONE")) {
 						ar.setNumReclose(1);
 					} else {
 						ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));  // max of 4 allowed
 					}
+					break;
 				case 14:
 					ar.setOVcurve(getTccCurve(Param));
+					break;
 				case 15:
 					ar.setUVCurve(getTccCurve(Param));
+					break;
 				case 16:
 					ar.setkVBase(parser.makeDouble());
+					break;
 				case 17:
 					ar.setBreaker_time(parser.makeDouble());
+					break;
 				case 18:
 					ar.interpretRelayAction(Param);
+					break;
 				case 19:
 					ar.setMonitorVariable(Param.toLowerCase());  // for pc elements
+					break;
 				case 20:
 					ar.setPctPickup46(parser.makeDouble());
+					break;
 				case 21:
 					ar.setIsqt46(parser.makeDouble());
+					break;
 				case 22:
 					ar.setBaseAmps46(parser.makeDouble());
+					break;
 				case 23:
 					ar.setDelay_Time(parser.makeDouble());
+					break;
 				case 24:
 					ar.setPctPickup47(parser.makeDouble());
+					break;
 				case 25:
 					ar.setOverTrip(parser.makeDouble());
+					break;
 				case 26:
 					ar.setUnderTrip(parser.makeDouble());
+					break;
 				case 27:
 					ar.setTDPhase(parser.makeDouble());
+					break;
 				case 28:
 					ar.setTDGround(parser.makeDouble());
+					break;
 				default:
 					// Inherited parameters
 					classEdit(ActiveRelayObj, ParamPointer - Relay.NumPropsThisClass);
+					break;
 				}
 			}
 
@@ -241,18 +272,23 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				/* Default the controlled element to the monitored element */
 				case 0:
 					ar.setElementName(ar.getMonitoredElementName());
+					break;
 				case 1:
 					ar.setElementTerminal(ar.getMonitoredElementTerminal());
+					break;
 				case 4:  /* Set Default Reclose Intervals */
 					switch (Param.toLowerCase().charAt(0)) {
 					case 'c':
 						ar.setPropertyValue(13, "(0.5, 2.0, 2.0)");
+						break;
 					case 'v':
 						ar.setPropertyValue(13, "(5.0)");
+						break;
 					}
 					Globals.getAuxParser().setCmdString(ar.getPropertyValue(13));
 					ParamName = Globals.getAuxParser().getNextParam();
 					ar.setNumReclose(Globals.getAuxParser().parseAsVector(4, ar.getRecloseIntervals()));
+					break;
 				}
 			}
 

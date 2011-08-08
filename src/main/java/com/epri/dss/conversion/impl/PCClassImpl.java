@@ -8,9 +8,9 @@ import com.epri.dss.conversion.PCElement;
 import com.epri.dss.parser.impl.Parser;
 
 public class PCClassImpl extends CktElementClassImpl implements PCClass {
-	
+
 	int NumPCClassProps;
-	
+
 	public PCClassImpl() {
 		super();
 		this.NumPCClassProps = 1;
@@ -27,7 +27,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
 	/**
 	 * Add Properties of this class to propName.
-	 * 
+	 *
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
@@ -49,8 +49,10 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 			switch (ParamPointer) {
 			case 1:
 				pElem.setSpectrum(Parser.getInstance().makeString());
+				break;
 			default:
 				super.classEdit(ActivePCObj, ParamPointer - NumPCClassProps);
+				break;
 			}
 		}
 		return Result;

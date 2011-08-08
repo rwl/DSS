@@ -203,15 +203,20 @@ public class LoadImpl extends PCClassImpl implements Load {
 		switch (al.getConnection()) {
 		case 0:
 			al.setNConds(al.getNPhases() + 1);
+			break;
 		case 1:
 			switch (al.getNPhases()) {
 			case 1:
 				al.setNConds(al.getNPhases() + 1);  // L-L
+				break;
 			case 2:
 				al.setNConds(al.getNPhases() + 1);  // Open-delta
+				break;
 			default:
 				al.setNConds(al.getNPhases());
+				break;
 			}
+			break;
 		}
 	}
 
@@ -227,17 +232,23 @@ public class LoadImpl extends PCClassImpl implements Load {
 		switch (TestS.charAt(0)) {
 		case 'y':
 			al.setConnection(0);  /* Wye */
+			break;
 		case 'w':
 			al.setConnection(0);  /* Wye */
+			break;
 		case 'd':
 			al.setConnection(1);  /* Delta or line-Line */
+			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
 			case 'n':
 				al.setConnection(0);
+				break;
 			case 'l':
 				al.setConnection(1);
+				break;
 			}
+			break;
 		}
 
 		setNcondsForConnection();
@@ -249,11 +260,15 @@ public class LoadImpl extends PCClassImpl implements Load {
 			switch (al.getNPhases()) {
 			case 2:
 				al.setVBase(al.getkVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				break;
 			case 3:
 				al.setVBase(al.getkVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				break;
 			default:
 				al.setVBase(al.getkVLoadBase() * 1000.0);
+				break;
 			}
+			break;
 		}
 		al.setVBase95(al.getVminpu() * al.getVBase());
 		al.setVBase105(al.getVmaxpu() * al.getVBase());
@@ -291,86 +306,123 @@ public class LoadImpl extends PCClassImpl implements Load {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ al.getName() + "\"", 580);
+				break;
 			case 0:
 				al.setNPhases(parser.makeInteger()); // num phases
+				break;
 			case 1:
 				al.setBus(1, Param);  // TODO: Check zero based indexing
+				break;
 			case 2:
 				al.setkVLoadBase(parser.makeDouble());
+				break;
 			case 3:
 				al.setkWBase(parser.makeDouble());
+				break;
 			case 4:
 				al.setPFNominal(parser.makeDouble());
+				break;
 			case 5:
 				al.setLoadModel(parser.makeInteger());
+				break;
 			case 6:
 				al.setYearlyShape(Param);
+				break;
 			case 7:
 				al.setDailyShape(Param);
+				break;
 			case 8:
 				al.setDutyShape(Param);
+				break;
 			case 9:
 				al.setGrowthShape(Param);
+				break;
 			case 10:
 				interpretConnection(Param);
+				break;
 			case 11:
 				al.setKvarBase(parser.makeDouble());
+				break;
 			case 12:
 				al.setRneut(parser.makeDouble());
+				break;
 			case 13:
 				al.setXneut(parser.makeDouble());
+				break;
 			case 14:
 				switch (Param.toLowerCase().charAt(0)) {
 				case 'f':
 					al.setFixed(true);
 					al.setExemptFromLDCurve(false);
+					break;
 				case 'e':
 					al.setFixed(false);
 					al.setExemptFromLDCurve(true);
+					break;
 				default:
 					al.setFixed(false);
 					al.setExemptFromLDCurve(false);
+					break;
 				}
 			case 15:
 				al.setLoadClass(parser.makeInteger());
+				break;
 			case 16:
 				al.setVminpu(parser.makeDouble());
+				break;
 			case 17:
 				al.setVmaxpu(parser.makeDouble());
+				break;
 			case 18:
 				al.setVminNormal(parser.makeDouble());
+				break;
 			case 19:
 				al.setVminEmerg(parser.makeDouble());
+				break;
 			case 20:
 				al.setConnectedkVA(parser.makeDouble());
+				break;
 			case 21:
 				al.setkVAAllocationFactor(parser.makeDouble());
+				break;
 			case 22:
 				al.setkVABase(parser.makeDouble());
+				break;
 			case 23:
 				al.setPuMean(parser.makeDouble() / 100.0);
+				break;
 			case 24:
 				al.setPuStdDev(parser.makeDouble() / 100.0);
+				break;
 			case 25:
 				al.setCVRwattFactor(parser.makeDouble());
+				break;
 			case 26:
 				al.setCVRvarFactor(parser.makeDouble());
+				break;
 			case 27:
 				al.setkWh(parser.makeDouble());
+				break;
 			case 28:
 				al.setkWhDays(parser.makeDouble());
+				break;
 			case 29:
 				al.setCFactor(parser.makeDouble());
+				break;
 			case 30:
 				al.setCVRshape(Param);
+				break;
 			case 31:
 				al.setNumCustomers(parser.makeInteger());
+				break;
 			case 32:
 				al.setZIPVSize(7);
 				parser.parseAsVector(7, al.getZIPV());
+				break;
 			default:
 				// Inherited edits
 				classEdit(getActiveLoadObj(), ParamPointer - Load.NumPropsThisClass);
+				break;
 			}
 
 			// SIDE EFFECTS
@@ -379,12 +431,16 @@ public class LoadImpl extends PCClassImpl implements Load {
 			case 0:
 				setNcondsForConnection();  // Force Reallocation of terminal info
 				al.updateVoltageBases();
+				break;
 			case 2:
 				al.updateVoltageBases();
+				break;
 			case 3:
 				al.setLoadSpecType(0);
+				break;
 			case 4:
 				al.setPFChanged(true);
+				break;
 			case 6:
 				/* Set shape objects;  returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
@@ -392,6 +448,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
 						al.setkWkvar(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
+				break;
 			case 7:
 				al.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDailyShape()));
 				if (al.getDailyShapeObj() != null)
@@ -400,21 +457,27 @@ public class LoadImpl extends PCClassImpl implements Load {
 				/* If Yearly load shape is not yet defined, make it the same as Daily */
 				if (al.getYearlyShapeObj() == null)
 					al.setYearlyShapeObj(al.getDailyShapeObj());
+				break;
 			case 8:
 				al.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDutyShape()));
 				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
 						al.setkWkvar(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
+				break;
 			case 9:
 				al.setGrowthShapeObj((GrowthShapeObj) Globals.getGrowthShapeClass().find(al.getGrowthShape()));
+				break;
 			case 11:
 				al.setLoadSpecType(1);  // kW, kvar
+				break;
 		/*** see set_xfkva, etc           21, 22: LoadSpectype = 3;  // XFKVA*AllocationFactor, PF  */
 			case 22:
 				al.setLoadSpecType(2);  // kVA, PF
+				break;
 		/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
 				al.setCVRShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getCVRshape()));
+				break;
 			}
 
 			ParamName = parser.getNextParam();

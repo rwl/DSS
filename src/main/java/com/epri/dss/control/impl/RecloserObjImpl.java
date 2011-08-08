@@ -224,6 +224,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 						Utilities.appendToEventLog(" ", "Ground Target");
 					ArmedForOpen = false;
 				}
+				break;
 			}
 
 		} else if (Code == ControlAction.CLOSE.code()) {
@@ -235,6 +236,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 					Utilities.appendToEventLog("Recloser."+getName(), "Closed");
 					ArmedForClose = false;
 				}
+				break;
 			}
 
 		} else if (Code == ControlAction.CTRL_RESET.code()) {
@@ -242,6 +244,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			case CLOSE:
 				if (!ArmedForOpen)
 					OperationCount = 1;  // Don't reset if we just rearmed
+				break;
 			}
 		}
 	}
@@ -256,14 +259,17 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
 				LockedOut = true;
 				OperationCount = NumReclose + 1;
+				break;
 			case 't':
 				getControlledElement().setConductorClosed(0, false);   // Open all phases of active terminal
 				LockedOut = true;
 				OperationCount = NumReclose + 1;
+				break;
 			case 'c':
 				getControlledElement().setConductorClosed(0, true);    // Close all phases of active terminal
 				LockedOut = false;
 				OperationCount = 1;
+				break;
 			}
 		}
 	}
@@ -405,8 +411,10 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			for (int i = 0; i < NumReclose; i++)
 				Result = Result + String.format("%-g, ", RecloseIntervals[i]);
 			Result = Result + ")";
+			break;
 		default:
 			Result = super.getPropertyValue(Index);
+			break;
 		}
 		return Result;
 	}

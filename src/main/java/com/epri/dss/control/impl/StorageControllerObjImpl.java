@@ -547,6 +547,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					ChargingAllowed = true;
 				}
 			}
+			break;
 		case 2:
 			if (ChargeTriggerTime > 0.0) {
 				if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTriggerTime) < sol.getDynaVars().h / 7200.0) {
@@ -565,6 +566,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 					}
 				}
 			}
+			break;
 		}
 	}
 
@@ -624,16 +626,20 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				}
 				PDiff  = S.getReal() * 0.001 - kWTarget;  // Assume S.re is normally positive
 				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for peak shaving
+				break;
 			// supporting DG; Try to keep load above kW target
 			case StorageController.MODESUPPORT:
 				PDiff  = S.getReal() * 0.001 + kWTarget;  // assume S.re is normally negative
 				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for generator
+				break;
 			case StorageController.MODEPEAKSHAVE:
 				PDiff  = S.getReal() * 0.001 - kWTarget;  // Assume S.re is normally positive
 				PFDiff = Utilities.convertPFToPFRange2(Utilities.powerFactor(S)) - PFTarget;  // for peak shaving
+				break;
 			default:
 				PDiff = 0.0;
 				PFDiff = 0.0;
+				break;
 			}
 
 			kWNeeded = PDiff;
@@ -653,12 +659,14 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						ChargingAllowed = true;
 						SkipkWDispatch  = true;
 					}
+					break;
 				case Storage.STORE_IDLING:
 					if ((PDiff < 0.0) || OutOfOomph) {
 						// Don't bother trying to dispatch
 						ChargingAllowed = true;
 						SkipkWDispatch  = true;
 					}
+					break;
 				case Storage.STORE_DISCHARGING:
 					if (((PDiff + getFleetkW()) < 0.0) || OutOfOomph) {
 						// desired decrease is greater then present output; just cancel
@@ -666,6 +674,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						ChargingAllowed = true;
 						SkipkWDispatch  = true;
 					}
+					break;
 				}
 			}
 
@@ -752,28 +761,38 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		case StorageController.MODEFOLLOW:
 			doTimeMode(1);
 			doLoadFollowMode();
+			break;
 		case StorageController.MODELOADSHAPE:
 			doLoadShapeMode();
+			break;
 		case StorageController.MODESUPPORT:
 			doLoadFollowMode();
+			break;
 		case StorageController.MODETIME:
 			doTimeMode(1);
+			break;
 		case StorageController.MODEPEAKSHAVE:
 			doLoadFollowMode();
+			break;
 		case StorageController.MODESCHEDULE:
 			doScheduleMode();
+			break;
 		default:
 			DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid DisCharging Mode: %d", DischargeMode), 14408);
+			break;
 		}
 
 		if (ChargingAllowed)
 			switch (ChargeMode) {
 			case StorageController.MODELOADSHAPE:
 				//doLoadShapeMode();  already executed above
+				break;
 			case StorageController.MODETIME:
 				doTimeMode(2);
+				break;
 			default:
 				DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid Charging Mode: %d", ChargeMode), 14409);
+				break;
 			}
 	}
 
@@ -817,14 +836,19 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		switch (sol.getMode()) {
 		case Dynamics.DAILYMODE:
 			calcDailyMult(sol.getDblHour());  // Daily dispatch curve
+			break;
 		case Dynamics.YEARLYMODE:
 			calcYearlyMult(sol.getDblHour());
+			break;
 		case Dynamics.LOADDURATION2:
 			calcDailyMult(sol.getDblHour());
+			break;
 		case Dynamics.PEAKDAY:
 			calcDailyMult(sol.getDblHour());
+			break;
 		case Dynamics.DUTYCYCLE:
 			calcDutyMult(sol.getDblHour()) ;
+			break;
 		}
 
 		if (LoadShapeMult.getReal() < 0.0) {
@@ -968,6 +992,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			default:
 				DSSGlobals.getInstance().doSimpleMsg("Discharge Mode \"" + S + "\" not recognized.", 14402);
 			}
+			break;
 		case StorageController.propMODECHARGE:
 			switch (S.toLowerCase().charAt(0)) {
 			/*case 'f':
@@ -981,9 +1006,11 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			default:
 				DSSGlobals.getInstance().doSimpleMsg("Charge Mode \"" + S + "\" not recognized.", 14402);
 			}
+			break;
 		default:
-			return 0;
+			break;
 		}
+		return 0;
 	}
 
 	private boolean makeFleetList() {

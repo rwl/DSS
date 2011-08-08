@@ -155,61 +155,87 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() +"\"", 390);
+				break;
 			case 0:
 				ar.setMonitoredElementName(Param.toLowerCase());
+				break;
 			case 1:
 				ar.setMonitoredElementTerminal(parser.makeInteger());
+				break;
 			case 2:
 				ar.setElementName(Param.toLowerCase());
+				break;
 			case 3:
 				ar.setElementTerminal(parser.makeInteger());
+				break;
 			case 4:
 				ar.setNumFast(parser.makeInteger());
+				break;
 			case 5:
 				ar.setPhaseFast(getTCC_Curve(Param));
+				break;
 			case 6:
 				ar.setPhaseDelayed(getTCC_Curve(Param));
+				break;
 			case 7:
 				ar.setGroundFast(getTCC_Curve(Param));
+				break;
 			case 8:
 				ar.setGroundDelayed(getTCC_Curve(Param));
+				break;
 			case 9:
 				ar.setPhaseTrip(parser.makeDouble());
+				break;
 			case 10:
 				ar.setGroundTrip(parser.makeDouble());
+				break;
 			case 11:
 				ar.setPhaseInst(parser.makeDouble());
+				break;
 			case 12:
 				ar.setGroundInst(parser.makeDouble());
+				break;
 			case 13:
 				ar.setResetTime(parser.makeDouble());
+				break;
 			case 14:
 				ar.setNumReclose(parser.makeInteger() - 1);   // one less than number of shots
+				break;
 			case 15:
 				ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));   // max of 4 allowed
+				break;
 			case 16:
 				ar.setDelayTime(parser.makeDouble());
+				break;
 			case 17:
 				ar.interpretRecloserAction(Param);
+				break;
 			case 18:
 				ar.setTDPhFast(parser.makeDouble());
+				break;
 			case 19:
 				ar.setTDGrFast(parser.makeDouble());
+				break;
 			case 20:
 				ar.setTDPhDelayed(parser.makeDouble());
+				break;
 			case 21:
 				ar.setTDGrDelayed(parser.makeDouble());
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveRecloserObj, ParamPointer - Recloser.NumPropsThisClass);  // TODO Check name-static member conflict
+				break;
 			}
 
 			switch (ParamPointer) {
 			/* Default the controlled element to the monitored element */
 			case 1:
 				ar.setElementName(ar.getMonitoredElementName());
+				break;
 			case 2:
 				ar.setElementTerminal(ar.getMonitoredElementTerminal());
+				break;
 			}
 
 			ParamName = parser.getNextParam();

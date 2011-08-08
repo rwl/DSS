@@ -100,51 +100,72 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ais.getName() + "\"", 330);
+				break;
 			case 0:
 				ais.setBus(1, Param);  // TODO Check zero based indexing
+				break;
 			case 1:
 				ais.setAmps(parser.makeDouble());
+				break;
 			case 2:
 				ais.setAngle(parser.makeDouble());  // Ang
+				break;
 			case 3:
 				ais.setSrcFrequency(parser.makeDouble()); // freq
+				break;
 			case 4:
 				ais.setNPhases(parser.makeInteger()); // num phases
 				switch (ais.getNPhases()) {
 				case 1:
 					ais.setPhaseShift(0.0);
+					break;
 				case 2:
 					ais.setPhaseShift(120.0);
+					break;
 				case 3:
 					ais.setPhaseShift(120.0);
+					break;
 				default:  // higher order systems
 					ais.setPhaseShift(360.0 / ais.getNPhases());
+					break;
 				}
 				ais.setNConds(ais.getNPhases());  // Force Reallocation of terminal info
+				break;
 			case 5:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					ais.setScanType(1);
+					break;
 				case 'Z':
 					ais.setScanType(0);
+					break;
 				case 'N':
 					ais.setScanType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
+					break;
 				}
+				break;
 			case 6:
 				switch (Param.toUpperCase().charAt(0)) {
 				case 'P':
 					ais.setSequenceType(1);
+					break;
 				case 'Z':
 					ais.setSequenceType(0);
+					break;
 				case 'N':
 					ais.setSequenceType(-1);
+					break;
 				default:
 					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
+					break;
 				}
+				break;
 			default:
 				classEdit(getActiveISourceObj(), ParamPointer - ISource.NumPropsThisClass);
+				break;
 			}
 
 			ParamName = parser.getNextParam();
