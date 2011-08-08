@@ -116,7 +116,7 @@ public class DSSExecutive implements Executive {
 			DSSGlobals.getInstance().clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
 
-			/* Now, start over */
+			/* Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
 			Globals.getDSSForms().setRebuildHelpForm(true);  // because class strings have changed

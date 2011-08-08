@@ -449,6 +449,7 @@ public class AutoAddImpl implements AutoAdd {
 			// note that the command that added the generator can be
 			// picked up from the Command property of the COM interface.
 
+			break;
 		case DSSGlobals.CAPADD:
 			MinLossBus = 0;  // null string
 			MaxLossImproveFactor = -1.0e50;  // Some very large number
@@ -562,6 +563,7 @@ public class AutoAddImpl implements AutoAdd {
 
 			// note that the command that added the generator can be
 			// picked up from the Command property of the COM interface.
+			break;
 		}
 
 		return Result;
@@ -592,13 +594,16 @@ public class AutoAddImpl implements AutoAdd {
 						case Solution.NEWTONSOLVE:
 							// FIXME Implement complex accumulate
 							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate().negate() );  // Terminal current
+							break;
 						case Solution.NORMALSOLVE:
 							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate() );   // Injection Current
+							break;
 						}
 					}
 				}
 			}
 
+			break;
 		case DSSGlobals.CAPADD:
 			/* For buses with voltage <> 0, add into aux current array */
 			for (int i = 0; i < Phases; i++) {
@@ -610,12 +615,15 @@ public class AutoAddImpl implements AutoAdd {
 						switch (SolveType) {
 						case Solution.NEWTONSOLVE:
 							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, Ycap).multiply(BusV) ); // Terminal Current
+							break;
 						case Solution.NORMALSOLVE:
 							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, -Ycap).multiply(BusV) );  // Injection Current
+							break;
 						}
 					}  // Constant Y model
 				}
 			}
+			break;
 		}
 	}
 

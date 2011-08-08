@@ -448,6 +448,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			switch (Solution.getLoadModel()) {
 			case DSSGlobals.ADMITTANCE:
 				invalidateAllPCElements();
+				break;
 			}
 		}
 		LoadMultiplier = Value;

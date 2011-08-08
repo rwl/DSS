@@ -288,6 +288,7 @@ public class ExecHelper {
 					switch (Globals.getActiveDSSObject().getDSSObjType()) {
 					case DSSClassDefs.DSS_OBJECT:
 						// do nothing for general DSS object
+						break;
 					default:  // for circuit types, set ActiveCircuit Element, too
 						Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
 						// Now check for active terminal designation
@@ -300,6 +301,7 @@ public class ExecHelper {
 							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(1);  // default to 1
 						}
 						Globals.setActiveBus( Globals.getActiveCircuit().getActiveCktElement().getBus(Globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()) );
+						break;
 					}
 				}
 			} else {
@@ -384,11 +386,13 @@ public class ExecHelper {
 						switch (Globals.getActiveDSSObject().getDSSObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
 							Globals.doSimpleMsg("Error in SetActiveCktElement: Object not a circuit Element."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 254);
+							break;
 						default:
 							Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
 							Result = 1;
 						}
 					}
+					break;
 				}
 			}
 		}
@@ -611,23 +615,31 @@ public class ExecHelper {
 				case 'O':
 					// Monitor
 					doResetMonitors();
+					break;
 				case 'E':
 					// Meter
 					doResetMeters();
+					break;
 				}
+				break;
 			case 'F':
 				// Faults
 				Utilities.doResetFaults();
+				break;
 			case 'C':
 				// Controls
 				Utilities.doResetControls();
+				break;
 			case 'E':
 				// EventLog
 				Utilities.clearEventLog();
+				break;
 			case 'K':
 				Utilities.doResetKeepList();
+				break;
 			default:
 				DSSGlobals.getInstance().doSimpleMsg("Unknown argument to Reset Command: \""+Param+"\"", 261);
+				break;
 			}
 		}
 
@@ -693,6 +705,7 @@ public class ExecHelper {
 		case 'A':
 			for (EnergyMeterObj MeterObj : Globals.getActiveCircuit().getEnergyMeters())
 				MeterObj.reduceZone();
+			break;
 		default:
 			/* Reduce a specific meter */
 			DevClassIndex = Globals.getClassNames().find("energymeter");
@@ -705,6 +718,7 @@ public class ExecHelper {
 					Globals.doSimpleMsg("EnergyMeter \""+Param+"\" not found.", 262);
 				}
 			}
+			break;
 		}
 		return 0;
 	}
@@ -744,6 +758,7 @@ public class ExecHelper {
 			objName.delete(0, objName.length());
 			propName.setLength(fullName.length());
 			propName.replace(0, fullName.length(), fullName);
+			break;
 		default:
 			tmpName = fullName.substring(DotPos1 + 1, (fullName.length() - DotPos1));  // TODO check indexing
 			propName.setLength(tmpName.length());
@@ -754,6 +769,7 @@ public class ExecHelper {
 				tmpName = fullName.substring(0, DotPos1 - 1);
 				objName.setLength(tmpName.length());
 				objName.replace(0, tmpName.length(), tmpName);
+				break;
 			default:
 				tmpName = fullName.substring(0, DotPos1 + DotPos2 - 1);
 				objName.setLength(tmpName.length());
@@ -762,7 +778,9 @@ public class ExecHelper {
 				tmpName = propName.substring(DotPos2 + 1, propName.length() - DotPos2);
 				propName.setLength(tmpName.length());
 				propName.replace(0, tmpName.length(), tmpName);
+				break;
 			}
+			break;
 		}
 	}
 
@@ -818,11 +836,14 @@ public class ExecHelper {
 
 		switch (Param.toUpperCase().charAt(0)) {
 		case 'Y':
-			solution.setYear(solution.getYear() + 1);  // Year
+			solution.setYear(solution.getYear() + 1);  // year
+			break;
 		case 'H':
-			solution.setIntHour(solution.getIntHour() + 1);  // Hour
+			solution.setIntHour(solution.getIntHour() + 1);  // hour
+			break;
 		case 'T':
 			solution.incrementTime();  // Time
+			break;
 		}
 
 		return 0;
@@ -876,6 +897,7 @@ public class ExecHelper {
 					// Stick in object list to keep track of it.
 					Globals.getDSSObjs().add(Globals.getActiveDSSObject());
 				}
+				break;
 			default:
 				// These are circuit elements
 				if (Globals.getActiveCircuit() == null) {
@@ -897,6 +919,7 @@ public class ExecHelper {
 									DSSGlobals.CRLF+ "Element being redefined.", 266);
 					}
 				}
+				break;
 			}
 
 			// ActiveDSSObject now points to the object just added
@@ -904,6 +927,7 @@ public class ExecHelper {
 			if (Result > 0) Globals.getActiveDSSObject().setClassIndex(Result);
 
 			Globals.getActiveDSSClass().edit();    // Process remaining instructions on the command line
+			break;
 		}
 
 		return Result;
@@ -926,6 +950,7 @@ public class ExecHelper {
 			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
 			if (Globals.getActiveDSSClass().setActive(name))
 				Result = Globals.getActiveDSSClass().edit();   // Edit the active object
+			break;
 		}
 
 		return Result;
@@ -1557,20 +1582,26 @@ public class ExecHelper {
 				switch (ParamName.charAt(0)) {
 				case 's':
 					ParamPointer = 1;
+					break;
 				case 'i':
 					ParamPointer = 2;
+					break;
 				default:
 					ParamPointer = 0;
+					break;
 				}
 			}
 
 			switch (ParamPointer) {
 			case 0:
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Capacity Command", 273);
+				break;
 			case 1:
 				Globals.getActiveCircuit().setCapacityStart(Parser.getInstance().makeDouble());
+				break;
 			case 2:
 				Globals.getActiveCircuit().setCapacityIncrement(Parser.getInstance().makeDouble());
+				break;
 			}
 
 			ParamName = Parser.getInstance().getNextParam();
@@ -1640,8 +1671,10 @@ public class ExecHelper {
 				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
 				for (int i = 0; i < cktElem.numVariables(); i++)
 					DSSGlobals.getInstance().appendGlobalResult(String.format("%-.6g", cktElem.getVariable(i)));
+				break;
 			default:
 				DSSGlobals.getInstance().appendGlobalResult("Null");
+				break;
 			}
 		}
 		return 0;
@@ -1656,8 +1689,10 @@ public class ExecHelper {
 				PCElement cktElem = (PCElement) ckt.getActiveCktElement();
 				for (int i = 0; i < cktElem.numVariables(); i++)
 					DSSGlobals.getInstance().appendGlobalResult(cktElem.variableName(i));
+				break;
 			default:
 				DSSGlobals.getInstance().appendGlobalResult("Null");
+				break;
 			}
 		}
 		return 0;
@@ -1746,17 +1781,22 @@ public class ExecHelper {
 		switch (Param.charAt(0)) {
 		case 'B':
 			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsBreakLoop);
+			break;
 		case 'D':
 			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDefault);
+			break;
 		case 'E':
 			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDangling);
+			break;
 		case 'M':
 			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsMergeParallel);
+			break;
 		case 'T':
 			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsTapEnds);
 			Globals.getActiveCircuit().setReductionMaxAngle(15.0);  // default
 			if (Param2.length() > 0)
 				Globals.getActiveCircuit().setReductionMaxAngle(Globals.getAuxParser().makeDouble());
+			break;
 		case 'S':  // Stubs
 			if (Utilities.compareTextShortest(Param, "SWITCH") == 0) {
 				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsSwitches);
@@ -1766,8 +1806,10 @@ public class ExecHelper {
 				if (Param2.length() > 0)
 					Globals.getActiveCircuit().setReductionZmag(Globals.getAuxParser().makeDouble());
 			}
+			break;
 		default:
 			Globals.doSimpleMsg("Unknown Reduction Strategy: \"" + S + "\".", 276);
+			break;
 		}
 	}
 
@@ -1797,6 +1839,7 @@ public class ExecHelper {
 		case 'A':
 			for (EnergyMeterObj MetObj : ckt.getEnergyMeters())
 				MetObj.interpolateCoordinates();
+			break;
 		default:
 			/* Interpolate a specific meter */
 			DevClassIndex = Globals.getClassNames().find("energymeter");
@@ -1809,6 +1852,7 @@ public class ExecHelper {
 					Globals.doSimpleMsg("EnergyMeter \""+Param+"\" not found.", 277);
 				}
 			}
+			break;
 		}
 
 		return Result;
@@ -1853,14 +1897,19 @@ public class ExecHelper {
 		switch (Param.charAt(0)) {
 		case 'L':
 			DSSGlobals.getInstance().getLoadShapeClass().TOPExport(ObjName);
+			break;
 		case 'T':
 			DSSGlobals.getInstance().getTShapeClass().TOPExport(ObjName);
+			break;
 //		case 'G':
 //			DSSGlobals.getInstance().getGrowthShapeClass().tOPExportAll();
+//			break;
 //		case 'T':
 //			DSSGlobals.getInstance().getTCC_CurveClass().tOPExportAll();
+//			break;
 		default:
 			DSSGlobals.getInstance().getMonitorClass().TOPExport(ObjName);
+			break;
 		}
 		return Result;
 	}
@@ -2005,18 +2054,25 @@ public class ExecHelper {
 			switch (ParamPointer) {
 			case 1:
 				kW = parser.makeDouble();
+				break;
 			case 2:
 				How = parser.makeString();
+				break;
 			case 3:
 				Skip = parser.makeInteger();
+				break;
 			case 4:
 				PF = parser.makeDouble();
+				break;
 			case 5:
 				FilName = parser.makeString();
+				break;
 			case 6:
 				kW = parser.makeDouble() * 1000.0;
+				break;
 			default:
 				// ignore unnamed and extra parms
+				break;
 			}
 
 			ParamName = parser.getNextParam();
@@ -2062,19 +2118,25 @@ public class ExecHelper {
 			switch (ParamPointer) {
 			case 1:
 				CaseName = Param;
+				break;
 			case 2:
 				CaseYear = parser.makeInteger();
+				break;
 			case 3:
 				NumRegs = parser.parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 				iRegisters = new int[NumRegs];
 				for (int i = 0; i < NumRegs; i++)
 					iRegisters[i - 1] = (int) dRegisters[i];
+				break;
 			case 4:
 				PeakDay = Utilities.interpretYesNo(Param);
+				break;
 			case 5:
 				MeterName = parser.makeString();
+				break;
 			default:
 				// ignore unnamed and extra parms
+				break;
 			}
 
 			ParamName = parser.getNextParam();
@@ -2128,14 +2190,19 @@ public class ExecHelper {
 				switch (ParamPointer) {
 				case 1:
 					CaseName1 = Param;
+					break;
 				case 2:
 					CaseName2 = Param;
+					break;
 				case 3:
 					Reg = Parser.getInstance().makeInteger();
+					break;
 				case 4:
 					WhichFile = Param;
+					break;
 				default:
 					// ignore unnamed and extra params
+					break;
 				}
 			}
 			ParamName = Parser.getInstance().getNextParam().toUpperCase();
@@ -2178,12 +2245,16 @@ public class ExecHelper {
 				switch (ParamName.toUpperCase().charAt(0)) {
 				case 'C':
 					ParamPointer = 1;
+					break;
 				case 'R':
 					ParamPointer = 2;
+					break;
 				case 'M':
-					ParamPointer = 3; // meter=
+					ParamPointer = 3;  // meter=
+					break;
 				default:
 					Unknown = true;
+					break;
 				}
 			}
 
@@ -2198,15 +2269,19 @@ public class ExecHelper {
 						Globals.getAuxParser().getNextParam();
 						Param = Globals.getAuxParser().makeString();
 					}
+					break;
 				case 2:
 					nRegs = Parser.getInstance().parseAsVector(EnergyMeterObj.NumEMRegisters, dRegisters);
 					iRegisters = new int[nRegs];
 					for (int i = 0; i < nRegs; i++)
 						iRegisters[i - 1] = (int) dRegisters[i];  // TODO: Check zero indexing
+					break;
 				case 3:
 					WhichFile = Param;
+					break;
 				default:
 					// ignore unnamed and extra params
+					break;
 				}
 			}
 
@@ -2256,15 +2331,20 @@ public class ExecHelper {
 					switch (Param.toLowerCase().charAt(0)) {
 					case 'c':
 						Quantity = DSSPlot.vizCURRENT;
+						break;
 					case 'v':
 						Quantity = DSSPlot.vizVOLTAGE;
+						break;
 					case 'p':
 						Quantity = DSSPlot.vizPOWER;
+						break;
 					}
 				case 2:
 					ElemName = Param;
+					break;
 				default:
 					// ignore unnamed and extra params
+					break;
 				}
 			}
 
@@ -2336,23 +2416,29 @@ public class ExecHelper {
 			} else {
 				ParamPointer = ReconductorCommands.getCommand(ParamName);
 			}
-			switch (ParamPointer	     ) {
+			switch (ParamPointer) {
 			case 1:
 				Line1 = Param;
+				break;
 			case 2:
 				Line2 = Param;
+				break;
 			case 3:
 				LineCode = Param;
 				LineCodeSpecified = true;
 				GeometrySpecified = false;
+				break;
 			case 4:
 				Geometry = Param;
 				LineCodeSpecified = false;
 				GeometrySpecified = true;
+				break;
 			case 5:
 				MyEditString = Param;
+				break;
 			default:
 				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28701);
+				break;
 			}
 
 			ParamName = Parser.getInstance().getNextParam();
@@ -2421,12 +2507,15 @@ public class ExecHelper {
 		switch (TraceDirection) {
 		case 1:
 			Utilities.traceAndEdit(pLine1, pLine2, EditString);
+			break;
 		case 2:
 			Utilities.traceAndEdit(pLine2, pLine1, EditString);
+			break;
 		default:
 			Globals.doSimpleMsg("Traceback path not found between Line1 and Line2.", 28707);
 			return Result;
 		}
+		return Result;
 	}
 
 	public static int doAddMarkerCmd() {
@@ -2450,14 +2539,19 @@ public class ExecHelper {
 			switch (ParamPointer) {
 			case 1:
 				BusName = Param;
+				break;
 			case 2:
 				DSSPlotImpl.setAddMarkerCode(parser.makeInteger());
+				break;
 			case 3:
 				DSSPlotImpl.setAddMarkerColor(parser.makeInteger());
+				break;
 			case 4:
 				DSSPlotImpl.setAddMarkerSize(parser.makeInteger());
+				break;
 			default:
 				// ignore unnamed and extra params
+				break;
 			}
 
 			ParamName = parser.getNextParam();
@@ -2542,8 +2636,10 @@ public class ExecHelper {
 		switch (Param.toLowerCase().charAt(0)) {
 		case 'd':
 			Action = "action=dblsave";
+			break;
 		default:
 			Action = "action=sngsave";  // default
+			break;
 		}
 
 		LoadShapeClass = (LoadShape) DSSClassDefs.getDSSClass("loadshape");
@@ -2660,16 +2756,22 @@ public class ExecHelper {
 			switch (ParamPointer) {
 			case 1:
 				StartLine = Param;
+				break;
 			case 2:
 				NewPhases = Param;
+				break;
 			case 3:
 				MyEditString = Param;
+				break;
 			case 4:
 				ScriptFileName = Param;
+				break;
 			case 5:
 				TransfStop = Utilities.interpretYesNo(Param);
+				break;
 			default:
 				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28711);
+				break;
 			}
 
 			ParamName = Parser.getInstance().getNextParam();
@@ -2719,12 +2821,16 @@ public class ExecHelper {
 			switch (ParamPointer) {
 			case 1:
 				BusName = Param;
+				break;
 			case 2:
 				Xval = Parser.getInstance().makeDouble();
+				break;
 			case 3:
 				Yval = Parser.getInstance().makeDouble();
+				break;
 			default:
 				Globals.doSimpleMsg("Error: Unknown Parameter on command line: "+Param, 28721);
+				break;
 			}
 
 			int iB = Globals.getActiveCircuit().getBusList().find(BusName);

@@ -138,6 +138,7 @@ public class ExportOptions {
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
+			break;
 		case 18:
 			parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
@@ -145,6 +146,7 @@ public class ExportOptions {
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
+			break;
 		case 7:  // Trap UE only flag
 			parser.getNextParam();
 			Parm2 = parser.makeString().toLowerCase();
@@ -152,9 +154,11 @@ public class ExportOptions {
 			if (Parm2.length() > 0)
 				if (Parm2.charAt(0) == 'u')
 					UEonlyOpt = true;
+			break;
 		case 14:  // Get monitor name for export monitors command
 			parser.getNextParam();
 			Parm2 = parser.makeString();
+			break;
 		case 31:  /* Get phases to plot */
 			parser.getNextParam();
 			Parm2 = parser.makeString();
@@ -174,6 +178,7 @@ public class ExportOptions {
 			} else if (Parm2.length() == 1) {
 				PhasesToPlot = parser.makeInteger();
 			}
+			break;
 		}
 
 		/* Pick up last parameter on line, alternate file name, if any */
@@ -185,59 +190,59 @@ public class ExportOptions {
 		/* Assign default file name if alternate not specified */
 		if (FileName.length() == 0) {
 			switch (ParamPointer) {
-			case 0: FileName = "EXP_VOLTAGES.CSV";
-			case 1: FileName = "EXP_SEQVOLTAGES.CSV";
-			case 2: FileName = "EXP_CURRENTS.CSV";
-			case 3: FileName = "EXP_SEQCURRENTS.CSV";
-			case 4: FileName = "EXP_ESTIMATION.CSV";   // Estimation error
-			case 5: FileName = "EXP_CAPACITY.CSV";
-			case 6: FileName = "EXP_OVERLOADS.CSV";
-			case 7: FileName = "EXP_UNSERVED.CSV";
-			case 8: FileName = "EXP_POWERS.CSV";
-			case 9: FileName = "EXP_SEQPOWERS.CSV";
-			case 10: FileName = "EXP_FAULTS.CSV";
-			case 11: FileName = "EXP_GENMETERS.CSV";
-			case 12: FileName = "EXP_LOADS.CSV";
-			case 13: FileName = "EXP_METERS.CSV";
+			case 0: FileName = "EXP_VOLTAGES.CSV"; break;
+			case 1: FileName = "EXP_SEQVOLTAGES.CSV"; break;
+			case 2: FileName = "EXP_CURRENTS.CSV"; break;
+			case 3: FileName = "EXP_SEQCURRENTS.CSV"; break;
+			case 4: FileName = "EXP_ESTIMATION.CSV"; break;  // estimation error
+			case 5: FileName = "EXP_CAPACITY.CSV"; break;
+			case 6: FileName = "EXP_OVERLOADS.CSV"; break;
+			case 7: FileName = "EXP_UNSERVED.CSV"; break;
+			case 8: FileName = "EXP_POWERS.CSV"; break;
+			case 9: FileName = "EXP_SEQPOWERS.CSV"; break;
+			case 10: FileName = "EXP_FAULTS.CSV"; break;
+			case 11: FileName = "EXP_GENMETERS.CSV"; break;
+			case 12: FileName = "EXP_LOADS.CSV"; break;
+			case 13: FileName = "EXP_METERS.CSV"; break;
 			//case 14: FileName is assigned
-			case 15: FileName = "EXP_YPRIM.CSV";
-			case 16: FileName = "EXP_Y.CSV";
-			case 17: FileName = "EXP_SEQZ.CSV";
-			case 18: FileName = "EXP_P_BYPHASE.CSV";
-			case 19: FileName = "CDPSM_Combined.XML";
-			case 20: FileName = "CDPSM_Functional.XML";
-			case 21: FileName = "CDPSM_Asset.XML";
-			case 22: FileName = "EXP_BUSCOORDS.CSV";
-			case 23: FileName = "EXP_LOSSES.CSV";
-			case 24: FileName = "EXP_GUIDS.CSV";
-			case 25: FileName = "EXP_Counts.CSV";
-			case 26: FileName = "EXP_Summary.CSV";
-			case 27: FileName = "CDPSM_ElectricalProperties.XML";
-			case 28: FileName = "CDPSM_Geographical.XML";
-			case 29: FileName = "CDPSM_Topology.XML";
-			case 30: FileName = "CDPSM_StateVariables.XML";
-			case 31: FileName = "EXP_Profile.CSV";
+			case 15: FileName = "EXP_YPRIM.CSV"; break;
+			case 16: FileName = "EXP_Y.CSV"; break;
+			case 17: FileName = "EXP_SEQZ.CSV"; break;
+			case 18: FileName = "EXP_P_BYPHASE.CSV"; break;
+			case 19: FileName = "CDPSM_Combined.XML"; break;
+			case 20: FileName = "CDPSM_Functional.XML"; break;
+			case 21: FileName = "CDPSM_Asset.XML"; break;
+			case 22: FileName = "EXP_BUSCOORDS.CSV"; break;
+			case 23: FileName = "EXP_LOSSES.CSV"; break;
+			case 24: FileName = "EXP_GUIDS.CSV"; break;
+			case 25: FileName = "EXP_Counts.CSV"; break;
+			case 26: FileName = "EXP_Summary.CSV"; break;
+			case 27: FileName = "CDPSM_ElectricalProperties.XML"; break;
+			case 28: FileName = "CDPSM_Geographical.XML"; break;
+			case 29: FileName = "CDPSM_Topology.XML"; break;
+			case 30: FileName = "CDPSM_StateVariables.XML"; break;
+			case 31: FileName = "EXP_Profile.CSV"; break;
 			default:
-				FileName = "EXP_VOLTAGES.CSV";
+				FileName = "EXP_VOLTAGES.CSV"; break;
 			}
 			FileName = Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FileName;  // Explicitly define directory
 		}
 
 		switch (ParamPointer) {
-		case 0: ExportResults.exportVoltages(FileName);
-		case 1: ExportResults.exportSeqVoltages(FileName);
-		case 2: ExportResults.exportCurrents(FileName);
-		case 3: ExportResults.exportSeqCurrents(FileName);
-		case 4: ExportResults.exportEstimation(FileName);   // Estimation error
-		case 5: ExportResults.exportCapacity(FileName);
-		case 6: ExportResults.exportOverloads(FileName);
-		case 7: ExportResults.exportUnserved(FileName, UEonlyOpt);
-		case 8: ExportResults.exportPowers(FileName, MVAOpt);
-		case 9: ExportResults.exportSeqPowers(FileName, MVAOpt);
-		case 10: ExportResults.exportFaultStudy(FileName);
-		case 11: ExportResults.exportGenMeters(FileName);
-		case 12: ExportResults.exportLoads(FileName);
-		case 13: ExportResults.exportMeters(FileName);
+		case 0: ExportResults.exportVoltages(FileName); break;
+		case 1: ExportResults.exportSeqVoltages(FileName); break;
+		case 2: ExportResults.exportCurrents(FileName); break;
+		case 3: ExportResults.exportSeqCurrents(FileName); break;
+		case 4: ExportResults.exportEstimation(FileName); break;  // estimation error
+		case 5: ExportResults.exportCapacity(FileName); break;
+		case 6: ExportResults.exportOverloads(FileName); break;
+		case 7: ExportResults.exportUnserved(FileName, UEonlyOpt); break;
+		case 8: ExportResults.exportPowers(FileName, MVAOpt); break;
+		case 9: ExportResults.exportSeqPowers(FileName, MVAOpt); break;
+		case 10: ExportResults.exportFaultStudy(FileName); break;
+		case 11: ExportResults.exportGenMeters(FileName); break;
+		case 12: ExportResults.exportLoads(FileName); break;
+		case 13: ExportResults.exportMeters(FileName); break;
 		case 14:
 			if (Parm2.length() > 0) {
 				pMon = (MonitorObj) Globals.getMonitorClass().find(Parm2);
@@ -250,25 +255,27 @@ public class ExportOptions {
 			} else {
 				Globals.doSimpleMsg("Monitor Name Not Specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
 			}
-		case 15: ExportResults.exportYprim(FileName);
-		case 16: ExportResults.exportY(FileName);
-		case 17: ExportResults.exportSeqZ(FileName);
-		case 18: ExportResults.exportPbyphase(FileName, MVAOpt);
-		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined);        // defaults to a load-flow model
-		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Functional);
-		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Asset);
-		case 22: ExportResults.exportBusCoords(FileName);
-		case 23: ExportResults.exportLosses(FileName);
-		case 24: ExportResults.exportUUIDs(FileName);
-		case 25: ExportResults.exportCounts(FileName);
-		case 26: ExportResults.exportSummary(FileName);
-		case 27: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ElectricalProperties);
-		case 28: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Geographical);
-		case 29: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Topology);
-		case 30: ExportResults.exportCDPSM(FileName, CIMProfileChoice.StateVariables);
-		case 31: ExportResults.exportProfile(FileName, PhasesToPlot);
+			break;
+		case 15: ExportResults.exportYprim(FileName); break;
+		case 16: ExportResults.exportY(FileName); break;
+		case 17: ExportResults.exportSeqZ(FileName); break;
+		case 18: ExportResults.exportPbyphase(FileName, MVAOpt); break;
+		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined); break;        // defaults to a load-flow model
+		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Functional); break;
+		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Asset); break;
+		case 22: ExportResults.exportBusCoords(FileName); break;
+		case 23: ExportResults.exportLosses(FileName); break;
+		case 24: ExportResults.exportUUIDs(FileName); break;
+		case 25: ExportResults.exportCounts(FileName); break;
+		case 26: ExportResults.exportSummary(FileName); break;
+		case 27: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ElectricalProperties); break;
+		case 28: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Geographical); break;
+		case 29: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Topology); break;
+		case 30: ExportResults.exportCDPSM(FileName, CIMProfileChoice.StateVariables); break;
+		case 31: ExportResults.exportProfile(FileName, PhasesToPlot); break;
 		default:
 			ExportResults.exportVoltages(FileName);
+			break;
 		}
 
 		int Result = 0;

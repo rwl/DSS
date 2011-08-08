@@ -271,6 +271,7 @@ public abstract class ShowResults {
 				for (i = 0; i < ckt.getNumBuses(); i++)
 					writeSeqVoltages(F, i, LL);
 
+				break;
 			case 1:
 				F.println();
 				if (LL) {
@@ -284,6 +285,7 @@ public abstract class ShowResults {
 				for (i = 0; i < ckt.getNumBuses(); i++)
 					writeBusVoltages(F, i, LL);
 
+				break;
 			case 2:
 				F.println();
 				F.println("NODE-GROUND VOLTAGES BY CIRCUIT ELEMENT");
@@ -321,6 +323,7 @@ public abstract class ShowResults {
 						writeElementVoltages(F, pElem, LL);
 					F.println();
 				}
+				break;
 			}
 
 			F.close();
@@ -519,6 +522,7 @@ public abstract class ShowResults {
 					}
 				}
 
+				break;
 			case 1:  // Element branch Currents
 
 				F.println();
@@ -558,6 +562,7 @@ public abstract class ShowResults {
 				for (CktElement pElem : ckt.getPCElements())
 					if (pElem.isEnabled())
 						writeTerminalCurrents(F, pElem, false);
+				break;
 			}
 			F.close();
 			FWriter.close();
@@ -610,8 +615,10 @@ public abstract class ShowResults {
 				switch (opt) {
 				case 1:
 					F.println(Utilities.pad("Element", MaxDeviceNameLength + 2) + " Term    P1(MW)   Q1(Mvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
+					break;
 				default:
 					F.println(Utilities.pad("Element", MaxDeviceNameLength + 2) + " Term    P1(kW)   Q1(kvar)       P2         Q2      P0      Q0       P_Norm      Q_Norm     P_Emerg    Q_Emerg");
+					break;
 				}
 				F.println();
 
@@ -780,6 +787,7 @@ public abstract class ShowResults {
 						}
 					}
 				}
+				break;
 			case 1:  /* Branch Powers */
 				F.println();
 				F.println("CIRCUIT ELEMENT POWER FLOW");
@@ -791,8 +799,10 @@ public abstract class ShowResults {
 				switch (opt) {
 				case 1:
 					F.println(Utilities.pad("  Bus", MaxBusNameLength) + " Phase     MW     +j   Mvar         MVA         PF");
+					break;
 				default:
 					F.println(Utilities.pad("  Bus", MaxBusNameLength) + " Phase     kW     +j   kvar         kVA         PF");
+					break;
 				}
 				F.println();
 
@@ -866,8 +876,10 @@ public abstract class ShowResults {
 				switch (opt) {
 				case 1:
 					F.println(Utilities.pad("  Bus", MaxBusNameLength) + " Phase     MW   +j  Mvar         MVA         PF");
+					break;
 				default:
 					F.println(Utilities.pad("  Bus", MaxBusNameLength) + " Phase     kW   +j  kvar         kVA         PF");
+					break;
 				}
 				F.println();
 
@@ -901,6 +913,7 @@ public abstract class ShowResults {
 					}
 					F.println();
 				}
+				break;
 			}
 
 			F.println();
@@ -980,10 +993,13 @@ public abstract class ShowResults {
 			switch (cktElem.getNPhases()) {
 			case 1:
 				S = Vph[0].multiply( Iph[0].conjugate() );
+				break;
 			case 2:
 				S = Vph[0].multiply( Iph[0].conjugate() ).add(Vph[1].multiply( Iph[2].conjugate() ));
+				break;
 			default:
 				S = V012[1].multiply( I012[1].conjugate() );
+				break;
 			}
 
 			if (opt == 1) S = S.multiply(0.001);
@@ -1151,8 +1167,10 @@ public abstract class ShowResults {
 				switch (opt) {
 				case 1:
 					F.println("Element                      Term    P1(MW)   Q1(Mvar)       P2         Q2      P0      Q0   ");
+					break;
 				default:
 					F.println("Element                      Term    P1(kW)   Q1(kvar)         P2         Q2      P0      Q0  ");
+					break;
 				}
 				F.println();
 
@@ -1181,6 +1199,7 @@ public abstract class ShowResults {
 						}
 				}
 
+				break;
 			case 1:
 				/* Write Bus Voltage */
 				F.println();
@@ -1242,8 +1261,10 @@ public abstract class ShowResults {
 				switch (opt) {
 				case 1:
 					F.println("  Bus       Phase     MW     +j   Mvar           MVA           PF");
+					break;
 				default:
 					F.println("  Bus       Phase     kW     +j   kvar           kVA           PF");
+					break;
 				}
 				F.println();
 
@@ -1292,6 +1313,7 @@ public abstract class ShowResults {
 							F.println();
 						}
 				}
+				break;
 			}
 
 			cBuffer = null;
@@ -1865,8 +1887,10 @@ public abstract class ShowResults {
 			switch (Param.length()) {
 			case 0:
 				Utilities.fireOffEditor(FileNm);
+				break;
 			default:
 				Globals.getDSSForms().showTreeView(FileNm);
+				break;
 			}
 		}
 	}

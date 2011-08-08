@@ -366,8 +366,10 @@ public class SolutionAlgs {
 					switch (sol.getRandomType()) {
 					case DSSGlobals.UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
+						break;
 					case DSSGlobals.GAUSSIAN:
 						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(), ckt.getDefaultDailyShapeObj().getStdDev()));
+						break;
 					}
 
 					for (int i = 0; i < nDaily; i++) {
@@ -432,10 +434,13 @@ public class SolutionAlgs {
 					switch (sol.getRandomType()) {
 					case DSSGlobals.UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
+						break;
 					case DSSGlobals.GAUSSIAN:
 						ckt.setLoadMultiplier(MathUtil.gauss(ckt.getDefaultDailyShapeObj().getMean(), ckt.getDefaultDailyShapeObj().getStdDev()));
+						break;
 					case DSSGlobals.LOGNORMAL:
 						ckt.setLoadMultiplier(MathUtil.quasiLognormal(ckt.getDefaultDailyShapeObj().getMean()));
+						break;
 					}
 
 					sol.solveSnap();

@@ -98,8 +98,10 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 				switch (ParamPointer) {
 				case 0:
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 630);
+					break;
 				default:
 					classEdit(ActiveFeederObj, ParamPointer - NumPropsThisClass);
+					break;
 				}
 
 				ParamName = Parser.getInstance().getNextParam();

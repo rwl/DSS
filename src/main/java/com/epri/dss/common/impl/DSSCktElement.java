@@ -276,10 +276,13 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		switch (Opt) {
 		case DSSGlobals.ALL_YPRIM:
 			Ymatrix = YPrim;
+			break;
 		case DSSGlobals.SERIES:
 			Ymatrix = YPrim_Series;
+			break;
 		case DSSGlobals.SHUNT:
 			Ymatrix = YPrim_Shunt;
+			break;
 		}
 		return 0;
 	}
@@ -295,12 +298,15 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		case DSSGlobals.ALL_YPRIM:
 			if (YPrim != null)
 				Result = YPrim.asArray(nOrder);
+			break;
 		case DSSGlobals.SERIES:
 			if (YPrim_Series != null)
 				Result = YPrim_Series.asArray(nOrder);
+			break;
 		case DSSGlobals.SHUNT:
 			if (YPrim_Shunt != null)
 				Result = YPrim_Shunt.asArray(nOrder);
+			break;
 		}
 
 		return Result;

@@ -21,10 +21,13 @@ public class CktElementClassImpl extends DSSClassImpl implements
 			switch (ParamPointer) {
 			case 0:
 				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
+				break;
 			case 2:
 				cktElem.setEnabled(Utilities.interpretYesNo(Parser.getInstance().makeString()));
+				break;
 			default:
 				super.classEdit(ActiveCktElemObj, ParamPointer - NumCktElemClassProps);
+				break;
 			}
 		}
 		return 0;

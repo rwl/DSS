@@ -258,6 +258,7 @@ public class DSSClassDefs {
 			return false;
 		default:
 			Globals.setLastClassReferenced(ClassRef);
+			break;
 		}
 
 		return true;

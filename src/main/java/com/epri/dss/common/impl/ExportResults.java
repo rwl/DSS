@@ -464,8 +464,10 @@ public class ExportResults {
 			switch (opt) {
 			case 1:
 				FPrinter.println("Element, Terminal, P(MW), Q(Mvar), P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+				break;
 			default:
 				FPrinter.println("Element, Terminal, P(kW), Q(kvar),  P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+				break;
 			}
 
 			// PD elements first
@@ -572,8 +574,10 @@ public class ExportResults {
 			switch (opt) {
 			case 1:
 				FPrinter.println("Element, NumTerminals, NumConductors, NumPhases, MW1, Mvar1, MW2, Mvar2, MW3, Mvar3, ... ");
+				break;
 			default:
 				FPrinter.println("Element, NumTerminals, NumConductors, NumPhases, kW1, kvar1, kW2, kvar2, kW3, kvar3, ... ");
+				break;
 			}
 
 			// PD elements first
@@ -646,8 +650,10 @@ public class ExportResults {
 			switch (opt) {
 			case 1:
 				FPrinter.println("Element, Terminal, P1(MW), Q1(Mvar), P2, Q2, P0, Q0, P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+				break;
 			default:
 				FPrinter.println("Element, Terminal, P1(kW), Q1(kvar), P2, Q2, P0, Q0, P_Normal, Q_Normal, P_Emergency, Q_Emergency");
+				break;
 			}
 
 			// PD elements first
@@ -1914,12 +1920,16 @@ public class ExportResults {
 			switch (PhasesToPlot) {
 			case DSSGlobals.PROFILELL:
 				S  = "L-L Voltage Profile";
+				break;
 			case DSSGlobals.PROFILELLALL:
 				S  = "L-L Voltage Profile";
+				break;
 			case DSSGlobals.PROFILELLPRI:
 				S  = "L-L Voltage Profile";
+				break;
 			default:
 				S  = "L-N Voltage Profile";
+				break;
 			}
 
 			FPrinter.println("Title=" + S + ", Distance in km");
@@ -1946,6 +1956,7 @@ public class ExportResults {
 										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 												iphs, 2, 0, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
+								break;
 							/* Plot all phases present (between 1 and 3) */
 							case DSSGlobals.PROFILEALL:
 								for (iphs = 0; iphs < 3; iphs++)
@@ -1960,6 +1971,7 @@ public class ExportResults {
 										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
+								break;
 							/* Plot all phases present (between 1 and 3) for Primary only */
 							case DSSGlobals.PROFILEALLPRI:
 								if (Bus1.getkVBase() > 1.0)
@@ -1975,6 +1987,7 @@ public class ExportResults {
 		                                    writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 		                                    		iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 										}
+								break;
 							case DSSGlobals.PROFILELL:
 								if (PresentCktElement.getNPhases() >= 3)
 									for (iphs = 0; iphs < 3; iphs++) {
@@ -1994,6 +2007,7 @@ public class ExportResults {
 										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
+								break;
 							case DSSGlobals.PROFILELLALL:
 								for (iphs = 0; iphs < 3; iphs++) {
 									iphs2 = iphs + 1;
@@ -2012,6 +2026,7 @@ public class ExportResults {
 									writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}
+								break;
 							case DSSGlobals.PROFILELLPRI:
 								if (Bus1.getkVBase() > 1.0)
 									for (iphs = 0; iphs < 3; iphs++) {
@@ -2031,6 +2046,7 @@ public class ExportResults {
 										writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 												iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 									}
+								break;
 							default:  // plot just the selected phase
 								iphs = PhasesToPlot;
 								if ((Bus1.findIdx(iphs) > 0) && (Bus2.findIdx(iphs) > 0)) {
@@ -2044,6 +2060,7 @@ public class ExportResults {
 									writeNewLine(FPrinter, PresentCktElement.getName(), Bus1.getDistFromMeter(), puV1, Bus2.getDistFromMeter(), puV2,
 											iphs, 2, Linetype, 0, 0, ckt.getNodeMarkerCode(), ckt.getNodeMarkerWidth());
 								}
+								break;
 							}
 						}
 					}

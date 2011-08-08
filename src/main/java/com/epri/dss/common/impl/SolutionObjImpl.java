@@ -200,8 +200,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			switch (year) {
 			case 0:  // TODO Check zero based indexing
 				ckt.setDefaultGrowthFactor(1.0);
+				break;
 			default:
 				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (year - 1)));
+				break;
 			}
 
 //			fire_InitControls();
@@ -211,40 +213,58 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			switch (DynaVars.SolutionMode) {
 			case Dynamics.SNAPSHOT:
 				solveSnap();
+				break;
 			case Dynamics.YEARLYMODE:
 				SolutionAlgs.solveYearly();
+				break;
 			case Dynamics.DAILYMODE:
 				SolutionAlgs.solveDaily();
+				break;
 			case Dynamics.DUTYCYCLE:
 				SolutionAlgs.solveDuty();
+				break;
 			case Dynamics.DYNAMICMODE:
 				SolutionAlgs.solveDynamic();
+				break;
 			case Dynamics.MONTECARLO1:
 				SolutionAlgs.solveMonte1();
+				break;
 			case Dynamics.MONTECARLO2:
 				SolutionAlgs.solveMonte2();
+				break;
 			case Dynamics.MONTECARLO3:
 				SolutionAlgs.solveMonte3();
+				break;
 			case Dynamics.PEAKDAY:
 				SolutionAlgs.solvePeakDay();
+				break;
 			case Dynamics.LOADDURATION1:
 				SolutionAlgs.solveLD1();
+				break;
 			case Dynamics.LOADDURATION2:
 				SolutionAlgs.solveLD2();
+				break;
 			case Dynamics.DIRECT:
 				solveDirect();
+				break;
 			case Dynamics.MONTEFAULT:
 				SolutionAlgs.solveMonteFault();  // Monte Carlo Fault Cases
+				break;
 			case Dynamics.FAULTSTUDY:
 				SolutionAlgs.solveFaultStudy();
+				break;
 			case Dynamics.AUTOADDFLAG:
 				ckt.getAutoAddObj().solve();
+				break;
 			case Dynamics.HARMONICMODE:
 				SolutionAlgs.solveHarmonic();
+				break;
 			case Dynamics.GENERALTIME:
 				SolutionAlgs.solveGeneralTime();
+				break;
 			default:
 				Globals.doSimpleMsg("Unknown solution mode.", 481);
+				break;
 			}
 		} catch (Esolv32Problem e) {
 			Globals.doSimpleMsg("Error Encountered in Solve: " + e.getMessage(), 482);
@@ -349,40 +369,58 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		switch (DynaVars.SolutionMode) {
 		case Dynamics.SNAPSHOT:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			break;
 		case Dynamics.YEARLYMODE:
 			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.DAILYMODE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.DUTYCYCLE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.GENERALTIME:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.DYNAMICMODE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			break;
 		case Dynamics.HARMONICMODE:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			break;
 		case Dynamics.MONTECARLO1:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			break;
 		case Dynamics.MONTECARLO2:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.MONTECARLO3:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.PEAKDAY:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.LOADDURATION1:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.LOADDURATION2:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor() * ckt.getDefaultHourMult().getReal());
+			break;
 		case Dynamics.DIRECT:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
+			break;
 		case Dynamics.MONTEFAULT:
 			ckt.setGeneratorDispatchReference(1.0);  // Monte Carlo Fault Cases solve  at peak load only base case
+			break;
 		case Dynamics.FAULTSTUDY:
 			ckt.setGeneratorDispatchReference(1.0);
+			break;
 		case Dynamics.AUTOADDFLAG:
 			ckt.setGeneratorDispatchReference(ckt.getDefaultGrowthFactor());   // peak load only
+			break;
 		default:
 			DSSGlobals.getInstance().doSimpleMsg("Unknown solution mode.", 483);
+			break;
 		}
 	}
 
@@ -582,8 +620,10 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		switch (Algorithm) {
 		case Solution.NORMALSOLVE:
 			doNormalSolution();
+			break;
 		case Solution.NEWTONSOLVE:
 			doNewtonSolution();
+			break;
 		}
 
 		Globals.getActiveCircuit().setIsSolved(ConvergedFlag);
@@ -872,6 +912,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			} else {
 				ckt.getControlQueue().doNearestActions(xHour, xSec); // ignore time advancement
 			}
+			break;
 		case DSSGlobals.EVENTDRIVEN:
 			MutableInt mHour = new MutableInt();
 			MutableDouble mSec = new MutableDouble();
@@ -880,9 +921,11 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			DynaVars.t = mSec.doubleValue();
 			if (!succ)
 				ControlActionsDone = true;
+			break;
 		case DSSGlobals.TIMEDRIVEN:
 			if (!ckt.getControlQueue().doActions(intHour, DynaVars.t))
 				ControlActionsDone = true;
+			break;
 		}
 	}
 
@@ -948,52 +991,68 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		case Dynamics.PEAKDAY:
 			DynaVars.h    = 3600.0;
 			NumberOfTimes = 24;
+			break;
 		case Dynamics.DAILYMODE:
 			DynaVars.h    = 3600.0;
 			NumberOfTimes = 24;
+			break;
 		case Dynamics.SNAPSHOT:
 			IntervalHrs   = 1.0;
 			NumberOfTimes = 1;
+			break;
 		case Dynamics.YEARLYMODE:
 			IntervalHrs   = 1.0;
 			DynaVars.h    = 3600.0;
 			NumberOfTimes = 8760;
+			break;
 		case Dynamics.DUTYCYCLE:
 			DynaVars.h  = 1.0;
 			ControlMode = DSSGlobals.TIMEDRIVEN;
+			break;
 		case Dynamics.DYNAMICMODE:
 			DynaVars.h     = 0.001;
 			ControlMode    = DSSGlobals.TIMEDRIVEN;
 			IsDynamicModel = true;
 			PreserveNodeVoltages = true;  // need to do this in case Y changes during this mode
+			break;
 		case Dynamics.GENERALTIME:
 			IntervalHrs   = 1.0;
 			DynaVars.h    = 3600.0;
 			NumberOfTimes = 1;  // just one time step per Solve call expected
+			break;
 		case Dynamics.MONTECARLO1:
 			IntervalHrs    = 1.0;
+			break;
 		case Dynamics.MONTECARLO2:
 			DynaVars.h     = 3600.0;
+			break;
 		case Dynamics.MONTECARLO3:
 			IntervalHrs    = 1.0;
+			break;
 		case Dynamics.MONTEFAULT:
 			IsDynamicModel = true;
+			break;
 		case Dynamics.FAULTSTUDY:
 			IsDynamicModel = true;
+			break;
 		case Dynamics.LOADDURATION1:
 			DynaVars.h = 3600.0;
 			ckt.setTrapezoidalIntegration(true);
+			break;
 		case Dynamics.LOADDURATION2:
 			intHour = 1;
 			ckt.setTrapezoidalIntegration(true);
+			break;
 		case Dynamics.AUTOADDFLAG:
 			IntervalHrs = 1.0;
 			ckt.getAutoAddObj().setModeChanged(true);
+			break;
 		case Dynamics.HARMONICMODE:
 			ControlMode     = DSSGlobals.CONTROLSOFF;
 			IsHarmonicModel = true;
 			LoadModel       = DSSGlobals.ADMITTANCE;
 			PreserveNodeVoltages = true;  // need to do this in case Y changes during this mode
+			break;
 		}
 
 		/* Moved here 9-8-2007 so that mode is changed before reseting monitors, etc. */
@@ -1053,12 +1112,16 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		switch (Value) {
 		case Dynamics.MONTEFAULT:
 			ValueIsDynamic = true;
+			break;
 		case Dynamics.DYNAMICMODE:
 			ValueIsDynamic = true;
+			break;
 		case Dynamics.FAULTSTUDY:
 			ValueIsDynamic = true;
+			break;
 		default:
 			ValueIsDynamic = false;
+			break;
 		}
 
 		/* When we go in and out of Dynamics mode, we have to do some special things */

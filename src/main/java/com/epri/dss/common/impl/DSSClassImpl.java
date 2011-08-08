@@ -232,6 +232,7 @@ public class DSSClassImpl implements DSSClass {
 			switch (ParamPointer) {
 			case 1:
 				makeLike(Parser.getInstance().makeString());  // like command
+				break;
 			}
 		}
 		return 0;

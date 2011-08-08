@@ -281,10 +281,13 @@ public class Utilities {
 		switch (S2.charAt(0)) {
 		case 'a':
 			Result = DSSGlobals.ADMITTANCE;
+			break;
 		case 'p':
 			Result = DSSGlobals.POWERFLOW;
+			break;
 		default:
 			Result = DSSGlobals.ADMITTANCE;
+			break;
 		}
 
 		/* If this represents a change, invalidate all the PC Yprims */
@@ -329,7 +332,7 @@ public class Utilities {
 		case 'l':
 			return DSSGlobals.LOGNORMAL;
 		default:
-		return 0;  // no variation for any other entry
+			return 0;  // no variation for any other entry
 		}
 	}
 
@@ -564,13 +567,17 @@ public class Utilities {
 				switch (ch) {
 				case 'h':
 					Result = Result * 3600.0;
+					break;
 				case 'm':
 					Result = Result * 60.0;
+					break;
 				case 's':
 					// do nothing
+					break;
 				default:
 					Result = Globals.getActiveCircuit().getSolution().getDynaVars().h;  // Don't change it
 					Globals.doSimpleMsg("Error in specification of StepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
+					break;
 				}
 			} catch (NumberFormatException ee) {
 				Result = Globals.getActiveCircuit().getSolution().getDynaVars().h; // Don't change it
@@ -706,9 +713,11 @@ public class Utilities {
 		case -1:
 			ObjName = FullObjName.substring(0, FullObjName.length());  // assume it is all objname; class defaults
 			ClassName = "";
+			break;
 		default:
 			ClassName = FullObjName.substring(0, dotpos);
 			ObjName   = FullObjName.substring(dotpos + 1, FullObjName.length());
+			break;
 		}
 	}
 
@@ -969,8 +978,10 @@ public class Utilities {
 			switch (pLoad.getLoadSpecType()) {
 			case 3:
 				F.println("Load."+pLoad.getName()+".AllocationFactor=" + String.format("%-.5g", pLoad.getkVAAllocationFactor()));
+				break;
 			case 4:
 				F.println("Load."+pLoad.getName()+".CFactor=" + String.format("%-.5g", pLoad.getCFactor()));
+				break;
 			}
 		}
 
@@ -1836,12 +1847,16 @@ public class Utilities {
 			switch (How.toUpperCase().charAt(0)) {
 			case 'U':
 				writeUniformGenerators(F, kW, PF);
+				break;
 			case 'R':
 				writeRandomGenerators(F, kW, PF);
+				break;
 			case 'S':
 				writeEveryOtherGenerators(F, kW, PF, Skip);
+				break;
 			default:
 				writeProportionalGenerators(F, kW, PF);
+				break;
 			}
 			Globals.setGlobalResult(Fname);
 		} finally {
@@ -2126,13 +2141,17 @@ public class Utilities {
 			switch (ss.charAt(1)) {
 			case 'a':
 				Result = DSSGlobals.USEDAILY;
+				break;
 			case 'u':
 				Result = DSSGlobals.USEDUTY;
+				break;
 			}
 		case 'y':
 			Result = DSSGlobals.USEYEARLY;
+			break;
 		case 'n':
 			Result = DSSGlobals.USENONE;
+			break;
 		}
 		return Result;
 	}
@@ -2143,10 +2162,13 @@ public class Utilities {
 		switch (ss.charAt(0)) {
 		case 'c':
 			Result = DSSGlobals.SIMPLECARSON;
+			break;
 		case 'f':
 			Result = DSSGlobals.FULLCARSON;
+			break;
 		case 'd':
 			Result = DSSGlobals.DERI;
+			break;
 		}
 		return Result;
 	}
@@ -2311,8 +2333,10 @@ public class Utilities {
 					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
 					case DSSClassDefs.XFMR_ELEMENT:
 						S = S + String.format("Wdg=%d Bus=%s ", i, NewBusName);
+						break;
 					default:
 						S = S + String.format("Bus%d=%s ", i, NewBusName);
+						break;
 					}
 	    		}
 				parser.setCmdString(S);
@@ -2337,45 +2361,46 @@ public class Utilities {
 				ControlUpDateStrings.add (S + String.format("Capacitor=%s ",
 						MakeNewCktElemName("capacitor." + pCktElem.getPropertyValue(2)).substring(10, 99)));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.REG_CONTROL:
 				// handled below
+				break;
 			case DSSClassDefs.RELAY_CONTROL:
 				S = String.format("MonitoredObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
 				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.RECLOSER_CONTROL:
 				S = String.format("MonitoredObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
 				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.FUSE_CONTROL:
 				S = String.format("MonitoredObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0)));
 				ControlUpDateStrings.add ( S + String.format("SwitchedObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(2))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.GEN_CONTROL:
 				ControlUpDateStrings.add (String.format("Element=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.STORAGE_CONTROL:
 				ControlUpDateStrings.add (String.format("Element=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 			case DSSClassDefs.SWT_CONTROL:
 				ControlUpDateStrings.add (String.format("SwitchedObj=%s ",
 						MakeNewCktElemName(pCktElem.getPropertyValue(0))));
 				ControlUpDatePtrs.add(pCktElem);
-
+				break;
 	    	}
 	    }
 
@@ -2400,7 +2425,9 @@ public class Utilities {
 	                    	pCtrlElem.edit();
 	                    }
 					}
+					break;
 	            default:
+	    			break;
 	            }
 			}
 	    }

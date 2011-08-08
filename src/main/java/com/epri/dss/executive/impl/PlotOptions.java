@@ -172,72 +172,99 @@ public class PlotOptions {
 					plot.setPlotType(PlotType.AutoAddLogPlot);
 					plot.setObjectName(Globals.getCircuitName_() + "AutoAddLog.csv");
 					plot.setValueIndex(2);
+					break;
 				case 'C':
 					plot.setPlotType(PlotType.CircuitPlot);
+					break;
 				case 'G':
 					plot.setPlotType(PlotType.GeneralDataPlot);
+					break;
 				case 'L':
 					plot.setPlotType(PlotType.LoadShape);
+					break;
 				case 'M':
 					plot.setPlotType(PlotType.MonitorPlot);
+					break;
 				case 'P':
-
 					if (Utilities.compareTextShortest("pro", Param) == 0) {
 						plot.setPlotType(PlotType.Profile);
 					} else {
 						plot.setPlotType(PlotType.PriceShape);
 					}
+					break;
 				case 'T':
 					plot.setPlotType(PlotType.TShape);
+					break;
 				case 'D':
 					plot.setPlotType(PlotType.DaisyPlot);
 					plot.getDaisyBusList().clear();
+					break;
 				case 'Z':
 					plot.setPlotType(PlotType.MeterZones);
+					break;
 				}
+				break;
 			case 1:
 				switch (Param.charAt(0)) {
 				case 'V':
 					plot.setQuantity(PlotQuantity.Voltage);
+					break;
 				case 'C':
 					switch (Param.charAt(1)) {
 					case 'A':
 						plot.setQuantity(PlotQuantity.Capacity);
+						break;
 					case 'U':
 						plot.setQuantity(PlotQuantity.Current);
+						break;
 					}
+					break;
 				case 'P':
 					plot.setQuantity(PlotQuantity.Power);
+					break;
 				case 'L':
 					plot.setQuantity(PlotQuantity.Losses);
+					break;
 				default:
 					plot.setQuantity(PlotQuantity.None);
 					plot.setValueIndex(parser.makeInteger());
+					break;
 				}
+				break;
 			case 2:
 				plot.setMaxScale(parser.makeDouble());
 				if (plot.getMaxScale() > 0.0)
 					plot.setMaxScaleIsSpecified(true);  // Indicate the user wants a particular value
+				break;
 			case 3:
 				plot.setDots(Utilities.interpretYesNo(Param));
+				break;
 			case 4:
 				plot.setLabels(Utilities.interpretYesNo(Param));
+				break;
 			case 5:
 				plot.setObjectName(parser.makeString());
+				break;
 			case 6:
 				plot.setShowLoops(Utilities.interpretYesNo(Param));
 				if (plot.isShowLoops())
 					plot.setPlotType(PlotType.MeterZones);
+				break;
 			case 7:
 				plot.setTriColorMax(parser.makeDouble());
+				break;
 			case 8:
 				plot.setTriColorMid(parser.makeDouble());
+				break;
 			case 9:
 				plot.setColor1(Utilities.interpretColor(Param));
+				break;
 			case 10:
 				plot.setColor2(Utilities.interpretColor(Param));
+				break;
 			case 11:
 				plot.setColor3(Utilities.interpretColor(Param));
+				break;
 			case 12:  // Channel definitions for Plot Monitor
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {  // Else take the defaults
@@ -248,6 +275,7 @@ public class PlotOptions {
 					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
 						plot.getBases()[i] = 1.0;
 				}
+				break;
 			case 13:
 				NumChannels = parser.parseAsVector(51, DblBuffer);  // allow up to 50 channels
 				if (NumChannels > 0) {
@@ -255,19 +283,26 @@ public class PlotOptions {
 					for (int i = 0; i < NumChannels - 1; i++)  // TODO Check zero indexing
 						plot.getBases()[i] = DblBuffer[i];
 				}
+				break;
 			case 14:
 				plot.setShowSubs(Utilities.interpretYesNo(Param));
+				break;
 			case 15:
 				plot.setMaxLineThickness(parser.makeInteger());
+				break;
 			case 16:
 				Utilities.interpretStringListArray(Param, plot.getDaisyBusList());  // read in Bus list
+				break;
 			/*case 17:
 				plot.setMinScale(parser.makeDouble());
-				plot.setMinScaleIsSpecified(true);*/    // Indicate the user wants a particular value
+				plot.setMinScaleIsSpecified(true);    // Indicate the user wants a particular value
+				break;*/
 			/*case 18:
-				plot.setThreePhLineStyle = parser.makeInteger();*/
+				plot.setThreePhLineStyle = parser.makeInteger();
+				break;*/
 			/*case 19:
-				plot.setSinglePhLineStyle = parser.makeInteger();*/
+				plot.setSinglePhLineStyle = parser.makeInteger();
+				break;*/
 			/*case 20:  // Parse off phase(s) to plot
 				plot.setPhasesToPlot(PROFILE3PH); // the default
 				if (Utilities.compareTextShortest(Param, "default") == 0) {
@@ -278,7 +313,8 @@ public class PlotOptions {
 					plot.setPhasesToPlot(PROFILEALLPRI) {
 				} else if (Param.length() == 1) {
 					plot.setPhasesToPlot(parser.makeInteger());
-				}*/
+				}
+				break;*/
 			}
 
 			ParamName = parser.getNextParam().toUpperCase();

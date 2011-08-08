@@ -96,9 +96,11 @@ public class YMatrix {
 		case WHOLEMATRIX:
 			resetSparseMatrix(sol.getYsystem(), YMatrixSize);
 			sol.setY(sol.getYsystem());
+			break;
 		case SERIESONLY:
 			resetSparseMatrix(sol.getYseries(), YMatrixSize);
 			sol.setY(sol.getYseries());
+			break;
 		}
 
 		// tune up the Yprims if necessary
@@ -119,8 +121,10 @@ public class YMatrix {
 			switch (BuildOption) {
 			case WHOLEMATRIX:
 				Utilities.logThisEvent("Building Whole Y Matrix");
+				break;
 			case SERIESONLY:
 				Utilities.logThisEvent("Building Series Y Matrix");
+				break;
 			}
 
 		// Add in Yprims for all devices
@@ -129,8 +133,10 @@ public class YMatrix {
 				switch (BuildOption) {
 				case WHOLEMATRIX:
 					CmatArray = pElem.getYPrimValues(DSSGlobals.ALL_YPRIM);
+					break;
 				case SERIESONLY:
 					CmatArray = pElem.getYPrimValues(DSSGlobals.SERIES);
+					break;
 				}
 				// new function adding primitive Y matrix to KLU system Y matrix
 				if (CmatArray != null)
@@ -163,8 +169,10 @@ public class YMatrix {
 		case WHOLEMATRIX:
 			sol.setSeriesYInvalid(true);  // Indicate that the Series matrix may not match
 			sol.setSystemYChanged(false);
+			break;
 		case SERIESONLY:
 			sol.setSeriesYInvalid(false);  // SystemYChange unchanged
+			break;
 		}
 
 		// Deleted RCD only done now on mode change

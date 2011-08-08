@@ -246,7 +246,7 @@ public class DSSGlobals {
 
 	/* Set object active by name */
 	public void setObject(String Param) {
-		String ObjName, ObjClass;
+		String ObjName, ObjClass = null;
 
 		// Split off Obj class and name
 		int dotpos = Param.indexOf(".");
@@ -254,9 +254,11 @@ public class DSSGlobals {
 		case 0:
 			// assume it is all name; class defaults
 			ObjName = Param;
+			break;
 		default:
 			ObjClass = Param.substring(0, dotpos - 1);
 			ObjName = Param.substring(dotpos + 1, Param.length());
+			break;
 		}
 
 		if (ObjClass.length() > 0)
@@ -271,9 +273,11 @@ public class DSSGlobals {
 				switch (ActiveDSSObject.getDSSObjType()) {
 				case DSSClassDefs.DSS_OBJECT:
 					// do nothing for general DSS object
+					break;
 				default:
 					// for circuit types, set ActiveCircuit Element, too
 					ActiveCircuit.setActiveCktElement((DSSCktElement) ActiveDSSClass.getActiveObj());
+					break;
 				}
 			}
 		} else {
