@@ -110,32 +110,45 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ am.getName() + "\"", 661);
+				break;
 			case 0:
 				am.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				am.setMeteredTerminal(parser.makeInteger());
+				break;
 			case 2:
 				am.setMode(parser.makeInteger());
+				break;
 			case 3:
 				switch (Param.toLowerCase().charAt(0)) {
 				case 's':
 					am.save();
+					break;
 				case 'c':
 					am.resetIt();
+					break;
 				case 'r':
 					am.resetIt();
+					break;
 				case 't':
 					am.takeSample();
+					break;
 				}
+				break;
 			case 4:
 				am.setIncludeResidual( Utilities.interpretYesNo(Param) );
+				break;
 			case 5:
 				am.setVIpolar( Utilities.interpretYesNo(Param) );
+				break;
 			case 6:
 				am.setPpolar( Utilities.interpretYesNo(Param) );
+				break;
 			default:
 				// Inherited parameters
 				classEdit(getActiveMonitorObj(), ParamPointer - Monitor.NumPropsThisClass);
+				break;
 			}
 
 			ParamName = parser.getNextParam();

@@ -115,8 +115,10 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			} else {
 				Vbase = kVBase * 1000.0 / DSSGlobals.SQRT3;
 			}
+			break;
 		case 1:
 			Vbase = kVBase * 1000.0;
+			break;
 		}
 	}
 
@@ -159,9 +161,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		case 1:
 			for (int i = 0; i < nPhases; i++)
 				CalculatedVoltage[i] = Vterminal[i].subtract( Vterminal[rotatePhases(i)] );
+			break;
 		default:
 			for (int i = 0; i < nPhases; i++)
 				CalculatedVoltage[i] = Vterminal[i];
+			break;
 		}
 	}
 

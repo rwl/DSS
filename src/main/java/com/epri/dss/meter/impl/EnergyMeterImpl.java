@@ -201,71 +201,99 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ aem.getName() + "\"", 520);
+				break;
 			case 0:
 				aem.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				aem.setMeteredTerminal(parser.makeInteger());
+				break;
 			case 2:  /* Actions */
 				switch (Param.toLowerCase().charAt(0)) {
 				case 'a':
 					aem.allocateLoad();
+					break;
 				case 'c':
 					aem.resetRegisters();
+					break;
 				case 'r':
 					aem.reduceZone();
+					break;
 				case 's':
 					aem.saveRegisters();
+					break;
 				case 't':
 					aem.takeSample();
+					break;
 				case 'z':
 					aem.zoneDump();
+					break;
 				}
+				break;
 			case 3:
 				processOptions(Param);
+				break;
 			case 4:
 				aem.setMaxZonekVA_Norm(parser.makeDouble());
+				break;
 			case 5:
 				aem.setMaxZonekVA_Emerg(parser.makeDouble());
+				break;
 			case 6:
 				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());   // Inits to zero
+				break;
 			case 7:
 				Utilities.interpretAndAllocStrArray(Param, aem.getDefinedZoneListSize(), aem.getDefinedZoneList());
+				break;
 			case 8:
 				aem.setLocalOnly(Utilities.interpretYesNo(Param));
+				break;
 			case 9:
 				interpretRegisterMaskArray(aem.getTotalsMask());
+				break;
 			case 10:
 				aem.setLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 11:
 				aem.setLineLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 12:
 				aem.setXfmrLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 13:
 				aem.setSeqLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 14:
 				aem.setThreePhaseLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 15:
 				aem.setVBaseLosses(Utilities.interpretYesNo(Param));
+				break;
 			case 16:
 				aem.setPhaseVoltageReport(Utilities.interpretYesNo(Param));
-			/* case 10: aem.setHasFeeder(Utilities.interpretYesNo(Param));*/
+				break;
+			/* case 10: aem.setHasFeeder(Utilities.interpretYesNo(Param)); break;*/
 			default:
 				classEdit(ActiveEnergyMeterObj, ParamPointer - EnergyMeter.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			case 0:
 				aem.setMeteredElementChanged(true);
 				DoRecalc = true;
+				break;
 			case 1:
 				aem.setMeteredElementChanged(true);
 				DoRecalc = true;
+				break;
 			case 10:
 				if (aem.isHasFeeder()) {
 					DoRecalc = true;
 				} else {
 					aem.removeFeederObj();
 				}
+				break;
 			}
 
 			ParamName = parser.getNextParam();
@@ -511,16 +539,22 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				switch (S2.charAt(0)) {
 				case 'e':
 					aem.setExcessFlag(true);
+					break;
 				case 't':
 					aem.setExcessFlag(false);
+					break;
 				case 'r':
 					aem.setZoneIsRadial(true);
+					break;
 				case 'm':
 					aem.setZoneIsRadial(false);
+					break;
 				case 'c':
 					aem.setVoltageUEOnly(false);
+					break;
 				case 'v':
 					aem.setVoltageUEOnly(true);
+					break;
 				}
 		}
 	}

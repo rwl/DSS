@@ -556,9 +556,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 								VBaseLoad[vbi] = VBaseLoad[vbi] + Load_kW;
 						}
 					}
+					break;
 				case DSSClassDefs.GEN_ELEMENT:
 					pGen = (GeneratorObj) PCelem;
 					accumulateGen(pGen, TotalGenkW, TotalGenkVAr);
+					break;
 				}
 				PCelem = (PCElement) BranchList.getNextObject();
 			}
@@ -1054,10 +1056,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					F.print(" C");
 				}
 				F.println(")");
+				break;
 			case 6:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				break;
 			default:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				break;
 			}
 		}
 
@@ -1133,8 +1138,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].NodeNum;
 						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // Restrict to phases 1..3
 							LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * LoadElem.getSensorObj().getPhsAllocationFactor()[ConnectedPhase] );
+						break;
 					default:
 						LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * AvgAllocFactor);
+						break;
 					}
 				}
 				LoadElem = (LoadObj) BranchList.getNextObject();  /* Next load at this bus */
@@ -1236,14 +1243,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (BranchList == null) makeMeterZoneLists();
 
 		switch (DSSGlobals.getInstance().getActiveCircuit().getReductionStrategy()) {
-		case rsStubs:         ReduceAlgs.doReduceStubs(BranchList);
-		case rsTapEnds:       ReduceAlgs.doReduceTapEnds (BranchList);
-		case rsMergeParallel: ReduceAlgs.doMergeParallelLines(BranchList);
-		case rsDangling:      ReduceAlgs.doReduceDangling(BranchList);
-		case rsBreakLoop:     ReduceAlgs.doBreakLoops(BranchList);
-		case rsSwitches:      ReduceAlgs.doReduceSwitches(BranchList);
+		case rsStubs:         ReduceAlgs.doReduceStubs(BranchList); break;
+		case rsTapEnds:       ReduceAlgs.doReduceTapEnds (BranchList); break;
+		case rsMergeParallel: ReduceAlgs.doMergeParallelLines(BranchList); break;
+		case rsDangling:      ReduceAlgs.doReduceDangling(BranchList); break;
+		case rsBreakLoop:     ReduceAlgs.doBreakLoops(BranchList); break;
+		case rsSwitches:      ReduceAlgs.doReduceSwitches(BranchList); break;
 		default:
 			ReduceAlgs.doReduceDefault(BranchList);
+			break;
 		}
 
 		// Resynchronize with Feeders
@@ -1364,10 +1372,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		switch (Index) {
 		case 3:
 			Result = "(";
+			break;
 		case 6:
 			Result = "(";
+			break;
 		default:
 			Result = "";
+			break;
 		}
 
 		switch (Index) {
@@ -1387,15 +1398,19 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			} else {
 				Result = Result + " C";
 			}
+			break;
 		default:
 			Result = Result + super.getPropertyValue(Index);
+			break;
 		}
 
 		switch (Index) {
 		case 3:
 			Result = Result + ")";
+			break;
 		case 6:
 			Result = Result + ")";
+			break;
 		}
 
 		return Result;

@@ -194,6 +194,7 @@ public class ReduceAlgs {
 							case 0:  /* Throw away if dangling */
 								if (pb.getNumObjects() == 0)
 									LineElement1.setEnabled(false);
+								break;
 
 							case 1:
 								if (pb.getNumObjects() == 0)
@@ -204,6 +205,7 @@ public class ReduceAlgs {
 											if (!LineElement2.isIsSwitch())
 												LineElement2.mergeWith(LineElement1, true);  /* Series Merge */
 									}
+								break;
 							}
 						}
 				}

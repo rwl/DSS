@@ -122,11 +122,13 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					Globals.doSimpleMsg(MeteredElement.getName() + " is not a transformer!", 663);
 					return;
 				}
+				break;
 			case 3:  // Must be PCElement
 				if ((MeteredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
 					Globals.doSimpleMsg(MeteredElement.getName() + " must be a power conversion element (Load or Generator)!", 664);
 					return;
 				}
+				break;
 			}
 
 			if (MeteredTerminal > MeteredElement.getNTerms()) {
@@ -150,9 +152,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				case 3:
 					NumStateVars = ((PCElement) MeteredElement).numVariables();
 					StateBuffer = (double[]) Utilities.resizeArray(StateBuffer, NumStateVars);
+					break;
 				default:
 					CurrentBuffer = (Complex[]) Utilities.resizeArray(CurrentBuffer, MeteredElement.getYorder());
 					VoltageBuffer = (Complex[]) Utilities.resizeArray(VoltageBuffer, MeteredElement.getNConds());
+					break;
 				}
 
 				clearMonitorStream();
@@ -179,9 +183,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			case 3:
 				NumStateVars = ((PCElement) MeteredElement).numVariables();
 				StateBuffer = (double[]) Utilities.resizeArray(StateBuffer, NumStateVars);
+				break;
 			default:
 				CurrentBuffer = (Complex[]) Utilities.resizeArray(CurrentBuffer, MeteredElement.getYorder());
 				VoltageBuffer = (Complex[]) Utilities.resizeArray(VoltageBuffer, MeteredElement.getNConds());
+				break;
 			}
 			clearMonitorStream();
 			ValidMonitor = true;
@@ -228,6 +234,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			case 2:
 //				RecordSize = 1;  // Transformer Taps
 				StrBuffer.append("Tap (pu)");
+				break;
 			case 3:
 //				RecordSize = NumStateVars;   // State variables
 				for (i = 0; i < NumStateVars; i++) {
@@ -236,6 +243,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					if (i < NumStateVars)
 						StrBuffer.append(", ");
 				}
+				break;
 			default:
 				// Compute RecordSize
 				// Use same logic as in TakeSample method.
@@ -282,98 +290,103 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 								StrBuffer.append(", ");
 						}
 					}
-					case 64:  // Save Pos Seq or Total of all Phases or Total power (Complex)
+					break;
+				case 64:  // Save Pos Seq or Total of all Phases or Total power (Complex)
 //						RecordSize = 2;
-						if (!IsPower) {
+					if (!IsPower) {
 //							RecordSize = RecordSize + 2;
-							if (VIpolar) {
-								StrBuffer.append("V1, V1ang, I1, I1ang");
-							} else {
-								StrBuffer.append("V1.re, V1.im, I1.re, I1.im");
-							}
+						if (VIpolar) {
+							StrBuffer.append("V1, V1ang, I1, I1ang");
 						} else {
-							if (Ppolar) {
-								StrBuffer.append("S1 (kVA), Ang ");
-							} else {
-								StrBuffer.append("P1 (kW), Q1 (kvar)");
-							}
+							StrBuffer.append("V1.re, V1.im, I1.re, I1.im");
 						}
-					case 96:  // Save Pos Seq or Aver magnitude of all Phases of total kVA (Magnitude)
+					} else {
+						if (Ppolar) {
+							StrBuffer.append("S1 (kVA), Ang ");
+						} else {
+							StrBuffer.append("P1 (kW), Q1 (kvar)");
+						}
+					}
+					break;
+				case 96:  // Save Pos Seq or Aver magnitude of all Phases of total kVA (Magnitude)
 //						RecordSize = 1;
-						if (!IsPower) {
+					if (!IsPower) {
 //							RecordSize = RecordSize + 1;
-							StrBuffer.append("V, I ");
+						StrBuffer.append("V, I ");
+					} else {
+						if (Ppolar) {
+							StrBuffer.append("S1 (kVA)");
 						} else {
-							if (Ppolar) {
-								StrBuffer.append("S1 (kVA)");
-							} else {
-								StrBuffer.append("P1 (kW)");
-							}
+							StrBuffer.append("P1 (kW)");
 						}
+					}
+					break;
 
-					default:  // save  V and I in mag and angle or complex kW, kvar
+				default:  // save  V and I in mag and angle or complex kW, kvar
 //						RecordSize = NumVI * 2;
-						if (!IsPower) {
-							if (IsPosSeq) {
-								iMin = 0;
-								iMax = NumVI - 1;
-							} else {
-								iMin = 1;
-								iMax = NumVI;
-							}
+					if (!IsPower) {
+						if (IsPosSeq) {
+							iMin = 0;
+							iMax = NumVI - 1;
+						} else {
+							iMin = 1;
+							iMax = NumVI;
+						}
 //							RecordSize = RecordSize + NumVI * 2;
 //							if (IncludeResidual) RecordSize += 4;
-							for (i = iMin; i < iMax; i++) {
-								if (VIpolar) {
-									StrBuffer.append("V"+String.valueOf(i)+", VAngle"+String.valueOf(i));
-								} else {
-									StrBuffer.append("V"+String.valueOf(i)+".re, V"+String.valueOf(i)+".im");
-								}
-								StrBuffer.append(", ");
-							}
-							if (IncludeResidual) {
-								if (VIpolar) {
-									StrBuffer.append("VN, VNAngle");
-								} else {
-									StrBuffer.append("VN.re, VN.im");
-								}
-								StrBuffer.append(", ");
-							}
-							for (i = iMin; i < iMax; i++) {
-								if (VIpolar) {
-									StrBuffer.append("I"+String.valueOf(i)+", IAngle"+String.valueOf(i));
-								} else {
-									StrBuffer.append("I"+String.valueOf(i)+".re, I"+String.valueOf(i)+".im");
-								}
-								if (i < NumVI)
-									StrBuffer.append(", ");
-							}
-							if (IncludeResidual) {
-								if (VIpolar) {
-									StrBuffer.append(", IN, INAngle");
-								} else {
-									StrBuffer.append(", IN.re, IN.im");
-								}
-							}
-						} else {
-							if (IsPosSeq) {
-								iMin = 0;
-								iMax = NumVI - 1;
+						for (i = iMin; i < iMax; i++) {
+							if (VIpolar) {
+								StrBuffer.append("V"+String.valueOf(i)+", VAngle"+String.valueOf(i));
 							} else {
-								iMin = 1;
-								iMax = NumVI;
+								StrBuffer.append("V"+String.valueOf(i)+".re, V"+String.valueOf(i)+".im");
 							}
-							for (i = iMin; i < iMax; i++) {
-								if (Ppolar) {
-									StrBuffer.append("S"+String.valueOf(i)+" (kVA), Ang"+String.valueOf(i));
-								} else {
-									StrBuffer.append("P"+String.valueOf(i)+" (kW), Q"+String.valueOf(i)+" (kvar)");
-								}
-								if (i < NumVI)
-									StrBuffer.append(", ");
+							StrBuffer.append(", ");
+						}
+						if (IncludeResidual) {
+							if (VIpolar) {
+								StrBuffer.append("VN, VNAngle");
+							} else {
+								StrBuffer.append("VN.re, VN.im");
+							}
+							StrBuffer.append(", ");
+						}
+						for (i = iMin; i < iMax; i++) {
+							if (VIpolar) {
+								StrBuffer.append("I"+String.valueOf(i)+", IAngle"+String.valueOf(i));
+							} else {
+								StrBuffer.append("I"+String.valueOf(i)+".re, I"+String.valueOf(i)+".im");
+							}
+							if (i < NumVI)
+								StrBuffer.append(", ");
+						}
+						if (IncludeResidual) {
+							if (VIpolar) {
+								StrBuffer.append(", IN, INAngle");
+							} else {
+								StrBuffer.append(", IN.re, IN.im");
 							}
 						}
+					} else {
+						if (IsPosSeq) {
+							iMin = 0;
+							iMax = NumVI - 1;
+						} else {
+							iMin = 1;
+							iMax = NumVI;
+						}
+						for (i = iMin; i < iMax; i++) {
+							if (Ppolar) {
+								StrBuffer.append("S"+String.valueOf(i)+" (kVA), Ang"+String.valueOf(i));
+							} else {
+								StrBuffer.append("P"+String.valueOf(i)+" (kW), Q"+String.valueOf(i)+" (kvar)");
+							}
+							if (i < NumVI)
+								StrBuffer.append(", ");
+						}
+						break;
+					}
 				}
+				break;
 			}  /* switch */
 
 			// RecordSize is the number of singles in the sample (after the hour and sec)
@@ -500,6 +513,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			} catch (Exception e) {
 				Globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
 			}
+			break;
 
 		case 1:
 
@@ -518,6 +532,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			} catch (Exception e) {
 				Globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
 			}
+			break;
 
 		case 2:  // Monitor Transformer Tap Position
 
@@ -530,7 +545,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			return;  // Done with this mode now
 
 		default:
-//			return; // Ignore invalid mask
+			return;  // Ignore invalid mask
 		}
 
 
@@ -566,12 +581,14 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				Utilities.convertComplexArrayToPolar(VoltageBuffer, NumVI);
 				Utilities.convertComplexArrayToPolar(CurrentBuffer, NumVI * MeteredElement.getNTerms());  // get all of current buffer
 			}
+			break;
 
 		case 1:  // Convert Voltage Buffer to power kW, kvar or Mag/Angle
 			MathUtil.calckPowers(VoltageBuffer, VoltageBuffer, CurrentBuffer[Offset + 1], NumVI);
 			if (IsSequence || Globals.getActiveCircuit().isPositiveSequence()) Utilities.CmulArray(VoltageBuffer, 3.0, NumVI); // convert to total power
 			if (Ppolar) Utilities.convertComplexArrayToPolar(VoltageBuffer, NumVI);
 			IsPower = true;
+			break;
 		}
 
 		// Now check to see what to write to disk
@@ -585,6 +602,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					addDblToBuffer(CurrentBuffer[Offset + i].getReal() /*CurrentBuffer[Offset + i].abs()*/);
 				if (IncludeResidual) addDblToBuffer(ResidualCurr.getReal());
 			}
+			break;
 
 		case 64:  // Save Pos Seq or Avg of all Phases or Total power (Complex)
 			if (IsSequence) {
@@ -610,6 +628,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					addDblsToBuffer(Sum.getReal(), 2);
 				}
 			}
+			break;
 
 		case 96:  // Save Pos Seq or Aver magnitude of all Phases of total kVA (Magnitude)
 			if (IsSequence) {
@@ -629,6 +648,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					addDblToBuffer(dSum);
 				}
 			}
+			break;
 
 		default:
 			addDblsToBuffer(VoltageBuffer[1].getReal(), NumVI * 2);
@@ -637,6 +657,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				addDblsToBuffer(CurrentBuffer[Offset + 1].getReal(), NumVI * 2);
 				if (IncludeResidual) addDblsToBuffer(ResidualCurr.asArray(), 2);
 			}
+			break;
 		}
 	}
 

@@ -118,62 +118,87 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 			switch (ParamPointer) {
 			case -1:
 				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ as.getName() + "\"", 661);
+				break;
 			case 0:
 				as.setElementName(Param.toLowerCase());
+				break;
 			case 1:
 				as.setMeteredTerminal(parser.makeInteger());
+				break;
 			case 2:
 				as.setkVBase(parser.makeDouble());
+				break;
 			case 3:
 				as.setClearSpecified(Utilities.interpretYesNo(Param));
+				break;
 			case 4:
 				parser.parseAsVector(as.getNPhases(), as.getSensorVoltage());  // Inits to zero
+				break;
 			case 5:
 				parser.parseAsVector(as.getNPhases(), as.getSensorCurrent());  // Inits to zero
+				break;
 			case 6:
 				parser.parseAsVector(as.getNPhases(), as.getSensorKW());
+				break;
 			case 7:
 				parser.parseAsVector(as.getNPhases(), as.getSensorKVar());
+				break;
 			case 8:
 				as.setConn(Utilities.interpretConnection(Param));
+				break;
 			case 9:
 				as.setDeltaDirection( as.limitToPlusMinusOne(parser.makeInteger()) );
+				break;
 			case 10:
 				as.setPctError(parser.makeDouble());
+				break;
 			case 11:
 				as.setWeight(parser.makeDouble());
+				break;
 			case 12:
 				as.setAction(Param);  // Put sq error in Global Result
+				break;
 			default:
 				// Inherited parameters
 				classEdit(ActiveSensorObj, ParamPointer - Sensor.NumPropsThisClass);
+				break;
 			}
 
 			switch (ParamPointer) {
 			case 0:
 				DoRecalcElementData = true;
 				as.setMeteredElementChanged(true);
+				break;
 			case 1:
 				DoRecalcElementData = true;
 				as.setMeteredElementChanged(true);
+				break;
 			case 2:
 				DoRecalcElementData = true;
+				break;
 
 			/* Do not recalc element data for setting of sensor quantities */
 			case 3:
 				if (as.isClearSpecified()) as.clearSensor();
+				break;
 			case 4:
 				as.setVspecified(true);
+				break;
 			case 5:
 				as.setIspecified(true);
+				break;
 			case 6:
 				as.setPspecified(true);
+				break;
 			case 7:
 				as.setQspecified(true);
+				break;
 			case 8:
 				DoRecalcElementData = true;
+				break;
 			case 9:
 				DoRecalcElementData = true;
+				break;
 			}
 
 			ParamName = parser.getNextParam();
