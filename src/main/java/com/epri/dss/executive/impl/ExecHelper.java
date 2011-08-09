@@ -94,49 +94,53 @@ public class ExecHelper {
 	 *
 	 * If no dot, last class is assumed.
 	 */
-	public static void getObjClassAndName(String ObjClass, String ObjName) {
+	public static void getObjClassAndName(StringBuffer ObjClass, StringBuffer ObjName) {
+		String ParamName, Param;
 		Parser parser = Parser.getInstance();
 
-		ObjClass = "";
-		ObjName = "";
-		String ParamName = parser.getNextParam().toLowerCase();
-		String Param = parser.makeString();
-		if (ParamName.length() > 0)  // If specified, must be object or an abbreviation.
+		ObjClass.delete(0, ObjClass.length());
+		ObjName.delete(0, ObjName.length());
+
+		ParamName = parser.getNextParam().toLowerCase();
+		Param = parser.makeString();
+		if (ParamName.length() > 0)  // if specified, must be object or an abbreviation.
 			if (Utilities.compareTextShortest(ParamName, "object") != 0) {
 				DSSGlobals.getInstance().doSimpleMsg("object=Class.Name expected as first parameter in command."+ DSSGlobals.CRLF + parser.getCmdString(), 240);
 				return;
 			}
 
-		Utilities.parseObjectClassandName(Param, ObjClass, ObjName);  // see DSSGlobals
+		Utilities.parseObjectClassandName(Param, ObjClass, ObjName);
 	}
 
 	/**
-	 * Process the New Command
-	 * new type=xxxx name=xxxx  editstring
+	 * Process the "new" command
+	 *
+	 *     new type=xxxx name=xxxx editstring
 	 *
 	 * If the device being added already exists, the default behaviour is to
-	 * treat the New command as an Edit command.  This may be overridden
-	 * by setting the DuplicatesAllowed VARiable to true, in which case,
-	 * the New command always results in a new device being added.
+	 * treat the "new" command as an "edit" command.  This may be overridden
+	 * by setting the duplicatesAllowed variable to true, in which case,
+	 * the "new" command always results in a new device being added.
 	 */
 	public static int doNewCmd() {
-		String ObjClass = "", ObjName = "";
+		StringBuffer ObjClass = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		int Handle = 0;
 		int Result = 0;
 
-		getObjClassAndName(ObjClass, ObjName);  // TODO: Check ObjClass and ObjName get set.
+		getObjClassAndName(ObjClass, ObjName);
 
-		if (ObjClass.equals("solution")) {
+		if (ObjClass.toString().equals("solution")) {
 			DSSGlobals.getInstance().doSimpleMsg("You cannot create new Solution objects through the command interface.", 241);
 			return Result;
 		}
 
-		if (ObjClass.equals("circuit")) {
-			DSSGlobals.getInstance().makeNewCircuit(ObjName);  // Make a new circuit
-			Utilities.clearEventLog();  // Start the event log in the current directory
+		if (ObjClass.toString().equals("circuit")) {
+			DSSGlobals.getInstance().makeNewCircuit(ObjName.toString());
+			Utilities.clearEventLog();  // start the event log in the current directory
 		} else {
-			// Everything else must be a circuit element or DSS Object
-			Handle = addObject(ObjClass, ObjName);
+			// everything else must be a circuit element or DSS object
+			Handle = addObject(ObjClass.toString(), ObjName.toString());
 		}
 
 		if (Handle == 0) Result = 1;
@@ -145,19 +149,20 @@ public class ExecHelper {
 	}
 
 	/**
-	 * edit type=xxxx name=xxxx  editstring
+	 * edit type=xxxx name=xxxx editstring
 	 */
 	public static int doEditCmd() {
-		String ObjType = "", ObjName = "";
+		StringBuffer ObjType = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		int Result = 0;
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.equals("circuit")) {
+		if (ObjType.toString().equals("circuit")) {
 			// Do nothing
 		} else {
 			// Everything else must be a circuit element
-			Result = editObject(ObjType, ObjName);
+			Result = editObject(ObjType.toString(), ObjName.toString());
 		}
 
 		return Result;
@@ -260,52 +265,52 @@ public class ExecHelper {
 	 * select element=elementname terminal=terminalnumber
 	 */
 	public static int doSelectCmd() {
-		String ObjClass = "", ObjName = "";
+		StringBuffer ObjClass = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		String ParamName, Param;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		int Result = 1;
 
-		getObjClassAndName(ObjClass, ObjName);  // Parse Object class and name
+		getObjClassAndName(ObjClass, ObjName);  // parse object class and name
 
-		if ((ObjClass.length() == 0) && (ObjName.length() == 0))
+		if ((ObjClass.toString().length() == 0) && (ObjName.toString().length() == 0))
 			return Result;  // select active obj if any
 
-		if (ObjClass.equals("circuit")) {
-			setActiveCircuit(ObjName);
+		if (ObjClass.toString().equals("circuit")) {
+			setActiveCircuit(ObjName.toString());
 		} else {
 			// Everything else must be a circuit element
-			if (ObjClass.length() > 0)
-				DSSClassDefs.setObjectClass(ObjClass);
+			if (ObjClass.toString().length() > 0)
+				DSSClassDefs.setObjectClass(ObjClass.toString());
 
 			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
 			if (Globals.getActiveDSSClass() != null) {
-				if (!Globals.getActiveDSSClass().setActive(ObjName)) {
+				if (!Globals.getActiveDSSClass().setActive( ObjName.toString() )) {
 					// scroll through list of objects until a match
-					Globals.doSimpleMsg("Error! Object \"" + ObjName + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 245);
+					Globals.doSimpleMsg("Error: Object \"" + ObjName.toString() + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 245);
 					Result = 0;
 				} else {
 					switch (Globals.getActiveDSSObject().getDSSObjType()) {
 					case DSSClassDefs.DSS_OBJECT:
 						// do nothing for general DSS object
 						break;
-					default:  // for circuit types, set ActiveCircuit Element, too
-						Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
-						// Now check for active terminal designation
+					default:  // for circuit types set activeCircuit element too
+						Globals.getActiveCircuit().setActiveCktElement((CktElement) Globals.getActiveDSSClass().getActiveObj());
+						// now check for active terminal designation
 						ParamName = Parser.getInstance().getNextParam().toLowerCase();
 						Param = Parser.getInstance().makeString();
 						if (Param.length() > 0) {
 							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(Parser.getInstance().makeInteger());
 						} else {
-							// TODO: Check zero indexing.
-							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(1);  // default to 1
+							Globals.getActiveCircuit().getActiveCktElement().setActiveTerminalIdx(0);
 						}
 						Globals.setActiveBus( Globals.getActiveCircuit().getActiveCktElement().getBus(Globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()) );
 						break;
 					}
 				}
 			} else {
-				Globals.doSimpleMsg("Error! Active object type/class is not set.", 246);
+				Globals.doSimpleMsg("Error: Active object type/class is not set.", 246);
 				Result = 0;
 			}
 		}
@@ -361,7 +366,8 @@ public class ExecHelper {
 	 * Parses the object off the line and sets it active as a CktElement.
 	 */
 	public static int setActiveCktElement() {
-		String ObjType = "", ObjName = "";
+		StringBuffer ObjType = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		int Result = 0;
 
@@ -370,18 +376,18 @@ public class ExecHelper {
 		if (ObjType.equals("circuit")) {
 			// Do nothing
 		} else {
-			if (ObjType.equals(Globals.getActiveDSSClass().getName())) {
-				Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
+			if (ObjType.toString().equals(Globals.getActiveDSSClass().getName())) {
+				Globals.setLastClassReferenced( Globals.getClassNames().find(ObjType.toString()) );
 
 				switch (Globals.getLastClassReferenced()) {
 				case 0:
-					Globals.doSimpleMsg("Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 253);
+					Globals.doSimpleMsg("Object Type \"" + ObjType.toString() + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 253);
 					Result = 0;
 					return Result;
 				default:
 					// intrinsic and user Defined models
 					Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
-					if (Globals.getActiveDSSClass().setActive(ObjName)) {
+					if (Globals.getActiveDSSClass().setActive( ObjName.toString() )) {
 						// scroll through list of objects until a match
 						switch (Globals.getActiveDSSObject().getDSSObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
@@ -401,7 +407,8 @@ public class ExecHelper {
 	}
 
 	public static int doEnableCmd() {
-		String ObjType = "", ObjName = "";
+		StringBuffer ObjType = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		DSSClass ClassPtr;
 		CktElement CktElem;
 
@@ -412,17 +419,17 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.equals("circuit")) {
+		if (ObjType.toString().equals("circuit")) {
 			// Do nothing
 		} else {
-			if (ObjType.length() > 0) {
+			if (ObjType.toString().length() > 0) {
 				// only applies to CktElementClass objects
-				ClassPtr = DSSClassDefs.getDSSClass(ObjType);
+				ClassPtr = DSSClassDefs.getDSSClass(ObjType.toString());
 				if (ClassPtr != null) {
 
 					if ((ClassPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// Everything else must be a circuit element
-						if (ObjName.equals("*")) {
+						if (ObjName.toString().equals("*")) {
 							// Enable all elements of this class
 							for (int i = 0; i < ClassPtr.getElementCount(); i++) {
 								CktElem = (CktElement) ClassPtr.getElementList().get(i);
@@ -430,8 +437,8 @@ public class ExecHelper {
 							}
 						} else {
 							// just load up the parser and call the edit routine for the object in question
-							Parser.getInstance().setCmdString("Enabled=true");  // Will only work for CktElements
-							Result = editObject(ObjType, ObjName);
+							Parser.getInstance().setCmdString("enabled=true");  // will only work for CktElements
+							Result = editObject(ObjType.toString(), ObjName.toString());
 						}
 					}
 
@@ -443,7 +450,8 @@ public class ExecHelper {
 	}
 
 	public static int doDisableCmd() {
-		String ObjType = "", ObjName = "";
+		StringBuffer ObjType = new StringBuffer();
+		StringBuffer ObjName = new StringBuffer();
 		DSSClass ClassPtr;
 		CktElement CktElem;
 
@@ -454,14 +462,14 @@ public class ExecHelper {
 		if (ObjType.equals("circuit")) {
 			// Do nothing
 		} else {
-			if (ObjType.length() > 0) {
+			if (ObjType.toString().length() > 0) {
 				// only applies to CktElementClass objects
-				ClassPtr = DSSClassDefs.getDSSClass(ObjType);
+				ClassPtr = DSSClassDefs.getDSSClass(ObjType.toString());
 				if (ClassPtr != null) {
 
 					if ((ClassPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 						// Everything else must be a circuit element
-						if (ObjName.equals("*")) {
+						if (ObjName.toString().equals("*")) {
 							// Disable all elements of this class
 							for (int i = 0; i < ClassPtr.getElementCount(); i++) {
 								CktElem = (CktElement) ClassPtr.getElementList().get(i);
@@ -471,7 +479,7 @@ public class ExecHelper {
 					} else {
 						// just load up the parser and call the edit routine for the object in question
 						Parser.getInstance().setCmdString("Enabled=false");  // Will only work for CktElements
-						Result = editObject(ObjType, ObjName);
+						Result = editObject(ObjType.toString(), ObjName.toString());
 					}
 
 				}
@@ -799,12 +807,12 @@ public class ExecHelper {
 
 		parseObjName(Param, ObjName, PropName);
 
-		if (ObjName.equals("solution")) {  // special for solution
+		if (ObjName.toString().equals("solution")) {  // special for solution
 			Globals.setActiveDSSClass(Globals.getSolutionClass());
 			Globals.setActiveDSSObject((DSSObjectImpl) Globals.getActiveCircuit().getSolution());
 		} else {
 			// Set Object Active
-			Parser.getInstance().setCmdString("\"" + ObjName + "\"");
+			Parser.getInstance().setCmdString("\"" + ObjName.toString() + "\"");
 			doSelectCmd();
 		}
 
@@ -866,24 +874,24 @@ public class ExecHelper {
 
 		int Result = 0;
 
-		// Search for class if not already active.
-		// If nothing specified, LastClassReferenced remains.
+		// search for class if not already active
+		// if nothing specified, lastClassReferenced remains
 		if (ObjType.equals(Globals.getActiveDSSClass().getName()))
 			Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
 
 		switch (Globals.getLastClassReferenced()) {
-		case 0:  // TODO Check zero indexing
+		case -1:
 			Globals.doSimpleMsg("New Command: Object Type \"" + ObjType + "\" not found." + DSSGlobals.CRLF + parser.getCmdString(), 263);
 			Result = 0;
 			return Result;
 		default:
-			// intrinsic and user Defined models
-			// Make a new circuit element
-			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
+			// intrinsic and user defined models
+			// make a new circuit element
+			Globals.setActiveDSSClass( Globals.getDSSClassList().get(Globals.getLastClassReferenced()) );
 
 			// Name must be supplied
 			if (name.length() == 0) {
-				Globals.doSimpleMsg("Object Name Missing"+ DSSGlobals.CRLF + parser.getCmdString(), 264);
+				Globals.doSimpleMsg("Object name missing"+ DSSGlobals.CRLF + parser.getCmdString(), 264);
 				return Result;
 			}
 
@@ -894,26 +902,26 @@ public class ExecHelper {
 				// Duplicates not allowed in general DSS objects;
 				if  (!Globals.getActiveDSSClass().setActive(name)) {
 					Result = Globals.getActiveDSSClass().newObject(name);
-					// Stick in object list to keep track of it.
+					// stick in object list to keep track of it.
 					Globals.getDSSObjs().add(Globals.getActiveDSSObject());
 				}
 				break;
 			default:
 				// These are circuit elements
 				if (Globals.getActiveCircuit() == null) {
-					Globals.doSimpleMsg("You Must Create a circuit first: \"new circuit.yourcktname\"", 265);
+					Globals.doSimpleMsg("You must create a circuit first: \"new circuit.cktname\"", 265);
 					return Result;
 				}
 
-				// If Object already exists. Treat as an Edit if duplicates not allowed
+				// if object already exists, treat as an "edit" if duplicates not allowed
 				if (Globals.getActiveCircuit().isDuplicatesAllowed()) {
-					Result = Globals.getActiveDSSClass().newObject(name); // Returns index into this class
-					Globals.getActiveCircuit().addCktElement(Result);   // Adds active object to active circuit
+					Result = Globals.getActiveDSSClass().newObject(name); // returns index into this class
+					Globals.getActiveCircuit().addCktElement(Result);   // adds active object to active circuit
 				} else {
-					// Check to see if we can set it active first
+					// check to see if we can set it active first
 					if (!Globals.getActiveDSSClass().setActive(name)) {
-						Result = Globals.getActiveDSSClass().newObject(name);   // Returns index into this class
-						Globals.getActiveCircuit().addCktElement(Result);   // Adds active object to active circuit
+						Result = Globals.getActiveDSSClass().newObject(name);   // returns index into this class
+						Globals.getActiveCircuit().addCktElement(Result);   // adds active object to active circuit
 					} else {
 						Globals.doSimpleMsg("Warning: Duplicate new element definition: \""+ Globals.getActiveDSSClass().getName()+"."+name+"\""+
 									DSSGlobals.CRLF+ "Element being redefined.", 266);
@@ -922,11 +930,13 @@ public class ExecHelper {
 				break;
 			}
 
-			// ActiveDSSObject now points to the object just added
-			// If a circuit element, ActiveCktElement in ActiveCircuit is also set
+			// activeDSSObject now points to the object just added
+			// if a circuit element, activeCktElement in activeCircuit is also set
 			if (Result > 0) Globals.getActiveDSSObject().setClassIndex(Result);
 
-			Globals.getActiveDSSClass().edit();    // Process remaining instructions on the command line
+			// process remaining instructions on the command line
+			Globals.getActiveDSSClass().edit();
+
 			break;
 		}
 
@@ -940,16 +950,16 @@ public class ExecHelper {
 		Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
 
 		switch (Globals.getLastClassReferenced()) {
-		case 0:  // TODO Check zero indexing
-			Globals.doSimpleMsg("Edit Command: Object Type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 267);
+		case -1:
+			Globals.doSimpleMsg("Edit command: Object type \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 267);
 			Result = 0;
 			return Result;
 		default:
-			// intrinsic and user Defined models
-			// Edit the DSS object
+			// intrinsic and user defined models
+			// edit the DSS object
 			Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
 			if (Globals.getActiveDSSClass().setActive(name))
-				Result = Globals.getActiveDSSClass().edit();   // Edit the active object
+				Result = Globals.getActiveDSSClass().edit();  // edit the active object
 			break;
 		}
 

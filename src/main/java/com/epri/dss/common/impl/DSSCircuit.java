@@ -929,13 +929,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public int setElementActive(String FullObjectName) {
 		int Result = 0;
-		String DevType = "", DevName = "";
+		StringBuffer DevType = new StringBuffer();
+		StringBuffer DevName = new StringBuffer();
 
-		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);  // TODO: Check DevType and DevName get set.
-		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType);
+		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);
+		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType.toString());
 		if (DevClassIndex == 0)
 			DevClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
-		int DevIndex = DeviceList.find(DevName);
+		int DevIndex = DeviceList.find(DevName.toString());
 		while (DevIndex >= 0) {
 			if (DeviceRef[DevIndex].CktElementClass == DevClassIndex) {  // we got a match
 				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(DevClassIndex));

@@ -222,7 +222,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			MonitorStream.reset();
 			SampleCount = 0;
 			IsPosSeq = false;
-			StrBuffer = new StringBuffer();  /* clear buffer */
+			StrBuffer.delete(0, StrBuffer.length());  /* clear buffer */
 //			strPtr = 0;  // Init string
 			if (Globals.getActiveCircuit().getSolution().isIsHarmonicModel()) {
 				StrBuffer.append("Freq, Harmonic, ");
@@ -245,10 +245,10 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				}
 				break;
 			default:
-				// Compute RecordSize
-				// Use same logic as in TakeSample method.
+				/* Compute recordSize */
+				// use same logic as in takeSample method
 
-				if (((Mode & Monitor.SEQUENCEMASK) > 0) && (nPhases == 3)) {  // Convert to Symmetrical components
+				if (((Mode & Monitor.SEQUENCEMASK) > 0) && (nPhases == 3)) {  // convert to symmetrical components
 					IsPosSeq = true;
 					NumVI = 3;
 				} else {

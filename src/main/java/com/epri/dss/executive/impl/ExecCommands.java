@@ -577,7 +577,7 @@ public class ExecCommands {
 
 			// Now check to see if this is a command or a property reference
 
-			if (ParamPointer == 0) {  // TODO Check zero indexing
+			if (ParamPointer == -1) {
 				/* If not a command or the command is unknown, then it could be a property of a circuit element */
 
 				/* If a command or no text before the = sign, then error */
@@ -585,13 +585,13 @@ public class ExecCommands {
 					Globals.doSimpleMsg("Unknown Command: \"" + Param + "\" "+ DSSGlobals.CRLF + Parser.getCmdString(), 302);
 					Globals.setCmdResult(1);
 				} else {
-					ExecHelper.parseObjName(ParamName, ObjName, PropName);  // TODO: Check ObjName and PropName get set.
+					ExecHelper.parseObjName(ParamName, ObjName, PropName);
 					if (ObjName.length() > 0)
 						Globals.setObject(ObjName.toString());  // Set active element
 					if (Globals.getActiveDSSObject() != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted OK after rebuild
-						Parser.setCmdString(PropName + "=\"" + Param + "\" " + Parser.getRemainder());
+						Parser.setCmdString(PropName.toString() + "=\"" + Param + "\" " + Parser.getRemainder());
 						Globals.getActiveDSSClass().edit();
 					}
 				}

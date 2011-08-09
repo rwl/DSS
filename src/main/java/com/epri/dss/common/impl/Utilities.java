@@ -706,17 +706,21 @@ public class Utilities {
 		}
 	}
 
-	public static void parseObjectClassandName(String FullObjName, String ClassName, String ObjName) {
+	public static void parseObjectClassandName(String FullObjName, StringBuffer ClassName, StringBuffer ObjName) {
 		// Split off obj class and name
-		int dotpos = FullObjName.indexOf('.');  // TODO Check zero based indexing
+		int dotpos = FullObjName.indexOf('.');
 		switch (dotpos) {
 		case -1:
-			ObjName = FullObjName.substring(0, FullObjName.length());  // assume it is all objname; class defaults
-			ClassName = "";
+			ObjName.delete(0, ObjName.length());
+			// assume it is all objname; class defaults
+			ObjName.append( FullObjName.substring(0, FullObjName.length()) );
+			ClassName.delete(0, ClassName.length());
 			break;
 		default:
-			ClassName = FullObjName.substring(0, dotpos);
-			ObjName   = FullObjName.substring(dotpos + 1, FullObjName.length());
+			ClassName.delete(0, ClassName.length());
+			ClassName.append( FullObjName.substring(0, dotpos) );
+			ObjName.delete(0, ObjName.length());
+			ObjName.append( FullObjName.substring(dotpos + 1, FullObjName.length()) );
 			break;
 		}
 	}
@@ -913,18 +917,19 @@ public class Utilities {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		int DevClassIndex, DevIndex;
-		String DevClassName = null, DevName = null;
+		StringBuffer DevClassName = new StringBuffer();
+		StringBuffer DevName = new StringBuffer();
 
 		int Result = 0; // Default return value
 		parseObjectClassandName(fullObjName, DevClassName, DevName);
-		DevClassIndex = Globals.getClassNames().find(DevClassName);
+		DevClassIndex = Globals.getClassNames().find(DevClassName.toString());
 		if (DevClassIndex == -1)
 			DevClassIndex = Globals.getLastClassReferenced();
 
 		// Since there could be devices of the same name of different classes,
 		// loop until we find one of the correct class
 		Circuit ckt = Globals.getActiveCircuit();
-		DevIndex = ckt.getDeviceList().find(DevName);
+		DevIndex = ckt.getDeviceList().find(DevName.toString());
 		while (DevIndex > -1) {
 			if ((ckt.getDeviceRef()[DevIndex]).CktElementClass == DevClassIndex)  // we got a match
 				return DevIndex;
