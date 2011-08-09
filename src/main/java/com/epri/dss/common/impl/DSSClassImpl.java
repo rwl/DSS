@@ -120,16 +120,16 @@ public class DSSClassImpl implements DSSClass {
 	/**
 	 * Used by newObject().
 	 */
-	protected int addObjectToList(Object Obj) {
-		// Stuff it in this collection's element list.
-		ElementList.add((CktElement) Obj);
-		ElementNameList.add( ((DSSObject) Obj).getName() );
+	protected int addObjectToList(DSSObject Obj) {
+		// put it in this collection's element list.
+		ElementList.add(Obj);
+		ElementNameList.add( Obj.getName() );
 
 		if (ElementList.size() > 2 * ElementNameList.getInitialAllocation())
 			reallocateElementNameList();
 
-		ActiveElement = ElementList.size();
-		return ActiveElement;  // Return index of object in list
+		ActiveElement = ElementList.size() - 1;
+		return ActiveElement;  // return index of object in list
 	}
 
 	public boolean setActive(String ObjName) {

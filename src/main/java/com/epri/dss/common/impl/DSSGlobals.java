@@ -329,23 +329,22 @@ public class DSSGlobals {
 
 
 	public void makeNewCircuit(String Name) {
-		if (NumCircuits <= MaxCircuits - 1) {
+		if (NumCircuits < MaxCircuits) {
 			ActiveCircuit = new DSSCircuit(Name);
 			ActiveDSSObject = SolutionImpl.getActiveSolutionObj();
 			/*Handle = */ Circuits.add(ActiveCircuit);
 			NumCircuits += 1;
-			// Pass remainder of string on to vsource.
+			// pass remainder of string on to VSource
 			String S = Parser.getInstance().getRemainder();
 
-			/* Create a default Circuit */
+			/* create a default circuit */
 			SolutionAbort = false;
-			/* Voltage source named "source" connected to SourceBus */
-			// Load up the parser as if it were read in
-			DSSExecutive.getInstance().setCommand("New object=vsource.source Bus1=SourceBus " + S);
+			/* Voltage source named "source" connected to "SourceBus" */
+			// load up the parser as if it were read in
+			DSSExecutive.getInstance().setCommand("new object=vsource.source bus1=SourceBus " + S);
 		} else {
-			doErrorMsg("MakeNewCircuit",
-					"Cannot create new circuit.",
-					"Max. Circuits Exceeded." + CRLF +
+			doErrorMsg("makeNewCircuit", "Cannot create new circuit.",
+					"Max. circuits exceeded." + CRLF +
 					"(Max no. of circuits=" + String.valueOf(MaxCircuits) + ")", 906);
 		}
 	}

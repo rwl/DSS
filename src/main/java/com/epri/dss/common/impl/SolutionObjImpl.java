@@ -44,7 +44,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	protected int DefaultLoadModel;     // 1=POWERFLOW  2=ADMITTANCE
 	protected boolean DoAllHarmonics;
 	protected boolean DynamicsAllowed;
-	protected DynamicsRec DynaVars;
+	protected DynamicsRec DynaVars = new DynamicsRec();
 	protected double[] ErrorSaved;
 	protected boolean FirstIteration;
 	/* Flag set to true if something has altered the frequency */

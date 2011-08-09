@@ -105,7 +105,7 @@ public class ExecHelper {
 		Param = parser.makeString();
 		if (ParamName.length() > 0)  // if specified, must be object or an abbreviation.
 			if (Utilities.compareTextShortest(ParamName, "object") != 0) {
-				DSSGlobals.getInstance().doSimpleMsg("object=Class.Name expected as first parameter in command."+ DSSGlobals.CRLF + parser.getCmdString(), 240);
+				DSSGlobals.getInstance().doSimpleMsg("object=class.name expected as first parameter in command."+ DSSGlobals.CRLF + parser.getCmdString(), 240);
 				return;
 			}
 
@@ -872,7 +872,7 @@ public class ExecHelper {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int Handle = -1;
 
 		// search for class if not already active
 		// if nothing specified, lastClassReferenced remains
@@ -881,9 +881,9 @@ public class ExecHelper {
 
 		switch (Globals.getLastClassReferenced()) {
 		case -1:
-			Globals.doSimpleMsg("New Command: Object Type \"" + ObjType + "\" not found." + DSSGlobals.CRLF + parser.getCmdString(), 263);
-			Result = 0;
-			return Result;
+			Globals.doSimpleMsg("new command: Object type \"" + ObjType + "\" not found." + DSSGlobals.CRLF + parser.getCmdString(), 263);
+			Handle = 0;
+			return Handle;
 		default:
 			// intrinsic and user defined models
 			// make a new circuit element
@@ -892,7 +892,7 @@ public class ExecHelper {
 			// Name must be supplied
 			if (name.length() == 0) {
 				Globals.doSimpleMsg("Object name missing"+ DSSGlobals.CRLF + parser.getCmdString(), 264);
-				return Result;
+				return Handle;
 			}
 
 			// now let's make a new object or set an existing one active, whatever the case
@@ -901,7 +901,7 @@ public class ExecHelper {
 				// These can be added WITHout having an active circuit
 				// Duplicates not allowed in general DSS objects;
 				if  (!Globals.getActiveDSSClass().setActive(name)) {
-					Result = Globals.getActiveDSSClass().newObject(name);
+					Handle = Globals.getActiveDSSClass().newObject(name);
 					// stick in object list to keep track of it.
 					Globals.getDSSObjs().add(Globals.getActiveDSSObject());
 				}
@@ -910,18 +910,18 @@ public class ExecHelper {
 				// These are circuit elements
 				if (Globals.getActiveCircuit() == null) {
 					Globals.doSimpleMsg("You must create a circuit first: \"new circuit.cktname\"", 265);
-					return Result;
+					return Handle;
 				}
 
 				// if object already exists, treat as an "edit" if duplicates not allowed
 				if (Globals.getActiveCircuit().isDuplicatesAllowed()) {
-					Result = Globals.getActiveDSSClass().newObject(name); // returns index into this class
-					Globals.getActiveCircuit().addCktElement(Result);   // adds active object to active circuit
+					Handle = Globals.getActiveDSSClass().newObject(name);  // returns index into this class
+					Globals.getActiveCircuit().addCktElement(Handle);  // adds active object to active circuit
 				} else {
 					// check to see if we can set it active first
 					if (!Globals.getActiveDSSClass().setActive(name)) {
-						Result = Globals.getActiveDSSClass().newObject(name);   // returns index into this class
-						Globals.getActiveCircuit().addCktElement(Result);   // adds active object to active circuit
+						Handle = Globals.getActiveDSSClass().newObject(name);  // returns index into this class
+						Globals.getActiveCircuit().addCktElement(Handle);  // adds active object to active circuit
 					} else {
 						Globals.doSimpleMsg("Warning: Duplicate new element definition: \""+ Globals.getActiveDSSClass().getName()+"."+name+"\""+
 									DSSGlobals.CRLF+ "Element being redefined.", 266);
@@ -932,7 +932,7 @@ public class ExecHelper {
 
 			// activeDSSObject now points to the object just added
 			// if a circuit element, activeCktElement in activeCircuit is also set
-			if (Result > 0) Globals.getActiveDSSObject().setClassIndex(Result);
+			if (Handle > 0) Globals.getActiveDSSObject().setClassIndex(Handle);
 
 			// process remaining instructions on the command line
 			Globals.getActiveDSSClass().edit();
@@ -940,7 +940,7 @@ public class ExecHelper {
 			break;
 		}
 
-		return Result;
+		return Handle;
 	}
 
 	public static int editObject(String ObjType, String name) {

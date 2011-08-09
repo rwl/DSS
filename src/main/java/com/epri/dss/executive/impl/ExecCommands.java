@@ -854,9 +854,9 @@ public class ExecCommands {
 				break;
 			}
 		} catch (Exception e) {
-			Globals.doErrorMsg("ProcessCommand"+DSSGlobals.CRLF+"Exception raised while processing DSS command:"+ DSSGlobals.CRLF + Parser.getCmdString(),
-					e.getMessage(),
-					"Error in command string or circuit data.", 303);
+//			Globals.doErrorMsg("ProcessCommand"+DSSGlobals.CRLF+"Exception raised while processing DSS command:"+ DSSGlobals.CRLF + Parser.getCmdString(),
+//					e.getMessage(),
+//					"Error in command string or circuit data.", 303);
 			e.printStackTrace();
 		}
 	}

@@ -112,11 +112,11 @@ public class Utilities {
 		String TestStr;
 
 		if (S1.length() < S2.length()) {
-			TestStr = S2.substring(0, S1.length());  // TODO Check zero based indexing
-			return TestStr.equals(S1) ? 1 : 0;
+			TestStr = S2.substring(0, S1.length());
+			return TestStr.equals(S1) ? 0 : -1;
 		} else {
 			TestStr = S1.substring(0, S2.length());
-			return TestStr.equals(S2) ? 1 : 0;
+			return TestStr.equals(S2) ? 0 : -1;
 		}
 	}
 

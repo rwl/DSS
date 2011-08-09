@@ -549,7 +549,7 @@ public class Parser {
 	}
 
 	public String getRemainder() {
-		return CmdBuffer.substring(Position, CmdBuffer.length() - Position + 1);  // TODO Check zero based indexing
+		return CmdBuffer.substring(Position, CmdBuffer.length());
 	}
 
 	/**

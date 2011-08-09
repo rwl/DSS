@@ -50,7 +50,7 @@ public class ControlQueueImpl implements ControlQueue {
 		ActionRecord pAction;
 		boolean ActionInserted;
 
-		ctrlHandle += 1; // just a serial number
+		ctrlHandle += 1;  // just a serial number
 
 		/* Normalize the time */
 		Hr = Hour;
@@ -65,7 +65,7 @@ public class ControlQueueImpl implements ControlQueue {
 		TRec.Sec  = S;
 
 		ThisActionTime = timeRecToTime(TRec);
-		pAction = new ActionRecord();  // Make a new Action
+		pAction = new ActionRecord();  // make a new action
 
 		/* Insert the action in the list in order of time */
 		ActionInserted = false;
@@ -88,7 +88,7 @@ public class ControlQueueImpl implements ControlQueue {
 
 		if (DebugTrace)
 			writeTraceRecord(Owner.getName(), Code, Owner.getDblTraceParameter(),
-					String.format("Handle %d Pushed onto Stack", ctrlHandle));
+					String.format("Handle %d pushed onto stack", ctrlHandle));
 
 		return ctrlHandle;
 	}
@@ -102,7 +102,7 @@ public class ControlQueueImpl implements ControlQueue {
 		ActionList = new ArrayList<ControlQueueImpl.ActionRecord>();
 		ActionList.clear();
 
-		ctrlHandle = 0;
+		ctrlHandle = 0;  // just a serial number
 
 		DebugTrace = false;
 	}

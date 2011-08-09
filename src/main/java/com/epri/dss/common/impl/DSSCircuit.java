@@ -208,12 +208,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		setLocalName(aName.toLowerCase());
 
-		this.CaseName = aName;  // Default case name to circuitname
-								// Sets CircuitName_
+		setCaseName(aName);  // default case name to circuitname; sets circuitName_
 
 		this.Fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
 		this.ActiveCktElement = null;
-		this.ActiveBusIndex = 1;    // Always a bus
+		this.ActiveBusIndex = 0;    // always a bus
 
 		// initial allocations increased from 100 to 1000 to speed things up
 
@@ -225,11 +224,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.IncNodes   = 3000;
 
 		// Allocate some nominal sizes
-		this.BusList    = new HashListImpl(900);  // Bus name list Nominal size to start; gets reallocated
+		this.BusList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
 		this.DeviceList = new HashListImpl(900);
 		this.AutoAddBusList = new HashListImpl(100);
 
-		this.NumBuses   = 0;  // Eventually allocate a single source
+		this.NumBuses   = 0;  // eventually allocate a single source
 		this.NumDevices = 0;
 		this.NumNodes   = 0;
 
@@ -263,37 +262,37 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.ControlQueue = new ControlQueueImpl();
 
 		this.LegalVoltageBases = new double[8];
-		// Default Voltage Bases
-		this.LegalVoltageBases[0] = 0.208;
-		this.LegalVoltageBases[1] = 0.480;
-		this.LegalVoltageBases[2] = 12.47;
-		this.LegalVoltageBases[3] = 24.9;
-		this.LegalVoltageBases[4] = 34.5;
+		// default voltage bases
+		this.LegalVoltageBases[0] =   0.208;
+		this.LegalVoltageBases[1] =   0.480;
+		this.LegalVoltageBases[2] =  12.47;
+		this.LegalVoltageBases[3] =  24.9;
+		this.LegalVoltageBases[4] =  34.5;
 		this.LegalVoltageBases[5] = 115.0;
 		this.LegalVoltageBases[6] = 230.0;
-		this.LegalVoltageBases[7] = 0.0;  // terminates array
+		this.LegalVoltageBases[7] =   0.0;  // terminates array
 
 		this.NodeBufferMax = 20;
-		this.NodeBuffer    = new int[this.NodeBufferMax]; // A place to hold the nodes
+		this.NodeBuffer    = new int[this.NodeBufferMax];  // to hold the nodes
 
-		// Init global circuit load and harmonic source multipliers
+		// init global circuit load and harmonic source multipliers
 		this.LoadMultiplier = 1.0;
 		this.GenMultiplier = 1.0;
 		this.HarmMult = 1.0;
 
-		this.PriceSignal = 25.0;   // $25/MWH
+		this.PriceSignal = 25.0;  // $25/MWh
 
-		// Factors for Autoadd stuff
-		this.UEWeight   = 1.0;  // Default to weighting UE same as losses
+		// factors for autoAdd
+		this.UEWeight   = 1.0;  // default to weighting UE same as losses
 		this.LossWeight = 1.0;
 		this.NumUERegs  = 1;
 		this.NumLossRegs = 1;
 		this.UERegs = new int[NumUERegs];
 		this.LossRegs = new int[NumLossRegs];
-		this.UERegs[0]      = 10;   // Overload UE
-		this.LossRegs[0]    = 13;   // Zone Losses
+		this.UERegs[0]      = 10;   // overload UE
+		this.LossRegs[0]    = 13;   // zone Losses
 
-		this.CapacityStart = 0.9;     // for Capacity search
+		this.CapacityStart = 0.9;  // for capacity search
 		this.CapacityIncrement = 0.005;
 
 		this.LoadDurCurve    = "";
@@ -301,9 +300,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.PriceCurve    = "";
 		this.PriceCurveObj = null;
 
-		// Flags
+		// flags
 		this.DuplicatesAllowed   = false;
-		this.ZonesLocked         = false;   // Meter zones recomputed after each change
+		this.ZonesLocked         = false;  // meter zones recomputed after each change
 		this.MeterZonesComputed  = false;
 		this.PositiveSequence    = false;
 
@@ -312,8 +311,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.EmergMaxVolts  = 1.08;
 		this.EmergMinVolts  = 0.90;
 
-		this.NodeMarkerCode = 16;
-		this.NodeMarkerWidth = 1;
+		this.NodeMarkerCode   = 16;
+		this.NodeMarkerWidth  = 1;
 		this.MarkSwitches     = false;
 		this.MarkTransformers = false;
 		this.SwitchMarkerCode = 5;
@@ -321,7 +320,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.TransMarkerSize  = 1;
 
 
-		this.TrapezoidalIntegration = false;  // Default to Euler method
+		this.TrapezoidalIntegration = false;  // default to Euler method
 		this.LogEvents = false;
 
 		this.GeneratorDispatchReference = 0.0;
@@ -342,7 +341,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.ReductionMaxAngle = 15.0;
 		this.ReductionZmag = 0.02;
 
-		/* Misc objects */
+		/* misc objects */
 		this.AutoAddObj = new AutoAddImpl();
 
 		this.Branch_List = null;

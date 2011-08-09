@@ -43,9 +43,9 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	}
 
 	public int newObject(String objName) {
-		// Make a new Solution object and add it to Solution class list.
+		// make a new Solution object and add it to Solution class list
 		ActiveSolutionObj = new SolutionObjImpl(this, objName);
-		// this one is different than the rest of the objects.
+		// this one is different than the rest of the objects
 		return addObjectToList(ActiveSolutionObj);
 	}
 
