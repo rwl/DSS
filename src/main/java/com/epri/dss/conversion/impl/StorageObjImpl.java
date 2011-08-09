@@ -130,10 +130,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		setName(StorageName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType(); // + STORAGE_ELEMENT;  // In both PCelement and Storageelement list
 
-		this.nPhases    = 3;
-		this.nConds     = 4;  // defaults to wye
+		setNPhases(3);
+		setNConds(4);  // defaults to wye
 		this.Yorder     = 0;  // To trigger an initial allocation
-		this.nTerms     = 1;  // forces allocations
+		setNTerms(1);  // forces allocations
 
 		this.YearlyShape       = "";
 		this.YearlyShapeObj    = null;  // If YearlyShapeobj = null Then the load alway stays nominal * global multipliers

@@ -34,9 +34,9 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		setName(ReactorName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds = 3;
-		this.nTerms = 2;  // Force allocation of terminals and conductors
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0.0.0"));  // Default to grounded wye   TODO Check zero based indexing
 

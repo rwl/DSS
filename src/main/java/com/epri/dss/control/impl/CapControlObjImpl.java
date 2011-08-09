@@ -63,9 +63,9 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		setName(CapControlName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors
+		setNPhases(3);  // Directly set conds and phases
+		setNConds(3);
+		setNTerms(1);  // this forces allocation of terminals and conductors
 							// in base class
 
 		this.CTPhase = 1;
@@ -118,14 +118,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		/* Check for existence of capacitor */
 
-		int DevIndex = Utilities.getCktElementIndex(CapacitorName); // Global function
+		int DevIndex = Utilities.getCktElementIndex(CapacitorName);
 		if (DevIndex >= 0) {
-			// Both capacitor and monitored element must already exist
+			// both capacitor and monitored element must already exist
 			setControlledElement(ckt.getCktElements().get(DevIndex));
 			ControlledCapacitor = getCapacitor();
-			nPhases = getControlledElement().getNPhases();  // Force number of phases to be same   Added 5/21/01  RCD
-			nConds  = nPhases;
-			getControlledElement().setActiveTerminalIdx(0);  // Make the 1 st terminal active   TODO Check zero based indexing
+			setNPhases( getControlledElement().getNPhases() );  // force number of phases to be same
+			setNConds(nPhases);
+			getControlledElement().setActiveTerminalIdx(0);  // make the 1st terminal active   TODO Check zero based indexing
 			// Get control synched up with capacitor
 
 			if (ControlledCapacitor.availableSteps() == ControlledCapacitor.getNumSteps()) {
@@ -175,8 +175,8 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
 			setEnabled(getControlledElement().isEnabled());
-			nPhases = getControlledElement().getNPhases();
-			nConds  = nPhases;
+			setNPhases( getControlledElement().getNPhases() );
+			setNConds(nPhases);
 		}
 
 		if (MonitoredElement != null) {
@@ -258,14 +258,14 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	@Override
 	public void doPendingAction(int Code, int ProxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(0);  // Set active terminal of capacitor to terminal 1  TODO Check zero based indexing
+		getControlledElement().setActiveTerminalIdx(0);  // set active terminal of capacitor to terminal 1  TODO Check zero based indexing
 
 		switch (PendingChange) {
 		case OPEN:
 			switch (ControlledCapacitor.getNumSteps()) {
 			case 1:
 				if (PresentState == ControlAction.CLOSE) {
-					getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
+					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 
 					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					PresentState = ControlAction.OPEN;
@@ -276,10 +276,10 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				}
 				break;
 			default:
-				if (PresentState == ControlAction.CLOSE)  // Do this only if at least one step is closed
+				if (PresentState == ControlAction.CLOSE)  // do this only if at least one step is closed
 					if (!ControlledCapacitor.subtractStep()) {
 						PresentState = ControlAction.OPEN;
-						getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
+						getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					} else {
 						Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Step Down**");
@@ -289,7 +289,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			break;
 		case CLOSE:
 			if (PresentState == ControlAction.OPEN) {
-				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
+				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 				Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Closed**");
 				PresentState = ControlAction.CLOSE;
 				ControlledCapacitor.addStep();

@@ -61,9 +61,9 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		super(ParClass);
 		setName(MonitorName.toLowerCase());
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		/* Current Buffer has to be big enough to hold all terminals */
 		this.CurrentBuffer = null;
@@ -136,8 +136,8 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
 			} else {
-				nPhases = MeteredElement.getNPhases();
-				nConds  = MeteredElement.getNConds();
+				setNPhases( MeteredElement.getNPhases() );
+				setNConds( MeteredElement.getNConds() );
 
 				// Sets name of i-th terminal's connected bus in monitor's buslist
 				// This value will be used to set the NodeRef array (see TakeSample)
@@ -177,8 +177,8 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	public void makePosSequence() {
 		if (MeteredElement != null) {
 			setBus(1, MeteredElement.getBus(MeteredTerminal));
-			nPhases = MeteredElement.getNPhases();
-			nConds  = MeteredElement.getNConds();
+			setNPhases( MeteredElement.getNPhases() );
+			setNConds( MeteredElement.getNConds() );
 			switch (Mode & Monitor.MODEMASK) {
 			case 3:
 				NumStateVars = ((PCElement) MeteredElement).numVariables();

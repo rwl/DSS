@@ -55,9 +55,9 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		setName(RecloserName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // This forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		this.ElementName       = "";
 		setControlledElement(null);
@@ -117,11 +117,11 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Circuit ckt = Globals.getActiveCircuit();
 
-		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);  // Global function
+		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);
 
 		if (DevIndex >= 0) {
 			MonitoredElement = ckt.getCktElements().get(DevIndex);
-			nPhases = MonitoredElement.getNPhases();       // Force number of phases to be same
+			setNPhases(MonitoredElement.getNPhases());  // force number of phases to be same
 			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
 				Globals.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
@@ -167,8 +167,8 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void makePosSequence() {
 		if (MonitoredElement != null) {
-			nPhases = MonitoredElement.getNPhases();
-			nConds = nPhases;
+			setNPhases( MonitoredElement.getNPhases() );
+			setNConds(nPhases);
 			setBus(1, MonitoredElement.getBus(ElementTerminal));
 			// Allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());

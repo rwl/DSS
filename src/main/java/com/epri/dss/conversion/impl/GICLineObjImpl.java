@@ -33,9 +33,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		setName(LineName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
 
-		this.nPhases  = 3;
-		this.nConds   = 3;
-		this.nTerms   = 2;   // Now a 2-terminal device
+		setNPhases(3);
+		setNConds(3);
+		setNTerms(2);  // now a 2-terminal device
 		this.Z        = null;
 		this.Zinv     = null;
 		/*this.Basefrequency = 60.0;*/ // set in base class

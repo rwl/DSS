@@ -37,9 +37,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		setName(SourceName.toLowerCase());
 		DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
 
-		this.nPhases = 3;
-		this.nConds = 3;
-		this.nTerms = 1;
+		setNPhases(3);
+		setNConds(3);
+		setNTerms(1);
 		this.Z    = null;
 		this.Zinv = null;
 		/*this.Basefrequency = 60.0;*/  // set in base class

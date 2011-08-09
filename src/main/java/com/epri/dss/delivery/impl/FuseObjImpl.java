@@ -46,9 +46,9 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		setName(FuseName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // Directly set conds and phases
+		setNConds(3);
+		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 
 		setElementName("");
 		setControlledElement(null);
@@ -83,10 +83,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		int i;
 
-		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName); // Global function
+		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);
 		if (DevIndex >= 0) {
 			MonitoredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex);
-			nPhases = MonitoredElement.getNPhases();  // Force number of phases to be same
+			setNPhases( MonitoredElement.getNPhases() );  // force number of phases to be same
 			if (getNPhases() > Fuse.FUSEMAXDIM)
 				Globals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > Max fuse dimension.", 404);
 			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {

@@ -38,9 +38,9 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		setName(GenDispatcherName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // This forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
 		this.ElementName   = "";
@@ -50,7 +50,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 		this.GeneratorNameList = new ArrayList<String>();
 		this.Weights   = null;
-		this.GenPointerList = new ArrayList<GeneratorObj>(20);  // Default size and increment
+		this.GenPointerList = new ArrayList<GeneratorObj>(20);  // default size and increment
 		this.ListSize    = 0;
 		this.kWLimit     = 8000.0;
 		this.kWBand      = 100.0;
@@ -90,8 +90,8 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void makePosSequence() {
 		if (MonitoredElement != null) {
-			nPhases = getControlledElement().getNPhases();
-			nConds = nPhases;
+			setNPhases(getControlledElement().getNPhases());
+			setNConds(nPhases);
 			setBus(1, MonitoredElement.getBus(ElementTerminal));
 		}
 		super.makePosSequence();

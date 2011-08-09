@@ -73,9 +73,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		setName(LineName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PDElement list and Linesection lists
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds = 3;
-		this.nTerms = 2;  // Force allocation of terminals and conductors
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(2);   // force allocation of terminals and conductors
 		this.IsSwitch = false;
 		this.R1 = 0.0580;  //ohms per 1000 ft
 		this.X1 = 0.1206;
@@ -200,7 +200,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				recalcElementData();  // Compute matrices
 			}
 
-			nConds = nPhases;  // Force Reallocation of terminal info
+			setNConds(nPhases);  // Force Reallocation of terminal info
 			Yorder = nConds * nTerms;
 			//setYprimInvalid(true);  // set in Edit; this is redundant
 		} else {
@@ -979,8 +979,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			SpacingCode = Code.toLowerCase();
 
 			// need to establish Yorder before FMakeZFromSpacing
-			nPhases       = LineSpacingObj.getNPhases();
-			nConds        = nPhases;  // Force Reallocation of terminal info
+			setNPhases( LineSpacingObj.getNPhases() );
+			setNConds(nPhases);  // Force Reallocation of terminal info
 			Yorder        = nConds * nTerms;
 			setYprimInvalid(true);    // Force Rebuild of Y matrix
 		} else {
@@ -1086,9 +1086,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			setEmergAmps(LineGeometryObj.getEmergAmps());
 			updatePDProperties();
 
-			nPhases       = LineGeometryObj.getNconds();
-			nConds        = nPhases;  // Force Reallocation of terminal info
-			Yorder        = nConds * nTerms;
+			setNPhases( LineGeometryObj.getNconds() );
+			setNConds(nPhases);  // force reallocation of terminal info
+			Yorder = nConds * nTerms;
 			setYprimInvalid(true);    // Force Rebuild of Y matrix
 		} else {
 			Globals.doSimpleMsg("Line Geometry Object:" + Code + " not found.", 181);

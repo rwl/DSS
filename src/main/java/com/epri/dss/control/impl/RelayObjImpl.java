@@ -81,9 +81,9 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		setName(RelayName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
 		this.ElementName   = "";
@@ -152,7 +152,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName); // Global function
 		if (DevIndex >= 0) {
 			MonitoredElement = Globals.getActiveCircuit().getCktElements().get(DevIndex);
-			nPhases = MonitoredElement.getNPhases();  // Force number of phases to be same
+			setNPhases( MonitoredElement.getNPhases() );  // force number of phases to be same
 			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
 				Globals.doErrorMsg("Relay: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
@@ -224,8 +224,8 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void makePosSequence() {
 		if (MonitoredElement != null) {
-			nPhases = MonitoredElement.getNPhases();
-			nConds = nPhases;
+			setNPhases( MonitoredElement.getNPhases() );
+			setNConds(nPhases);
 			setBus(1, MonitoredElement.getBus(ElementTerminal));
 			// Allocate a buffer big enough to hold everything from the monitored element
 			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());

@@ -67,12 +67,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		setName(TransfName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement   (kept in both actually)
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds = this.nPhases + 1;
+		setNPhases(3);  // Directly set conds and phases
+		setNConds(this.nPhases + 1);
 		setNumWindings(2);  // must do this after setting number of phases
 		this.ActiveWinding = 0;  // TODO Check zero based indexing
 
-		this.nTerms = this.NumWindings;  // Force allocation of terminals and conductors
+		setNTerms(this.NumWindings);  // force allocation of terminals and conductors
 
 		this.XHL = 0.07;
 		this.XHT = 0.35;
@@ -124,8 +124,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			OldWdgSize = (NumWindings - 1) * NumWindings / 2;
 			NumWindings = N;
 			MaxWindings = N;
-			nConds = nPhases + 1;
-			nTerms = NumWindings;
+			setNConds(nPhases + 1);
+			setNTerms(NumWindings);
 
 			Winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(Winding, MaxWindings);  // Reallocate collector array
 			for (i = 0; i < MaxWindings; i++)
@@ -1244,9 +1244,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Obj = (XfmrCodeObj) TransformerImpl.getXfmrCodeClass().getActiveObj();
 			XfmrCode = Code.toLowerCase();
 			// set sizes and copy parameters
-			nPhases = Obj.getNPhases();
+			setNPhases(Obj.getNPhases());
 			setNumWindings(Obj.getNumWindings());
-			nConds = nPhases + 1; // forces reallocation of terminals and conductors
+			setNConds(nPhases + 1); // forces reallocation of terminals and conductors
 			for (i = 0; i < NumWindings; i++) {
 				Winding W = Winding[i];
 				W.setConnection(Obj.getWinding()[i].getConnection());

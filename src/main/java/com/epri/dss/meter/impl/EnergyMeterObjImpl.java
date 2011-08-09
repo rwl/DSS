@@ -102,10 +102,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		setName(EnergyMeterName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();  // ENERGY_METER;
 
-		this.nPhases        = 3;  // Directly set conds and phases
-		this.nConds         = 3;
-		this.nTerms         = 1;  // this forces allocation of terminals and conductors in base class
-		this.ExcessFlag     = true;  // Default to Excess energy FOR UE
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		this.ExcessFlag     = true;  // default to excess energy for UE
 		this.ElementName    = "Vsource." + ckt.getCktElements().get(0).getName(); // Default to first circuit element (source)
 		this.MeteredElement = null;
 		this.BranchList     = null;  // initialize to null, set later when inited
@@ -238,7 +238,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				// Sets name of i-th terminal's connected bus in monitor's buslist
 				// This value will be used to set the NodeRef array (see TakeSample)
 				setBus(1, MeteredElement.getBus(MeteredTerminal));
-				nPhases = MeteredElement.getNPhases();
+				setNPhases( MeteredElement.getNPhases() );
 				nConds  = MeteredElement.getNConds();
 				allocateSensorArrays();
 
@@ -263,8 +263,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		if (MeteredElement != null) {
 		setBus(1, MeteredElement.getBus(MeteredTerminal));
-		nPhases = MeteredElement.getNPhases();
-		nConds = MeteredElement.getNConds();
+		setNPhases( MeteredElement.getNPhases() );
+		setNConds( MeteredElement.getNConds() );
 		allocateSensorArrays();
 		BranchList = null;
 		}

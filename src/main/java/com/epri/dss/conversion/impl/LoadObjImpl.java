@@ -136,10 +136,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		setName(SourceName.toLowerCase());
 		DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases       = 3;
-		this.nConds        = 4;  // defaults to wye  so it has a 4th conductor
+		setNPhases(3);
+		setNConds(4);  // defaults to wye  so it has a 4th conductor
 		this.Yorder        = 0;  // To trigger an initial allocation
-		this.nTerms        = 1;  // forces allocations
+		setNTerms(1);  // forces allocations
 		this.kWBase        = 10.0;
 		this.kvarBase      = 5.0;
 		this.PFNominal     = 0.88;

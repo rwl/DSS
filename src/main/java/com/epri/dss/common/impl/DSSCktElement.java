@@ -60,12 +60,12 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public DSSCktElement(DSSClass ParClass) {
 		super(ParClass);
 
-		this.NodeRef = null;
+		this.NodeRef      = null;
 		this.YPrim_Series = null;
 		this.YPrim_Shunt  = null;
 		this.YPrim        = null;
 		this.Terminals    = null;
-		this.BusNames    = null;
+		this.BusNames     = null;
 		this.Vterminal    = null;
 		this.Iterminal    = null;  // present value of terminal current
 		this.ComplexBuffer = null;

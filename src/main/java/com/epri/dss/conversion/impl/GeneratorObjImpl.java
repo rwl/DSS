@@ -141,10 +141,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		setName(GeneratorName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType(); // + GEN_ELEMENT;  // In both PCelement and Genelement list
 
-		this.nPhases = 3;
-		this.nConds  = 4;  // defaults to wye
-		this.Yorder  = 0;  // To trigger an initial allocation
-		this.nTerms  = 1;  // forces allocations
+		setNPhases(3);
+		setNConds(4);  // defaults to wye
+		this.Yorder  = 0;  // to trigger an initial allocation
+		setNTerms(1);  // forces allocations
 		this.kWBase  = 1000.0;
 		this.kvarBase = 60.0;
 

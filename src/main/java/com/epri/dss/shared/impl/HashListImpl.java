@@ -129,7 +129,7 @@ public class HashListImpl implements HashList {
 
 		LastSearchString = S.toLowerCase();
 		LastHash = hash(LastSearchString);
-		int Result = -1;  // TODO: Check zero indexing.
+		int Result = -1;
 		LastFind = -1;
 
 		for (int i = 0; i < ListArray[LastHash].nElem; i++)

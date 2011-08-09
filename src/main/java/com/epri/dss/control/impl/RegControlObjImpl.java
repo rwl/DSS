@@ -63,9 +63,9 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		setName(RegControlName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		this.Vreg         = 120.0;
 		this.Bandwidth    = 3.0;
@@ -135,11 +135,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
 
 			if (UsingRegulatedBus) {
-				nPhases = 1;     // Only need one phase
-				nConds  = 2;
+				setNPhases(1);  // only need one phase
+				setNConds(2);
 			} else {
-				nPhases = getControlledElement().getNPhases();
-				nConds = nPhases;
+				setNPhases( getControlledElement().getNPhases() );
+				setNConds(nPhases);
 				if (PTphase > nPhases) {
 					PTphase = 1;
 					setPropertyValue(21, "1");
@@ -705,11 +705,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if (getControlledElement() != null) {
 			setEnabled( getControlledElement().isEnabled() );
 			if (UsingRegulatedBus) {
-				nPhases = 1;
+				setNPhases(1);
 			} else {
-				nPhases = getControlledElement().getNPhases();
+				setNPhases( getControlledElement().getNPhases() );
 			}
-			nConds = nPhases;
+			setNConds(nPhases);
 			if (getControlledElement().getDSSClassName().equals("transformer")) {
 				// Sets name of i-th terminal's connected bus in RegControl's buslist
 				// This value will be used to set the NodeRef array (see Sample function)

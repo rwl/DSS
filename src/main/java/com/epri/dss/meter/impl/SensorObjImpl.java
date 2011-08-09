@@ -31,9 +31,9 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		super(ParClass);
 		setName(SensorName.toLowerCase());
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		this.SensorKW   = null;
 		this.SensorKVar = null;
@@ -67,8 +67,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
 			} else {
-				nPhases = MeteredElement.getNPhases();
-				nConds  = MeteredElement.getNConds();
+				setNPhases( MeteredElement.getNPhases() );
+				setNConds( MeteredElement.getNConds() );
 
 				// Sets name of i-th terminal's connected bus in Sensor's buslist
 				// This value will be used to set the NodeRef array (see TakeSample)
@@ -96,8 +96,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	public void makePosSequence() {
 		if (MeteredElement != null) {
 			setBus(1, MeteredElement.getBus(MeteredTerminal));
-			nPhases = MeteredElement.getNPhases();
-			nConds  = MeteredElement.getNConds();
+			setNPhases( MeteredElement.getNPhases() );
+			setNConds( MeteredElement.getNConds() );
 			clearSensor();
 			ValidSensor = true;
 			allocateSensorObjArrays();

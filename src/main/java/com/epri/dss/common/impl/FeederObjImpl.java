@@ -42,17 +42,17 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		int bref;
 		CktElement pElement, pShunt;
 
-		SequenceList.clear();  // Get rid of any previous definitions
+		SequenceList.clear();  // get rid of any previous definitions
 		ShuntList.clear();
 
 		IsSynched = false;
-		// Now set up Feeder terminals and BusRef to match the from node of the first branch
+		// set up feeder terminals and busRef to match the from node of the first branch
 		if (BranchList != null) {
 			RootElement = (CktElement) BranchList.getFirst();
 
-			nPhases = RootElement.getNPhases(); // Take care of allocating Terminal stuff
-			nConds = RootElement.getNConds();
-			nTerms = 1;
+			setNPhases( RootElement.getNPhases() );  // take care of allocating terminal stuff
+			setNConds( RootElement.getNConds() );
+			setNTerms(1);
 			Yorder = nTerms * nConds;
 
 			Terminals[0].setBusRef(BranchList.getPresentBranch().getFromBusReference());  // TODO Check zero based indexing
@@ -60,12 +60,12 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 			FromTerminalOffset = (BranchList.getPresentBranch().getFromTerminal() - 1) * nConds;
 			setNodeRef(0, RootElement.getNodeRef()[1 + FromTerminalOffset]);  // TODO Check zero based indexing
 
-			// Build The Sequence List  and ShuntList
+			// build the sequence list and shunt list
 			pElement = RootElement;
 			while (pElement != null) {
 				SequenceList.add(pElement);
 
-				// Mark all the To buses for this branch as radial buses
+				// mark all the to buses for this branch as radial buses
 				BranchList.getPresentBranch().resetToBusList();  // reset pointer to first to bus
 				for (int i = 0; i < pElement.getNTerms() - 1; i++) {
 					bref = BranchList.getPresentBranch().getToBusReference();  // each call pops off a new one

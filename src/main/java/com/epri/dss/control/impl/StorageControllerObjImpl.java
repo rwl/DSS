@@ -86,9 +86,9 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		setName(StorageControllerName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors
 
 		this.ElementName       = "";
 		setControlledElement(null);  // not used in this control
@@ -97,7 +97,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 		this.StorageNameList  = new ArrayList<String>();
 		this.Weights          = null;
-		this.FleetPointerList = new ArrayList<Object>(20);  // Default size and increment
+		this.FleetPointerList = new ArrayList<Object>(20);  // default size and increment
 		this.FleetSize        = 0;
 		this.FleetState       = Storage.STORE_IDLING;
 		this.kWTarget         = 8000.0;
@@ -296,8 +296,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						"Terminal no. \"" +"\" Does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
-				nPhases = MonitoredElement.getNPhases();
-				nConds  = nPhases;
+				setNPhases( MonitoredElement.getNPhases() );
+				setNConds(nPhases);
 				// Sets name of i-th terminal's connected bus in StorageController's buslist
 				setBus(1, MonitoredElement.getBus(ElementTerminal));
 			}
@@ -327,8 +327,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	@Override
 	public void makePosSequence() {
 		if (MonitoredElement != null) {
-			nPhases = MonitoredElement.getNPhases();
-			nConds = nPhases;
+			setNPhases( MonitoredElement.getNPhases() );
+			setNConds(nPhases);
 			setBus(1, MonitoredElement.getBus(ElementTerminal));
 		}
 		super.makePosSequence();

@@ -37,10 +37,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // Only in Fault object class
 		setName(FaultName.toLowerCase());
 
-		// Default to SLG fault
-		this.nPhases = 1;  // Directly set conds and phases
-		this.nConds = 1;
-		this.nTerms = 2;  // Force allocation of terminals and conductors
+		// default to SLG fault
+		setNPhases(1);  // directly set conds and phases
+		setNConds(1);
+		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0"));  // Default to grounded   TODO Check zero based indexing
 		setShunt(true);

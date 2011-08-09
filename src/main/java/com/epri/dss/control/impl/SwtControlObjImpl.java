@@ -21,9 +21,9 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		setName(SwtControlName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		this.nPhases = 3;  // Directly set conds and phases
-		this.nConds  = 3;
-		this.nTerms  = 1;  // this forces allocation of terminals and conductors in base class
+		setNPhases(3);  // directly set conds and phases
+		setNConds(3);
+		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		this.ElementName   = "";
 		setControlledElement(null);
@@ -42,8 +42,8 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		int DevIndex = Utilities.getCktElementIndex(ElementName);
 		if (DevIndex >= 0) {
 			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
-			nPhases = getControlledElement().getNPhases();
-			nConds  = nPhases;
+			setNPhases( getControlledElement().getNPhases() );
+			setNConds(nPhases);
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);
 			if (!Locked) {
 				switch (PresentState) {
@@ -70,8 +70,8 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void makePosSequence() {
 		if (getControlledElement() != null) {
-			nPhases = getControlledElement().getNPhases();
-			nConds = nPhases;
+			setNPhases( getControlledElement().getNPhases() );
+			setNConds(nPhases);
 			setBus(1, getControlledElement().getBus(ElementTerminal));
 		}
 		super.makePosSequence();

@@ -876,8 +876,8 @@ public class ExecHelper {
 
 		// search for class if not already active
 		// if nothing specified, lastClassReferenced remains
-		if (ObjType.equals(Globals.getActiveDSSClass().getName()))
-			Globals.setLastClassReferenced(Globals.getClassNames().find(ObjType));
+		if (!ObjType.equals( Globals.getActiveDSSClass().getName() ))
+			Globals.setLastClassReferenced( Globals.getClassNames().find(ObjType) );
 
 		switch (Globals.getLastClassReferenced()) {
 		case -1:
