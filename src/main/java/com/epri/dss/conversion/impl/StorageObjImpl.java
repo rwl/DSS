@@ -131,21 +131,21 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		this.DSSObjType = ParClass.getDSSClassType(); // + STORAGE_ELEMENT;  // In both PCelement and Storageelement list
 
 		setNPhases(3);
-		setNConds(4);  // defaults to wye
-		this.Yorder     = 0;  // To trigger an initial allocation
-		setNTerms(1);  // forces allocations
+		this.nConds = 4;  // defaults to wye
+		this.Yorder = 0;  // to trigger an initial allocation
+		setNTerms(1);     // forces allocations
 
 		this.YearlyShape       = "";
-		this.YearlyShapeObj    = null;  // If YearlyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.YearlyShapeObj    = null;  // If YearlyShapeobj = null Then the load always stays nominal * global multipliers
 		this.DailyShape        = "";
-		this.DailyShapeObj     = null;  // If DaillyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.DailyShapeObj     = null;  // If DaillyShapeobj = null Then the load always stays nominal * global multipliers
 		this.DutyShape         = "";
-		this.DutyShapeObj      = null;  // If DutyShapeobj = null Then the load alway stays nominal * global multipliers
+		this.DutyShapeObj      = null;  // If DutyShapeobj = null Then the load always stays nominal * global multipliers
 		this.Connection        = 0;     // Wye (star)
 		this.VoltageModel      = 1;  /* Typical fixed kW negative load */
 		this.StorageClass      = 1;
 
-		this.StorageSolutionCount     = -1;  // For keep track of the present solution in Injcurrent calcs
+		this.StorageSolutionCount     = -1;  // for keep track of the present solution in injcurrent calcs
 		this.OpenStorageSolutionCount = -1;
 		this.YPrimOpenCond            = null;
 
@@ -158,30 +158,30 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		this.Yorder           = this.nTerms * this.nConds;
 		this.RandomMult       = 1.0 ;
 
-		/* Output rating stuff */
+		/* output rating stuff */
 		this.kW_out       = 25.0;
 		this.kvar_out     = 0.0;
-		setPowerFactor(1.0);
+		this.PFNominal    = 1.0;
 		this.kWrating     = 25.0;
 		this.kVArating    = this.kWrating *1.0;
 
-		setState(Storage.STORE_IDLING);  // Idling and fully charged
-		this.StateChanged    = true;  // Force building of YPrim
-		this.kWhRating       = 50;
-		this.kWhStored       = kWhRating;
-		this.pctReserve      = 20.0;  // per cent of kWhRating
-		this.kWhReserve      = kWhRating * pctReserve /100.0;
-		this.pctR            = 0.0;;
-		this.pctX            = 50.0;
-		this.pctIdlekW       = 1.0;
-		this.pctIdlekvar     = 0.0;
+		this.State        = Storage.STORE_IDLING;  // idling and fully charged
+		this.StateChanged = true;  // force building of YPrim
+		this.kWhRating    = 50;
+		this.kWhStored    = kWhRating;
+		this.pctReserve   = 20.0;  // per cent of kWhRating
+		this.kWhReserve   = kWhRating * pctReserve /100.0;
+		this.pctR         = 0.0;;
+		this.pctX         = 50.0;
+		this.pctIdlekW    = 1.0;
+		this.pctIdlekvar  = 0.0;
 
 		this.DischargeTrigger = 0.0;
 		this.ChargeTrigger    = 0.0;
 		this.pctChargeEff     = 90.0;
 		this.pctDischargeEff  = 90.0;
-		setPctKWOut(100.0);
-		setPctKVarOut(100.0);
+		this.pctKWout         = 100.0;
+		this.pctKVarout       = 100.0;
 		this.pctKWin          = 100.0;
 
 		this.ChargeTime       = 2.0;   // 2 AM
@@ -199,8 +199,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		this.DebugTrace = false;
 		this.StorageObjSwitchOpen = false;
-		setSpectrum("");  // override base class
-		setSpectrumObj(null);
+		this.Spectrum = "";  // override base class
+		this.SpectrumObj = null;
 
 		initPropertyValues(0);
 		recalcElementData();

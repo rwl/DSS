@@ -30,10 +30,10 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 	protected void defineProperties() {
 
 		NumProperties = CapControl.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		// Define property names
+		// define property names
 
 		PropertyName[0] = "element";
 		PropertyName[1] = "terminal";

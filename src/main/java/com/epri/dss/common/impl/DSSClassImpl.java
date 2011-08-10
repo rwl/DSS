@@ -24,8 +24,8 @@ public class DSSClassImpl implements DSSClass {
 
 	protected String Class_Name;
 
-	/* index of present ActiveElement */
-	private int ActiveElement;
+	/* index of present active element */
+	protected int ActiveElement;
 
 	protected CommandList CommandList;
 
@@ -54,14 +54,14 @@ public class DSSClassImpl implements DSSClass {
 
 	public DSSClassImpl() {
 		super();
-		// Init size and increment
+		// init size and increment
 		this.ElementList = new PointerListImpl(20);
 		this.PropertyName = null;
 		this.PropertyHelp = null;
 		this.PropertyIdxMap = null;
 		this.RevPropertyIdxMap = null;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 		this.ActiveProperty = -1;
 
 		this.ElementNameList = new HashListImpl(100);
@@ -69,7 +69,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	protected void finalize() throws Throwable {
-		// Get rid of space occupied by strings
+		// get rid of space occupied by strings
 		for (int i = 0; i < this.NumProperties; i++) this.PropertyName[i] = "";
 		for (int i = 0; i < this.NumProperties; i++) this.PropertyHelp[i] = "";
 

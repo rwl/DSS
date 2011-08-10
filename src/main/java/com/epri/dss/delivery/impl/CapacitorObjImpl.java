@@ -41,12 +41,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.DSSObjType = ParClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // Default to grounded wye
 
-		setShunt(true);  // defaults to shunt capacitor
+		this.IsShunt = true;  // defaults to shunt capacitor
 
 		this.Cmatrix = null;
 
@@ -58,7 +58,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.Harm = null;
 		this.States = null;
 
-		setNumSteps(1);  // Initial Allocation for the Arrays, too
+		setNumSteps(1);  // initial allocation for the arrays, too
 		this.LastStepInService = this.NumSteps;
 
 		Utilities.initDblArray(this.NumSteps, this.R, 0.0);
@@ -75,11 +75,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.Connection = 0;   // 0 or 1 for wye (default) or delta, respectively
 		this.SpecType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
 
-		setNormAmps(this.kvarrating[0] * DSSGlobals.SQRT3 / this.kvrating * 1.35);   // 135%
-		setEmergAmps(getNormAmps() * 1.8 / 1.35);   //180%
-		setFaultRate(0.0005);
-		setPctPerm(100.0);
-		setHrsToRepair(3.0);
+		this.NormAmps = this.kvarrating[0] * DSSGlobals.SQRT3 / this.kvrating * 1.35;  // 135%
+		this.EmergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
+		this.FaultRate = 0.0005;
+		this.PctPerm = 100.0;
+		this.HrsToRepair = 3.0;
 		this.Yorder = this.nTerms * this.nConds;
 
 		this.doHarmonicRecalc = false;

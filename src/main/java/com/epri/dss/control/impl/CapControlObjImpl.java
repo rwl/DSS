@@ -64,7 +64,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		this.DSSObjType = ParClass.getDSSClassType();
 
 		setNPhases(3);  // Directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors
 							// in base class
 

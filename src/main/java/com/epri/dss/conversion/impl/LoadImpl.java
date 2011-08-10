@@ -18,7 +18,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		this.Class_Name = "Load";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.LOAD_ELEMENT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

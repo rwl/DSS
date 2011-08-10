@@ -25,7 +25,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		this.Class_Name = "Line";
 		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PDElement list and LineSection lists
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 		LineCodeClass = null;
 		LineGeometryClass = null;
 

@@ -25,14 +25,14 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		super(ParClass);
 
 		setName(MeterName.toLowerCase());
-		DSSObjType = ParClass.getDSSClassType();  // This will be a current source (PCElement)
+		DSSObjType = ParClass.getDSSClassType();  // this will be a current source (PCElement)
 
 		SequenceList = new ArrayList<CktElement>(50);
 		ShuntList = new ArrayList<CktElement>(50);
 
 		IsSynched = false;
 
-		// Bus names and nPhases, etc are set up from EnergyMeter
+		// bus names and nPhases, etc are set up from EnergyMeter
 
 		recalcElementData();
 		initPropertyValues(0);

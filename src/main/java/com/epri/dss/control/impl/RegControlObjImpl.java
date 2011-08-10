@@ -64,7 +64,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		this.DSSObjType = ParClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		this.Vreg         = 120.0;
@@ -89,8 +89,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		this.revBandwidth = 3.0;
 		this.revR         = 0.0;
 		this.revX         = 0.0;
-		this.revDelay     =  60.0; // Power must be reversed this long before it will reverse
-		this.RevPowerThreshold   = 100000.0; // 100 kW
+		this.revDelay     =  60.0;  // power must be reversed this long before it will reverse
+		this.RevPowerThreshold   = 100000.0;  // 100 kW
 		this.kWRevPowerThreshold = 100.0;
 		this.IsReversible = false;
 		this.ReversePending = false;

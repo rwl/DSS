@@ -27,7 +27,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		Class_Name = "Storage";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // In both PCelement and Storage element list
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		// Set register names
 		this.RegisterNames[0]  = "kWh";

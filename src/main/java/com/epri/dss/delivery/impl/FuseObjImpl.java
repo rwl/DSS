@@ -46,13 +46,13 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		setName(FuseName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType();
 
-		setNPhases(3);  // Directly set conds and phases
-		setNConds(3);
+		setNPhases(3);  // directly set conds and phases
+		this.nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 
-		setElementName("");
+		this.ElementName = "";
 		setControlledElement(null);
-		setElementTerminal(1);
+		this.ElementTerminal = 1;
 
 		this.MonitoredElementName = "";
 		this.MonitoredElementTerminal = 1;
@@ -69,7 +69,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
 			this.hAction[i] = 0;
 
-		cBuffer = null;  // Complex buffer
+		this.cBuffer = null;  // complex buffer
 
 		this.DSSObjType = ParClass.getDSSClassType(); //cap_CONTROL;
 

@@ -18,7 +18,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		this.Class_Name = "Feeder";
 		this.DSSClassType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

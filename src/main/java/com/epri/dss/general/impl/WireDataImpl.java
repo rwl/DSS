@@ -15,7 +15,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		this.Class_Name = "WireData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

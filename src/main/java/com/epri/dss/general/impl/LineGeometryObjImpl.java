@@ -68,12 +68,12 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		this.LineData = null;
 		this.SpacingType = "";
 
-		setNconds(3);  // Allocates terminals
-		setNphases(3);
-		setActiveCond(1);
-		this.LastUnit   = LineUnits.UNITS_FT;
-		this.NormAmps   = 0.0;
-		this.EmergAmps  = 0.0;
+		setNconds(3);  // allocates terminals
+		this.NPhases = 3;
+		setActiveCond(1);  // TODO Check zero based indexing
+		this.LastUnit  = LineUnits.UNITS_FT;
+		this.NormAmps  = 0.0;
+		this.EmergAmps = 0.0;
 
 		this.Reduce = false;
 

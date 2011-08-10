@@ -22,11 +22,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	public GeneratorImpl() {
 		super();
 		this.Class_Name = "Generator";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // In both PCelement and Genelement list
+		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // in both PCElement and GenElement list
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
-		// Set Register names
+		// set register names
 		this.RegisterNames[0]  = "kWh";
 		this.RegisterNames[1]  = "kvarh";
 		this.RegisterNames[2]  = "Max kW";

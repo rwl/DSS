@@ -18,23 +18,23 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 	private double Angle;
 	private double Volts;
-	private double Vmag;  // Present voltage magnitude
+	private double Vmag;  // present voltage magnitude
 	private double SrcFrequency;
 	private double R, X, C;
 
     private int ScanType;
     private int SequenceType;
 
-    protected CMatrix Z;  // Base Frequency Series Z matrix
+    protected CMatrix Z;  // base frequency series Z matrix
     protected CMatrix Zinv;
 
 	public GICLineObjImpl(DSSClass ParClass, String LineName) {
 		super(ParClass);
 		setName(LineName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
+		this.DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);  // now a 2-terminal device
 		this.Z        = null;
 		this.Zinv     = null;
@@ -49,7 +49,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		this.ScanType     = 0;
 		this.SequenceType = 0; // default to zero sequence (same voltage induced in all phases)
 
-		setSpectrum("");  // no default
+		this.Spectrum = "";  // no default
 
 		initPropertyValues(0);
 

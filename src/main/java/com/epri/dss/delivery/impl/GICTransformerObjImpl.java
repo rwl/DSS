@@ -22,21 +22,21 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		setName(TransformerName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 
-		setBus(2, getBus(1) + ".0");  // Default to grounded
-		setShunt(true);
+		setBus(2, getBus(1) + ".0");  // default to grounded
+		this.IsShunt = true;
 
 		this.G1            = 10000.0;
 		this.G2            = 10000.0;
 		this.SpecType      = GICTransformer.SPEC_GSU;
 
-		setNormAmps(0.0);
-		setEmergAmps(0.0);
-		setFaultRate(0.0);
-		setPctPerm(100.0);
-		setHrsToRepair(0.0);
+		this.NormAmps  = 0.0;
+		this.EmergAmps = 0.0;
+		this.FaultRate = 0.0;
+		this.PctPerm   = 100.0;
+		this.HrsToRepair = 0.0;
 
 		initPropertyValues(0);
 

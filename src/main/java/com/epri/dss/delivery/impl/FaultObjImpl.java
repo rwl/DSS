@@ -39,7 +39,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		// default to SLG fault
 		setNPhases(1);  // directly set conds and phases
-		setNConds(1);
+		this.nConds = 1;
 		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0"));  // Default to grounded   TODO Check zero based indexing
@@ -58,11 +58,11 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		this.RandomMult = 1;
 
-		setNormAmps(0.0);
-		setEmergAmps(0.0);
-		setFaultRate(0.0);
-		setPctPerm(100.0);
-		setHrsToRepair(0.0);
+		this.NormAmps  = 0.0;
+		this.EmergAmps = 0.0;
+		this.FaultRate = 0.0;
+		this.PctPerm   = 100.0;
+		this.HrsToRepair = 0.0;
 
 		initPropertyValues(0);
 
@@ -72,7 +72,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	@Override
 	public void recalcElementData() {
-		// Nothing to do
+		// nothing to do
 	}
 
 //	private double cube(double x) {

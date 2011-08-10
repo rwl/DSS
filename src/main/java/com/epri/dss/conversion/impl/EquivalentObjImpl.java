@@ -38,7 +38,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
 
 		setNPhases(3);
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(1);
 		this.Z    = null;
 		this.Zinv = null;
@@ -61,7 +61,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		this.EquivFrequency = BaseFrequency;
 		this.Angle = 0.0;
 
-		setSpectrum("defaultvsource");
+		this.Spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 

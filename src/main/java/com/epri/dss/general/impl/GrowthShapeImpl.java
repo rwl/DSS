@@ -23,7 +23,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		this.Class_Name = "GrowthShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

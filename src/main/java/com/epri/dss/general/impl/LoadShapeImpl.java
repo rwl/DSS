@@ -25,7 +25,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		Class_Name = "LoadShape";
 		DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

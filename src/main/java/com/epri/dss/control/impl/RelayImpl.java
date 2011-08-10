@@ -35,12 +35,12 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 	protected void defineProperties() {
 
 		NumProperties = Relay.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 
 		allocatePropertyArrays();  /* see DSSClass */
 
 
-		// Define property names
+		// define property names
 
 		addProperty("MonitoredObj", 0,
 				"Full object name of the circuit element, typically a line, transformer, load, or generator, "+

@@ -24,7 +24,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		super();
 		this.Class_Name = "LineCode";
 		this.DSSClassType= DSSClassDefs.DSS_OBJECT;
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

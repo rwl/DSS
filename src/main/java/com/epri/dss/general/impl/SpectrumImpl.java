@@ -24,7 +24,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		this.Class_Name = "Spectrum";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

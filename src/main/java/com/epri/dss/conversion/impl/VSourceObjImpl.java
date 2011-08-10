@@ -43,10 +43,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super(ParClass);
 
 		setName(SourceName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
+		this.DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);  // now a 2-terminal device
 		this.Z        = null;
 		this.Zinv     = null;
@@ -69,7 +69,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		this.ScanType = 1;
 		this.SequenceType = 1;
 
-		setSpectrum("defaultvsource");
+		this.Spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 

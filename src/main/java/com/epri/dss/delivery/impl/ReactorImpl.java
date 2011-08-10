@@ -17,7 +17,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		this.Class_Name = "Reactor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.REACTOR_ELEMENT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

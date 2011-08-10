@@ -18,7 +18,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		this.Class_Name = "TCC_Curve";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

@@ -29,9 +29,9 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
 		this.LastValueAccessed = 0;
 
-		setNumPoints(0);
-		this.Interval = 1.0;  // hr
-		this.Hours = null;
+		this.NumPoints   = 0;
+		this.Interval    = 1.0;  // hr
+		this.Hours       = null;
 		this.PriceValues = null;
 		this.StdDevCalculated = false;  // calculate on demand
 

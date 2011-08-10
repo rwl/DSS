@@ -24,7 +24,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		this.Class_Name   = "TShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

@@ -93,7 +93,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		super(parClass);
 		setName(solutionName.toLowerCase());
 
-		setYear(0);
+		this.year = 0;
 		this.intHour = 0;
 		this.DynaVars.t = 0.0;
 		this.dblHour = 0.0;

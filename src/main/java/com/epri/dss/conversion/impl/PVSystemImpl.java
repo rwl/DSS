@@ -26,7 +26,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		this.Class_Name = "PVSystem";
 		this.DSSClassType = DSSClassType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		// Set register names
 		this.RegisterNames[0]  = "kWh";

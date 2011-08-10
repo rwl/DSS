@@ -104,7 +104,7 @@ public class ControlQueueImpl implements ControlQueue {
 
 		ctrlHandle = 0;  // just a serial number
 
-		setTrace(false);
+		this.DebugTrace = false;
 	}
 
 	public void doAllActions() {

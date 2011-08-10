@@ -16,10 +16,10 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 	public GICLineImpl() {
 		super();
-		this.Class_Name   = "GICLine";
+		this.Class_Name = "GICLine";
 		this.DSSClassType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -33,10 +33,10 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		// Define Property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "bus2";
 		PropertyName[2] = "Volts";
@@ -50,7 +50,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		PropertyName[10] = "Sequence";
 
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+ CRLF +
 		                   "bus1=busname"+ CRLF +
 		                   "bus1=busname.1.2.3";
@@ -72,9 +72,9 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		                    "Default is ZERO sequence. ";
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override help string
+		// override help string
 		PropertyHelp[NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 

@@ -25,7 +25,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		this.Class_Name   = "PriceShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

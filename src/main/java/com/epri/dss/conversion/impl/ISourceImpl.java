@@ -14,9 +14,9 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 	public ISourceImpl() {
 		super();
 		this.Class_Name = "Isource";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
+		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -29,11 +29,10 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 	protected void defineProperties() {
 		NumProperties = ISource.NumPropsThisClass;
 
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "amps";
 		PropertyName[2] = "angle";
@@ -42,7 +41,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		PropertyName[5] = "scantype";
 	    PropertyName[6] = "sequence";
 
-		// Define property help values
+		// define property help values
 		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
 		PropertyHelp[1] = "Magnitude of current source, each phase, in Amps.";
 		PropertyHelp[2] = "Phase angle in degrees of first phase: e.g.,Angle=10.3."+DSSGlobals.CRLF+
@@ -57,9 +56,9 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 
 		ActiveProperty = ISource.NumPropsThisClass - 1;  // TODO Check zero based indexing
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override help string
+		// override help string
 		PropertyHelp[ISource.NumPropsThisClass - 1] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
 	}
 

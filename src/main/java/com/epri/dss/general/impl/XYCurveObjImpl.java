@@ -21,7 +21,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
 		this.LastValueAccessed = 0;
 
-		setNumPoints(0);
+		this.NumPoints = 0;
 		this.XValues = null;
 		this.YValues = null;
 

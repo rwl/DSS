@@ -20,7 +20,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		super();
 		Class_Name    = "LineGeometry";
 		DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

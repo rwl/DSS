@@ -17,7 +17,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		this.Class_Name   = "Vsource";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

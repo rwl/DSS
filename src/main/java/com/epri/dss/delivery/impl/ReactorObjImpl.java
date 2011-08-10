@@ -35,12 +35,12 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		this.DSSObjType = ParClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0.0.0"));  // Default to grounded wye   TODO Check zero based indexing
 
-		setShunt(true);
+		this.IsShunt = true;
 
 		this.Rmatrix = null;
 		this.XMatrix = null;
@@ -56,11 +56,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		this.RpSpecified = false;
 		this.Connection  = 0;   // 0 or 1 for wye (default) or delta, respectively
 		this.SpecType    = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
-		setNormAmps(this.kvarrating * DSSGlobals.SQRT3 / this.kvrating);
-		setEmergAmps(getNormAmps() * 1.35);
-		setFaultRate(0.0005);
-		setPctPerm(100.0);
-		setHrsToRepair(3.0);
+		this.NormAmps    = this.kvarrating * DSSGlobals.SQRT3 / this.kvrating;
+		this.EmergAmps   = getNormAmps() * 1.35;
+		this.FaultRate   = 0.0005;
+		this.PctPerm     = 100.0;
+		this.HrsToRepair = 3.0;
 		this.Yorder      = this.nTerms * this.nConds;
 		recalcElementData();
 

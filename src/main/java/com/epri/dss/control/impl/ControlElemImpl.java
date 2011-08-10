@@ -28,7 +28,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 		this.DblTraceParameter = 0.0;
 		this.MonitorVariable = "";
 		this.MonitorVarIndex = 0;
-		setControlledElement(null);
+		this.ControlledElement = null;
 	}
 
 	/**

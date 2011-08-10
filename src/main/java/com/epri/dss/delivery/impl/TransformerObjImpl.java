@@ -67,8 +67,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		setName(TransfName.toLowerCase());
 		this.DSSObjType = ParClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement   (kept in both actually)
 
-		setNPhases(3);  // Directly set conds and phases
-		setNConds(this.nPhases + 1);
+		setNPhases(3);  // directly set conds and phases
+		this.nConds = this.nPhases + 1;
 		setNumWindings(2);  // must do this after setting number of phases
 		this.ActiveWinding = 0;  // TODO Check zero based indexing
 

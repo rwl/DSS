@@ -62,7 +62,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		setName(MonitorName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		/* Current Buffer has to be big enough to hold all terminals */

@@ -20,10 +20,9 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 		this.Class_Name    = "LineSpacing";
 		this.DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
-
 
 		String[] Commands = new String[this.NumProperties];
 		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);

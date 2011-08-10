@@ -39,7 +39,7 @@ public class LineConstantsImpl implements LineConstants {
 	public LineConstantsImpl(int NumConductors) {
 
 		this.NumConds = NumConductors;
-		this.NumPhases = this.NumConds;
+		setNPhases(this.NumConds);
 
 		X = new double[this.NumConds];
 		Y = new double[this.NumConds];

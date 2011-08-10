@@ -126,9 +126,9 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		this.DSSObjType = ParClass.getDSSClassType();  // + PVSystem_ELEMENT;  // In both PCelement and PVSystemelement list
 
 		setNPhases(3);
-		setNConds(4);  // defaults to wye
-		this.Yorder  = 0;  // To trigger an initial allocation
-		setNTerms(1);  // forces allocations
+		this.nConds = 4;   // defaults to wye
+		this.Yorder  = 0;  // to trigger an initial allocation
+		setNTerms(1);      // forces allocations
 
 		this.YearlyShape        = "";
 		this.YearlyShapeObj     = null;  // if YearlyShapeobj = null Then the Irradiance alway stays nominal
@@ -175,11 +175,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		this.pctCutIn        = 20.0;
 		this.pctCutOut       = 20.0;
 
-		/* Output rating stuff */
-		this.kW_out       = 500.0;
-		this.kvar_out     = 0.0;
-		setPowerFactor(1.0);
-		this.kVArating    = 500.0;
+		/* output rating stuff */
+		this.kW_out      = 500.0;
+		this.kvar_out    = 0.0;
+		this.PFnominal   = 1.0;
+		this.kVArating   = 500.0;
 		this.Pmpp        = 500.0;
 
 		this.pctR         = 0.0;;
@@ -194,10 +194,10 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		this.Reg_Hours  = 4;
 		this.Reg_Price  = 5;
 
-		this.DebugTrace = false;
+		this.DebugTrace            = false;
 		this.PVsystemObjSwitchOpen = false;
-		setSpectrum("");  // override base class
-		setSpectrumObj(null);
+		this.Spectrum              = "";  // override base class
+		this.SpectrumObj           = null;
 
 		initPropertyValues(0);
 		recalcElementData();

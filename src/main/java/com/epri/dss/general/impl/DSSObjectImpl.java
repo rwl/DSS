@@ -129,7 +129,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	}
 
 	public void setName(String Value) {
-		// If renamed, then let someone know so hash list can be updated
+		// if renamed, then let someone know so hash list can be updated
 		if (getLocalName().length() > 0)
 			ParentClass.setElementNamesOutOfSynch(true);
 

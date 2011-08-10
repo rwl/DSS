@@ -22,7 +22,7 @@ public class PowerTerminal implements Terminal {
 		this.Conductors = new Conductor[this.NumCond];
 		for (int i = 0; i < this.NumCond; i++)
 			Conductors[i] = new ConductorImpl();
-		setActiveConductor(0);  // TODO Check zero based indexing
+		ActiveConductor = 0;  // TODO Check zero based indexing
 	}
 
 	public int getBusRef() {

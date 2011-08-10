@@ -54,12 +54,12 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		this.Class_Name = "EnergyMeter";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.ENERGY_METER;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
-		/* Initialice demand interval options to off */
-		setSaveDemandInterval(false);
+		/* Initialise demand interval options to off */
+		this.SaveDemandInterval = false;
 		this.DI_Verbose         = false;
-		this.Do_OverloadReport  = false;  // FSaveDemandInterval must be true for this to have an effect
+		this.Do_OverloadReport  = false;  // saveDemandInterval must be true for this to have an effect
 		this.OverLoadFileIsOpen = false;
 		this.VoltageFileIsOpen  = false;
 

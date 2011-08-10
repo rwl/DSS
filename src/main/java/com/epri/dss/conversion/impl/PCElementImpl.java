@@ -18,8 +18,8 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	private boolean IterminalUpdated;
 
-	private String Spectrum;
-	private SpectrumObj SpectrumObj;
+	protected String Spectrum;
+	protected SpectrumObj SpectrumObj;
 	/* Upline EnergyMeter */
 	private MeterElement MeterObj;
 	/* Upline Sensor for this element */
@@ -34,7 +34,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		this.SensorObj   = null;
 		this.MeterObj    = null;
 		this.InjCurrent  = null;
-		setITerminalUpdated(false);
+		this.IterminalUpdated = false;
 
 		this.DSSObjType = DSSClassDefs.PC_ELEMENT;
 	}

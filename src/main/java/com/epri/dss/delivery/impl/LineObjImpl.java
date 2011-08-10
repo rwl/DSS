@@ -74,7 +74,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		this.DSSObjType = ParClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PDElement list and Linesection lists
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
+		this.nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 		this.IsSwitch = false;
 		this.R1 = 0.0580;  //ohms per 1000 ft
@@ -96,12 +96,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		this.rhoSpecified = false;
 		this.CapSpecified = false;
 
-		/*Basefrequency = 60.0;*/  // set in base class
-		setNormAmps(400.0);
-		setEmergAmps(600.0);
-		setPctPerm(20.0);
-		setFaultRate(0.1);
-		setHrsToRepair(3.0);
+		/*baseFrequency = 60.0;*/  // set in base class
+		this.NormAmps = 400.0;
+		this.EmergAmps = 600.0;
+		this.PctPerm   = 20.0;
+		this.FaultRate = 0.1;
+		this.HrsToRepair = 3.0;
 
 		this.SymComponentsChanged = false;
 		this.SymComponentsModel = true;

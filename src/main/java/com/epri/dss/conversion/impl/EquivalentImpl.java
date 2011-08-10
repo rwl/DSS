@@ -17,7 +17,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		this.Class_Name = "Equivalent";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 
@@ -33,7 +33,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		countProperties();   // Get inherited property count
 		allocatePropertyArrays();
 
-		// Define Property names
+		// define property names
 		PropertyName[0] = "terminals";
 		PropertyName[1] = "buses";
 		PropertyName[2] = "basekv";
@@ -46,7 +46,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		PropertyName[9] = "R0";
 		PropertyName[10] = "X0";
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Number of terminals.  Default =1. Set this BEFORE defining matrices.";
 		PropertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSSGlobals.CRLF+"buses=(b1 b2 b3)";
 		PropertyHelp[2] = "Base Source kV, usually L-L unless you are making a positive-sequence model"+
@@ -62,9 +62,9 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		PropertyHelp[10] = "Zero-sequence reactance matrix, lower triangle.";
 
 		ActiveProperty = Equivalent.NumPropsThisClass;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override help string
+		// override help string
 		PropertyHelp[Equivalent.NumPropsThisClass + 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 

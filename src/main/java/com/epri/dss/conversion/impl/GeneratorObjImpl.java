@@ -142,7 +142,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.DSSObjType = ParClass.getDSSClassType(); // + GEN_ELEMENT;  // In both PCelement and Genelement list
 
 		setNPhases(3);
-		setNConds(4);  // defaults to wye
+		this.nConds = 4;  // defaults to wye
 		this.Yorder  = 0;  // to trigger an initial allocation
 		setNTerms(1);  // forces allocations
 		this.kWBase  = 1000.0;
@@ -165,10 +165,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.LastYear          = 0;
 		this.LastGrowthFactor  = 1.0;
 
-		this.dQdVSaved = 0.0;  // Initialize this here.  Allows generators to be turned off and on
+		this.dQdVSaved = 0.0;  // initialize this here; allows generators to be turned off and on
 
 
-		this.GeneratorSolutionCount     = -1;  // For keep track of the present solution in Injcurrent calcs
+		this.GeneratorSolutionCount     = -1;  // for keep track of the present solution in injcurrent calcs
 		this.OpenGeneratorSolutionCount = -1;
 		this.YPrimOpenCond              = null;
 
@@ -186,10 +186,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		/* Machine rating stuff */
 		this.GenVars.kVArating  = this.kWBase * 1.2;
-		this.kVANotSet = true;  // Flag for default value for kVA
+		this.kVANotSet = true;  // flag for default value for kVA
 
 		//this.GenVars.Vd = 7200.0;
-
 
 		this.GenVars.puXd       = 1.0;
 		this.GenVars.puXdp      = 0.28;
@@ -197,7 +196,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.GenVars.Xd         = this.GenVars.puXd * Math.pow(this.GenVars.kVGeneratorBase, 2) * 1000.0 / this.GenVars.kVArating;
 		this.GenVars.Xdp        = this.GenVars.puXdp * Math.pow(this.GenVars.kVGeneratorBase, 2) * 1000.0 / this.GenVars.kVArating;
 		this.GenVars.Xdpp       = this.GenVars.puXdpp * Math.pow(this.GenVars.kVGeneratorBase, 2) * 1000.0 / this.GenVars.kVArating;
-		this.GenVars.Hmass      = 1.0;       //  W-sec/VA rating
+		this.GenVars.Hmass      = 1.0;  // W-sec/VA rating
 		this.GenVars.Theta      = 0.0;
 		this.GenVars.w0         = DSSGlobals.TwoPi * getBaseFrequency();
 		this.GenVars.Speed      = 0.0;
@@ -222,7 +221,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.GenSwitchOpen = false;
 		this.ShapeIsActual = false;
 
-		setSpectrum("defaultgen");  // override base class
+		this.Spectrum = "defaultgen";  // override base class
 
 		initPropertyValues(0);
 

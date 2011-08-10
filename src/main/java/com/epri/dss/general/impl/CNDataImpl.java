@@ -15,7 +15,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 		this.Class_Name = "CNData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		setActiveElement(-1);
+		this.ActiveElement = -1;
 
 		defineProperties();
 

@@ -103,8 +103,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		this.DSSObjType = ParClass.getDSSClassType();  // ENERGY_METER;
 
 		setNPhases(3);  // directly set conds and phases
-		setNConds(3);
-		setNTerms(1);   // this forces allocation of terminals and conductors in base class
+		this.nConds = 3;
+		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 		this.ExcessFlag     = true;  // default to excess energy for UE
 		this.ElementName    = "Vsource." + ckt.getCktElements().get(0).getName(); // Default to first circuit element (source)
 		this.MeteredElement = null;

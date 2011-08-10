@@ -12,14 +12,14 @@ import com.epri.dss.meter.MeterElement;
 
 public class PDElementImpl extends DSSCktElement implements PDElement {
 
-	private double NormAmps,
+	protected double NormAmps,
 		EmergAmps,
 		FaultRate,
 		PctPerm,
 		HrsToRepair;
 	private int FromTerminal,
-		ToTerminal;  // Set by Meter zone for radial feeder
-	private boolean IsShunt;
+		ToTerminal;  // set by meter zone for radial feeder
+	protected boolean IsShunt;
 
 	private int NumCustomers;
 	private int TotalCustomers;

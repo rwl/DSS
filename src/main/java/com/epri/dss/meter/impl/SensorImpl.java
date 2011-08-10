@@ -36,8 +36,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		countProperties();  // Get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define property names
+		// define property names
 
 		PropertyName[0] = "element";
 		PropertyName[1] = "terminal";

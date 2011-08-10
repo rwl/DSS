@@ -137,8 +137,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		DSSObjType = ParClass.getDSSClassType();
 
 		setNPhases(3);
-		setNConds(4);  // defaults to wye  so it has a 4th conductor
-		this.Yorder        = 0;  // To trigger an initial allocation
+		this.nConds = 4;  // defaults to wye so it has a 4th conductor
+		this.Yorder        = 0;  // to trigger an initial allocation
 		setNTerms(1);  // forces allocations
 		this.kWBase        = 10.0;
 		this.kvarBase      = 5.0;
@@ -167,21 +167,21 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		this.CVRvarFactor   = 2.0;
 
 		this.LastGrowthFactor = 1.0;
-		setkVAAllocationFactor(0.5);
+		this.kVAAllocationFactor = 0.5;
 		this.AllocationFactor = this.kVAAllocationFactor;
 		this.HasBeenAllocated = false;
 		this.PFChanged        = false;
 		this.ShapeIsActual    = false;
 
-		this.LoadSolutionCount     = -1;  // for keeping track of the present solution in Injcurrent calcs
+		this.LoadSolutionCount     = -1;  // for keeping track of the present solution in injcurrent calcs
 		this.OpenLoadSolutionCount = -1;
 		this.YPrimOpenCond         = null;
 
-		setConnectedkVA(0.0);  // loadSpecType=3
-		setKWh(0.0);           // loadSpecType=4
-		setCFactor(4.0);
-		setKWhDays(30.0);
-		this.VminNormal = 0.0;    // indicates for program to use Circuit quantities
+		this.ConnectedkVA = 0.0;  // loadSpecType=3
+		this.kWh        = 0.0;    // loadSpecType=4
+		this.CFactor    = 4.0;
+		this.kWhDays    = 30.0;
+		this.VminNormal = 0.0;    // indicates for program to use circuit quantities
 		this.VminEmerg  = 0.0;
 		this.kVLoadBase = 12.47;
 		this.VBase      = 7200.0;
@@ -198,7 +198,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		this.puStdDev   = 0.1;
 		this.UE_Factor  = 0.0;
 		this.EEN_Factor = 0.0;
-		setSpectrum("defaultload");  // override base class definition
+		this.Spectrum   = "defaultload";  // override base class definition
 		this.HarmMag    = null;
 		this.HarmAng    = null;
 		this.ZIPV       = null;
