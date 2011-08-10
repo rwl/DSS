@@ -93,7 +93,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		super(parClass);
 		setName(solutionName.toLowerCase());
 
-		this.year    = 0;
+		setYear(0);
 		this.intHour = 0;
 		this.DynaVars.t = 0.0;
 		this.dblHour = 0.0;
@@ -113,7 +113,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		this.IsDynamicModel  = false;
 		this.IsHarmonicModel = false;
 
-		this.Frequency = DSSGlobals.getInstance().getDefaultBaseFreq();
+		setFrequency( DSSGlobals.getInstance().getDefaultBaseFreq() );
 		/*this.Fundamental = 60.0; Moved to Circuit and used as default base frequency*/
 		this.Harmonic = 1.0;
 

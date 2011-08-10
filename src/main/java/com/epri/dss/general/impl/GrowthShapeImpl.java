@@ -23,7 +23,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		this.Class_Name = "GrowthShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -105,7 +105,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 			switch (ParamPointer) {
 			case 0:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 600);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 600);
 				break;
 			case 1:
 				pShape.setNpts(Parser.getInstance().makeInteger());

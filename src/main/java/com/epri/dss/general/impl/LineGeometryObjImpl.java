@@ -68,9 +68,9 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		this.LineData = null;
 		this.SpacingType = "";
 
-		this.NConds     = 3;  // Allocates terminals
-		this.NPhases    = 3;
-		this.ActiveCond = 1;
+		setNconds(3);  // Allocates terminals
+		setNphases(3);
+		setActiveCond(1);
 		this.LastUnit   = LineUnits.UNITS_FT;
 		this.NormAmps   = 0.0;
 		this.EmergAmps  = 0.0;
@@ -88,7 +88,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		for (int j = 0; j < NConds; j++) {
-			ActiveCond = j;
+			setActiveCond(j);
 			F.println("~ " + ParentClass.getPropertyName()[2] + "=" + getPropertyValue(2));
 			F.println("~ " + ParentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
 			F.println("~ " + ParentClass.getPropertyName()[4] + "=" + getPropertyValue(4));
@@ -287,7 +287,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	public void setActiveCond(int Value) {
 		if (Value > 0)
 			if (Value <= NConds) {
-				ActiveCond = Value;
+				setActiveCond(Value);
 				if (Units[ActiveCond] == -1)
 					Units[ActiveCond] = LastUnit;  // makes this a sticky value so you don't have to repeat it
 			}
@@ -425,7 +425,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		ConductorChoice newPhaseChoice;
 
 		NConds = Spc.getNWires();  // allocates
-		NPhases = Spc.getNPhases();
+		setNphases(Spc.getNPhases());
 		SpacingType = Spc.getName();
 		if (NConds > NPhases)
 			Reduce = true;
@@ -466,7 +466,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	}
 
 	public int getNphases() {
-		return NConds;
+		return NPhases;
 	}
 
 	public int getActiveCond() {

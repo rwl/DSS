@@ -17,7 +17,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		this.Class_Name = "Reactor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.REACTOR_ELEMENT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -195,7 +195,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() + "\"", 230);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
 				reactorSetBus1(Param);

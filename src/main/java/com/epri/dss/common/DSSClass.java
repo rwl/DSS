@@ -40,9 +40,9 @@ public interface DSSClass {
 
 	void setSaved(boolean saved);
 
-	int getActive();
+	int getActiveElement();
 
-	void setActive(int Value);
+	void setActiveElement(int Value);
 
 	int getElementCount();
 

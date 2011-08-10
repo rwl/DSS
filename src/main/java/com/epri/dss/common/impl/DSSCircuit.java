@@ -88,7 +88,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private List<PCElement>[] BusAdjPC;
 	private List<PDElement>[] BusAdjPD;
 
-	protected String CaseName;
+	private String CaseName;
 
 	protected int ActiveBusIndex;
 	/* fundamental and default base frequency */
@@ -211,7 +211,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		setCaseName(aName);  // default case name to circuitname; sets circuitName_
 
 		this.Fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
-		this.ActiveCktElement = null;
+		setActiveCktElement(null);
 		this.ActiveBusIndex = 0;    // always a bus
 
 		// initial allocations increased from 100 to 1000 to speed things up
@@ -276,7 +276,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.NodeBuffer    = new int[this.NodeBufferMax];  // to hold the nodes
 
 		// init global circuit load and harmonic source multipliers
-		this.LoadMultiplier = 1.0;
+		setLoadMultiplier(1.0);
 		this.GenMultiplier = 1.0;
 		this.HarmMult = 1.0;
 
@@ -332,7 +332,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		this.CurrentDirectory = "";
 
-		this.BusNameRedefined = true;  // set to force rebuild of buslists, nodelists
+		setBusNameRedefined(true);  // set to force rebuild of buslists, nodelists
 
 		this.SavedBuses = null;
 		this.SavedBusNames = null;
@@ -417,9 +417,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		BusNameRedefined = Value;
 
 		if (Value) {
-			// Force Rebuilding of SystemY if bus def has changed
+			// force rebuilding of systemY if bus def has changed
 			Solution.setSystemYChanged(true);
-			// So controls will know buses redefined
+			// so controls will know buses redefined
 			Control_BusNameRedefined = true;
 		}
 	}
@@ -711,7 +711,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 
 		Solution.setMode(Dynamics.SNAPSHOT);
-		LoadMultiplier = CapacityStart;
+		setLoadMultiplier(CapacityStart);
 		boolean CapacityFound = false;
 
 		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
@@ -728,7 +728,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				LoadMultiplier += CapacityIncrement;
 		}
 
-		if (LoadMultiplier > 1.0) LoadMultiplier = 1.0;
+		if (LoadMultiplier > 1.0) setLoadMultiplier(1.0);
 		Result = true;
 
 		return Result;
@@ -896,12 +896,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		// Now redo all enabled circuit elements
 		CktElement CktElementSave = ActiveCktElement;
 		for (int i = 0; i < CktElements.size(); i++) {
-			ActiveCktElement = CktElements.get(i);
+			setActiveCktElement( CktElements.get(i) );
 			if (ActiveCktElement.isEnabled()) processBusDefs();
 			if (AbortBusProcess) return;
 		}
 
-		ActiveCktElement = CktElementSave;  // restore active circuit element
+		setActiveCktElement(CktElementSave);  // restore active circuit element
 
 		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
 		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
@@ -909,7 +909,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		restoreBusInfo();     // frees old bus info, too
 		doResetMeterZones();  // Fix up meter zones to correspond
 
-		BusNameRedefined = false;  // Get ready for next time
+		setBusNameRedefined(false);  // Get ready for next time
 	}
 
 	public void doResetMeterZones() {
@@ -943,7 +943,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				Result = DeviceRef[DevIndex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
-				ActiveCktElement = CktElements.get(Result);
+				setActiveCktElement( CktElements.get(Result) );
 				break;
 			}
 			DevIndex = DeviceList.findNext();   // Could be duplicates
@@ -978,7 +978,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		F.println("DeviceList:");
 		for (int i = 0; i < NumDevices; i++) {
 			F.printf("  %12s%s", DeviceList.get(i), DSSGlobals.CRLF);
-			ActiveCktElement = CktElements.get(i);
+			setActiveCktElement( CktElements.get(i) );
 			if (!ActiveCktElement.isEnabled())
 				F.print("  DISABLED");
 			F.println();

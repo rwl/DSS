@@ -42,7 +42,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 		this.LastValueAccessed = 1;
 
-		this.NumPoints    = 0;
+		setNumPoints(0);
 		this.Interval     = 1.0;  // hr
 		this.Hours        = null;
 		this.PMultipliers = null;

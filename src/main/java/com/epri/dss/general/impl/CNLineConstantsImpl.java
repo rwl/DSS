@@ -41,7 +41,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		double GmrCN;
 		double Denom, RadIn, RadOut;
 
-		Frequency = f;  // this has side effects
+		setFrequency(f);  // this has side effects
 
 		if (Zreduced != null) {
 			ReducedSize = Zreduced.getNOrder();

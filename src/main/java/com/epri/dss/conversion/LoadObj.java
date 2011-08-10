@@ -205,14 +205,6 @@ public interface LoadObj extends PCElement {
 
 	void setPFChanged(boolean pFChanged);
 
-	double getkWh();
-
-	void setkWh(double kWh);
-
-	double getkWhDays();
-
-	void setkWhDays(double kWhDays);
-
 	double getAvgkW();
 
 	void setAvgkW(double avgkW);

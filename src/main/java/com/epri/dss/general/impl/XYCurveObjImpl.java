@@ -9,7 +9,7 @@ import com.epri.dss.general.XYCurveObj;
 public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
 	private int LastValueAccessed,
-			NumPoints;  // Number of points in curve
+			NumPoints;  // number of points in curve
 	private int ArrayPropertyIndex;
 	private double X, Y;
 	private double[] XValues, YValues;
@@ -21,9 +21,9 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
 		this.LastValueAccessed = 0;
 
-		this.NumPoints   = 0;
-		this.XValues     = null;
-		this.YValues     = null;
+		setNumPoints(0);
+		this.XValues = null;
+		this.YValues = null;
 
 		this.X = 0.0;
 		this.Y = 0.0;

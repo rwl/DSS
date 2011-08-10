@@ -40,36 +40,36 @@ public class NamedObjectImpl implements NamedObject {
 	}
 
 	protected void finalize() throws Throwable {
-		if (this.pGuid != null)
-			this.pGuid = null;
+		if (pGuid != null)
+			pGuid = null;
 	}
 
 	public String getDisplayName() {
 		if (this.DName == "") {
-			return this.PName + "_" + this.LName;
+			return PName + "_" + LName;
 		} else {
-			return this.DName;
+			return DName;
 		}
 	}
 
 	public void setDisplayName(String Value) {
-		this.DName = Value;
+		DName = Value;
 	}
-	
+
 	public String getQualifiedName() {
 		return PName + "." + LName;
 	}
 
 	private UUID getUUID() {
-		if (this.pGuid == null) {
-			this.pGuid = UUID.randomUUID();
+		if (pGuid == null) {
+			pGuid = UUID.randomUUID();
 		}
-		return this.pGuid;
+		return pGuid;
 	}
 
 	public void setUUID(UUID Value) {
-		//if (this.pGuid == null) {}
-		this.pGuid = Value;
+		//if (pGuid == null) {}
+		pGuid = Value;
 	}
 
 	public String getID() {
@@ -82,19 +82,19 @@ public class NamedObjectImpl implements NamedObject {
 
 
 	public String getDSSClassName() {
-		return this.PName;
+		return PName;
 	}
 
 	public void setDSSClassName(String Value) {
-		this.PName = Value;
+		PName = Value;
 	}
 
 	public String getLocalName() {
-		return this.LName;
+		return LName;
 	}
 
 	public void setLocalName(String Value) {
-		this.LName = Value;
+		LName = Value;
 	}
 
 

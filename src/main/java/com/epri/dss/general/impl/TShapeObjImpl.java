@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.MathUtil;
 public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 
 	private int LastValueAccessed,
-			NumPoints;  // Number of points in curve
+			NumPoints;  // number of points in curve
 	private int ArrayPropertyIndex;
 
 	private boolean StdDevCalculated;
@@ -20,8 +20,8 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	private MutableDouble StdDev = new MutableDouble();
 
 	protected double Interval;   // =0.0 then random interval (hr)
-	protected double[] Hours;      // Time values (hr) if Interval > 0.0  Else nil
-	protected double[] TValues;  // Temperatures
+	protected double[] Hours;    // time values (hr) if interval > 0.0 else nil
+	protected double[] TValues;  // temperatures
 
 	public TShapeObjImpl(DSSClass ParClass, String TShapeName) {
 		super(ParClass);
@@ -30,7 +30,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 
 		this.LastValueAccessed = 0;
 
-		this.NumPoints = 0;
+		setNumPoints(0);
 		this.Interval = 1.0;  // hr
 		this.Hours = null;
 		this.TValues = null;

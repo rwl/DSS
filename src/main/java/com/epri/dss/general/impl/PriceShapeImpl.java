@@ -25,7 +25,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		this.Class_Name   = "PriceShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -139,7 +139,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ aps.getName() + "\"", 610);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ aps.getName() + "\"", 610);
 				break;
 			case 0:
 				aps.setNumPoints(parser.makeInteger());

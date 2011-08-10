@@ -18,7 +18,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		this.Class_Name = "Feeder";
 		this.DSSClassType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -97,7 +97,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 				switch (ParamPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 630);
+					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ActiveFeederObj.getName() + "\"", 630);
 					break;
 				default:
 					classEdit(ActiveFeederObj, ParamPointer - NumPropsThisClass);

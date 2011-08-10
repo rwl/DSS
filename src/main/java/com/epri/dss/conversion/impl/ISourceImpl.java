@@ -16,7 +16,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		this.Class_Name = "Isource";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -99,7 +99,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ais.getName() + "\"", 330);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ais.getName() + "\"", 330);
 				break;
 			case 0:
 				ais.setBus(1, Param);  // TODO Check zero based indexing
@@ -143,7 +143,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
+					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
 					break;
 				}
 				break;
@@ -159,7 +159,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ ais.getName() + "\": "+Param, 331);
+					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
 					break;
 				}
 				break;

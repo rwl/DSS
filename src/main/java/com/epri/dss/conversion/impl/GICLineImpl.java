@@ -19,7 +19,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		this.Class_Name   = "GICLine";
 		this.DSSClassType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -180,7 +180,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ agl.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -196,7 +196,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ agl.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;

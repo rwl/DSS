@@ -54,14 +54,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		this.Class_Name = "EnergyMeter";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.ENERGY_METER;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		/* Initialice demand interval options to off */
-		this.SaveDemandInterval = false;
+		setSaveDemandInterval(false);
 		this.DI_Verbose         = false;
-		this.Do_OverloadReport   = false;  // FSaveDemandInterval must be true for this to have an effect
-		this.OverLoadFileIsOpen  = false;
-		this.VoltageFileIsOpen   = false;
+		this.Do_OverloadReport  = false;  // FSaveDemandInterval must be true for this to have an effect
+		this.OverLoadFileIsOpen = false;
+		this.VoltageFileIsOpen  = false;
 
 		this.DI_Dir = "";
 
@@ -200,7 +200,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ aem.getName() + "\"", 520);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ aem.getName() + "\"", 520);
 				break;
 			case 0:
 				aem.setElementName(Param.toLowerCase());

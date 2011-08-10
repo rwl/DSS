@@ -167,7 +167,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				switch (PropertyIdxMap[ParamPointer]) {
 				/* internal relay property commands */
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() + "\"", 382);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() + "\"", 382);
 					break;
 				case 0:
 					ar.setMonitoredElementName(Param.toLowerCase());

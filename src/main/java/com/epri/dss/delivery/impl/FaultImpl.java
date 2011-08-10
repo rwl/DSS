@@ -17,7 +17,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		this.Class_Name = "Fault";
 		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // Only in Fault object class
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -150,7 +150,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ af.getName() + "\"", 350);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
 				fltSetBus1(Param);

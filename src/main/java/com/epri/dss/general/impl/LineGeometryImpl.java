@@ -20,7 +20,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		super();
 		Class_Name    = "LineGeometry";
 		DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -129,7 +129,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 				switch (ParamPointer) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name + "." + alg.getName() + "\"", 10101);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() + "." + alg.getName() + "\"", 10101);
 					break;
 				case 0:
 					alg.setNconds(parser.makeInteger());  // Use property value to force reallocations

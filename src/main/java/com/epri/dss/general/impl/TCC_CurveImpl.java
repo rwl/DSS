@@ -18,7 +18,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		this.Class_Name = "TCC_Curve";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -97,7 +97,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 			switch (ParamPointer) {
 			case 0:
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ atc.getName() + "\"", 420);
+				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 1:
 				atc.setNpts(parser.makeInteger());

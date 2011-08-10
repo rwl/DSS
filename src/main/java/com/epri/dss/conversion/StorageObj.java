@@ -87,10 +87,6 @@ public interface StorageObj extends PCElement {
 
 	void setVoltageModel(int voltageModel);
 
-	double getPFNominal();
-
-	void setPFNominal(double pFNominal);
-
 	String getYearlyShape();
 
 	void setYearlyShape(String yearlyShape);
@@ -114,14 +110,6 @@ public interface StorageObj extends PCElement {
 	double getkWhReserve();
 
 	void setkWhReserve(double kWhReserve);
-
-	double getPctKWout();
-
-	void setPctKWout(double pctKWout);
-
-	double getPctKVarout();
-
-	void setPctKVarout(double pctKVarout);
 
 	double getPctKWin();
 

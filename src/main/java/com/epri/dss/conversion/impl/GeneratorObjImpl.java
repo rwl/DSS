@@ -1998,13 +1998,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		GenVars.Qnominalperphase = 1000.0 * kvarBase  / nPhases; // init to something reasonable
 		kVA_Gen = Math.sqrt(Math.pow(kWBase, 2) + Math.pow(kvarBase, 2));
 		if (kVA_Gen != 0.0) {
-			setPFNominal(kWBase / kVA_Gen);  // TODO Check for property use
+			setPowerFactor(kWBase / kVA_Gen);
 		} else {
-			setPFNominal(1.0);
+			setPowerFactor(1.0);
 		}
 
 		if ((kWBase * kvarBase) < 0.0)
-			setPFNominal(-getPFNominal());
+			setPowerFactor(-PFNominal);
 
 		kvarMax  = 2.0 * kvarBase;
 		kvarMin  = -kvarMax;
@@ -2018,12 +2018,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	// FIXME Private method in OpenDSS
 	public void syncUpPowerQuantities() {
 		// keep kvar nominal up to date with kW and PF
-		if (getPFNominal() != 0.0) {
-			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(getPFNominal(), 2) - 1.0);
+		if (PFNominal != 0.0) {
+			kvarBase = kWBase * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0);
 			GenVars.Qnominalperphase = 1000.0 * kvarBase / nPhases;
 			kvarMax = 2.0 * kvarBase;
 			kvarMin = -kvarMax;
-			if (getPFNominal() < 0.0)
+			if (PFNominal < 0.0)
 				kvarBase = -kvarBase;
 
 			if (kVANotSet)
@@ -2157,14 +2157,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	public void setkWBase(double kWBase) {
 		this.kWBase = kWBase;
-	}
-
-	public double getPFNominal() {
-		return PFNominal;
-	}
-
-	public void setPFNominal(double pFNominal) {
-		PFNominal = pFNominal;
 	}
 
 	public double getVpu() {

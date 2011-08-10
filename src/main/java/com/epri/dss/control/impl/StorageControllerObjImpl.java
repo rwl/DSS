@@ -106,7 +106,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		this.TotalWeight      = 1.0;
 		this.HalfkWBand       = this.pctkWBand / 200.0 * this.kWTarget;
 		this.PFTarget         = 0.96;
-		this.PFBand           = 0.04;
+		setPFBand(0.04);
 		this.HalfPFBand       = this.PFBand / 2.0;
 		this.kWNeeded         = 0.0;
 
@@ -886,8 +886,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
 			pStorage.setPctKWin(pctChargeRate);
-			pStorage.setPctKVarout(pctkvarRate);
-			pStorage.setPctKWout(pctKWRate);
+			pStorage.setPctKVarOut(pctkvarRate);
+			pStorage.setPctKWOut(pctKWRate);
 			pStorage.setPctReserve(pctFleetReserve);
 		}
 	}
@@ -905,7 +905,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		/* For side effects see pctKVArOut property of storage element */
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
-			pStorage.setPctKVarout(pctkvarRate);
+			pStorage.setPctKVarOut(pctkvarRate);
 		}
 	}
 
@@ -913,7 +913,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		for (int i = 0; i < FleetPointerList.size(); i++) {
 			pStorage = (StorageObj) FleetPointerList.get(i);
-			pStorage.setPctKWout(pctkw);
+			pStorage.setPctKWOut(pctkw);
 		}
 	}
 

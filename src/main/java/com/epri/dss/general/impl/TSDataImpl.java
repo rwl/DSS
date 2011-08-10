@@ -14,7 +14,8 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		super();
 		this.Class_Name = "TSData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -79,7 +80,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ tsd.getName() + "\"", 101);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ tsd.getName() + "\"", 101);
 				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());

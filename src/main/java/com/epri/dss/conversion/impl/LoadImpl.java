@@ -18,7 +18,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		this.Class_Name = "Load";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.LOAD_ELEMENT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -305,7 +305,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ al.getName() + "\"", 580);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
 				al.setNPhases(parser.makeInteger()); // num phases
@@ -401,10 +401,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setCVRvarFactor(parser.makeDouble());
 				break;
 			case 27:
-				al.setkWh(parser.makeDouble());
+				al.setKWh(parser.makeDouble());
 				break;
 			case 28:
-				al.setkWhDays(parser.makeDouble());
+				al.setKWhDays(parser.makeDouble());
 				break;
 			case 29:
 				al.setCFactor(parser.makeDouble());
@@ -572,7 +572,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				pLoad.randomize(0);
 			}
 		} else {
-			setActive(Handle);
+			setActiveElement(Handle);
 			pLoad = (LoadObj) getActiveObj();
 			pLoad.randomize(0);
 		}

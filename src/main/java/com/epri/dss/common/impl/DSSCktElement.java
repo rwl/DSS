@@ -70,7 +70,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		this.Iterminal    = null;  // present value of terminal current
 		this.ComplexBuffer = null;
 
-		this.Handle      = -1;
+		setHandle(-1);
 		this.BusIndex    = 0;
 		this.nTerms      = 0;
 		this.nConds      = 0;
@@ -79,7 +79,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		this.Yorder      = 0;
 
 		this.YPrimInvalid   = true;
-		this.Enabled        = true;
+		setEnabled(true);
 		this.HasEnergyMeter = false;
 		this.HasSensorObj   = false;
 		this.IsPartofFeeder = false;

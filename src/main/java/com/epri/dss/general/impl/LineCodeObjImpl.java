@@ -15,7 +15,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	private int NeutralConductor;
 
-	protected int NPhases;
+	private int NPhases;
 
 	protected boolean SymComponentsModel, ReduceByKron;
 
@@ -37,7 +37,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		setName(LineCodeName.toLowerCase());
 		DSSObjType = ParClass.getDSSClassType();
 
-		NPhases = 3;  // Directly set conds and phases
+		setNPhases(3);  // Directly set conds and phases
 		NeutralConductor = NPhases - 1;  // initialize to last conductor  TODO Check zero indexing
 		R1 = 0.0580;  //ohms per 1000 ft
 		X1 = 0.1206;

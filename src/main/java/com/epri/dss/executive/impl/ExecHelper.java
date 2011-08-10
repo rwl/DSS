@@ -898,8 +898,8 @@ public class ExecHelper {
 			// now let's make a new object or set an existing one active, whatever the case
 			switch (Globals.getActiveDSSClass().getDSSClassType()) {
 			case DSSClassDefs.DSS_OBJECT:
-				// These can be added WITHout having an active circuit
-				// Duplicates not allowed in general DSS objects;
+				// these can be added without having an active circuit
+				// duplicates not allowed in general DSS objects
 				if  (!Globals.getActiveDSSClass().setActive(name)) {
 					Handle = Globals.getActiveDSSClass().newObject(name);
 					// stick in object list to keep track of it.

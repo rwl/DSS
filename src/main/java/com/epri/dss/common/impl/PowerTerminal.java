@@ -20,9 +20,9 @@ public class PowerTerminal implements Terminal {
 		this.BusRef = -1;  // signify not set
 		this.TermNodeRef = new int[this.NumCond];
 		this.Conductors = new Conductor[this.NumCond];
-		for (int i = 0; i < this.NumCond; i++) 
+		for (int i = 0; i < this.NumCond; i++)
 			Conductors[i] = new ConductorImpl();
-		this.ActiveConductor = 0;  // TODO Check zero based indexing
+		setActiveConductor(0);  // TODO Check zero based indexing
 	}
 
 	public int getBusRef() {

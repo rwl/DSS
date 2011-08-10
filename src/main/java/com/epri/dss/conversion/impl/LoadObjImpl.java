@@ -166,8 +166,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		this.CVRwattFactor  = 1.0;
 		this.CVRvarFactor   = 2.0;
 
-		this.LastGrowthFactor    = 1.0;
-		this.kVAAllocationFactor = 0.5;
+		this.LastGrowthFactor = 1.0;
+		setkVAAllocationFactor(0.5);
 		this.AllocationFactor = this.kVAAllocationFactor;
 		this.HasBeenAllocated = false;
 		this.PFChanged        = false;
@@ -177,21 +177,21 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		this.OpenLoadSolutionCount = -1;
 		this.YPrimOpenCond         = null;
 
-		this.ConnectedkVA  = 0.0;  // Loadspectype=3
-		this.kWh           = 0.0;  // Loadspectype=4
-		this.CFactor       = 4.0;
-		this.kWhDays       = 30.0;
-		this.VminNormal    = 0.0;    // indicates for program to use Circuit quantities
-		this.VminEmerg     = 0.0;
-		this.kVLoadBase    = 12.47;
-		this.VBase         = 7200.0;
-		this.Vminpu        = 0.95;
-		this.Vmaxpu        = 1.05;
-		this.VBase95       = this.Vminpu * this.VBase;
-		this.VBase105      = this.Vmaxpu * this.VBase;
-		this.Yorder        = this.nTerms * this.nConds;
-		this.RandomMult    = 1.0 ;
-		this.Fixed         = false;
+		setConnectedkVA(0.0);  // loadSpecType=3
+		setKWh(0.0);           // loadSpecType=4
+		setCFactor(4.0);
+		setKWhDays(30.0);
+		this.VminNormal = 0.0;    // indicates for program to use Circuit quantities
+		this.VminEmerg  = 0.0;
+		this.kVLoadBase = 12.47;
+		this.VBase      = 7200.0;
+		this.Vminpu     = 0.95;
+		this.Vmaxpu     = 1.05;
+		this.VBase95    = this.Vminpu * this.VBase;
+		this.VBase105   = this.Vmaxpu * this.VBase;
+		this.Yorder     = this.nTerms * this.nConds;
+		this.RandomMult = 1.0 ;
+		this.Fixed      = false;
 		this.ExemptFromLDCurve = false;
 
 		this.puMean     = 0.5;
@@ -1278,7 +1278,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Allocate load from connected kva or kWh billing.
 	 */
 	public void setkVAAllocationFactor(double Value) {
-		kVAAllocationFactor = Value;
+		setkVAAllocationFactor(Value);
 		AllocationFactor = Value;
 		LoadSpecType = 3;
 		computeAllocatedLoad();
@@ -1294,10 +1294,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		AllocationFactor = Value;
 		switch (LoadSpecType) {
 		case 3:
-			kVAAllocationFactor = Value;
+			setkVAAllocationFactor(Value);
 			break;
 		case 4:
-			CFactor             = Value;
+			setCFactor(Value);
 			break;
 		}
 		computeAllocatedLoad();  // update kWbase
@@ -1313,14 +1313,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	}
 
 	public void setConnectedkVA(double Value) {
-		ConnectedkVA = Value;
+		setConnectedkVA(Value);
 		LoadSpecType = 3;
 		AllocationFactor = kVAAllocationFactor;
 		computeAllocatedLoad();
 	}
 
 	public void setKWh(double Value) {
-		kWh = Value;
+		setKWh(Value);
 		LoadSpecType = 4;
 		AllocationFactor = CFactor;
 		computeAllocatedLoad();
@@ -1755,22 +1755,6 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void setPFChanged(boolean pFChanged) {
 		PFChanged = pFChanged;
-	}
-
-	public double getkWh() {
-		return kWh;
-	}
-
-	public void setkWh(double kWh) {
-		this.kWh = kWh;
-	}
-
-	public double getkWhDays() {
-		return kWhDays;
-	}
-
-	public void setkWhDays(double kWhDays) {
-		this.kWhDays = kWhDays;
 	}
 
 	public double getAvgkW() {

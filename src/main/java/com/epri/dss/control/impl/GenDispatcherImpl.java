@@ -95,7 +95,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ agd.getName() + "\"", 364);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
 				agd.setElementName(Param.toLowerCase());

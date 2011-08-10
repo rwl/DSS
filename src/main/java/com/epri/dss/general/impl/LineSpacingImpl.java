@@ -20,7 +20,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 		this.Class_Name    = "LineSpacing";
 		this.DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -110,7 +110,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 				switch (ParamPointer) {
 				case 0:  // TODO Check zero based indexing
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ als.getName() + "\"", 10101);
+					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ als.getName() + "\"", 10101);
 					break;
 				case 1:
 					als.setNWires(parser.makeInteger());  // Use property value to force reallocations

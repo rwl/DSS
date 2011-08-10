@@ -115,11 +115,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	protected double kWhStored;
 	protected double kWhReserve;
 	/* percent of kW rated output currently dispatched */
-	protected double pctKWout;
-	protected double pctKVarout;
-	protected double pctKWin;
-	protected double pctReserve;
-	protected int DispatchMode;
+	private double pctKWout;
+	private double pctKVarout;
+	private double pctKWin;
+	private double pctReserve;
+	private int DispatchMode;
 
 	protected double[] Registers = new double[Storage.NumStorageRegisters];
 	protected double[] Derivatives = new double[Storage.NumStorageRegisters];
@@ -161,11 +161,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		/* Output rating stuff */
 		this.kW_out       = 25.0;
 		this.kvar_out     = 0.0;
-		this.PFNominal    = 1.0;
+		setPowerFactor(1.0);
 		this.kWrating     = 25.0;
 		this.kVArating    = this.kWrating *1.0;
 
-		this.State           = Storage.STORE_IDLING;  // Idling and fully charged
+		setState(Storage.STORE_IDLING);  // Idling and fully charged
 		this.StateChanged    = true;  // Force building of YPrim
 		this.kWhRating       = 50;
 		this.kWhStored       = kWhRating;
@@ -180,8 +180,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		this.ChargeTrigger    = 0.0;
 		this.pctChargeEff     = 90.0;
 		this.pctDischargeEff  = 90.0;
-		this.pctKWout         = 100.0;
-		this.pctKVarout       = 100.0;
+		setPctKWOut(100.0);
+		setPctKVarOut(100.0);
 		this.pctKWin          = 100.0;
 
 		this.ChargeTime       = 2.0;   // 2 AM
@@ -422,7 +422,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				State = Storage.STORE_IDLING;   // all charged up
+				setState(Storage.STORE_IDLING);   // all charged up
 			}
 			break;
 
@@ -441,7 +441,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				State = Storage.STORE_IDLING;  // not enough storage to discharge
+				setState(Storage.STORE_IDLING);  // not enough storage to discharge
 			}
 			break;
 		}
@@ -1226,7 +1226,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() / DischargeEff;
 			if (kWhStored < kWhReserve) {
 				kWhStored = kWhReserve;
-				State = Storage.STORE_IDLING;  // It's empty Turn it off
+				setState(Storage.STORE_IDLING);  // It's empty Turn it off
 				StateChanged = true;
 			}
 			break;
@@ -1235,7 +1235,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() * ChargeEff;
 			if (kWhStored > kWhRating) {
 				kWhStored = kWhRating;
-				State = Storage.STORE_IDLING;  // It's full turn it off
+				setState(Storage.STORE_IDLING);  // It's full turn it off
 				StateChanged = true;
 			}
 			break;
@@ -1400,10 +1400,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			kWhStored = Value;
 			break;
 		case 1:
-			State = (int) Value;
+			setState((int) Value);
 			break;
 		case 2:
-			pctKWout = Value;
+			setPctKWOut(Value);
 			break;
 		case 3:
 			pctKWin = Value;
@@ -1568,16 +1568,16 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (kVA_Gen > kVArating)
 			kVA_Gen = kVArating;  // Limit kVA to rated value
 		if (kVA_Gen != 0.0) {
-			setPFNominal(kW_out / kVA_Gen);
+			setPowerFactor(kW_out / kVA_Gen);
 		} else {
-			setPFNominal(1.0);
+			setPowerFactor(1.0);
 		}
 		if ((kW_out * kvar_out) < 0.0)
-			setPFNominal(-getPFNominal());
+			setPowerFactor(-PFNominal);
 	}
 
 	public void setPresentKW(double Value) {
-		pctKWout = Value / kWhRating * 100.0;
+		setPctKWOut( Value / kWhRating * 100.0 );
 		kW_out   = Value;
 		//syncUpPowerQuantities();
 	}
@@ -1675,14 +1675,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VoltageModel = voltageModel;
 	}
 
-	public double getPFNominal() {
-		return PFNominal;
-	}
-
-	public void setPFNominal(double pFNominal) {
-		PFNominal = pFNominal;
-	}
-
 	public String getYearlyShape() {
 		return YearlyShape;
 	}
@@ -1729,22 +1721,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	public void setkWhReserve(double kWhReserve) {
 		this.kWhReserve = kWhReserve;
-	}
-
-	public double getPctKWout() {
-		return pctKWout;
-	}
-
-	public void setPctKWout(double pctKWout) {
-		this.pctKWout = pctKWout;
-	}
-
-	public double getPctKVarout() {
-		return pctKVarout;
-	}
-
-	public void setPctKVarout(double pctKVarout) {
-		this.pctKVarout = pctKVarout;
 	}
 
 	public double getPctKWin() {

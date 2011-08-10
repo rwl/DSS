@@ -24,7 +24,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		super();
 		this.Class_Name = "LineCode";
 		this.DSSClassType= DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -230,7 +230,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 				switch (ParamPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 101);
+					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
 					break;
 				case 1:
 					getActiveLineCodeObj().setNPhases(parser.makeInteger());  // Use property value to force reallocations

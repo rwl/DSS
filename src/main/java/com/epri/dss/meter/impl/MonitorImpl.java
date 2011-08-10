@@ -109,7 +109,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ am.getName() + "\"", 661);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
 				am.setElementName(Param.toLowerCase());

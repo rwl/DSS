@@ -65,7 +65,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		double GmrTS;
 		double Denom, RadIn, RadOut;
 
-		Frequency = f;  // TODO Check this has side effects
+		setFrequency(f);
 
 		if (Zreduced != null) {
 			ReducedSize = Zreduced.getNOrder();

@@ -154,7 +154,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ar.getName() +"\"", 390);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
 				ar.setMonitoredElementName(Param.toLowerCase());

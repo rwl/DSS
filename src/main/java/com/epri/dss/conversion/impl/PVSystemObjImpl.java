@@ -10,7 +10,6 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.common.impl.YMatrix;
 import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.PVSystemObj;
 import com.epri.dss.conversion.PVSystemUserModel;
@@ -179,7 +178,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		/* Output rating stuff */
 		this.kW_out       = 500.0;
 		this.kvar_out     = 0.0;
-		this.PFnominal    = 1.0;
+		setPowerFactor(1.0);
 		this.kVArating    = 500.0;
 		this.Pmpp        = 500.0;
 
@@ -1480,14 +1479,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	public void setVoltageModel(int voltageModel) {
 		VoltageModel = voltageModel;
-	}
-
-	public double getPFnominal() {
-		return PFnominal;
-	}
-
-	public void setPFnominal(double pFnominal) {
-		PFnominal = pFnominal;
 	}
 
 	public double[] getRegisters() {

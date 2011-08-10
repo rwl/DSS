@@ -27,13 +27,13 @@ public class LineConstantsImpl implements LineConstants {
 	protected CMatrix Zmatrix;   // in ohms/m
 	protected CMatrix YCmatrix;  // siemens/m   --- jwC
 
-	protected CMatrix Zreduced;   // These two do not exist until Kron Reduction
+	protected CMatrix Zreduced;   // these two do not exist until Kron reduction
 	protected CMatrix YCreduced;  // is executed
 
-	protected double Frequency;  // Frequency for which impedances are computed
+	protected double Frequency;  // frequency for which impedances are computed
 	protected double w;  // 2piF
 	protected double rhoEarth;  // ohm-m
-	protected Complex me; // factor for earth impedance
+	protected Complex me;  // factor for earth impedance
 	protected boolean RhoChanged;
 
 	public LineConstantsImpl(int NumConductors) {
@@ -58,8 +58,8 @@ public class LineConstantsImpl implements LineConstants {
 		this.Zmatrix = new CMatrixImpl(this.NumConds);
 		this.YCmatrix = new CMatrixImpl(this.NumConds);
 
-		this.Frequency = -1.0;  // not computed
-		this.rhoEarth = 100.0;  // default value
+		setFrequency(-1.0);  // not computed
+		setRhoEarth(100.0);  // default value
 		this.RhoChanged= true;
 
 		this.Zreduced = null;
@@ -80,7 +80,7 @@ public class LineConstantsImpl implements LineConstants {
 		int ReducedSize;
 
 		// RhoEarth = rho;
-		Frequency = f;  // this has side effects
+		setFrequency(f);  // this has side effects
 
 		if (Zreduced != null) {
 			ReducedSize = Zreduced.getNOrder();
@@ -131,7 +131,7 @@ public class LineConstantsImpl implements LineConstants {
 
 		/* Capacitance Matrix */
 
-		Pfactor = -1.0 / TwoPI / e0 / w; // include frequency
+		Pfactor = -1.0 / TwoPI / e0 / w;  // include frequency
 
 		/* Construct P matrix and then invert */
 
@@ -149,9 +149,9 @@ public class LineConstantsImpl implements LineConstants {
 		YCmatrix.invert();  // now should be nodal C matrix
 
 		if (ReducedSize > 0)
-			Kron(ReducedSize);  // Was reduced so reduce again to same size
+			Kron(ReducedSize);  // was reduced so reduce again to same size
 
-		/* Else the Zmatrix is OK as last computed */
+		/* else the Zmatrix is OK as last computed */
 
 		RhoChanged = false;
 	}
@@ -406,8 +406,8 @@ public class LineConstantsImpl implements LineConstants {
 		Kron(NumPhases);
 	}
 
-	private void setFrequency(double Value) {
-		Frequency = Value;
+	protected void setFrequency(double Value) {
+		setFrequency(Value);
 		w = TwoPI * Frequency;
 		me = new Complex(0.0, w * mu0 / rhoEarth).sqrt();
 	}

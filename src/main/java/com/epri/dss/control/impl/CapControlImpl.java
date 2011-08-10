@@ -137,7 +137,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ acc.getName() + "\"", 352);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
 				acc.setElementName(Param.toLowerCase());

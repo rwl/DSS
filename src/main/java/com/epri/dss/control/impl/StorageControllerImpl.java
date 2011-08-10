@@ -202,7 +202,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ asc.getName() + "\"", 14407);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ asc.getName() + "\"", 14407);
 				break;
 			case StorageController.propELEMENT:
 				asc.setElementName(Param.toLowerCase());

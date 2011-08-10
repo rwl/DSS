@@ -9,7 +9,6 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.common.impl.DSSClassDefs;
-import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.PCElement;
 import com.epri.dss.meter.MeterElement;
@@ -35,7 +34,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		this.SensorObj   = null;
 		this.MeterObj    = null;
 		this.InjCurrent  = null;
-		this.IterminalUpdated = false;
+		setITerminalUpdated(false);
 
 		this.DSSObjType = DSSClassDefs.PC_ELEMENT;
 	}

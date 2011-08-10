@@ -326,7 +326,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 						regWriteTraceRecord(TapChangeToMake);
 					pElem.setPresentTap(TapWinding, pElem.getPresentTap(TapWinding) + TapChangeToMake);
 					Utilities.appendToEventLog("Regulator." + getControlledElement().getName(), String.format(" Changed %d taps to %-.6g.", LastChange, pElem.getPresentTap(TapWinding)));
-					PendingTapChange = 0.0;  // Reset to no change.  Program will determine if another needed.
+					setPendingTapChange(0.0);  // reset to no change; program will determine if another needed
 					Armed = false;
 
 				case DSSGlobals.EVENTDRIVEN:
@@ -439,11 +439,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 						if (!Armed) {
 
-							PendingTapChange = 0.0;
+							setPendingTapChange(0.0);
 							if (Math.abs(ControlledTransformer.getPresentTap(TapWinding) - 1.0) > DSSGlobals.EPSILON) {
 
 								Increment = ControlledTransformer.getTapIncrement(TapWinding);
-								PendingTapChange = Math.round((1.0 - ControlledTransformer.getPresentTap(TapWinding)) / Increment) * Increment;
+								setPendingTapChange( Math.round((1.0 - ControlledTransformer.getPresentTap(TapWinding)) / Increment) * Increment );
 								if ((PendingTapChange != 0.0) && (!Armed)) {
 
 									if (DebugTrace)
@@ -535,12 +535,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					Vboost = (Vlimit - VlocalBus);
 			BoostNeeded = Vboost * PTRatio / ControlledTransformer.getBaseVoltage(ElementTerminal);  // per unit Winding boost needed
 			Increment = ControlledTransformer.getTapIncrement(TapWinding);
-			PendingTapChange = Math.round(BoostNeeded / Increment) * Increment;  // Make sure it is an even increment
+			setPendingTapChange( Math.round(BoostNeeded / Increment) * Increment );  // Make sure it is an even increment
 
 			/* If Tap is another winding or in reverse mode, it has to move
 			 * the other way to accomplish the change */
 			if ((TapWinding != ElementTerminal) || InReverseMode)
-				PendingTapChange = -PendingTapChange;
+				setPendingTapChange(-PendingTapChange);
 
             // Send Initial Tap Change message to control queue
             // Add Delay time to solution control queue
@@ -566,7 +566,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			}
 		}  // if TapChangeIsNeeded
 		else {
-			PendingTapChange = 0.0;
+			setPendingTapChange(0.0);
 		}
 	}
 
@@ -657,7 +657,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	 */
 	@Override
 	public void reset() {
-		PendingTapChange = 0.0;
+		setPendingTapChange(0.0);
 	}
 
 	@Override

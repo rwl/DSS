@@ -75,7 +75,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	 * Allow calls to edit from object itself.
 	 */
 	public int edit() {
-		ParentClass.setActive(ClassIndex);
+		ParentClass.setActiveElement(ClassIndex);
 		return ParentClass.edit();
 	}
 

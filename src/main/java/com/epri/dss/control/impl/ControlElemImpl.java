@@ -28,7 +28,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 		this.DblTraceParameter = 0.0;
 		this.MonitorVariable = "";
 		this.MonitorVarIndex = 0;
-		this.ControlledElement = null;
+		setControlledElement(null);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
 	public void setControlledElement(CktElement Value) {
 		try {
-			// Check for reassignment
+			// check for reassignment
 			if (ControlledElement != null)
 				ControlledElement.setHasControl(false);
 		} finally {

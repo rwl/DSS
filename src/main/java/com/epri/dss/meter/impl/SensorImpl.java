@@ -117,7 +117,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ as.getName() + "\"", 661);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
 				as.setElementName(Param.toLowerCase());

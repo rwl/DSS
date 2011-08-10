@@ -26,7 +26,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		this.Class_Name = "PVSystem";
 		this.DSSClassType = DSSClassType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		// Set register names
 		this.RegisterNames[0]  = "kWh";
@@ -306,7 +306,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				iCase = PropertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ apv.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ apv.getName() + "\"", 561);
 					break;
 				case 0:
 					apv.setNPhases(parser.makeInteger());  // num phases
@@ -323,7 +323,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				case propPF:
 					apv.setPFSpecified(true);
 					apv.setKvarSpecified(false);
-					apv.setPFnominal(parser.makeDouble());
+					apv.setPowerFactor(parser.makeDouble());
 					break;
 				case propMODEL:
 					apv.setVoltageModel(parser.makeInteger());
@@ -497,7 +497,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			apv.setkW_out(OtherPVsystemObj.getkW_out());
 			apv.setKvar_out(OtherPVsystemObj.getKvar_out());
 			apv.setPnominalperphase(OtherPVsystemObj.getPnominalperphase());
-			apv.setPFnominal(OtherPVsystemObj.getPFnominal());
+			apv.setPowerFactor(OtherPVsystemObj.getPowerFactor());
 			apv.setQnominalperphase(OtherPVsystemObj.getQnominalperphase());
 			apv.setConnection(OtherPVsystemObj.getConnection());
 			apv.setYearlyShape(OtherPVsystemObj.getYearlyShape());
@@ -558,7 +558,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				p = (PVSystemObj) ElementList.getNext();
 			}
 		} else {
-			setActive(Handle);
+			setActiveElement(Handle);
 			p = (PVSystemObj) getActiveObj();
 			p.randomize(0);
 		}

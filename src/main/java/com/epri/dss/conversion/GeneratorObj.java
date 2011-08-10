@@ -121,10 +121,6 @@ public interface GeneratorObj extends PCElement {
 
 	void setkWBase(double kWBase);
 
-	double getPFNominal();
-
-	void setPFNominal(double pFNominal);
-
 	double getVpu();
 
 	void setVpu(double vpu);

@@ -129,10 +129,6 @@ public interface PVSystemObj extends PCElement {
 
 	public void setPresentIrradiance(double Value);
 
-	double getPFnominal();
-
-	void setPFnominal(double pFnominal);
-
 	double[] getRegisters();
 
 	void setRegisters(double[] registers);

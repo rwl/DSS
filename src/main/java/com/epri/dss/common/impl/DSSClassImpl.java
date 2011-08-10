@@ -25,7 +25,7 @@ public class DSSClassImpl implements DSSClass {
 	protected String Class_Name;
 
 	/* index of present ActiveElement */
-	protected int ActiveElement;
+	private int ActiveElement;
 
 	protected CommandList CommandList;
 
@@ -61,7 +61,7 @@ public class DSSClassImpl implements DSSClass {
 		this.PropertyIdxMap = null;
 		this.RevPropertyIdxMap = null;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 		this.ActiveProperty = -1;
 
 		this.ElementNameList = new HashListImpl(100);
@@ -92,7 +92,7 @@ public class DSSClassImpl implements DSSClass {
 		return 0;
 	}
 
-	public void setActive(int Value) {
+	public void setActiveElement(int Value) {
 		if ((Value > 0) && (Value <= ElementList.size())) {
 			DSSGlobals Globals = DSSGlobals.getInstance();
 			this.ActiveElement = Value;
@@ -102,6 +102,10 @@ public class DSSClassImpl implements DSSClass {
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement)
 				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 		}
+	}
+
+	public int getActiveElement() {
+		return ActiveElement;
 	}
 
 	/**
@@ -128,7 +132,7 @@ public class DSSClassImpl implements DSSClass {
 		if (ElementList.size() > 2 * ElementNameList.getInitialAllocation())
 			reallocateElementNameList();
 
-		ActiveElement = ElementList.size() - 1;
+		setActiveElement(ElementList.size() - 1);
 		return ActiveElement;  // return index of object in list
 	}
 
@@ -139,7 +143,7 @@ public class DSSClassImpl implements DSSClass {
 			resynchElementNameList();
 		int idx = ElementNameList.find(ObjName);
 		if (idx > 0) {
-			this.ActiveElement = idx;
+			setActiveElement(idx);
 			DSSGlobals.getInstance().setActiveDSSObject((DSSObject) ElementList.get(idx));
 			Result = true;
 		}
@@ -156,7 +160,7 @@ public class DSSClassImpl implements DSSClass {
 
 		int idx = ElementNameList.find(ObjName);
 		if (idx > 0) {
-			ActiveElement = idx;
+			setActiveElement(idx);
 			Result = ElementList.get(idx);
 		}
 		return Result;
@@ -250,7 +254,7 @@ public class DSSClassImpl implements DSSClass {
 		} else {
 			DSSGlobals Globals = DSSGlobals.getInstance();
 
-			this.ActiveElement = 1;
+			setActiveElement(1);
 			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(0));
 			// Make sure Active Ckt Element agrees if is a ckt element
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
@@ -275,7 +279,7 @@ public class DSSClassImpl implements DSSClass {
 				Result = ActiveElement;
 			}
 		}
-		this.ActiveElement += 1;
+		ActiveElement += 1;
 
 		return Result;
 	}
@@ -402,10 +406,6 @@ public class DSSClassImpl implements DSSClass {
 
 	public void setSaved(boolean saved) {
 		Saved = saved;
-	}
-
-	public int getActive() {
-		return ActiveElement;
 	}
 
 	public String getName() {

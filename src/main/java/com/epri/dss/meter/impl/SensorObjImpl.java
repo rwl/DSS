@@ -42,7 +42,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		this.Weight = 1.0;
 		this.pctError = 1.0;
 
-		this.Conn = 0;  // Wye
+		setConn(0);  // Wye
 
 		clearSensor();
 

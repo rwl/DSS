@@ -864,7 +864,7 @@ public class SolutionAlgs {
 		for (PCElement p : ckt.getPCElements()) {
 			if (p.isEnabled()) {
 				if (Globals.getSpectrumClass().find(p.getSpectrum()) != null) {
-					SpectrumInUse[Globals.getSpectrumClass().getActive()] = 1;
+					SpectrumInUse[Globals.getSpectrumClass().getActiveElement()] = 1;
 				}
 			}
 		}
@@ -872,7 +872,7 @@ public class SolutionAlgs {
 		/* Add marked spectra to list */
 		for (int i = 0; i < Globals.getSpectrumClass().getElementCount(); i++) {
 			if (SpectrumInUse[i] == 1) {
-				Globals.getSpectrumClass().setActive(i);
+				Globals.getSpectrumClass().setActiveElement(i);
 				pSpectrum = (SpectrumObj) Globals.getSpectrumClass().getActiveObj();
 				for (int j = 0; j < pSpectrum.getNumHarm(); j++) {
 					addFrequency(FreqList, NumFreq, MaxFreq, pSpectrum.getHarmArray()[j] * ckt.getFundamental());

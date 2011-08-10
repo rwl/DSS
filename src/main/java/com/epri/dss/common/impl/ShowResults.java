@@ -1512,7 +1512,7 @@ public abstract class ShowResults {
 					FDisabled.println();
 					Globals.setActiveDSSClass( Globals.getDSSClassList().get(Globals.getLastClassReferenced()) );
 					for (i = 0; i < Globals.getActiveDSSClass().getElementCount(); i++) {
-						Globals.getActiveDSSClass().setActive(i);
+						Globals.getActiveDSSClass().setActiveElement(i);
 						if ((Globals.getActiveDSSClass().getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
 							if (((CktElement) Globals.getActiveDSSObject()).isEnabled()) {
 								F.println(Globals.getActiveDSSObject().getName());

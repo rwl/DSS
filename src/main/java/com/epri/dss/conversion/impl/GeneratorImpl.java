@@ -24,7 +24,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		this.Class_Name = "Generator";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // In both PCelement and Genelement list
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		// Set Register names
 		this.RegisterNames[0]  = "kWh";
@@ -280,7 +280,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if (ParamPointer >= 0) {
 				switch (PropertyIdxMap[ParamPointer]) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ ag.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
 					ag.setNPhases(parser.makeInteger());  // num phases
@@ -295,7 +295,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setkWBase(parser.makeDouble());
 					break;
 				case 4:
-					ag.setPFNominal(parser.makeDouble());
+					ag.setPowerFactor(parser.makeDouble());
 					break;
 				case 5:
 					ag.setGenModel(parser.makeInteger());
@@ -509,7 +509,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setkWBase(OtherGenerator.getkWBase());
 			ag.setKvarBase(OtherGenerator.getKvarBase());
 			ag.getGenVars().Pnominalperphase = OtherGenerator.getGenVars().Pnominalperphase;
-			ag.setPFNominal(OtherGenerator.getPFNominal());
+			ag.setPowerFactor(OtherGenerator.getPowerFactor());
 			ag.getGenVars().Qnominalperphase = OtherGenerator.getGenVars().Qnominalperphase;
 			ag.setVarMin(OtherGenerator.getVarMin());
 			ag.setVarMax(OtherGenerator.getVarMax());
@@ -572,7 +572,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				p.randomize(0);
 			}
 		} else {
-			setActive(Handle);
+			setActiveElement(Handle);
 			p = (GeneratorObj) getActiveObj();
 			p.randomize(0);
 		}

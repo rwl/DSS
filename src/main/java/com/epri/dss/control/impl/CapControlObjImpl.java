@@ -99,7 +99,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		this.ShouldSwitch = false;
 		this.Armed        = false;
-		this.PendingChange = ControlAction.NONE;
+		setPendingChange(ControlAction.NONE);
 		this.ControlActionHandle = 0;
 
 		this.cBuffer = null; // Complex buffer
@@ -402,13 +402,13 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if (Vtest.doubleValue() < Vmin) {
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					}
 					break;
 				case CLOSE:
 					if (Vtest.doubleValue() > Vmax) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					}
 					break;
@@ -429,24 +429,24 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if (CurrTest.doubleValue() > ON_Value) {
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				case CLOSE:
 					if (CurrTest.doubleValue() < OFF_Value) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
 						if (CurrTest.doubleValue() > ON_Value) {
-							PendingChange = ControlAction.CLOSE;
+							setPendingChange(ControlAction.CLOSE);
 							ShouldSwitch = true;
 						}
 					} else {  // Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				}
@@ -459,25 +459,25 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if (Vtest.doubleValue() < ON_Value) {
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				case CLOSE:
 					if (Vtest.doubleValue() > OFF_Value) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
 						if (Vtest.doubleValue() < ON_Value) {
-							PendingChange = ControlAction.CLOSE;
+							setPendingChange(ControlAction.CLOSE);
 							ShouldSwitch = true;
 						}
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				}
@@ -490,25 +490,25 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if (Q > ON_Value) {
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				case CLOSE:
 					if (Q < OFF_Value) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
 						if (Q > ON_Value) {
-							PendingChange = ControlAction.CLOSE;  // We can go some more
+							setPendingChange(ControlAction.CLOSE);  // We can go some more
 							ShouldSwitch = true;
 						}
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				}
@@ -521,25 +521,25 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if (Q > ON_Value) {
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				case CLOSE:
 					if (Q < OFF_Value) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
 						if (Q > ON_Value) {
-							PendingChange = ControlAction.CLOSE;  // We can go some more
+							setPendingChange(ControlAction.CLOSE);  // We can go some more
 							ShouldSwitch = true;
 						}
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				}
@@ -552,48 +552,48 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				case OPEN:
 					if (OFF_Value > ON_Value) {
 						if ((NormalizedTime >= ON_Value) && (NormalizedTime < OFF_Value)) {
-							PendingChange = ControlAction.CLOSE;
+							setPendingChange(ControlAction.CLOSE);
 							ShouldSwitch  = true;
 						} else {
 							// Reset
-							PendingChange = ControlAction.NONE;
+							setPendingChange(ControlAction.NONE);
 						}
 					} else {  // OFF time is next day
 						if ((NormalizedTime >= ON_Value) && (NormalizedTime < 24.0)) {
-							PendingChange = ControlAction.CLOSE;
+							setPendingChange(ControlAction.CLOSE);
 							ShouldSwitch  = true;
 						} else {
 							// Reset
-							PendingChange = ControlAction.NONE;
+							setPendingChange(ControlAction.NONE);
 						}
 					}
 					break;
 				case CLOSE:
 					if (OFF_Value > ON_Value) {
 						if (NormalizedTime  >= OFF_Value) {
-							PendingChange = ControlAction.OPEN;
+							setPendingChange(ControlAction.OPEN);
 							ShouldSwitch = true;
 						} else if (ControlledCapacitor.availableSteps() > 0) {
 							if ((NormalizedTime >= ON_Value) && (NormalizedTime < OFF_Value)) {
-								PendingChange = ControlAction.CLOSE;  // We can go some more
+								setPendingChange(ControlAction.CLOSE);  // We can go some more
 								ShouldSwitch = true;
 							}
 						} else {
 							// Reset
-							PendingChange = ControlAction.NONE;
+							setPendingChange(ControlAction.NONE);
 						}
 					} else {  // OFF time is next day
 						if ((NormalizedTime >= OFF_Value) && (NormalizedTime < ON_Value)) {
-							PendingChange = ControlAction.OPEN;
+							setPendingChange(ControlAction.OPEN);
 							ShouldSwitch = true;
 						} else if (ControlledCapacitor.availableSteps() > 0) {
 							if ((NormalizedTime >= ON_Value) && (NormalizedTime < 24.0)) {
-								PendingChange = ControlAction.CLOSE;  // We can go some more
+								setPendingChange(ControlAction.CLOSE);  // We can go some more
 								ShouldSwitch = true;
 							}
 						} else {
 							// Reset
-							PendingChange = ControlAction.NONE;
+							setPendingChange(ControlAction.NONE);
 						}
 					}
 					break;
@@ -610,24 +610,24 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				switch (PresentState) {
 				case OPEN:
 					if ((PF < PFON_Value) && (S.getImaginary() * 0.001 > ControlledCapacitor.getTotalkvar() * 0.5)) {  // make sure we don't go too far leading
-						PendingChange = ControlAction.CLOSE;
+						setPendingChange(ControlAction.CLOSE);
 						ShouldSwitch = true;
 					} else {  // Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				case CLOSE:
 					if (PF > PFOFF_Value) {
-						PendingChange = ControlAction.OPEN;
+						setPendingChange(ControlAction.OPEN);
 						ShouldSwitch = true;
 					} else if (ControlledCapacitor.availableSteps() > 0) {
 						if ((PF < PFON_Value) && (S.getImaginary() * 0.001 > ControlledCapacitor.getTotalkvar() / ControlledCapacitor.getNumSteps() * 0.5)) {
-							PendingChange = ControlAction.CLOSE;  // We can go some more
+							setPendingChange(ControlAction.CLOSE);  // We can go some more
 							ShouldSwitch = true;
 						}
 					} else {
 						// Reset
-						PendingChange = ControlAction.NONE;
+						setPendingChange(ControlAction.NONE);
 					}
 					break;
 				}
@@ -693,7 +693,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	 */
 	@Override
 	public void reset() {
-		PendingChange = ControlAction.NONE;
+		setPendingChange(ControlAction.NONE);
 		getControlledElement().setActiveTerminalIdx(0);
 		switch (InitialState) {
 		case OPEN:

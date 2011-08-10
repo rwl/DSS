@@ -16,7 +16,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		this.Class_Name = "GICTransformer";
 		this.DSSClassType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -166,7 +166,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ getName() + "\"", 350);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 350);
 				break;
 			case 0:
 				GICTransSetBusH(Param);

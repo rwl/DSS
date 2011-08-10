@@ -20,7 +20,8 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		super();
 		this.Class_Name = "XfmrCode";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+
+		setActiveElement(-1);
 
 		defineProperties();
 

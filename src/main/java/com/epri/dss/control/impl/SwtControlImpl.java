@@ -89,7 +89,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ asc.getName() + "\"", 382);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
 				asc.setElementName(Param.toLowerCase());

@@ -27,7 +27,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		Class_Name = "Storage";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // In both PCelement and Storage element list
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		// Set register names
 		this.RegisterNames[0]  = "kWh";
@@ -342,7 +342,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				iCase = PropertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ as.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
 					as.setNPhases(parser.makeInteger());  // num phases
@@ -357,7 +357,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setkW_out(parser.makeDouble());
 					break;
 				case propPF:
-					as.setPFNominal(parser.makeDouble());
+					as.setPowerFactor(parser.makeDouble());
 					break;
 				case propMODEL:
 					as.setVoltageModel(parser.makeInteger());
@@ -408,7 +408,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setPctDischargeEff(parser.makeDouble());
 					break;
 				case propPCTKWOUT:
-					as.setPctKWout(parser.makeDouble());
+					as.setPctKWOut(parser.makeDouble());
 					break;
 				case propVMINPU:
 					as.setVminpu(parser.makeDouble());
@@ -560,7 +560,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setkW_out(OtherStorageObj.getkW_out());
 			as.setKvar_out(OtherStorageObj.getKvar_out());
 			as.setPNominalPerPhase(OtherStorageObj.getPNominalPerPhase());
-			as.setPFNominal(OtherStorageObj.getPFNominal());
+			as.setPowerFactor(OtherStorageObj.getPowerFactor());
 			as.setQNominalPerPhase(OtherStorageObj.getQNominalPerPhase());
 			as.setConnection(OtherStorageObj.getConnection());
 			as.setYearlyShape(OtherStorageObj.getYearlyShape());
@@ -588,7 +588,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setChargeTrigger(OtherStorageObj.getChargeTrigger());
 			as.setPctChargeEff(OtherStorageObj.getPctChargeEff());
 			as.setPctDischargeEff(OtherStorageObj.getPctDischargeEff());
-			as.setPctKWout(OtherStorageObj.getPctKWout());
+			as.setPctKWOut(OtherStorageObj.getPctKWOut());
 			as.setPctKWin(OtherStorageObj.getPctKWin());
 			as.setPctIdlekW(OtherStorageObj.getPctIdlekW());
 			as.setPctIdlekvar(OtherStorageObj.getPctIdlekvar());
@@ -625,7 +625,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				pElem.randomize(0);
 			}
 		} else {
-			setActive(Handle);
+			setActiveElement(Handle);
 			pElem = (StorageObj) getActiveObj();
 			pElem.randomize(0);
 		}

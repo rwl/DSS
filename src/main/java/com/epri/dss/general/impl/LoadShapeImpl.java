@@ -25,7 +25,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		Class_Name = "LoadShape";
 		DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -151,7 +151,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 				switch (ParamPointer) {  // TODO Check zero based indexing
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ als.getName() + "\"", 610);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ als.getName() + "\"", 610);
 					break;
 				case 0:
 					als.setNumPoints(parser.makeInteger());

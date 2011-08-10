@@ -156,7 +156,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name +"."+ arc.getName() + "\"", 120);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ arc.getName() + "\"", 120);
 				break;
 			case 0:
 				arc.setElementName("Transformer." + Param.toLowerCase());

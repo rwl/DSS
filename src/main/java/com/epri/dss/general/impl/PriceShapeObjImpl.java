@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.MathUtil;
 
 public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
-	private int LastValueAccessed, NumPoints;  // Number of points in curve
+	private int LastValueAccessed, NumPoints;  // number of points in curve
 	private int ArrayPropertyIndex;
 
 	private boolean StdDevCalculated;
@@ -19,8 +19,8 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	private MutableDouble StdDev = new MutableDouble();
 
 	protected double Interval;  // =0.0 then random interval (hr)
-	protected double[] Hours;   // Time values (hr) if Interval > 0.0  Else nil
-	protected double[] PriceValues;  // Prices
+	protected double[] Hours;   // time values (hr) if interval > 0.0 else nil
+	protected double[] PriceValues;  // prices
 
 	public PriceShapeObjImpl(DSSClass ParClass, String PriceShapeName) {
 		super(ParClass);
@@ -29,7 +29,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
 		this.LastValueAccessed = 0;
 
-		this.NumPoints = 0;
+		setNumPoints(0);
 		this.Interval = 1.0;  // hr
 		this.Hours = null;
 		this.PriceValues = null;

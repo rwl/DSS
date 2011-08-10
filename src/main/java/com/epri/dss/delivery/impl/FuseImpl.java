@@ -124,7 +124,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + Class_Name + "." + getName() + "\"", 402);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() + "." + getName() + "\"", 402);
 				break;
 			case 0:
 				af.setMonitoredElementName(Param.toLowerCase());

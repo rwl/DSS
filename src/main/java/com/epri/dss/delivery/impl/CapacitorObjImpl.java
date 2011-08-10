@@ -58,7 +58,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.Harm = null;
 		this.States = null;
 
-		this.NumSteps = 1;  // Initial Allocation for the Arrays, too
+		setNumSteps(1);  // Initial Allocation for the Arrays, too
 		this.LastStepInService = this.NumSteps;
 
 		Utilities.initDblArray(this.NumSteps, this.R, 0.0);

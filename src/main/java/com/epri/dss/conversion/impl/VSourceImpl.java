@@ -17,7 +17,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		this.Class_Name   = "Vsource";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 
@@ -226,7 +226,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + Class_Name +"."+ avs.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ avs.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -242,7 +242,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + Class_Name +"."+ getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ getName() + "\": "+Param, 321);
 					break;
 				}
 				break;

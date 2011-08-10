@@ -17,7 +17,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		this.Class_Name = "Capacitor";
 		this.DSSClassType = DSSClassType + DSSClassDefs.CAP_ELEMENT;
 
-		this.ActiveElement = -1;
+		setActiveElement(-1);
 
 		defineProperties();
 

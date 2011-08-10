@@ -41,7 +41,7 @@ public class DSSExecutive implements Executive {
 		ExecCommands.getInstance().setLastCmdLine("");
 		ExecCommands.getInstance().setRedirFile("");
 
-		this.RecorderOn = false;
+		setRecorderOn(false);
 		this.RecorderFile = "";
 
 		//DSSGlobals.getInstance().readDSS_Registry();
