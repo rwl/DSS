@@ -581,7 +581,7 @@ public class ExecCommands {
 				/* If not a command or the command is unknown, then it could be a property of a circuit element */
 
 				/* If a command or no text before the = sign, then error */
-				if ((ParamName.length() == 0) || ParamName.equals("command")) {
+				if ((ParamName.length() == 0) || ParamName.equalsIgnoreCase("command")) {
 					Globals.doSimpleMsg("Unknown Command: \"" + Param + "\" "+ DSSGlobals.CRLF + Parser.getCmdString(), 302);
 					Globals.setCmdResult(1);
 				} else {

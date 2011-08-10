@@ -113,10 +113,10 @@ public class Utilities {
 
 		if (S1.length() < S2.length()) {
 			TestStr = S2.substring(0, S1.length());
-			return TestStr.equals(S1) ? 0 : -1;
+			return TestStr.equalsIgnoreCase(S1) ? 0 : -1;
 		} else {
 			TestStr = S1.substring(0, S2.length());
-			return TestStr.equals(S2) ? 0 : -1;
+			return TestStr.equalsIgnoreCase(S2) ? 0 : -1;
 		}
 	}
 
@@ -375,8 +375,8 @@ public class Utilities {
 	}
 
 	public static int interpretSolveAlg(String s) {
-		String SLC = s.toLowerCase().substring(0, 1);  // TODO Check zero based indexing
-		if (SLC.equals("ne")) {
+		String SLC = s.toLowerCase().substring(0, 2);
+		if (SLC.equalsIgnoreCase("ne")) {
 			return Solution.NEWTONSOLVE;
 		} else {
 			return Solution.NORMALSOLVE;
@@ -430,7 +430,7 @@ public class Utilities {
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
 				// FIXME Use BufferedReader not BufferedInputStream
@@ -501,7 +501,7 @@ public class Utilities {
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
 				// FIXME Use BufferedReader not BufferedInputStream
@@ -614,7 +614,7 @@ public class Utilities {
 		String Param = Globals.getAuxParser().makeString();
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
 				FileInputStream fileStream = new FileInputStream(Param);
@@ -675,7 +675,7 @@ public class Utilities {
 
 		/* Syntax can be either a list of string values or a file specification:  File= ... */
 
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 			try {
 				FileInputStream fileStream = new FileInputStream(Param);

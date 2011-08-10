@@ -223,7 +223,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || ObjName.equals("none")) {
+		if ((ObjName.length() == 0) || ObjName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(ObjName);
@@ -276,7 +276,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		setActiveTShapeObj(null);
 		TShapeObj pTShapeObj = (TShapeObj) ElementList.getFirst();
 		while (pTShapeObj != null) {
-			if (pTShapeObj.getName().equals(Value)) {
+			if (pTShapeObj.getName().equalsIgnoreCase(Value)) {
 				setActiveTShapeObj(pTShapeObj);
 				return;
 			}

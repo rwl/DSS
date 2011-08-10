@@ -241,7 +241,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		XYCurveObj pXYCurveObj = (XYCurveObj) ElementList.getFirst();
 		while (pXYCurveObj != null) {
 
-			if (pXYCurveObj.getName().equals(Value)) {
+			if (pXYCurveObj.getName().equalsIgnoreCase(Value)) {
 				setActiveXYCurveObj(pXYCurveObj);
 				return;
 			}
@@ -341,7 +341,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 */
 	@Override
 	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || ObjName.equals("none")) {
+		if ((ObjName.length() == 0) || ObjName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(ObjName);

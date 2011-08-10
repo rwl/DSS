@@ -246,7 +246,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.getPrpSequence()[1] = 0;            // Reset this for save function
 				break;
 			case 1:
-				if (Utilities.stripExtension(ar.getBus(1)).equals( Utilities.stripExtension(ar.getBus(2)) ))
+				if (!Utilities.stripExtension(ar.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(ar.getBus(2)) ))
 					ar.setShunt(false);
 				break;
 			case 2:

@@ -190,7 +190,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		setActiveSpectrumObj(null);
 		for (int i = 0; i < ElementList.size(); i++) {
 			SpectrumObj pSpectrum = (SpectrumObj) ElementList.get(i);
-			if (pSpectrum.getName().equals(Value)) {
+			if (pSpectrum.getName().equalsIgnoreCase(Value)) {
 				setActiveSpectrumObj(pSpectrum);
 				return;
 			}

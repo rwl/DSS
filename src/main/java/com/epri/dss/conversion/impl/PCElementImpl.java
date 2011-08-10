@@ -162,7 +162,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		int Result = -1;   // Returns -1 for error not found
 		int TestLength = S.length();
 		for (int i = 0; i < numVariables(); i++) {
-			if (variableName(i).substring(0, TestLength).equals(S)) {
+			if (variableName(i).substring(0, TestLength).equalsIgnoreCase(S)) {
 				Result = i;
 				break;
 			}

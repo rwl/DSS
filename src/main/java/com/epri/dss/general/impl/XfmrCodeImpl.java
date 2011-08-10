@@ -461,7 +461,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		setActiveXfmrCodeObj(null);
 		for (int i = 0; i < ElementList.size(); i++) {
 			pXfmrCode = (XfmrCodeObj) ElementList.get(i);
-			if (pXfmrCode.getName().equals(Value)) {
+			if (pXfmrCode.getName().equalsIgnoreCase(Value)) {
 				setActiveXfmrCodeObj(pXfmrCode);
 				return;
 			}

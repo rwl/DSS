@@ -133,7 +133,7 @@ public class HashListImpl implements HashList {
 		LastFind = -1;
 
 		for (int i = 0; i < ListArray[LastHash].nElem; i++)
-			if (LastSearchString.equals(ListArray[LastHash].str[i])) {
+			if (LastSearchString.equalsIgnoreCase(ListArray[LastHash].str[i])) {
 				Result = ListArray[LastHash].idx[i];
 				LastFind = i;
 				break;
@@ -152,7 +152,7 @@ public class HashListImpl implements HashList {
 
 		if ((LastHash > 0) && (LastHash <= NumLists)) {
 			for (int i = LastFind; i < ListArray[LastHash].nElem; i++)
-				if (LastSearchString.equals(ListArray[LastHash].str[i])) {
+				if (LastSearchString.equalsIgnoreCase(ListArray[LastHash].str[i])) {
 					Result = ListArray[LastHash].idx[i];
 					LastFind = i;
 					break;
@@ -174,7 +174,7 @@ public class HashListImpl implements HashList {
 			Test1 = S.toLowerCase();
 			for (int i = 0; i < NumElements; i++) {
 				Test2 = StringArray[i].substring(0, Test1.length());
-				if (Test1.equals(Test2)) {
+				if (Test1.equalsIgnoreCase(Test2)) {
 					Result = i;
 					break;
 				}

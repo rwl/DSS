@@ -411,7 +411,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		setActiveLineCodeObj(null);
 		for (int i = 0; i < ElementList.size(); i++) {
 			pCode = (LineCodeObj) ElementList.get(i);
-			if (pCode.getName().equals(Value)) {
+			if (pCode.getName().equalsIgnoreCase(Value)) {
 				setActiveLineCodeObj(pCode);
 				return;
 			}

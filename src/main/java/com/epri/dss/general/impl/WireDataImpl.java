@@ -120,7 +120,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		WireDataObj pWireData;
 		for (int i = 0; i < ElementList.size(); i++) {
 			pWireData = (WireDataObj) ElementList.get(i);
-			if (pWireData.getName().equals(Value)) {
+			if (pWireData.getName().equalsIgnoreCase(Value)) {
 				setActiveConductorDataObj(pWireData);
 				return;
 			}

@@ -16,25 +16,25 @@ public abstract class LineUnits {
 	public static int getUnitsCode(String S) {
 
 		String Stest = S.substring(0, 2);  // copy first 2 chars for most of the test  TODO Check indexing
-		if (Stest.equals("no")) {
+		if (Stest.equalsIgnoreCase("no")) {
 			return UNITS_NONE;  // no units specified
-		} else if (Stest.equals("mi")) {
+		} else if (Stest.equalsIgnoreCase("mi")) {
 			return UNITS_MILES;  // per mile
-		} else if (Stest.equals("kf")) {
+		} else if (Stest.equalsIgnoreCase("kf")) {
 			return UNITS_KFT;  // per 1000 ft (kft)
-		} else if (Stest.equals("km")) {
+		} else if (Stest.equalsIgnoreCase("km")) {
 			return UNITS_KM;  // per km
-		} else if (Stest.equals("m")) {
+		} else if (Stest.equalsIgnoreCase("m")) {
 			return UNITS_M;  // per meter
-		} else if (Stest.equals("me")) {
+		} else if (Stest.equalsIgnoreCase("me")) {
 			return UNITS_M;  // per meter
-		} else if (Stest.equals("ft")) {
+		} else if (Stest.equalsIgnoreCase("ft")) {
 			return UNITS_FT;
-		} else if (Stest.equals("in")) {
+		} else if (Stest.equalsIgnoreCase("in")) {
 			return UNITS_IN;
-		} else if (Stest.equals("cm")) {
+		} else if (Stest.equalsIgnoreCase("cm")) {
 			return UNITS_CM;
-		} else if (Stest.equals("mm")) {
+		} else if (Stest.equalsIgnoreCase("mm")) {
 			return UNITS_MM;
 		}
 

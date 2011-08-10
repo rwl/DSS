@@ -444,7 +444,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 		for (int i = 0; i < ElementList.size(); i++) {
 			LineGeometryObj pLineGeo = (LineGeometryObj) ElementList.get(i);
-			if (pLineGeo.getName().equals(Value)) {
+			if (pLineGeo.getName().equalsIgnoreCase(Value)) {
 				setActiveLineGeometryObj(pLineGeo);
 				return;
 			}

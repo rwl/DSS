@@ -508,9 +508,12 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		setNominalLoad();
 
 		/* Now check for errors. If any of these came out nil and the string was not nil, give warning. */
-		if (YearlyShape.equals("none")) YearlyShape = "";
-		if (DailyShape.equals("none")) DailyShape = "";
-		if (DutyShape.equals("none")) DutyShape = "";
+		if (YearlyShape.equalsIgnoreCase("none"))
+			YearlyShape = "";
+		if (DailyShape.equalsIgnoreCase("none"))
+			DailyShape = "";
+		if (DutyShape.equalsIgnoreCase("none"))
+			DutyShape = "";
 
 		if (YearlyShapeObj == null)
 			if (YearlyShape.length() > 0)

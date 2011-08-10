@@ -182,7 +182,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		TCC_CurveObj pCurve;
 		for (int i = 0; i < ElementList.size(); i++) {
 			pCurve = (TCC_CurveObj) ElementList.get(i);
-			if (pCurve.getName().equals(Value)) {
+			if (pCurve.getName().equalsIgnoreCase(Value)) {
 				setActiveTCC_CurveObj(pCurve);
 				return;
 			}

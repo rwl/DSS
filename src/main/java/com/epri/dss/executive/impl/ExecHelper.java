@@ -130,12 +130,12 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjClass, ObjName);
 
-		if (ObjClass.toString().equals("solution")) {
+		if (ObjClass.toString().equalsIgnoreCase("solution")) {
 			DSSGlobals.getInstance().doSimpleMsg("You cannot create new Solution objects through the command interface.", 241);
 			return Result;
 		}
 
-		if (ObjClass.toString().equals("circuit")) {
+		if (ObjClass.toString().equalsIgnoreCase("circuit")) {
 			DSSGlobals.getInstance().makeNewCircuit(ObjName.toString());
 			Utilities.clearEventLog();  // start the event log in the current directory
 		} else {
@@ -158,10 +158,10 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.toString().equals("circuit")) {
-			// Do nothing
+		if (ObjType.toString().equalsIgnoreCase("circuit")) {
+			// do nothing
 		} else {
-			// Everything else must be a circuit element
+			// everything else must be a circuit element
 			Result = editObject(ObjType.toString(), ObjName.toString());
 		}
 
@@ -277,10 +277,10 @@ public class ExecHelper {
 		if ((ObjClass.toString().length() == 0) && (ObjName.toString().length() == 0))
 			return Result;  // select active obj if any
 
-		if (ObjClass.toString().equals("circuit")) {
+		if (ObjClass.toString().equalsIgnoreCase("circuit")) {
 			setActiveCircuit(ObjName.toString());
 		} else {
-			// Everything else must be a circuit element
+			// everything else must be a circuit element
 			if (ObjClass.toString().length() > 0)
 				DSSClassDefs.setObjectClass(ObjClass.toString());
 
@@ -373,25 +373,25 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.equals("circuit")) {
-			// Do nothing
+		if (ObjType.toString().equalsIgnoreCase("circuit")) {
+			// do nothing
 		} else {
-			if (ObjType.toString().equals(Globals.getActiveDSSClass().getName())) {
+			if (!ObjType.toString().equalsIgnoreCase( Globals.getActiveDSSClass().getName() )) {
 				Globals.setLastClassReferenced( Globals.getClassNames().find(ObjType.toString()) );
 
 				switch (Globals.getLastClassReferenced()) {
 				case 0:
-					Globals.doSimpleMsg("Object Type \"" + ObjType.toString() + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 253);
+					Globals.doSimpleMsg("Object type \"" + ObjType.toString() + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 253);
 					Result = 0;
 					return Result;
 				default:
-					// intrinsic and user Defined models
+					// intrinsic and user defined models
 					Globals.setActiveDSSClass(Globals.getDSSClassList().get(Globals.getLastClassReferenced()));
 					if (Globals.getActiveDSSClass().setActive( ObjName.toString() )) {
 						// scroll through list of objects until a match
 						switch (Globals.getActiveDSSObject().getDSSObjType()) {
 						case DSSClassDefs.DSS_OBJECT:
-							Globals.doSimpleMsg("Error in SetActiveCktElement: Object not a circuit Element."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 254);
+							Globals.doSimpleMsg("Error in SetActiveCktElement: Object not a circuit element."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 254);
 							break;
 						default:
 							Globals.getActiveCircuit().setActiveCktElement((DSSCktElement) Globals.getActiveDSSClass().getActiveObj());
@@ -419,8 +419,8 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.toString().equals("circuit")) {
-			// Do nothing
+		if (ObjType.toString().equalsIgnoreCase("circuit")) {
+			// do nothing
 		} else {
 			if (ObjType.toString().length() > 0) {
 				// only applies to CktElementClass objects
@@ -428,9 +428,9 @@ public class ExecHelper {
 				if (ClassPtr != null) {
 
 					if ((ClassPtr.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
-						// Everything else must be a circuit element
+						// everything else must be a circuit element
 						if (ObjName.toString().equals("*")) {
-							// Enable all elements of this class
+							// enable all elements of this class
 							for (int i = 0; i < ClassPtr.getElementCount(); i++) {
 								CktElem = (CktElement) ClassPtr.getElementList().get(i);
 								CktElem.setEnabled(true);
@@ -459,7 +459,7 @@ public class ExecHelper {
 
 		getObjClassAndName(ObjType, ObjName);
 
-		if (ObjType.equals("circuit")) {
+		if (ObjType.toString().equalsIgnoreCase("circuit")) {
 			// Do nothing
 		} else {
 			if (ObjType.toString().length() > 0) {
@@ -514,7 +514,7 @@ public class ExecHelper {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		for (Circuit ckt : Globals.getCircuits())
-			if (ckt.getName().equals(cktname)) {
+			if (ckt.getName().equalsIgnoreCase(cktname)) {
 				Globals.setActiveCircuit(ckt);
 				return;
 			}
@@ -807,7 +807,7 @@ public class ExecHelper {
 
 		parseObjName(Param, ObjName, PropName);
 
-		if (ObjName.toString().equals("solution")) {  // special for solution
+		if (ObjName.toString().equalsIgnoreCase("solution")) {  // special for solution
 			Globals.setActiveDSSClass(Globals.getSolutionClass());
 			Globals.setActiveDSSObject((DSSObjectImpl) Globals.getActiveCircuit().getSolution());
 		} else {
@@ -876,7 +876,7 @@ public class ExecHelper {
 
 		// search for class if not already active
 		// if nothing specified, lastClassReferenced remains
-		if (!ObjType.equals( Globals.getActiveDSSClass().getName() ))
+		if (!ObjType.equalsIgnoreCase( Globals.getActiveDSSClass().getName() ))
 			Globals.setLastClassReferenced( Globals.getClassNames().find(ObjType) );
 
 		switch (Globals.getLastClassReferenced()) {
@@ -983,7 +983,7 @@ public class ExecHelper {
 		ckt.setActiveBusIndex(ckt.getBusList().find(BusName));
 
 		if (ckt.getActiveBusIndex() > 0) {
-			if (ParamName.equals("kvln")) {
+			if (ParamName.equalsIgnoreCase("kvln")) {
 				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue);
 			} else {
 				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue / DSSGlobals.SQRT3);
@@ -1016,7 +1016,7 @@ public class ExecHelper {
 
 		/* Syntax can be either a list of bus names or a file specification:  File= ... */
 
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 
 			try {
@@ -1065,7 +1065,7 @@ public class ExecHelper {
 		String ParmName = Globals.getAuxParser().getNextParam();
 		String Param = Globals.getAuxParser().makeString();
 
-		if (ParmName.equals("file")) {
+		if (ParmName.equalsIgnoreCase("file")) {
 			// load the list from a file
 
 			try {
@@ -1528,12 +1528,12 @@ public class ExecHelper {
 
 		SolutionObj solution = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (S.equals("ALL")) {
+		if (S.equalsIgnoreCase("ALL")) {
 			solution.setDoAllHarmonics(true);
 		} else {
 			solution.setDoAllHarmonics(false);
 
-			double[] Dummy = new double[100]; // Big Buffer
+			double[] Dummy = new double[100];  // big buffer
 			int Num = Parser.getInstance().parseAsVector(100, Dummy);
 			/* Parsing zero-fills the array */
 
@@ -1553,7 +1553,7 @@ public class ExecHelper {
 		if (Globals.isNoFormsAllowed())
 			return 0;
 
-		doSelectCmd();  // Select ActiveObject
+		doSelectCmd();  // select active object
 
 		if (Globals.getActiveDSSObject() != null) {
 			Globals.getDSSForms().showPropEditForm();

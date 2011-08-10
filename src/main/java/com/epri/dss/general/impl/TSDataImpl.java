@@ -154,7 +154,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		ConductorDataImpl.setActiveConductorDataObj(null);
 		TSDataObj pTSDataObj = (TSDataObj) ElementList.getFirst();
 		while (pTSDataObj != null) {
-			if (pTSDataObj.getName().equals(Value)) {
+			if (pTSDataObj.getName().equalsIgnoreCase(Value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pTSDataObj);
 				return;
 			}

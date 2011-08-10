@@ -188,7 +188,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 		for (int i = 0; i < ElementList.size(); i++) {
 			GrowthShapeObj pShape = (GrowthShapeObj) ElementList.get(i);
-			if (pShape.getName().equals(Value)) {
+			if (pShape.getName().equalsIgnoreCase(Value)) {
 				setActiveGrowthShapeObj(pShape);
 				return;
 			}

@@ -469,9 +469,12 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		setNominalGeneration();
 
 		/* Now check for errors.  If any of these came out nil and the string was not nil, give warning */
-		if (YearlyShape.equals("none")) YearlyShape = "";
-		if (DailyDispShape.equals("none")) DailyDispShape = "";
-		if (DutyShape.equals("none")) DutyShape = "";
+		if (YearlyShape.equalsIgnoreCase("none"))
+			YearlyShape = "";
+		if (DailyDispShape.equalsIgnoreCase("none"))
+			DailyDispShape = "";
+		if (DutyShape.equalsIgnoreCase("none"))
+			DutyShape = "";
 
 		if (YearlyShapeObj == null)
 			if (YearlyShape.length() > 0)

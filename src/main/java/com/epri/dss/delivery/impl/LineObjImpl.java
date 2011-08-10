@@ -963,7 +963,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public void updateControlElements(String NewName, String OldName) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		for (ControlElem pControlElem : ckt.getDSSControls())
-			if (OldName.equals(pControlElem.getElementName())) {
+			if (OldName.equalsIgnoreCase( pControlElem.getElementName() )) {
 				Parser.getInstance().setCmdString(" Element=" + NewName);  // Change name of the property
 				pControlElem.edit();
 			}

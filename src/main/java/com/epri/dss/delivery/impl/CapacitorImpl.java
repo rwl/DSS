@@ -258,7 +258,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				aco.getPrpSequence()[1] = 0; // Reset this for save function
 				break;
 			case 1:
-				if (Utilities.stripExtension(aco.getBus(0)).equals( Utilities.stripExtension(aco.getBus(1)) ))
+				if (!Utilities.stripExtension(aco.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(aco.getBus(2)) ))
 					aco.setShunt(false);
 				break;
 			case 2:

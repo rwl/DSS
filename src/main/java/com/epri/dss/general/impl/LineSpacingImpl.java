@@ -211,7 +211,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		for (int i = 0; i < ElementList.size(); i++) {
 			pSpacing = (LineSpacingObj) ElementList.get(i);
 
-			if (pSpacing.getName().equals(Value)) {
+			if (pSpacing.getName().equalsIgnoreCase(Value)) {
 				setActiveLineSpacingObj(pSpacing);
 				return;
 			}

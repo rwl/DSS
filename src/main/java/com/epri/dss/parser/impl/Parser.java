@@ -71,49 +71,49 @@ public class Parser {
 			Result = 0; // reset error return
 			String S = TokenBuffer.toLowerCase();
 
-			if (S.equals("+")) {
+			if (S.equalsIgnoreCase("+")) {
 				RPN.add();
-			} else if (S.equals("-")) {
+			} else if (S.equalsIgnoreCase("-")) {
 				RPN.subtract();
-			} else if (S.equals("*")) {
+			} else if (S.equalsIgnoreCase("*")) {
 				RPN.multiply();
-			} else if (S.equals("/")) {
+			} else if (S.equalsIgnoreCase("/")) {
 				RPN.divide();
-			} else if (S.equals("sqrt")) {
+			} else if (S.equalsIgnoreCase("sqrt")) {
 				RPN.sqrt();
-			} else if (S.equals("sqr")) {
+			} else if (S.equalsIgnoreCase("sqr")) {
 				RPN.square();
-			} else if (S.equals("^")) {
+			} else if (S.equalsIgnoreCase("^")) {
 				RPN.yToTheXPower();
-			} else if (S.equals("sin")) {
+			} else if (S.equalsIgnoreCase("sin")) {
 				RPN.sinDeg();
-			} else if (S.equals("cos")) {
+			} else if (S.equalsIgnoreCase("cos")) {
 				RPN.cosDeg();
-			} else if (S.equals("tan")) {
+			} else if (S.equalsIgnoreCase("tan")) {
 				RPN.tanDeg();
-			} else if (S.equals("asin")) {
+			} else if (S.equalsIgnoreCase("asin")) {
 				RPN.aSinDeg();
-			} else if (S.equals("acos")) {
+			} else if (S.equalsIgnoreCase("acos")) {
 				RPN.aCosDeg();
-			} else if (S.equals("atan")) {
+			} else if (S.equalsIgnoreCase("atan")) {
 				RPN.aTanDeg();
-			} else if (S.equals("atan2")) {
+			} else if (S.equalsIgnoreCase("atan2")) {
 				RPN.aTan2Deg();
-			} else if (S.equals("swap")) {
+			} else if (S.equalsIgnoreCase("swap")) {
 				RPN.swapXY();
-			} else if (S.equals("rollup")) {
+			} else if (S.equalsIgnoreCase("rollup")) {
 				RPN.rollUp();
-			} else if (S.equals("rolldn")) {
+			} else if (S.equalsIgnoreCase("rolldn")) {
 				RPN.rollDn();
-			} else if (S.equals("ln")) {
+			} else if (S.equalsIgnoreCase("ln")) {
 				RPN.natLog();
-			} else if (S.equals("pi")) {
+			} else if (S.equalsIgnoreCase("pi")) {
 				RPN.enterPi();
-			} else if (S.equals("log10")) {
+			} else if (S.equalsIgnoreCase("log10")) {
 				RPN.tenLog();
-			} else if (S.equals("exp")) {
+			} else if (S.equalsIgnoreCase("exp")) {
 				RPN.eToTheX();
-			} else if (S.equals("inv")) {
+			} else if (S.equalsIgnoreCase("inv")) {
 				RPN.inv();
 			} else {
 				Result = 1;  // error

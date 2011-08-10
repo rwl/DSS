@@ -264,7 +264,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	 * Find an obj of this class by name.
 	 */
 	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || (ObjName.equals("none"))) {
+		if ((ObjName.length() == 0) || (ObjName.equalsIgnoreCase("none"))) {
 			return null;
 		} else {
 			return super.find(ObjName);
@@ -335,7 +335,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		LoadShapeObj pShape;
 		for (int i = 0; i < ElementList.size(); i++) {
 			pShape = (LoadShapeObj) ElementList.get(i);
-			if (pShape.getName().equals(Value)) {
+			if (pShape.getName().equalsIgnoreCase(Value)) {
 				setActiveLoadShapeObj(pShape);
 				return;
 			}

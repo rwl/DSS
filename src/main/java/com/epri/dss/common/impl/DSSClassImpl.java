@@ -202,7 +202,7 @@ public class DSSClassImpl implements DSSClass {
 	public int propertyIndex(String Prop) {
 		int Result = 0;  // Default result if not found
 		for (int i = 0; i < NumProperties; i++) {
-			if (Prop.equals(PropertyName[i])) {
+			if (Prop.equalsIgnoreCase(PropertyName[i])) {
 				Result = PropertyIdxMap[i];
 				break;
 			}

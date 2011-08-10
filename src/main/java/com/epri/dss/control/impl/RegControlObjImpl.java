@@ -146,7 +146,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 			}
 
-			if (getControlledElement().getDSSClassName().equals("transformer")) {
+			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				if (ElementTerminal > getControlledElement().getNTerms()) {
 					Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
 							"Respecify Monitored Winding no.", 122);
@@ -710,7 +710,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				setNPhases( getControlledElement().getNPhases() );
 			}
 			setNConds(nPhases);
-			if (getControlledElement().getDSSClassName().equals("transformer")) {
+			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				// Sets name of i-th terminal's connected bus in RegControl's buslist
 				// This value will be used to set the NodeRef array (see Sample function)
 				if (UsingRegulatedBus) {

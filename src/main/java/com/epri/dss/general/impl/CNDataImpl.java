@@ -172,7 +172,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 		ConductorDataImpl.setActiveConductorDataObj(null);
 		CNDataObj pCNDataObj = (CNDataObj) ElementList.getFirst();
 		while (pCNDataObj != null) {
-			if (pCNDataObj.getName() == Value) {
+			if (pCNDataObj.getName().equalsIgnoreCase(Value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pCNDataObj);
 				return;
 			}

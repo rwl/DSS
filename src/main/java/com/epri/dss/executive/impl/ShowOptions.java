@@ -304,7 +304,7 @@ public class ShowOptions {
 
 			Filname = "VLN";
 			if (Param.length() > 0) {
-				if (Param.equals("LL")) {
+				if (Param.equalsIgnoreCase("LL")) {
 					LLopt = true;
 					Filname = "VLL";
 				}

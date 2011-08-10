@@ -818,7 +818,7 @@ public class SolutionAlgs {
 		VSourceObj pVsrc;
 		ISourceObj pIsrc;
 
-		if (pc.getDSSClassName().equals("vsource")) {
+		if (pc.getDSSClassName().equalsIgnoreCase("vsource")) {
 			pVsrc = (VSourceObj) pc;
 			return pVsrc.getSrcFrequency();
 		} else {

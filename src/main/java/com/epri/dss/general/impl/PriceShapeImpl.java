@@ -224,7 +224,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 	@Override
 	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || ObjName.equals("none")) {
+		if ((ObjName.length() == 0) || ObjName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
 			return super.find(ObjName);
@@ -277,7 +277,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		setActivePriceShapeObj(null);
 		PriceShapeObj pPriceShapeObj = (PriceShapeObj) ElementList.getFirst();
 		while (pPriceShapeObj != null) {
-			if (pPriceShapeObj.getName().equals(Value)) {
+			if (pPriceShapeObj.getName().equalsIgnoreCase(Value)) {
 				setActivePriceShapeObj(pPriceShapeObj);
 				return;
 			}

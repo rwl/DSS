@@ -209,7 +209,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 					ar.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
 					break;
 				case 13:
-					if (Param.equals("NONE")) {
+					if (Param.equalsIgnoreCase("NONE")) {
 						ar.setNumReclose(1);
 					} else {
 						ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));  // max of 4 allowed
