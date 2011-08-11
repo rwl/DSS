@@ -5,11 +5,11 @@ import com.epri.dss.common.impl.Esolv32Problem;
 import com.epri.dss.common.impl.SolverError;
 
 /*
- * Unit for processing the AutoAdd Solution FUNCTIONs
+ * Unit for processing the AutoAdd solution functions
  *
  * Note: Make sure this class in instantiated after EnergyMeter class
  *
- * There is one of these per circuit
+ * There is one of these per circuit.
  */
 public interface AutoAdd {
 
@@ -44,7 +44,8 @@ public interface AutoAdd {
 	void addCurrents(int SolveType);
 
 	/**
-	 * Automatically add caps or generators.
+	 * Automatically add capacitors or generators.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem

@@ -222,17 +222,17 @@ public interface IDSSGlobals {
 
 	void clearAllCircuits();
 
-	/* Set object active by name */
+	/** Set object active by name */
 	void setObject(String Param);
 
 	int setActiveBus(String BusName);
 
 	void makeNewCircuit(String Name);
 
-	/* Append a string to Global result, separated by commas */
+	/** Append a string to global result, separated by commas */
 	void appendGlobalResult(String S);
 
-	/* Separate by CRLF */
+	/** Separate by CRLF */
 	void appendGlobalResultCRLF(String S);
 
 	void WriteDLLDebugFile(String S);
@@ -244,4 +244,5 @@ public interface IDSSGlobals {
 	boolean isDSSDLL(String Fname);
 
 	String getDSSVersion();
+
 }

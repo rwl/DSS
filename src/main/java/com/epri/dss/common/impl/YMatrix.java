@@ -44,15 +44,15 @@ public class YMatrix {
 
 	public static void resetSparseMatrix(MutableLong Y, int size) throws Esolv32Problem {
 		if (Y.longValue() != 0) {
-			if (deleteSparseSet(Y.longValue()) < 1)  // Get rid of existing one beFore making a new one
-				throw new Esolv32Problem("Error Deleting System Y Matrix in ResetSparseMatrix. Problem with sparse matrix solver.");
+			if (deleteSparseSet(Y.longValue()) < 1)  // get rid of existing one before making a new one
+				throw new Esolv32Problem("Error deleting system Y Matrix in resetSparseMatrix. Problem with sparse matrix solver.");
 			Y.setValue(0);
 		}
 
-		// Make a new sparse set
+		// make a new sparse set
 		Y.setValue(newSparseSet(size));
-		if (Y.longValue() < 1)  // Raise and exception  TODO Check zero based indexing
-			throw new Esolv32Problem("Error Creating System Y Matrix. Problem WITH Sparse matrix solver.");
+		if (Y.longValue() < 1)  // raise an exception  TODO Check zero based indexing
+			throw new Esolv32Problem("Error creating system Y Matrix. Problem with sparse matrix solver.");
 	}
 
 	public static void initializeNodeVbase() {
@@ -68,6 +68,7 @@ public class YMatrix {
 
 	/**
 	 * Builds designated Y matrix for system and allocates solution arrays.
+	 *
 	 * @throws Esolv32Problem
 	 */
 	public static void buildYMatrix(int BuildOption, boolean AllocateVI) throws Esolv32Problem {
@@ -83,12 +84,12 @@ public class YMatrix {
 		SolutionObj sol = ckt.getSolution();
 
 		if (sol.isPreserveNodeVoltages())
-			sol.updateVBus();  // Update voltage values stored with Bus object
+			sol.updateVBus();  // update voltage values stored with bus object
 
-		// the following re counts the number of buses and resets meter zones and feeders
-		// If radial but systemNodeMap not set then init for radial got skipped due to script sequence
+		// the following recounts the number of buses and resets meter zones and feeders
+		// if radial but systemNodeMap not set then init for radial got skipped due to script sequence
 		if (ckt.isBusNameRedefined())
-			ckt.reProcessBusDefs();  // This changes the node references into the system Y matrix!!
+			ckt.reProcessBusDefs();  // this changes the node references into the system Y matrix!
 
 		YMatrixSize = ckt.getNumNodes();
 
@@ -112,7 +113,7 @@ public class YMatrix {
 
 		if (Globals.isSolutionAbort()) {
 			Globals.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
-			return;  // Some problem occured building Yprims
+			return;  // some problem occurred building Yprims
 		}
 
 		sol.setFrequencyChanged(false);
@@ -120,14 +121,14 @@ public class YMatrix {
 		if (ckt.isLogEvents())
 			switch (BuildOption) {
 			case WHOLEMATRIX:
-				Utilities.logThisEvent("Building Whole Y Matrix");
+				Utilities.logThisEvent("Building whole Y matrix");
 				break;
 			case SERIESONLY:
-				Utilities.logThisEvent("Building Series Y Matrix");
+				Utilities.logThisEvent("Building series Y matrix");
 				break;
 			}
 
-		// Add in Yprims for all devices
+		// add in Yprims for all devices
 		for (CktElement pElem : ckt.getCktElements()) {
 			if (pElem.isEnabled()) {
 				switch (BuildOption) {
@@ -142,17 +143,17 @@ public class YMatrix {
 				if (CmatArray != null)
 					if (addPrimitiveMatrix(sol.getY(), pElem.getYorder(), pElem.getNodeRef()[0], CmatArray[0]) < 0)  // TODO Check zero based indexing
 						throw new Esolv32Problem("Node index out of range adding to System Y Matrix");
-			}  // If Enabled
+			}  // if enabled
 		}
 
-		// Allocate voltage and current vectors if requested
+		// allocate voltage and current vectors if requested
 		if (AllocateVI) {
 			if (ckt.isLogEvents())
 				Utilities.logThisEvent("ReAllocating Solution Arrays");
-			sol.setNodeV( (Complex[]) Utilities.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // Allocate System Voltage array - allow for zero element
+			sol.setNodeV( (Complex[]) Utilities.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
 			sol.getNodeV()[0] = Complex.ZERO;  // TODO Check zero based indexing
-			sol.setCurrents( (Complex[]) Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // Allocate System current array
-			sol.setAuxCurrents( (Complex[]) Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // Allocate System current array
+			sol.setCurrents( (Complex[]) Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
+			sol.setAuxCurrents( (Complex[]) Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
 			if (sol.getVmagSaved() != null)
 				sol.setVmagSaved(new double[0]);
 			if (sol.getErrorSaved() != null)
@@ -167,16 +168,16 @@ public class YMatrix {
 
 		switch (BuildOption) {
 		case WHOLEMATRIX:
-			sol.setSeriesYInvalid(true);  // Indicate that the Series matrix may not match
+			sol.setSeriesYInvalid(true);  // indicate that the series matrix may not match
 			sol.setSystemYChanged(false);
 			break;
 		case SERIESONLY:
-			sol.setSeriesYInvalid(false);  // SystemYChange unchanged
+			sol.setSeriesYInvalid(false);  // systemYChange unchanged
 			break;
 		}
 
-		// Deleted RCD only done now on mode change
-		//sol.setSolutionInitialized(false);  //Require initialization of voltages if Y changed
+		// seleted RCD only done now on mode change
+		//sol.setSolutionInitialized(false);  // require initialization of voltages if Y changed
 
 		if (sol.isPreserveNodeVoltages())
 			sol.restoreNodeVfromVbus();
@@ -245,7 +246,6 @@ public class YMatrix {
 		return Result;
 	}
 
-	// in general, KLU arrays are 0-based
 	// function calls return 0 to indicate failure, 1 for success
 
 	private static long findIslands(CMatrix y, int numNodes, Long pNodes) {
@@ -263,114 +263,188 @@ public class YMatrix {
 
 	}
 
-	// returns the non-zero handle of a new sparse matrix, if successful
-	// must call DeleteSparseSet on the valid handle when finished
+	/**
+	 * Returns the non-zero handle of a new sparse matrix, if successful
+	 * must call deleteSparseSet on the valid handle when finished.
+	 */
 	public static long newSparseSet(long nBus) {
 		return 0;
 	}
 
-	// return 1 for success, 0 for invalid handle
+	/** return 1 for success, 0 for invalid handle */
 	public static long deleteSparseSet(long id) {
 		return 0;
 	}
 
-	// return 1 for success, 2 for singular, 0 for invalid handle
-	// factors matrix if needed
+	/**
+	 * Return 1 for success, 2 for singular, 0 for invalid handle
+	 * factors matrix if needed.
+	 */
 	public static long solveSparseSet(long id, Complex[] x, Complex[] b) {
 		return 0;
 	}
 
-	// return 1 for success, 0 for invalid handle
+	/**
+	 * @param id
+	 * @return 1 for success, 0 for invalid handle
+	 */
 	public static long zeroSparseSet(long id) {
 		return 0;
 	}
 
-	// return 1 for success, 2 for singular, 0 for invalid handle
-	// FactorSparseMatrix does no extra work if the factoring was done previously
+	/**
+	 * Does no extra work if the factoring was done previously.
+	 *
+	 * @param id
+	 * @return 1 for success, 2 for singular, 0 for invalid handle
+	 */
 	public static long factorSparseMatrix(long id) {
 		return 0;
 	}
 
-	// These "Get" functions for matrix information all return 1 for success, 0 for invalid handle
-	// Res is the matrix order (number of nodes)
+	/* These "get" functions for matrix information all return 1 for success, 0 for invalid handle */
+
+	/**
+	 * Res is the matrix order (number of nodes)
+	 */
 	public static long getSize(long id, long Res) {
 		return 0;
 	}
 
-	// the following function results are not known prior to factoring
-	// Res is the number of floating point operations to factor
+	/**
+	 * The following function results are not known prior to factoring.
+	 *
+	 * @param id
+	 * @param Res the number of floating point operations to factor
+	 * @return
+	 */
 	public static long getFlops(long id, double Res) {
 		return 0;
 	}
 
-	// Res is number of non-zero entries in the original matrix
+	/**
+	 * @param id
+	 * @param Res number of non-zero entries in the original matrix
+	 * @return
+	 */
 	public static long getNNZ(long id, long Res) {
 		return 0;
 	}
 
-	// Res is the number of non-zero entries in factored matrix
+	/**
+	 * @param id
+	 * @param Res number of non-zero entries in factored matrix
+	 * @return
+	 */
 	public static long getSparseNNZ(long id, long Res) {
 		return 0;
 	}
 
-	// Res is a column number corresponding to a singularity, or 0 if not singular
+	/**
+	 * @param id
+	 * @param Res a column number corresponding to a singularity, or 0 if not singular
+	 * @return
+	 */
 	public static long getSingularCol(long id, long Res) {
 		return 0;
 	}
 
-	// Res is the pivot element growth factor
+	/**
+	 * @param id
+	 * @param Res the pivot element growth factor
+	 * @return
+	 */
 	public static long getRGrowth(long id, double Res) {
 		return 0;
 	}
 
-	// Res is aquick estimate of the reciprocal of condition number
+	/**
+	 * @param id
+	 * @param Res quick estimate of the reciprocal of condition number
+	 * @return
+	 */
 	public static long getRCond(long id, double Res) {
 		return 0;
 	}
 
-	// Res is a more accurate estimate of condition number
+	/**
+	 * @param id
+	 * @param Res a more accurate estimate of condition number
+	 * @return
+	 */
 	public static long getCondEst(long id, double Res) {
 		return 0;
 	}
 
-	// return 1 for success, 0 for invalid handle or a node number out of range
+	/**
+	 * @param id
+	 * @param nOrder
+	 * @param Nodes
+	 * @param Mat
+	 * @return 1 for success, 0 for invalid handle or a node number out of range
+	 */
 	public static long addPrimitiveMatrix(long id, long nOrder, long Nodes, Complex Mat) {
 		return 0;
 	}
 
-	// Action = 0 (close), 1 (rewrite) or 2 (append)
+	/**
+	 * @param Path
+	 * @param Action 0 (close), 1 (rewrite) or 2 (append)
+	 * @return
+	 */
 	public static long setLogFile(char Path, long Action) {
 		return 0;
 	}
 
-	// fill sparse matrix in compressed column form
-	// return 1 for success, 0 for invalid handle, 2 for invalid array sizes
-	// pColP must be of length nColP == nBus + 1
-	// pRowIdx and pMat of length nNZ, which
-//	    must be at least the value returned by GetNNZ
+	/**
+	 * Fill sparse matrix in compressed column form.
+	 *
+	 * @param id
+	 * @param nColP
+	 * @param nNZ
+	 * @param pColP must be of length nColP == nBus + 1
+	 * @param pRowIdx length nnz
+	 * @param Mat length nnz
+	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
+	 */
 	public static long getCompressedMatrix(long id, long nColP, long nNZ, long pColP, long pRowIdx, Complex Mat) {
 		return 0;
 	}
 
-	// fill sparse matrix in triplet form
-	// return 1 for success, 0 for invalid handle, 2 for invalid array sizes
-	// pRows, pCols, and Mat must all be of length nNZ
+	/**
+	 * Fill sparse matrix in triplet form.
+	 *
+	 * @param id
+	 * @param nNZ
+	 * @param pRows length nnz
+	 * @param pCols length nnz
+	 * @param Mat length nnz
+	 * @return 1 for success, 0 for invalid handle, 2 for invalid array sizes
+	 */
 	public static long getTripletMatrix(long id, long nNZ, long pRows, long pCols, Complex Mat) {
 		return 0;
 	}
 
-	// returns number of islands >= 1 by graph traversal
-	// pNodes contains the island number for each node
+	/**
+	 * @param id
+	 * @param nOrder
+	 * @param pNodes contains the island number for each node
+	 * @return number of islands >= 1 by graph traversal
+	 */
 	public static long findIslands(long id, long nOrder, long pNodes) {
 		return 0;
 	}
 
-	// AddMatrixElement is deprecated, use AddPrimitiveMatrix instead
+	/**
+	 * Deprecated, use addPrimitiveMatrix instead.
+	 */
 	public static long addMatrixElement(long id, long i, long j, Complex Value) {
 		return 0;
 	}
 
-	// GetMatrixElement is deprecated, use GetCompressedMatrix or GetTripletMatrix
+	/**
+	 * Deprecated, use getCompressedMatrix or getTripletMatrix.
+	 */
 	public static long getMatrixElement(long id, long i, long j, Complex Value) {
 		return 0;
 	}

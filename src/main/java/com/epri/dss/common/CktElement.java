@@ -120,40 +120,40 @@ public interface CktElement extends DSSObject {
 
 	Complex[] getYPrimValues(int Opt);
 
-	/* Max of Iterminal 1 phase currents */
+	/** Max of ITerminal 1 phase currents */
 	double maxTerminalOneIMag();
 
-	/* Computes Iterminal for this device */
+	/** Computes ITerminal for this device */
 	void computeIterminal();
 
 	void computeVterminal();
 
 	void zeroITerminal();
 
-	/* Get present value of terminal Curr for reports */
+	/** Get present value of terminal current for reports */
 	void getCurrents(Complex[] Curr);
 
-	/* Returns Injextion currents */
+	/** Returns injection currents */
 	void getInjCurrents(Complex[] Curr);
 
-	/* Applies to PC Elements Puts straight into Solution Array */
+	/** Applies to PC elements puts straight into solution array */
 	int injCurrents();
 
 
-	/* Get bus name by index */
+	/** Get bus name by index */
 	String getBus(int i);
 
-	/* Set bus name by index */
+	/** Set bus name by index */
 	void setBus(int i, String s);
 
-	/* Set NodeRef Array for fast solution with intrinsics */
+	/** Set NodeRef array for fast solution with intrinsics */
 	void setNodeRef(int iTerm, int[] NodeRefArray);
 
 	void recalcElementData();
 
 	void calcYPrim();
 
-	/* Make a positive Sequence Model */
+	/** Make a positive sequence model */
 	void makePosSequence();
 
 	void getTermVoltages(int iTerm, Complex[] VBuffer);

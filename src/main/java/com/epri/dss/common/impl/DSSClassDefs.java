@@ -51,16 +51,16 @@ public class DSSClassDefs {
 	public static final int CLASSMASK = 0xFFFFFFF8;
 
 	/* Basic element types */
-	public static final int NON_PCPD_ELEM = 1;  // A circuit Element we don't want enumerated in PD and PC Elements
+	public static final int NON_PCPD_ELEM = 1;  // a circuit element we don't want enumerated in PD and PC Elements
 	public static final int PD_ELEMENT    = 2;
 	public static final int PC_ELEMENT    = 3;
 	public static final int CTRL_ELEMENT  = 4;
 	public static final int METER_ELEMENT = 5;
 	public static final int HIDDEN_ELEMENT= 6;
 
-	/* Specific element Types */
+	/* Specific element types */
 	public static final int MON_ELEMENT  =  1 * 8;
-	public static final int DSS_OBJECT   =  2 * 8;   // Just a general DSS object, accessible to all circuits
+	public static final int DSS_OBJECT   =  2 * 8;  // just a general DSS object, accessible to all circuits
 	public static final int SOURCE       =  3 * 8;
 	public static final int XFMR_ELEMENT =  4 * 8;
 	public static final int SUBSTATION   =  5 * 8;  // not used
@@ -83,7 +83,7 @@ public class DSSClassDefs {
 	public static final int STORAGE_CONTROL  = 22 * 8;
 	public static final int SWT_CONTROL      = 23 * 8;
 	public static final int PVSYSTEM_ELEMENT = 24 * 8;
-	public static final int GIC_TRANSFORMER  = 25 * 8;    // special models for GIC studies
+	public static final int GIC_TRANSFORMER  = 25 * 8;  // special models for GIC studies
 	public static final int GIC_LINE         = 26 * 8;
 
 
@@ -109,7 +109,7 @@ public class DSSClassDefs {
 	public static void createDSSClasses() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		Globals.setClassNames(new HashListImpl(25));   // Makes 5 sub lists
+		Globals.setClassNames(new HashListImpl(25));  // makes 5 sub lists
 		Globals.setDSSClassList(new ArrayList<DSSClass>(10));  // 10 is initial size and increment
 		DSSClassImpl.setDSSClasses(new DSSClassesImpl());  // class to handle defining DSS classes
 
@@ -118,9 +118,9 @@ public class DSSClassDefs {
 
 		/* Instantiate all intrinsic object classes */
 
-		/* Generic Object classes first in case others refer to them */
+		/* Generic object classes first in case others refer to them */
 		DSSClassImpl.getDSSClasses().setNew( new SolutionImpl() );
-		Globals.setSolutionClass(Globals.getActiveDSSClass());     // this is a special class
+		Globals.setSolutionClass(Globals.getActiveDSSClass());  // this is a special class
 		DSSClassImpl.getDSSClasses().setNew( new LineCodeImpl() );
 		Globals.setLoadShapeClass(new LoadShapeImpl());
 		DSSClassImpl.getDSSClasses().setNew( Globals.getLoadShapeClass() );
@@ -151,7 +151,7 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( Globals.getLineSpacingClass() );
 		DSSClassImpl.getDSSClasses().setNew( new XfmrCodeImpl() );
 
-		/* Circuit Element Classes */
+		/* Circuit element classes */
 		DSSClassImpl.getDSSClasses().setNew( new LineImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new VSourceImpl() );
 		DSSClassImpl.getDSSClasses().setNew( new ISourceImpl() );
@@ -187,8 +187,7 @@ public class DSSClassDefs {
 		DSSClassImpl.getDSSClasses().setNew( new GICLineImpl() );
 
 
-
-		/* Create Classes for custom implementations */
+		/* Create classes for custom implementations */
 //		MyClassDefs.createMyDSSClasses();
 
 		NumIntrinsicClasses = Globals.getDSSClassList().size();
@@ -216,8 +215,8 @@ public class DSSClassDefs {
 			TraceName = "(DSSObjs Class)";
 			Globals.setDSSObjs(null);
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Exception disposing of DSS Obj \""+TraceName+"\". "+DSSGlobals.CRLF+
-					"Last Successful dispose was for object \"" + SuccessFree + "\" " +DSSGlobals.CRLF+
+			Globals.doSimpleMsg("Exception disposing of DSS obj \""+TraceName+"\". "+DSSGlobals.CRLF+
+					"Last successful dispose was for object \"" + SuccessFree + "\" " +DSSGlobals.CRLF+
 					e.getMessage(), 901);
 		}
 
@@ -231,7 +230,7 @@ public class DSSClassDefs {
 			TraceName = "(ClassNames)";
 			Globals.setClassNames(null);
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Exception disposing of DSS Class\""+TraceName+"\". "+DSSGlobals.CRLF + e.getMessage(), 902);
+			Globals.doSimpleMsg("Exception disposing of DSS class\""+TraceName+"\". "+DSSGlobals.CRLF + e.getMessage(), 902);
 		}
 	}
 
@@ -244,7 +243,7 @@ public class DSSClassDefs {
 	}
 
 	/**
-	 * set LastClassReferenced variable by class name.
+	 * Set lastClassReferenced variable by class name.
 	 */
 	public static boolean setObjectClass(String ObjType) {
 
@@ -254,7 +253,7 @@ public class DSSClassDefs {
 
 		switch (ClassRef) {
 		case 0:
-			Globals.doSimpleMsg("Error! Object Class \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 903);
+			Globals.doSimpleMsg("Error: Object class \"" + ObjType + "\" not found."+ DSSGlobals.CRLF + Parser.getInstance().getCmdString(), 903);
 			return false;
 		default:
 			Globals.setLastClassReferenced(ClassRef);

@@ -128,7 +128,7 @@ public class Utilities {
 	}
 
 	/**
-	 * Pad out a string with dots to Width characters.
+	 * Pad out a string with dots to width characters.
 	 */
 	public static String padDots(String S, int width) {
 		return S.substring(0, S.length()) + padDotsString.substring(0, width - S.length());
@@ -350,18 +350,18 @@ public class Utilities {
 	}
 
 	/**
-	 * Accepts (Case insensitive)
+	 * Accepts (case insensitive)
 	 *   delta or LL    Result = 1
 	 *   Y, wye, or LN  Result = 0
 	 */
 	public static int interpretConnection(String s) {
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
-			return 0;  // Wye
+			return 0;  // wye
 		case 'w':
-			return 0;  // Wye
+			return 0;  // wye
 		case 'd':
-			return 1;  // Delta or line-Line
+			return 1;  // delta or line-Line
 		case 'l':
 			switch (s.toLowerCase().charAt(1)) {
 			case 'n':
@@ -413,7 +413,7 @@ public class Utilities {
 
 	/**
 	 * Get numeric values from an array specified either as a list on numbers
-	 * or a text file spec. ResultArray must be allocated to MaxValues by
+	 * or a text file spec. ResultArray must be allocated to maxValues by
 	 * calling routine. File is assumed to have one value per line.
 	 */
 	public static int interpretDblArray(String s, int MaxValues, double[] ResultArray) {
@@ -426,7 +426,7 @@ public class Utilities {
 		Globals.getAuxParser().setCmdString(s);
 		String ParmName = Globals.getAuxParser().getNextParam();
 		String Param = Globals.getAuxParser().makeString();
-		int Result = MaxValues; // Default return value;
+		int Result = MaxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
@@ -443,7 +443,7 @@ public class Utilities {
 						if (dataStream.available() != 0) {
 							ResultArray[i] = dataStream.readDouble();
 						} else {
-							Result = i - 1;  // This will be different if less found;  TODO Check zero based indexing
+							Result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
 							break;
 						}
 					} catch (Exception e) {
@@ -471,11 +471,11 @@ public class Utilities {
 			throw new UnsupportedOperationException();
 			// TODO Implement this section
 		} else {
-			// Parse list of values off input string
+			// parse list of values off input string
 
-			// Parse Values of array list
+			// parse Values of array list
 			for (int i = 0; i < MaxValues; i++) {
-				ResultArray[i] = Globals.getAuxParser().makeDouble();  // Fills array with zeros if we run out of numbers
+				ResultArray[i] = Globals.getAuxParser().makeDouble();  // fills array with zeros if we run out of numbers
 				Globals.getAuxParser().getNextParam();
 			}
 		}
@@ -484,7 +484,7 @@ public class Utilities {
 
 	/**
 	 * Get numeric values from an array specified either as a list on numbers
-	 * or a text file spec. ResultArray must be allocated to MaxValues by
+	 * or a text file spec. ResultArray must be allocated to maxValues by
 	 * calling routine. File is assumed to have one value per line.
 	 */
 	public static int interpretIntArray(String s, int MaxValues, int[] ResultArray) {
@@ -497,7 +497,7 @@ public class Utilities {
 		Globals.getAuxParser().setCmdString(s);
 		String ParmName = Globals.getAuxParser().getNextParam();
 		String Param = Globals.getAuxParser().makeString();
-		int Result = MaxValues;  // Default return value
+		int Result = MaxValues;  // default return value
 
 		/* Syntax can be either a list of numeric values or a file specification: File= ... */
 
@@ -514,7 +514,7 @@ public class Utilities {
 						if (dataStream.available() != 0) {
 							ResultArray[i] = dataStream.readInt();
 						} else {
-							Result = i - 1;  // This will be different if less found;  TODO Check zero based indexing
+							Result = i - 1;  // this will be different if less found;  TODO Check zero based indexing
 							break;
 						}
 					} catch (Exception e) {
@@ -534,11 +534,11 @@ public class Utilities {
 				e.printStackTrace();
 			}
 
-		} else {  // Parse list of values off input string
+		} else {  // parse list of values off input string
 
-			// Parse Values of array list
+			// parse values of array list
 			for (int i = 0; i < MaxValues; i++) {
-				ResultArray[i] = Globals.getAuxParser().makeInteger();  // Fills array with zeros if we run out of numbers
+				ResultArray[i] = Globals.getAuxParser().makeInteger();  // fills array with zeros if we run out of numbers
 				Globals.getAuxParser().getNextParam();
 			}
 		}
@@ -557,7 +557,7 @@ public class Utilities {
 
 		/* Try to convert and see if we get an error */
 		try {
-			return Double.valueOf(s);  // Only a number was specified, so must be seconds
+			return Double.valueOf(s);  // only a number was specified, so must be seconds
 		} catch (NumberFormatException e) {
 			/* Error occurred so must have a units specifier */
 			ch = s.charAt(s.length() - 1);  // get last character
@@ -575,23 +575,19 @@ public class Utilities {
 					// do nothing
 					break;
 				default:
-					Result = Globals.getActiveCircuit().getSolution().getDynaVars().h;  // Don't change it
-					Globals.doSimpleMsg("Error in specification of StepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
+					Result = Globals.getActiveCircuit().getSolution().getDynaVars().h;  // don't change it
+					Globals.doSimpleMsg("Error in specification of stepSize: \"" + s +"\" Units can only be h, m, or s (single char only) ", 99934);
 					break;
 				}
 			} catch (NumberFormatException ee) {
-				Result = Globals.getActiveCircuit().getSolution().getDynaVars().h; // Don't change it
-				Globals.doSimpleMsg("Error in specification of StepSize: " + s, 99933);
+				Result = Globals.getActiveCircuit().getSolution().getDynaVars().h; // don't change it
+				Globals.doSimpleMsg("Error in specification of stepSize: " + s, 99933);
 				return Result;
 			}
 		}
 
 		return Result;
 	}
-
-//	public static void initStringToNull(StringBuffer S) {
-//		S.delete(0, S.length());
-//	}
 
 	/**
 	 * Get string values from an array specified either as a list on strings or
@@ -601,10 +597,10 @@ public class Utilities {
 	public static void interpretAndAllocStrArray(String s, int Size, String[] ResultArray) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Throw away any previous allocation
+		// throw away any previous allocation
 		ResultArray = new String[0];
 
-		// Now Reallocate
+		// now reallocate
 		int MaxSize = 100;  // initialize
 		Size = 0;
 		ResultArray = new String[MaxSize];
@@ -622,7 +618,7 @@ public class Utilities {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
 
 				while ((Param = reader.readLine()) != null) {
-					if (Param != "") {  // Ignore blank lines in file
+					if (Param != "") {  // ignore blank lines in file
 						Size += 1;
 						if (Size > MaxSize) {
 							MaxSize += 100;
@@ -638,9 +634,9 @@ public class Utilities {
 				Globals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 707);
 			}
 
-		} else {  // Parse list of values off input string
+		} else {  // parse list of values off input string
 
-			// Parse Values of array list
+			// parse values of array list
 			while (Param != "") {
 				Size += 1;
 				if (Size > MaxSize) {
@@ -653,7 +649,7 @@ public class Utilities {
 			}
 		}
 
-		MaxSize = Size;  // Get rid of excess allocation
+		MaxSize = Size;  // get rid of excess allocation
 		ResultArray = (String[]) resizeArray(ResultArray, MaxSize);
 	}
 
@@ -666,7 +662,7 @@ public class Utilities {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		String NextParam;
 
-		// Throw away any previous allocation
+		// throw away any previous allocation
 		ResultList.clear();
 
 		Globals.getAuxParser().setCmdString(s);
@@ -695,9 +691,9 @@ public class Utilities {
 			} catch (Exception e) {
 				Globals.doSimpleMsg("Error trying to read numeric array values from a file. Error is: "+e.getMessage(), 708);
 			}
-		} else {  // Parse list of values off input string
+		} else {  // parse list of values off input string
 
-			// Parse Values of array list
+			// parse values of array list
 			while (Param != "") {
 				ResultList.add(Param);
 				ParmName = Globals.getAuxParser().getNextParam();
@@ -707,7 +703,7 @@ public class Utilities {
 	}
 
 	public static void parseObjectClassandName(String FullObjName, StringBuffer ClassName, StringBuffer ObjName) {
-		// Split off obj class and name
+		// split off obj class and name
 		int dotpos = FullObjName.indexOf('.');
 		switch (dotpos) {
 		case -1:
@@ -834,7 +830,7 @@ public class Utilities {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Parse the line once to get the count of tokens on string, S
+		// parse the line once to get the count of tokens on string, S
 		Globals.getAuxParser().setCmdString(s);
 		count.setValue(0);
 		while (Param.length() > 0) {
@@ -890,7 +886,7 @@ public class Utilities {
 		double Ztest;
 		LineObj LineElement = (LineObj) Elem;
 
-		/* Get Positive Sequence or equivalent from matrix */
+		/* Get positive sequence or equivalent from matrix */
 		if (LineElement.isSymComponentsModel()) {
 			Ztest = (new Complex(LineElement.getR1(), LineElement.getX1())).abs() * LineElement.getLen();
 		} else {
@@ -911,7 +907,7 @@ public class Utilities {
 
 	/**
 	 * Given the full object name, return the index to the circuit element in the
-	 * active circuit.  Use full name if given. Else assume last class referenced.
+	 * active circuit.  Use full name if given, else assume last class referenced.
 	 */
 	public static int getCktElementIndex(String fullObjName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -920,7 +916,7 @@ public class Utilities {
 		StringBuffer DevClassName = new StringBuffer();
 		StringBuffer DevName = new StringBuffer();
 
-		int Result = 0; // Default return value
+		int Result = 0;  // default return value
 		parseObjectClassandName(fullObjName, DevClassName, DevName);
 		DevClassIndex = Globals.getClassNames().find(DevClassName.toString());
 		if (DevClassIndex == -1)
@@ -950,20 +946,6 @@ public class Utilities {
 			return "*****";
 		}
 	}
-
-//	/**
-//	 * Replace CRLF with a \n character sequence.
-//	 */
-//	private String replaceCRLF(String S) {
-//		return S;
-//	}
-//
-//	/**
-//	 * Replace \n character sequence with CRLF.
-//	 */
-//	private String restoreCRLF(String S) {
-//		return S;
-//	}
 
 	public static void dumpAllocationFactors(String FileName) {
 		PrintWriter F;
@@ -1040,10 +1022,10 @@ public class Utilities {
 		int Count = 1;
 		double TestkV = ckt.getLegalVoltageBases()[0];
 		double Result = TestkV;
-		double MinDiff = 1.e50;  // Big number
+		double MinDiff = 1.e50;  // big number
 
 		while (TestkV != 0.0) {
-			Diff = Math.abs(1.0 - kV / TestkV);  // Get per unit difference
+			Diff = Math.abs(1.0 - kV / TestkV);  // get per unit difference
 			if (Diff < MinDiff) {
 				MinDiff = Diff;
 				Result = TestkV;
@@ -1337,20 +1319,20 @@ public class Utilities {
 
 			Globals.getSavedFileList().add(ClassName + ".dss");
 			DSS_Class.getFirst();  // Sets ActiveDSSObject
-			writeActiveDSSObject(F, "Edit");  // Write first Vsource out as an edit
+			writeActiveDSSObject(F, "Edit");  // write first Vsource out as an edit
 			while (DSS_Class.getNext() >= 0) {  // TODO Check zero based indexing
-				// Skip cktElements that have been checked before and written out by
+				// skip cktElements that have been checked before and written out by
 				// something else
 				elem = (CktElement) Globals.getActiveDSSObject();
 				if (elem.isHasBeenSaved())
 					continue;
-				// Skip disabled circuit elements; write all general DSS objects
-				writeActiveDSSObject(F, "New");  // sets HasBeenSaved = true
+				// skip disabled circuit elements; write all general DSS objects
+				writeActiveDSSObject(F, "New");  // sets hasBeenSaved = true
 			}
 			F.close();
 			DSS_Class.setSaved(true);
 		} catch (Exception e) {
-			Globals.doSimpleMsg("WriteClassFile Error: "+e.getMessage(), 717);
+			Globals.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 717);
 			Result = false;
 		}
 
@@ -1380,10 +1362,10 @@ public class Utilities {
 
 			nRecords = 0;
 
-			DSS_Class.getFirst();  // Sets ActiveDSSObject
+			DSS_Class.getFirst();  // sets activeDSSObject
 
 			while (DSS_Class.getNext() >= 0) {  // TODO Check zero based indexing
-				// Skip cktElements that have been checked before and written out by
+				// skip cktElements that have been checked before and written out by
 				// something else
 				if (isCktElement) {
 					elem = (CktElement) Globals.getActiveDSSObject();
@@ -1391,8 +1373,8 @@ public class Utilities {
 						continue;
 				}
 
-				writeActiveDSSObject(F, "New");  // sets HasBeenSaved = true
-				nRecords += 1; // count the actual records
+				writeActiveDSSObject(F, "New");  // sets hasBeenSaved = true
+				nRecords += 1;  // count the actual records
 
 			}
 			F.close();
@@ -1405,7 +1387,7 @@ public class Utilities {
 
 			DSS_Class.setSaved(true);
 		} catch (Exception e) {
-			Globals.doSimpleMsg("WriteClassFile Error: "+e.getMessage(), 718);
+			Globals.doSimpleMsg("WriteClassFile error: "+e.getMessage(), 718);
 			Result = false;
 		}
 		return Result;
@@ -1417,9 +1399,9 @@ public class Utilities {
 	public static String checkForBlanks(String S) {
 		String Result = S;
 		if (S.indexOf(' ') >= 0)
-			if (S.charAt(0) != '(')  // Ignore if already quoted
-				if (S.charAt(0) != '[')  // Ignore if already quoted
-					if (S.charAt(0) != '{')  // Ignore if already quoted
+			if (S.charAt(0) != '(')  // ignore if already quoted
+				if (S.charAt(0) != '[')  // ignore if already quoted
+					if (S.charAt(0) != '{')  // ignore if already quoted
 						Result = "\""+S+"\"";
 		return Result;
 	}
@@ -1432,13 +1414,13 @@ public class Utilities {
 
 		Globals.getActiveDSSObject().saveWrite(F);
 
-		// Handle disabled circuit elements;  Modified to allow applets to save disabled elements 12-28-06
+		// Handle disabled circuit elements; modified to allow applets to save disabled elements 12-28-06
 		if ((Globals.getActiveDSSObject().getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.DSS_OBJECT) {
 			CktElement elem = (CktElement) Globals.getActiveDSSObject();
 			if (!elem.isEnabled())
 				F.write(" ENABLED=NO");
 		}
-		F.println();  // Terminate line
+		F.println();  // terminate line
 
 		Globals.getActiveDSSObject().setHasBeenSaved(true);
 	}
@@ -1505,7 +1487,7 @@ public class Utilities {
 		try {
 			/* Scan once to set field lengths */
 			while ((Line = inputReader.readLine()) != null) {
-				Globals.getAuxParser().setCmdString(Line);  // Load the parser
+				Globals.getAuxParser().setCmdString(Line);  // load the parser
 				FieldNum = 0;
 				while (FieldLen > 0) {
 					Globals.getAuxParser().getNextParam();
@@ -1530,7 +1512,7 @@ public class Utilities {
 			inputReader.reset();
 
 			while ((Line = inputReader.readLine()) != null) {
-				Globals.getAuxParser().setCmdString(Line);  // Load the parser
+				Globals.getAuxParser().setCmdString(Line);  // load the parser
 				FieldNum = 0;
 				while (FieldLen > 0) {
 					Globals.getAuxParser().getNextParam();
@@ -1693,7 +1675,7 @@ public class Utilities {
 	}
 
 	/**
-	 * Distribute Generators randomly to loaded buses.
+	 * Distribute generators randomly to loaded buses.
 	 */
 	private static void writeRandomGenerators(PrintWriter F, double kW, double PF) {
 		LoadObj pLoad;
@@ -1843,7 +1825,7 @@ public class Utilities {
 		}
 
 		try {
-			F.println("! Created with Distribute Command:");
+			F.println("! Created with distribute command:");
 			F.println(String.format("! Distribute kW=%-.6g PF=%-.6g How=%s Skip=%d  file=%s", kW, PF, How, Skip, Fname));
 			F.println();
 			//F.println("Set allowduplicates=yes");
@@ -1865,7 +1847,7 @@ public class Utilities {
 			}
 			Globals.setGlobalResult(Fname);
 		} finally {
-			F.println("Set allowduplicates=no");
+			F.println("set allowduplicates=no");
 			try {
 				FW.close();
 			} catch (IOException e) {
@@ -1877,9 +1859,9 @@ public class Utilities {
 	}
 
 	/**
-	 * Let EnergyMeter Objects control re-enabling of feeders.
+	 * Let EnergyMeter objects control re-enabling of feeders.
 	 *
-	 * Feeder could have been dumped in meantime by setting Feeder=False in EnergyMeter.
+	 * Feeder could have been dumped in meantime by setting Feeder=false in EnergyMeter.
 	 */
 	public static void enableFeeders() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -1896,15 +1878,15 @@ public class Utilities {
 	}
 
 	public static void initializeFeeders() {
-		// Do nothing for now
+		// do nothing for now
 	}
 
 	public static void forwardSweepAllFeeders() {
-		// Do nothing for now
+		// do nothing for now
 	}
 
 	public static void backwardSweepAllFeeders() {
-		// Do nothing for now
+		// do nothing for now
 	}
 
 	public static String getDSSArray_Real(int n, double[] dbls) {
@@ -1947,7 +1929,7 @@ public class Utilities {
 
 	/**
 	 * To help avoid collisions of neutral numbers, this function returns a
-	 * node number that is not being used, starting at the StartNode value.
+	 * node number that is not being used, starting at the startNode value.
 	 */
 	public static int getUniqueNodeNumber(String sBusName, int StartNode) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -1984,7 +1966,7 @@ public class Utilities {
 		PDElement pLine = FromLine;
 		while (pLine != null) {
 			Parser.getInstance().setCmdString(EditStr);
-			pLine.edit();  // Uses Parser
+			pLine.edit();  // uses parser
 			if (pLine.equals(ToLine))
 				break;
 			pLine = pLine.getParentPDElement();
@@ -1992,7 +1974,7 @@ public class Utilities {
 	}
 
 	/**
-	 * Trace forward down a tree and Generate a script file to change the phase.
+	 * Trace forward down a tree and generate a script file to change the phase.
 	 */
 	public static void goForwardAndRephase(PDElement FromLine, String PhaseString,
 			String EditStr, String ScriptFileName, boolean TransStop) {
@@ -2018,7 +2000,7 @@ public class Utilities {
 
 		/* Error check */
 		if (pPDelem == null) {
-		Globals.doSimpleMsg(FromLine.getParentClass().getName() + "." + FromLine.getName() + " Not found in Meter Zone.", 723);
+		Globals.doSimpleMsg(FromLine.getParentClass().getName() + "." + FromLine.getName() + " not found in meter zone.", 723);
 		return;
 		}
 
@@ -2036,7 +2018,7 @@ public class Utilities {
 			while (pPDelem != null) {
 				S = "edit " + pPDelem.getParentClass().getName() + "." + pPDelem.getName();
 
-				/* ----------------LINES--------------------------------------------------- */
+				/* ----------------LINES------------------------------------- */
 
 				if (isLineElement(pPDelem)) {
 
@@ -2058,7 +2040,7 @@ public class Utilities {
 					/* Now get all shunt objects connected to this branch */
 					pShuntObject = (CktElement) pMeter.getBranchList().getFirstObject();
 					while (pShuntObject != null) {
-						/* 1st Terminal Only */
+						/* 1st terminal only */
 						i = 0;  // TODO Check zero based indexing
 						S = "edit " + pShuntObject.getParentClass().getName() + "." + pShuntObject.getName();
 						S = S + String.format(" Bus%d=%s%s", i, stripExtension(pShuntObject.getBus(i)), PhaseString);
@@ -2073,7 +2055,7 @@ public class Utilities {
 					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 				} // isLine
 
-				/* ----------------TRANSFORMERS--------------------------------------------------- */
+				/* ----------------TRANSFORMERS------------------------------ */
 
 				else if (isTransformerElement(pPDelem)) {
 
@@ -2086,14 +2068,14 @@ public class Utilities {
 						S = S + String.format(" wdg=2 Bus=%s%s  %s", stripExtension(pPDelem.getBus(1)), PhaseString, EditStr);
 					Fout.println(S);
 
-					/* Be default Go forward in the tree until we bounce back up to a line section above the transformer */
+					/* Be default go forward in the tree until we bounce back up to a line section above the transformer */
 					if (TransStop) {
 						while ((pPDelem != null) && (pMeter.getBranchList().getLevel() > XfmrLevel)) {
 							pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 						}
 					}
 				} else {
-					// Then we get lines and loads beyond transformer
+					// then we get lines and loads beyond transformer
 					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
 				}
 			}
@@ -2272,7 +2254,7 @@ public class Utilities {
 		pElem.setName( String.format("%s%d",
 				pElem.getParentClass().getName().substring(0, 3),
 				pElem.getClassIndex()) );
-		// Make a new device list corresponding to the CktElements List
+		// make a new device list corresponding to the CktElements list
 		DSSGlobals.getInstance().getActiveCircuit().getDeviceList().add(pElem.getName());
 		pElem.setChecked(true);
 	}
@@ -2353,7 +2335,7 @@ public class Utilities {
 	    /* Have to catch the control elements and edit some of their
 	     * parameters */
 
-	    /* first, make scripts to change the monitored element names in the
+	    /* First, make scripts to change the monitored element names in the
 	     * controls to what they will be */
 	    ControlUpDateStrings = new ArrayList<String>();
 	    ControlUpDatePtrs    = new ArrayList<CktElement>();
@@ -2410,7 +2392,7 @@ public class Utilities {
 	    }
 
 	    for (CktElement pCktElem : ckt.getCktElements())
-			pCktElem.setChecked(false);     // Initialize to not checked
+			pCktElem.setChecked(false);  // initialize to not checked
 
 	    DevListSize = ckt.getDeviceList().listSize();
 	    ckt.setDeviceList(null);

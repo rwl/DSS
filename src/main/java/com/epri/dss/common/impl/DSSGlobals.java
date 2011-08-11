@@ -41,48 +41,48 @@ public class DSSGlobals {
 	public static final double PI = 3.14159265359;
 	public static final double TwoPi = 2.0 * PI;
 	public static final double RadiansToDegrees = 57.29577951;
-	public static final double EPSILON = 1.0e-12;   // Default tiny floating point
-	public static final double EPSILON2 = 1.0e-3;   // Default for Real number mismatch testing
+	public static final double EPSILON = 1.0e-12;   // default tiny floating point
+	public static final double EPSILON2 = 1.0e-3;   // default for real number mismatch testing
 
-	// Load model types for solution
+	/* Load model types for solution */
 	public static final int POWERFLOW  = 1;
 	public static final int ADMITTANCE = 2;
 
-	// For YPrim matrices
+	/* For YPrim matrices */
 	public static final int ALL_YPRIM = 0;
 	public static final int SERIES = 1;
 	public static final int SHUNT  = 2;
 
-	/* Control Modes */
+	/* Control modes */
 	public static final int CONTROLSOFF = -1;
 	public static final int EVENTDRIVEN =  1;
 	public static final int TIMEDRIVEN  =  2;
 	public static final int CTRLSTATIC  =  0;
 
-	/* Randomization Constants */
+	/* Randomization constants */
 	public static final int GAUSSIAN  = 1;
 	public static final int UNIFORM   = 2;
 	public static final int LOGNORMAL = 3;
 
-	/* Autoadd Constants */
+	/* AutoAdd constants */
 	public static final int GENADD = 1;
 	public static final int CAPADD = 2;
 
-	/* ERRORS */
+	/* Errors */
 	public static final int SOLUTION_ABORT = 99;
 
-	/* For General Sequential Time Simulations */
+	/* For general sequential time simulations */
 	public static final int USEDAILY  = 0;
 	public static final int USEYEARLY = 1;
 	public static final int USEDUTY   = 2;
 	public static final int USENONE   =-1;
 
-	/* Earth Model */
+	/* Earth model */
 	public static final int SIMPLECARSON  = 1;
 	public static final int FULLCARSON    = 2;
 	public static final int DERI          = 3;
 
-    /* Profile Plot Constants */
+    /* Profile plot constants */
 	public static final int PROFILE3PH    = 9999;  // some big number > likely no. of phases
 	public static final int PROFILEALL    = 9998;
 	public static final int PROFILEALLPRI = 9997;
@@ -97,10 +97,10 @@ public class DSSGlobals {
 	public static final double InvSQRT3 = 1.0 / SQRT3;
 	public static final double InvSQRT3x1000 = InvSQRT3 * 1000.0;
 
-	/** DSS Forms */
+	/* DSS Forms */
 	DSSForms Forms = CommandLineDSSForms.getInstance();
 
-	/** Variables */
+	/* Variables */
 	private boolean DLLFirstTime = true;
 	private PrintStream DLLDebugFile;
 	private String DSS_IniFileName = "OpenDSSPanel.ini";
@@ -116,12 +116,12 @@ public class DSSGlobals {
 	private DSSObject ActiveDSSObject;
 	private int NumCircuits = 0;
 	private int MaxCircuits = 1;
-	private int MaxBusLimit = 0; // Set in Validation
+	private int MaxBusLimit = 0;  // set in validation
 	private int MaxAllocationIterations = 2;
 	private ArrayList<Circuit> Circuits;
 	private ArrayList<DSSObject> DSSObjs;
 
-	// Auxiliary parser for use by anybody for reparsing values
+	// auxiliary parser for use by anybody for reparsing values
 	private Parser AuxParser = Parser.getInstance();
 
 	private boolean ErrorPending = false;
@@ -148,18 +148,18 @@ public class DSSGlobals {
 	private String GlobalResult = "";
 	private String VersionString = "Version " + getDSSVersion();
 
-	private String DefaultEditor = "NotePad";     // normally, Notepad
-	private String DSSFileName;// = GetDSSExeFile();     // Name of current exe or DLL
-	private String DSSDirectory;// = new File(DSSFileName).getParent();     // where the current exe resides
-	private String StartupDirectory = System.getProperty("user.dir") + "/";  // Where we started
+	private String DefaultEditor = "NotePad";
+	private String DSSFileName;// = GetDSSExeFile();  // name of current exe or DLL
+	private String DSSDirectory;// = new File(DSSFileName).getParent();  // where the current exe resides
+	private String StartupDirectory = System.getProperty("user.dir") + "/";  // starting point
 	private String DSSDataDirectory = StartupDirectory;
-	private String CircuitName_;     // Name of Circuit with a "_" appended
+	private String CircuitName_;  // name of circuit with a "_" appended
 	private String CurrentDirectory = StartupDirectory;  // current working directory
 
 	private double DefaultBaseFreq = 60.0;
 	private double DaisySize = 1.0;
 
-	// Some commonly used classes   so we can find them easily
+	// commonly used classes
 	private LoadShape LoadShapeClass;
 	private TShape TShapeClass;
 	private PriceShape PriceShapeClass;
@@ -185,7 +185,7 @@ public class DSSGlobals {
 	private List<DSSClass> DSSClassList;  // base class types
 	private HashList ClassNames;
 
-	// Private constructor prevents instantiation from other classes
+	// private constructor prevents instantiation from other classes
 	private DSSGlobals() {
 	}
 
@@ -240,15 +240,17 @@ public class DSSGlobals {
 
 	public void clearAllCircuits() {
 		ActiveCircuit = null;
-		Circuits = new ArrayList<Circuit>(2);   // Make a new list of circuits
+		Circuits = new ArrayList<Circuit>(2);  // make a new list of circuits
 		NumCircuits = 0;
 	}
 
-	/* Set object active by name */
+	/**
+	 * Set object active by name.
+	 */
 	public void setObject(String Param) {
 		String ObjName, ObjClass = null;
 
-		// Split off Obj class and name
+		// Split off obj class and name
 		int dotpos = Param.indexOf(".");
 		switch (dotpos) {
 		case 0:
@@ -267,21 +269,21 @@ public class DSSGlobals {
 		ActiveDSSClass = DSSClassList.get(LastClassReferenced);
 		if (ActiveDSSClass != null) {
 			if (!ActiveDSSClass.setActive(ObjName)) {
-				// scroll through list of objects untill a match
-				doSimpleMsg("Error! Object \"" + ObjName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
+				// scroll through list of objects until a match
+				doSimpleMsg("Error: Object \"" + ObjName + "\" not found." + CRLF + Parser.getInstance().getCmdString(), 904);
 			} else {
 				switch (ActiveDSSObject.getDSSObjType()) {
 				case DSSClassDefs.DSS_OBJECT:
 					// do nothing for general DSS object
 					break;
 				default:
-					// for circuit types, set ActiveCircuit Element, too
+					// for circuit types, set active circuit element too
 					ActiveCircuit.setActiveCktElement((DSSCktElement) ActiveDSSClass.getActiveObj());
 					break;
 				}
 			}
 		} else {
-			doSimpleMsg("Error! Active object type/class is not set.", 905);
+			doSimpleMsg("Error: Active object type/class is not set.", 905);
 		}
 	}
 
@@ -290,13 +292,13 @@ public class DSSGlobals {
 		int Result = 0;
 
 		if (ActiveCircuit.getBusList().listSize() == 0)
-			return Result;   // BusList not yet built
+			return Result;   // bus list not yet built
 
 		ActiveCircuit.setActiveBusIndex(ActiveCircuit.getBusList().find(BusName));
 
 		if (ActiveCircuit.getActiveBusIndex() == 0) {
 			Result = 1;
-			appendGlobalResult("SetActiveBus: Bus " + BusName + " Not Found.");
+			appendGlobalResult("SetActiveBus: Bus " + BusName + " not found.");
 		}
 
 		return Result;
@@ -308,7 +310,7 @@ public class DSSGlobals {
 
 		if ((PathName.length() > 0) && !F.exists()) {
 
-			// Try to create the directory
+			// try to create the directory
 			if (F.mkdir()) {
 				doSimpleMsg("Cannot create " + PathName + " directory.", 907);
 				System.exit(0);
@@ -349,7 +351,9 @@ public class DSSGlobals {
 		}
 	}
 
-	/* Append a string to Global result, separated by commas */
+	/**
+	 * Append a string to global result, separated by commas.
+	 */
 	public void appendGlobalResult(String S) {
 		if (GlobalResult.length() == 0) {
 			GlobalResult = S;
@@ -358,7 +362,9 @@ public class DSSGlobals {
 		}
 	}
 
-	/* Separate by CRLF */
+	/**
+	 * Separate by CRLF.
+	 */
 	public void appendGlobalResultCRLF(String S) {
 		if (GlobalResult.length() > 0) {
 			GlobalResult += CRLF + S;

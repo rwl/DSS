@@ -22,9 +22,9 @@ import com.epri.dss.executive.Executive;
 import com.epri.dss.executive.impl.DSSExecutive;
 
 /**
- * Unit for processing the AutoAdd Solution functions.
+ * Unit for processing the AutoAdd solution functions.
  *
- * Note: Make sure this class in instantiated after energymeter class.
+ * Note: Make sure this class in instantiated after EnergyMeter class.
  *
  * There is one of these per circuit.
  *
@@ -49,12 +49,12 @@ public class AutoAddImpl implements AutoAdd {
 	private double kWLosses, BaseLosses, puLossImprovement;
 	private double kWEEN , BaseEEN, puEENImprovement;
 
-	private PrintStream Log;  // Log File
+	private PrintStream Log;  // log file
 
 	private int ProgressCount;
 
 
-	/* Autoadd mode Variables */
+	/* AutoAdd mode variables */
 	protected double GenkW, GenPF, Genkvar, Capkvar;
 	protected int AddType;
 
@@ -88,9 +88,9 @@ public class AutoAddImpl implements AutoAdd {
 
 	/**
 	 * Make a list of unique bus names.
-	 * If AutoAddBusList in ActiveCircuit is not nil, use this list.
-	 * Else, Use the element lists in Energy Meters.
-	 * If no Energy Meters, use all the buses in the active circuit.
+	 * If autoAddBusList in activeCircuit is not nil, use this list.
+	 * Else, use the element lists in energy meters.
+	 * If no energy meters, use all the buses in the active circuit.
 	 */
 	public void makeBusList() {
 		int retval;
@@ -107,13 +107,13 @@ public class AutoAddImpl implements AutoAdd {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Autoaddbuslist exists in Active Circuit, use it  (see set Autobuslist=)
+		// autoAddBusList exists in active circuit, use it (see set autoBusList)
 		if (Globals.getActiveCircuit().getAutoAddBusList().listSize() > 0) {
 			BusList = Globals.getActiveCircuit().getAutoAddBusList();
 		} else  {
 			if (Globals.getActiveCircuit().getEnergyMeters().size() == 0) {
-				// No energymeters in circuit
-				// Include all buses in the circuit
+				// no energy meters in circuit
+				// include all buses in the circuit
 				BusIdxListSize = Globals.getActiveCircuit().getBusList().listSize();
 				BusIdxList = (int[]) Utilities.resizeArray(BusIdxList, BusIdxListSize);
 
@@ -123,9 +123,9 @@ public class AutoAddImpl implements AutoAdd {
 				BusIdxListCreated = true;
 				return;
 			} else {
-				/* Construct Bus List from Energy Meters Zone Lists */
-				// Include only buses in EnergyMeter lists
-				// Consider all meters
+				/* Construct bus list from energy meters zone lists */
+				// include only buses in energy meter lists
+				// consider all meters
 				BusListCreatedHere = true;
 				BusList = new HashListImpl(Globals.getActiveCircuit().getNumBuses());
 				for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters()) {
@@ -146,7 +146,7 @@ public class AutoAddImpl implements AutoAdd {
 			}
 		}
 
-		// Make busIdxList from BusList
+		// make busIdxList from busList
 		BusIdxListSize = BusList.listSize();
 		BusIdxList = (int[]) Utilities.resizeArray(BusIdxList, BusIdxListSize);
 
@@ -172,8 +172,8 @@ public class AutoAddImpl implements AutoAdd {
 		ComputekWLosses_EEN();
 
 		if (DSSGlobals.getInstance().getActiveCircuit().getEnergyMeters().size() == 0) {
-			// No energymeters in circuit
-			// Just go by total system losses
+			// no energymeters in circuit
+			// just go by total system losses
 			puLossImprovement = (BaseLosses - kWLosses) / GenkW;
 			puEENImprovement = 0.0;
 			Result = puLossImprovement;
@@ -229,11 +229,12 @@ public class AutoAddImpl implements AutoAdd {
 	 * that results in the lowest losses in either metered part of circuit or
 	 * total circuit, if no meters.
 	 *
-	 * If metered, EEN is also added in WITH a selected weighting factor (see
+	 * If metered, EEN is also added in with a selected weighting factor (see
 	 * set ueweight= ... command).
 	 *
 	 * Thus, this algorithm placed generators and capacitors to minimize losses and
 	 * potential unserved energy.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -266,11 +267,11 @@ public class AutoAddImpl implements AutoAdd {
 
 		if (sol.getLoadModel() == DSSGlobals.ADMITTANCE) {
 			sol.setLoadModel(DSSGlobals.POWERFLOW);
-			sol.setSystemYChanged(true);  // Force rebuild of System Y without Loads
+			sol.setSystemYChanged(true);  // force rebuild of system Y without loads
 		}
 
-		/* Do a preliminary snapshot solution to Force definition of meter zones
-		 * and set bus lists}
+		/* Do a preliminary snapshot solution to force definition of meter zones
+		 * and set bus lists
 		 */
 		Globals.getEnergyMeterClass().resetAll();
 		if (sol.isSystemYChanged() || ckt.isBusNameRedefined()) {
@@ -285,8 +286,8 @@ public class AutoAddImpl implements AutoAdd {
 			sol.setVoltageBases();
 
 		if (ModeChanged) {
-			makeBusList();  // Make list of buses to check
-			ModeChanged = false;  /* Keep same BusIdxList if no changes */
+			makeBusList();  // make list of buses to check
+			ModeChanged = false;  /* Keep same busIdxList if no changes */
 		}
 
 		sol.setIntervalHrs(1.0);
@@ -299,7 +300,7 @@ public class AutoAddImpl implements AutoAdd {
 			BufferedWriter FLog = new BufferedWriter(FStream);
 			FLog.write("\"Bus\", \"Base kV\", \"kW Losses\", \"% Improvement\", \"kW UE\", \"% Improvement\", \"Weighted Total\", \"Iterations\"");
 			FLog.newLine();
-			FLog.close();  // Close it now after clearing it out
+			FLog.close();  // close it now after clearing it out
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -327,13 +328,13 @@ public class AutoAddImpl implements AutoAdd {
 				Genkvar = TestGenkW * Math.sqrt(1.0 / Math.pow(GenPF, 2) - 1.0);
 				if (GenPF < 0.0)
 					Genkvar = -Genkvar;
-			} else {  // Someone goofed and specified 0.0 PF
+			} else {  // Someone specified 0.0 PF
 				GenPF = 1.0;
 				Genkvar = 0.0;
 			}
 
-			MinLossBus = 0;   // null string
-			MaxLossImproveFactor = -1.0e50;  // Some very large neg number
+			MinLossBus = 0;  // null string
+			MaxLossImproveFactor = -1.0e50;  // very large negative number
 			MinBusPhases = 3;
 
 			/* Progress meter */
@@ -361,7 +362,7 @@ public class AutoAddImpl implements AutoAdd {
 
 					Globals.getEnergyMeterClass().resetAll();
 
-					/* Get the Number of Phases at this bus and the Node Ref and add into the Aux Current Array */
+					/* Get the number of phases at this bus and the node ref and add into the aux current array */
 
 					/* Assume either a 3-phase or 1-phase generator */
 					if (ckt.getBuses()[BusIndex].getNumNodesThisBus() < 3) {
@@ -375,12 +376,12 @@ public class AutoAddImpl implements AutoAdd {
 					/* - - - - - - - - - Solution - - - - - - - - - - - - - - - */
 					ckt.setIsSolved(false);
 
-					sol.setUseAuxCurrents(true);   // Calls InjCurrents on callback
+					sol.setUseAuxCurrents(true);  // calls injCurrents on callback
 					sol.solveSnap();
 
 					if (ckt.isSolved()) {
-						/* Only do this if solution converged ELSE something might break
-						 * in meter sampling}
+						/* Only do this if solution converged else something might break
+						 * in meter sampling.
 						 */
 						Globals.getEnergyMeterClass().sampleAll();
 
@@ -412,7 +413,7 @@ public class AutoAddImpl implements AutoAdd {
 					break;
 			}
 
-			/* Put Control mode back to default before inserting Generator for real */
+			/* Put control mode back to default before inserting generator for real */
 			sol.setControlMode(DSSGlobals.CTRLSTATIC);
 			sol.setUseAuxCurrents(false);
 
@@ -431,28 +432,23 @@ public class AutoAddImpl implements AutoAdd {
 						", kw=" + String.format("%-g", TestGenkW) +
 						", " + String.format("%5.2f", GenPF) +
 						String.format("! Factor =  %-g (%-.3g, %-.3g)", MaxLossImproveFactor, ckt.getLossWeight(), ckt.getUEWeight());
-				exec.setCommand(CommandString);    // Defines Generator
+				exec.setCommand(CommandString);  // defines generator
 
-				// AppEnd this command to '...AutoAddedGenerators.txt'
+				// append this command to '...AutoAddedGenerators.txt'
 				appendToFile("Generators", CommandString);
 
-				sol.solveSnap();  // Force rebuilding of lists
-
+				sol.solveSnap();  // force rebuilding of lists
 			}
-			// Return location of added generator so that it can
-			// be picked up through the result string of the COM interface
+			// return location of added generator
 			Globals.setGlobalResult(ckt.getBusList().get(MinLossBus) +
 					String.format(", %-g", MaxLossImproveFactor));
 
 			Globals.getDSSForms().progressHide();
 
-			// note that the command that added the generator can be
-			// picked up from the Command property of the COM interface.
-
 			break;
 		case DSSGlobals.CAPADD:
 			MinLossBus = 0;  // null string
-			MaxLossImproveFactor = -1.0e50;  // Some very large number
+			MaxLossImproveFactor = -1.0e50;  // very large negative number
 			MinBusPhases = 3;
 
 			if (ckt.isPositiveSequence()) {
@@ -468,7 +464,7 @@ public class AutoAddImpl implements AutoAdd {
 
 			for (int i = 0; i < BusIdxListSize; i++) {
 				ProgressCount += 1;
-				/* Make sure testbus is actually in the circuit */
+				/* Make sure test bus is actually in the circuit */
 				BusIndex = BusIdxList[i];
 				if (BusIndex > 0) {
 					TestBus = ckt.getBusList().get(BusIndex);
@@ -486,7 +482,7 @@ public class AutoAddImpl implements AutoAdd {
 						Phases = 3;
 					}
 
-					// Apply the capacitor at the bus rating
+					// apply the capacitor at the bus rating
 
 					kVrat = ckt.getBuses()[BusIndex].getkVBase();  // L-N Base kV
 					Ycap = (TestCapkvar * 0.001 / Phases ) / (kVrat * kVrat) ;
@@ -495,11 +491,11 @@ public class AutoAddImpl implements AutoAdd {
 					/* - - - - - - - - - Solution - - - - - - - - - - - - - - - */
 					ckt.setIsSolved(false);
 
-					sol.setUseAuxCurrents(true);    // Calls InjCurrents on callback
+					sol.setUseAuxCurrents(true);  // calls injCurrents on callback
 					sol.solveSnap();
 
 					if (ckt.isSolved()) {
-						/* Only do this if solution converged ELSE something might break in meter sampling */
+						/* Only do this if solution converged else something might break in meter sampling */
 
 						Globals.getEnergyMeterClass().sampleAll();
 
@@ -529,8 +525,7 @@ public class AutoAddImpl implements AutoAdd {
 					break;
 			}
 
-
-			/* Put Control mode back to default before inserting Capacitor for real */
+			/* Put control mode back to default before inserting capacitor for real */
 			sol.setControlMode(DSSGlobals.CTRLSTATIC);
 			sol.setUseAuxCurrents(false);
 
@@ -550,19 +545,14 @@ public class AutoAddImpl implements AutoAdd {
 						", kv=" + String.format("%-g", kVrat);
 				exec.setCommand(CommandString);  // Defines capacitor
 
-				// AppEnd this command to 'DSSAutoAddedCapacitors.txt'
+				// append this command to 'DSSAutoAddedCapacitors.txt'
 				appendToFile("Capacitors", CommandString);
 
-
 				sol.solveSnap();  // for rebuilding of lists, etc.
-
 			}
-			// Return location of added generator so that it can
-			// be picked up through the result string of the COM interface
+			// return location of added generator
 			Globals.setGlobalResult(ckt.getBusList().get(MinLossBus));
 
-			// note that the command that added the generator can be
-			// picked up from the Command property of the COM interface.
 			break;
 		}
 
@@ -583,20 +573,20 @@ public class AutoAddImpl implements AutoAdd {
 
 		switch (AddType) {
 		case DSSGlobals.GENADD:
-			/* For buses with voltage <> 0, add into aux current array */
+			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < Phases; i++) {
 				NRef = ckt.getBuses()[BusIndex].getRef(i);
 				if (NRef > 0) {  // add in only non-ground currents  TODO Check zero indexing
 					BusV = sol.getNodeV()[NRef];
 					if ((BusV.getReal() != 0.0) || (BusV.getImaginary() != 0.0)) {
-						/* Current  INTO the system network */
+						/* Current into the system network */
 						switch (SolveType) {
 						case Solution.NEWTONSOLVE:
 							// FIXME Implement complex accumulate
-							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate().negate() );  // Terminal current
+							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate().negate() );  // terminal current
 							break;
 						case Solution.NORMALSOLVE:
-							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate() );   // Injection Current
+							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( GenVA.divide(BusV).conjugate() );  // injection Current
 							break;
 						}
 					}
@@ -605,22 +595,22 @@ public class AutoAddImpl implements AutoAdd {
 
 			break;
 		case DSSGlobals.CAPADD:
-			/* For buses with voltage <> 0, add into aux current array */
+			/* For buses with voltage != 0, add into aux current array */
 			for (int i = 0; i < Phases; i++) {
 				NRef = ckt.getBuses()[BusIndex].getRef(i);
 				if (NRef > 0) {
 					BusV = sol.getNodeV()[NRef];
 					if ((BusV.getReal() != 0.0) || (BusV.getImaginary() != 0.0)) {
-						/* Current  INTO the system network */
+						/* Current into the system network */
 						switch (SolveType) {
 						case Solution.NEWTONSOLVE:
-							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, Ycap).multiply(BusV) ); // Terminal Current
+							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, Ycap).multiply(BusV) );  // terminal current
 							break;
 						case Solution.NORMALSOLVE:
-							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, -Ycap).multiply(BusV) );  // Injection Current
+							sol.getCurrents()[NRef] = sol.getCurrents()[NRef].add( new Complex(0.0, -Ycap).multiply(BusV) );  // injection current
 							break;
 						}
-					}  // Constant Y model
+					}  // constant Y model
 				}
 			}
 			break;
@@ -632,12 +622,12 @@ public class AutoAddImpl implements AutoAdd {
 
 		if (ckt.getEnergyMeters().size() == 0) {
 
-			// No energymeters in circuit
-			// Just go by total system losses
+			// no energymeters in circuit
+			// just go by total system losses
 			kWLosses = ckt.getLosses().getReal() * 0.001;
 			kWEEN = 0.0;
 
-		} else {  // Sum losses in energy meters and add EEN
+		} else {  // sum losses in energy meters and add EEN
 			kWLosses = 0.0;
 			kWEEN = 0.0;
 

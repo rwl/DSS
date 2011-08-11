@@ -152,7 +152,7 @@ public class ControlQueueImpl implements ControlQueue {
 	}
 
 	/**
-	 * Pop off next control action with an action time <= ActionTime (sec).
+	 * Pop off next control action with an action time <= actionTime (sec).
 	 */
 	private ControlElem pop(TimeRec ActionTime, MutableInt Code, MutableInt ProxyHdl, MutableInt Hdl) {
 		ControlElem Result = null;
@@ -191,7 +191,7 @@ public class ControlQueueImpl implements ControlQueue {
 				S = "by control device";
 			}
 			writeTraceRecord(pElem.getName(), action.ActionCode, pElem.getDblTraceParameter(),
-					String.format("Handle %d deleted from Queue %s", action.ActionHandle, S));
+					String.format("Handle %d deleted from queue %s", action.ActionHandle, S));
 		}
 
 		ActionList.remove(i);
@@ -215,7 +215,7 @@ public class ControlQueueImpl implements ControlQueue {
 		while (pElem != null) {
 			if (DebugTrace)
 				writeTraceRecord(pElem.getName(), Code.intValue(), pElem.getDblTraceParameter(),
-						String.format("Pop Handle %d Do Action", hdl));
+						String.format("Pop handle %d do action", hdl));
 			pElem.doPendingAction(Code.intValue(), ProxyHdl.intValue());
 			Result = true;
 			pElem = pop(t, Code, ProxyHdl, hdl);

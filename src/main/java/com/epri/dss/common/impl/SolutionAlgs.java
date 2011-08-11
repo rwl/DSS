@@ -38,6 +38,7 @@ public class SolutionAlgs {
 
 	/**
 	 * Solve following yearly cycle.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -56,7 +57,7 @@ public class SolutionAlgs {
 		try {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage elements
 			if (!Globals.isDIFilesAreOpen())
-				Globals.getEnergyMeterClass().openAllDIFiles();   // Open Demand Interval Files, if desired   Creates DI_Totals
+				Globals.getEnergyMeterClass().openAllDIFiles();   // open demand interval files, if desired, creates DI_Totals
 			TwoPct = Math.max(sol.getNumberOfTimes() / 50, 1);
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
 				if (!Globals.isSolutionAbort()) {
@@ -65,8 +66,8 @@ public class SolutionAlgs {
 					if (ckt.getPriceCurveObj() != null)
 						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+					Globals.getEnergyMeterClass().sampleAll();  // make all energy meters take a sample
 					Globals.getStorageClass().updateAll();
 					if ((N % TwoPct) == 0)
 						Globals.getDSSForms().showPctProgress((N * 100) / sol.getNumberOfTimes());
@@ -75,7 +76,7 @@ public class SolutionAlgs {
 		} finally {
 			Globals.getDSSForms().progressHide();
 			Globals.getMonitorClass().saveAll();
-			//Globals.getEnergyMeterClass().closeAllDIFiles();   // Save Demand interval Files    See DIFilesAreOpen Logic
+			//Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files, see DIFilesAreOpen logic
 		}
 		return 0;
 	}
@@ -85,6 +86,7 @@ public class SolutionAlgs {
 	 *
 	 * Stepsize defaults to 1 hr and number of times = 24.
 	 * Load is modified by yearly growth, time of day, and global load multiplier.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -102,7 +104,7 @@ public class SolutionAlgs {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters
 			ckt.setDefaultDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find("default"));
 			if (!Globals.isDIFilesAreOpen())
-				Globals.getEnergyMeterClass().openAllDIFiles();  // Append Demand Interval Files, if desired
+				Globals.getEnergyMeterClass().openAllDIFiles();  // append demand interval files, if desired
 
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
 				if (!Globals.isSolutionAbort()) {
@@ -111,14 +113,14 @@ public class SolutionAlgs {
 					if (ckt.getPriceCurveObj() != null)
 						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+					Globals.getEnergyMeterClass().sampleAll(); // make all energy meters take a sample
 					Globals.getStorageClass().updateAll();
 				}
 			}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand interval Files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 		}
 		return 0;
 	}
@@ -130,6 +132,7 @@ public class SolutionAlgs {
 	 * Load is modified by daily load curve and growth factor for the year.
 	 * 'h' defaults to 3600 (1 hr) but can be reset to anything.
 	 * Differs from Daily mode in that the global load multiplier is ignored.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -150,7 +153,7 @@ public class SolutionAlgs {
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage devices
 			ckt.setDefaultDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find("default"));
 			if (!Globals.isDIFilesAreOpen())
-				Globals.getEnergyMeterClass().openAllDIFiles();  // Open Demand Interval Files, if desired
+				Globals.getEnergyMeterClass().openAllDIFiles();  // open demand interval files, if desired
 
 			for (int N = 0; N < sol.getNumberOfTimes(); N++)
 				if (!Globals.isSolutionAbort()) {
@@ -159,13 +162,13 @@ public class SolutionAlgs {
 					if (ckt.getPriceCurveObj() != null)
 						ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(sol.getDblHour()) );
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-					Globals.getEnergyMeterClass().sampleAll(); // Make all Energy Meters take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+					Globals.getEnergyMeterClass().sampleAll(); // make all energy meters take a sample
 					Globals.getStorageClass().updateAll();
 				}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand interval Files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 		}
 
 		return 0;
@@ -195,9 +198,9 @@ public class SolutionAlgs {
 				if (!Globals.isSolutionAbort()) {
 					sol.incrementTime();
 					ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
-					// Assume price signal stays constant for dutycycle calcs
+					// assume price signal stays constant for dutycycle calcs
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
 					Globals.getStorageClass().updateAll();
 
 					if (N % TwoPct == 0)
@@ -213,6 +216,7 @@ public class SolutionAlgs {
 
 	/**
 	 * For rolling your own solution modes.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -226,11 +230,11 @@ public class SolutionAlgs {
 
 		for (int N = 0; N < sol.getNumberOfTimes(); N++)
 			if (!Globals.isSolutionAbort()) {
-				/* Compute basic multiplier from Default loadshape to use in generator dispatch, if any */
+				/* Compute basic multiplier from default load shape to use in generator dispatch, if any */
 				ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 
 				sol.solveSnap();
-				Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
+				Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
 				Globals.getStorageClass().updateAll();
 				sol.incrementTime();
 			}
@@ -260,13 +264,13 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		try {
-			sol.setSolutionInitialized(true);  // If we're in dynamics mode, no need to re-initialize.
+			sol.setSolutionInitialized(true);  // if we're in dynamics mode, no need to re-initialize.
 			sol.setIntervalHrs(sol.getDynaVars().h / 3600.0);  // needed for energy meters and storage devices
 			for (int N = 0; N < sol.getNumberOfTimes(); N++)
 				if (!Globals.isSolutionAbort()) {
 					sol.incrementTime();
 					ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
-					// Assume price signal stays constant for dynamic calcs
+					// assume price signal stays constant for dynamic calcs
 					/* Predictor */
 					sol.getDynaVars().IterationFlag = 0;
 					integratePCStates();
@@ -275,7 +279,7 @@ public class SolutionAlgs {
 					sol.getDynaVars().IterationFlag = 1;
 					integratePCStates();
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
 					Globals.getStorageClass().updateAll();
 				}
 		} finally {
@@ -287,6 +291,7 @@ public class SolutionAlgs {
 
 	/**
 	 * Solve Monte Carlo solution.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -297,10 +302,10 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		try {
-			ckt.setLoadMultiplier(1.0);   // Always set with prop in case matrix must be rebuilt
+			ckt.setLoadMultiplier(1.0);   // always set with prop in case matrix must be rebuilt
 			sol.setIntervalHrs(1.0);      // needed for energy meters and storage devices
 			sol.setIntHour(0);
-			sol.setDblHour(0.0);          // Use hour to denote Case number
+			sol.setDblHour(0.0);          // use hour to denote case number
 			sol.getDynaVars().t = 0.0;
 
 			//Globals.getMonitorClass().resetAll();
@@ -313,8 +318,8 @@ public class SolutionAlgs {
 				if (!Globals.isSolutionAbort()) {
 					sol.setIntHour(sol.getIntHour() + 1);
 					sol.solveSnap();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-					Globals.getEnergyMeterClass().sampleAll();  // Make all meters take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+					Globals.getEnergyMeterClass().sampleAll();  // make all meters take a sample
 					show10PctProgress(N, sol.getNumberOfTimes());
 				} else {
 					Globals.setErrorNumber(DSSGlobals.SOLUTION_ABORT);
@@ -333,8 +338,8 @@ public class SolutionAlgs {
 
 	/**
 	 * Solve Monte Carlo solution.
-	 *
 	 * Do a daily load solution for several random days.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -354,15 +359,15 @@ public class SolutionAlgs {
 			int nDaily = (int) Math.round(24.0 / sol.getIntervalHrs());
 
 			if (!Globals.isDIFilesAreOpen())
-				Globals.getEnergyMeterClass().openAllDIFiles();  // Open Demand Interval files, if desired
+				Globals.getEnergyMeterClass().openAllDIFiles();  // open demand interval files, if desired
 
 			Globals.getDSSForms().progressCaption("Monte Carlo Mode 2, " + String.valueOf(sol.getNumberOfTimes()) + " Days.");
 			ProgressCount = 0;
 
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
-				if (!Globals.isSolutionAbort()) {  // Number of Days
+				if (!Globals.isSolutionAbort()) {  // number of days
 
-					// Always set LoadMultiplier WITH prop in case matrix must be rebuilt
+					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
 					case DSSGlobals.UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
@@ -377,8 +382,8 @@ public class SolutionAlgs {
 						ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 						sol.solveSnap();
 
-						Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-						Globals.getEnergyMeterClass().sampleAll();  // Make all meters take a sample
+						Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+						Globals.getEnergyMeterClass().sampleAll();  // make all meters take a sample
 						Globals.getStorageClass().updateAll();
 					}
 
@@ -392,7 +397,7 @@ public class SolutionAlgs {
 			}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand Interval files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 			Globals.getDSSForms().progressHide();
 		}
 
@@ -412,7 +417,7 @@ public class SolutionAlgs {
 		Circuit ckt = Globals.getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
 
-		// Time must be set beFore entering this routine
+		// time must be set beFore entering this routine
 		try {
 			//Globals.getMonitorClass().resetAll();
 			//Globals.getEnergyMeterClass().resetAll();
@@ -430,7 +435,7 @@ public class SolutionAlgs {
 
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
 				if (!Globals.isSolutionAbort()) {
-					// Always set LoadMultiplier WITH prop in case matrix must be rebuilt
+					// always set loadMultiplier with prop in case matrix must be rebuilt
 					switch (sol.getRandomType()) {
 					case DSSGlobals.UNIFORM:
 						ckt.setLoadMultiplier(Math.random());  // number between 0 and 1
@@ -445,8 +450,8 @@ public class SolutionAlgs {
 
 					sol.solveSnap();
 
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-					Globals.getEnergyMeterClass().sampleAll();  // Make all meters take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+					Globals.getEnergyMeterClass().sampleAll();  // make all meters take a sample
 
 					show10PctProgress(N, sol.getNumberOfTimes());
 				} else {
@@ -458,7 +463,7 @@ public class SolutionAlgs {
 			}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand Interval files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 			Globals.getDSSForms().progressHide();
 		}
 
@@ -484,7 +489,7 @@ public class SolutionAlgs {
 				return 0;
 			}
 
-			// Time must be set before entering this routine
+			// time must be set before entering this routine
 
 			//Globals.getMonitorClass().resetAll();
 			//Globals.getEnergyMeterClass().resetAll();
@@ -492,33 +497,34 @@ public class SolutionAlgs {
 			int nDaily = (int) Math.round(24.0 / sol.getDynaVars().h * 3600.0);
 
 			if (!Globals.isDIFilesAreOpen())
-				Globals.getEnergyMeterClass().openAllDIFiles();  // Open Demand Interval files, if desired
+				Globals.getEnergyMeterClass().openAllDIFiles();  // open demand interval files, if desired
 
 			Globals.getDSSForms().progressCaption("Load-Duration Mode 1 Solution.");
 
-			// (set in Solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
+			// (set in solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
 
 			sol.setIntHour(0);
 			for (int i = 0; i < nDaily; i++) {
-				// Set the time
+				// set the time
 				sol.incrementTime();
 
 				ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 
 				if (!Globals.isSolutionAbort()) {
 					for (int N = 0; N < ckt.getLoadDurCurveObj().getNumPoints(); N++) {
-						ckt.setLoadMultiplier(ckt.getLoadDurCurveObj().mult(N));  // Always set LoadMultiplier with prop in case matrix must be rebuilt
-						// Adjust meter interval to interval on value of present Load-Duration Curve
+						// always set loadMultiplier with prop in case matrix must be rebuilt
+						ckt.setLoadMultiplier(ckt.getLoadDurCurveObj().mult(N));
+						// adjust meter interval to interval on value of present load-duration curve
 						sol.setIntervalHrs(ckt.getLoadDurCurveObj().getInterval());
 
-						// Price curve must correspond to load-duration curve
+						// price curve must correspond to load-duration curve
 						if (ckt.getPriceCurveObj() != null)
 							ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(N) );
 
 						sol.solveSnap();
 
-						Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-						Globals.getEnergyMeterClass().sampleAll();  // Make all meters take a sample
+						Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+						Globals.getEnergyMeterClass().sampleAll();  // make all meters take a sample
 						Globals.getStorageClass().updateAll();
 					}
 					Globals.getDSSForms().showPctProgress((i * 100) / nDaily);
@@ -531,7 +537,7 @@ public class SolutionAlgs {
 			}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand Interval files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 			Globals.getDSSForms().progressHide();
 		}
 
@@ -540,9 +546,9 @@ public class SolutionAlgs {
 
 	/**
 	 * Solve Load-Duration Curve, 2.
-	 *
 	 * Hold time fixed and just vary the global load multiplier according to
 	 * the global Load-Duration Curve.
+	 *
 	 * @throws ControlProblem
 	 * @throws SolverError
 	 * @throws Esolv32Problem
@@ -553,47 +559,48 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		if (ckt.getLoadDurCurveObj() == null) {
-			Globals.doSimpleMsg("Load Duration Curve Not Defined (Set LDCurve=... command). Cannot perForm solution.", 471);
+			Globals.doSimpleMsg("Load duration curve not defined (set ldcurve=... command). Can not perform solution.", 471);
 			return 0;
 		}
 
-		// Time must be set before entering this routine
+		// time must be set before entering this routine
 
 		//Globals.getMonitorClass().resetAll();
 		//Globals.getEnergyMeterClass().resetAll();
 
 		ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 		if (!Globals.isDIFilesAreOpen())
-			Globals.getEnergyMeterClass().openAllDIFiles();  // Open Demand Interval files, if desired
+			Globals.getEnergyMeterClass().openAllDIFiles();  // open demand interval files, if desired
 
-		// (set in Solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
+		// (set in solve method) ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), (sol.getYear() - 1)));
 
 		try {
 			if (Globals.isSolutionAbort()) {
 				Globals.setCmdResult(DSSGlobals.SOLUTION_ABORT);
 				Globals.setErrorNumber(Globals.getCmdResult());
-				Globals.setGlobalResult("Solution Aborted.");
+				Globals.setGlobalResult("Solution aborted.");
 				return 0;
 			}
 
 			for (int N = 0; N < ckt.getLoadDurCurveObj().getNumPoints(); N++) {
-				// Adjust meter interval to interval on value of present Load-Duration Curve
-				ckt.setLoadMultiplier(ckt.getLoadDurCurveObj().mult(N));  // Always set LoadMultiplier with prop in case matrix must be rebuilt
+				// adjust meter interval to interval on value of present load-duration curve
+				// always set loadMultiplier with prop in case matrix must be rebuilt
+				ckt.setLoadMultiplier(ckt.getLoadDurCurveObj().mult(N));
 				sol.setIntervalHrs(ckt.getLoadDurCurveObj().getInterval());
 
-				// Price curve must correspond to load-duration curve
+				// price curve must correspond to load-duration curve
 				if (ckt.getPriceCurveObj() != null)
 					ckt.setPriceSignal( ckt.getPriceCurveObj().getPrice(N) );
 
 				sol.solveSnap();
 
-				Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
-				Globals.getEnergyMeterClass().sampleAll();  // Make all meters take a sample
+				Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
+				Globals.getEnergyMeterClass().sampleAll();  // make all meters take a sample
 				Globals.getStorageClass().updateAll();
 			}
 		} finally {
 			Globals.getMonitorClass().saveAll();
-			Globals.getEnergyMeterClass().closeAllDIFiles();  // Save Demand Interval files
+			Globals.getEnergyMeterClass().closeAllDIFiles();  // save demand interval files
 		}
 
 		return 0;
@@ -615,7 +622,7 @@ public class SolutionAlgs {
 		for (int i = 0; i < NumFaults; i++) {
 			FaultObj = ckt.getFaults().get(i);
 			if (i == WhichOne) {
-				FaultImpl.setActiveFaultObj(FaultObj);  // in Fault Unit
+				FaultImpl.setActiveFaultObj(FaultObj);  // in fault unit
 				FaultObj.setEnabled(true);
 			} else {
 				FaultObj.setEnabled(false);
@@ -625,6 +632,7 @@ public class SolutionAlgs {
 
 	/**
 	 * Solve Monte Carlo Fault Study.
+	 *
 	 * @throws Esolv32Problem
 	 */
 	public static int solveMonteFault() throws Esolv32Problem {
@@ -633,15 +641,15 @@ public class SolutionAlgs {
 		SolutionObj sol = ckt.getSolution();
 
 		try {
-			sol.setLoadModel(DSSGlobals.ADMITTANCE);   // All Direct solution
-			ckt.setLoadMultiplier(1.0);  // Always set LoadMultiplier with prop in case matrix must be rebuilt
+			sol.setLoadModel(DSSGlobals.ADMITTANCE);   // all direct solution
+			ckt.setLoadMultiplier(1.0);  // always set loadMultiplier with prop in case matrix must be rebuilt
 			sol.setIntHour(0);
-			sol.setDblHour(0.0);  // Use hour to denote Case number
+			sol.setDblHour(0.0);  // use hour to denote case number
 			sol.getDynaVars().t = 0.0;
 
 			//Globals.getMonitorClass().resetAll();
 
-			Globals.getDSSForms().progressCaption("Monte Carlo Fault Study: " + String.valueOf(sol.getNumberOfTimes()) + " Different Faults.");
+			Globals.getDSSForms().progressCaption("Monte Carlo Fault Study: " + String.valueOf(sol.getNumberOfTimes()) + " different faults.");
 			ProgressCount = 0;
 
 			sol.setGeneratorDispRef();
@@ -649,10 +657,10 @@ public class SolutionAlgs {
 			for (int N = 0; N < sol.getNumberOfTimes(); N++) {
 				if (!Globals.isSolutionAbort()) {
 					sol.setIntHour(sol.getIntHour() + 1);
-					pickAFault();  // Randomly enable one of the faults
-					FaultImpl.getActiveFaultObj().randomize();  // Randomize the fault resistance
+					pickAFault();  // randomly enable one of the faults
+					FaultImpl.getActiveFaultObj().randomize();  // randomize the fault resistance
 					sol.solveDirect();
-					Globals.getMonitorClass().sampleAll();  // Make all monitors take a sample
+					Globals.getMonitorClass().sampleAll();  // make all monitors take a sample
 
 					show10PctProgress(N, sol.getNumberOfTimes());
 				}
@@ -684,8 +692,8 @@ public class SolutionAlgs {
 
 	/**
 	 * Compute YSC for I-th bus.
-	 *
 	 * Assume InjCurr is zeroed.
+	 *
 	 * @throws Esolv32Problem
 	 */
 	public static void computeYsc(int iB) throws Esolv32Problem {
@@ -703,8 +711,8 @@ public class SolutionAlgs {
 				sol.getCurrents()[ref1] = Complex.ONE;
 				/* SparseSet expects 1st element of voltage array, not 0-th element */
 				if (YMatrix.solveSparseSet(sol.getYsystem(), sol.getNodeV()[1], sol.getCurrents()[1]) < 1)
-					throw new Esolv32Problem("Error Solving System Y Matrix in ComputeYsc. Problem with Sparse matrix solver.");
-				/* Extract Voltage Vector = column of Zsc */
+					throw new Esolv32Problem("Error solving system Y matrix in computeYsc. Problem with sparse matrix solver.");
+				/* Extract voltage vector = column of Zsc */
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++)
 					bus.getZsc().setElement(j ,i, sol.getNodeV()[bus.getRef(j)]);
 				sol.getCurrents()[ref1] = Complex.ZERO;
@@ -726,7 +734,7 @@ public class SolutionAlgs {
 
 		for (int iB = 0; iB < ckt.getNumBuses(); iB++) {
 			try {
-				computeYsc(iB);  // Compute YSC for iB-th Bus
+				computeYsc(iB);  // compute YSC for iB-th Bus
 			} catch (Esolv32Problem e) {
 				// TODO Auto-generated catch block
 			}
@@ -747,7 +755,8 @@ public class SolutionAlgs {
 	}
 
 	/**
-	 * Full Fault Study
+	 * Full fault study
+	 *
 	 * @throws Esolv32Problem
 	 */
 	public static int solveFaultStudy() throws Esolv32Problem {
@@ -759,12 +768,12 @@ public class SolutionAlgs {
 
 		sol.setLoadModel(DSSGlobals.ADMITTANCE);
 		disableAllFaults();
-		sol.solveDirect();  // This gets the open circuit voltages and bus lists corrected
+		sol.solveDirect();  // this gets the open circuit voltages and bus lists corrected
 
-		allocateAllSCParms();   // Reallocate bus quantities
-		sol.updateVBus();  // Put present solution Voc's in bus quantities
+		allocateAllSCParms();  // reallocate bus quantities
+		sol.updateVBus();  // put present solution Voc's in bus quantities
 
-		Globals.getDSSForms().progressCaption("Computing Ysc Matrices for each Bus");
+		Globals.getDSSForms().progressCaption("Computing Ysc Matrices for each bus");
 		Globals.getDSSForms().showPctProgress(30);
 		computeAllYsc();
 
@@ -775,38 +784,38 @@ public class SolutionAlgs {
 		Globals.getDSSForms().showPctProgress(100);
 		Globals.getDSSForms().progressCaption("Done.");
 		Globals.getDSSForms().progressHide();
-		// Now should have all we need to make a short circuit report
+		// now should have all we need to make a short circuit report
 
 		return 0;
 	}
 
 	/**
-	 * Add unique Frequency, F to list in ascending order, reallocating if necessary.
+	 * Add unique frequency, F to list in ascending order, reallocating if necessary.
 	 */
 	private static void addFrequency(double[] FreqList, int NumFreq, int MaxFreq, double F) {
 		/* See if F is in list */
 
 		for (int i = 0; i < NumFreq; i++) {
-			/* Allow a little tolerance (0.1 hz) for the Frequency for round off error */
+			/* Allow a little tolerance (0.1 hz) for the frequency for round off error */
 			if (Math.abs(F - FreqList[i]) < 0.1)
-				return;  // Already in list, nothing to do
+				return;  // already in list, nothing to do
 		}
 
 		/* OK, it's not in list, so let's add it */
 		NumFreq += 1;
-		if (NumFreq > MaxFreq) {  // Let's make a little more room
+		if (NumFreq > MaxFreq) {
 			MaxFreq += 20;
 			FreqList = (double[]) Utilities.resizeArray(FreqList, MaxFreq);
 		}
 
-		/* Let's add it in ascending order */
+		/* let's add it in ascending order */
 		for (int i = 0; i < NumFreq - 1; i++) {
 			if (F < FreqList[i]) {
-				/* Push down array and insert it */
+				/* push down array and insert it */
 				for (int j = NumFreq - 1; j >= i; j--)  // TODO Check count down logic
 					FreqList[j + 1] = FreqList[j];
 				FreqList[i] = F;
-				return;  // We're done!
+				return;
 			}
 		}
 
@@ -835,16 +844,16 @@ public class SolutionAlgs {
 		SpectrumObj pSpectrum;
 		double f;
 
-		/* Make a ist of all frequencies in use */
+		/* Make a list of all frequencies in use */
 
-		/* accumulate all unique frequencies */
+		/* Accumulate all unique frequencies */
 		MaxFreq = 20;    // Initial List size
 		NumFreq = 0;
 		FreqList = (double[]) Utilities.resizeArray(FreqList, MaxFreq);
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		/* Check Sources -- each could have a different base frequency */
+		/* Check sources -- each could have a different base frequency */
 		for (PCElement p : ckt.getSources()) {
 			if (p.isEnabled()) {
 				if (Globals.getSpectrumClass().find(p.getSpectrum()) != null) {
@@ -857,10 +866,10 @@ public class SolutionAlgs {
 			}
 		}
 
-		/* Mark Spectra being used */
+		/* Mark spectra being used */
 
 		/* Check loads and generators - these are assumed to be at fundamental frequency */
-		SpectrumInUse = new int[Globals.getSpectrumClass().getElementCount()];  //Allocate and zero
+		SpectrumInUse = new int[Globals.getSpectrumClass().getElementCount()];  // allocate and zero
 		for (PCElement p : ckt.getPCElements()) {
 			if (p.isEnabled()) {
 				if (Globals.getSpectrumClass().find(p.getSpectrum()) != null) {
@@ -898,14 +907,14 @@ public class SolutionAlgs {
 			if (sol.getFrequency() != ckt.getFundamental()) {  // Last solution was something other than fundamental
 				sol.setFrequency(ckt.getFundamental());
 				if (!Utilities.retrieveSavedVoltages())
-					return 0;  /* Get Saved fundamental frequency solution */
+					return 0;  /* Get saved fundamental frequency solution */
 			}
 
-			Globals.getMonitorClass().sampleAll();  // Store the fundamental frequency in the monitors
+			Globals.getMonitorClass().sampleAll();  // store the fundamental frequency in the monitors
 
-			/* Get the list of Harmonic Frequencies to solve at */
+			/* Get the list of harmonic frequencies to solve at */
 			if (sol.isDoAllHarmonics()) {
-				collectAllFrequencies(FrequencyList, nFreq);   // Allocates FrequencyList  TODO Check allocation
+				collectAllFrequencies(FrequencyList, nFreq);  // allocates frequencyList  TODO Check allocation
 			} else {
 				FrequencyList = (double[]) Utilities.resizeArray(FrequencyList, sol.getHarmonicListSize());
 				nFreq = sol.getHarmonicListSize();
@@ -917,11 +926,11 @@ public class SolutionAlgs {
 			for (int i = 0; i < nFreq; i++) {
 				sol.setFrequency(FrequencyList[i]);
 				if (Math.abs(sol.getHarmonic() - 1.0) > DSSGlobals.EPSILON) {  // Skip fundamental
-					Globals.getDSSForms().progressCaption("Solving at Frequency = " + String.format("%-g", sol.getFrequency()));
+					Globals.getDSSForms().progressCaption("Solving at frequency = " + String.format("%-g", sol.getFrequency()));
 					Globals.getDSSForms().showPctProgress((int) Math.round((100.0 * i) / nFreq));
 					sol.solveDirect();
 					Globals.getMonitorClass().sampleAll();
-					// Storage devices are assumed to stay the same since there is no time variation in this mode
+					// storage devices are assumed to stay the same since there is no time variation in this mode
 				}
 			}
 
@@ -932,7 +941,7 @@ public class SolutionAlgs {
 			Globals.getMonitorClass().saveAll();
 			FrequencyList = null;
 		}
-		// Now should have all we need to make a short circuit report
+		// now should have all we need to make a short circuit report
 
 		return 0;
 	}

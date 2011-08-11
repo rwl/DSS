@@ -92,7 +92,7 @@ public abstract class ShowResults {
 		} else {
 			Vph[0] = ckt.getSolution().getNodeV()[ ckt.getBuses()[i].getRef(0) ];
 			V0 = 0.0;
-			V1 = Vph[0].abs();  // Use first phase value for non-three phase buses
+			V1 = Vph[0].abs();  // use first phase value for non-three phase buses
 			V2 = 0.0;
 		}
 
@@ -100,7 +100,7 @@ public abstract class ShowResults {
 		V2 = V2 / 1000.0;
 		V0 = V0 / 1000.0;
 
-		// Calc per unit value
+		// calc per unit value
 		if (ckt.getBuses()[i].getkVBase() != 0.0) {
 			Vpu = V1 / ckt.getBuses()[i].getkVBase();
 		} else {
@@ -133,7 +133,7 @@ public abstract class ShowResults {
 			Volts = ckt.getSolution().getNodeV()[nref];
 
 			if (LL && (j < 4)) {  // TODO Check zero based indexing
-				// Convert to Line-Line assuming no more than 3 phases
+				// convert to line-line assuming no more than 3 phases
 				k = j + 1;
 				if (k > 3) k = 1;  // TODO Check zero based indexing
 				if (k <= ckt.getBuses()[i].getNumNodesThisBus()) {
@@ -296,7 +296,7 @@ public abstract class ShowResults {
 				F.println();
 
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled())
 						writeElementVoltages(F, pElem, LL);
@@ -458,7 +458,7 @@ public abstract class ShowResults {
 				F.println(Utilities.pad("Element", MaxDeviceNameLength + 2) + " Term      I1         I2         %I2/I1    I0         %I0/I1   %Normal %Emergency");
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled()) {
 						NCond = pElem.getNConds();
@@ -506,7 +506,7 @@ public abstract class ShowResults {
 					}
 				}
 
-				// Faults next
+				// faults next
 				for (CktElement pElem : ckt.getFaults()) {
 					if (pElem.isEnabled()) {
 						NCond = pElem.getNConds();
@@ -523,7 +523,7 @@ public abstract class ShowResults {
 				}
 
 				break;
-			case 1:  // Element branch Currents
+			case 1:  // element branch currents
 
 				F.println();
 				F.println("CIRCUIT ELEMENT CURRENTS");
@@ -535,7 +535,7 @@ public abstract class ShowResults {
 				F.println(Utilities.pad("  Bus", MaxBusNameLength) + " Phase    Magnitude, A     Angle");
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources())
 					if (pElem.isEnabled())
 						writeTerminalCurrents(F, pElem, false);
@@ -545,7 +545,7 @@ public abstract class ShowResults {
 					if (pElem.isEnabled())
 						writeTerminalCurrents(F, pElem, ShowResidual);
 
-				// Faults
+				// faults
 				for (CktElement pElem : ckt.getFaults())
 					if (pElem.isEnabled())
 						writeTerminalCurrents(F, pElem, false);
@@ -583,9 +583,6 @@ public abstract class ShowResults {
 		PrintWriter F;
 		Complex[] cBuffer;
 		int NCond, Nterm, i, j, k;
-//		CktElement pElem;
-//		PDElement PDElem;
-//		PDElement PCElem;
 		Complex Volts;
 		Complex S, Saccum;
 		int nref;
@@ -603,7 +600,7 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			/* Allocate c_Buffer big enough for largest circuit element */
+			/* Allocate cBuffer big enough for largest circuit element */
 			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
 
 			switch (ShowOptionCode) {
@@ -622,7 +619,7 @@ public abstract class ShowResults {
 				}
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled()) {
 						NCond = pElem.getNConds();
@@ -975,7 +972,7 @@ public abstract class ShowResults {
 			if (cktElem.getNPhases() >= 3) {
 				MathUtil.phase2SymComp(Iph, I012);
 				MathUtil.phase2SymComp(Vph, V012);
-			} else {  // Handle single phase and pos seq models
+			} else {  // handle single phase and pos seq models
 				V012[0] = Complex.ZERO;
 				I012[0] = Complex.ZERO;
 				V012[2] = Complex.ZERO;
@@ -989,7 +986,7 @@ public abstract class ShowResults {
 				}
 			}
 
-			// Pos Seq or Single Phase
+			// pos seq or single phase
 			switch (cktElem.getNPhases()) {
 			case 1:
 				S = Vph[0].multiply( Iph[0].conjugate() );
@@ -1024,7 +1021,7 @@ public abstract class ShowResults {
 		int i, k, NCond, nref;
 		Complex Volts, S;
 		Complex Saccum;
-		Complex[] cBuffer;  // Allocate to max total conductors
+		Complex[] cBuffer;  // allocate to max total conductors
 		String FromBus;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -1071,11 +1068,8 @@ public abstract class ShowResults {
 		FileWriter FWriter;
 		PrintWriter F;
 		int j = 0, Ncond, Nterm;
-//		CktElement pElem;
-//		PDElement PDElem;
-//		PCElement PCElem;
 		double I0 = 0, I1 = 0, I2 = 0, Cmax = 0;
-		Complex[] cBuffer;  // Allocate to max total conductors
+		Complex[] cBuffer;  // allocate to max total conductors
 		int BusReference;
 		int jTerm = 0;
 
@@ -1097,7 +1091,7 @@ public abstract class ShowResults {
 
 			switch (ShowOptionCode) {
 			case 0:
-				/* Write Bus Voltage */
+				/* Write bus voltage */
 
 				F.println();
 				F.println("  Bus   Mag:    V1 (kV)  p.u.    V2 (kV)  %V2/V1  V0 (kV)  %V0/V1");
@@ -1105,14 +1099,14 @@ public abstract class ShowResults {
 
 				writeSeqVoltages(F, BusReference, false);
 
-				/* Sequence Currents */
+				/* Sequence currents */
 				F.println();
 				F.println("SYMMETRICAL COMPONENT CURRENTS BY CIRCUIT ELEMENT (first 3 phases)");
 				F.println();
 				F.println("Element                      Term      I1         I2         %I2/I1    I0         %I0/I1   %Normal %Emergency");
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled())
 						if (checkBusReference(pElem, BusReference, j)) {
@@ -1160,7 +1154,7 @@ public abstract class ShowResults {
 						}
 				}
 
-				/* Sequence Powers */
+				/* Sequence powers */
 				F.println();
 				F.println("SYMMETRICAL COMPONENT POWERS BY CIRCUIT ELEMENT (first 3 phases)");
 				F.println();
@@ -1174,7 +1168,7 @@ public abstract class ShowResults {
 				}
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled())
 						if (checkBusReference(pElem, BusReference, j)) {
@@ -1201,13 +1195,13 @@ public abstract class ShowResults {
 
 				break;
 			case 1:
-				/* Write Bus Voltage */
+				/* Write bus voltage */
 				F.println();
 				F.println("  Bus   (node ref)  Node       V (kV)    Angle    p.u.   Base kV");
 				F.println();
 				writeBusVoltages(F, BusReference, false);
 
-				/* Element Currents */
+				/* Element currents */
 				F.println();
 				F.println("CIRCUIT ELEMENT CURRENTS");
 				F.println();
@@ -1218,7 +1212,7 @@ public abstract class ShowResults {
 				F.println("  Bus         Phase    Magnitude, A     Angle");
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled())
 						if (checkBusReference(pElem, BusReference, j)) {
@@ -1252,7 +1246,7 @@ public abstract class ShowResults {
 						}
 				}
 
-				/* Branch Powers */
+				/* Branch powers */
 				F.println();
 				F.println("CIRCUIT ELEMENT POWER FLOW");
 				F.println();
@@ -1268,7 +1262,7 @@ public abstract class ShowResults {
 				}
 				F.println();
 
-				// Sources first
+				// sources first
 				for (CktElement pElem : ckt.getSources()) {
 					if (pElem.isEnabled())
 						if (checkBusReference(pElem, BusReference, j)) {
@@ -1349,7 +1343,7 @@ public abstract class ShowResults {
 
 			/* Set source voltage injection currents */
 
-			/* All Phase Faults */
+			/* All phase faults */
 			F.println("FAULT STUDY REPORT");
 			F.println();
 			F.println("ALL-Node Fault Currents");
@@ -1357,7 +1351,7 @@ public abstract class ShowResults {
 			F.println(Utilities.pad("Bus", MaxBusNameLength) + "       Node 1  X/R        Node 2  X/R        Node 3  X/R   ...  (Amps)");
 			F.println();
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
-				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
 				F.print(Utilities.pad(Utilities.encloseQuotes(ckt.getBusList().get(iBus)) + ",", MaxBusNameLength + 2));
 				for (i = 0; i < bus.getNumNodesThisBus(); i++) {
@@ -1376,7 +1370,7 @@ public abstract class ShowResults {
 
 			F.println();
 
-			/* One Phase Faults */
+			/* One phase faults */
 			F.println();
 			F.println("ONE-Node to ground Faults");
 			F.println();
@@ -1384,9 +1378,9 @@ public abstract class ShowResults {
 			F.println(Utilities.pad("Bus", MaxBusNameLength) + "   Node      Amps         Node 1     Node 2     Node 3    ...");
 			F.println();
 
-			/* Solve for Fault Injection Currents */
+			/* Solve for fault injection currents */
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
-				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
 				ZFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				ZFault.copyFrom(bus.getZsc());
@@ -1405,12 +1399,12 @@ public abstract class ShowResults {
 					}
 					F.println();
 				}
-				/* Now, Stuff it in the Css Array where it belongs */
+				/* Now, put it in the Css array where it belongs */
 
 				ZFault = null;
 			}
 
-			/* Node-Node Faults */
+			/* Node-node faults */
 			F.println();
 			F.println("Adjacent Node-Node Faults");
 			F.println();
@@ -1418,9 +1412,9 @@ public abstract class ShowResults {
 			F.println("Bus          Node-Node      Amps        Node 1     Node 2     Node 3    ...");
 			F.println();
 
-			/* Solve for Fault Injection Currents */
+			/* Solve for fault injection currents */
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
-				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
 				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				Vfault = new Complex[bus.getNumNodesThisBus()];
@@ -1433,7 +1427,7 @@ public abstract class ShowResults {
 					YFault.addElement(iphs + 1, iphs + 1, GFault);
 					YFault.addElemSym(iphs, iphs + 1, GFault.negate());
 
-					/* Solve for Injection Currents */
+					/* Solve for injection currents */
 					YFault.invert();
 					YFault.MVMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
@@ -1451,7 +1445,7 @@ public abstract class ShowResults {
 
 				}
 			}
-			/* Now, Stuff it in the Css Array where it belongs */
+			/* Now, put it in the Css array where it belongs */
 			Vfault = null;
 			YFault = null;
 
@@ -1525,7 +1519,7 @@ public abstract class ShowResults {
 					}
 				}
 			} else {
-				// Default - Just do PD and PC Element in active circuit
+				// Default - just do PD and PC Element in active circuit
 
 				F.println();
 				F.println("Elements in Active Circuit: " + ckt.getName());
@@ -1565,7 +1559,7 @@ public abstract class ShowResults {
 				FDisabled.println(Utilities.pad("DISABLED Element", MaxDeviceNameLength + 2) + Utilities.pad(" Bus1", MaxBusNameLength) + Utilities.pad(" Bus2", MaxBusNameLength) + Utilities.pad(" Bus3", MaxBusNameLength) + " ...");
 				FDisabled.println();
 
-				// PC elements  next
+				// PC elements next
 				for (CktElement pElem : ckt.getPCElements()) {
 					if (pElem.isEnabled()) {
 						writeElementRecord(F, pElem);
@@ -1767,7 +1761,6 @@ public abstract class ShowResults {
 	public static void showRegulatorTaps(String FileNm) {
 		FileWriter FWriter;
 		PrintWriter F;
-//		RegControlObj pReg;
 		int iWind;
 
 		try {
@@ -1810,7 +1803,6 @@ public abstract class ShowResults {
 		String ParamName;
 		String Param;
 
-		// Singletons
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
@@ -1873,7 +1865,7 @@ public abstract class ShowResults {
 					}
 				}
 			} else {
-				Globals.doSimpleMsg("Meter Name Not Specified."+ DSSGlobals.CRLF + parser.getCmdString(), 221);
+				Globals.doSimpleMsg("Meter name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 221);
 			}
 
 			F.close();
@@ -1898,9 +1890,8 @@ public abstract class ShowResults {
 	public static void showOverloads(String FileNm) {
 		FileWriter FWriter;
 		PrintWriter F;
-		Complex[] cBuffer;  // Allocate to max total conductors
+		Complex[] cBuffer;  // allocate to max total conductors
 		int NCond, i, j, k;
-//		PDElement PDElem;
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
 		double I0, I1, I2, Cmag, Cmax;
@@ -1913,10 +1904,10 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			/* Allocate c_Buffer big enough for largest circuit element */
+			/* Allocate cBuffer big enough for largest circuit element */
 			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
 
-			/* Sequence Currents */
+			/* Sequence currents */
 			F.println();
 			F.println("Power Delivery Element Overload Report");
 			F.println();
@@ -1928,11 +1919,11 @@ public abstract class ShowResults {
 			// PD elements
 			for (PDElement PDElem : ckt.getPDElements()) {
 				if (PDElem.isEnabled())
-					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // Ignore capacitors
+					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {  // ignore capacitors
 						NCond = PDElem.getNConds();
 						PDElem.getCurrents(cBuffer);
 
-						for (j = 0; j < 1; j++) {  // Check only terminal 1 for overloads
+						for (j = 0; j < 1; j++) {  // check only terminal 1 for overloads
 							if (PDElem.getNPhases() >= 3) {
 								Cmax = 0.0;
 								for (i = 0; i < 3; i++) {
@@ -2013,7 +2004,7 @@ public abstract class ShowResults {
 			F.println("Load Element        Bus        Load kW  EEN Factor  UE Factor");
 			F.println();
 
-			// Load
+			// load
 			for (LoadObj pLoad : ckt.getLoads()) {
 				if (pLoad.isEnabled()) {
 					DoIt = false;
@@ -2048,8 +2039,6 @@ public abstract class ShowResults {
 	public static void showLosses(String FileNm) {
 		FileWriter FWriter;
 		PrintWriter F;
-//		PDElement PDElem;
-//		PCElement PCElem;
 
 		Complex kLosses,
 			TotalLosses,
@@ -2066,7 +2055,7 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			/* Sequence Currents */
+			/* Sequence currents */
 			F.println();
 			F.println("LOSSES REPORT");
 			F.println();
@@ -2085,7 +2074,7 @@ public abstract class ShowResults {
 					/*if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) != DSSClassDefs.CAP_ELEMENT) {*/    // Ignore capacitors
 					kLosses = PDElem.getLosses().multiply(0.001);   // kW Losses in element
 					TotalLosses = TotalLosses.add(kLosses);
-					TermPower = PDElem.getPower(1).multiply(0.001);  // Terminal 1 power  TODO Check zero based indexing
+					TermPower = PDElem.getPower(1).multiply(0.001);  // terminal 1 power  TODO Check zero based indexing
 
 					if ((DSSClassDefs.CLASSMASK & PDElem.getDSSObjType()) == DSSClassDefs.XFMR_ELEMENT)
 						TransLosses = TransLosses.add(kLosses);
@@ -2111,7 +2100,7 @@ public abstract class ShowResults {
 			F.println(Utilities.pad("TOTAL LOSSES=", 30) + TotalLosses.getReal() + " kW");
 
 			LoadPower = Complex.ZERO;
-			// Sum the total load kW being served in the Ckt Model
+			// sum the total load kW being served in the circuit model
 			for (PCElement PCElem : ckt.getLoads()) {
 				if (PCElem.isEnabled()) {
 					LoadPower = LoadPower.add(PCElem.getPower(1));
@@ -2145,7 +2134,7 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			/* Sequence Currents */
+			/* Sequence currents */
 			F.println();
 			F.println("VARIABLES REPORT");
 			F.println();
@@ -2175,7 +2164,7 @@ public abstract class ShowResults {
 	 */
 	public static void showIsolated(String FileNm) {
 		CktTree Branch_List,
-				SubArea;  // Pointers to all circuit elements
+				SubArea;  // all circuit elements
 
 		FileWriter FWriter;
 		PrintWriter F;
@@ -2185,7 +2174,7 @@ public abstract class ShowResults {
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		// Make sure bus list is built
+		// make sure bus list is built
 		if (ckt.isBusNameRedefined()) ckt.reProcessBusDefs();
 		/* Initialize all circuit elements to not checked */
 		for (CktElement TestElement : ckt.getCktElements()) {
@@ -2195,15 +2184,15 @@ public abstract class ShowResults {
 			}
 		}
 
-		// Initialize the checked flag for all buses
+		// initialize the checked flag for all buses
 		for (j = 0; j < ckt.getNumBuses(); j++)
 			ckt.getBuses()[j].setBusChecked(false);
 
-		// Get Started at main voltage source
+		// get started at main voltage source
 		TestElem = ckt.getSources().get(0);
 		Branch_List = CktTreeImpl.getIsolatedSubArea(TestElem);
 
-		/* Show Report of Elements connected and not connected */
+		/* Show report of elements connected and not connected */
 		try {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
@@ -2308,7 +2297,6 @@ public abstract class ShowResults {
 	public static void showRatings(String FileNm) {
 		FileWriter FWriter;
 		PrintWriter F;
-//		PDElement PDElem;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
@@ -2410,8 +2398,8 @@ public abstract class ShowResults {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		try {
-			FileNm = FileRoot + "TopoSumm.Txt";
-			TreeNm = FileRoot + "TopoTree.Txt";
+			FileNm = FileRoot + "TopoSumm.txt";
+			TreeNm = FileRoot + "TopoTree.txt";
 
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
@@ -2539,7 +2527,7 @@ public abstract class ShowResults {
 		double C1, C0;
 		Complex YCM;
 		double XCM;
-		double CCM;  // Common mode capacitance
+		double CCM;  // common mode capacitance
 		String LineCodesFileNm;
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -2574,7 +2562,7 @@ public abstract class ShowResults {
 				YC = null;
 
 				try {
-					// Get impedances per unit length
+					// get impedances per unit length
 					pElem.setRhoEarth(Rho);
 					Z  = pElem.getZmatrix(Freq, 1.0, Units);
 					YC = pElem.getYCmatrix(Freq, 1.0, Units);
@@ -2628,14 +2616,14 @@ public abstract class ShowResults {
 					F.println();
 				}
 
-				/* Write DSS LineCode record */
+				/* Write DSS line code record */
 				//F.println();
 				//F.println(,"-------------------------------------------------------------------");
-				//F.println(,"-------------------DSS Linecode Definition-------------------------");
+				//F.println(,"-------------------DSS LineCode Definition-------------------------");
 				//F.println(,"-------------------------------------------------------------------");
 				F2.println();
 
-				F2.println(String.format("New Linecode.%s nphases=%d  Units=%s", pElem.getName(), Z.getNOrder(), LineUnits.lineUnitsStr(Units)));
+				F2.println(String.format("new lineCode.%s nphases=%d  Units=%s", pElem.getName(), Z.getNOrder(), LineUnits.lineUnitsStr(Units)));
 
 				F2.print("~ Rmatrix=[");
 				for (i = 0; i < Z.getNOrder(); i++) {
@@ -2692,7 +2680,7 @@ public abstract class ShowResults {
 					F.println("Z0, ohms per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g + j %.6g (L0 = %.6g mH) ", Z0.getReal(), Z0.getImaginary(), Z0.getImaginary() / w));
 					F.println();
 
-					/* Compute Common Mode Series Impedance */
+					/* Compute common mode series impedance */
 					Z.invert();
 					YCM = Complex.ZERO;
 					for (i = 0; i < 3; i++)
@@ -2711,9 +2699,9 @@ public abstract class ShowResults {
 					C1 = (CS - CM) / 3.0 / w;   // nF
 					C0 = (CS + 2.0 * CM) / 3.0 / w;
 
-					/* Compute Common Mode Shunt Capacitance */
+					/* Compute common mode shunt capacitance */
 					YCM = Complex.ZERO;
-					for (i = 0; i < 3; i++)  // Add up all elements of Z inverse
+					for (i = 0; i < 3; i++)  // add up all elements of Z inverse
 						for (j = 0; j < 3; j++)
 							YCM = YCM.add(YC.getElement(i, j));
 					CCM = YCM.getImaginary() / w;
@@ -2890,28 +2878,28 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			// Zero out the nodal current array
+			// zero out the nodal current array
 			for (i = 0; i < ckt.getNumNodes(); i++)
 				sol.getCurrents()[i] = Complex.ZERO;
-			// Make temp storage for max current at node
+			// make temp storage for max current at node
 			MaxNodeCurrent = new double[ckt.getNumNodes() + 1];
 			for (i = 0; i < ckt.getNumNodes(); i++)
 				MaxNodeCurrent[i] = 0.0;
-			// Now Sum in each device current, keep track of the largest current at a node.
+			// now sum in each device current, keep track of the largest current at a node.
 			for (CktElement pCktElement : ckt.getCktElements()) {
 				if (pCktElement.isEnabled()) {
 					pCktElement.computeIterminal();
 					for (i = 0; i < pCktElement.getYorder(); i++) {
 						Ctemp =  pCktElement.getIterminal()[i];
 						nRef  =  pCktElement.getNodeRef()[i];
-						sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add(Ctemp);  // Noderef = 0 is OK  TODO Check
+						sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add(Ctemp);  // nodeRef = 0 is OK  TODO Check
 						if (Ctemp.abs() > MaxNodeCurrent[nRef])
 							MaxNodeCurrent[nRef] = Ctemp.abs();
 					}
 				}
 			}
 
-			// Now write report
+			// now write report
 
 			setMaxBusNameLength();
 			MaxBusNameLength = MaxBusNameLength + 2;
@@ -2921,7 +2909,7 @@ public abstract class ShowResults {
 			F.println();
 			F.println(Utilities.pad("Bus,", MaxBusNameLength) + " Node, \"Current Sum (A)" + "%error" + "Max Current (A)\"");
 
-			// Ground Bus
+			// ground bus
 			nRef = 0;
 			dTemp = sol.getCurrents()[nRef].abs();
 			if ((MaxNodeCurrent[nRef] == 0.0) || (MaxNodeCurrent[nRef] == dTemp)) {
@@ -2964,8 +2952,6 @@ public abstract class ShowResults {
 		FileWriter FWriter;
 		PrintWriter F;
 
-//		LoadObj pLoad;
-//		GeneratorObj pGen;
 		Bus pBus;
 		double BuskV;
 		String BusName;
@@ -2976,7 +2962,7 @@ public abstract class ShowResults {
 			FWriter = new FileWriter(FileNm);
 			F = new PrintWriter(FWriter);
 
-			/* Check Loads */
+			/* Check loads */
 			if (ckt.getLoads().size() > 0) {
 				F.println();
 				F.println("!!!  LOAD VOLTAGE BASE MISMATCHES");
@@ -2984,7 +2970,7 @@ public abstract class ShowResults {
 			}
 
 			for (LoadObj pLoad : ckt.getLoads()) {
-				/* Find Bus To Which Load Connected */
+				/* Find bus to which load connected */
 				pBus = ckt.getBuses()[ pLoad.getTerminals()[0].BusRef ];
 				BusName = ckt.getBusList().get( pLoad.getTerminals()[0].BusRef );
 				if (pBus.getkVBase() != 0.0) {
@@ -3006,7 +2992,7 @@ public abstract class ShowResults {
 			}
 
 
-			/* Check Generators */
+			/* Check generators */
 
 			if (ckt.getGenerators().size() > 0) {
 				F.println();
@@ -3015,7 +3001,7 @@ public abstract class ShowResults {
 			}
 
 			for (GeneratorObj pGen : ckt.getGenerators()) {
-				/* Find Bus To Which Generator Connected */
+				/* Find bus to which generator connected */
 				pBus = ckt.getBuses()[ pGen.getTerminals()[0].BusRef ];
 				BusName = ckt.getBusList().get( pGen.getTerminals()[0].BusRef );
 				if (pBus.getkVBase() != 0.0) {
@@ -3047,7 +3033,6 @@ public abstract class ShowResults {
 	public static void showDeltaV(String FileNm) {
 		FileWriter FWriter;
 		PrintWriter F;
-//		CktElement pElem;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
@@ -3065,7 +3050,7 @@ public abstract class ShowResults {
 			F.println(Utilities.pad("Element,", MaxDeviceNameLength) + " Conductor,     Volts,   Percent,           kVBase,  Angle");
 			F.println();
 
-			// Sources first
+			// sources first
 			for (CktElement pElem : ckt.getSources()) {
 				if (pElem.isEnabled() && (pElem.getNTerms() == 2)) {
 					writeElementDeltaVoltages(F, pElem);

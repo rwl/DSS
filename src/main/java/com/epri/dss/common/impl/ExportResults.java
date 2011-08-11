@@ -163,7 +163,7 @@ public class ExportResults {
 				bus = ckt.getBuses()[i];
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
 					while (NodeIdx <= 0) {  // TODO Check zero based indexing
-						NodeIdx = bus.findIdx(jj);     // Try to find nodes in order
+						NodeIdx = bus.findIdx(jj);  // try to find nodes in order
 						jj += 1;
 					}
 					nref = bus.getRef(NodeIdx);
@@ -256,10 +256,7 @@ public class ExportResults {
 		FileWriter F;
 		PrintWriter FPrinter;
 		int j;
-//		CktElement pElem;
-//		PDElement PDElem;
-//		PCElement PCElem;
-		Complex[] cBuffer;  // Allocate to max total conductors
+		Complex[] cBuffer;  // allocate to max total conductors
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
@@ -267,13 +264,13 @@ public class ExportResults {
 			F = new FileWriter(FileNm);
 			FPrinter = new PrintWriter(F);
 
-			/* Sequence Currents */
+			/* Sequence currents */
 			FPrinter.println("Element, Terminal,  I1, %Normal, %Emergency, I2, %I2/I1, I0, %I0/I1, Iresidual, %NEMA");
 
 			/* Allocate cBuffer big enough for largest circuit element */
 			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
 
-			// Sources first
+			// sources first
 			for (CktElement pElem : ckt.getSources()) {
 				if (pElem.isEnabled()) {
 					pElem.getCurrents(cBuffer);
@@ -300,7 +297,7 @@ public class ExportResults {
 				}
 			}
 
-			// Faults next
+			// faults next
 			for (CktElement pElem : ckt.getFaults()) {
 				if (pElem.isEnabled())
 					pElem.getCurrents(cBuffer);
@@ -371,7 +368,6 @@ public class ExportResults {
 		FileWriter F;
 		PrintWriter FPrinter;
 		Complex[] cBuffer;
-//		CktElement pElem;
 		int MaxCond, MaxTerm;
 		int i, j;
 
@@ -391,7 +387,7 @@ public class ExportResults {
 				if (pElem.getNConds() > MaxCond) MaxCond = pElem.getNConds();
 			}
 
-			/* Branch Currents */
+			/* Branch currents */
 			FPrinter.print("Element");
 			for (i = 0; i < MaxTerm; i++) {
 				for (j = 0; j < MaxCond; j++)
@@ -400,7 +396,7 @@ public class ExportResults {
 			}
 			FPrinter.println();
 
-			// Sources first
+			// sources first
 			for (CktElement pElem : ckt.getSources()) {
 				if (pElem.isEnabled()) {
 					pElem.getCurrents(cBuffer);
@@ -416,7 +412,7 @@ public class ExportResults {
 				}
 			}
 
-			// Faults
+			// faults
 			for (CktElement pElem : ckt.getFaults()) {
 				if (pElem.isEnabled()) {
 					pElem.getCurrents(cBuffer);
@@ -450,8 +446,6 @@ public class ExportResults {
 		FileWriter F;
 		PrintWriter FPrinter;
 		int Nterm, j;
-//		PDElement PDElem;
-//		PCElement PCElem;
 		Complex S;
 		String Separator = ", ";
 
@@ -497,7 +491,7 @@ public class ExportResults {
 				}
 			}
 
-				// PC elements next
+			// PC elements next
 			for (PCElement PCElem : ckt.getPCElements()) {
 				if (PCElem.isEnabled()) {
 					Nterm = PCElem.getNTerms();
@@ -628,8 +622,6 @@ public class ExportResults {
 		PrintWriter FPrinter;
 		Complex[] cBuffer;
 		int NCond, Nterm, i, j, k;
-//		PDElement PDElem;
-//		PCElement PCElem;
 		Complex Volts;
 		Complex S;
 		int nref;
@@ -784,7 +776,7 @@ public class ExportResults {
 	public static void exportFaultStudy(String FileNm) {
 		int i, iBus, iphs;
 		CMatrix YFault;
-		Complex[] Vfault;  /* Big temp array */
+		Complex[] Vfault;  // big temp array
 		FileWriter F;
 		PrintWriter FPrinter;
 		Complex GFault;
@@ -800,10 +792,10 @@ public class ExportResults {
 
 			/* Set source voltage injection currents */
 
-			/* All Phase Faults */
+			/* All phase faults */
 			FPrinter.println("Bus,  3-Phase,  1-Phase,  L-L");
 			for (iBus = 0; iBus < ckt.getNumBuses(); iBus++) {
-				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				/* Bus Norton equivalent current, Isc has been previously computed */
 				bus = ckt.getBuses()[iBus];
 				FPrinter.print(Utilities.pad(ckt.getBusList().get(iBus), 12));
 				MaxCurr = 0.0;
@@ -813,9 +805,9 @@ public class ExportResults {
 				}
 				FPrinter.print(Separator + MaxCurr);
 
-				/* One Phase Faults */
+				/* One phase faults */
 
-				/* Solve for Fault Injection Currents */
+				/* Solve for fault injection currents */
 
 				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				Vfault = new Complex[bus.getNumNodesThisBus()];
@@ -830,7 +822,7 @@ public class ExportResults {
 					YFault.copyFrom(bus.getYsc());
 					YFault.addElement(iphs, iphs, GFault);
 
-					/* Solve for Injection Currents */
+					/* Solve for injection currents */
 					YFault.invert();
 					YFault.MVMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
@@ -838,15 +830,15 @@ public class ExportResults {
 					if (CurrMag > MaxCurr) MaxCurr = CurrMag;
 
 				}
-				/* Now, Stuff it in the Css Array where it belongs */
+				/* Now, put it in the Css array where it belongs */
 				FPrinter.print(Separator + MaxCurr);
 
 				Vfault = null;
 				YFault = null;
 
-				/* Node-Node Faults */
+				/* Node-node faults */
 
-				/* Bus Norton Equivalent Current, Isc has been previously computed */
+				/* Bus Norton equivalent current, Isc has been previously computed */
 
 				YFault = new CMatrixImpl(bus.getNumNodesThisBus());
 				Vfault = new Complex[bus.getNumNodesThisBus()];
@@ -861,14 +853,14 @@ public class ExportResults {
 					YFault.addElement(iphs + 1, iphs + 1, GFault);
 					YFault.addElemSym(iphs, iphs + 1, GFault.negate());
 
-					/* Solve for Injection Currents */
+					/* Solve for injection currents */
 					YFault.invert();
 					YFault.MVMult(Vfault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
 					CurrMag = Vfault[iphs].subtract( Vfault[iphs + 1] ).multiply(GFault).abs();
 					if (CurrMag > MaxCurr) MaxCurr = CurrMag;
 				}
-				/* Now, Stuff it in the Css Array where it belongs */
+				/* Now, put it in the Css array where it belongs */
 
 				FPrinter.print(Separator + MaxCurr);
 
@@ -895,8 +887,6 @@ public class ExportResults {
 		FileWriter F;
 		PrintWriter FPrinter;
 		int i;
-//		EnergyMeterObj pEnergyMeterObj;
-//		SensorObj pSensorObj;
 		double[] TempX = new double[3];  // temp number buffer
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -912,26 +902,26 @@ public class ExportResults {
 			for (EnergyMeterObj pEnergyMeterObj : ckt.getEnergyMeters()) {
 				if (pEnergyMeterObj.isEnabled()) {
 					FPrinter.printf("\"Energymeter.%s\"", pEnergyMeterObj.getName());
-					/* Sensor currents (Target) */
+					/* Sensor currents (target) */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
 						TempX[i] = pEnergyMeterObj.getSensorCurrent()[i];
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Calculated Currents */
+					/* Calculated currents */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
 						TempX[i] = pEnergyMeterObj.getCalculatedCurrent()[i].abs();
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Percent Error */
+					/* Percent error */
 					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
 						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pEnergyMeterObj.getSensorCurrent()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
 
 					/****  Not all that useful
-					// Allocation Factors
+					// allocation factors
 					zeroTempXArray(TempX);
 					for (i = 0; i < pEnergyMeterObj.getNPhases(); i++)
 						TempX[i] = pEnergyMeterObj.getPhsAllocationFactor()[i];
@@ -952,41 +942,41 @@ public class ExportResults {
 			for (SensorObj pSensorObj : ckt.getSensors()) {
 				if (pSensorObj.isEnabled()) {
 					FPrinter.printf("\"Sensor.%s\"", pSensorObj.getName());
-					/* Sensor currents (Target) */
+					/* Sensor currents (target) */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = pSensorObj.getSensorCurrent()[i];
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Calculated Currents */
+					/* Calculated currents */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = pSensorObj.getCalculatedCurrent()[i].abs();
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Percent Error */
+					/* Percent error */
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pSensorObj.getSensorCurrent()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Sensor Voltage (Target) */
+					/* Sensor voltage (target) */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = pSensorObj.getSensorVoltage()[i];
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Calculated Voltage */
+					/* Calculated voltage */
 					zeroTempXArray(TempX);
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = pSensorObj.getCalculatedVoltage()[i].abs();
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* Percent Error */
+					/* Percent error */
 					for (i = 0; i < pSensorObj.getNPhases(); i++)
 						TempX[i] = (1.0 - TempX[i] / Math.max(0.001, pSensorObj.getSensorVoltage()[i])) * 100.0;
 					for (i = 0; i < 3; i++)
 						FPrinter.printf(", %.6g", TempX[i]);
-					/* WLS Errors */
+					/* WLS errors */
 					zeroTempXArray(TempX);
 					FPrinter.printf(", %.6g, %.6g", pSensorObj.getWLSVoltageError(), pSensorObj.getWLSCurrentError());
 
@@ -1026,7 +1016,7 @@ public class ExportResults {
 						F = new FileWriter(FileNm);
 						FPrinter = new PrintWriter(F);
 
-						/* Write New Header */
+						/* Write new header */
 						FPrinter.print("Year, LDCurve, Hour, Meter");
 						for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
 							FPrinter.write(Separator + "\""+ pElem.getRegisterNames()[i]+"\"");
@@ -1166,7 +1156,7 @@ public class ExportResults {
 					if (!new File(FileNm).exists()) {
 						F = new FileWriter(FileNm);
 						FPrinter = new PrintWriter(F);
-						/* Write New Header */
+						/* Write new header */
 						FPrinter.print("Year, LDCurve, Hour, Generator");
 						for (i = 0; i < Generator.NumGenRegisters; i++)
 							FPrinter.print(Separator + "\"" + GeneratorClass.getRegisterNames()[i]+"\"");
@@ -1240,7 +1230,7 @@ public class ExportResults {
 			if (ReWriteFile) {
 				F = new FileWriter(FileNm);
 				FPrinter = new PrintWriter(F);
-				/* Write New Header */
+				/* Write new header */
 				FPrinter.print("Year, LDCurve, Hour, Generator");
 				for (i = 0; i < Generator.NumGenRegisters; i++)
 					FPrinter.print(Separator + "\""+ GeneratorClass.getRegisterNames()[i]+"\"");
@@ -1298,7 +1288,7 @@ public class ExportResults {
 		try {
 			F = new FileWriter(FileNm);
 			FPrinter = new PrintWriter(F);
-			/* Write Header */
+			/* Write header */
 			FPrinter.println("Load, Connected KVA, Allocation Factor, Phases, kW, kvar, PF, Model");
 
 			for (LoadObj pElem : ckt.getLoads()) {
@@ -1364,7 +1354,7 @@ public class ExportResults {
 	public static void exportOverloads(String FileNm) {
 		FileWriter F;
 		PrintWriter FPrinter;
-		Complex[] cBuffer;  // Allocate to max total conductors
+		Complex[] cBuffer;  // allocate to max total conductors
 		int NCond, i, j;
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
@@ -1382,7 +1372,7 @@ public class ExportResults {
 			/* Allocate cBuffer big enough for largest circuit element */
 			cBuffer = new Complex[Utilities.getMaxCktElementSize()];
 
-			/* Sequence Currents */
+			/* Sequence currents */
 			FPrinter.println("Element, Terminal,  I1, %Normal, %Emergency, I2, %I2/I1, I0, %I0/I1");
 
 			// PD elements only
@@ -1602,7 +1592,6 @@ public class ExportResults {
 					re = 0.0;
 					im = 0.0;
 					// search for a non-zero element [i, j]
-					// DSS indices are 1-based, KLU indices are 0-based
 					for (p = ColPtr[(int) (j - 1)]; p < ColPtr[(int) j] - 1; p++) {
 						if (RowIdx[(int) p] + 1 == i) {
 							re = cVals[(int) p].getReal();

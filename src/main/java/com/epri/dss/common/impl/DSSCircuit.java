@@ -27,7 +27,6 @@ import com.epri.dss.control.SwtControlObj;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
 import com.epri.dss.conversion.PCElement;
-import com.epri.dss.conversion.PVSystem;
 import com.epri.dss.conversion.PVSystemObj;
 import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.delivery.CapacitorObj;
@@ -72,26 +71,26 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private boolean BusNameRedefined;
 	private CktElement ActiveCktElement;
 
-	// Temp arrays for when the bus swap takes place
+	// temp arrays for when the bus swap takes place
 	private Bus[] SavedBuses;
 	private String[] SavedBusNames;
 	private int SavedNumBuses;
 
-	/* global multiplier for every load */
+	/* Global multiplier for every load */
 	private double LoadMultiplier;
 
 	private boolean AbortBusProcess;
 
-	/* topology from the first source, lazy evaluation */
+	/* Topology from the first source, lazy evaluation */
 	private CktTree Branch_List;
-	/* bus adjacency lists of PD and PC elements */
+	/* Bus adjacency lists of PD and PC elements */
 	private List<PCElement>[] BusAdjPC;
 	private List<PDElement>[] BusAdjPD;
 
 	private String CaseName;
 
 	protected int ActiveBusIndex;
-	/* fundamental and default base frequency */
+	/* Fundamental and default base frequency */
 	protected double Fundamental;
 
 	/* Flag for use by control elements to detect redefinition of buses */
@@ -100,7 +99,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected HashList BusList;
 	protected HashList AutoAddBusList;
 	protected HashList DeviceList;
-	protected CktElementDef[] DeviceRef;  //Type and handle of device
+	protected CktElementDef[] DeviceRef;  // type and handle of device
 
 	// lists of pointers to different elements by class
 	protected ArrayList<FaultObj> Faults;
@@ -131,7 +130,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected SolutionObj Solution;
 	protected AutoAdd AutoAddObj;
 
-	// For AutoAdd stuff
+	// for AutoAdd stuff
 	protected double UEWeight, LossWeight;
 
 	protected int NumUERegs, NumLossRegs;
@@ -139,8 +138,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	protected double CapacityStart, CapacityIncrement;
 
-	protected boolean TrapezoidalIntegration,  // flag for trapezoidal integration
-	LogEvents;
+	protected boolean TrapezoidalIntegration;  // flag for trapezoidal integration
+	protected boolean LogEvents;
 
 	protected String LoadDurCurve;
 	protected LoadShapeObj LoadDurCurveObj;
@@ -151,33 +150,33 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	protected int MaxDevices, MaxBuses, MaxNodes;
 	protected int IncDevices, IncBuses, IncNodes;
 
-	// Bus and Node stuff
+	// bus and node stuff
 	protected Bus[] Buses;
 	protected NodeBus[] MapNodeToBus;
 
-	// Flags
+	// flags
 	protected boolean IsSolved;
 	protected boolean DuplicatesAllowed;
 	protected boolean ZonesLocked;
 	protected boolean MeterZonesComputed;
-	protected boolean PositiveSequence;  // Model is to be interpreted as Pos seq
+	protected boolean PositiveSequence;  // model is to be interpreted as pos seq
 
-	// Voltage limits
-	/* per unit voltage restraints for this circuit */
+	// voltage limits
+	/* Per unit voltage restraints for this circuit */
 	protected double NormalMinVolts, NormalMaxVolts, EmergMaxVolts, EmergMinVolts;
 	protected double[] LegalVoltageBases;
 
-	// Global circuit multipliers
+	// global circuit multipliers
 	protected double GeneratorDispatchReference,
 	DefaultGrowthFactor,
 	DefaultGrowthRate,
-	GenMultiplier,   // global multiplier for every generator
+	GenMultiplier,  // global multiplier for every generator
 	HarmMult;
 	protected Complex DefaultHourMult;
 
-	protected double PriceSignal; // price signal for entire circuit
+	protected double PriceSignal;  // price signal for entire circuit
 
-	// EnergyMeter Totals
+	// energy meter totals
 	protected double[] RegisterTotals;
 
 	protected LoadShapeObj DefaultDailyShapeObj, DefaultYearlyShapeObj;
@@ -190,7 +189,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	protected double PctNormalFactor;
 
-	/* Plot Markers */
+	/* Plot markers */
 	protected int NodeMarkerCode, NodeMarkerWidth, SwitchMarkerCode;
 	protected int TransMarkerSize, TransMarkerCode;
 
@@ -208,11 +207,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		setLocalName(aName.toLowerCase());
 
-		setCaseName(aName);  // default case name to circuitname; sets circuitName_
+		setCaseName(aName);  // default case name to "circuitname"; sets circuitName_
 
 		this.Fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
 		setActiveCktElement(null);
-		this.ActiveBusIndex = 0;    // always a bus
+		this.ActiveBusIndex = 0;  // always a bus
 
 		// initial allocations increased from 100 to 1000 to speed things up
 
@@ -223,7 +222,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.IncBuses   = 1000;
 		this.IncNodes   = 3000;
 
-		// Allocate some nominal sizes
+		// allocate some nominal sizes
 		this.BusList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
 		this.DeviceList = new HashListImpl(900);
 		this.AutoAddBusList = new HashListImpl(100);
@@ -282,15 +281,15 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		this.PriceSignal = 25.0;  // $25/MWh
 
-		// factors for autoAdd
-		this.UEWeight   = 1.0;  // default to weighting UE same as losses
-		this.LossWeight = 1.0;
-		this.NumUERegs  = 1;
+		// factors for AutoAdd
+		this.UEWeight    = 1.0;  // default to weighting UE same as losses
+		this.LossWeight  = 1.0;
+		this.NumUERegs   = 1;
 		this.NumLossRegs = 1;
-		this.UERegs = new int[NumUERegs];
-		this.LossRegs = new int[NumLossRegs];
-		this.UERegs[0]      = 10;   // overload UE
-		this.LossRegs[0]    = 13;   // zone Losses
+		this.UERegs      = new int[NumUERegs];
+		this.LossRegs    = new int[NumLossRegs];
+		this.UERegs[0]   = 10;  // overload UE
+		this.LossRegs[0] = 13;  // zone losses
 
 		this.CapacityStart = 0.9;  // for capacity search
 		this.CapacityIncrement = 0.005;
@@ -301,10 +300,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.PriceCurveObj = null;
 
 		// flags
-		this.DuplicatesAllowed   = false;
-		this.ZonesLocked         = false;  // meter zones recomputed after each change
-		this.MeterZonesComputed  = false;
-		this.PositiveSequence    = false;
+		this.DuplicatesAllowed  = false;
+		this.ZonesLocked        = false;  // meter zones recomputed after each change
+		this.MeterZonesComputed = false;
+		this.PositiveSequence   = false;
 
 		this.NormalMinVolts = 0.95;
 		this.NormalMaxVolts = 1.05;
@@ -332,7 +331,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		this.CurrentDirectory = "";
 
-		setBusNameRedefined(true);  // set to force rebuild of buslists, nodelists
+		setBusNameRedefined(true);  // set to force rebuild of bus and node lists
 
 		this.SavedBuses = null;
 		this.SavedBusNames = null;
@@ -341,7 +340,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		this.ReductionMaxAngle = 15.0;
 		this.ReductionZmag = 0.02;
 
-		/* misc objects */
+		/* Misc objects */
 		this.AutoAddObj = new AutoAddImpl();
 
 		this.Branch_List = null;
@@ -354,7 +353,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			MaxDevices = MaxDevices + IncDevices;
 			DeviceRef = (CktElementDef[]) Utilities.resizeArray(DeviceRef, MaxDevices);
 		}
-		DeviceRef[NumDevices].devHandle = Handle;    // Index into CktElements
+		DeviceRef[NumDevices].devHandle = Handle;  // index into CktElements
 		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
 	}
 
@@ -374,8 +373,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private int addBus(final String BusName, int NNodes) {
 
-		if (BusName.length() == 0) {  // Error in busname
-			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.AddBus", "BusName for Object \"" + ActiveCktElement.getName() + "\" is null.",
+		if (BusName.length() == 0) {  // error in busname
+			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + ActiveCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
 			for (int i = 0; i < ActiveCktElement.getNConds(); i++) NodeBuffer[i] = 0;
 			return 0;
@@ -383,23 +382,23 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		int Result = BusList.find(BusName);
 		if (Result == 0) {
-			Result = BusList.add(BusName);    // Result is index of bus
+			Result = BusList.add(BusName);  // result is index of bus
 			NumBuses += 1;
-			addABus();   // Allocates more memory if necessary
+			addABus();  // allocates more memory if necessary
 			Buses[NumBuses] = new DSSBus();
 		}
 
 		/* Define nodes belonging to the bus */
-		/* Replace NodeBuffer values with global reference number */
+		/* Replace nodeBuffer values with global reference number */
 		int NodeRef;
 		for (int i = 0; i < NNodes; i++) {
 			NodeRef = Buses[Result].add(NodeBuffer[i]);
-			if (NodeRef == NumNodes) { // This was a new node so Add a NodeToBus element ????
-				addANodeBus();   // Allocates more memory if necessary
+			if (NodeRef == NumNodes) {  // this was a new node so add a nodeToBus element ????
+				addANodeBus();  // allocates more memory if necessary
 				MapNodeToBus[NumNodes].BusRef  = Result;
 				MapNodeToBus[NumNodes].NodeNum = NodeBuffer[i];
 			}
-			NodeBuffer[i] = NodeRef;  //  Swap out in preparation to setnoderef call
+			NodeBuffer[i] = NodeRef;  // swap out in preparation to setNodeRef call
 		}
 		return Result;
 	}
@@ -417,7 +416,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		BusNameRedefined = Value;
 
 		if (Value) {
-			// force rebuilding of systemY if bus def has changed
+			// force rebuilding of system Y if bus def has changed
 			Solution.setSystemYChanged(true);
 			// so controls will know buses redefined
 			Control_BusNameRedefined = true;
@@ -428,12 +427,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		return BusNameRedefined;
 	}
 
-	/* Total Circuit PD Element losses */
+	/* Total circuit PD element losses */
 	public Complex getLosses() {
 		Complex Result = Complex.ZERO;
 		for (PDElement pdElem : PDElements) {
 			if (pdElem.isEnabled()) {
-				/* Ignore Shunt Elements */
+				/* Ignore shunt elements */
 				if (!pdElem.isShunt())
 					Result = Result.add(pdElem.getLosses());
 			}
@@ -443,7 +442,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setLoadMultiplier(double Value) {
 		if (Value != LoadMultiplier) {
-			// We may have to change the Y matrix if the load multiplier  has changed
+			// may have to change the Y matrix if the load multiplier has changed
 			switch (Solution.getLoadModel()) {
 			case DSSGlobals.ADMITTANCE:
 				invalidateAllPCElements();
@@ -471,7 +470,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private void restoreBusInfo() {
 		Bus bus;
-		/* Restore  kV bases, other values to buses still in the list */
+		/* Restore kV bases, other values to buses still in the list */
 		for (int i = 0; i < SavedNumBuses; i++) {
 			int idx = BusList.find(SavedBusNames[i]);
 			if (idx != -1) {
@@ -481,21 +480,21 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				Buses[idx].setY(bus.getY());
 				Buses[idx].setCoordDefined(bus.isCoordDefined());
 				Buses[idx].setKeep(bus.isKeep());
-				/* Restore Voltages in new bus def that existed in old bus def */
+				/* Restore voltages in new bus def that existed in old bus def */
 				if (bus.getVBus() != null) {
 					for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
-						// Find index in new bus for j-th node  in old bus
+						// find index in new bus for j-th node in old bus
 						int jdx = Buses[idx].findIdx(bus.getNum(j));
 						if (jdx > -1) Buses[idx].getVBus()[jdx] = bus.getVBus()[j];
 					}
 				}
 			}
-			SavedBusNames[i] = ""; // De-allocate string
+			SavedBusNames[i] = "";  // de-allocate string
 		}
 
 		if (SavedBuses != null)
 			for (int i = 0; i < SavedNumBuses; i++)
-				SavedBuses[i] = null;  // gets rid of old bus voltages, too
+				SavedBuses[i] = null;  // gets rid of old bus voltages too
 
 		SavedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
 		SavedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
@@ -504,64 +503,64 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private boolean saveMasterFile() {
 		boolean Result = false;
 		try {
-			File FD = new File("Master.DSS");
+			File FD = new File("Master.dss");
 			PrintStream F = new PrintStream(FD);
 
-			F.println("Clear");
-			F.println("New Circuit." + getName());
+			F.println("clear");
+			F.println("new circuit." + getName());
 			F.println();
-			if (PositiveSequence) F.println("Set Cktmodel=Positive");
-			if (DuplicatesAllowed) F.println("set allowdup=yes");
+			if (PositiveSequence) F.println("set cktModel=Positive");
+			if (DuplicatesAllowed) F.println("set allowDup=yes");
 			F.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
 			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
-				F.println("Redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
+				F.println("redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
 
-			if (new File("buscoords.dss").exists()) {
-				F.println("MakeBusList");
-				F.println("Buscoords buscoords.dss");
+			if (new File("BusCoords.dss").exists()) {
+				F.println("makeBusList");
+				F.println("BusCoords BusCoords.dss");
 			}
 
 			F.close();
 			Result = true;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error Saving Master File: " + e.getMessage(), 435);
+			DSSGlobals.getInstance().doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
 		}
 
 		return Result;
 	}
 
 	private boolean saveDSSObjects() {
-		// Write Files for all populated DSS Classes  Except Solution Class
+		// write files for all populated DSS classes except solution class
 		for (DSSClass DSS_Class : DSSGlobals.getInstance().getDSSClassList()) {
 			if ((DSS_Class == DSSGlobals.getInstance().getSolutionClass()) || DSS_Class.isSaved())
-				continue;   // Cycle to next
+				continue;  // cycle to next
 			/* use default filename=classname */
 			if (!Utilities.writeClassFile(DSS_Class, "", (DSS_Class instanceof CktElementClass) ))
-				return false;  // bail on error
+				return false;
 			DSS_Class.setSaved(true);
 		}
 		return true;
 	}
 
 	private boolean saveFeeders() {
-		String CurrDir;
-//		EnergyMeter Meter;
+		String CurrDir, SaveDir;
+		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		boolean Result = true;
-		/* Write out all energy meter  zones to separate subdirectories */
-//		String SaveDir = System.getProperty("user.dir");
+		/* Write out all energy meter zones to separate subdirectories */
+		SaveDir = Globals.getCurrentDirectory();
 		for (EnergyMeterObj Meter : EnergyMeters) {
 			CurrDir = Meter.getName();
 			if (new File(CurrDir).mkdir()) {
-//				SetCurrentDir(CurrDir);  FIXME: Set cwd
+				Globals.setCurrentDirectory(CurrDir);
 				Meter.saveZone(CurrDir);
-//				SetCurrentDir(SaveDir);  FIXME: Set cwd
+				Globals.setCurrentDirectory(SaveDir);
 			} else {
 				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
 				Result = false;
-//				SetCurrentDir(SaveDir);  FIXME: Set cwd // back to whence we came
+				Globals.setCurrentDirectory(SaveDir);
 				break;
 			}
 		}
@@ -583,7 +582,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 			Result = true;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error creating Buscoords.dss.", 437);
+			DSSGlobals.getInstance().doSimpleMsg("Error creating BusCoords.dss.", 437);
 		}
 
 		return Result;
@@ -591,7 +590,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	/* Reallocate the device list to improve the performance of searches */
 	private void reallocDeviceList() {
-		if (LogEvents) Utilities.logThisEvent("Reallocating Device List");
+		if (LogEvents) Utilities.logThisEvent("Reallocating device list");
 		HashListImpl TempList = new HashListImpl(2 * NumDevices);
 
 		for (int i = 0; i < DeviceList.listSize(); i++)
@@ -615,16 +614,16 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	/* Adds last DSS object created to circuit */
 	public void addCktElement(int Handle) {
-		// Update lists that keep track of individual circuit elements
+		// update lists that keep track of individual circuit elements
 		NumDevices += 1;
 
-		// Resize DeviceList if no. of devices greatly exceeds allocation
+		// resize deviceList if no. of devices greatly exceeds allocation
 		if (NumDevices > 2 * DeviceList.getInitialAllocation())
 			reallocDeviceList();
 		DeviceList.add(ActiveCktElement.getName());
 		CktElements.add(ActiveCktElement);
 
-		/* Build Lists of PC and PD elements */
+		/* Build lists of PC and PD elements */
 		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
 			PDElements.add((PDElement) ActiveCktElement);
 		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
@@ -635,7 +634,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			MeterElements.add((MeterElement) ActiveCktElement);
 		}
 
-		/* Build  lists of Special elements and generic types */
+		/* Build lists of special elements and generic types */
 		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
 			Monitors.add((MonitorObj) ActiveCktElement);
 		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
@@ -657,8 +656,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
 			ShuntCapacitors.add((CapacitorObj) ActiveCktElement);
 		}
-		/* Keep Lines, Transformer, and Lines and Faults in PDElements and
-		separate lists so we can find them quickly. */
+		/* Keep lines, transformer, and faults in PDElements and
+		 * separate lists so we can find them quickly. */
 		else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
 			Transformers.add((TransformerObj) ActiveCktElement);
 		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
@@ -673,8 +672,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			PVSystems.add((PVSystemObj) ActiveCktElement);
 		}
 
-		// AddDeviceHandle(Handle); // Keep Track of this device result is handle
-		addDeviceHandle(CktElements.size()); // Handle is global index into CktElements
+		// AddDeviceHandle(Handle);  // keep track of this device result is handle
+		addDeviceHandle(CktElements.size());  // handle is global index into CktElements
 		ActiveCktElement.setHandle(CktElements.size());
 	}
 
@@ -706,7 +705,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 
 		if (NumUERegs == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined.  Use SET UEREGS=(...) command.", 431);
+			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
 			return Result;
 		}
 
@@ -720,10 +719,10 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
 			totalizeMeters();
 
-			// Check for non-zero in UEregs
+			// check for non-zero in UEregs
 			if (sumSelectedRegisters(RegisterTotals, UERegs, NumUERegs) != 0.0)
 				CapacityFound = true;
-			// LoadMultiplier is a property ...
+			// loadMultiplier is a property ...
 			if (!CapacityFound)
 				LoadMultiplier += CapacityIncrement;
 		}
@@ -735,11 +734,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public boolean save(String Dir) {
-		// Make a new subfolder in the present folder based on the circuit
-		// name and a unique sequence number.
+		DSSGlobals Globals = DSSGlobals.getInstance();
+		String CurrDir, SaveDir;
 		boolean Result = false;
-//		String SaveDir = System.getProperty("user.dir");  // remember where to come back to
-		String CurrDir;
+
+		// make a new subfolder in the present folder based on the circuit
+		// name and a unique sequence number
+		SaveDir = Globals.getCurrentDirectory();
 
 		boolean Success = false;
 		if (Dir.length() == 0) {
@@ -750,7 +751,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				File F = new File(CurrDir);
 				if (!F.exists()) {
 					if (F.mkdir()) {
-//		            	SetCurrentDir(CurrDir);
+		            	Globals.setCurrentDirectory(CurrDir);
 						Success = true;
 						break;
 					}
@@ -763,12 +764,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				CurrDir = Dir;
 				F = new File(CurrDir);
 				if (F.mkdir()) {
-//		            SetCurrentDir(CurrDir);
+		            Globals.setCurrentDirectory(CurrDir);
 					Success = true;
 				}
-			} else {  // Exists - overwrite
+			} else {  // exists - overwrite
 				CurrDir = Dir;
-//		        SetCurrentDir(CurrDir);
+		        Globals.setCurrentDirectory(CurrDir);
 				Success = true;
 			}
 		}
@@ -778,25 +779,23 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			return Result;
 		}
 
-		// This list keeps track of all files saved
+		// this list keeps track of all files saved
 		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
 
-		// Initialize so we will know when we have saved the circuit elements
+		// initialize so we will know when we have saved the circuit elements
 		for (CktElement elem : CktElements)
 			elem.setHasBeenSaved(false);
-//			DSSCktElement(elem).setHasBeenSaved(false);
 
-		// Initialize so we don't save a class twice
+		// initialize so we don't save a class twice
 		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
 			cls.setSaved(false);
-//			DSSClass(cls).setSaved(false);
 
-		// Ignore Feeder Class -- gets saved with Energymeters
-		//DSSGlobals.getInstance().getFeederClass().setSaved(true);
+		// ignore feeder class -- gets saved with EnergyMeters
+		//Globals.getFeederClass().setSaved(true);
 
 		// Define voltage sources first
 		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
-		// Write library files so that they will be available to lines, loads, etc
+		// write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
@@ -809,18 +808,18 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
 		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
-		if (Success) Success = saveFeeders(); // Save feeders first
-		if (Success) Success = saveDSSObjects();  // Save rest ot the objects
+		if (Success) Success = saveFeeders();  // save feeders first
+		if (Success) Success = saveDSSObjects();  // save rest to the objects
 		if (Success) Success = saveBusCoords();
 		if (Success) Success = saveMasterFile();
 
 		if (Success) {
-			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + System.getProperty("user.dir"), 433);
+			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + Globals.getCurrentDirectory(), 433);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + System.getProperty("user.dir"), 434);
+			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + Globals.getCurrentDirectory(), 434);
 		}
-		// Return to Original directory
-//		SetCurrentDir(SaveDir);  FIXME: Set cwd
+		// return to original directory
+		Globals.setCurrentDirectory(SaveDir);
 
 		return true;
 	}
@@ -836,22 +835,22 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
 			boolean NodesOK = true;
-			// Assume normal phase rotation  for default
+			// assume normal phase rotation for default
 			for (int i = 0; i < np; i++)
-				NodeBuffer[i] = i; // set up buffer with defaults
+				NodeBuffer[i] = i;  // set up buffer with defaults
 
-			// Default all other conductors to a ground connection
-			// If user wants them ungrounded, must be specified explicitly!
+			// default all other conductors to a ground connection
+			// uf user wants them ungrounded, must be specified explicitly!
 			for (int i = np + 1; i < NCond; i++)
 				NodeBuffer[i] = 0;
 
-			// Parser will override bus connection if any specified
-			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer); // TODO: Check NNodes gets set.
+			// parser will override bus connection if any specified
+			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer);
 
-			// Check for error in node specification
+			// check for error in node specification
 			for (int j = 0; j < NNodes.intValue(); j++) {
 				if (NodeBuffer[j] < 0) {
-					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in Node specification for Element: \""
+					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in node specification for element: \""
 						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					NodesOK = false;
@@ -864,9 +863,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				}
 			}
 
-			// Node -Terminal Connnections
-			// Caution: Magic -- AddBus replaces values in nodeBuffer to correspond
-			// with global node reference number.
+			// node-terminal connnections
+			// Caution: addBus replaces values in nodeBuffer to correspond
+			// with global node reference number
 			if (NodesOK) {
 				ActiveCktElement.setActiveTerminalIdx(iTerm);
 				ActiveCktElement.getActiveTerminal().setBusRef(addBus(BusName, NCond));
@@ -877,28 +876,30 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	/**
-	 * Redo all BusLists, NodeLists
+	 * Redo all bus and node lists.
 	 */
 	public void reProcessBusDefs() {
-		if (LogEvents) Utilities.logThisEvent("Reprocessing Bus Definitions");
+		if (LogEvents) Utilities.logThisEvent("Reprocessing bus definitions");
 
 		AbortBusProcess = false;
-		saveBusInfo();  // So we don't have to keep re-doing this
-		// Keeps present definitions of bus objects until new ones created
+		saveBusInfo();  // so we don't have to keep re-doing this
+		// keeps present definitions of bus objects until new ones created
 
 		// get rid of old bus lists
-//		BusList.Free();  // Clears hash list of Bus names for adding more
+		BusList = null;  // clears hash list of bus names for adding more
 		BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
 
-		NumBuses = 0;  // Leave allocations same, but start count over
+		NumBuses = 0;  // leave allocations same, but start count over
 		NumNodes = 0;
 
-		// Now redo all enabled circuit elements
+		// now redo all enabled circuit elements
 		CktElement CktElementSave = ActiveCktElement;
 		for (int i = 0; i < CktElements.size(); i++) {
 			setActiveCktElement( CktElements.get(i) );
-			if (ActiveCktElement.isEnabled()) processBusDefs();
-			if (AbortBusProcess) return;
+			if (ActiveCktElement.isEnabled())
+				processBusDefs();
+			if (AbortBusProcess)
+				return;
 		}
 
 		setActiveCktElement(CktElementSave);  // restore active circuit element
@@ -906,21 +907,21 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
 		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
 
-		restoreBusInfo();     // frees old bus info, too
-		doResetMeterZones();  // Fix up meter zones to correspond
+		restoreBusInfo();     // frees old bus info too
+		doResetMeterZones();  // fix up meter zones to correspond
 
-		setBusNameRedefined(false);  // Get ready for next time
+		setBusNameRedefined(false);  // get ready for next time
 	}
 
 	public void doResetMeterZones() {
-		/* Do this only if meterzones unlocked .  Normally, Zones will remain
-		unlocked so that all changes to the circuit will result in rebuilding
-		the lists */
+		/* Do this only if meterZones unlocked. Normally, zones will remain
+		 * unlocked so that all changes to the circuit will result in rebuilding
+		 * the lists */
 		if (!MeterZonesComputed || !ZonesLocked) {
-			if (LogEvents) Utilities.logThisEvent("Resetting Meter Zones");
+			if (LogEvents) Utilities.logThisEvent("Resetting meter zones");
 			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
 			MeterZonesComputed = true;
-			if (LogEvents) Utilities.logThisEvent("Done Resetting Meter Zones");
+			if (LogEvents) Utilities.logThisEvent("Done resetting meter zones");
 		}
 
 		freeTopology();
@@ -942,11 +943,11 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				DSSGlobals.getInstance().setLastClassReferenced(DevClassIndex);
 				Result = DeviceRef[DevIndex].devHandle;
 				// ActiveDSSClass.Active = Result;
-				//  ActiveCktElement = ActiveDSSClass.GetActiveObj;
+				// ActiveCktElement = ActiveDSSClass.getActiveObj;
 				setActiveCktElement( CktElements.get(Result) );
 				break;
 			}
-			DevIndex = DeviceList.findNext();   // Could be duplicates
+			DevIndex = DeviceList.findNext();  // could be duplicates
 		}
 
 		DSSGlobals.getInstance().setCmdResult(Result);
@@ -958,18 +959,18 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		for (PCElement p : PCElements)
 			p.setYprimInvalid(true);
 
-		// Force rebuild of matrix on next solution
+		// force rebuild of matrix on next solution
 		Solution.setSystemYChanged(true);
 	}
 
 	public void debugDump(PrintStream F) {
-		F.println("NumBuses= " + NumBuses);
-		F.println("NumNodes= " + NumNodes);
-		F.println("NumDevices= " + NumDevices);
+		F.println("numBuses= " + NumBuses);
+		F.println("numNodes= " + NumNodes);
+		F.println("numDevices= " + NumDevices);
 		F.println("BusList:");
 		for (int i = 0; i < NumBuses; i++) {
 			F.printf("  %12s", BusList.get(i));
-			F.printf(" (" + Buses[i].getNumNodesThisBus() + " Nodes)");
+			F.printf(" (" + Buses[i].getNumNodesThisBus() + " nodes)");
 			for (int j = 0; j < Buses[i].getNumNodesThisBus(); j++) {
 				F.print(" " + Buses[i].getNum(j));
 			}
@@ -991,17 +992,17 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 	}
 
-	/* Access to topology from the first source */
+	/**
+	 * Access to topology from the first source
+	 */
 	public CktTree getTopology() {
-//		DSSCktElement Elem;
-
 		if (Branch_List == null) {
-			/* Initialize all Circuit Elements and Buses to not checked, then build a new tree */
+			/* Initialize all circuit elements and buses to not checked, then build a new tree */
 			for (CktElement elem : CktElements) {
 				elem.setChecked(false);
 				for (int i = 0; i < elem.getNTerms(); i++)
 					elem.getTerminals()[i].setChecked(false);
-				elem.setIsIsolated(true); // till proven otherwise
+				elem.setIsIsolated(true);  // till proven otherwise
 			}
 
 			for (int i = 0; i < NumBuses; i++)
@@ -1013,19 +1014,21 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public void freeTopology() {
-//		if (Branch_List != null) Branch_List.Free();
-		Branch_List = null;
+		if (Branch_List != null)
+			Branch_List = null;
 		if (BusAdjPC != null)
 			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
 	}
 
 	public List<PDElement>[] getBusAdjacentPDLists() {
-		if (BusAdjPD == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPD == null)
+			CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPD;
 	}
 
 	public List<PCElement>[] getBusAdjacentPCLists() {
-		if (BusAdjPC == null) CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (BusAdjPC == null)
+			CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 		return BusAdjPC;
 	}
 

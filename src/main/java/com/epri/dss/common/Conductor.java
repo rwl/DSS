@@ -4,7 +4,7 @@ public interface Conductor {
 
 	boolean isClosed();
 
-	/* change this variable to indicate open or closed switch */
+	/** Change this variable to indicate open or closed switch */
 	void setClosed(boolean closed);
 
 	boolean isFuseBlown();
@@ -17,10 +17,10 @@ public interface Conductor {
 
 	String getTCCname();
 
-	/* Computes whether conductor has burned down */
+	/** Computes whether conductor has burned down */
 	void calcIsqt(double CurrentMag);
 
-	/* Restore the conductor and reset the i2t calcs */
+	/** Restore the conductor and reset the i2t calcs */
 	void ResetIsqt();
 
 }

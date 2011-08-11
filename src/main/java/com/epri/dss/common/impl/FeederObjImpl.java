@@ -94,9 +94,9 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 	@Override
 	public void calcYPrim() {
-		// For now, YPrim is null
+		// for now, YPrim is null
 
-		// Build only YPrim Series
+		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrim_Series != null)
 				YPrim_Series = null;
@@ -109,7 +109,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 			YPrim.clear();
 		}
 
-		/* Yprim = 0  for Ideal Current Source;  just leave it zeroed */
+		/* Yprim = 0 for ideal current source; just leave it zeroed */
 
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */

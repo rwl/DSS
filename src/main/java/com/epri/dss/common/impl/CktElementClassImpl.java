@@ -15,7 +15,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	}
 
 	protected int classEdit(Object ActiveCktElemObj, int ParamPointer) {
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		if (ParamPointer >= 0) {  // TODO Check zero based indexing
 			CktElement cktElem = (CktElement) ActiveCktElemObj;
 			switch (ParamPointer) {

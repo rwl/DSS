@@ -13,10 +13,9 @@ import com.epri.dss.shared.impl.HashListImpl;
 import com.epri.dss.shared.impl.PointerListImpl;
 
 /**
- * Base Class for all DSS collection classes.
+ * Base class for all DSS collection classes.
  * Keeps track of objects of each class, dispatches edits, etc
  *
- * @author Richard Lincoln
  */
 public class DSSClassImpl implements DSSClass {
 
@@ -33,14 +32,13 @@ public class DSSClassImpl implements DSSClass {
 
 	protected HashList ElementNameList;
 
-
 	protected int NumProperties;
 
 	protected String[] PropertyName, PropertyHelp;
 
 	protected int[] PropertyIdxMap;
 
-	/* maps property to internal command number */
+	/* Maps property to internal command number */
 	protected int[] RevPropertyIdxMap;
 
 	protected int DSSClassType;
@@ -97,8 +95,7 @@ public class DSSClassImpl implements DSSClass {
 			DSSGlobals Globals = DSSGlobals.getInstance();
 			this.ActiveElement = Value;
 			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(ActiveElement));
-			// Make sure Active Ckt Element agrees if is a ckt element
-			// So COM interface will work
+
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement)
 				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 		}
@@ -218,7 +215,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	/**
-	 * Add Properties of this class to propName.
+	 * Add properties of this class to propName.
 	 */
 	protected void defineProperties() {
 		ActiveProperty += 1;
@@ -226,11 +223,11 @@ public class DSSClassImpl implements DSSClass {
 		PropertyName[ActiveProperty] = "like";
 		PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" +
 				DSSGlobals.CRLF + DSSGlobals.CRLF +
-				"New Capacitor.C2 like=c1  ...";
+				"new capacitor.C2 like=c1  ...";
 	}
 
 	protected int classEdit(final Object ActiveObj, int ParamPointer) {
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		if (ParamPointer > 0) {
 //			DSSObject obj = (DSSObject) ActiveObj;
 			switch (ParamPointer) {
@@ -256,7 +253,6 @@ public class DSSClassImpl implements DSSClass {
 
 			setActiveElement(1);
 			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(0));
-			// Make sure Active Ckt Element agrees if is a ckt element
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
 				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 				Result = ActiveElement;
@@ -273,7 +269,7 @@ public class DSSClassImpl implements DSSClass {
 			DSSGlobals Globals = DSSGlobals.getInstance();
 
 			Globals.setActiveDSSObject((DSSObject) ElementList.getNext());
-			// Make sure Active Ckt Element agrees if is a ckt element
+
 			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
 				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
 				Result = ActiveElement;
@@ -285,19 +281,19 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	/**
-	 * Helper routine for building Property strings.
+	 * Helper routine for building property strings.
 	 *
-	 * Using the addProperty FUNCTION, you can list the properties here in the order you want
-	 * them to appear when properties are accessed sequentially without tags.   Syntax:
+	 * Using the addProperty function, you can list the properties here in the order you want
+	 * them to appear when properties are accessed sequentially without tags. Syntax:
 	 *
-	 * addProperty( <name of property>, <index in the EDIT Case statement>, <help text>);
+	 * addProperty(<name of property>, <index in the edit case statement>, <help text>);
 	 */
 	public void addProperty(String PropName, int CmdMapIndex, String HelpString) {
 		ActiveProperty += 1;
 
 		PropertyName[ActiveProperty] = PropName;
 		PropertyHelp[ActiveProperty] = HelpString;
-		// Map to internal object property index
+		// map to internal object property index
 		PropertyIdxMap[ActiveProperty] = CmdMapIndex;
 		RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
 	}
@@ -308,19 +304,19 @@ public class DSSClassImpl implements DSSClass {
 		PropertyIdxMap = new int[NumProperties];
 		RevPropertyIdxMap = new int[NumProperties];
 
-		ActiveProperty = -1;    // initialize for addProperty
+		ActiveProperty = -1;  // initialize for addProperty
 
-		/* initialize PropertyIdxMap to take care of legacy items */
+		/* initialize propertyIdxMap to take care of legacy items */
 		for (int i = 0; i < NumProperties; i++) PropertyIdxMap[i] = i;
 		for (int i = 0; i < NumProperties; i++) RevPropertyIdxMap[i] = i;
 	}
 
 	public void reallocateElementNameList() {
 		/* Reallocate the device name list to improve the performance of searches */
-		ElementNameList = null;  // Throw away the old one.
+		ElementNameList = null;  // throw away the old one
 		ElementNameList = new HashListImpl(2 * ElementList.size());  // make a new one
 
-		// Do this using the Names of the Elements rather than the old list because it might be
+		// do this using the names of the elements rather than the old list because it might be
 		// messed up if an element gets renamed
 
 		for (int i = 0; i < this.ElementList.size(); i++)

@@ -11,7 +11,7 @@ import com.epri.dss.shared.CMatrix;
 public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public class NodeBus {
-		/* Ref to Bus in circuit's BusList */
+		/* Ref to bus in circuit's bus list */
 		public int BusRef;
 		public int NodeNum;
 	}
@@ -42,7 +42,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		Zsc              = null;
 		VBus             = null;
 		BusCurrent       = null;
-		kVBase           = 0.0;  // Signify that it has not been set
+		kVBase           = 0.0;  // signify that it has not been set
 		x                = 0.0;
 		y                = 0.0;
 		distFromMeter    = 0.0;
@@ -62,7 +62,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public int add(int NodeNum) {
 		int Result;
-		
+
 		if (NodeNum == 0) {
 			Result = 0;
 		} else {
@@ -74,26 +74,26 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-				ckt.setNumNodes(ckt.getNumNodes() + 1);  // Global node number for circuit
+				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
 				RefNo[NumNodesThisBus] = ckt.getNumNodes();
-				Result = ckt.getNumNodes();  // Return global node number
+				Result = ckt.getNumNodes();  // return global node number
 			}
 		}
 
 		return Result;
 	}
-	
+
 	/**
 	 * Returns reference num for node by node number.
 	 */
 	public int find(int NodeNum) {
 		for (int i = 0; i < NumNodesThisBus; i++) {
-			if (Nodes[i] == NodeNum) 
+			if (Nodes[i] == NodeNum)
 				return RefNo[i];
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Returns reference num for node by node index.
 	 */
@@ -104,7 +104,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 			return 0;
 		}
 	}
-	
+
 	/**
 	 * Returns ith node number designation.
 	 */
@@ -115,9 +115,9 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 			return 0;
 		}
 	}
-	
+
 	public void allocateBusQuantities() {
-		// Have to perform a short circuit study to get this allocated.
+		// have to perform a short circuit study to get this allocated
 		Ysc = new CMatrixImpl(NumNodesThisBus);
 		Zsc = new CMatrixImpl(NumNodesThisBus);
 		allocateBusVoltages();
@@ -145,27 +145,27 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 			return Complex.ZERO;
 		}
 	}
-	
+
 	/**
 	 * Returns index of node by node number.
 	 */
 	public int findIdx(int NodeNum) {
 		for (int i = 0; i < NumNodesThisBus; i++) {
-			if (Nodes[i] == NodeNum) 
+			if (Nodes[i] == NodeNum)
 				return i;
 		}
 		return 0;  // TODO Check zero based indexing
 	}
-	
+
 	public void allocateBusVoltages() {
 		VBus = (Complex[]) Utilities.resizeArray(VBus, NumNodesThisBus);
-		for (int i = 0; i < NumNodesThisBus; i++) 
+		for (int i = 0; i < NumNodesThisBus; i++)
 			VBus[i] = Complex.ZERO;
 	}
-	
+
 	public void allocateBusCurrents() {
 		BusCurrent = (Complex[]) Utilities.resizeArray(BusCurrent, NumNodesThisBus);
-		for (int i = 0; i < NumNodesThisBus; i++) 
+		for (int i = 0; i < NumNodesThisBus; i++)
 			BusCurrent[i] = Complex.ZERO;
 	}
 

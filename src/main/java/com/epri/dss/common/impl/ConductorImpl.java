@@ -6,10 +6,10 @@ public class ConductorImpl implements Conductor {
 
 	private String TCCName;
 	private double AmbientTemp;
-	/* Accumulated I2t */
+	/** accumulated I2t */
 	private double Accum_Isqt;
 
-	/* change this variable to indicate open or closed switch */
+	/** Change this variable to indicate open or closed switch. */
 	protected boolean Closed;
 	protected boolean FuseBlown;
 

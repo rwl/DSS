@@ -32,7 +32,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		NumPropsThisClass = 0;
 
 		NumProperties = NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 // Can't think of any properties we want the user to be able to set
@@ -55,8 +55,8 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	public int newObject(String ObjName) {
 		int Result;
 
-		// Make a new Feeder object
-		// First see if this one already exists. If so, just reinitialize
+		// make a new feeder object
+		// first see if this one already exists; if so, just reinitialize
 		FeederObj Obj = (FeederObj) find(ObjName);
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -76,7 +76,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 	@Override
 	public int edit() {
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		ActiveFeederObj = (FeederObj) ElementList.getActive();
 		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) ActiveFeederObj);
 
@@ -97,7 +97,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 				switch (ParamPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ActiveFeederObj.getName() + "\"", 630);
+					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ActiveFeederObj.getName() + "\"", 630);
 					break;
 				default:
 					classEdit(ActiveFeederObj, ParamPointer - NumPropsThisClass);
@@ -123,13 +123,13 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		if (OtherFeeder != null) {
 			if (ActiveFeederObj.getNPhases() != OtherFeeder.getNPhases()) {
 				ActiveFeederObj.setNPhases(OtherFeeder.getNPhases());
-				ActiveFeederObj.setNConds(ActiveFeederObj.getNPhases());  // Forces reallocation of terminal stuff
+				ActiveFeederObj.setNConds(ActiveFeederObj.getNPhases());  // forces reallocation of terminal stuff
 
 				ActiveFeederObj.setYorder(ActiveFeederObj.getNConds() * ActiveFeederObj.getNTerms());
 				ActiveFeederObj.setYprimInvalid(true);
 			}
 
-			// Put properties to copy here
+			// put properties to copy here
 
 			classMakeLike(OtherFeeder);  // set spectrum, base frequency
 
@@ -138,7 +138,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 			}
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Feeder MakeLike: \"" + OtherFeederName + "\" Not Found.", 631);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Feeder makeLike: \"" + OtherFeederName + "\" not found.", 631);
 		}
 
 		return Result;

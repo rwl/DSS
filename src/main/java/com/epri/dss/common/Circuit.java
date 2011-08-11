@@ -408,7 +408,7 @@ public interface Circuit extends NamedObject {
 
 	boolean isBusNameRedefined();
 
-	/* Total Circuit PD Element losses */
+	/** Total circuit PD element losses */
 	Complex getLosses();
 
 	void setLoadMultiplier(double Value);
@@ -421,10 +421,10 @@ public interface Circuit extends NamedObject {
 
 	String getName();
 
-	/* Adds last DSS object created to circuit */
+	/** Adds last DSS object created to circuit */
 	void addCktElement(int Handle);
 
-	/* Totalize all energymeters in the problem */
+	/** Totalize all energymeters in the problem */
 	void totalizeMeters();
 
 	boolean computeCapacity();
@@ -433,7 +433,7 @@ public interface Circuit extends NamedObject {
 
 	void processBusDefs();
 
-	/* Redo all Buslists, nodelists */
+	/** Redo all bus lists and node lists */
 	void reProcessBusDefs();
 
 	void doResetMeterZones();
@@ -444,13 +444,13 @@ public interface Circuit extends NamedObject {
 
 	void debugDump(PrintStream F);
 
-	/* Access to topology from the first source */
+	/** Access to topology from the first source */
 	CktTree getTopology();
 
 	void freeTopology();
 
-	List[] getBusAdjacentPDLists();
+	List<PDElement>[] getBusAdjacentPDLists();
 
-	List[] getBusAdjacentPCLists();
+	List<PCElement>[] getBusAdjacentPCLists();
 
 }

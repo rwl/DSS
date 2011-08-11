@@ -56,13 +56,13 @@ public interface DSSClass {
 
 	String getNextPropertyName();
 
-	/* Helper routine for building Property strings */
+	/** Helper routine for building property strings */
 	void addProperty(String PropName, int CmdMapIndex,
 			String HelpString);
 
 	void reallocateElementNameList();
 
-	/* uses global parser */
+	/** Uses global parser */
 	int edit();
 
 	int init(int Handle);
@@ -71,13 +71,13 @@ public interface DSSClass {
 
 	boolean setActive(String Value);
 
-	/* Get address of active obj of this class */
+	/** Get address of active object of this class */
 	Object getActiveObj();
 
-	/* Find an obj of this class by name */
+	/** Find an obj of this class by name */
 	Object find(String ObjName);
 
-	/* Find property value by string */
+	/** Find property value by string */
 	int propertyIndex(String Prop);
 
 }

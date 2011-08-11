@@ -219,31 +219,31 @@ public interface SolutionObj extends DSSObject {
 
 	void doPFlowSolution() throws SolverError, Esolv32Problem;
 
-	/* Main Solution dispatch */
+	/** Main solution dispatch */
 	void solve();
 
 	void snapShotInit();
 
-	/* solve for now once */
+	/** Solve for now once */
 	int solveSnap() throws SolverError, ControlProblem, Esolv32Problem;
 
-	/* solve for now once, direct solution */
+	/** Solve for now once, direct solution */
 	int solveDirect() throws Esolv32Problem;
 
-	/* Similar to SolveDirect; used for initialization */
+	/** Similar to solveDirect; used for initialization */
 	int solveYDirect() throws Esolv32Problem;
 
-	/* SolveSnap sans control iteration */
+	/** SolveSnap sans control iteration */
 	int solveCircuit() throws SolverError;
 
-	/* Snapshot checks with matrix rebuild */
+	/** Snapshot checks with matrix rebuild */
 	void checkControls() throws ControlProblem, Esolv32Problem;
 
 	void sampleControlDevices() throws ControlProblem;
 
 	void doControlActions();
 
-	/* Sample and Do */
+	/** Sample and do */
 	void sample_DoControlActions() throws ControlProblem;
 
 	void checkFaultStatus();
@@ -254,13 +254,13 @@ public interface SolutionObj extends DSSObject {
 
 	void saveVoltages();
 
-	/* Updates voltages for each bus from NodeV */
+	/** Updates voltages for each bus from nodeV */
 	void updateVBus();
 
-	/* opposite of updateVBus() */
+	/** opposite of updateVBus() */
 	void restoreNodeVfromVbus();
 
-	/* Difference between two node voltages */
+	/** Difference between two node voltages */
 	Complex vDiff(int i, int j);
 
 	void initPropertyValues(int ArrayOffset);
@@ -272,4 +272,5 @@ public interface SolutionObj extends DSSObject {
 	void updateDblHour();
 
 	void incrementTime();
+
 }

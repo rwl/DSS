@@ -20,15 +20,15 @@ public interface ControlQueue {
 
 	void doAllActions();
 
-	/* Do only actions with lowest time */
+	/** Do only actions with lowest time */
 	boolean doNearestActions(MutableInt Hour, MutableDouble Sec);
 
-	/* Do actions with time <= t */
+	/** Do actions with time <= t */
 	boolean doActions(int Hour, double sec);
 
 	boolean isEmpty();
 
-	/* Delete queue item by handle */
+	/** Delete queue item by handle */
 	void delete(int Hdl);
 
 	void showQueue(String FileName);

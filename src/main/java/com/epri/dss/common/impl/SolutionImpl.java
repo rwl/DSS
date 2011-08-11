@@ -32,18 +32,18 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// define Property names
+		// define property names
 		PropertyName[0] = "-------";
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Use Set Command to set Solution properties.";
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	public int newObject(String objName) {
-		// make a new Solution object and add it to Solution class list
+		// make a new solution object and add it to solution class list
 		ActiveSolutionObj = new SolutionObjImpl(this, objName);
 		// this one is different than the rest of the objects
 		return addObjectToList(ActiveSolutionObj);
