@@ -32,7 +32,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		super(ParClass);
 
 		setName(SourceName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
+		this.DSSObjType = ParClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
 
 		setNPhases(3);
 		this.nConds = 3;
@@ -58,7 +58,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		setSpectrumObj( (com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()) );
 
 		if (getSpectrumObj() == null)
-			Globals.doSimpleMsg("Spectrum Object \"" + getSpectrum() + "\" for Device Isource."+getName()+" Not Found.", 333);
+			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
 	}
@@ -66,7 +66,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	@Override
 	public void calcYPrim() {
 
-		// Build only YPrim Series
+		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrim_Series != null)
 				YPrim_Series = null;
@@ -80,7 +80,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		}
 
 
-		/* Yprim = 0  for Ideal Current Source;  just leave it zeroed */
+		/* Yprim = 0 for ideal current source; just leave it zeroed */
 
 		/* Now account for open conductors.
 		 * For any conductor that is open, zero out row and column.
@@ -102,7 +102,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			/* Get first phase current */
 			if (sol.isIsHarmonicModel()) {
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
-				Result = getSpectrumObj().getMult(SrcHarmonic).multiply(Amps);  // Base current for this harmonic
+				Result = getSpectrumObj().getMult(SrcHarmonic).multiply(Amps);  // base current for this harmonic
 				Result = Utilities.rotatePhasorDeg(Result, SrcHarmonic, Angle);
 			} else {
 				if (Math.abs(sol.getFrequency() - SrcFrequency) < DSSGlobals.EPSILON2) {
@@ -112,7 +112,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 				}
 			}
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error computing current for Isource."+getName()+". Check specification. Aborting.", 334);
+			Globals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
 			if (Globals.isIn_Redirect())
 				Globals.setRedirect_Abort(true);
 		}
@@ -127,7 +127,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
 
-		return super.injCurrents();  // Adds into system array
+		return super.injCurrents();  // adds into system array
 	}
 
 	/**
@@ -136,13 +136,13 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	@Override
 	public void getCurrents(Complex[] Curr) {
 		try {
-			getInjCurrents(ComplexBuffer);  // Get present value of inj currents
-			// Add together  with YPrim currents
+			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			// add together with YPrim currents
 			for (int i = 0; i < Yorder; i++)
 				Curr[i] = ComplexBuffer[i].negate();
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for Isource Element: " + getName() + "."), e.getMessage(),
-					"Inadequate storage allotted for circuit element?", 335);
+			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for ISource element: " + getName() + "."), e.getMessage(),
+					"Inadequate storage allotted for circuit element.", 335);
 		}
 	}
 
@@ -157,14 +157,14 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		for (int i = 0; i < getNPhases(); i++) {
 			Curr[i] = BaseCurr;
-			if (i < getNPhases()) {
+			if (i < getNPhases())
 				if (sol.isIsHarmonicModel()) {
 					switch (ScanType) {
 					case 1:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift()); // maintain positive sequence for isource
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource
 						break;
 					case 0:
-						// Do not rotate for zero sequence
+						// do not rotate for zero sequence
 						break;
 					default:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
@@ -174,17 +174,16 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 				} else {
 					switch (SequenceType) {
 					case -1:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // Neg seq
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // neg seq
 						break;
 					case 0:
-						// Do not rotate for zero sequence
+						// do not rotate for zero sequence
 						break;
 					default:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // Maintain pos seq
+						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // maintain pos seq
 						break;
 					}
 				}
-			}
 		}
 	}
 

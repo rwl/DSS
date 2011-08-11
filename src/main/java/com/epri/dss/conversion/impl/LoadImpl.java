@@ -34,13 +34,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 	protected void defineProperties() {
 
 		NumProperties = NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define property names
+		// define property names
 		PropertyName[0] = "phases";
 		PropertyName[1] = "bus1";
-		PropertyName[2] = "kV";  //
+		PropertyName[2] = "kV";
 		PropertyName[3] = "kW";
 		PropertyName[4] = "pf";
 		PropertyName[5] = "model";
@@ -50,30 +50,30 @@ public class LoadImpl extends PCClassImpl implements Load {
 		PropertyName[9] = "growth";
 		PropertyName[10] = "conn";
 		PropertyName[11] = "kvar";
-		PropertyName[12] = "Rneut";  // if entered -, assume open
+		PropertyName[12] = "Rneut";     // if entered -, assume open
 		PropertyName[13] = "Xneut";
 		PropertyName[14] = "status";    // fixed or variable
 		PropertyName[15] = "class";     // integer
-		PropertyName[16] = "Vminpu";    // Min pu voltage FOR which model applies
-		PropertyName[17] = "Vmaxpu";    // Max pu voltage FOR which model applies
-		PropertyName[18] = "Vminnorm";  // Min pu voltage normal load
-		PropertyName[19] = "Vminemerg"; // Min pu voltage emergency rating
-		PropertyName[20] = "xfkVA";     // Service transformer rated kVA
-		PropertyName[21] = "allocationfactor";  // allocation factor  for xfkVA
+		PropertyName[16] = "Vminpu";    // min pu voltage for which model applies
+		PropertyName[17] = "Vmaxpu";    // max pu voltage for which model applies
+		PropertyName[18] = "Vminnorm";  // min pu voltage normal load
+		PropertyName[19] = "Vminemerg"; // min pu voltage emergency rating
+		PropertyName[20] = "xfkVA";     // service transformer rated kVA
+		PropertyName[21] = "allocationfactor";  // allocation factor for xfkVA
 		PropertyName[22] = "kVA";       // specify load in kVA and PF
 		PropertyName[23] = "%mean";     // per cent default mean
 		PropertyName[24] = "%stddev";   // per cent default standard deviation
-		PropertyName[25] = "CVRwatts";  // Percent watts reduction per 1% reduction in voltage from nominal
-		PropertyName[26] = "CVRvars";   // Percent vars reduction per 1% reduction in voltage from nominal
+		PropertyName[25] = "CVRwatts";  // percent watts reduction per 1% reduction in voltage from nominal
+		PropertyName[26] = "CVRvars";   // percent vars reduction per 1% reduction in voltage from nominal
 		PropertyName[27] = "kwh";       // kwh billing
 		PropertyName[28] = "kwhdays";   // kwh billing period (24-hr days)
 		PropertyName[29] = "Cfactor";   // multiplier from kWh avg to peak kW
 		PropertyName[30] = "CVRcurve";  // name of curve to use for yearly CVR simulations
-		PropertyName[31] = "NumCust";   // Number of customers, this load
+		PropertyName[31] = "NumCust";   // number of customers, this load
 		PropertyName[32] = "ZIPV";      // array of 7 coefficients
 
 
-		// Define property help values
+		// define property help values
 		PropertyHelp[0] = "Number of Phases, this load.  Load is evenly divided among phases.";
 		PropertyHelp[1] = "Bus to which the load is connected.  May include specific node specification.";
 		PropertyHelp[2] = "Nominal rated (1.0 per unit) voltage, kV, for load. For 2- and 3-phase loads, specify phase-phase kV. "+
@@ -184,7 +184,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		PropertyHelp[NumPropsThisClass - 1] = "Name of harmonic current spectrum for this load.  Default is \"defaultload\", which is defined when the DSS starts.";
 	}
@@ -210,7 +210,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setNConds(al.getNPhases() + 1);  // L-L
 				break;
 			case 2:
-				al.setNConds(al.getNPhases() + 1);  // Open-delta
+				al.setNConds(al.getNPhases() + 1);  // open-delta
 				break;
 			default:
 				al.setNConds(al.getNPhases());
@@ -221,7 +221,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	}
 
 	/**
-	 * Accepts     (checks only min number of chars required}
+	 * Accepts (checks only min number of chars required):
 	 * 		delta or LL           (Case insensitive)
 	 * 		Y, wye, or LN
 	 */
@@ -237,7 +237,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setConnection(0);  /* Wye */
 			break;
 		case 'd':
-			al.setConnection(1);  /* Delta or line-Line */
+			al.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
@@ -282,7 +282,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// Continue parsing with contents of parser
+		// continue parsing with contents of parser
 		setActiveLoadObj((LoadObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveLoadObj());
 
@@ -305,7 +305,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ al.getName() + "\"", 580);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
 				al.setNPhases(parser.makeInteger()); // num phases
@@ -425,11 +425,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 			}
 
-			// SIDE EFFECTS
-			// keep kvar nominal up to date WITH kW and PF
+			// side effects
+			// keep kvar nominal up to date with kW and PF
 			switch (ParamPointer) {
 			case 0:
-				setNcondsForConnection();  // Force Reallocation of terminal info
+				setNcondsForConnection();  // force reallocation of terminal info
 				al.updateVoltageBases();
 				break;
 			case 2:
@@ -442,8 +442,8 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setPFChanged(true);
 				break;
 			case 6:
-				/* Set shape objects;  returns nil if not valid */
-				/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
+				/* Set shape objects; returns nil if not valid */
+				/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
 				al.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getYearlyShape()));
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
@@ -454,7 +454,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
 						al.setkWkvar(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
-				/* If Yearly load shape is not yet defined, make it the same as Daily */
+				/* If yearly load shape is not yet defined, make it the same as daily */
 				if (al.getYearlyShapeObj() == null)
 					al.setYearlyShapeObj(al.getDailyShapeObj());
 				break;
@@ -501,7 +501,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			if (al.getNPhases() != OtherLoad.getNPhases()) {
 				al.setNPhases(OtherLoad.getNPhases());
-				al.setNConds(al.getNPhases());  // Forces reallocation of terminal stuff
+				al.setNConds(al.getNPhases());  // forces reallocation of terminal stuff
 				al.setYorder(al.getNConds() * al.getNTerms());
 				al.setYprimInvalid(true);
 			}
@@ -532,7 +532,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setDutyShapeObj(OtherLoad.getDutyShapeObj());
 			al.setGrowthShape(OtherLoad.getGrowthShape());
 			al.setGrowthShapeObj(OtherLoad.getGrowthShapeObj());
-			//al.setSpectrum(OtherLoad.getSpectrum();       in base class now
+			//al.setSpectrum(OtherLoad.getSpectrum();  in base class now
 			//al.setSpectrumObj(OtherLoad.getSpectrumObj());
 			al.setLoadClass(OtherLoad.getLoadClass());
 			al.setNumCustomers(OtherLoad.getNumCustomers());
@@ -549,7 +549,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			for (int i = 0; i < al.getnZIPV(); i++)
 				al.getZIPV()[i] = OtherLoad.getZIPV()[i];
 
-			classMakeLike(OtherLoad);  // Take care of inherited class properties
+			classMakeLike(OtherLoad);  // take care of inherited class properties
 
 
 			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
@@ -557,7 +557,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherLoadName + "\" Not Found.", 581);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherLoadName + "\" not found.", 581);
 		}
 
 		return Result;

@@ -25,17 +25,17 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	public StorageImpl() {
 		super();
 		Class_Name = "Storage";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // In both PCelement and Storage element list
+		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // in both PCElement and Storage element list
 
 		this.ActiveElement = -1;
 
-		// Set register names
-		this.RegisterNames[0]  = "kWh";
-		this.RegisterNames[1]  = "kvarh";
-		this.RegisterNames[2]  = "Max kW";
-		this.RegisterNames[3]  = "Max kVA";
-		this.RegisterNames[4]  = "Hours";
-		this.RegisterNames[5]  = "$";
+		// set register names
+		this.RegisterNames[0] = "kWh";
+		this.RegisterNames[1] = "kvarh";
+		this.RegisterNames[2] = "Max kW";
+		this.RegisterNames[3] = "Max kVA";
+		this.RegisterNames[4] = "Hours";
+		this.RegisterNames[5] = "$";
 
 		defineProperties();
 
@@ -48,13 +48,15 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	protected void defineProperties() {
 
 		NumProperties = NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();  /* see DSSClass */
 
-		// Define Property names
-		/* Using the addProperty FUNCTION, you can list the properties here in the order you want
-		 * them to appear when properties are accessed sequentially without tags.   Syntax:
-		 *   addProperty( <name of property>, <index in the EDIT Case statement>, <help text>);
+		// define property names
+		/*
+		 * Using the addProperty function, you can list the properties here in the order you want
+		 * them to appear when properties are accessed sequentially without tags. Syntax:
+		 *
+		 *   addProperty(<name of property>, <index in the edit case statement>, <help text>);
 		 */
 		addProperty("phases", 0,
 				"Number of Phases, this Storage element.  Power is evenly divided among phases.");
@@ -190,9 +192,9 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"for each iteration.  Creates a separate file for each Storage element named \"STORAGE_name.CSV\"." );
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override default help string
+		// override default help string
 		PropertyHelp[NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this Storage element. " +
 							"Current injection is assumed for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
@@ -219,7 +221,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				as.setNConds(as.getNPhases() + 1);  // L-L
 				break;
 			case 2:
-				as.setNConds(as.getNPhases() + 1);  // Open-delta
+				as.setNConds(as.getNPhases() + 1);  // open-delta
 				break;
 			default:
 				as.setNConds(as.getNPhases());
@@ -239,8 +241,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	}
 
 	/**
-	 * Accepts
-	 *   delta or LL           (Case insensitive)
+	 * Accepts (case insensitive):
+	 *   delta or LL
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String S) {
@@ -254,7 +256,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setConnection(0);  /* Wye */
 			break;
 		case 'd':
-			as.setConnection(1);  /* Delta or line-Line */
+			as.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
@@ -274,13 +276,13 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		switch (as.getNPhases()) {
 		case 2:
-			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);    // L-N Volts
+			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
 			break;
 		case 3:
 			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);
 			break;
 		default:
-			as.setVBase(as.getkVStorageBase() * 1000.0);   // Just use what is supplied
+			as.setVBase(as.getkVStorageBase() * 1000.0);  // just use what is supplied
 			break;
 		}
 
@@ -313,7 +315,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// Continue parsing with contents of parser
+		// continue parsing with contents of parser
 		setActiveStorageObj((StorageObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
 
@@ -322,18 +324,18 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		StorageObj as = getActiveStorageObj();
 
 		int ParamPointer = 0;
-		String ParamName    = parser.getNextParam();  // Parse next property off the command line
-		String Param        = parser.makeString();   // Put the string value of the property value in local memory for faster access
+		String ParamName    = parser.getNextParam();  // parse next property off the command line
+		String Param        = parser.makeString();    // put the string value of the property value in local memory for faster access
 		while (Param.length() > 0) {
 
 			if (ParamName.length() == 0) {
-				ParamPointer += 1;  // If it is not a named property, assume the next property
+				ParamPointer += 1;  // if it is not a named property, assume the next property
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);  // Look up the name in the list for this class
+				ParamPointer = CommandList.getCommand(ParamName);  // look up the name in the list for this class
 			}
 
 			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
-				as.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // Update the string value of the property
+				as.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // update the string value of the property
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Storage \""+as.getName()+"\"", 560);
 			}
@@ -342,7 +344,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				iCase = PropertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ as.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
 					as.setNPhases(parser.makeInteger());  // num phases
@@ -435,10 +437,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setPctReserve(parser.makeDouble());
 					break;
 				case propUSERMODEL:
-					as.getUserModel().setName(parser.makeString());  // Connect to user written models
+					as.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
 				case propUSERDATA:
-					as.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					as.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case propDEBUGTRACE:
 					as.setDebugTrace(Utilities.interpretYesNo(Param));
@@ -453,23 +455,23 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setChargeTime(parser.makeDouble());
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(getActiveStorageObj(), ParamPointer - NumPropsThisClass);
 					break;
 				}
 
 				switch (iCase) {
 				case 0:
-					setNcondsForConnection();  // Force Reallocation of terminal info
+					setNcondsForConnection();  // force reallocation of terminal info
 					break;
 				case propKW:
-					as.syncUpPowerQuantities();   // keep kvar nominal up to date with kW and PF
+					as.syncUpPowerQuantities();   // keep kVAr nominal up to date with kW and PF
 					break;
 				case propPF:
 					as.syncUpPowerQuantities();
 					break;
 
-					/* Set loadshape objects;  returns nil If not valid */
+					/* Set load shape objects; returns nil if not valid */
 				case propYEARLY:
 					as.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getYearlyShape()));
 					break;
@@ -494,7 +496,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				case propDEBUGTRACE:
 					if (as.isDebugTrace()) {
 						try {
-							// Init trace file
+							// init trace file
 							File TraceFile = new File(Globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
@@ -539,14 +541,14 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	@Override
 	protected int makeLike(String OtherStorageObjName) {
 		int Result = 0;
-		/* See If we can find this line name in the present collection */
+		/* See if we can find this line name in the present collection */
 		StorageObj OtherStorageObj = (StorageObj) find(OtherStorageObjName);
 		if (OtherStorageObj != null) {
 			StorageObj as = getActiveStorageObj();
 
 			if (as.getNPhases() != OtherStorageObj.getNPhases()) {
 				as.setNPhases(OtherStorageObj.getNPhases());
-				as.setNConds(as.getNPhases());  // Forces reallocation of terminal stuff
+				as.setNConds(as.getNPhases());  // forces reallocation of terminal stuff
 				as.setYorder(as.getNConds() * as.getNTerms());
 				as.setYprimInvalid(true);
 			}
@@ -599,7 +601,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			as.setRandomMult(OtherStorageObj.getRandomMult());
 
-			as.getUserModel().setName(OtherStorageObj.getUserModel().getName());  // Connect to user written models
+			as.getUserModel().setName(OtherStorageObj.getUserModel().getName());  // connect to user written models
 
 			classMakeLike(OtherStorageObj);
 
@@ -608,7 +610,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + OtherStorageObjName + "\" Not Found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + OtherStorageObjName + "\" not found.", 562);
 		}
 
 		return Result;

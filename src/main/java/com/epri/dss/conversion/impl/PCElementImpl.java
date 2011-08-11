@@ -20,9 +20,9 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	protected String Spectrum;
 	protected SpectrumObj SpectrumObj;
-	/* Upline EnergyMeter */
+	/** Upline energy meter */
 	private MeterElement MeterObj;
-	/* Upline Sensor for this element */
+	/** Upline sensor for this element */
 	private MeterElement SensorObj;
 
 	private Complex[] InjCurrent;
@@ -30,7 +30,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	public PCElementImpl(DSSClass ParClass) {
 		super(ParClass);
 		this.Spectrum = "default";
-		this.SpectrumObj = null;  // have to allocate later because not guaranteed there will be one now.
+		this.SpectrumObj = null;  // have to allocate later because not guaranteed there will be one now
 		this.SensorObj   = null;
 		this.MeterObj    = null;
 		this.InjCurrent  = null;
@@ -40,7 +40,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	/**
-	 * Add injection currents into System currents array.
+	 * Add injection currents into system currents array.
 	 */
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
@@ -55,17 +55,17 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 * Get present values of terminal.
 	 */
 	public void getInjCurrents(Complex[] Curr) {
-		DSSGlobals.getInstance().doErrorMsg("PCElement.InjCurrents", ("Improper call to GetInjCurrents for Element: " + getName() + "."),
-			"Called PCELEMENT class virtual function instead of actual.", 640);
+		DSSGlobals.getInstance().doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
+			"Called PCElement class virtual function instead of actual.", 640);
 	}
 
 	/**
 	 * This is called only if we need to compute the terminal currents from the inj currents.
 	 *
-	 * Such as for Harmonic model.
+	 * Such as for harmonic model.
 	 */
 	protected void getTerminalCurrents(Complex[] Curr) {
-		if (getITerminalUpdated()) {  // Just copy iTerminal unless iTerminal=Curr
+		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
 			if (Curr != getIterminal())
 				for (int i = 0; i < Yorder; i++)
 					Curr[i] = getIterminal()[i];
@@ -91,8 +91,8 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 				if ( sol.isLastSolutionWasDirect() && (! (sol.isIsDynamicModel() || sol.isIsHarmonicModel())) ) {
 
-					// Take a short cut and get Currents from YPrim only
-					// For case where model is entirely in Y matrix
+					// take a short cut and get currents from YPrim only
+					// for case where model is entirely in Y matrix
 
 					calcYPrimContribution(Curr);
 
@@ -106,22 +106,22 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 					Curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for Element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.getInstance().doErrorMsg(("getCurrents for element: " + getName() + "."), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 641);
 		}
 	}
 
 	public void calcYPrimContribution(Complex[] Curr) {
 		computeVterminal();
-		// Apply these voltages to Yprim
+		// apply these voltages to Yprim
 		YPrim.MVMult(Curr, Vterminal);
 	}
 
 	/**
-	 * For Harmonics Mode
+	 * For harmonics mode
 	 */
 	public void initHarmonics() {
-		// By default do nothing in the base class
+		// by default do nothing in the base class
 	}
 
 	public void initPropertyValues(int ArrayOffset) {
@@ -131,18 +131,18 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	/**
-	 * For Dynamics Mode and Control Devices.
+	 * For dynamics mode and control devices.
 	 */
 	public void initStateVars() {
-		// By default do nothing
+		// by default do nothing
 	}
 
 	public void integrateStates() {
-		// By default do nothing
+		// by default do nothing
 	}
 
 	public void getAllVariables(double[] States) {
-		/* Do Nothing */
+		/* Do nothing */
 	}
 
 	public int numVariables() {
@@ -150,7 +150,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	public String variableName(int i) {
-		/* Do Nothing */
+		/* Do nothing */
 		return "";
 	}
 
@@ -159,7 +159,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 * Compare up to length of S.
 	 */
 	public int lookupVariable(String S) {
-		int Result = -1;   // Returns -1 for error not found
+		int Result = -1;   // returns -1 for error not found
 		int TestLength = S.length();
 		for (int i = 0; i < numVariables(); i++) {
 			if (variableName(i).substring(0, TestLength).equalsIgnoreCase(S)) {
@@ -225,7 +225,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		Spectrum = spectrum;
 	}
 
-	/* Upline Sensor for this element */
+	/** Upline sensor for this element */
 	public SpectrumObj getSpectrumObj() {
 		return SpectrumObj;
 	}
@@ -234,7 +234,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		SpectrumObj = spectrumObj;
 	}
 
-	/* Upline EnergyMeter */
+	/** Upline energy meter */
 	public MeterElement getMeterObj() {
 		return MeterObj;
 	}

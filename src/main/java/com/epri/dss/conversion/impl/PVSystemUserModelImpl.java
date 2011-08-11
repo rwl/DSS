@@ -8,9 +8,9 @@ import com.epri.dss.shared.impl.GeneratorVars;
 
 public class PVSystemUserModelImpl implements PVSystemUserModel {
 
-	private int Handle;  // Handle to DLL containing user model
-	private int ID;      // ID of this instance of the user model
-	private String name; // Name of the DLL file containing user model
+	private int Handle;  // handle to DLL containing user model
+	private int ID;      // id of this instance of the user model
+	private String name; // name of the DLL file containing user model
 	private boolean FuncError;
 
 	public PVSystemUserModelImpl() {
@@ -58,7 +58,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 	}
 
 	/**
-	 * Send string to user model to handle
+	 * Send string to user model to handle.
 	 */
 	public void edit(int s, int Maxlen) {
 	}
@@ -71,7 +71,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 	}
 
 	/**
-	 * Returns currents or sets Pshaft.
+	 * Returns currents or sets pShaft.
 	 */
 	public void calc(Complex[] V, Complex[] I) {
 

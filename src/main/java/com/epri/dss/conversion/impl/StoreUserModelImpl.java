@@ -7,9 +7,9 @@ import com.epri.dss.shared.impl.GeneratorVars;
 
 public class StoreUserModelImpl implements StoreUserModel {
 
-	private int Handle;  // Handle to DLL containing user model
-	private int ID;      // ID of this instance of the user model
-	private String Name; // Name of the DLL file containing user model
+	private int Handle;  // handle to DLL containing user model
+	private int ID;      // id of this instance of the user model
+	private String Name; // name of the DLL file containing user model
 	private boolean FuncError;
 
 	public StoreUserModelImpl() {
@@ -57,27 +57,27 @@ public class StoreUserModelImpl implements StoreUserModel {
 	}
 
 	/**
-	 * Send string to user model to handle
+	 * Send string to user model to handle.
 	 */
 	public void edit(int s, int Maxlen) {
 	}
 
 	/**
-	 * For dynamics
+	 * For dynamics.
 	 */
 	public void init(Complex[] V, Complex[] I) {
 
 	}
 
 	/**
-	 * Returns currents or sets Pshaft.
+	 * Returns currents or sets pShaft.
 	 */
 	public void calc(Complex[] V, Complex[] I) {
 
 	}
 
 	/**
-	 * Integrates any state vars
+	 * Integrates any state vars.
 	 */
 	public void integrate() {
 

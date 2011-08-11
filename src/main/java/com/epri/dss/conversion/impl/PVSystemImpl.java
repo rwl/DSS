@@ -28,12 +28,12 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		this.ActiveElement = -1;
 
-		// Set register names
-		this.RegisterNames[0]  = "kWh";
-		this.RegisterNames[1]  = "kvarh";
-		this.RegisterNames[2]  = "Max kW";
-		this.RegisterNames[3]  = "Max kVA";
-		this.RegisterNames[4]  = "Hours";
+		// set register names
+		this.RegisterNames[0] = "kWh";
+		this.RegisterNames[1] = "kvarh";
+		this.RegisterNames[2] = "Max kW";
+		this.RegisterNames[3] = "Max kVA";
+		this.RegisterNames[4] = "Hours";
 
 		defineProperties();
 
@@ -47,10 +47,10 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		final String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = PVSystem.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();  /* see DSSClass */
 
-		// Define property names
+		// define property names
 		addProperty("phases", 0,
 				"Number of Phases, this PVSystem element.  Power is evenly divided among phases.");
 		addProperty("bus1", 1,
@@ -170,9 +170,9 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				"for each iteration.  Creates a separate file for each PVSystem element named \"PVSystem_name.csv\"." );
 
 		ActiveProperty = PVSystem.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override default help string
+		// override default help string
 		PropertyHelp[PVSystem.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this PVSystem element. " +
 				"Current injection is assumed for inverter. " +
 				"Default value is \"default\", which is defined when the DSS starts.";
@@ -199,7 +199,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				apv.setNConds(apv.getNPhases() + 1);  // L-L
 				break;
 			case 2:
-				apv.setNConds(apv.getNPhases() + 1);  // Open-delta
+				apv.setNConds(apv.getNPhases() + 1);  // open-delta
 				break;
 			default:
 				apv.setNConds(apv.getNPhases());
@@ -218,8 +218,8 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	}
 
 	/**
-	 * Accepts:
-	 *   delta or LL           (Case insensitive)
+	 * Accepts (case insensitive):
+	 *   delta or LL
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String S) {
@@ -233,7 +233,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			apv.setConnection(0);  /* Wye */
 			break;
 		case 'd':
-			apv.setConnection(1);  /* Delta or line-Line */
+			apv.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (S.toLowerCase().charAt(1)) {
@@ -253,13 +253,13 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		switch (apv.getNPhases()) {
 		case 2:
-			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
 			break;
 		case 3:
-			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
 			break;
 		default:
-			apv.setVBase(apv.getkVPVSystemBase() * 1000.0);  // Just use what is supplied
+			apv.setVBase(apv.getkVPVSystemBase() * 1000.0);  // just use what is supplied
 			break;
 		}
 
@@ -287,17 +287,17 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		PVSystemObj apv = getActivePVsystemObj();
 
 		int ParamPointer = 0;
-		String ParamName    = parser.getNextParam();  // Parse next property off the command line
-		String Param        = parser.makeString();    // Put the string value of the property value in local memory for faster access
+		String ParamName    = parser.getNextParam();  // parse next property off the command line
+		String Param        = parser.makeString();    // put the string value of the property value in local memory for faster access
 		while (Param.length() > 0) {
 			if (ParamName.length() == 0) {
-				ParamPointer += 1;  // If it is not a named property, assume the next property
+				ParamPointer += 1;  // if it is not a named property, assume the next property
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);  // Look up the name in the list for this class
+				ParamPointer = CommandList.getCommand(ParamName);  // look up the name in the list for this class
 			}
 
 			if ((ParamPointer >= 0) && (ParamPointer < NumProperties)) {
-				apv.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // Update the string value of the property
+				apv.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // update the string value of the property
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for PVSystem \""+apv.getName()+"\"", 560);
 			}
@@ -306,7 +306,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				iCase = PropertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ apv.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ apv.getName() + "\"", 561);
 					break;
 				case 0:
 					apv.setNPhases(parser.makeInteger());  // num phases
@@ -391,25 +391,25 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					apv.setkVArating(parser.makeDouble());
 					break;
 				case propUSERMODEL:
-					apv.getUserModel().setName(parser.makeString());  // Connect to user written models
+					apv.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
 				case propUSERDATA:
-					apv.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					apv.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case propDEBUGTRACE:
 					apv.setDebugTrace(Utilities.interpretYesNo(Param));
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(getActivePVsystemObj(), ParamPointer - NumPropsThisClass);
 					break;
 				}
 
 				switch (iCase) {
 				case 0:
-					setNcondsForConnection();  // Force Reallocation of terminal info
+					setNcondsForConnection();  // force reallocation of terminal info
 					break;
-				/* Set loadshape objects;  returns nil If not valid */
+				/* set loadshape objects; returns nil if not valid */
 				case propYEARLY:
 					apv.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getYearlyShape()) );
 					break;
@@ -438,7 +438,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					break;
 
 				case propDEBUGTRACE:
-					if (apv.isDebugTrace()) {  // Init trace file
+					if (apv.isDebugTrace()) {  // init trace file
 						try {
 							FileWriter TraceStream = new FileWriter(Globals.getDSSDataDirectory() + "STOR_"+apv.getName()+".csv", false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
@@ -476,14 +476,14 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	@Override
 	protected int makeLike(String OtherPVSystemObjName) {
 		int Result = 0;
-		/* See If we can find this line name in the present collection */
+		/* See if we can find this line name in the present collection */
 		PVSystemObj OtherPVsystemObj = (PVSystemObj) find(OtherPVSystemObjName);
 		if (OtherPVsystemObj != null) {
 			PVSystemObj apv = getActivePVsystemObj();
 
 			if (apv.getNPhases() != OtherPVsystemObj.getNPhases()) {
 				apv.setNPhases(OtherPVsystemObj.getNPhases());
-				apv.setNConds(apv.getNPhases());  // Forces reallocation of terminal stuff
+				apv.setNConds(apv.getNPhases());  // forces reallocation of terminal stuff
 				apv.setYorder(apv.getNConds() * apv.getNTerms());
 				apv.setYprimInvalid(true);
 			}
@@ -532,7 +532,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 			apv.setRandomMult(OtherPVsystemObj.getRandomMult());
 
-			apv.getUserModel().setName(OtherPVsystemObj.getUserModel().getName());  // Connect to user written models
+			apv.getUserModel().setName(OtherPVsystemObj.getUserModel().getName());  // connect to user written models
 
 			classMakeLike(OtherPVsystemObj);
 
@@ -541,7 +541,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in PVSystem makeLike: \"" + OtherPVSystemObjName + "\" Not Found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in PVSystem makeLike: \"" + OtherPVSystemObjName + "\" not found.", 562);
 		}
 
 		return Result;

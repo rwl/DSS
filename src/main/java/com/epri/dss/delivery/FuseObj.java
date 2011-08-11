@@ -7,11 +7,11 @@ import com.epri.dss.general.TCC_CurveObj;
 import com.epri.dss.shared.impl.Complex;
 
 /**
- * A Fuse is a control element that is connected to a terminal of a
+ * A control element that is connected to a terminal of a
  * circuit element and controls the switches in the same or another terminal.
  *
- * The control is usually placed in the
- * terminal of a line or transformer, but it could be any element.
+ * The control is usually placed in the terminal of a line or transformer,
+ * but it could be any element.
  *
  * CktElement to be controlled must already exist.
  *

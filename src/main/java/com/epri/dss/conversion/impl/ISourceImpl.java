@@ -75,7 +75,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveISourceObj((ISourceObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
 
@@ -107,7 +107,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				ais.setAmps(parser.makeDouble());
 				break;
 			case 2:
-				ais.setAngle(parser.makeDouble());  // Ang
+				ais.setAngle(parser.makeDouble());  // ang
 				break;
 			case 3:
 				ais.setSrcFrequency(parser.makeDouble()); // freq
@@ -128,7 +128,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setPhaseShift(360.0 / ais.getNPhases());
 					break;
 				}
-				ais.setNConds(ais.getNPhases());  // Force Reallocation of terminal info
+				ais.setNConds(ais.getNPhases());  // force reallocation of terminal info
 				break;
 			case 5:
 				switch (Param.toUpperCase().charAt(0)) {
@@ -142,7 +142,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
+					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
 					break;
 				}
 				break;
@@ -158,7 +158,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
+					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
 					break;
 				}
 				break;
@@ -189,7 +189,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 			if (ais.getNPhases() != OtherIsource.getNPhases()) {
 				ais.setNPhases(OtherIsource.getNPhases());
-				ais.setNConds(ais.getNPhases());  // Forces reallocation of terminal stuff
+				ais.setNConds(ais.getNPhases());  // forces reallocation of terminal stuff
 
 				ais.setYorder(ais.getNConds() * ais.getNTerms());
 				ais.setYprimInvalid(true);
@@ -201,14 +201,14 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 			ais.setScanType(OtherIsource.getScanType());
 			ais.setSequenceType(OtherIsource.getSequenceType());
 
-			classMakeLike(OtherIsource); // set spectrum,  base frequency
+			classMakeLike(OtherIsource); // set spectrum, base frequency
 
 			for (int i = 0; i < ais.getParentClass().getNumProperties(); i++)
 				ais.setPropertyValue(i, OtherIsource.getPropertyValue(i));
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Isource makeLike: \"" + OtherSource + "\" Not Found.", 332);
+			DSSGlobals.getInstance().doSimpleMsg("Error in ISource makeLike: \"" + OtherSource + "\" not found.", 332);
 		}
 
 		return Result;
@@ -216,7 +216,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Isource.init", -1);
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement ISource.init", -1);
 		return 0;
 	}
 

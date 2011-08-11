@@ -49,7 +49,6 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		PropertyName[9] = "ScanType";
 		PropertyName[10] = "Sequence";
 
-
 		// define property help values
 		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+ CRLF +
 		                   "bus1=busname"+ CRLF +
@@ -90,14 +89,14 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		String S2;
 		int dotpos;
 
-		// Special handling for Bus 1
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus 1
+		// set bus2=bus1.0.0.0
 
 		GICLineObj agl = getActiveGICLineObj();
 
 		agl.setBus(1, S);
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
 			S2 = S.substring(0, dotpos-1);  // copy up to dot
@@ -105,7 +104,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 			S2 = S.substring(0);
 		}
 
-		agl.setBus(2, S2);  // default setting for Bus2 is same as Bus1
+		agl.setBus(2, S2);  // default setting for bus2 is same as bus1
 	}
 
 	@Override
@@ -138,10 +137,10 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"VSource."+agl.getName()+"\"", 320);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"VSource."+agl.getName()+"\"", 320);
 				break;
 			case 0:
-				GICLineSetBus1(Param);   // special handling of Bus 1
+				GICLineSetBus1(Param);   // special handling of bus 1
 				break;
 			case 1:
 				agl.setBus(2, Param);
@@ -150,14 +149,14 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				agl.setVolts(parser.makeDouble());  // basekv
 				break;
 			case 3:
-				agl.setAngle(parser.makeDouble());  // Ang
+				agl.setAngle(parser.makeDouble());  // ang
 				break;
 			case 4:
 				agl.setSrcFrequency(parser.makeDouble());  // freq
 				break;
 			case 5:
 				agl.setNPhases(parser.makeInteger());  // num phases
-				agl.setNConds(agl.getNPhases());  // Force Reallocation of terminal info
+				agl.setNConds(agl.getNPhases());  // force reallocation of terminal info
 				break;
 			case 6:
 				agl.setR(parser.makeDouble());
@@ -180,7 +179,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -196,7 +195,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -230,7 +229,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 			if (agl.getNPhases() != OtherGICLine.getNPhases()) {
 
 				agl.setNPhases(OtherGICLine.getNPhases());
-				agl.setNConds(agl.getNPhases());  // Forces reallocation of terminal stuff
+				agl.setNConds(agl.getNPhases());  // forces reallocation of terminal stuff
 
 				agl.setYorder(agl.getNConds() * agl.getNTerms());
 				agl.setYprimInvalid(true);
@@ -261,7 +260,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				Result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GICLine MakeLike: \"" + OtherLine + "\" Not Found.", 322);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GICLine makeLike: \"" + OtherLine + "\" not found.", 322);
 		}
 		return Result;
 	}

@@ -26,7 +26,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	}
 
 	/**
-	 * Add Properties of this class to propName.
+	 * Add properties of this class to propName.
 	 *
 	 * Define the properties for the base power delivery element class.
 	 */
@@ -42,7 +42,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
 	protected int classEdit(Object ActivePCObj, int ParamPointer) {
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		if (ParamPointer >= 0) {
 			PCElement pElem = (PCElement) ActivePCObj;
 

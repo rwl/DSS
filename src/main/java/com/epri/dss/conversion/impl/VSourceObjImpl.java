@@ -30,7 +30,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	private int ScanType;
 	private int SequenceType;
 
-	protected CMatrix Z;  // Base Frequency Series Z matrix
+	protected CMatrix Z;  // base frequency series Z matrix
 	protected CMatrix Zinv;
 	protected double VMag;
 
@@ -50,10 +50,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		setNTerms(2);  // now a 2-terminal device
 		this.Z        = null;
 		this.Zinv     = null;
-		//this.Basefrequency = 60.0; // set in base class
+		//this.Basefrequency = 60.0;  // set in base class
 		this.MVAsc3   = 2000.0;
 		this.MVAsc1   = 2100.0;
-		this.ZSpecType = 1; // default to MVAsc
+		this.ZSpecType = 1;  // default to MVAsc
 		this.R1       = 1.65;
 		this.X1       = 6.6;
 		this.R0       = 1.9;
@@ -90,7 +90,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		if (Z != null) Z = null;
 		if (Zinv != null) Zinv = null;
 
-		// For a source, nPhases = nCond, for now
+		// for a source, nPhases = nCond, for now
 		Z    = new CMatrixImpl(nPhases);
 		Zinv = new CMatrixImpl(nPhases);
 
@@ -109,7 +109,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		switch (ZSpecType) {
 		case 1:  // MVAsc
 			X1   = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2)); // Approx
+			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
 			R1   = X1 / X1R1;
 			Xm   = Xs - X1;
 			X0   = (Xs + 2.0 * Xm);
@@ -130,7 +130,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			MVAsc3 = DSSGlobals.SQRT3 * kVBase * Isc3 / 1000.0;
 			MVAsc1 = Factor * kVBase * Isc1 / 1000.0;
 			X1   = Math.pow(kVBase, 2) / MVAsc3 / Math.sqrt(1.0 + 1.0 / Math.pow(X1R1, 2));
-			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2)); //Approx
+			Xs   = Math.pow(kVBase, 2) / MVAsc1 / Math.sqrt(1.0 + 1.0 / Math.pow(X0R0, 2));  // approx
 			R1   = X1 / X1R1;
 			Xm   = Xs - X1;
 			X0   = (Xs + 2.0 * Xm);
@@ -145,10 +145,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			Rm = (R0 - R1) / 3.0;
 			break;
 
-		case 3:  // Z1, Z0    Specified
+		case 3:  // Z1, Z0; specified
 			Isc3 = kVBase * 1000.0 / DSSGlobals.SQRT3 / new Complex(R1, X1).abs();
 
-			if (nPhases == 1) {  // Force Z0 to be Z1 so Zs is same as Z1
+			if (nPhases == 1) {  // force Z0 to be Z1 so Zs is same as Z1
 				R0 = R1;
 				X0 = X1;
 			}
@@ -165,7 +165,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			break;
 		}
 
-		/* Update property Value array */
+		/* Update property value array */
 		/* Don't change a specified value; only computed ones */
 
 		Zs = new Complex(Rs, Xs);
@@ -188,7 +188,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		setSpectrumObj((com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			Globals.doSimpleMsg("Spectrum Object \"" + getSpectrum() + "\" for Device Vsource."+getName()+" Not Found.", 324);
+			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
 	}
@@ -201,7 +201,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Build only YPrim Series
+		// build only YPrim_Series
 		if (isYprimInvalid()) {
 			if (YPrim_Series != null) YPrim_Series = null;
 			YPrim_Series = new CMatrixImpl(Yorder);
@@ -215,7 +215,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		YprimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
 		FreqMultiplier = YprimFreq / BaseFrequency;
 
-		/* Put in Series RL Adjusted for frequency */
+		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
 				Value    = Z.getElement(i, j);
@@ -227,8 +227,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		Zinv.invert();  /* Invert in place */
 
 		if (Zinv.getInvertError() > 0) {
-			/* If error, put in Large series conductance */
-			Globals.doErrorMsg("VsourceObj.calcYPrim", "Matrix Inversion Error for Vsource \"" + getName() + "\"",
+			/* If error, put in large series conductance */
+			Globals.doErrorMsg("VsourceObj.calcYPrim", "Matrix inversion error for VSource \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 325);
 			Zinv.clear();
 			for (i = 0; i < nPhases; i++)
@@ -248,7 +248,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		YPrim.copyFrom(YPrim_Series);
 
-		/* Now Account for Open Conductors */
+		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
@@ -263,8 +263,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		try {
-			/* This formulation will theoretically handle voltage sources of any number of phases assuming they are
-			 * equally displaced in time.
+			/* This formulation will theoretically handle voltage sources of any
+			 * number of phases assuming they are equally displaced in time.
 			 */
 
 			switch (nPhases) {
@@ -281,8 +281,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			if (sol.isIsHarmonicModel()) {
 
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
-				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // Base voltage for this harmonic
-				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // Rotate for phase 1 shift
+				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // base voltage for this harmonic
+				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
 					Vterminal[i + nPhases] = Complex.ZERO;
@@ -292,35 +292,35 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 							Vharm = Utilities.rotatePhasorDeg(Vharm, 1.0, -360.0 / nPhases); // maintain pos seq
 							break;
 						case 0:
-							// Do nothing for Zero Sequence; All the same.
+							// do nothing for zero sequence; all the same.
 							break;
 						default:
-							Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0 / nPhases); // normal rotation
+							Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, -360.0 / nPhases);  // normal rotation
 							break;
 						}
 				}
 			} else {
 
 				if (Math.abs(sol.getFrequency() - SrcFrequency) > DSSGlobals.EPSILON2)
-					VMag = 0.0;  // Solution Frequency and Source Frequency don't match!
+					VMag = 0.0;  // solution frequency and source frequency don't match
 				/* NOTE: RE-uses VTerminal space */
 				for (i = 0; i < nPhases; i++) {
 					switch (SequenceType) {
 					case -1:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));   // neg seq
+						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));  // neg seq
 						break;
 					case 0:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));   // all the same for zero sequence
+						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));  // all the same for zero sequence
 						break;
 					default:
 						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i-1) * 360.0 / nPhases));
 						break;
 					}
-					Vterminal[i + nPhases] = Complex.ZERO;    // See comments in GetInjCurrents
+					Vterminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
 				}
 			}
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error computing Voltages for Vsource."+getName()+". Check specification. Aborting.", 326);
+			Globals.doSimpleMsg("Error computing voltages for VSource."+getName()+". Check specification. Aborting.", 326);
 			if (Globals.isIn_Redirect())
 				Globals.setRedirect_Abort(true);
 		}
@@ -332,7 +332,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		/* This is source injection */
 
-		return super.injCurrents();  // Add into system array
+		return super.injCurrents();  // add into system array
 	}
 
 	@Override
@@ -345,15 +345,15 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			for (int i = 0; i < Yorder; i++)
 				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
 
-			YPrim.MVMult(Curr, Vterminal);  // Current from Elements in System Y
+			YPrim.MVMult(Curr, Vterminal);  // current from elements in system Y
 
-			getInjCurrents(ComplexBuffer);  // Get present value of inj currents
-			// Add together  with Yprim currents
+			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			// add together with Yprim currents
 			for (int i = 0; i < Yorder; i++)
 				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
 
 		} catch (Exception e) {
-			Globals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
+			Globals.doErrorMsg("getCurrents for element: " + getName() + ".", e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 327);
 		}
 	}
@@ -386,9 +386,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		if (Complete) {
 			F.println();
-			F.println("BaseFrequency=" + BaseFrequency);
-			F.println("VMag=" + VMag);
-			F.println("Z Matrix=");
+			F.println("baseFrequency=" + BaseFrequency);
+			F.println("vMag=" + VMag);
+			F.println("zMatrix=");
 			for (int i = 0; i < nPhases; i++) {
 				for (int j = 0; j < i; j++) {
 					c = Z.getElement(i, j);
@@ -459,10 +459,10 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	 */
 	@Override
 	public void makePosSequence() {
-		String S = "Phases=1 ";
-		S = S + String.format("BasekV=%-.5g ", kVBase / DSSGlobals.SQRT3);
-		S = S + String.format("R1=%-.5g ", R1);
-		S = S + String.format("X1=%-.5g ", X1);
+		String S = "phases=1 ";
+		S = S + String.format("basekV=%-.5g ", kVBase / DSSGlobals.SQRT3);
+		S = S + String.format("r1=%-.5g ", R1);
+		S = S + String.format("x1=%-.5g ", X1);
 
 		Parser.getInstance().setCmdString(S);
 		edit();

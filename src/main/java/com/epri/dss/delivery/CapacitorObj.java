@@ -3,23 +3,23 @@ package com.epri.dss.delivery;
 /**
  * Basic capacitor
  *
- * Implemented as a two-terminal constant impedance (Power Delivery Element)
+ * Implemented as a two-terminal constant impedance (power delivery element)
  *
- * Bus2 connection defaults to 0 node of Bus1 (if Bus2 has the default bus
- * connection at the time Bus1 is defined.  Therefore, if only Bus1 is
- * specified, a shunt capacitor results. If delta connected, Bus2 is set to
- * node zero of Bus1 and nothing is returned in the lower half of YPrim - all
+ * bus2 connection defaults to 0 node of bus1 (if bus2 has the default bus
+ * connection at the time bus1 is defined.  Therefore, if only bus1 is
+ * specified, a shunt capacitor results. If delta connected, bus2 is set to
+ * node zero of bus1 and nothing is returned in the lower half of YPrim - all
  * zeroes.
  *
- * If an ungrounded wye is desired, explicitly set Bus2= and set all nodes the
+ * If an ungrounded wye is desired, explicitly set bus2= and set all nodes the
  * same,
- *   e.g. Bus1.4.4.4   (uses 4th node of Bus1 as neutral point)
- *     or BusNew.1.1.1  (makes a new bus for the neutral point)
+ *   e.g. bus1.4.4.4   (uses 4th node of Bus1 as neutral point)
+ *     or busNew.1.1.1  (makes a new bus for the neutral point)
  * You must specify the nodes or you will get a series capacitor!
  *
  * A series capacitor is specified simply by setting bus2 and declaring the
  * connection to be Wye.  If the connection is specified as delta, nothing will
- * be connected to Bus2.
+ * be connected to bus2.
  * In fact the number of terminals is set to 1.
  *
  * Capacitance may be specified as:
@@ -42,7 +42,7 @@ public interface CapacitorObj extends PDElement {
 
 	void setStates(int Idx, int Value);
 
-	/* 1=kvar, 2=Cuf, 3=Cmatrix */
+	/** 1=kvar, 2=Cuf, 3=Cmatrix */
 	void setNumSteps(int Value);
 
 	int getNumSteps();

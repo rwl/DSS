@@ -14,8 +14,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	public VSourceImpl() {
 		super();
-		this.Class_Name   = "Vsource";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
+		this.Class_Name = "Vsource";
+		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don't want this in PC element list
 
 		this.ActiveElement = -1;
 
@@ -30,11 +30,10 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	protected void defineProperties() {
 
 		NumProperties = VSource.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define Property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "basekv";
 		PropertyName[2] = "pu";
@@ -55,7 +54,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	    PropertyName[17] = "Sequence";
 		PropertyName[18]  = "bus2";
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
 		PropertyHelp[1] = "Base Source kV, usually phase-phase (L-L) unless you are making a positive-sequence model or 1-phase model"+
 				"in which case, it will be phase-neutral (L-N) kV.";
@@ -94,9 +93,9 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				"Default is Bus1.0.0.0 (grounded wye connection)";
 
 		ActiveProperty = VSource.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override help string
+		// override help string
 		PropertyHelp[VSource.NumPropsThisClass - 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
@@ -112,26 +111,26 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		String S2;
 		int i, dotpos;
 
-		// Special handling for Bus 1
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus 1
+		// set bus2=bus1.0.0.0
 
 		VSourceObj avs = getActiveVsourceObj();
 
 		avs.setBus(1, S);  // TODO Check zero based indexing
 
-		// Default Bus2 to zero node of Bus1. (Grounded-Y connection)
+		// default bus2 to zero node of bus1. (Grounded-Y connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
 			S2 = S.substring(0, dotpos);
 		} else {
-			S2 = S.substring(0);  // copy up to Dot
+			S2 = S.substring(0);  // copy up to dot
 		}
 		for (i = 0; i < avs.getNPhases(); i++)
 			S2 = S2 + ".0";  // append series of ".0"'s
 
-		avs.setBus(2, S2);  // default setting for Bus2
+		avs.setBus(2, S2);  // default setting for bus2
 	}
 
 	@Override
@@ -140,7 +139,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// Continue parsing with contents of parser
+		// continue parsing with contents of parser
 		setActiveVsourceObj((VSourceObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
 
@@ -163,26 +162,26 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"VSource."+avs.getName()+"\"", 320);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"VSource."+avs.getName()+"\"", 320);
 				break;
 			case 0:
-				vSourceSetBus1(Param);   // special handling of Bus 1
+				vSourceSetBus1(Param);  // special handling of bus 1
 				break;
 			case 1:
-				avs.setkVBase(parser.makeDouble());  // basekv
+				avs.setkVBase(parser.makeDouble());  // baseKV
 				break;
 			case 2:
 				avs.setPerUnit(parser.makeDouble());  // pu
 				break;
 			case 3:
-				avs.setAngle(parser.makeDouble());  // Ang
+				avs.setAngle(parser.makeDouble());  // ang
 				break;
 			case 4:
-				avs.setSrcFrequency(parser.makeDouble()); // freq
+				avs.setSrcFrequency(parser.makeDouble());  // freq
 				break;
 			case 5:
 				avs.setNPhases(parser.makeInteger());  // num phases
-				avs.setNConds(avs.getNPhases());  // Force reallocation of terminal info
+				avs.setNConds(avs.getNPhases());  // force reallocation of terminal info
 				break;
 			case 6:
 				avs.setMVAsc3(parser.makeDouble());  // MVAsc3
@@ -226,7 +225,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Scan Type for \"" + getName() +"."+ avs.getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -242,7 +241,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown Sequence Type for \"" + getName() +"."+ getName() + "\": "+Param, 321);
+					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+Param, 321);
 					break;
 				}
 				break;
@@ -254,7 +253,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				break;
 			}
 
-			// Set the Z spec type switch depending on which was specified.
+			// set the Z spec type switch depending on which was specified
 			switch (ParamPointer) {
 			case 6:
 				avs.setZSpecType(1);
@@ -304,7 +303,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			if (avs.getNPhases() != OtherVSource.getNPhases()) {
 				avs.setNPhases(OtherVSource.getNPhases());
-				avs.setNConds(avs.getNPhases());  // Forces reallocation of terminal stuff
+				avs.setNConds(avs.getNPhases());  // forces reallocation of terminal stuff
 
 				avs.setYorder(avs.getNConds() * avs.getNTerms());
 				avs.setYprimInvalid(true);
@@ -337,7 +336,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Vsource makeLike: \"" + OtherSource + "\" Not Found.", 322);
+			DSSGlobals.getInstance().doSimpleMsg("Error in VSource makeLike: \"" + OtherSource + "\" not found.", 322);
 		}
 
 		return Result;
@@ -345,7 +344,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Vsource.init", -1);
+		DSSGlobals.getInstance().doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;
 	}
 

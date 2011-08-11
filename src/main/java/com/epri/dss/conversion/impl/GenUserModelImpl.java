@@ -8,9 +8,9 @@ import com.epri.dss.shared.impl.GeneratorVars;
 
 public class GenUserModelImpl implements GenUserModel {
 
-	private int Handle;  // Handle to DLL containing user model
-	private int ID;      // ID of this instance of the user model
-	private String Name; // Name of the DLL file containing user model
+	private int Handle;  // handle to DLL containing user model
+	private int ID;      // id of this instance of the user model
+	private String Name; // name of the DLL file containing user model
 	private boolean FuncError;
 
 	protected GeneratorVars ActiveGeneratorVars;
