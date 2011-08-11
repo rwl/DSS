@@ -1,6 +1,5 @@
 package com.epri.dss.meter;
 
-import java.io.File;
 import java.io.FileWriter;
 
 public interface EnergyMeter extends MeterClass {

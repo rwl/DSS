@@ -68,7 +68,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			PowerFreq= false;
 		}
 
-		// Self Impedances - CN cores and bare neutrals
+		// self impedances - CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			Zi = getZint(i);
 			if (PowerFreq) {  // for less than 1 kHz, use published GMR
@@ -92,7 +92,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			Zmat.setElement(idxi, idxi, Zi.add( Zspacing.add(getZe(i, i)) ));
 		}
 
-		// Mutual Impedances - between CN cores and bare neutrals
+		// mutual impedances - between CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			for (j = 0; j < i - 1; j++) {
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
@@ -100,7 +100,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			}
 		}
 
-		// Mutual Impedances - CN to other CN, cores, and bare neutrals
+		// mutual impedances - CN to other CN, cores, and bare neutrals
 		for (i = 0; i < getNPhases(); i++) {
 			idxi = i + getNumConds();
 			for (j = 0; j < i - 1; j++) {  // CN to other CN
@@ -142,9 +142,9 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		}
 
 		if (ReducedSize > 0)
-			Kron(ReducedSize);  // Was reduced so reduce again to same size
+			Kron(ReducedSize);  // was reduced so reduce again to same size
 
-		/* Else the Zmatrix is OK as last computed */
+		/* else the Zmatrix is OK as last computed */
 		RhoChanged = false;
 	}
 

@@ -18,7 +18,9 @@ public class DSSExecutive implements Executive {
 	private String RecorderFile;
 	private FileWriter RecorderFileWriter;
 
-	// Private constructor prevents instantiation from other classes
+	/**
+	 * Private constructor prevents instantiation from other classes
+	 */
 	private DSSExecutive() {
 		super();
 
@@ -82,7 +84,7 @@ public class DSSExecutive implements Executive {
 	 * used by all circuits.
 	 */
 	public void createDefaultDSSItems() {
-		/* this load shape used for generator dispatching, etc.   Loads may refer to it, also. */
+		/* this load shape used for generator dispatching, etc. loads may refer to it, also. */
 		setCommand("new loadshape.default npts=24 1.0 mult=(.677 .6256 .6087 .5833 .58028 .6025 .657 .7477 .832 .88 .94 .989 .985 .98 .9898 .999 1 .958 .936 .913 .876 .876 .828 .756)");
 		if (DSSGlobals.getInstance().getCmdResult() == 0) {
 			setCommand("new growthshape.default 2 year=\"1 20\" mult=(1.025 1.025)");  // 20 years at 2.5%

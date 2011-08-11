@@ -4,13 +4,17 @@ import com.epri.dss.common.DSSClass;
 
 /* Superstructure for all Spectrum objects */
 public interface Spectrum extends DSSClass {
-	
+
 	static final int NumPropsThisClass = 5;
 
-	/* Returns active spectrum code string */
+	/**
+	 * Returns active spectrum code string.
+	 */
 	String getCode();
 
-	/* Sets the active Spectrum */
+	/**
+	 * Sets the active spectrum.
+	 */
 	void setCode(String Value);
 
 	int edit();

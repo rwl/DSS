@@ -108,7 +108,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 							"will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix.";
 
 		ActiveProperty = LineCode.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	/**
@@ -173,21 +173,21 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		MatBuffer = new double[np2];
 		OrderFound = Parser.getInstance().parseAsSymMatrix(getActiveLineCodeObj().getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful
+		if (OrderFound > 0) {  // parse was successful
 			switch (i) {  // TODO Check zero based indexing
-			case 1:  // R
+			case 1:  // r
 				ZValues = getActiveLineCodeObj().getZ().asArray(Norder);  // TODO Check nOrder is set
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
 				break;
-			case 2:  // X
+			case 2:  // x
 				ZValues = getActiveLineCodeObj().getZ().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
 				break;
-			case 3:  // YC Matrix
+			case 3:  // Yc matrix
 				Factor = DSSGlobals.TwoPi * getActiveLineCodeObj().getBaseFrequency() * 1.0e-9;
 				ZValues = getActiveLineCodeObj().getYC().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
@@ -214,7 +214,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveLineCodeObj());
 		SymComponentsChanged = false;
 		MatrixChanged = false;
-		getActiveLineCodeObj().setReduceByKron(false);  // Allow all matrices to be computed it raw form
+		getActiveLineCodeObj().setReduceByKron(false);  // allow all matrices to be computed it raw form
 
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
@@ -233,7 +233,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
 					break;
 				case 1:
-					getActiveLineCodeObj().setNPhases(parser.makeInteger());  // Use property value to force reallocations
+					getActiveLineCodeObj().setNPhases(parser.makeInteger());  // use property value to force reallocations
 					break;
 				case 2:
 					setZ1Z0(1, parser.makeDouble());  // R1
@@ -248,7 +248,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 					setZ1Z0(4, parser.makeDouble());  // X0
 					break;
 				case 6:
-					setZ1Z0(5, parser.makeDouble() * 1.0e-9);  // C1   // Convert from nano to farads
+					setZ1Z0(5, parser.makeDouble() * 1.0e-9);  // C1   // convert from nano to farads
 					break;
 				case 7:
 					setZ1Z0(6, parser.makeDouble() * 1.0e-9);  // C0
@@ -332,7 +332,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			}
 		}
 
-		return 0;
+		return Result;
 	}
 
 	@Override
@@ -382,7 +382,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				getActiveLineCodeObj().setPropertyValue(i, OtherLineCode.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Line MakeLike: \"" + LineName + "\" Not Found.", 102);
+			DSSGlobals.getInstance().doSimpleMsg("Error in line makeLike: \"" + LineName + "\" not found.", 102);
 		}
 
 		return Result;
@@ -403,7 +403,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	}
 
 	/**
-	 * Sets the active linecode.
+	 * Sets the active line code.
 	 */
 	public void setCode(String Value) {
 		LineCodeObj pCode;
@@ -417,7 +417,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("Linecode: \"" + Value + "\" not Found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("LineCode: \"" + Value + "\" not found.", 103);
 	}
 
 	public static LineCodeObj getActiveLineCodeObj() {

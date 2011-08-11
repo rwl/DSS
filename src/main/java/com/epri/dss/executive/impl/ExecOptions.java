@@ -1,8 +1,5 @@
 package com.epri.dss.executive.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.common.Circuit;
@@ -27,7 +24,7 @@ public class ExecOptions {
 
 	private CommandList OptionList;
 
-	// Private constructor prevents instantiation from other classes
+	// private constructor prevents instantiation from other classes
 	private ExecOptions() {
 		defineOptions();
 
@@ -78,7 +75,7 @@ public class ExecOptions {
 		ExecOption[23] = "emergvmaxpu";
 		ExecOption[24] = "%mean";
 		ExecOption[25] = "%stddev";
-		ExecOption[26] = "LDCurve";  // Load Duration Curve
+		ExecOption[26] = "LDCurve";  // load duration curve
 		ExecOption[27] = "%growth";  // default growth rate
 		ExecOption[28] = "Genkw";
 		ExecOption[29] = "Genpf";
@@ -90,10 +87,10 @@ public class ExecOptions {
 		ExecOption[35] = "Lossweight";
 		ExecOption[36] = "UEregs";
 		ExecOption[37] = "Lossregs";
-		ExecOption[38] = "Voltagebases";  //  changes the default voltage base rules
-		ExecOption[39] = "Algorithm";  //  changes the default voltage base rules
+		ExecOption[38] = "Voltagebases";  // changes the default voltage base rules
+		ExecOption[39] = "Algorithm";     // changes the default voltage base rules
 		ExecOption[40] = "Trapezoidal";
-		ExecOption[41] = "Autobuslist";  // array of bus names to include in auto add solutions
+		ExecOption[41] = "Autobuslist";   // array of bus names to include in auto add solutions
 		ExecOption[42] = "Controlmode";
 		ExecOption[43] = "Tracecontrol";
 		ExecOption[44] = "Genmult";
@@ -371,7 +368,7 @@ public class ExecOptions {
 	}
 
 	/**
-	 * Set Commands that do not require a circuit.
+	 * Set commands that do not require a circuit.
 	 *
 	 * This is for setting global options that do not require an active circuit.
 	 */
@@ -395,13 +392,13 @@ public class ExecOptions {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set Command ", 130);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set command ", 130);
 				break;
 			case 14:
 				Globals.setDefaultEditor(Param);  // 'Editor='
 				break;
 			case 56:
-				Globals.setDataPath(Param);  // Set a legal data path
+				Globals.setDataPath(Param);  // set a legal data path
 				break;
 			case 66:
 				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(Param));
@@ -411,7 +408,7 @@ public class ExecOptions {
 				break;
 			default:
 				Globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
-				Result = false;  // Indicate that we could not process all set command
+				Result = false;  // indicate that we could not process all set command
 				break;
 			}
 
@@ -423,9 +420,9 @@ public class ExecOptions {
 	}
 
 	/**
-	 * Set DSS Options.
+	 * Set DSS options.
 	 *
-	 * Solve Command is re-routed here first to set options before solving.
+	 * Solve command is re-routed here first to set options before solving.
 	 */
 	public int doSetCmd(int SolveOption) {
 		LoadShapeObj TestLoadShapeObj;
@@ -437,7 +434,7 @@ public class ExecOptions {
 		SolutionObj solution;
 
 		int Result = 0;
-		// Continue parsing command line
+		// continue parsing command line
 		int ParamPointer = 0;
 		String ParamName = parser.getNextParam();
 		String Param = parser.makeString();
@@ -451,7 +448,7 @@ public class ExecOptions {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set Command ", 130);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set command ", 130);
 				break;
 			case 0:
 				DSSClassDefs.setObjectClass(Param);
@@ -515,7 +512,7 @@ public class ExecOptions {
 				solution.setLoadModel(solution.getDefaultLoadModel());
 				break;
 			case 19:
-				Globals.getActiveCircuit().setLoadMultiplier(parser.makeDouble());  // Set using LoadMultiplier property
+				Globals.getActiveCircuit().setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
 				break;
 			case 20:
 				Globals.getActiveCircuit().setNormalMinVolts(parser.makeDouble());
@@ -540,7 +537,7 @@ public class ExecOptions {
 				ckt.setLoadDurCurve(Param);
 				ckt.setLoadDurCurveObj((LoadShapeObj) Globals.getLoadShapeClass().find(Param));
 				if (ckt.getLoadDurCurveObj() == null)
-					Globals.doSimpleMsg("Load-Duration Curve not found.", 131);
+					Globals.doSimpleMsg("Load-duration curve not found.", 131);
 				break;
 			case 27:
 				ckt = Globals.getActiveCircuit();
@@ -632,18 +629,18 @@ public class ExecOptions {
 				ckt.setPriceCurve(Param);
 				ckt.setPriceCurveObj((PriceShapeObj) Globals.getLoadShapeClass().find(Param));
 				if (ckt.getPriceCurveObj() == null)
-					Globals.doSimpleMsg("Priceshape: \"" +Param+ "\" not found.", 132);
+					Globals.doSimpleMsg("PriceShape: \"" +Param+ "\" not found.", 132);
 				break;
 			case 51:
 				ckt = Globals.getActiveCircuit();
 				if (ckt.getActiveCktElement() != null) {
 					CktElement cktElem = ckt.getActiveCktElement();
 					cktElem.setActiveTerminalIdx(parser.makeInteger());
-					Globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );   // bus connected to terminal
+					Globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );  // bus connected to terminal
 				}
 				break;
 			case 52:
-				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // Set Base Frequency for system (used henceforth)
+				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
 				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 53:
@@ -653,10 +650,10 @@ public class ExecOptions {
 				Globals.getActiveCircuit().getSolution().setMaxControlIterations(parser.makeInteger());
 				break;
 			case 55:
-				Result = Globals.setActiveBus(Param);  // See DSSGlobals
+				Result = Globals.setActiveBus(Param);  // see DSSGlobals
 				break;
 			case 56:
-				Globals.setDataPath(Param);  // Set a legal data path
+				Globals.setDataPath(Param);  // set a legal data path
 				break;
 			case 57:
 				ExecHelper.doKeeperBusList(Param);
@@ -706,7 +703,7 @@ public class ExecOptions {
 				break;
 			case 72:
 				Globals.setDefaultBaseFreq(parser.makeDouble());
-				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // Set Base Frequency for system (used henceforth)
+				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
 				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 73:
@@ -734,7 +731,7 @@ public class ExecOptions {
 				Globals.setDefaultEarthModel(Utilities.interpretEarthModel(Param));
 				break;
 			default:
-				// Ignore excess parameters
+				// ignore excess parameters
 				break;
 			}
 
@@ -758,8 +755,8 @@ public class ExecOptions {
 	}
 
 	/**
-	 * Get DSS Options Reguaeste and put it in Global Result string
-	 * may be retrieved by Result property of the DSSText interface.
+	 * Get DSS options reguaeste and put it in global result string
+	 * may be retrieved by result property of the DSSText interface.
 	 */
 	public int doGetCmd() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
@@ -770,17 +767,17 @@ public class ExecOptions {
 		try {
 			Globals.setGlobalResult("");  // initialize for appending
 
-			// Continue parsing command line
+			// continue parsing command line
 			String ParamName = Parser.getInstance().getNextParam();
 			String Param = Parser.getInstance().makeString();
-			// there will be no named paramters in this command and the params
+			// there will be no named parameters in this command and the params
 			// themselves will be the parameter name to return
 			while (Param.length() > 0) {
 				ParamPointer = OptionList.getCommand(Param);
 
 				switch (ParamPointer) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Get Command ", 133);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Get command ", 133);
 					break;
 				case 0:
 					Globals.appendGlobalResult(Globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
@@ -1110,7 +1107,7 @@ public class ExecOptions {
 					Globals.appendGlobalResult(Utilities.getEarthModel(Globals.getDefaultEarthModel()));
 					break;
 				default:
-					// Ignore excess parameters
+					// ignore excess parameters
 					break;
 				}
 

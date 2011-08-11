@@ -1,5 +1,7 @@
 package com.epri.dss.executive.impl;
 
+import java.io.File;
+
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.parser.impl.Parser;
@@ -19,7 +21,9 @@ public class ExecCommands {
 	private String LastCmdLine;
 	private String RedirFile;
 
-	// Private constructor prevents instantiation from other classes
+	/**
+	 * Private constructor prevents instantiation from other classes.
+	 */
 	private ExecCommands() {
 		defineCommands();
 
@@ -59,24 +63,24 @@ public class ExecCommands {
 		ExecCommand[11] = "Plot";
 		ExecCommand[12] = "Reset";
 		ExecCommand[13] = "Compile";
-		ExecCommand[14] = "Set";   // Set DSS Options
-		ExecCommand[15] = "Dump";   // Debug dump
-		ExecCommand[16] = "Open";   // Open a device terminal conductor
-		ExecCommand[17] = "Close";   // Close a device terminal conductor
-		ExecCommand[18] = "//";       // Comment
+		ExecCommand[14] = "Set";    // set DSS options
+		ExecCommand[15] = "Dump";   // debug dump
+		ExecCommand[16] = "Open";   // open a device terminal conductor
+		ExecCommand[17] = "Close";  // close a device terminal conductor
+		ExecCommand[18] = "//";     // comment
 		ExecCommand[19] = "Redirect";
 		ExecCommand[20] = "Help";
 		ExecCommand[21] = "Quit";
-		ExecCommand[22] = "?";   // Property Value inquiry
+		ExecCommand[22] = "?";      // property value inquiry
 		ExecCommand[23] = "Next";
 		ExecCommand[24] = "Panel";
 		ExecCommand[25] = "Sample";
 		ExecCommand[26] = "Clear";
 		ExecCommand[27] = "About";
-		ExecCommand[28] = "Calcvoltagebases";  //  Computes voltage bases
-		ExecCommand[29] = "SetkVBase";  //  Set kV Base at a Bus
-		ExecCommand[30] = "BuildY";  //  forces Rebuild of Y matrix right now
-		ExecCommand[31] = "Get";  //  returns values set WITH Set command
+		ExecCommand[28] = "Calcvoltagebases";  // computes voltage bases
+		ExecCommand[29] = "SetkVBase";  // set kV base at a bus
+		ExecCommand[30] = "BuildY";  // forces rebuild of Y matrix right now
+		ExecCommand[31] = "Get";  // returns values set with set command
 		ExecCommand[32] = "Init";
 		ExecCommand[33] = "Export";
 		ExecCommand[34] = "Fileedit";
@@ -91,10 +95,10 @@ public class ExecCommands {
 		ExecCommand[43] = "Cktlosses";
 		ExecCommand[44] = "Allocateloads";
 		ExecCommand[45] = "Formedit";
-		ExecCommand[46] = "Totals";  // Total all energymeters
-		ExecCommand[47] = "Capacity";  // Find upper kW limit of system for present year
-		ExecCommand[48] = "Classes";  // List of intrinsic classes
-		ExecCommand[49] = "Userclasses";  // List of user-defined classes
+		ExecCommand[46] = "Totals";  // total all energyMeters
+		ExecCommand[47] = "Capacity";  // find upper kW limit of system for present year
+		ExecCommand[48] = "Classes";  // list of intrinsic classes
+		ExecCommand[49] = "Userclasses";  // list of user-defined classes
 		ExecCommand[50] = "Zsc";
 		ExecCommand[51] = "Zsc10";
 		ExecCommand[52] = "ZscRefresh";
@@ -480,7 +484,7 @@ public class ExecCommands {
 			if (Param.length() == 0) return;  // skip blank line
 
 			// check for command verb or property value
-			// commands do not have equal signs so ParamName must be zero
+			// commands do not have equal signs so paramName must be zero
 			if (ParamName.length() == 0)
 				ParamPointer = CommandList.getCommand(Param);
 
@@ -510,18 +514,18 @@ public class ExecCommands {
 			case 14:
 				if (Globals.getActiveCircuit() == null) {
 					ExecOptions.getInstance().doSetCmd_NoCircuit();  // can only call this if no circuit active
-					return;  // We exit with either a good outcome or bad
+					return;  // we exit with either a good outcome or bad
 				}
 				break;
 			case 18:
-				// Do Nothing - comment
+				// do nothing - comment
 				break;
 			case 20:
 				Globals.setCmdResult(ExecHelper.doHelpCmd());
 				break;
 			case 21:
 				if (!Globals.isDLL())
-					Globals.getDSSForms().exitControlPanel();  // Quit in Stand alone version
+					Globals.getDSSForms().exitControlPanel();
 				break;
 			case 24:
 				Globals.getDSSForms().showControlPanel();
@@ -556,12 +560,13 @@ public class ExecCommands {
 			case 71:
 				ParamName = Parser.getNextParam();
 				Param = Parser.makeString();
-//				if (setCurrentDir(Param)) {  FIXME: Change cwd.
-//					Globals.setCmdResult(0);
-//					Globals.setDataPath(Param);  // Change DSSdataDirectory
-//				} else {
-//					Globals.doSimpleMsg("Directory \""+Param+"\" not found.", 282);
-//				}
+				if (new File(Globals.getCurrentDirectory()).exists()) {
+					Globals.setCurrentDirectory(Param);
+					Globals.setCmdResult(0);
+					Globals.setDataPath(Param);  // change DSSDataDirectory
+				} else {
+					Globals.doSimpleMsg("Directory \""+Param+"\" not found.", 282);
+				}
 				break;
 			case 74:
 				ExecHelper.doADOScmd();
@@ -575,7 +580,7 @@ public class ExecCommands {
 				break;
 			}
 
-			// Now check to see if this is a command or a property reference
+			// now check to see if this is a command or a property reference
 
 			if (ParamPointer == -1) {
 				/* If not a command or the command is unknown, then it could be a property of a circuit element */
@@ -587,18 +592,18 @@ public class ExecCommands {
 				} else {
 					ExecHelper.parseObjName(ParamName, ObjName, PropName);
 					if (ObjName.length() > 0)
-						Globals.setObject(ObjName.toString());  // Set active element
+						Globals.setObject(ObjName.toString());  // set active element
 					if (Globals.getActiveDSSObject() != null) {
 						// rebuild command line and pass to editor
-						// use quotes to ensure first parameter is interpreted OK after rebuild
+						// use quotes to ensure first parameter is interpreted ok after rebuild
 						Parser.setCmdString(PropName.toString() + "=\"" + Param + "\" " + Parser.getRemainder());
 						Globals.getActiveDSSClass().edit();
 					}
 				}
-				return;  // Done - don't need to do anything else
+				return;
 			}
 
-			// Process the rest of the commands
+			// process the rest of the commands
 			switch (ParamPointer) {
 			case 1:
 				Globals.setCmdResult(ExecHelper.doEditCmd());  // edit
@@ -684,9 +689,9 @@ public class ExecCommands {
 			case 33:
 				Globals.setCmdResult(ExportOptions.getInstance().doExportCmd());
 				break;
-//			case 34:
-//				Globals.setCmdResult(ExecHelper.doFileEditCmd());
-//				break;
+			case 34:
+				Globals.setCmdResult(ExecHelper.doFileEditCmd());
+				break;
 			case 35:
 				Globals.setCmdResult(ExecHelper.doVoltagesCmd(false));
 				break;
@@ -850,7 +855,7 @@ public class ExecCommands {
 				Utilities.Obfuscate();
 				break;
 			default:
-				// Ignore excess parameters
+				// ignore excess parameters
 				break;
 			}
 		} catch (Exception e) {

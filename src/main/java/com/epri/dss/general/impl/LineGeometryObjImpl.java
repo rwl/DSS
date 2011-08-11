@@ -145,7 +145,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 			Result = Result + "]";
 			break;
 		default:
-			// Inherited parameters
+			// inherited parameters
 			Result = super.getPropertyValue(Index);
 			break;
 		}
@@ -230,9 +230,9 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 	@Override
 	public void saveWrite(PrintWriter F) {
 		/* Write only properties that were explicitly set in the
-		 * final order they were actually set
+		 * final order they were actually set.
 		 */
-		int iProp = getNextPropertySet(0);  // Works on ActiveDSSObject
+		int iProp = getNextPropertySet(0);  // works on activeDSSObject
 		if (iProp >= 0)  // TODO Check zero based indexing
 			F.println();
 
@@ -412,12 +412,12 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		} else {
 			LineData.calc(f);
 			if (Reduce)
-				LineData.reduce(); // reduce out neutrals
+				LineData.reduce();  // reduce out neutrals
 		}
 	}
 
 	/**
-	 * Called from a Line object that has its own spacing and wires input
+	 * Called from a line object that has its own spacing and wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases.
 	 */
 	public void loadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires) {

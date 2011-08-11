@@ -10,10 +10,10 @@ public interface MeterClass extends CktElementClass {
 
 	void resetAll();
 
-	/* Force all monitors to take a sample */
+	/** Force all monitors to take a sample */
 	void sampleAll();
 
-	/* Force all monitors to save their buffers to disk */
+	/** Force all monitors to save their buffers to disk */
 	void saveAll();
 
 }

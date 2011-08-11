@@ -34,7 +34,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = LineGeometry.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0]  = "nconds";
@@ -88,7 +88,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 
 		ActiveProperty = LineGeometry.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() + "." + alg.getName() + "\"", 10101);
 					break;
 				case 0:
-					alg.setNconds(parser.makeInteger());  // Use property value to force reallocations
+					alg.setNconds(parser.makeInteger());  // use property value to force reallocations
 					break;
 				case 1:
 					alg.setNphases(parser.makeInteger());
@@ -216,7 +216,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 							}
 						} else {
-							Globals.doSimpleMsg("WireData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+							Globals.doSimpleMsg("WireData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
 					break;
@@ -229,7 +229,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 					Globals.getAuxParser().setCmdString(parser.makeString());
 					for (int i = istart; i < istop + 1; i++) {
-						Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+						Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
 						alg.getCondName()[i] = Globals.getAuxParser().makeString();
 
 						Globals.getCNDataClass().setCode(alg.getCondName()[i]);
@@ -243,7 +243,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 							}
 						} else {
-							Globals.doSimpleMsg("CNData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+							Globals.doSimpleMsg("CNData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
 					break;
@@ -270,7 +270,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 							}
 						} else {
-							Globals.doSimpleMsg("TSData Object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
+							Globals.doSimpleMsg("TSData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
 						}
 					}
 					break;
@@ -288,7 +288,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 					break;
 				case 2:
 					if ((alg.getActiveCond() < 1) || (alg.getActiveCond() > alg.getNconds()))
-						Globals.doSimpleMsg("Illegal cond= specification in Line Geometry:" + DSSGlobals.CRLF + parser.getCmdString(), 10102);
+						Globals.doSimpleMsg("Illegal cond= specification in line geometry:" + DSSGlobals.CRLF + parser.getCmdString(), 10102);
 					break;
 				case 3:
 					Globals.getWireDataClass().setCode(Param);
@@ -303,7 +303,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 						}
 					} else {
-						Globals.doSimpleMsg("WireData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
+						Globals.doSimpleMsg("WireData object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
 					break;
 				case 12:
@@ -319,7 +319,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 						}
 					} else {
-						Globals.doSimpleMsg("CNData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
+						Globals.doSimpleMsg("CNData object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
 					break;
 				case 13:
@@ -335,7 +335,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
 						}
 					} else {
-						Globals.doSimpleMsg("TSData Object \"" + Param + "\" not defined. Must be previously defined.", 10103);
+						Globals.doSimpleMsg("TSData object \"" + Param + "\" not defined. Must be previously defined.", 10103);
 					}
 					break;
 				}
@@ -422,7 +422,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				alg.setPropertyValue(i, OtherLineGeometry.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in LineGeometry MakeLike: \"" + LineName + "\" Not Found.", 102);
+			DSSGlobals.getInstance().doSimpleMsg("Error in LineGeometry makeLike: \"" + LineName + "\" not found.", 102);
 		}
 
 		return Result;
@@ -450,7 +450,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("LineGeometry: \"" + Value + "\" not Found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("LineGeometry: \"" + Value + "\" not found.", 103);
 	}
 
 	public static LineGeometryObj getActiveLineGeometryObj() {

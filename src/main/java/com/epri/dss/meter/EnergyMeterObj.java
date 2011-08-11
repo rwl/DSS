@@ -1,6 +1,5 @@
 package com.epri.dss.meter;
 
-import java.io.File;
 import java.io.FileWriter;
 
 import com.epri.dss.common.FeederObj;
@@ -44,7 +43,7 @@ import com.epri.dss.shared.CktTree;
 public interface EnergyMeterObj extends MeterElement {
 
 	static final int NumEMVbase = 7;
-	// Total number of energy meter registers
+	/** Total number of energy meter registers */
 	static final int NumEMRegisters = 32 + 5 * NumEMVbase;
 
 	String[] getRegisterNames();
@@ -81,7 +80,7 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void allocateLoad();
 
-	/* Reduce Zone by eliminating buses and merging lines */
+	/** Reduce zone by eliminating buses and merging lines */
 	void reduceZone();
 
 	void saveZone(String dirname);

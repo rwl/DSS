@@ -54,22 +54,22 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	public double getPrice(double Hr) {
 		int Index, i;
 
-		double Result = 0.0;    // default return value if no points in curve
+		double Result = 0.0;  // default return value if no points in curve
 
-		if (NumPoints > 0)  // Handle exceptional cases
+		if (NumPoints > 0)  // handle exceptional cases
 			if (NumPoints == 1) {
 				Result = PriceValues[0];
 			} else {
 				if (Interval > 0.0) {
 					Index = (int) Math.round(Hr / Interval);
-					if (Index > NumPoints) Index = Index % NumPoints;  // Wrap around using remainder
+					if (Index > NumPoints) Index = Index % NumPoints;  // wrap around using remainder
 					if (Index == 0) Index = NumPoints;
 					Result = PriceValues[Index];
 				} else {
-					// For random interval
+					// for random interval
 
 					/* Start with previous value accessed under the assumption that most
-					 * of the time, this FUNCTION will be called sequentially
+					 * of the time, this function will be called sequentially.
 					 */
 
 					/* Normalize Hr to max hour in curve to get wraparound */
@@ -77,13 +77,13 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 						Hr = Hr - (int) (Hr / Hours[NumPoints]) * Hours[NumPoints];
 					}
 
-					if (Hours[LastValueAccessed] > Hr) LastValueAccessed = 1;  // Start over from Beginning
+					if (Hours[LastValueAccessed] > Hr) LastValueAccessed = 1;  // start over from beginning
 					for (i = LastValueAccessed; i < NumPoints; i++) {  // TODO Check zero based indexing
-						if (Math.abs(Hours[i] - Hr) < 0.00001) {  // If close to an actual point, just use it.
+						if (Math.abs(Hours[i] - Hr) < 0.00001) {  // if close to an actual point, just use it.
 							Result = PriceValues[i];
 							LastValueAccessed = i;
 							return Result;
-						} else if (Hours[i] > Hr) {  // Interpolate for Price
+						} else if (Hours[i] > Hr) {  // interpolate for price
 							LastValueAccessed = i - 1;
 							Result = PriceValues[LastValueAccessed] +
 									(Hr - Hours[LastValueAccessed]) / (Hours[i] - Hours[LastValueAccessed]) *
@@ -92,7 +92,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 						}
 					}
 
-					// If we fall through the loop, just use last value
+					// if we fall through the loop, just use last value
 					LastValueAccessed = NumPoints - 1;
 					Result            = PriceValues[NumPoints];
 				}
@@ -233,18 +233,18 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		setPropertyValue(0, "0");  // Number of points to expect
+		setPropertyValue(0, "0");  // number of points to expect
 		setPropertyValue(1, "1");  // default = 1.0 hr;
 		setPropertyValue(2, "");   // vector of multiplier values
 		setPropertyValue(3, "");   // vextor of hour values
 		setPropertyValue(4, "0");  // set the mean (otherwise computed)
 		setPropertyValue(5, "0");  // set the std dev (otherwise computed)
-		setPropertyValue(6, "");   // Switch input to a csvfile
+		setPropertyValue(6, "");   // switch input to a csvfile
 		setPropertyValue(7, "");   // switch input to a binary file of singles
 		setPropertyValue(8, "");   // switch input to a binary file of singles
 		setPropertyValue(9, "3600");  // seconds
 		setPropertyValue(10, "60");   // minutes
-		setPropertyValue(11, "");  // action option .
+		setPropertyValue(11, "");     // action option
 
 		super.initPropertyValues(PriceShape.NumPropsThisClass);
 	}
@@ -265,9 +265,9 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	}
 
 	public void setNumPoints(int numPoints) {
-		setPropertyValue(0, String.valueOf(numPoints));  // Update property list variable
+		setPropertyValue(0, String.valueOf(numPoints));  // update property list variable
 
-		// Reset array property values to keep them in propoer order in save
+		// reset array property values to keep them in proper order in save
 
 		if (ArrayPropertyIndex >= 0)
 			setPropertyValue(ArrayPropertyIndex, getPropertyValue(ArrayPropertyIndex));

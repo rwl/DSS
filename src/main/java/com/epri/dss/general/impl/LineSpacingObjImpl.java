@@ -60,7 +60,7 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		case 5:
 			LineUnits.lineUnitsStr(Units);
 		default:
-			// Inherited parameters
+			// inherited parameters
 			return super.getPropertyValue(Index);
 		}
 	}

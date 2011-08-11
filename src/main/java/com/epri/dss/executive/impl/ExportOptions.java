@@ -18,7 +18,7 @@ public class ExportOptions {
 
 	private static CommandList ExportCommands;
 
-	// Private constructor prevents instantiation from other classes
+	// private constructor prevents instantiation from other classes
 	private ExportOptions() {
 		defineOptions();
 
@@ -131,7 +131,7 @@ public class ExportOptions {
 		PhasesToPlot = DSSGlobals.PROFILE3PH;  // init this to get rid of compiler warning
 
 		switch (ParamPointer) {
-		case 8:  // Trap export powers command and look for MVA/kVA option
+		case 8:  // trap export powers command and look for MVA/kVA option
 			parser.getNextParam();
 			Parm2 = Parser.getInstance().makeString().toLowerCase();
 			MVAOpt = 0;
@@ -147,7 +147,7 @@ public class ExportOptions {
 				if (Parm2.charAt(0) == 'm')
 					MVAOpt = 1;
 			break;
-		case 7:  // Trap UE only flag
+		case 7:  // trap UE only flag
 			parser.getNextParam();
 			Parm2 = parser.makeString().toLowerCase();
 			UEonlyOpt = false;
@@ -155,7 +155,7 @@ public class ExportOptions {
 				if (Parm2.charAt(0) == 'u')
 					UEonlyOpt = true;
 			break;
-		case 14:  // Get monitor name for export monitors command
+		case 14:  // get monitor name for export monitors command
 			parser.getNextParam();
 			Parm2 = parser.makeString();
 			break;
@@ -190,42 +190,42 @@ public class ExportOptions {
 		/* Assign default file name if alternate not specified */
 		if (FileName.length() == 0) {
 			switch (ParamPointer) {
-			case 0: FileName = "EXP_VOLTAGES.CSV"; break;
-			case 1: FileName = "EXP_SEQVOLTAGES.CSV"; break;
-			case 2: FileName = "EXP_CURRENTS.CSV"; break;
-			case 3: FileName = "EXP_SEQCURRENTS.CSV"; break;
-			case 4: FileName = "EXP_ESTIMATION.CSV"; break;  // estimation error
-			case 5: FileName = "EXP_CAPACITY.CSV"; break;
-			case 6: FileName = "EXP_OVERLOADS.CSV"; break;
-			case 7: FileName = "EXP_UNSERVED.CSV"; break;
-			case 8: FileName = "EXP_POWERS.CSV"; break;
-			case 9: FileName = "EXP_SEQPOWERS.CSV"; break;
-			case 10: FileName = "EXP_FAULTS.CSV"; break;
-			case 11: FileName = "EXP_GENMETERS.CSV"; break;
-			case 12: FileName = "EXP_LOADS.CSV"; break;
-			case 13: FileName = "EXP_METERS.CSV"; break;
+			case 0: FileName = "EXP_VOLTAGES.csv"; break;
+			case 1: FileName = "EXP_SEQVOLTAGES.csv"; break;
+			case 2: FileName = "EXP_CURRENTS.csv"; break;
+			case 3: FileName = "EXP_SEQCURRENTS.csv"; break;
+			case 4: FileName = "EXP_ESTIMATION.csv"; break;  // estimation error
+			case 5: FileName = "EXP_CAPACITY.csv"; break;
+			case 6: FileName = "EXP_OVERLOADS.csv"; break;
+			case 7: FileName = "EXP_UNSERVED.csv"; break;
+			case 8: FileName = "EXP_POWERS.csv"; break;
+			case 9: FileName = "EXP_SEQPOWERS.csv"; break;
+			case 10: FileName = "EXP_FAULTS.csv"; break;
+			case 11: FileName = "EXP_GENMETERS.csv"; break;
+			case 12: FileName = "EXP_LOADS.csv"; break;
+			case 13: FileName = "EXP_METERS.csv"; break;
 			//case 14: FileName is assigned
-			case 15: FileName = "EXP_YPRIM.CSV"; break;
-			case 16: FileName = "EXP_Y.CSV"; break;
-			case 17: FileName = "EXP_SEQZ.CSV"; break;
-			case 18: FileName = "EXP_P_BYPHASE.CSV"; break;
-			case 19: FileName = "CDPSM_Combined.XML"; break;
-			case 20: FileName = "CDPSM_Functional.XML"; break;
-			case 21: FileName = "CDPSM_Asset.XML"; break;
-			case 22: FileName = "EXP_BUSCOORDS.CSV"; break;
-			case 23: FileName = "EXP_LOSSES.CSV"; break;
-			case 24: FileName = "EXP_GUIDS.CSV"; break;
-			case 25: FileName = "EXP_Counts.CSV"; break;
-			case 26: FileName = "EXP_Summary.CSV"; break;
-			case 27: FileName = "CDPSM_ElectricalProperties.XML"; break;
-			case 28: FileName = "CDPSM_Geographical.XML"; break;
-			case 29: FileName = "CDPSM_Topology.XML"; break;
-			case 30: FileName = "CDPSM_StateVariables.XML"; break;
-			case 31: FileName = "EXP_Profile.CSV"; break;
+			case 15: FileName = "EXP_YPRIM.csv"; break;
+			case 16: FileName = "EXP_Y.csv"; break;
+			case 17: FileName = "EXP_SEQZ.csv"; break;
+			case 18: FileName = "EXP_P_BYPHASE.csv"; break;
+			case 19: FileName = "CDPSM_Combined.xml"; break;
+			case 20: FileName = "CDPSM_Functional.xml"; break;
+			case 21: FileName = "CDPSM_Asset.xml"; break;
+			case 22: FileName = "EXP_BUSCOORDS.csv"; break;
+			case 23: FileName = "EXP_LOSSES.csv"; break;
+			case 24: FileName = "EXP_GUIDS.csv"; break;
+			case 25: FileName = "EXP_Counts.csv"; break;
+			case 26: FileName = "EXP_Summary.csv"; break;
+			case 27: FileName = "CDPSM_ElectricalProperties.xml"; break;
+			case 28: FileName = "CDPSM_Geographical.xml"; break;
+			case 29: FileName = "CDPSM_Topology.xml"; break;
+			case 30: FileName = "CDPSM_StateVariables.xml"; break;
+			case 31: FileName = "EXP_Profile.csv"; break;
 			default:
-				FileName = "EXP_VOLTAGES.CSV"; break;
+				FileName = "EXP_VOLTAGES.csv"; break;
 			}
-			FileName = Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FileName;  // Explicitly define directory
+			FileName = Globals.getDSSDataDirectory() + Globals.getCircuitName_() + FileName;  // explicitly define directory
 		}
 
 		switch (ParamPointer) {
@@ -253,14 +253,14 @@ public class ExportOptions {
 					Globals.doSimpleMsg("Monitor \""+Parm2+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 250);
 				}
 			} else {
-				Globals.doSimpleMsg("Monitor Name Not Specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
+				Globals.doSimpleMsg("Monitor name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(FileName); break;
 		case 16: ExportResults.exportY(FileName); break;
 		case 17: ExportResults.exportSeqZ(FileName); break;
 		case 18: ExportResults.exportPbyphase(FileName, MVAOpt); break;
-		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined); break;        // defaults to a load-flow model
+		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined); break;  // defaults to a load-flow model
 		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Functional); break;
 		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Asset); break;
 		case 22: ExportResults.exportBusCoords(FileName); break;

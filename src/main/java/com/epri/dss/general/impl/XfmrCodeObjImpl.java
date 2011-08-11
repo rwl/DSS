@@ -20,17 +20,17 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	private int MaxWindings;
 	private double XHL, XHT, XLT;  // per unit
 	private double[] XSC;     // per unit SC measurements
-	private double VABase;    // FOR impedances
+	private double VABase;    // for impedances
 	private double NormMaxHKVA;
 	private double EmergMaxHKVA;
 	private double ThermalTimeConst;  // hr
 	private double n_thermal;
-	private double m_thermal;  // Exponents
+	private double m_thermal;  // exponents
 	private double Lrise;
 	private double HSrise;
 	private double pctLoadLoss;
 	private double pctNoLoadLoss;
-	private double ppm_FloatFactor; //  parts per million winding float factor
+	private double ppm_FloatFactor;  // parts per million winding float factor
 	private double pctImag;
 	private Winding[] Winding;
 
@@ -56,10 +56,10 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		n_thermal        = 0.8;
 		m_thermal        = 0.8;
 		Lrise            = 65.0;
-		HSrise           = 15.0;  // Hot spot rise
+		HSrise           = 15.0;  // hot spot rise
 		NormMaxHKVA      = 1.1 * Winding[0].getKva();
 		EmergMaxHKVA     = 1.5 * Winding[0].getKva();
-		pctLoadLoss      = 2.0 * Winding[0].getRpu() * 100.0; //  assume two windings
+		pctLoadLoss      = 2.0 * Winding[0].getRpu() * 100.0;  // assume two windings
 		ppm_FloatFactor  = 0.000001;
 		/* Compute antifloat added for each winding */
 		for (int i = 0; i < NumWindings; i++)
@@ -73,11 +73,11 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	public void setNumWindings(int N) {
 		if (N > 1) {
 			for (int i = 0; i < NumWindings; i++)
-				Winding[i] = null;  // Free old winding objects
+				Winding[i] = null;  // free old winding objects
 			int OldWdgSize = (NumWindings - 1) * NumWindings / 2;
 			NumWindings = N;
 			MaxWindings = N;
-			Winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(Winding, MaxWindings);  // Reallocate collector array
+			Winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(Winding, MaxWindings);  // reallocate collector array
 			for (int i = 0; i < MaxWindings; i++)
 				Winding[i] = new WindingImpl();
 			XSC = (double[]) Utilities.resizeArray(XSC, ((NumWindings - 1) * NumWindings / 2));
@@ -132,7 +132,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		/* Basic Property Dump */
+		/* Basic property dump */
 
 		F.println("~ " + "NumWindings=" + NumWindings);
 		F.println("~ " + "phases=" + NPhases);
@@ -328,19 +328,19 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "3"; //"phases";
-		PropertyValue[1] = "2"; //"windings";
-		PropertyValue[2] = "1"; //"wdg";
-		PropertyValue[3] = "wye"; // "conn";
-		PropertyValue[4] = "12.47"; // IF 2or 3-phase:  phase-phase    ELSE actual winding
+		PropertyValue[0] = "3"; // "phases";
+		PropertyValue[1] = "2"; // "windings";
+		PropertyValue[2] = "1"; // "wdg";
+		PropertyValue[3] = "wye";   // "conn";
+		PropertyValue[4] = "12.47"; // if 2or 3-phase: phase-phase else actual winding
 		PropertyValue[5] = "1000";
 		PropertyValue[6] = "1.0";
 		PropertyValue[7] = "0.2";
 		PropertyValue[8] = "-1";
 		PropertyValue[9] = "0";
 		PropertyValue[10] = "";
-		PropertyValue[11] = ""; // IF 1-phase: actual winding rating; ELSE phase-phase
-		PropertyValue[12] = ""; // IF 1-phase: actual winding rating; ELSE phase-phase
+		PropertyValue[11] = "";  // if 1-phase: actual winding rating; else phase-phase
+		PropertyValue[12] = "";  // if 1-phase: actual winding rating; else phase-phase
 		PropertyValue[13] = "";
 		PropertyValue[14] = "7";
 		PropertyValue[15] = "35";

@@ -93,7 +93,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 			PowerFreq = false;
 		}
 
-		// Self impedances - TS cores and bare neutrals
+		// self impedances - TS cores and bare neutrals
 		for (i = 0; i < NumConds; i++) {
 			Zi = getZint(i);
 			if (PowerFreq) {  // for less than 1 kHz, use published GMR
@@ -115,7 +115,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 			Zmat.setElement(idxi, idxi, Zi.add( Zspacing.add(getZe(i, i)) ));
 		}
 
-		// Mutual Impedances - between TS cores and bare neutrals
+		// mutual impedances - between TS cores and bare neutrals
 		for (i = 0; i < NumConds; i++) {
 			for (j = 0; j < i; j++) {  // TODO Check zero based indexing
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
@@ -123,7 +123,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 			}
 		}
 
-		// Mutual Impedances - TS to other TS, cores, and bare neutrals
+		// mutual impedances - TS to other TS, cores, and bare neutrals
 		for (i = 0; i < NumPhases; i++) {
 			idxi = i + NumConds;
 			for (j = 0; j < i; j++) {  // TODO Check zero based indexing
@@ -165,9 +165,9 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		}
 
 		if (ReducedSize > 0)
-			Kron(ReducedSize);  // Was reduced so reduce again to same size
+			Kron(ReducedSize);  // was reduced so reduce again to same size
 
-		/* Else the Zmatrix is OK as last computed */
+		/* else the Zmatrix is OK as last computed */
 		RhoChanged = false;
 	}
 

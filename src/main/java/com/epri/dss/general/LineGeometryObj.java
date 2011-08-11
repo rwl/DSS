@@ -8,11 +8,11 @@ import com.epri.dss.shared.CMatrix;
  * The LineGeometry object is a general DSS object used by all circuits
  * as a reference for obtaining line impedances.
  *
- * The values are set by the normal New and Edit procedures for any DSS object.
+ * The values are set by the normal "new" and "edit" procedures for any DSS object.
  *
- * The values are retrieved by setting the Code Property in the LineGeometry
- * Class. This sets the active LineGeometry object to be the one referenced by
- * the Code Property;
+ * The values are retrieved by setting the code property in the LineGeometry
+ * class. This sets the active LineGeometry object to be the one referenced by
+ * the code property;
  *
  * Then the values of that code can be retrieved via the public variables.
  *
@@ -52,7 +52,7 @@ public interface LineGeometryObj extends DSSObject {
 	int getNWires();
 
 	/**
-	 * called from a Line object that has its own Spacing and Wires input
+	 * Called from a Line object that has its own Spacing and Wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases
 	 */
 	void loadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires);

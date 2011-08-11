@@ -8,7 +8,7 @@ import com.epri.dss.general.CableDataObj;
 public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataObj {
 
 	private double EpsR;
-	// next 3 use parent RadiusUnits
+	// next 3 use parent radiusUnits
 	private double InsLayer;
 	private double DiaIns;
 	private double DiaCable;

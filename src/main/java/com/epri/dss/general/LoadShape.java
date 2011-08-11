@@ -6,10 +6,14 @@ public interface LoadShape extends DSSClass {
 
 	static final int NumPropsThisClass = 16;
 
-	/* Returns active LoadShape string */
+	/**
+	 * Returns active LoadShape string.
+	 */
 	String getCode();
 
-	/* Sets the active LoadShape */
+	/**
+	 * Sets the active LoadShape.
+	 */
 	void setCode(String Value);
 
 	int edit();
@@ -18,7 +22,9 @@ public interface LoadShape extends DSSClass {
 
 	int newObject(String ObjName);
 
-	/* Find an obj of this class by name */
+	/**
+	 * Find an obj of this class by name.
+	 */
 	Object find(String ObjName);
 
 	void TOPExport(String ObjName);

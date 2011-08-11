@@ -28,7 +28,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	protected void defineProperties() {
 
 		NumProperties = TSData.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0] = "DiaShield";
@@ -40,7 +40,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		PropertyHelp[2] = "Tape Lap in percent; default 20.0";
 
 		ActiveProperty = TSData.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		Parser parser = Parser.getInstance();
 
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) ElementList.getActive());
 		Globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
 
@@ -80,7 +80,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ tsd.getName() + "\"", 101);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
 				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());
@@ -135,7 +135,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 				tsd.setPropertyValue(i, OtherData.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" Not Found.", 102);
+			DSSGlobals.getInstance().doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" not found.", 102);
 		}
 		return Result;
 	}
@@ -160,7 +160,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			}
 			pTSDataObj = (TSDataObj) ElementList.getNext();
 		}
-		DSSGlobals.getInstance().doSimpleMsg("TSData: \"" + Value + "\" not Found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("TSData: \"" + Value + "\" not found.", 103);
 	}
 
 }

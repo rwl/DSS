@@ -15,13 +15,13 @@ import com.epri.dss.general.LoadShapeObj;
 public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	private int LastValueAccessed;
-	/* Number of points in curve */
+	/** Number of points in curve */
 	private int NumPoints;
 	private int ArrayPropertyIndex;
 
-	/* =0.0 then random interval (hr) */
+	/** =0.0 then random interval (hr) */
 	protected double Interval;
-	/* Time values (hr) if Interval > 0.0 */
+	/** Time values (hr) if Interval > 0.0 */
 	protected double[] Hours;
 	protected double[] PMultipliers, QMultipliers;
 
@@ -80,7 +80,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		//Complex Result = new Complex(1.0, 1.0);  // default return value if no points in curve
 		double[] Result = new double[] {1.0, 1.0};
 
-		if (NumPoints > 0) {  // Handle exceptional cases
+		if (NumPoints > 0) {  // handle exceptional cases
 			if (NumPoints == 1) {
 				Result[0] = PMultipliers[0];  // TODO Check zero based indexing
 				if (QMultipliers != null) {
@@ -92,7 +92,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 				if (Interval > 0.0) {
 					Index = (int) Math.round(hr / Interval);
 					if (Index > NumPoints)
-						Index = Index % NumPoints;  // Wrap around using remainder
+						Index = Index % NumPoints;  // wrap around using remainder
 					if (Index == 0)
 						Index = NumPoints;
 					Result[0] = PMultipliers[Index];
@@ -102,7 +102,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 						Result[1] = setResultIm(Result[0]);
 					}
 				} else {
-					// For random interval
+					// for random interval
 
 					/* Start with previous value accessed under the assumption that most
 					 * of the time, this function will be called sequentially
@@ -115,7 +115,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 					if (Hours[LastValueAccessed] > hr)
 						LastValueAccessed = 1;  // Start over from beginning
 					for (int i = LastValueAccessed + 1; i < NumPoints; i++) {  // TODO Check zero based indexing
-						if (Math.abs(Hours[i] - hr) < 0.00001) {  // If close to an actual point, just use it.
+						if (Math.abs(Hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
 							Result[0] = PMultipliers[i];
 							if (QMultipliers != null) {
 								Result[1] = QMultipliers[i];
@@ -124,7 +124,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 							}
 							LastValueAccessed = i;
 							return new Complex(Result[0], Result[1]);
-						} else if (Hours[i] > hr) {  // Interpolate for multiplier
+						} else if (Hours[i] > hr) {  // interpolate for multiplier
 							LastValueAccessed = i - 1;  // TODO Check zero based indexing
 							Result[0] = PMultipliers[LastValueAccessed] +
 								(hr - Hours[LastValueAccessed]) / (Hours[i] - Hours[LastValueAccessed]) *
@@ -140,7 +140,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 						}
 					}
 
-					// If we fall through the loop, just use last value
+					// if we fall through the loop, just use last value
 					LastValueAccessed = NumPoints - 1;
 					Result[0] = PMultipliers[NumPoints];
 					if (QMultipliers != null) {
@@ -164,7 +164,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			for (i = 1; i < NumPoints; i++)  // TODO Check zero based indexing
 				MaxMult = Math.max(MaxMult, Math.abs(Multipliers[i]));
 			if (MaxMult == 0.0)
-				MaxMult = 1.0;  // Avoid divide by zero
+				MaxMult = 1.0;  // avoid divide by zero
 			for (i = 0; i < NumPoints; i++)
 				Multipliers[i] = Multipliers[i] / MaxMult;
 		}
@@ -177,7 +177,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		doNormalize(PMultipliers);
 		if (QMultipliers != null)
 			doNormalize(QMultipliers);
-		UseActual = false;  // not likely that you would want to use the actual if you normalized it.
+		UseActual = false;  // not likely that you would want to use the actual if you normalized it
 	}
 
 	public void calcMeanAndStdDev() {
@@ -193,7 +193,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		PropertyValue[5] = String.format("%.8g", StdDev.doubleValue());
 
 		StdDevCalculated = true;
-		/* No Action is taken on Q multipliers */
+		/* No action is taken on Q multipliers */
 	}
 
 	public double getInterval() {
@@ -347,13 +347,13 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "0";  // Number of points to expect
+		PropertyValue[0] = "0";  // number of points to expect
 		PropertyValue[1] = "1";  // default = 1.0 hr;
 		PropertyValue[2] = "";   // vector of multiplier values
 		PropertyValue[3] = "";   // vector of hour values
 		PropertyValue[4] = "0";  // set the mean (otherwise computed)
 		PropertyValue[5] = "0";  // set the std dev (otherwise computed)
-		PropertyValue[6] = "";   // Switch input to a csvfile
+		PropertyValue[6] = "";   // switch input to a csvfile
 		PropertyValue[7] = "";   // switch input to a binary file of singles
 		PropertyValue[8] = "";   // switch input to a binary file of singles
 		PropertyValue[9] = "";   // action option.
@@ -361,8 +361,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 		PropertyValue[11] = "No";
 		PropertyValue[12] = "0";
 		PropertyValue[13] = "0";
-		PropertyValue[14] = "3600";   // seconds
-		PropertyValue[15] = "60";     // minutes
+		PropertyValue[14] = "3600";  // seconds
+		PropertyValue[15] = "60";    // minutes
 
 		super.initPropertyValues(LoadShape.NumPropsThisClass);
 	}
@@ -402,16 +402,16 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setNumPoints(int Value) {
 
-		PropertyValue[0] = String.valueOf(Value);  // Update property list variable
+		PropertyValue[0] = String.valueOf(Value);  // update property list variable
 
-		// Reset array property values to keep them in propoer order in Save
+		// reset array property values to keep them in proper order in save
 
 		if (ArrayPropertyIndex >= 0)  // TODO Check zero based indexing
 			PropertyValue[ArrayPropertyIndex] = PropertyValue[ArrayPropertyIndex];
 		if (QMultipliers != null)
 			PropertyValue[10] = PropertyValue[10];  // TODO Check zero based indexing
 
-		NumPoints = Value;   // Now assign the value
+		NumPoints = Value;  // now assign the value
 	}
 
 	public void setStdDev(double stdDev) {

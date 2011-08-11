@@ -10,7 +10,6 @@ import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.PriceShape;
 import com.epri.dss.general.PriceShapeObj;
 import com.epri.dss.parser.impl.Parser;
@@ -39,27 +38,26 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		final String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = PriceShape.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define property names
-		PropertyName[0]  = "npts";     // Number of points to expect
-		PropertyName[1]  = "interval"; // default = 1.0;
+		// define property names
+		PropertyName[0]  = "npts";      // number of points to expect
+		PropertyName[1]  = "interval";  // default = 1.0;
 		PropertyName[2]  = "price";     // vector of price values
-		PropertyName[3]  = "hour";     // vector of hour values
-		PropertyName[4]  = "mean";     // set the mean Price (otherwise computed)
-		PropertyName[5]  = "stddev";   // set the std dev of the Price (otherwise computed)
-		PropertyName[6]  = "csvfile";  // Switch input to a csvfile
-		PropertyName[7]  = "sngfile";  // switch input to a binary file of singles
-		PropertyName[8]  = "dblfile";    // switch input to a binary file of singles
-		PropertyName[9] = "sinterval"; // Interval in seconds
-		PropertyName[10] = "minterval"; // Interval in minutes
-		PropertyName[11] = "action";    //
+		PropertyName[3]  = "hour";      // vector of hour values
+		PropertyName[4]  = "mean";      // set the mean Price (otherwise computed)
+		PropertyName[5]  = "stddev";    // set the std dev of the Price (otherwise computed)
+		PropertyName[6]  = "csvfile";   // switch input to a csvfile
+		PropertyName[7]  = "sngfile";   // switch input to a binary file of singles
+		PropertyName[8]  = "dblfile";   // switch input to a binary file of singles
+		PropertyName[9] = "sinterval";  // interval in seconds
+		PropertyName[10] = "minterval"; // interval in minutes
+		PropertyName[11] = "action";
 
-		// Define property help values
+		// define property help values
 		PropertyHelp[0] = "Max number of points to expect in price shape vectors. This gets reset to the number of Price values " +
-				"found if less than specified.";  // Number of points to expect
+				"found if less than specified.";  // number of points to expect
 		PropertyHelp[1] = "Time interval for fixed interval data, hrs. Default = 1. "+
 				"If set = 0 then time data (in hours) is expected using either the Hour property or input files. " +CRLF+CRLF+
 				"See also \"sinterval\" and \"minterval\".";  // default = 1.0;
@@ -84,7 +82,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				"Used for Monte Carlo load simulations.";  // set the std dev (otherwise computed)
 		PropertyHelp[6] = "Switch input of  Price curve data to a csv file "+
 				"containing (hour, Price) points, or simply (Price) values for fixed time interval data, one per line. " +
-				"NOTE: This action may reset the number of points to a lower value.";  // Switch input to a csvfile
+				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a csvfile
 		PropertyHelp[7] = "Switch input of  Price curve data to a binary file of singles "+
 				"containing (hour, Price) points, or simply (Price) values for fixed time interval data, packed one after another. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a binary file of singles
@@ -95,10 +93,10 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		PropertyHelp[10] ="Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
 		PropertyHelp[11] ="{DblSave | SngSave} After defining Price curve data... " +
 				"Setting action=DblSave or SngSave will cause the present \"Price\" values to be written to " +
-				"either a packed file of double or single. The filename is the PriceShape name. ";  // Action
+				"either a packed file of double or single. The filename is the PriceShape name. ";  // action
 
 		ActiveProperty = PriceShape.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -139,7 +137,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ aps.getName() + "\"", 610);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ aps.getName() + "\"", 610);
 				break;
 			case 0:
 				aps.setNumPoints(parser.makeInteger());
@@ -149,7 +147,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				break;
 			case 2:
 				aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
-				// Allow possible Resetting (to a lower value) of num points when specifying Prices not Hours
+				// allow possible resetting (to a lower value) of num points when specifying prices not hours
 				aps.setNumPoints( Utilities.interpretDblArray(Param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
 				break;
 			case 3:
@@ -172,10 +170,10 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				doDblFile(Param);
 				break;
 			case 9:
-				aps.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+				aps.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 				break;
 			case 10:
-				aps.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
+				aps.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
 				break;
 			case 11:
 				switch (Param.toLowerCase().charAt(0)) {
@@ -188,7 +186,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				}
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActivePriceShapeObj(), ParamPointer - PriceShape.NumPropsThisClass);
 				break;
 			}
@@ -197,22 +195,22 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			case 2:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
-				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command  FIXME
+				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command  FIXME
 				break;
 			case 6:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
-				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
 				break;
 			case 7:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
-				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
 				break;
 			case 8:
 				aps.setStdDevCalculated(false);  // now calculated on demand
 				aps.setArrayPropertyIndex(ParamPointer);
-				aps.setNumPoints(aps.getNumPoints());  // Keep properties in order for save command
+				aps.setNumPoints(aps.getNumPoints());  // keep properties in order for save command
 				break;
 			}
 
@@ -257,7 +255,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
 				aps.setPropertyValue(i, OtherPriceShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in PriceShape MakeLike: \"" + ShapeName + "\" Not Found.", 611);
+			DSSGlobals.getInstance().doSimpleMsg("Error in PriceShape makeLike: \"" + ShapeName + "\" not found.", 611);
 		}
 
 		return Result;
@@ -285,7 +283,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			pPriceShapeObj = (PriceShapeObj) ElementList.getNext();
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("PriceShape: \"" + Value + "\" not Found.", 612);
+		DSSGlobals.getInstance().doSimpleMsg("PriceShape: \"" + Value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String FileName) {
@@ -311,7 +309,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < aps.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
-				/* AuxParser allows commas or white space */
+				/* Aux parser allows commas or white space */
 				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				if (aps.getInterval() == 0.0) {
@@ -331,7 +329,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			dataStream.close();
 			reader.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 604);
+			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

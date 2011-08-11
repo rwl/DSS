@@ -38,25 +38,25 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		final String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = TShape.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
-		// Define property names
-		PropertyName[0]  = "npts";      // Number of points to expect
+		// define property names
+		PropertyName[0]  = "npts";      // number of points to expect
 		PropertyName[1]  = "interval";  // default = 1.0;
 		PropertyName[2]  = "temp";      // vector of temperature values
 		PropertyName[3]  = "hour";      // vector of hour values
 		PropertyName[4]  = "mean";      // set the mean temp (otherwise computed)
 		PropertyName[5]  = "stddev";    // set the std dev of the temp (otherwise computed)
-		PropertyName[6]  = "csvfile";   // Switch input to a csvfile
+		PropertyName[6]  = "csvfile";   // switch input to a csvfile
 		PropertyName[7]  = "sngfile";   // switch input to a binary file of singles
 		PropertyName[8]  = "dblfile";   // switch input to a binary file of singles
-		PropertyName[9]  = "sinterval"; // Interval in seconds
-		PropertyName[10] = "minterval"; // Interval in minutes
-		PropertyName[11] = "action";    // Interval in minutes
+		PropertyName[9]  = "sinterval"; // interval in seconds
+		PropertyName[10] = "minterval"; // interval in minutes
+		PropertyName[11] = "action";    // interval in minutes
 
-		// Define property help values
+		// define property help values
 		PropertyHelp[0] = "Max number of points to expect in temperature shape vectors. This gets reset to the number of temperature values " +
 				"found if less than specified.";  // Number of points to expect
 		PropertyHelp[1] = "Time interval for fixed interval data, hrs. Default = 1. "+
@@ -97,7 +97,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				"either a packed file of double or single. The filename is the TShape name. ";  // Action
 
 		ActiveProperty = TShape.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ats.getName() + "\"", 610);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
 				break;
 			case 0:
 				ats.setNumPoints(parser.makeInteger());
@@ -148,7 +148,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				break;
 			case 2:
 				ats.setTValues( (double[]) Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
-				// Allow possible resetting (to a lower value) of num points when specifying temperatures not hours
+				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
 				ats.setNumPoints( Utilities.interpretDblArray(Param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
 				break;
 			case 3:
@@ -171,10 +171,10 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				doDblFile(Param);
 				break;
 			case 9:
-				ats.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+				ats.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 				break;
 			case 10:
-				ats.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
+				ats.setInterval(parser.makeDouble() / 60.0);  // convert minutes to hr
 				break;
 			case 11:
 				switch (Param.toLowerCase().charAt(0)) {
@@ -187,7 +187,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				}
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveTShapeObj(), ParamPointer - TShape.NumPropsThisClass);
 				break;
 			}
@@ -196,22 +196,22 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			case 2:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
-				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command  FIXME
+				ats.setNumPoints(ats.getNumPoints());  //keep properties in order for save command  FIXME
 				break;
 			case 6:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
-				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
 				break;
 			case 7:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
-				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
 				break;
 			case 8:
 				ats.setStdDevCalculated(false);  // now calculated on demand
 				ats.setArrayPropertyIndex(ParamPointer);
-				ats.setNumPoints(ats.getNumPoints());  // Keep properties in order for save command
+				ats.setNumPoints(ats.getNumPoints());  // keep properties in order for save command
 				break;
 			}
 
@@ -256,7 +256,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
 				aps.setPropertyValue(i, OtherTShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in TShape makeLike: \"" + ShapeName + "\" Not Found.", 611);
+			DSSGlobals.getInstance().doSimpleMsg("Error in TShape makeLike: \"" + ShapeName + "\" not found.", 611);
 		}
 
 		return Result;
@@ -310,7 +310,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < ats.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
-				/* AuxParser allows commas or white space */
+				/* Aux parser allows commas or white space */
 				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				if (ats.getInterval() == 0.0) {
@@ -330,7 +330,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			dataStream.close();
 			reader.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 604);
+			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

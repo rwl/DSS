@@ -38,7 +38,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = Spectrum.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0] = "NumHarm";
@@ -64,7 +64,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			"If fewer than NUMHARM frequencies found in the file, NUMHARM is set to the smaller value.";
 
 		ActiveProperty = Spectrum.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 					break;
 				case 1:
 					aso.setNumHarm(parser.makeInteger());
-					aso.setAngleArray( (double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // Make a dummy angle array
+					aso.setAngleArray( (double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));  // make a dummy angle array
 					for (int i = 0; i < aso.getNumHarm(); i++)
 						aso.getAngleArray()[i] = 0.0;
 					break;
@@ -126,7 +126,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 					doCSVFile(Param);
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(getActiveSpectrumObj(), ParamPointer - Spectrum.NumPropsThisClass);
 					break;
 				}
@@ -169,7 +169,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				Result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Spectrum.makeLike(): \"" + Name + "\" Not Found.", 651);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Spectrum.makeLike(): \"" + Name + "\" not found.", 651);
 		}
 
 		return Result;
@@ -223,7 +223,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < aso.getNumHarm()) {  // TODO: Check zero based indexing
 				i += 1;
-				// Use Auxparser, which allows for formats
+				// use aux parser, which allows for formats
 				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				parser.getNextParam();
@@ -244,7 +244,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			dataStream.close();
 			reader.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 654);
+			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 654);
 			return;
 		}
 	}

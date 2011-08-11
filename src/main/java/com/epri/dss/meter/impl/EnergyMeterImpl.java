@@ -26,12 +26,11 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
-	// Adjacency lists for PC and PD elements at each bus, built for faster searches
-	public static List<PCElement>[] BusAdjPC; // Also includes shunt PD elements
+	// adjacency lists for PC and PD elements at each bus, built for faster searches
+	public static List<PCElement>[] BusAdjPC;  // also includes shunt PD elements
 	public static List<PDElement>[] BusAdjPD;
 
 	private static EnergyMeterObj ActiveEnergyMeterObj;
-
 
 	private Generator GeneratorClass;
 	private boolean SaveDemandInterval;
@@ -81,11 +80,10 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	protected void defineProperties() {
 
 		NumProperties = EnergyMeter.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define property names
+		// define property names
 		PropertyName[0] = "element";
 		PropertyName[1] = "terminal";
 		PropertyName[2] = "action";
@@ -101,8 +99,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		PropertyName[12] = "XfmrLosses";
 		PropertyName[13] = "SeqLosses";
 		PropertyName[14] = "3phaseLosses";
-		PropertyName[15] = "VbaseLosses"; // segregate losses by voltage base
-		PropertyName[16] = "PhaseVoltageReport"; // Compute Avg phase voltages in zone
+		PropertyName[15] = "VbaseLosses";  // segregate losses by voltage base
+		PropertyName[16] = "PhaseVoltageReport";  // compute avg phase voltages in zone
 
 		/*PropertyName[10] = "Feeder";  **** removed - not used*/
 
@@ -159,7 +157,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				"synched automatically with the meter zone.  Do not create feeders for zones in meshed transmission systems.";*/
 
 		ActiveProperty = EnergyMeter.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	public int newObject(String ObjName) {
@@ -200,7 +198,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ aem.getName() + "\"", 520);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ aem.getName() + "\"", 520);
 				break;
 			case 0:
 				aem.setElementName(Param.toLowerCase());
@@ -240,7 +238,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				aem.setMaxZonekVA_Emerg(parser.makeDouble());
 				break;
 			case 6:
-				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());   // Inits to zero
+				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());  // inits to zero
 				break;
 			case 7:
 				Utilities.interpretAndAllocStrArray(Param, aem.getDefinedZoneListSize(), aem.getDefinedZoneList());
@@ -301,24 +299,24 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 
 		if (DoRecalc)
-			aem.recalcElementData();  // When some basic data have changed
+			aem.recalcElementData();  // when some basic data have changed
 
 		return Result;
 	}
 
 	protected int makeLike(String EnergyMeterName) {
 		int Result = 0;
-		/* See IF we can find this EnergyMeter name in the present collection */
+		/* See if we can find this EnergyMeter name in the present collection */
 		EnergyMeterObj OtherEnergyMeter = (EnergyMeterObj) find(EnergyMeterName);
 		if (OtherEnergyMeter != null) {
 
 			EnergyMeterObj aem = getActiveEnergyMeterObj();
 
 			aem.setNPhases(OtherEnergyMeter.getNPhases());
-			aem.setNConds(OtherEnergyMeter.getNConds());  // Force reallocation of terminal stuff
+			aem.setNConds(OtherEnergyMeter.getNConds());  // force reallocation of terminal stuff
 
 			aem.setElementName(OtherEnergyMeter.getElementName());
-			aem.setMeteredElement(OtherEnergyMeter.getMeteredElement());  // Pointer to target circuit element
+			aem.setMeteredElement(OtherEnergyMeter.getMeteredElement());  // pointer to target circuit element
 			aem.setMeteredTerminal(OtherEnergyMeter.getMeteredTerminal());
 			aem.setExcessFlag(OtherEnergyMeter.isExcessFlag());
 
@@ -327,14 +325,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			aem.setDefinedZoneListSize(OtherEnergyMeter.getDefinedZoneListSize());
 			aem.setDefinedZoneList(new String[aem.getDefinedZoneListSize()]);
-			// Copy strings over (actually incr ref count on string)
+			// copy strings over (actually incr ref count on string)
 			for (int i = 0; i < aem.getDefinedZoneListSize(); i++)
 				aem.getDefinedZoneList()[i] = OtherEnergyMeter.getDefinedZoneList()[i];
 
 			aem.setLocalOnly(OtherEnergyMeter.isLocalOnly());
 			aem.setVoltageUEOnly(OtherEnergyMeter.isVoltageUEOnly());
 
-			/* Boolean Flags */
+			/* Boolean flags */
 			aem.setLosses(OtherEnergyMeter.isLosses());
 			aem.setLineLosses(OtherEnergyMeter.isLineLosses());
 			aem.setXfmrLosses(OtherEnergyMeter.isXfmrLosses());
@@ -346,7 +344,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			for (int i = 0; i < aem.getParentClass().getNumProperties(); i++)
 				aem.setPropertyValue(i, OtherEnergyMeter.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in EnergyMeter makeLike: \"" + EnergyMeterName + "\" Not Found.", 521);
+			DSSGlobals.getInstance().doSimpleMsg("Error in EnergyMeter makeLike: \"" + EnergyMeterName + "\" not found.", 521);
 		}
 
 		return Result;
@@ -365,7 +363,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		if (ckt.getEnergyMeters().size() == 0)
 			return;
 
-		// Initialize the checked flag for all circuit elements.
+		// initialize the checked flag for all circuit elements.
 		for (CktElement pCktElement : ckt.getCktElements()) {
 			pCktElement.setChecked(false);
 			pCktElement.setIsIsolated(true);
@@ -385,14 +383,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			PCElem.setSensorObj(null);
 		}
 
-		// Set up the bus adjacency lists for faster searches to build meter zone lists.
+		// set up the bus adjacency lists for faster searches to build meter zone lists
 		CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
 
-		/* Set HasMeter flag for all cktElements */
+		/* Set hasMeter flag for all cktElements */
 		setHasMeterFlag();
-		DSSGlobals.getInstance().getSensorClass().setHasSensorFlag();  // Set all sensor branch flags, too.
+		DSSGlobals.getInstance().getSensorClass().setHasSensorFlag();  // set all sensor branch flags, too.
 
-		// Initialise the checked flag for all buses
+		// initialise the checked flag for all buses
 		for (i = 0; i < ckt.getNumBuses(); i++)
 			ckt.getBuses()[i].setBusChecked(false);
 
@@ -431,7 +429,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				try {
 					dir.mkdir();
 				} catch (Exception e) {
-					Globals.doSimpleMsg("Error making Demand Interval Directory: \""+DI_Dir+"\". " + e.getMessage(), 523);
+					Globals.doSimpleMsg("Error making demand interval directory: \""+DI_Dir+"\". " + e.getMessage(), 523);
 				}
 			}
 
@@ -448,7 +446,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		SystemMeter.reset();
 
-		// Reset generator objects, too
+		// reset generator objects, too
 		GeneratorClass.resetRegistersAll();
 		Globals.getStorageClass().resetRegistersAll();
 	}
@@ -481,7 +479,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			if (VoltageFileIsOpen) writeVoltageReport();
 		}
 
-		// Sample generator and storage objects, too
+		// sample generator and storage objects, too
 		GeneratorClass.sampleAll();
 		Globals.getStorageClass().sampleAll();  // samples energymeter part of storage elements (not update)
 	}
@@ -501,7 +499,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	/**
-	 * Set the HasMeter flag for all cktElement;
+	 * Set the hasMeter flag for all cktElement;
 	 */
 	protected void setHasMeterFlag() {
 		int i;
@@ -527,7 +525,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		String S2 = " ";
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(Opts);  // Load up aux parser
+		Globals.getAuxParser().setCmdString(Opts);  // load up aux parser
 
 		EnergyMeterObj aem = getActiveEnergyMeterObj();
 
@@ -575,7 +573,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				if (pMeter.isEnabled())
 					pMeter.closeDemandIntervalFile();
 
-			writeTotalsFile();  // Sum all EnergyMeter registers to "Totals.csv"
+			writeTotalsFile();  // sum all EnergyMeter registers to "Totals.csv"
 			SystemMeter.closeDemandIntervalFile();
 			SystemMeter.save();
 			try {
@@ -644,11 +642,11 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		/* Check PDElements only */
 		for (PDElement PDElem : ckt.getPDElements()) {
-			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // Ignore shunts
+			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // ignore shunts
 
 				if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
 					PDElem.computeIterminal();
-					Cmax = PDElem.maxTerminalOneIMag();  // For now, check only terminal 1 for overloads
+					Cmax = PDElem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
 					if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
 						OverLoadPrinter.printf("%-.6g,", ckt.getSolution().getDblHour());
 						OverLoadPrinter.printf(" %s, %-.4g, %-.4g,", Utilities.fullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps());
@@ -822,7 +820,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	private void interpretRegisterMaskArray(double[] Mask) {
 		int n = Parser.getInstance().parseAsVector(NumEMRegisters, Mask);
 		for (int i = n; i < EnergyMeter.NumEMRegisters; i++)  // TODO Check zero based indexing
-			Mask[i] = 1.0;  // Set the rest to 1
+			Mask[i] = 1.0;  // set the rest to 1
 	}
 
 	/**
@@ -841,7 +839,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 			SystemMeter.openDemandIntervalFile();
 
-			/* Optional Exception Reporting */
+			/* Optional exception reporting */
 			if (Do_OverloadReport) openOverloadReportFile();
 			if (Do_VoltageExceptionReport) openVoltageReportFile();
 

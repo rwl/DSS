@@ -9,13 +9,13 @@ import com.epri.dss.general.GrowthShapeObj;
 
 public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj {
 
-	/* Number of points in curve */
+	/** Number of points in curve */
 	private int Npts;
-	/* Number of years presently allocated in look up table */
+	/** Number of years presently allocated in look up table */
 	private int NYears;
 	private int BaseYear;
 
-	/* Year values */
+	/** Year values */
 	private int[] Year;
 	private double[] YearMult, Multiplier;
 
@@ -46,11 +46,11 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 		double Result = 1.0;  // default return value if no points in curve
 
-		if (Npts > 0) {  // Handle Exceptional cases
+		if (Npts > 0) {  // handle exceptional cases
 			Index = Yr - BaseYear;
-			if (Index > 0) {  // Returns 1.0 for base year or any year previous  TODO Check zero based indexing
+			if (Index > 0) {  // returns 1.0 for base year or any year previous  TODO Check zero based indexing
 
-				if (Index > NYears) {  // Make some more space
+				if (Index > NYears) {  // make some more space
 					NYears = Index + 10;
 					YearMult = (double[]) Utilities.resizeArray(YearMult, NYears);
 					reCalcYearMult();
@@ -67,7 +67,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 	/* FIXME Private procedure in OpenDSS */
 	public void reCalcYearMult() {
-		// Fill up the YearMult array with total yearly multiplier from base year
+		// fill up the yearMult array with total yearly multiplier from base year
 		double Mult = Multiplier[1];
 		double MultInc = Mult;
 		YearMult[0] = Mult;  // TODO Check zero based indexing
@@ -148,10 +148,10 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "0";  // Number of points to expect
+		PropertyValue[0] = "0";  // number of points to expect
 		PropertyValue[1] = "";   // vector of year values
 		PropertyValue[2] = "";   // vector of multiplier values corresponding to years
-		PropertyValue[3] = "";   // Switch input to a csvfile                (year, mult)
+		PropertyValue[3] = "";   // switch input to a csvfile                (year, mult)
 		PropertyValue[4] = "";   // switch input to a binary file of singles (year, mult)
 		PropertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
 

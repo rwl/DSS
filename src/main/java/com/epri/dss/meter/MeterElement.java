@@ -3,7 +3,6 @@ package com.epri.dss.meter;
 import com.epri.dss.shared.impl.Complex;
 
 import com.epri.dss.common.CktElement;
-import com.epri.dss.common.impl.DSSCktElement;
 
 public interface MeterElement extends CktElement {
 
@@ -47,7 +46,7 @@ public interface MeterElement extends CktElement {
 
 	void setAvgAllocFactor(double avgAllocFactor);
 
-	/* Sample control quantities and set action times in Control Queue */
+	/** Sample control quantities and set action times in control queue */
 	void takeSample();
 
 	void allocateSensorArrays();

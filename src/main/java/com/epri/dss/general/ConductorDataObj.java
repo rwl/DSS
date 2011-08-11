@@ -4,10 +4,10 @@ package com.epri.dss.general;
  * The ConductorData object is a general DSS object used by all circuits
  * as a reference for obtaining line impedances.
  *
- * The values are set by the normal New and Edit procedures for any DSS object.
+ * The values are set by the normal "new" and "edit" procedures for any DSS object.
  *
- * The values are retrieved by setting the Code Property in the ConductorData Class.
- * This sets the active ConductorData object to be the one referenced by the Code Property;
+ * The values are retrieved by setting the code property in the ConductorData class.
+ * This sets the active ConductorData object to be the one referenced by the code property;
  *
  * Then the values of that code can be retrieved via the public variables.
  *

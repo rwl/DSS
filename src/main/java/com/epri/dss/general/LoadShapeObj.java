@@ -4,23 +4,23 @@ import java.io.PrintStream;
 
 import com.epri.dss.shared.impl.Complex;
 
-/*
- * The LoadShape object is a general DSS object used by all circuits
- * as a reference for obtaining yearly, daily, and other load shapes.
+/**
+ * A general DSS object used by all circuits as a reference for obtaining
+ * yearly, daily, and other load shapes.
  *
- * The values are set by the normal New and Edit procedures for any DSS object.
+ * The values are set by the normal "new" and "edit" procedures for any DSS object.
  *
- * The values are retrieved by setting the Code Property in the LoadShape
- * Class. This sets the active LoadShape object to be the one referenced by the
- * Code Property;
+ * The values are retrieved by setting the Code property in the LoadShape
+ * class. This sets the active LoadShape object to be the one referenced by the
+ * Code property;
  *
  * Then the values of that code can be retrieved via the public variables.  Or
- * you can pick up the ActiveLoadShapeObj object and save the direct reference
+ * you can pick up the activeLoadShapeObj object and save the direct reference
  * to the object.
  *
- * Loadshapes default to fixed interval data.  If the Interval is specified to
- * be 0.0, then both time and multiplier data are expected.  If the Interval is
- * greater than 0.0, the user specifies only the multipliers.  The Hour command
+ * LoadShapes default to fixed interval data.  If the interval is specified to
+ * be 0.0, then both time and multiplier data are expected.  If the interval is
+ * greater than 0.0, the user specifies only the multipliers.  The hour command
  * is ignored and the files are assumed to contain only the multiplier data.
  *
  * The user may place the data in CSV or binary files as well as passing
@@ -52,16 +52,24 @@ public interface LoadShapeObj extends DSSObject {
 
 	int getNumPoints();
 
-	/* Get multiplier at specified time */
+	/**
+	 * Get multiplier at specified time.
+	 */
 	Complex getMult(double hr);
 
-	/* get multiplier by index */
+	/**
+	 * Get multiplier by index.
+	 */
 	double mult(int i);
 
-	/* get hour corresponding to point index */
+	/**
+	 * Get hour corresponding to point index.
+	 */
 	double hour(int i);
 
-	/* Normalize the curve presently in memory */
+	/**
+	 * Normalize the curve presently in memory.
+	 */
 	void normalize();
 
 	void calcMeanAndStdDev();

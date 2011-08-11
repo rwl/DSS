@@ -10,7 +10,7 @@ public interface CNData extends CableData {
 	String getCode();
 
 	/**
-	 * Sets the  active CNData.
+	 * Sets the active CNData.
 	 */
 	void setCode(String Value);
 

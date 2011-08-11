@@ -7,7 +7,9 @@ import com.epri.dss.common.DSSClass;
 
 public interface DSSObject extends NamedObject {
 
-	/* PD, PC, Monitor, CondCode, etc. */
+	/**
+	 * PD, PC, Monitor, CondCode, etc.
+	 */
 	int getDSSObjType();
 
 	void setDSSObjType(int dSSObjType);
@@ -16,7 +18,9 @@ public interface DSSObject extends NamedObject {
 
 	void setParentClass(DSSClass parentClass);
 
-	/* Index into the class collection list */
+	/**
+	 * Index into the class collection list.
+	 */
 	int getClassIndex();
 
 	void setClassIndex(int classIndex);
@@ -25,12 +29,16 @@ public interface DSSObject extends NamedObject {
 
 	void setHasBeenSaved(boolean hasBeenSaved);
 
-	/* General purpose Flag for each object  don't assume inited */
+	/**
+	 * General purpose flag for each object don't assume inited.
+	 */
 	boolean isFlag();
 
 	void setFlag(boolean flag);
 
-	/* Use DSSClass.PropertyIndex to get index by name */
+	/**
+	 * Use DSSClass.PropertyIndex to get index by name.
+	 */
 	String getPropertyValue(int Index);
 
 	void setPropertyValue(int Index, String Value);
@@ -39,7 +47,9 @@ public interface DSSObject extends NamedObject {
 
 	void setName(String Value);
 
-	/* Allow Calls to edit from object itself */
+	/**
+	 * Allow Calls to edit from object itself.
+	 */
 	int edit();
 
 	void initPropertyValues(int ArrayOffset);

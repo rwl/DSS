@@ -27,7 +27,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 	protected void defineProperties() {
 		NumProperties = CNData.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0] = "k";
@@ -41,7 +41,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 		PropertyHelp[3] = "AC resistance of a concentric neutral strand; same units as core conductor resistance; no default.";
 
 		ActiveProperty = CNData.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
 				break;
 			case 0:
 				acd.setkStrand(parser.makeInteger());
@@ -97,7 +97,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				acd.setRStrand(parser.makeDouble());
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ConductorDataImpl.getActiveConductorDataObj(), ParamPointer - CNData.NumPropsThisClass);
 				break;
 			}
@@ -147,7 +147,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				acd.setPropertyValue(i, OtherData.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Concentric Neutral MakeLike: \"" + CNName + "\" Not Found.", 102);
+			DSSGlobals.getInstance().doSimpleMsg("Error in concentric neutral makeLike: \"" + CNName + "\" not found.", 102);
 		}
 		return Result;
 	}
@@ -178,7 +178,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			}
 			pCNDataObj = (CNDataObj) ElementList.getNext();
 		}
-		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + Value + "\" not Found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + Value + "\" not found.", 103);
 	}
 
 }

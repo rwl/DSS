@@ -11,8 +11,8 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	private int LastValueAccessed,
 		Npts;  // Number of points in curve
 
-	private double[] LogT, LogC,  // Logarithms of t_values and c_values
-		t_values,  // Time values (hr) if Interval > 0.0  Else null
+	private double[] LogT, LogC,  // logarithms of t_values and c_values
+		t_values,  // time values (hr) if interval > 0.0  else null
 		c_values;
 
 	public TCC_CurveObjImpl(DSSClass ParClass, String Name) {
@@ -33,8 +33,8 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 	/**
 	 * This function returns the operation time for the value given.
-	 * If the value is less than the first entry, return = -1 for No operation.
-	 * Log-Log  interpolation is used.
+	 * If the value is less than the first entry, return = -1 for no operation.
+	 * Log-log interpolation is used.
 	 */
 	public double getTCCTime(double C_Value) {
 		int i;
@@ -46,7 +46,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		if (C_Value < c_values[0])
 			return Result;
 
-		if (Npts > 0)  // Handle Exceptional cases
+		if (Npts > 0)  // Handle exceptional cases
 			if (Npts == 1) {
 				Result = t_values[0];
 			} else {
@@ -54,13 +54,13 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 				 * of the time, this function will be called sequentially}
 				 */
 				if (c_values[LastValueAccessed] > C_Value)
-					LastValueAccessed = 0;  // Start over from beginning
+					LastValueAccessed = 0;  // start over from beginning
 				for (i = LastValueAccessed + 1; i < Npts; i++) {  // TODO Check zero based indexing
 					if (c_values[i] == C_Value) {
-						Result = t_values[i];  // direct hit!
+						Result = t_values[i];
 						LastValueAccessed = i;
 						return Result;
-					} else if (c_values[i] > C_Value) {  // Log-Log interpolation
+					} else if (c_values[i] > C_Value) {  // log-log interpolation
 						LastValueAccessed = i - 1;  // TODO Check zero based indexing
 						if (C_Value > 0.0) {
 							LogTest = Math.log(C_Value);
@@ -74,7 +74,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 					}
 				}
 
-				// If we fall through the loop, just use last value
+				// if we fall through the loop, just use last value
 				LastValueAccessed = Npts - 1;  // TODO Check zero based indexing
 				Result = t_values[Npts];
 			}
@@ -87,7 +87,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 */
 	public double getOVTime(double V_Value) {
 		int i;
-		double Result = -1.0;  // No op return
+		double Result = -1.0;  // no op return
 
 		if (V_Value > c_values[0]) {
 			if (Npts == 1) {
@@ -111,7 +111,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 */
 	public double getUVTime(double V_Value) {
 		int i;
-		double Result = -1.0;  // No op return
+		double Result = -1.0;  // no op return
 
 		if (V_Value < c_values[Npts])  {
 			if (Npts == 1) {
@@ -206,9 +206,9 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		PropertyValue[0] = "0";     // Number of points to expect
-		PropertyValue[1] = "";      // vector of multiplier values
-		PropertyValue[2] = "";      // vector of sec values
+		PropertyValue[0] = "0";  // number of points to expect
+		PropertyValue[1] = "";   // vector of multiplier values
+		PropertyValue[2] = "";   // vector of sec values
 
 		super.initPropertyValues(TCC_Curve.NumPropsThisClass);
 	}

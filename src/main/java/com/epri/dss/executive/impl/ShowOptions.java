@@ -21,7 +21,7 @@ public class ShowOptions {
 
 	private CommandList ShowCommands;
 
-	// Private constructor prevents instantiation from other classes
+	// private constructor prevents instantiation from other classes
 	private ShowOptions() {
 		defineOptions();
 
@@ -176,7 +176,7 @@ public class ShowOptions {
 		Globals.setInShowResults(true);
 
 		switch (ParamPointer) {
-		case 0:  // Autoadded
+		case 0:  // autoadded
 			Utilities.fireOffEditor(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "AutoAddedGenerators.txt");
 			Utilities.fireOffEditor(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "AutoAddedCapacitors.txt");
 			break;
@@ -186,9 +186,9 @@ public class ShowOptions {
 		case 2:
 			ShowOptionCode = 0;
 			ShowResid = false;
-			parser.getNextParam();  // Look for residual
+			parser.getNextParam();  // look for residual
 			Param = parser.makeString().toUpperCase();
-			// logic handles show curr y|n|T elements or show curr elements
+			// logic handles show curr y|n|t elements or show curr elements
 			if (Param.length() > 0) {
 				switch (Param.charAt(0)) {
 				case 'Y':
@@ -204,7 +204,7 @@ public class ShowOptions {
 					ShowOptionCode = 1;
 					break;
 				}
-				parser.getNextParam();  // Look for another param
+				parser.getNextParam();  // look for another param
 				Param = parser.makeString().toUpperCase();
 				if (Param.length() > 0) {
 					switch (Param.charAt(0)) {
@@ -255,7 +255,7 @@ public class ShowOptions {
 					Globals.doSimpleMsg("Monitor \""+Param+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 248);
 				}
 			} else {
-				Globals.doSimpleMsg("Monitor Name Not Specified." + DSSGlobals.CRLF + parser.getCmdString(), 249);
+				Globals.doSimpleMsg("Monitor name not specified." + DSSGlobals.CRLF + parser.getCmdString(), 249);
 			}
 			break;
 		case 10:
@@ -296,7 +296,7 @@ public class ShowOptions {
 			ShowResults.showPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", MVAopt, ShowOptionCode);
 			break;
 		case 12:
-			LLopt = false;  // Line-Line voltage option
+			LLopt = false;  // line-line voltage option
 			ShowOptionCode = 0;
 			/* Check for LL or LN option */
 			parser.getNextParam();
@@ -309,14 +309,14 @@ public class ShowOptions {
 					Filname = "VLL";
 				}
 			}
-			/* Check for Seq | nodes | elements */
+			/* Check for seq | nodes | elements */
 			parser.getNextParam();
 			Param = parser.makeString().toUpperCase();
 			if (Param.length() > 0) {
 				switch (Param.charAt(0)) {
 				case 'N':
 					ShowOptionCode = 1;
-					Filname = Filname + "_Node";
+					Filname = Filname + "_node";
 					break;
 				case 'E':
 					ShowOptionCode = 2;
@@ -362,10 +362,10 @@ public class ShowOptions {
 		case 21:
 			ShowResults.showLosses(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Losses.txt");
 			break;
-		case 22:  // Show Bus Power Report
+		case 22:  // show bus power report
 			ShowOptionCode = 0;
 			MVAopt = 0;
-			parser.getNextParam(); // Get busname
+			parser.getNextParam();  // get bus name
 			BusName = parser.makeString();
 			if (BusName.length() > 0) {
 				Filname = BusName;
@@ -402,8 +402,8 @@ public class ShowOptions {
 
 			ShowResults.showBusPowers(Globals.getDSSDataDirectory() + Globals.getCircuitName_() + Filname + ".txt", BusName, MVAopt, ShowOptionCode);
 			break;
-		case 23:  // ShowLineConstants  Show Lineconstants 60 mi
-			Freq = Globals.getDefaultBaseFreq();  // Default
+		case 23:  // showLineConstants  show lineConstants 60 mi
+			Freq = Globals.getDefaultBaseFreq();  // default
 			Units = LineUnits.UNITS_KFT; // 'kft'; // default
 			Rho_line = 100.0;
 			parser.getNextParam();

@@ -42,13 +42,13 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		allocatePropertyArrays();
 
 
-		// Define Property names
+		// define property names
 
-		PropertyName[0] = "npts";     // Number of points to expect
+		PropertyName[0] = "npts";     // number of points to expect
 		PropertyName[1] = "year";     // vextor of year values
 		PropertyName[2] = "mult";     // vector of multiplier values corresponding to years
-		PropertyName[3] = "csvfile";  // Switch input to a csvfile                 (year, mult)
-		PropertyName[4] = "sngfile";  // switch input to a binary file of singles  (year, mult)
+		PropertyName[3] = "csvfile";  // switch input to a csvfile                (year, mult)
+		PropertyName[4] = "sngfile";  // switch input to a binary file of singles (year, mult)
 		PropertyName[5] = "dblfile";  // switch input to a binary file of doubles (year, mult)
 
 		PropertyHelp[0] = "Number of points to expect in subsequent vector.";
@@ -68,11 +68,11 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				"containing (year, mult) points, packed one after another.";
 
 		ActiveProperty = GrowthShape.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	public int newObject(String ObjName) {
-		// Create a new object of this class and add to list.
+		// create a new object of this class and add to list.
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Globals.setActiveDSSObject(new GrowthShapeObjImpl(this, ObjName));
 		return addObjectToList(Globals.getActiveDSSObject());
@@ -134,7 +134,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				doDblFile(Param);
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveGrowthShapeObj(), ParamPointer - GrowthShape.NumPropsThisClass);
 				break;
 			}
@@ -163,7 +163,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			for (int i = 0; i < pShape.getParentClass().getNumProperties(); i++)
 				pShape.setPropertyValue(i, OtherGrowthShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GrowthShape MakeLike: \"" + ShapeName + "\" Not Found.", 601);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GrowthShape makeLike: \"" + ShapeName + "\" not found.", 601);
 		}
 		return 0;
 	}
@@ -194,7 +194,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("GrowthShape: \"" + Value + "\" not Found.", 602);
+		DSSGlobals.getInstance().doSimpleMsg("GrowthShape: \"" + Value + "\" not found.", 602);
 	}
 
 	private void doCSVFile(String FileName) {
@@ -216,7 +216,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < pShape.getNpts()) {  // TODO: Check zero based indexing
 				i += 1;
-				// Use AuxParser to allow flexible formats
+				// use aux parser to allow flexible formats
 				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				parser.getNextParam();
@@ -229,7 +229,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			dataStream.close();
 			reader.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 604);
+			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

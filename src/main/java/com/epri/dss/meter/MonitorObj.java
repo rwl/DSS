@@ -75,7 +75,7 @@ public interface MonitorObj extends MeterElement {
 
 	void resetIt();
 
-	/* Saves present buffer to file */
+	/** Saves present buffer to file. */
 	void save();
 
 	void openMonitorStream();

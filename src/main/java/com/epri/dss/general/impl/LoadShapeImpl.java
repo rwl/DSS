@@ -44,25 +44,24 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 
 		// define property names
-		PropertyName[0] = "npts";     // Number of points to expect
+		PropertyName[0] = "npts";     // number of points to expect
 		PropertyName[1] = "interval"; // default = 1.0;
 		PropertyName[2] = "mult";     // vector of power multiplier values
 		PropertyName[3] = "hour";     // vextor of hour values
 		PropertyName[4] = "mean";     // set the mean (otherwise computed)
 		PropertyName[5] = "stddev";   // set the std dev (otherwise computed)
-		PropertyName[6] = "csvfile";  // Switch input to a csvfile
+		PropertyName[6] = "csvfile";  // switch input to a csvfile
 		PropertyName[7] = "sngfile";  // switch input to a binary file of singles
 		PropertyName[8] = "dblfile";  // switch input to a binary file of singles
 		PropertyName[9] = "action";   // actions  Normalize
 		PropertyName[10] = "qmult";   // Q multiplier
-		PropertyName[11] = "UseActual"; // Flag to signify to use actual value
-		PropertyName[12] = "Pmax";    // MaxP value
-		PropertyName[13] = "Qmax";    // MaxQ
-		PropertyName[14] = "sinterval"; // Interval in seconds
-		PropertyName[15] = "minterval"; // Interval in minutes
+		PropertyName[11] = "UseActual"; // flag to signify to use actual value
+		PropertyName[12] = "Pmax";    // maxP value
+		PropertyName[13] = "Qmax";    // maxQ
+		PropertyName[14] = "sinterval"; // interval in seconds
+		PropertyName[15] = "minterval"; // interval in minutes
 
 		// define property help values
-
 		PropertyHelp[0] = "Max number of points to expect in load shape vectors. This gets reset to the number of multiplier values found (in files only) if less than specified.";     // Number of points to expect
 		PropertyHelp[1] = "Time interval for fixed interval data (hrs). Default = 1. "+
 				"If set = 0 then time data (in hours) is expected using either the Hour property or input files. " +CRLF+CRLF+
@@ -114,9 +113,8 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		PropertyHelp[15] = "Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
 
 
-
 		ActiveProperty = LoadShape.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	public int newObject(String ObjName) {
@@ -131,7 +129,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		Parser parser = Parser.getInstance();
 
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveLoadShapeObj((LoadShapeObj) ElementList.getActive());
 		Globals.setActiveDSSObject(getActiveLoadShapeObj());
 
@@ -151,7 +149,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 				switch (ParamPointer) {  // TODO Check zero based indexing
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ als.getName() + "\"", 610);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
 					break;
 				case 0:
 					als.setNumPoints(parser.makeInteger());
@@ -161,7 +159,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					break;
 				case 2:
 					als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
-					// Allow possible Resetting (to a lower value) of num points when specifying multipliers not Hours
+					// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
 					als.setNumPoints( Utilities.interpretDblArray(Param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
 					break;
 				case 3:
@@ -210,13 +208,13 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					als.setMaxQ(parser.makeDouble());
 					break;
 				case 14:
-					als.setInterval(parser.makeDouble() / 3600.0);  // Convert seconds to hr
+					als.setInterval(parser.makeDouble() / 3600.0);  // convert seconds to hr
 					break;
 				case 15:
-					als.setInterval(parser.makeDouble() / 60.0);  // Convert minutes to hr
+					als.setInterval(parser.makeDouble() / 60.0);    // convert minutes to hr
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(ActiveLoadShapeObj, ParamPointer - LoadShape.NumPropsThisClass);
 					break;
 				}
@@ -225,7 +223,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				case 2:  // TODO Check zero based indexing
 					als.setStdDevCalculated(false);   // now calculated on demand
 					als.setArrayPropertyIndex(ParamPointer);
-					als.setNumPoints(als.getNumPoints());  // Keep Properties in order for save command
+					als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
 					break;
 				case 6:
 					als.setStdDevCalculated(false);
@@ -307,7 +305,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			for (int i = 0; i < als.getParentClass().getNumProperties(); i++)
 				als.setPropertyValue(i, OtherLoadShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in LoadShape MakeLike: \"" + ShapeName + "\" Not Found.", 611);
+			DSSGlobals.getInstance().doSimpleMsg("Error in LoadShape makeLike: \"" + ShapeName + "\" not found.", 611);
 		}
 
 		return Result;
@@ -367,7 +365,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			int i = 0;
 			while (((s = reader.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
-				/* AuxParser allows commas or white space */
+				/* aux parser allows commas or white space */
 				parser = Globals.getAuxParser();
 				parser.setCmdString(s);
 				if (als.getInterval() == 0.0) {
@@ -387,7 +385,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			dataStream.close();
 			reader.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Processing CSV File: \"" + FileName + ". " + e.getMessage(), 604);
+			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

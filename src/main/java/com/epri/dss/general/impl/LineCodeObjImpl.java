@@ -19,9 +19,9 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	protected boolean SymComponentsModel, ReduceByKron;
 
-	protected CMatrix Z,  // Base Frequency Series Z matrix
+	protected CMatrix Z,  // base frequency series Z matrix
 		Zinv,
-		Yc;               // Shunt capacitance matrix at Base frequency.
+		Yc;               // shunt capacitance matrix at base frequency
 
 	protected double BaseFrequency;
 
@@ -29,7 +29,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	protected double NormAmps, EmergAmps, FaultRate, PctPerm, HrsToRepair;
 	protected double Rg, Xg, rho;
 
-	protected int Units;  // See LineUnits
+	protected int Units;  // see LineUnits
 
 	public LineCodeObjImpl(DSSClass ParClass, String LineCodeName) {
 		super(ParClass);
@@ -37,9 +37,9 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		setName(LineCodeName.toLowerCase());
 		DSSObjType = ParClass.getDSSClassType();
 
-		setNPhases(3);  // Directly set conds and phases
+		setNPhases(3);  // directly set conds and phases
 		NeutralConductor = NPhases - 1;  // initialize to last conductor  TODO Check zero indexing
-		R1 = 0.0580;  //ohms per 1000 ft
+		R1 = 0.0580;  // ohms per 1000 ft
 		X1 = 0.1206;
 		R0 = 0.1784;
 		X0 = 0.4047;
@@ -105,10 +105,10 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	 */
 	public void setNPhases(int Value) {
 		if (Value > 0)
-			if (NPhases != Value) {  // If size is no different, we don't need to do anything
+			if (NPhases != Value) {  // if size is no different, we don't need to do anything
 				NPhases = Value;
-				NeutralConductor = NPhases;  // Init to last conductor
-				// Put some reasonable values in these matrices
+				NeutralConductor = NPhases;  // init to last conductor
+				// put some reasonable values in these matrices
 				calcMatricesFromZ1Z0();  // reallocs matrices
 			}
 	}
@@ -129,12 +129,12 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		if (Yc != null)
 			Yc = null;
 
-		// For a line, nphases = ncond, for now
+		// for a line, nPhases = nCond, for now
 		Z    = new CMatrixImpl(NPhases);
 		Zinv = new CMatrixImpl(NPhases);
 		Yc   = new CMatrixImpl(NPhases);
 
-		OneThird = 1.0 / 3.0;  // Do this to get more precision in next few statements
+		OneThird = 1.0 / 3.0;  // do this to get more precision in next few statements
 
 		Ztemp = new Complex(R1, X1).multiply(2.0);
 		Zs = Ztemp.add(new Complex(R0, X0)).multiply(OneThird);
@@ -245,28 +245,28 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] =  "3"; // "nphases";
-		PropertyValue[1] =  ".058"; // "r1";
-		PropertyValue[2] =  ".1206"; // "x1";
+		PropertyValue[0] =  "3";      // "nphases";
+		PropertyValue[1] =  ".058";   // "r1";
+		PropertyValue[2] =  ".1206";  // "x1";
 		PropertyValue[3] =  "0.1784"; // "r0";
 		PropertyValue[4] =  "0.4047"; // "x0";
-		PropertyValue[5] =  "3.4"; // "c1";
-		PropertyValue[6] =  "1.6"; // "c0";
+		PropertyValue[5] =  "3.4";  // "c1";
+		PropertyValue[6] =  "1.6";  // "c0";
 		PropertyValue[7] =  "none"; // "units";
-		PropertyValue[8] =  ""; // "rmatrix";
-		PropertyValue[9] =  ""; // "xmatrix";
-		PropertyValue[10] = ""; // "cmatrix";
+		PropertyValue[8] =  "";     // "rmatrix";
+		PropertyValue[9] =  "";     // "xmatrix";
+		PropertyValue[10] = "";     // "cmatrix";
 		PropertyValue[11] = String.format("%6.1f", DSSGlobals.getInstance().getDefaultBaseFreq());  // "baseFreq";
-		PropertyValue[12] = "400"; // "normamps";
-		PropertyValue[13] = "600"; // "emergamps";
-		PropertyValue[14] = "0.1"; // "faultrate";
-		PropertyValue[15] = "20"; // "pctperm";
-		PropertyValue[16] = "3"; // "Hrs to repair";
-		PropertyValue[17] = "N"; // "Kron";
-		PropertyValue[18] = ".01805"; // "Rg";
+		PropertyValue[12] = "400";  // "normamps";
+		PropertyValue[13] = "600";  // "emergamps";
+		PropertyValue[14] = "0.1";  // "faultrate";
+		PropertyValue[15] = "20";   // "pctperm";
+		PropertyValue[16] = "3";    // "Hrs to repair";
+		PropertyValue[17] = "N";    // "Kron";
+		PropertyValue[18] = ".01805";  // "Rg";
 		PropertyValue[19] = ".155081"; // "Xg";
-		PropertyValue[20] = "100"; // "rho";
-		PropertyValue[21] = "3"; // "Neutral";
+		PropertyValue[20] = "100";     // "rho";
+		PropertyValue[21] = "3";       // "Neutral";
 
 		super.initPropertyValues(LineCode.NumPropsThisClass);
 	}
@@ -283,23 +283,23 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 		if (NPhases > 1) {
 			try {
-				NewZ = Z.kron(NeutralConductor);       // Perform Kron Reductions into temp space
+				NewZ = Z.kron(NeutralConductor);  // perform Kron reductions into temp space
 				/* Have to invert the Y matrix to eliminate properly */
 				Yc.invert();  // Vn = 0 not In
 				NewYc = Yc.kron(NeutralConductor);
 			} catch (Exception e) {
-				Globals.doSimpleMsg(String.format("Kron Reduction failed: LineCode.%s. Attempting to eliminate Neutral Conductor %d.", getName(), NeutralConductor), 103);
+				Globals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
 			}
 
-			// Reallocate into smaller space   if Kron was successful
+			// Reallocate into smaller space if Kron was successful
 
 			if ((NewZ != null) && (NewYc != null)) {
 
-				NewYc.invert();  // Back to Y
+				NewYc.invert();  // back to Y
 
 				NPhases = NewZ.getNOrder();
 
-				// Get rid of Z and YC and replace
+				// get rid of Z and Yc and replace
 				Z = null;
 				Yc = null;
 
@@ -309,14 +309,14 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				NeutralConductor = 0;  // TODO Check zero based indexing
 				ReduceByKron = false;
 
-				/* Change Property values to reflect Kron reduction for save circuit function */
+				/* Change property values to reflect Kron reduction for save circuit function */
 				PropertyValue[0] = String.format("%d", NPhases);
 				PropertyValue[8] = getRMatrix();
 				PropertyValue[9] = getXMatrix();
 				PropertyValue[10] = getCMatrix();
 
 			} else {
-				Globals.doSimpleMsg(String.format("Kron Reduction failed: LineCode.%s. Attempting to eliminate Neutral Conductor %d.", getName(), NeutralConductor), 103);
+				Globals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
 			}
 
 		} else {

@@ -35,23 +35,23 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = XfmrCode.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		PropertyName[0] = "phases";
 		PropertyName[1] = "windings";
 
-		// Winding Definition
+		// winding definition
 		PropertyName[2] = "wdg";
 		PropertyName[3] = "conn";
-		PropertyName[4] = "kV"; // FOR 2-and 3- always kVLL ELSE actual winding KV
+		PropertyName[4] = "kV"; // for 2-and 3- always kVLL else actual winding KV
 		PropertyName[5] = "kVA";
 		PropertyName[6] = "tap";
 		PropertyName[7] = "%R";
 		PropertyName[8] = "Rneut";
 		PropertyName[9] = "Xneut";
 
-		// General Data
+		// general data
 		PropertyName[10] = "conns";
 		PropertyName[11] = "kVs";
 		PropertyName[12] = "kVAs";
@@ -76,11 +76,11 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		PropertyName[31] = "ppm_antifloat";
 		PropertyName[32] = "%Rs";
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Number of phases this transformer. Default is 3.";
 		PropertyHelp[1] = "Number of windings, this transformers. (Also is the number of terminals) "+
 					"Default is 2.";
-		// Winding Definition
+		// winding definition
 		PropertyHelp[2] = "Set this = to the number of the winding you wish to define.  Then set "+
 					"the values for this winding.  Repeat for each winding.  Alternatively, use "+
 					"the array collections (buses, kvas, etc.) to define the windings.  Note: "+
@@ -97,7 +97,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 							"If entered as a negative value, the neutral is assumed to be open, or floating.";
 		PropertyHelp[9] = "Neutral reactance of wye(star)-connected winding in actual ohms.  May be + or -.";
 
-		// General Data
+		// general data
 		PropertyHelp[10] = "Use this to specify all the Winding connections at once using an array. Example:"+CRLF+CRLF+
 							"New Transformer.T1 buses=\"Hibus, lowbus\" "+
 							"~ conns=(delta, wye)";
@@ -140,7 +140,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 							"~ %Rs=(0.2  0.3)";
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 	}
 
@@ -218,7 +218,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 			switch (ParamPointer) {
 			case 0:  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"XfmrCode." + axc.getName() + "\"", 110);
+				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
 				break;
 			case 1:
 				axc.setNPhases(parser.makeInteger());
@@ -326,26 +326,26 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 			/* Take care of properties that require some additional work, */
 			switch (ParamPointer) {
-			// default all winding kvas to first winding so latter Donot have to be specified
+			// default all winding kVAs to first winding so latter do not have to be specified
 			case 6:
 				if (axc.getActiveWinding() == 1) {  // TODO Check zero based indexing
 					for (int i = 1; i < axc.getNumWindings(); i++)
 						axc.getWinding()[i].setKva(axc.getWinding()[0].getKva());  // TODO Check zero based indexing
-					axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKva());    // Defaults for new winding rating.
+					axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKva());    // defaults for new winding rating
 					axc.setEmergMaxHKVA(1.5 * axc.getWinding()[0].getKva());
 					axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
 					axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
 				} else {
 					if (axc.getNumWindings() == 2)
-						axc.getWinding()[0].setKva(axc.getWinding()[1].getKva());  // For 2-winding, force both kVAs to be same
+						axc.getWinding()[0].setKva(axc.getWinding()[1].getKva());  // for 2-winding, force both kVAs to be same
 				}
-				// Update LoadLosskW if winding %r changed. Using only windings 1 and 2
+				// update LoadLosskW if winding %r changed; using only windings 1 and 2
 				break;
 			case 8:
 				axc.setPctLoadLoss(axc.getWinding()[0].getRpu() + axc.getWinding()[1].getRpu() * 100.0);
 				break;
 			case 13:
-				axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKva());    // Defaults for new winding rating.
+				axc.setNormMaxHKVA(1.1 * axc.getWinding()[0].getKva());  // defaults for new winding rating
 				axc.setEmergMaxHKVA(1.5 * axc.getWinding()[0].getKva());
 				break;
 			case 15:
@@ -361,12 +361,12 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				for (int i = 0; i < ((axc.getNumWindings() - 1) * axc.getNumWindings() / 2); i++)
 					axc.getXSC()[i] = axc.getXSC()[i] * 0.01;  // Convert to per unit
 				break;
-			case 24:  // Assume load loss is split evenly  between windings 1 and 2
+			case 24:  // assume load loss is split evenly between windings 1 and 2
 				axc.getWinding()[0].setRpu(axc.getPctLoadLoss() / 2.0 / 100.0);
 				axc.getWinding()[1].setRpu(axc.getWinding()[0].getRpu());
 				break;
 			}
-			/* Advance to next property on input line */
+			/* advance to next property on input line */
 			ParamName = parser.getNextParam();
 			Param     = parser.makeString();
 		}

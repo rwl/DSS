@@ -22,17 +22,17 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 
 	protected int[] PrpSequence;
 
-	/* PD, PC, Monitor, CondCode, etc. */
+	/** PD, PC, Monitor, CondCode, etc. */
 	protected int DSSObjType;
 
 	protected DSSClass ParentClass;
 
-	/* Index into the class collection list */
+	/** Index into the class collection list */
 	protected int ClassIndex;
 
 	protected boolean HasBeenSaved;
 
-	/* General purpose Flag for each object  don't assume inited */
+	/** General purpose flag for each object  don't assume inited */
 	protected boolean Flag;
 
 	public void clearPropSeqArray() {
@@ -90,7 +90,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	public void initPropertyValues(int ArrayOffset) {
 		this.PropertyValue[ArrayOffset] = "";
 
-		// Clear propertySequence Array after initialization
+		// clear propertySequence array after initialization
 		clearPropSeqArray();
 	}
 
@@ -98,7 +98,7 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.
 		 */
-		int iProp = getNextPropertySet(0); // Works on ActiveDSSObject
+		int iProp = getNextPropertySet(0); // works on activeDSSObject
 		while (iProp > 0) {
 			DSSClass pc = ParentClass;
 			F.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
@@ -139,8 +139,8 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	public void setPropertyValue(int Index, String Value) {
 		PropertyValue[Index] = Value;
 
-		// Keep track of the order in which this property was
-		// accessed for Save Command
+		// keep track of the order in which this property was
+		// accessed for save command
 		PropSeqCount += 1;
 		PrpSequence[Index] = PropSeqCount;
 	}

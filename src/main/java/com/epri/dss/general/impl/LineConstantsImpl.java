@@ -69,7 +69,7 @@ public class LineConstantsImpl implements LineConstants {
 	/**
 	 * Force a calc of impedances.
 	 *
-	 * Compute base Z and YC matrices in ohms/m for this frequency and earth impedance.
+	 * Compute base Z and Yc matrices in ohms/m for this frequency and earth impedance.
 	 */
 	public void calc(double f) {
 		Complex Zi, Zspacing;
@@ -106,7 +106,7 @@ public class LineConstantsImpl implements LineConstants {
 			PowerFreq = false;
 		}
 
-		/* Self Impedances */
+		/* Self impedances */
 
 		for (i = 0; i < NumConds; i++) {
 			Zi = getZint(i);
@@ -120,7 +120,7 @@ public class LineConstantsImpl implements LineConstants {
 			Zmatrix.setElement(i, i, Zi.add( Zspacing.add(getZe(i, i)) ));
 		}
 
-		/* Mutual Impedances */
+		/* Mutual impedances */
 
 		for (i = 0; i < NumConds; i++) {
 			for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
@@ -129,7 +129,7 @@ public class LineConstantsImpl implements LineConstants {
 			}
 		}
 
-		/* Capacitance Matrix */
+		/* Capacitance matrix */
 
 		Pfactor = -1.0 / TwoPI / e0 / w;  // include frequency
 
@@ -329,7 +329,7 @@ public class LineConstantsImpl implements LineConstants {
 
 	/**
 	 * Will auto recalc the impedance matrices if frequency is different
-	 * Converts to desired units when executed.
+	 * converts to desired units when executed.
 	 *
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
@@ -363,7 +363,7 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	/**
-	 * Performs a Kron reduction leaving first Norder rows.
+	 * Performs a Kron reduction leaving first nOrder rows.
 	 */
 	public void Kron(int nOrder) {
 
@@ -382,7 +382,7 @@ public class LineConstantsImpl implements LineConstants {
 
 			while (Ztemp.getNOrder() > nOrder) {
 
-				Zreduced = Ztemp.kron(Ztemp.getNOrder());    // Eliminate last row
+				Zreduced = Ztemp.kron(Ztemp.getNOrder());  // eliminate last row
 				YCreduced = YCTemp.kron(Ztemp.getNOrder());
 
 				if (!FirstTime) {
@@ -400,7 +400,7 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	/**
-	 * Kron reduce to NumPhases only.
+	 * Kron reduce to num phases only.
 	 */
 	public void reduce() {
 		Kron(NumPhases);
@@ -441,7 +441,7 @@ public class LineConstantsImpl implements LineConstants {
 		if ((i > 0) && (i <= NumConds)) {  // TODO Check zero based indexing
 			radius[i] = Value * LineUnits.toMeters(units);
 			if (GMR[i] < 0.0)
-				GMR[i] = radius[i] * 0.7788; // Default to round conductor
+				GMR[i] = radius[i] * 0.7788;  // default to round conductor
 		}
 	}
 

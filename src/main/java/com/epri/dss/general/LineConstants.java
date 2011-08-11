@@ -6,7 +6,7 @@ import com.epri.dss.shared.impl.Complex;
 /**
  * Manages the geometry data and calculates the impedance matrices for an overhead line
  *
- * Usage: Create with Number of conductors you want
+ * Usage: Create with number of conductors you want
  *     Specify the number of phases. The first conductors you define with
  *     be the phases. Other conductors may be considered neutral.
  *
@@ -91,12 +91,12 @@ public interface LineConstants {
 	void calc(double f);
 
 	/**
-	 * Performs a Kron reduction leaving first Norder rows
+	 * Performs a Kron reduction leaving first nOrder rows
 	 */
-	void Kron(int Norder);
+	void Kron(int nOrder);
 
 	/**
-	 * Kron reduce to Numphases only
+	 * Kron reduce to numPhases only
 	 */
 	void reduce();
 

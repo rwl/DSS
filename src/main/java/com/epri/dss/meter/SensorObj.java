@@ -8,7 +8,7 @@ package com.epri.dss.meter;
  */
 public interface SensorObj extends MeterElement {
 
-	/* Connection code */
+	/** Connection code */
 	void setConn(int Value);
 
 	int getConn();
@@ -37,7 +37,7 @@ public interface SensorObj extends MeterElement {
 
 	void resetIt();
 
-	/* Saves present buffer to file */
+	/** Saves present buffer to file. */
 	void save();
 
 	// FIXME Private method in OpenDSS

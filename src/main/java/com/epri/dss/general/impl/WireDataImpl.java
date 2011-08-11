@@ -27,11 +27,11 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 	protected void defineProperties() {
 		NumProperties = WireData.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		ActiveProperty = WireData.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -68,10 +68,10 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 			switch (ParamPointer) {
 			case -1:  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +'.'+ acd.getName() + "\"", 101);
+				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveConductorDataObj(), ParamPointer - WireData.NumPropsThisClass);
 				break;
 			}

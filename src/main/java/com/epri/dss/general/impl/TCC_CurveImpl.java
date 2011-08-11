@@ -35,14 +35,13 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define Property names
-		PropertyName[0] = "npts";     // Number of points to expect
-		PropertyName[1] = "C_array";     // vector of multiplier values
-		PropertyName[2] = "T_array";     // vextor of time values , Sec
+		// define property names
+		PropertyName[0] = "npts";     // number of points to expect
+		PropertyName[1] = "C_array";  // vector of multiplier values
+		PropertyName[2] = "T_array";  // vextor of time values , Sec
 
 		// define property help values
-
-		PropertyHelp[0] = "Number of points to expect in time-current arrays.";     // Number of points to expect
+		PropertyHelp[0] = "Number of points to expect in time-current arrays.";  // number of points to expect
 		PropertyHelp[1] = "Array of current (or voltage) values corresponding to time values (see help on T_Array).";  // vector of multiplier values
 		PropertyHelp[2] = "Array of time values in sec. Typical array syntax: " +CRLF+
 					"t_array = (1, 2, 3, 4, ...)" +CRLF+CRLF+
@@ -51,7 +50,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 					"The specified file has one value per line.";
 
 		ActiveProperty = TCC_Curve.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -74,7 +73,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 	@Override
 	public int edit() {
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveTCC_CurveObj((TCC_CurveObj) ElementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveTCC_CurveObj());
 
@@ -97,7 +96,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 			switch (ParamPointer) {
 			case 0:
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ atc.getName() + "\"", 420);
+				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 1:
 				atc.setNpts(parser.makeInteger());
@@ -109,13 +108,13 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 				Utilities.interpretDblArray(Param, atc.getNpts(), atc.getT_values());   // Parser.ParseAsVector(Npts, Hours);
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveTCC_CurveObj(), ParamPointer - TCC_Curve.NumPropsThisClass);
 				break;
 			}
 
 			switch (ParamPointer) {
-			case 0:  // Reallocate arrays to correspond to Npts
+			case 0:  // reallocate arrays to correspond to npts
 				atc.setC_values( (double[]) Utilities.resizeArray(atc.getC_values(), atc.getNpts()) );
 				atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNpts()) );
 				atc.setT_values( (double[]) Utilities.resizeArray(atc.getT_values(), atc.getNpts()) );
@@ -160,7 +159,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)
 				atc.setPropertyValue(i, OtherTCC_Curve.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + Name + "\" Not Found.", 421);
+			DSSGlobals.getInstance().doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + Name + "\" not found.", 421);
 		}
 
 		return Result;

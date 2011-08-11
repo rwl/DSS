@@ -3,13 +3,13 @@ package com.epri.dss.general;
 import com.epri.dss.shared.CMatrix;
 
 /**
- * The LineCode object is a general DSS object used by all circuits
- * as a reference for obtaining line impedances.
+ * A general DSS object used by all circuits as a reference for obtaining line
+ * impedances.
  *
- * The values are set by the normal New and Edit procedures for any DSS object.
+ * The values are set by the normal "new" and "edit" procedures for any DSS object.
  *
- * The values are retrieved by setting the Code Property in the LineCode Class.
- * This sets the active LineCode object to be the one referenced by the Code Property;
+ * The values are retrieved by setting the code property in the LineCode class.
+ * This sets the active LineCode object to be the one referenced by the code property;
  *
  * Then the values of that code can be retrieved via the public variables.
  *
