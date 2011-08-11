@@ -15,7 +15,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	public FaultImpl() {
 		super();
 		this.Class_Name = "Fault";
-		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // Only in Fault object class
+		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // only in fault object class
 
 		this.ActiveElement = -1;
 
@@ -30,12 +30,11 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	protected void defineProperties() {
 
 		NumProperties = Fault.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
-		// Define Property names
-
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "bus2";
 		PropertyName[2] = "phases";
@@ -46,7 +45,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		PropertyName[7] = "temporary";
 		PropertyName[8] = "MinAmps";
 
-		// define Property help values
+		// define property help values
 		PropertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
 						"bus1=busname"+DSSGlobals.CRLF+
 						"bus1=busname.1.2.3";
@@ -69,7 +68,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 
 		ActiveProperty = Fault.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -87,7 +86,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		double[] MatBuffer = new double[af.getNPhases() * af.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful  TODO Check zero based indexing
+		if (OrderFound > 0) {  // parse was successful  TODO Check zero based indexing
 			/* X */
 			af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) );
 			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
@@ -100,24 +99,24 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	private void fltSetBus1(String S) {
 		String S2;
 
-		// Special handling for Bus 1
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus 1
+		// set bus2 = bus1.0.0.0
 
 		FaultObj af = getActiveFaultObj();
 
 		af.setBus(1, S);  // TODO Check zero based indexing
 
-		// Default Bus2 to zero node of Bus1. (Wye Grounded connection)
+		// default bus2 to zero node of bus1. (wye grounded connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		int dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos - 1);  // copy up to Dot   TODO Check zero based indexing
+			S2 = S.substring(0, dotpos);  // copy up to dot
 		} else {
 			S2 = S.substring(S.length());
 		}
 
-		S2 = S2 + ".0.0.0";  // Set Default for up to 3 phases
+		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
 
 		af.setBus(2, S2);  // TODO Check zero based indexing
 		af.setShunt(true);
@@ -129,7 +128,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		Parser parser = Parser.getInstance();
 
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveFaultObj((FaultObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
 
@@ -150,7 +149,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ af.getName() + "\"", 350);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
 				fltSetBus1(Param);
@@ -166,7 +165,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				if (af.getG() != 0.0) {
 					af.setG(1.0 / af.getG());
 				} else {
-					af.setG(10000.0);  // Default to a low resistance
+					af.setG(10000.0);  // default to a low resistance
 				}
 				break;
 			case 4:
@@ -185,15 +184,15 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setMinAmps(parser.makeDouble());
 				break;
 			default:
-				// Inherited
+				// inherited
 				classEdit(getActiveFaultObj(), ParamPointer - Fault.NumPropsThisClass);
 				break;
 			}
 
-			// Some specials ...
+			// some specials ...
 			switch (ParamPointer) {
 			case 0:
-				af.setPropertyValue(1, af.getBus(2));  // Bus2 gets modified if bus1 is   TODO Check zero based indexing
+				af.setPropertyValue(1, af.getBus(2));  // bus2 gets modified if bus1 is   TODO Check zero based indexing
 				break;
 			case 1:
 				if (!Utilities.stripExtension(af.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(af.getBus(2)) ))
@@ -202,8 +201,8 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			case 2:
 				if (af.getNPhases() != parser.makeInteger()) {
 					af.setNPhases(parser.makeInteger());
-					af.setNConds(af.getNPhases());  // Force Reallocation of terminal info
-					Globals.getActiveCircuit().setBusNameRedefined(true);  // Set Global Flag to signal circuit to rebuild busdefs
+					af.setNConds(af.getNPhases());  // force reallocation of terminal info
+					Globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 3:
@@ -214,7 +213,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				break;
 			case 6:
 				if (af.getOn_Time() > 0.0)
-					af.setIs_ON(false);  // Assume fault will be on later
+					af.setIs_ON(false);  // assume fault will be on later
 				break;
 			}
 
@@ -244,14 +243,14 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	protected int makeLike(String FaultName) {
 
 		int Result = 0;
-		/* See if we can find this Fault name in the present collection */
+		/* See if we can find this fault name in the present collection */
 		FaultObj OtherFault = (FaultObj) find(FaultName);
 		if (OtherFault != null) {
 			FaultObj af = getActiveFaultObj();
 
 			if (af.getNPhases() != OtherFault.getNPhases()) {
 				af.setNPhases(OtherFault.getNPhases());
-				af.setNConds(af.getNPhases()); // force reallocation of terminals and conductors
+				af.setNConds(af.getNPhases());  // force reallocation of terminals and conductors
 
 				af.setYorder(af.getNConds() * af.getNTerms());
 				af.setYprimInvalid(true);
@@ -282,7 +281,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setPropertyValue(i, OtherFault.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fault.makeLike(): \"" + FaultName + "\" Not Found.", 351);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Fault.makeLike(): \"" + FaultName + "\" not found.", 351);
 		}
 		return Result;
 	}

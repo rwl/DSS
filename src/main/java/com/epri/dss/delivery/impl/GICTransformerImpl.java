@@ -23,19 +23,17 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		String[] Commands = new String[this.NumProperties];
 		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
 		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);  // Allow property list abbreviations
+		this.CommandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = NumPropsThisClass;
-	    countProperties();   // Get inherited property count
+	    countProperties();   // get inherited property count
 	    allocatePropertyArrays();
 
-
 	    // define property names
-
 	    PropertyName[0] = "BusH";
 	    PropertyName[1] = "BusNH";
 	    PropertyName[2] = "BusX";
@@ -63,7 +61,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 
 	    ActiveProperty = NumPropsThisClass - 1;
-	    super.defineProperties();  // Add defs of inherited properties to bottom of list
+	    super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -78,23 +76,23 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		String S2;
 		int dotpos;
 
-		// Set Bus2 = BusH1.0.0.0
+		// set bus2 = busH1.0.0.0
 
 		GICTransformerObj agt = getActiveGICTransformerObj();
 
 		agt.setBus(1, S);
 
-		// Default Bus2 to zero node of Bus1. (Wye Grounded connection)
+		// default bus2 to zero node of bus1. (wye grounded connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos - 1);  // copy up to dot
+			S2 = S.substring(0, dotpos);  // copy up to dot
 		} else {
 			S2 = S.substring(0);
 		}
 
-		S2 = S2 + ".0.0.0";     // Set Default for up to 3 phases
+		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
 
 		agt.setBus(2, S2);
 		agt.setShunt(true);
@@ -104,31 +102,31 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
     	String S2;
     	int dotpos;
 
-		// Special handling for Bus X
-		// Make sure we have enough terminals defined
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus X
+		// make sure we have enough terminals defined
+		// set bus2 = bus1.0.0.0
 
 		GICTransformerObj agt = getActiveGICTransformerObj();
 
 		if (agt.getNTerms() != 4) {  // have to have 4 terminals to set this property
 
 			agt.setNTerms(4);
-			agt.setNConds(agt.getNPhases()); // force reallocation of terminals and conductors
+			agt.setNConds(agt.getNPhases());  // force reallocation of terminals and conductors
 		}
 
 		agt.setBus(3, S);
 
-		// Default Bus4 to zero node of Bus3. (Wye Grounded connection)
+		// default bus4 to zero node of bus3. (wye grounded connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos - 1);  // copy up to Dot
+			S2 = S.substring(0, dotpos);  // copy up to dot
 		} else {
 			S2 = S.substring(0);
 		}
 
-		S2 = S2 + ".0.0.0";     // Set Default for up to 3 phases
+		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
 
 		agt.setBus(4, S2);
 		agt.setShunt(true);
@@ -166,7 +164,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 350);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ getName() + "\"", 350);
 				break;
 			case 0:
 				GICTransSetBusH(Param);
@@ -201,7 +199,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				if (agt.getG1() != 0.0) {
 					agt.setG1(1.0 / agt.getG1());
 				} else {
-					agt.setG1(10000.0);  // Default to a low resistance
+					agt.setG1(10000.0);  // default to a low resistance
 				}
 				break;
 			case 7:
@@ -209,22 +207,22 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				if (agt.getG2() != 0.0) {
 					agt.setG2(1.0 / agt.getG2());
 				} else {
-					agt.setG2(10000.0);  // Default to a low resistance
+					agt.setG2(10000.0);  // default to a low resistance
 				}
 				break;
 			default:
-				// Inherited
+				// inherited
 				classEdit(getActiveGICTransformerObj(), ParamPointer - NumPropsThisClass);
 				break;
 			}
 
-			// Some specials ...
+			// some specials ...
 			switch (ParamPointer) {
 			case 0:
-				agt.setPropertyValue(1, agt.getBus(2));  // Bus2 gets modified if bus1 is set
+				agt.setPropertyValue(1, agt.getBus(2));  // bus2 gets modified if bus1 is set
 				break;
 			case 2:
-				agt.setPropertyValue(3, agt.getBus(4));  // Bus4 gets modified if bus3(X) is set
+				agt.setPropertyValue(3, agt.getBus(4));  // bus4 gets modified if bus3(X) is set
 				if (agt.getSpecType() == SPEC_AUTO) {
 					// automatically make up series-to-common connection
 					agt.setBus(2, agt.getBus(3));
@@ -234,8 +232,8 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			case 4:
 				if (agt.getNPhases() != parser.makeInteger()) {
 					agt.setNPhases(parser.makeInteger());
-					agt.setNConds(agt.getNPhases());  // Force Reallocation of terminal info if different size
-					Globals.getActiveCircuit().setBusNameRedefined(true);  // Set Global Flag to signal circuit to rebuild busdefs
+					agt.setNConds(agt.getNPhases());  // force reallocation of terminal info if different size
+					Globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 5:
@@ -295,7 +293,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				agt.setPropertyValue(i, OtherGICTrans.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GICTransformer MakeLike: \"" + GICTransName + "\" Not Found.", 351);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GICTransformer makeLike: \"" + GICTransName + "\" not found.", 351);
 		}
 		return Result;
 	}

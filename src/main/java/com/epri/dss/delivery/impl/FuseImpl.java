@@ -48,12 +48,11 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 	protected void defineProperties() {
 
 		NumProperties = Fuse.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
-		// Define Property names
-
+		// define property names
 		PropertyName[0]  = "MonitoredObj";
 		PropertyName[1]  = "MonitoredTerm";
 		PropertyName[2]  = "SwitchedObj";
@@ -85,7 +84,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 							"\"Close\" causes the controlled element to close and the Fuse to reset.";
 
 		ActiveProperty  = Fuse.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -101,7 +100,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// continue parsing WITH contents of Parser
+		// continue parsing with contents of parser
 		setActiveFuseObj((FuseObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
 
@@ -152,7 +151,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				break;
 
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveFuseObj(), ParamPointer - Fuse.NumPropsThisClass);
 				break;
 			}
@@ -186,15 +185,15 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 			FuseObj af = getActiveFuseObj();
 
 			af.setNPhases(OtherFuse.getNPhases());
-			af.setNConds(OtherFuse.getNConds()); // Force Reallocation of terminal stuff
+			af.setNConds(OtherFuse.getNConds()); // force reallocation of terminal stuff
 
 			af.setElementName(OtherFuse.getElementName());
 			af.setElementTerminal(OtherFuse.getElementTerminal());
-			af.setControlledElement(OtherFuse.getControlledElement());  // Pointer to target circuit element
+			af.setControlledElement(OtherFuse.getControlledElement());  // target circuit element
 
-			af.setMonitoredElement(OtherFuse.getMonitoredElement());  // Pointer to target circuit element
-			af.setMonitoredElementName(OtherFuse.getMonitoredElementName());  // Pointer to target circuit element
-			af.setMonitoredElementTerminal(OtherFuse.getMonitoredElementTerminal());  // Pointer to target circuit element
+			af.setMonitoredElement(OtherFuse.getMonitoredElement());  // target circuit element
+			af.setMonitoredElementName(OtherFuse.getMonitoredElementName());  // target circuit element
+			af.setMonitoredElementTerminal(OtherFuse.getMonitoredElementTerminal());  // target circuit element
 
 			af.setFuseCurve(OtherFuse.getFuseCurve());
 			af.setRatedCurrent(OtherFuse.getRatedCurrent());
@@ -207,7 +206,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				af.setPropertyValue(i, OtherFuse.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fuse MakeLike: \"" + FuseName + "\" Not Found.", 403);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Fuse makeLike: \"" + FuseName + "\" not found.", 403);
 		}
 
 		return Result;

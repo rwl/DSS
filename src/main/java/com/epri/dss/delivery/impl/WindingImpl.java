@@ -4,18 +4,18 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.delivery.Winding;
 
 public class WindingImpl implements Winding {
-	
+
 	private int Connection;
 	private double kvll,
 		VBase,
 		kva,
 		puTap,
-		Rpu,      // on transformer MVABase  (1st winding)
+		Rpu,  // on transformer MVABase (1st winding)
 		Rneut,
 		Xneut;
-	private double Y_PPM;  // Anti Float reactance adder
+	private double Y_PPM;  // Anti float reactance adder
 
-	/* Tap Changer Data */
+	/* Tap changer data */
 	private double TapIncrement,
 		MinTap,
 		MaxTap;
@@ -29,7 +29,7 @@ public class WindingImpl implements Winding {
 		this.kva        = 1000.0;
 		this.puTap      = 1.0;
 		this.Rpu        = 0.002;
-		this.Rneut      = -1.0;    // default to open - make user specify connection
+		this.Rneut      = -1.0;  // default to open - make user specify connection
 		this.Xneut      = 0.0;
 		computeAntiFloatAdder(1.0e-6, kva / 3.0 / 1000.0);  //  1 PPM
 
@@ -38,7 +38,7 @@ public class WindingImpl implements Winding {
 		this.MaxTap       = 1.10;
 		this.MinTap       = 0.90;
 	}
-	
+
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
 		Y_PPM = -PPM_Factor / (Math.pow(VBase, 2) / VABase1ph);
 	}

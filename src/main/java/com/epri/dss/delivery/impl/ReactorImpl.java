@@ -30,10 +30,10 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	protected void defineProperties() {
 
 		NumProperties = Reactor.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define Property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "bus2";
 		PropertyName[2] = "phases";
@@ -47,8 +47,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		PropertyName[10] = "X";
 		PropertyName[11] = "Rp";
 
-		// define Property help values
-
+		// define property help values
 		PropertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
 							"bus1=busname"+DSSGlobals.CRLF+
 							"bus1=busname.1.2.3";
@@ -70,7 +69,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		PropertyHelp[11] = "Resistance in parallel with R and X (the entire branch). Assumed infinite if not specified.";
 
 		ActiveProperty = Reactor.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -98,8 +97,8 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	}
 
 	/**
-	 * Accepts:
-	 * 		delta or LL           (Case insensitive)
+	 * Accepts (case insensitive):
+	 * 		delta or LL
 	 * 		Y, wye, or LN
 	 */
 	private void interpretConnection(String S) {
@@ -114,7 +113,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			ar.setConnection(0);  /* Wye */
 			break;
 		case 'd':
-			ar.setConnection(1);  /* Delta or line-Line */
+			ar.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
@@ -130,7 +129,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		switch (ar.getConnection()) {
 		case 1:
-			ar.setNTerms(1);  // Force reallocation of terminals
+			ar.setNTerms(1);  // force reallocation of terminals
 			break;
 		case 0:
 			if (ar.getNTerms() != 2)
@@ -143,21 +142,21 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		String S2;
 		int i, dotpos;
 
-		// Special handling for Bus 1
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus 1
+		// set bus2 = bus1.0.0.0
 
 		ReactorObj ar = getActiveReactorObj();
 
 		ar.setBus(1, S);
 
-		// Default Bus2 to zero node of Bus1. (Wye Grounded connection)
+		// default bus2 to zero node of bus1. (wye grounded connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);  // TODO Check zero based indexing
+			S2 = S.substring(0, dotpos);  // copy up to dot
 		} else {
-			S2 = S.substring(0, S.length());  // copy up to Dot
+			S2 = S.substring(0, S.length());
 		}
 
 		for (i = 0; i < ar.getNPhases(); i++)
@@ -173,7 +172,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		Parser parser = Parser.getInstance();
 
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveReactorObj((ReactorObj) ElementList.getActive());
 		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(getActiveReactorObj());
 
@@ -195,7 +194,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() + "\"", 230);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
 				reactorSetBus1(Param);
@@ -204,7 +203,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setBus(2, Param);  // TODO Check zero based indexing
 				break;
 			case 2:
-				/*Numphases = parser.makeInteger();*/  // see below
+				/*nPhases = parser.makeInteger();*/  // see below
 				break;
 			case 3:
 				ar.setKvarrating(parser.makeDouble());
@@ -234,16 +233,16 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setRp(parser.makeDouble());
 				break;
 			default:
-				// Inherited Property Edits
+				// inherited property edits
 				classEdit(ActiveReactorObj, ParamPointer - Reactor.NumPropsThisClass);
 				break;
 			}
 
-			// Some specials ...
+			// some specials ...
 			switch (ParamPointer) {
 			case 0:
 				ar.setPropertyValue(1, ar.getBus(2));  // this gets modified   TODO Check zero based indexing
-				ar.getPrpSequence()[1] = 0;            // Reset this for save function
+				ar.getPrpSequence()[1] = 0;            // reset this for save function
 				break;
 			case 1:
 				if (!Utilities.stripExtension(ar.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(ar.getBus(2)) ))
@@ -252,12 +251,12 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			case 2:
 				if (ar.getNPhases() != parser.makeInteger()) {
 					ar.setNPhases(parser.makeInteger());
-					ar.setNConds(ar.getNPhases());  // Force Reallocation of terminal info
+					ar.setNConds(ar.getNPhases());  // force reallocation of terminal info
 					ar.setYorder(ar.getNTerms() * ar.getNConds());
 				}
 				break;
 			case 3:
-				ar.setSpecType(1);   // X specified by kvar, kV
+				ar.setSpecType(1);  // x specified by kVAr, kV
 				break;
 			case 6:
 				ar.setSpecType(3);
@@ -266,7 +265,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setSpecType(3);
 				break;
 			case 10:
-				ar.setSpecType(2);   // X specified directly
+				ar.setSpecType(2);  // x specified directly
 				break;
 			case 11:
 				ar.setRpSpecified(true);
@@ -274,9 +273,8 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((ParamPointer >= 2) && (ParamPointer <= 11)) {
+			if ((ParamPointer >= 2) && (ParamPointer <= 11))
 				ar.setYprimInvalid(true);
-			}
 
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
@@ -292,14 +290,14 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		int i, Result = 0;
 
-		/* See if we can find this Reactor name in the present collection */
+		/* See if we can find this reactor name in the present collection */
 		ReactorObj OtherReactor = (ReactorObj) find(ReactorName);
 		if (OtherReactor != null) {
 			ReactorObj ar = getActiveReactorObj();
 
 			if (ar.getNPhases() != OtherReactor.getNPhases()) {
 				ar.setNPhases(OtherReactor.getNPhases());
-				ar.setNConds(ar.getNPhases()); // force reallocation of terminals and conductors
+				ar.setNConds(ar.getNPhases());  // force reallocation of terminals and conductors
 
 				ar.setYorder(ar.getNConds() * ar.getNTerms());
 				ar.setYprimInvalid(true);
@@ -334,14 +332,14 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				}
 			}
 
-			classMakeLike(OtherReactor);  // Take care of inherited class properties
+			classMakeLike(OtherReactor);  // take care of inherited class properties
 
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++) {
 				ar.setPropertyValue(i, OtherReactor.getPropertyValue(i));
 			}
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Reactor MakeLike: \"" + ReactorName + "\" Not Found.", 231);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Reactor makeLike: \"" + ReactorName + "\" not found.", 231);
 		}
 
 		return Result;

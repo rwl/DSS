@@ -31,11 +31,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		String CRLF = DSSGlobals.CRLF;
 
 		NumProperties = Capacitor.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
-		// Define Property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "bus2";
 		PropertyName[2] = "phases";
@@ -50,8 +50,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		PropertyName[11] = "Numsteps";
 		PropertyName[12] = "states";
 
-		// define Property help values
-
+		// define property help values
 		PropertyHelp[0] = "Name of first bus. Examples:" + CRLF +
 							"bus1=busname" + CRLF + "bus1=busname.1.2.3";
 		PropertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
@@ -78,7 +77,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 							"Capcontrol will modify this array as it turns steps on or off.";
 
 		ActiveProperty = Capacitor.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -98,7 +97,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		MatBuffer = new double[aco.getNPhases() * aco.getNPhases()];
 		OrderFound = Parser.getInstance().parseAsSymMatrix(aco.getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful
+		if (OrderFound > 0) {  // parse was successful
 			/* C */
 			aco.setCmatrix((double[]) Utilities.resizeArray(aco.getCmatrix(), aco.getNPhases() * aco.getNPhases()));
 			for (j = 0; j < aco.getNPhases() * aco.getNPhases(); j++)
@@ -109,8 +108,8 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	}
 
 	/**
-	 * Accepts:
-	 *   delta or LL           (Case insensitive)
+	 * Accepts (case insensitive):
+	 *   delta or LL
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String S) {
@@ -125,7 +124,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			aco.setConnection(0);  /* Wye */
 			break;
 		case 'd':
-			aco.setConnection(1);  /* Delta or line-Line */
+			aco.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
 			switch (TestS.charAt(1)) {
@@ -141,7 +140,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		switch (aco.getConnection()) {
 		case 1:
-			aco.setNTerms(1);  // Force reallocation of terminals
+			aco.setNTerms(1);  // force reallocation of terminals
 			break;
 		case 0:
 			if (aco.getNTerms() != 2)
@@ -154,26 +153,26 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		String S2;
 		int i, dotpos;
 
-		// Special handling for Bus 1
-		// Set Bus2 = Bus1.0.0.0
+		// special handling for bus 1
+		// set bus2 = bus1.0.0.0
 
 		CapacitorObj aco = getActiveCapacitorObj();
 
 		aco.setBus(0, S);
 
-		// Default Bus2 to zero node of Bus1. (Grounded-Y connection)
+		// default bus2 to zero node of bus1. (grounded-Y connection)
 
-		// Strip node designations from S
+		// strip node designations from s
 		dotpos = S.indexOf('.');
 		if (dotpos >= 0) {
 			S2 = S.substring(0, dotpos - 1);
 		} else {
-			S2 = S.substring(0, S.length());  // copy up to Dot
+			S2 = S.substring(0, S.length());  // copy up to dot
 		}
 		for (i = 0; i < aco.getNPhases(); i++)
 			S2 = S2 + ".0";   // append series of ".0"'s
 
-		aco.setBus(1, S2);    // default setting for Bus2
+		aco.setBus(1, S2);    // default setting for bus2
 		aco.setShunt(true);
 	}
 
@@ -204,7 +203,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 			switch (ParamPointer) {
 			case 0:
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Object \"Capacitor."+aco.getName()+"\"", 450);
+				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
 				break;
 			case 1:
 				capSetBus1(Param);
@@ -246,16 +245,16 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				aco.processStatesSpec(Param);
 				break;
 			default:
-				// Inherited Property Edits
+				// inherited property edits
 				classEdit(getActiveCapacitorObj(), ParamPointer - Capacitor.NumPropsThisClass);
 				break;
 			}
 
-			// Some specials ...
+			// some specials ...
 			switch (ParamPointer) {
 			case 0:
-				aco.setPropertyValue(1, aco.getBus(1));   // this gets modified
-				aco.getPrpSequence()[1] = 0; // Reset this for save function
+				aco.setPropertyValue(1, aco.getBus(1));  // this gets modified
+				aco.getPrpSequence()[1] = 0;  // reset this for save function
 				break;
 			case 1:
 				if (!Utilities.stripExtension(aco.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(aco.getBus(2)) ))
@@ -264,7 +263,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			case 2:
 				if (aco.getNPhases() != parser.makeInteger()) {
 					aco.setNPhases(parser.makeInteger());
-					aco.setNConds(aco.getNPhases());  // Force Reallocation of terminal info
+					aco.setNConds(aco.getNPhases());  // force reallocation of terminal info
 					aco.setYorder(aco.getNTerms() * aco.getNConds());
 				}
 				break;
@@ -328,14 +327,14 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	@Override
 	protected int makeLike(String CapacitorName) {
 		int Result = 0;
-		/* See if we can find this Capacitor name in the present collection */
+		/* See if we can find this capacitor name in the present collection */
 		CapacitorObj OtherCapacitor = (CapacitorObj) find(CapacitorName);
 		if (OtherCapacitor != null) {
 			CapacitorObj aco = getActiveCapacitorObj();
 
 			if (aco.getNPhases() != OtherCapacitor.getNPhases()) {
 				aco.setNPhases(OtherCapacitor.getNPhases());
-				aco.setNConds(aco.getNPhases()); // force reallocation of terminals and conductors
+				aco.setNConds(aco.getNPhases());  // force reallocation of terminals and conductors
 
 				aco.setYorder(aco.getNConds() * aco.getNTerms());
 				aco.setYprimInvalid(true);
@@ -365,14 +364,14 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 					aco.getCmatrix()[i] = OtherCapacitor.getCmatrix()[i];
 			}
 
-			classMakeLike(OtherCapacitor);  // Take care of inherited class properties
+			classMakeLike(OtherCapacitor);  // take care of inherited class properties
 
 			for (int i = 0; i < aco.getParentClass().getNumProperties(); i++) {
 				aco.setPropertyValue(i, OtherCapacitor.getPropertyValue(i));
 				Result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Capacitor.makeLike(): \"" + CapacitorName + "\" Not Found.", 451);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Capacitor.makeLike(): \"" + CapacitorName + "\" not found.", 451);
 		}
 
 		return Result;

@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.Complex;
 
 public class GICTransformerObjImpl extends PDElementImpl implements GICTransformerObj {
 
-	private double G1, G2;         // single G per phase (line rating)
+	private double G1, G2;  // single G per phase (line rating)
 
     private int SpecType;
 
@@ -23,7 +23,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
-		setNTerms(2);   // force allocation of terminals and conductors
+		setNTerms(2);  // force allocation of terminals and conductors
 
 		setBus(2, getBus(1) + ".0");  // default to grounded
 		this.IsShunt = true;
@@ -56,7 +56,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		CMatrix YPrimTemp;
 
-		if (isYprimInvalid()) {  // Reallocate YPrim if something has invalidated old allocation
+		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrim_Series != null) YPrim_Series = null;
 			YPrim_Series = new CMatrixImpl(Yorder);
 			if (YPrim_Shunt != null) YPrim_Shunt = null;
@@ -65,7 +65,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			YPrim = new CMatrixImpl(Yorder);
 		} else {
 			YPrim_Series.clear();  // zero out YPrim
-			YPrim_Shunt.clear();  // zero out YPrim
+			YPrim_Shunt.clear();   // zero out YPrim
 			YPrim.clear();
 		}
 
@@ -75,11 +75,11 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			YPrimTemp = YPrim_Series;
 		}
 
-		// make sure randommult is 1.0 if not solution mode MonteFault
+		// make sure randomMult is 1.0 if not solution mode MonteFault
 
-		/* now, Put in Yprim matrix */
+		/* Now, put in Yprim matrix */
 
-		/* If the fault is not ON, the set zero conductance */
+		/* If the fault is not on, the set zero conductance */
 
 		switch (SpecType) {
 		case GICTransformer.SPEC_GSU:
@@ -87,7 +87,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 			Value = new Complex(G1, 0.0);
 			Value2 = Value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i+nPhases, i+nPhases,Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
@@ -95,19 +95,19 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		case GICTransformer.SPEC_AUTO:
 
-			// Terminals 1 and 2
+			// terminals 1 and 2
 			Value = new Complex(G1, 0.0);
 			Value2 = Value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
-			// Terminals 3 and 4
+			// terminals 3 and 4
 			Value = new Complex(G2, 0.0);
 			Value2 = Value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
@@ -115,19 +115,19 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		case GICTransformer.SPEC_YY:
 
-			// Terminals 1 and 2
+			// terminals 1 and 2
 			Value = new Complex(G1, 0.0);
 			Value2 = Value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
-			// Terminals 3 and 4
+			// terminals 3 and 4
 			Value = new Complex(G2, 0.0);
 			Value2 = Value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);     // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
 				YPrimTemp.setElemSym(i, i+nPhases, Value2);
 			}
@@ -187,11 +187,11 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		super.initPropertyValues(GICTransformer.NumPropsThisClass - 1);
 
 		// Override Inherited Properties
-		setPropertyValue(GICTransformer.NumPropsThisClass + 0, "0");  // Normamps
-		setPropertyValue(GICTransformer.NumPropsThisClass + 1, "0");  // Emergamps
-		setPropertyValue(GICTransformer.NumPropsThisClass + 2, "0");  // Fault rate
-		setPropertyValue(GICTransformer.NumPropsThisClass + 3, "0");  // Pct Perm
-		setPropertyValue(GICTransformer.NumPropsThisClass + 4, "0");  // Hrs to repair
+		setPropertyValue(GICTransformer.NumPropsThisClass + 0, "0");  // normAmps
+		setPropertyValue(GICTransformer.NumPropsThisClass + 1, "0");  // emergAmps
+		setPropertyValue(GICTransformer.NumPropsThisClass + 2, "0");  // faultRate
+		setPropertyValue(GICTransformer.NumPropsThisClass + 3, "0");  // pctPerm
+		setPropertyValue(GICTransformer.NumPropsThisClass + 4, "0");  // hrsToRepair
 	}
 
 	@Override

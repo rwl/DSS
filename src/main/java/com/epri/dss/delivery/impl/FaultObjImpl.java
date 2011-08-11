@@ -22,19 +22,19 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	private double On_Time;
 	private double RandomMult;
 
-	/* single G per phase (line rating) if Gmatrix not specified */
+	/* Single G per phase (line rating) if GMatrix not specified */
 	protected double G;
 	/* If not null then overrides G */
 	protected double[] Gmatrix;
 
-	/* per unit stddev */
+	/* Per unit std dev */
 	protected double Stddev;
 	protected int SpecType;
 
 	public FaultObjImpl(DSSClass ParClass, String FaultName) {
 		super(ParClass);
 
-		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // Only in Fault object class
+		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
 		setName(FaultName.toLowerCase());
 
 		// default to SLG fault
@@ -42,18 +42,18 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		this.nConds = 1;
 		setNTerms(2);   // force allocation of terminals and conductors
 
-		setBus(2, (getBus(1) + ".0"));  // Default to grounded   TODO Check zero based indexing
+		setBus(2, (getBus(1) + ".0"));  // default to grounded   TODO Check zero based indexing
 		setShunt(true);
 
 		this.Gmatrix       = null;
 		this.G             = 10000.0;
-		this.SpecType      = 1;  // G  2=Gmatrix
+		this.SpecType      = 1;  // G 2=Gmatrix
 
 		this.MinAmps       = 5.0;
 		this.IsTemporary   = false;
 		this.Cleared       = false;
 		this.Is_ON         = true;
-		this.On_Time       = 0.0;  // Always enabled at the start of a solution.
+		this.On_Time       = 0.0;  // always enabled at the start of a solution
 
 
 		this.RandomMult = 1;
@@ -74,10 +74,6 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	public void recalcElementData() {
 		// nothing to do
 	}
-
-//	private double cube(double x) {
-//		return x * x * x;
-//	}
 
 	/**
 	 * Called from solveMontefault procedure.
@@ -100,10 +96,10 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			break;
 		}
 
-		// Give the multiplier some skew to approximate more uniform/Gaussian current distributions
+		// give the multiplier some skew to approximate more uniform/Gaussian current distributions
 		// RandomMult = cube(RandomMult);   removed 12/7/04
 
-		setYprimInvalid(true);    // force rebuilding of matrix
+		setYprimInvalid(true);  // force rebuilding of matrix
 	}
 
 	@Override
@@ -113,7 +109,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		CMatrix YPrimTemp;
 
-		if (isYprimInvalid()) {  // Reallocate YPrim if something has invalidated old allocation
+		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
 			if (YPrim_Series != null)
 				YPrim_Series = null;
 			YPrim_Series = new CMatrixImpl(Yorder);
@@ -124,8 +120,8 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				YPrim = null;
 			YPrim = new CMatrixImpl(Yorder);
 		} else {
-			YPrim_Series.clear(); // zero out YPrim
-			YPrim_Shunt.clear(); // zero out YPrim
+			YPrim_Series.clear();  // zero out YPrim
+			YPrim_Shunt.clear();   // zero out YPrim
 			YPrim.clear();
 		}
 
@@ -136,7 +132,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			YPrimTemp = YPrim_Series;
 		}
 
-		// make sure randommult is 1.0 if not solution mode MonteFault
+		// make sure randomMult is 1.0 if not solution mode MonteFault
 
 		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != Dynamics.MONTEFAULT)
 			RandomMult = 1.0;
@@ -146,8 +142,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		/* Now, put in Yprim matrix */
 
-		/* If the fault is not ON, the set zero conductance */
-
+		/* If the fault is not on, the set zero conductance */
 		switch (SpecType) {
 		case 1:
 
@@ -158,7 +153,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 			}
 			Value2 = Value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // Elements are only on the diagonals
+				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
 				YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
 				YPrimTemp.setElemSym(i, i + nPhases, Value2);
 			}
@@ -250,7 +245,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					}
 			}
 			break;
-		case DSSGlobals.TIMEDRIVEN:  // Identical to event driven case.
+		case DSSGlobals.TIMEDRIVEN:  // identical to event driven case.
 			if (!Is_ON) {
 				/* Turn it on unless it has been previously cleared */
 				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
@@ -298,12 +293,12 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		super.initPropertyValues(Fault.NumPropsThisClass);
 
-		// Override Inherited Properties
-		PropertyValue[Fault.NumPropsThisClass + 1] = "0";  // NormAmps   TODO Check zero based indexing
-		PropertyValue[Fault.NumPropsThisClass + 2] = "0";  // EmergAmps
-		PropertyValue[Fault.NumPropsThisClass + 3] = "0";  // Fault rate
-		PropertyValue[Fault.NumPropsThisClass + 4] = "0";  // Pct Perm
-		PropertyValue[Fault.NumPropsThisClass + 5] = "0";  // Hrs to repair
+		// override inherited properties
+		PropertyValue[Fault.NumPropsThisClass + 1] = "0";  // normAmps   TODO Check zero based indexing
+		PropertyValue[Fault.NumPropsThisClass + 2] = "0";  // emergAmps
+		PropertyValue[Fault.NumPropsThisClass + 3] = "0";  // faultRate
+		PropertyValue[Fault.NumPropsThisClass + 4] = "0";  // pctPerm
+		PropertyValue[Fault.NumPropsThisClass + 5] = "0";  // hrsToRepair
 	}
 
 	@Override

@@ -23,7 +23,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	public LineImpl() {
 		super();
 		this.Class_Name = "Line";
-		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PDElement list and LineSection lists
+		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PD element list and line section lists
 
 		this.ActiveElement = -1;
 		LineCodeClass = null;
@@ -40,11 +40,10 @@ public class LineImpl extends PDClassImpl implements Line {
 	protected void defineProperties() {
 
 		NumProperties = Line.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define Property names
+		// define property names
 		PropertyName[0] = "bus1";
 		PropertyName[1] = "bus2";
 		PropertyName[2] = "linecode";
@@ -71,8 +70,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		PropertyName[23] = "cncables";
 		PropertyName[24] = "tscables";
 
-		// define Property help values
-
+		// define property help values
 		PropertyHelp[0] = "Name of bus to which first terminal is connected."+ DSSGlobals.CRLF+
 					"Example:"+DSSGlobals.CRLF+
 					"bus1=busname   (assumes all terminals connected in normal phase order)"+DSSGlobals.CRLF+
@@ -144,7 +142,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 
 		ActiveProperty = Line.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -164,7 +162,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful
+		if (OrderFound > 0) {  // parse was successful
 			/* R */
 			ZValues = al.getZ().asArray(Norder);
 			if (Norder == al.getNPhases())
@@ -184,7 +182,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful
+		if (OrderFound > 0) {  // parse was successful
 			/* X */
 			ZValues = al.getZ().asArray(Norder);
 			if (Norder == al.getNPhases())
@@ -205,7 +203,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful
+		if (OrderFound > 0) {  // parse was successful
 			/* X */
 			Factor = DSSGlobals.TwoPi * al.getBaseFrequency() * 1.0e-9;
 			YValues = al.getYc().asArray(Norder);
@@ -218,7 +216,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	/**
-	 * A Line Defaults to 3-phases and some typical symmetrical component data.
+	 * A line defaults to 3-phases and some typical symmetrical component data.
 	 *
 	 * Line impedances are specified in per unit length and are multiplied by the length
 	 * when the primitive Y matrix is computed.
@@ -228,9 +226,9 @@ public class LineImpl extends PDClassImpl implements Line {
 	 *
 	 * All C's is entered in nano farads.
 	 *
-	 * The ultimate values are in the matrices.  If you specify matrices, then the symmetrical
-	 * component values are ignored.  However, if you change any of the symmetrical component values
-	 * the matrices will be recomputed.  It is assumed you want to use symmetrical component values.
+	 * The ultimate values are in the matrices. If you specify matrices, then the symmetrical
+	 * component values are ignored. However, if you change any of the symmetrical component values
+	 * the matrices will be recomputed. It is assumed you want to use symmetrical component values.
 	 * Don't mix data entry by matrix and by symmetrical components.
 	 *
 	 * Note that if you change the number of phases, the matrices are reallocated and reinitialized
@@ -244,7 +242,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		int NewLengthUnits;
 
 		int Result = 0;
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveLineObj((LineObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveLineObj());  // use property to set this value
 
@@ -265,7 +263,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"Line." + al.getName() + "\"", 181);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"Line." + al.getName() + "\"", 181);
 				break;
 			case 0:
 				al.setBus(1, Param);  // TODO Check zero based indexing
@@ -274,7 +272,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setBus(2, Param);
 				break;
 			case 2:
-				al.fetchLineCode(Param);  // Define line by conductor code
+				al.fetchLineCode(Param);  // define line by conductor code
 				break;
 			case 3:
 				al.setLen(parser.makeDouble());
@@ -295,7 +293,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setX0(parser.makeDouble());
 				break;
 			case 9:
-				al.setC1(parser.makeDouble() * 1.0e-9);    // Convert from nano to farads
+				al.setC1(parser.makeDouble() * 1.0e-9);  // convert from nano to farads
 				break;
 			case 10:
 				al.setC0(parser.makeDouble() * 1.0e-9);
@@ -325,7 +323,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			case 18:
 				al.fetchGeometryCode(Param);
 				break;
-			case 19:  // Update units conversion factor that might have been changed previously
+			case 19:  // update units conversion factor that might have been changed previously
 				NewLengthUnits = LineUnits.getUnitsCode(Param);
 				if (al.isLineCodeSpecified()) {
 					al.setUnitsConvert(LineUnits.convertLineUnits(al.getLineCodeUnits(), NewLengthUnits));
@@ -350,21 +348,21 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.fetchTSCableList(Param);
 				break;
 			default:
-				// Inherited Property Edits
+				// inherited property edits
 				classEdit(getActiveLineObj(), ParamPointer - Line.NumPropsThisClass);
 				break;
 			}
 
-			// Side Effects ...
+			// side effects ...
 			switch (ParamPointer) {
-			case 4:  /* Change the number of phases ... only valid if SymComponentsModel=TRUE */
+			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
 				if (al.getNPhases() != parser.makeInteger())
-					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nphases if geometry used
+					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
 						al.setNPhases(parser.makeInteger());
-						al.setNConds(al.getNPhases());  // Force Reallocation of terminal info
+						al.setNConds(al.getNPhases());  // force reallocation of terminal info
 						al.setYorder(al.getNTerms() * al.getNConds());
 						/*al.setYprimInvalid(true);*/  // now set below
-						al.recalcElementData();  // Reallocate Z, etc.
+						al.recalcElementData();  // reallocate Z, etc.
 					} else {
 						Globals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
 					}
@@ -536,7 +534,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				if (al.getYc() != null)
 					al.setYc(null);
 
-				// For a line, nphases = ncond, for now
+				// for a line, nPhases = nCond, for now
 				al.setZ(new CMatrixImpl(al.getNPhases()));
 				al.setZinv(new CMatrixImpl(al.getNPhases()));
 				al.setYc(new CMatrixImpl(al.getNPhases()));
@@ -555,13 +553,13 @@ public class LineImpl extends PDClassImpl implements Line {
 			al.setSymComponentsModel(OtherLine.isSymComponentsModel());
 			al.setCapSpecified(OtherLine.isCapSpecified());
 
-			classMakeLike(OtherLine);  // Take care of inherited class properties
+			classMakeLike(OtherLine);  // take care of inherited class properties
 
 			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
 				al.setPropertyValue(i, OtherLine.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Line MakeLike: \"" + LineName + "\" Not Found.", 182);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Line makeLike: \"" + LineName + "\" not found.", 182);
 		}
 
 		return Result;

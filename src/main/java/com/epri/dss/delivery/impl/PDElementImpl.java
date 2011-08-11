@@ -26,11 +26,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 
 	private PDElement ParentPDElement;
 
-	private MeterElement MeterObj,   // Upline energymeter
-		SensorObj; // Upline Sensor for this element  for allocation and estimation
+	private MeterElement MeterObj,   // upline energymeter
+		SensorObj;  // upline sensor for this element for allocation and estimation
 
 	private double Overload_UE,
-		OverLoad_EEN;  // Indicate amount of branch overload
+		OverLoad_EEN;  // indicate amount of branch overload
 
 	public PDElementImpl(DSSClass ParClass) {
 		super(ParClass);
@@ -75,11 +75,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 			return Complex.ZERO;
 		}
 
-		Complex kVA = getPower(idxTerm).multiply(0.001);  // Also forces computation of Current into Itemp
+		Complex kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
 		double Factor = maxTerminalOneIMag() / NormAmps - 1.0;
 		if (Factor > 0.0) {
 			OverLoad_EEN = Factor;
-			Factor = 1.0 - 1.0 / (Factor + 1.0);  // To get factor
+			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get factor
 			Result = kVA.multiply(Factor) ;
 		} else {
 			OverLoad_EEN = 0.0;
@@ -101,12 +101,12 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 			return Complex.ZERO;
 		}
 
-		Complex kVA = getPower(idxTerm).multiply(0.001);  // Also forces computation of Current into Itemp
+		Complex kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
 
 		double Factor = maxTerminalOneIMag() / getEmergAmps() - 1.0;
 		if (Factor > 0.0) {
 			Overload_UE = Factor;
-			Factor = 1.0 - 1.0 / (Factor + 1.0);  // To get excess
+			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get excess
 			Result = kVA.multiply(Factor);
 		} else {
 			Overload_UE = 0.0;
@@ -119,11 +119,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[ArrayOffset + 1] = "400";  // NormAmps   TODO Check zero based indexing
-		PropertyValue[ArrayOffset + 2] = "600";  // EmerAamps
-		PropertyValue[ArrayOffset + 3] = "0.1";  // Fault Rate
-		PropertyValue[ArrayOffset + 4] = "20";   // Pct Perm
-		PropertyValue[ArrayOffset + 5] = "3";    // Hrs to repair
+		PropertyValue[ArrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
+		PropertyValue[ArrayOffset + 2] = "600";  // emerAamps
+		PropertyValue[ArrayOffset + 3] = "0.1";  // faultRate
+		PropertyValue[ArrayOffset + 4] = "20";   // pctPerm
+		PropertyValue[ArrayOffset + 5] = "3";    // hrsToRepair
 
 		super.initPropertyValues(ArrayOffset + 5);
 	}
