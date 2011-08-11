@@ -10,14 +10,14 @@ import com.epri.dss.shared.impl.GeneratorVars;
 /**
  * The generator is essentially a negative load that can be dispatched.
  *
- * If the dispatch value (DispValue) is 0, the generator always follows the
- * appropriate dispatch curve, which are simply load curves. If DispValue>0
+ * If the dispatch value (dispValue) is 0, the generator always follows the
+ * appropriate dispatch curve, which are simply load curves. If dispValue>0
  * then the generator only comes on when the global circuit load multiplier
- * exceeds DispValue.  When the generator is on, it always follows the dispatch
+ * exceeds dispValue.  When the generator is on, it always follows the dispatch
  * curve appropriate for the type of solution being performed.
  *
  * If you want to model a generator that is fully on whenever it is dispatched
- * on, simply designate "Status=Fixed".  The default is "Status=Variable"
+ * on, simply designate "status=Fixed".  The default is "status=Variable"
  * (i.e., it follows a dispatch curve.  You could also define a dispatch curve
  * that is always 1.0.
  *
@@ -147,14 +147,14 @@ public interface GeneratorObj extends PCElement {
 
 	void setNominalGeneration();
 
-	/* 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
+	/** 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
 	void randomize(int Opt);
 
 	void resetRegisters();
 
 	void takeSample();
 
-	/* Procedures for setting the DQDV used by the Solution Object */
+	/** Procedures for setting the dQdV used by the solution object */
 	void initDQDVCalc();
 
 	void bumpUpQ();
@@ -165,7 +165,7 @@ public interface GeneratorObj extends PCElement {
 
 	void resetStartPoint();
 
-	/* Make a positive Sequence Model */
+	/** Make a positive sequence model */
 	void makePosSequence();
 
 	// FIXME Private method in OpenDSS

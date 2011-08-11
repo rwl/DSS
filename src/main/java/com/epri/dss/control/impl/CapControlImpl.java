@@ -98,7 +98,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				"Must be less than the number of phases. Does not apply to kvar control which uses all phases by default.";
 
 		ActiveProperty = CapControl.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -114,7 +114,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveCapControlObj((CapControlObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
 
@@ -137,7 +137,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ acc.getName() + "\"", 352);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
 				acc.setElementName(Param.toLowerCase());
@@ -169,7 +169,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					acc.setControlType(CapControlType.SRPCONTROL);
 					break;
 				default:
-					Globals.doSimpleMsg(String.format("Unrecognized CapControl Type: \"%s\" (Capcontrol.%s)", Param, acc.getName()), 352);
+					Globals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", Param, acc.getName()), 352);
 					break;
 				}
 				break;
@@ -226,17 +226,17 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				}
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(getActiveCapControlObj(), ParamPointer - CapControl.NumPropsThisClass);
 				break;
 			}
 
 
-			/* PF Controller changes */
+			/* PF controller changes */
 			if (acc.getControlType() == CapControlType.PFCONTROL) {
 				switch (ParamPointer) {
 				case 3:
-					acc.setPFON_Value(0.95);     // defaults
+					acc.setPFON_Value(0.95);  // defaults
 					acc.setPFOFF_Value(1.05);
 					break;
 				case 6:
@@ -247,7 +247,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFON_Value(acc.getON_Value());
 						}
 					} else {
-						Globals.doSimpleMsg("Invalid PF ON value for CapControl."+acc.getName(), 353);
+						Globals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
 					}
 					break;
 				case 7:
@@ -258,7 +258,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFOFF_Value(acc.getOFF_Value());
 						}
 					} else {
-						Globals.doSimpleMsg("Invalid PF OFF value for CapControl."+acc.getName(), 35301);
+						Globals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
 					}
 					break;
 				case 14:
@@ -295,12 +295,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 			CapControlObj acc = getActiveCapControlObj();
 
 			acc.setNPhases(OtherCapControl.getNPhases());
-			acc.setNConds(OtherCapControl.getNConds());  // Force reallocation of terminal stuff
+			acc.setNConds(OtherCapControl.getNConds());  // force reallocation of terminal stuff
 
 			acc.setElementName(OtherCapControl.getElementName());
 			acc.setCapacitorName(OtherCapControl.getCapacitorName());
-			acc.setControlledElement(OtherCapControl.getControlledElement());  // Pointer to target circuit element
-			acc.setMonitoredElement(OtherCapControl.getMonitoredElement());  // Pointer to target circuit element
+			acc.setControlledElement(OtherCapControl.getControlledElement());  // pointer to target circuit element
+			acc.setMonitoredElement(OtherCapControl.getMonitoredElement());    // pointer to target circuit element
 
 			acc.setElementTerminal(OtherCapControl.getElementTerminal());
 			acc.setPTRatio(OtherCapControl.getPTRatio());
@@ -322,7 +322,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setPropertyValue(i, OtherCapControl.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + CapControlName + "\" Not Found.", 360);
+			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + CapControlName + "\" not found.", 360);
 		}
 
 		return Result;

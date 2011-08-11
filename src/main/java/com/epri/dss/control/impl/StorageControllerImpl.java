@@ -30,10 +30,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 	protected void defineProperties() {
 
 		NumProperties = StorageController.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		// Define property names
+		// define property names
 		PropertyName[StorageController.propELEMENT]                = "Element";
 		PropertyName[StorageController.propTERMINAL]               = "Terminal";
 		PropertyName[StorageController.propKWTARGET]               = "kWTarget";
@@ -163,7 +163,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"setting kWTarget if you want a different value.";
 
 		ActiveProperty = StorageController.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -257,19 +257,19 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setPctFleetReserve(parser.makeDouble());
 				break;
 			case StorageController.propKWHTOTAL:
-				// Do nothing (read only)
+				// do nothing (read only)
 				break;
 			case StorageController.propKWTOTAL:
-				// Do nothing (Read only)
+				// do nothing (read only)
 				break;
 			case StorageController.propKWHACTUAL:
-				// Do nothing (Read only)
+				// do nothing (read only)
 				break;
 			case StorageController.propKWACTUAL:
-				// Do nothing (Read only)
+				// do nothing (read only)
 				break;
 			case StorageController.propKWNEED:
-				// Do nothing (Read only)
+				// do nothing (read only)
 				break;
 			case StorageController.propPARTICIPATION:
 				break;
@@ -289,7 +289,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setDispatchVars(Utilities.interpretYesNo(Param));
 				break;
 			case StorageController.propINHIBITTIME:
-				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >=1
+				asc.setInhibitHrs( Math.max(1, parser.makeInteger()) );  // >= 1
 				break;
 			case StorageController.propTUPRAMP:
 				asc.setUpRamptime(parser.makeDouble());
@@ -304,12 +304,12 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setkWThreshold(parser.makeDouble());
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ActiveStorageControllerObj, ParamPointer - StorageController.NumPropsThisClass);
 				break;
 			}
 
-			// Side effects of setting properties above
+			// side effects of setting properties above
 			switch (ParamPointer) {
 			case propKWTARGET:
 				asc.setHalfkWBand( asc.getPctkWBand() / 200.0 * asc.getkWTarget() );
@@ -323,7 +323,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				break;
 			case propMODEDISCHARGE:
 				if (asc.getDischargeMode() == StorageController.MODEFOLLOW)
-					asc.setDischargeTriggerTime(12.0);  // Noon
+					asc.setDischargeTriggerTime(12.0);  // noon
 				break;
 			case propELEMENTLIST:
 				// levelize the list
@@ -331,7 +331,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setFleetListChanged(true);
 				asc.setElementListSpecified(true);
 				asc.setFleetSize(asc.getStorageNameList().size());
-				// Realloc weights to be same size as possible number of storage elements
+				// realloc weights to be same size as possible number of storage elements
 				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = 1.0;
@@ -371,11 +371,11 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			StorageControllerObj asc = getActiveStorageControllerObj();
 
 			asc.setNPhases(OtherStorageController.getNPhases());
-			asc.setNConds(OtherStorageController.getNConds());  // Force reallocation of terminal stuff
+			asc.setNConds(OtherStorageController.getNConds());  // force reallocation of terminal stuff
 
 			asc.setElementName(OtherStorageController.getElementName());
-			asc.setControlledElement(OtherStorageController.getControlledElement());  // Pointer to target circuit element
-			asc.setMonitoredElement(OtherStorageController.getMonitoredElement());  // Pointer to target circuit element
+			asc.setControlledElement(OtherStorageController.getControlledElement());  // pointer to target circuit element
+			asc.setMonitoredElement(OtherStorageController.getMonitoredElement());  // pointer to target circuit element
 			asc.setElementTerminal(OtherStorageController.getElementTerminal());
 
 			asc.setkWTarget(OtherStorageController.getkWTarget());
@@ -415,11 +415,11 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			asc.setFlatTime(OtherStorageController.getFlatTime());
 			asc.setDnrampTime(OtherStorageController.getDnrampTime());
 
-			// Fill in private properties
+			// fill in private properties
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, OtherStorageController.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in StorageController makeLike: \"" + StorageControllerName + "\" Not Found.", 370);
+			DSSGlobals.getInstance().doSimpleMsg("Error in StorageController makeLike: \"" + StorageControllerName + "\" not found.", 370);
 		}
 
 		return Result;

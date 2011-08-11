@@ -68,7 +68,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 		/* Check for existence of monitored element */
 
-		int DevIndex = Utilities.getCktElementIndex(ElementName);  // Global function
+		int DevIndex = Utilities.getCktElementIndex(ElementName);
 		if (DevIndex >= 0) {
 			MonitoredElement = Globals.getActiveCircuit().getCktElements().get(DevIndex);
 			if (ElementTerminal > MonitoredElement.getNTerms()) {
@@ -76,7 +76,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
-				// Sets name of i-th terminal's connected bus in GenDispatcher's buslist
+				// sets name of i-th terminal's connected bus in GenDispatcher's buslist
 				setBus(1, MonitoredElement.getBus(ElementTerminal));
 			}
 		} else {
@@ -99,8 +99,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	@Override
 	public void calcYPrim() {
-		// Leave YPrims as null and they will be ignored.
-		// Yprim is zeroed when created.  Leave it as is.
+		// leave YPrims as null and they will be ignored
 	}
 
 	@Override
@@ -131,7 +130,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	 */
 	@Override
 	public void doPendingAction(int Code, int ProxyHdl) {
-		/* Do Nothing */
+		/* Do nothing */
 	}
 
 	/**
@@ -146,25 +145,25 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		boolean GenkWChanged, Genkvarchanged;
 		double GenkW, Genkvar;
 
-		// If list is not define, go make one from all generators in circuit
+		// if list is not define, go make one from all generators in circuit
 		if (GenPointerList.size() == 0)
 			makeGenList();
 
 		if (ListSize > 0) {
 
-			//----MonitoredElement.ActiveTerminalIdx = ElementTerminal;
-			S = MonitoredElement.getPower(ElementTerminal);  // Power in active terminal
+			//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
+			S = MonitoredElement.getPower(ElementTerminal);  // power in active terminal
 
 			PDiff = S.getReal() * 0.001 - kWLimit;
 
 			QDiff = S.getImaginary() * 0.001 - kvarLimit;
 
-			// Redispatch the vars.
+			// redispatch the vars
 
 			GenkWChanged = false;
 			Genkvarchanged = false;
 
-			if (Math.abs(PDiff) > HalfkWBand) {  // Redispatch Generators
+			if (Math.abs(PDiff) > HalfkWBand) {  // redispatch generators
 				// PDiff is kW needed to get back into band
 				for (i = 0; i < ListSize; i++) {
 					Gen = GenPointerList.get(i);
@@ -177,7 +176,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				}
 			}
 
-			if (Math.abs(QDiff) > HalfkWBand) {  // Redispatch Generators
+			if (Math.abs(QDiff) > HalfkWBand) {  // redispatch generators
 				// QDiff is kvar needed to get back into band
 				for (i = 0; i < ListSize; i++) {
 					Gen = GenPointerList.get(i);
@@ -190,12 +189,12 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				}
 			}
 
-			if (GenkWChanged || Genkvarchanged) {  // Only push onto controlqueue if there has been a change
+			if (GenkWChanged || Genkvarchanged) {  // only push onto control queue if there has been a change
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 				SolutionObj sol = ckt.getSolution();
 
-				sol.setLoadsNeedUpdating(true);  // Force recalc of power parms
-				// Push present time onto control queue to force re solve at new dispatch value
+				sol.setLoadsNeedUpdating(true);  // force recalc of power parms
+				// push present time onto control queue to force re solve at new dispatch value
 				ckt.getControlQueue().push(sol.getIntHour(), sol.getDynaVars().t, 0, 0, this);
 			}
 		}
@@ -204,8 +203,8 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "";   //"element";
-		PropertyValue[1] = "1";   //"terminal";
+		PropertyValue[0] = "";  // "element";
+		PropertyValue[1] = "1";  // "terminal";
 		PropertyValue[2] = "8000";
 		PropertyValue[3] = "100";
 		PropertyValue[4] = "0";
@@ -222,7 +221,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		boolean Result = false;
 		DSSClass GenClass = DSSClassDefs.getDSSClass("generator");
 
-		if (ListSize > 0) {  // Name list is defined - Use it
+		if (ListSize > 0) {  // name list is defined - use it
 
 			for (i = 0; i < ListSize; i++) {
 				Gen = (GeneratorObj) GenClass.find(GeneratorNameList.get(i - 1));
@@ -246,7 +245,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				Weights[i] = 1.0;
 		}
 
-		// Add up total weights
+		// add up total weights
 		TotalWeight = 0.0;
 		for (i = 0; i < ListSize; i++)
 			TotalWeight = TotalWeight + Weights[i];

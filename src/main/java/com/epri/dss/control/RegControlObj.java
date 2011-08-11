@@ -6,22 +6,20 @@ import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.shared.impl.Complex;
 
 /**
- * A RegControl is a control element that is connected to a terminal of another
+ * A control element that is connected to a terminal of another
  * circuit element that must be a transformer.
  *
- * A RegControl is defined by a New command:
- *
- * New RegControl.Name=myname Transformer = name Terminal=[1,2,...] Controlledbus=name etc...
+ *   new regControl.name=myName transformer=name terminal=[1,2,...] controlledBus=name etc...
  *
  * Transformer to be controlled must already exist.
  *
  */
 public interface RegControlObj extends ControlElem {
 
-	/* Controlled transformer. */
+	/** Controlled transformer. */
 	TransformerObj getTransformer();
 
-	/* Report tapped winding. */
+	/** Report tapped winding. */
 	int getWinding();
 
 	/* CIM accessors */

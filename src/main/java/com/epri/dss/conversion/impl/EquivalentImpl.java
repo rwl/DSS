@@ -15,7 +15,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	public EquivalentImpl() {
 		super();
 		this.Class_Name = "Equivalent";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // Don"t want this in PC Element List
+		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
 		this.ActiveElement = -1;
 
@@ -30,7 +30,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	protected void defineProperties() {
 
 		NumProperties = Equivalent.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
@@ -81,7 +81,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// continue parsing with contents of Parser
+		// continue parsing with contents of parser
 		setActiveEquivalentObj((EquivalentObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
 
@@ -104,29 +104,29 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"Equivalent."+ae.getName()+"\"", 800);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
 				break;
 			case 0:
-				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));  // This will allocate a bunch of stuff
+				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));
 				break;
 			case 1:
 				interpretAllBuses(Param);
 				break;
 			case 2:
-				ae.setkVBase(parser.makeDouble()); // basekv
+				ae.setkVBase(parser.makeDouble());  // basekv
 				break;
 			case 3:
-				ae.setPerUnit(parser.makeDouble()); // pu
+				ae.setPerUnit(parser.makeDouble());  // pu
 				break;
 			case 4:
-				ae.setAngle(parser.makeDouble()); // Ang
+				ae.setAngle(parser.makeDouble());  // ang
 				break;
 			case 5:
-				ae.setEquivFrequency(parser.makeDouble()); // freq
+				ae.setEquivFrequency(parser.makeDouble());  // freq
 				break;
 			case 6:
-				ae.setNPhases(parser.makeInteger()); // num phases
-				ae.setNConds(ae.getNPhases());  // Force Reallocation of terminal info
+				ae.setNPhases(parser.makeInteger());  // num phases
+				ae.setNConds(ae.getNPhases());  // force reallocation of terminal info
 				break;
 			case 7:
 				ae.parseDblMatrix(ae.getR1());
@@ -173,7 +173,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 				ae.setNTerms( ae.doTerminalsDef(OtherEquivalent.getNTerms()) );
 				ae.setNPhases(OtherEquivalent.getNPhases());
-				ae.setNConds(ae.getNPhases());  // Forces reallocation of terminal stuff
+				ae.setNConds(ae.getNPhases());  // forces reallocation of terminal stuff
 
 				ae.setYorder(ae.getNConds() * ae.getNTerms());
 				ae.setYprimInvalid(true);
@@ -211,7 +211,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setPropertyValue(i, OtherEquivalent.getPropertyValue(i));
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" Not Found.", 801);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
 		}
 
 		return Result;
@@ -230,9 +230,9 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		String BusNam;
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // Load up Parser
+		Globals.getAuxParser().setCmdString(S);  // load up parser
 
-		/* Loop for no more than the expected number of windings;  Ignore omitted values */
+		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj ae = getActiveEquivalentObj();
 		for (int i = 0; i < ae.getNTerms(); i++) {
 			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any

@@ -7,14 +7,12 @@ import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.shared.impl.Complex;
 
 /**
- * A CapControl is a control element that is connected to a terminal of another
+ * A control element that is connected to a terminal of another
  * circuit element and controls a capacitor.  The control is usually placed in
  * the terminal of a line or transformer, although a voltage control device
- * could be placed in the terminal of the capacitor it controls
+ * could be placed in the terminal of the capacitor it controls.
  *
- * A CapControl is defined by a New command:
- *
- * New CapControl.Name=myname Element=devclass.name terminal=[ 1|2|...] Capacitor = name
+ *   new capControl.name=myName element=devClass.name terminal=[ 1|2|...] capacitor=name
  *
  * Capacitor to be controlled must already exist.
  *

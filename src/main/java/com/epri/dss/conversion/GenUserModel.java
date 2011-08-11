@@ -29,7 +29,7 @@ public interface GenUserModel {
 	void init(Complex[] V, Complex[] I);
 
 	/**
-	 * Returns currents or sets Pshaft.
+	 * Returns currents or sets pShaft.
 	 */
 	void calc(Complex[] V, Complex[] I);
 

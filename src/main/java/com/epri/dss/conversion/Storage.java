@@ -9,7 +9,7 @@ public interface Storage extends PCClass {
 	static int STORE_IDLING      =  0;
 	static int STORE_DISCHARGING =  1;
 
-	/* Dispatch Modes */
+	/* Dispatch modes */
 	static int STORE_DEFAULT = 0;
 	static int STORE_LOADMODE = 1;
 	static int STORE_PRICEMODE = 2;
@@ -59,7 +59,7 @@ public interface Storage extends PCClass {
 	static int propPCTSTORED  = 34;
 	static int propCHARGETIME = 35;
 
-	static int NumPropsThisClass = 36; // Make this agree with the last property constant
+	static int NumPropsThisClass = 36;  // make this agree with the last property constant
 
 	String[] getRegisterNames();
 

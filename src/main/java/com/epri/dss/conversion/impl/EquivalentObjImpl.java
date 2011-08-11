@@ -28,14 +28,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 	private boolean NeedToDoRecalc;
 
-	// Base Frequency Series Z matrix
+	// base frequency series Z matrix
 	protected CMatrix Z;
 	protected CMatrix Zinv;
 
 	public EquivalentObjImpl(DSSClassImpl ParClass, String SourceName) {
 		super(ParClass);
 		setName(SourceName.toLowerCase());
-		DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // Don't want this in PC Element List
+		DSSObjType = ParClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
 		this.nConds = 3;
@@ -83,11 +83,11 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		if (Z != null) Z = null;
 		if (Zinv != null) Zinv = null;
 
-		// For a source, nPhases = nCond, for now
+		// for a source, nPhases = nCond, for now
 		Z    = new CMatrixImpl(nPhases * nTerms);
 		Zinv = new CMatrixImpl(nPhases * nTerms);
 
-		// Build Z matrix for all phases
+		// build Z matrix for all phases
 		for (int i = 0; i < nTerms; i++)
 			for (int j = 0; j < nTerms; j++) {
 				indx = idx(i, j);
@@ -103,14 +103,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 							Z.setElement(ii + iOffset, jj + jOffset, Zs);
 						} else {
 							Z.setElement(ii + iOffset, jj + jOffset, Zm);
-							Z.setElement(jj + iOffset, ii + jOffset, Zm);  // set other offdiagonal in this submatrix
+							Z.setElement(jj + iOffset, ii + jOffset, Zm);  // set other off-diagonal in this submatrix
 						}
 					}
 				}
 
 			}
 
-		// Voltage source properties
+		//  voltage source properties
 		switch (nPhases) {
 		case 1:
 			VMag = kVBase * PerUnit * 1000.0;
@@ -122,7 +122,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		setSpectrumObj((com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			Globals.doSimpleMsg("Spectrum Object \"" + getSpectrum() + "\" for Device Equivalent."+getName()+" Not Found.", 802);
+			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
 
@@ -137,7 +137,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Build only YPrim Series
+		// build only YPrim series
 		if (isYprimInvalid()) {
 			if (YPrim_Series != null) YPrim_Series = null;
 			YPrim_Series = new CMatrixImpl(Yorder);
@@ -154,7 +154,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		YprimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
 		FreqMultiplier = YprimFreq / BaseFrequency;
 
-		/* Put in Series RL matrix Adjusted for frequency */
+		/* Put in Series RL matrix adjusted for frequency */
 		for (i = 0; i < Yorder; i++) {
 			for (j = 0; j < Yorder; j++) {
 				Value = Z.getElement(i, j);
@@ -167,8 +167,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		Zinv.invert();  /* Invert in place */
 
 		if (Zinv.getInvertError() > 0) {
-			/* If error, put in Large series conductance */
-			Globals.doErrorMsg("EquivalentObj.calcYPrim", "Matrix Inversion Error for Equivalent \"" + getName() + "\"",
+			/* If error, put in large series conductance */
+			Globals.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 803);
 			Zinv.clear();
 			for (i = 0; i < nPhases; i++)
@@ -212,8 +212,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 			if (sol.isIsHarmonicModel()) {
 				EquivHarm = sol.getFrequency() / EquivFrequency ;
-				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // Base voltage for this harmonic
-				Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // Rotate for phase 1 shift
+				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // base voltage for this harmonic
+				Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
 					Vterminal[i] = Vharm;
 					if (i < nPhases)
@@ -225,7 +225,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			}
 
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error computing Voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
+			Globals.doSimpleMsg("Error computing voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
 			if (Globals.isIn_Redirect())
 				Globals.setRedirect_Abort(true);
 		}
@@ -234,7 +234,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public int injCurrents() {
 		getInjCurrents(getInjCurrent());
-		return super.injCurrents();  // Add into system array
+		return super.injCurrents();  // add into system array
 	}
 
 	@Override
@@ -249,12 +249,12 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 			YPrim.MVMult(Curr, Vterminal);
 
-			getInjCurrents(ComplexBuffer);  // Get present value of inj currents
-			// Add together with Yprim currents
+			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			// add together with Yprim currents
 			for (i = 0; i < Yorder; i++)
 				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
 		} catch (Exception e) {
-			Globals.doErrorMsg(("GetCurrents for Element: " + getName() + "."), e.getMessage(),
+			Globals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
 			"Inadequate storage allotted for circuit element.", 805);
 		}
 	}
@@ -281,9 +281,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		if (Complete) {
 			F.println();
-			F.println("BaseFrequency=" + BaseFrequency);
-			F.println("VMag=" + VMag);
-			F.println("Z Matrix=");
+			F.println("baseFrequency=" + BaseFrequency);
+			F.println("vMag=" + VMag);
+			F.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++) {
 					c = Z.getElement(i, j);
@@ -330,9 +330,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		String S;
 
 		S = "Phases=1 ";
-		S = S + String.format("BasekV=%-.5g ", kVBase / DSSGlobals.SQRT3);
-		S = S + String.format("R1=%-.5g ", R1);
-		S = S + String.format("X1=%-.5g ", X1);
+		S = S + String.format("basekV=%-.5g ", kVBase / DSSGlobals.SQRT3);
+		S = S + String.format("r1=%-.5g ", R1);
+		S = S + String.format("x1=%-.5g ", X1);
 
 		Parser.getInstance().setCmdString(S);
 		edit();

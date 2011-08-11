@@ -37,7 +37,7 @@ public interface StorageController extends ControlClass {
 
 	static final int NumPropsThisClass = 32;
 
-	/* CONTROL MODES */
+	/* Control modes */
 	static final int MODEFOLLOW      = 1;
 	static final int MODELOADSHAPE   = 2;
 	static final int MODESUPPORT     = 3;
@@ -45,7 +45,7 @@ public interface StorageController extends ControlClass {
 	static final int MODEPEAKSHAVE   = 5;
 	static final int MODESCHEDULE    = 6;
 
-	/* OTHER CONSTANTS */
+	/* Other constants */
 	static final int RELEASE_INHIBIT = 999;
 
 }

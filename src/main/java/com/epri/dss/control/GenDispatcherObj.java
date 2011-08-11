@@ -6,13 +6,11 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.conversion.GeneratorObj;
 
 /**
- * A GenDispatcher is a control element that is connected to a terminal of
+ * A control element that is connected to a terminal of
  * another circuit element and sends dispatch kW signals to a set of generators
  * it controls.
  *
- * A GenDispatcher is defined by a New command:
- *
- * New GenDispatcher.Name=myname Element=devclass.name terminal=[ 1|2|...] CapacitorList = (gen1  gen2 ...)
+ *   new genDispatcher.name=myName element=devClass.name terminal=[ 1|2|...] capacitorList=(gen1 gen2 ...)
  *
  */
 public interface GenDispatcherObj extends ControlElem {

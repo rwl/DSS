@@ -29,7 +29,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 	protected void defineProperties() {
 
 		NumProperties = SwtControl.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 
 		allocatePropertyArrays();
 
@@ -50,7 +50,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		PropertyHelp[4] = "Operating time delay (sec) of the switch. Defaults to 120.";
 
 		ActiveProperty = SwtControl.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ asc.getName() + "\"", 382);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
 				asc.setElementName(Param.toLowerCase());
@@ -107,7 +107,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 				asc.setTimeDelay(parser.makeDouble());
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ActiveSwtControlObj, ParamPointer - SwtControl.NumPropsThisClass);
 				break;
 			}
@@ -131,11 +131,11 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			SwtControlObj asc = getActiveSwtControlObj();
 
 			asc.setNPhases(OtherSwtControl.getNPhases());
-			asc.setNConds(OtherSwtControl.getNConds());  // Force reallocation of terminal stuff
+			asc.setNConds(OtherSwtControl.getNConds());  // force reallocation of terminal stuff
 
 			asc.setElementName(OtherSwtControl.getElementName());
 			asc.setElementTerminal(OtherSwtControl.getElementTerminal());
-			asc.setControlledElement(OtherSwtControl.getControlledElement());  // Pointer to target circuit element
+			asc.setControlledElement(OtherSwtControl.getControlledElement());  // pointer to target circuit element
 
 			asc.setTimeDelay(OtherSwtControl.getTimeDelay());
 			asc.setLocked(OtherSwtControl.isLocked());
@@ -144,7 +144,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, OtherSwtControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in SwtControl makeLike: \"" + SwtControlName + "\" Not Found.", 383);
+			DSSGlobals.getInstance().doSimpleMsg("Error in SwtControl makeLike: \"" + SwtControlName + "\" not found.", 383);
 		}
 
 		return Result;

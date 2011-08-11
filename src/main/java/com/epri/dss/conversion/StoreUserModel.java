@@ -18,22 +18,22 @@ public interface StoreUserModel {
 	boolean exists();
 
 	/**
-	 * Send string to user model to handle
+	 * Send string to user model to handle.
 	 */
 	void edit(int s, int Maxlen);
 
 	/**
-	 * For dynamics
+	 * For dynamics.
 	 */
 	void init(Complex[] V, Complex[] I);
 
 	/**
-	 * Returns currents or sets Pshaft.
+	 * Returns currents or sets pShaft.
 	 */
 	void calc(Complex[] V, Complex[] I);
 
 	/**
-	 * Integrates any state vars
+	 * Integrates any state vars.
 	 */
 	void integrate();
 

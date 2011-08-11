@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.Complex;
  * to either produce power or consume power commensurate with rating and
  * amount of stored energy.
  *
- * The storage element can also produce or absorb vars within the kVA rating
+ * The storage element can also produce or absorb VArs within the kVA rating
  * of the inverter.
  * That is, a StorageController object requests kvar and the storage element
  * provides them if it has any capacity left. The storage element can
@@ -19,10 +19,10 @@ import com.epri.dss.shared.impl.Complex;
  *
  * The Storage element is assumed balanced over the no. of phases defined.
  *
- * TODO: Make connection to User model
+ * TODO: Make connection to user model
  * TODO: Yprim for various modes
- * TODO: Define state vars and dynamics mode behavior
- * TODO: Complete Harmonics mode algorithm (generator mode is implemented)
+ * TODO: Define state vars and dynamics mode behaviour
+ * TODO: Complete harmonics mode algorithm (generator mode is implemented)
  *
  */
 public interface StorageObj extends PCElement {
@@ -133,7 +133,7 @@ public interface StorageObj extends PCElement {
 
 	void setNominalStorageOuput();
 
-	/* 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
+	/** 0 = reset to 1.0; 1 = Gaussian around mean and std dev; 2 = uniform */
 	void randomize(int Opt);
 
 	void resetRegisters();

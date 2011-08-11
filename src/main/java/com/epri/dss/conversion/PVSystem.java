@@ -2,8 +2,8 @@ package com.epri.dss.conversion;
 
 public interface PVSystem extends PCClass {
 
-	static final int NumPVSystemRegisters = 5;  // Number of energy meter registers
-	static final int NumPVSystemVariables = 4;  // No state variables that need integrating.
+	static final int NumPVSystemRegisters = 5;  // number of energy meter registers
+	static final int NumPVSystemVariables = 4;  // no state variables that need integrating.
 
 	static final int propKV         =  2;
 	static final int propIrradiance =  3;

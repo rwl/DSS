@@ -55,11 +55,11 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 					break;
 				}
 			}
-			// Attach controller bus to the switch bus - no space allocated for monitored variables
+			// attach controller bus to the switch bus - no space allocated for monitored variables
 			setBus (1, getControlledElement().getBus(ElementTerminal));
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ ElementName + "\" Not Found.",
+			Globals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ ElementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 	}
@@ -79,7 +79,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 	@Override
 	public void calcYPrim() {
-		// Leave YPrims as nil.
+		// leave YPrims as nil
 	}
 
 	@Override
@@ -102,11 +102,11 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		if (!Locked) {
 			getControlledElement().setActiveTerminalIdx(ElementTerminal);
 			if ((Code == ControlAction.OPEN.code()) && (PresentState == ControlAction.CLOSE)) {
-				getControlledElement().setConductorClosed(0, false);  // Open all phases of active terminal
+				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Opened");
 			}
 			if ((Code == ControlAction.CLOSE.code()) && (PresentState == ControlAction.OPEN)) {
-				getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
+				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Closed");
 			}
 		}
@@ -144,7 +144,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	@Override
 	public void sample() {
 		getControlledElement().setActiveTerminalIdx(ElementTerminal);
-		if (getControlledElement().getConductorClosed(0)) {  // Check state of phases of active terminal
+		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
 			PresentState = ControlAction.CLOSE;
 		} else {
 			PresentState = ControlAction.OPEN;
@@ -173,8 +173,8 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		PresentState = ControlAction.CLOSE;
 		Locked       = false;
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // Set active terminal
-			getControlledElement().setConductorClosed(0, true);  // Close all phases of active terminal
+			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 		}
 	}
 

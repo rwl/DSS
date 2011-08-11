@@ -44,10 +44,10 @@ public interface PCElement extends CktElement {
 
 	void initPropertyValues(int ArrayOffset);
 
-	/* Get present values of terminal */
+	/** Get present values of terminal */
 	void getCurrents(Complex[] Curr);
 
-	/* Get present values of terminal */
+	/** Get present values of terminal */
 	void getInjCurrents(Complex[] Curr);
 
 	void computeIterminal();
@@ -58,11 +58,11 @@ public interface PCElement extends CktElement {
 
 	void dumpProperties(PrintStream F, boolean Complete);
 
-	/** For Harmonics Mode */
+	/* For harmonics mode */
 
 	void initHarmonics();
 
-	/** For Dynamics Mode and Control Devices */
+	/* For dynamics mode and control devices */
 
 	void initStateVars();
 

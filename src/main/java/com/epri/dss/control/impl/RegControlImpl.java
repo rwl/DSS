@@ -33,11 +33,10 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 	protected void defineProperties() {
 
 		NumProperties = RegControl.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-
-		// Define property names
+		// define property names
 
 		PropertyName[0] = "transformer";
 		PropertyName[1] = "winding";
@@ -117,7 +116,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 
 		ActiveProperty = RegControl.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -156,7 +155,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ arc.getName() + "\"", 120);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
 				break;
 			case 0:
 				arc.setElementName("Transformer." + Param.toLowerCase());
@@ -245,14 +244,14 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 				arc.setReverseNeutral(Utilities.interpretYesNo(Param));
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ActiveRegControlObj, ParamPointer - RegControl.NumPropsThisClass);
 				break;
 			}
 
 			switch (ParamPointer) {
 			case 1:
-				arc.setTapWinding(arc.getElementTerminal());  // Resets if property re-assigned
+				arc.setTapWinding(arc.getElementTerminal());  // resets if property re-assigned
 				arc.setPropertyValue(19, Param);
 				break;
 			case 16:
@@ -296,10 +295,10 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			RegControlObj arc = getActiveRegControlObj();
 
 			arc.setNPhases(OtherRegControl.getNPhases());
-			arc.setNConds(OtherRegControl.getNConds());  // Force reallocation of terminal stuff
+			arc.setNConds(OtherRegControl.getNConds());  // force reallocation of terminal stuff
 
 			arc.setElementName(OtherRegControl.getElementName());
-			arc.setControlledElement(OtherRegControl.getControlledElement());  // Pointer to target circuit element
+			arc.setControlledElement(OtherRegControl.getControlledElement());  // pointer to target circuit element
 			arc.setElementTerminal(OtherRegControl.getElementTerminal());
 			arc.setVreg(OtherRegControl.getVreg());
 			arc.setBandwidth(OtherRegControl.getBandwidth());
@@ -323,14 +322,14 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			arc.setRevPowerThreshold(OtherRegControl.getRevPowerThreshold());
 			arc.setRevDelay(OtherRegControl.getRevDelay());
 			arc.setReverseNeutral(OtherRegControl.isReverseNeutral());
-			//arc.setDebugTrace(OtherRegControl.isDebugTrace();  Always default to NO
+			//arc.setDebugTrace(OtherRegControl.isDebugTrace();  always default to no
 
 			arc.setPTphase(OtherRegControl.getPTphase());
 
 			for (int i = 0; i < arc.getParentClass().getNumProperties(); i++)
 				arc.setPropertyValue(i, OtherRegControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in RegControl makeLike: \"" + RegControlName + "\" Not Found.",121);
+			DSSGlobals.getInstance().doSimpleMsg("Error in RegControl makeLike: \"" + RegControlName + "\" not found.",121);
 		}
 
 		return Result;

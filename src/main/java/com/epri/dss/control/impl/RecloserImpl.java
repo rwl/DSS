@@ -43,11 +43,11 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 	protected void defineProperties() {
 
 		NumProperties = NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
-		// Define Property names
+		// define property names
 
 		PropertyName[0]  = "MonitoredObj";
 		PropertyName[1]  = "MonitoredTerm";
@@ -115,7 +115,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		PropertyHelp[21] = "Time dial for Ground Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
 
 		ActiveProperty = Recloser.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -154,7 +154,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() +"\"", 390);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
 				ar.setMonitoredElementName(Param.toLowerCase());
@@ -199,10 +199,10 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				ar.setResetTime(parser.makeDouble());
 				break;
 			case 14:
-				ar.setNumReclose(parser.makeInteger() - 1);   // one less than number of shots
+				ar.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
 				break;
 			case 15:
-				ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));   // max of 4 allowed
+				ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));  // max of 4 allowed
 				break;
 			case 16:
 				ar.setDelayTime(parser.makeDouble());
@@ -223,7 +223,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				ar.setTDGrDelayed(parser.makeDouble());
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ActiveRecloserObj, ParamPointer - Recloser.NumPropsThisClass);  // TODO Check name-static member conflict
 				break;
 			}
@@ -257,15 +257,15 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			RecloserObj ar = getActiveRecloserObj();
 
 			ar.setNPhases(OtherRecloser.getNPhases());
-			ar.setNConds(OtherRecloser.getNConds());  // Force reallocation of terminal stuff
+			ar.setNConds(OtherRecloser.getNConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(OtherRecloser.getElementName());
 			ar.setElementTerminal(OtherRecloser.getElementTerminal());
-			ar.setControlledElement(OtherRecloser.getControlledElement());  // Pointer to target circuit element
+			ar.setControlledElement(OtherRecloser.getControlledElement());  // pointer to target circuit element
 
-			ar.setMonitoredElement(OtherRecloser.getMonitoredElement());  // Pointer to target circuit element
-			ar.setMonitoredElementName(OtherRecloser.getMonitoredElementName());  // Pointer to target circuit element
-			ar.setMonitoredElementTerminal(OtherRecloser.getMonitoredElementTerminal());  // Pointer to target circuit element
+			ar.setMonitoredElement(OtherRecloser.getMonitoredElement());  // pointer to target circuit element
+			ar.setMonitoredElementName(OtherRecloser.getMonitoredElementName());  // pointer to target circuit element
+			ar.setMonitoredElementTerminal(OtherRecloser.getMonitoredElementTerminal());  // pointer to target circuit element
 
 			ar.setPhaseDelayed(OtherRecloser.getPhaseDelayed());
 			ar.setGroundDelayed(OtherRecloser.getGroundDelayed());
@@ -279,7 +279,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			ar.setNumReclose(OtherRecloser.getNumReclose());
 			ar.setNumFast(OtherRecloser.getNumFast());
 
-			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // Always make a max of 4
+			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = OtherRecloser.getRecloseIntervals()[i];
 
@@ -291,7 +291,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++)
 				ar.setPropertyValue(i, OtherRecloser.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Recloser makeLike: \"" + RecloserName + "\" Not Found.", 391);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Recloser makeLike: \"" + RecloserName + "\" not found.", 391);
 		}
 
 		return Result;

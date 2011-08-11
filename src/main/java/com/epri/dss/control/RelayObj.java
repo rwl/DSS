@@ -6,26 +6,24 @@ import com.epri.dss.general.TCC_CurveObj;
 import com.epri.dss.shared.impl.Complex;
 
 /**
- * A Relay is a control element that is connected to a terminal of a
+ * A control element that is connected to a terminal of a
  * circuit element and controls the switches in the same or another terminal.
  *
  * The control is usually placed in the terminal of a line or transformer,
  * but it could be any element.
  *
- * A Relay is defined by a New command:
- *
- * New Relay.Name=myname Element=devclass.name terminal=[ 1|2|...] Switch = devclass.name   terminal=[ 1|2|...]
- * Type = [current | voltage]
- * Phase = TCCCurve
- * Ground = TCCCurve
- * OverVolt = TCCcurve
- * UnderVolt = TCCCurve
- * PhaseTrip =  Multipliers times curve
- * GroundTrip =
- * PhaseInst  =
- * GroundInst =
- * RecloseIntervals= (array of times, sec);
- * ResetTime =
+ *   new relay.name=myName element=devClass.name terminal=[ 1|2|...] switch=devClass.name terminal=[ 1|2|...]
+ *   type = [current | voltage]
+ *   phase = TCCCurve
+ *   ground = TCCCurve
+ *   overVolt = TCCcurve
+ *   underVolt = TCCCurve
+ *   phaseTrip =  Multipliers times curve
+ *   groundTrip =
+ *   phaseInst  =
+ *   groundInst =
+ *   recloseIntervals = (array of times, sec);
+ *   resetTime =
  *
  * CktElement to be controlled must already exist.
  *

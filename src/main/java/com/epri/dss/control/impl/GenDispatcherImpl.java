@@ -29,10 +29,10 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 	protected void defineProperties() {
 
 		this.NumProperties = GenDispatcher.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define property names
+		// define property names
 
 		PropertyName[0] = "Element";
 		PropertyName[1] = "Terminal";
@@ -56,7 +56,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				"Default is to set all weights to 1.0.";
 
 		ActiveProperty = GenDispatcher.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -95,7 +95,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ agd.getName() + "\"", 364);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
 				agd.setElementName(Param.toLowerCase());
@@ -161,18 +161,18 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			GenDispatcherObj agd = getActiveGenDispatcherObj();
 
 			agd.setNPhases(OtherGenDispatcher.getNPhases());
-			agd.setNConds(OtherGenDispatcher.getNConds());  // Force reallocation of terminal stuff
+			agd.setNConds(OtherGenDispatcher.getNConds());  // force reallocation of terminal stuff
 
 			agd.setElementName(OtherGenDispatcher.getElementName());
-			agd.setControlledElement(OtherGenDispatcher.getControlledElement());  // Pointer to target circuit element
-			agd.setMonitoredElement(OtherGenDispatcher.getMonitoredElement());  // Pointer to target circuit element
+			agd.setControlledElement(OtherGenDispatcher.getControlledElement());  // pointer to target circuit element
+			agd.setMonitoredElement(OtherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
 
 			agd.setElementTerminal(OtherGenDispatcher.getElementTerminal());
 
 			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
 				agd.setPropertyValue(i, OtherGenDispatcher.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + GenDispatcherName + "\" Not Found.", 370);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + GenDispatcherName + "\" not found.", 370);
 		}
 
 		return Result;

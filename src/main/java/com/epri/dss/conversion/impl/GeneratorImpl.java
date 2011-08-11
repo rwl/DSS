@@ -45,10 +45,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	protected void defineProperties() {
 
 		NumProperties = Generator.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();   /* see DSSClass */
 
-		// Define Property names
+		// define property names
 		addProperty("phases", 0, "Number of Phases, this Generator.  Power is evenly divided among phases.");
 		addProperty("bus1", 1, "Bus to which the Generator is connected.  May include specific node specification.");
 		addProperty("kv",  2,  "Nominal rated (1.0 per unit) voltage, kV, for Generator. For 2- and 3-phase Generators, specify phase-phase kV. "+
@@ -146,9 +146,9 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 
 		ActiveProperty = NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 
-		// Override default help string
+		// override default help string
 		PropertyHelp[Generator.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this generator. " +
 							"Voltage behind Xd' for machine - default. Current injection for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
@@ -175,7 +175,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				ag.setNConds(ag.getNPhases() + 1);  // L-L
 				break;
 			case 2:
-				ag.setNConds(ag.getNPhases() + 1);  // Open-delta
+				ag.setNConds(ag.getNPhases() + 1);  // open-delta
 				break;
 			default:
 				ag.setNConds(ag.getNPhases());
@@ -186,8 +186,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	}
 
 	/**
-	 * Accepts
-	 * 		delta or LL           (Case insensitive)
+	 * Accepts (case insensitive):
+	 * 		delta or LL
 	 * 		Y, wye, or LN
 	 */
 	private void interpretConnection(String S) {
@@ -228,7 +228,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setVBase(ag.getGenVars().kVGeneratorBase * DSSGlobals.InvSQRT3x1000);  // L-N Volts
 			break;
 		default:
-			ag.setVBase(ag.getGenVars().kVGeneratorBase * 1000.0);   // Just use what is supplied
+			ag.setVBase(ag.getGenVars().kVGeneratorBase * 1000.0);   // just use what is supplied
 			break;
 		}
 		ag.setVBase95(ag.getVMinPU() * ag.getVBase());
@@ -254,7 +254,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		// Continue parsing with contents of parser
+		// continue parsing with contents of parser
 		setActiveGeneratorObj((GeneratorObj) ElementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
 
@@ -274,13 +274,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
 				ag.setPropertyValue(PropertyIdxMap[ParamPointer], Param);
 			} else {
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Generator \""+ag.getName()+"\"", 560);
+				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for generator \""+ag.getName()+"\"", 560);
 			}
 
 			if (ParamPointer >= 0) {
 				switch (PropertyIdxMap[ParamPointer]) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ag.getName() + "\"", 561);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
 					ag.setNPhases(parser.makeInteger());  // num phases
@@ -383,10 +383,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.getGenVars().Dpu = parser.makeDouble();
 					break;
 				case 32:
-					ag.getUserModel().setName(parser.makeString());  // Connect to user written models
+					ag.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
 				case 33:
-					ag.getUserModel().edit(parser.makeString());  // Send edit string to user model
+					ag.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case 34:
 					ag.getShaftModel().setName(parser.makeString());
@@ -395,7 +395,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.getShaftModel().edit(parser.makeString());
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(getActiveGeneratorObj(), ParamPointer - Generator.NumPropsThisClass);
 					break;
 				}
@@ -404,7 +404,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if (ParamPointer >= 0) {
 				switch (PropertyIdxMap[ParamPointer]) {
 				case 0:
-					setNcondsForConnection();  // Force reallocation of terminal info
+					setNcondsForConnection();  // force reallocation of terminal info
 					break;
 				case 3:
 					// keep kvar nominal up to date with kW and PF
@@ -415,8 +415,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.syncUpPowerQuantities();
 					break;
 				case 6:
-					/* Set shape objects;  returns nil if not valid */
-					/* Sets the kW and kvar properties to match the peak kW demand from the Loadshape */
+					/* Set shape objects; returns nil if not valid */
+					/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
 					ag.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
@@ -494,7 +494,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 			if (ag.getNPhases() != OtherGenerator.getNPhases()) {
 				ag.setNPhases(OtherGenerator.getNPhases());
-				ag.setNConds(ag.getNPhases());  // Forces reallocation of terminal stuff
+				ag.setNConds(ag.getNPhases());  // forces reallocation of terminal stuff
 
 				ag.setYorder(ag.getNConds() * ag.getNTerms());
 				ag.setYprimInvalid(true);
@@ -546,7 +546,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.getGenVars().D              = OtherGenerator.getGenVars().D;
 			ag.getGenVars().Dpu            = OtherGenerator.getGenVars().Dpu;
 
-			ag.getUserModel().setName(OtherGenerator.getUserModel().getName());  // Connect to user written models
+			ag.getUserModel().setName(OtherGenerator.getUserModel().getName());  // connect to user written models
 			ag.getShaftModel().setName(OtherGenerator.getShaftModel().getName());
 
 			classMakeLike(OtherGenerator);
@@ -556,7 +556,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 			Result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load MakeLike: \"" + OtherGeneratorName + "\" Not Found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherGeneratorName + "\" not found.", 562);
 		}
 
 		return Result;

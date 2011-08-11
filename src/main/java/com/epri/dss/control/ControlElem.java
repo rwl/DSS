@@ -43,10 +43,14 @@ public interface ControlElem extends CktElement {
 
 	CktElement getControlledElement();
 
-	/* Sample control quantities and set action times in Control Queue */
+	/**
+	 * Sample control quantities and set action times in control queue.
+	 */
 	void sample();
 
-	/* Do the action that is pending from last sample */
+	/**
+	 * Do the action that is pending from last sample.
+	 */
 	void doPendingAction(int Code, int ProxyHdl);
 
 	void reset();

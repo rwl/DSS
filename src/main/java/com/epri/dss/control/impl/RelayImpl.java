@@ -37,11 +37,9 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		NumProperties = Relay.NumPropsThisClass;
 		countProperties();  // get inherited property count
 
-		allocatePropertyArrays();  /* see DSSClass */
-
+		allocatePropertyArrays();
 
 		// define property names
-
 		addProperty("MonitoredObj", 0,
 				"Full object name of the circuit element, typically a line, transformer, load, or generator, "+
 				"to which the relay's PT and/or CT are connected." +
@@ -113,7 +111,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				"\"Close\" causes the controlled element to close and the relay to reset to its first operation.");
 
 		ActiveProperty = Relay.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -160,14 +158,14 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
 				ar.setPropertyValue(PropertyIdxMap[ParamPointer], Param);
 			} else {
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Relay \""+ar.getName()+"\"", 381);
+				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for relay \""+ar.getName()+"\"", 381);
 			}
 
 			if (ParamPointer >= 0) {
 				switch (PropertyIdxMap[ParamPointer]) {
 				/* internal relay property commands */
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ar.getName() + "\"", 382);
+					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
 					break;
 				case 0:
 					ar.setMonitoredElementName(Param.toLowerCase());
@@ -209,7 +207,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 					ar.setNumReclose(parser.makeInteger() - 1);  // one less than number of shots
 					break;
 				case 13:
-					if (Param.equalsIgnoreCase("NONE")) {
+					if (Param.equalsIgnoreCase("none")) {
 						ar.setNumReclose(1);
 					} else {
 						ar.setNumReclose(parser.parseAsVector(4, ar.getRecloseIntervals()));  // max of 4 allowed
@@ -261,7 +259,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 					ar.setTDGround(parser.makeDouble());
 					break;
 				default:
-					// Inherited parameters
+					// inherited parameters
 					classEdit(ActiveRelayObj, ParamPointer - Relay.NumPropsThisClass);
 					break;
 				}
@@ -276,7 +274,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				case 1:
 					ar.setElementTerminal(ar.getMonitoredElementTerminal());
 					break;
-				case 4:  /* Set Default Reclose Intervals */
+				case 4:  /* Set default reclose intervals */
 					switch (Param.toLowerCase().charAt(0)) {
 					case 'c':
 						ar.setPropertyValue(13, "(0.5, 2.0, 2.0)");
@@ -304,22 +302,22 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 	@Override
 	protected int makeLike(String RelayName) {
 		int Result = 0;
-		/* See if we can find this Relay name in the present collection */
+		/* See if we can find this relay name in the present collection */
 		RelayObj OtherRelay = (RelayObj) find(RelayName);
 		if (OtherRelay != null) {
 
 			RelayObj ar = getActiveRelayObj();
 
 			ar.setNPhases(OtherRelay.getNPhases());
-			ar.setNConds(OtherRelay.getNConds()); // Force Reallocation of terminal stuff
+			ar.setNConds(OtherRelay.getNConds());  // force reallocation of terminal stuff
 
 			ar.setElementName(OtherRelay.getElementName());
 			ar.setElementTerminal(OtherRelay.getElementTerminal());
-			ar.setControlledElement(OtherRelay.getControlledElement());  // Pointer to target circuit element
+			ar.setControlledElement(OtherRelay.getControlledElement());  // target circuit element
 
-			ar.setMonitoredElement(OtherRelay.getMonitoredElement());  // Pointer to target circuit element
-			ar.setMonitoredElementName(OtherRelay.getMonitoredElementName());  // Pointer to target circuit element
-			ar.setMonitoredElementTerminal(OtherRelay.getMonitoredElementTerminal());  // Pointer to target circuit element
+			ar.setMonitoredElement(OtherRelay.getMonitoredElement());  // target circuit element
+			ar.setMonitoredElementName(OtherRelay.getMonitoredElementName());  // target circuit element
+			ar.setMonitoredElementTerminal(OtherRelay.getMonitoredElementTerminal());  // target circuit element
 
 			ar.setPhaseCurve(OtherRelay.getPhaseCurve());
 			ar.setGroundCurve(OtherRelay.getGroundCurve());
@@ -336,7 +334,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			ar.setDelay_Time(OtherRelay.getDelay_Time());
 			ar.setBreaker_time(OtherRelay.getBreaker_time());
 
-			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // Always make a max of 4
+			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (int i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = OtherRelay.getRecloseIntervals()[i];
 
@@ -347,17 +345,17 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			ar.setPresentState(OtherRelay.getPresentState());
 			ar.setCondOffset(OtherRelay.getCondOffset());
 
-			/* 46 Relay Neg Seq Current */
+			/* 46 relay neg seq current */
 			ar.setPickupAmps46(OtherRelay.getPickupAmps46());
 			ar.setPctPickup46(OtherRelay.getPctPickup46());
 			ar.setBaseAmps46(OtherRelay.getBaseAmps46());
 			ar.setIsqt46(OtherRelay.getIsqt46());
 
-			/* 47 Relay */
+			/* 47 relay */
 			ar.setPickupVolts47(OtherRelay.getPickupVolts47());
 			ar.setPctPickup47(OtherRelay.getPctPickup47());
 
-			/* Generic Relay */
+			/* Generic relay */
 			ar.setMonitorVariable(OtherRelay.getMonitorVariable());
 			ar.setOverTrip(OtherRelay.getOverTrip());
 			ar.setUnderTrip(OtherRelay.getUnderTrip());
@@ -366,7 +364,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				ar.setPropertyValue(i, OtherRelay.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Relay makeLike: \"" + RelayName + "\" Not Found.", 383);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Relay makeLike: \"" + RelayName + "\" not found.", 383);
 		}
 
 		return Result;

@@ -27,7 +27,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		R,
 		X;
 
-	/* Reverse Power Variables */
+	/* Reverse power variables */
 	private double revVreg,
 		revBandwidth,
         RevPowerThreshold,   // W
@@ -40,8 +40,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	private boolean LDCActive, UsingRegulatedBus;
     private String RegulatedBus;
 
-	private double PendingTapChange;   // amount of tap change pending
-	private double TapDelay;           // delay between taps
+	private double PendingTapChange;  // amount of tap change pending
+	private double TapDelay;          // delay between taps
 
 	private boolean DebugTrace;
 	private boolean Armed;
@@ -129,7 +129,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			UsingRegulatedBus = true;
 		}
 
-		int DevIndex = Utilities.getCktElementIndex(ElementName);  // Global function
+		int DevIndex = Utilities.getCktElementIndex(ElementName);
 		if (DevIndex >= 0) {  // TODO Check zero based indexing
 			// RegControled element must already exist
 			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
@@ -149,12 +149,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				if (ElementTerminal > getControlledElement().getNTerms()) {
 					Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
-							"Respecify Monitored Winding no.", 122);
+							"Respecify monitored winding no.", 122);
 				} else {
-					// Sets name of i-th terminal's connected bus in RegControl's buslist
-					// This value will be used to set the NodeRef array (see Sample function)
+					// sets name of i-th terminal's connected bus in RegControl's bus list
+					// this value will be used to set the nodeRef array (see sample function)
 					if (UsingRegulatedBus) {
-						setBus(1, RegulatedBus);   // hopefully this will actually exist
+						setBus(1, RegulatedBus);  // hopefully this will actually exist
 					} else {
 						setBus(1, getControlledElement().getBus(ElementTerminal));
 					}
@@ -164,20 +164,19 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
-				Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled Regulator Element \""+ ElementName + "\" Is not a transformer.",
+				Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled regulator element \""+ ElementName + "\" is not a transformer.",
 						" Element must be defined previously.", 123);
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer Element \""+ ElementName + "\" Not Found.",
+			Globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer element \""+ ElementName + "\" not found.",
 					" Element must be defined previously.", 124);
 		}
 	}
 
 	@Override
 	public void calcYPrim() {
-		// Leave YPrim as null and it will be ignored ... zero current source
-		// Yprim is zeroed when created.  Leave it as is.
+		// leave YPrim as null and it will be ignored ... zero current source
 	}
 
 	private Complex getControlVoltage(Complex[] VBuffer, int Nphs, double PTRatio) {
@@ -359,7 +358,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			}
 			break;
 		case RegControl.ACTION_REVERSE:
-			// Toggle reverse mode flag
+			// toggle reverse mode flag
 			if (DebugTrace)
 				regWriteDebugRecord(String.format("Handling Reverse Action, ReversePending=%s, InReverseMode=%s",
 						String.valueOf(ReversePending), String.valueOf(InReverseMode)));
@@ -399,11 +398,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if (!UsingRegulatedBus) {
 			if (IsReversible) {
 
-				if (!InReverseMode) {  // If looking forward, check to see if we should reverse
+				if (!InReverseMode) {  // if looking forward, check to see if we should reverse
 
-					if (!ReversePending) {  // If reverse is already pending, don't send any more messages
+					if (!ReversePending) {  // if reverse is already pending, don't send any more messages
 
-						FwdPower = -ControlledTransformer.getPower(ElementTerminal).getReal();  // watts
+						FwdPower = -ControlledTransformer.getPower(ElementTerminal).getReal();  // Watts
 						if (FwdPower < -RevPowerThreshold) {
 
 							if (DebugTrace)
@@ -413,13 +412,13 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 									ckt.getSolution().getDynaVars().t + revDelay,
 									RegControl.ACTION_REVERSE, 0, this);
 						} else {
-							ReversePending = false;  // Reset it if power goes back
+							ReversePending = false;  // reset it if power goes back
 						}
 					}
 				} else {
-					// If reversed look to see if power is back in forward direction
+					// if reversed look to see if power is back in forward direction
 					if (!ReversePending) {
-						FwdPower = -ControlledTransformer.getPower(ElementTerminal).getReal();  // watts
+						FwdPower = -ControlledTransformer.getPower(ElementTerminal).getReal();  // Watts
 						if (FwdPower > RevPowerThreshold) {
 
 							if (DebugTrace)
@@ -429,11 +428,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	                        		ckt.getSolution().getDynaVars().t + revDelay,
 	                        		RegControl.ACTION_REVERSE, 0, this);
 						} else {
-							ReversePending = false; // Reset it if power went back to reverse
+							ReversePending = false;  // reset it if power went back to reverse
 						}
 					}
 
-					/* Check for special case of Reverse Neutral where
+					/* Check for special case of reverse neutral where
 					 * regulator is to move to neutral position */
 					if (ReverseNeutral) {
 
@@ -457,7 +456,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 								}
 							}
 						}
-						return;  // We're done here in any case if Reverse neutral specified
+						return;  // we're done here in any case if reverse neutral specified
 					}
 				}  // else
 			}
@@ -466,14 +465,14 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if (UsingRegulatedBus) {
 
 			TransformerConnection = ControlledTransformer.getWinding()[ElementTerminal].getConnection();
-			computeVterminal();   // Computes the voltage at the bus being regulated
+			computeVterminal();   // computes the voltage at the bus being regulated
 			for (i = 0; i < getNPhases(); i++) {
 				switch (TransformerConnection) {
-				case 0:  // Wye
+				case 0:  // wye
 					VBuffer[i] = Vterminal[i];
 					break;
-				case 1:  // Delta
-					// Get next phase in sequence using Transformer Obj rotate
+				case 1:  // delta
+					// get next phase in sequence using transformer obj rotate
 					ii = ControlledTransformer.rotatePhases(i);
 					VBuffer[i] = Vterminal[i].subtract( Vterminal[ii] );
 					break;
@@ -485,7 +484,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 		Vcontrol = getControlVoltage(VBuffer, getNPhases(), PTRatio);
 
-		// Check Vlimit
+		// check VLimit
 		if (VLimitActive) {
 
 			if (UsingRegulatedBus) {
@@ -497,10 +496,10 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				VlocalBus = Vcontrol.abs();
 			}
 		} else {
-			VlocalBus = 0.0;  // to get rid of warning message;
+			VlocalBus = 0.0;  // to get rid of warning message
 		}
 
-		// Check for LDC
+		// check for LDC
 		if ((!UsingRegulatedBus) && LDCActive) {
 
 			getControlledElement().getCurrents(CBuffer);
@@ -510,12 +509,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			} else {
 				VLDC  = new Complex(R, X).multiply(ILDC);
 			}
-			Vcontrol = Vcontrol.add(VLDC);   // Direction on ILDC is INTO terminal, so this is equivalent to Vterm - (R+jX)*ILDC
+			Vcontrol = Vcontrol.add(VLDC);  // direction on ILDC is into terminal, so this is equivalent to Vterm - (R+jX)*ILDC
 		}
 
 		Vactual = Vcontrol.abs();
 
-		// Check for out of band voltage
+		// check for out of band voltage
 		if (Math.abs(Vreg - Vactual) > Bandwidth / 2.0) {
 			TapChangeIsNeeded = true;
 		} else {
@@ -528,43 +527,43 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 		if (TapChangeIsNeeded) {
 
-			// Compute tapchange
+			// compute tapchange
 			Vboost = (Vreg - Vactual);
 			if (VLimitActive)
 				if (VlocalBus > Vlimit)
 					Vboost = (Vlimit - VlocalBus);
-			BoostNeeded = Vboost * PTRatio / ControlledTransformer.getBaseVoltage(ElementTerminal);  // per unit Winding boost needed
+			BoostNeeded = Vboost * PTRatio / ControlledTransformer.getBaseVoltage(ElementTerminal);  // per unit winding boost needed
 			Increment = ControlledTransformer.getTapIncrement(TapWinding);
-			setPendingTapChange( Math.round(BoostNeeded / Increment) * Increment );  // Make sure it is an even increment
+			setPendingTapChange( Math.round(BoostNeeded / Increment) * Increment );  // make sure it is an even increment
 
-			/* If Tap is another winding or in reverse mode, it has to move
+			/* If tap is another winding or in reverse mode, it has to move
 			 * the other way to accomplish the change */
 			if ((TapWinding != ElementTerminal) || InReverseMode)
 				setPendingTapChange(-PendingTapChange);
 
-            // Send Initial Tap Change message to control queue
-            // Add Delay time to solution control queue
+            // send initial tap change message to control queue
+            // add delay time to solution control queue
 			if ((PendingTapChange != 0.0) && (!Armed)) {
 
-				// Now see if any tap change is possible in desired direction  Else ignore
+				// now see if any tap change is possible in desired direction, else ignore
 				if (PendingTapChange > 0.0) {
 
 					if (ControlledTransformer.getPresentTap(TapWinding) < ControlledTransformer.getMaxTap(TapWinding)) {
 						ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 								ckt.getSolution().getDynaVars().t + computeTimeDelay(Vactual),
 								RegControl.ACTION_TAPCHANGE, 0, this);
-						Armed = true;  // Armed to change taps
+						Armed = true;  // armed to change taps
 					}
 				} else {
 					if (ControlledTransformer.getPresentTap(TapWinding) > ControlledTransformer.getMinTap(TapWinding)) {
 						ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 								ckt.getSolution().getDynaVars().t + computeTimeDelay(Vactual),
 								RegControl.ACTION_TAPCHANGE, 0, this);
-						Armed = true;  // Armed to change taps
+						Armed = true;  // armed to change taps
 					}
 				}
 			}
-		}  // if TapChangeIsNeeded
+		}  // if tapChangeIsNeeded
 		else {
 			setPendingTapChange(0.0);
 		}
@@ -663,8 +662,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = ""; //"element";
-		PropertyValue[1] = "1"; //"terminal";
+		PropertyValue[0] = "";   // "element";
+		PropertyValue[1] = "1";  // "terminal";
 		PropertyValue[2] = "120";
 		PropertyValue[3] = "3";
 		PropertyValue[4] = "60";
@@ -711,8 +710,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			}
 			setNConds(nPhases);
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
-				// Sets name of i-th terminal's connected bus in RegControl's buslist
-				// This value will be used to set the NodeRef array (see Sample function)
+				// sets name of i-th terminal's connected bus in RegControl's bus list
+				// this value will be used to set the nodeRef array (see sample function)
 				if (UsingRegulatedBus) {
 					setBus(1, RegulatedBus);  // hopefully this will actually exist
 				} else {
