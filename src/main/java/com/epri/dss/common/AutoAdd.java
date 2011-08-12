@@ -13,21 +13,21 @@ import com.epri.dss.common.impl.SolverError;
  */
 public interface AutoAdd {
 
-	double getGenkW();
+	double getGenKW();
 
-	void setGenkW(double genkW);
+	void setGenKW(double genkW);
 
 	double getGenPF();
 
 	void setGenPF(double genPF);
 
-	double getGenkvar();
+	double getGenKVAr();
 
-	void setGenkvar(double genkvar);
+	void setGenKVAr(double genkvar);
 
-	double getCapkvar();
+	double getCapKVAr();
 
-	void setCapkvar(double capkvar);
+	void setCapKVAr(double capkvar);
 
 	int getAddType();
 
@@ -39,7 +39,7 @@ public interface AutoAdd {
 
 	void makeBusList();
 
-	void appendToFile(final String WhichFile, final String S);
+	void appendToFile(String WhichFile, String S);
 
 	void addCurrents(int SolveType);
 

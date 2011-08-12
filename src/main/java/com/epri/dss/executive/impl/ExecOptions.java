@@ -545,13 +545,13 @@ public class ExecOptions {
 				ckt.setDefaultGrowthFactor( Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
 				break;
 			case 28:
-				Globals.getActiveCircuit().getAutoAddObj().setGenkW(parser.makeDouble());
+				Globals.getActiveCircuit().getAutoAddObj().setGenKW(parser.makeDouble());
 				break;
 			case 29:
 				Globals.getActiveCircuit().getAutoAddObj().setGenPF(parser.makeDouble());
 				break;
 			case 30:
-				Globals.getActiveCircuit().getAutoAddObj().setCapkvar(parser.makeDouble());
+				Globals.getActiveCircuit().getAutoAddObj().setCapKVAr(parser.makeDouble());
 				break;
 			case 31:
 				Globals.getActiveCircuit().getAutoAddObj().setAddType(Utilities.interpretAddType(Param));
@@ -864,13 +864,13 @@ public class ExecOptions {
 					Globals.appendGlobalResult(String.format("%-g", (Globals.getActiveCircuit().getDefaultGrowthRate() - 1.0) * 100.0));
 					break;
 				case 28:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getGenkW()));
+					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getGenKW()));
 					break;
 				case 29:
 					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getGenPF()));
 					break;
 				case 30:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getCapkvar()));
+					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getCapKVAr()));
 					break;
 				case 31:
 					switch (Globals.getActiveCircuit().getAutoAddObj().getAddType()) {
