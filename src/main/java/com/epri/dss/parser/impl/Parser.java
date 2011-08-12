@@ -538,7 +538,7 @@ public class Parser {
 			}
 
 			if (Code.intValue() != 0) {
-				// not needed with throw ...  Result = 0.0;
+				// not needed with throw ... Result = 0.0;
 				ConvertError = true;
 //				throw new ParserProblem("Floating point number conversion error for string: \""+TokenBuffer+"\"");
 				DSSGlobals.getInstance().doErrorMsg("", "Floating point number conversion error for string: \""+TokenBuffer+"\"", "", 0);
@@ -588,7 +588,7 @@ public class Parser {
 			} catch (ParserProblem e) {
 				DSSGlobals.getInstance().doErrorMsg("", e.getMessage(), "", 0);
 				if (Code.intValue() > 0)
-					break;  // Stop on any floating point error
+					break;  // stop on any floating point error
 			}
 
 			TokenBuffer = getToken(ParseBuffer, ParseBufferPos);
