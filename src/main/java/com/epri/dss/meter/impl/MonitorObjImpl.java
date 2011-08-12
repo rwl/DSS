@@ -583,7 +583,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 		case 1:  // convert voltage buffer to power kW, kVAr or mag/angle
 			MathUtil.calckPowers(VoltageBuffer, VoltageBuffer, CurrentBuffer[Offset + 1], NumVI);
-			if (IsSequence || Globals.getActiveCircuit().isPositiveSequence()) Utilities.CmulArray(VoltageBuffer, 3.0, NumVI);  // convert to total power
+			if (IsSequence || Globals.getActiveCircuit().isPositiveSequence()) Utilities.mulArray(VoltageBuffer, 3.0, NumVI);  // convert to total power
 			if (Ppolar) Utilities.convertComplexArrayToPolar(VoltageBuffer, NumVI);
 			IsPower = true;
 			break;

@@ -852,7 +852,7 @@ public class ExecCommands {
 				Globals.setCmdResult(ExecHelper.doUpdateStorageCmd());
 				break;
 			case 92:
-				Utilities.Obfuscate();
+				Utilities.obfuscate();
 				break;
 			default:
 				// ignore excess parameters

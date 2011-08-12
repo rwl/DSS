@@ -25,14 +25,14 @@ public class SolutionAlgs {
 	}
 
 	private static void show10PctProgress(int i, int n) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (Globals.isNoFormsAllowed())
+		if (globals.isNoFormsAllowed())
 			return;
 
 		if (((i * 10) / n) > progressCount) {
 			progressCount += 1;
-			Globals.getDSSForms().showPctProgress(progressCount * 10);
+			globals.getDSSForms().showPctProgress(progressCount * 10);
 		}
 	}
 
