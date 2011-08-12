@@ -6,9 +6,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SolutionImpl extends DSSClassImpl implements Solution {
 
-	private static SolutionObj ActiveSolutionObj;
+	private static SolutionObj activeSolutionObj;
 
-//	private static File FDebug;
+//	private static File fDebug;
 
 	public static final int NumPropsThisClass = 1;
 
@@ -21,9 +21,9 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 
 		defineProperties();
 
-		String[] Commands = new String[numProperties];
-		System.arraycopy(propertyName, 0, Commands, 0, numProperties);
-		commandList = new CommandListImpl(Commands);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
 		commandList.setAbbrevAllowed(true);
 	}
 
@@ -44,16 +44,16 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 
 	public int newObject(String objName) {
 		// make a new solution object and add it to solution class list
-		ActiveSolutionObj = new SolutionObjImpl(this, objName);
+		activeSolutionObj = new SolutionObjImpl(this, objName);
 		// this one is different than the rest of the objects
-		return addObjectToList(ActiveSolutionObj);
+		return addObjectToList(activeSolutionObj);
 	}
 
 	public int edit() {
-		ActiveSolutionObj = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		activeSolutionObj = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
 		// This is all we do here now...
-		ActiveSolutionObj.solve();
+		activeSolutionObj.solve();
 
 		return 0;
 	}
@@ -64,11 +64,11 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	}
 
 	public static SolutionObj getActiveSolutionObj() {
-		return ActiveSolutionObj;
+		return activeSolutionObj;
 	}
 
-	public static void setActiveSolutionObj(SolutionObj activeSolutionObj) {
-		ActiveSolutionObj = activeSolutionObj;
+	public static void setActiveSolutionObj(SolutionObj solutionObj) {
+		activeSolutionObj = solutionObj;
 	}
 
 }

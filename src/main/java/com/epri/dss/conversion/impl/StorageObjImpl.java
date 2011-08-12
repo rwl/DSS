@@ -454,7 +454,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		ShapeFactor = CDOUBLEONE;  // init here; changed by curve routine
 
 		// check to make sure the storage element is on
-		if (! (sol.isIsDynamicModel() || sol.isIsHarmonicModel()) ) {  // leave storage element in whatever state it was prior to entering dynamic mode
+		if (! (sol.isDynamicModel() || sol.isHarmonicModel()) ) {  // leave storage element in whatever state it was prior to entering dynamic mode
 
 			// check dispatch to see what state the storage element should be in
 			switch (DispatchMode) {
@@ -624,7 +624,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		YPrimFreq = sol.getFrequency();
 		FreqMultiplier = YPrimFreq / baseFrequency;
 
-		if (/*sol.isIsDynamicModel() ||*/ sol.isIsHarmonicModel()) {
+		if (/*sol.isIsDynamicModel() ||*/ sol.isHarmonicModel()) {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			switch (State) {
 			case Storage.STORE_IDLING:
@@ -1052,9 +1052,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		setITerminalUpdated(false);
 
-		if (sol.isIsDynamicModel()) {
+		if (sol.isDynamicModel()) {
 			doDynamicMode();
-		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
 			doHarmonicMode();
 		} else {
 			// compute currents and put into injTemp array
@@ -1110,7 +1110,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (sol.isLoadsNeedUpdating())
+		if (sol.loadsNeedUpdating())
 			setNominalStorageOuput();  // set the nominal kW, etc for the type of solution being done
 
 		calcInjCurrentArray();  // difference between currents in YPrim and total terminal current

@@ -61,7 +61,7 @@ public class YMatrix {
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			NodeBus nb = ckt.getMapNodeToBus()[i];
-			sol.getNodeVbase()[i] = ckt.getBuses()[nb.busRef].getKVBase() * 1000.0;
+			sol.getNodeVBase()[i] = ckt.getBuses()[nb.busRef].getKVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
 	}
@@ -95,12 +95,12 @@ public class YMatrix {
 
 		switch (BuildOption) {
 		case WHOLEMATRIX:
-			resetSparseMatrix(sol.getYsystem(), YMatrixSize);
-			sol.setY(sol.getYsystem());
+			resetSparseMatrix(sol.getYSystem(), YMatrixSize);
+			sol.setY(sol.getYSystem());
 			break;
 		case SERIESONLY:
-			resetSparseMatrix(sol.getYseries(), YMatrixSize);
-			sol.setY(sol.getYseries());
+			resetSparseMatrix(sol.getYSeries(), YMatrixSize);
+			sol.setY(sol.getYSeries());
 			break;
 		}
 
@@ -154,15 +154,15 @@ public class YMatrix {
 			sol.getNodeV()[0] = Complex.ZERO;  // TODO Check zero based indexing
 			sol.setCurrents( (Complex[]) Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
 			sol.setAuxCurrents( (Complex[]) Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
-			if (sol.getVmagSaved() != null)
-				sol.setVmagSaved(new double[0]);
+			if (sol.getVMagSaved() != null)
+				sol.setVMagSaved(new double[0]);
 			if (sol.getErrorSaved() != null)
 				sol.setErrorSaved(new double[0]);
-			if (sol.getNodeVbase() != null)
-				sol.setNodeVbase(new double[0]);
-			sol.setVmagSaved(new double[ckt.getNumNodes()]);   // zero fill
+			if (sol.getNodeVBase() != null)
+				sol.setNodeVBase(new double[0]);
+			sol.setVMagSaved(new double[ckt.getNumNodes()]);   // zero fill
 			sol.setErrorSaved(new double[ckt.getNumNodes()]);  // zero fill
-			sol.setNodeVbase(new double[ckt.getNumNodes()]);   // zero fill
+			sol.setNodeVBase(new double[ckt.getNumNodes()]);   // zero fill
 			initializeNodeVbase();
 		}
 
@@ -180,7 +180,7 @@ public class YMatrix {
 		//sol.setSolutionInitialized(false);  // require initialization of voltages if Y changed
 
 		if (sol.isPreserveNodeVoltages())
-			sol.restoreNodeVfromVbus();
+			sol.restoreNodeVFromVbus();
 
 	}
 

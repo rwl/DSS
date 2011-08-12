@@ -286,7 +286,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
 
-		if (!sol.isIsDynamicModel() || !sol.isIsHarmonicModel()) {  // leave generator in whatever state it was prior to entering dynamic mode
+		if (!sol.isDynamicModel() || !sol.isHarmonicModel()) {  // leave generator in whatever state it was prior to entering dynamic mode
 			GenON = true;   // init to on then check if it should be off
 			if (!ForcedON)
 				switch (DispatchMode) {
@@ -388,7 +388,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				}
 			}
 
-			if (!sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {
+			if (!sol.isDynamicModel() || sol.isHarmonicModel()) {
 				if (ShapeIsActual) {
 					GenVars.Pnominalperphase = 1000.0 * ShapeFactor.getReal() / nPhases;
 				} else {
@@ -414,7 +414,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 		}  /* else genON */
 
-		if (!sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {
+		if (!sol.isDynamicModel() || sol.isHarmonicModel()) {
 
 			switch (GenModel) {
 			case 6:
@@ -525,7 +525,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		SolutionObj sol = ckt.getSolution();
 
-		if (sol.isIsDynamicModel() || sol.isIsHarmonicModel()) {
+		if (sol.isDynamicModel() || sol.isHarmonicModel()) {
 			if (GenON) {
 				Y  = Yeq;  // L-N value computed in initialization routines
 			} else {
@@ -1165,9 +1165,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		SolutionObj sol = ckt.getSolution();
 
 		setITerminalUpdated(false);
-		if (sol.isIsDynamicModel()) {
+		if (sol.isDynamicModel()) {
 			doDynamicMode();
-		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
 			doHarmonicMode();
 		} else {
 			// compute currents and put into injTemp array
@@ -1290,7 +1290,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (sol.isLoadsNeedUpdating())
+		if (sol.loadsNeedUpdating())
 			setNominalGeneration();  // set the nominal kW, etc for the type of solution being done
 
 		calcInjCurrentArray();  // difference between currents in YPrim and total terminal current

@@ -1,11 +1,13 @@
 package com.epri.dss.common.impl;
 
 public enum CIMProfileChoice {
-	Combined,
-	Functional,
-	ElectricalProperties,
-	Asset,
-	Geographical,
-	Topology,
-	StateVariables;
+
+	COMBINED,
+	FUNCTIONAL,
+	ELECTRICAL_PROPERTIES,
+	ASSET,
+	GEOGRAPHICAL,
+	TOPOLOGY,
+	STATE_VARIABLES;
+
 }

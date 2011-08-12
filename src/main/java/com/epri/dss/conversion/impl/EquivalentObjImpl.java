@@ -210,7 +210,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
-			if (sol.isIsHarmonicModel()) {
+			if (sol.isHarmonicModel()) {
 				EquivHarm = sol.getFrequency() / EquivFrequency ;
 				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // base voltage for this harmonic
 				Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // rotate for phase 1 shift

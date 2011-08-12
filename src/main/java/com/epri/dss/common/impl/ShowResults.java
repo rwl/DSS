@@ -935,7 +935,7 @@ public abstract class ShowResults {
 	private static boolean checkBusReference(CktElement cktElem, int BusReference, int TerminalIndex) {
 
 		for (int i = 0; i < cktElem.getNTerms(); i++)
-			if (cktElem.getTerminals()[i].BusRef == BusReference) {
+			if (cktElem.getTerminals()[i].busRef == BusReference) {
 				TerminalIndex = i;
 				return true;
 			}
@@ -2971,8 +2971,8 @@ public abstract class ShowResults {
 
 			for (LoadObj pLoad : ckt.getLoads()) {
 				/* Find bus to which load connected */
-				pBus = ckt.getBuses()[ pLoad.getTerminals()[0].BusRef ];
-				BusName = ckt.getBusList().get( pLoad.getTerminals()[0].BusRef );
+				pBus = ckt.getBuses()[ pLoad.getTerminals()[0].busRef ];
+				BusName = ckt.getBusList().get( pLoad.getTerminals()[0].busRef );
 				if (pBus.getKVBase() != 0.0) {
 					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
 						if (Math.abs(pLoad.getkVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
@@ -3002,8 +3002,8 @@ public abstract class ShowResults {
 
 			for (GeneratorObj pGen : ckt.getGenerators()) {
 				/* Find bus to which generator connected */
-				pBus = ckt.getBuses()[ pGen.getTerminals()[0].BusRef ];
-				BusName = ckt.getBusList().get( pGen.getTerminals()[0].BusRef );
+				pBus = ckt.getBuses()[ pGen.getTerminals()[0].busRef ];
+				BusName = ckt.getBusList().get( pGen.getTerminals()[0].busRef );
 				if (pBus.getKVBase() != 0.0) {
 					if ((pGen.getNPhases() == 1) && (pGen.getConnection() == 0)) {
 						if (Math.abs(pGen.getGenVars().kVGeneratorBase - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {

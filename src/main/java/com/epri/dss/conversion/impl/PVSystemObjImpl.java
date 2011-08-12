@@ -359,7 +359,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
 
-		if (!(sol.isIsDynamicModel() || sol.isIsHarmonicModel())) {
+		if (!(sol.isDynamicModel() || sol.isHarmonicModel())) {
 			// leave PVSystem element in whatever state it was prior to entering dynamic mode
 
 			// check dispatch to see what state the PVSystem element should be in
@@ -516,7 +516,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		YPrimFreq = sol.getFrequency();
 		FreqMultiplier = YPrimFreq / baseFrequency;
 
-		if (/*sol.isDynamicModel() ||*/ sol.isIsHarmonicModel()) {
+		if (/*sol.isDynamicModel() ||*/ sol.isHarmonicModel()) {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			Y = YEQ;  // L-N value computed in initialization routines
 
@@ -895,9 +895,9 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		setITerminalUpdated(false);
 
-		if (sol.isIsDynamicModel()) {
+		if (sol.isDynamicModel()) {
 			doDynamicMode();
-		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
 			doHarmonicMode();
 		} else {
 			// compute currents and put into injTemp array
@@ -953,7 +953,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (sol.isLoadsNeedUpdating())
+		if (sol.loadsNeedUpdating())
 			setNominalPVSystemOuput();  // set the nominal kW, etc for the type of solution being done
 
 		calcInjCurrentArray();          // difference between currents in YPrim and total terminal current

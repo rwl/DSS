@@ -1931,8 +1931,8 @@ public class ExportResults {
 				PresentCktElement = (CktElement) ActiveEnergyMeter.getBranchList().getFirst();
 				while (PresentCktElement != null) {
 					if (Utilities.isLineElement(PresentCktElement)) {
-						Bus1 = ckt.getBuses()[PresentCktElement.getTerminals()[0].BusRef];
-						Bus2 = ckt.getBuses()[PresentCktElement.getTerminals()[1].BusRef];
+						Bus1 = ckt.getBuses()[PresentCktElement.getTerminals()[0].busRef];
+						Bus2 = ckt.getBuses()[PresentCktElement.getTerminals()[1].busRef];
 						/* Now determin which phase to plot */
 						if ((Bus1.getKVBase() > 0.0) && (Bus2.getKVBase() > 0.0)) {
 							switch (PhasesToPlot) {

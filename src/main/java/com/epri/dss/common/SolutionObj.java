@@ -13,15 +13,15 @@ import com.epri.dss.shared.CMatrix;
 
 public interface SolutionObj extends DSSObject {
 
-	void setFrequency(double Value);
+	void setFrequency(double value);
 
 	double getFrequency();
 
-	void setMode(int Value);
+	void setMode(int value);
 
 	int getMode();
 
-	void setYear(int Value);
+	void setYear(int alue);
 
 	int getYear();
 
@@ -105,13 +105,13 @@ public interface SolutionObj extends DSSObject {
 
 	void setDblHour(double dblHour);
 
-	CMatrix getYsystem();
+	CMatrix getYSystem();
 
-	void setYsystem(CMatrix ysystem);
+	void setYSystem(CMatrix ySystem);
 
-	CMatrix getYseries();
+	CMatrix getYSeries();
 
-	void setYseries(CMatrix yseries);
+	void setYSeries(CMatrix ySeries);
 
 	CMatrix getY();
 
@@ -121,13 +121,13 @@ public interface SolutionObj extends DSSObject {
 
 	void setIntervalHrs(double intervalHrs);
 
-	boolean isIsDynamicModel();
+	boolean isDynamicModel();
 
-	void setIsDynamicModel(boolean isDynamicModel);
+	void setDynamicModel(boolean isDynamicModel);
 
-	boolean isIsHarmonicModel();
+	boolean isHarmonicModel();
 
-	void setIsHarmonicModel(boolean isHarmonicModel);
+	void setHarmonicModel(boolean isHarmonicModel);
 
 	int getIteration();
 
@@ -137,11 +137,11 @@ public interface SolutionObj extends DSSObject {
 
 	void setLoadModel(int loadModel);
 
-	boolean isLastSolutionWasDirect();
+	boolean lastSolutionWasDirect();
 
 	void setLastSolutionWasDirect(boolean lastSolutionWasDirect);
 
-	boolean isLoadsNeedUpdating();
+	boolean loadsNeedUpdating();
 
 	void setLoadsNeedUpdating(boolean loadsNeedUpdating);
 
@@ -161,9 +161,9 @@ public interface SolutionObj extends DSSObject {
 
 	void setMostIterationsDone(int mostIterationsDone);
 
-	double[] getNodeVbase();
+	double[] getNodeVBase();
 
-	void setNodeVbase(double[] nodeVbase);
+	void setNodeVBase(double[] nodeVbase);
 
 	int getNumberOfTimes();
 
@@ -193,13 +193,13 @@ public interface SolutionObj extends DSSObject {
 
 	void setSystemYChanged(boolean systemYChanged);
 
-	boolean isUseAuxCurrents();
+	boolean useAuxCurrents();
 
 	void setUseAuxCurrents(boolean useAuxCurrents);
 
-	double[] getVmagSaved();
+	double[] getVMagSaved();
 
-	void setVmagSaved(double[] vmagSaved);
+	void setVMagSaved(double[] vmagSaved);
 
 	boolean isVoltageBaseChanged();
 
@@ -244,7 +244,7 @@ public interface SolutionObj extends DSSObject {
 	void doControlActions();
 
 	/** Sample and do */
-	void sample_DoControlActions() throws ControlProblem;
+	void sampleDoControlActions() throws ControlProblem;
 
 	void checkFaultStatus();
 
@@ -258,7 +258,7 @@ public interface SolutionObj extends DSSObject {
 	void updateVBus();
 
 	/** opposite of updateVBus() */
-	void restoreNodeVfromVbus();
+	void restoreNodeVFromVbus();
 
 	/** Difference between two node voltages */
 	Complex vDiff(int i, int j);

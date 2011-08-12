@@ -995,9 +995,9 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		setITerminalUpdated(false);
 
-		if (sol.isIsDynamicModel()) {
+		if (sol.isDynamicModel()) {
 			//doDynamicMode();  // TODO Implement dynamic mode
-		} else if (sol.isIsHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
+		} else if (sol.isHarmonicModel() && (sol.getFrequency() != ckt.getFundamental())) {
 			doHarmonicMode();
 		} else {
 			// compute total load currents and add into injCurrent array
@@ -1112,7 +1112,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		int Result = 0;
 		if (isEnabled()) {
-			if (sol.isLoadsNeedUpdating())
+			if (sol.loadsNeedUpdating())
 				setNominalLoad();  // set the nominal kW, etc. for the type of solution being done
 			calcInjCurrentArray();
 			Result = super.injCurrents();  // add into global currents array

@@ -260,18 +260,18 @@ public class ExportOptions {
 		case 16: ExportResults.exportY(FileName); break;
 		case 17: ExportResults.exportSeqZ(FileName); break;
 		case 18: ExportResults.exportPbyphase(FileName, MVAOpt); break;
-		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Combined); break;  // defaults to a load-flow model
-		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Functional); break;
-		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Asset); break;
+		case 19: ExportResults.exportCDPSM(FileName, CIMProfileChoice.COMBINED); break;  // defaults to a load-flow model
+		case 20: ExportResults.exportCDPSM(FileName, CIMProfileChoice.FUNCTIONAL); break;
+		case 21: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ASSET); break;
 		case 22: ExportResults.exportBusCoords(FileName); break;
 		case 23: ExportResults.exportLosses(FileName); break;
 		case 24: ExportResults.exportUUIDs(FileName); break;
 		case 25: ExportResults.exportCounts(FileName); break;
 		case 26: ExportResults.exportSummary(FileName); break;
-		case 27: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ElectricalProperties); break;
-		case 28: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Geographical); break;
-		case 29: ExportResults.exportCDPSM(FileName, CIMProfileChoice.Topology); break;
-		case 30: ExportResults.exportCDPSM(FileName, CIMProfileChoice.StateVariables); break;
+		case 27: ExportResults.exportCDPSM(FileName, CIMProfileChoice.ELECTRICAL_PROPERTIES); break;
+		case 28: ExportResults.exportCDPSM(FileName, CIMProfileChoice.GEOGRAPHICAL); break;
+		case 29: ExportResults.exportCDPSM(FileName, CIMProfileChoice.TOPOLOGY); break;
+		case 30: ExportResults.exportCDPSM(FileName, CIMProfileChoice.STATE_VARIABLES); break;
 		case 31: ExportResults.exportProfile(FileName, PhasesToPlot); break;
 		default:
 			ExportResults.exportVoltages(FileName);

@@ -177,7 +177,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 			 * time. */
 			Vmag = Volts;
 
-			if (sol.isIsHarmonicModel() && (getSpectrumObj() != null)) {
+			if (sol.isHarmonicModel() && (getSpectrumObj() != null)) {
 
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				// base voltage for this harmonic

@@ -100,7 +100,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
 			/* Get first phase current */
-			if (sol.isIsHarmonicModel()) {
+			if (sol.isHarmonicModel()) {
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				Result = getSpectrumObj().getMult(SrcHarmonic).multiply(Amps);  // base current for this harmonic
 				Result = Utilities.rotatePhasorDeg(Result, SrcHarmonic, Angle);
@@ -158,7 +158,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		for (int i = 0; i < getNPhases(); i++) {
 			Curr[i] = BaseCurr;
 			if (i < getNPhases())
-				if (sol.isIsHarmonicModel()) {
+				if (sol.isHarmonicModel()) {
 					switch (ScanType) {
 					case 1:
 						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource

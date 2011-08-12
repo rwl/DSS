@@ -278,7 +278,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
-			if (sol.isIsHarmonicModel()) {
+			if (sol.isHarmonicModel()) {
 
 				SrcHarmonic = sol.getFrequency() / SrcFrequency;
 				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // base voltage for this harmonic

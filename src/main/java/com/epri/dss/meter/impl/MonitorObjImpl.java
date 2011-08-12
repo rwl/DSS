@@ -222,7 +222,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			IsPosSeq = false;
 			StrBuffer.delete(0, StrBuffer.length());  /* clear buffer */
 //			strPtr = 0;  // init string
-			if (Globals.getActiveCircuit().getSolution().isIsHarmonicModel()) {
+			if (Globals.getActiveCircuit().getSolution().isHarmonicModel()) {
 				StrBuffer.append("Freq, Harmonic, ");
 			} else {
 				StrBuffer.append("hour, t(sec), ");
@@ -484,7 +484,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		Offset = (MeteredTerminal - 1)  * MeteredElement.getNConds();
 
 		// save time unless harmonics mode and then save frequency and harmonic
-		if (sol.isIsHarmonicModel()) {
+		if (sol.isHarmonicModel()) {
 			addDblsToBuffer(sol.getFrequency(), 1);  // put freq in hour slot as a double
 			addDblsToBuffer(sol.getHarmonic(), 1);   // put harmonic in time slot in buffer
 		} else {

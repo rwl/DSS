@@ -5,64 +5,64 @@ import com.epri.dss.common.Terminal;
 
 public class PowerTerminal implements Terminal {
 
-	private int NumCond;
-	private int ActiveConductor;
+	private int numCond;
+	private int activeConductor;
 
-	protected int BusRef;
+	protected int busRef;
 
-	protected int[] TermNodeRef;
-	protected Conductor[] Conductors;
-	protected boolean Checked;
+	protected int[] termNodeRef;
+	protected Conductor[] conductors;
+	protected boolean checked;
 
 	public PowerTerminal(int nCond) {
 		super();
-		this.NumCond = nCond;
-		this.BusRef = -1;  // signify not set
-		this.TermNodeRef = new int[this.NumCond];
-		this.Conductors = new Conductor[this.NumCond];
-		for (int i = 0; i < this.NumCond; i++)
-			Conductors[i] = new ConductorImpl();
-		ActiveConductor = 0;  // TODO Check zero based indexing
+		this.numCond = nCond;
+		this.busRef = -1;  // signify not set
+		this.termNodeRef = new int[this.numCond];
+		this.conductors = new Conductor[this.numCond];
+		for (int i = 0; i < this.numCond; i++)
+			conductors[i] = new ConductorImpl();
+		activeConductor = 0;  // TODO Check zero based indexing
 	}
 
 	public int getBusRef() {
-		return BusRef;
+		return busRef;
 	}
 
-	public void setBusRef(int busRef) {
-		BusRef = busRef;
+	public void setBusRef(int value) {
+		busRef = value;
 	}
 
 	public int[] getTermNodeRef() {
-		return TermNodeRef;
+		return termNodeRef;
 	}
 
-	public void setTermNodeRef(int[] termNodeRef) {
-		TermNodeRef = termNodeRef;
+	public void setTermNodeRef(int[] value) {
+		termNodeRef = value;
 	}
 
 	public Conductor[] getConductors() {
-		return Conductors;
+		return conductors;
 	}
 
-	public void setConductors(Conductor[] conductors) {
-		Conductors = conductors;
+	public void setConductors(Conductor[] value) {
+		conductors = value;
 	}
 
 	public boolean isChecked() {
-		return Checked;
+		return checked;
 	}
 
-	public void setChecked(boolean checked) {
-		Checked = checked;
+	public void setChecked(boolean value) {
+		checked = value;
 	}
 
-	public void setActiveConductor(int Value) {
-		if ((Value >= 0) & (Value < NumCond))  // TODO Check zero based indexing
-			ActiveConductor = Value;
+	public void setActiveConductor(int value) {
+		if ((value >= 0) & (value < numCond))  // TODO Check zero based indexing
+			activeConductor = value;
 	}
 
 	public int getActiveConductor() {
-		return ActiveConductor;
+		return activeConductor;
 	}
 }

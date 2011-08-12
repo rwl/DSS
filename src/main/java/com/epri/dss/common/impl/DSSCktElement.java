@@ -366,7 +366,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		size2 = nConds;  // size for one terminal
 		nodeRef = (int[]) Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
 		System.arraycopy(nodeRefArray[0], 0, nodeRef[(iTerm - 1) * nConds + 1], 0, size2);
-		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].TermNodeRef[0], 0, size2);  // copy in terminal as well
+		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].termNodeRef[0], 0, size2);  // copy in terminal as well
 
 		// allocate temp array used to hold voltages and currents for calcs
 		VTerminal = (Complex[]) Utilities.resizeArray(VTerminal, YOrder);

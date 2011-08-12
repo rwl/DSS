@@ -1567,12 +1567,12 @@ public class Utilities {
 	 */
 	public static boolean checkParallel(CktElement Line1, CktElement Line2) {
 
-		if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[0].BusRef)  // TODO Check zero based indexing
-			if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[1].BusRef)
+		if (Line1.getTerminals()[0].busRef == Line2.getTerminals()[0].busRef)  // TODO Check zero based indexing
+			if (Line1.getTerminals()[1].busRef == Line2.getTerminals()[1].busRef)
 				return true;
 
-		if (Line1.getTerminals()[1].BusRef == Line2.getTerminals()[0].BusRef)
-			if (Line1.getTerminals()[0].BusRef == Line2.getTerminals()[1].BusRef)
+		if (Line1.getTerminals()[1].busRef == Line2.getTerminals()[0].busRef)
+			if (Line1.getTerminals()[0].busRef == Line2.getTerminals()[1].busRef)
 				return true;
 
 		return false;
@@ -2314,7 +2314,7 @@ public class Utilities {
 						// preserve node designations if any
 						Nodes = OldBusName.substring(dotpos);
 					}
-					bref  = pCktElem.getTerminals()[i].BusRef;
+					bref  = pCktElem.getTerminals()[i].busRef;
 					NewBusName = String.format("B_%d%s", bref, Nodes);
 					// Check for Transformer because that will be an exception
 					switch (pCktElem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
