@@ -50,9 +50,9 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		this.nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 
-		this.ElementName = "";
+		this.elementName = "";
 		setControlledElement(null);
-		this.ElementTerminal = 1;
+		this.elementTerminal = 1;
 
 		this.MonitoredElementName = "";
 		this.MonitoredElementTerminal = 1;
@@ -104,10 +104,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		/* Check for existence of controlled element */
 
-		DevIndex = Utilities.getCktElementIndex(ElementName);
+		DevIndex = Utilities.getCktElementIndex(elementName);
 		if (DevIndex >= 0) {  // both CktElement and monitored element must already exist
 			setControlledBus( (Bus) Globals.getActiveCircuit().getCktElements().get(DevIndex) );
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // make the 1st terminal active
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
 
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++) {
 				if (getControlledElement().getConductorClosed(i)) {  // check state of i-th phase of active terminal
@@ -122,7 +122,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				ReadyToBlow[i] = false;
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ ElementName + "\" not found.",
+			Globals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 405);
 		}
 	}
@@ -163,7 +163,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	@Override
 	public void doPendingAction(int Phs, int ProxyHdl) {
 		if (Phs <= Fuse.FUSEMAXDIM) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal of CktElement to terminal 1
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
 			switch (PresentState[Phs]) {
 			case CLOSE:
 				if (ReadyToBlow[Phs]) {  // ignore if we became disarmed in meantime
@@ -181,7 +181,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	public void interpretFuseAction(String Action) {
 		if (getControlElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			switch (Action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal   TODO Check zero based indexing
@@ -204,7 +204,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		double Cmag;
 		double TripTime;
 
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminal);
 		MonitoredElement.getCurrents(cBuffer);
 
 		for (int i = 0; i < Math.min(Fuse.FUSEMAXDIM, MonitoredElement.getNPhases()); i++) {
@@ -273,7 +273,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				ReadyToBlow[i] = false;
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
 				hAction[i] = 0;
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			getControlledElement().setConductorClosed(0, true);            // close all phases of active terminal
 		}
 	}

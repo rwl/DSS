@@ -10,32 +10,32 @@ import com.epri.dss.control.ControlElem;
 
 public class ControlElemImpl extends DSSCktElement implements ControlElem {
 
-	private CktElement ControlledElement;
+	private CktElement controlledElement;
 
-	protected String ElementName;
-	protected int ElementTerminal;
+	protected String elementName;
+	protected int elementTerminal;
 	/* If different than terminal */
-	protected String ControlledBusName;
-	protected Bus ControlledBus;
-	protected String MonitorVariable;
-	protected int MonitorVarIndex;
-	protected double TimeDelay, DblTraceParameter;
+	protected String controlledBusName;
+	protected Bus controlledBus;
+	protected String monitorVariable;
+	protected int monitorVarIndex;
+	protected double timeDelay, dblTraceParameter;
 
-	public ControlElemImpl(DSSClass ParClass) {
-		super(ParClass);
+	public ControlElemImpl(DSSClass parClass) {
+		super(parClass);
 
 		this.DSSObjType = DSSClassDefs.CTRL_ELEMENT;
-		this.DblTraceParameter = 0.0;
-		this.MonitorVariable = "";
-		this.MonitorVarIndex = 0;
-		this.ControlledElement = null;
+		this.dblTraceParameter = 0.0;
+		this.monitorVariable = "";
+		this.monitorVarIndex = 0;
+		this.controlledElement = null;
 	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
-	public void doPendingAction(int Code, int ProxyHdl) {
-		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for DoPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
+	public void doPendingAction(int code, int proxyHdl) {
+		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for doPendingAction."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 460);
 	}
 
 	public void reset() {
@@ -49,86 +49,86 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base class for sample."+DSSGlobals.CRLF+"Device: "+getDSSClassName()+"."+getName(), 462);
 	}
 
-	public void setControlledElement(CktElement Value) {
+	public void setControlledElement(CktElement value) {
 		try {
 			// check for reassignment
-			if (ControlledElement != null)
-				ControlledElement.setHasControl(false);
+			if (controlledElement != null)
+				controlledElement.setHasControl(false);
 		} finally {
-			ControlledElement = Value;
-			if (ControlledElement != null) {
-				ControlledElement.setHasControl(true);
-				ControlledElement.setControlElement(this);
+			controlledElement = value;
+			if (controlledElement != null) {
+				controlledElement.setHasControl(true);
+				controlledElement.setControlElement(this);
 			}
 		}
 	}
 
 	public CktElement getControlledElement() {
-		return ControlledElement;
+		return controlledElement;
 	}
 
 	public String getElementName() {
-		return ElementName;
+		return elementName;
 	}
 
-	public void setElementName(String elementName) {
-		ElementName = elementName;
+	public void setElementName(String name) {
+		elementName = name;
 	}
 
 	public int getElementTerminal() {
-		return ElementTerminal;
+		return elementTerminal;
 	}
 
-	public void setElementTerminal(int elementTerminal) {
-		ElementTerminal = elementTerminal;
+	public void setElementTerminal(int terminal) {
+		elementTerminal = terminal;
 	}
 
 	public String getControlledBusName() {
-		return ControlledBusName;
+		return controlledBusName;
 	}
 
-	public void setControlledBusName(String controlledBusName) {
-		ControlledBusName = controlledBusName;
+	public void setControlledBusName(String name) {
+		controlledBusName = name;
 	}
 
 	public Bus getControlledBus() {
-		return ControlledBus;
+		return controlledBus;
 	}
 
-	public void setControlledBus(Bus controlledBus) {
-		ControlledBus = controlledBus;
+	public void setControlledBus(Bus bus) {
+		controlledBus = bus;
 	}
 
 	public String getMonitorVariable() {
-		return MonitorVariable;
+		return monitorVariable;
 	}
 
-	public void setMonitorVariable(String monitorVariable) {
-		MonitorVariable = monitorVariable;
+	public void setMonitorVariable(String variable) {
+		monitorVariable = variable;
 	}
 
 	public int getMonitorVarIndex() {
-		return MonitorVarIndex;
+		return monitorVarIndex;
 	}
 
-	public void setMonitorVarIndex(int monitorVarIndex) {
-		MonitorVarIndex = monitorVarIndex;
+	public void setMonitorVarIndex(int index) {
+		monitorVarIndex = index;
 	}
 
 	public double getTimeDelay() {
-		return TimeDelay;
+		return timeDelay;
 	}
 
-	public void setTimeDelay(double timeDelay) {
-		TimeDelay = timeDelay;
+	public void setTimeDelay(double delay) {
+		timeDelay = delay;
 	}
 
 	public double getDblTraceParameter() {
-		return DblTraceParameter;
+		return dblTraceParameter;
 	}
 
-	public void setDblTraceParameter(double dblTraceParameter) {
-		DblTraceParameter = dblTraceParameter;
+	public void setDblTraceParameter(double parameter) {
+		dblTraceParameter = parameter;
 	}
 
 }

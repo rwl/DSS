@@ -24,33 +24,33 @@ public interface StorageControllerObj extends ControlElem {
 
 	double getPFBand();
 
-	double getFleetkW();
+	double getFleetKW();
 
 	double getFleetkWh();
 
 	double getFleetReserveKWh();
 
 	// FIXME Private method in OpenDSS
-	int interpretMode(int Opt, String S);
+	int interpretMode(int opt, String s);
 
 
 	// FIXME Private members in OpenDSS
 
-	double getkWTarget();
+	double getKWTarget();
 
-	void setkWTarget(double kWTarget);
+	void setKWTarget(double kWTarget);
 
-	void setkWThreshold(double kWThreshold);
+	void setKWThreshold(double kWThreshold);
 
-	double getkWThreshold();
+	double getKWThreshold();
 
-	double getPctkWBand();
+	double getPctKWBand();
 
-	void setPctkWBand(double pctkWBand);
+	void setPctKWBand(double pctkWBand);
 
-	double getHalfkWBand();
+	double getHalfKWBand();
 
-	void setHalfkWBand(double halfkWBand);
+	void setHalfKWBand(double halfkWBand);
 
 	double getPFTarget();
 
@@ -64,9 +64,9 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setHalfPFBand(double halfPFBand);
 
-	double getkWNeeded();
+	double getKWNeeded();
 
-	void setkWNeeded(double kWNeeded);
+	void setKWNeeded(double kWNeeded);
 
 	int getFleetSize();
 
@@ -112,9 +112,9 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setPctKWRate(double pctKWRate);
 
-	double getPctkvarRate();
+	double getPctKVArRate();
 
-	void setPctkvarRate(double pctkvarRate);
+	void setPctKVArRate(double pctkVArRate);
 
 	double getPctChargeRate();
 
@@ -148,25 +148,25 @@ public interface StorageControllerObj extends ControlElem {
 
 	void setDischargeInhibited(boolean dischargeInhibited);
 
-	boolean isOutOfOomph();
+	boolean isOutOfEnergy();
 
-	void setOutOfOomph(boolean outOfOomph);
+	void setOutOfEnergy(boolean outOfEnergy);
 
 	int getInhibitHrs();
 
 	void setInhibitHrs(int inhibitHrs);
 
-	double getUpRamptime();
+	double getUpRampTime();
 
-	void setUpRamptime(double upRamptime);
+	void setUpRampTime(double upRampTime);
 
 	double getFlatTime();
 
 	void setFlatTime(double flatTime);
 
-	double getDnrampTime();
+	double getDnRampTime();
 
-	void setDnrampTime(double dnrampTime);
+	void setDnRampTime(double dnRampTime);
 
 	double getUpPlusFlat();
 

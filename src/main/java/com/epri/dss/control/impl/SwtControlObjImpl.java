@@ -12,41 +12,41 @@ import com.epri.dss.control.SwtControlObj;
 
 public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj {
 
-	private ControlAction PresentState;
-	private boolean Locked;
+	private ControlAction presentState;
+	private boolean locked;
 
-	public SwtControlObjImpl(DSSClassImpl ParClass, String SwtControlName) {
-		super(ParClass);
+	public SwtControlObjImpl(DSSClassImpl parClass, String swtControlName) {
+		super(parClass);
 
-		setName(SwtControlName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(swtControlName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.ElementName   = "";
+		this.elementName   = "";
 		setControlledElement(null);
-		this.ElementTerminal = 1;
-		this.PresentState  = ControlAction.CLOSE;
-		this.Locked        = false;
-		this.TimeDelay     = 120.0;
+		this.elementTerminal = 1;
+		this.presentState  = ControlAction.CLOSE;
+		this.locked        = false;
+		this.timeDelay     = 120.0;
 
 		initPropertyValues(0);
 	}
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		int DevIndex = Utilities.getCktElementIndex(ElementName);
-		if (DevIndex >= 0) {
-			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
+		int devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {
+			setControlledElement(globals.getActiveCircuit().getCktElements().get(devIndex));
 			setNPhases( getControlledElement().getNPhases() );
 			setNConds(nPhases);
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);
-			if (!Locked) {
-				switch (PresentState) {
+			getControlledElement().setActiveTerminalIdx(elementTerminal);
+			if (!locked) {
+				switch (presentState) {
 				case OPEN:
 					getControlledElement().setConductorClosed(0, false);
 					break;
@@ -56,10 +56,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 				}
 			}
 			// attach controller bus to the switch bus - no space allocated for monitored variables
-			setBus (1, getControlledElement().getBus(ElementTerminal));
+			setBus (1, getControlledElement().getBus(elementTerminal));
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ ElementName + "\" not found.",
+			globals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 	}
@@ -72,7 +72,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		if (getControlledElement() != null) {
 			setNPhases( getControlledElement().getNPhases() );
 			setNConds(nPhases);
-			setBus(1, getControlledElement().getBus(ElementTerminal));
+			setBus(1, getControlledElement().getBus(elementTerminal));
 		}
 		super.makePosSequence();
 	}
@@ -83,29 +83,29 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
 	@Override
-	public void doPendingAction(int Code, int ProxyHdl) {
-		if (!Locked) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);
-			if ((Code == ControlAction.OPEN.code()) && (PresentState == ControlAction.CLOSE)) {
+	public void doPendingAction(int code, int proxyHdl) {
+		if (!locked) {
+			getControlledElement().setActiveTerminalIdx(elementTerminal);
+			if ((code == ControlAction.OPEN.code()) && (presentState == ControlAction.CLOSE)) {
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Opened");
 			}
-			if ((Code == ControlAction.CLOSE.code()) && (PresentState == ControlAction.OPEN)) {
+			if ((code == ControlAction.CLOSE.code()) && (presentState == ControlAction.OPEN)) {
 				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 				Utilities.appendToEventLog("SwtControl."+getName(), "Closed");
 			}
@@ -113,20 +113,20 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 
 	// FIXME Private method in OpenDSS
-	public void interpretSwitchAction(String Action) {
-		if (!Locked) {
-			switch (Action.toLowerCase().charAt(0)) {
+	public void interpretSwitchAction(String action) {
+		if (!locked) {
+			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
-				PresentState = ControlAction.OPEN;
+				presentState = ControlAction.OPEN;
 				break;
 			case 'c':
-				PresentState = ControlAction.CLOSE;
+				presentState = ControlAction.CLOSE;
 				break;
 			}
 
 			if (getControlledElement() != null) {
-				getControlledElement().setActiveTerminalIdx(ElementTerminal);
-				switch (PresentState) {
+				getControlledElement().setActiveTerminalIdx(elementTerminal);
+				switch (presentState) {
 				case OPEN:
 					getControlledElement().setConductorClosed(0, false);
 					break;
@@ -143,26 +143,26 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	 */
 	@Override
 	public void sample() {
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminal);
 		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
-			PresentState = ControlAction.CLOSE;
+			presentState = ControlAction.CLOSE;
 		} else {
-			PresentState = ControlAction.OPEN;
+			presentState = ControlAction.OPEN;
 		}
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(getParentClass().getPropertyIdxMap()[i]));
-		if (Complete)
-			F.println();
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(getParentClass().getPropertyIdxMap()[i]));
+		if (complete)
+			f.println();
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		return super.getPropertyValue(Index);
+	public String getPropertyValue(int index) {
+		return super.getPropertyValue(index);
 	}
 
 	/**
@@ -170,16 +170,16 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	 */
 	@Override
 	public void reset() {
-		PresentState = ControlAction.CLOSE;
-		Locked       = false;
+		presentState = ControlAction.CLOSE;
+		locked       = false;
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "");   // 'element';
 		setPropertyValue(1, "1");  // 'terminal';
 		setPropertyValue(2, "c");
@@ -189,21 +189,21 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 	}
 
 	public ControlAction getPresentState() {
-		return PresentState;
+		return presentState;
 	}
 
 	public boolean isLocked() {
-		return Locked;
+		return locked;
 	}
 
 	// FIXME Private members in OpenDSS
 
-	public void setPresentState(ControlAction presentState) {
-		PresentState = presentState;
+	public void setPresentState(ControlAction state) {
+		presentState = state;
 	}
 
-	public void setLocked(boolean locked) {
-		Locked = locked;
+	public void setLocked(boolean value) {
+		locked = value;
 	}
 
 }

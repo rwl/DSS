@@ -19,21 +19,21 @@ public interface GenDispatcherObj extends ControlElem {
 
 	// FIXME Private members in OpenDSS
 
-	double getkWLimit();
+	double getKWLimit();
 
-	void setkWLimit(double kWLimit);
+	void setKWLimit(double kWLimit);
 
-	double getkWBand();
+	double getKWBand();
 
-	void setkWBand(double kWBand);
+	void setKWBand(double kWBand);
 
-	double getHalfkWBand();
+	double getHalfKWBand();
 
-	void setHalfkWBand(double halfkWBand);
+	void setHalfKWBand(double halfKWBand);
 
-	double getKvarLimit();
+	double getKVArLimit();
 
-	void setKvarLimit(double kvarLimit);
+	void setKVArLimit(double kVArLimit);
 
 	double getTotalWeight();
 

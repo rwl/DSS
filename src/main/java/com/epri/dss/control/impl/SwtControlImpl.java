@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
-	private static SwtControlObj ActiveSwtControlObj;
+	private static SwtControlObj activeSwtControlObj;
 
 	public SwtControlImpl() {
 		super();
@@ -20,9 +20,9 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -54,108 +54,108 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new SwtControlObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new SwtControlObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveSwtControlObj((SwtControlObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveSwtControlObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveSwtControlObj());
 
-		int Result = 0;
+		int result = 0;
 
 		SwtControlObj asc = getActiveSwtControlObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				asc.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				asc.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
-				asc.setElementName(Param.toLowerCase());
+				asc.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				asc.setElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				asc.interpretSwitchAction(Param);
+				asc.interpretSwitchAction(param);
 				break;
 			case 3:
-				asc.setLocked( Utilities.interpretYesNo(Param) );
+				asc.setLocked( Utilities.interpretYesNo(param) );
 				break;
 			case 4:
 				asc.setTimeDelay(parser.makeDouble());
 				break;
 			default:
 				// inherited parameters
-				classEdit(ActiveSwtControlObj, ParamPointer - SwtControl.NumPropsThisClass);
+				classEdit(activeSwtControlObj, paramPointer - SwtControl.NumPropsThisClass);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		asc.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String SwtControlName) {
+	protected int makeLike(String swtControlName) {
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this SwtControl name in the present collection */
-		SwtControlObj OtherSwtControl = (SwtControlObj) find(SwtControlName);
-		if (OtherSwtControl != null) {
+		SwtControlObj otherSwtControl = (SwtControlObj) find(swtControlName);
+		if (otherSwtControl != null) {
 			SwtControlObj asc = getActiveSwtControlObj();
 
-			asc.setNPhases(OtherSwtControl.getNPhases());
-			asc.setNConds(OtherSwtControl.getNConds());  // force reallocation of terminal stuff
+			asc.setNPhases(otherSwtControl.getNPhases());
+			asc.setNConds(otherSwtControl.getNConds());  // force reallocation of terminal stuff
 
-			asc.setElementName(OtherSwtControl.getElementName());
-			asc.setElementTerminal(OtherSwtControl.getElementTerminal());
-			asc.setControlledElement(OtherSwtControl.getControlledElement());  // pointer to target circuit element
+			asc.setElementName(otherSwtControl.getElementName());
+			asc.setElementTerminal(otherSwtControl.getElementTerminal());
+			asc.setControlledElement(otherSwtControl.getControlledElement());  // pointer to target circuit element
 
-			asc.setTimeDelay(OtherSwtControl.getTimeDelay());
-			asc.setLocked(OtherSwtControl.isLocked());
-			asc.setPresentState(OtherSwtControl.getPresentState());
+			asc.setTimeDelay(otherSwtControl.getTimeDelay());
+			asc.setLocked(otherSwtControl.isLocked());
+			asc.setPresentState(otherSwtControl.getPresentState());
 
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
-				asc.setPropertyValue(i, OtherSwtControl.getPropertyValue(i));
+				asc.setPropertyValue(i, otherSwtControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in SwtControl makeLike: \"" + SwtControlName + "\" not found.", 383);
+			DSSGlobals.getInstance().doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
 		}
 
-		return Result;
+		return result;
 	}
 
-	public static void setActiveSwtControlObj(SwtControlObj activeSwtControlObj) {
-		ActiveSwtControlObj = activeSwtControlObj;
+	public static void setActiveSwtControlObj(SwtControlObj swtControlObj) {
+		activeSwtControlObj = swtControlObj;
 	}
 
 	public static SwtControlObj getActiveSwtControlObj() {
-		return ActiveSwtControlObj;
+		return activeSwtControlObj;
 	}
 
 }

@@ -18,127 +18,127 @@ import com.epri.dss.general.TCC_CurveObj;
 
 public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
-	private int ControlType;
+	private int controlType;
 
 	/* Over current relay */
-	private TCC_CurveObj PhaseCurve, GroundCurve;
+	private TCC_CurveObj phaseCurve, groundCurve;
 
-	private double PhaseTrip, GroundTrip, PhaseInst, GroundInst;
+	private double phaseTrip, groundTrip, phaseInst, groundInst;
 
-	private double[] RecloseIntervals;
-	private int NumReclose;
+	private double[] recloseIntervals;
+	private int numReclose;
 
-	private double ResetTime,
-		Delay_Time,
-		Breaker_time,
+	private double resetTime,
+		delayTime,
+		breakerTime,
 		TDPhase, TDGround;
 
-	private String RelayTarget;
+	private String relayTarget;
 
 	/* Over/under voltage relay */
 	// Curves assumed in per unit of base voltage
-	private TCC_CurveObj OVcurve, UVCurve;
+	private TCC_CurveObj OVCurve, UVCurve;
 
-	private double Vbase,   // line-neut volts base
+	private double VBase,   // line-neut volts base
 		kVBase;
 
 	/* 46 relay neg seq current */
-	private double PickupAmps46,
-		PctPickup46,
-		BaseAmps46,
-		Isqt46;
+	private double pickupAmps46,
+		pctPickup46,
+		baseAmps46,
+		isqt46;
 
 	/* 47 relay */
-	private double PickupVolts47,
-		PctPickup47;
+	private double pickupVolts47,
+		pctPickup47;
 
 	/* Generic relay */
-	private double OverTrip,
-		UnderTrip;
+	private double overTrip,
+		underTrip;
 
-	private String MonitoredElementName;
-	private int MonitoredElementTerminal;
-	private CktElement MonitoredElement;
+	private String monitoredElementName;
+	private int monitoredElementTerminal;
+	private CktElement monitoredElement;
 
-	private ControlAction PresentState;
+	private ControlAction presentState;
 
-	private int OperationCount;
+	private int operationCount;
 
-	private boolean LockedOut,
-		ArmedForClose,
-		ArmedForOpen,
-		PhaseTarget, GroundTarget;
+	private boolean lockedOut,
+		armedForClose,
+		armedForOpen,
+		phaseTarget, groundTarget;
 
-	private double NextTriptime;
-	private int LastEventHandle;
+	private double nextTripTime;
+	private int lastEventHandle;
 
-	private int CondOffset;  // Offset for monitored terminal
+	private int condOffset;  // Offset for monitored terminal
 
 	private Complex[] cBuffer;
 
-	public RelayObjImpl(DSSClassImpl ParClass, String RelayName) {
-		super(ParClass);
-		setName(RelayName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+	public RelayObjImpl(DSSClassImpl parClass, String relayName) {
+		super(parClass);
+		setName(relayName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
-		this.ElementName   = "";
+		this.elementName   = "";
 		setControlledElement(null);
-		this.ElementTerminal = 0;  // TODO Check zero based indexing
+		this.elementTerminal = 0;  // TODO Check zero based indexing
 
-		this.MonitoredElementName = "";
-		this.MonitoredElementTerminal = 0;
-		this.MonitoredElement = null;
+		this.monitoredElementName = "";
+		this.monitoredElementTerminal = 0;
+		this.monitoredElement = null;
 
-		this.RelayTarget = "";
+		this.relayTarget = "";
 
-		this.PhaseCurve     = null;
-		this.GroundCurve    = null;
-		this.OVcurve        = null;
+		this.phaseCurve     = null;
+		this.groundCurve    = null;
+		this.OVCurve        = null;
 		this.UVCurve        = null;
-		this.PhaseTrip      = 1.0;
-		this.GroundTrip     = 1.0;
+		this.phaseTrip      = 1.0;
+		this.groundTrip     = 1.0;
 		this.TDPhase        = 1.0;
 		this.TDGround       = 1.0;
-		this.PhaseInst      = 0.0;
-		this.GroundInst     = 0.0;
-		this.ResetTime      = 15.0;
-		this.NumReclose     = 3;
-		this.RecloseIntervals = null;
+		this.phaseInst      = 0.0;
+		this.groundInst     = 0.0;
+		this.resetTime      = 15.0;
+		this.numReclose     = 3;
+		this.recloseIntervals = null;
 
-		this.RecloseIntervals = (double[]) Utilities.resizeArray(this.RecloseIntervals, 4);  // fixed allocation of 4
-		this.RecloseIntervals[0] = 0.5;
-		this.RecloseIntervals[1] = 2.0;
-		this.RecloseIntervals[2] = 2.0;
+		this.recloseIntervals = (double[]) Utilities.resizeArray(this.recloseIntervals, 4);  // fixed allocation of 4
+		this.recloseIntervals[0] = 0.5;
+		this.recloseIntervals[1] = 2.0;
+		this.recloseIntervals[2] = 2.0;
 
-		this.PresentState = ControlAction.CLOSE;
+		this.presentState = ControlAction.CLOSE;
 
-		this.Isqt46 = 1.0;
-		this.BaseAmps46 = 100.0;
-		this.PctPickup46 = 20.0;
-		this.PickupAmps46 = this.BaseAmps46 * this.PctPickup46 * 0.01;
+		this.isqt46 = 1.0;
+		this.baseAmps46 = 100.0;
+		this.pctPickup46 = 20.0;
+		this.pickupAmps46 = this.baseAmps46 * this.pctPickup46 * 0.01;
 
-		this.PctPickup47 = 2.0;
+		this.pctPickup47 = 2.0;
 
-		this.OverTrip  = 1.2;
-		this.UnderTrip = 0.8;
+		this.overTrip  = 1.2;
+		this.underTrip = 0.8;
 
-		this.OperationCount   = 1;
-		this.LockedOut        = false;
-		this.ArmedForOpen     = false;
-		this.ArmedForClose    = false;
-		this.PhaseTarget      = false;
-		this.GroundTarget     = false;
+		this.operationCount   = 1;
+		this.lockedOut        = false;
+		this.armedForOpen     = false;
+		this.armedForClose    = false;
+		this.phaseTarget      = false;
+		this.groundTarget     = false;
 
-		this.NextTriptime     = -1.0;  // not set to trip
+		this.nextTripTime     = -1.0;  // not set to trip
 
 		this.cBuffer = null;
 
-		this.DSSObjType = ParClass.getDSSClassType();  // CAP_CONTROL;
+		this.DSSObjType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -147,32 +147,32 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);
-		if (DevIndex >= 0) {
-			MonitoredElement = Globals.getActiveCircuit().getCktElements().get(DevIndex);
-			setNPhases( MonitoredElement.getNPhases() );  // force number of phases to be same
-			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
-				Globals.doErrorMsg("Relay: \"" + getName() + "\"",
+		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
+		if (devIndex >= 0) {
+			monitoredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
+			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
+				globals.doErrorMsg("Relay: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 384);
 			} else {
 				// sets name of i-th terminal's connected bus in Relay's bus list
-				setBus(1, MonitoredElement.getBus(MonitoredElementTerminal));
+				setBus(1, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-				CondOffset = (MonitoredElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 
-				switch (ControlType) {
+				switch (controlType) {
 				case Relay.GENERIC:
-					if ((MonitoredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
-						Globals.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
+					if ((monitoredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
+						globals.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
 					} else {
-						PCElement pElem = (PCElement) MonitoredElement;
-						MonitorVarIndex = pElem.lookupVariable(MonitorVariable);
-						if (MonitorVarIndex < 0)
-							Globals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+MonitorVariable+"\" does not exist.", 386);
+						PCElement pElem = (PCElement) monitoredElement;
+						monitorVarIndex = pElem.lookupVariable(monitorVariable);
+						if (monitorVarIndex < 0)
+							globals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
 					}
 					break;
 				}
@@ -180,42 +180,42 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		}
 
 		/* Check for existence of controlled element */
-		DevIndex = Utilities.getCktElementIndex(ElementName);
-		if (DevIndex >= 0) {
+		devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {
 			// both CktElement and monitored element must already exist
-			setControlledElement(Globals.getActiveCircuit().getCktElements().get(DevIndex));
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // make the 1 st terminal active
+			setControlledElement(globals.getActiveCircuit().getCktElements().get(devIndex));
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1 st terminal active
 			if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
-				PresentState = ControlAction.CLOSE;
-				LockedOut = false;
-				OperationCount = 1;
-				ArmedForOpen = false;
+				presentState = ControlAction.CLOSE;
+				lockedOut = false;
+				operationCount = 1;
+				armedForOpen = false;
 			} else {
-				PresentState = ControlAction.OPEN;
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
-				ArmedForClose = false;
+				presentState = ControlAction.OPEN;
+				lockedOut = true;
+				operationCount = numReclose + 1;
+				armedForClose = false;
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ ElementName + "\" not found.",
+			globals.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 
 		/* Misc stuff */
 
-		PickupAmps46 = BaseAmps46 * PctPickup46 * 0.01;
+		pickupAmps46 = baseAmps46 * pctPickup46 * 0.01;
 
 		switch (nPhases) {
 		case 1:
-			Vbase = kVBase * 1000.0;
+			VBase = kVBase * 1000.0;
 			break;
 		default:
-			Vbase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			VBase = kVBase / DSSGlobals.SQRT3 * 1000.0;
 			break;
 		}
 
-		PickupVolts47 = Vbase * PctPickup47 * 0.01;
+		pickupVolts47 = VBase * pctPickup47 * 0.01;
 	}
 
 	/**
@@ -223,25 +223,25 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	 */
 	@Override
 	public void makePosSequence() {
-		if (MonitoredElement != null) {
-			setNPhases( MonitoredElement.getNPhases() );
+		if (monitoredElement != null) {
+			setNPhases( monitoredElement.getNPhases() );
 			setNConds(nPhases);
-			setBus(1, MonitoredElement.getBus(ElementTerminal));
+			setBus(1, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-			CondOffset = (ElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 		}
 
 		switch (nPhases) {
 		case 1:
-			Vbase = kVBase * 1000.0;
+			VBase = kVBase * 1000.0;
 			break;
 		default:
-			Vbase = kVBase / DSSGlobals.SQRT3 * 1000.0;
+			VBase = kVBase / DSSGlobals.SQRT3 * 1000.0;
 			break;
 		}
 
-		PickupVolts47 = Vbase * PctPickup47 * 0.01;
+		pickupVolts47 = VBase * pctPickup47 * 0.01;
 
 		super.makePosSequence();
 	}
@@ -252,84 +252,84 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
 	@Override
-	public void doPendingAction(int Code, int ProxyHdl) {
+	public void doPendingAction(int code, int proxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal of CktElement to terminal 1
+		getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
 
-		if (Code == ControlAction.OPEN.code()) {
-			switch (PresentState) {
+		if (code == ControlAction.OPEN.code()) {
+			switch (presentState) {
 			case CLOSE:
-				if (ArmedForOpen) {
+				if (armedForOpen) {
 					// ignore if we became disarmed in meantime
 					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-					if (OperationCount > NumReclose) {
-						LockedOut = true;
-						Utilities.appendToEventLog("Relay."+getName(), "Opened on "+RelayTarget+" & Locked Out ");
+					if (operationCount > numReclose) {
+						lockedOut = true;
+						Utilities.appendToEventLog("Relay."+getName(), "Opened on "+relayTarget+" & Locked Out ");
 					}
 				} else {
 					Utilities.appendToEventLog("Relay."+getName(), "Opened");
 				}
-				if (PhaseTarget) Utilities.appendToEventLog(" ", "Phase Target");
-				if (GroundTarget) Utilities.appendToEventLog(" ", "Ground Target");
-				ArmedForOpen = false;
+				if (phaseTarget) Utilities.appendToEventLog(" ", "Phase Target");
+				if (groundTarget) Utilities.appendToEventLog(" ", "Ground Target");
+				armedForOpen = false;
 				break;
 			}
-		} else if (Code == ControlAction.CLOSE.code()) {
-			switch (PresentState) {
+		} else if (code == ControlAction.CLOSE.code()) {
+			switch (presentState) {
 			case OPEN:
-				if (ArmedForClose && !LockedOut) {
+				if (armedForClose && !lockedOut) {
 					getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
-					OperationCount += 1;
+					operationCount += 1;
 					Utilities.appendToEventLog("Relay."+getName(), "Closed");
-					ArmedForClose = false;
+					armedForClose = false;
 				}
 				break;
 			}
-		} else if (Code == ControlAction.CTRL_RESET.code()) {
-			switch (PresentState) {
+		} else if (code == ControlAction.CTRL_RESET.code()) {
+			switch (presentState) {
 			case CLOSE:
-				if (!ArmedForOpen)
-					OperationCount = 1;  // don't reset if we just rearmed
+				if (!armedForOpen)
+					operationCount = 1;  // don't reset if we just rearmed
 				break;
 			}
 		}
 	}
 
 	// FIXME Private method in OpenDSS
-	public void interpretRelayAction(String Action) {
+	public void interpretRelayAction(String action) {
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
-			switch (Action.toLowerCase().charAt(0)) {
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
+				lockedOut = true;
+				operationCount = numReclose + 1;
 				break;
 			case 't':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
+				lockedOut = true;
+				operationCount = numReclose + 1;
 				break;
 			case 'c':
 				getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
-				LockedOut = false;
-				OperationCount = 1;
+				lockedOut = false;
+				operationCount = 1;
 				break;
 			}
 		}
@@ -341,13 +341,13 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void sample() {
 
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminal);
 		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
-			PresentState = ControlAction.CLOSE;
+			presentState = ControlAction.CLOSE;
 		} else {
-			PresentState = ControlAction.OPEN;
+			presentState = ControlAction.OPEN;
 
-			switch (ControlType) {
+			switch (controlType) {
 			case Relay.CURRENT:
 				overcurrentLogic();  /* Current */
 				break;
@@ -371,36 +371,36 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue( getParentClass().getPropertyIdxMap()[i] ));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue( getParentClass().getPropertyIdxMap()[i] ));
 
-		if (Complete)
-		F.println();
+		if (complete)
+		f.println();
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result = "";
+	public String getPropertyValue(int index) {
+		String result = "";
 
-		switch (getParentClass().getPropertyIdxMap()[Index]) {
+		switch (getParentClass().getPropertyIdxMap()[index]) {
 		case 13:
-			Result = "(";
-			if (NumReclose == 0) {
-				Result = Result + "NONE";
+			result = "(";
+			if (numReclose == 0) {
+				result = result + "NONE";
 			} else {
-				for (int i = 0; i < NumReclose; i++)
-					Result = Result + String.format("%-g, " , RecloseIntervals[i]);
-				Result = Result + ")";
+				for (int i = 0; i < numReclose; i++)
+					result = result + String.format("%-g, " , recloseIntervals[i]);
+				result = result + ")";
 			}
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
-		return Result;
+		return result;
 	}
 
 	/**
@@ -409,24 +409,24 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void reset() {
 
-		PresentState   = ControlAction.CLOSE;
-		OperationCount = 1;
-		LockedOut      = false;
-		ArmedForOpen   = false;
-		ArmedForClose  = false;
-		PhaseTarget    = false;
-		GroundTarget   = false;
+		presentState   = ControlAction.CLOSE;
+		operationCount = 1;
+		lockedOut      = false;
+		armedForOpen   = false;
+		armedForClose  = false;
+		phaseTarget    = false;
+		groundTarget   = false;
 
-		NextTriptime   = -1.0;  // not set to trip
+		nextTripTime   = -1.0;  // not set to trip
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		PropertyValue[0] = "";   // "element";
 		PropertyValue[1] = "1";  // "terminal";
@@ -462,83 +462,83 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	}
 
 	// FIXME Private method in OpenDSS
-	public void interpretRelayType(String S) {
+	public void interpretRelayType(String s) {
 
-		switch (S.toLowerCase().charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'c':
-			ControlType = Relay.CURRENT;
+			controlType = Relay.CURRENT;
 			break;
 		case'v':
-			ControlType = Relay.VOLTAGE;
+			controlType = Relay.VOLTAGE;
 			break;
 		case'r':
-			ControlType = Relay.REVPOWER;
+			controlType = Relay.REVPOWER;
 			break;
 		case'4':
-			switch (S.charAt(1)) {
+			switch (s.charAt(1)) {
 			case '6':
-				ControlType = Relay.NEGCURRENT;
+				controlType = Relay.NEGCURRENT;
 				break;
 			case '7':
-				ControlType = Relay.NEGVOLTAGE;
+				controlType = Relay.NEGVOLTAGE;
 				break;
 			}
 		case '8':
-			ControlType = Relay.GENERIC;
+			controlType = Relay.GENERIC;
 			break;
 		default:
-			ControlType = Relay.CURRENT;
+			controlType = Relay.CURRENT;
 			break;
 		}
 
 		/* Set definite time defaults */
-		switch (S.toLowerCase().charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'c':
-			Delay_Time = 0.0;
+			delayTime = 0.0;
 			break;
 		case 'v':
-			Delay_Time = 0.0;
+			delayTime = 0.0;
 			break;
 		case 'r':
-			Delay_Time = 0.1;
+			delayTime = 0.1;
 			break;
 		case '4':
-			Delay_Time = 0.1;
+			delayTime = 0.1;
 			break;
 		case '8':
-			Delay_Time = 0.1;
+			delayTime = 0.1;
 			break;
 		default:
-			Delay_Time = 0.0;
+			delayTime = 0.0;
 			break;
 		}
 
-		PropertyValue[23] = String.format("%-.g", Delay_Time);
+		PropertyValue[23] = String.format("%-.g", delayTime);
 	}
 
 	/**
 	 * Generic relays only work on PC elements with control terminals.
 	 */
 	private void genericLogic() {
-		PCElement pElem = (PCElement) MonitoredElement;
-		double VarValue = pElem.getVariable(MonitorVarIndex);
+		PCElement pElem = (PCElement) monitoredElement;
+		double varValue = pElem.getVariable(monitorVarIndex);
 
 		/* Check for trip */
-		if ((VarValue >  OverTrip) || (VarValue < UnderTrip)) {
-			if (!ArmedForOpen) {  // push the trip operation and arm to trip
+		if ((varValue >  overTrip) || (varValue < underTrip)) {
+			if (!armedForOpen) {  // push the trip operation and arm to trip
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				RelayTarget = pElem.variableName(MonitorVarIndex);
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + Delay_Time + Breaker_time, ControlAction.OPEN, 0, this);
-				OperationCount = NumReclose + 1;  // force a lockout
-				ArmedForOpen = true;
+				relayTarget = pElem.variableName(monitorVarIndex);
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
+				operationCount = numReclose + 1;  // force a lockout
+				armedForOpen = true;
 			}
 		} else {
 			/* Within bounds */
 			/* Less than pickup value: reset if armed */
-			if (ArmedForOpen) {  // we became unarmed, so reset and disarm
+			if (armedForOpen) {  // we became unarmed, so reset and disarm
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-				ArmedForOpen = false;
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+				armedForOpen = false;
 			}
 		}
 	}
@@ -547,105 +547,105 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	 * Negative sequence current relay. Patterned after Basler relay.
 	 */
 	private void negSeq46Logic() {
-		double NegSeqCurrentMag, TripTime;
+		double negSeqCurrentMag, tripTime;
 		int iOffset;
 		Complex[] I012 = new Complex[3];
 
-		MonitoredElement.setActiveTerminalIdx(MonitoredElementTerminal);
-		MonitoredElement.getCurrents(cBuffer);
-		iOffset = (MonitoredElementTerminal - 1) * MonitoredElement.getNConds();  // offset for active terminal
+		monitoredElement.setActiveTerminalIdx(monitoredElementTerminal);
+		monitoredElement.getCurrents(cBuffer);
+		iOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // offset for active terminal
 		MathUtil.phase2SymComp(cBuffer[iOffset + 1], I012);
-		NegSeqCurrentMag = I012[2].abs();
-		if (NegSeqCurrentMag >= PickupAmps46) {
-			if (!ArmedForOpen) {  // push the trip operation and arm to trip
+		negSeqCurrentMag = I012[2].abs();
+		if (negSeqCurrentMag >= pickupAmps46) {
+			if (!armedForOpen) {  // push the trip operation and arm to trip
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				RelayTarget = "-Seq Curr";
+				relayTarget = "-Seq Curr";
 				/* Simple estimate of trip time assuming current will be constant */
-				if (Delay_Time > 0.0) {
-					TripTime = Delay_Time;
+				if (delayTime > 0.0) {
+					tripTime = delayTime;
 				} else {
-					TripTime = Isqt46 / Math.pow(NegSeqCurrentMag / BaseAmps46, 2);  // sec
+					tripTime = isqt46 / Math.pow(negSeqCurrentMag / baseAmps46, 2);  // sec
 				}
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + Breaker_time, ControlAction.OPEN, 0, this);
-				OperationCount = NumReclose + 1;  // force a lockout
-				ArmedForOpen = true;
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + breakerTime, ControlAction.OPEN, 0, this);
+				operationCount = numReclose + 1;  // force a lockout
+				armedForOpen = true;
 			}
 		} else {
 			/* Less than pickup value: reset if armed */
-			if (ArmedForOpen) {  // we became unarmed, so reset and disarm
+			if (armedForOpen) {  // we became unarmed, so reset and disarm
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-				ArmedForOpen = false;
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+				armedForOpen = false;
 			}
 		}
 	}
 
 	private void overcurrentLogic() {
 		int i;
-		double Cmag;
-		Complex Csum;
+		double CMag;
+		Complex CSum;
 
-		double GroundTime, PhaseTime, TripTime, TimeTest;
+		double groundTime, phaseTime, tripTime, timeTest;
 
-		if (PresentState == ControlAction.CLOSE) {
-			TripTime = -1.0;
-			GroundTime = -1.0;
-			PhaseTime = -1.0;  /* No trip */
+		if (presentState == ControlAction.CLOSE) {
+			tripTime = -1.0;
+			groundTime = -1.0;
+			phaseTime = -1.0;  /* No trip */
 
-			// Check largest current of all phases of monitored element
-			MonitoredElement.getCurrents(cBuffer);
+			// check largest current of all phases of monitored element
+			monitoredElement.getCurrents(cBuffer);
 
 			/* Check ground trip, if any */
-			if (((GroundCurve != null) || (Delay_Time > 0.0)) && (GroundTrip > 0.0)) {
-				Csum = Complex.ZERO;
-				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)  // TODO Check zero based indexing
-					Csum = Csum.add(cBuffer[i]);
-				Cmag  = Csum.abs();
-				if ((GroundInst > 0.0) && (Cmag >= GroundInst) && (OperationCount == 1)) {
-					GroundTime = 0.01 + Breaker_time;  // inst trip on first operation
+			if (((groundCurve != null) || (delayTime > 0.0)) && (groundTrip > 0.0)) {
+				CSum = Complex.ZERO;
+				for (i = (1 + condOffset); i < (nPhases + condOffset); i++)  // TODO Check zero based indexing
+					CSum = CSum.add(cBuffer[i]);
+				CMag  = CSum.abs();
+				if ((groundInst > 0.0) && (CMag >= groundInst) && (operationCount == 1)) {
+					groundTime = 0.01 + breakerTime;  // inst trip on first operation
 				} else {
-					if (Delay_Time > 0.0) {  // definite time ground relay
-						if (Cmag >= GroundTrip) {
-							GroundTime = Delay_Time;
+					if (delayTime > 0.0) {  // definite time ground relay
+						if (CMag >= groundTrip) {
+							groundTime = delayTime;
 						} else {
-							GroundTime = -1.0;
+							groundTime = -1.0;
 						}
 					} else {
-						GroundTime = TDGround * GroundCurve.getTCCTime(Cmag / GroundTrip);
+						groundTime = TDGround * groundCurve.getTCCTime(CMag / groundTrip);
 					}
 				}
 			}
 
-			if (GroundTime > 0.0) {
-				TripTime = GroundTime;
-				GroundTarget = true;
+			if (groundTime > 0.0) {
+				tripTime = groundTime;
+				groundTarget = true;
 			}
 
 			// if groundTime > 0 then we have a ground trip
 
 			/* Check phase trip, if any */
 
-			if (((PhaseCurve != null) || (Delay_Time > 0.0)) && (PhaseTrip > 0.0)) {
-				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++) {  // TODO Check zero based indexing
-					Cmag = cBuffer[i].abs();
-					if ((PhaseInst > 0.0) && (Cmag >= PhaseInst) && (OperationCount == 1)) {
-						PhaseTime = 0.01 + Breaker_time;  // inst trip on first operation
+			if (((phaseCurve != null) || (delayTime > 0.0)) && (phaseTrip > 0.0)) {
+				for (i = (1 + condOffset); i < (nPhases + condOffset); i++) {  // TODO Check zero based indexing
+					CMag = cBuffer[i].abs();
+					if ((phaseInst > 0.0) && (CMag >= phaseInst) && (operationCount == 1)) {
+						phaseTime = 0.01 + breakerTime;  // inst trip on first operation
 						break;  /* if inst, no sense checking other phases */
 					} else {
-						if (Delay_Time > 0.0) {  // definite time phase relay
-							if (Cmag >= PhaseTrip) {
-								TimeTest = Delay_Time;
+						if (delayTime > 0.0) {  // definite time phase relay
+							if (CMag >= phaseTrip) {
+								timeTest = delayTime;
 							} else {
-								TimeTest = -1.0;
+								timeTest = -1.0;
 							}
 						} else {
-							TimeTest = TDPhase * PhaseCurve.getTCCTime(Cmag / PhaseTrip);
+							timeTest = TDPhase * phaseCurve.getTCCTime(CMag / phaseTrip);
 						}
-						if (TimeTest > 0.0) {
-							if (PhaseTime < 0.0) {
-								PhaseTime = TimeTest;
+						if (timeTest > 0.0) {
+							if (phaseTime < 0.0) {
+								phaseTime = timeTest;
 							} else {
-								PhaseTime = Math.min(PhaseTime, TimeTest);
+								phaseTime = Math.min(phaseTime, timeTest);
 							}
 						}
 					}
@@ -653,39 +653,39 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			}
 
 			// if phaseTime > 0 then we have a phase trip
-			if (PhaseTime > 0.0) {
-				PhaseTarget = true;
-				if (TripTime > 0.0) {
-					TripTime = Math.min(TripTime, PhaseTime);
+			if (phaseTime > 0.0) {
+				phaseTarget = true;
+				if (tripTime > 0.0) {
+					tripTime = Math.min(tripTime, phaseTime);
 				} else {
-					TripTime = PhaseTime;
+					tripTime = phaseTime;
 				}
 			}
 
-			if (TripTime > 0.0) {
-				if (!ArmedForOpen) {
+			if (tripTime > 0.0) {
+				if (!armedForOpen) {
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 					// then arm for an open operation
-					RelayTarget = "";
-					if (PhaseTime > 0.0)
-						RelayTarget = RelayTarget + "Ph";
-					if (GroundTime > 0.0)
-						RelayTarget = RelayTarget + " Gnd";
-					LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + Breaker_time, ControlAction.OPEN, 0, this);
-					if (OperationCount <= NumReclose)
-						LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + Breaker_time + RecloseIntervals[OperationCount], ControlAction.CLOSE, 0, this);
-					ArmedForOpen = true;
-					ArmedForClose = true;
+					relayTarget = "";
+					if (phaseTime > 0.0)
+						relayTarget = relayTarget + "Ph";
+					if (groundTime > 0.0)
+						relayTarget = relayTarget + " Gnd";
+					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + breakerTime, ControlAction.OPEN, 0, this);
+					if (operationCount <= numReclose)
+						lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + breakerTime + recloseIntervals[operationCount], ControlAction.CLOSE, 0, this);
+					armedForOpen = true;
+					armedForClose = true;
 				}
 			} else {
-				if (ArmedForOpen) {
+				if (armedForOpen) {
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 					// if current dropped below pickup, disarm trip and set for reset
-					LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-					ArmedForOpen  = false;
-					ArmedForClose = false;
-					PhaseTarget   = false;
-					GroundTarget  = false;
+					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+					armedForOpen  = false;
+					armedForClose = false;
+					phaseTarget   = false;
+					groundTarget  = false;
 				}
 			}
 		}
@@ -694,21 +694,21 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	private void revPowerLogic() {
 
 		//MonitoredElement.ActiveTerminalIdx = MonitoredElementTerminal;
-		Complex S = MonitoredElement.getPower(MonitoredElementTerminal);
+		Complex S = monitoredElement.getPower(monitoredElementTerminal);
 		if (S.getReal() < 0.0) {
-			if (Math.abs(S.getReal()) > PhaseInst * 1000.0) {
-				if (!ArmedForOpen) {  // push the trip operation and arm to trip
+			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
+				if (!armedForOpen) {  // push the trip operation and arm to trip
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-					RelayTarget = "Rev P";
-					LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + Delay_Time +  Breaker_time, ControlAction.OPEN, 0, this);
-					OperationCount = NumReclose + 1;  // force a lockout
-					ArmedForOpen = true;
+					relayTarget = "Rev P";
+					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime +  breakerTime, ControlAction.OPEN, 0, this);
+					operationCount = numReclose + 1;  // force a lockout
+					armedForOpen = true;
 				}
 			} else {
-				if (ArmedForOpen) {  // we became unarmed, so reset and disarm
+				if (armedForOpen) {  // we became unarmed, so reset and disarm
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-					LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-					ArmedForOpen = false;
+					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+					armedForOpen = false;
 				}
 			}
 		}
@@ -716,97 +716,97 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	private void voltageLogic() {
 		int i;
-		double Vmax, Vmin, Vmag = 0;
-		double OVTime, UVTime, TripTime;
+		double VMax, VMin, VMag = 0;
+		double OVTime, UVTime, tripTime;
 
-		if (!LockedOut) {
+		if (!lockedOut) {
 			/* *** Fix so that fastest trip time applies *** */
-			MonitoredElement.getTermVoltages(MonitoredElementTerminal, cBuffer);
+			monitoredElement.getTermVoltages(monitoredElementTerminal, cBuffer);
 
-			Vmin = 1.e50;
-			Vmax = 0.0;
-			for (i = 0; i < MonitoredElement.getNPhases(); i++)
-				Vmag = cBuffer[i].abs();
-			if (Vmag > Vmax) Vmax = Vmag;
-			if (Vmag < Vmin) Vmin = Vmag;
+			VMin = 1.e50;
+			VMax = 0.0;
+			for (i = 0; i < monitoredElement.getNPhases(); i++)
+				VMag = cBuffer[i].abs();
+			if (VMag > VMax) VMax = VMag;
+			if (VMag < VMin) VMin = VMag;
 
 			/* Convert to per unit */
-			Vmax = Vmax / Vbase;
-			Vmin = Vmin / Vbase;
+			VMax = VMax / VBase;
+			VMin = VMin / VBase;
 
-			if (PresentState == ControlAction.CLOSE) {
-				TripTime = -1.0;
+			if (presentState == ControlAction.CLOSE) {
+				tripTime = -1.0;
 				OVTime = -1.0;
 				UVTime = -1.0;
 
 				/* Check over voltage trip, if any */
-				if (OVcurve != null) OVTime = OVcurve.getOVTime(Vmax);
+				if (OVCurve != null) OVTime = OVCurve.getOVTime(VMax);
 
 				if (OVTime > 0.0)
-					TripTime = OVTime;
+					tripTime = OVTime;
 				// if OVTime > 0 then we have a OV trip
 
 				/* Check UV trip, if any */
 				if (UVCurve != null)
-					UVTime = UVCurve.getUVTime(Vmin);
+					UVTime = UVCurve.getUVTime(VMin);
 
 				// If UVTime > 0 then we have a UV trip
 				if (UVTime > 0.0) {
-					if (TripTime > 0.0) {
-						TripTime = Math.min(TripTime, UVTime);  // min of UV or OV time
+					if (tripTime > 0.0) {
+						tripTime = Math.min(tripTime, UVTime);  // min of UV or OV time
 					} else {
-						TripTime = UVTime;
+						tripTime = UVTime;
 					}
 				}
 
-				if (TripTime > 0.0) {
+				if (tripTime > 0.0) {
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-					if (ArmedForOpen && ((ckt.getSolution().getDynaVars().t + TripTime + Breaker_time) < NextTriptime)) {
-						ckt.getControlQueue().delete(LastEventHandle);  // delete last event from queue
-						ArmedForOpen = false;  // force it to go through next if
+					if (armedForOpen && ((ckt.getSolution().getDynaVars().t + tripTime + breakerTime) < nextTripTime)) {
+						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
+						armedForOpen = false;  // force it to go through next if
 					}
 
-					if (!ArmedForOpen) {
+					if (!armedForOpen) {
 						// then arm for an open operation
-						if (TripTime == UVTime) {
-							if (TripTime == OVTime) {
-								RelayTarget = "UV + OV";
+						if (tripTime == UVTime) {
+							if (tripTime == OVTime) {
+								relayTarget = "UV + OV";
 							} else {
-								RelayTarget = "UV";
+								relayTarget = "UV";
 							}
 						} else {
-							RelayTarget = "OV";
+							relayTarget = "OV";
 						}
 
-						NextTriptime = ckt.getSolution().getDynaVars().t + TripTime + Breaker_time;
-						LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), NextTriptime, ControlAction.OPEN, 0, this);
-						ArmedForOpen = true;
+						nextTripTime = ckt.getSolution().getDynaVars().t + tripTime + breakerTime;
+						lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), nextTripTime, ControlAction.OPEN, 0, this);
+						armedForOpen = true;
 					}
 				} else {
-					if (ArmedForOpen) {
+					if (armedForOpen) {
 						Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 						// if voltage dropped below pickup, disarm trip and set for reset
-						ckt.getControlQueue().delete(LastEventHandle);  // delete last event from queue
-						NextTriptime = -1.0;
-						LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-						ArmedForOpen = false;
+						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
+						nextTripTime = -1.0;
+						lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+						armedForOpen = false;
 					}
 				}
 			} else {
 				/* Present state is open, check for voltage and then set reclose interval */
-				if (OperationCount <= NumReclose) {
-					if (!ArmedForClose) {
-						if (Vmax > 0.9) {
+				if (operationCount <= numReclose) {
+					if (!armedForClose) {
+						if (VMax > 0.9) {
 							Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 							// OK if voltage > 90%
-							LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + RecloseIntervals[OperationCount], ControlAction.CLOSE, 0, this);
-							ArmedForClose = true;
+							lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + recloseIntervals[operationCount], ControlAction.CLOSE, 0, this);
+							armedForClose = true;
 						}
 					} else {
 						/* Armed, but check to see if voltage dropped before it reclosed and cancel action */
-						if (Vmax < 0.9)
-							ArmedForClose = false;
+						if (VMax < 0.9)
+							armedForClose = false;
 					}
 				}
 			}
@@ -817,26 +817,26 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	 * Neg seq voltage relay.
 	 */
 	private void negSeq47Logic() {
-		double NegSeqVoltageMag;
+		double negSeqVoltageMag;
 		Complex[] V012 = new Complex[3];
 
-		MonitoredElement.getTermVoltages(MonitoredElementTerminal, cBuffer);
+		monitoredElement.getTermVoltages(monitoredElementTerminal, cBuffer);
 		MathUtil.phase2SymComp(cBuffer, V012);  // phase to symmetrical components
-		NegSeqVoltageMag = V012[2].abs();
-		if (NegSeqVoltageMag >= PickupVolts47) {
-			if (!ArmedForOpen) {  // push the trip operation and arm to trip
+		negSeqVoltageMag = V012[2].abs();
+		if (negSeqVoltageMag >= pickupVolts47) {
+			if (!armedForOpen) {  // push the trip operation and arm to trip
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				RelayTarget = "-Seq V";
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + Delay_Time + Breaker_time, ControlAction.OPEN, 0, this);
-				OperationCount = NumReclose + 1;  // force a lockout
-				ArmedForOpen = true;
+				relayTarget = "-Seq V";
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
+				operationCount = numReclose + 1;  // force a lockout
+				armedForOpen = true;
 			}
 		} else {
 			/* Less than pickup value: reset if armed */
-			if (ArmedForOpen) {  // we became unarmed, so reset and disarm
+			if (armedForOpen) {  // we became unarmed, so reset and disarm
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
-				LastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-				ArmedForOpen = false;
+				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+				armedForOpen = false;
 			}
 		}
 	}
@@ -844,331 +844,331 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	// FIXME Private members in OpenDSS
 
 	public int getControlType() {
-		return ControlType;
+		return controlType;
 	}
 
-	public void setControlType(int controlType) {
-		ControlType = controlType;
+	public void setControlType(int type) {
+		controlType = type;
 	}
 
 	public TCC_CurveObj getPhaseCurve() {
-		return PhaseCurve;
+		return phaseCurve;
 	}
 
-	public void setPhaseCurve(TCC_CurveObj phaseCurve) {
-		PhaseCurve = phaseCurve;
+	public void setPhaseCurve(TCC_CurveObj curve) {
+		phaseCurve = curve;
 	}
 
 	public TCC_CurveObj getGroundCurve() {
-		return GroundCurve;
+		return groundCurve;
 	}
 
-	public void setGroundCurve(TCC_CurveObj groundCurve) {
-		GroundCurve = groundCurve;
+	public void setGroundCurve(TCC_CurveObj curve) {
+		groundCurve = curve;
 	}
 
 	public double getPhaseTrip() {
-		return PhaseTrip;
+		return phaseTrip;
 	}
 
-	public void setPhaseTrip(double phaseTrip) {
-		PhaseTrip = phaseTrip;
+	public void setPhaseTrip(double trip) {
+		phaseTrip = trip;
 	}
 
 	public double getGroundTrip() {
-		return GroundTrip;
+		return groundTrip;
 	}
 
-	public void setGroundTrip(double groundTrip) {
-		GroundTrip = groundTrip;
+	public void setGroundTrip(double trip) {
+		groundTrip = trip;
 	}
 
 	public double getPhaseInst() {
-		return PhaseInst;
+		return phaseInst;
 	}
 
-	public void setPhaseInst(double phaseInst) {
-		PhaseInst = phaseInst;
+	public void setPhaseInst(double value) {
+		phaseInst = value;
 	}
 
 	public double getGroundInst() {
-		return GroundInst;
+		return groundInst;
 	}
 
-	public void setGroundInst(double groundInst) {
-		GroundInst = groundInst;
+	public void setGroundInst(double value) {
+		groundInst = value;
 	}
 
 	public double[] getRecloseIntervals() {
-		return RecloseIntervals;
+		return recloseIntervals;
 	}
 
-	public void setRecloseIntervals(double[] recloseIntervals) {
-		RecloseIntervals = recloseIntervals;
+	public void setRecloseIntervals(double[] intervals) {
+		recloseIntervals = intervals;
 	}
 
 	public int getNumReclose() {
-		return NumReclose;
+		return numReclose;
 	}
 
-	public void setNumReclose(int numReclose) {
-		NumReclose = numReclose;
+	public void setNumReclose(int num) {
+		numReclose = num;
 	}
 
 	public double getResetTime() {
-		return ResetTime;
+		return resetTime;
 	}
 
-	public void setResetTime(double resetTime) {
-		ResetTime = resetTime;
+	public void setResetTime(double time) {
+		resetTime = time;
 	}
 
-	public double getDelay_Time() {
-		return Delay_Time;
+	public double getDelayTime() {
+		return delayTime;
 	}
 
-	public void setDelay_Time(double delay_Time) {
-		Delay_Time = delay_Time;
+	public void setDelayTime(double time) {
+		delayTime = time;
 	}
 
-	public double getBreaker_time() {
-		return Breaker_time;
+	public double getBreakerTime() {
+		return breakerTime;
 	}
 
-	public void setBreaker_time(double breaker_time) {
-		Breaker_time = breaker_time;
+	public void setBreakerTime(double time) {
+		breakerTime = time;
 	}
 
 	public double getTDPhase() {
 		return TDPhase;
 	}
 
-	public void setTDPhase(double tDPhase) {
-		TDPhase = tDPhase;
+	public void setTDPhase(double phase) {
+		TDPhase = phase;
 	}
 
 	public double getTDGround() {
 		return TDGround;
 	}
 
-	public void setTDGround(double tDGround) {
-		TDGround = tDGround;
+	public void setTDGround(double ground) {
+		TDGround = ground;
 	}
 
 	public String getRelayTarget() {
-		return RelayTarget;
+		return relayTarget;
 	}
 
-	public void setRelayTarget(String relayTarget) {
-		RelayTarget = relayTarget;
+	public void setRelayTarget(String target) {
+		relayTarget = target;
 	}
 
-	public TCC_CurveObj getOVcurve() {
-		return OVcurve;
+	public TCC_CurveObj getOVCurve() {
+		return OVCurve;
 	}
 
-	public void setOVcurve(TCC_CurveObj oVcurve) {
-		OVcurve = oVcurve;
+	public void setOVCurve(TCC_CurveObj curve) {
+		OVCurve = curve;
 	}
 
 	public TCC_CurveObj getUVCurve() {
 		return UVCurve;
 	}
 
-	public void setUVCurve(TCC_CurveObj uVCurve) {
-		UVCurve = uVCurve;
+	public void setUVCurve(TCC_CurveObj curve) {
+		UVCurve = curve;
 	}
 
-	public double getVbase() {
-		return Vbase;
+	public double getVBase() {
+		return VBase;
 	}
 
-	public void setVbase(double vbase) {
-		Vbase = vbase;
+	public void setVBase(double base) {
+		VBase = base;
 	}
 
-	public double getkVBase() {
+	public double getKVBase() {
 		return kVBase;
 	}
 
-	public void setkVBase(double kVBase) {
-		this.kVBase = kVBase;
+	public void setKVBase(double base) {
+		this.kVBase = base;
 	}
 
 	public double getPickupAmps46() {
-		return PickupAmps46;
+		return pickupAmps46;
 	}
 
-	public void setPickupAmps46(double pickupAmps46) {
-		PickupAmps46 = pickupAmps46;
+	public void setPickupAmps46(double value) {
+		pickupAmps46 = value;
 	}
 
 	public double getPctPickup46() {
-		return PctPickup46;
+		return pctPickup46;
 	}
 
-	public void setPctPickup46(double pctPickup46) {
-		PctPickup46 = pctPickup46;
+	public void setPctPickup46(double value) {
+		pctPickup46 = value;
 	}
 
 	public double getBaseAmps46() {
-		return BaseAmps46;
+		return baseAmps46;
 	}
 
-	public void setBaseAmps46(double baseAmps46) {
-		BaseAmps46 = baseAmps46;
+	public void setBaseAmps46(double value) {
+		baseAmps46 = value;
 	}
 
 	public double getIsqt46() {
-		return Isqt46;
+		return isqt46;
 	}
 
-	public void setIsqt46(double isqt46) {
-		Isqt46 = isqt46;
+	public void setIsqt46(double value) {
+		isqt46 = value;
 	}
 
 	public double getPickupVolts47() {
-		return PickupVolts47;
+		return pickupVolts47;
 	}
 
-	public void setPickupVolts47(double pickupVolts47) {
-		PickupVolts47 = pickupVolts47;
+	public void setPickupVolts47(double value) {
+		pickupVolts47 = value;
 	}
 
 	public double getPctPickup47() {
-		return PctPickup47;
+		return pctPickup47;
 	}
 
-	public void setPctPickup47(double pctPickup47) {
-		PctPickup47 = pctPickup47;
+	public void setPctPickup47(double value) {
+		pctPickup47 = value;
 	}
 
 	public double getOverTrip() {
-		return OverTrip;
+		return overTrip;
 	}
 
-	public void setOverTrip(double overTrip) {
-		OverTrip = overTrip;
+	public void setOverTrip(double trip) {
+		overTrip = trip;
 	}
 
 	public double getUnderTrip() {
-		return UnderTrip;
+		return underTrip;
 	}
 
-	public void setUnderTrip(double underTrip) {
-		UnderTrip = underTrip;
+	public void setUnderTrip(double trip) {
+		underTrip = trip;
 	}
 
 	public String getMonitoredElementName() {
-		return MonitoredElementName;
+		return monitoredElementName;
 	}
 
-	public void setMonitoredElementName(String monitoredElementName) {
-		MonitoredElementName = monitoredElementName;
+	public void setMonitoredElementName(String name) {
+		monitoredElementName = name;
 	}
 
 	public int getMonitoredElementTerminal() {
-		return MonitoredElementTerminal;
+		return monitoredElementTerminal;
 	}
 
-	public void setMonitoredElementTerminal(int monitoredElementTerminal) {
-		MonitoredElementTerminal = monitoredElementTerminal;
+	public void setMonitoredElementTerminal(int terminal) {
+		monitoredElementTerminal = terminal;
 	}
 
 	public CktElement getMonitoredElement() {
-		return MonitoredElement;
+		return monitoredElement;
 	}
 
-	public void setMonitoredElement(CktElement monitoredElement) {
-		MonitoredElement = monitoredElement;
+	public void setMonitoredElement(CktElement element) {
+		monitoredElement = element;
 	}
 
 	public ControlAction getPresentState() {
-		return PresentState;
+		return presentState;
 	}
 
-	public void setPresentState(ControlAction presentState) {
-		PresentState = presentState;
+	public void setPresentState(ControlAction state) {
+		presentState = state;
 	}
 
 	public int getOperationCount() {
-		return OperationCount;
+		return operationCount;
 	}
 
-	public void setOperationCount(int operationCount) {
-		OperationCount = operationCount;
+	public void setOperationCount(int count) {
+		operationCount = count;
 	}
 
 	public boolean isLockedOut() {
-		return LockedOut;
+		return lockedOut;
 	}
 
-	public void setLockedOut(boolean lockedOut) {
-		LockedOut = lockedOut;
+	public void setLockedOut(boolean value) {
+		lockedOut = value;
 	}
 
 	public boolean isArmedForClose() {
-		return ArmedForClose;
+		return armedForClose;
 	}
 
-	public void setArmedForClose(boolean armedForClose) {
-		ArmedForClose = armedForClose;
+	public void setArmedForClose(boolean armed) {
+		armedForClose = armed;
 	}
 
 	public boolean isArmedForOpen() {
-		return ArmedForOpen;
+		return armedForOpen;
 	}
 
-	public void setArmedForOpen(boolean armedForOpen) {
-		ArmedForOpen = armedForOpen;
+	public void setArmedForOpen(boolean armed) {
+		armedForOpen = armed;
 	}
 
 	public boolean isPhaseTarget() {
-		return PhaseTarget;
+		return phaseTarget;
 	}
 
-	public void setPhaseTarget(boolean phaseTarget) {
-		PhaseTarget = phaseTarget;
+	public void setPhaseTarget(boolean target) {
+		phaseTarget = target;
 	}
 
 	public boolean isGroundTarget() {
-		return GroundTarget;
+		return groundTarget;
 	}
 
-	public void setGroundTarget(boolean groundTarget) {
-		GroundTarget = groundTarget;
+	public void setGroundTarget(boolean target) {
+		groundTarget = target;
 	}
 
-	public double getNextTriptime() {
-		return NextTriptime;
+	public double getNextTripTime() {
+		return nextTripTime;
 	}
 
-	public void setNextTriptime(double nextTriptime) {
-		NextTriptime = nextTriptime;
+	public void setNextTripTime(double time) {
+		nextTripTime = time;
 	}
 
 	public int getLastEventHandle() {
-		return LastEventHandle;
+		return lastEventHandle;
 	}
 
-	public void setLastEventHandle(int lastEventHandle) {
-		LastEventHandle = lastEventHandle;
+	public void setLastEventHandle(int handle) {
+		lastEventHandle = handle;
 	}
 
 	public int getCondOffset() {
-		return CondOffset;
+		return condOffset;
 	}
 
-	public void setCondOffset(int condOffset) {
-		CondOffset = condOffset;
+	public void setCondOffset(int offset) {
+		condOffset = offset;
 	}
 
-	public Complex[] getcBuffer() {
+	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
-	public void setcBuffer(Complex[] cBuffer) {
-		this.cBuffer = cBuffer;
+	public void setCBuffer(Complex[] buffer) {
+		this.cBuffer = buffer;
 	}
 
 }

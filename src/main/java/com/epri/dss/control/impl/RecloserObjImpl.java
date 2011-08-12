@@ -15,97 +15,97 @@ import com.epri.dss.general.TCC_CurveObj;
 
 public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
-	private TCC_CurveObj PhaseDelayed,
-		GroundDelayed,
-		PhaseFast,
-		GroundFast;
+	private TCC_CurveObj phaseDelayed,
+		groundDelayed,
+		phaseFast,
+		groundFast;
 
-	private double PhaseTrip,
-		GroundTrip,
-		PhaseInst,
-		GroundInst;
+	private double phaseTrip,
+		groundTrip,
+		phaseInst,
+		groundInst;
 
-	private double[] RecloseIntervals;
-	private int NumFast, NumReclose;
-	private double ResetTime,
-		DelayTime,
+	private double[] recloseIntervals;
+	private int numFast, numReclose;
+	private double resetTime,
+		delayTime,
 		TDGrDelayed,
 		TDPhDelayed,
 		TDGrFast,
 		TDPhFast;
 
-	private String MonitoredElementName;
-	private int MonitoredElementTerminal;
-	private CktElement MonitoredElement;
+	private String monitoredElementName;
+	private int monitoredElementTerminal;
+	private CktElement monitoredElement;
 
-	private ControlAction PresentState;
+	private ControlAction presentState;
 
-	private int OperationCount;
+	private int operationCount;
 
-	private boolean LockedOut,
-		ArmedForClose, ArmedForOpen, GroundTarget, PhaseTarget;
+	private boolean lockedOut,
+		armedForClose, armedForOpen, groundTarget, phaseTarget;
 
-	private int CondOffset;  // offset for monitored terminal
+	private int condOffset;  // offset for monitored terminal
 
 	private Complex[] cBuffer;
 
-	public RecloserObjImpl(DSSClassImpl ParClass, String RecloserName) {
-		super(ParClass);
+	public RecloserObjImpl(DSSClassImpl parClass, String recloserName) {
+		super(parClass);
 
-		setName(RecloserName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(recloserName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.ElementName       = "";
+		this.elementName       = "";
 		setControlledElement(null);
-		this.ElementTerminal   = 1;
+		this.elementTerminal   = 1;
 
-		this.MonitoredElementName = "";
-		this.MonitoredElementTerminal = 1;
-		this.MonitoredElement = null;
+		this.monitoredElementName = "";
+		this.monitoredElementTerminal = 1;
+		this.monitoredElement = null;
 
-		this.PhaseFast      = RecloserImpl.getTCC_Curve("a");
-		this.PhaseDelayed   = RecloserImpl.getTCC_Curve("d");
-		this.GroundFast     = null;
-		this.GroundDelayed  = null;
+		this.phaseFast      = RecloserImpl.getTCC_Curve("a");
+		this.phaseDelayed   = RecloserImpl.getTCC_Curve("d");
+		this.groundFast     = null;
+		this.groundDelayed  = null;
 
-		this.PhaseTrip      = 1.0;
-		this.GroundTrip     = 1.0;
-		this.PhaseInst      = 0.0;
-		this.GroundInst     = 0.0;
+		this.phaseTrip      = 1.0;
+		this.groundTrip     = 1.0;
+		this.phaseInst      = 0.0;
+		this.groundInst     = 0.0;
 
 		this.TDGrDelayed    = 1.0;
 		this.TDPhDelayed    = 1.0;
 		this.TDGrFast       = 1.0;
 		this.TDPhFast       = 1.0;
 
-		this.ResetTime      = 15.0;
-		this.NumReclose     = 3;
-		this.NumFast	    = 1;
+		this.resetTime      = 15.0;
+		this.numReclose     = 3;
+		this.numFast	    = 1;
 
-		this.RecloseIntervals = new double[4];  // fixed allocation of 4
-		this.RecloseIntervals[0] = 0.5;
-		this.RecloseIntervals[1] = 2.0;
-		this.RecloseIntervals[2] = 2.0;
-
-
-		this.PresentState  = ControlAction.CLOSE;
+		this.recloseIntervals = new double[4];  // fixed allocation of 4
+		this.recloseIntervals[0] = 0.5;
+		this.recloseIntervals[1] = 2.0;
+		this.recloseIntervals[2] = 2.0;
 
 
-		this.OperationCount = 1;
-		this.LockedOut      = false;
-		this.ArmedForOpen   = false;
-		this.ArmedForClose  = false;
-		this.GroundTarget   = false;
-		this.PhaseTarget    = false;
+		this.presentState  = ControlAction.CLOSE;
+
+
+		this.operationCount = 1;
+		this.lockedOut      = false;
+		this.armedForOpen   = false;
+		this.armedForClose  = false;
+		this.groundTarget   = false;
+		this.phaseTarget    = false;
 
 
 		this.cBuffer = null;
 
-		this.DSSObjType = ParClass.getDSSClassType();  // CAP_CONTROL;
+		this.DSSObjType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -114,49 +114,49 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Circuit ckt = Globals.getActiveCircuit();
+		DSSGlobals globals = DSSGlobals.getInstance();
+		Circuit ckt = globals.getActiveCircuit();
 
-		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);
+		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
 
-		if (DevIndex >= 0) {
-			MonitoredElement = ckt.getCktElements().get(DevIndex);
-			setNPhases(MonitoredElement.getNPhases());  // force number of phases to be same
-			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
-				Globals.doErrorMsg("Recloser: \"" + getName() + "\"",
+		if (devIndex >= 0) {
+			monitoredElement = ckt.getCktElements().get(devIndex);
+			setNPhases(monitoredElement.getNPhases());  // force number of phases to be same
+			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
+				globals.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 392);
 			} else {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
-				setBus(1, MonitoredElement.getBus(MonitoredElementTerminal));
+				setBus(1, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-				CondOffset = (MonitoredElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}
 
 		/* Check for existence of controlled element */
 
-		DevIndex = Utilities.getCktElementIndex(ElementName);
-		if (DevIndex >= 0) {  // both CktElement and monitored element must already exist
+		devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
 
-			setControlledElement( ckt.getCktElements().get(DevIndex) );
+			setControlledElement( ckt.getCktElements().get(devIndex) );
 
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // make the 1st terminal active
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
 			if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
-				PresentState = ControlAction.CLOSE;
-				LockedOut = false;
-				OperationCount = 1;
-				ArmedForOpen = false;
+				presentState = ControlAction.CLOSE;
+				lockedOut = false;
+				operationCount = 1;
+				armedForOpen = false;
 			} else {
-				PresentState = ControlAction.OPEN;
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
-				ArmedForClose = false;
+				presentState = ControlAction.OPEN;
+				lockedOut = true;
+				operationCount = numReclose + 1;
+				armedForClose = false;
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ ElementName + "\" not found.",
+			globals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 393);
 		}
 	}
@@ -166,13 +166,13 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	 */
 	@Override
 	public void makePosSequence() {
-		if (MonitoredElement != null) {
-			setNPhases( MonitoredElement.getNPhases() );
+		if (monitoredElement != null) {
+			setNPhases( monitoredElement.getNPhases() );
 			setNConds(nPhases);
-			setBus(1, MonitoredElement.getBus(ElementTerminal));
+			setBus(1, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-			CondOffset = (ElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 		}
 		super.makePosSequence();
 	}
@@ -183,91 +183,91 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	}
 
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
 	@Override
-	public void doPendingAction(int Code, int ProxyHdl) {
+	public void doPendingAction(int code, int proxyHdl) {
 
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal of CktElement to terminal 1
+		getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
 
-		if (Code == ControlAction.OPEN.code()) {
-			switch (PresentState) {
+		if (code == ControlAction.OPEN.code()) {
+			switch (presentState) {
 			case CLOSE:
-				if (ArmedForOpen) {  // ignore if we became disarmed in meantime
+				if (armedForOpen) {  // ignore if we became disarmed in meantime
 					getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-					if (OperationCount > NumReclose) {
-						LockedOut = true;
+					if (operationCount > numReclose) {
+						lockedOut = true;
 						Utilities.appendToEventLog("Recloser."+getName(), "Opened, Locked Out");
 					} else {
-						if (OperationCount > NumFast) {
+						if (operationCount > numFast) {
 							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Delayed");
 						} else {
 							Utilities.appendToEventLog("Recloser."+getName(), "Opened, Fast");
 						}
 					}
-					if (PhaseTarget)
+					if (phaseTarget)
 						Utilities.appendToEventLog(" ", "Phase Target");
-					if (GroundTarget)
+					if (groundTarget)
 						Utilities.appendToEventLog(" ", "Ground Target");
-					ArmedForOpen = false;
+					armedForOpen = false;
 				}
 				break;
 			}
 
-		} else if (Code == ControlAction.CLOSE.code()) {
-			switch (PresentState) {
+		} else if (code == ControlAction.CLOSE.code()) {
+			switch (presentState) {
 			case OPEN:
-				if (ArmedForClose && !LockedOut) {
+				if (armedForClose && !lockedOut) {
 					getControlledElement().setConductorClosed(0, true);  // close all phases of active terminal
-					OperationCount += 1;
+					operationCount += 1;
 					Utilities.appendToEventLog("Recloser."+getName(), "Closed");
-					ArmedForClose = false;
+					armedForClose = false;
 				}
 				break;
 			}
 
-		} else if (Code == ControlAction.CTRL_RESET.code()) {
-			switch (PresentState) {
+		} else if (code == ControlAction.CTRL_RESET.code()) {
+			switch (presentState) {
 			case CLOSE:
-				if (!ArmedForOpen)
-					OperationCount = 1;  // don't reset if we just rearmed
+				if (!armedForOpen)
+					operationCount = 1;  // don't reset if we just rearmed
 				break;
 			}
 		}
 	}
 
 	// FIXME Private method in OpenDSS
-	public void interpretRecloserAction(String Action) {
+	public void interpretRecloserAction(String action) {
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
-			switch (Action.toLowerCase().charAt(0)) {
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
+			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
+				lockedOut = true;
+				operationCount = numReclose + 1;
 				break;
 			case 't':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal
-				LockedOut = true;
-				OperationCount = NumReclose + 1;
+				lockedOut = true;
+				operationCount = numReclose + 1;
 				break;
 			case 'c':
 				getControlledElement().setConductorClosed(0, true);   // close all phases of active terminal
-				LockedOut = false;
-				OperationCount = 1;
+				lockedOut = false;
+				operationCount = 1;
 				break;
 			}
 		}
@@ -279,77 +279,77 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void sample() {
 		int i;
-		double Cmag;
-		Complex Csum;
+		double CMag;
+		Complex CSum;
 
-		TCC_CurveObj GroundCurve, PhaseCurve;
-		double Groundtime, PhaseTime, TripTime, TimeTest;
+		TCC_CurveObj groundCurve, phaseCurve;
+		double groundTime, phaseTime, tripTime, timeTest;
 		double TDPhase, TDGround;
 
-		getControlledElement().setActiveTerminalIdx(ElementTerminal);
+		getControlledElement().setActiveTerminalIdx(elementTerminal);
 
 		if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
-			PresentState = ControlAction.CLOSE;
+			presentState = ControlAction.CLOSE;
 		} else {
-			PresentState = ControlAction.OPEN;
+			presentState = ControlAction.OPEN;
 		}
 
-		if (OperationCount > NumFast) {
-			GroundCurve = GroundDelayed;
-			PhaseCurve = PhaseDelayed;
+		if (operationCount > numFast) {
+			groundCurve = groundDelayed;
+			phaseCurve = phaseDelayed;
 			TDGround = TDGrDelayed;
 			TDPhase =  TDPhDelayed;
 		} else {
-			GroundCurve = GroundFast;
-			PhaseCurve = PhaseFast;
+			groundCurve = groundFast;
+			phaseCurve = phaseFast;
 			TDGround = TDGrFast;
 			TDPhase =  TDPhFast;
 		}
 
-		if (PresentState == ControlAction.CLOSE) {
-			TripTime = -1.0;
-			Groundtime = -1.0;
-			PhaseTime = -1.0;  /* No trip */
+		if (presentState == ControlAction.CLOSE) {
+			tripTime = -1.0;
+			groundTime = -1.0;
+			phaseTime = -1.0;  /* No trip */
 
 			// check largest current of all phases of monitored element
-			MonitoredElement.getCurrents(cBuffer);
+			monitoredElement.getCurrents(cBuffer);
 
 			/* Check ground trip, if any */
-			if (GroundCurve != null) {
-				Csum = Complex.ZERO;
-				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++)
-					Csum = Csum.add(cBuffer[i]);
-				Cmag = Csum.abs();
-				if ((GroundInst > 0.0) && (Cmag >= GroundInst) && (OperationCount == 1)) {
-					Groundtime = 0.01 + DelayTime;  // inst trip on first operation
+			if (groundCurve != null) {
+				CSum = Complex.ZERO;
+				for (i = (1 + condOffset); i < (nPhases + condOffset); i++)
+					CSum = CSum.add(cBuffer[i]);
+				CMag = CSum.abs();
+				if ((groundInst > 0.0) && (CMag >= groundInst) && (operationCount == 1)) {
+					groundTime = 0.01 + delayTime;  // inst trip on first operation
 				} else {
-					Groundtime = TDGround * GroundCurve.getTCCTime(Cmag / GroundTrip);
+					groundTime = TDGround * groundCurve.getTCCTime(CMag / groundTrip);
 				}
 			}
 
-			if (Groundtime > 0.0) {
-				TripTime = Groundtime;
-				GroundTarget = true;
+			if (groundTime > 0.0) {
+				tripTime = groundTime;
+				groundTarget = true;
 			}
 
 			// if GroundTime > 0 then we have a ground trip
 
 			/* Check phase trip, if any */
 
-			if (PhaseCurve != null) {
-				for (i = (1 + CondOffset); i < (nPhases + CondOffset); i++) {
-					Cmag =  cBuffer[i].abs();
+			if (phaseCurve != null) {
+				for (i = (1 + condOffset); i < (nPhases + condOffset); i++) {
+					CMag =  cBuffer[i].abs();
 
-					if ((PhaseInst > 0.0) && (Cmag >= PhaseInst) && (OperationCount == 1)) {
-						PhaseTime = 0.01 + DelayTime;  // inst trip on first operation
+					if ((phaseInst > 0.0) && (CMag >= phaseInst) && (operationCount == 1)) {
+						phaseTime = 0.01 + delayTime;  // inst trip on first operation
 						break;  /* no sense checking other phases */
 					} else {
-						TimeTest = TDPhase * PhaseCurve.getTCCTime(Cmag / PhaseTrip);
-						if (TimeTest > 0.0) {
-							if (PhaseTime < 0.0) {
-								PhaseTime = TimeTest;
+						timeTest = TDPhase * phaseCurve.getTCCTime(CMag / phaseTrip);
+						if (timeTest > 0.0) {
+							if (phaseTime < 0.0) {
+								phaseTime = timeTest;
 							} else {
-								PhaseTime = Math.min(PhaseTime, TimeTest);
+								phaseTime = Math.min(phaseTime, timeTest);
 							}
 						}
 					}
@@ -357,65 +357,65 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			}
 
 			// if PhaseTime > 0 then we have a phase trip
-			if (PhaseTime > 0.0) {
-				PhaseTarget = true;
-				if (TripTime > 0.0) {
-					TripTime = Math.min(TripTime, PhaseTime);
+			if (phaseTime > 0.0) {
+				phaseTarget = true;
+				if (tripTime > 0.0) {
+					tripTime = Math.min(tripTime, phaseTime);
 				} else {
-					TripTime = PhaseTime;
+					tripTime = phaseTime;
 				}
 			}
 
-			if (TripTime > 0.0) {
-				if (!ArmedForOpen) {
+			if (tripTime > 0.0) {
+				if (!armedForOpen) {
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 					// then arm for an open operation
-					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + DelayTime, ControlAction.OPEN, 0, this);
-					if (OperationCount <= NumReclose)
-						ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + TripTime + DelayTime + RecloseIntervals[OperationCount], ControlAction.CLOSE, 0, this);
-					ArmedForOpen = true;
-					ArmedForClose = true;
+					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + delayTime, ControlAction.OPEN, 0, this);
+					if (operationCount <= numReclose)
+						ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + delayTime + recloseIntervals[operationCount], ControlAction.CLOSE, 0, this);
+					armedForOpen = true;
+					armedForClose = true;
 				}
 			} else {
-				if (ArmedForOpen) {
+				if (armedForOpen) {
 					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 					// if current dropped below pickup, disarm trip and set for reset.
-					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + ResetTime, ControlAction.CTRL_RESET, 0, this);
-					ArmedForOpen = false;
-					ArmedForClose = false;
-					GroundTarget = false;
-					PhaseTarget = false;
+					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
+					armedForOpen = false;
+					armedForClose = false;
+					groundTarget = false;
+					phaseTarget = false;
 				}
 			}
 		}
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete)
-			F.println();
+		if (complete)
+			f.println();
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result = "";
-		switch (Index) {
+	public String getPropertyValue(int index) {
+		String result = "";
+		switch (index) {
 		case 15:
-			Result = "(";
-			for (int i = 0; i < NumReclose; i++)
-				Result = Result + String.format("%-g, ", RecloseIntervals[i]);
-			Result = Result + ")";
+			result = "(";
+			for (int i = 0; i < numReclose; i++)
+				result = result + String.format("%-g, ", recloseIntervals[i]);
+			result = result + ")";
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
-		return Result;
+		return result;
 	}
 
 	/**
@@ -424,28 +424,28 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void reset() {
 
-		PresentState   = ControlAction.CLOSE;
-		OperationCount = 1;
-		LockedOut      = false;
-		ArmedForOpen   = false;
-		ArmedForClose  = false;
-		GroundTarget   = false;
-		PhaseTarget    = false;
+		presentState   = ControlAction.CLOSE;
+		operationCount = 1;
+		lockedOut      = false;
+		armedForOpen   = false;
+		armedForClose  = false;
+		groundTarget   = false;
+		phaseTarget    = false;
 
 		if (getControlledElement() != null) {
-			getControlledElement().setActiveTerminalIdx(ElementTerminal);  // set active terminal
+			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
 			getControlledElement().setConductorClosed(0, true);            // close all phases of active terminal
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		PropertyValue[0]  = "";   // "element";
 		PropertyValue[1]  = "1";  // "terminal";
 		PropertyValue[2]  = "";
 		PropertyValue[3]  = "1";  // "terminal";
-		PropertyValue[4]  = String.valueOf(NumFast);
+		PropertyValue[4]  = String.valueOf(numFast);
 		PropertyValue[5]  = "";
 		PropertyValue[6]  = "";
 		PropertyValue[7]  = "";
@@ -470,235 +470,235 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	// FIXME Private members in Open DSS
 
 	public TCC_CurveObj getPhaseDelayed() {
-		return PhaseDelayed;
+		return phaseDelayed;
 	}
 
-	public void setPhaseDelayed(TCC_CurveObj phaseDelayed) {
-		PhaseDelayed = phaseDelayed;
+	public void setPhaseDelayed(TCC_CurveObj value) {
+		phaseDelayed = value;
 	}
 
 	public TCC_CurveObj getGroundDelayed() {
-		return GroundDelayed;
+		return groundDelayed;
 	}
 
-	public void setGroundDelayed(TCC_CurveObj groundDelayed) {
-		GroundDelayed = groundDelayed;
+	public void setGroundDelayed(TCC_CurveObj value) {
+		groundDelayed = value;
 	}
 
 	public TCC_CurveObj getPhaseFast() {
-		return PhaseFast;
+		return phaseFast;
 	}
 
-	public void setPhaseFast(TCC_CurveObj phaseFast) {
-		PhaseFast = phaseFast;
+	public void setPhaseFast(TCC_CurveObj value) {
+		phaseFast = value;
 	}
 
 	public TCC_CurveObj getGroundFast() {
-		return GroundFast;
+		return groundFast;
 	}
 
-	public void setGroundFast(TCC_CurveObj groundFast) {
-		GroundFast = groundFast;
+	public void setGroundFast(TCC_CurveObj value) {
+		groundFast = value;
 	}
 
 	public double getPhaseTrip() {
-		return PhaseTrip;
+		return phaseTrip;
 	}
 
-	public void setPhaseTrip(double phaseTrip) {
-		PhaseTrip = phaseTrip;
+	public void setPhaseTrip(double value) {
+		phaseTrip = value;
 	}
 
 	public double getGroundTrip() {
-		return GroundTrip;
+		return groundTrip;
 	}
 
-	public void setGroundTrip(double groundTrip) {
-		GroundTrip = groundTrip;
+	public void setGroundTrip(double value) {
+		groundTrip = value;
 	}
 
 	public double getPhaseInst() {
-		return PhaseInst;
+		return phaseInst;
 	}
 
-	public void setPhaseInst(double phaseInst) {
-		PhaseInst = phaseInst;
+	public void setPhaseInst(double value) {
+		phaseInst = value;
 	}
 
 	public double getGroundInst() {
-		return GroundInst;
+		return groundInst;
 	}
 
-	public void setGroundInst(double groundInst) {
-		GroundInst = groundInst;
+	public void setGroundInst(double value) {
+		groundInst = value;
 	}
 
 	public double[] getRecloseIntervals() {
-		return RecloseIntervals;
+		return recloseIntervals;
 	}
 
-	public void setRecloseIntervals(double[] recloseIntervals) {
-		RecloseIntervals = recloseIntervals;
+	public void setRecloseIntervals(double[] intervals) {
+		recloseIntervals = intervals;
 	}
 
 	public int getNumFast() {
-		return NumFast;
+		return numFast;
 	}
 
-	public void setNumFast(int numFast) {
-		NumFast = numFast;
+	public void setNumFast(int num) {
+		numFast = num;
 	}
 
 	public int getNumReclose() {
-		return NumReclose;
+		return numReclose;
 	}
 
-	public void setNumReclose(int numReclose) {
-		NumReclose = numReclose;
+	public void setNumReclose(int num) {
+		numReclose = num;
 	}
 
 	public double getResetTime() {
-		return ResetTime;
+		return resetTime;
 	}
 
-	public void setResetTime(double resetTime) {
-		ResetTime = resetTime;
+	public void setResetTime(double time) {
+		resetTime = time;
 	}
 
 	public double getDelayTime() {
-		return DelayTime;
+		return delayTime;
 	}
 
-	public void setDelayTime(double delayTime) {
-		DelayTime = delayTime;
+	public void setDelayTime(double time) {
+		delayTime = time;
 	}
 
 	public double getTDGrDelayed() {
 		return TDGrDelayed;
 	}
 
-	public void setTDGrDelayed(double tDGrDelayed) {
-		TDGrDelayed = tDGrDelayed;
+	public void setTDGrDelayed(double value) {
+		TDGrDelayed = value;
 	}
 
 	public double getTDPhDelayed() {
 		return TDPhDelayed;
 	}
 
-	public void setTDPhDelayed(double tDPhDelayed) {
-		TDPhDelayed = tDPhDelayed;
+	public void setTDPhDelayed(double value) {
+		TDPhDelayed = value;
 	}
 
 	public double getTDGrFast() {
 		return TDGrFast;
 	}
 
-	public void setTDGrFast(double tDGrFast) {
-		TDGrFast = tDGrFast;
+	public void setTDGrFast(double value) {
+		TDGrFast = value;
 	}
 
 	public double getTDPhFast() {
 		return TDPhFast;
 	}
 
-	public void setTDPhFast(double tDPhFast) {
-		TDPhFast = tDPhFast;
+	public void setTDPhFast(double value) {
+		TDPhFast = value;
 	}
 
 	public String getMonitoredElementName() {
-		return MonitoredElementName;
+		return monitoredElementName;
 	}
 
-	public void setMonitoredElementName(String monitoredElementName) {
-		MonitoredElementName = monitoredElementName;
+	public void setMonitoredElementName(String name) {
+		monitoredElementName = name;
 	}
 
 	public int getMonitoredElementTerminal() {
-		return MonitoredElementTerminal;
+		return monitoredElementTerminal;
 	}
 
-	public void setMonitoredElementTerminal(int monitoredElementTerminal) {
-		MonitoredElementTerminal = monitoredElementTerminal;
+	public void setMonitoredElementTerminal(int terminal) {
+		monitoredElementTerminal = terminal;
 	}
 
 	public CktElement getMonitoredElement() {
-		return MonitoredElement;
+		return monitoredElement;
 	}
 
-	public void setMonitoredElement(CktElement monitoredElement) {
-		MonitoredElement = monitoredElement;
+	public void setMonitoredElement(CktElement element) {
+		monitoredElement = element;
 	}
 
 	public ControlAction getPresentState() {
-		return PresentState;
+		return presentState;
 	}
 
-	public void setPresentState(ControlAction presentState) {
-		PresentState = presentState;
+	public void setPresentState(ControlAction state) {
+		presentState = state;
 	}
 
 	public int getOperationCount() {
-		return OperationCount;
+		return operationCount;
 	}
 
-	public void setOperationCount(int operationCount) {
-		OperationCount = operationCount;
+	public void setOperationCount(int count) {
+		operationCount = count;
 	}
 
 	public boolean isLockedOut() {
-		return LockedOut;
+		return lockedOut;
 	}
 
-	public void setLockedOut(boolean lockedOut) {
-		LockedOut = lockedOut;
+	public void setLockedOut(boolean locked) {
+		lockedOut = locked;
 	}
 
 	public boolean isArmedForClose() {
-		return ArmedForClose;
+		return armedForClose;
 	}
 
-	public void setArmedForClose(boolean armedForClose) {
-		ArmedForClose = armedForClose;
+	public void setArmedForClose(boolean armed) {
+		armedForClose = armed;
 	}
 
 	public boolean isArmedForOpen() {
-		return ArmedForOpen;
+		return armedForOpen;
 	}
 
-	public void setArmedForOpen(boolean armedForOpen) {
-		ArmedForOpen = armedForOpen;
+	public void setArmedForOpen(boolean armed) {
+		armedForOpen = armed;
 	}
 
 	public boolean isGroundTarget() {
-		return GroundTarget;
+		return groundTarget;
 	}
 
-	public void setGroundTarget(boolean groundTarget) {
-		GroundTarget = groundTarget;
+	public void setGroundTarget(boolean target) {
+		groundTarget = target;
 	}
 
 	public boolean isPhaseTarget() {
-		return PhaseTarget;
+		return phaseTarget;
 	}
 
-	public void setPhaseTarget(boolean phaseTarget) {
-		PhaseTarget = phaseTarget;
+	public void setPhaseTarget(boolean target) {
+		phaseTarget = target;
 	}
 
 	public int getCondOffset() {
-		return CondOffset;
+		return condOffset;
 	}
 
-	public void setCondOffset(int condOffset) {
-		CondOffset = condOffset;
+	public void setCondOffset(int offset) {
+		condOffset = offset;
 	}
 
-	public Complex[] getcBuffer() {
+	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
-	public void setcBuffer(Complex[] cBuffer) {
-		this.cBuffer = cBuffer;
+	public void setCBuffer(Complex[] buffer) {
+		this.cBuffer = buffer;
 	}
 
 }

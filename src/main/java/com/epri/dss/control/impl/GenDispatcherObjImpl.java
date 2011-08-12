@@ -22,65 +22,65 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	private double kWLimit,
 		kWBand,
-		HalfkWBand,
-		kvarLimit,
-		TotalWeight;
-	private int ListSize;
-	private List<String> GeneratorNameList;
-	private List<GeneratorObj> GenPointerList;
-	private double[] Weights;
+		halfKWBand,
+		kVArLimit,
+		totalWeight;
+	private int listSize;
+	private List<String> generatorNameList;
+	private List<GeneratorObj> genPointerList;
+	private double[] weights;
 
-	private CktElement MonitoredElement;
+	private CktElement monitoredElement;
 
-	public GenDispatcherObjImpl(DSSClassImpl ParClass, String GenDispatcherName) {
-		super(ParClass);
+	public GenDispatcherObjImpl(DSSClassImpl parClass, String genDispatcherName) {
+		super(parClass);
 
-		setName(GenDispatcherName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(genDispatcherName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
-		this.ElementName   = "";
+		this.elementName   = "";
 		setControlledElement(null);  // not used in this control
-		this.ElementTerminal  = 1;
-		this.MonitoredElement = null;
+		this.elementTerminal  = 1;
+		this.monitoredElement = null;
 
-		this.GeneratorNameList = new ArrayList<String>();
-		this.Weights   = null;
-		this.GenPointerList = new ArrayList<GeneratorObj>(20);  // default size and increment
-		this.ListSize    = 0;
+		this.generatorNameList = new ArrayList<String>();
+		this.weights   = null;
+		this.genPointerList = new ArrayList<GeneratorObj>(20);  // default size and increment
+		this.listSize    = 0;
 		this.kWLimit     = 8000.0;
 		this.kWBand      = 100.0;
-		this.TotalWeight = 1.0;
-		this.HalfkWBand  = this.kWBand / 2.0;
+		this.totalWeight = 1.0;
+		this.halfKWBand  = this.kWBand / 2.0;
 		initPropertyValues(0);
-		this.kvarLimit   = this.kWLimit / 2.0;
+		this.kVArLimit   = this.kWLimit / 2.0;
 
 		//recalcElementData();
 	}
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		/* Check for existence of monitored element */
 
-		int DevIndex = Utilities.getCktElementIndex(ElementName);
-		if (DevIndex >= 0) {
-			MonitoredElement = Globals.getActiveCircuit().getCktElements().get(DevIndex);
-			if (ElementTerminal > MonitoredElement.getNTerms()) {
-				Globals.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
+		int devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {
+			monitoredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			if (elementTerminal > monitoredElement.getNTerms()) {
+				globals.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
 				// sets name of i-th terminal's connected bus in GenDispatcher's buslist
-				setBus(1, MonitoredElement.getBus(ElementTerminal));
+				setBus(1, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
-			Globals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+ElementName+"\"", 372);
+			globals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
 		}
 	}
 
@@ -89,10 +89,10 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	 */
 	@Override
 	public void makePosSequence() {
-		if (MonitoredElement != null) {
+		if (monitoredElement != null) {
 			setNPhases(getControlledElement().getNPhases());
 			setNConds(nPhases);
-			setBus(1, MonitoredElement.getBus(ElementTerminal));
+			setBus(1, monitoredElement.getBus(elementTerminal));
 		}
 		super.makePosSequence();
 	}
@@ -103,33 +103,33 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	}
 
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < nConds; i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete)
-			F.println();
+		if (complete)
+			f.println();
 	}
 
 	/**
 	 * Do the action that is pending from last sample.
 	 */
 	@Override
-	public void doPendingAction(int Code, int ProxyHdl) {
+	public void doPendingAction(int code, int proxyHdl) {
 		/* Do nothing */
 	}
 
@@ -141,55 +141,55 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		int i;
 		double PDiff, QDiff;
 		Complex S;
-		GeneratorObj Gen;
-		boolean GenkWChanged, Genkvarchanged;
-		double GenkW, Genkvar;
+		GeneratorObj gen;
+		boolean genKWChanged, genKVArChanged;
+		double genKW, genKVAr;
 
 		// if list is not define, go make one from all generators in circuit
-		if (GenPointerList.size() == 0)
+		if (genPointerList.size() == 0)
 			makeGenList();
 
-		if (ListSize > 0) {
+		if (listSize > 0) {
 
 			//MonitoredElement.ActiveTerminalIdx = ElementTerminal;
-			S = MonitoredElement.getPower(ElementTerminal);  // power in active terminal
+			S = monitoredElement.getPower(elementTerminal);  // power in active terminal
 
 			PDiff = S.getReal() * 0.001 - kWLimit;
 
-			QDiff = S.getImaginary() * 0.001 - kvarLimit;
+			QDiff = S.getImaginary() * 0.001 - kVArLimit;
 
 			// redispatch the vars
 
-			GenkWChanged = false;
-			Genkvarchanged = false;
+			genKWChanged = false;
+			genKVArChanged = false;
 
-			if (Math.abs(PDiff) > HalfkWBand) {  // redispatch generators
+			if (Math.abs(PDiff) > halfKWBand) {  // redispatch generators
 				// PDiff is kW needed to get back into band
-				for (i = 0; i < ListSize; i++) {
-					Gen = GenPointerList.get(i);
+				for (i = 0; i < listSize; i++) {
+					gen = genPointerList.get(i);
 					// compute new dispatch value for this generator ...
-					GenkW = Math.max(1.0, (Gen.getkWBase() + PDiff * (Weights[i] / TotalWeight)));
-					if (GenkW != Gen.getkWBase()) {
-						Gen.setkWBase(GenkW);
-						GenkWChanged = true;
+					genKW = Math.max(1.0, (gen.getkWBase() + PDiff * (weights[i] / totalWeight)));
+					if (genKW != gen.getkWBase()) {
+						gen.setkWBase(genKW);
+						genKWChanged = true;
 					}
 				}
 			}
 
-			if (Math.abs(QDiff) > HalfkWBand) {  // redispatch generators
+			if (Math.abs(QDiff) > halfKWBand) {  // redispatch generators
 				// QDiff is kvar needed to get back into band
-				for (i = 0; i < ListSize; i++) {
-					Gen = GenPointerList.get(i);
+				for (i = 0; i < listSize; i++) {
+					gen = genPointerList.get(i);
 					// compute new dispatch value for this generator ...
-					Genkvar = Math.max(0.0, (Gen.getKvarBase() + QDiff * (Weights[i] / TotalWeight)));
-					if (Genkvar != Gen.getKvarBase()) {
-						Gen.setKvarBase(Genkvar);
-						Genkvarchanged = true;
+					genKVAr = Math.max(0.0, (gen.getKvarBase() + QDiff * (weights[i] / totalWeight)));
+					if (genKVAr != gen.getKvarBase()) {
+						gen.setKvarBase(genKVAr);
+						genKVArChanged = true;
 					}
 				}
 			}
 
-			if (GenkWChanged || Genkvarchanged) {  // only push onto control queue if there has been a change
+			if (genKWChanged || genKVArChanged) {  // only push onto control queue if there has been a change
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 				SolutionObj sol = ckt.getSolution();
 
@@ -201,7 +201,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		PropertyValue[0] = "";  // "element";
 		PropertyValue[1] = "1";  // "terminal";
@@ -215,45 +215,45 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	}
 
 	public boolean makeGenList() {
-		GeneratorObj Gen;
+		GeneratorObj gen;
 		int i;
 
-		boolean Result = false;
-		DSSClass GenClass = DSSClassDefs.getDSSClass("generator");
+		boolean result = false;
+		DSSClass genClass = DSSClassDefs.getDSSClass("generator");
 
-		if (ListSize > 0) {  // name list is defined - use it
+		if (listSize > 0) {  // name list is defined - use it
 
-			for (i = 0; i < ListSize; i++) {
-				Gen = (GeneratorObj) GenClass.find(GeneratorNameList.get(i - 1));
-				if ((Gen != null) && Gen.isEnabled())
-					GenPointerList.add(Gen);
+			for (i = 0; i < listSize; i++) {
+				gen = (GeneratorObj) genClass.find(generatorNameList.get(i - 1));
+				if ((gen != null) && gen.isEnabled())
+					genPointerList.add(gen);
 			}
 
 		} else {
 			/* Search through the entire circuit for enabled generators and add them to the list */
 
-			for (i = 0; i < GenClass.getElementCount(); i++) {
-				Gen = (GeneratorObj) GenClass.getElementList().get(i);
-				if (Gen.isEnabled())
-					GenPointerList.add(Gen);
+			for (i = 0; i < genClass.getElementCount(); i++) {
+				gen = (GeneratorObj) genClass.getElementList().get(i);
+				if (gen.isEnabled())
+					genPointerList.add(gen);
 			}
 
 			/* Allocate uniform weights */
-			ListSize = GenPointerList.size();
-			Weights = (double[]) Utilities.resizeArray(Weights, ListSize);
-			for (i = 0; i < ListSize; i++)
-				Weights[i] = 1.0;
+			listSize = genPointerList.size();
+			weights = (double[]) Utilities.resizeArray(weights, listSize);
+			for (i = 0; i < listSize; i++)
+				weights[i] = 1.0;
 		}
 
 		// add up total weights
-		TotalWeight = 0.0;
-		for (i = 0; i < ListSize; i++)
-			TotalWeight = TotalWeight + Weights[i];
+		totalWeight = 0.0;
+		for (i = 0; i < listSize; i++)
+			totalWeight = totalWeight + weights[i];
 
-		if (GenPointerList.size() > 0)
-			Result = true;
+		if (genPointerList.size() > 0)
+			result = true;
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -266,84 +266,84 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	// FIXME Private members in OpenDSS
 
-	public double getkWLimit() {
+	public double getKWLimit() {
 		return kWLimit;
 	}
 
-	public void setkWLimit(double kWLimit) {
-		this.kWLimit = kWLimit;
+	public void setKWLimit(double limit) {
+		this.kWLimit = limit;
 	}
 
-	public double getkWBand() {
+	public double getKWBand() {
 		return kWBand;
 	}
 
-	public void setkWBand(double kWBand) {
-		this.kWBand = kWBand;
+	public void setKWBand(double band) {
+		this.kWBand = band;
 	}
 
-	public double getHalfkWBand() {
-		return HalfkWBand;
+	public double getHalfKWBand() {
+		return halfKWBand;
 	}
 
-	public void setHalfkWBand(double halfkWBand) {
-		HalfkWBand = halfkWBand;
+	public void setHalfKWBand(double band) {
+		halfKWBand = band;
 	}
 
-	public double getKvarLimit() {
-		return kvarLimit;
+	public double getKVArLimit() {
+		return kVArLimit;
 	}
 
-	public void setKvarLimit(double fkvarLimit) {
-		kvarLimit = fkvarLimit;
+	public void setKVArLimit(double limit) {
+		kVArLimit = limit;
 	}
 
 	public double getTotalWeight() {
-		return TotalWeight;
+		return totalWeight;
 	}
 
-	public void setTotalWeight(double totalWeight) {
-		TotalWeight = totalWeight;
+	public void setTotalWeight(double total) {
+		totalWeight = total;
 	}
 
 	public int getListSize() {
-		return ListSize;
+		return listSize;
 	}
 
-	public void setListSize(int listSize) {
-		ListSize = listSize;
+	public void setListSize(int size) {
+		listSize = size;
 	}
 
 	public List<String> getGeneratorNameList() {
-		return GeneratorNameList;
+		return generatorNameList;
 	}
 
-	public void setGeneratorNameList(List<String> generatorNameList) {
-		GeneratorNameList = generatorNameList;
+	public void setGeneratorNameList(List<String> list) {
+		generatorNameList = list;
 	}
 
 	public List<GeneratorObj> getGenPointerList() {
-		return GenPointerList;
+		return genPointerList;
 	}
 
-	public void setGenPointerList(List<GeneratorObj> genPointerList) {
-		GenPointerList = genPointerList;
+	public void setGenPointerList(List<GeneratorObj> list) {
+		genPointerList = list;
 	}
 
 	public double[] getWeights() {
-		return Weights;
+		return weights;
 	}
 
-	public void setWeights(double[] weights) {
-		Weights = weights;
+	public void setWeights(double[] values) {
+		weights = values;
 	}
 
 	public CktElement getMonitoredElement() {
-		return MonitoredElement;
+		return monitoredElement;
 	}
 
-	public void setMonitoredElement(CktElement monitoredElement) {
-		MonitoredElement = monitoredElement;
+	public void setMonitoredElement(CktElement element) {
+		monitoredElement = element;
 	}
 
 }

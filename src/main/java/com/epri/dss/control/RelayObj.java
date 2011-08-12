@@ -35,7 +35,7 @@ import com.epri.dss.shared.impl.Complex;
 public interface RelayObj extends ControlElem {
 
 	// FIXME Private method in OpenDSS
-	void interpretRelayType(String S);
+	void interpretRelayType(String s);
 
 	// FIXME Private method in OpenDSS
 	void interpretRelayAction(String Action);
@@ -83,41 +83,41 @@ public interface RelayObj extends ControlElem {
 
 	void setResetTime(double resetTime);
 
-	double getDelay_Time();
+	double getDelayTime();
 
-	void setDelay_Time(double delay_Time);
+	void setDelayTime(double delayTime);
 
-	double getBreaker_time();
+	double getBreakerTime();
 
-	void setBreaker_time(double breaker_time);
+	void setBreakerTime(double breakerTime);
 
 	double getTDPhase();
 
-	void setTDPhase(double tDPhase);
+	void setTDPhase(double TDPhase);
 
 	double getTDGround();
 
-	void setTDGround(double tDGround);
+	void setTDGround(double TDGround);
 
 	String getRelayTarget();
 
 	void setRelayTarget(String relayTarget);
 
-	TCC_CurveObj getOVcurve();
+	TCC_CurveObj getOVCurve();
 
-	void setOVcurve(TCC_CurveObj oVcurve);
+	void setOVCurve(TCC_CurveObj ovcurve);
 
 	TCC_CurveObj getUVCurve();
 
-	void setUVCurve(TCC_CurveObj uVCurve);
+	void setUVCurve(TCC_CurveObj uvcurve);
 
-	double getVbase();
+	double getVBase();
 
-	void setVbase(double vbase);
+	void setVBase(double vbase);
 
-	double getkVBase();
+	double getKVBase();
 
-	void setkVBase(double kVBase);
+	void setKVBase(double kVBase);
 
 	double getPickupAmps46();
 
@@ -191,9 +191,9 @@ public interface RelayObj extends ControlElem {
 
 	void setGroundTarget(boolean groundTarget);
 
-	double getNextTriptime();
+	double getNextTripTime();
 
-	void setNextTriptime(double nextTriptime);
+	void setNextTripTime(double nextTripTime);
 
 	int getLastEventHandle();
 
@@ -203,8 +203,8 @@ public interface RelayObj extends ControlElem {
 
 	void setCondOffset(int condOffset);
 
-	Complex[] getcBuffer();
+	Complex[] getCBuffer();
 
-	void setcBuffer(Complex[] cBuffer);
+	void setCBuffer(Complex[] cBuffer);
 
 }

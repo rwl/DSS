@@ -73,19 +73,19 @@ public interface RecloserObj extends ControlElem {
 
 	double getTDGrDelayed();
 
-	void setTDGrDelayed(double tDGrDelayed);
+	void setTDGrDelayed(double TDGrDelayed);
 
 	double getTDPhDelayed();
 
-	void setTDPhDelayed(double tDPhDelayed);
+	void setTDPhDelayed(double TDPhDelayed);
 
 	double getTDGrFast();
 
-	void setTDGrFast(double tDGrFast);
+	void setTDGrFast(double TDGrFast);
 
 	double getTDPhFast();
 
-	void setTDPhFast(double tDPhFast);
+	void setTDPhFast(double TDPhFast);
 
 	String getMonitoredElementName();
 
@@ -131,9 +131,9 @@ public interface RecloserObj extends ControlElem {
 
 	void setCondOffset(int condOffset);
 
-	Complex[] getcBuffer();
+	Complex[] getCBuffer();
 
-	void setcBuffer(Complex[] cBuffer);
+	void setCBuffer(Complex[] cBuffer);
 
 	// FIXME Private method in OpenDSS
 	void interpretRecloserAction(String param);

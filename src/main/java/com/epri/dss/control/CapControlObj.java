@@ -21,7 +21,7 @@ public interface CapControlObj extends ControlElem {
 
 	CapacitorObj getCapacitor();
 
-	void setPendingChange(ControlAction Value);
+	void setPendingChange(ControlAction value);
 
 	ControlAction getPendingChange();
 
@@ -29,39 +29,39 @@ public interface CapControlObj extends ControlElem {
 
 	void setControlType(CapControlType controlType);
 
-	double getON_Value();
+	double getOnValue();
 
-	double getOFF_Value();
+	double getOffValue();
 
-	double getPFON_Value();
+	double getPFOnValue();
 
-	double getPFOFF_Value();
+	double getPFOffValue();
 
 	double getCTRatio();
 
 	double getPTRatio();
 
-	double getONDelay();
+	double getOnDelay();
 
-	double getOFFDelay();
+	double getOffDelay();
 
 	double getDeadTime();
 
 	boolean isVOverride();
 
-	double getVmax();
+	double getVMax();
 
-	double getVmin();
+	double getVMin();
 
 	// FIXME Private properties in OpenDSS
 
 	int getCTPhase();
 
-	void setCTPhase(int cTPhase);
+	void setCTPhase(int CTPhase);
 
 	int getPTPhase();
 
-	void setPTPhase(int pTPhase);
+	void setPTPhase(int PTPhase);
 
 	double getLastOpenTime();
 
@@ -103,32 +103,32 @@ public interface CapControlObj extends ControlElem {
 
 	void setCondOffset(int condOffset);
 
-	Complex[] getcBuffer();
+	Complex[] getCBuffer();
 
-	void setcBuffer(Complex[] cBuffer);
+	void setCBuffer(Complex[] cBuffer);
 
-	void setON_Value(double oN_Value);
+	void setOnValue(double onValue);
 
-	void setOFF_Value(double oFF_Value);
+	void setOffValue(double offValue);
 
-	void setPFON_Value(double pFON_Value);
+	void setPFOnValue(double PFOnValue);
 
-	void setPFOFF_Value(double pFOFF_Value);
+	void setPFOffValue(double PFOffValue);
 
-	void setCTRatio(double cTRatio);
+	void setCTRatio(double CTRatio);
 
-	void setPTRatio(double pTRatio);
+	void setPTRatio(double PTRatio);
 
-	void setONDelay(double oNDelay);
+	void setOnDelay(double ONDelay);
 
-	void setOFFDelay(double oFFDelay);
+	void setOffDelay(double OffDelay);
 
 	void setDeadTime(double deadTime);
 
-	void setVOverride(boolean vOverride);
+	void setVOverride(boolean VOverride);
 
-	void setVmax(double vmax);
+	void setVMax(double vmax);
 
-	void setVmin(double vmin);
+	void setVMin(double vmin);
 
 }

@@ -13,6 +13,6 @@ public interface Relay extends ControlClass {
 	static final int NEGVOLTAGE = 5;
 	static final int GENERIC = 6;  /* Use this for frequency, etc. Generic over/under relay */
 
-	TCC_CurveObj getTccCurve(String CurveName);
+	TCC_CurveObj getTccCurve(String curveName);
 
 }

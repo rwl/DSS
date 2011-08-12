@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class RecloserImpl extends ControlClassImpl implements Recloser {
 
-	private static RecloserObj ActiveRecloserObj;
+	private static RecloserObj activeRecloserObj;
 
 	private static DSSClass TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 
@@ -30,14 +30,14 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		this.commandList.setAbbrevAllowed(true);
 	}
 
-	public static TCC_CurveObj getTCC_Curve(String CurveName) {
+	public static TCC_CurveObj getTCC_Curve(String curveName) {
 
-		TCC_CurveObj Result = (TCC_CurveObj) TCC_CurveClass.find(CurveName);
+		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
-		if (Result == null)
-			DSSGlobals.getInstance().doSimpleMsg("TCC Curve object: \""+CurveName+"\" not found.", 388);
+		if (result == null)
+			DSSGlobals.getInstance().doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 388);
 
-		return Result;
+		return result;
 	}
 
 	protected void defineProperties() {
@@ -48,7 +48,6 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 
 		// define property names
-
 		propertyName[0]  = "MonitoredObj";
 		propertyName[1]  = "MonitoredTerm";
 		propertyName[2]  = "SwitchedObj";
@@ -119,51 +118,51 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new RecloserObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new RecloserObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveRecloserObj((RecloserObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveRecloserObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveRecloserObj());
 
-		int Result = 0;
+		int result = 0;
 
 		RecloserObj ar = getActiveRecloserObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
-				ar.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+				ar.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
-				ar.setMonitoredElementName(Param.toLowerCase());
+				ar.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
 				ar.setMonitoredElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				ar.setElementName(Param.toLowerCase());
+				ar.setElementName(param.toLowerCase());
 				break;
 			case 3:
 				ar.setElementTerminal(parser.makeInteger());
@@ -172,16 +171,16 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				ar.setNumFast(parser.makeInteger());
 				break;
 			case 5:
-				ar.setPhaseFast(getTCC_Curve(Param));
+				ar.setPhaseFast(getTCC_Curve(param));
 				break;
 			case 6:
-				ar.setPhaseDelayed(getTCC_Curve(Param));
+				ar.setPhaseDelayed(getTCC_Curve(param));
 				break;
 			case 7:
-				ar.setGroundFast(getTCC_Curve(Param));
+				ar.setGroundFast(getTCC_Curve(param));
 				break;
 			case 8:
-				ar.setGroundDelayed(getTCC_Curve(Param));
+				ar.setGroundDelayed(getTCC_Curve(param));
 				break;
 			case 9:
 				ar.setPhaseTrip(parser.makeDouble());
@@ -208,7 +207,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				ar.setDelayTime(parser.makeDouble());
 				break;
 			case 17:
-				ar.interpretRecloserAction(Param);
+				ar.interpretRecloserAction(param);
 				break;
 			case 18:
 				ar.setTDPhFast(parser.makeDouble());
@@ -224,11 +223,11 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				break;
 			default:
 				// inherited parameters
-				classEdit(ActiveRecloserObj, ParamPointer - Recloser.NumPropsThisClass);  // TODO Check name-static member conflict
+				classEdit(activeRecloserObj, paramPointer - Recloser.NumPropsThisClass);  // TODO Check name-static member conflict
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			/* Default the controlled element to the monitored element */
 			case 1:
 				ar.setElementName(ar.getMonitoredElementName());
@@ -238,71 +237,71 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		ar.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String RecloserName) {
-		int i, Result = 0;
+	protected int makeLike(String recloserName) {
+		int i, result = 0;
 
 		/* See if we can find this Recloser name in the present collection */
-		RecloserObj OtherRecloser = (RecloserObj) find(RecloserName);
-		if (OtherRecloser != null) {
+		RecloserObj otherRecloser = (RecloserObj) find(recloserName);
+		if (otherRecloser != null) {
 			RecloserObj ar = getActiveRecloserObj();
 
-			ar.setNPhases(OtherRecloser.getNPhases());
-			ar.setNConds(OtherRecloser.getNConds());  // force reallocation of terminal stuff
+			ar.setNPhases(otherRecloser.getNPhases());
+			ar.setNConds(otherRecloser.getNConds());  // force reallocation of terminal stuff
 
-			ar.setElementName(OtherRecloser.getElementName());
-			ar.setElementTerminal(OtherRecloser.getElementTerminal());
-			ar.setControlledElement(OtherRecloser.getControlledElement());  // pointer to target circuit element
+			ar.setElementName(otherRecloser.getElementName());
+			ar.setElementTerminal(otherRecloser.getElementTerminal());
+			ar.setControlledElement(otherRecloser.getControlledElement());  // pointer to target circuit element
 
-			ar.setMonitoredElement(OtherRecloser.getMonitoredElement());  // pointer to target circuit element
-			ar.setMonitoredElementName(OtherRecloser.getMonitoredElementName());  // pointer to target circuit element
-			ar.setMonitoredElementTerminal(OtherRecloser.getMonitoredElementTerminal());  // pointer to target circuit element
+			ar.setMonitoredElement(otherRecloser.getMonitoredElement());  // pointer to target circuit element
+			ar.setMonitoredElementName(otherRecloser.getMonitoredElementName());  // pointer to target circuit element
+			ar.setMonitoredElementTerminal(otherRecloser.getMonitoredElementTerminal());  // pointer to target circuit element
 
-			ar.setPhaseDelayed(OtherRecloser.getPhaseDelayed());
-			ar.setGroundDelayed(OtherRecloser.getGroundDelayed());
-			ar.setPhaseFast(OtherRecloser.getPhaseFast());
-			ar.setGroundFast(OtherRecloser.getGroundFast());
-			ar.setPhaseTrip(OtherRecloser.getPhaseTrip());
-			ar.setGroundTrip(OtherRecloser.getGroundTrip());
-			ar.setPhaseInst(OtherRecloser.getPhaseInst());
-			ar.setGroundInst(OtherRecloser.getGroundInst());
-			ar.setResetTime(OtherRecloser.getResetTime());
-			ar.setNumReclose(OtherRecloser.getNumReclose());
-			ar.setNumFast(OtherRecloser.getNumFast());
+			ar.setPhaseDelayed(otherRecloser.getPhaseDelayed());
+			ar.setGroundDelayed(otherRecloser.getGroundDelayed());
+			ar.setPhaseFast(otherRecloser.getPhaseFast());
+			ar.setGroundFast(otherRecloser.getGroundFast());
+			ar.setPhaseTrip(otherRecloser.getPhaseTrip());
+			ar.setGroundTrip(otherRecloser.getGroundTrip());
+			ar.setPhaseInst(otherRecloser.getPhaseInst());
+			ar.setGroundInst(otherRecloser.getGroundInst());
+			ar.setResetTime(otherRecloser.getResetTime());
+			ar.setNumReclose(otherRecloser.getNumReclose());
+			ar.setNumFast(otherRecloser.getNumFast());
 
 			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (i = 0; i < ar.getNumReclose(); i++)
-				ar.getRecloseIntervals()[i] = OtherRecloser.getRecloseIntervals()[i];
+				ar.getRecloseIntervals()[i] = otherRecloser.getRecloseIntervals()[i];
 
-			ar.setLockedOut(OtherRecloser.isLockedOut());
+			ar.setLockedOut(otherRecloser.isLockedOut());
 
-			ar.setPresentState(OtherRecloser.getPresentState());
-			ar.setCondOffset(OtherRecloser.getCondOffset());
+			ar.setPresentState(otherRecloser.getPresentState());
+			ar.setCondOffset(otherRecloser.getCondOffset());
 
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++)
-				ar.setPropertyValue(i, OtherRecloser.getPropertyValue(i));
+				ar.setPropertyValue(i, otherRecloser.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Recloser makeLike: \"" + RecloserName + "\" not found.", 391);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Recloser makeLike: \"" + recloserName + "\" not found.", 391);
 		}
 
-		return Result;
+		return result;
 	}
 
 	public static RecloserObj getActiveRecloserObj() {
-		return ActiveRecloserObj;
+		return activeRecloserObj;
 	}
 
-	public static void setActiveRecloserObj(RecloserObj activeRecloserObj) {
-		ActiveRecloserObj = activeRecloserObj;
+	public static void setActiveRecloserObj(RecloserObj recloserObj) {
+		activeRecloserObj = recloserObj;
 	}
 
 }

@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class CapControlImpl extends ControlClassImpl implements CapControl {
 
-	private static CapControlObj ActiveCapControlObj;
+	private static CapControlObj activeCapControlObj;
 
 	public CapControlImpl() {
 		super();
@@ -21,9 +21,9 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -34,7 +34,6 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		allocatePropertyArrays();
 
 		// define property names
-
 		propertyName[0] = "element";
 		propertyName[1] = "terminal";
 		propertyName[2] = "capacitor";
@@ -103,73 +102,73 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new CapControlObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new CapControlObjImpl(this, ObjName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveCapControlObj((CapControlObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
 
-		int Result = 0;
+		int result = 0;
 
 		CapControlObj acc = getActiveCapControlObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
-				acc.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+				acc.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
-				acc.setElementName(Param.toLowerCase());
+				acc.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				acc.setElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				acc.setCapacitorName("capacitor." + Param);
+				acc.setCapacitorName("capacitor." + param);
 				break;
 			case 3:
-				switch (Param.toLowerCase().charAt(0)) {
+				switch (param.toLowerCase().charAt(0)) {
 				case 'c':
-					acc.setControlType(CapControlType.CURRENTCONTROL);
+					acc.setControlType(CapControlType.CURRENT);
 					break;
 				case 'v':
-					acc.setControlType(CapControlType.VOLTAGECONTROL);
+					acc.setControlType(CapControlType.VOLTAGE);
 					break;
 				case 'k':
-					acc.setControlType(CapControlType.KVARCONTROL);
+					acc.setControlType(CapControlType.KVAR);
 					break;
 				case 't':
-					acc.setControlType(CapControlType.TIMECONTROL);
+					acc.setControlType(CapControlType.TIME);
 					break;
 				case 'p':
-					acc.setControlType(CapControlType.PFCONTROL);
+					acc.setControlType(CapControlType.PF);
 					break;
 				case 's':
-					acc.setControlType(CapControlType.SRPCONTROL);
+					acc.setControlType(CapControlType.SRP);
 					break;
 				default:
-					Globals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", Param, acc.getName()), 352);
+					globals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
 					break;
 				}
 				break;
@@ -180,46 +179,46 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setCTRatio(parser.makeDouble());
 				break;
 			case 6:
-				acc.setON_Value(parser.makeDouble());
+				acc.setOnValue(parser.makeDouble());
 				break;
 			case 7:
-				acc.setOFF_Value(parser.makeDouble());
+				acc.setOffValue(parser.makeDouble());
 				break;
 			case 8:
-				acc.setONDelay(parser.makeDouble());
+				acc.setOnDelay(parser.makeDouble());
 				break;
 			case 9:
-				acc.setVOverride(Utilities.interpretYesNo(Param));
+				acc.setVOverride(Utilities.interpretYesNo(param));
 				break;
 			case 10:
-				acc.setVmax(parser.makeDouble());
+				acc.setVMax(parser.makeDouble());
 				break;
 			case 11:
-				acc.setVmin(parser.makeDouble());
+				acc.setVMin(parser.makeDouble());
 				break;
 			case 12:
-				acc.setOFFDelay(parser.makeDouble());
+				acc.setOffDelay(parser.makeDouble());
 				break;
 			case 13:
 				acc.setDeadTime(parser.makeDouble());
 				break;
 			case 14:
-				if (Utilities.compareTextShortest(Param, "avg") == 0) {
+				if (Utilities.compareTextShortest(param, "avg") == 0) {
 					acc.setCTPhase(CapControl.AVGPHASES);
-				} else if (Utilities.compareTextShortest(Param, "max") == 0) {
+				} else if (Utilities.compareTextShortest(param, "max") == 0) {
 					acc.setCTPhase(CapControl.MAXPHASE);
-				} else if (Utilities.compareTextShortest(Param, "min") == 0) {
+				} else if (Utilities.compareTextShortest(param, "min") == 0) {
 					acc.setCTPhase(CapControl.MINPHASE);
 				} else {
 					acc.setCTPhase( Math.max(1, parser.makeInteger()) );
 				}
 				break;
 			case 15:
-				if (Utilities.compareTextShortest(Param, "avg") == 0) {
+				if (Utilities.compareTextShortest(param, "avg") == 0) {
 					acc.setPTPhase(CapControl.AVGPHASES);
-				} else if (Utilities.compareTextShortest(Param, "max") == 0) {
+				} else if (Utilities.compareTextShortest(param, "max") == 0) {
 					acc.setPTPhase(CapControl.MAXPHASE);
-				} else if (Utilities.compareTextShortest(Param, "min") == 0) {
+				} else if (Utilities.compareTextShortest(param, "min") == 0) {
 					acc.setPTPhase(CapControl.MINPHASE);
 				} else {
 					acc.setPTPhase( Math.max(1, parser.makeInteger()) );
@@ -227,113 +226,113 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveCapControlObj(), ParamPointer - CapControl.NumPropsThisClass);
+				classEdit(getActiveCapControlObj(), paramPointer - CapControl.NumPropsThisClass);
 				break;
 			}
 
 
 			/* PF controller changes */
-			if (acc.getControlType() == CapControlType.PFCONTROL) {
-				switch (ParamPointer) {
+			if (acc.getControlType() == CapControlType.PF) {
+				switch (paramPointer) {
 				case 3:
-					acc.setPFON_Value(0.95);  // defaults
-					acc.setPFOFF_Value(1.05);
+					acc.setPFOnValue(0.95);  // defaults
+					acc.setPFOffValue(1.05);
 					break;
 				case 6:
-					if ((acc.getON_Value() >= -1.0) && (acc.getON_Value() <= 1.0)) {
-						if (acc.getON_Value() < 0.0) {
-							acc.setPFON_Value( 2.0 + acc.getON_Value());
+					if ((acc.getOnValue() >= -1.0) && (acc.getOnValue() <= 1.0)) {
+						if (acc.getOnValue() < 0.0) {
+							acc.setPFOnValue( 2.0 + acc.getOnValue());
 						} else {
-							acc.setPFON_Value(acc.getON_Value());
+							acc.setPFOnValue(acc.getOnValue());
 						}
 					} else {
-						Globals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
+						globals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
 					}
 					break;
 				case 7:
-					if ((acc.getOFF_Value() >= -1.0) && (acc.getOFF_Value() <= 1.0)) {
-						if (acc.getOFF_Value() < 0.0) {
-							acc.setPFOFF_Value(2.0 + acc.getOFF_Value());
+					if ((acc.getOffValue() >= -1.0) && (acc.getOffValue() <= 1.0)) {
+						if (acc.getOffValue() < 0.0) {
+							acc.setPFOffValue(2.0 + acc.getOffValue());
 						} else {
-							acc.setPFOFF_Value(acc.getOFF_Value());
+							acc.setPFOffValue(acc.getOffValue());
 						}
 					} else {
-						Globals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
+						globals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
 					}
 					break;
 				case 14:
 					if (acc.getCTPhase() > acc.getNPhases()) {
-						Globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
+						globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
 						acc.setCTPhase(1);
 					}
 					break;
 				case 15:
 					if (acc.getPTPhase() > acc.getNPhases()) {
-						Globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
+						globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
 						acc.setPTPhase(1);
 					}
 					break;
 				}
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		acc.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String CapControlName) {
-		int i, Result = 0;
+	protected int makeLike(String capControlName) {
+		int i, result = 0;
 
 		/* See if we can find this CapControl name in the present collection */
-		CapControlObj OtherCapControl = (CapControlObj) find(CapControlName);
-		if (OtherCapControl != null) {
+		CapControlObj otherCapControl = (CapControlObj) find(capControlName);
+		if (otherCapControl != null) {
 			CapControlObj acc = getActiveCapControlObj();
 
-			acc.setNPhases(OtherCapControl.getNPhases());
-			acc.setNConds(OtherCapControl.getNConds());  // force reallocation of terminal stuff
+			acc.setNPhases(otherCapControl.getNPhases());
+			acc.setNConds(otherCapControl.getNConds());  // force reallocation of terminal stuff
 
-			acc.setElementName(OtherCapControl.getElementName());
-			acc.setCapacitorName(OtherCapControl.getCapacitorName());
-			acc.setControlledElement(OtherCapControl.getControlledElement());  // pointer to target circuit element
-			acc.setMonitoredElement(OtherCapControl.getMonitoredElement());    // pointer to target circuit element
+			acc.setElementName(otherCapControl.getElementName());
+			acc.setCapacitorName(otherCapControl.getCapacitorName());
+			acc.setControlledElement(otherCapControl.getControlledElement());  // pointer to target circuit element
+			acc.setMonitoredElement(otherCapControl.getMonitoredElement());    // pointer to target circuit element
 
-			acc.setElementTerminal(OtherCapControl.getElementTerminal());
-			acc.setPTRatio(OtherCapControl.getPTRatio());
-			acc.setCTRatio(OtherCapControl.getCTRatio());
-			acc.setControlType(OtherCapControl.getControlType());
-			acc.setPresentState(OtherCapControl.getPresentState());
-			acc.setShouldSwitch(OtherCapControl.isShouldSwitch());
-			acc.setCondOffset(OtherCapControl.getCondOffset());
+			acc.setElementTerminal(otherCapControl.getElementTerminal());
+			acc.setPTRatio(otherCapControl.getPTRatio());
+			acc.setCTRatio(otherCapControl.getCTRatio());
+			acc.setControlType(otherCapControl.getControlType());
+			acc.setPresentState(otherCapControl.getPresentState());
+			acc.setShouldSwitch(otherCapControl.isShouldSwitch());
+			acc.setCondOffset(otherCapControl.getCondOffset());
 
-			acc.setON_Value(OtherCapControl.getON_Value());
-			acc.setOFF_Value(OtherCapControl.getOFF_Value());
-			acc.setPFON_Value(OtherCapControl.getPFON_Value());
-			acc.setPFOFF_Value(OtherCapControl.getPFOFF_Value());
+			acc.setOnValue(otherCapControl.getOnValue());
+			acc.setOffValue(otherCapControl.getOffValue());
+			acc.setPFOnValue(otherCapControl.getPFOnValue());
+			acc.setPFOffValue(otherCapControl.getPFOffValue());
 
-			acc.setCTPhase(OtherCapControl.getCTPhase());
-			acc.setPTPhase(OtherCapControl.getPTPhase());
+			acc.setCTPhase(otherCapControl.getCTPhase());
+			acc.setPTPhase(otherCapControl.getPTPhase());
 
 			for (i = 0; i < acc.getParentClass().getNumProperties(); i++)
-				acc.setPropertyValue(i, OtherCapControl.getPropertyValue(i));
+				acc.setPropertyValue(i, otherCapControl.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + CapControlName + "\" not found.", 360);
+			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
 		}
 
-		return Result;
+		return result;
 	}
 
 	public static CapControlObj getActiveCapControlObj() {
-		return ActiveCapControlObj;
+		return activeCapControlObj;
 	}
 
-	public static void setActiveCapControlObj(CapControlObj activeCapControlObj) {
-		ActiveCapControlObj = activeCapControlObj;
+	public static void setActiveCapControlObj(CapControlObj capControlObj) {
+		activeCapControlObj = capControlObj;
 	}
 
 }

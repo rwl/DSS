@@ -39,7 +39,7 @@ public interface ControlElem extends CktElement {
 
 	void setDblTraceParameter(double dblTraceParameter);
 
-	void setControlledElement(CktElement Value);
+	void setControlledElement(CktElement value);
 
 	CktElement getControlledElement();
 
@@ -51,7 +51,7 @@ public interface ControlElem extends CktElement {
 	/**
 	 * Do the action that is pending from last sample.
 	 */
-	void doPendingAction(int Code, int ProxyHdl);
+	void doPendingAction(int code, int proxyHdl);
 
 	void reset();
 

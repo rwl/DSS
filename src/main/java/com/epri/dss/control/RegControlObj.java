@@ -32,7 +32,7 @@ public interface RegControlObj extends ControlElem {
 
 	int getNumTaps();
 
-	void setPendingTapChange(double Value);
+	void setPendingTapChange(double value);
 
 	double getPendingTapChange();
 
@@ -72,9 +72,9 @@ public interface RegControlObj extends ControlElem {
 
 	// FIXME Private members in OpenDSS
 
-	double getVreg();
+	double getVReg();
 
-	void setVreg(double vreg);
+	void setVReg(double vreg);
 
 	double getR();
 
@@ -84,21 +84,21 @@ public interface RegControlObj extends ControlElem {
 
 	void setX(double x);
 
-	double getRevVreg();
+	double getRevVReg();
 
-	void setRevVreg(double revVreg);
+	void setRevVReg(double revVreg);
 
 	String getRegulatedBus();
 
 	void setRegulatedBus(String regulatedBus);
 
-	boolean isIsReversible();
+	boolean isReversible();
 
-	void setIsReversible(boolean isReversible);
+	void setReversible(boolean isReversible);
 
 	boolean isLDCActive();
 
-	void setLDCActive(boolean lDCActive);
+	void setLDCActive(boolean LDCActive);
 
 	boolean isUsingRegulatedBus();
 
@@ -112,9 +112,9 @@ public interface RegControlObj extends ControlElem {
 
 	void setArmed(boolean armed);
 
-	File getTracefile();
+	File getTraceFile();
 
-	void setTracefile(File tracefile);
+	void setTraceFile(File tracefile);
 
 	int getTapLimitPerChange();
 
@@ -124,21 +124,19 @@ public interface RegControlObj extends ControlElem {
 
 	void setTapWinding(int tapWinding);
 
-	boolean isInversetime();
+	void setInverseTime(boolean inversetime);
 
-	void setInversetime(boolean inversetime);
+	double getVLimit();
 
-	double getVlimit();
-
-	void setVlimit(double vlimit);
+	void setVLimit(double vlimit);
 
 	boolean isVLimitActive();
 
 	void setVLimitActive(boolean vLimitActive);
 
-	int getPTphase();
+	int getPTPhase();
 
-	void setPTphase(int pTphase);
+	void setPTPhase(int ptphase);
 
 	int getControlledPhase();
 
@@ -166,9 +164,9 @@ public interface RegControlObj extends ControlElem {
 
 	void setTapDelay(double tapDelay);
 
-	void setkWRevPowerThreshold(double kWRevPowerThreshold);
+	void setKWRevPowerThreshold(double kWRevPowerThreshold);
 
-	double getkWRevPowerThreshold();
+	double getKWRevPowerThreshold();
 
 	void setRevDelay(double revDelay);
 

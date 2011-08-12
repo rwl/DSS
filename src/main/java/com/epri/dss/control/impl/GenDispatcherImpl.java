@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher {
 
-	private static GenDispatcherObj ActiveGenDispatcherObj;
+	private static GenDispatcherObj activeGenDispatcherObj;
 
 	public GenDispatcherImpl() {
 		super();
@@ -20,9 +20,9 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -33,7 +33,6 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		allocatePropertyArrays();
 
 		// define property names
-
 		propertyName[0] = "Element";
 		propertyName[1] = "Terminal";
 		propertyName[2] = "kWLimit";
@@ -61,77 +60,77 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveGenDispatcherObj((GenDispatcherObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveGenDispatcherObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveGenDispatcherObj());
 
-		int Result = 0;
+		int result = 0;
 
 		GenDispatcherObj agd = getActiveGenDispatcherObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
-				agd.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+				agd.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
-				agd.setElementName(Param.toLowerCase());
+				agd.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				agd.setElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				agd.setkWLimit(parser.makeDouble());
+				agd.setKWLimit(parser.makeDouble());
 				break;
 			case 3:
-				agd.setkWBand(parser.makeDouble());
+				agd.setKWBand(parser.makeDouble());
 				break;
 			case 4:
-				agd.setKvarLimit(parser.makeDouble());
+				agd.setKVArLimit(parser.makeDouble());
 				break;
 			case 5:
-				Utilities.interpretStringListArray(Param, agd.getGeneratorNameList());
+				Utilities.interpretStringListArray(param, agd.getGeneratorNameList());
 				break;
 			case 6:
 				agd.setListSize(agd.getGeneratorNameList().size());
 				if (agd.getListSize() > 0) {
 					agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
 
-					Utilities.interpretDblArray(Param, agd.getListSize(), agd.getWeights());
+					Utilities.interpretDblArray(param, agd.getListSize(), agd.getWeights());
 				}
 				break;
 			default:
 				// Inherited parameters
-				classEdit(ActiveGenDispatcherObj, ParamPointer - GenDispatcher.NumPropsThisClass);
+				classEdit(activeGenDispatcherObj, paramPointer - GenDispatcher.NumPropsThisClass);
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 3:
-				agd.setHalfkWBand(agd.getkWBand() / 2.0);
+				agd.setHalfKWBand(agd.getKWBand() / 2.0);
 				break;
 			case 5:  // levelize the list
 				agd.getGenPointerList().clear();  // clear this for resetting on first sample
@@ -142,48 +141,48 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		agd.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String GenDispatcherName) {
-		int Result = 0;
+	protected int makeLike(String genDispatcherName) {
+		int result = 0;
 
 		/* See if we can find this GenDispatcher name in the present collection */
-		GenDispatcherObj OtherGenDispatcher = (GenDispatcherObj) find(GenDispatcherName);
-		if (OtherGenDispatcher != null) {
+		GenDispatcherObj otherGenDispatcher = (GenDispatcherObj) find(genDispatcherName);
+		if (otherGenDispatcher != null) {
 			GenDispatcherObj agd = getActiveGenDispatcherObj();
 
-			agd.setNPhases(OtherGenDispatcher.getNPhases());
-			agd.setNConds(OtherGenDispatcher.getNConds());  // force reallocation of terminal stuff
+			agd.setNPhases(otherGenDispatcher.getNPhases());
+			agd.setNConds(otherGenDispatcher.getNConds());  // force reallocation of terminal stuff
 
-			agd.setElementName(OtherGenDispatcher.getElementName());
-			agd.setControlledElement(OtherGenDispatcher.getControlledElement());  // pointer to target circuit element
-			agd.setMonitoredElement(OtherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
+			agd.setElementName(otherGenDispatcher.getElementName());
+			agd.setControlledElement(otherGenDispatcher.getControlledElement());  // pointer to target circuit element
+			agd.setMonitoredElement(otherGenDispatcher.getMonitoredElement());  // pointer to target circuit element
 
-			agd.setElementTerminal(OtherGenDispatcher.getElementTerminal());
+			agd.setElementTerminal(otherGenDispatcher.getElementTerminal());
 
 			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
-				agd.setPropertyValue(i, OtherGenDispatcher.getPropertyValue(i));
+				agd.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + GenDispatcherName + "\" not found.", 370);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
 		}
 
-		return Result;
+		return result;
 	}
 
-	public static void setActiveGenDispatcherObj(GenDispatcherObj activeGenDispatcherObj) {
-		ActiveGenDispatcherObj = activeGenDispatcherObj;
+	public static void setActiveGenDispatcherObj(GenDispatcherObj genDispatcherObj) {
+		activeGenDispatcherObj = genDispatcherObj;
 	}
 
 	public static GenDispatcherObj getActiveGenDispatcherObj() {
-		return ActiveGenDispatcherObj;
+		return activeGenDispatcherObj;
 	}
 
 }
