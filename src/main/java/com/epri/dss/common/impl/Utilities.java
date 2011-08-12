@@ -1131,7 +1131,7 @@ public class Utilities {
 		if (NodeRef == 0) {  // TODO Check zero based indexing
 			return 0;
 		} else {
-			return DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef].NodeNum;
+			return DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef].nodeNum;
 		}
 	}
 
@@ -1585,11 +1585,11 @@ public class Utilities {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
-			if (ckt.getBuses()[i].getkVBase() > 0.0) {
+			if (ckt.getBuses()[i].getKVBase() > 0.0) {
 				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
 					nRef = ckt.getBuses()[i].getRef(j);
 					if (nRef > 0)
-						Result = Math.max(Result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getkVBase());
+						Result = Math.max(Result, ckt.getSolution().getNodeV()[nRef].abs() / ckt.getBuses()[i].getKVBase());
 				}
 			}
 		}
@@ -1608,11 +1608,11 @@ public class Utilities {
 
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBuses()[i];
-			if (bus.getkVBase() > 0.0)
+			if (bus.getKVBase() > 0.0)
 				for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 					nRef = bus.getRef(j);
 					if (nRef > 0) {
-						VMagPU = ckt.getSolution().getNodeV()[nRef].abs() / bus.getkVBase();
+						VMagPU = ckt.getSolution().getNodeV()[nRef].abs() / bus.getKVBase();
 						if (ignoreNeutrals) {
 							if (VMagPU > 100.0) {  // 0.1 pu
 								Result   = Math.min(Result, VMagPU);  // only check buses greater than 10%

@@ -61,7 +61,7 @@ public class YMatrix {
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
 			NodeBus nb = ckt.getMapNodeToBus()[i];
-			sol.getNodeVbase()[i] = ckt.getBuses()[nb.BusRef].getkVBase() * 1000.0;
+			sol.getNodeVbase()[i] = ckt.getBuses()[nb.busRef].getKVBase() * 1000.0;
 			sol.setVoltageBaseChanged(false);
 		}
 	}
@@ -213,7 +213,7 @@ public class YMatrix {
 			getMatrixElement(Y, i, i, c);
 			if (c.abs() == 0.0) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
-				Result += String.format("%sZero diagonal for bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.BusRef), nb.NodeNum);
+				Result += String.format("%sZero diagonal for bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), nb.nodeNum);
 			}
 		}
 
@@ -221,7 +221,7 @@ public class YMatrix {
 		getSingularCol(Y, sCol);  // returns a 0-based node number  TODO Check zero based indexing
 		if (sCol >= 0) {
 			NodeBus nb = ckt.getMapNodeToBus()[sCol];
-			Result += String.format("%sMatrix singularity at bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.BusRef), sCol);
+			Result += String.format("%sMatrix singularity at bus %s, node %d", DSSGlobals.CRLF, ckt.getBusList().get(nb.busRef), sCol);
 		}
 
 		Cliques = new ArrayList<Long>(ckt.getNumNodes());  // TODO Check translation
@@ -239,7 +239,7 @@ public class YMatrix {
 					}
 				}
 				NodeBus nb = ckt.getMapNodeToBus()[(int) iFirst];
-				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSSGlobals.CRLF, i, iCount, ckt.getBusList().get(nb.BusRef), iFirst);
+				Result += String.format("%s  #%d has %d nodes, including bus %s (node %d)", DSSGlobals.CRLF, i, iCount, ckt.getBusList().get(nb.busRef), iFirst);
 			}
 		}
 

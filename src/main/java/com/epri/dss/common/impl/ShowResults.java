@@ -101,8 +101,8 @@ public abstract class ShowResults {
 		V0 = V0 / 1000.0;
 
 		// calc per unit value
-		if (ckt.getBuses()[i].getkVBase() != 0.0) {
-			Vpu = V1 / ckt.getBuses()[i].getkVBase();
+		if (ckt.getBuses()[i].getKVBase() != 0.0) {
+			Vpu = V1 / ckt.getBuses()[i].getKVBase();
 		} else {
 			Vpu = 0.0;
 		}
@@ -142,8 +142,8 @@ public abstract class ShowResults {
 				}
 			}
 			Vmag = Volts.abs() * 0.001;
-			if (ckt.getBuses()[i].getkVBase() != 0.0) {
-				Vpu = Vmag / ckt.getBuses()[i].getkVBase();
+			if (ckt.getBuses()[i].getKVBase() != 0.0) {
+				Vpu = Vmag / ckt.getBuses()[i].getKVBase();
 			} else {
 				Vpu = 0.0;
 			}
@@ -153,7 +153,7 @@ public abstract class ShowResults {
 			} else {
 				Bname = Utilities.pad("   -", MaxBusNameLength);
 			}
-			F.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f", Bname, ckt.getBuses()[i].getNum(j), Vmag, Volts.degArg(), Vpu, ckt.getBuses()[i].getkVBase() * DSSGlobals.SQRT3);
+			F.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f", Bname, ckt.getBuses()[i].getNum(j), Vmag, Volts.degArg(), Vpu, ckt.getBuses()[i].getKVBase() * DSSGlobals.SQRT3);
 			F.println();
 		}
 	}
@@ -180,9 +180,9 @@ public abstract class ShowResults {
 				if (nref == 0) {
 					Vpu = 0.0;
 				} else {
-					bref = ckt.getMapNodeToBus()[nref].BusRef;
-					if (ckt.getBuses()[bref].getkVBase() != 0.0) {
-						Vpu = Vmag / ckt.getBuses()[bref].getkVBase();
+					bref = ckt.getMapNodeToBus()[nref].busRef;
+					if (ckt.getBuses()[bref].getKVBase() != 0.0) {
+						Vpu = Vmag / ckt.getBuses()[bref].getKVBase();
 					} else {
 						Vpu = 0.0;
 					}
@@ -212,12 +212,12 @@ public abstract class ShowResults {
 			Node1 = pElem.getNodeRef()[i];
 			Node2 = pElem.getNodeRef()[i + NCond];
 			if (Node1 > 0) {
-				Bus1  = ckt.getMapNodeToBus()[Node1].BusRef;
+				Bus1  = ckt.getMapNodeToBus()[Node1].busRef;
 			} else {
 				Bus1 = 0;
 			}
 			if (Node2 > 0) {
-				Bus2 = ckt.getMapNodeToBus()[Node2].BusRef;
+				Bus2 = ckt.getMapNodeToBus()[Node2].busRef;
 			} else {
 				Bus2 = 0;
 			}
@@ -226,16 +226,16 @@ public abstract class ShowResults {
 				Volts2 = ckt.getSolution().getNodeV()[Node2];
 				Volts1 = Volts1.subtract(Volts2);  // diff voltage
 
-				if (ckt.getBuses()[Bus1].getkVBase() != ckt.getBuses()[Bus2].getkVBase()) {
+				if (ckt.getBuses()[Bus1].getKVBase() != ckt.getBuses()[Bus2].getKVBase()) {
 					Vmag = 0.0;
 				} else {
-					if (ckt.getBuses()[Bus1].getkVBase() > 0.0) {
-						Vmag = Volts1.abs() / (1000.0 * ckt.getBuses()[Bus1].getkVBase()) * 100.0;
+					if (ckt.getBuses()[Bus1].getKVBase() > 0.0) {
+						Vmag = Volts1.abs() / (1000.0 * ckt.getBuses()[Bus1].getKVBase()) * 100.0;
 					} else {
 						Vmag = 0.0;
 					}
 				}
-				F.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f", ElemName, i, Volts1.abs(), Vmag, ckt.getBuses()[Bus1].getkVBase(), Volts1.degArg());
+				F.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f", ElemName, i, Volts1.abs(), Vmag, ckt.getBuses()[Bus1].getKVBase(), Volts1.degArg());
 				F.println();
 			}
 		}
@@ -1390,8 +1390,8 @@ public abstract class ShowResults {
 					F.print(Utilities.pad( Utilities.encloseQuotes(ckt.getBusList().get(iBus)), MaxBusNameLength + 2) + iphs + IFault.abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
 						Vphs = bus.getVBus()[i].subtract( bus.getZsc().getElement(i, iphs).multiply(IFault) ).abs();
-						if (bus.getkVBase() > 0.0) {
-							Vphs = 0.001 * Vphs / bus.getkVBase();
+						if (bus.getKVBase() > 0.0) {
+							Vphs = 0.001 * Vphs / bus.getKVBase();
 							F.print(" " + Vphs);
 						} else {
 							F.print(" " + Vphs);
@@ -1434,8 +1434,8 @@ public abstract class ShowResults {
 					F.print(Utilities.pad(Utilities.encloseQuotes(ckt.getBusList().get(iBus)), MaxBusNameLength + 2) + iphs + (iphs + 1) + Vfault[iphs].subtract(Vfault[iphs + 1]).multiply(GFault).abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
 						Vphs = Vfault[i].abs();
-						if (bus.getkVBase() > 0.0) {
-							Vphs = 0.001 * Vphs / bus.getkVBase();
+						if (bus.getKVBase() > 0.0) {
+							Vphs = 0.001 * Vphs / bus.getKVBase();
 							F.print(" " + Vphs);
 						} else {
 							F.print(" " + Vphs);
@@ -1608,8 +1608,8 @@ public abstract class ShowResults {
 			for (i = 0; i < ckt.getNumBuses(); i++) {
 				F.print(Utilities.pad(Utilities.encloseQuotes(ckt.getBusList().get(i)), MaxBusNameLength) + " ");
 				pBus = ckt.getBuses()[i];
-				if (pBus.getkVBase() > 0.0) {
-					F.print(pBus.getkVBase() * DSSGlobals.SQRT3);
+				if (pBus.getKVBase() > 0.0) {
+					F.print(pBus.getKVBase() * DSSGlobals.SQRT3);
 				} else {
 					F.print("   NA ");
 				}
@@ -2973,15 +2973,15 @@ public abstract class ShowResults {
 				/* Find bus to which load connected */
 				pBus = ckt.getBuses()[ pLoad.getTerminals()[0].BusRef ];
 				BusName = ckt.getBusList().get( pLoad.getTerminals()[0].BusRef );
-				if (pBus.getkVBase() != 0.0) {
+				if (pBus.getKVBase() != 0.0) {
 					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
-						if (Math.abs(pLoad.getkVLoadBase() - pBus.getkVBase()) > 0.10 * pBus.getkVBase()) {
-							F.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), pBus.getkVBase()));
+						if (Math.abs(pLoad.getkVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
+							F.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), pBus.getKVBase()));
 							F.println(String.format("!setkvbase %s kVLN=%.6g", BusName, pLoad.getkVLoadBase()));
-							F.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), pBus.getkVBase()));
+							F.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), pBus.getKVBase()));
 						}
 					} else {
-						BuskV = pBus.getkVBase() * DSSGlobals.SQRT3;
+						BuskV = pBus.getKVBase() * DSSGlobals.SQRT3;
 						if (Math.abs(pLoad.getkVLoadBase() - BuskV) > 0.10 * BuskV) {
 							F.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), BuskV));
 							F.println(String.format("!setkvbase %s kVLL=%.6g", BusName, pLoad.getkVLoadBase()));
@@ -3004,15 +3004,15 @@ public abstract class ShowResults {
 				/* Find bus to which generator connected */
 				pBus = ckt.getBuses()[ pGen.getTerminals()[0].BusRef ];
 				BusName = ckt.getBusList().get( pGen.getTerminals()[0].BusRef );
-				if (pBus.getkVBase() != 0.0) {
+				if (pBus.getKVBase() != 0.0) {
 					if ((pGen.getNPhases() == 1) && (pGen.getConnection() == 0)) {
-						if (Math.abs(pGen.getGenVars().kVGeneratorBase - pBus.getkVBase()) > 0.10 * pBus.getkVBase()) {
-							F.println(String.format("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pGen.getName(), pGen.getGenVars().kVGeneratorBase, pGen.getBus(1), pBus.getkVBase()));
+						if (Math.abs(pGen.getGenVars().kVGeneratorBase - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
+							F.println(String.format("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pGen.getName(), pGen.getGenVars().kVGeneratorBase, pGen.getBus(1), pBus.getKVBase()));
 							F.println(String.format("!setkvbase %s kVLN=%.6g", BusName, pGen.getGenVars().kVGeneratorBase));
-							F.println(String.format("!Generator.%s.kV=%.6g", pGen.getName(), pBus.getkVBase()));
+							F.println(String.format("!Generator.%s.kV=%.6g", pGen.getName(), pBus.getKVBase()));
 						}
 					} else {
-						BuskV = pBus.getkVBase() * DSSGlobals.SQRT3;
+						BuskV = pBus.getKVBase() * DSSGlobals.SQRT3;
 						if (Math.abs(pGen.getGenVars().kVGeneratorBase - BuskV) > 0.10 * BuskV) {
 							F.println(String.format("!!! Voltage Base Mismatch, Generator.%s.kV=%.6g, Bus %s kvBase = %.6g", pGen.getName(), pGen.getGenVars().kVGeneratorBase, pGen.getBus(1), BuskV));
 							F.println(String.format("!setkvbase %s kVLL=%.6g", BusName, pGen.getGenVars().kVGeneratorBase));

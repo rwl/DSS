@@ -661,7 +661,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 							OverLoadPrinter.print(" 0.0,");
 						}
 						/* Find bus of first terminal */
-						OverLoadPrinter.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].BusRef].getkVBase());
+						OverLoadPrinter.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef].getKVBase());
 
 						OverLoadPrinter.println();
 					}
@@ -792,9 +792,9 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		UnderVmin  = ckt.getNormalMaxVolts();
 		for (i = 0; i < ckt.getNumBuses(); i++) {
 			bus = ckt.getBuses()[i];
-			if (bus.getkVBase() > 0.0) {
+			if (bus.getKVBase() > 0.0) {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
-					Vmagpu = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getkVBase() * 0.001;
+					Vmagpu = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getKVBase() * 0.001;
 					if (Vmagpu > 0.1) {  // ignore neutral buses
 						UnderVmin = Math.min(UnderVmin, Vmagpu);
 						OverVmax  = Math.max(OverVmax,  Vmagpu);

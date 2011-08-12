@@ -685,7 +685,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			for (int i = 0; i < ckt.getNumBuses(); i++) {
 				Bus bus = ckt.getBuses()[i];
-				bus.setkVBase( Utilities.nearestBasekV( NodeV[bus.getRef(0)].abs() * 0.001732 ) / DSSGlobals.SQRT3);  // l-n base kV  TODO Check zero based indexing
+				bus.setKVBase( Utilities.nearestBasekV( NodeV[bus.getRef(0)].abs() * 0.001732 ) / DSSGlobals.SQRT3);  // l-n base kV  TODO Check zero based indexing
 			}
 
 			YMatrix.initializeNodeVbase();  // for convergence test
@@ -881,7 +881,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			for (int i = 0; i < ckt.getNumNodes(); i++) {
 				NodeBus nb = ckt.getMapNodeToBus()[i];
-				F.print("\"" + Utilities.pad((ckt.getBusList().get(nb.BusRef)+"."+String.valueOf(nb.NodeNum)+"\""), 18) );
+				F.print("\"" + Utilities.pad((ckt.getBusList().get(nb.busRef)+"."+String.valueOf(nb.nodeNum)+"\""), 18) );
 				F.printf(", %10.5s", ErrorSaved[i]);
 				F.printf(", %14s", VmagSaved[i]);
 				F.printf(", %14s", NodeVbase[i]);  // TODO Check text padding

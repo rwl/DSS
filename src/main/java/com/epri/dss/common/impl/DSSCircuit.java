@@ -395,8 +395,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			NodeRef = Buses[Result].add(NodeBuffer[i]);
 			if (NodeRef == NumNodes) {  // this was a new node so add a nodeToBus element ????
 				addANodeBus();  // allocates more memory if necessary
-				MapNodeToBus[NumNodes].BusRef  = Result;
-				MapNodeToBus[NumNodes].NodeNum = NodeBuffer[i];
+				MapNodeToBus[NumNodes].busRef  = Result;
+				MapNodeToBus[NumNodes].nodeNum = NodeBuffer[i];
 			}
 			NodeBuffer[i] = NodeRef;  // swap out in preparation to setNodeRef call
 		}
@@ -475,7 +475,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			int idx = BusList.find(SavedBusNames[i]);
 			if (idx != -1) {
 				bus = SavedBuses[i];
-				Buses[idx].setkVBase(bus.getkVBase());
+				Buses[idx].setKVBase(bus.getKVBase());
 				Buses[idx].setX(bus.getX());
 				Buses[idx].setY(bus.getY());
 				Buses[idx].setCoordDefined(bus.isCoordDefined());
@@ -986,8 +986,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		}
 		F.println("NodeToBus Array:");
 		for (int i = 0; i < NumNodes; i++) {
-			int j = MapNodeToBus[i].BusRef;
-			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].NodeNum + ")");
+			int j = MapNodeToBus[i].busRef;
+			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].nodeNum + ")");
 			F.println();
 		}
 	}

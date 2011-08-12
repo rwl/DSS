@@ -187,7 +187,7 @@ public class AutoAddImpl implements AutoAdd {
 		return result;
 	}
 
-	public void appendToFile(String WhichFile, String S) {
+	public void appendToFile(String whichFile, String s) {
 		// FIXME Implement this method.
 		throw new UnsupportedOperationException();
 	}
@@ -282,7 +282,7 @@ public class AutoAddImpl implements AutoAdd {
 		globals.getEnergyMeterClass().sampleAll();
 
 		/* Check to see if bus base voltages have been defined. */
-		if (ckt.getBuses()[ckt.getNumBuses()].getkVBase() == 0.0)
+		if (ckt.getBuses()[ckt.getNumBuses()].getKVBase() == 0.0)
 			sol.setVoltageBases();
 
 		if (modeChanged) {
@@ -390,7 +390,7 @@ public class AutoAddImpl implements AutoAdd {
 						try {
 							FStream = new FileWriter(F, true);  // append
 							BufferedWriter FLog = new BufferedWriter(FStream);
-							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getkVBase()*DSSGlobals.SQRT3));
+							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getKVBase()*DSSGlobals.SQRT3));
 							FLog.write(String.format(", %-g, %-g", kWLosses, puLossImprovement * 100.0));
 							FLog.write(String.format(", %-g, %-g", kWEEN, puEENImprovement * 100.0));
 							FLog.write(String.format(", %-g, %d", lossImproveFactor, sol.getIteration()));
@@ -421,9 +421,9 @@ public class AutoAddImpl implements AutoAdd {
 				Executive exec = DSSExecutive.getInstance();
 
 				if (minBusPhases >= 3) {
-					kVrat = ckt.getBuses()[minLossBus].getkVBase() * DSSGlobals.SQRT3;
+					kVrat = ckt.getBuses()[minLossBus].getKVBase() * DSSGlobals.SQRT3;
 				} else {
-					kVrat = ckt.getBuses()[minLossBus].getkVBase();
+					kVrat = ckt.getBuses()[minLossBus].getKVBase();
 				}
 				commandString = "New, generator." + getUniqueGenName() +
 						", bus1=\"" + ckt.getBusList().get(minLossBus) +
@@ -484,7 +484,7 @@ public class AutoAddImpl implements AutoAdd {
 
 					// apply the capacitor at the bus rating
 
-					kVrat = ckt.getBuses()[busIndex].getkVBase();  // L-N Base kV
+					kVrat = ckt.getBuses()[busIndex].getKVBase();  // L-N Base kV
 					Ycap = (testCapKVAr * 0.001 / phases ) / (kVrat * kVrat) ;
 
 
@@ -504,7 +504,7 @@ public class AutoAddImpl implements AutoAdd {
 						try {
 							FStream = new FileWriter(F, true);  // append
 							BufferedWriter FLog = new BufferedWriter(FStream);
-							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getkVBase() * DSSGlobals.SQRT3));
+							FLog.write(String.format("\"%s\", %-g", testBus, ckt.getBuses()[busIndex].getKVBase() * DSSGlobals.SQRT3));
 							FLog.write(String.format(", %-g, %-g", kWLosses, puLossImprovement * 100.0));
 							FLog.write(String.format(", %-g, %-g", kWEEN, puEENImprovement * 100.0));
 							FLog.write(String.format(", %-g, %d", lossImproveFactor, sol.getIteration()));
@@ -533,9 +533,9 @@ public class AutoAddImpl implements AutoAdd {
 				Executive exec = DSSExecutive.getInstance();
 
 				if (minBusPhases >= 3) {
-					kVrat = ckt.getBuses()[minLossBus].getkVBase() * DSSGlobals.SQRT3;
+					kVrat = ckt.getBuses()[minLossBus].getKVBase() * DSSGlobals.SQRT3;
 				} else {
-					kVrat = ckt.getBuses()[minLossBus].getkVBase();
+					kVrat = ckt.getBuses()[minLossBus].getKVBase();
 				}
 
 				commandString = "New, Capacitor." + getUniqueCapName() +
@@ -563,7 +563,7 @@ public class AutoAddImpl implements AutoAdd {
 	 * Compute injection currents for generator or capacitor and add into
 	 * system currents array.
 	 */
-	public void addCurrents(int SolveType) {
+	public void addCurrents(int solveType) {
 		Complex busV;
 		int nRef;
 
@@ -580,7 +580,7 @@ public class AutoAddImpl implements AutoAdd {
 					busV = sol.getNodeV()[nRef];
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
 						/* Current into the system network */
-						switch (SolveType) {
+						switch (solveType) {
 						case Solution.NEWTONSOLVE:
 							// FIXME Implement complex accumulate
 							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( GenVA.divide(busV).conjugate().negate() );  // terminal current
@@ -602,7 +602,7 @@ public class AutoAddImpl implements AutoAdd {
 					busV = sol.getNodeV()[nRef];
 					if ((busV.getReal() != 0.0) || (busV.getImaginary() != 0.0)) {
 						/* Current into the system network */
-						switch (SolveType) {
+						switch (solveType) {
 						case Solution.NEWTONSOLVE:
 							sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add( new Complex(0.0, Ycap).multiply(busV) );  // terminal current
 							break;

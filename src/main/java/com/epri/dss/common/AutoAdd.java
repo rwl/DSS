@@ -39,9 +39,9 @@ public interface AutoAdd {
 
 	void makeBusList();
 
-	void appendToFile(String WhichFile, String S);
+	void appendToFile(String whichFile, String s);
 
-	void addCurrents(int SolveType);
+	void addCurrents(int solveType);
 
 	/**
 	 * Automatically add capacitors or generators.

@@ -12,16 +12,16 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public class NodeBus {
 		/* Ref to bus in circuit's bus list */
-		public int BusRef;
-		public int NodeNum;
+		public int busRef;
+		public int nodeNum;
 	}
 
-	private int NumNodesThisBus;
-	private int[] Nodes;
-	private int Allocation;
-	private int[] RefNo;
+	private int numNodesThisBus;
+	private int[] nodes;
+	private int allocation;
+	private int[] refNo;
 
-	protected Complex[] VBus, BusCurrent;
+	protected Complex[] VBus, busCurrent;
 	protected CMatrix Zsc, Ysc;
 
 	/* Coordinates */
@@ -30,66 +30,66 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	/* Base kV for each node to ground (0) */
 	protected double distFromMeter;
 
-	protected boolean CoordDefined, BusChecked, Keep, IsRadialBus;
+	protected boolean coordDefined, busChecked, keep, isRadialBus;
 
 	public DSSBus() {
 		super("Bus");
-		Allocation = 3;
-		Nodes = new int[Allocation];
-		RefNo = new int[Allocation];
-		NumNodesThisBus = 0;
+		allocation = 3;
+		nodes = new int[allocation];
+		refNo = new int[allocation];
+		numNodesThisBus = 0;
 		Ysc              = null;
 		Zsc              = null;
 		VBus             = null;
-		BusCurrent       = null;
+		busCurrent       = null;
 		kVBase           = 0.0;  // signify that it has not been set
 		x                = 0.0;
 		y                = 0.0;
 		distFromMeter    = 0.0;
-		CoordDefined     = false;
-		Keep             = false;
-		IsRadialBus      = false;
+		coordDefined     = false;
+		keep             = false;
+		isRadialBus      = false;
 	}
 
 	private void addANode() {
-		NumNodesThisBus += 1;
-		if (NumNodesThisBus > Allocation) {
-			Allocation = Allocation + 1;
-			Nodes = (int[]) Utilities.resizeArray(Nodes, Allocation);
-			RefNo = (int[]) Utilities.resizeArray(RefNo, Allocation);
+		numNodesThisBus += 1;
+		if (numNodesThisBus > allocation) {
+			allocation = allocation + 1;
+			nodes = (int[]) Utilities.resizeArray(nodes, allocation);
+			refNo = (int[]) Utilities.resizeArray(refNo, allocation);
 		}
 	}
 
-	public int add(int NodeNum) {
-		int Result;
+	public int add(int nodeNum) {
+		int result;
 
-		if (NodeNum == 0) {
-			Result = 0;
+		if (nodeNum == 0) {
+			result = 0;
 		} else {
-			Result = find(NodeNum);
-			if (Result == 0) {
-				// Add a node to the bus
+			result = find(nodeNum);
+			if (result == 0) {
+				// add a node to the bus
 				addANode();
-				Nodes[NumNodesThisBus] = NodeNum;
+				nodes[numNodesThisBus] = nodeNum;
 
 				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
-				RefNo[NumNodesThisBus] = ckt.getNumNodes();
-				Result = ckt.getNumNodes();  // return global node number
+				refNo[numNodesThisBus] = ckt.getNumNodes();
+				result = ckt.getNumNodes();  // return global node number
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Returns reference num for node by node number.
 	 */
-	public int find(int NodeNum) {
-		for (int i = 0; i < NumNodesThisBus; i++) {
-			if (Nodes[i] == NodeNum)
-				return RefNo[i];
+	public int find(int nodeNum) {
+		for (int i = 0; i < numNodesThisBus; i++) {
+			if (nodes[i] == nodeNum)
+				return refNo[i];
 		}
 		return 0;
 	}
@@ -97,9 +97,9 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	/**
 	 * Returns reference num for node by node index.
 	 */
-	public int getRef(int NodeIndex) {  // FIXME Check zero based indexing
-		if ((NodeIndex > 0) && (NodeIndex <= NumNodesThisBus)) {
-			return RefNo[NodeIndex];
+	public int getRef(int nodeIndex) {  // FIXME Check zero based indexing
+		if ((nodeIndex > 0) && (nodeIndex <= numNodesThisBus)) {
+			return refNo[nodeIndex];
 		} else {
 			return 0;
 		}
@@ -108,9 +108,9 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	/**
 	 * Returns ith node number designation.
 	 */
-	public int getNum(int NodeIndex) {
-		if ((NodeIndex > 0) && (NodeIndex <= NumNodesThisBus)) {
-			return Nodes[NodeIndex];
+	public int getNum(int nodeIndex) {
+		if ((nodeIndex > 0) && (nodeIndex <= numNodesThisBus)) {
+			return nodes[nodeIndex];
 		} else {
 			return 0;
 		}
@@ -118,8 +118,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 
 	public void allocateBusQuantities() {
 		// have to perform a short circuit study to get this allocated
-		Ysc = new CMatrixImpl(NumNodesThisBus);
-		Zsc = new CMatrixImpl(NumNodesThisBus);
+		Ysc = new CMatrixImpl(numNodesThisBus);
+		Zsc = new CMatrixImpl(numNodesThisBus);
 		allocateBusVoltages();
 		allocateBusCurrents();
 	}
@@ -149,24 +149,24 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	/**
 	 * Returns index of node by node number.
 	 */
-	public int findIdx(int NodeNum) {
-		for (int i = 0; i < NumNodesThisBus; i++) {
-			if (Nodes[i] == NodeNum)
+	public int findIdx(int nodeNum) {
+		for (int i = 0; i < numNodesThisBus; i++) {
+			if (nodes[i] == nodeNum)
 				return i;
 		}
 		return 0;  // TODO Check zero based indexing
 	}
 
 	public void allocateBusVoltages() {
-		VBus = (Complex[]) Utilities.resizeArray(VBus, NumNodesThisBus);
-		for (int i = 0; i < NumNodesThisBus; i++)
+		VBus = (Complex[]) Utilities.resizeArray(VBus, numNodesThisBus);
+		for (int i = 0; i < numNodesThisBus; i++)
 			VBus[i] = Complex.ZERO;
 	}
 
 	public void allocateBusCurrents() {
-		BusCurrent = (Complex[]) Utilities.resizeArray(BusCurrent, NumNodesThisBus);
-		for (int i = 0; i < NumNodesThisBus; i++)
-			BusCurrent[i] = Complex.ZERO;
+		busCurrent = (Complex[]) Utilities.resizeArray(busCurrent, numNodesThisBus);
+		for (int i = 0; i < numNodesThisBus; i++)
+			busCurrent[i] = Complex.ZERO;
 	}
 
 	public Complex[] getVBus() {
@@ -178,11 +178,11 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	}
 
 	public Complex[] getBusCurrent() {
-		return BusCurrent;
+		return busCurrent;
 	}
 
-	public void setBusCurrent(Complex[] busCurrent) {
-		BusCurrent = busCurrent;
+	public void setBusCurrent(Complex[] buscurrent) {
+		busCurrent = buscurrent;
 	}
 
 	public CMatrix getZsc() {
@@ -217,11 +217,11 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		this.y = y;
 	}
 
-	public double getkVBase() {
+	public double getKVBase() {
 		return kVBase;
 	}
 
-	public void setkVBase(double kVBase) {
+	public void setKVBase(double kVBase) {
 		this.kVBase = kVBase;
 	}
 
@@ -234,39 +234,39 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	}
 
 	public boolean isCoordDefined() {
-		return CoordDefined;
+		return coordDefined;
 	}
 
-	public void setCoordDefined(boolean coordDefined) {
-		CoordDefined = coordDefined;
+	public void setCoordDefined(boolean defined) {
+		coordDefined = defined;
 	}
 
 	public boolean isBusChecked() {
-		return BusChecked;
+		return busChecked;
 	}
 
-	public void setBusChecked(boolean busChecked) {
-		BusChecked = busChecked;
+	public void setBusChecked(boolean checked) {
+		busChecked = checked;
 	}
 
 	public boolean isKeep() {
-		return Keep;
+		return keep;
 	}
 
 	public void setKeep(boolean keep) {
-		Keep = keep;
+		this.keep = keep;
 	}
 
-	public boolean isIsRadialBus() {
-		return IsRadialBus;
+	public boolean isRadialBus() {
+		return isRadialBus;
 	}
 
-	public void setIsRadialBus(boolean isRadialBus) {
-		IsRadialBus = isRadialBus;
+	public void setRadialBus(boolean isRadial) {
+		isRadialBus = isRadial;
 	}
 
 	public int getNumNodesThisBus() {
-		return NumNodesThisBus;
+		return numNodesThisBus;
 	}
 
 }

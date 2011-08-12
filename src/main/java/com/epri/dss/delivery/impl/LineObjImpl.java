@@ -795,9 +795,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				Common2 = 0;
 				i = 1;
 				while ((Common1 == 0) && (i <= 2)) {
-					TestBusNum = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[1 + (i - 1) * nConds]].BusRef;
+					TestBusNum = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[1 + (i - 1) * nConds]].busRef;
 					for (j = 0; j < 2; j++) {
-						if (DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[OtherLine.getNodeRef()[1 + (j - 1) * OtherLine.getNConds()]].BusRef == TestBusNum) {
+						if (DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[OtherLine.getNodeRef()[1 + (j - 1) * OtherLine.getNConds()]].busRef == TestBusNum) {
 							Common1 = i;
 							Common2 = j;
 							break;

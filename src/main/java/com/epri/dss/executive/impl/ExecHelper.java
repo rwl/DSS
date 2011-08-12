@@ -983,9 +983,9 @@ public class ExecHelper {
 
 		if (ckt.getActiveBusIndex() > 0) {
 			if (ParamName.equalsIgnoreCase("kvln")) {
-				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue);
+				ckt.getBuses()[ckt.getActiveBusIndex()].setKVBase(kVValue);
 			} else {
-				ckt.getBuses()[ckt.getActiveBusIndex()].setkVBase(kVValue / DSSGlobals.SQRT3);
+				ckt.getBuses()[ckt.getActiveBusIndex()].setKVBase(kVValue / DSSGlobals.SQRT3);
 			}
 			Result = 0;
 			ckt.getSolution().setVoltageBaseChanged(true);
@@ -1380,8 +1380,8 @@ public class ExecHelper {
 				for (int i = 0; i < ActiveBus.getNumNodesThisBus(); i++) {
 					Volts = ckt.getSolution().getNodeV()[ActiveBus.getRef(i)];
 					Vmag = Volts.abs();
-					if (perUnit && (ActiveBus.getkVBase() > 0.0)) {
-						Vmag = Vmag * 0.001 / ActiveBus.getkVBase();
+					if (perUnit && (ActiveBus.getKVBase() > 0.0)) {
+						Vmag = Vmag * 0.001 / ActiveBus.getKVBase();
 						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", Vmag, Volts.degArg()));
 					} else {
 						Globals.setGlobalResult( Globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", Vmag, Volts.degArg()));
@@ -2596,7 +2596,7 @@ public class ExecHelper {
 			sBus = Utilities.stripExtension(pLoad.getBus(0));  // TODO Check zero indexing
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
-			kvln = pBus.getkVBase();
+			kvln = pBus.getKVBase();
 			if ((pLoad.getConnection() == 1) || (pLoad.getNPhases() == 3)) {
 				pLoad.setkVLoadBase(kvln * DSSGlobals.SQRT3);
 			} else {
@@ -2610,7 +2610,7 @@ public class ExecHelper {
 			sBus = Utilities.stripExtension(pGen.getBus(0));  // TODO Check zero indexing
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
-			kvln = pBus.getkVBase();
+			kvln = pBus.getKVBase();
 			if ((pGen.getConnection() == 1) || (pGen.getNPhases() > 1)) {
 				pGen.setPresentKV(kvln * DSSGlobals.SQRT3);
 			} else {

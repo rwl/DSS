@@ -628,11 +628,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					int fbr = BranchList.getPresentBranch().getFromBusReference();
 					if (vbi >= 0) {
 						Circuit ckt = Globals.getActiveCircuit();
-						if (ckt.getBuses()[fbr].getkVBase() > 0.0) {
+						if (ckt.getBuses()[fbr].getKVBase() > 0.0) {
 							for (i = 0; i < ckt.getBuses()[fbr].getNumNodesThisBus(); i++) {
 								j = ckt.getBuses()[fbr].getNum(i);
 								if ((j >= 0) && (j < 3)) {  // TODO Check zero based indexing
-									puV = ckt.getSolution().getNodeV()[ ckt.getBuses()[fbr].getRef(i) ].abs() / ckt.getBuses()[fbr].getkVBase();
+									puV = ckt.getSolution().getNodeV()[ ckt.getBuses()[fbr].getRef(i) ].abs() / ckt.getBuses()[fbr].getKVBase();
 									VphaseMax[jiIndex(j, vbi)] = Math.max(VphaseMax[jiIndex(j, vbi)], puV);
 									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
 									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
@@ -1094,13 +1094,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Bus bus = DSSGlobals.getInstance().getActiveCircuit().getBuses()[BusRef];
 
 		for (int i = 0; i < VBaseCount; i++) {
-			if (Math.abs(1.0 - bus.getkVBase() / VBaseList[i]) < 0.01)  // < 1% difference
+			if (Math.abs(1.0 - bus.getKVBase() / VBaseList[i]) < 0.01)  // < 1% difference
 				return i;
 		}
 
-		if ((bus.getkVBase() > 0.0) && (VBaseCount < MaxVBaseCount)) {
+		if ((bus.getKVBase() > 0.0) && (VBaseCount < MaxVBaseCount)) {
 			VBaseCount += 1;
-			VBaseList[VBaseCount] = bus.getkVBase();
+			VBaseList[VBaseCount] = bus.getKVBase();
 			return VBaseCount;
 		} else {
 			return 0;
@@ -1134,7 +1134,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					switch (LoadElem.getNPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
-						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].NodeNum;
+						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].nodeNum;
 						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // restrict to phases 1..3
 							LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * LoadElem.getSensorObj().getPhsAllocationFactor()[ConnectedPhase] );
 						break;

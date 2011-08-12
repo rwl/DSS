@@ -35,9 +35,9 @@ public interface Bus extends NamedObject {
 
 	void setY(double y);
 
-	double getkVBase();
+	double getKVBase();
 
-	void setkVBase(double kVBase);
+	void setKVBase(double kVBase);
 
 	double getDistFromMeter();
 
@@ -55,9 +55,9 @@ public interface Bus extends NamedObject {
 
 	void setKeep(boolean keep);
 
-	boolean isIsRadialBus();
+	boolean isRadialBus();
 
-	void setIsRadialBus(boolean isRadialBus);
+	void setRadialBus(boolean isRadialBus);
 
 	int getNumNodesThisBus();
 
