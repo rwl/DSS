@@ -162,7 +162,7 @@ public class SystemMeterImpl implements SystemMeter {
 			FPrinter.close();
 			FStream.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening System Meter File \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 542);
+			Globals.doSimpleMsg("Error opening system meter file \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 542);
 		}
 	}
 
@@ -180,7 +180,7 @@ public class SystemMeterImpl implements SystemMeter {
 		peakkVA = Math.max(cPower.abs(), peakkVA);
 
 		/* Get total circuit losses */
-		cLosses = DSSGlobals.getInstance().getActiveCircuit().getLosses();  // PD Elements except shunts
+		cLosses = DSSGlobals.getInstance().getActiveCircuit().getLosses();  // PD elements except shunts
 		cLosses = cLosses.multiply(0.001);  // convert to kW
 
 		integrate(Losseskwh, cLosses.getReal(), dLosseskWh);

@@ -17,10 +17,10 @@ public interface EnergyMeter extends MeterClass {
 	static final int Reg_Zonekvarh         = 5;
 	static final int Reg_ZoneMaxkW         = 6;
 	static final int Reg_ZoneMaxkVA        = 7;
-	static final int Reg_OverloadkWhNorm   = 8;    // Max overload
+	static final int Reg_OverloadkWhNorm   = 8;  // max overload
 	static final int Reg_OverloadkWhEmerg  = 9;
 	static final int Reg_LoadEEN           = 10;
-	static final int Reg_LoadUE            = 11;  // Energy served below normal voltage
+	static final int Reg_LoadUE            = 11;  // energy served below normal voltage
 	static final int Reg_ZoneLosseskWh     = 12;
 	static final int Reg_ZoneLosseskvarh   = 13;
 	static final int Reg_LossesMaxkW       = 14;
@@ -33,7 +33,7 @@ public interface EnergyMeter extends MeterClass {
 	static final int Reg_MaxNoLoadLosses   = 21;
 	static final int Reg_LineLosseskWh     = 22;
 	static final int Reg_TransformerLosseskWh = 23;
-	static final int Reg_LineModeLineLoss  = 24;    // for 3-phase feeder lines
+	static final int Reg_LineModeLineLoss  = 24;  // for 3-phase feeder lines
 	static final int Reg_ZeroModeLineLoss  = 25;
 	static final int Reg_3_phaseLineLoss   = 26;
 	static final int Reg_1_phaseLineLoss   = 27;

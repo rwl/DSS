@@ -13,18 +13,18 @@ public interface CktTree {
 
 	void setZoneEndsList(ZoneEndsList zoneEndsList);
 
-	/* Adds a pointer to an object to be associated with the current node */
+	/** Adds a pointer to an object to be associated with the current node */
 	void setNewObject(DSSObject Value);
 
-	/* Start Forward Search at the present location (can also use active) */
+	/** Start Forward Search at the present location (can also use active) */
 	void startHere();
 
 	void addNewChild(DSSObject Value, int BusRef, int TerminalNo);
 
-	/* Adds child and makes it present */
+	/** Adds child and makes it present */
 	void setNew(DSSObject Value);
 
-	/* Returns pointer to first cktobject */
+	/** Returns pointer to first cktobject */
 	Object getFirst();
 
 	Object getParent();
@@ -41,7 +41,7 @@ public interface CktTree {
 
 	void setActive(DSSObject Value);
 
-	/* Get lexical level of present node */
+	/** Get lexical level of present node */
 	int getLevel();
 
 }

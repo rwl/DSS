@@ -16,13 +16,13 @@ public class DSSCompletor implements Completor {
 	public int complete(String buf, int cursor, List clist) {
 		String buffer = (buf == null) ? "" : buf;
 
-		// Trim leading spaces.
+		// trim leading spaces
 		while (buffer.startsWith(" ")) {
 			buffer = buffer.replaceFirst("^ ", "");
 			cursor -= 1;
 		}
 
-		// The list of candidates that will be completed.
+		// the list of candidates that will be completed
 		Set<String> candidates = locateCandidates(buffer);
 
 
@@ -37,7 +37,7 @@ public class DSSCompletor implements Completor {
 		}
 
 
-		// The index of the completion is always from the beginning of the buffer.
+		// the index of the completion is always from the beginning of the buffer
 		return (clist.size() == 0) ? (-1) : 0;
 	}
 

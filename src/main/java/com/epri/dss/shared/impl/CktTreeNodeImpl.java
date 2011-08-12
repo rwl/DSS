@@ -14,10 +14,9 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	protected boolean ChildAdded;
 	protected int LexicalLevel;
 	protected CktTreeNode ParentBranch;
-	protected PointerList ShuntObjects;  // Generic objects attached to the tree at this node
+	protected PointerList ShuntObjects;  // generic objects attached to the tree at this node
 
-
-	protected Object CktObject;    // Pointer to the circuit object referenced
+	protected Object CktObject;  // pointer to the circuit object referenced
 	protected int FromBusReference;
 	protected int VoltBaseIndex;
 	protected int FromTerminal;
@@ -37,7 +36,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		this.ChildBranches   = new PointerListImpl(2);
 		this.ShuntObjects    = new PointerListImpl(1);
 		this.FromBusReference = 0;
-		this.VoltBaseIndex    = 0; // Index to voltage base list used by energymeter and maybe others
+		this.VoltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
 		this.NumToBuses = 0;
 		this.ToBusList = null;
 		this.ToBusPtr = 0;
@@ -85,15 +84,15 @@ public class CktTreeNodeImpl implements CktTreeNode {
 	}
 
 	/**
-	 * Sequentially access the To Bus list if more than one with each invocation of the property.
+	 * Sequentially access the toBus list if more than one with each invocation of the property.
 	 */
 	public int getToBusReference() {
 		if (NumToBuses == 1)  {
-			return ToBusList[0];  // Always return the first
+			return ToBusList[0];  // always return the first
 		} else {
 			ToBusPtr += 1;
 			if (ToBusPtr >= NumToBuses) {  // TODO Check zero based indexing
-				ToBusPtr = 0;  // Ready for next sequence of access
+				ToBusPtr = 0;  // ready for next sequence of access
 				return -1;
 			} else {
 				return ToBusList[ToBusPtr];

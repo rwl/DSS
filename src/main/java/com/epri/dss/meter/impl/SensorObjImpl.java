@@ -15,8 +15,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	private boolean ValidSensor;
 	private double[] SensorKW;
 	private double[] SensorKVar;
-	private double kVBase; // value specified
-	private double Vbase; // in volts
+	private double kVBase;  // value specified
+	private double Vbase;   // in volts
 
 	private int Conn;
 
@@ -42,7 +42,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		this.Weight = 1.0;
 		this.pctError = 1.0;
 
-		setConn(0);  // Wye
+		setConn(0);  // wye
 
 		clearSensor();
 
@@ -58,8 +58,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		ValidSensor = false;
-		int DevIndex = Utilities.getCktElementIndex(ElementName);  // Global function
-		if (DevIndex >= 0) {  // Sensored element must already exist
+		int DevIndex = Utilities.getCktElementIndex(ElementName);
+		if (DevIndex >= 0) {  // sensored element must already exist
 			MeteredElement = Globals.getActiveCircuit().getCktElements().get(DevIndex);
 
 			if (MeteredTerminal > MeteredElement.getNTerms()) {  // TODO Check zero based indexing
@@ -70,8 +70,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 				setNPhases( MeteredElement.getNPhases() );
 				setNConds( MeteredElement.getNConds() );
 
-				// Sets name of i-th terminal's connected bus in Sensor's buslist
-				// This value will be used to set the NodeRef array (see TakeSample)
+				// sets name of i-th terminal's connected bus in Sensor's bus list
+				// this value will be used to set the nodeRef array (see takeSample)
 				setBus(1, MeteredElement.getBus(MeteredTerminal));
 
 				clearSensor();
@@ -84,7 +84,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			}
 		} else {
 			MeteredElement = null;   // element not found
-			Globals.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" Not Found.",
+			Globals.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" not found.",
 					" Element must be defined previously.", 666);
 		}
 	}
@@ -124,8 +124,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void calcYPrim() {
-		// Leave YPrims as nil and they will be ignored.
-		// Yprim is zeroed when created. Leave it as is.
+		// leave YPrims as nil and they will be ignored
 	}
 
 	public void resetIt() {
@@ -138,13 +137,13 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	private int rotatePhases(int j) {
 		int Result = j + DeltaDirection;
 
-		// Make sure result is within limits
+		// make sure result is within limits
 		if (nPhases > 2) {
-			// Assumes 2 phase delta is open delta
+			// assumes 2 phase delta is open delta
 			if (Result > nPhases) Result = 1;
 			if (Result < 1) Result = nPhases;
 		} else {
-			if (Result < 1) Result = 3;  // For 2-phase delta, next phase will be 3rd phase
+			if (Result < 1) Result = 3;  // for 2-phase delta, next phase will be 3rd phase
 		}
 
 		return Result;
@@ -198,11 +197,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 					kVA = new Complex(SensorKW[i], SensorKVar[i]).abs();
 					SensorCurrent[i] = kVA * 1000.0 / Vbase;
 				}
-			} else {  // No Q just use P
+			} else {  // no Q just use P
 				for (i = 0; i < nPhases; i++)
 					SensorCurrent[i] = SensorKW[i] * 1000.0 / Vbase;
 			}
-			Ispecified = true;  // Overrides current specification
+			Ispecified = true;  // overrides current specification
 		}
 
 		if (Ispecified)
@@ -267,10 +266,10 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		setPropertyValue(0, ""); // 'element';
-		setPropertyValue(1, "1"); // 'terminal';
-		setPropertyValue(2, "12.47"); // 'kVBase';
-		setPropertyValue(3, "No"); // Must be set to yes to clear before setting quantities
+		setPropertyValue(0, "");   // 'element';
+		setPropertyValue(1, "1");  // 'terminal';
+		setPropertyValue(2, "12.47");  // 'kVBase';
+		setPropertyValue(3, "No");  // must be set to yes to clear before setting quantities
 		setPropertyValue(4, "[7.2, 7.2, 7.2]");
 		setPropertyValue(5, "[0.0, 0.0, 0.0]");  // currents
 		setPropertyValue(6, "[0.0, 0.0, 0.0]");  // P kW

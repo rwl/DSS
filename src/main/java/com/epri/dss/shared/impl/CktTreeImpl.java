@@ -99,7 +99,7 @@ public class CktTreeImpl implements CktTree {
 
 	private void pushAllChildren() {
 		if (PresentBranch != null) {
-			// Push all children of present node onto stack
+			// push all children of present node onto stack
 			CktTreeNode pChild = PresentBranch.getFirstChild();
 			while (pChild != null) {
 				ForwardStack.push((DSSObject) pChild);  // FIXME Implement generics
@@ -113,12 +113,12 @@ public class CktTreeImpl implements CktTree {
 	 * Move forward from present node.
 	 */
 	public DSSObject GoForward() {
-		// If we have added children to the present node since we opened it push em on
+		// if we have added children to the present node since we opened it push them on
 		if (PresentBranch != null)
 			if (PresentBranch.isChildAdded())
 				pushAllChildren();
 
-		// If the forward stack is empty push stuff on it to get started
+		// if the forward stack is empty push stuff on it to get started
 		if (ForwardStack.size() == 0)
 			pushAllChildren();
 
@@ -349,22 +349,22 @@ public class CktTreeImpl implements CktTree {
 		BranchList.setNew(TestElement);
 		if (Analyze)
 			TestElement.setIsIsolated(false);
-		TestElement.setLastTerminalChecked(0);  // We'll check things connected to both sides
+		TestElement.setLastTerminalChecked(0);  // we'll check things connected to both sides
 
-		// Check off this element so we don't use it again
+		// check off this element so we don't use it again
 		TestElement.setChecked(true);
 
-		// Now start looking for other branches
-		// Finds any branch connected to the TestBranch and adds it to the list
-		// Goes until end of circuit, another energy meter, an open terminal, or disabled device.
+		// now start looking for other branches
+		// finds any branch connected to the TestBranch and adds it to the list
+		// goes until end of circuit, another energy meter, an open terminal, or disabled device
 		TestBranch = TestElement;
 		while (TestBranch != null) {
 			for (iTerm = 0; iTerm < TestBranch.getNTerms(); iTerm++) {
 				if (!TestBranch.getTerminals()[iTerm].isChecked()) {
-					// Now find all PC elements connected to the bus on this end of branch
+					// now find all PC elements connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node.
 					TestBusNum = TestBranch.getTerminals()[iTerm].getBusRef();
-					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // Add this as a "to" bus reference
+					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // add this as a "to" bus reference
 					if (TestBusNum > 0) {
 						ckt.getBuses()[TestBusNum].setBusChecked(true);
 						getSourcesConnectedToBus(TestBusNum, BranchList, Analyze);
@@ -386,7 +386,7 @@ public class CktTreeImpl implements CktTree {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		nBus = ckt.getNumBuses();
-		// Circuit.Buses is effectively 1-based; bus 0 is ground   TODO Check zero based indexing
+		// Circuit.buses is effectively 1-based; bus 0 is ground   TODO Check zero based indexing
 		lstPD = new List[nBus + 1];
 		lstPC = new List[nBus + 1];
 		for (i = 0; i < nBus; i++) {
@@ -402,7 +402,7 @@ public class CktTreeImpl implements CktTree {
 		}
 
 		for (CktElement pCktElement : ckt.getPDElements()) {
-			/* Put only eligible PDElements in the list */
+			/* Put only eligible PD elements in the list */
 			if (pCktElement.isEnabled()) {
 				if (Utilities.isShuntElement(pCktElement)) {
 					i = pCktElement.getTerminals()[0].getBusRef();

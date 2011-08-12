@@ -29,18 +29,17 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	protected void defineProperties() {
 
 		NumProperties = Monitor.NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		// Define property names
-
+		// define property names
 		PropertyName[0] = "element";
 		PropertyName[1] = "terminal";
 		PropertyName[2] = "mode";
-		PropertyName[3] = "action";  // buffer=clear|save
+		PropertyName[3] = "action";    // buffer=clear|save
 		PropertyName[4] = "residual";  // buffer=clear|save
-		PropertyName[5] = "VIPolar";  // V I in mag and angle rather then re and im
-		PropertyName[6] = "PPolar";  // Power in power PF rather then power and vars
+		PropertyName[5] = "VIPolar";   // V I in mag and angle rather then re and im
+		PropertyName[6] = "PPolar";    // power in power PF rather then power and vars
 
 		PropertyHelp[0] = "Name (Full Object name) of element to which the monitor is connected.";
 		PropertyHelp[1] = "Number of the terminal of the circuit element to which the monitor is connected. "+
@@ -70,7 +69,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		PropertyHelp[6] = "{Yes/True | No/False} Default = YES. Report power in Apparent power, S, in polar form (Mag/Angle).(default)  Otherwise, is P and Q";
 
 		ActiveProperty = Monitor.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -109,7 +108,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ am.getName() + "\"", 661);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
 				am.setElementName(Param.toLowerCase());
@@ -193,17 +192,17 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	@Override
 	protected int makeLike(String MonitorName) {
 		int i, Result = 0;
-		/* See if we can find this Monitor name in the present collection */
+		/* See if we can find this monitor name in the present collection */
 		MonitorObj OtherMonitor = (MonitorObj) find(MonitorName);
 		if (OtherMonitor != null) {
 			MonitorObj am = getActiveMonitorObj();
 
 			am.setNPhases(OtherMonitor.getNPhases());
-			am.setNConds(OtherMonitor.getNConds());  // Force reallocation of terminal stuff
+			am.setNConds(OtherMonitor.getNConds());  // force reallocation of terminal stuff
 
 			am.setBufferSize(OtherMonitor.getBufferSize());
 			am.setElementName(OtherMonitor.getElementName());
-			am.setMeteredElement(OtherMonitor.getMeteredElement());  // Pointer to target circuit element
+			am.setMeteredElement(OtherMonitor.getMeteredElement());  // target circuit element
 			am.setMeteredTerminal(OtherMonitor.getMeteredTerminal());
 			am.setMode(OtherMonitor.getMode());
 			am.setIncludeResidual(OtherMonitor.isIncludeResidual());
@@ -214,7 +213,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			am.setBaseFrequency(OtherMonitor.getBaseFrequency());
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" Not Found.", 662);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
 		}
 
 		return Result;

@@ -17,12 +17,12 @@ public class PointerListImpl implements PointerList {
 	public PointerListImpl(int Size) {
 		super();
 		this.MaxAllocated = Size;
-		// Default Size & Increment
+		// default size & increment
 		if (this.MaxAllocated <= 0) this.MaxAllocated = 10;
 		this.List = new Object[MaxAllocated];
 		this.NumInList = 0;
 		this.ActiveItem = 0;
-		// Increment is equal to original allocation
+		// increment is equal to original allocation
 		this.IncrementSize = MaxAllocated;
 	}
 
@@ -68,7 +68,7 @@ public class PointerListImpl implements PointerList {
 		NumInList = 0;
 	}
 
-	/* Returns index of item */
+	/** Returns index of item */
 	public int add(Object p) {
 		NumInList += 1;
 		if (NumInList > MaxAllocated) {

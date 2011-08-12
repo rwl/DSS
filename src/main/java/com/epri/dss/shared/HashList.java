@@ -27,16 +27,16 @@ public interface HashList {
 
 	int add(String S);
 
-	/* repeat find for duplicate string in same hash list */
+	/** Repeat find for duplicate string in same hash list */
 	int find(String S);
-	
+
 	int findNext();
 
 	int findAbbrev(String S);
 
 	String get(int i);
 
-	/* Expands number of elements */
+	/** Expands number of elements */
 	void expand(int NewSize);
 
 	void dumpToFile(String fname);

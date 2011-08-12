@@ -55,7 +55,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 		MeteredElement.getCurrents(CalculatedCurrent);
 
-		// The Phase Allocation Factor is the amount that the load must change to match the measured peak
+		// The phase allocation factor is the amount that the load must change to match the measured peak
 		iOffset = (MeteredTerminal - 1) * MeteredElement.getNConds();
 		AvgAllocFactor = 0.0;
 		for (i = 0; i < nPhases; i++) {
@@ -63,18 +63,18 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 			if (Mag > 0.0) {
 				PhsAllocationFactor[i] = SensorCurrent[i] / Mag;
 			} else {
-				PhsAllocationFactor[i] = 1.0;  // No change
+				PhsAllocationFactor[i] = 1.0;  // no change
 			}
 			AvgAllocFactor = AvgAllocFactor + PhsAllocationFactor[i];
 		}
-		AvgAllocFactor = AvgAllocFactor / nPhases;  // Factor for 2- and 3-phase loads
+		AvgAllocFactor = AvgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
 	}
 
 	/**
 	 * Sample control quantities and set action times in control queue.
 	 */
 	public void takeSample() {
-		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Reached base MeterElement class for takeSample."+DSSGlobals.CRLF+"Device: "+getName(), 723);
+		DSSGlobals.getInstance().doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSSGlobals.CRLF+"Device: "+getName(), 723);
 	}
 
 	public String getElementName() {

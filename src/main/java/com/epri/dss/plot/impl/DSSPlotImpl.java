@@ -50,18 +50,18 @@ public class DSSPlotImpl implements DSSPlot {
 	protected double MinScale;
 	protected boolean Dots,
 		Labels,
-		ShowLoops,         // applies to Meterzone plots only
+		ShowLoops,  // applies to meterZone plots only
 		ShowSubs;
 	protected PlotQuantity Quantity;
 	protected String ObjectName,
 		FeederName;
 	protected int ValueIndex,
-		MarkerIdx;  // For General & AutoAdd
+		MarkerIdx;  // for general & autoAdd
 
-	protected int PhasesToPlot;  // Profile Plot
+	protected int PhasesToPlot;  // profile plot
 
-	protected int[] Channels;  // for Monitor Plot
-	protected double[] Bases;  // for Monitor Plot
+	protected int[] Channels;  // for monitor plot
+	protected double[] Bases;  // for monitor plot
 
 	protected Color Color1, Color2, Color3;
 
@@ -109,7 +109,7 @@ public class DSSPlotImpl implements DSSPlot {
 
 	}
 
-	/* Misc support procedures */
+	/** Misc support procedures */
 	private void markSubTransformers() {
 
 	}

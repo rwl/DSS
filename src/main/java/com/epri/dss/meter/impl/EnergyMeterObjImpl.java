@@ -62,8 +62,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	private double MaxZonekVA_Norm;
 	private double MaxZonekVA_Emerg;
 
-	/* Voltage bases in the Meter Zone */
-	private double[] VBaseTotalLosses;    // allocated array
+	/* Voltage bases in the meter zone */
+	private double[] VBaseTotalLosses;  // allocated array
 	private double[] VBaseLineLosses;
 	private double[] VBaseLoadLosses;
 	private double[] VBaseNoLoadLosses;
@@ -80,14 +80,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	private FileWriter VPhase_File;
 	private boolean VPhaseReportFileIsOpen;
 
-	/* Demand Interval File variables */
+	/* Demand interval file variables */
 	private FileWriter DI_File;
 	private boolean This_Meter_DIFileIsOpen;
 
 
 	protected String[] RegisterNames = new String[NumEMRegisters];
 
-	protected CktTree BranchList;  // Pointers to all circuit elements in meter"s zone
+	protected CktTree BranchList;  // all circuit elements in meter"s zone
 
 	protected double[] Registers   = new double[NumEMRegisters];
 	protected double[] Derivatives = new double[NumEMRegisters];
@@ -106,7 +106,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		this.nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 		this.ExcessFlag     = true;  // default to excess energy for UE
-		this.ElementName    = "Vsource." + ckt.getCktElements().get(0).getName(); // Default to first circuit element (source)
+		this.ElementName    = "Vsource." + ckt.getCktElements().get(0).getName();  // default to first circuit element (source)
 		this.MeteredElement = null;
 		this.BranchList     = null;  // initialize to null, set later when inited
 
@@ -115,13 +115,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		initPropertyValues(0);
 
-		// Max zone kW limits ignored unless the user provides a rating
+		// max zone kW limits ignored unless the user provides a rating
 		this.MaxZonekVA_Norm     = 0.0;
 		this.MaxZonekVA_Emerg    = 0.0;
 
 		this.ZoneIsRadial        = true;
 		this.HasFeeder           = false;
-		this.FeederObj           = null;  // Initialise to not assigned
+		this.FeederObj           = null;  // initialise to not assigned
 		this.DefinedZoneList     = null;
 		this.DefinedZoneListSize = 0;
 		this.Losses             = true;  /* Loss reporting switches */
@@ -146,7 +146,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		this.VBaseNoLoadLosses  = new double[this.MaxVBaseCount];
 		this.VBaseLoad          = new double[this.MaxVBaseCount];
 
-		// Arrays for phase voltage report
+		// arrays for phase voltage report
 		this.VphaseMax   = new double[this.MaxVBaseCount * 3];
 		this.VPhaseMin   = new double[this.MaxVBaseCount * 3];
 		this.VPhaseAccum = new double[this.MaxVBaseCount * 3];
@@ -155,7 +155,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		LocalOnly     = false;
 		VoltageUEOnly = false;
 
-		// Set register names  that correspond to the register quantities
+		// set register names  that correspond to the register quantities
 		RegisterNames[0]  = "kWh";
 		RegisterNames[1]  = "kvarh";
 		RegisterNames[2]  = "Max kW";
@@ -216,14 +216,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void recalcElementData() {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		int DevIndex = Utilities.getCktElementIndex(ElementName);   // Global function
+		int DevIndex = Utilities.getCktElementIndex(ElementName);
 
-		if (DevIndex >= 0) {  // Monitored element must already exist
-		MeteredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex); // Get pointer to metered element
+		if (DevIndex >= 0) {  // monitored element must already exist
+		MeteredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex);
 		/* MeteredElement must be a PDElement */
 		if (!(MeteredElement instanceof PDElement)) {
 			MeteredElement = null;  // element not found
-			Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" is not a Power Delivery (PD) element.",
+			Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ ElementName + "\" is not a Power Delivery (PD) element.",
 				" Element must be a PD element.", 525);
 			return;
 		}
@@ -235,14 +235,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		} else {
 
 			if (MeteredElementChanged) {
-				// Sets name of i-th terminal's connected bus in monitor's buslist
-				// This value will be used to set the NodeRef array (see TakeSample)
+				// Sets name of i-th terminal's connected bus in monitor's bus list
+				// This value will be used to set the nodeRef array (see takeSample)
 				setBus(1, MeteredElement.getBus(MeteredTerminal));
 				setNPhases( MeteredElement.getNPhases() );
 				nConds  = MeteredElement.getNConds();
 				allocateSensorArrays();
 
-				// If we come through here, throw branchlist away
+				// if we come through here, throw branch list away
 				BranchList = null;
 			}
 
@@ -250,7 +250,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 		} else {
 		MeteredElement = null;  // element not found
-		Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit Element \""+ ElementName + "\" Not Found.",
+		Globals.doErrorMsg("EnergyMeter: \"" + getName() + "\"", "Circuit element \""+ ElementName + "\" not found.",
 				" Element must be defined previously.", 525);
 		}
 	}
@@ -305,7 +305,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	@Override
 	public void calcYPrim() {
-		// YPrim is all zeros. Just leave as nil so it is ignored.
+		// YPrim is all zeros; just leave as nil so it is ignored
 	}
 
 	public void saveRegisters() {
@@ -344,7 +344,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		if (ckt.isTrapezoidalIntegration()) {
-		/* Trapezoidal Rule Integration */
+		/* Trapezoidal rule integration */
 		if (!FirstSampleAfterReset)
 			Registers[Reg] = Registers[Reg] + 0.5 * Interval * (Deriv + Derivatives[Reg]);
 		} else {
@@ -352,7 +352,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Registers[Reg] = Registers[Reg] + Interval * Deriv;
 		}
 
-		/* Set the derivatives so that the proper value shows up in Demand Interval Files
+		/* Set the derivatives so that the proper value shows up in demand interval files
 		 * and prepare for next time step in Trapezoidal integration.
 		 */
 		Derivatives[Reg] = Deriv;
@@ -381,7 +381,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		TotalNoLoadLosses,
 		TotalLineLosses,
 		TotalTransformerLosses,
-		TotalLineModeLosses,    // Lines only  for now
+		TotalLineModeLosses,  // lines only for now
 		TotalZeroModeLosses,
 		Total3phaseLosses,
 		Total1phaseLosses,
@@ -415,22 +415,22 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		// Compute energy in branch to which meter is connected
+		// compute energy in branch to which meter is connected
 
-		//MeteredElement.setActiveTerminalIdx(MeteredTerminal);  // needed for Excess kVA calcs
+		//MeteredElement.setActiveTerminalIdx(MeteredTerminal);  // needed for excess kVA calcs
 		S_Local     = MeteredElement.getPower(MeteredTerminal).multiply(0.001);
 		S_Local_kVA = S_Local.abs();
 		Delta_Hrs   = Globals.getActiveCircuit().getSolution().getIntervalHrs();
-		integrate(EnergyMeter.Reg_kWh,   S_Local.getReal(), Delta_Hrs);  // Accumulate the power
+		integrate(EnergyMeter.Reg_kWh,   S_Local.getReal(), Delta_Hrs);  // accumulate the power
 		integrate(EnergyMeter.Reg_kvarh, S_Local.getImaginary(), Delta_Hrs);
 		setDragHandRegister(EnergyMeter.Reg_MaxkW,  S_Local.getReal());   // 3-10-04 removed abs()
 		setDragHandRegister(EnergyMeter.Reg_MaxkVA, S_Local_kVA);
 
-		// Compute maximum overload energy in all branches in zone
+		// compute maximum overload energy in all branches in zone
 		// and mark all load downline from an overloaded branch as unserved
-		// If localonly, check only metered element
+		// if localonly, check only metered element
 
-		TotalLosses         = Complex.ZERO;     // Initialize loss accumulators
+		TotalLosses         = Complex.ZERO;  // initialize loss accumulators
 		TotalLoadLosses     = Complex.ZERO;
 		TotalNoLoadLosses   = Complex.ZERO;
 		TotalLineLosses     = Complex.ZERO;
@@ -440,7 +440,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Total1phaseLosses   = Complex.ZERO;
 		TotalTransformerLosses   = Complex.ZERO;
 
-		// Init all voltage base loss accumulators
+		// init all voltage base loss accumulators
 		for (i = 0; i < MaxVBaseCount; i++) {
 			VBaseTotalLosses[i]  = 0.0;
 			VBaseLineLosses[i]   = 0.0;
@@ -449,7 +449,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			VBaseLoad[i]         = 0.0;
 		}
 
-		// Phase voltage arrays
+		// phase voltage arrays
 		if (PhaseVoltageReport) {
 			for (i = 0; i < MaxVBaseCount; i++) {
 				if (VBaseList[i] > 0.0) {
@@ -457,7 +457,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						VphaseMax[jiIndex(j, i)] = 0.0;
 						VPhaseMin[jiIndex(j, i)] = 9999.0;
 						VPhaseAccum[jiIndex(j, i)] = 0.0;
-						VPhaseAccumCount[jiIndex(j, i)] = 0;  // Keep track of counts for average
+						VPhaseAccumCount[jiIndex(j, i)] = 0;  // keep track of counts for average
 					}
 				}
 			}
@@ -467,27 +467,27 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		MaxExcesskWNorm   = 0.0;
 		MaxExcesskWEmerg  = 0.0;
 
-		/* -------------------------------------------------------------------------- */
-		/* ------------------------ Local Zone Only --------------------------------- */
-		/* -------------------------------------------------------------------------- */
+		/* ------------------------------------------------------------------ */
+		/* ------------------------ Local Zone Only ------------------------- */
+		/* ------------------------------------------------------------------ */
 		if (LocalOnly) {
 			CktElem = (PDElement) MeteredElement;
 			MaxExcesskWNorm  = Math.abs(CktElem.getExcessKVANorm(MeteredTerminal).getReal());
 			MaxExcesskWEmerg = Math.abs(CktElem.getExcessKVAEmerg(MeteredTerminal).getReal());
 		} else {
-			/* -------------------------------------------------------------------------- */
-			/* --------Cyle Through Entire Zone Setting EEN/UE -------------------------- */
-			/* -------------------------------------------------------------------------- */
+			/* -------------------------------------------------------------- */
+			/* --------Cyle Through Entire Zone Setting EEN/UE -------------- */
+			/* -------------------------------------------------------------- */
 			while (CktElem != null) {
 				// loop thru all ckt elements on zone
 
 				CktElem.setActiveTerminalIdx( BranchList.getPresentBranch().getFromTerminal() );
-				// Invoking this property sets the Overload_UE flag in the PD Element
+				// invoking this property sets the Overload_UE flag in the PD element
 				EEN = Math.abs(CktElem.getExcessKVANorm(CktElem.getActiveTerminalIdx()).getReal());
 				UE  = Math.abs(CktElem.getExcessKVAEmerg(CktElem.getActiveTerminalIdx()).getReal());
 			}
 
-			/* For radial circuits just keep the maximum overload; for mesh, add 'em up */
+			/* For radial circuits just keep the maximum overload; for mesh, add them up */
 			if (ZoneIsRadial) {
 				if (UE  > MaxExcesskWEmerg) MaxExcesskWEmerg = UE;
 				if (EEN > MaxExcesskWNorm)  MaxExcesskWNorm  = EEN;
@@ -496,18 +496,18 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				MaxExcesskWNorm  = MaxExcesskWNorm  + EEN;
 			}
 
-			// Even if this branch is not overloaded, if the parent element is overloaded
+			// even if this branch is not overloaded, if the parent element is overloaded
 			// mark load on this branch as unserved also
-			// Use the larger of the two factors
+			// use the larger of the two factors
 			ParenElem = (PDElement) BranchList.getParent();
 			if (ParenElem != null) {
 				CktElem.setOverLoad_EEN( Math.max(CktElem.getOverLoad_EEN(), ParenElem.getOverLoad_EEN()) );
 				CktElem.setOverload_UE( Math.max(CktElem.getOverload_UE(), ParenElem.getOverload_UE()) );
 			}
 
-			// Mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial
-			// This overrides and supercedes the load's own determination of unserved based on voltage
-			// If voltage only is to be used for Load UE/EEN, don't mark (set to 0.0 and load will calc UE based on voltage)
+			// mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial
+			// this overrides and supercedes the load's own determination of unserved based on voltage
+			// if voltage only is to be used for Load UE/EEN, don't mark (set to 0.0 and load will calc UE based on voltage)
 			PCelem = (PCElement) BranchList.getFirstObject();
 			while (PCelem != null) {
 				if ((PCelem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
@@ -530,7 +530,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			CktElem = (PDElement) BranchList.GoForward();
 		}
 
-		// Get the losses, and unserved bus energies
+		// get the losses, and unserved bus energies
 		TotalZonekw   = 0.0;
 		TotalZonekvar = 0.0;
 		TotalLoad_EEN = 0.0;
@@ -538,16 +538,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		TotalGenkW    = 0.0;
 		TotalGenkVAr  = 0.0;
 
-		/* -------------------------------------------------------------------------- */
-		/* --------       Cycle Through Zone Accumulating Load and Losses    -------- */
-		/* -------------------------------------------------------------------------- */
+		/* ------------------------------------------------------------------ */
+		/* ----       Cycle Through Zone Accumulating Load and Losses    ---- */
+		/* ------------------------------------------------------------------ */
 		CktElem = (PDElement) BranchList.getFirst();
 		while (CktElem != null) {
 			PCelem = (PCElement) BranchList.getFirstObject();
 			while (PCelem != null) {
 				switch (PCelem.getDSSObjType() & DSSClassDefs.CLASSMASK) {
 				case DSSClassDefs.LOAD_ELEMENT:
-					if (!LocalOnly) {  // Dont check for load EEN/UE if Local only
+					if (!LocalOnly) {  // don't check for load EEN/UE if Local only
 						pLoad = (LoadObj) PCelem;
 						Load_kW = accumulateLoad(pLoad, TotalZonekw, TotalZonekvar, TotalLoad_EEN, TotalLoad_UE);
 						if (VBaseLosses) {
@@ -565,7 +565,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				PCelem = (PCElement) BranchList.getNextObject();
 			}
 
-			if (Losses) {  // Compute and report losses
+			if (Losses) {  // compute and report losses
 
 				/* Get losses from the present circuit element */
 				CktElem.getLosses(mS_Totallosses, mS_LoadLosses, mS_NoLoadLosses);  // returns watts, vars
@@ -578,13 +578,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				S_LoadLosses = S_LoadLosses.multiply(0.001);
 				S_NoLoadLosses = S_NoLoadLosses.multiply(0.001);
 				/* Update accumulators */
-				TotalLosses = TotalLosses.add(S_Totallosses);  // Accumulate total losses in meter zone
-				TotalLoadLosses = TotalLoadLosses.add(S_LoadLosses);  // Accumulate total load losses in meter zone
-				TotalNoLoadLosses = TotalNoLoadLosses.add(S_NoLoadLosses);  // Accumulate total no load losses in meter zone
+				TotalLosses = TotalLosses.add(S_Totallosses);  // accumulate total losses in meter zone
+				TotalLoadLosses = TotalLoadLosses.add(S_LoadLosses);  // accumulate total load losses in meter zone
+				TotalNoLoadLosses = TotalNoLoadLosses.add(S_NoLoadLosses);  // accumulate total no load losses in meter zone
 
-				/* Line and Transformer Elements */
+				/* Line and transformer elements */
 				if (Utilities.isLineElement(CktElem) && LineLosses) {
-					TotalLineLosses = TotalLineLosses.add(S_Totallosses);  // Accumulate total losses in meter zone
+					TotalLineLosses = TotalLineLosses.add(S_Totallosses);  // accumulate total losses in meter zone
 					if (SeqLosses) {
 						CktElem.getSeqLosses(mS_PosSeqLosses, mS_NegSeqLosses, mS_ZeroSeqLosses);
 						S_PosSeqLosses = new Complex(mS_PosSeqLosses[0], mS_PosSeqLosses[1]);
@@ -597,7 +597,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						TotalLineModeLosses = TotalLineModeLosses.add(S_PosSeqLosses);
 						TotalZeroModeLosses = TotalZeroModeLosses.add(S_ZeroSeqLosses);
 					}
-					/* Separate Line losses into 3- and "1-phase" losses */
+					/* Separate line losses into 3- and "1-phase" losses */
 					if (ThreePhaseLosses) {
 						if (CktElem.getNPhases() == 3) {
 							Total3phaseLosses = Total3phaseLosses.add(S_Totallosses);
@@ -606,7 +606,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						}
 					}
 				} else if (Utilities.isTransformerElement(CktElem) && XfmrLosses) {
-					TotalTransformerLosses = TotalTransformerLosses.add(S_Totallosses); // Accumulate total losses in meter zone
+					TotalTransformerLosses = TotalTransformerLosses.add(S_Totallosses);  // accumulate total losses in meter zone
 				}
 
 				if (VBaseLosses) {
@@ -622,7 +622,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					}
 				}
 
-				// Compute min, max, and average pu voltages for 1st 3 phases  (nodes designated 1, 2, or 3)
+				// compute min, max, and average pu voltages for 1st 3 phases (nodes designated 1, 2, or 3)
 				if (PhaseVoltageReport) {
 					int vbi = BranchList.getPresentBranch().getVoltBaseIndex();
 					int fbr = BranchList.getPresentBranch().getFromBusReference();
@@ -636,13 +636,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 									VphaseMax[jiIndex(j, vbi)] = Math.max(VphaseMax[jiIndex(j, vbi)], puV);
 									VPhaseMin[jiIndex(j, vbi)] = Math.min(VPhaseMin[jiIndex(j, vbi)], puV);
 									VPhaseAccum[jiIndex(j, vbi)] = VPhaseAccum[jiIndex(j, vbi)] + puV;
-									VPhaseAccumCount[jiIndex(j, vbi)] += 1;  // Keep track of counts for average
+									VPhaseAccumCount[jiIndex(j, vbi)] += 1;  // keep track of counts for average
 								}
 							}
 						}
 					}
 				}
-			}  // if (Losses)
+			}  // if (losses)
 
 			CktElem = (PDElement) BranchList.GoForward();
 		}
@@ -674,9 +674,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 
 
-		/* -------------------------------------------------------------------------- */
-		/* ---------------   Total Zone Load and Generation ------------------------- */
-		/* -------------------------------------------------------------------------- */
+		/* ------------------------------------------------------------------ */
+		/* ---------------   Total Zone Load and Generation ----------------- */
+		/* ------------------------------------------------------------------ */
 
 		integrate(EnergyMeter.Reg_ZonekWh,   TotalZonekw,   Delta_Hrs);
 		integrate(EnergyMeter.Reg_Zonekvarh, TotalZonekvar, Delta_Hrs);
@@ -685,9 +685,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		GenkVA  = Math.sqrt(Math.pow(TotalGenkVAr, 2)  + Math.pow(TotalGenkW, 2));
 		LoadkVA = Math.sqrt(Math.pow(TotalZonekvar, 2) + Math.pow(TotalZonekw, 2));
 
-		/* -------------------------------------------------------------------------- */
-		/* ---------------   Set Drag Hand Registers  ------------------------------- */
-		/* -------------------------------------------------------------------------- */
+		/* ------------------------------------------------------------------ */
+		/* ---------------   Set Drag Hand Registers  ----------------------- */
+		/* ------------------------------------------------------------------ */
 
 		setDragHandRegister(EnergyMeter.Reg_LossesMaxkW,     Math.abs(TotalLosses.getReal()));
 		setDragHandRegister(EnergyMeter.Reg_LossesMaxkvar,   Math.abs(TotalLosses.getImaginary()));
@@ -699,9 +699,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		setDragHandRegister(EnergyMeter.Reg_GenMaxkW,        TotalGenkW); // Removed abs()  3-10-04
 		setDragHandRegister(EnergyMeter.Reg_GenMaxkVA,       GenkVA);
 
-		/* -------------------------------------------------------------------------- */
-		/* ---------------------   Overload Energy  --------------------------------- */
-		/* -------------------------------------------------------------------------- */
+		/* ------------------------------------------------------------------ */
+		/* ---------------------   Overload Energy  ------------------------- */
+		/* ------------------------------------------------------------------ */
 		/* Overload energy for the entire zone */
 		if (LocalOnly) {
 			ZonekW = S_Local.getReal();
@@ -738,11 +738,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		PDElement CktElem;
 
 		if (BranchList == null) {
-			DSSGlobals.getInstance().doSimpleMsg("Meter Zone Lists need to be built. Do Solve or makeBusList first!", 529);
+			DSSGlobals.getInstance().doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
 			return;
 		}
 
-		/* Init totsls and checked flag */
+		/* Init totals and checked flag */
 		CktElem = (PDElement) BranchList.getFirst();
 		while (CktElem != null) {
 			CktElem.setChecked(false);
@@ -789,7 +789,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		PCElement pC;
 		LoadObj pLoad;
 		boolean IsFeederEnd;
-//		String S;
 		List<PCElement> adjLstPC;
 		List<PDElement> adjLstPD;
 
@@ -809,9 +808,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			return;
 		}
 
-		/* Initialize SensorObj property of the first branch to this MeterElement object.
-		 * Before starting, all sensorObj definitions are cleared in PCElements and PDElements. The
-		 * SensorObj property is passed down to the Load objects for LoadAllocation and state estimation.
+		/* Initialize sensorObj property of the first branch to this MeterElement object.
+		 * Before starting, all sensorObj definitions are cleared in PC elements and PD elements. The
+		 * sensorObj property is passed down to the Load objects for loadAllocation and state estimation.
 		 */
 		if (MeteredElement instanceof PDElement) {
 			((PDElement) MeteredElement).setSensorObj(this);
@@ -827,7 +826,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		MeteredElement.getTerminals()[MeteredTerminal].setChecked(true);
 		CktTreeNode pb = BranchList.getPresentBranch();
-		// This bus is the head of the feeder; do not mark as radial bus
+		// this bus is the head of the feeder; do not mark as radial bus
 		pb.setFromBusReference( MeteredElement.getTerminals()[MeteredTerminal].getBusRef() );
 		Globals.getActiveCircuit().getBuses()[pb.getFromBusReference()].setDistFromMeter(0.0);
 		pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
@@ -835,30 +834,30 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (MeteredElement instanceof PDElement)
 			((PDElement) MeteredElement).setFromTerminal(MeteredTerminal);
 
-		// Check off this element so we don't use it again
+		// check off this element so we don't use it again
 		MeteredElement.setChecked(true);
 		MeteredElement.setIsIsolated(false);
 
-		// Now start looking for other branches
-		// Finds any branch connected to the TestBranch and adds it to the list
-		// Goes until end of circuit, another energy meter, an open terminal, or disabled device.
+		// now start looking for other branches
+		// finds any branch connected to the testBranch and adds it to the list
+		// goes until end of circuit, another energy meter, an open terminal, or disabled device
 		ActiveBranch = MeteredElement;
 		while (ActiveBranch != null) {
 			pb = BranchList.getPresentBranch();
 			pb.setIsLoopedHere(false);
 			pb.setIsParallel(false);
-			pb.setIsDangling(true);  // Unless we find something connected to it
+			pb.setIsDangling(true);  // unless we find something connected to it
 			pb.setVoltBaseIndex( addToVoltBaseList(pb.getFromBusReference()) );
 
-			((PDElement) ActiveBranch).setNumCustomers(0);  // Init counter
+			((PDElement) ActiveBranch).setNumCustomers(0);  // init counter
 
 			for (iTerm = 0; iTerm < ActiveBranch.getNTerms(); iTerm++) {
 				if (!ActiveBranch.getTerminals()[iTerm].isChecked()) {
-					// Now find all loads and generators connected to the bus on this end of branch
-					// attach them as generic objects to cktTree node.
+					// now find all loads and generators connected to the bus on this end of branch
+					// attach them as generic objects to cktTree node
 					TestBusNum = ActiveBranch.getTerminals()[iTerm].getBusRef();
-					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // Add this as a "to" bus reference
-					if (Utilities.isLineElement(ActiveBranch)) {  // Convert to consistent units (km)
+					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // add this as a "to" bus reference
+					if (Utilities.isLineElement(ActiveBranch)) {  // convert to consistent units (km)
 						ckt.getBuses()[TestBusNum].setDistFromMeter( ckt.getBuses()[ BranchList.getPresentBranch().getFromBusReference() ].getDistFromMeter()
 								+ ((LineObj) ActiveBranch).getLen() * LineUnits.convertLineUnits( ((LineObj) ActiveBranch).getLengthUnits(), LineUnits.UNITS_KM) );
 					} else {
@@ -869,15 +868,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					for (iPC = 0; iPC < adjLstPC.size(); iPC++) {
 						pC = (PCElement) adjLstPC.get(iPC);
 						if (pC.isChecked()) continue;  // skip ones we already checked
-						BranchList.getPresentBranch().setIsDangling(false);  // Something is connected here
-						// Is this a load or a generator or a Capacitor or reactor?
+						BranchList.getPresentBranch().setIsDangling(false);  // something is connected here
+						// is this a load or a generator or a capacitor or reactor?
 						if (((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT)
 								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.GEN_ELEMENT)
 								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.CAP_ELEMENT)
 								|| ((pC.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.REACTOR_ELEMENT)) {
 
 							BranchList.setNewObject(pC);
-							pC.setChecked(true);  // So we don't pick this element up again
+							pC.setChecked(true);  // so we don't pick this element up again
 							pC.setIsIsolated(false);
 							pC.setActiveTerminalIdx(1);  // TODO Check zero based indexing
 							/* Totalize number of customers if load type */
@@ -892,20 +891,20 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						}
 					}
 
-					// Now find all branches connected to this bus that we havent found already
-					// Do not include in this zone if branch has open terminals or has another meter
+					// now find all branches connected to this bus that we havent found already
+					// do not include in this zone if branch has open terminals or has another meter
 
-					if (DefinedZoneListSize == 0) {  // Search tree for connected branches (default)
+					if (DefinedZoneListSize == 0) {  // search tree for connected branches (default)
 						IsFeederEnd = true;
 						adjLstPD = EnergyMeterImpl.BusAdjPD[TestBusNum];
 						for (iPD = 0; iPD < adjLstPD.size(); iPD++) {
-							TestElement = (PDElement) adjLstPD.get(iPD);  // Only enabled objects are in this list
-							// See resetMeterZonesAll()
-							if (!(TestElement == ActiveBranch)) {  // Skip self
-								if (!TestElement.hasEnergyMeter()) {  // Stop at other meters  so zones don't interfere
-									for (j = 0; j < TestElement.getNTerms(); j++) {  // Check each terminal
+							TestElement = (PDElement) adjLstPD.get(iPD);  // only enabled objects are in this list
+							// see resetMeterZonesAll()
+							if (!(TestElement == ActiveBranch)) {  // skip self
+								if (!TestElement.hasEnergyMeter()) {  // stop at other meters so zones don't interfere
+									for (j = 0; j < TestElement.getNTerms(); j++) {  // check each terminal
 										if (TestBusNum == TestElement.getTerminals()[j].getBusRef()) {
-											BranchList.getPresentBranch().setIsDangling(false);  // We found something it was connected to
+											BranchList.getPresentBranch().setIsDangling(false);  // we found something it was connected to
 											/* Check for loops and parallel branches and mark them */
 											if (TestElement.isChecked()) {  /* This branch is on some meter's list already */
 												BranchList.getPresentBranch().setIsLoopedHere(true);  /* It's a loop */
@@ -913,9 +912,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 												if (Utilities.isLineElement(ActiveBranch) && Utilities.isLineElement(TestElement))
 													if (Utilities.checkParallel(ActiveBranch, TestElement))
 														BranchList.getPresentBranch().setIsParallel(true);  /* It's paralleled with another line */
-											} else {  // Push testElement onto stack and set properties
+											} else {  // push testElement onto stack and set properties
 												IsFeederEnd = false;  // for interpolation
-												BranchList.addNewChild(TestElement, TestBusNum, j);  // Add new child to the branchlist
+												BranchList.addNewChild(TestElement, TestBusNum, j);  // add new child to the branch list
 												TestElement.getTerminals()[j].setChecked(true);
 												TestElement.setFromTerminal(j);
 												TestElement.setChecked(true);
@@ -923,47 +922,47 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 												/* Branch inherits sensor of upline branch if it doesn't have its own */
 												if (!HasSensorObj)
 													TestElement.setSensorObj( ((PDElement) ActiveBranch).getSensorObj() );
-												TestElement.setMeterObj(this);   // Set meterobj to this meter
+												TestElement.setMeterObj(this);   // set meterobj to this meter
 												TestElement.setParentPDElement( (PDElement) ActiveBranch );  // record the parent so we can easily back up for reconductoring, etc.
 												break;
 											}
-										}  /* if TestBusNum */
+										}  /* if testBusNum */
 									}  /* for terminals */
 								}
 							}
 						}  /* for iPD */
 						if (IsFeederEnd)
 							BranchList.getZoneEndsList().add(BranchList.getPresentBranch(), TestBusNum);
-						/* This is an end of the feeder and testbusnum is the end bus */
-					} else {  // Zone is manually specified; Just add next element in list as a child
+						/* This is an end of the feeder and testBusNum is the end bus */
+					} else {  // zone is manually specified; just add next element in list as a child
 						ZoneListCounter += 1;
 						while (ZoneListCounter <= DefinedZoneListSize) {
 							if (ckt.setElementActive(DefinedZoneList[ZoneListCounter]) == 0) {
-								ZoneListCounter += 1;  // Not found. Let's search for another
+								ZoneListCounter += 1;  // not found, let's search for another
 							} else {
 								TestElement = (PDElement) ckt.getActiveCktElement();
 								if (!TestElement.isEnabled()) {
-									ZoneListCounter += 1;  // Lets ignore disabled devices
+									ZoneListCounter += 1;  // lets ignore disabled devices
 								} else {
 									if ((TestElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PD_ELEMENT) {
-										ZoneListCounter += 1;  // Lets ignore non-PD elements
+										ZoneListCounter += 1;  // lets ignore non-PD elements
 									} else {
-										BranchList.addNewChild(TestElement, 0, 0);  // Add it as a child to the previous element
+										BranchList.addNewChild(TestElement, 0, 0);  // add it as a child to the previous element
 									}
-									break;  // Can't do reductions if manually spec'd
+									break;  // can't do reductions if manually spec'd
 								}
 							}
 						}  // while
 					}
 				}
 			}  /* for iTerm */
-			ActiveBranch = (DSSCktElement) BranchList.GoForward();  // Sets present node
+			ActiveBranch = (DSSCktElement) BranchList.GoForward();  // sets present node
 		}
 
 		totalUpDownstreamCustomers();
 
 		if (HasFeeder)
-			FeederObj.initializeFeeder(BranchList);   // Synchronise the feeder definition
+			FeederObj.initializeFeeder(BranchList);  // synchronise the feeder definition
 
 		assignVoltBaseRegisterNames();
 	}
@@ -1024,7 +1023,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			FBuffer.close();
 			FStream.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening File \"" + CSVName + "\": " + e.getMessage(), 528);
+			Globals.doSimpleMsg("Error opening file \"" + CSVName + "\": " + e.getMessage(), 528);
 		}
 	}
 
@@ -1119,8 +1118,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		 * have an effect on loads defined with either the XFKVA property or the
 		 * kWh property.
 		 *
-		 * Loads have a SensorObj property that points to its upstream sensor that has the adjustments for
-		 * the allocation factors.  This is established in the MakeMeterZoneLists proc in this Unit.
+		 * Loads have a sensorObj property that points to its upstream sensor that has the adjustments for
+		 * the allocation factors.  This is established in the makeMeterZoneLists proc in this unit.
 		 *
 		 * Sensors consist of EnergyMeters, which drive the load allocation process and Sensor objects that
 		 * are simply voltage and current measuring points.  A Sensor may be attached to a line or transformer
@@ -1136,7 +1135,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
 						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].NodeNum;
-						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // Restrict to phases 1..3
+						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // restrict to phases 1..3
 							LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * LoadElem.getSensorObj().getPhsAllocationFactor()[ConnectedPhase] );
 						break;
 					default:
@@ -1154,14 +1153,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void initPropertyValues(int ArrayOffset) {
 		String S;
 
-		setPropertyValue(0, ""); // "element";
-		setPropertyValue(1, "1"); // "terminal";
-		setPropertyValue(2, "clear"); // "action";
+		setPropertyValue(0, "");          // "element";
+		setPropertyValue(1, "1");         // "terminal";
+		setPropertyValue(2, "clear");     // "action";
 		setPropertyValue(3, "(E, R, C)"); // "option";
-		setPropertyValue(4, "0.0"); // "kWnormal";
-		setPropertyValue(5, "0.0"); // "kwEmerg";
-		setPropertyValue(6, "(400, 400, 400)"); // "PeakCurrent";
-		setPropertyValue(7, ""); // ZoneList
+		setPropertyValue(4, "0.0");       // "kWnormal";
+		setPropertyValue(5, "0.0");       // "kwEmerg";
+		setPropertyValue(6, "(400, 400, 400)"); // "peakCurrent";
+		setPropertyValue(7, "");  // zoneList
 		setPropertyValue(8, "No");
 		/* Define mask as 1 for all registers */
 		S = "[";
@@ -1193,7 +1192,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		double Load_EEN, Load_UE;
 
 		//pLoad.setActiveTerminalIdx(1);
-		S_Load  = pLoad.getPower(1).multiply(0.001);   // Get Power in Terminal 1   TODO Check zero based indexing
+		S_Load  = pLoad.getPower(1).multiply(0.001);  // get power in terminal 1   TODO Check zero based indexing
 		kW_Load = S_Load.getReal();
 		Result  = kW_Load;
 
@@ -1201,11 +1200,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		TotalZonekW   = TotalZonekW   + kW_Load;
 		TotalZonekvar = TotalZonekvar + S_Load.getImaginary();
 
-		/* always integrate even if the value is 0.0
-		 * otherwise the Integrate function is not correct
+		/* Always integrate even if the value is 0.0
+		 * otherwise the integrate function is not correct.
 		 */
-		/* Invoking the ExceedsNormal and Unserved Properties causes the factors to be computed */
-		if (ExcessFlag) {  // Return Excess load as EEN/UE
+		/* Invoking the exceedsNormal and unserved properties causes the factors to be computed */
+		if (ExcessFlag) {  // return excess load as EEN/UE
 			if (pLoad.getExceedsNormal()) {
 				Load_EEN = kW_Load * pLoad.getEEN_Factor();
 			} else {
@@ -1216,7 +1215,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			} else {
 				Load_UE = 0.0;
 			}
-		} else {  // Return TOTAL load as EEN/UE
+		} else {  // return total load as EEN/UE
 			if (pLoad.getExceedsNormal()) {
 				Load_EEN = kW_Load;
 			} else {
@@ -1236,10 +1235,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	}
 
 	/**
-	 * Reduce Zone by eliminating buses and merging lines.
+	 * Reduce zone by eliminating buses and merging lines.
 	 */
 	public void reduceZone() {
-		// Make  sure zone list is built
+		// make sure zone list is built
 		if (BranchList == null) makeMeterZoneLists();
 
 		switch (DSSGlobals.getInstance().getActiveCircuit().getReductionStrategy()) {
@@ -1254,7 +1253,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			break;
 		}
 
-		// Resynchronize with Feeders
+		// resynchronize with feeders
 		if (HasFeeder) FeederObj.initializeFeeder(BranchList);
 	}
 
@@ -1271,7 +1270,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Circuit ckt = Globals.getActiveCircuit();
 
 		if (BranchList == null) {
-			Globals.doSimpleMsg("Meter Zone Lists need to be built. Do Solve or Makebuslist first!", 529);
+			Globals.doSimpleMsg("Meter zone lists need to be built. Solve or makeBusList first.", 529);
 			return;
 		}
 
@@ -1290,7 +1289,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			}
 
 			while (PresentNode != null) {
-				/* Back up until we find another Coord defined */
+				/* Back up until we find another coord defined */
 				LineCount = 0;  /* number of line segments in this segment */
 				StartNode = PresentNode;
 				CktElem   = (CktElement) PresentNode.getCktObject();
@@ -1322,7 +1321,6 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				FirstCoordRef = SecondCoordRef;
 			}
-
 		}  /* for */
 	}
 
@@ -1341,11 +1339,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Y = ckt.getBuses()[FirstCoordRef].getY();
 
 		/*if (((X < 10.0) && (y < 10.0)) || ((ckt.getBuses()[SecondCoordRef].getX() < 10.0) && (ckt.getBuses()[SecondCoordRef].getY() < 10.0)))
-			X = Y;*/  // Stopping point
+			X = Y;*/  // stopping point
 
-		/* Either start with the "to" end of StartNode or the "from" end; */
+		/* Either start with the "to" end of startNode or the "from" end; */
 		if (FirstCoordRef != StartBranch.getFromBusReference()) {
-			// Start with "to" end
+			// start with "to" end
 			X = X - Xinc;
 			Y = Y - Yinc;
 			ckt.getBuses()[StartBranch.getFromBusReference()].setX(X);
@@ -1435,13 +1433,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			/* Open some files: */
 
 			try {
-				FBranches = new File("Branches.dss");  // Both lines and transformers
+				FBranches = new File("Branches.dss");  // both lines and transformers
 				FBranchesStream = new FileWriter(FBranches, false);
 				FBranchesBuffer = new PrintWriter(FBranchesStream);
 
 				NBranches = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Branches.dss for Energymeter: " + getName()+". " + e.getMessage(), 530);
+				Globals.doSimpleMsg("Error creating Branches.dss for EnergyMeter: " + getName()+". " + e.getMessage(), 530);
 				return;
 			}
 
@@ -1452,7 +1450,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				NShunts = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Shunts.dss for Energymeter: " + getName() + ". " + e.getMessage(), 531);
+				Globals.doSimpleMsg("Error creating Shunts.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 531);
 				return;
 			}
 
@@ -1463,7 +1461,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				NLoads = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Loads.dss for Energymeter: " + getName() + ". " + e.getMessage(), 532);
+				Globals.doSimpleMsg("Error creating Loads.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 532);
 				return;
 			}
 
@@ -1474,7 +1472,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				NGens = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Generators.dss for Energymeter: " + getName() + ". " + e.getMessage(), 533);
+				Globals.doSimpleMsg("Error creating Generators.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 533);
 				return;
 			}
 
@@ -1484,7 +1482,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				FCapsBuffer = new PrintWriter(FCapsStream);
 				NCaps = 0;
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error creating Capacitors.dss for Energymeter: " + getName() + ". " + e.getMessage(), 534);
+				Globals.doSimpleMsg("Error creating Capacitors.dss for EnergyMeter: " + getName() + ". " + e.getMessage(), 534);
 				return;
 			}
 
@@ -1494,10 +1492,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				if (cktElem.isEnabled()) {
 					ckt.setActiveCktElement(cktElem);
 					NBranches += 1;
-					Utilities.writeActiveDSSObject(FBranchesBuffer, "New");     // sets hasBeenSaved(true)
+					Utilities.writeActiveDSSObject(FBranchesBuffer, "New");  // sets hasBeenSaved(true)
 					if (ckt.getActiveCktElement().hasControl()) {
 						ckt.setActiveCktElement( ckt.getActiveCktElement().getControlElement() );
-						Utilities.writeActiveDSSObject(FBranchesBuffer, "New");  //  regulator control ... also, relays, switch controls
+						Utilities.writeActiveDSSObject(FBranchesBuffer, "New");  // regulator control ... also, relays, switch controls
 					}
 
 					shuntElement = (CktElement) BranchList.getFirstObject();
@@ -1586,7 +1584,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	private void setDragHandRegister(int Reg, double Value) {
 		if (Value > Registers[Reg]) {
 			Registers[Reg]   = Value;
-			Derivatives[Reg] = Value;  // Use this for demand interval data;
+			Derivatives[Reg] = Value;  // use this for demand interval data
 		}
 	}
 
@@ -1602,10 +1600,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				VPhaseReportFileIsOpen = false;
 			}
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error Closing Demand Interval file for Meter \""+getName()+"\"", 534);
+			Globals.doSimpleMsg("Error closing demand interval file for meter \""+getName()+"\"", 534);
 		}
 
-		/* Write Registers to Totals File */
+		/* Write registers to totals file */
 		PrintWriter MeterTotalsPrinter = new PrintWriter(Globals.getEnergyMeterClass().getMeterTotals());
 		MeterTotalsPrinter.print("\"" + getName() + "\"");
 		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
@@ -1636,7 +1634,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 				DI_Printer.println();
 				DI_Printer.close();
 
-				/* Phase Voltage Report, if requested */
+				/* Phase voltage report, if requested */
 				if (PhaseVoltageReport) {
 					VPhase_File = new FileWriter(makeVPhaseReportFileName());
 					PrintWriter VPhase_Printer = new PrintWriter(VPhase_File);
@@ -1685,11 +1683,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			DI_Printer.close();
 		}
 
-		/* Add to Class demand interval registers */
+		/* Add to class demand interval registers */
 		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
 			Globals.getEnergyMeterClass().getDI_RegisterTotals()[i] += Derivatives[i] * TotalsMask[i];
 
-		/* Phase Voltage Report, if requested */
+		/* Phase voltage report, if requested */
 		if (VPhaseReportFileIsOpen) {
 			PrintWriter VPhase_Printer = new PrintWriter(VPhase_File);
 			VPhase_Printer.printf("%-.6g", sol.getDblHour());
@@ -1720,7 +1718,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		try {
 			if (Globals.getEnergyMeterClass().isDIVerbose()) {
-				FileNm = makeDIFileName();  // Creates directory if it doesn't exist
+				FileNm = makeDIFileName();  // creates directory if it doesn't exist
 				/* File must exist */
 				if (new File(FileNm).exists()) {
 					DI_File = new FileWriter(FileNm, true);
@@ -1778,7 +1776,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 //			getFeederObj().setNConds(MeteredElement.getNConds());
 			//getFeederObj().setEnabled(Globals.getActiveCircuit().isRadialSolution());
 		} else {
-			Globals.doSimpleMsg("Error: Attempted to make Feeder Obj without instantiating Metered Element in Energymeter."+getName(), 544);
+			Globals.doSimpleMsg("Error: Attempted to make Feeder object without instantiating meteredElement in EnergyMeter."+getName(), 544);
 		}
 	}
 

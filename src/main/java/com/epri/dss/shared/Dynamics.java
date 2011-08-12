@@ -13,8 +13,8 @@ public interface Dynamics {
 	static final int PEAKDAY = 5;
 	static final int DUTYCYCLE = 6;
 	static final int DIRECT = 7;
-	static final int MONTEFAULT = 8;  // Monte Carlo Fault Study
-	static final int FAULTSTUDY = 9;  // Run through all buses and compute Voc and Zsc; Then ask for fault current.
+	static final int MONTEFAULT = 8;  // Monte Carlo fault study
+	static final int FAULTSTUDY = 9;  // run through all buses and compute Voc and Zsc; then ask for fault current
 	static final int MONTECARLO2 = 10;
 	static final int MONTECARLO3 = 11;
 	static final int LOADDURATION2 = 12;

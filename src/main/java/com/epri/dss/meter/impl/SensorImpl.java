@@ -33,11 +33,10 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	protected void defineProperties() {
 
 		NumProperties = NumPropsThisClass;
-		countProperties();  // Get inherited property count
+		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-
 		PropertyName[0] = "element";
 		PropertyName[1] = "terminal";
 		PropertyName[2] = "kvbase";
@@ -46,9 +45,9 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		PropertyName[5] = "currents";
 		PropertyName[6] = "kWs";
 		PropertyName[7] = "kvars";
-		PropertyName[8] = "conn";  //  Sensor connection
-		PropertyName[9] = "Deltadirection";  //  +/- 1
-		PropertyName[10] = "%Error";  //  %Error of sensor
+		PropertyName[8] = "conn";  // sensor connection
+		PropertyName[9] = "Deltadirection";  // +/- 1
+		PropertyName[10] = "%Error";  // %Error of sensor
 		PropertyName[11] = "Weight";  // for WLS calc
 		PropertyName[12] = "action";
 
@@ -76,7 +75,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				"Value reported in result window/result variable.";
 
 		ActiveProperty = Sensor.NumPropsThisClass - 1;
-		super.defineProperties();  // Add defs of inherited properties to bottom of list
+		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			switch (ParamPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ as.getName() + "\"", 661);
+				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
 				as.setElementName(Param.toLowerCase());
@@ -131,10 +130,10 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setClearSpecified(Utilities.interpretYesNo(Param));
 				break;
 			case 4:
-				parser.parseAsVector(as.getNPhases(), as.getSensorVoltage());  // Inits to zero
+				parser.parseAsVector(as.getNPhases(), as.getSensorVoltage());  // inits to zero
 				break;
 			case 5:
-				parser.parseAsVector(as.getNPhases(), as.getSensorCurrent());  // Inits to zero
+				parser.parseAsVector(as.getNPhases(), as.getSensorCurrent());  // inits to zero
 				break;
 			case 6:
 				parser.parseAsVector(as.getNPhases(), as.getSensorKW());
@@ -155,10 +154,10 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setWeight(parser.makeDouble());
 				break;
 			case 12:
-				as.setAction(Param);  // Put sq error in Global Result
+				as.setAction(Param);  // put sq error in global result
 				break;
 			default:
-				// Inherited parameters
+				// inherited parameters
 				classEdit(ActiveSensorObj, ParamPointer - Sensor.NumPropsThisClass);
 				break;
 			}
@@ -238,7 +237,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	}
 
 	/**
-	 * Set the hasSensorObj flag for all cktElement.
+	 * Set the hasSensorObj flag for all ckt element.
 	 */
 	public void setHasSensorFlag() {
 		int i;
@@ -275,16 +274,16 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		SensorObj OtherSensor;
 		int i, Result = 0;
 
-		/* See if we can find this Sensor name in the present collection */
+		/* See if we can find this sensor name in the present collection */
 		OtherSensor = (SensorObj) find(SensorName);
 		if (OtherSensor != null) {
 			SensorObj as = getActiveSensorObj();
 
 			as.setNPhases(OtherSensor.getNPhases());
-			as.setNConds(OtherSensor.getNConds());  // Force reallocation of terminal stuff
+			as.setNConds(OtherSensor.getNConds());  // force reallocation of terminal stuff
 
 			as.setElementName(OtherSensor.getElementName());
-			as.setMeteredElement(OtherSensor.getMeteredElement());  // Pointer to target circuit element
+			as.setMeteredElement(OtherSensor.getMeteredElement());  // target circuit element
 			as.setMeteredTerminal(OtherSensor.getMeteredTerminal());
 
 			for (i = 0; i < as.getParentClass().getNumProperties(); i++)
@@ -292,7 +291,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			as.setBaseFrequency(OtherSensor.getBaseFrequency());
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Sensor makeLike: \"" + SensorName + "\" Not Found.", 662);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Sensor makeLike: \"" + SensorName + "\" not found.", 662);
 		}
 
 		return Result;

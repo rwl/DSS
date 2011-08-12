@@ -12,7 +12,7 @@ import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
 
 /**
- * Reduction Algorithms
+ * Reduction algorithms
  *
  * Primarily called from EnergyMeter.
  *
@@ -30,12 +30,12 @@ public class ReduceAlgs {
 
 		if (BranchList != null) {
 			BranchList.getFirst();
-			LineElement = (LineObj) BranchList.GoForward();  // Always keep the first element
+			LineElement = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement != null) {
 				if (BranchList.getPresentBranch().isIsParallel()) {
-					/* There will always be two lines in parallel.  The first operation will disable the second */
+					/* There will always be two lines in parallel. The first operation will disable the second */
 					if (LineElement.isEnabled())
-						LineElement.mergeWith( (LineObj) BranchList.getPresentBranch().getLoopLineObj(), false );  // Guaranteed to be a line
+						LineElement.mergeWith( (LineObj) BranchList.getPresentBranch().getLoopLineObj(), false );  // guaranteed to be a line
 				}
 				LineElement = (LineObj) BranchList.GoForward();
 			}
@@ -47,12 +47,12 @@ public class ReduceAlgs {
 
 		if (BranchList != null) {
 			BranchList.getFirst();
-			LineElement = (LineObj) BranchList.GoForward();  // Always keep the first element
+			LineElement = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement != null) {
 				if (BranchList.getPresentBranch().isIsLoopedHere()) {
-					/* There will always be two lines in the loop.  The first operation will disable the second */
+					/* There will always be two lines in the loop. The first operation will disable the second */
 					if (LineElement.isEnabled())
-						((LineObj) BranchList.getPresentBranch().getLoopLineObj()).setEnabled(false);  // Disable the other
+						((LineObj) BranchList.getPresentBranch().getLoopLineObj()).setEnabled(false);  // disable the other
 				}
 				LineElement = (LineObj) BranchList.GoForward();
 			}
@@ -70,7 +70,7 @@ public class ReduceAlgs {
 		if (BranchList != null) {
 			/* Let's throw away all dangling end branches */
 			BranchList.getFirst();
-			pLineElem1 = (CktElement) BranchList.GoForward();  // Always keep the first element
+			pLineElem1 = (CktElement) BranchList.GoForward();  // always keep the first element
 
 			while (pLineElem1 != null) {
 				if (Utilities.isLineElement(pLineElem1)) {
@@ -80,7 +80,7 @@ public class ReduceAlgs {
 					 * or coordinate, just throw it away.
 					 */
 					if (pb.isIsDangling()) {
-						ToBusRef = pb.getToBusReference();  // only access this property once!
+						ToBusRef = pb.getToBusReference();  // only access this property once
 						if (ToBusRef > 0) {
 							Bus bus = DSSGlobals.getInstance().getActiveCircuit().getBuses()[ToBusRef];
 							if (!bus.isKeep())
@@ -106,7 +106,7 @@ public class ReduceAlgs {
 		if (BranchList != null) {  /* eliminate really short lines */
 			/* First, flag all elements that need to be merged */
 			LineElement1 = (LineObj) BranchList.getFirst();
-			LineElement1 = (LineObj) BranchList.GoForward();  // Always keep the first element
+			LineElement1 = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement1 != null) {
 				if (Utilities.isLineElement(LineElement1)) {
 					if (Utilities.isStubLine(LineElement1)) {
@@ -119,26 +119,26 @@ public class ReduceAlgs {
 			}
 
 			LineElement1 = (LineObj) BranchList.getFirst();
-			LineElement1 = (LineObj) BranchList.GoForward(); // Always keep the first element
+			LineElement1 = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement1 != null) {
-				if (LineElement1.isFlag()) {  // Merge this element out
+				if (LineElement1.isFlag()) {  // merge this element out
 
 					CktTreeNode pb = BranchList.getPresentBranch();
 
 					if ((pb.getNumChildren() == 0) && (pb.getNumObjects() == 0)) {
 						LineElement1.setEnabled(false);  // just discard it
 					} else if ((pb.getNumChildren() == 0) || (pb.getNumChildren() > 1)) {
-						/* Merge with Parent and move loads on parent to To node */
+						/* Merge with parent and move loads on parent to to node */
 						ParentNode = pb.getParent();
 						if (ParentNode != null) {
 							if (ParentNode.getNumChildren() == 1)  // only works for in-line
 								if (!ckt.getBuses()[ParentNode.getToBusReference()].isKeep()) {
 									/* Let's consider merging */
 									LineElement2 = (LineObj) ParentNode.getCktObject();
-									if (LineElement2.isEnabled())  // Check to make sure it hasn't been merged out
+									if (LineElement2.isEnabled())  // check to make sure it hasn't been merged out
 										if (Utilities.isLineElement(LineElement2))
 											if (LineElement2.mergeWith(LineElement1, true))
-												/* Move any loads to ToBus Reference of downline branch */
+												/* Move any loads to toBus Reference of downline branch */
 												if (ParentNode.getNumObjects() > 0) {
 													/* Redefine bus connection for PC elements hanging on the bus that is eliminated */
 													LoadElement = (LoadObj) ParentNode.getFirstObject();
@@ -146,11 +146,10 @@ public class ReduceAlgs {
 														Parser.getInstance().setCmdString("bus1=\"" +ckt.getBusList().get(pb.getToBusReference())+"\"");
 														LoadElement.edit();
 														LoadElement = (LoadObj) ParentNode.getNextObject();
-
 													}
 												}
 								}
-						}  /* if ParentNode */
+						}  /* if parentNode */
 					} else {  /* Merge with child */
 						if (!ckt.getBuses()[pb.getToBusReference()].isKeep()) {
 							/* Let's consider merging */
@@ -182,14 +181,14 @@ public class ReduceAlgs {
 
 		if (BranchList != null) {
 			LineElement1 = (LineObj) BranchList.getFirst();
-			LineElement1 = (LineObj) BranchList.GoForward();  // Always keep the first element
+			LineElement1 = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement1 != null) {
 
 				if (LineElement1.isEnabled()) {  // maybe we threw it away already
 					if (Utilities.isLineElement(LineElement1))
 						if (LineElement1.isIsSwitch()) {
 							CktTreeNode pb = BranchList.getPresentBranch();
-							/* see if eligble for merging */
+							/* See if eligble for merging */
 							switch (pb.getNumChildren()) {
 							case 0:  /* Throw away if dangling */
 								if (pb.getNumObjects() == 0)
@@ -220,11 +219,9 @@ public class ReduceAlgs {
 		if (BranchList != null) {
 
 			/* Now merge remaining lines */
-
 			LineElement1 = (LineObj) BranchList.getFirst();
-			LineElement1 = (LineObj) BranchList.GoForward();  // Always keep the first element
+			LineElement1 = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement1 != null) {
-
 				if (Utilities.isLineElement(LineElement1))
 					if (!LineElement1.isIsSwitch())
 						if (LineElement1.isEnabled()) {  // maybe we threw it away already
@@ -237,7 +234,7 @@ public class ReduceAlgs {
 										LineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(LineElement2))
 											if (!LineElement2.isIsSwitch())
-												LineElement2.mergeWith(LineElement1, true);  /* Series Merge */
+												LineElement2.mergeWith(LineElement1, true);  /* Series merge */
 									}
 						}
 				LineElement1 = (LineObj) BranchList.GoForward();

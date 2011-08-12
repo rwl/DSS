@@ -7,7 +7,7 @@ import com.epri.dss.shared.CMatrix;
 
 public abstract class MathUtil {
 
-	/* Symmetrical Component Conversion Matrices */
+	/* Symmetrical component conversion matrices */
 	private static final CMatrix As2p = getAs2p(3);
 	private static final CMatrix Ap2s = getAp2s(3);
 //	private static final CMatrix ClarkeF = getClarkeF(3);
@@ -241,7 +241,7 @@ public abstract class MathUtil {
 			return;
 		}
 		mean.setValue(sum(Data, (nData)) / nData);
-		S = 0;               // sum differences from the mean, for greater accuracy
+		S = 0;  // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
 			S = S + Math.pow(mean.doubleValue() - Data[i], 2);
 		stdDev.setValue(Math.sqrt(S / (nData - 1)));
@@ -261,7 +261,7 @@ public abstract class MathUtil {
 			s += 0.5 * (pY[i] + pY[i + 1]) * (pX[i + 1] - pX[i]);
 		Mean.setValue(s / (pX[N] - pX[0]));  // TODO Check zero based indexing
 
-		s = 0;               // sum differences from the mean, for greater accuracy
+		s = 0;  // sum differences from the mean, for greater accuracy
 		for (i = 0; i < N - 1; i++) {
 			dy1 = (pY[i] - Mean.doubleValue());
 			dy2 = (pY[i + 1] - Mean.doubleValue());

@@ -12,7 +12,7 @@ public interface PointerList {
 
 	void clear();
 
-	/* Returns index of item */
+	/** Returns index of item */
 	int add(Object p);
 
 	Object get(int i);

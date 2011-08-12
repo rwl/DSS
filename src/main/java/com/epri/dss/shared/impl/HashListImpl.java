@@ -49,7 +49,7 @@ public class HashListImpl implements HashList {
 		this.ListArray = new SubList[NumLists];
 		for (int i = 0; i < this.NumLists; i++) {
 			this.ListArray[i] = new SubList();
-			/* Allocate initial Sublists to zero; allocated on demand */
+			/* Allocate initial sublists to zero; allocated on demand */
 			this.ListArray[i].str = new String[0];
 			this.ListArray[i].idx = new int[0];
 			this.ListArray[i].nAllocated = 0;
@@ -123,7 +123,7 @@ public class HashListImpl implements HashList {
 	}
 
 	/**
-	 * Repeat find for duplicate string in same hash list
+	 * Repeat find for duplicate string in same hash list.
 	 */
 	public int find(String S) {
 
@@ -143,12 +143,12 @@ public class HashListImpl implements HashList {
 	}
 
 	/**
-	 * Begins search in same list as last
+	 * Begins search in same list as last.
 	 */
 	public int findNext() {
 		// TODO: Check zero indexing.
-		int Result = -1;  // Default return
-		LastFind += 1;   // Start with next item in hash list
+		int Result = -1;  // default return
+		LastFind += 1;    // start with next item in hash list
 
 		if ((LastHash > 0) && (LastHash <= NumLists)) {
 			for (int i = LastFind; i < ListArray[LastHash].nElem; i++)
@@ -164,7 +164,7 @@ public class HashListImpl implements HashList {
 
 	/**
 	 * Makes a linear search and tests each string until a string is found
-	 * that matches all the characters entered in S.
+	 * that matches all the characters entered in s.
 	 */
 	public int findAbbrev(String S) {
 		String Test1, Test2;
@@ -215,16 +215,16 @@ public class HashListImpl implements HashList {
 			if (NewNumLists < 1) NewNumLists = 1;  // make sure at least one list
 			NewListArray = new SubList[NewNumLists];
 			for (int i = 0; i < NumLists; i++) {  // TODO: Check zero indexing.
-				/* Allocate initial Sublists */
+				/* Allocate initial sublists */
 				NewListArray[i].str = new String[ElementsPerList];
 				NewListArray[i].idx = new int[ElementsPerList];
 				NewListArray[i].nAllocated = ElementsPerList;
 				NewListArray[i].nElem = 0;
 			}
 
-			NumLists = NewNumLists;  // Has to be set so Hash function will work
+			NumLists = NewNumLists;  // has to be set so hash function will work
 
-			/* Add elements from old Hash List to New Hash List */
+			/* Add elements from old hash list to new hash list */
 
 			for (int i = 0; i < NumElements; i++) {  // TODO: Check zero indexing
 				S = StringArray[i];
@@ -239,7 +239,7 @@ public class HashListImpl implements HashList {
 				NewListArray[HashNum].idx[NewListArray[HashNum].nElem] = i;
 			}
 
-			/* Assign new String and List Pointers */
+			/* Assign new string and list pointers */
 
 			StringArray = NewStringArray;
 			ListArray = NewListArray;

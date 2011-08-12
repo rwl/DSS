@@ -6,12 +6,12 @@ package com.epri.dss.shared.impl;
 public class DynamicsRec {
 
 	/* time vars */
-	public double h;     // Time step size in sec for dynamics
+	public double h;     // time step size in sec for dynamics
 	public double t;     // sec from top of hour
 	public double tstart;
 	public double tstop;
 
-	/* 0 = New Time Step; 1 = Same Time Step as last iteration */
+	/* 0 = new time step; 1 = same time step as last iteration */
 	public int IterationFlag;
 	/* PEAKSNAP, DAILYMODE, YEARLYMODE, MONTECARLO, etc. (see DSSGlobals) */
 	public int SolutionMode;

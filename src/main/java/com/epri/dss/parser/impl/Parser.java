@@ -28,7 +28,7 @@ public class Parser {
 		super();
 
 		this.DelimChars          = ",=";
-		this.WhiteSpaceChars     = " " + "\t";   // blank + tab
+		this.WhiteSpaceChars     = " " + "\t";  // blank + tab
 		this.BeginQuoteChars     = "(\"'[{";
 		this.EndQuoteChars       = ")\"']}";
 		this.Position            = 0;
@@ -55,9 +55,9 @@ public class Parser {
 
 	private int processRPNCommand(String TokenBuffer, RPNCalc RPN) throws ParserProblem {
 		double Number = 0;
-		int Result = 0;  // Error Code on conversion error
+		int Result = 0;  // error code on conversion error
 
-		/* First Try to make a valid number. If that fails, check for RPN command */
+		/* First try to make a valid number. If that fails, check for RPN command */
 		try {
 			Number = Double.valueOf(TokenBuffer);
 			Result = 1;
@@ -66,7 +66,7 @@ public class Parser {
 		}
 
 		if (Result == 0) {
-			RPN.setX(Number);  // Enters number in X register
+			RPN.setX(Number);  // enters number in X register
 		} else {  /* Check for RPN command. */
 			Result = 0; // reset error return
 			String S = TokenBuffer.toLowerCase();
@@ -129,7 +129,7 @@ public class Parser {
 		CmdBuffer = Value + " ";  // add some white space at end to get last param
 
 		mPosition = new MutableInt(0);
-		skipWhiteSpace(CmdBuffer, mPosition);   // position at first non whitespace character
+		skipWhiteSpace(CmdBuffer, mPosition);  // position at first non whitespace character
 		Position = mPosition.intValue();  // passed by reference
 	}
 
@@ -138,7 +138,7 @@ public class Parser {
 	 */
 	public void resetDelims() {
 		DelimChars          = ",=";
-		WhiteSpaceChars     = " " + "\t";   // blank + tab
+		WhiteSpaceChars     = " " + "\t";  // blank + tab
 		MatrixRowTerminator = '|';
 		BeginQuoteChars     = "(\"'[{";
 		EndQuoteChars       = ")\"']}";
@@ -211,7 +211,7 @@ public class Parser {
 
 		_Result = _LineBuffer.substring(_TokenStart, _LinePos);
 		if (_LinePos < _CmdBufLength)
-			_LinePos += 1;  // Increment past endchar
+			_LinePos += 1;  // increment past endchar
 	}
 
 	private void _parseToEndQuote() {
@@ -234,7 +234,7 @@ public class Parser {
 		_CmdBufLength = _LineBuffer.length();
 		if (_LinePos < _CmdBufLength) {
 
-			/* Handle Quotes and Parentheses around tokens */
+			/* Handle quotes and parentheses around tokens */
 			IsQuotedString = false;
 			if (_isBeginQuote(_LineBuffer.charAt(_LinePos))) {
 				_parseToEndQuote();
@@ -255,7 +255,7 @@ public class Parser {
 				_LinePos = _LineBuffer.length() + 1;
 			} else {
 
-				/* Get Rid of Trailing White Space */
+				/* Get rid of trailing white space */
 				if (LastDelimiter == ' ') {
 					mLinePos = new MutableInt(_LinePos);
 					skipWhiteSpace(_LineBuffer, mLinePos);
@@ -300,8 +300,8 @@ public class Parser {
 	}
 
 	/**
-	 * Looking for "BusName.1.2.3" in the TokenBuffer.
-	 * Assumes NodeArray is big enough to hold the numbers.
+	 * Looking for "busName.1.2.3" in the TokenBuffer.
+	 * Assumes nodeArray is big enough to hold the numbers.
 	 */
 	public String parseAsBusName(MutableInt NumNodes, int[] NodeArray) {
 		int DotPos;
@@ -318,7 +318,7 @@ public class Parser {
 		} else {
 			Result = TokenBuffer.substring(0, DotPos).trim();  // bus name  TODO Check zero based indexing
 			TokenSave = TokenBuffer;
-			/* now get nodes */
+			/* Now get nodes */
 			NodeBuffer = TokenBuffer.substring(DotPos, TokenBuffer.length() - DotPos) + " ";
 
 			NodeBufferPos = new MutableInt(0);
@@ -334,10 +334,10 @@ public class Parser {
 					TokenBuffer = getToken(NodeBuffer, NodeBufferPos);
 				}
 			} catch (Exception e) {
-				DSSGlobals.getInstance().getDSSForms().messageDlg("Node Buffer Too Small: " + e.getMessage(), true);
+				DSSGlobals.getInstance().getDSSForms().messageDlg("Node buffer too small: " + e.getMessage(), true);
 			}
 
-			DelimChars = DelimSave;   //restore to original delimiters
+			DelimChars = DelimSave;  // restore to original delimiters
 			TokenBuffer = TokenSave;
 		}
 		return Result;
@@ -377,10 +377,10 @@ public class Parser {
 
 			Result = NumElements;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().getDSSForms().messageDlg("Vector Buffer in ParseAsVector Probably Too Small: " + e.getMessage(), true);
+			DSSGlobals.getInstance().getDSSForms().messageDlg("Vector buffer in parseAsVector probably too small: " + e.getMessage(), true);
 		}
 
-		DelimChars  = DelimSave;   // restore to original delimiters
+		DelimChars  = DelimSave;  // restore to original delimiters
 		TokenBuffer = ParseBuffer.substring(ParseBufferPos.intValue(), ParseBuffer.length());  // prepare for next trip
 
 		return Result;
@@ -404,7 +404,7 @@ public class Parser {
 			for (i = 0; i < ExpectedOrder; i++) {
 				ElementsFound = parseAsVector(ExpectedOrder, RowBuf);
 
-				/* Returns matrix in Column Order (Fortran order) */
+				/* Returns matrix in column order (Fortran order) */
 				k = i;
 				for (j = 0; j < ElementsFound; j++) {
 					MatrixBuffer[k] = RowBuf[j];
@@ -412,7 +412,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().getDSSForms().messageDlg("Matrix Buffer in parseAsMatrix Probably Too Small: " + e.getMessage(), true);
+			DSSGlobals.getInstance().getDSSForms().messageDlg("Matrix buffer in parseAsMatrix probably too small: " + e.getMessage(), true);
 		}
 
 		if (RowBuf != null)
@@ -453,7 +453,7 @@ public class Parser {
 			}
 
 		} catch (Exception e) {
-			DSSGlobals.getInstance().getDSSForms().messageDlg("Matrix Buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
+			DSSGlobals.getInstance().getDSSForms().messageDlg("Matrix buffer in parseAsSymMatrix() probably too small: " + e.getMessage(), true);
 		}
 
 		if (RowBuf != null)
@@ -487,7 +487,7 @@ public class Parser {
 				Result = (int) Math.round(Temp);
 			} else {
 				try {
-					Result = Integer.valueOf(TokenBuffer);  // Try direct conversion to integer
+					Result = Integer.valueOf(TokenBuffer);  // try direct conversion to integer
 					Code.setValue(1);
 				} catch (NumberFormatException e) {
 					Code.setValue(0);
@@ -495,7 +495,7 @@ public class Parser {
 			}
 
 			if (Code.intValue() != 0) {  // on error for integer conversion
-				// Try again with an double result in case value specified in decimal or some other technique
+				// try again with an double result in case value specified in decimal or some other technique
 				try {
 					Temp = Double.valueOf(TokenBuffer);
 					Code.setValue(1);
