@@ -5,6 +5,6 @@ package com.epri.dss.common;
  */
 public interface DSSClasses {
 
-	void setNew(DSSClass Value);
-	
+	void setNew(DSSClass value);
+
 }

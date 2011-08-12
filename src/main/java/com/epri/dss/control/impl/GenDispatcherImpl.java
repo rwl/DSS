@@ -15,47 +15,47 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 	public GenDispatcherImpl() {
 		super();
 
-		this.Class_Name = "GenDispatcher";
+		this.className = "GenDispatcher";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		this.NumProperties = GenDispatcher.NumPropsThisClass;
+		this.numProperties = GenDispatcher.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
 
-		PropertyName[0] = "Element";
-		PropertyName[1] = "Terminal";
-		PropertyName[2] = "kWLimit";
-		PropertyName[3] = "kWBand";
-		PropertyName[4] = "kvarlimit";
-		PropertyName[5] = "GenList";
-		PropertyName[6] = "Weights";
+		propertyName[0] = "Element";
+		propertyName[1] = "Terminal";
+		propertyName[2] = "kWLimit";
+		propertyName[3] = "kWBand";
+		propertyName[4] = "kvarlimit";
+		propertyName[5] = "GenList";
+		propertyName[6] = "Weights";
 
-		PropertyHelp[0] = "Full object name of the circuit element, typically a line or transformer, "+
+		propertyHelp[0] = "Full object name of the circuit element, typically a line or transformer, "+
 				"which the control is monitoring. There is no default; must be specified.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the GenDispatcher control is connected. "+
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the GenDispatcher control is connected. "+
 				"1 or 2, typically.  Default is 1. Make sure you have the direction on the power matching the sign of kWLimit.";
-		PropertyHelp[2] = "kW Limit for the monitored element. The generators are dispatched to hold the power in band.";
-		PropertyHelp[3] = "Bandwidth (kW) of the dead band around the target limit." +
+		propertyHelp[2] = "kW Limit for the monitored element. The generators are dispatched to hold the power in band.";
+		propertyHelp[3] = "Bandwidth (kW) of the dead band around the target limit." +
 				"No dispatch changes are attempted if the power in the monitored terminal stays within this band.";
-		PropertyHelp[4] = "Max kvar to be delivered through the element.  Uses same dead band as kW.";
-		PropertyHelp[5] = "Array list of generators to be dispatched.  If not specified, all generators in the circuit are assumed dispatchable.";
-		PropertyHelp[6] = "Array of proportional weights corresponding to each generator in the GenList." +
+		propertyHelp[4] = "Max kvar to be delivered through the element.  Uses same dead band as kW.";
+		propertyHelp[5] = "Array list of generators to be dispatched.  If not specified, all generators in the circuit are assumed dispatchable.";
+		propertyHelp[6] = "Array of proportional weights corresponding to each generator in the GenList." +
 				" The needed kW to get back to center band is dispatched to each generator according to these weights. " +
 				"Default is to set all weights to 1.0.";
 
-		ActiveProperty = GenDispatcher.NumPropsThisClass - 1;
+		activeProperty = GenDispatcher.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -73,7 +73,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGenDispatcherObj((GenDispatcherObj) ElementList.getActive());
+		setActiveGenDispatcherObj((GenDispatcherObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveGenDispatcherObj());
 
 		int Result = 0;
@@ -87,10 +87,10 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
 				agd.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

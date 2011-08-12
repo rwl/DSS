@@ -22,92 +22,92 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 	public LineCodeImpl() {
 		super();
-		this.Class_Name = "LineCode";
+		this.className = "LineCode";
 		this.DSSClassType= DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		NumProperties = LineCode.NumPropsThisClass;
+		numProperties = LineCode.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		PropertyName[0] = "nphases";
-		PropertyName[1] = "r1";
-		PropertyName[2] = "x1";
-		PropertyName[3] = "r0";
-		PropertyName[4] = "x0";
-		PropertyName[5] = "c1";
-		PropertyName[6] = "c0";
-		PropertyName[7] = "units";
-		PropertyName[8] = "rmatrix";
-		PropertyName[9] = "xmatrix";
-		PropertyName[10] = "cmatrix";
-		PropertyName[11] = "baseFreq";
-		PropertyName[12] = "normamps";
-		PropertyName[13] = "emergamps";
-		PropertyName[14] = "faultrate";
-		PropertyName[15] = "pctperm";
-		PropertyName[16] = "repair";
-		PropertyName[17] = "Kron";
-		PropertyName[18] = "Rg";
-		PropertyName[19] = "Xg";
-		PropertyName[20] = "rho";
-		PropertyName[21] = "neutral";
+		propertyName[0] = "nphases";
+		propertyName[1] = "r1";
+		propertyName[2] = "x1";
+		propertyName[3] = "r0";
+		propertyName[4] = "x0";
+		propertyName[5] = "c1";
+		propertyName[6] = "c0";
+		propertyName[7] = "units";
+		propertyName[8] = "rmatrix";
+		propertyName[9] = "xmatrix";
+		propertyName[10] = "cmatrix";
+		propertyName[11] = "baseFreq";
+		propertyName[12] = "normamps";
+		propertyName[13] = "emergamps";
+		propertyName[14] = "faultrate";
+		propertyName[15] = "pctperm";
+		propertyName[16] = "repair";
+		propertyName[17] = "Kron";
+		propertyName[18] = "Rg";
+		propertyName[19] = "Xg";
+		propertyName[20] = "rho";
+		propertyName[21] = "neutral";
 
-		PropertyHelp[0] = "Number of phases in the line this line code data represents.  Setting this property reinitializes the line code.  Impedance matrix is reset for default symmetrical component.";
-		PropertyHelp[1] = "Positive-sequence Resistance, ohms per unit length.  See also Rmatrix.";
-		PropertyHelp[2] = "Positive-sequence Reactance, ohms per unit length.  See also Xmatrix";
-		PropertyHelp[3] = "Zero-sequence Resistance, ohms per unit length.";
-		PropertyHelp[4] = "Zero-sequence Reactance, ohms per unit length.";
-		PropertyHelp[5] = "Positive-sequence capacitance, nf per unit length. See also Cmatrix.";
-		PropertyHelp[6] = "Zero-sequence capacitance, nf per unit length.";
-		PropertyHelp[7] = "One of (ohms per ...) {none|mi|km|kft|m|me|ft|in|cm}.  Default is none; assumes units agree with length units" +
+		propertyHelp[0] = "Number of phases in the line this line code data represents.  Setting this property reinitializes the line code.  Impedance matrix is reset for default symmetrical component.";
+		propertyHelp[1] = "Positive-sequence Resistance, ohms per unit length.  See also Rmatrix.";
+		propertyHelp[2] = "Positive-sequence Reactance, ohms per unit length.  See also Xmatrix";
+		propertyHelp[3] = "Zero-sequence Resistance, ohms per unit length.";
+		propertyHelp[4] = "Zero-sequence Reactance, ohms per unit length.";
+		propertyHelp[5] = "Positive-sequence capacitance, nf per unit length. See also Cmatrix.";
+		propertyHelp[6] = "Zero-sequence capacitance, nf per unit length.";
+		propertyHelp[7] = "One of (ohms per ...) {none|mi|km|kft|m|me|ft|in|cm}.  Default is none; assumes units agree with length units" +
 					"given in Line object";
-		PropertyHelp[8] = "Resistance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
+		propertyHelp[8] = "Resistance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
 						"May be used to specify the impedance of any line configuration.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[9] = "Reactance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
+		propertyHelp[9] = "Reactance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
 						"May be used to specify the impedance of any line configuration.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[10] = "Nodal Capacitance matrix, lower triangle, nf per unit length.Order of the matrix is the number of phases. "+
+		propertyHelp[10] = "Nodal Capacitance matrix, lower triangle, nf per unit length.Order of the matrix is the number of phases. "+
 						"May be used to specify the shunt capacitance of any line configuration.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[11] = "Frequency at which impedances are specified.";
-		PropertyHelp[12] = "Normal ampere limit on line.  This is the so-called Planning Limit. It may also be "+
+		propertyHelp[11] = "Frequency at which impedances are specified.";
+		propertyHelp[12] = "Normal ampere limit on line.  This is the so-called Planning Limit. It may also be "+
 						"the value above which load will have to be dropped in a contingency.  Usually about "+
 						"75% - 80% of the emergency (one-hour) rating.";
-		PropertyHelp[13] = "Emergency ampere limit on line (usually one-hour rating).";
-		PropertyHelp[14] = "Number of faults per unit length per year.";
-		PropertyHelp[15] = "Percentage of the faults that become permanent.";
-		PropertyHelp[16] = "Hours to repair.";
-		PropertyHelp[17] = "Kron = Y/N. Default=N.  Perform Kron reduction on the impedance matrix after it is formed, reducing order by 1. " +
+		propertyHelp[13] = "Emergency ampere limit on line (usually one-hour rating).";
+		propertyHelp[14] = "Number of faults per unit length per year.";
+		propertyHelp[15] = "Percentage of the faults that become permanent.";
+		propertyHelp[16] = "Hours to repair.";
+		propertyHelp[17] = "Kron = Y/N. Default=N.  Perform Kron reduction on the impedance matrix after it is formed, reducing order by 1. " +
 							"Eliminates the conductor designated by the \"Neutral=\" property. " +
 							"Do this after the R, X, and C matrices are defined. Ignored for symmetrical components. " +
 							"May be issued more than once to eliminate more than one conductor by resetting the Neutral property after the previous " +
 							"invoking of this property. Generally, you do not want to do a Kron reduction on the matrix if you intend to solve at a " +
 							"frequency other than the base frequency and exploit the Rg and Xg values.";
-		PropertyHelp[18] = "Carson earth return resistance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
+		propertyHelp[18] = "Carson earth return resistance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
 							"Default is 0.01805 = 60 Hz value in ohms per kft (matches default line impedances). " +
 							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
 							"If not, set both Rg and Xg = 0.";
-		PropertyHelp[19] = "Carson earth return reactance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
+		propertyHelp[19] = "Carson earth return reactance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
 							"Default value is 0.155081 = 60 Hz value in ohms per kft (matches default line impedances). " +
 							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
 							"If not, set both Rg and Xg = 0.";
-		PropertyHelp[20] = "Default=100 meter ohms.  Earth resitivity used to compute earth correction factor.";
-		PropertyHelp[21] = "Designates which conductor is the \"neutral\" conductor that will be eliminated by Kron reduction. " +
+		propertyHelp[20] = "Default=100 meter ohms.  Earth resitivity used to compute earth correction factor.";
+		propertyHelp[21] = "Designates which conductor is the \"neutral\" conductor that will be eliminated by Kron reduction. " +
 							"Default is the last conductor (nphases value). After Kron reduction is set to 0. Subsequent issuing of Kron=Yes " +
 							"will not do anything until this property is set to a legal value. Applies only to LineCodes defined by R, X, and C matrix.";
 
-		ActiveProperty = LineCode.NumPropsThisClass - 1;
+		activeProperty = LineCode.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -188,7 +188,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 						ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
 				break;
 			case 3:  // Yc matrix
-				Factor = DSSGlobals.TwoPi * getActiveLineCodeObj().getBaseFrequency() * 1.0e-9;
+				Factor = DSSGlobals.TWO_PI * getActiveLineCodeObj().getBaseFrequency() * 1.0e-9;
 				ZValues = getActiveLineCodeObj().getYC().asArray(Norder);
 				if (Norder == getActiveLineCodeObj().getNPhases())
 					for (j = 0; j < np2; j++)
@@ -210,7 +210,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveLineCodeObj((LineCodeObj) ElementList.getActive());
+		setActiveLineCodeObj((LineCodeObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveLineCodeObj());
 		SymComponentsChanged = false;
 		MatrixChanged = false;
@@ -223,9 +223,9 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
+				if ((ParamPointer > 0) && (ParamPointer <= numProperties))
 					getActiveLineCodeObj().setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -398,7 +398,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 * Returns active line code string.
 	 */
 	public String getCode() {
-		LineCodeObj active = (LineCodeObj) ElementList.getActive();
+		LineCodeObj active = (LineCodeObj) elementList.getActive();
 		return active.getName();
 	}
 
@@ -409,8 +409,8 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 		LineCodeObj pCode;
 
 		setActiveLineCodeObj(null);
-		for (int i = 0; i < ElementList.size(); i++) {
-			pCode = (LineCodeObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pCode = (LineCodeObj) elementList.get(i);
 			if (pCode.getName().equalsIgnoreCase(Value)) {
 				setActiveLineCodeObj(pCode);
 				return;

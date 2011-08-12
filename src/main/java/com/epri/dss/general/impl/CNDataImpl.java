@@ -12,35 +12,35 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 	public CNDataImpl() {
 		super();
-		this.Class_Name = "CNData";
+		this.className = "CNData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		NumProperties = CNData.NumPropsThisClass;
+		numProperties = CNData.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		PropertyName[0] = "k";
-		PropertyName[1] = "DiaStrand";
-		PropertyName[2] = "GmrStrand";
-		PropertyName[3] = "Rstrand";
+		propertyName[0] = "k";
+		propertyName[1] = "DiaStrand";
+		propertyName[2] = "GmrStrand";
+		propertyName[3] = "Rstrand";
 
-		PropertyHelp[0] = "Number of concentric neutral strands; default is 2";
-		PropertyHelp[1] = "Diameter of a concentric neutral strand; same units as core conductor radius; no default.";
-		PropertyHelp[2] = "Geometric mean radius of a concentric neutral strand; same units as core conductor GMR; defaults to 0.7788 * CN strand radius.";
-		PropertyHelp[3] = "AC resistance of a concentric neutral strand; same units as core conductor resistance; no default.";
+		propertyHelp[0] = "Number of concentric neutral strands; default is 2";
+		propertyHelp[1] = "Diameter of a concentric neutral strand; same units as core conductor radius; no default.";
+		propertyHelp[2] = "Geometric mean radius of a concentric neutral strand; same units as core conductor GMR; defaults to 0.7788 * CN strand radius.";
+		propertyHelp[3] = "AC resistance of a concentric neutral strand; same units as core conductor resistance; no default.";
 
-		ActiveProperty = CNData.NumPropsThisClass - 1;
+		activeProperty = CNData.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -61,7 +61,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) ElementList.getActive());
+		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
 		Globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
 
 		CNDataObj acd = (CNDataObj) ConductorDataImpl.getActiveConductorDataObj();
@@ -74,10 +74,10 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				acd.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -162,7 +162,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	 * Returns active line code string.
 	 */
 	public String getCode() {
-		return ((CNDataObj) ElementList.getActive()).getName();
+		return ((CNDataObj) elementList.getActive()).getName();
 	}
 
 	/**
@@ -170,13 +170,13 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	 */
 	public void setCode(String Value) {
 		ConductorDataImpl.setActiveConductorDataObj(null);
-		CNDataObj pCNDataObj = (CNDataObj) ElementList.getFirst();
+		CNDataObj pCNDataObj = (CNDataObj) elementList.getFirst();
 		while (pCNDataObj != null) {
 			if (pCNDataObj.getName().equalsIgnoreCase(Value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pCNDataObj);
 				return;
 			}
-			pCNDataObj = (CNDataObj) ElementList.getNext();
+			pCNDataObj = (CNDataObj) elementList.getNext();
 		}
 		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + Value + "\" not found.", 103);
 	}

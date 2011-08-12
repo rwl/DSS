@@ -21,7 +21,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	 * Add no. of intrinsic properties.
 	 */
 	protected void countProperties() {
-		NumProperties = NumProperties + NumPCClassProps;
+		numProperties = numProperties + NumPCClassProps;
 		super.countProperties();
 	}
 
@@ -31,11 +31,11 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 1] = "spectrum";
+		propertyName[activeProperty + 1] = "spectrum";
 
-		PropertyHelp[ActiveProperty + 1] = "Name of harmonic spectrum for this device.";
+		propertyHelp[activeProperty + 1] = "Name of harmonic spectrum for this device.";
 
-		ActiveProperty = ActiveProperty + NumPCClassProps;
+		activeProperty = activeProperty + NumPCClassProps;
 
 		super.defineProperties();
 	}

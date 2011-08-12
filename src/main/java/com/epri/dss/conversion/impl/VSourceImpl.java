@@ -14,89 +14,89 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	public VSourceImpl() {
 		super();
-		this.Class_Name = "Vsource";
+		this.className = "Vsource";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don't want this in PC element list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = VSource.NumPropsThisClass;
+		numProperties = VSource.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "basekv";
-		PropertyName[2] = "pu";
-		PropertyName[3] = "angle";
-		PropertyName[4] = "frequency";
-		PropertyName[5] = "phases";
-		PropertyName[6] = "MVAsc3";
-		PropertyName[7] = "MVAsc1";
-		PropertyName[8] = "x1r1";
-		PropertyName[9] = "x0r0";
-		PropertyName[10] = "Isc3";
-		PropertyName[11] = "Isc1";
-		PropertyName[12] = "R1";
-		PropertyName[13] = "X1";
-		PropertyName[14] = "R0";
-		PropertyName[15] = "X0";
-		PropertyName[16] = "ScanType";
-	    PropertyName[17] = "Sequence";
-		PropertyName[18]  = "bus2";
+		propertyName[0] = "bus1";
+		propertyName[1] = "basekv";
+		propertyName[2] = "pu";
+		propertyName[3] = "angle";
+		propertyName[4] = "frequency";
+		propertyName[5] = "phases";
+		propertyName[6] = "MVAsc3";
+		propertyName[7] = "MVAsc1";
+		propertyName[8] = "x1r1";
+		propertyName[9] = "x0r0";
+		propertyName[10] = "Isc3";
+		propertyName[11] = "Isc1";
+		propertyName[12] = "R1";
+		propertyName[13] = "X1";
+		propertyName[14] = "R0";
+		propertyName[15] = "X0";
+		propertyName[16] = "ScanType";
+	    propertyName[17] = "Sequence";
+		propertyName[18]  = "bus2";
 
 		// define property help values
-		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
-		PropertyHelp[1] = "Base Source kV, usually phase-phase (L-L) unless you are making a positive-sequence model or 1-phase model"+
+		propertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
+		propertyHelp[1] = "Base Source kV, usually phase-phase (L-L) unless you are making a positive-sequence model or 1-phase model"+
 				"in which case, it will be phase-neutral (L-N) kV.";
-		PropertyHelp[2] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
+		propertyHelp[2] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
 				"\"pu=1.05\"";
-		PropertyHelp[3] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
-		PropertyHelp[4] = "Source frequency.  Defaults to system default base frequency.";
-		PropertyHelp[5] = "Number of phases.  Defaults to 3.";
-		PropertyHelp[6] = "MVA Short circuit, 3-phase fault. Default = 2000. " +
+		propertyHelp[3] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
+		propertyHelp[4] = "Source frequency.  Defaults to system default base frequency.";
+		propertyHelp[5] = "Number of phases.  Defaults to 3.";
+		propertyHelp[6] = "MVA Short circuit, 3-phase fault. Default = 2000. " +
 				"Z1 is determined by squaring the base kv and dividing by this value. "+
 				"For single-phase source, this value is not used.";
-		PropertyHelp[7] = "MVA Short Circuit, 1-phase fault. Default = 2100. " +
+		propertyHelp[7] = "MVA Short Circuit, 1-phase fault. Default = 2100. " +
 				"The \"single-phase impedance\", Zs, is determined by squaring the base kV and dividing by this value. "+
 				"Then Z0 is determined by Z0 = 3Zs - 2Z1.  For 1-phase sources, Zs is used directly. " +
 				"Use X0R0 to define X/R ratio for 1-phase source.";
-		PropertyHelp[8] = "Positive-sequence  X/R ratio. Default = 4.";
-		PropertyHelp[9] = "Zero-sequence X/R ratio.Default = 3.";
-		PropertyHelp[10] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[8] = "Positive-sequence  X/R ratio. Default = 4.";
+		propertyHelp[9] = "Zero-sequence X/R ratio.Default = 3.";
+		propertyHelp[10] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"3-phase short circuit current, amps.  Default is 10000.";
-		PropertyHelp[11] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[11] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"single-phase short circuit current, amps.  Default is 10500.";
-		PropertyHelp[12] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[12] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"Positive-sequence resistance, ohms.  Default is 1.65.";
-		PropertyHelp[13] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[13] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"Positive-sequence reactance, ohms.  Default is 6.6.";
-		PropertyHelp[14] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[14] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"Zero-sequence resistance, ohms.  Default is 1.9.";
-		PropertyHelp[15] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
+		propertyHelp[15] = "Alternate method of defining the source impedance. " + DSSGlobals.CRLF +
 				"Zero-sequence reactance, ohms.  Default is 5.7.";
-		PropertyHelp[16] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
+		propertyHelp[16] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
-		PropertyHelp[17] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+		propertyHelp[17] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
                  "Default is positive sequence. ";
-		PropertyHelp[18] = "Name of bus to which 2nd terminal is connected."+DSSGlobals.CRLF+"bus2=busname"+DSSGlobals.CRLF+"bus2=busname.1.2.3" +
+		propertyHelp[18] = "Name of bus to which 2nd terminal is connected."+DSSGlobals.CRLF+"bus2=busname"+DSSGlobals.CRLF+"bus2=busname.1.2.3" +
 				DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Default is Bus1.0.0.0 (grounded wye connection)";
 
-		ActiveProperty = VSource.NumPropsThisClass - 1;
+		activeProperty = VSource.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		PropertyHelp[VSource.NumPropsThisClass - 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[VSource.NumPropsThisClass - 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -140,7 +140,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveVsourceObj((VSourceObj) ElementList.getActive());
+		setActiveVsourceObj((VSourceObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
 
 		int Result = 0;
@@ -154,10 +154,10 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				avs.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

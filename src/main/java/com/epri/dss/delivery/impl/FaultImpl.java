@@ -14,60 +14,60 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 	public FaultImpl() {
 		super();
-		this.Class_Name = "Fault";
+		this.className = "Fault";
 		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // only in fault object class
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Fault.NumPropsThisClass;
+		numProperties = Fault.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "bus2";
-		PropertyName[2] = "phases";
-		PropertyName[3] = "r";
-		PropertyName[4] = "%stddev";
-		PropertyName[5] = "Gmatrix";
-		PropertyName[6] = "ONtime";
-		PropertyName[7] = "temporary";
-		PropertyName[8] = "MinAmps";
+		propertyName[0] = "bus1";
+		propertyName[1] = "bus2";
+		propertyName[2] = "phases";
+		propertyName[3] = "r";
+		propertyName[4] = "%stddev";
+		propertyName[5] = "Gmatrix";
+		propertyName[6] = "ONtime";
+		propertyName[7] = "temporary";
+		propertyName[8] = "MinAmps";
 
 		// define property help values
-		PropertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
 						"bus1=busname"+DSSGlobals.CRLF+
 						"bus1=busname.1.2.3";
-		PropertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
+		propertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
 						"to first bus, node 0, if not specified. (Shunt Wye Connection to ground reference)";
-		PropertyHelp[2] = "Number of Phases. Default is 1.";
-		PropertyHelp[3] = "Resistance, each phase, ohms. Default is 0.0001. Assumed to be Mean value if gaussian random mode."+
+		propertyHelp[2] = "Number of Phases. Default is 1.";
+		propertyHelp[3] = "Resistance, each phase, ohms. Default is 0.0001. Assumed to be Mean value if gaussian random mode."+
 						"Max value if uniform mode.  A Fault is actually a series resistance "+
 						"that defaults to a wye connection to ground on the second terminal.  You "+
 						"may reconnect the 2nd terminal to achieve whatever connection.  Use "+
 						"the Gmatrix property to specify an arbitrary conductance matrix.";
-		PropertyHelp[4] = "Percent standard deviation in resistance to assume for Monte Carlo fault (MF) solution mode for GAUSSIAN distribution. Default is 0 (no variation from mean).";
-		PropertyHelp[5] = "Use this to specify a nodal conductance (G) matrix to represent some arbitrary resistance network. "+
+		propertyHelp[4] = "Percent standard deviation in resistance to assume for Monte Carlo fault (MF) solution mode for GAUSSIAN distribution. Default is 0 (no variation from mean).";
+		propertyHelp[5] = "Use this to specify a nodal conductance (G) matrix to represent some arbitrary resistance network. "+
 						"Specify in lower triangle form as usual for DSS matrices.";
-		PropertyHelp[6] = "Time (sec) at which the fault is established for time varying simulations. Default is 0.0 " +
+		propertyHelp[6] = "Time (sec) at which the fault is established for time varying simulations. Default is 0.0 " +
 							"(on at the beginning of the simulation)";
-		PropertyHelp[7] = "{Yes | No} Default is No.  Designate whether the fault is temporary.  For Time-varying simulations, " +
+		propertyHelp[7] = "{Yes | No} Default is No.  Designate whether the fault is temporary.  For Time-varying simulations, " +
 							"the fault will be removed if the current through the fault drops below the MINAMPS criteria.";
-		PropertyHelp[8] = "Minimum amps that can sustain a temporary fault. Default is 5.";
+		propertyHelp[8] = "Minimum amps that can sustain a temporary fault. Default is 5.";
 
 
-		ActiveProperty = Fault.NumPropsThisClass - 1;
+		activeProperty = Fault.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -129,7 +129,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveFaultObj((FaultObj) ElementList.getActive());
+		setActiveFaultObj((FaultObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
 
 		FaultObj af = getActiveFaultObj();
@@ -141,10 +141,10 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
 				af.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

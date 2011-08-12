@@ -24,34 +24,34 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 	}
 
 	protected void countProperties() {
-		NumProperties = NumProperties + getNumConductorClassProps();
+		numProperties = numProperties + getNumConductorClassProps();
 		super.countProperties();
 	}
 
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 1] = "Rdc";
-		PropertyName[ActiveProperty + 2] = "Rac";
-		PropertyName[ActiveProperty + 3] = "Runits";
-		PropertyName[ActiveProperty + 4] = "GMRac";
-		PropertyName[ActiveProperty + 5] = "GMRunits";
-		PropertyName[ActiveProperty + 6] = "radius";
-		PropertyName[ActiveProperty + 7] = "radunits";
-		PropertyName[ActiveProperty + 8] = "normamps";
-		PropertyName[ActiveProperty + 9] = "emergamps";
-		PropertyName[ActiveProperty + 10] = "diam";
+		propertyName[activeProperty + 1] = "Rdc";
+		propertyName[activeProperty + 2] = "Rac";
+		propertyName[activeProperty + 3] = "Runits";
+		propertyName[activeProperty + 4] = "GMRac";
+		propertyName[activeProperty + 5] = "GMRunits";
+		propertyName[activeProperty + 6] = "radius";
+		propertyName[activeProperty + 7] = "radunits";
+		propertyName[activeProperty + 8] = "normamps";
+		propertyName[activeProperty + 9] = "emergamps";
+		propertyName[activeProperty + 10] = "diam";
 
-		PropertyHelp[ActiveProperty + 1] = "dc Resistance, ohms per unit length (see Runits). Defaults to Rac/1.02 if not specified.";
-		PropertyHelp[ActiveProperty + 2] = "Resistance at 60 Hz per unit length. Defaults to 1.02*Rdc if not specified.";
-		PropertyHelp[ActiveProperty + 3] = "Length units for resistance: ohms per " + LineUnitsHelp;
-		PropertyHelp[ActiveProperty + 4] = "GMR at 60 Hz. Defaults to .7788*radius if not specified.";
-		PropertyHelp[ActiveProperty + 5] = "Units for GMR: " + LineUnitsHelp;
-		PropertyHelp[ActiveProperty + 6] = "Outside radius of conductor. Defaults to GMR/0.7788 if not specified.";
-		PropertyHelp[ActiveProperty + 7] = "Units for outside radius: " + LineUnitsHelp;
-		PropertyHelp[ActiveProperty + 8] = "Normal ampacity, amperes. Defaults to Emergency amps/1.5 if not specified.";
-		PropertyHelp[ActiveProperty + 9] = "Emergency ampacity, amperes. Defaults to 1.5 * Normal Amps if not specified.";
-		PropertyHelp[ActiveProperty + 10] = "Diameter; Alternative method for entering radius.";
+		propertyHelp[activeProperty + 1] = "dc Resistance, ohms per unit length (see Runits). Defaults to Rac/1.02 if not specified.";
+		propertyHelp[activeProperty + 2] = "Resistance at 60 Hz per unit length. Defaults to 1.02*Rdc if not specified.";
+		propertyHelp[activeProperty + 3] = "Length units for resistance: ohms per " + LineUnitsHelp;
+		propertyHelp[activeProperty + 4] = "GMR at 60 Hz. Defaults to .7788*radius if not specified.";
+		propertyHelp[activeProperty + 5] = "Units for GMR: " + LineUnitsHelp;
+		propertyHelp[activeProperty + 6] = "Outside radius of conductor. Defaults to GMR/0.7788 if not specified.";
+		propertyHelp[activeProperty + 7] = "Units for outside radius: " + LineUnitsHelp;
+		propertyHelp[activeProperty + 8] = "Normal ampacity, amperes. Defaults to Emergency amps/1.5 if not specified.";
+		propertyHelp[activeProperty + 9] = "Emergency ampacity, amperes. Defaults to 1.5 * Normal Amps if not specified.";
+		propertyHelp[activeProperty + 10] = "Diameter; Alternative method for entering radius.";
 
-		ActiveProperty = ActiveProperty + NumConductorClassProps;
+		activeProperty = activeProperty + NumConductorClassProps;
 		super.defineProperties();
 	}
 

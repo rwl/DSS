@@ -223,16 +223,16 @@ public class ExecHelper {
 				if (IsCompile)
 					Globals.setDataPath(CurrDir);  // change DSS data directory
 
-				Globals.setRedirect_Abort(false);
-				Globals.setIn_Redirect(true);
+				Globals.setRedirectAbort(false);
+				Globals.setInRedirect(true);
 
 				br = new BufferedReader(Fin);
 
-				while (((InputLine = br.readLine()) != null) || Globals.isRedirect_Abort()) {
+				while (((InputLine = br.readLine()) != null) || Globals.isRedirectAbort()) {
 					if (!Globals.isSolutionAbort()) {
 						ExecCommands.getInstance().processCommand(InputLine);
 					} else {
-						Globals.setRedirect_Abort(true);  // abort file if solution was aborted
+						Globals.setRedirectAbort(true);  // abort file if solution was aborted
 					}
 				}
 
@@ -246,7 +246,7 @@ public class ExecHelper {
 							e.getMessage(),
 							"Error in file: \"" + ExecCommands.getInstance().getRedirFile() + "\" or filename.", 244);
 			} finally {
-				Globals.setIn_Redirect(false);
+				Globals.setInRedirect(false);
 				if (IsCompile) {
 					Globals.setDataPath(CurrDir);  // change DSSDataDirectory
 					Globals.setLastCommandWasCompile(true);

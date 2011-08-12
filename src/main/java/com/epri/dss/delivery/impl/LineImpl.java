@@ -22,126 +22,126 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	public LineImpl() {
 		super();
-		this.Class_Name = "Line";
+		this.className = "Line";
 		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PD element list and line section lists
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 		LineCodeClass = null;
 		LineGeometryClass = null;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Line.NumPropsThisClass;
+		numProperties = Line.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "bus2";
-		PropertyName[2] = "linecode";
-		PropertyName[3] = "length";
-		PropertyName[4] = "phases";
-		PropertyName[5] = "r1";
-		PropertyName[6] = "x1";
-		PropertyName[7] = "r0";
-		PropertyName[8] = "x0";
-		PropertyName[9] = "c1";
-		PropertyName[10] = "c0";
-		PropertyName[11] = "rmatrix";
-		PropertyName[12] = "xmatrix";
-		PropertyName[13] = "cmatrix";
-		PropertyName[14] = "Switch";
-		PropertyName[15] = "Rg";
-		PropertyName[16] = "Xg";
-		PropertyName[17] = "rho";
-		PropertyName[18] = "geometry";
-		PropertyName[19] = "units";
-		PropertyName[20] = "spacing";
-		PropertyName[21] = "wires";
-		PropertyName[22] = "EarthModel";
-		PropertyName[23] = "cncables";
-		PropertyName[24] = "tscables";
+		propertyName[0] = "bus1";
+		propertyName[1] = "bus2";
+		propertyName[2] = "linecode";
+		propertyName[3] = "length";
+		propertyName[4] = "phases";
+		propertyName[5] = "r1";
+		propertyName[6] = "x1";
+		propertyName[7] = "r0";
+		propertyName[8] = "x0";
+		propertyName[9] = "c1";
+		propertyName[10] = "c0";
+		propertyName[11] = "rmatrix";
+		propertyName[12] = "xmatrix";
+		propertyName[13] = "cmatrix";
+		propertyName[14] = "Switch";
+		propertyName[15] = "Rg";
+		propertyName[16] = "Xg";
+		propertyName[17] = "rho";
+		propertyName[18] = "geometry";
+		propertyName[19] = "units";
+		propertyName[20] = "spacing";
+		propertyName[21] = "wires";
+		propertyName[22] = "EarthModel";
+		propertyName[23] = "cncables";
+		propertyName[24] = "tscables";
 
 		// define property help values
-		PropertyHelp[0] = "Name of bus to which first terminal is connected."+ DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of bus to which first terminal is connected."+ DSSGlobals.CRLF+
 					"Example:"+DSSGlobals.CRLF+
 					"bus1=busname   (assumes all terminals connected in normal phase order)"+DSSGlobals.CRLF+
 					"bus1=busname.3.1.2.0 (specify terminal to node connections explicitly)";
-		PropertyHelp[1] = "Name of bus to which 2nd terminal is connected.";
-		PropertyHelp[2] = "Name of linecode object describing line impedances."+DSSGlobals.CRLF+
+		propertyHelp[1] = "Name of bus to which 2nd terminal is connected.";
+		propertyHelp[2] = "Name of linecode object describing line impedances."+DSSGlobals.CRLF+
 					"If you use a line code, you do not need to specify the impedances here. "+
 					"The line code must have been PREVIOUSLY defined. " +
 					"The values specified last will prevail over those specified earlier (left-to-right " +
 					"sequence of properties).  You can subsequently change the number of phases if symmetrical component quantities are specified." +
 					"If no line code or impedance data are specified, the line object "+
 					"defaults to 336 MCM ACSR on 4 ft spacing.";
-		PropertyHelp[3] = "Length of line. Default is 1.0. If units do not match the impedance data, specify \"units\" property. ";
-		PropertyHelp[4] = "Number of phases, this line.";
-		PropertyHelp[5] = "Positive-sequence Resistance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
+		propertyHelp[3] = "Length of line. Default is 1.0. If units do not match the impedance data, specify \"units\" property. ";
+		propertyHelp[4] = "Number of phases, this line.";
+		propertyHelp[5] = "Positive-sequence Resistance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
 						"the program to use the symmetrical component line definition. See also Rmatrix.";
-		PropertyHelp[6] = "Positive-sequence Reactance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
+		propertyHelp[6] = "Positive-sequence Reactance, ohms per unit length. Setting any of R1, R0, X1, X0, C1, C0 forces " +
 						"the program to use the symmetrical component line definition.  See also Xmatrix";
-		PropertyHelp[7] = "Zero-sequence Resistance, ohms per unit length.";
-		PropertyHelp[8] = "Zero-sequence Reactance, ohms per unit length.";
-		PropertyHelp[9] = "Positive-sequence capacitance, nf per unit length.  Setting any of R1, R0, X1, X0, C1, C0 forces " +
+		propertyHelp[7] = "Zero-sequence Resistance, ohms per unit length.";
+		propertyHelp[8] = "Zero-sequence Reactance, ohms per unit length.";
+		propertyHelp[9] = "Positive-sequence capacitance, nf per unit length.  Setting any of R1, R0, X1, X0, C1, C0 forces " +
 						"the program to use the symmetrical component line definition. See also Cmatrix.";
-		PropertyHelp[10] = "Zero-sequence capacitance, nf per unit length.";
-		PropertyHelp[11] = "Resistance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
+		propertyHelp[10] = "Zero-sequence capacitance, nf per unit length.";
+		propertyHelp[11] = "Resistance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
 						"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
 						"forces program to use the matrix values for line impedance definition. For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[12] = "Reactance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
+		propertyHelp[12] = "Reactance matrix, lower triangle, ohms per unit length. Order of the matrix is the number of phases. "+
 						"May be used to specify the impedance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
 						"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[13] = "Nodal Capacitance matrix, lower triangle, nf per unit length.Order of the matrix is the number of phases. "+
+		propertyHelp[13] = "Nodal Capacitance matrix, lower triangle, nf per unit length.Order of the matrix is the number of phases. "+
 						"May be used to specify the shunt capacitance of any line configuration. Using any of Rmatrix, Xmatrix, Cmatrix " +
 						"forces program to use the matrix values for line impedance definition.  For balanced line models, you may "+
 						"use the standard symmetrical component data definition instead.";
-		PropertyHelp[14] = "{y/n | T/F}  Default= no/false.  Designates this line as a switch for graphics and algorithmic purposes. " +DSSGlobals.CRLF+
+		propertyHelp[14] = "{y/n | T/F}  Default= no/false.  Designates this line as a switch for graphics and algorithmic purposes. " +DSSGlobals.CRLF+
 							"SIDE EFFECT: Sets r1 = 1.0; x1 = 1.0; r0 = 1.0; x0 = 1.0; c1 = 1.1 ; c0 = 1.0;  length = 0.001; You must reset if you want something different.";
-		PropertyHelp[15] = "Carson earth return resistance per unit length used to compute impedance values at base frequency. " +
+		propertyHelp[15] = "Carson earth return resistance per unit length used to compute impedance values at base frequency. " +
 							"Default is 0.01805 = 60 Hz value in ohms per kft (matches default line impedances). " +
 							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
 							"If not, set both Rg and Xg = 0.";
-		PropertyHelp[16] = "Carson earth return reactance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
+		propertyHelp[16] = "Carson earth return reactance per unit length used to compute impedance values at base frequency.  For making better frequency adjustments. " +
 							"Default is 0.155081 = 60 Hz value in ohms per kft (matches default line impedances). " +
 							"This value is required for harmonic solutions if you wish to adjust the earth return impedances for frequency. " +
 							"If not, set both Rg and Xg = 0.";
-		PropertyHelp[17] = "Default=100 meter ohms.  Earth resitivity used to compute earth correction factor. Overrides Line geometry definition if specified.";
-		PropertyHelp[18] = "Geometry code for LineGeometry Object. Supercedes any previous definition of line impedance. " +
+		propertyHelp[17] = "Default=100 meter ohms.  Earth resitivity used to compute earth correction factor. Overrides Line geometry definition if specified.";
+		propertyHelp[18] = "Geometry code for LineGeometry Object. Supercedes any previous definition of line impedance. " +
 							"Line constants are computed for each frequency change or rho change. CAUTION: may alter number of phases. "+
 							"You cannot subsequently change the number of phases unless you change how the line impedance is defined.";
-		PropertyHelp[19] = "Length Units = {none | mi|kft|km|m|Ft|in|cm } Default is None - assumes length units match impedance units.";
-		PropertyHelp[20] = "Reference to a LineSpacing for use in a line constants calculation." + DSSGlobals.CRLF +
+		propertyHelp[19] = "Length Units = {none | mi|kft|km|m|Ft|in|cm } Default is None - assumes length units match impedance units.";
+		propertyHelp[20] = "Reference to a LineSpacing for use in a line constants calculation." + DSSGlobals.CRLF +
 							"Must be used in conjunction with the Wires property." + DSSGlobals.CRLF +
 							"Specify this before the wires property.";
-		PropertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSSGlobals.CRLF +
+		propertyHelp[21] = "Array of WireData names for use in a line constants calculation." + DSSGlobals.CRLF +
 				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
 				"Specify the Spacing first, and \"ncond\" wires." + DSSGlobals.CRLF +
 				"May also be used to specify bare neutrals with cables, using \"ncond-nphase\" wires.";
-		PropertyHelp[22] = "One of {Carson | FullCarson | Deri}. Default is the global value established with the Set EarthModel command. " +
+		propertyHelp[22] = "One of {Carson | FullCarson | Deri}. Default is the global value established with the Set EarthModel command. " +
 							"See the Options Help on EarthModel option. This is used to override the global value for this line. This " +
 							"option applies only when the \"geometry\" property is used.";
-		PropertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSSGlobals.CRLF +
+		propertyHelp[23] = "Array of CNData names for use in a cable constants calculation." + DSSGlobals.CRLF +
 				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
 				"Specify the Spacing first, using \"nphases\" cncables." + DSSGlobals.CRLF +
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
-		PropertyHelp[24] = "Array of TSData names for use in a cable constants calculation." + DSSGlobals.CRLF +
+		propertyHelp[24] = "Array of TSData names for use in a cable constants calculation." + DSSGlobals.CRLF +
 				"Must be used in conjunction with the Spacing property." + DSSGlobals.CRLF +
 				"Specify the Spacing first, using \"nphases\" tscables." + DSSGlobals.CRLF +
 				"You may later specify \"nconds-nphases\" wires for separate neutrals";
 
 
-		ActiveProperty = Line.NumPropsThisClass - 1;
+		activeProperty = Line.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -205,7 +205,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		if (OrderFound > 0) {  // parse was successful
 			/* X */
-			Factor = DSSGlobals.TwoPi * al.getBaseFrequency() * 1.0e-9;
+			Factor = DSSGlobals.TWO_PI * al.getBaseFrequency() * 1.0e-9;
 			YValues = al.getYc().asArray(Norder);
 			if (Norder == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
@@ -243,7 +243,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveLineObj((LineObj) ElementList.getActive());
+		setActiveLineObj((LineObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveLineObj());  // use property to set this value
 
 		LineObj al = getActiveLineObj();
@@ -255,7 +255,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
 			if ((ParamPointer >= 0) && (ParamPointer < getNumProperties()))

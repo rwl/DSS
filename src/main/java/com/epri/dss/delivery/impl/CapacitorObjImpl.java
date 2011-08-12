@@ -70,7 +70,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		this.kvrating = 12.47;
 		Utilities.initDblArray(this.NumSteps, this.C,
-				1.0 / (DSSGlobals.TwoPi * baseFrequency * Math.pow(kvrating, 2) * 1000.0 / this.kvarrating[0]));
+				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kvrating, 2) * 1000.0 / this.kvarrating[0]));
 
 		this.Connection = 0;   // 0 or 1 for wye (default) or delta, respectively
 		this.SpecType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
@@ -96,7 +96,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		totalkvar = 0.0;
 		PhasekV = 1.0;
-		w = DSSGlobals.TwoPi * baseFrequency;
+		w = DSSGlobals.TWO_PI * baseFrequency;
 		switch (SpecType) {
 		case 1:// kvar
 			switch (Connection) {
@@ -471,7 +471,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		setYPrimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
 		FreqMultiple = getYPrimFreq() / getBaseFrequency();
-		w = DSSGlobals.TwoPi * getYPrimFreq();
+		w = DSSGlobals.TWO_PI * getYPrimFreq();
 
 		if ((getR()[iStep] + Math.abs(getXL()[iStep])) > 0.0) {
 			HasZL = true;

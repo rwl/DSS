@@ -7,18 +7,18 @@ import com.epri.dss.parser.impl.Parser;
 public class CktElementClassImpl extends DSSClassImpl implements
 		CktElementClass {
 
-	private int NumCktElemClassProps;
+	private int numCktElemClassProps;
 
 	public CktElementClassImpl() {
 		super();
-		this.NumCktElemClassProps = 2;
+		this.numCktElemClassProps = 2;
 	}
 
-	protected int classEdit(Object ActiveCktElemObj, int ParamPointer) {
+	protected int classEdit(Object activeCktElemObj, int paramPointer) {
 		// continue parsing with contents of parser
-		if (ParamPointer >= 0) {  // TODO Check zero based indexing
-			CktElement cktElem = (CktElement) ActiveCktElemObj;
-			switch (ParamPointer) {
+		if (paramPointer >= 0) {  // TODO Check zero based indexing
+			CktElement cktElem = (CktElement) activeCktElemObj;
+			switch (paramPointer) {
 			case 0:
 				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
 				break;
@@ -26,18 +26,18 @@ public class CktElementClassImpl extends DSSClassImpl implements
 				cktElem.setEnabled(Utilities.interpretYesNo(Parser.getInstance().makeString()));
 				break;
 			default:
-				super.classEdit(ActiveCktElemObj, ParamPointer - NumCktElemClassProps);
+				super.classEdit(activeCktElemObj, paramPointer - numCktElemClassProps);
 				break;
 			}
 		}
 		return 0;
 	}
 
-	protected void classMakeLike(Object OtherObj) {
-		CktElement OtherCktObj = (CktElement) OtherObj;
+	protected void classMakeLike(Object otherObj) {
+		CktElement otherCktObj = (CktElement) otherObj;
 
 		CktElement cktElem = (CktElement) DSSGlobals.getInstance().getActiveDSSObject();
-		cktElem.setBaseFrequency(OtherCktObj.getBaseFrequency());
+		cktElem.setBaseFrequency(otherCktObj.getBaseFrequency());
 		cktElem.setEnabled(true);
 	}
 
@@ -45,7 +45,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	 * Add no. of intrinsic properties.
 	 */
 	protected void countProperties() {
-		NumProperties = NumProperties + NumCktElemClassProps;
+		numProperties = numProperties + numCktElemClassProps;
 		super.countProperties();
 	}
 
@@ -53,19 +53,19 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 1] = "basefreq";  // TODO Check zero based indexing
-		PropertyName[ActiveProperty + 2] = "enabled";
+		propertyName[activeProperty + 1] = "basefreq";  // TODO Check zero based indexing
+		propertyName[activeProperty + 2] = "enabled";
 
-		PropertyHelp[ActiveProperty + 1] = "Base Frequency for ratings.";
-		PropertyHelp[ActiveProperty + 2] = "{Yes|No or True|False} Indicates whether this element is enabled.";
+		propertyHelp[activeProperty + 1] = "Base Frequency for ratings.";
+		propertyHelp[activeProperty + 2] = "{Yes|No or True|False} Indicates whether this element is enabled.";
 
-		ActiveProperty = ActiveProperty + NumCktElemClassProps;
+		activeProperty = activeProperty + numCktElemClassProps;
 
 		super.defineProperties();
 	}
 
 	public int getNumCktElemClassProps() {
-		return NumCktElemClassProps;
+		return numCktElemClassProps;
 	}
 
 }

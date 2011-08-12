@@ -10,9 +10,9 @@ public interface DSSForms {
 
 	void initProgressForm();
 
-	void progressCaption(String S);
+	void progressCaption(String s);
 
-	void progressFormCaption(String S);
+	void progressFormCaption(String s);
 
 	void progressHide();
 
@@ -24,9 +24,9 @@ public interface DSSForms {
 
 	void showPropEditForm();
 
-	void showPctProgress(int Count);
+	void showPctProgress(int count);
 
-	void showMessageForm(List<String> S);
+	void showMessageForm(List<String> s);
 
 	int messageDlg(String msg, boolean err);
 
@@ -36,9 +36,9 @@ public interface DSSForms {
 
 	void closeDownForms();
 
-	void showTreeView(String Fname);
+	void showTreeView(String fname);
 
-	boolean makeChannelSelection(int NumFieldsToSkip, String Filename);
+	boolean makeChannelSelection(int numFieldsToSkip, String filename);
 
 	boolean isRebuildHelpForm();
 

@@ -15,41 +15,41 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 	public TCC_CurveImpl() {
 		super();
-		this.Class_Name = "TCC_Curve";
+		this.className = "TCC_Curve";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = TCC_Curve.NumPropsThisClass;
+		numProperties = TCC_Curve.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "npts";     // number of points to expect
-		PropertyName[1] = "C_array";  // vector of multiplier values
-		PropertyName[2] = "T_array";  // vextor of time values , Sec
+		propertyName[0] = "npts";     // number of points to expect
+		propertyName[1] = "C_array";  // vector of multiplier values
+		propertyName[2] = "T_array";  // vextor of time values , Sec
 
 		// define property help values
-		PropertyHelp[0] = "Number of points to expect in time-current arrays.";  // number of points to expect
-		PropertyHelp[1] = "Array of current (or voltage) values corresponding to time values (see help on T_Array).";  // vector of multiplier values
-		PropertyHelp[2] = "Array of time values in sec. Typical array syntax: " +CRLF+
+		propertyHelp[0] = "Number of points to expect in time-current arrays.";  // number of points to expect
+		propertyHelp[1] = "Array of current (or voltage) values corresponding to time values (see help on T_Array).";  // vector of multiplier values
+		propertyHelp[2] = "Array of time values in sec. Typical array syntax: " +CRLF+
 					"t_array = (1, 2, 3, 4, ...)" +CRLF+CRLF+
 					"Can also substitute a file designation: " +CRLF+
 					"t_array =  (file=filename)"+CRLF+CRLF+
 					"The specified file has one value per line.";
 
-		ActiveProperty = TCC_Curve.NumPropsThisClass - 1;
+		activeProperty = TCC_Curve.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -74,7 +74,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 	public int edit() {
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveTCC_CurveObj((TCC_CurveObj) ElementList.getActive());
+		setActiveTCC_CurveObj((TCC_CurveObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveTCC_CurveObj());
 
 		Parser parser = Parser.getInstance();
@@ -88,10 +88,10 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}  // FIXME Check indenting of other edit methods at this point.
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer > 0) && (ParamPointer <= numProperties))
 				atc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -172,15 +172,15 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 	}
 
 	public String getCode() {
-		TCC_CurveObj pCurve = (TCC_CurveObj) ElementList.getActive();
+		TCC_CurveObj pCurve = (TCC_CurveObj) elementList.getActive();
 		return pCurve.getName();
 	}
 
 	public void setCode(String Value) {
 		setActiveTCC_CurveObj(null);
 		TCC_CurveObj pCurve;
-		for (int i = 0; i < ElementList.size(); i++) {
-			pCurve = (TCC_CurveObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pCurve = (TCC_CurveObj) elementList.get(i);
 			if (pCurve.getName().equalsIgnoreCase(Value)) {
 				setActiveTCC_CurveObj(pCurve);
 				return;

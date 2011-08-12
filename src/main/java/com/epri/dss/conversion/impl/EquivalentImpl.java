@@ -14,58 +14,58 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	public EquivalentImpl() {
 		super();
-		this.Class_Name = "Equivalent";
+		this.className = "Equivalent";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Equivalent.NumPropsThisClass;
+		numProperties = Equivalent.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "terminals";
-		PropertyName[1] = "buses";
-		PropertyName[2] = "basekv";
-		PropertyName[3] = "pu";
-		PropertyName[4] = "angle";
-		PropertyName[5] = "frequency";
-		PropertyName[6] = "phases";
-		PropertyName[7] = "R1";
-		PropertyName[8] = "X1";
-		PropertyName[9] = "R0";
-		PropertyName[10] = "X0";
+		propertyName[0] = "terminals";
+		propertyName[1] = "buses";
+		propertyName[2] = "basekv";
+		propertyName[3] = "pu";
+		propertyName[4] = "angle";
+		propertyName[5] = "frequency";
+		propertyName[6] = "phases";
+		propertyName[7] = "R1";
+		propertyName[8] = "X1";
+		propertyName[9] = "R0";
+		propertyName[10] = "X0";
 
 		// define property help values
-		PropertyHelp[0] = "Number of terminals.  Default =1. Set this BEFORE defining matrices.";
-		PropertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSSGlobals.CRLF+"buses=(b1 b2 b3)";
-		PropertyHelp[2] = "Base Source kV, usually L-L unless you are making a positive-sequence model"+
+		propertyHelp[0] = "Number of terminals.  Default =1. Set this BEFORE defining matrices.";
+		propertyHelp[1] = "Array of Bus Names to which equivalent source is connected."+DSSGlobals.CRLF+"buses=(b1 b2 b3)";
+		propertyHelp[2] = "Base Source kV, usually L-L unless you are making a positive-sequence model"+
 					"in which case, it will be L-N.";
-		PropertyHelp[3] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
+		propertyHelp[3] = "Per unit of the base voltage that the source is actually operating at."+ DSSGlobals.CRLF +
 						"\"pu=1.05\"";
-		PropertyHelp[4] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
-		PropertyHelp[5] = "Source frequency.  Defaults to  60 Hz.";
-		PropertyHelp[6] = "Number of phases.  Defaults to 3.";
-		PropertyHelp[7] = "Positive-sequence resistance matrix, lower triangle.";
-		PropertyHelp[8] = "Positive-sequence reactance matrix, lower triangle.";
-		PropertyHelp[9] = "Zero-sequence resistance matrix, lower triangle.";
-		PropertyHelp[10] = "Zero-sequence reactance matrix, lower triangle.";
+		propertyHelp[4] = "Phase angle in degrees of first phase: e.g.,Angle=10.3";
+		propertyHelp[5] = "Source frequency.  Defaults to  60 Hz.";
+		propertyHelp[6] = "Number of phases.  Defaults to 3.";
+		propertyHelp[7] = "Positive-sequence resistance matrix, lower triangle.";
+		propertyHelp[8] = "Positive-sequence reactance matrix, lower triangle.";
+		propertyHelp[9] = "Zero-sequence resistance matrix, lower triangle.";
+		propertyHelp[10] = "Zero-sequence reactance matrix, lower triangle.";
 
-		ActiveProperty = Equivalent.NumPropsThisClass;
+		activeProperty = Equivalent.NumPropsThisClass;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		PropertyHelp[Equivalent.NumPropsThisClass + 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[Equivalent.NumPropsThisClass + 1] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -82,7 +82,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveEquivalentObj((EquivalentObj) ElementList.getActive());
+		setActiveEquivalentObj((EquivalentObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
 
 		int Result = 0;
@@ -96,10 +96,10 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				ae.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

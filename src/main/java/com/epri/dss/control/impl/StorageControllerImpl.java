@@ -16,84 +16,84 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 	public StorageControllerImpl() {
 		super();
 
-		this.Class_Name = "StorageController";
+		this.className = "StorageController";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = StorageController.NumPropsThisClass;
+		numProperties = StorageController.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[StorageController.propELEMENT]                = "Element";
-		PropertyName[StorageController.propTERMINAL]               = "Terminal";
-		PropertyName[StorageController.propKWTARGET]               = "kWTarget";
-		PropertyName[StorageController.propKWBAND]                 = "%kWBand";
-		PropertyName[StorageController.propPFTARGET]               = "PFTarget";
-		PropertyName[StorageController.propPFBAND]                 = "PFBand";
-		PropertyName[StorageController.propELEMENTLIST]            = "ElementList";
-		PropertyName[StorageController.propWEIGHTS]                = "Weights";
-		PropertyName[StorageController.propMODEDISCHARGE]          = "ModeDischarge";
-		PropertyName[StorageController.propMODECHARGE]             = "ModeCharge";
-		PropertyName[StorageController.propTIMEDISCHARGETRIGGER]   = "TimeDischargeTrigger";
-		PropertyName[StorageController.propTIMECHARGETRIGGER]      = "TimeChargeTrigger";
-		PropertyName[StorageController.propRATEKW]                 = "%RatekW";
-		PropertyName[StorageController.propRATEKVAR]               = "%Ratekvar";
-		PropertyName[StorageController.propRATECHARGE]             = "%RateCharge";
-		PropertyName[StorageController.propRESERVE]                = "%Reserve";
-		PropertyName[StorageController.propKWHTOTAL]               = "kWhTotal";
-		PropertyName[StorageController.propKWTOTAL]                = "kWTotal";
-		PropertyName[StorageController.propKWHACTUAL]              = "kWhActual";
-		PropertyName[StorageController.propKWACTUAL]               = "kWActual";
-		PropertyName[StorageController.propKWNEED]                 = "kWneed";
-		PropertyName[StorageController.propPARTICIPATION]          = "%Participation";
-		PropertyName[StorageController.propYEARLY]                 = "Yearly";
-		PropertyName[StorageController.propDAILY]                  = "Daily";
-		PropertyName[StorageController.propDUTY]                   = "Duty";
-		PropertyName[StorageController.propEVENTLOG]               = "EventLog";
-		PropertyName[StorageController.propVARDISPATCH]            = "VarDispatch";
-		PropertyName[StorageController.propINHIBITTIME]            = "InhibitTime";
-		PropertyName[StorageController.propTUPRAMP]                = "Tup";
-		PropertyName[StorageController.propTFLAT]                  = "TFlat";
-		PropertyName[StorageController.propTDNRAMP]                = "Tdn";
-		PropertyName[StorageController.propKWTHRESHOLD]            = "kWThreshold";
+		propertyName[StorageController.propELEMENT]                = "Element";
+		propertyName[StorageController.propTERMINAL]               = "Terminal";
+		propertyName[StorageController.propKWTARGET]               = "kWTarget";
+		propertyName[StorageController.propKWBAND]                 = "%kWBand";
+		propertyName[StorageController.propPFTARGET]               = "PFTarget";
+		propertyName[StorageController.propPFBAND]                 = "PFBand";
+		propertyName[StorageController.propELEMENTLIST]            = "ElementList";
+		propertyName[StorageController.propWEIGHTS]                = "Weights";
+		propertyName[StorageController.propMODEDISCHARGE]          = "ModeDischarge";
+		propertyName[StorageController.propMODECHARGE]             = "ModeCharge";
+		propertyName[StorageController.propTIMEDISCHARGETRIGGER]   = "TimeDischargeTrigger";
+		propertyName[StorageController.propTIMECHARGETRIGGER]      = "TimeChargeTrigger";
+		propertyName[StorageController.propRATEKW]                 = "%RatekW";
+		propertyName[StorageController.propRATEKVAR]               = "%Ratekvar";
+		propertyName[StorageController.propRATECHARGE]             = "%RateCharge";
+		propertyName[StorageController.propRESERVE]                = "%Reserve";
+		propertyName[StorageController.propKWHTOTAL]               = "kWhTotal";
+		propertyName[StorageController.propKWTOTAL]                = "kWTotal";
+		propertyName[StorageController.propKWHACTUAL]              = "kWhActual";
+		propertyName[StorageController.propKWACTUAL]               = "kWActual";
+		propertyName[StorageController.propKWNEED]                 = "kWneed";
+		propertyName[StorageController.propPARTICIPATION]          = "%Participation";
+		propertyName[StorageController.propYEARLY]                 = "Yearly";
+		propertyName[StorageController.propDAILY]                  = "Daily";
+		propertyName[StorageController.propDUTY]                   = "Duty";
+		propertyName[StorageController.propEVENTLOG]               = "EventLog";
+		propertyName[StorageController.propVARDISPATCH]            = "VarDispatch";
+		propertyName[StorageController.propINHIBITTIME]            = "InhibitTime";
+		propertyName[StorageController.propTUPRAMP]                = "Tup";
+		propertyName[StorageController.propTFLAT]                  = "TFlat";
+		propertyName[StorageController.propTDNRAMP]                = "Tdn";
+		propertyName[StorageController.propKWTHRESHOLD]            = "kWThreshold";
 
 
-		PropertyHelp[StorageController.propELEMENT] =
+		propertyHelp[StorageController.propELEMENT] =
 				"Full object name of the circuit element, typically a line or transformer, "+
 				"which the control is monitoring. There is no default; must be specified.";
-		PropertyHelp[StorageController.propTERMINAL] =
+		propertyHelp[StorageController.propTERMINAL] =
 				"Number of the terminal of the circuit element to which the StorageController control is connected. "+
 				"1 or 2, typically.  Default is 1. Make sure you have the direction on the power matching the sign of kWLimit.";
-		PropertyHelp[StorageController.propKWTARGET] =
+		propertyHelp[StorageController.propKWTARGET] =
 				"kW target for Discharging. The storage element fleet is dispatched to try to hold the power in band "+
 				"at least until the storage is depleted.";
-		PropertyHelp[StorageController.propKWBAND] =
+		propertyHelp[StorageController.propKWBAND] =
 				"Bandwidth (% of Target kW) of the dead band around the kW target value. Default is 2% (+/-1%)." +
 				"No dispatch changes are attempted If the power in the monitored terminal stays within this band.";
-		PropertyHelp[StorageController.propPFTARGET] =
+		propertyHelp[StorageController.propPFTARGET] =
 				"Power Factor target for dispatching the reactive power. Default is 0.96. The reactive power of the storage element fleet is dispatched to try to hold the power factor in band. "+
 				"It is assumed that the storage element inverter can produce kvar up to its kVA limit regardless of storage level.";
-		PropertyHelp[StorageController.propPFBAND] =
+		propertyHelp[StorageController.propPFBAND] =
 				"Bandwidth of the Target power factor of the monitored element. of the dead band around the kvar target value. Default is 0.04 (+/- 0.02)." +
 				"No dispatch changes of the kvar are attempted If the power factor of the monitored terminal stays within this band.";
-		PropertyHelp[StorageController.propELEMENTLIST] =
+		propertyHelp[StorageController.propELEMENTLIST] =
 				"Array list of Storage elements to be controlled.  If not specified, all storage elements in the circuit not presently dispatched by another controller " +
 				"are assumed dispatched by this controller.";
-		PropertyHelp[StorageController.propWEIGHTS] =
+		propertyHelp[StorageController.propWEIGHTS] =
 				"Array of proportional weights corresponding to each storage element in the ElementList. " +
 				"The needed kW or kvar to get back to center band is dispatched to each storage element according to these weights. " +
 				"Default is to set all weights to 1.0.";
-		PropertyHelp[StorageController.propMODEDISCHARGE] =
+		propertyHelp[StorageController.propMODEDISCHARGE] =
 				"{PeakShave* | Follow | Support | Loadshape | Time | Schedule} Mode of operation for the DISCHARGE FUNCTION of this controller. " +
 				"In PeakShave mode (Default), the control attempts to discharge storage to keep power in the monitored element below the kWTarget. " +
 				"In Follow mode, the control is triggered by time and resets the kWTarget value to the present monitored element power. " +
@@ -104,65 +104,65 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				"In Time mode, the storage discharge is turned on at the specified %RatekW and %Ratekvar at the specified discharge trigger time in fractional hours." +
 				"In Schedule mode, the Tup, TFlat, and Tdn properties specify the up ramp duration, flat duration, and down ramp duration for the schedule. " +
 				"The schedule start time is set by TimeDischargeTrigger and the rate of discharge for the flat part is determined by RatekW.";
-		PropertyHelp[StorageController.propMODECHARGE] =
+		propertyHelp[StorageController.propMODECHARGE] =
 				"{Loadshape | Time*} Mode of operation for the CHARGE FUNCTION of this controller. " +
 				"In Loadshape mode, both charging and discharging precisely follows the per unit loadshape. " +
 				"Storage is charged when the loadshape value is negative. " +
 				"In Time mode, the storage charging FUNCTION is triggered at the specified %RateCharge at the specified sharge trigger time in fractional hours.";
-		PropertyHelp[StorageController.propTIMEDISCHARGETRIGGER] =
+		propertyHelp[StorageController.propTIMEDISCHARGETRIGGER] =
 				"Default time of day (hr) for initiating Discharging of the fleet. During Follow or Time mode discharging is triggered at a fixed time " +
 				"each day at this hour. If Follow mode, storage will be discharged to attempt to hold the load at or below the power level at the time of triggering. " +
 				"In Time mode, the discharge is based on the %RatekW property value. " +
 				"Set this to a negative value to ignore. Default is 12.0 for Follow mode; otherwise it is -1 (ignored). ";
-		PropertyHelp[StorageController.propTIMECHARGETRIGGER] =
+		propertyHelp[StorageController.propTIMECHARGETRIGGER] =
 				"Default time of day (hr) for initiating charging in Time control mode. Set this to a negative value to ignore. Default is 2.0.  (0200)." +
 				"When this value is >0 the storage fleet is set to charging at this time regardless of other control criteria to make sure storage is " +
 				"topped off for the next discharge cycle.";
-		PropertyHelp[StorageController.propRATEKW] =
+		propertyHelp[StorageController.propRATEKW] =
 				"Sets the kW discharge rate in % of rated capacity for each element of the fleet. Applies to TIME control mode or anytime discharging is triggered " +
 				"by time.";
-		PropertyHelp[StorageController.propRATEKVAR] =
+		propertyHelp[StorageController.propRATEKVAR] =
 				"Sets the kvar discharge rate in % of rated capacity for each element of the fleet. Applies to TIME control mode or anytime discharging is triggered " +
 				"by time." ;
-		PropertyHelp[StorageController.propRATECHARGE] =
+		propertyHelp[StorageController.propRATECHARGE] =
 				"Sets the kW charging rate in % of rated capacity for each element of the fleet. Applies to TIME control mode and anytime charging mode is " +
 				"entered due to a time trigger.";
-		PropertyHelp[StorageController.propRESERVE] =
+		propertyHelp[StorageController.propRESERVE] =
 				"Use this property to change the % reserve for each storage element under control of this controller. This might be used, for example, to " +
 				"allow deeper discharges of storage or in case of emergency operation to use the remainder of the storage element.";
-		PropertyHelp[StorageController.propKWHTOTAL] =
+		propertyHelp[StorageController.propKWHTOTAL] =
 				"(Read only). Total rated kWh energy storage capacity of storage elements controlled by this controller.";
-		PropertyHelp[StorageController.propKWTOTAL] =
+		propertyHelp[StorageController.propKWTOTAL] =
 				"(Read only). Total rated kW power capacity of storage elements controlled by this controller.";
-		PropertyHelp[StorageController.propKWHACTUAL] =
+		propertyHelp[StorageController.propKWHACTUAL] =
 				"(Read only). Actual kWh output of all controlled storage elements. ";
-		PropertyHelp[StorageController.propKWACTUAL] =
+		propertyHelp[StorageController.propKWACTUAL] =
 				"(Read only). Actual kW output of all controlled storage elements. ";
-		PropertyHelp[StorageController.propKWNEED] =
+		propertyHelp[StorageController.propKWNEED] =
 				"(Read only). KW needed to meet target.";
-		PropertyHelp[StorageController.propPARTICIPATION] =
+		propertyHelp[StorageController.propPARTICIPATION] =
 				"Participation factor, %. Default = 100.";
-		PropertyHelp[StorageController.propYEARLY] =
+		propertyHelp[StorageController.propYEARLY] =
 				"Dispatch loadshape object, If any, for Yearly solution Mode.";
-		PropertyHelp[StorageController.propDAILY] =
+		propertyHelp[StorageController.propDAILY] =
 				"Dispatch loadshape object, If any, for Daily solution mode.";
-		PropertyHelp[StorageController.propDUTY] =
+		propertyHelp[StorageController.propDUTY] =
 				"Dispatch loadshape object, If any, for Dutycycle solution mode.";
-		PropertyHelp[StorageController.propEVENTLOG] =
+		propertyHelp[StorageController.propEVENTLOG] =
 				"{Yes/True | No/False} Default is No. Log control actions to Eventlog.";
-		PropertyHelp[StorageController.propVARDISPATCH] =
+		propertyHelp[StorageController.propVARDISPATCH] =
 				"{Yes/True | No/False} Default is No. Flag to indicate whether or not to disatch vars as well as watts.";
-		PropertyHelp[StorageController.propINHIBITTIME] =
+		propertyHelp[StorageController.propINHIBITTIME] =
 				"Hours (integer) to inhibit Discharging after going into Charge mode. Default is 5";
 
-		PropertyHelp[StorageController.propTUPRAMP]  = "Duration, hrs, of upramp part for SCHEDULE mode. Default is 0.25.";
-		PropertyHelp[StorageController.propTFLAT]    = "Duration, hrs, of flat part for SCHEDULE mode. Default is 2.0.";
-		PropertyHelp[StorageController.propTDNRAMP]  = "Duration, hrs, of downramp part for SCHEDULE mode. Default is 0.25.";
-		PropertyHelp[StorageController.propKWTHRESHOLD] = "Threshold, kW, for Follow mode. kW has to be above this value for the Storage element " +
+		propertyHelp[StorageController.propTUPRAMP]  = "Duration, hrs, of upramp part for SCHEDULE mode. Default is 0.25.";
+		propertyHelp[StorageController.propTFLAT]    = "Duration, hrs, of flat part for SCHEDULE mode. Default is 2.0.";
+		propertyHelp[StorageController.propTDNRAMP]  = "Duration, hrs, of downramp part for SCHEDULE mode. Default is 0.25.";
+		propertyHelp[StorageController.propKWTHRESHOLD] = "Threshold, kW, for Follow mode. kW has to be above this value for the Storage element " +
 				"to be dispatched on. Defaults to 75% of the kWTarget value. Must reset this property after " +
 				"setting kWTarget if you want a different value.";
 
-		ActiveProperty = StorageController.NumPropsThisClass - 1;
+		activeProperty = StorageController.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -180,7 +180,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveStorageControllerObj((StorageControllerObj) ElementList.getActive());
+		setActiveStorageControllerObj((StorageControllerObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageControllerObj());
 
 		int Result = 0;
@@ -194,10 +194,10 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				asc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

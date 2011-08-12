@@ -24,10 +24,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 	public StorageImpl() {
 		super();
-		Class_Name = "Storage";
+		className = "Storage";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // in both PCElement and Storage element list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		// set register names
 		this.RegisterNames[0] = "kWh";
@@ -39,15 +39,15 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();  /* see DSSClass */
 
@@ -191,11 +191,11 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the Storage model " +
 				"for each iteration.  Creates a separate file for each Storage element named \"STORAGE_name.CSV\"." );
 
-		ActiveProperty = NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override default help string
-		PropertyHelp[NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this Storage element. " +
+		propertyHelp[NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this Storage element. " +
 							"Current injection is assumed for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}
@@ -233,8 +233,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 	public void updateAll() {
 		StorageObj pElem;
-		for (int i = 0; i < ElementList.size(); i++) {
-			pElem = (StorageObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pElem = (StorageObj) elementList.get(i);
 			if (pElem.isEnabled())
 				pElem.updateStorage();
 		}
@@ -316,7 +316,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveStorageObj((StorageObj) ElementList.getActive());
+		setActiveStorageObj((StorageObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
 
 		int Result = 0;
@@ -331,17 +331,17 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;  // if it is not a named property, assume the next property
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);  // look up the name in the list for this class
+				ParamPointer = commandList.getCommand(ParamName);  // look up the name in the list for this class
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
-				as.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // update the string value of the property
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties)) {
+				as.setPropertyValue(propertyIdxMap[ParamPointer], Param);  // update the string value of the property
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Storage \""+as.getName()+"\"", 560);
 			}
 
 			if (ParamPointer > 0) {
-				iCase = PropertyIdxMap[ParamPointer];
+				iCase = propertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
@@ -622,8 +622,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		StorageObj pElem;
 
 		if (Handle == 0) {  // init all
-			for (int i = 0; i < ElementList.size(); i++) {
-				pElem = (StorageObj) ElementList.get(i);
+			for (int i = 0; i < elementList.size(); i++) {
+				pElem = (StorageObj) elementList.get(i);
 				pElem.randomize(0);
 			}
 		} else {
@@ -654,8 +654,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	 */
 	public void sampleAll() {
 		StorageObj pElem;
-		for (int i = 0; i < ElementList.size(); i++) {
-			pElem = (StorageObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pElem = (StorageObj) elementList.get(i);
 			if (pElem.isEnabled())
 				pElem.takeSample();
 		}

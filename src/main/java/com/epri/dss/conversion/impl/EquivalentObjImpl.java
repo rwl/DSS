@@ -226,8 +226,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error computing voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
-			if (Globals.isIn_Redirect())
-				Globals.setRedirect_Abort(true);
+			if (Globals.isInRedirect())
+				Globals.setRedirectAbort(true);
 		}
 	}
 

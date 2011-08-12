@@ -19,62 +19,62 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	public SensorImpl() {
 		super();
 
-		this.Class_Name = "Sensor";
+		this.className = "Sensor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.SENSOR_ELEMENT;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "element";
-		PropertyName[1] = "terminal";
-		PropertyName[2] = "kvbase";
-		PropertyName[3] = "clear";
-		PropertyName[4] = "kVs";
-		PropertyName[5] = "currents";
-		PropertyName[6] = "kWs";
-		PropertyName[7] = "kvars";
-		PropertyName[8] = "conn";  // sensor connection
-		PropertyName[9] = "Deltadirection";  // +/- 1
-		PropertyName[10] = "%Error";  // %Error of sensor
-		PropertyName[11] = "Weight";  // for WLS calc
-		PropertyName[12] = "action";
+		propertyName[0] = "element";
+		propertyName[1] = "terminal";
+		propertyName[2] = "kvbase";
+		propertyName[3] = "clear";
+		propertyName[4] = "kVs";
+		propertyName[5] = "currents";
+		propertyName[6] = "kWs";
+		propertyName[7] = "kvars";
+		propertyName[8] = "conn";  // sensor connection
+		propertyName[9] = "Deltadirection";  // +/- 1
+		propertyName[10] = "%Error";  // %Error of sensor
+		propertyName[11] = "Weight";  // for WLS calc
+		propertyName[12] = "action";
 
-		PropertyHelp[0] = "Name (Full Object name) of element to which the Sensor is connected.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the Sensor is connected. "+
+		propertyHelp[0] = "Name (Full Object name) of element to which the Sensor is connected.";
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the Sensor is connected. "+
 				"1 or 2, typically. Default is 1.";
-		PropertyHelp[2] = "Voltage base for the sensor, in kV. If connected to a 2- or 3-phase terminal, " + DSSGlobals.CRLF +
+		propertyHelp[2] = "Voltage base for the sensor, in kV. If connected to a 2- or 3-phase terminal, " + DSSGlobals.CRLF +
 				"specify L-L voltage. For 1-phase devices specify L-N or actual 1-phase voltage. "+
 				"Like many other DSS devices, default is 12.47kV.";
-		PropertyHelp[3] = "{ Yes | No }. Clear=Yes clears sensor values. Should be issued before putting in a new set of measurements.";
-		PropertyHelp[4] = "Array of Voltages (kV) measured by the voltage sensor. For Delta-connected " +
+		propertyHelp[3] = "{ Yes | No }. Clear=Yes clears sensor values. Should be issued before putting in a new set of measurements.";
+		propertyHelp[4] = "Array of Voltages (kV) measured by the voltage sensor. For Delta-connected " +
 				"sensors, Line-Line voltages are expected. For Wye, Line-Neutral are expected.";
-		PropertyHelp[5] = "Array of Currents (amps) measured by the current sensor. Specify this or power quantities; not both.";
-		PropertyHelp[6] = "Array of Active power (kW) measurements at the sensor. Is converted into Currents along with q=[...]"+DSSGlobals.CRLF+
+		propertyHelp[5] = "Array of Currents (amps) measured by the current sensor. Specify this or power quantities; not both.";
+		propertyHelp[6] = "Array of Active power (kW) measurements at the sensor. Is converted into Currents along with q=[...]"+DSSGlobals.CRLF+
 				"Will override any i=[...] specification.";
-		PropertyHelp[7] = "Array of Reactive power (kvar) measurements at the sensor. Is converted into Currents along with p=[...]";
-		PropertyHelp[8] = "Voltage sensor Connection: { wye | delta | LN | LL }.  Default is wye. Applies to voltage measurement only. "+DSSGlobals.CRLF+
+		propertyHelp[7] = "Array of Reactive power (kvar) measurements at the sensor. Is converted into Currents along with p=[...]";
+		propertyHelp[8] = "Voltage sensor Connection: { wye | delta | LN | LL }.  Default is wye. Applies to voltage measurement only. "+DSSGlobals.CRLF+
 				"Currents are always assumed to be line currents." + DSSGlobals.CRLF +
 				"If wye or LN, voltage is assumed measured line-neutral; otherwise, line-line.";
-		PropertyHelp[9] ="{1 or -1}  Default is 1:  1-2, 2-3, 3-1.  For reverse rotation, enter -1. Any positive or negative entry will suffice.";
-		PropertyHelp[10] ="Assumed percent error in the measurement. Default is 1.";
-		PropertyHelp[11] ="Weighting factor: Default is 1.";
-		PropertyHelp[12] ="NOT IMPLEMENTED.Action options: "+DSSGlobals.CRLF+"SQERROR: Show square error of the present value of the monitored terminal  "+DSSGlobals.CRLF+
+		propertyHelp[9] ="{1 or -1}  Default is 1:  1-2, 2-3, 3-1.  For reverse rotation, enter -1. Any positive or negative entry will suffice.";
+		propertyHelp[10] ="Assumed percent error in the measurement. Default is 1.";
+		propertyHelp[11] ="Weighting factor: Default is 1.";
+		propertyHelp[12] ="NOT IMPLEMENTED.Action options: "+DSSGlobals.CRLF+"SQERROR: Show square error of the present value of the monitored terminal  "+DSSGlobals.CRLF+
 				"quantity vs the sensor value. Actual values - convert to per unit in calling program.  "+DSSGlobals.CRLF+
 				"Value reported in result window/result variable.";
 
-		ActiveProperty = Sensor.NumPropsThisClass - 1;
+		activeProperty = Sensor.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -92,7 +92,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveSensorObj((SensorObj) ElementList.getActive());
+		setActiveSensorObj((SensorObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveSensorObj());
 
 		int Result = 0;
@@ -107,10 +107,10 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				as.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -303,11 +303,11 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		int Result = 0;
 
 		if (Handle >= 0) {
-			pSensor = (SensorObj) ElementList.get(Handle);
+			pSensor = (SensorObj) elementList.get(Handle);
 			pSensor.resetIt();
 		} else {  // Do 'em all
-			for (int i = 0; i < ElementList.size(); i++) {
-				pSensor = (SensorObj) ElementList.get(i);
+			for (int i = 0; i < elementList.size(); i++) {
+				pSensor = (SensorObj) elementList.get(i);
 				pSensor.resetIt();
 			}
 		}

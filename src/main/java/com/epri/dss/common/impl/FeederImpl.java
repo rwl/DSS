@@ -11,27 +11,27 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 	private static int NumPropsThisClass = 0;
 
-	private static FeederObj ActiveFeederObj;
+	private static FeederObj activeFeederObj;
 
 	public FeederImpl() {
 		super();
-		this.Class_Name = "Feeder";
+		this.className = "Feeder";
 		this.DSSClassType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[NumProperties];
-		System.arraycopy(PropertyName, 0, Commands, 0, NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		this.commandList = new CommandListImpl(commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		NumPropsThisClass = 0;
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
@@ -44,7 +44,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 //		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
 
 
-		ActiveProperty = NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // Add defs of inherited properties to bottom of list
 	}
 
@@ -52,100 +52,100 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	 * Called from EnergyMeter.
 	 */
 	@Override
-	public int newObject(String ObjName) {
-		int Result;
+	public int newObject(String objName) {
+		int result;
 
 		// make a new feeder object
 		// first see if this one already exists; if so, just reinitialize
-		FeederObj Obj = (FeederObj) find(ObjName);
+		FeederObj obj = (FeederObj) find(objName);
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		if (Obj != null) {
-			ckt.setActiveCktElement((DSSCktElement) Obj);
-			Result = 0;
+		if (obj != null) {
+			ckt.setActiveCktElement((DSSCktElement) obj);
+			result = 0;
 		} else {
-			ckt.setActiveCktElement(new FeederObjImpl(this, ObjName));
-			Result = addObjectToList(DSSGlobals.getInstance().getActiveDSSObject());
-			ckt.addCktElement(Result);
+			ckt.setActiveCktElement(new FeederObjImpl(this, objName));
+			result = addObjectToList(DSSGlobals.getInstance().getActiveDSSObject());
+			ckt.addCktElement(result);
 			// done here because feeder objects are instantiated from energy meters
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
 	public int edit() {
 		// continue parsing with contents of parser
-		ActiveFeederObj = (FeederObj) ElementList.getActive();
-		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) ActiveFeederObj);
+		activeFeederObj = (FeederObj) elementList.getActive();
+		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) activeFeederObj);
 
-		int Result = 0;
+		int result = 0;
 
-		int ParamPointer = 0;
-		String ParamName = Parser.getInstance().getNextParam();
-		String Param = Parser.getInstance().makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = Parser.getInstance().getNextParam();
+		String param = Parser.getInstance().makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
-				ActiveFeederObj.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))
+				activeFeederObj.setPropertyValue(paramPointer, param);
 
-				switch (ParamPointer) {
+				switch (paramPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ActiveFeederObj.getName() + "\"", 630);
+					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
 					break;
 				default:
-					classEdit(ActiveFeederObj, ParamPointer - NumPropsThisClass);
+					classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
 					break;
 				}
 
-				ParamName = Parser.getInstance().getNextParam();
-				Param     = Parser.getInstance().makeString();
+				paramName = Parser.getInstance().getNextParam();
+				param     = Parser.getInstance().makeString();
 		}
 
-		ActiveFeederObj.recalcElementData();
-		ActiveFeederObj.setYPrimInvalid(true);
+		activeFeederObj.recalcElementData();
+		activeFeederObj.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherFeederName) {
-		int Result = 0;
+	protected int makeLike(String otherFeederName) {
+		int result = 0;
 
 		/* See if we can find this name in the present collection */
-		FeederObj OtherFeeder = (FeederObj) find(OtherFeederName);
-		if (OtherFeeder != null) {
-			if (ActiveFeederObj.getNPhases() != OtherFeeder.getNPhases()) {
-				ActiveFeederObj.setNPhases(OtherFeeder.getNPhases());
-				ActiveFeederObj.setNConds(ActiveFeederObj.getNPhases());  // forces reallocation of terminal stuff
+		FeederObj otherFeeder = (FeederObj) find(otherFeederName);
+		if (otherFeeder != null) {
+			if (activeFeederObj.getNPhases() != otherFeeder.getNPhases()) {
+				activeFeederObj.setNPhases(otherFeeder.getNPhases());
+				activeFeederObj.setNConds(activeFeederObj.getNPhases());  // forces reallocation of terminal stuff
 
-				ActiveFeederObj.setYorder(ActiveFeederObj.getNConds() * ActiveFeederObj.getNTerms());
-				ActiveFeederObj.setYPrimInvalid(true);
+				activeFeederObj.setYorder(activeFeederObj.getNConds() * activeFeederObj.getNTerms());
+				activeFeederObj.setYPrimInvalid(true);
 			}
 
 			// put properties to copy here
 
-			classMakeLike(OtherFeeder);  // set spectrum, base frequency
+			classMakeLike(otherFeeder);  // set spectrum, base frequency
 
-			for (int i = 0; i < ActiveFeederObj.getParentClass().getNumProperties(); i++) {
-				ActiveFeederObj.setPropertyValue(i, OtherFeeder.getPropertyValue(i));
+			for (int i = 0; i < activeFeederObj.getParentClass().getNumProperties(); i++) {
+				activeFeederObj.setPropertyValue(i, otherFeeder.getPropertyValue(i));
 			}
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Feeder makeLike: \"" + OtherFeederName + "\" not found.", 631);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Feeder.init()", -1);
 		return 0;
 	}
@@ -159,11 +159,11 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	}
 
 	public static FeederObj getActiveFeederObj() {
-		return ActiveFeederObj;
+		return activeFeederObj;
 	}
 
-	public static void setActiveFeederObj(FeederObj activeFeederObj) {
-		ActiveFeederObj = activeFeederObj;
+	public static void setActiveFeederObj(FeederObj feederObj) {
+		activeFeederObj = feederObj;
 	}
 
 }

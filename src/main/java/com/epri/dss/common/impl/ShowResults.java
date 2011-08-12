@@ -2598,7 +2598,7 @@ public abstract class ShowResults {
 					F.println();
 				}
 
-				w = Freq * DSSGlobals.TwoPi / 1.e3;
+				w = Freq * DSSGlobals.TWO_PI / 1.e3;
 				F.println();
 				F.println("L MATRIX, mH per " + LineUnits.lineUnitsStr(Units));
 				for (i = 0; i < Z.getNOrder(); i++) {
@@ -2607,7 +2607,7 @@ public abstract class ShowResults {
 					F.println();
 				}
 
-				w = Freq * DSSGlobals.TwoPi / 1.e9;
+				w = Freq * DSSGlobals.TWO_PI / 1.e9;
 				F.println();
 				F.println("C MATRIX, nF per " + LineUnits.lineUnitsStr(Units));
 				for (i = 0; i < YC.getNOrder(); i++) {
@@ -2641,7 +2641,7 @@ public abstract class ShowResults {
 				}
 				F2.println("]");
 
-				w = Freq * DSSGlobals.TwoPi /1.e9;
+				w = Freq * DSSGlobals.TWO_PI /1.e9;
 				F2.print("~ Cmatrix=[");
 				for (i = 0; i < YC.getNOrder(); i++) {
 					for (j = 0; j < i; j++)
@@ -2674,7 +2674,7 @@ public abstract class ShowResults {
 
 					Z1 = Zs.subtract(Zm).divide(3.0);
 					Z0 = Zm.multiply(2.0).add(Zs).divide(3.0);
-					w = Freq * DSSGlobals.TwoPi / 1000.0;
+					w = Freq * DSSGlobals.TWO_PI / 1000.0;
 					F.println();
 					F.println("Z1, ohms per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g + j %.6g (L1 = %.6g mH) ", Z1.getReal(), Z1.getImaginary(), Z1.getImaginary() / w));
 					F.println("Z0, ohms per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g + j %.6g (L0 = %.6g mH) ", Z0.getReal(), Z0.getImaginary(), Z0.getImaginary() / w));
@@ -2688,7 +2688,7 @@ public abstract class ShowResults {
 							YCM = YCM.add(Z.getElement(i, j));
 					XCM = YCM.invert().getImaginary();
 
-					w = Freq * DSSGlobals.TwoPi /1.e9;
+					w = Freq * DSSGlobals.TWO_PI /1.e9;
 					/* Capacitance */
 					for (i = 0; i < 3; i++)
 						CS = CS + YC.getElement(i, i).getImaginary();
@@ -2710,7 +2710,7 @@ public abstract class ShowResults {
 					F.println("C0, nF per " + LineUnits.lineUnitsStr(Units) + String.format(" = %.6g", C0));
 					F.println();
 
-					w = Freq * DSSGlobals.TwoPi;
+					w = Freq * DSSGlobals.TWO_PI;
 					F.println("Surge Impedance:");
 					F.println(String.format("  Positive sequence = %.6g ohms", Math.sqrt(Z1.getImaginary() / w / (C1 * 1.0e-9))));
 					F.println(String.format("  Zero sequence     = %.6g ohms", Math.sqrt(Z0.getImaginary() / w / (C0 * 1.0e-9))));

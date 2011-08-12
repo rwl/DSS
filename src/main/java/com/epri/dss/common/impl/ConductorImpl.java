@@ -5,31 +5,31 @@ import com.epri.dss.common.Conductor;
 public class ConductorImpl implements Conductor {
 
 	private String TCCName;
-	private double AmbientTemp;
+	private double ambientTemp;
 	/** accumulated I2t */
-	private double Accum_Isqt;
+	private double accumIsqt;
 
 	/** Change this variable to indicate open or closed switch. */
-	protected boolean Closed;
-	protected boolean FuseBlown;
+	protected boolean closed;
+	protected boolean fuseBlown;
 
 	public ConductorImpl() {
 		super();
-		this.Closed = true;
-		this.FuseBlown = false;
-		this.Accum_Isqt = 0.0;
+		this.closed = true;
+		this.fuseBlown = false;
+		this.accumIsqt = 0.0;
 		this.TCCName = "";
 	}
 
 	public void setAmbient(double Value) {
-		AmbientTemp = Value;
+		ambientTemp = Value;
 	}
 
-	public void setTCCname(String Value) {
+	public void setTCCName(String Value) {
 		TCCName = Value.toLowerCase();
 	}
 
-	public String getTCCname() {
+	public String getTCCName() {
 		return TCCName;
 	}
 
@@ -43,24 +43,24 @@ public class ConductorImpl implements Conductor {
 	/**
 	 * Restore the conductor and reset the i2t calcs.
 	 */
-	public void ResetIsqt() {
+	public void resetIsqt() {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
 	}
 
 	public boolean isClosed() {
-		return Closed;
+		return closed;
 	}
 
-	public void setClosed(boolean closed) {
-		Closed = closed;
+	public void setClosed(boolean value) {
+		closed = value;
 	}
 
 	public boolean isFuseBlown() {
-		return FuseBlown;
+		return fuseBlown;
 	}
 
-	public void setFuseBlown(boolean fuseBlown) {
-		FuseBlown = fuseBlown;
+	public void setFuseBlown(boolean value) {
+		fuseBlown = value;
 	}
 
 }

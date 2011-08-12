@@ -23,70 +23,70 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 	public XYCurveImpl() {
 		super();
-		this.Class_Name   = "XYcurve";
+		this.className   = "XYcurve";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 		this.TempPointsBuffer = null;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		final String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = XYCurve.NumPropsThisClass;
+		numProperties = XYCurve.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0]  = "npts";     // number of points to expect
-		PropertyName[1]  = "Points";
-		PropertyName[2]  = "Yarray";   // vector of Y values
-		PropertyName[3]  = "Xarray";   // vector of X values corresponding to Y values
-		PropertyName[4]  = "csvfile";  // switch input to a csvfile
-		PropertyName[5]  = "sngfile";  // switch input to a binary file of singles
-		PropertyName[6]  = "dblfile";  // switch input to a binary file of singles
-		PropertyName[7]  = "x";
-		PropertyName[8]  = "y";
+		propertyName[0]  = "npts";     // number of points to expect
+		propertyName[1]  = "Points";
+		propertyName[2]  = "Yarray";   // vector of Y values
+		propertyName[3]  = "Xarray";   // vector of X values corresponding to Y values
+		propertyName[4]  = "csvfile";  // switch input to a csvfile
+		propertyName[5]  = "sngfile";  // switch input to a binary file of singles
+		propertyName[6]  = "dblfile";  // switch input to a binary file of singles
+		propertyName[7]  = "x";
+		propertyName[8]  = "y";
 
 		// define property help values
-		PropertyHelp[0] = "Max number of points to expect in curve. This could get reset to the actual number of points defined " +
+		propertyHelp[0] = "Max number of points to expect in curve. This could get reset to the actual number of points defined " +
 				"if less than specified.";     // number of points to expect
-		PropertyHelp[1] = "One way to enter the points in a curve. Enter x and y values as one array "+
+		propertyHelp[1] = "One way to enter the points in a curve. Enter x and y values as one array "+
 				"in the order [x1, y1, x2, y2, ...]. For example:"+CRLF+CRLF+
 				"Points=[1,100 2,200 3, 300] "+CRLF+CRLF+
 				"Values separated by commas or white space. Zero fills arrays if insufficient number of values.";
-		PropertyHelp[2] = "Alternate way to enter Y values. Enter an array of Y values corresponding to the X values.  "+
+		propertyHelp[2] = "Alternate way to enter Y values. Enter an array of Y values corresponding to the X values.  "+
 				"You can also use the syntax: "+CRLF+
 				"Yarray = (file=filename)     !for text file one value per line"+CRLF+
 				"Yarray = (dblfile=filename)  !for packed file of doubles"+CRLF+
 				"Yarray = (sngfile=filename)  !for packed file of singles "+CRLF+CRLF+
 				"Note: this property will reset Npts to a smaller value if the  number of values in the files are fewer.";  // vextor of hour values
-		PropertyHelp[3] = "Alternate way to enter X values. Enter an array of X values corresponding to the Y values.  "+
+		propertyHelp[3] = "Alternate way to enter X values. Enter an array of X values corresponding to the Y values.  "+
 				"You can also use the syntax: "+CRLF+
 				"Xarray = (file=filename)     !for text file one value per line"+CRLF+
 				"Xarray = (dblfile=filename)  !for packed file of doubles"+CRLF+
 				"Xarray = (sngfile=filename)  !for packed file of singles "+CRLF+CRLF+
 				"Note: this property will reset Npts to a smaller value if the  number of values in the files are fewer.";  // vextor of hour values
-		PropertyHelp[4] = "Switch input of  X-Y curve data to a CSV file "+
+		propertyHelp[4] = "Switch input of  X-Y curve data to a CSV file "+
 				"containing X, Y points one per line. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a csvfile
-		PropertyHelp[5] = "Switch input of  X-Y curve data to a binary file of SINGLES "+
+		propertyHelp[5] = "Switch input of  X-Y curve data to a binary file of SINGLES "+
 				"containing X, Y points packed one after another. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a binary file of singles
-		PropertyHelp[6] = "Switch input of  X-Y  curve data to a binary file of DOUBLES "+
+		propertyHelp[6] = "Switch input of  X-Y  curve data to a binary file of DOUBLES "+
 				"containing X, Y points packed one after another. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a binary file of singles
-		PropertyHelp[7] = "Enter an value and then retrieve the interpolated Y value from the Y property.";
-		PropertyHelp[8] = "Enter an value and then retrieve the interpolated X value from the X property.";
+		propertyHelp[7] = "Enter an value and then retrieve the interpolated Y value from the Y property.";
+		propertyHelp[8] = "Enter an value and then retrieve the interpolated X value from the X property.";
 
-		ActiveProperty = XYCurve.NumPropsThisClass - 1;
+		activeProperty = XYCurve.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -107,7 +107,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveXYCurveObj((XYCurveObj) ElementList.getActive());
+		setActiveXYCurveObj((XYCurveObj) elementList.getActive());
 		Globals.setActiveDSSObject(getActiveXYCurveObj());
 
 		XYCurveObj xyc = getActiveXYCurveObj();
@@ -120,10 +120,10 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				xyc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -233,12 +233,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	}
 
 	public String getCode() {
-		return ((XYCurveObj) ElementList.getActive()).getName();
+		return ((XYCurveObj) elementList.getActive()).getName();
 	}
 
 	public void setCode(String Value) {
 		setActiveXYCurveObj(null);
-		XYCurveObj pXYCurveObj = (XYCurveObj) ElementList.getFirst();
+		XYCurveObj pXYCurveObj = (XYCurveObj) elementList.getFirst();
 		while (pXYCurveObj != null) {
 
 			if (pXYCurveObj.getName().equalsIgnoreCase(Value)) {
@@ -246,7 +246,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				return;
 			}
 
-			pXYCurveObj = (XYCurveObj) ElementList.getNext();
+			pXYCurveObj = (XYCurveObj) elementList.getNext();
 		}
 
 		DSSGlobals.getInstance().doSimpleMsg("XYCurve: \"" + Value + "\" not found.", 612);

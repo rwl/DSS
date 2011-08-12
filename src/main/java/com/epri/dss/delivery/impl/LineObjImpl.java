@@ -235,7 +235,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			if (ckt.isPositiveSequence() && (C1 > 0)) {
 				// nominal pi parameters per unit length
 				Zs = new Complex(R1, X1);
-				Ys = new Complex(0.0, DSSGlobals.TwoPi * baseFrequency * C1);
+				Ys = new Complex(0.0, DSSGlobals.TWO_PI * baseFrequency * C1);
 				// apply the long-line correction to obtain Zm and Ym
 				GammaL = Zs.multiply(Ys).sqrt();
 				GammaL = GammaL.multiply(Len);
@@ -250,7 +250,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				// rely on this function being called only once, unless r1, x1, or c1 changes
 				R1 = Zm.getReal() / Len;
 				X1 = Zm.getImaginary() / Len;
-				C1 = Ym.getImaginary() / Len / DSSGlobals.TwoPi / baseFrequency;
+				C1 = Ym.getImaginary() / Len / DSSGlobals.TWO_PI / baseFrequency;
 			}
 			// zero sequence the same as positive sequence
 			R0 = R1;
@@ -260,8 +260,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Zs = Ztemp.add(new Complex(R0, X0)).multiply(OneThird);
 		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(OneThird);
 
-		Yc1 = DSSGlobals.TwoPi * baseFrequency * C1;
-		Yc0 = DSSGlobals.TwoPi * baseFrequency * C0;
+		Yc1 = DSSGlobals.TWO_PI * baseFrequency * C1;
+		Yc0 = DSSGlobals.TWO_PI * baseFrequency * C0;
 
 		Ys = new Complex(0.0, Yc1).multiply(2.0).add( new Complex(0.0, Yc0) ).multiply(OneThird);
 		Ym = new Complex(0.0, Yc0).subtract( new Complex(0.0, Yc1) ).multiply(OneThird);
@@ -455,7 +455,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		F.print("~ " + pc.getPropertyName()[13] + "=" + "\"");
 		for (int i = 0; i < getNPhases(); i++) {
 			for (int j = 0; j < getNPhases(); j++) {
-				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TwoPi / baseFrequency * 1.e9) + " ");
+				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / baseFrequency * 1.e9) + " ");
 			}
 			F.print("|");
 		}
@@ -580,7 +580,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			}
 			break;
 		case 13:  // CMatrix nf
-			Factor = DSSGlobals.TwoPi * baseFrequency * 1.0e-9;
+			Factor = DSSGlobals.TWO_PI * baseFrequency * 1.0e-9;
 			for (i = 0; i < nConds; i++) {
 				for (j = 0; j < i; j++) {
 					if (GeometrySpecified || SpacingSpecified) {
@@ -744,7 +744,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 							Cm = Cm + Yc.getElement(i, j).getImaginary();
 						}
 					}
-					C1_new = (Cs - Cm) / DSSGlobals.TwoPi / baseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
+					C1_new = (Cs - Cm) / DSSGlobals.TWO_PI / baseFrequency/ (nPhases * (nPhases - 1.0) / 2.0) * 1.0e9; // nanofarads
 				}
 				S = String.format(" R1=%-.5g  %-.5g  C1=%-.5g Phases=1", Z1.getReal(), Z1.getImaginary(), C1_new);
 			}
@@ -934,7 +934,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					edit();
 
 					/* C matrix */
-					wnano = DSSGlobals.TwoPi * baseFrequency / 1.0e9;
+					wnano = DSSGlobals.TWO_PI * baseFrequency / 1.0e9;
 					S = "Cmatrix=[";
 					for (i = 0; i < 3; i++) {
 						for (j = 0; j < i; j++)

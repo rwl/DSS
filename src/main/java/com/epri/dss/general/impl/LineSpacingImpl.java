@@ -18,39 +18,39 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	public LineSpacingImpl() {
 		super();
 
-		this.Class_Name    = "LineSpacing";
+		this.className    = "LineSpacing";
 		this.DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 
-		PropertyName[0]  = "nconds";
-		PropertyName[1]  = "nphases";
-		PropertyName[2]  = "x";
-		PropertyName[3]  = "h";
-		PropertyName[4]  = "units";
+		propertyName[0]  = "nconds";
+		propertyName[1]  = "nphases";
+		propertyName[2]  = "x";
+		propertyName[3]  = "h";
+		propertyName[4]  = "units";
 
 
-		PropertyHelp[0] = "Number of wires in this geometry. Default is 3. Triggers memory allocations. Define first!";
-		PropertyHelp[1] = "Number of retained phase conductors. If less than the number of wires, list the retained phase coordinates first.";
-		PropertyHelp[2] = "Array of wire X coordinates.";
-		PropertyHelp[3] = "Array of wire Heights.";
-		PropertyHelp[4] = "Units for x and h: {mi|kft|km|m|Ft|in|cm } Initial default is \"ft\", but defaults to last unit defined";
+		propertyHelp[0] = "Number of wires in this geometry. Default is 3. Triggers memory allocations. Define first!";
+		propertyHelp[1] = "Number of retained phase conductors. If less than the number of wires, list the retained phase coordinates first.";
+		propertyHelp[2] = "Array of wire X coordinates.";
+		propertyHelp[3] = "Array of wire Heights.";
+		propertyHelp[4] = "Units for x and h: {mi|kft|km|m|Ft|in|cm } Initial default is \"ft\", but defaults to last unit defined";
 
-		ActiveProperty = LineSpacing.NumPropsThisClass - 1;
+		activeProperty = LineSpacing.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -90,7 +90,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveLineSpacingObj((LineSpacingObj) ElementList.getActive());
+		setActiveLineSpacingObj((LineSpacingObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveLineSpacingObj());
 
 		LineSpacingObj als = getActiveLineSpacingObj();
@@ -102,9 +102,9 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
+				if ((ParamPointer > 0) && (ParamPointer <= numProperties))
 					als.setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -196,7 +196,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	 * Returns active line code string.
 	 */
 	public String getCode() {
-		LineSpacingObj active = (LineSpacingObj) ElementList.getActive();
+		LineSpacingObj active = (LineSpacingObj) elementList.getActive();
 		return active.getName();
 	}
 
@@ -207,8 +207,8 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		LineSpacingObj pSpacing;
 
 		setActiveLineSpacingObj(null);
-		for (int i = 0; i < ElementList.size(); i++) {
-			pSpacing = (LineSpacingObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pSpacing = (LineSpacingObj) elementList.get(i);
 
 			if (pSpacing.getName().equalsIgnoreCase(Value)) {
 				setActiveLineSpacingObj(pSpacing);

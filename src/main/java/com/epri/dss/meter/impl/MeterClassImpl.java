@@ -17,12 +17,12 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 	}
 
 	protected void countProperties() {
-		NumProperties = NumProperties + NumMeterClassProps;
+		numProperties = numProperties + NumMeterClassProps;
 		super.countProperties();
 	}
 
 	protected void defineProperties() {
-		ActiveProperty = ActiveProperty + NumMeterClassProps;
+		activeProperty = activeProperty + NumMeterClassProps;
 		super.defineProperties();
 	}
 

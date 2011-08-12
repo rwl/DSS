@@ -14,61 +14,61 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	public ReactorImpl() {
 		super();
-		this.Class_Name = "Reactor";
+		this.className = "Reactor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.REACTOR_ELEMENT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Reactor.NumPropsThisClass;
+		numProperties = Reactor.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "bus2";
-		PropertyName[2] = "phases";
-		PropertyName[3] = "kvar";
-		PropertyName[4] = "kv";
-		PropertyName[5] = "conn";
-		PropertyName[6] = "Rmatrix";
-		PropertyName[7] = "Xmatrix";
-		PropertyName[8] = "Parallel";
-		PropertyName[9] = "R";
-		PropertyName[10] = "X";
-		PropertyName[11] = "Rp";
+		propertyName[0] = "bus1";
+		propertyName[1] = "bus2";
+		propertyName[2] = "phases";
+		propertyName[3] = "kvar";
+		propertyName[4] = "kv";
+		propertyName[5] = "conn";
+		propertyName[6] = "Rmatrix";
+		propertyName[7] = "Xmatrix";
+		propertyName[8] = "Parallel";
+		propertyName[9] = "R";
+		propertyName[10] = "X";
+		propertyName[11] = "Rp";
 
 		// define property help values
-		PropertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of first bus. Examples:"+DSSGlobals.CRLF+
 							"bus1=busname"+DSSGlobals.CRLF+
 							"bus1=busname.1.2.3";
-		PropertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
+		propertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
 							"to first bus, node 0. (Shunt Wye Connection)"+DSSGlobals.CRLF+
 							"Not necessary to specify for delta (LL) connection";
-		PropertyHelp[2] = "Number of phases.";
-		PropertyHelp[3] = "Total kvar, all phases.  Evenly divided among phases. Only determines X. Specify R separately";
-		PropertyHelp[4] = "For 2, 3-phase, kV phase-phase. Otherwise specify actual coil rating.";
-		PropertyHelp[5] = "={wye | delta |LN |LL}  Default is wye, which is equivalent to LN. If Delta, then only one terminal.";
-		PropertyHelp[6] = "Resistance matrix, lower triangle, ohms at base frequency. Order of the matrix is the number of phases. "+
+		propertyHelp[2] = "Number of phases.";
+		propertyHelp[3] = "Total kvar, all phases.  Evenly divided among phases. Only determines X. Specify R separately";
+		propertyHelp[4] = "For 2, 3-phase, kV phase-phase. Otherwise specify actual coil rating.";
+		propertyHelp[5] = "={wye | delta |LN |LL}  Default is wye, which is equivalent to LN. If Delta, then only one terminal.";
+		propertyHelp[6] = "Resistance matrix, lower triangle, ohms at base frequency. Order of the matrix is the number of phases. "+
 							"Mutually exclusive to specifying parameters by kvar or X.";
-		PropertyHelp[7] = "Reactance matrix, lower triangle, ohms at base frequency. Order of the matrix is the number of phases. " +
+		propertyHelp[7] = "Reactance matrix, lower triangle, ohms at base frequency. Order of the matrix is the number of phases. " +
 							"Mutually exclusive to specifying parameters by kvar or X.";
-		PropertyHelp[8] = "{Yes | No}  Default=No. Indicates whether Rmatrix and Xmatrix are to be considered in parallel. " +
+		propertyHelp[8] = "{Yes | No}  Default=No. Indicates whether Rmatrix and Xmatrix are to be considered in parallel. " +
 							"Default is series. For other models, specify R and Rp.";
-		PropertyHelp[9] = "Resistance (in series with reactance), each phase, ohms.";
-		PropertyHelp[10] = "Reactance, each phase, ohms at base frequency.";
-		PropertyHelp[11] = "Resistance in parallel with R and X (the entire branch). Assumed infinite if not specified.";
+		propertyHelp[9] = "Resistance (in series with reactance), each phase, ohms.";
+		propertyHelp[10] = "Reactance, each phase, ohms at base frequency.";
+		propertyHelp[11] = "Resistance in parallel with R and X (the entire branch). Assumed infinite if not specified.";
 
-		ActiveProperty = Reactor.NumPropsThisClass - 1;
+		activeProperty = Reactor.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -173,7 +173,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveReactorObj((ReactorObj) ElementList.getActive());
+		setActiveReactorObj((ReactorObj) elementList.getActive());
 		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(getActiveReactorObj());
 
 		ReactorObj ar = getActiveReactorObj();
@@ -186,10 +186,10 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				ar.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

@@ -16,65 +16,65 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 	public GICLineImpl() {
 		super();
-		this.Class_Name = "GICLine";
+		this.className = "GICLine";
 		this.DSSClassType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "bus2";
-		PropertyName[2] = "Volts";
-		PropertyName[3] = "Angle";
-		PropertyName[4] = "frequency";
-		PropertyName[5] = "phases";
-		PropertyName[6] = "R";
-		PropertyName[7] = "X";
-		PropertyName[8] = "C";
-		PropertyName[9] = "ScanType";
-		PropertyName[10] = "Sequence";
+		propertyName[0] = "bus1";
+		propertyName[1] = "bus2";
+		propertyName[2] = "Volts";
+		propertyName[3] = "Angle";
+		propertyName[4] = "frequency";
+		propertyName[5] = "phases";
+		propertyName[6] = "R";
+		propertyName[7] = "X";
+		propertyName[8] = "C";
+		propertyName[9] = "ScanType";
+		propertyName[10] = "Sequence";
 
 		// define property help values
-		PropertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+ CRLF +
+		propertyHelp[0] = "Name of bus to which the main terminal (1) is connected."+ CRLF +
 		                   "bus1=busname"+ CRLF +
 		                   "bus1=busname.1.2.3";
-		PropertyHelp[1] = "Name of bus to which 2nd terminal is connected."+ CRLF +
+		propertyHelp[1] = "Name of bus to which 2nd terminal is connected."+ CRLF +
 		                   "bus2=busname"+ CRLF +
 		                   "bus2=busname.1.2.3" + CRLF + CRLF +
 		                   "No Default; must be specified.";
 
-		PropertyHelp[2] = "Voltage magnitude, in volts, of the GIC voltage induced across this line.";
-		PropertyHelp[3] = "Phase angle in degrees of first phase. Default=0.0";
-		PropertyHelp[4] = "Source frequency.  Defaults to 0.1 Hz.";
-		PropertyHelp[5] = "Number of phases.  Defaults to 3.";
-		PropertyHelp[6] = "Resistance of line, ohms of impedance in series with GIC voltage source. ";
-		PropertyHelp[7] = "Reactance at base frequency, ohms. Default = 0.0. This value is generally not important for GIC studies but may be used if desired.";
-		PropertyHelp[8] = "Value of line blocking capacitance in microfarads. Default = 0.0, implying that there is no line blocking capacitor.";
-		PropertyHelp[9] = "{pos | zero* | none} Maintain specified sequence for harmonic solution. Default is ZERO sequence. "+
+		propertyHelp[2] = "Voltage magnitude, in volts, of the GIC voltage induced across this line.";
+		propertyHelp[3] = "Phase angle in degrees of first phase. Default=0.0";
+		propertyHelp[4] = "Source frequency.  Defaults to 0.1 Hz.";
+		propertyHelp[5] = "Number of phases.  Defaults to 3.";
+		propertyHelp[6] = "Resistance of line, ohms of impedance in series with GIC voltage source. ";
+		propertyHelp[7] = "Reactance at base frequency, ohms. Default = 0.0. This value is generally not important for GIC studies but may be used if desired.";
+		propertyHelp[8] = "Value of line blocking capacitance in microfarads. Default = 0.0, implying that there is no line blocking capacitor.";
+		propertyHelp[9] = "{pos | zero* | none} Maintain specified sequence for harmonic solution. Default is ZERO sequence. "+
 		                    "Otherwise, angle between phases rotates with harmonic.";
-		PropertyHelp[10] = "{pos | neg | zero*} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+		propertyHelp[10] = "{pos | neg | zero*} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
 		                    "Default is ZERO sequence. ";
 
-		ActiveProperty = NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		PropertyHelp[NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
+		propertyHelp[NumPropsThisClass] = "Name of harmonic spectrum for this source.  Default is \"defaultvsource\", which is defined when the DSS starts.";
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGICLineObj((GICLineObj) ElementList.getActive());
+		setActiveGICLineObj((GICLineObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveGICLineObj());
 
 		int Result = 0;
@@ -129,10 +129,10 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				agl.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

@@ -16,88 +16,88 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 	public CapControlImpl() {
 		super();
 
-		this.Class_Name = "CapControl";
+		this.className = "CapControl";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.CAP_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = CapControl.NumPropsThisClass;
+		numProperties = CapControl.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
 
-		PropertyName[0] = "element";
-		PropertyName[1] = "terminal";
-		PropertyName[2] = "capacitor";
-		PropertyName[3] = "type";
-		PropertyName[4] = "PTratio";
-		PropertyName[5] = "CTratio";
-		PropertyName[6] = "ONsetting";
-		PropertyName[7] = "OFFsetting";
-		PropertyName[8] = "Delay";
-		PropertyName[9] = "VoltOverride";
-		PropertyName[10] = "Vmax";
-		PropertyName[11] = "Vmin";
-		PropertyName[12] = "DelayOFF";
-		PropertyName[13] = "DeadTime";
-		PropertyName[14] = "CTPhase";
-		PropertyName[15] = "PTPhase";
+		propertyName[0] = "element";
+		propertyName[1] = "terminal";
+		propertyName[2] = "capacitor";
+		propertyName[3] = "type";
+		propertyName[4] = "PTratio";
+		propertyName[5] = "CTratio";
+		propertyName[6] = "ONsetting";
+		propertyName[7] = "OFFsetting";
+		propertyName[8] = "Delay";
+		propertyName[9] = "VoltOverride";
+		propertyName[10] = "Vmax";
+		propertyName[11] = "Vmin";
+		propertyName[12] = "DelayOFF";
+		propertyName[13] = "DeadTime";
+		propertyName[14] = "CTPhase";
+		propertyName[15] = "PTPhase";
 
-		PropertyHelp[0] = "Full object name of the circuit element, typically a line or transformer, "+
+		propertyHelp[0] = "Full object name of the circuit element, typically a line or transformer, "+
 				"to which the capacitor control's PT and/or CT are connected." +
 				"There is no default; must be specified.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the CapControl is connected. "+
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the CapControl is connected. "+
 				"1 or 2, typically.  Default is 1.";
-		PropertyHelp[2] = "Name of Capacitor element which the CapControl controls. No Default; Must be specified."+
+		propertyHelp[2] = "Name of Capacitor element which the CapControl controls. No Default; Must be specified."+
 				"Do not specify the full object name; \"Capacitor\" is assumed for "  +
 				"the object class.  Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Capacitor=cap1";
-		PropertyHelp[3] = "{Current | voltage | kvar | PF | time } Control type.  Specify the ONsetting and OFFsetting " +
+		propertyHelp[3] = "{Current | voltage | kvar | PF | time } Control type.  Specify the ONsetting and OFFsetting " +
 				"appropriately with the type of control. (See help for ONsetting)";
-		PropertyHelp[4] = "Ratio of the PT that converts the monitored voltage to the control voltage. "+
+		propertyHelp[4] = "Ratio of the PT that converts the monitored voltage to the control voltage. "+
 				"Default is 60.  If the capacitor is Wye, the 1st phase line-to-neutral voltage is monitored.  Else, the line-to-line " +
 				"voltage (1st - 2nd phase) is monitored.";
-		PropertyHelp[5] = "Ratio of the CT from line amps to control ampere setting for current and kvar control types. ";
-		PropertyHelp[6] = "Value at which the control arms to switch the capacitor ON (or ratchet up a step).  " + DSSGlobals.CRLF+DSSGlobals.CRLF +
+		propertyHelp[5] = "Ratio of the CT from line amps to control ampere setting for current and kvar control types. ";
+		propertyHelp[6] = "Value at which the control arms to switch the capacitor ON (or ratchet up a step).  " + DSSGlobals.CRLF+DSSGlobals.CRLF +
 				"Type of Control:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Current: Line Amps / CTratio"+DSSGlobals.CRLF+
 				"Voltage: Line-Neutral (or Line-Line for delta) Volts / PTratio" +DSSGlobals.CRLF+
 				"kvar:    Total kvar, all phases (3-phase for pos seq model). This is directional. " + DSSGlobals.CRLF +
 				"PF:      Power Factor, Total power in monitored terminal. Negative for Leading. " + DSSGlobals.CRLF +
 				"Time:    Hrs from Midnight as a floating point number (decimal). 7:30am would be entered as 7.5.";
-		PropertyHelp[7] = "Value at which the control arms to switch the capacitor OFF. (See help for ONsetting)" +
+		propertyHelp[7] = "Value at which the control arms to switch the capacitor OFF. (See help for ONsetting)" +
 				"For Time control, is OK to have Off time the next day ( < On time)";
-		PropertyHelp[8] = "Time delay, in seconds, from when the control is armed before it sends out the switching " +
+		propertyHelp[8] = "Time delay, in seconds, from when the control is armed before it sends out the switching " +
 				"command to turn ON.  The control may reset before the action actually occurs. " +
 				"This is used to determine which capacity control will act first. Default is 15.  You may specify any "+
 				"floating point number to achieve a model of whatever condition is necessary.";
-		PropertyHelp[9] = "{Yes | No}  Default is No.  Switch to indicate whether VOLTAGE OVERRIDE is to be considered. " +
+		propertyHelp[9] = "{Yes | No}  Default is No.  Switch to indicate whether VOLTAGE OVERRIDE is to be considered. " +
 				"Vmax and Vmin must be set to reasonable values if this property is Yes.";
-		PropertyHelp[10] = "Maximum voltage, in volts.  If the voltage across the capacitor divided by the PTRATIO is greater " +
+		propertyHelp[10] = "Maximum voltage, in volts.  If the voltage across the capacitor divided by the PTRATIO is greater " +
 				"than this voltage, the capacitor will switch OFF regardless of other control settings. " +
 				"Default is 126 (goes with a PT ratio of 60 for 12.47 kV system).";
-		PropertyHelp[11] = "Minimum voltage, in volts.  If the voltage across the capacitor divided by the PTRATIO is less " +
+		propertyHelp[11] = "Minimum voltage, in volts.  If the voltage across the capacitor divided by the PTRATIO is less " +
 				"than this voltage, the capacitor will switch ON regardless of other control settings. "+
 				"Default is 115 (goes with a PT ratio of 60 for 12.47 kV system).";
-		PropertyHelp[12] = "Time delay, in seconds, for control to turn OFF when present state is ON. Default is 15.";
-		PropertyHelp[13] = "Dead time after capacitor is turned OFF before it can be turned back ON. Default is 300 sec.";
-		PropertyHelp[14] = "Number of the phase being monitored for CURRENT control or one of {AVG | MAX | MIN} for all phases. Default=1. " +
+		propertyHelp[12] = "Time delay, in seconds, for control to turn OFF when present state is ON. Default is 15.";
+		propertyHelp[13] = "Dead time after capacitor is turned OFF before it can be turned back ON. Default is 300 sec.";
+		propertyHelp[14] = "Number of the phase being monitored for CURRENT control or one of {AVG | MAX | MIN} for all phases. Default=1. " +
 				"If delta or L-L connection, enter the first or the two phases being monitored [1-2, 2-3, 3-1]. " +
 				"Must be less than the number of phases. Does not apply to kvar control which uses all phases by default.";
-		PropertyHelp[15] = "Number of the phase being monitored for VOLTAGE control or one of {AVG | MAX | MIN} for all phases. Default=1. " +
+		propertyHelp[15] = "Number of the phase being monitored for VOLTAGE control or one of {AVG | MAX | MIN} for all phases. Default=1. " +
 				"If delta or L-L connection, enter the first or the two phases being monitored [1-2, 2-3, 3-1]. " +
 				"Must be less than the number of phases. Does not apply to kvar control which uses all phases by default.";
 
-		ActiveProperty = CapControl.NumPropsThisClass - 1;
+		activeProperty = CapControl.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -115,7 +115,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj((CapControlObj) ElementList.getActive());
+		setActiveCapControlObj((CapControlObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
 
 		int Result = 0;
@@ -129,10 +129,10 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
 				acc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

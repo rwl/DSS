@@ -5,12 +5,12 @@ import com.epri.dss.common.DSSClasses;
 
 public class DSSClassesImpl implements DSSClasses {
 
-	public void setNew(DSSClass Value) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public void setNew(DSSClass value) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getDSSClassList().add(Value);  // add to class list
-		Globals.setActiveDSSClass(Value);      // declare to be active
-		Globals.getClassNames().add(Globals.getActiveDSSClass().getName());  // add to classname list
+		globals.getDSSClassList().add(value);  // add to class list
+		globals.setActiveDSSClass(value);      // declare to be active
+		globals.getClassNames().add(globals.getActiveDSSClass().getName());  // add to classname list
 	}
 
 }

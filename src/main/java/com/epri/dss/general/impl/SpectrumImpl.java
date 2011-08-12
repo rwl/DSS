@@ -21,49 +21,49 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 	public SpectrumImpl() {
 		super();
-		this.Class_Name = "Spectrum";
+		this.className = "Spectrum";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = Spectrum.NumPropsThisClass;
+		numProperties = Spectrum.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		PropertyName[0] = "NumHarm";
-		PropertyName[1] = "harmonic";
-		PropertyName[2] = "%mag";
-		PropertyName[3] = "angle";
-		PropertyName[4] = "CSVFile";
+		propertyName[0] = "NumHarm";
+		propertyName[1] = "harmonic";
+		propertyName[2] = "%mag";
+		propertyName[3] = "angle";
+		propertyName[4] = "CSVFile";
 
-		PropertyHelp[0] = "Number of frequencies in this spectrum. (See CSVFile)";
-		PropertyHelp[1] = "Array of harmonic values. You can also use the syntax" + CRLF +
+		propertyHelp[0] = "Number of frequencies in this spectrum. (See CSVFile)";
+		propertyHelp[1] = "Array of harmonic values. You can also use the syntax" + CRLF +
 			"harmonic = (file=filename)     !for text file one value per line"+CRLF+
 			"harmonic = (dblfile=filename)  !for packed file of doubles"+CRLF+
 			"harmonic = (sngfile=filename)  !for packed file of singles ";
-		PropertyHelp[2] = "Array of magnitude values, assumed to be in PERCENT. You can also use the syntax" + CRLF +
+		propertyHelp[2] = "Array of magnitude values, assumed to be in PERCENT. You can also use the syntax" + CRLF +
 			"%mag = (file=filename)     !for text file one value per line"+CRLF+
 			"%mag = (dblfile=filename)  !for packed file of doubles"+CRLF+
 			"%mag = (sngfile=filename)  !for packed file of singles ";
-		PropertyHelp[3] = "Array of phase angle values, degrees.You can also use the syntax" + CRLF +
+		propertyHelp[3] = "Array of phase angle values, degrees.You can also use the syntax" + CRLF +
 			"angle = (file=filename)     !for text file one value per line"+CRLF+
 			"angle = (dblfile=filename)  !for packed file of doubles"+CRLF+
 			"angle = (sngfile=filename)  !for packed file of singles ";
-		PropertyHelp[4] = "File of spectrum points with (harmonic, magnitude-percent, angle-degrees) values, one set of 3 per line, in CSV format. "+
+		propertyHelp[4] = "File of spectrum points with (harmonic, magnitude-percent, angle-degrees) values, one set of 3 per line, in CSV format. "+
 			"If fewer than NUMHARM frequencies found in the file, NUMHARM is set to the smaller value.";
 
-		ActiveProperty = Spectrum.NumPropsThisClass - 1;
+		activeProperty = Spectrum.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -81,7 +81,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 		int Result = 0;
 		// continue parsing with contents of Parser
-		setActiveSpectrumObj((SpectrumObj) ElementList.getActive());
+		setActiveSpectrumObj((SpectrumObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveSpectrumObj());
 
 		SpectrumObj aso = getActiveSpectrumObj();
@@ -93,9 +93,9 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))  // TODO Check zero based indexing
+				if ((ParamPointer > 0) && (ParamPointer <= numProperties))  // TODO Check zero based indexing
 					aso.setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -179,7 +179,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	 * Returns active spectrum code string.
 	 */
 	public String getCode() {
-		SpectrumObj pSpectrum = (SpectrumObj) ElementList.getActive();
+		SpectrumObj pSpectrum = (SpectrumObj) elementList.getActive();
 		return pSpectrum.getName();
 	}
 
@@ -188,8 +188,8 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	 */
 	public void setCode(String Value) {
 		setActiveSpectrumObj(null);
-		for (int i = 0; i < ElementList.size(); i++) {
-			SpectrumObj pSpectrum = (SpectrumObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			SpectrumObj pSpectrum = (SpectrumObj) elementList.get(i);
 			if (pSpectrum.getName().equalsIgnoreCase(Value)) {
 				setActiveSpectrumObj(pSpectrum);
 				return;

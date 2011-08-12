@@ -198,7 +198,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.GenVars.Xdpp       = this.GenVars.puXdpp * Math.pow(this.GenVars.kVGeneratorBase, 2) * 1000.0 / this.GenVars.kVArating;
 		this.GenVars.Hmass      = 1.0;  // W-sec/VA rating
 		this.GenVars.Theta      = 0.0;
-		this.GenVars.w0         = DSSGlobals.TwoPi * getBaseFrequency();
+		this.GenVars.w0         = DSSGlobals.TWO_PI * getBaseFrequency();
 		this.GenVars.Speed      = 0.0;
 		this.GenVars.dSpeed     = 0.0;
 		this.GenVars.D          = 1.0;
@@ -1610,7 +1610,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			//Theta  = Vthev[0].getArgument();  // assume source at 0
 			GenVars.Theta  = Edp.getArgument() ;
 			GenVars.dTheta = 0.0;
-			GenVars.w0     = DSSGlobals.TwoPi * sol.getFrequency();
+			GenVars.w0     = DSSGlobals.TWO_PI * sol.getFrequency();
 			// recalc mMass and D in case the frequency has changed
 			GenVars.Mmass = 2.0 * GenVars.Hmass * GenVars.kVArating * 1000.0 / GenVars.w0;   // M = W-sec
 			GenVars.D = GenVars.Dpu * GenVars.kVArating * 1000.0 / GenVars.w0;
@@ -1706,10 +1706,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		switch (i) {
 		case 0:
-			Result = (GenVars.w0 + GenVars.Speed) / DSSGlobals.TwoPi;  // frequency, Hz
+			Result = (GenVars.w0 + GenVars.Speed) / DSSGlobals.TWO_PI;  // frequency, Hz
 			break;
 		case 1:
-			Result = GenVars.Theta * DSSGlobals.RadiansToDegrees;  // report in deg
+			Result = GenVars.Theta * DSSGlobals.RADIANS_TO_DEGREES;  // report in deg
 			break;
 		case 2:
 			Result = Vthev.abs() / VBase;  // report in pu
@@ -1718,7 +1718,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			Result = GenVars.Pshaft;
 			break;
 		case 4:
-			Result = GenVars.dSpeed * DSSGlobals.RadiansToDegrees;  // report in deg
+			Result = GenVars.dSpeed * DSSGlobals.RADIANS_TO_DEGREES;  // report in deg
 			break;
 		case 5:
 			Result = GenVars.dTheta;
@@ -1751,10 +1751,10 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (i < 0) return;
 		switch (i) {
 		case 0:
-			GenVars.Speed = (Value - GenVars.w0) * DSSGlobals.TwoPi;
+			GenVars.Speed = (Value - GenVars.w0) * DSSGlobals.TWO_PI;
 			break;
 		case 1:
-			GenVars.Theta = Value / DSSGlobals.RadiansToDegrees;  // deg to rad
+			GenVars.Theta = Value / DSSGlobals.RADIANS_TO_DEGREES;  // deg to rad
 			break;
 		case 2:
 			// meaningless to set Vd = Value * vbase; // pu to volts
@@ -1763,7 +1763,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			GenVars.Pshaft = Value;
 			break;
 		case 4:
-			GenVars.dSpeed = Value / DSSGlobals.RadiansToDegrees;
+			GenVars.dSpeed = Value / DSSGlobals.RADIANS_TO_DEGREES;
 			break;
 		case 5:
 			GenVars.dTheta = Value ;

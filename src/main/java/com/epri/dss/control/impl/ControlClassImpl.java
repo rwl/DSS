@@ -16,12 +16,12 @@ public abstract class ControlClassImpl extends CktElementClassImpl implements Co
 	}
 	
 	protected void countProperties() {
-		NumProperties = NumProperties + NumControlClassProps;
+		numProperties = numProperties + NumControlClassProps;
 		super.countProperties();	
 	}
 	
 	protected void defineProperties() {
-		ActiveProperty = ActiveProperty + NumControlClassProps;
+		activeProperty = activeProperty + NumControlClassProps;
 
 		super.defineProperties();	
 	}

@@ -12,25 +12,25 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 	public WireDataImpl() {
 		super();
-		this.Class_Name = "WireData";
+		this.className = "WireData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		NumProperties = WireData.NumPropsThisClass;
+		numProperties = WireData.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
 
-		ActiveProperty = WireData.NumPropsThisClass - 1;
+		activeProperty = WireData.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -46,7 +46,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	public int edit() {
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveConductorDataObj((ConductorDataObj) ElementList.getActive());
+		setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveConductorDataObj());
 
 		Parser parser = Parser.getInstance();
@@ -60,10 +60,10 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer > 0) && (ParamPointer <= numProperties))
 				acd.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -110,7 +110,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	}
 
 	public String getCode() {
-		WireDataObj active = (WireDataObj) ElementList.getActive();
+		WireDataObj active = (WireDataObj) elementList.getActive();
 		return active.getName();
 	}
 
@@ -118,8 +118,8 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 		setActiveConductorDataObj(null);
 		WireDataObj pWireData;
-		for (int i = 0; i < ElementList.size(); i++) {
-			pWireData = (WireDataObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pWireData = (WireDataObj) elementList.get(i);
 			if (pWireData.getName().equalsIgnoreCase(Value)) {
 				setActiveConductorDataObj(pWireData);
 				return;

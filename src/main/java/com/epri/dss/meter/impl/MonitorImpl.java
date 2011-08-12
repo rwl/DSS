@@ -15,36 +15,36 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	public MonitorImpl() {
 		super();
 
-		this.Class_Name   = "Monitor";
+		this.className   = "Monitor";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.MON_ELEMENT;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Monitor.NumPropsThisClass;
+		numProperties = Monitor.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "element";
-		PropertyName[1] = "terminal";
-		PropertyName[2] = "mode";
-		PropertyName[3] = "action";    // buffer=clear|save
-		PropertyName[4] = "residual";  // buffer=clear|save
-		PropertyName[5] = "VIPolar";   // V I in mag and angle rather then re and im
-		PropertyName[6] = "PPolar";    // power in power PF rather then power and vars
+		propertyName[0] = "element";
+		propertyName[1] = "terminal";
+		propertyName[2] = "mode";
+		propertyName[3] = "action";    // buffer=clear|save
+		propertyName[4] = "residual";  // buffer=clear|save
+		propertyName[5] = "VIPolar";   // V I in mag and angle rather then re and im
+		propertyName[6] = "PPolar";    // power in power PF rather then power and vars
 
-		PropertyHelp[0] = "Name (Full Object name) of element to which the monitor is connected.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the monitor is connected. "+
+		propertyHelp[0] = "Name (Full Object name) of element to which the monitor is connected.";
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the monitor is connected. "+
 				"1 or 2, typically. For monitoring states, attach monitor to terminal 1.";
-		PropertyHelp[2] = "Bitmask integer designating the values the monitor is to capture: "+DSSGlobals.CRLF+
+		propertyHelp[2] = "Bitmask integer designating the values the monitor is to capture: "+DSSGlobals.CRLF+
 				"0 = Voltages and currents" + DSSGlobals.CRLF+
 				"1 = Powers"+DSSGlobals.CRLF+
 				"2 = Tap Position (Transformers only)"+DSSGlobals.CRLF+
@@ -57,18 +57,18 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				"Mix adder to obtain desired results. For example:" + DSSGlobals.CRLF+
 				"Mode=112 will save positive sequence voltage and current magnitudes only" + DSSGlobals.CRLF+
 				"Mode=48 will save all sequence voltages and currents, but magnitude only.";
-		PropertyHelp[3] = "{Clear | Save | Take}" + DSSGlobals.CRLF +
+		propertyHelp[3] = "{Clear | Save | Take}" + DSSGlobals.CRLF +
 				"(C)lears or (S)aves current buffer." + DSSGlobals.CRLF +
 				"(T)ake action takes a sample."+ DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Note that monitors are automatically reset (cleared) when the Set Mode= command is issued. "+
 				"Otherwise, the user must explicitly reset all monitors (reset monitors command) or individual " +
 				"monitors with the Clear action.";
-		PropertyHelp[4] = "{Yes/True | No/False} Default = No.  Include Residual cbannel (sum of all phases) for voltage and current. " +
+		propertyHelp[4] = "{Yes/True | No/False} Default = No.  Include Residual cbannel (sum of all phases) for voltage and current. " +
 				"Does not apply to sequence quantity modes or power modes.";
-		PropertyHelp[5] = "{Yes/True | No/False} Default = YES. Report voltage and current in polar form (Mag/Angle). (default)  Otherwise, it will be real and imaginary.";
-		PropertyHelp[6] = "{Yes/True | No/False} Default = YES. Report power in Apparent power, S, in polar form (Mag/Angle).(default)  Otherwise, is P and Q";
+		propertyHelp[5] = "{Yes/True | No/False} Default = YES. Report voltage and current in polar form (Mag/Angle). (default)  Otherwise, it will be real and imaginary.";
+		propertyHelp[6] = "{Yes/True | No/False} Default = YES. Report power in Apparent power, S, in polar form (Mag/Angle).(default)  Otherwise, is P and Q";
 
-		ActiveProperty = Monitor.NumPropsThisClass - 1;
+		activeProperty = Monitor.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -86,7 +86,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveMonitorObj((MonitorObj) ElementList.getActive());
+		setActiveMonitorObj((MonitorObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveMonitorObj());
 
 		int Result = 0;
@@ -100,10 +100,10 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				am.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -225,12 +225,12 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		int Result = 0;
 
 		if (Handle >= 0) {
-			Mon = (MonitorObj) ElementList.get(Handle);
+			Mon = (MonitorObj) elementList.get(Handle);
 			Mon.resetIt();
 		} else {
 			// Do 'em all
-			for (int i = 0; i < ElementList.size(); i++) {
-				Mon = (MonitorObj) ElementList.get(i);
+			for (int i = 0; i < elementList.size(); i++) {
+				Mon = (MonitorObj) elementList.get(i);
 				Mon.resetIt();
 			}
 		}

@@ -18,76 +18,76 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 	public LineGeometryImpl() {
 		super();
-		Class_Name    = "LineGeometry";
+		className    = "LineGeometry";
 		DSSClassType  = DSSClassDefs.DSS_OBJECT;
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = LineGeometry.NumPropsThisClass;
+		numProperties = LineGeometry.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		PropertyName[0]  = "nconds";
-		PropertyName[1]  = "nphases";
-		PropertyName[2]  = "cond";
-		PropertyName[3]  = "wire";
-		PropertyName[4]  = "x";
-		PropertyName[5]  = "h";
-		PropertyName[6]  = "units";
-		PropertyName[7]  = "normamps";
-		PropertyName[8]  = "emergamps";
-		PropertyName[9]  = "reduce";
-		PropertyName[10] = "spacing";
-		PropertyName[11] = "wires";
-		PropertyName[12] = "cncable";
-		PropertyName[13] = "tscable";
-		PropertyName[14] = "cncables";
-		PropertyName[15] = "tscables";
+		propertyName[0]  = "nconds";
+		propertyName[1]  = "nphases";
+		propertyName[2]  = "cond";
+		propertyName[3]  = "wire";
+		propertyName[4]  = "x";
+		propertyName[5]  = "h";
+		propertyName[6]  = "units";
+		propertyName[7]  = "normamps";
+		propertyName[8]  = "emergamps";
+		propertyName[9]  = "reduce";
+		propertyName[10] = "spacing";
+		propertyName[11] = "wires";
+		propertyName[12] = "cncable";
+		propertyName[13] = "tscable";
+		propertyName[14] = "cncables";
+		propertyName[15] = "tscables";
 
-		PropertyHelp[0] = "Number of conductors in this geometry. Default is 3. Triggers memory allocations. Define first!";
-		PropertyHelp[1] = "Number of phases. Default =3; All other conductors are considered neutrals and might be reduced out.";
-		PropertyHelp[2] = "Set this = number of the conductor you wish to define. Default is 1.";
-		PropertyHelp[3] = "Code from WireData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
+		propertyHelp[0] = "Number of conductors in this geometry. Default is 3. Triggers memory allocations. Define first!";
+		propertyHelp[1] = "Number of phases. Default =3; All other conductors are considered neutrals and might be reduced out.";
+		propertyHelp[2] = "Set this = number of the conductor you wish to define. Default is 1.";
+		propertyHelp[3] = "Code from WireData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
 			"Specifies use of Overhead Line parameter calculation," + CRLF +
 			"Unless Tape Shield cable previously assigned to phases, and this wire is a neutral.";
-		PropertyHelp[4] = "x coordinate.";
-		PropertyHelp[5] = "Height of conductor.";
-		PropertyHelp[6] = "Units for x and h: {mi|kft|km|m|Ft|in|cm } Initial default is \"ft\", but defaults to last unit defined";
-		PropertyHelp[7] = "Normal ampacity, amperes for the line. Defaults to first conductor if not specified.";
-		PropertyHelp[8] = "Emergency ampacity, amperes. Defaults to first conductor if not specified.";
-		PropertyHelp[9] = "{Yes | No} Default = no. Reduce to Nphases (Kron Reduction). Reduce out neutrals.";
-		PropertyHelp[10] = "Reference to a LineSpacing for use in a line constants calculation." + CRLF +
+		propertyHelp[4] = "x coordinate.";
+		propertyHelp[5] = "Height of conductor.";
+		propertyHelp[6] = "Units for x and h: {mi|kft|km|m|Ft|in|cm } Initial default is \"ft\", but defaults to last unit defined";
+		propertyHelp[7] = "Normal ampacity, amperes for the line. Defaults to first conductor if not specified.";
+		propertyHelp[8] = "Emergency ampacity, amperes. Defaults to first conductor if not specified.";
+		propertyHelp[9] = "{Yes | No} Default = no. Reduce to Nphases (Kron Reduction). Reduce out neutrals.";
+		propertyHelp[10] = "Reference to a LineSpacing for use in a line constants calculation." + CRLF +
 							"Alternative to x, h, and units. MUST BE PREVIOUSLY DEFINED." + CRLF +
 							"Must match \"nconds\" as previously defined for this geometry." + CRLF +
 							"Must be used in conjunction with the Wires property.";
-		PropertyHelp[11] = "Array of WireData names for use in a line constants calculation." + CRLF +
+		propertyHelp[11] = "Array of WireData names for use in a line constants calculation." + CRLF +
 							"Alternative to individual wire inputs. ALL MUST BE PREVIOUSLY DEFINED." + CRLF +
 							"Must match \"nconds\" as previously defined for this geometry," + CRLF +
 							"unless TSData or CNData were previously assigned to phases, and these wires are neutrals." + CRLF +
 							"Must be used in conjunction with the Spacing property.";
-		PropertyHelp[12] = "Code from CNData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
+		propertyHelp[12] = "Code from CNData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
 				"Specifies use of Concentric Neutral cable parameter calculation.";
-		PropertyHelp[13] = "Code from TSData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
+		propertyHelp[13] = "Code from TSData. MUST BE PREVIOUSLY DEFINED. no default." + CRLF +
 				"Specifies use of Tape Shield cable parameter calculation.";
-		PropertyHelp[14] = "Array of CNData names for cable parameter calculation." + CRLF +
+		propertyHelp[14] = "Array of CNData names for cable parameter calculation." + CRLF +
 				"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
 				"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
-		PropertyHelp[15] = "Array of TSData names for cable parameter calculation." + CRLF +
+		propertyHelp[15] = "Array of TSData names for cable parameter calculation." + CRLF +
 				"All must be previously defined, and match \"nphases\" for this geometry." + CRLF +
 				"You can later define \"nconds-nphases\" wires for bare neutral conductors.";
 
 
-		ActiveProperty = LineGeometry.NumPropsThisClass - 1;
+		activeProperty = LineGeometry.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -111,7 +111,7 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 		int istart, istop, Result = 0;
 		// continue parsing with contents of Parser
-		setActiveLineGeometryObj((LineGeometryObj) ElementList.getActive());
+		setActiveLineGeometryObj((LineGeometryObj) elementList.getActive());
 		Globals.setActiveDSSObject(alg);
 
 		int ParamPointer = 0;
@@ -122,9 +122,9 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= NumProperties))
+				if ((ParamPointer > 0) && (ParamPointer <= numProperties))
 					alg.setPropertyValue(ParamPointer, Param);
 
 				switch (ParamPointer) {
@@ -435,15 +435,15 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 	}
 
 	public String getCode() {
-		LineGeometryObj active = (LineGeometryObj) ElementList.getActive();
+		LineGeometryObj active = (LineGeometryObj) elementList.getActive();
 		return active.getName();
 	}
 
 	public void setCode(String Value) {
 		setActiveLineGeometryObj(null);
 
-		for (int i = 0; i < ElementList.size(); i++) {
-			LineGeometryObj pLineGeo = (LineGeometryObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			LineGeometryObj pLineGeo = (LineGeometryObj) elementList.get(i);
 			if (pLineGeo.getName().equalsIgnoreCase(Value)) {
 				setActiveLineGeometryObj(pLineGeo);
 				return;

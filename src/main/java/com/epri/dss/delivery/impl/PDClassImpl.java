@@ -18,7 +18,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 	}
 
 	protected void countProperties() {
-		NumProperties = NumProperties + NumPDClassProps;
+		numProperties = numProperties + NumPDClassProps;
 		super.countProperties();
 	}
 
@@ -26,19 +26,19 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 	 * Define the properties for the base power delivery element class.
 	 */
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 1] = "normamps";  // TODO Check zero based indexing
-		PropertyName[ActiveProperty + 2] = "emergamps";
-		PropertyName[ActiveProperty + 3] = "faultrate";
-		PropertyName[ActiveProperty + 4] = "pctperm";
-		PropertyName[ActiveProperty + 5] = "repair";
+		propertyName[activeProperty + 1] = "normamps";  // TODO Check zero based indexing
+		propertyName[activeProperty + 2] = "emergamps";
+		propertyName[activeProperty + 3] = "faultrate";
+		propertyName[activeProperty + 4] = "pctperm";
+		propertyName[activeProperty + 5] = "repair";
 
-		PropertyHelp[ActiveProperty + 1] = "Normal rated current.";
-		PropertyHelp[ActiveProperty + 2] = "Maximum current.";
-		PropertyHelp[ActiveProperty + 3] = "No. of failures per year.";
-		PropertyHelp[ActiveProperty + 4] = "Percent of failures that become permanent.";
-		PropertyHelp[ActiveProperty + 5] = "Hours to repair.";
+		propertyHelp[activeProperty + 1] = "Normal rated current.";
+		propertyHelp[activeProperty + 2] = "Maximum current.";
+		propertyHelp[activeProperty + 3] = "No. of failures per year.";
+		propertyHelp[activeProperty + 4] = "Percent of failures that become permanent.";
+		propertyHelp[activeProperty + 5] = "Hours to repair.";
 
-		ActiveProperty = ActiveProperty + NumPDClassProps;
+		activeProperty = activeProperty + NumPDClassProps;
 
 		super.defineProperties();
 	}

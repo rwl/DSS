@@ -19,15 +19,15 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 	public FuseImpl() {
 		super();
 
-		this.Class_Name = "Fuse";
+		this.className = "Fuse";
 		this.DSSClassType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 
 		setTCC_CurveClass( DSSClassDefs.getDSSClass("TCC_Curve") );
 	}
@@ -47,43 +47,43 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 	protected void defineProperties() {
 
-		NumProperties = Fuse.NumPropsThisClass;
+		numProperties = Fuse.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
 		// define property names
-		PropertyName[0]  = "MonitoredObj";
-		PropertyName[1]  = "MonitoredTerm";
-		PropertyName[2]  = "SwitchedObj";
-		PropertyName[3]  = "SwitchedTerm";
-		PropertyName[4]  = "FuseCurve";
-		PropertyName[5] = "RatedCurrent";
-		PropertyName[6] = "Delay";
-		PropertyName[7] = "Action";
+		propertyName[0]  = "MonitoredObj";
+		propertyName[1]  = "MonitoredTerm";
+		propertyName[2]  = "SwitchedObj";
+		propertyName[3]  = "SwitchedTerm";
+		propertyName[4]  = "FuseCurve";
+		propertyName[5] = "RatedCurrent";
+		propertyName[6] = "Delay";
+		propertyName[7] = "Action";
 
-		PropertyHelp[0] = "Full object name of the circuit element, typically a line, transformer, load, or generator, "+
+		propertyHelp[0] = "Full object name of the circuit element, typically a line, transformer, load, or generator, "+
 							"to which the Fuse is connected." +
 							" This is the \"monitored\" element. " +
 							"There is no default; must be specified.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the Fuse is connected. "+
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the Fuse is connected. "+
 							"1 or 2, typically.  Default is 1.";
-		PropertyHelp[2] = "Name of circuit element switch that the Fuse controls. "+
+		propertyHelp[2] = "Name of circuit element switch that the Fuse controls. "+
 							"Specify the full object name." +
 							"Defaults to the same as the Monitored element. "+
 							"This is the \"controlled\" element.";
-		PropertyHelp[3] = "Number of the terminal of the controlled element in which the switch is controlled by the Fuse. "+
+		propertyHelp[3] = "Number of the terminal of the controlled element in which the switch is controlled by the Fuse. "+
 							"1 or 2, typically.  Default is 1.  Assumes all phases of the element have a fuse of this type.";
-		PropertyHelp[4] = "Name of the TCC Curve object that determines the fuse blowing.  Must have been previously defined as a TCC_Curve object."+
+		propertyHelp[4] = "Name of the TCC Curve object that determines the fuse blowing.  Must have been previously defined as a TCC_Curve object."+
 							" Default is \"Tlink\". "+
 							"Multiplying the current values in the curve by the \"RatedCurrent\" value gives the actual current.";
-		PropertyHelp[5] = "Multiplier or actual phase amps for the phase TCC curve.  Defaults to 1.0.";
-		PropertyHelp[6] = "Fixed delay time (sec) added to Fuse blowing time determined from the TCC curve. Default is 0.0. Used to represent fuse clearing time or any other delay." ;
-		PropertyHelp[7] = "{Trip/Open | Close}  Action that overrides the Fuse control. Simulates manual control on Fuse " +
+		propertyHelp[5] = "Multiplier or actual phase amps for the phase TCC curve.  Defaults to 1.0.";
+		propertyHelp[6] = "Fixed delay time (sec) added to Fuse blowing time determined from the TCC curve. Default is 0.0. Used to represent fuse clearing time or any other delay." ;
+		propertyHelp[7] = "{Trip/Open | Close}  Action that overrides the Fuse control. Simulates manual control on Fuse " +
 							"\"Trip\" or \"Open\" causes the controlled element to open and lock out. " +
 							"\"Close\" causes the controlled element to close and the Fuse to reset.";
 
-		ActiveProperty  = Fuse.NumPropsThisClass - 1;
+		activeProperty  = Fuse.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -101,7 +101,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveFuseObj((FuseObj) ElementList.getActive());
+		setActiveFuseObj((FuseObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
 
 		int Result = 0;
@@ -115,10 +115,10 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))  // TODO Check zero based indexing
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))  // TODO Check zero based indexing
 				af.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

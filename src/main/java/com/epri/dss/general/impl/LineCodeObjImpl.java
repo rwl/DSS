@@ -92,7 +92,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		String Result = "[";
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				Result = Result + String.format("%12.8f ", Yc.getElement(i, j).getImaginary() / DSSGlobals.TwoPi / BaseFrequency * 1.e9);
+				Result = Result + String.format("%12.8f ", Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9);
 			if (i < NPhases)  // TODO Check zero based indexing
 				Result = Result + "|";
 		}
@@ -140,8 +140,8 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Zs = Ztemp.add(new Complex(R0, X0)).multiply(OneThird);
 		Zm = new Complex(R0, X0).subtract(new Complex(R1, X1)).multiply(OneThird);
 
-		Yc1 = DSSGlobals.TwoPi * BaseFrequency * C1;
-		Yc0 = DSSGlobals.TwoPi * BaseFrequency * C0;
+		Yc1 = DSSGlobals.TWO_PI * BaseFrequency * C1;
+		Yc0 = DSSGlobals.TWO_PI * BaseFrequency * C0;
 
 		Ys = new Complex(0.0, Yc1).multiply(2.0).add(new Complex(0.0, Yc0)).multiply(OneThird);
 		Ym = new Complex(0.0, Yc0).subtract(new Complex(0.0, Yc1)).multiply(OneThird);
@@ -189,7 +189,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.print("~ " + ParentClass.getPropertyName()[11] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
-				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TwoPi / BaseFrequency * 1.e9) + " ");
+				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9) + " ");
 			F.print("|");
 		}
 		F.println("\"");

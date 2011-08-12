@@ -13,54 +13,54 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 	public GICTransformerImpl() {
 		super();
-		this.Class_Name = "GICTransformer";
+		this.className = "GICTransformer";
 		this.DSSClassType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);  // allow property list abbreviations
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 	    countProperties();   // get inherited property count
 	    allocatePropertyArrays();
 
 	    // define property names
-	    PropertyName[0] = "BusH";
-	    PropertyName[1] = "BusNH";
-	    PropertyName[2] = "BusX";
-	    PropertyName[3] = "BusNX";
-	    PropertyName[4] = "phases";
-	    PropertyName[5] = "Type";
-	    PropertyName[6] = "R1";
-	    PropertyName[7] = "R2";
+	    propertyName[0] = "BusH";
+	    propertyName[1] = "BusNH";
+	    propertyName[2] = "BusX";
+	    propertyName[3] = "BusNX";
+	    propertyName[4] = "phases";
+	    propertyName[5] = "Type";
+	    propertyName[6] = "R1";
+	    propertyName[7] = "R2";
 
 	    // define property help values
-	    PropertyHelp[0] = "Name of High-side(H) bus. Examples:"+CRLF+
+	    propertyHelp[0] = "Name of High-side(H) bus. Examples:"+CRLF+
 	                       "BusH=busname"+CRLF+
 	                       "BusH=busname.1.2.3";
-	    PropertyHelp[1] = "Name of Neutral bus for H, or first, winding. Defaults to all phases connected "+
+	    propertyHelp[1] = "Name of Neutral bus for H, or first, winding. Defaults to all phases connected "+
 	                       "to H-side bus, node 0, if not specified and transformer type is either GSU or YY. " +
 	                       "(Shunt Wye Connection to ground reference)" +
 	                       "For Auto, this is automatically set to the X bus.";
-	    PropertyHelp[2] = "Name of Low-side(X) bus, if type=Auto or YY. ";
-	    PropertyHelp[3] = "Name of Neutral bus for X, or Second, winding. Defaults to all phases connected "+
+	    propertyHelp[2] = "Name of Low-side(X) bus, if type=Auto or YY. ";
+	    propertyHelp[3] = "Name of Neutral bus for X, or Second, winding. Defaults to all phases connected "+
 	                       "to X-side bus, node 0, if not specified. (Shunt Wye Connection to ground reference)";
-	    PropertyHelp[4] = "Number of Phases. Default is 3.";
-	    PropertyHelp[5] = "Type of transformer: {GSU* | Auto | YY}. Default is GSU.";
-	    PropertyHelp[6] = "Resistance, each phase, ohms for H winding, (Series winding, if Auto). Default is 0.0001. ";
-	    PropertyHelp[7] = "Resistance, each phase, ohms for X winding, (Common winding, if Auto). Default is 0.0001. ";
+	    propertyHelp[4] = "Number of Phases. Default is 3.";
+	    propertyHelp[5] = "Type of transformer: {GSU* | Auto | YY}. Default is GSU.";
+	    propertyHelp[6] = "Resistance, each phase, ohms for H winding, (Series winding, if Auto). Default is 0.0001. ";
+	    propertyHelp[7] = "Resistance, each phase, ohms for X winding, (Common winding, if Auto). Default is 0.0001. ";
 
 
-	    ActiveProperty = NumPropsThisClass - 1;
+	    activeProperty = NumPropsThisClass - 1;
 	    super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -144,7 +144,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		int Result = 0;
 
 		// continue parsing with contents of parser
-		setActiveGICTransformerObj((GICTransformerObj) ElementList.getActive());
+		setActiveGICTransformerObj((GICTransformerObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveGICTransformerObj());  // use property to set this value
 
 		GICTransformerObj agt = getActiveGICTransformerObj();
@@ -156,10 +156,10 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				agt.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

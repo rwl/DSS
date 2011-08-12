@@ -12,25 +12,25 @@ public interface ControlQueue {
 
 	boolean getTrace();
 
-	int push(int Hour, double Sec, int Code, int ProxyHdl, ControlElem Owner);
+	int push(int hour, double sec, int code, int proxyHdl, ControlElem owner);
 
-	int push(int Hour, double Sec, ControlAction Code, int ProxyHdl, ControlElem Owner);
+	int push(int hour, double sec, ControlAction code, int proxyHdl, ControlElem owner);
 
 	void clear();
 
 	void doAllActions();
 
 	/** Do only actions with lowest time */
-	boolean doNearestActions(MutableInt Hour, MutableDouble Sec);
+	boolean doNearestActions(MutableInt hour, MutableDouble sec);
 
 	/** Do actions with time <= t */
-	boolean doActions(int Hour, double sec);
+	boolean doActions(int hour, double sec);
 
 	boolean isEmpty();
 
 	/** Delete queue item by handle */
-	void delete(int Hdl);
+	void delete(int hdl);
 
-	void showQueue(String FileName);
+	void showQueue(String fileName);
 
 }

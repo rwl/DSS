@@ -11,10 +11,10 @@ public class CommandLineDSSForms implements DSSForms {
 
 	private static Scanner sc = new Scanner(System.in);
 
-	private boolean ControlPanelCreated;
+	private boolean controlPanelCreated;
 //	private static ControlPanel ControlPanel;
 
-	private boolean RebuildHelpForm;
+	private boolean rebuildHelpForm;
 
 	private CommandLineDSSForms() {
 
@@ -40,11 +40,11 @@ public class CommandLineDSSForms implements DSSForms {
 
 	}
 
-	public void progressCaption(String S) {
+	public void progressCaption(String s) {
 
 	}
 
-	public void progressFormCaption(String S) {
+	public void progressFormCaption(String s) {
 
 	}
 
@@ -68,11 +68,11 @@ public class CommandLineDSSForms implements DSSForms {
 
 	}
 
-	public void showPctProgress(int Count) {
+	public void showPctProgress(int count) {
 
 	}
 
-	public void showMessageForm(List<String> S) {
+	public void showMessageForm(List<String> s) {
 
 	}
 
@@ -113,20 +113,20 @@ public class CommandLineDSSForms implements DSSForms {
 
 	}
 
-	public void showTreeView(String Fname) {
+	public void showTreeView(String fname) {
 
 	}
 
-	public boolean makeChannelSelection(int NumFieldsToSkip, String Filename) {
+	public boolean makeChannelSelection(int numFieldsToSkip, String filename) {
 		return false;
 	}
 
 	public boolean isRebuildHelpForm() {
-		return RebuildHelpForm;
+		return rebuildHelpForm;
 	}
 
-	public void setRebuildHelpForm(boolean rebuildHelpForm) {
-		RebuildHelpForm = rebuildHelpForm;
+	public void setRebuildHelpForm(boolean rebuild) {
+		rebuildHelpForm = rebuild;
 	}
 
 }

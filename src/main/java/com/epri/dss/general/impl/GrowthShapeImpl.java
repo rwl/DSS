@@ -20,23 +20,23 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 	public GrowthShapeImpl() {
 		super();
-		this.Class_Name = "GrowthShape";
+		this.className = "GrowthShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(false);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(false);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = GrowthShape.NumPropsThisClass;
+		numProperties = GrowthShape.NumPropsThisClass;
 		countProperties();   // Get inherited property count
 
 		allocatePropertyArrays();
@@ -44,30 +44,30 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 		// define property names
 
-		PropertyName[0] = "npts";     // number of points to expect
-		PropertyName[1] = "year";     // vextor of year values
-		PropertyName[2] = "mult";     // vector of multiplier values corresponding to years
-		PropertyName[3] = "csvfile";  // switch input to a csvfile                (year, mult)
-		PropertyName[4] = "sngfile";  // switch input to a binary file of singles (year, mult)
-		PropertyName[5] = "dblfile";  // switch input to a binary file of doubles (year, mult)
+		propertyName[0] = "npts";     // number of points to expect
+		propertyName[1] = "year";     // vextor of year values
+		propertyName[2] = "mult";     // vector of multiplier values corresponding to years
+		propertyName[3] = "csvfile";  // switch input to a csvfile                (year, mult)
+		propertyName[4] = "sngfile";  // switch input to a binary file of singles (year, mult)
+		propertyName[5] = "dblfile";  // switch input to a binary file of doubles (year, mult)
 
-		PropertyHelp[0] = "Number of points to expect in subsequent vector.";
-		PropertyHelp[1] = "Array of year values, or a text file spec, corresponding to the multipliers. "+
+		propertyHelp[0] = "Number of points to expect in subsequent vector.";
+		propertyHelp[1] = "Array of year values, or a text file spec, corresponding to the multipliers. "+
 				"Enter only those years where the growth changes. "+
 				"May be any integer sequence -- just so it is consistent. See help on Mult.";
-		PropertyHelp[2] = "Array of growth multiplier values, or a text file spec, corresponding to the year values. "+
+		propertyHelp[2] = "Array of growth multiplier values, or a text file spec, corresponding to the year values. "+
 				"Enter the multiplier by which you would multiply the previous year's load to get the present year's."+
 				CRLF+CRLF+"Examples:"+CRLF+CRLF+
 				"  Year = [1, 2, 5]   Mult=[1.05, 1.025, 1.02]."+CRLF+
 				"  Year= (File=years.txt) Mult= (file=mults.txt)."+ CRLF+CRLF+
 				"Text files contain one value per line.";
-		PropertyHelp[3] = "Switch input of growth curve data to a csv file containing (year, mult) points, one per line.";
-		PropertyHelp[4] = "Switch input of growth curve data to a binary file of singles "+
+		propertyHelp[3] = "Switch input of growth curve data to a csv file containing (year, mult) points, one per line.";
+		propertyHelp[4] = "Switch input of growth curve data to a binary file of singles "+
 				"containing (year, mult) points, packed one after another.";
-		PropertyHelp[5] = "Switch input of growth curve data to a binary file of doubles "+
+		propertyHelp[5] = "Switch input of growth curve data to a binary file of doubles "+
 				"containing (year, mult) points, packed one after another.";
 
-		ActiveProperty = GrowthShape.NumPropsThisClass - 1;
+		activeProperty = GrowthShape.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -85,7 +85,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveGrowthShapeObj((GrowthShapeObj) ElementList.getActive());
+		setActiveGrowthShapeObj((GrowthShapeObj) elementList.getActive());
 		Globals.setActiveDSSObject(getActiveGrowthShapeObj());
 
 		GrowthShapeObj pShape = getActiveGrowthShapeObj();
@@ -97,10 +97,10 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))  // TODO Check zero based indexing
+			if ((ParamPointer > 0) && (ParamPointer <= numProperties))  // TODO Check zero based indexing
 				pShape.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -177,7 +177,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	 * Returns active GrowthShape string.
 	 */
 	public String getCode() {
-		return ((GrowthShapeObj) ElementList.getActive()).getName();
+		return ((GrowthShapeObj) elementList.getActive()).getName();
 	}
 
 	/**
@@ -186,8 +186,8 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	public void setCode(String Value) {
 		setActiveGrowthShapeObj(null);
 
-		for (int i = 0; i < ElementList.size(); i++) {
-			GrowthShapeObj pShape = (GrowthShapeObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			GrowthShapeObj pShape = (GrowthShapeObj) elementList.get(i);
 			if (pShape.getName().equalsIgnoreCase(Value)) {
 				setActiveGrowthShapeObj(pShape);
 				return;

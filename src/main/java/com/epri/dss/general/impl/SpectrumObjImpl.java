@@ -178,8 +178,8 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 				MultArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (AngleArray[i] - HarmArray[i] * FundAngle));
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check Definition. Aborting", 655);
-			if (Globals.isIn_Redirect())
-				Globals.setRedirect_Abort(true);
+			if (Globals.isInRedirect())
+				Globals.setRedirectAbort(true);
 		}
 	}
 

@@ -14,31 +14,31 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 
 	public SolutionImpl() {
 		super();
-		this.Class_Name = "Solution";
+		this.className = "Solution";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT + DSSClassDefs.HIDDEN_ELEMENT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[NumProperties];
-		System.arraycopy(PropertyName, 0, Commands, 0, NumProperties);
-		CommandList = new CommandListImpl(Commands);
-		CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, Commands, 0, numProperties);
+		commandList = new CommandListImpl(Commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "-------";
+		propertyName[0] = "-------";
 
 		// define property help values
-		PropertyHelp[0] = "Use Set Command to set Solution properties.";
+		propertyHelp[0] = "Use Set Command to set Solution properties.";
 
-		ActiveProperty = NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 

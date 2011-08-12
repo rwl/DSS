@@ -21,10 +21,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	public GeneratorImpl() {
 		super();
-		this.Class_Name = "Generator";
+		this.className = "Generator";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // in both PCElement and GenElement list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		// set register names
 		this.RegisterNames[0]  = "kWh";
@@ -36,15 +36,15 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Generator.NumPropsThisClass;
+		numProperties = Generator.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();   /* see DSSClass */
 
@@ -145,11 +145,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 							"for each iteration.  Creates a separate file for each generator named \"GEN_name.CSV\"." );
 
 
-		ActiveProperty = NumPropsThisClass - 1;
+		activeProperty = NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override default help string
-		PropertyHelp[Generator.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this generator. " +
+		propertyHelp[Generator.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this generator. " +
 							"Voltage behind Xd' for machine - default. Current injection for inverter. " +
 							"Default value is \"default\", which is defined when the DSS starts.";
 	}
@@ -255,7 +255,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGeneratorObj((GeneratorObj) ElementList.getActive());
+		setActiveGeneratorObj((GeneratorObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
 
 		int Result = 0;
@@ -268,17 +268,17 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
-				ag.setPropertyValue(PropertyIdxMap[ParamPointer], Param);
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties)) {
+				ag.setPropertyValue(propertyIdxMap[ParamPointer], Param);
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for generator \""+ag.getName()+"\"", 560);
 			}
 
 			if (ParamPointer >= 0) {
-				switch (PropertyIdxMap[ParamPointer]) {
+				switch (propertyIdxMap[ParamPointer]) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
@@ -402,7 +402,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			}
 
 			if (ParamPointer >= 0) {
-				switch (PropertyIdxMap[ParamPointer]) {
+				switch (propertyIdxMap[ParamPointer]) {
 				case 0:
 					setNcondsForConnection();  // force reallocation of terminal info
 					break;
@@ -567,8 +567,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		GeneratorObj p;
 
 		if (Handle == 0) {  // init all
-			for (int i = 0; i < ElementList.size(); i++) {
-				p = (GeneratorObj) ElementList.get(i);
+			for (int i = 0; i < elementList.size(); i++) {
+				p = (GeneratorObj) elementList.get(i);
 				p.randomize(0);
 			}
 		} else {

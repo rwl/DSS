@@ -12,34 +12,34 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 	public TSDataImpl() {
 		super();
-		this.Class_Name = "TSData";
+		this.className = "TSData";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = TSData.NumPropsThisClass;
+		numProperties = TSData.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
-		PropertyName[0] = "DiaShield";
-		PropertyName[1] = "TapeLayer";
-		PropertyName[2] = "TapeLap";
+		propertyName[0] = "DiaShield";
+		propertyName[1] = "TapeLayer";
+		propertyName[2] = "TapeLap";
 
-		PropertyHelp[0] = "Diameter over tape shield; same units as radius; no default.";
-		PropertyHelp[1] = "Tape shield thickness; same units as radius; no default.";
-		PropertyHelp[2] = "Tape Lap in percent; default 20.0";
+		propertyHelp[0] = "Diameter over tape shield; same units as radius; no default.";
+		propertyHelp[1] = "Tape shield thickness; same units as radius; no default.";
+		propertyHelp[2] = "Tape Lap in percent; default 20.0";
 
-		ActiveProperty = TSData.NumPropsThisClass - 1;
+		activeProperty = TSData.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -60,7 +60,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) ElementList.getActive());
+		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
 		Globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
 
 		TSDataObj tsd = (TSDataObj) ConductorDataImpl.getActiveConductorDataObj();
@@ -72,10 +72,10 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				tsd.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -147,18 +147,18 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	}
 
 	public String getCode() {
-		return ((TSDataObj) ElementList.getActive()).getName();
+		return ((TSDataObj) elementList.getActive()).getName();
 	}
 
 	public void setCode(String Value) {
 		ConductorDataImpl.setActiveConductorDataObj(null);
-		TSDataObj pTSDataObj = (TSDataObj) ElementList.getFirst();
+		TSDataObj pTSDataObj = (TSDataObj) elementList.getFirst();
 		while (pTSDataObj != null) {
 			if (pTSDataObj.getName().equalsIgnoreCase(Value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pTSDataObj);
 				return;
 			}
-			pTSDataObj = (TSDataObj) ElementList.getNext();
+			pTSDataObj = (TSDataObj) elementList.getNext();
 		}
 		DSSGlobals.getInstance().doSimpleMsg("TSData: \"" + Value + "\" not found.", 103);
 	}

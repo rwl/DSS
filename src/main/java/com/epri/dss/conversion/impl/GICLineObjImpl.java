@@ -127,7 +127,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		if (C > 0.0) {  // add 1/wC into diagonals of Zinv
 
-			Xc = -1.0 / (DSSGlobals.TwoPi * YPrimFreq * C * 1.0e-6);
+			Xc = -1.0 / (DSSGlobals.TWO_PI * YPrimFreq * C * 1.0e-6);
 			for (i = 0; i < nPhases; i++)
 				Zinv.addElement(i, i, new Complex(0.0, Xc)) ;
 		}
@@ -225,8 +225,8 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 			}
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error computing Voltages for GICLine."+getName()+". Check specification. Aborting.", 326);
-			if (Globals.isIn_Redirect())
-				Globals.setRedirect_Abort(true);
+			if (Globals.isInRedirect())
+				Globals.setRedirectAbort(true);
 		}
 	}
 

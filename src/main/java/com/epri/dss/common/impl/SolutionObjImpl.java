@@ -1144,8 +1144,8 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				/* Raise error message if not solved */
 				Globals.doSimpleMsg("Circuit must be solved in a non-dynamic mode before entering dynamics or fault study modes!" + DSSGlobals.CRLF +
 						"If you attempted to solve, then the solution has not yet converged.", 486);
-				if (Globals.isIn_Redirect())
-					Globals.setRedirect_Abort(true);
+				if (Globals.isInRedirect())
+					Globals.setRedirectAbort(true);
 				Result = false;
 			}
 		}
@@ -1169,13 +1169,13 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			if (ckt.isSolved() && (Frequency == ckt.getFundamental())) {
 				if (!Utilities.initializeForHarmonics()) {  // set state variables for machines (loads and generators) and sources
 					Result = false;
-					if (DSSGlobals.getInstance().isIn_Redirect())
-						DSSGlobals.getInstance().setRedirect_Abort(true);
+					if (DSSGlobals.getInstance().isInRedirect())
+						DSSGlobals.getInstance().setRedirectAbort(true);
 				}
 			} else {
 				DSSGlobals.getInstance().doSimpleMsg("Circuit must be solved in a fundamental frequency power flow or direct mode before entering harmonics mode!", 487);
-				if (DSSGlobals.getInstance().isIn_Redirect())
-					DSSGlobals.getInstance().setRedirect_Abort(true);
+				if (DSSGlobals.getInstance().isInRedirect())
+					DSSGlobals.getInstance().setRedirectAbort(true);
 				Result = false;
 			}
 		}

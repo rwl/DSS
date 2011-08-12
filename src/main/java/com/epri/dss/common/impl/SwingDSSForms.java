@@ -8,10 +8,10 @@ import com.epri.dss.common.DSSForms;
 
 public class SwingDSSForms implements DSSForms {
 
-	private static boolean ControlPanelCreated;
+	private static boolean controlPanelCreated;
 //	private static ControlPanel ControlPanel;
 
-	private static boolean RebuildHelpForm;
+	private static boolean rebuildHelpForm;
 
 	private SwingDSSForms() {
 
@@ -37,11 +37,11 @@ public class SwingDSSForms implements DSSForms {
 
 	}
 
-	public void progressCaption(String S) {
+	public void progressCaption(String s) {
 
 	}
 
-	public void progressFormCaption(String S) {
+	public void progressFormCaption(String s) {
 
 	}
 
@@ -65,11 +65,11 @@ public class SwingDSSForms implements DSSForms {
 
 	}
 
-	public void showPctProgress(int Count) {
+	public void showPctProgress(int count) {
 
 	}
 
-	public void showMessageForm(List<String> S) {
+	public void showMessageForm(List<String> s) {
 
 	}
 
@@ -102,20 +102,20 @@ public class SwingDSSForms implements DSSForms {
 
 	}
 
-	public void showTreeView(String Fname) {
+	public void showTreeView(String fname) {
 
 	}
 
-	public boolean makeChannelSelection(int NumFieldsToSkip, String Filename) {
+	public boolean makeChannelSelection(int numFieldsToSkip, String filename) {
 		return false;
 	}
 
 	public boolean isRebuildHelpForm() {
-		return RebuildHelpForm;
+		return rebuildHelpForm;
 	}
 
-	public void setRebuildHelpForm(boolean rebuildHelpForm) {
-		RebuildHelpForm = rebuildHelpForm;
+	public void setRebuildHelpForm(boolean rebuild) {
+		rebuildHelpForm = rebuild;
 	}
 
 }

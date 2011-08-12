@@ -14,69 +14,69 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	public CapacitorImpl() {
 		super();
-		this.Class_Name = "Capacitor";
+		this.className = "Capacitor";
 		this.DSSClassType = DSSClassType + DSSClassDefs.CAP_ELEMENT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = Capacitor.NumPropsThisClass;
+		numProperties = Capacitor.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "bus2";
-		PropertyName[2] = "phases";
-		PropertyName[3] = "kvar";
-		PropertyName[4] = "kv";
-		PropertyName[5] = "conn";
-		PropertyName[6] = "cmatrix";
-		PropertyName[7] = "cuf";
-		PropertyName[8] = "R";
-		PropertyName[9] = "XL";
-		PropertyName[10] = "Harm";
-		PropertyName[11] = "Numsteps";
-		PropertyName[12] = "states";
+		propertyName[0] = "bus1";
+		propertyName[1] = "bus2";
+		propertyName[2] = "phases";
+		propertyName[3] = "kvar";
+		propertyName[4] = "kv";
+		propertyName[5] = "conn";
+		propertyName[6] = "cmatrix";
+		propertyName[7] = "cuf";
+		propertyName[8] = "R";
+		propertyName[9] = "XL";
+		propertyName[10] = "Harm";
+		propertyName[11] = "Numsteps";
+		propertyName[12] = "states";
 
 		// define property help values
-		PropertyHelp[0] = "Name of first bus. Examples:" + CRLF +
+		propertyHelp[0] = "Name of first bus. Examples:" + CRLF +
 							"bus1=busname" + CRLF + "bus1=busname.1.2.3";
-		PropertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
+		propertyHelp[1] = "Name of 2nd bus. Defaults to all phases connected "+
 							"to first bus, node 0. (Shunt Wye Connection)" + CRLF +
 							"Not necessary to specify for delta (LL) connection";
-		PropertyHelp[2] = "Number of phases.";
-		PropertyHelp[3] = "Total kvar, if one step, or ARRAY of kvar ratings for each step.  Evenly divided among phases. See rules for NUMSTEPS.";
-		PropertyHelp[4] = "For 2, 3-phase, kV phase-phase. Otherwise specify actual can rating.";
-		PropertyHelp[5] = "={wye | delta |LN |LL}  Default is wye, which is equivalent to LN";
-		PropertyHelp[6] = "Nodal cap. matrix, lower triangle, microfarads, of the following form:"+CRLF+CRLF+
+		propertyHelp[2] = "Number of phases.";
+		propertyHelp[3] = "Total kvar, if one step, or ARRAY of kvar ratings for each step.  Evenly divided among phases. See rules for NUMSTEPS.";
+		propertyHelp[4] = "For 2, 3-phase, kV phase-phase. Otherwise specify actual can rating.";
+		propertyHelp[5] = "={wye | delta |LN |LL}  Default is wye, which is equivalent to LN";
+		propertyHelp[6] = "Nodal cap. matrix, lower triangle, microfarads, of the following form:"+CRLF+CRLF+
 							"cmatrix=\"c11 | -c21 c22 | -c31 -c32 c33\""+CRLF+CRLF+
 							"All steps are assumed the same if this property is used.";
-		PropertyHelp[7] = "ARRAY of Capacitance, each phase, for each step, microfarads."+CRLF+
+		propertyHelp[7] = "ARRAY of Capacitance, each phase, for each step, microfarads."+CRLF+
 							"See Rules for NumSteps.";
-		PropertyHelp[8] = "ARRAY of series resistance in each phase (line), ohms. Default is 0.0";
-		PropertyHelp[9] = "ARRAY of series inductive reactance(s) in each phase (line) for filter, ohms at base frequency. Use this OR \"h\" property to define filter. Default is 0.0.";
-		PropertyHelp[10] = "ARRAY of harmonics to which each step is tuned. Zero is interpreted as meaning zero reactance (no filter). Default is zero.";
-		PropertyHelp[11] = "Number of steps in this capacitor bank. Default = 1. Forces reallocation of the capacitance, reactor, and states array.  Rules: "+
+		propertyHelp[8] = "ARRAY of series resistance in each phase (line), ohms. Default is 0.0";
+		propertyHelp[9] = "ARRAY of series inductive reactance(s) in each phase (line) for filter, ohms at base frequency. Use this OR \"h\" property to define filter. Default is 0.0.";
+		propertyHelp[10] = "ARRAY of harmonics to which each step is tuned. Zero is interpreted as meaning zero reactance (no filter). Default is zero.";
+		propertyHelp[11] = "Number of steps in this capacitor bank. Default = 1. Forces reallocation of the capacitance, reactor, and states array.  Rules: "+
 							"If this property was previously =1, the value in the kvar property is divided equally among the steps. The kvar property " +
 							"does not need to be reset if that is accurate.  If the Cuf or Cmatrix property was used previously, all steps are set to the value of the first step. " +
 							"The states property is set to all steps on. All filter steps are set to the same harmonic. " +
 							"If this property was previously >1, the arrays are reallocated, but no values are altered. You must SUBSEQUENTLY assign all array properties.";
-		PropertyHelp[12] = "ARRAY of integers {1|0} states representing the state of each step (on|off). Defaults to 1 when reallocated (on). "+
+		propertyHelp[12] = "ARRAY of integers {1|0} states representing the state of each step (on|off). Defaults to 1 when reallocated (on). "+
 							"Capcontrol will modify this array as it turns steps on or off.";
 
-		ActiveProperty = Capacitor.NumPropsThisClass - 1;
+		activeProperty = Capacitor.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -183,7 +183,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapacitorObj((CapacitorObj) ElementList.getActive());
+		setActiveCapacitorObj((CapacitorObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveCapacitorObj());  // use property to set this value
 
 		CapacitorObj aco = getActiveCapacitorObj();
@@ -195,10 +195,10 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= NumProperties))  // TODO Check zero based indexing
+			if ((ParamPointer > 0) && (ParamPointer <= numProperties))  // TODO Check zero based indexing
 				aco.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

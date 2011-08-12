@@ -23,10 +23,10 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	public PVSystemImpl() {
 		super();
-		this.Class_Name = "PVSystem";
+		this.className = "PVSystem";
 		this.DSSClassType = DSSClassType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		// set register names
 		this.RegisterNames[0] = "kWh";
@@ -37,16 +37,16 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		final String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = PVSystem.NumPropsThisClass;
+		numProperties = PVSystem.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();  /* see DSSClass */
 
@@ -169,11 +169,11 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the PVSystem model " +
 				"for each iteration.  Creates a separate file for each PVSystem element named \"PVSystem_name.csv\"." );
 
-		ActiveProperty = PVSystem.NumPropsThisClass - 1;
+		activeProperty = PVSystem.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override default help string
-		PropertyHelp[PVSystem.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this PVSystem element. " +
+		propertyHelp[PVSystem.NumPropsThisClass] = "Name of harmonic voltage or current spectrum for this PVSystem element. " +
 				"Current injection is assumed for inverter. " +
 				"Default value is \"default\", which is defined when the DSS starts.";
 	}
@@ -210,8 +210,8 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	}
 
 	public void updateAll() {
-		for (int i = 0; i < ElementList.size(); i++) {
-			PVSystemObj pElem = (PVSystemObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			PVSystemObj pElem = (PVSystemObj) elementList.get(i);
 			if (pElem.isEnabled())
 				pElem.updatePVSystem();
 		}
@@ -279,7 +279,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActivePVsystemObj((PVSystemObj) ElementList.getActive());
+		setActivePVsystemObj((PVSystemObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActivePVsystemObj());
 
 		int iCase, Result = 0;
@@ -293,17 +293,17 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;  // if it is not a named property, assume the next property
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);  // look up the name in the list for this class
+				ParamPointer = commandList.getCommand(ParamName);  // look up the name in the list for this class
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties)) {
-				apv.setPropertyValue(PropertyIdxMap[ParamPointer], Param);  // update the string value of the property
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties)) {
+				apv.setPropertyValue(propertyIdxMap[ParamPointer], Param);  // update the string value of the property
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for PVSystem \""+apv.getName()+"\"", 560);
 			}
 
 			if (ParamPointer >= 0) {
-				iCase = PropertyIdxMap[ParamPointer];
+				iCase = propertyIdxMap[ParamPointer];
 				switch (iCase) {
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ apv.getName() + "\"", 561);
@@ -552,10 +552,10 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		PVSystemObj p;
 
 		if (Handle == 0) {  // init all
-			p = (PVSystemObj) ElementList.getFirst();
+			p = (PVSystemObj) elementList.getFirst();
 			while (p != null) {
 				p.randomize(0);
-				p = (PVSystemObj) ElementList.getNext();
+				p = (PVSystemObj) elementList.getNext();
 			}
 		} else {
 			setActiveElement(Handle);
@@ -577,8 +577,8 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	public void sampleAll() {
 		PVSystemObj pElem;
-		for (int i = 0; i < ElementList.size(); i++) {
-			pElem = (PVSystemObj) ElementList.get(i);
+		for (int i = 0; i < elementList.size(); i++) {
+			pElem = (PVSystemObj) elementList.get(i);
 			if (pElem.isEnabled())
 				pElem.takeSample();
 		}

@@ -19,15 +19,15 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 	public RecloserImpl() {
 		super();
 
-		this.Class_Name = "Recloser";
+		this.className = "Recloser";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.RECLOSER_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	public static TCC_CurveObj getTCC_Curve(String CurveName) {
@@ -42,79 +42,79 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 	protected void defineProperties() {
 
-		NumProperties = NumPropsThisClass;
+		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
 		// define property names
 
-		PropertyName[0]  = "MonitoredObj";
-		PropertyName[1]  = "MonitoredTerm";
-		PropertyName[2]  = "SwitchedObj";
-		PropertyName[3]  = "SwitchedTerm";
-		PropertyName[4]  = "NumFast";
-		PropertyName[5]  = "PhaseFast";
-		PropertyName[6]  = "PhaseDelayed";
-		PropertyName[7]  = "GroundFast";
-		PropertyName[8]  = "GroundDelayed";
-		PropertyName[9]  = "PhaseTrip";
-		PropertyName[10] = "GroundTrip";
-		PropertyName[11] = "PhaseInst";
-		PropertyName[12] = "GroundInst";
-		PropertyName[13] = "Reset";
-		PropertyName[14] = "Shots";
-		PropertyName[15] = "RecloseIntervals";
-		PropertyName[16] = "Delay";
-		PropertyName[17] = "Action";
-		PropertyName[18] = "TDPhFast";
-		PropertyName[19] = "TDGrFast";
-		PropertyName[20] = "TDPhDelayed";
-		PropertyName[21] = "TDGrDelayed";
+		propertyName[0]  = "MonitoredObj";
+		propertyName[1]  = "MonitoredTerm";
+		propertyName[2]  = "SwitchedObj";
+		propertyName[3]  = "SwitchedTerm";
+		propertyName[4]  = "NumFast";
+		propertyName[5]  = "PhaseFast";
+		propertyName[6]  = "PhaseDelayed";
+		propertyName[7]  = "GroundFast";
+		propertyName[8]  = "GroundDelayed";
+		propertyName[9]  = "PhaseTrip";
+		propertyName[10] = "GroundTrip";
+		propertyName[11] = "PhaseInst";
+		propertyName[12] = "GroundInst";
+		propertyName[13] = "Reset";
+		propertyName[14] = "Shots";
+		propertyName[15] = "RecloseIntervals";
+		propertyName[16] = "Delay";
+		propertyName[17] = "Action";
+		propertyName[18] = "TDPhFast";
+		propertyName[19] = "TDGrFast";
+		propertyName[20] = "TDPhDelayed";
+		propertyName[21] = "TDGrDelayed";
 
-		PropertyHelp[0] = "Full object name of the circuit element, typically a line, transformer, load, or generator, "+
+		propertyHelp[0] = "Full object name of the circuit element, typically a line, transformer, load, or generator, "+
 				"to which the Recloser's PT and/or CT are connected." +
 				" This is the \"monitored\" element. " +
 				"There is no default; must be specified.";
-		PropertyHelp[1] = "Number of the terminal of the circuit element to which the Recloser is connected. "+
+		propertyHelp[1] = "Number of the terminal of the circuit element to which the Recloser is connected. "+
 				"1 or 2, typically.  Default is 1.";
-		PropertyHelp[2] = "Name of circuit element switch that the Recloser controls. "+
+		propertyHelp[2] = "Name of circuit element switch that the Recloser controls. "+
 				"Specify the full object name." +
 				"Defaults to the same as the Monitored element. "+
 				"This is the \"controlled\" element.";
-		PropertyHelp[3] = "Number of the terminal of the controlled element in which the switch is controlled by the Recloser. "+
+		propertyHelp[3] = "Number of the terminal of the controlled element in which the switch is controlled by the Recloser. "+
 				"1 or 2, typically.  Default is 1.";
-		PropertyHelp[4] = "Number of Fast (fuse saving) operations.  Default is 1. (See \"Shots\")";
-		PropertyHelp[5] = "Name of the TCC Curve object that determines the Phase Fast trip.  Must have been previously defined as a TCC_Curve object."+
+		propertyHelp[4] = "Number of Fast (fuse saving) operations.  Default is 1. (See \"Shots\")";
+		propertyHelp[5] = "Name of the TCC Curve object that determines the Phase Fast trip.  Must have been previously defined as a TCC_Curve object."+
 				" Default is \"A\". "+
 				"Multiplying the current values in the curve by the \"phasetrip\" value gives the actual current.";
-		PropertyHelp[6] = "Name of the TCC Curve object that determines the Phase Delayed trip.  Must have been previously defined as a TCC_Curve object."+
+		propertyHelp[6] = "Name of the TCC Curve object that determines the Phase Delayed trip.  Must have been previously defined as a TCC_Curve object."+
 				" Default is \"D\"."+
 				"Multiplying the current values in the curve by the \"phasetrip\" value gives the actual current.";
-		PropertyHelp[7] = "Name of the TCC Curve object that determines the Ground Fast trip.  Must have been previously defined as a TCC_Curve object."+
+		propertyHelp[7] = "Name of the TCC Curve object that determines the Ground Fast trip.  Must have been previously defined as a TCC_Curve object."+
 				" Default is none (ignored). "+
 				"Multiplying the current values in the curve by the \"groundtrip\" value gives the actual current.";
-		PropertyHelp[8] = "Name of the TCC Curve object that determines the Ground Delayed trip.  Must have been previously defined as a TCC_Curve object."+
+		propertyHelp[8] = "Name of the TCC Curve object that determines the Ground Delayed trip.  Must have been previously defined as a TCC_Curve object."+
 				" Default is none (ignored)."+
 				"Multiplying the current values in the curve by the \"groundtrip\" value gives the actual current.";
-		PropertyHelp[9] = "Multiplier or actual phase amps for the phase TCC curve.  Defaults to 1.0.";
-		PropertyHelp[10] = "Multiplier or actual ground amps (3I0) for the ground TCC curve.  Defaults to 1.0.";
-		PropertyHelp[11] = "Actual amps for instantaneous phase trip which is assumed to happen in 0.01 sec + Delay Time. Default is 0.0, which signifies no inst trip. ";
-		PropertyHelp[12] = "Actual amps for instantaneous ground trip which is assumed to happen in 0.01 sec + Delay Time.Default is 0.0, which signifies no inst trip.";
-		PropertyHelp[13] = "Reset time in sec for Recloser.  Default is 15. ";
-		PropertyHelp[14] = "Total Number of fast and delayed shots to lockout.  Default is 4. This is one more than the number of reclose intervals.";
-		PropertyHelp[15] = "Array of reclose intervals.  Default for Recloser is (0.5, 2.0, 2.0) seconds. " +
+		propertyHelp[9] = "Multiplier or actual phase amps for the phase TCC curve.  Defaults to 1.0.";
+		propertyHelp[10] = "Multiplier or actual ground amps (3I0) for the ground TCC curve.  Defaults to 1.0.";
+		propertyHelp[11] = "Actual amps for instantaneous phase trip which is assumed to happen in 0.01 sec + Delay Time. Default is 0.0, which signifies no inst trip. ";
+		propertyHelp[12] = "Actual amps for instantaneous ground trip which is assumed to happen in 0.01 sec + Delay Time.Default is 0.0, which signifies no inst trip.";
+		propertyHelp[13] = "Reset time in sec for Recloser.  Default is 15. ";
+		propertyHelp[14] = "Total Number of fast and delayed shots to lockout.  Default is 4. This is one more than the number of reclose intervals.";
+		propertyHelp[15] = "Array of reclose intervals.  Default for Recloser is (0.5, 2.0, 2.0) seconds. " +
 				"A locked out Recloser must be closed manually (action=close).";
-		PropertyHelp[16] = "Fixed delay time (sec) added to Recloser trip time. Default is 0.0. Used to represent breaker time or any other delay." ;
-		PropertyHelp[17] = "{Trip/Open | Close}  Action that overrides the Recloser control. Simulates manual control on recloser " +
+		propertyHelp[16] = "Fixed delay time (sec) added to Recloser trip time. Default is 0.0. Used to represent breaker time or any other delay." ;
+		propertyHelp[17] = "{Trip/Open | Close}  Action that overrides the Recloser control. Simulates manual control on recloser " +
 				"\"Trip\" or \"Open\" causes the controlled element to open and lock out. " +
 				"\"Close\" causes the controlled element to close and the Recloser to reset to its first operation.";
-		PropertyHelp[18] = "Time dial for Phase Fast trip curve. Multiplier on time axis of specified curve. Default=1.0.";
-		PropertyHelp[19] = "Time dial for Ground Fast trip curve. Multiplier on time axis of specified curve. Default=1.0.";
-		PropertyHelp[20] = "Time dial for Phase Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
-		PropertyHelp[21] = "Time dial for Ground Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
+		propertyHelp[18] = "Time dial for Phase Fast trip curve. Multiplier on time axis of specified curve. Default=1.0.";
+		propertyHelp[19] = "Time dial for Ground Fast trip curve. Multiplier on time axis of specified curve. Default=1.0.";
+		propertyHelp[20] = "Time dial for Phase Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
+		propertyHelp[21] = "Time dial for Ground Delayed trip curve. Multiplier on time axis of specified curve. Default=1.0.";
 
-		ActiveProperty = Recloser.NumPropsThisClass - 1;
+		activeProperty = Recloser.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -132,7 +132,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRecloserObj((RecloserObj) ElementList.getActive());
+		setActiveRecloserObj((RecloserObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveRecloserObj());
 
 		int Result = 0;
@@ -146,10 +146,10 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
 				ar.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

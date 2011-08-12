@@ -21,63 +21,63 @@ public class DSSClassImpl implements DSSClass {
 
 	private static com.epri.dss.common.DSSClasses DSSClasses;
 
-	protected String Class_Name;
+	protected String className;
 
-	/* index of present active element */
-	protected int ActiveElement;
+	/** Index of present active element */
+	protected int activeElement;
 
-	protected CommandList CommandList;
+	protected CommandList commandList;
 
-	protected int ActiveProperty;
+	protected int activeProperty;
 
-	protected HashList ElementNameList;
+	protected HashList elementNameList;
 
-	protected int NumProperties;
+	protected int numProperties;
 
-	protected String[] PropertyName, PropertyHelp;
+	protected String[] propertyName, propertyHelp;
 
-	protected int[] PropertyIdxMap;
+	protected int[] propertyIdxMap;
 
-	/* Maps property to internal command number */
-	protected int[] RevPropertyIdxMap;
+	/** Maps property to internal command number */
+	protected int[] revPropertyIdxMap;
 
 	protected int DSSClassType;
 
-	protected PointerList ElementList;
+	protected PointerList elementList;
 
-	/* When device gets renamed */
-	protected boolean ElementNamesOutOfSynch;
+	/** When device gets renamed */
+	protected boolean elementNamesOutOfSynch;
 
-	protected boolean Saved;
+	protected boolean saved;
 
 	public DSSClassImpl() {
 		super();
 		// init size and increment
-		this.ElementList = new PointerListImpl(20);
-		this.PropertyName = null;
-		this.PropertyHelp = null;
-		this.PropertyIdxMap = null;
-		this.RevPropertyIdxMap = null;
+		this.elementList = new PointerListImpl(20);
+		this.propertyName = null;
+		this.propertyHelp = null;
+		this.propertyIdxMap = null;
+		this.revPropertyIdxMap = null;
 
-		this.ActiveElement = -1;
-		this.ActiveProperty = -1;
+		this.activeElement = -1;
+		this.activeProperty = -1;
 
-		this.ElementNameList = new HashListImpl(100);
-		this.ElementNamesOutOfSynch = false;
+		this.elementNameList = new HashListImpl(100);
+		this.elementNamesOutOfSynch = false;
 	}
 
 	protected void finalize() throws Throwable {
 		// get rid of space occupied by strings
-		for (int i = 0; i < this.NumProperties; i++) this.PropertyName[i] = "";
-		for (int i = 0; i < this.NumProperties; i++) this.PropertyHelp[i] = "";
+		for (int i = 0; i < this.numProperties; i++) this.propertyName[i] = "";
+		for (int i = 0; i < this.numProperties; i++) this.propertyHelp[i] = "";
 
-		this.PropertyName = new String[0];
-		this.PropertyHelp = new String[0];
-		this.PropertyIdxMap = new int[0];
-		this.RevPropertyIdxMap = new int[0];
-		this.ElementList = null;
-		this.ElementNameList = null;
-		this.CommandList = null;
+		this.propertyName = new String[0];
+		this.propertyHelp = new String[0];
+		this.propertyIdxMap = new int[0];
+		this.revPropertyIdxMap = new int[0];
+		this.elementList = null;
+		this.elementNameList = null;
+		this.commandList = null;
 
 		super.finalize();
 	}
@@ -91,18 +91,18 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public void setActiveElement(int Value) {
-		if ((Value > 0) && (Value <= ElementList.size())) {
-			DSSGlobals Globals = DSSGlobals.getInstance();
-			this.ActiveElement = Value;
-			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(ActiveElement));
+		if ((Value > 0) && (Value <= elementList.size())) {
+			DSSGlobals globals = DSSGlobals.getInstance();
+			activeElement = Value;
+			globals.setActiveDSSObject((DSSObjectImpl) elementList.get(activeElement));
 
-			if (Globals.getActiveDSSObject() instanceof DSSCktElement)
-				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
+			if (globals.getActiveDSSObject() instanceof DSSCktElement)
+				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
 		}
 	}
 
 	public int getActiveElement() {
-		return ActiveElement;
+		return activeElement;
 	}
 
 	/**
@@ -123,114 +123,114 @@ public class DSSClassImpl implements DSSClass {
 	 */
 	protected int addObjectToList(DSSObject Obj) {
 		// put it in this collection's element list.
-		ElementList.add(Obj);
-		ElementNameList.add( Obj.getName() );
+		elementList.add(Obj);
+		elementNameList.add( Obj.getName() );
 
-		if (ElementList.size() > 2 * ElementNameList.getInitialAllocation())
+		if (elementList.size() > 2 * elementNameList.getInitialAllocation())
 			reallocateElementNameList();
 
-		setActiveElement(ElementList.size() - 1);
-		return ActiveElement;  // return index of object in list
+		setActiveElement(elementList.size() - 1);
+		return activeElement;  // return index of object in list
 	}
 
 	public boolean setActive(String ObjName) {
-		boolean Result = false;
+		boolean result = false;
 
-		if (ElementNamesOutOfSynch)
+		if (elementNamesOutOfSynch)
 			resynchElementNameList();
-		int idx = ElementNameList.find(ObjName);
+		int idx = elementNameList.find(ObjName);
 		if (idx > 0) {
 			setActiveElement(idx);
-			DSSGlobals.getInstance().setActiveDSSObject((DSSObject) ElementList.get(idx));
-			Result = true;
+			DSSGlobals.getInstance().setActiveDSSObject((DSSObject) elementList.get(idx));
+			result = true;
 		}
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Find an obj of this class by name.
 	 */
 	public Object find(String ObjName) {
-		Object Result = null;
-		if (ElementNamesOutOfSynch)
+		Object result = null;
+		if (elementNamesOutOfSynch)
 			resynchElementNameList();
 
-		int idx = ElementNameList.find(ObjName);
+		int idx = elementNameList.find(ObjName);
 		if (idx > 0) {
 			setActiveElement(idx);
-			Result = ElementList.get(idx);
+			result = elementList.get(idx);
 		}
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Get address of active obj of this class.
 	 */
 	public Object getActiveObj() {
-		if (ActiveElement > 0) {
-			return ElementList.get(ActiveElement);
+		if (activeElement > 0) {
+			return elementList.get(activeElement);
 		} else {
 			return null;
 		}
 	}
 
 	public String getFirstPropertyName() {
-		ActiveProperty = 0;
+		activeProperty = 0;
 		return getNextPropertyName();
 	}
 
 	public String getNextPropertyName() {
-		String Result;
+		String result;
 
-		if (ActiveProperty <= NumProperties) {
-			Result = PropertyName[ActiveProperty];
+		if (activeProperty <= numProperties) {
+			result = propertyName[activeProperty];
 		} else {
-			Result = "";
+			result = "";
 		}
 
-		ActiveProperty += 1;
+		activeProperty += 1;
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Find property value by string.
 	 */
-	public int propertyIndex(String Prop) {
-		int Result = 0;  // Default result if not found
-		for (int i = 0; i < NumProperties; i++) {
-			if (Prop.equalsIgnoreCase(PropertyName[i])) {
-				Result = PropertyIdxMap[i];
+	public int propertyIndex(String prop) {
+		int result = 0;  // default result if not found
+		for (int i = 0; i < numProperties; i++) {
+			if (prop.equalsIgnoreCase(propertyName[i])) {
+				result = propertyIdxMap[i];
 				break;
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Add no. of intrinsic properties.
 	 */
 	protected void countProperties() {
-		NumProperties = NumProperties + 1;
+		numProperties = numProperties + 1;
 	}
 
 	/**
 	 * Add properties of this class to propName.
 	 */
 	protected void defineProperties() {
-		ActiveProperty += 1;
+		activeProperty += 1;
 
-		PropertyName[ActiveProperty] = "like";
-		PropertyHelp[ActiveProperty] = "Make like another object, e.g.:" +
+		propertyName[activeProperty] = "like";
+		propertyHelp[activeProperty] = "Make like another object, e.g.:" +
 				DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"new capacitor.C2 like=c1  ...";
 	}
 
-	protected int classEdit(final Object ActiveObj, int ParamPointer) {
+	protected int classEdit(final Object activeObj, int paramPointer) {
 		// continue parsing with contents of parser
-		if (ParamPointer > 0) {
+		if (paramPointer > 0) {
 //			DSSObject obj = (DSSObject) ActiveObj;
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 1:
 				makeLike(Parser.getInstance().makeString());  // like command
 				break;
@@ -239,45 +239,45 @@ public class DSSClassImpl implements DSSClass {
 		return 0;
 	}
 
-	protected int makeLike(String ObjName) {
+	protected int makeLike(String objName) {
 		DSSGlobals.getInstance().doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
 		return 0;
 	}
 
 	public int getFirst() {
-		int Result = 0;
-		if (ElementList.size() == 0) {
-			Result = 0;
+		int result = 0;
+		if (elementList.size() == 0) {
+			result = 0;
 		} else {
-			DSSGlobals Globals = DSSGlobals.getInstance();
+			DSSGlobals globals = DSSGlobals.getInstance();
 
 			setActiveElement(1);
-			Globals.setActiveDSSObject((DSSObjectImpl) ElementList.get(0));
-			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
-				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
-				Result = ActiveElement;
+			globals.setActiveDSSObject((DSSObjectImpl) elementList.get(0));
+			if (globals.getActiveDSSObject() instanceof DSSCktElement) {
+				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
+				result = activeElement;
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	public int getNext() {
-		int Result = -1;
-		if (ActiveElement > ElementList.size()) {
-			Result = 0;
+		int result = -1;
+		if (activeElement > elementList.size()) {
+			result = 0;
 		} else {
-			DSSGlobals Globals = DSSGlobals.getInstance();
+			DSSGlobals globals = DSSGlobals.getInstance();
 
-			Globals.setActiveDSSObject((DSSObject) ElementList.getNext());
+			globals.setActiveDSSObject((DSSObject) elementList.getNext());
 
-			if (Globals.getActiveDSSObject() instanceof DSSCktElement) {
-				Globals.getActiveCircuit().setActiveCktElement( (CktElement) Globals.getActiveDSSObject() );
-				Result = ActiveElement;
+			if (globals.getActiveDSSObject() instanceof DSSCktElement) {
+				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
+				result = activeElement;
 			}
 		}
-		ActiveElement += 1;
+		activeElement += 1;
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -288,128 +288,128 @@ public class DSSClassImpl implements DSSClass {
 	 *
 	 * addProperty(<name of property>, <index in the edit case statement>, <help text>);
 	 */
-	public void addProperty(String PropName, int CmdMapIndex, String HelpString) {
-		ActiveProperty += 1;
+	public void addProperty(String propName, int cmdMapIndex, String helpString) {
+		activeProperty += 1;
 
-		PropertyName[ActiveProperty] = PropName;
-		PropertyHelp[ActiveProperty] = HelpString;
+		propertyName[activeProperty] = propName;
+		propertyHelp[activeProperty] = helpString;
 		// map to internal object property index
-		PropertyIdxMap[ActiveProperty] = CmdMapIndex;
-		RevPropertyIdxMap[CmdMapIndex] = ActiveProperty;
+		propertyIdxMap[activeProperty] = cmdMapIndex;
+		revPropertyIdxMap[cmdMapIndex] = activeProperty;
 	}
 
 	protected void allocatePropertyArrays() {
-		PropertyName = new String[NumProperties];
-		PropertyHelp = new String[NumProperties];
-		PropertyIdxMap = new int[NumProperties];
-		RevPropertyIdxMap = new int[NumProperties];
+		propertyName = new String[numProperties];
+		propertyHelp = new String[numProperties];
+		propertyIdxMap = new int[numProperties];
+		revPropertyIdxMap = new int[numProperties];
 
-		ActiveProperty = -1;  // initialize for addProperty
+		activeProperty = -1;  // initialize for addProperty
 
 		/* initialize propertyIdxMap to take care of legacy items */
-		for (int i = 0; i < NumProperties; i++) PropertyIdxMap[i] = i;
-		for (int i = 0; i < NumProperties; i++) RevPropertyIdxMap[i] = i;
+		for (int i = 0; i < numProperties; i++) propertyIdxMap[i] = i;
+		for (int i = 0; i < numProperties; i++) revPropertyIdxMap[i] = i;
 	}
 
 	public void reallocateElementNameList() {
 		/* Reallocate the device name list to improve the performance of searches */
-		ElementNameList = null;  // throw away the old one
-		ElementNameList = new HashListImpl(2 * ElementList.size());  // make a new one
+		elementNameList = null;  // throw away the old one
+		elementNameList = new HashListImpl(2 * elementList.size());  // make a new one
 
 		// do this using the names of the elements rather than the old list because it might be
 		// messed up if an element gets renamed
 
-		for (int i = 0; i < this.ElementList.size(); i++)
-			ElementNameList.add( ((DSSObject) ElementList.get(i)).getName() );
+		for (int i = 0; i < this.elementList.size(); i++)
+			elementNameList.add( ((DSSObject) elementList.get(i)).getName() );
 	}
 
 	private void resynchElementNameList() {
 		reallocateElementNameList();
-		ElementNamesOutOfSynch = false;
+		elementNamesOutOfSynch = false;
 	}
 
 	public int getElementCount() {
-		return ElementList.size();
+		return elementList.size();
 	}
 
 	public int getNumProperties() {
-		return NumProperties;
+		return numProperties;
 	}
 
-	public void setNumProperties(int numProperties) {
-		NumProperties = numProperties;
+	public void setNumProperties(int num) {
+		numProperties = num;
 	}
 
 	public String[] getPropertyName() {
-		return PropertyName;
+		return propertyName;
 	}
 
-	public void setPropertyName(String[] propertyName) {
-		PropertyName = propertyName;
+	public void setPropertyName(String[] name) {
+		propertyName = name;
 	}
 
 	public String[] getPropertyHelp() {
-		return PropertyHelp;
+		return propertyHelp;
 	}
 
-	public void setPropertyHelp(String[] propertyHelp) {
-		PropertyHelp = propertyHelp;
+	public void setPropertyHelp(String[] help) {
+		propertyHelp = help;
 	}
 
 	public int[] getPropertyIdxMap() {
-		return PropertyIdxMap;
+		return propertyIdxMap;
 	}
 
-	public void setPropertyIdxMap(int[] propertyIdxMap) {
-		PropertyIdxMap = propertyIdxMap;
+	public void setPropertyIdxMap(int[] map) {
+		propertyIdxMap = map;
 	}
 
 	public int[] getRevPropertyIdxMap() {
-		return RevPropertyIdxMap;
+		return revPropertyIdxMap;
 	}
 
-	public void setRevPropertyIdxMap(int[] revPropertyIdxMap) {
-		RevPropertyIdxMap = revPropertyIdxMap;
+	public void setRevPropertyIdxMap(int[] map) {
+		revPropertyIdxMap = map;
 	}
 
 	public int getDSSClassType() {
 		return DSSClassType;
 	}
 
-	public void setDSSClassType(int dSSClassType) {
-		DSSClassType = dSSClassType;
+	public void setDSSClassType(int type) {
+		DSSClassType = type;
 	}
 
 	public PointerList getElementList() {
-		return ElementList;
+		return elementList;
 	}
 
-	public void setElementList(PointerList elementList) {
-		ElementList = elementList;
+	public void setElementList(PointerList list) {
+		elementList = list;
 	}
 
 	public boolean isElementNamesOutOfSynch() {
-		return ElementNamesOutOfSynch;
+		return elementNamesOutOfSynch;
 	}
 
-	public void setElementNamesOutOfSynch(boolean elementNamesOutOfSynch) {
-		ElementNamesOutOfSynch = elementNamesOutOfSynch;
+	public void setElementNamesOutOfSynch(boolean value) {
+		elementNamesOutOfSynch = value;
 	}
 
 	public boolean isSaved() {
-		return Saved;
+		return saved;
 	}
 
-	public void setSaved(boolean saved) {
-		Saved = saved;
+	public void setSaved(boolean value) {
+		saved = value;
 	}
 
 	public String getName() {
-		return Class_Name;
+		return className;
 	}
 
-	public static void setDSSClasses(com.epri.dss.common.DSSClasses dSSClasses) {
-		DSSClasses = dSSClasses;
+	public static void setDSSClasses(com.epri.dss.common.DSSClasses classes) {
+		DSSClasses = classes;
 	}
 
 	public static com.epri.dss.common.DSSClasses getDSSClasses() {

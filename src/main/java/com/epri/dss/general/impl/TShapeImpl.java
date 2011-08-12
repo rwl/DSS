@@ -21,82 +21,82 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	public TShapeImpl() {
 		super();
-		this.Class_Name   = "TShape";
+		this.className   = "TShape";
 		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 		final String CRLF = DSSGlobals.CRLF;
 
-		NumProperties = TShape.NumPropsThisClass;
+		numProperties = TShape.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 
 		// define property names
-		PropertyName[0]  = "npts";      // number of points to expect
-		PropertyName[1]  = "interval";  // default = 1.0;
-		PropertyName[2]  = "temp";      // vector of temperature values
-		PropertyName[3]  = "hour";      // vector of hour values
-		PropertyName[4]  = "mean";      // set the mean temp (otherwise computed)
-		PropertyName[5]  = "stddev";    // set the std dev of the temp (otherwise computed)
-		PropertyName[6]  = "csvfile";   // switch input to a csvfile
-		PropertyName[7]  = "sngfile";   // switch input to a binary file of singles
-		PropertyName[8]  = "dblfile";   // switch input to a binary file of singles
-		PropertyName[9]  = "sinterval"; // interval in seconds
-		PropertyName[10] = "minterval"; // interval in minutes
-		PropertyName[11] = "action";    // interval in minutes
+		propertyName[0]  = "npts";      // number of points to expect
+		propertyName[1]  = "interval";  // default = 1.0;
+		propertyName[2]  = "temp";      // vector of temperature values
+		propertyName[3]  = "hour";      // vector of hour values
+		propertyName[4]  = "mean";      // set the mean temp (otherwise computed)
+		propertyName[5]  = "stddev";    // set the std dev of the temp (otherwise computed)
+		propertyName[6]  = "csvfile";   // switch input to a csvfile
+		propertyName[7]  = "sngfile";   // switch input to a binary file of singles
+		propertyName[8]  = "dblfile";   // switch input to a binary file of singles
+		propertyName[9]  = "sinterval"; // interval in seconds
+		propertyName[10] = "minterval"; // interval in minutes
+		propertyName[11] = "action";    // interval in minutes
 
 		// define property help values
-		PropertyHelp[0] = "Max number of points to expect in temperature shape vectors. This gets reset to the number of temperature values " +
+		propertyHelp[0] = "Max number of points to expect in temperature shape vectors. This gets reset to the number of temperature values " +
 				"found if less than specified.";  // Number of points to expect
-		PropertyHelp[1] = "Time interval for fixed interval data, hrs. Default = 1. "+
+		propertyHelp[1] = "Time interval for fixed interval data, hrs. Default = 1. "+
 				"If set = 0 then time data (in hours) is expected using either the Hour property or input files. " +CRLF+CRLF+
 				"See also \"sinterval\" and \"minterval\".";  // default = 1.0;
-		PropertyHelp[2] = "Array of temperature values.  Units should be compatible with the object using the data. " +
+		propertyHelp[2] = "Array of temperature values.  Units should be compatible with the object using the data. " +
 				"You can also use the syntax: "+CRLF+
 				"Temp = (file=filename)     !for text file one value per line"+CRLF+
 				"Temp = (dblfile=filename)  !for packed file of doubles"+CRLF+
 				"Temp = (sngfile=filename)  !for packed file of singles "+CRLF+CRLF+
 				"Note: this property will reset Npts if the  number of values in the files are fewer.";  // vextor of hour values
-		PropertyHelp[3] = "Array of hour values. Only necessary to define this property for variable interval data."+
+		propertyHelp[3] = "Array of hour values. Only necessary to define this property for variable interval data."+
 				" If the data are fixed interval, do not use this property. " +
 				"You can also use the syntax: "+CRLF+
 				"hour = (file=filename)     !for text file one value per line"+CRLF+
 				"hour = (dblfile=filename)  !for packed file of doubles"+CRLF+
 				"hour = (sngfile=filename)  !for packed file of singles ";  // vextor of hour values
-		PropertyHelp[4] = "Mean of the temperature curve values.  This is computed on demand the first time a "+
+		propertyHelp[4] = "Mean of the temperature curve values.  This is computed on demand the first time a "+
 				"value is needed.  However, you may set it to another value independently. "+
 				"Used for Monte Carlo load simulations.";  // set the mean (otherwise computed)
-		PropertyHelp[5] = "Standard deviation of the temperature.  This is computed on demand the first time a "+
+		propertyHelp[5] = "Standard deviation of the temperature.  This is computed on demand the first time a "+
 				"value is needed.  However, you may set it to another value independently."+
 				"Is overwritten if you subsequently read in a curve" + CRLF + CRLF +
 				"Used for Monte Carlo load simulations.";  // set the std dev (otherwise computed)
-		PropertyHelp[6] = "Switch input of temperature curve data to a csv file "+
+		propertyHelp[6] = "Switch input of temperature curve data to a csv file "+
 				"containing (hour, Temp) points, or simply (Temp) values for fixed time interval data, one per line. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // Switch input to a csvfile
-		PropertyHelp[7] = "Switch input of temperature curve data to a binary file of singles "+
+		propertyHelp[7] = "Switch input of temperature curve data to a binary file of singles "+
 				"containing (hour, Temp) points, or simply (Temp) values for fixed time interval data, packed one after another. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a binary file of singles
-		PropertyHelp[8] = "Switch input of temperature curve data to a binary file of doubles "+
+		propertyHelp[8] = "Switch input of temperature curve data to a binary file of doubles "+
 				"containing (hour, Temp) points, or simply (Temp) values for fixed time interval data, packed one after another. " +
 				"NOTE: This action may reset the number of points to a lower value.";  // switch input to a binary file of singles
-		PropertyHelp[9] ="Specify fixed interval in SECONDS. Alternate way to specify Interval property.";
-		PropertyHelp[10] ="Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
-		PropertyHelp[11] ="{DblSave | SngSave} After defining temperature curve data... " +
+		propertyHelp[9] ="Specify fixed interval in SECONDS. Alternate way to specify Interval property.";
+		propertyHelp[10] ="Specify fixed interval in MINUTES. Alternate way to specify Interval property.";
+		propertyHelp[11] ="{DblSave | SngSave} After defining temperature curve data... " +
 				"Setting action=DblSave or SngSave will cause the present \"Temp\" values to be written to " +
 				"either a packed file of double or single. The filename is the TShape name. ";  // Action
 
-		ActiveProperty = TShape.NumPropsThisClass - 1;
+		activeProperty = TShape.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -117,7 +117,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 		int Result = 0;
 		// continue parsing with contents of parser
-		setActiveTShapeObj((TShapeObj) ElementList.getActive());
+		setActiveTShapeObj((TShapeObj) elementList.getActive());
 		Globals.setActiveDSSObject(getActiveTShapeObj());
 
 		TShapeObj ats = getActiveTShapeObj();
@@ -130,10 +130,10 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				ats.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
@@ -269,19 +269,19 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	}
 
 	public String getCode() {
-		return ((TShapeObj) ElementList.getActive()).getName();
+		return ((TShapeObj) elementList.getActive()).getName();
 	}
 
 	public void setCode(String Value) {
 		setActiveTShapeObj(null);
-		TShapeObj pTShapeObj = (TShapeObj) ElementList.getFirst();
+		TShapeObj pTShapeObj = (TShapeObj) elementList.getFirst();
 		while (pTShapeObj != null) {
 			if (pTShapeObj.getName().equalsIgnoreCase(Value)) {
 				setActiveTShapeObj(pTShapeObj);
 				return;
 			}
 
-			pTShapeObj = (TShapeObj) ElementList.getNext();
+			pTShapeObj = (TShapeObj) elementList.getNext();
 		}
 
 		DSSGlobals.getInstance().doSimpleMsg("TShape: \"" + Value + "\" not found.", 612);

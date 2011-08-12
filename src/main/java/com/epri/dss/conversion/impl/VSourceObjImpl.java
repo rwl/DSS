@@ -321,8 +321,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			}
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error computing voltages for VSource."+getName()+". Check specification. Aborting.", 326);
-			if (Globals.isIn_Redirect())
-				Globals.setRedirect_Abort(true);
+			if (Globals.isInRedirect())
+				Globals.setRedirectAbort(true);
 		}
 	}
 

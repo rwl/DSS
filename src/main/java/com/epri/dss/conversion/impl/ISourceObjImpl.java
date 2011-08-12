@@ -113,8 +113,8 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			}
 		} catch (Exception e) {
 			Globals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
-			if (Globals.isIn_Redirect())
-				Globals.setRedirect_Abort(true);
+			if (Globals.isInRedirect())
+				Globals.setRedirectAbort(true);
 		}
 
 		return Result;

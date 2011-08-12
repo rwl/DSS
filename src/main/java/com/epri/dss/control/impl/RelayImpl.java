@@ -19,22 +19,22 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 	public RelayImpl() {
 		super();
 
-		this.Class_Name = "Relay";
+		this.className = "Relay";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.RELAY_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 
 		this.TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = Relay.NumPropsThisClass;
+		numProperties = Relay.NumPropsThisClass;
 		countProperties();  // get inherited property count
 
 		allocatePropertyArrays();
@@ -110,7 +110,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				"\"Trip\" or \"Open\" causes the controlled element to open and lock out. " +
 				"\"Close\" causes the controlled element to close and the relay to reset to its first operation.");
 
-		ActiveProperty = Relay.NumPropsThisClass - 1;
+		activeProperty = Relay.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -138,7 +138,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRelayObj((RelayObj) ElementList.getActive());
+		setActiveRelayObj((RelayObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveRelayObj());
 
 		int Result = 0;
@@ -152,17 +152,17 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= NumProperties)) {
-				ar.setPropertyValue(PropertyIdxMap[ParamPointer], Param);
+			if ((ParamPointer >= 0) && (ParamPointer <= numProperties)) {
+				ar.setPropertyValue(propertyIdxMap[ParamPointer], Param);
 			} else {
 				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for relay \""+ar.getName()+"\"", 381);
 			}
 
 			if (ParamPointer >= 0) {
-				switch (PropertyIdxMap[ParamPointer]) {
+				switch (propertyIdxMap[ParamPointer]) {
 				/* internal relay property commands */
 				case -1:
 					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
@@ -266,7 +266,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			}
 
 			if (ParamPointer >= 0) {
-				switch (PropertyIdxMap[ParamPointer]) {
+				switch (propertyIdxMap[ParamPointer]) {
 				/* Default the controlled element to the monitored element */
 				case 0:
 					ar.setElementName(ar.getMonitoredElementName());

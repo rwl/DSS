@@ -13,13 +13,13 @@ import com.epri.dss.shared.CktTree;
 
 public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
-	private ArrayList<CktElement> SequenceList;
-	private ArrayList<CktElement> ShuntList;
+	private ArrayList<CktElement> sequenceList;
+	private ArrayList<CktElement> shuntList;
 
-	private CktElement RootElement;
-	private int FromTerminalOffset;
+	private CktElement rootElement;
+	private int fromTerminalOffset;
 
-	protected boolean IsSynched;
+	protected boolean isSynched;
 
 	public FeederObjImpl(DSSClassImpl ParClass, String MeterName) {
 		super(ParClass);
@@ -27,10 +27,10 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		setName(MeterName.toLowerCase());
 		DSSObjType = ParClass.getDSSClassType();  // this will be a current source (PCElement)
 
-		SequenceList = new ArrayList<CktElement>(50);
-		ShuntList = new ArrayList<CktElement>(50);
+		sequenceList = new ArrayList<CktElement>(50);
+		shuntList = new ArrayList<CktElement>(50);
 
-		IsSynched = false;
+		isSynched = false;
 
 		// bus names and nPhases, etc are set up from EnergyMeter
 
@@ -42,28 +42,28 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		int bref;
 		CktElement pElement, pShunt;
 
-		SequenceList.clear();  // get rid of any previous definitions
-		ShuntList.clear();
+		sequenceList.clear();  // get rid of any previous definitions
+		shuntList.clear();
 
-		IsSynched = false;
+		isSynched = false;
 		// set up feeder terminals and busRef to match the from node of the first branch
 		if (BranchList != null) {
-			RootElement = (CktElement) BranchList.getFirst();
+			rootElement = (CktElement) BranchList.getFirst();
 
-			setNPhases( RootElement.getNPhases() );  // take care of allocating terminal stuff
-			setNConds( RootElement.getNConds() );
+			setNPhases( rootElement.getNPhases() );  // take care of allocating terminal stuff
+			setNConds( rootElement.getNConds() );
 			setNTerms(1);
 			YOrder = nTerms * nConds;
 
 			terminals[0].setBusRef(BranchList.getPresentBranch().getFromBusReference());  // TODO Check zero based indexing
-			setBus(0, RootElement.getBus(BranchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
-			FromTerminalOffset = (BranchList.getPresentBranch().getFromTerminal() - 1) * nConds;
-			setNodeRef(0, RootElement.getNodeRef()[1 + FromTerminalOffset]);  // TODO Check zero based indexing
+			setBus(0, rootElement.getBus(BranchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
+			fromTerminalOffset = (BranchList.getPresentBranch().getFromTerminal() - 1) * nConds;
+			setNodeRef(0, rootElement.getNodeRef()[1 + fromTerminalOffset]);  // TODO Check zero based indexing
 
 			// build the sequence list and shunt list
-			pElement = RootElement;
+			pElement = rootElement;
 			while (pElement != null) {
-				SequenceList.add(pElement);
+				sequenceList.add(pElement);
 
 				// mark all the to buses for this branch as radial buses
 				BranchList.getPresentBranch().resetToBusList();  // reset pointer to first to bus
@@ -75,13 +75,13 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 				pShunt = (CktElement) BranchList.getPresentBranch().getFirstObject();
 				while (pShunt != null) {
-					ShuntList.add(pShunt);
+					shuntList.add(pShunt);
 					pShunt = (CktElement) BranchList.getPresentBranch().getNextObject();
 				}
 				pElement = (CktElement) BranchList.GoForward();
 			}
 
-			IsSynched = true;
+			isSynched = true;
 
 			setCktElementFeederFlags(true);
 		}
@@ -123,9 +123,9 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 	 * Return the currents in the from terminal of the first element in the sequence list.
 	 */
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < YOrder; i++)
-			Curr[i] = Complex.ZERO;  // no contribution if not radial solution
+			curr[i] = Complex.ZERO;  // no contribution if not radial solution
 	}
 
 	/**
@@ -134,23 +134,23 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 	 * Only thing this is used for is for getCurrents(). Ignore for Feeder.
 	 */
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 		// Do not dump any properties for a Feeder unless debug.
 
-		if (Complete) {
+		if (complete) {
 			/* Dump sequence lists, etc here... */
-			F.println();
-			F.println();
+			f.println();
+			f.println();
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		super.initPropertyValues(FeederImpl.getNumPropsThisClass());
 	}
 
@@ -162,19 +162,19 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		// do nothing
 	}
 
-	public void setCktElementFeederFlags(boolean Value) {
-		for (int i = 0; i < ShuntList.size(); i++)
-			ShuntList.get(i).setPartofFeeder(Value);
+	public void setCktElementFeederFlags(boolean value) {
+		for (int i = 0; i < shuntList.size(); i++)
+			shuntList.get(i).setPartofFeeder(value);
 
-		for (int i = 0; i < SequenceList.size(); i++)
-			SequenceList.get(i).setPartofFeeder(Value);
+		for (int i = 0; i < sequenceList.size(); i++)
+			sequenceList.get(i).setPartofFeeder(value);
 	}
 
 	public boolean isSynched() {
-		return IsSynched;
+		return isSynched;
 	}
 
-	public void setIsSynched(boolean isSynched) {
-		IsSynched = isSynched;
+	public void setSynched(boolean synched) {
+		isSynched = synched;
 	}
 }

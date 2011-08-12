@@ -17,24 +17,24 @@ public class CableDataImpl extends ConductorDataImpl implements CableData {
 	}
 
 	protected void countProperties() {
-		NumProperties = NumProperties + NumCableClassProps;
+		numProperties = numProperties + NumCableClassProps;
 		super.countProperties();
 	}
 
 	protected void defineProperties() {
-		PropertyName[ActiveProperty + 1] = "EpsR";
-		PropertyName[ActiveProperty + 2] = "InsLayer";
-		PropertyName[ActiveProperty + 3] = "DiaIns";
-		PropertyName[ActiveProperty + 4] = "DiaCable";
+		propertyName[activeProperty + 1] = "EpsR";
+		propertyName[activeProperty + 2] = "InsLayer";
+		propertyName[activeProperty + 3] = "DiaIns";
+		propertyName[activeProperty + 4] = "DiaCable";
 
-		PropertyHelp[ActiveProperty + 1] = "Insulation layer relative permittivity; default is 2.3.";
-		PropertyHelp[ActiveProperty + 2] = "Insulation layer thickness; same units as radius; no default. " +
+		propertyHelp[activeProperty + 1] = "Insulation layer relative permittivity; default is 2.3.";
+		propertyHelp[activeProperty + 2] = "Insulation layer thickness; same units as radius; no default. " +
 				"With DiaIns, establishes inner radius for capacitance calculation.";
-		PropertyHelp[ActiveProperty + 3] = "Diameter over insulation layer; same units as radius; no default." +
+		propertyHelp[activeProperty + 3] = "Diameter over insulation layer; same units as radius; no default." +
                 "Establishes outer radius for capacitance calculation.";
-		PropertyHelp[ActiveProperty + 4] = "Diameter over cable; same units as radius; no default.";
+		propertyHelp[activeProperty + 4] = "Diameter over cable; same units as radius; no default.";
 
-		ActiveProperty = ActiveProperty + NumCableClassProps;
+		activeProperty = activeProperty + NumCableClassProps;
 		super.defineProperties();
 	}
 

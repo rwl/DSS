@@ -26,7 +26,7 @@ public interface DSSClass {
 
 	int getDSSClassType();
 
-	void setDSSClassType(int dSSClassType);
+	void setDSSClassType(int DSSClassType);
 
 	PointerList getElementList();
 
@@ -42,7 +42,7 @@ public interface DSSClass {
 
 	int getActiveElement();
 
-	void setActiveElement(int Value);
+	void setActiveElement(int value);
 
 	int getElementCount();
 
@@ -57,8 +57,7 @@ public interface DSSClass {
 	String getNextPropertyName();
 
 	/** Helper routine for building property strings */
-	void addProperty(String PropName, int CmdMapIndex,
-			String HelpString);
+	void addProperty(String propName, int cmdMapIndex, String helpString);
 
 	void reallocateElementNameList();
 
@@ -67,17 +66,17 @@ public interface DSSClass {
 
 	int init(int Handle);
 
-	int newObject(String ObjName);
+	int newObject(String objName);
 
-	boolean setActive(String Value);
+	boolean setActive(String value);
 
 	/** Get address of active object of this class */
 	Object getActiveObj();
 
 	/** Find an obj of this class by name */
-	Object find(String ObjName);
+	Object find(String objName);
 
 	/** Find property value by string */
-	int propertyIndex(String Prop);
+	int propertyIndex(String prop);
 
 }

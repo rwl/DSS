@@ -18,15 +18,15 @@ public interface IDSSGlobals {
 
 	boolean isDLLFirstTime();
 
-	void setDLLFirstTime(boolean dLLFirstTime);
+	void setDLLFirstTime(boolean DLLFirstTime);
 
 	PrintStream getDLLDebugFile();
 
-	void setDLLDebugFile(PrintStream dLLDebugFile);
+	void setDLLDebugFile(PrintStream DLLDebugFile);
 
-	String getDSS_IniFileName();
+	String getDSSIniFileName();
 
-	void setDSS_IniFileName(String dSS_IniFileName);
+	void setDSSIniFileName(String fileName);
 
 //	IniRegSave getDSS_Registry();
 
@@ -78,7 +78,7 @@ public interface IDSSGlobals {
 //
 //	PointerList getDSSObjs();
 //
-//	void setDSSObjs(PointerList dSSObjs);
+//	void setDSSObjs(PointerList DSSObjs);
 //
 //	Parser getAuxParser();
 //
@@ -116,17 +116,17 @@ public interface IDSSGlobals {
 
 	void setInShowResults(boolean inShowResults);
 
-	boolean isRedirect_Abort();
+	boolean isRedirectAbort();
 
-	void setRedirect_Abort(boolean redirect_Abort);
+	void setRedirectAbort(boolean redirectAbort);
 
-	boolean isIn_Redirect();
+	boolean isInRedirect();
 
-	void setIn_Redirect(boolean in_Redirect);
+	void setInRedirect(boolean inRedirect);
 
 	boolean isDIFilesAreOpen();
 
-	void setDIFilesAreOpen(boolean dIFilesAreOpen);
+	void setDIFilesAreOpen(boolean DIFilesAreOpen);
 
 	boolean isAutoShowExport();
 
@@ -202,7 +202,7 @@ public interface IDSSGlobals {
 
 	TCC_Curve getTCC_CurveClass();
 
-	void setTCC_CurveClass(TCC_Curve tCC_CurveClass);
+	void setTCC_CurveClass(TCC_Curve TCC_CurveClass);
 
 	WireData getWireDataClass();
 
@@ -216,32 +216,32 @@ public interface IDSSGlobals {
 
 	void setStorageClass(Storage storageClass);
 
-	void doErrorMsg(String S, String Emsg, String ProbCause, int ErrNum);
+	void doErrorMsg(String s, String emsg, String probCause, int errNum);
 
-	void doSimpleMsg(String S, int ErrNum);
+	void doSimpleMsg(String s, int errNum);
 
 	void clearAllCircuits();
 
 	/** Set object active by name */
-	void setObject(String Param);
+	void setObject(String param);
 
-	int setActiveBus(String BusName);
+	int setActiveBus(String busName);
 
-	void makeNewCircuit(String Name);
+	void makeNewCircuit(String name);
 
 	/** Append a string to global result, separated by commas */
-	void appendGlobalResult(String S);
+	void appendGlobalResult(String s);
 
 	/** Separate by CRLF */
-	void appendGlobalResultCRLF(String S);
+	void appendGlobalResultCRLF(String s);
 
-	void WriteDLLDebugFile(String S);
+	void WriteDLLDebugFile(String s);
 
 	void readDSS_Registry();
 
 	void writeDSS_Registry();
 
-	boolean isDSSDLL(String Fname);
+	boolean isDSSDLL(String fname);
 
 	String getDSSVersion();
 

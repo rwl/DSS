@@ -11,16 +11,16 @@ public interface Conductor {
 
 	void setFuseBlown(boolean fuseBlown);
 
-	void setAmbient(double Value);
+	void setAmbient(double value);
 
-	void setTCCname(String Value);
+	void setTCCName(String value);
 
-	String getTCCname();
+	String getTCCName();
 
 	/** Computes whether conductor has burned down */
-	void calcIsqt(double CurrentMag);
+	void calcIsqt(double currentMag);
 
 	/** Restore the conductor and reset the i2t calcs */
-	void ResetIsqt();
+	void resetIsqt();
 
 }

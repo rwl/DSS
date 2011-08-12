@@ -13,53 +13,53 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 	public ISourceImpl() {
 		super();
-		this.Class_Name = "Isource";
+		this.className = "Isource";
 		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
-		this.ActiveElement = -1;
+		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		NumProperties = ISource.NumPropsThisClass;
+		numProperties = ISource.NumPropsThisClass;
 
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
-		PropertyName[0] = "bus1";
-		PropertyName[1] = "amps";
-		PropertyName[2] = "angle";
-		PropertyName[3] = "frequency";
-		PropertyName[4] = "phases";
-		PropertyName[5] = "scantype";
-	    PropertyName[6] = "sequence";
+		propertyName[0] = "bus1";
+		propertyName[1] = "amps";
+		propertyName[2] = "angle";
+		propertyName[3] = "frequency";
+		propertyName[4] = "phases";
+		propertyName[5] = "scantype";
+	    propertyName[6] = "sequence";
 
 		// define property help values
-		PropertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
-		PropertyHelp[1] = "Magnitude of current source, each phase, in Amps.";
-		PropertyHelp[2] = "Phase angle in degrees of first phase: e.g.,Angle=10.3."+DSSGlobals.CRLF+
+		propertyHelp[0] = "Name of bus to which source is connected."+DSSGlobals.CRLF+"bus1=busname"+DSSGlobals.CRLF+"bus1=busname.1.2.3";
+		propertyHelp[1] = "Magnitude of current source, each phase, in Amps.";
+		propertyHelp[2] = "Phase angle in degrees of first phase: e.g.,Angle=10.3."+DSSGlobals.CRLF+
 				"Phase shift between phases is assumed 120 degrees when "+
 				"number of phases <= 3";
-		PropertyHelp[3] = "Source frequency.  Defaults to  circuit fundamental frequency.";
-		PropertyHelp[4] = "Number of phases.  Defaults to 3. For 3 or less, phase shift is 120 degrees.";
-		PropertyHelp[5] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
+		propertyHelp[3] = "Source frequency.  Defaults to  circuit fundamental frequency.";
+		propertyHelp[4] = "Number of phases.  Defaults to 3. For 3 or less, phase shift is 120 degrees.";
+		propertyHelp[5] = "{pos*| zero | none} Maintain specified sequence for harmonic solution. Default is positive sequence. "+
 				"Otherwise, angle between phases rotates with harmonic.";
-	    PropertyHelp[6] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
+	    propertyHelp[6] = "{pos*| neg | zero} Set the phase angles for the specified symmetrical component sequence for non-harmonic solution modes. "+
                  "Default is positive sequence.";
 
 
-		ActiveProperty = ISource.NumPropsThisClass - 1;  // TODO Check zero based indexing
+		activeProperty = ISource.NumPropsThisClass - 1;  // TODO Check zero based indexing
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 
 		// override help string
-		PropertyHelp[ISource.NumPropsThisClass - 1] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
+		propertyHelp[ISource.NumPropsThisClass - 1] = "Harmonic spectrum assumed for this source.  Default is \"default\".";  // TODO Check zero based indexing
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveISourceObj((ISourceObj) ElementList.getActive());
+		setActiveISourceObj((ISourceObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
 
 		int Result = 0;
@@ -90,10 +90,10 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				ais.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

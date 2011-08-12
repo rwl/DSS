@@ -15,41 +15,41 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 	public SwtControlImpl() {
 		super();
 
-		this.Class_Name = "SwtControl";
+		this.className = "SwtControl";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.SWT_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = SwtControl.NumPropsThisClass;
+		numProperties = SwtControl.NumPropsThisClass;
 		countProperties();  // get inherited property count
 
 		allocatePropertyArrays();
 
-		PropertyName[0] = "SwitchedObj";
-		PropertyName[1] = "SwitchedTerm";
-		PropertyName[2] = "Action";
-		PropertyName[3] = "Lock";
-		PropertyName[4] = "Delay";
+		propertyName[0] = "SwitchedObj";
+		propertyName[1] = "SwitchedTerm";
+		propertyName[2] = "Action";
+		propertyName[3] = "Lock";
+		propertyName[4] = "Delay";
 
-		PropertyHelp[0] = "Name of circuit element switch that the SwtControl operates. "+
+		propertyHelp[0] = "Name of circuit element switch that the SwtControl operates. "+
 				"Specify the full object class and name.";
-		PropertyHelp[1] = "Terminal number of the controlled element switch. " +
+		propertyHelp[1] = "Terminal number of the controlled element switch. " +
 				"1 or 2, typically.  Default is 1.";
-		PropertyHelp[2] = "{Open | Close}  simulates manual operation of the controlled switch to open or close, after a time delay. " +
+		propertyHelp[2] = "{Open | Close}  simulates manual operation of the controlled switch to open or close, after a time delay. " +
 				"Note: automatic operation requires use of the COM interface with an external control algorithm.";
-		PropertyHelp[3] = "Controlled switch is locked in its present open / close state. " +
+		propertyHelp[3] = "Controlled switch is locked in its present open / close state. " +
 				"Switch will not respond to either manual (Action) or automatic (COM interface) control until this Lock is removed.";
-		PropertyHelp[4] = "Operating time delay (sec) of the switch. Defaults to 120.";
+		propertyHelp[4] = "Operating time delay (sec) of the switch. Defaults to 120.";
 
-		ActiveProperty = SwtControl.NumPropsThisClass - 1;
+		activeProperty = SwtControl.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -67,7 +67,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveSwtControlObj((SwtControlObj) ElementList.getActive());
+		setActiveSwtControlObj((SwtControlObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveSwtControlObj());
 
 		int Result = 0;
@@ -81,10 +81,10 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				asc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {

@@ -19,103 +19,103 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 	public RegControlImpl() {
 		super();
 
-		this.Class_Name   = "RegControl";
+		this.className   = "RegControl";
 		this.DSSClassType = this.DSSClassType + DSSClassDefs.REG_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.NumProperties];
-		System.arraycopy(this.PropertyName, 0, Commands, 0, this.NumProperties);
-		this.CommandList = new CommandListImpl(Commands);
-		this.CommandList.setAbbrevAllowed(true);
+		String[] Commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(Commands);
+		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
 
-		NumProperties = RegControl.NumPropsThisClass;
+		numProperties = RegControl.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
 
 		// define property names
 
-		PropertyName[0] = "transformer";
-		PropertyName[1] = "winding";
-		PropertyName[2] = "vreg";
-		PropertyName[3] = "band";
-		PropertyName[4] = "ptratio";
-		PropertyName[5] = "CTprim";
-		PropertyName[6] = "R";
-		PropertyName[7] = "X";
-		PropertyName[8] = "bus";
-		PropertyName[9] = "delay";
-		PropertyName[10] = "reversible";
-		PropertyName[11] = "revvreg";
-		PropertyName[12] = "revband";
-		PropertyName[13] = "revR";
-		PropertyName[14] = "revX";
-		PropertyName[15] = "tapdelay";
-		PropertyName[16] = "debugtrace";
-		PropertyName[17] = "maxtapchange";
-		PropertyName[18] = "inversetime";
-		PropertyName[19] = "tapwinding";
-		PropertyName[20] = "vlimit";
-		PropertyName[21] = "PTphase";
-		PropertyName[22] = "revThreshold";
-		PropertyName[23] = "revDelay";
-		PropertyName[24] = "revNeutral";
+		propertyName[0] = "transformer";
+		propertyName[1] = "winding";
+		propertyName[2] = "vreg";
+		propertyName[3] = "band";
+		propertyName[4] = "ptratio";
+		propertyName[5] = "CTprim";
+		propertyName[6] = "R";
+		propertyName[7] = "X";
+		propertyName[8] = "bus";
+		propertyName[9] = "delay";
+		propertyName[10] = "reversible";
+		propertyName[11] = "revvreg";
+		propertyName[12] = "revband";
+		propertyName[13] = "revR";
+		propertyName[14] = "revX";
+		propertyName[15] = "tapdelay";
+		propertyName[16] = "debugtrace";
+		propertyName[17] = "maxtapchange";
+		propertyName[18] = "inversetime";
+		propertyName[19] = "tapwinding";
+		propertyName[20] = "vlimit";
+		propertyName[21] = "PTphase";
+		propertyName[22] = "revThreshold";
+		propertyName[23] = "revDelay";
+		propertyName[24] = "revNeutral";
 
-		PropertyHelp[0] = "Name of Transformer element to which the RegControl is connected. "+
+		propertyHelp[0] = "Name of Transformer element to which the RegControl is connected. "+
 				"Do not specify the full object name; \"Transformer\" is assumed for "  +
 				"the object class.  Example:"+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Transformer=Xfmr1";
-		PropertyHelp[1] = "Number of the winding of the transformer element that the RegControl is monitoring. "+
+		propertyHelp[1] = "Number of the winding of the transformer element that the RegControl is monitoring. "+
 				"1 or 2, typically.  Side Effect: Sets TAPWINDING property to the same winding.";
-		PropertyHelp[2] = "Voltage regulator setting, in VOLTS, for the winding being controlled.  Multiplying this "+
+		propertyHelp[2] = "Voltage regulator setting, in VOLTS, for the winding being controlled.  Multiplying this "+
 				"value times the ptratio should yield the voltage across the WINDING of the controlled transformer." +
 				" Default is 120.0";
-		PropertyHelp[3] = "Bandwidth in VOLTS for the controlled bus (see help for ptratio property).  Default is 3.0";
-		PropertyHelp[4] = "Ratio of the PT that converts the controlled winding voltage to the regulator voltage. "+
+		propertyHelp[3] = "Bandwidth in VOLTS for the controlled bus (see help for ptratio property).  Default is 3.0";
+		propertyHelp[4] = "Ratio of the PT that converts the controlled winding voltage to the regulator voltage. "+
 				"Default is 60.  If the winding is Wye, the line-to-neutral voltage is used.  Else, the line-to-line " +
 				"voltage is used.";
-		PropertyHelp[5] = "Rating, in Amperes, of the primary CT rating for converting the line amps to control amps."+
+		propertyHelp[5] = "Rating, in Amperes, of the primary CT rating for converting the line amps to control amps."+
 				"The typical default secondary ampere rating is 0.2 Amps (check with manufacturer specs).";
-		PropertyHelp[6] = "R setting on the line drop compensator in the regulator, expressed in VOLTS.";
-		PropertyHelp[7] = "X setting on the line drop compensator in the regulator, expressed in VOLTS.";
-		PropertyHelp[8] = "Name of a bus (busname.nodename) in the system to use as the controlled bus instead of the bus to which the "+
+		propertyHelp[6] = "R setting on the line drop compensator in the regulator, expressed in VOLTS.";
+		propertyHelp[7] = "X setting on the line drop compensator in the regulator, expressed in VOLTS.";
+		propertyHelp[8] = "Name of a bus (busname.nodename) in the system to use as the controlled bus instead of the bus to which the "+
 				"transformer winding is connected or the R and X line drop compensator settings.  Do not specify this "+
 				"value if you wish to use the line drop compensator settings.  Default is null string. Assumes the base voltage for this "+
 				"bus is the same as the transformer winding base specified above. " +
 				"Note: This bus (1-phase) WILL BE CREATED by the regulator control upon SOLVE if not defined by some other device. " +
 				"You can specify the node of the bus you wish to sample (defaults to 1). " +
 				"If specified, the RegControl is redefined as a 1-phase device since only one voltage is used." ;
-		PropertyHelp[9] = "Time delay, in seconds, from when the voltage goes out of band to when the tap changing begins. " +
+		propertyHelp[9] = "Time delay, in seconds, from when the voltage goes out of band to when the tap changing begins. " +
 				"This is used to determine which regulator control will act first. Default is 15.  You may specify any "+
 				"floating point number to achieve a model of whatever condition is necessary.";
-		PropertyHelp[10] = "{Yes | No*} Indicates whether or not the regulator can be switched to regulate in the reverse direction. Default is No." +
+		propertyHelp[10] = "{Yes | No*} Indicates whether or not the regulator can be switched to regulate in the reverse direction. Default is No." +
 				"Typically applies only to line regulators and not to LTC on a substation transformer.";
-		PropertyHelp[11] = "Voltage setting in volts for operation in the reverse direction.";
-		PropertyHelp[12] = "Bandwidth for operating in the reverse direction.";
-		PropertyHelp[13] = "R line drop compensator setting for reverse direction.";
-		PropertyHelp[14] = "X line drop compensator setting for reverse direction.";
-		PropertyHelp[15] = "Delay in sec between tap changes. Default is 2. This is how long it takes between changes " +
+		propertyHelp[11] = "Voltage setting in volts for operation in the reverse direction.";
+		propertyHelp[12] = "Bandwidth for operating in the reverse direction.";
+		propertyHelp[13] = "R line drop compensator setting for reverse direction.";
+		propertyHelp[14] = "X line drop compensator setting for reverse direction.";
+		propertyHelp[15] = "Delay in sec between tap changes. Default is 2. This is how long it takes between changes " +
 				"after the first change.";
-		PropertyHelp[16] = "{Yes | No*}  Default is no.  Turn this on to capture the progress of the regulator model " +
+		propertyHelp[16] = "{Yes | No*}  Default is no.  Turn this on to capture the progress of the regulator model " +
 				"for each control iteration.  Creates a separate file for each RegControl named \"REG_name.CSV\"." ;
-		PropertyHelp[17] = "Maximum allowable tap change per control iteration in STATIC control mode.  Default is 16. " + DSSGlobals.CRLF+ DSSGlobals.CRLF +
+		propertyHelp[17] = "Maximum allowable tap change per control iteration in STATIC control mode.  Default is 16. " + DSSGlobals.CRLF+ DSSGlobals.CRLF +
 				"Set this to 1 to better approximate actual control action. " + DSSGlobals.CRLF + DSSGlobals.CRLF +
 				"Set this to 0 to fix the tap in the current position.";
-		PropertyHelp[18] = "{Yes | No*} Default is no.  The time delay is adjusted inversely proportional to the amount the voltage is outside the band down to 10%.";
-		PropertyHelp[19] = "Winding containing the actual taps, if different than the WINDING property. Defaults to the same winding as specified by the WINDING property.";
-		PropertyHelp[20] = "Voltage Limit for bus to which regulated winding is connected (e.g. first customer). Default is 0.0. " +
+		propertyHelp[18] = "{Yes | No*} Default is no.  The time delay is adjusted inversely proportional to the amount the voltage is outside the band down to 10%.";
+		propertyHelp[19] = "Winding containing the actual taps, if different than the WINDING property. Defaults to the same winding as specified by the WINDING property.";
+		propertyHelp[20] = "Voltage Limit for bus to which regulated winding is connected (e.g. first customer). Default is 0.0. " +
 				"Set to a value greater then zero to activate this function.";
-		PropertyHelp[21] = "For multi-phase transformers, the number of the phase being monitored or one of { MAX | MIN} for all phases. Default=1. " +
+		propertyHelp[21] = "For multi-phase transformers, the number of the phase being monitored or one of { MAX | MIN} for all phases. Default=1. " +
 				"Must be less than or equal to the number of phases. Ignored for regulated bus.";
-		PropertyHelp[22] = "kW reverse power threshold for reversing the direction of the regulator. Default is 100.0 kw.";
-		PropertyHelp[23] = "Time Delay in seconds (s) for executing the reversing action once the threshold for reversing has been exceeded. Default is 60 s.";
-		PropertyHelp[24] = "{Yes | No*} Default is no. Set this to Yes if you want the regulator to go to neutral in the reverse direction.";
+		propertyHelp[22] = "kW reverse power threshold for reversing the direction of the regulator. Default is 100.0 kw.";
+		propertyHelp[23] = "Time Delay in seconds (s) for executing the reversing action once the threshold for reversing has been exceeded. Default is 60 s.";
+		propertyHelp[24] = "{Yes | No*} Default is no. Set this to Yes if you want the regulator to go to neutral in the reverse direction.";
 
 
-		ActiveProperty = RegControl.NumPropsThisClass - 1;
+		activeProperty = RegControl.NumPropsThisClass - 1;
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
@@ -133,7 +133,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRegControlObj((RegControlObj) ElementList.getActive());
+		setActiveRegControlObj((RegControlObj) elementList.getActive());
 		Globals.getActiveCircuit().setActiveCktElement(getActiveRegControlObj());
 
 		int Result = 0;
@@ -147,10 +147,10 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			if (ParamName.length() == 0) {
 				ParamPointer += 1;
 			} else {
-				ParamPointer = CommandList.getCommand(ParamName);
+				ParamPointer = commandList.getCommand(ParamName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < NumProperties))
+			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
 				arc.setPropertyValue(ParamPointer, Param);
 
 			switch (ParamPointer) {
