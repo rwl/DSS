@@ -70,7 +70,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		this.kvrating = 12.47;
 		Utilities.initDblArray(this.NumSteps, this.C,
-				1.0 / (DSSGlobals.TwoPi * BaseFrequency * Math.pow(kvrating, 2) * 1000.0 / this.kvarrating[0]));
+				1.0 / (DSSGlobals.TwoPi * baseFrequency * Math.pow(kvrating, 2) * 1000.0 / this.kvarrating[0]));
 
 		this.Connection = 0;   // 0 or 1 for wye (default) or delta, respectively
 		this.SpecType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
@@ -80,7 +80,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.FaultRate = 0.0005;
 		this.PctPerm = 100.0;
 		this.HrsToRepair = 3.0;
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 
 		this.doHarmonicRecalc = false;
 
@@ -96,7 +96,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		totalkvar = 0.0;
 		PhasekV = 1.0;
-		w = DSSGlobals.TwoPi * BaseFrequency;
+		w = DSSGlobals.TwoPi * baseFrequency;
 		switch (SpecType) {
 		case 1:// kvar
 			switch (Connection) {
@@ -174,28 +174,28 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		if (isYprimInvalid()) {
 			// reallocate YPrim if something has invalidated old allocation
-			if (YPrim_Shunt != null)
-				YPrim_Shunt = null;
-			YPrim_Shunt = new CMatrixImpl(Yorder);
-			if (YPrim_Series != null)
-				YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimShunt != null)
+				YPrimShunt = null;
+			YPrimShunt = new CMatrixImpl(YOrder);
+			if (YPrimSeries != null)
+				YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear(); // zero out YPrim
-			YPrim_Shunt.clear();  // zero out YPrim
+			YPrimSeries.clear(); // zero out YPrim
+			YPrimShunt.clear();  // zero out YPrim
 			YPrim.clear();
 		}
 
 		if (isShunt()) {
-			YPrimTemp = YPrim_Shunt;
+			YPrimTemp = YPrimShunt;
 		} else {
-			YPrimTemp = YPrim_Series;
+			YPrimTemp = YPrimSeries;
 		}
 
-		YPrimWork = new CMatrixImpl(Yorder);
+		YPrimWork = new CMatrixImpl(YOrder);
 
 		for (i = 0; i < NumSteps; i++)
 			if (States[i] == 1) {
@@ -207,14 +207,14 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt())
-			for (i = 0; i < Yorder; i++)
-				YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+			for (i = 0; i < YOrder; i++)
+				YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
 
 		YPrim.copyFrom(YPrimTemp);
 
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	@Override
@@ -354,7 +354,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	public void setStates(int Idx, int Value) {
 		if (getStates()[Idx] != Value) {
 			getStates()[Idx] = Value;
-			setYprimInvalid(true);
+			setYPrimInvalid(true);
 		}
 	}
 
@@ -469,9 +469,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		double w, FreqMultiple;
 		boolean HasZL;
 
-		setYprimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
-		FreqMultiple = getYprimFreq() / getBaseFrequency();
-		w = DSSGlobals.TwoPi * getYprimFreq();
+		setYPrimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
+		FreqMultiple = getYPrimFreq() / getBaseFrequency();
+		w = DSSGlobals.TwoPi * getYPrimFreq();
 
 		if ((getR()[iStep] + Math.abs(getXL()[iStep])) > 0.0) {
 			HasZL = true;

@@ -577,11 +577,11 @@ public class ExportResults {
 			// PD elements first
 			for (PDElement PDElem : Globals.getActiveCircuit().getPDElements()) {
 				if (PDElem.isEnabled()) {
-					PDElem.computeIterminal();
-					PDElem.computeVterminal();
+					PDElem.computeITerminal();
+					PDElem.computeVTerminal();
 					FPrinter.printf("\"%s.%s\", %d, %d, %d", PDElem.getDSSClassName(), PDElem.getName(), PDElem.getNTerms(), PDElem.getNConds(), PDElem.getNPhases());
 					for (i = 0; i < PDElem.getYorder(); i++) {
-						S = PDElem.getVterminal()[i].multiply( PDElem.getIterminal()[i].conjugate() ).multiply(0.001);
+						S = PDElem.getVTerminal()[i].multiply( PDElem.getITerminal()[i].conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
 						FPrinter.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
 					}
@@ -592,11 +592,11 @@ public class ExportResults {
 			// PC elements next
 			for (PCElement PCElem : Globals.getActiveCircuit().getPCElements()) {
 				if (PCElem.isEnabled()) {
-					PCElem.computeIterminal();
-					PCElem.computeVterminal();
+					PCElem.computeITerminal();
+					PCElem.computeVTerminal();
 					FPrinter.printf("\"%s.%s\", %d, %d, %d", PCElem.getDSSClassName(), PCElem.getName(), PCElem.getNTerms(), PCElem.getNConds(), PCElem.getNPhases());
 					for (i = 0; i < PCElem.getYorder(); i++) {
-						S = PCElem.getVterminal()[i].multiply( PCElem.getIterminal()[i].conjugate() ).multiply(0.001);
+						S = PCElem.getVTerminal()[i].multiply( PCElem.getITerminal()[i].conjugate() ).multiply(0.001);
 						if (opt == 1) S = S.multiply(0.001);  // convert to MVA
 						FPrinter.printf(", %10.3f, %10.3f", S.getReal(), S.getImaginary());
 					}

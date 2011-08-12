@@ -836,7 +836,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		// check off this element so we don't use it again
 		MeteredElement.setChecked(true);
-		MeteredElement.setIsIsolated(false);
+		MeteredElement.setIsolated(false);
 
 		// now start looking for other branches
 		// finds any branch connected to the testBranch and adds it to the list
@@ -877,7 +877,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 							BranchList.setNewObject(pC);
 							pC.setChecked(true);  // so we don't pick this element up again
-							pC.setIsIsolated(false);
+							pC.setIsolated(false);
 							pC.setActiveTerminalIdx(1);  // TODO Check zero based indexing
 							/* Totalize number of customers if load type */
 							if (pC instanceof LoadObj) {
@@ -918,9 +918,9 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 												TestElement.getTerminals()[j].setChecked(true);
 												TestElement.setFromTerminal(j);
 												TestElement.setChecked(true);
-												TestElement.setIsIsolated(false);
+												TestElement.setIsolated(false);
 												/* Branch inherits sensor of upline branch if it doesn't have its own */
-												if (!HasSensorObj)
+												if (!hasSensorObj)
 													TestElement.setSensorObj( ((PDElement) ActiveBranch).getSensorObj() );
 												TestElement.setMeterObj(this);   // set meterobj to this meter
 												TestElement.setParentPDElement( (PDElement) ActiveBranch );  // record the parent so we can easily back up for reconductoring, etc.
@@ -1134,7 +1134,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					switch (LoadElem.getNPhases()) {
 					/* For single phase loads, allocate based on phase factor, else average factor */
 					case 1:
-						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[NodeRef[0]].nodeNum;
+						ConnectedPhase = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[nodeRef[0]].nodeNum;
 						if ((ConnectedPhase > 0) && (ConnectedPhase < 4))  // restrict to phases 1..3
 							LoadElem.setAllocationFactor( LoadElem.getAllocationFactor() * LoadElem.getSensorObj().getPhsAllocationFactor()[ConnectedPhase] );
 						break;

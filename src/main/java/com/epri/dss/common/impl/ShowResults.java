@@ -2888,9 +2888,9 @@ public abstract class ShowResults {
 			// now sum in each device current, keep track of the largest current at a node.
 			for (CktElement pCktElement : ckt.getCktElements()) {
 				if (pCktElement.isEnabled()) {
-					pCktElement.computeIterminal();
+					pCktElement.computeITerminal();
 					for (i = 0; i < pCktElement.getYorder(); i++) {
-						Ctemp =  pCktElement.getIterminal()[i];
+						Ctemp =  pCktElement.getITerminal()[i];
 						nRef  =  pCktElement.getNodeRef()[i];
 						sol.getCurrents()[nRef] = sol.getCurrents()[nRef].add(Ctemp);  // nodeRef = 0 is OK  TODO Check
 						if (Ctemp.abs() > MaxNodeCurrent[nRef])

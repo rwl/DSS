@@ -465,16 +465,16 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if (UsingRegulatedBus) {
 
 			TransformerConnection = ControlledTransformer.getWinding()[ElementTerminal].getConnection();
-			computeVterminal();   // computes the voltage at the bus being regulated
+			computeVTerminal();   // computes the voltage at the bus being regulated
 			for (i = 0; i < getNPhases(); i++) {
 				switch (TransformerConnection) {
 				case 0:  // wye
-					VBuffer[i] = Vterminal[i];
+					VBuffer[i] = VTerminal[i];
 					break;
 				case 1:  // delta
 					// get next phase in sequence using transformer obj rotate
 					ii = ControlledTransformer.rotatePhases(i);
-					VBuffer[i] = Vterminal[i].subtract( Vterminal[ii] );
+					VBuffer[i] = VTerminal[i].subtract( VTerminal[ii] );
 					break;
 				}
 			}

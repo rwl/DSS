@@ -40,7 +40,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -57,22 +57,22 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		CMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
-			if (YPrim_Shunt != null) YPrim_Shunt = null;
-			YPrim_Shunt = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
+			if (YPrimShunt != null) YPrimShunt = null;
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();  // zero out YPrim
-			YPrim_Shunt.clear();   // zero out YPrim
+			YPrimSeries.clear();  // zero out YPrim
+			YPrimShunt.clear();   // zero out YPrim
 			YPrim.clear();
 		}
 
 		if (isShunt()) {
-			YPrimTemp = YPrim_Shunt;
+			YPrimTemp = YPrimShunt;
 		} else {
-			YPrimTemp = YPrim_Series;
+			YPrimTemp = YPrimSeries;
 		}
 
 		// make sure randomMult is 1.0 if not solution mode MonteFault
@@ -137,7 +137,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		YPrim.copyFrom(YPrimTemp);
 
 		super.calcYPrim();
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	@Override

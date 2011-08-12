@@ -366,7 +366,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		// initialize the checked flag for all circuit elements.
 		for (CktElement pCktElement : ckt.getCktElements()) {
 			pCktElement.setChecked(false);
-			pCktElement.setIsIsolated(true);
+			pCktElement.setIsolated(true);
 			for (i = 0; i < pCktElement.getNTerms(); i++)
 				pCktElement.getTerminals()[i].setChecked(false);
 		}
@@ -645,7 +645,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			if (PDElem.isEnabled() && !PDElem.isShunt()) {  // ignore shunts
 
 				if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
-					PDElem.computeIterminal();
+					PDElem.computeITerminal();
 					Cmax = PDElem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
 					if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
 						OverLoadPrinter.printf("%-.6g,", ckt.getSolution().getDblHour());

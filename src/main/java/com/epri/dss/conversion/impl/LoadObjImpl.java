@@ -138,7 +138,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		setNPhases(3);
 		this.nConds = 4;  // defaults to wye so it has a 4th conductor
-		this.Yorder        = 0;  // to trigger an initial allocation
+		this.YOrder        = 0;  // to trigger an initial allocation
 		setNTerms(1);  // forces allocations
 		this.kWBase        = 10.0;
 		this.kvarBase      = 5.0;
@@ -189,7 +189,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		this.Vmaxpu     = 1.05;
 		this.VBase95    = this.Vminpu * this.VBase;
 		this.VBase105   = this.Vmaxpu * this.VBase;
-		this.Yorder     = this.nTerms * this.nConds;
+		this.YOrder     = this.nTerms * this.nConds;
 		this.RandomMult = 1.0 ;
 		this.Fixed      = false;
 		this.ExemptFromLDCurve = false;
@@ -546,7 +546,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		varBase = 1000.0 * kvarBase / nPhases;
 		YQFixed = -varBase / Math.pow(VBase, 2);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		setPFChanged(false);
 	}
@@ -556,8 +556,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		int i, j;
 		double FreqMultiplier;
 
-		YprimFreq = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 		Y = Yeq;
 		Y = new Complex(Y.getReal(), Y.getImaginary() / FreqMultiplier);  /* Correct reactive part for frequency */
 		Yij = Y.negate();
@@ -599,36 +599,36 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		// build only YPrim shunt for a load then copy to YPrim
 		// build a dummy Yprim series so that calcV does not fail
 		if (isYprimInvalid()) {
-			if (YPrim_Shunt != null) YPrim_Shunt = null;
-			if (YPrim_Series != null) YPrim_Series = null;
+			if (YPrimShunt != null) YPrimShunt = null;
+			if (YPrimSeries != null) YPrimSeries = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrim_Series = new CMatrixImpl(Yorder);
-			YPrim_Shunt  = new CMatrixImpl(Yorder);
-			YPrim        = new CMatrixImpl(Yorder);
+			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimShunt  = new CMatrixImpl(YOrder);
+			YPrim        = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Shunt.clear();
-			YPrim_Series.clear();
+			YPrimShunt.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
 		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
 
 			setNominalLoad();  // same as admittance model
-			calcYPrimMatrix(YPrim_Shunt);
+			calcYPrimMatrix(YPrimShunt);
 
 		} else {
 			// admittance model wanted
 
 			setNominalLoad();
-			calcYPrimMatrix(YPrim_Shunt);
+			calcYPrimMatrix(YPrimShunt);
 		}
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
-		for (int i = 0; i < Yorder; i++)
-			YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+		for (int i = 0; i < YOrder; i++)
+			YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
 
-		YPrim.copyFrom(YPrim_Shunt);
+		YPrim.copyFrom(YPrimShunt);
 
 		// account for open conductors
 		super.calcYPrim();
@@ -688,7 +688,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 			Vmag = V.abs();
 
 			if (Vmag <= VBase95) {
@@ -699,7 +699,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				Curr = new Complex(WNominal, varNominal).divide(V).conjugate();  // above 95%, constant PQ
 			}
 
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -714,8 +714,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			Curr = Yeq.multiply(Vterminal[i]);
-			stickCurrInTerminalArray(getIterminal(),  Curr.negate(), i);  // put into terminal array taking into account connection
+			Curr = Yeq.multiply(VTerminal[i]);
+			stickCurrInTerminalArray(getITerminal(),  Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -734,7 +734,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 			VMag = V.abs();
 			if (VMag <= VBase95) {
 				Curr = Yeq95.multiply(V);  // below 95% use an impedance model
@@ -744,7 +744,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				Curr = new Complex(WNominal, 0.0).divide(V).conjugate();  // above 95%, constant P
 				Curr = Curr.add(new Complex(0.0, Yeq.getImaginary()).multiply(V));  // add in Q component of current
 			}
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -769,11 +769,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 
 			Curr = new Complex(WNominal, varNominal).divide( V.divide( V.abs() ).multiply(VBase) ).conjugate();
 
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -789,7 +789,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (i = 0; i < nPhases; i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 			VMag = V.abs();
 
 			if (VMag <= VBase95) {
@@ -797,7 +797,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			} else if (VMag > VBase105) {
 				Curr = Yeq105.multiply(V);
 			} else {
-				CurrZ = new Complex(Yeq.getReal() * ZIPV[0], Yeq.getImaginary() * ZIPV[3]).multiply( Vterminal[i] );
+				CurrZ = new Complex(Yeq.getReal() * ZIPV[0], Yeq.getImaginary() * ZIPV[3]).multiply( VTerminal[i] );
 				CurrI = new Complex(WNominal * ZIPV[1], varNominal * ZIPV[4]).divide( V.divide(V.abs()).multiply(VBase) ).conjugate();
 				CurrP = new Complex(WNominal * ZIPV[2], varNominal * ZIPV[5]).divide(V).conjugate();
 				Curr  = CurrZ.add(CurrI.add(CurrP));
@@ -811,7 +811,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				Curr = Curr.multiply(yv);
 			}
 
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -835,7 +835,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		try {
 			for (int i = 0; i < nPhases; i++) {
-				V    = Vterminal[i];
+				V    = VTerminal[i];
 				Vmag = V.abs();
 				VRatio = Vmag / VBase;  // VBase is l-n for wye and l-l for delta
 				// linear factor adjustment does not converge for some reason while power adjust does easily
@@ -865,7 +865,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				}
 				Curr = Curr.add(Cvar);  // add in Q component of current
 				/*writeDLLDebugFile(String.format("%s, %d, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g, %-.5g ", getName(), i, Vmag, VRatio, WNominal, WattFactor, varNominal, VarFactor, Curr.abs(), V.multiply(Curr.conjugate()).getReal()));*/
-				stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+				stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 				setITerminalUpdated(true);
 				stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 			}
@@ -886,7 +886,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 			Vmag = V.abs();
 			if (Vmag <= VBase95) {
 				Curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // below 95% use an impedance model
@@ -895,7 +895,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			} else {
 				Curr = new Complex(WNominal, varBase).divide(V).conjugate();
 			}
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -913,7 +913,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroITerminal();
 
 		for (int i = 0; i < nPhases; i++) {
-			V = Vterminal[i];
+			V = VTerminal[i];
 			Vmag = V.abs();
 			if (Vmag <= VBase95) {
 				Curr = new Complex(Yeq95.getReal(), YQFixed).multiply(V);  // below 95% use an impedance model
@@ -924,7 +924,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				Curr = Curr.add(new Complex(0.0, YQFixed).multiply(V));   // add in Q component of current
 			}
 
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -950,7 +950,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			Curr = Mult.multiply(HarmMag[i]);  // get base harmonic magnitude
 			Curr = Utilities.rotatePhasorDeg(Curr, LoadHarmonic, HarmAng[i]);  // time shift by fundamental
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 		}
 	}
@@ -958,7 +958,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	private boolean allTerminalsClosed() {
 		for (int i = 0; i < nTerms; i++)
 			for (int j = 0; j < nConds; j++)
-				if (!Terminals[i].getConductors()[j].isClosed())
+				if (!terminals[i].getConductors()[j].isClosed())
 					return false;
 		return true;
 	}
@@ -971,14 +971,14 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		switch (Connection) {
 		case 0:
 			for (int i = 0; i < nPhases; i++)
-				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds]);
 			break;
 		case 1:
 			for (int i = 0; i < nPhases; i++) {
 				j = i + 1;  // TODO Check zero based indexing
 				if (j > nConds)
 					j = 0;
-				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
 		}
@@ -1056,13 +1056,13 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 				// only reallocate when necessary
 				if (YPrimOpenCond == null) {
-					YPrimOpenCond = new CMatrixImpl(Yorder);
+					YPrimOpenCond = new CMatrixImpl(YOrder);
 				} else {
 					YPrimOpenCond.clear();
 				}
-				if (YPrimOpenCond.getNOrder() != Yorder) {
+				if (YPrimOpenCond.getNOrder() != YOrder) {
 					YPrimOpenCond = null;
-					YPrimOpenCond = new CMatrixImpl(Yorder);
+					YPrimOpenCond = new CMatrixImpl(YOrder);
 				}
 				calcYPrimMatrix(YPrimOpenCond);
 
@@ -1072,7 +1072,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				int k = 0;
 				for (int i = 0; i < nTerms; i++) {
 					for (int j = 0; j < nConds; j++) {
-						if (!Terminals[i].getConductors()[j].isClosed()) {
+						if (!terminals[i].getConductors()[j].isClosed()) {
 							YPrimOpenCond.zeroRow(j + k);
 							YPrimOpenCond.zeroCol(j + k);
 							YPrimOpenCond.setElement(j + k, j + k, new Complex(1.0e-12, 0.0));  // in case node gets isolated
@@ -1085,10 +1085,10 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 			}
 
-			computeVterminal();
-			YPrimOpenCond.MVMult(ComplexBuffer, Vterminal);
-			for (int i = 0; i < Yorder; i++)
-				ComplexBuffer[i] = ComplexBuffer[i].negate();
+			computeVTerminal();
+			YPrimOpenCond.MVMult(complexBuffer, VTerminal);
+			for (int i = 0; i < YOrder; i++)
+				complexBuffer[i] = complexBuffer[i].negate();
 		}
 	}
 
@@ -1098,7 +1098,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	protected void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (IterminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
+		if (ITerminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
 			calcLoadModelContribution();  // adds totals in ITerminal as a side effect
 
 		super.getTerminalCurrents(Curr);
@@ -1130,7 +1130,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			if (isEnabled()) {
 				calcInjCurrentArray();
 				// copy into buffer array
-				for (int i = 0; i < Yorder; i++)
+				for (int i = 0; i < YOrder; i++)
 					Curr[i] = getInjCurrent()[i];
 			} else {
 				for (int i = 0; i < Curr.length; i++)
@@ -1163,7 +1163,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		// get the lowest of the phase voltages
 		Vpu = VBase;
 		for (int i = 0; i < nPhases; i++) {
-			Vmag = Vterminal[i].abs();
+			Vmag = VTerminal[i].abs();
 			if (Vmag < Vpu)
 				Vpu = Vmag;
 		}
@@ -1215,7 +1215,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		// get the lowest of the phase voltages
 		Vpu = VBase;
 		for (int i = 0; i < nPhases; i++) {
-			Vmag = Vterminal[i].abs();
+			Vmag = VTerminal[i].abs();
 			if (Vmag < Vpu)
 				Vpu = Vmag;
 		}
@@ -1366,7 +1366,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		/* Make sure there's enough memory */
 		HarmMag = (double[]) Utilities.resizeArray(HarmMag, nPhases);
 		HarmAng = (double[]) Utilities.resizeArray(HarmAng, nPhases);
-		Currents = new Complex[Yorder];  // to hold currents
+		Currents = new Complex[YOrder];  // to hold currents
 
 		LoadFundamental = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
 

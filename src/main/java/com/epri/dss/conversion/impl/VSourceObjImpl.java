@@ -64,7 +64,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		this.X1R1     = 4.0;
 		this.X0R0     = 3.0;
 		this.PerUnit  = 1.0;
-		this.SrcFrequency = this.BaseFrequency;
+		this.SrcFrequency = this.baseFrequency;
 		this.Angle    = 0.0;
 		this.ScanType = 1;
 		this.SequenceType = 1;
@@ -73,7 +73,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -190,7 +190,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		if (getSpectrumObj() == null)
 			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override
@@ -203,17 +203,17 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
-		YprimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
@@ -240,19 +240,19 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
 				Value = Zinv.getElement(i, j);
-				YPrim_Series.setElement(i, j, Value);
-				YPrim_Series.setElement(i + nPhases, j + nPhases, Value);
-				YPrim_Series.setElemSym(i + nPhases, j, Value.negate());
+				YPrimSeries.setElement(i, j, Value);
+				YPrimSeries.setElement(i + nPhases, j + nPhases, Value);
+				YPrimSeries.setElemSym(i + nPhases, j, Value.negate());
 			}
 		}
 
-		YPrim.copyFrom(YPrim_Series);
+		YPrim.copyFrom(YPrimSeries);
 
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	private void getVTerminalForSource() {
@@ -284,8 +284,8 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				Vharm = getSpectrumObj().getMult(SrcHarmonic).multiply(VMag);  // base voltage for this harmonic
 				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
-					Vterminal[i] = Vharm;
-					Vterminal[i + nPhases] = Complex.ZERO;
+					VTerminal[i] = Vharm;
+					VTerminal[i + nPhases] = Complex.ZERO;
 					if (i < nPhases)
 						switch (ScanType) {
 						case 1:
@@ -307,16 +307,16 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				for (i = 0; i < nPhases; i++) {
 					switch (SequenceType) {
 					case -1:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));  // neg seq
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle + (i-1)* 360.0/nPhases));  // neg seq
 						break;
 					case 0:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));  // all the same for zero sequence
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle));  // all the same for zero sequence
 						break;
 					default:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i-1) * 360.0 / nPhases));
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i-1) * 360.0 / nPhases));
 						break;
 					}
-					Vterminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
+					VTerminal[i + nPhases] = Complex.ZERO;  // see comments in getInjCurrents
 				}
 			}
 		} catch (Exception e) {
@@ -342,15 +342,15 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		try {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
-			for (int i = 0; i < Yorder; i++)
-				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
+			for (int i = 0; i < YOrder; i++)
+				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(Curr, Vterminal);  // current from elements in system Y
+			YPrim.MVMult(Curr, VTerminal);  // current from elements in system Y
 
-			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
-			for (int i = 0; i < Yorder; i++)
-				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
+			for (int i = 0; i < YOrder; i++)
+				Curr[i] = Curr[i].subtract(complexBuffer[i]);
 
 		} catch (Exception e) {
 			Globals.doErrorMsg("getCurrents for element: " + getName() + ".", e.getMessage(),
@@ -370,7 +370,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void getInjCurrents(Complex[] Curr) {
 
 		getVTerminalForSource();  // gets voltage vector above
-		YPrim.MVMult(Curr, Vterminal);
+		YPrim.MVMult(Curr, VTerminal);
 
 		setITerminalUpdated(false);
 	}
@@ -386,7 +386,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		if (Complete) {
 			F.println();
-			F.println("baseFrequency=" + BaseFrequency);
+			F.println("baseFrequency=" + baseFrequency);
 			F.println("vMag=" + VMag);
 			F.println("zMatrix=");
 			for (int i = 0; i < nPhases; i++) {

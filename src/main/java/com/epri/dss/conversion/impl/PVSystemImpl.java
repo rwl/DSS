@@ -267,7 +267,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		apv.setVBase105(apv.getVmaxpu() * apv.getVBase());
 
 		apv.setYorder(apv.getNConds() * apv.getNTerms());
-		apv.setYprimInvalid(true);
+		apv.setYPrimInvalid(true);
 	}
 
 	/**
@@ -468,7 +468,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		}
 
 		apv.recalcElementData();
-		apv.setYprimInvalid(true);
+		apv.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -485,7 +485,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				apv.setNPhases(OtherPVsystemObj.getNPhases());
 				apv.setNConds(apv.getNPhases());  // forces reallocation of terminal stuff
 				apv.setYorder(apv.getNConds() * apv.getNTerms());
-				apv.setYprimInvalid(true);
+				apv.setYPrimInvalid(true);
 			}
 
 			apv.setkVPVSystemBase(OtherPVsystemObj.getkVPVSystemBase());

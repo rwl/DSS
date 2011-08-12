@@ -108,7 +108,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		this.Y_Terminal_Freqmult = 0.0;
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		initPropertyValues(0);
 		recalcElementData();
 	}
@@ -370,41 +370,41 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		if (isYprimInvalid()) {
 			// reallocate YPrim if something has invalidated old allocation
-			if (YPrim_Series != null) YPrim_Series = null;
-			if (YPrim_Shunt != null) YPrim_Shunt = null;
+			if (YPrimSeries != null) YPrimSeries = null;
+			if (YPrimShunt != null) YPrimShunt = null;
 			if (YPrim != null) YPrim = null;
 
-			YPrim_Series = new CMatrixImpl(Yorder);
-			YPrim_Shunt  = new CMatrixImpl(Yorder);
-			YPrim        = new CMatrixImpl(Yorder);
+			YPrimSeries = new CMatrixImpl(YOrder);
+			YPrimShunt  = new CMatrixImpl(YOrder);
+			YPrim        = new CMatrixImpl(YOrder);
 		} else {
 			/* Same size as last time; just zero out to start over */
-			YPrim_Series.clear(); // zero out YPrim
-			YPrim_Shunt.clear(); // zero out YPrim
+			YPrimSeries.clear(); // zero out YPrim
+			YPrimShunt.clear(); // zero out YPrim
 			YPrim.clear();
 		}
 
 		// Setfrequency multipliers for this calculation
-		YprimFreq      = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq      = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 		// Check for rebuilding Y_Terminal; only rebuild if freq is different than last time
 		if (FreqMultiplier != Y_Terminal_Freqmult)
 			calcY_Terminal(FreqMultiplier);
 
-		buildYPrimComponent(YPrim_Series, Y_Term);
-		buildYPrimComponent(YPrim_Shunt,  Y_Term_NL);
+		buildYPrimComponent(YPrimSeries, Y_Term);
+		buildYPrimComponent(YPrimShunt,  Y_Term_NL);
 
 		addNeutralToY(FreqMultiplier);
 
 		/* Combine the two YPrim components into YPrim */
-		YPrim.copyFrom(YPrim_Series);
-		YPrim.addFrom(YPrim_Shunt);
+		YPrim.copyFrom(YPrimSeries);
+		YPrim.addFrom(YPrimShunt);
 
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	@Override
@@ -528,7 +528,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 			if (TempVal != W.getPuTap()) {  /* Only if there's been a change */
 				W.setPuTap(TempVal);
-				setYprimInvalid(true);  // this property triggers setting systemYChanged=true
+				setYPrimInvalid(true);  // this property triggers setting systemYChanged=true
 				recalcElementData();
 			}
 		}
@@ -645,8 +645,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			/* Load up VTemp - already allocated for all cktelements */
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
-			for (i = 0; i < Yorder; i++)
-				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
+			for (i = 0; i < YOrder; i++)
+				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
 
 			k = (iWind - 1) * nConds;  // Offset for winding   TODO Check zero based indexing
@@ -654,11 +654,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			for (i = 0; i < nPhases; i++) {
 				switch (Winding[iWind].getConnection()) {
 				case 0:  // wye
-					VBuffer[i] = Vterminal[i + k].subtract(Vterminal[NeutTerm]);
+					VBuffer[i] = VTerminal[i + k].subtract(VTerminal[NeutTerm]);
 					break;
 				case 1:  // delta
 					ii = rotatePhases(i);  // get next phase in sequence
-					VBuffer[i] = Vterminal[i + k].subtract(Vterminal[ii + k]);
+					VBuffer[i] = VTerminal[i + k].subtract(VTerminal[ii + k]);
 					break;
 				}
 			}
@@ -686,13 +686,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		totalLosses = getLosses();  // Side effect: computes ITerminal
 
 		/* Compute no load losses in YPrim_Shunt */
-		Complex[] cTempIterminal = new Complex[Yorder];
-		computeVterminal();
-		YPrim_Shunt.MVMult(cTempIterminal, Vterminal);
+		Complex[] cTempIterminal = new Complex[YOrder];
+		computeVTerminal();
+		YPrimShunt.MVMult(cTempIterminal, VTerminal);
 		/* No load losses are sum of all powers coming into YPrim_Shunt from each terminal */
 		noLoadLosses = Complex.ZERO;
-		for (int i = 0; i < Yorder; i++)
-			noLoadLosses = noLoadLosses.add( Vterminal[i].multiply(cTempIterminal[i].conjugate()) );
+		for (int i = 0; i < YOrder; i++)
+			noLoadLosses = noLoadLosses.add( VTerminal[i].multiply(cTempIterminal[i].conjugate()) );
 
 		loadLosses = totalLosses.subtract(noLoadLosses);
 
@@ -1014,12 +1014,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 					Value = new Complex(W.getRneut(), W.getXneut() * FreqMultiplier).invert();
 				}
 				j = i * nConds;
-				YPrim_Series.addElement(j, j, Value);
+				YPrimSeries.addElement(j, j, Value);
 			} else {
 				// bump up neutral admittance a bit in case neutral is floating
 				j = i * nConds;
 				if (ppm_FloatFactor != 0.0) {
-					YPrim_Series.setElement(j, j, YPrim_Series.getElement(j, j).add( new Complex(0.0, W.getY_PPM()) ));
+					YPrimSeries.setElement(j, j, YPrimSeries.getElement(j, j).add( new Complex(0.0, W.getY_PPM()) ));
 					/* YPrim_Series.setElement(j, j, CmulReal_im(GetElement(j, j), ppm_FloatFactorPlusOne)); */
 				}
 			}
@@ -1278,8 +1278,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			pctNoLoadLoss    = Obj.getPctNoLoadLoss();
 			setNormMaxHKVA(Obj.getNormMaxHKVA());
 			setEmergMaxHKVA(Obj.getEmergMaxHKVA());
-			Yorder = nConds * nTerms;
-			setYprimInvalid(true);
+			YOrder = nConds * nTerms;
+			setYPrimInvalid(true);
 			Y_Terminal_Freqmult = 0.0;
 
 			recalcElementData();

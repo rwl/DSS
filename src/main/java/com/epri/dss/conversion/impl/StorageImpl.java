@@ -290,7 +290,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		as.setVBase105(as.getVmaxpu() * as.getVBase());
 
 		as.setYorder(as.getNConds() * as.getNTerms());
-		as.setYprimInvalid(true);
+		as.setYPrimInvalid(true);
 	}
 
 	private int interpretDispMode(String S) {
@@ -530,7 +530,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		}
 
 		as.recalcElementData();
-		as.setYprimInvalid(true);
+		as.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -550,7 +550,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				as.setNPhases(OtherStorageObj.getNPhases());
 				as.setNConds(as.getNPhases());  // forces reallocation of terminal stuff
 				as.setYorder(as.getNConds() * as.getNTerms());
-				as.setYprimInvalid(true);
+				as.setYPrimInvalid(true);
 			}
 
 			as.setkVStorageBase(OtherStorageObj.getkVStorageBase());

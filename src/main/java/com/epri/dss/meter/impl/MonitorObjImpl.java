@@ -70,7 +70,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		this.VoltageBuffer = null;
 		this.StateBuffer   = null;
 
-		this.BaseFrequency = 60.0;
+		this.baseFrequency = 60.0;
 		this.Hour          = 0;
 		this.Sec           = 0.0;
 
@@ -498,15 +498,15 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 			// MeteredElement.getCurrents(CurrentBuffer);
 			// to save some time, call computeITerminal
-			MeteredElement.computeIterminal();  // only does calc if needed
+			MeteredElement.computeITerminal();  // only does calc if needed
 			for (i = 0; i < MeteredElement.getYorder(); i++)
-				CurrentBuffer[i] = MeteredElement.getIterminal()[i];
+				CurrentBuffer[i] = MeteredElement.getITerminal()[i];
 
 			try {
 				for (i = 0; i < nConds; i++) {
 					// nodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
-					VoltageBuffer[i] = sol.getNodeV()[NodeRef[i]];
+					VoltageBuffer[i] = sol.getNodeV()[nodeRef[i]];
 				}
 			} catch (Exception e) {
 				Globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
@@ -517,15 +517,15 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 			// MeteredElement.getCurrents(CurrentBuffer);
 			// to save some time, call computeITerminal
-			MeteredElement.computeIterminal();  // only does calc if needed
+			MeteredElement.computeITerminal();  // only does calc if needed
 			for (i = 0; i < MeteredElement.getYorder(); i++)
-				CurrentBuffer[i] = MeteredElement.getIterminal()[i];
+				CurrentBuffer[i] = MeteredElement.getITerminal()[i];
 
 			try {
 				for (i = 0; i < nConds; i++) {
 					// NodeRef is set by the main circuit object
 					// it is the index of the terminal into the system node list
-					VoltageBuffer[i] = sol.getNodeV()[NodeRef[i]];
+					VoltageBuffer[i] = sol.getNodeV()[nodeRef[i]];
 				}
 			} catch (Exception e) {
 				Globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
@@ -771,7 +771,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			F.println("// BufferSize=" + BufferSize);
 			F.println("// Hour=" + Hour);
 			F.println("// Sec=" + Sec);
-			F.println("// BaseFrequency=" + BaseFrequency);
+			F.println("// BaseFrequency=" + baseFrequency);
 			F.println("// Bufptr=" + BufPtr);
 			F.println("// Buffer=");
 			int k = 0;

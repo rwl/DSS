@@ -155,15 +155,15 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			return;
 
 		MeteredElement.getCurrents(CalculatedCurrent);
-		computeVterminal();
+		computeVTerminal();
 		switch (Conn) {
 		case 1:
 			for (int i = 0; i < nPhases; i++)
-				CalculatedVoltage[i] = Vterminal[i].subtract( Vterminal[rotatePhases(i)] );
+				CalculatedVoltage[i] = VTerminal[i].subtract( VTerminal[rotatePhases(i)] );
 			break;
 		default:
 			for (int i = 0; i < nPhases; i++)
-				CalculatedVoltage[i] = Vterminal[i];
+				CalculatedVoltage[i] = VTerminal[i];
 			break;
 		}
 	}

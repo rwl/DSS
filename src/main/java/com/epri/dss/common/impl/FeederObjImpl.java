@@ -53,9 +53,9 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 			setNPhases( RootElement.getNPhases() );  // take care of allocating terminal stuff
 			setNConds( RootElement.getNConds() );
 			setNTerms(1);
-			Yorder = nTerms * nConds;
+			YOrder = nTerms * nConds;
 
-			Terminals[0].setBusRef(BranchList.getPresentBranch().getFromBusReference());  // TODO Check zero based indexing
+			terminals[0].setBusRef(BranchList.getPresentBranch().getFromBusReference());  // TODO Check zero based indexing
 			setBus(0, RootElement.getBus(BranchList.getPresentBranch().getFromTerminal()));  // set bus name same as first element
 			FromTerminalOffset = (BranchList.getPresentBranch().getFromTerminal() - 1) * nConds;
 			setNodeRef(0, RootElement.getNodeRef()[1 + FromTerminalOffset]);  // TODO Check zero based indexing
@@ -98,14 +98,14 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrim_Series != null)
-				YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null)
+				YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
@@ -115,7 +115,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	/**
@@ -124,7 +124,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 	 */
 	@Override
 	public void getCurrents(Complex[] Curr) {
-		for (int i = 0; i < Yorder; i++)
+		for (int i = 0; i < YOrder; i++)
 			Curr[i] = Complex.ZERO;  // no contribution if not radial solution
 	}
 
@@ -164,10 +164,10 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 	public void setCktElementFeederFlags(boolean Value) {
 		for (int i = 0; i < ShuntList.size(); i++)
-			ShuntList.get(i).setIsPartofFeeder(Value);
+			ShuntList.get(i).setPartofFeeder(Value);
 
 		for (int i = 0; i < SequenceList.size(); i++)
-			SequenceList.get(i).setIsPartofFeeder(Value);
+			SequenceList.get(i).setPartofFeeder(Value);
 	}
 
 	public boolean isSynched() {

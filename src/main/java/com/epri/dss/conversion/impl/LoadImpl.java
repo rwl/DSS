@@ -274,7 +274,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		al.setVBase105(al.getVmaxpu() * al.getVBase());
 
 		al.setYorder(al.getNConds() * al.getNTerms());
-		al.setYprimInvalid(true);
+		al.setYPrimInvalid(true);
 	}
 
 	@Override
@@ -485,7 +485,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		}
 
 		al.recalcElementData();
-		al.setYprimInvalid(true);
+		al.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -503,7 +503,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setNPhases(OtherLoad.getNPhases());
 				al.setNConds(al.getNPhases());  // forces reallocation of terminal stuff
 				al.setYorder(al.getNConds() * al.getNTerms());
-				al.setYprimInvalid(true);
+				al.setYPrimInvalid(true);
 			}
 
 			al.setkVLoadBase(OtherLoad.getkVLoadBase());

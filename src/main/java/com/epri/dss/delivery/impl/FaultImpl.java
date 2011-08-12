@@ -220,13 +220,13 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			// YPrim invalidation on anything that changes impedance values
 			switch (ParamPointer) {
 			case 3:
-				af.setYprimInvalid(true);
+				af.setYPrimInvalid(true);
 				break;
 			case 4:
-				af.setYprimInvalid(true);
+				af.setYPrimInvalid(true);
 				break;
 			case 6:
-				af.setYprimInvalid(true);
+				af.setYPrimInvalid(true);
 				break;
 			}
 
@@ -253,7 +253,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setNConds(af.getNPhases());  // force reallocation of terminals and conductors
 
 				af.setYorder(af.getNConds() * af.getNTerms());
-				af.setYprimInvalid(true);
+				af.setYPrimInvalid(true);
 			}
 
 			af.setBaseFrequency(OtherFault.getBaseFrequency());

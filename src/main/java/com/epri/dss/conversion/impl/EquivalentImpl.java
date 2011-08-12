@@ -154,7 +154,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		}
 
 		// recalcElementData();
-		ae.setYprimInvalid(true);
+		ae.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -176,7 +176,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setNConds(ae.getNPhases());  // forces reallocation of terminal stuff
 
 				ae.setYorder(ae.getNConds() * ae.getNTerms());
-				ae.setYprimInvalid(true);
+				ae.setYPrimInvalid(true);
 
 				for (i = 0; i < ae.getNTerms(); i++)
 					ae.getR1()[i] = OtherEquivalent.getR1()[i];

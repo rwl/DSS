@@ -286,7 +286,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		}
 
 		avs.recalcElementData();
-		avs.setYprimInvalid(true);
+		avs.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -306,7 +306,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setNConds(avs.getNPhases());  // forces reallocation of terminal stuff
 
 				avs.setYorder(avs.getNConds() * avs.getNTerms());
-				avs.setYprimInvalid(true);
+				avs.setYPrimInvalid(true);
 
 				if (avs.getZ() != null) avs.setZ(null);
 				if (avs.getZinv() != null) avs.setZinv(null);

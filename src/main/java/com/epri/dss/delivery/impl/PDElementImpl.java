@@ -53,12 +53,12 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		try {
 			if (isEnabled()) {
 				SolutionObj sol = Globals.getActiveCircuit().getSolution();
-				for (i = 0; i < Yorder; i++)
-					Vterminal[i] = sol.getNodeV()[NodeRef[i]];
+				for (i = 0; i < YOrder; i++)
+					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-				YPrim.MVMult(Curr, Vterminal);
+				YPrim.MVMult(Curr, VTerminal);
 			} else {
-				for (i = 0; i < Yorder; i++)
+				for (i = 0; i < YOrder; i++)
 					Curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {

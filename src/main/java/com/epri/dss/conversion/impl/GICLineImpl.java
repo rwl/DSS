@@ -209,7 +209,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		}
 
 		agl.recalcElementData();
-		agl.setYprimInvalid(true);
+		agl.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -232,7 +232,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				agl.setNConds(agl.getNPhases());  // forces reallocation of terminal stuff
 
 				agl.setYorder(agl.getNConds() * agl.getNTerms());
-				agl.setYprimInvalid(true);
+				agl.setYPrimInvalid(true);
 
 				if (agl.getZ() != null) agl.setZ(null);
 				if (agl.getZinv() != null) agl.setZinv(null);

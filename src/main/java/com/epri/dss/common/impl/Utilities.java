@@ -1105,7 +1105,7 @@ public class Utilities {
 	 */
 	public static void invalidateAllMachines() {
 		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators())
-			pGen.setYprimInvalid(true);
+			pGen.setYPrimInvalid(true);
 	}
 
 	public static double presentTimeInSec() {

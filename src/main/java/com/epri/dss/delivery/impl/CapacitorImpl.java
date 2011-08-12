@@ -290,28 +290,28 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			// YPrim invalidation on anything that changes impedance values
 			switch (ParamPointer) {
 			case 3:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 4:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 5:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 6:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 7:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 8:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 12:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			case 13:
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 				break;
 			}
 
@@ -337,7 +337,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				aco.setNConds(aco.getNPhases());  // force reallocation of terminals and conductors
 
 				aco.setYorder(aco.getNConds() * aco.getNTerms());
-				aco.setYprimInvalid(true);
+				aco.setYPrimInvalid(true);
 			}
 
 			aco.setNumSteps(OtherCapacitor.getNumSteps());

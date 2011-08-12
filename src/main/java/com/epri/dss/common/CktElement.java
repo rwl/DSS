@@ -37,7 +37,7 @@ public interface CktElement extends DSSObject {
 
 	boolean isIsolated();
 
-	void setIsIsolated(boolean isIsolated);
+	void setIsolated(boolean isIsolated);
 
 	boolean hasControl();
 
@@ -45,19 +45,19 @@ public interface CktElement extends DSSObject {
 
 	boolean isPartofFeeder();
 
-	void setIsPartofFeeder(boolean isPartofFeeder);
+	void setPartofFeeder(boolean isPartofFeeder);
 
 	DSSCktElement getControlElement();
 
 	void setControlElement(DSSCktElement controlElement);
 
-	Complex[] getIterminal();
+	Complex[] getITerminal();
 
-	void setIterminal(Complex[] iterminal);
+	void setITerminal(Complex[] iterminal);
 
-	Complex[] getVterminal();
+	Complex[] getVTerminal();
 
-	void setVterminal(Complex[] vterminal);
+	void setVTerminal(Complex[] vterminal);
 
 	double getBaseFrequency();
 
@@ -71,9 +71,9 @@ public interface CktElement extends DSSObject {
 
 	PowerTerminal getActiveTerminal();
 
-	void setYprimFreq(double Value);
+	void setYPrimFreq(double Value);
 
-	double getYprimFreq();
+	double getYPrimFreq();
 
 	void setNConds(int Value);
 
@@ -93,7 +93,7 @@ public interface CktElement extends DSSObject {
 
 	boolean getConductorClosed(int Index);
 
-	void setYprimInvalid(boolean Value);
+	void setYPrimInvalid(boolean Value);
 
 	boolean isYprimInvalid();
 
@@ -103,7 +103,7 @@ public interface CktElement extends DSSObject {
 
 	Complex getLosses();
 
-	/* Get total complex power in active terminal */
+	/** Get total complex power in active terminal */
 	Complex getPower(int idxTerm);
 
 	void setConductorClosed(int Index, boolean Value);
@@ -124,21 +124,20 @@ public interface CktElement extends DSSObject {
 	double maxTerminalOneIMag();
 
 	/** Computes ITerminal for this device */
-	void computeIterminal();
+	void computeITerminal();
 
-	void computeVterminal();
+	void computeVTerminal();
 
 	void zeroITerminal();
 
 	/** Get present value of terminal current for reports */
-	void getCurrents(Complex[] Curr);
+	void getCurrents(Complex[] curr);
 
 	/** Returns injection currents */
-	void getInjCurrents(Complex[] Curr);
+	void getInjCurrents(Complex[] curr);
 
 	/** Applies to PC elements puts straight into solution array */
 	int injCurrents();
-
 
 	/** Get bus name by index */
 	String getBus(int i);
@@ -147,7 +146,7 @@ public interface CktElement extends DSSObject {
 	void setBus(int i, String s);
 
 	/** Set NodeRef array for fast solution with intrinsics */
-	void setNodeRef(int iTerm, int[] NodeRefArray);
+	void setNodeRef(int iTerm, int[] nodeRefArray);
 
 	void recalcElementData();
 
@@ -160,19 +159,19 @@ public interface CktElement extends DSSObject {
 
 	void getPhasePower(Complex[] PowerBuffer);
 
-	void getPhaseLosses(int Num_Phases, Complex[] LossBuffer);
+	void getPhaseLosses(int numPhases, Complex[] lossBuffer);
 
-	void getLosses(double[] TotalLosses, double[] LoadLosses,
-			double[] NoLoadLosses);
+	void getLosses(double[] totalLosses, double[] loadLosses,
+			double[] noLoadLosses);
 
-	void getSeqLosses(double[] PosSeqLosses, double[] NegSeqLosses,
-			double[] ZeroModeLosses);
+	void getSeqLosses(double[] posSeqLosses, double[] negSeqLosses,
+			double[] zeroModeLosses);
 
-	String getPropertyValue(int Index);
+	String getPropertyValue(int index);
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	void sumCurrents();
 

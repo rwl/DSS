@@ -235,7 +235,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		ag.setVBase105(ag.getVMaxPU() * ag.getVBase());
 
 		ag.setYorder(ag.getNConds() * ag.getNTerms());
-		ag.setYprimInvalid(true);
+		ag.setYPrimInvalid(true);
 	}
 
 	private static int interpretDispMode(String S) {
@@ -477,7 +477,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		}
 
 		ag.recalcElementData();
-		ag.setYprimInvalid(true);
+		ag.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -497,7 +497,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				ag.setNConds(ag.getNPhases());  // forces reallocation of terminal stuff
 
 				ag.setYorder(ag.getNConds() * ag.getNTerms());
-				ag.setYprimInvalid(true);
+				ag.setYPrimInvalid(true);
 			}
 
 			ag.getGenVars().kVGeneratorBase = OtherGenerator.getGenVars().kVGeneratorBase;

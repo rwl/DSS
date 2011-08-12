@@ -236,7 +236,7 @@ public class CktTreeImpl implements CktTree {
 				if (Analyze || (!psrc.isChecked())) {
 					if (psrc.getTerminals()[0].getBusRef() == BusNum) {  // ? Connected to this bus ?
 						if (Analyze) {
-							psrc.setIsIsolated(false);
+							psrc.setIsolated(false);
 							BranchList.getPresentBranch().setIsDangling(false);
 						}
 
@@ -257,7 +257,7 @@ public class CktTreeImpl implements CktTree {
 			p = adjLst.get(i);
 			if (p.isEnabled()) {
 				if (Analyze) {
-					p.setIsIsolated(false);
+					p.setIsolated(false);
 					BranchList.getPresentBranch().setIsDangling(false);
 				}
 				if (!p.isChecked()) {
@@ -282,7 +282,7 @@ public class CktTreeImpl implements CktTree {
 						for (j = 0; j < p.getNTerms(); j++) {
 							if (BusNum == p.getTerminals()[j].getBusRef()) {
 								if (Analyze) {
-									p.setIsIsolated(false);
+									p.setIsolated(false);
 									BranchList.getPresentBranch().setIsDangling(false);
 									if (p.isChecked() && (BranchList.getLevel() > 0)) {
 										BranchList.getPresentBranch().setIsLoopedHere(true);
@@ -312,7 +312,7 @@ public class CktTreeImpl implements CktTree {
 			p = adjLst.get(i);
 			if (p.isEnabled() && Utilities.isShuntElement(p)) {
 				if (Analyze) {
-					p.setIsIsolated(false);
+					p.setIsolated(false);
 					BranchList.getPresentBranch().setIsDangling(false);
 				}
 				if (!p.isChecked()) {
@@ -348,7 +348,7 @@ public class CktTreeImpl implements CktTree {
 
 		BranchList.setNew(TestElement);
 		if (Analyze)
-			TestElement.setIsIsolated(false);
+			TestElement.setIsolated(false);
 		TestElement.setLastTerminalChecked(0);  // we'll check things connected to both sides
 
 		// check off this element so we don't use it again

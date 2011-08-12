@@ -957,7 +957,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void invalidateAllPCElements() {
 		for (PCElement p : PCElements)
-			p.setYprimInvalid(true);
+			p.setYPrimInvalid(true);
 
 		// force rebuild of matrix on next solution
 		solution.setSystemYChanged(true);
@@ -1002,7 +1002,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				elem.setChecked(false);
 				for (int i = 0; i < elem.getNTerms(); i++)
 					elem.getTerminals()[i].setChecked(false);
-				elem.setIsIsolated(true);  // till proven otherwise
+				elem.setIsolated(true);  // till proven otherwise
 			}
 
 			for (int i = 0; i < numBuses; i++)

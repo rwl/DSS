@@ -172,7 +172,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		}
 
 		ais.recalcElementData();
-		ais.setYprimInvalid(true);
+		ais.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -192,7 +192,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				ais.setNConds(ais.getNPhases());  // forces reallocation of terminal stuff
 
 				ais.setYorder(ais.getNConds() * ais.getNTerms());
-				ais.setYprimInvalid(true);
+				ais.setYPrimInvalid(true);
 			}
 
 			ais.setAmps(OtherIsource.getAmps());

@@ -375,20 +375,20 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 			// YPrim invalidation on anything that changes impedance values
 			if ((ParamPointer >= 4) && (ParamPointer <= 18)) {
-				at.setYprimInvalid(true);
+				at.setYPrimInvalid(true);
 			} else {
 				switch (ParamPointer) {
 				case 25:
-					at.setYprimInvalid(true);
+					at.setYPrimInvalid(true);
 					break;
 				case 26:
-					at.setYprimInvalid(true);
+					at.setYPrimInvalid(true);
 					break;
 				case 34:
-					at.setYprimInvalid(true);
+					at.setYPrimInvalid(true);
 					break;
 				case 35:
-					at.setYprimInvalid(true);
+					at.setYPrimInvalid(true);
 					break;
 				}
 			}
@@ -445,7 +445,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		}
 
 		at.setYorder(at.getNConds() * at.getNTerms());
-		at.setYprimInvalid(true);
+		at.setYPrimInvalid(true);
 	}
 
 	/**
@@ -591,7 +591,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			at.setNConds(at.getNPhases() + 1);  // forces reallocation of terminals and conductors
 
 			at.setYorder(at.getNConds() * at.getNTerms());
-			at.setYprimInvalid(true);
+			at.setYPrimInvalid(true);
 
 			for (i = 0; i < at.getNumWindings(); i++) {
 				Winding w = at.getWinding()[i];

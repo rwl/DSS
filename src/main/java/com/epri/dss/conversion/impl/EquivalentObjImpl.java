@@ -58,14 +58,14 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		this.kVBase = 115.0;
 		this.PerUnit = 1.0;
-		this.EquivFrequency = BaseFrequency;
+		this.EquivFrequency = baseFrequency;
 		this.Angle = 0.0;
 
 		this.Spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -124,7 +124,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		if (getSpectrumObj() == null)
 			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		NeedToDoRecalc = false;
 	}
@@ -139,24 +139,24 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		// build only YPrim series
 		if (isYprimInvalid()) {
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
 		if (NeedToDoRecalc)
 			recalcElementData();
 
-		YprimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Put in Series RL matrix adjusted for frequency */
-		for (i = 0; i < Yorder; i++) {
-			for (j = 0; j < Yorder; j++) {
+		for (i = 0; i < YOrder; i++) {
+			for (j = 0; j < YOrder; j++) {
 				Value = Z.getElement(i, j);
 				/* Modify from base freq */
 				Value = new Complex(Value.getReal(), Value.getImaginary() * FreqMultiplier);
@@ -176,15 +176,15 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		}
 
 
-		YPrim_Series.copyFrom(Zinv);
+		YPrimSeries.copyFrom(Zinv);
 
-		YPrim.copyFrom(YPrim_Series);
+		YPrim.copyFrom(YPrimSeries);
 
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	private void getVterminalForSource() {
@@ -215,13 +215,13 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				Vharm = getSpectrumObj().getMult(EquivHarm).multiply(VMag);  // base voltage for this harmonic
 				Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, Angle);  // rotate for phase 1 shift
 				for (i = 0; i < nPhases; i++) {
-					Vterminal[i] = Vharm;
+					VTerminal[i] = Vharm;
 					if (i < nPhases)
 						Vharm = Utilities.rotatePhasorDeg(Vharm, EquivHarm, -360.0 / nPhases);
 				}
 			} else {
 				for (i = 0; i < nPhases; i++)
-					Vterminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i - 1) * 360.0 / nPhases));
+					VTerminal[i] = ComplexUtil.polarDeg2Complex(VMag, (360.0 + Angle - (i - 1) * 360.0 / nPhases));
 			}
 
 		} catch (Exception e) {
@@ -244,15 +244,15 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		try {
 			SolutionObj sol = Globals.getActiveCircuit().getSolution();
-			for (i = 0; i < Yorder; i++)
-				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
+			for (i = 0; i < YOrder; i++)
+				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(Curr, Vterminal);
+			YPrim.MVMult(Curr, VTerminal);
 
-			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
-			for (i = 0; i < Yorder; i++)
-				Curr[i] = Curr[i].subtract(ComplexBuffer[i]);
+			for (i = 0; i < YOrder; i++)
+				Curr[i] = Curr[i].subtract(complexBuffer[i]);
 		} catch (Exception e) {
 			Globals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
 			"Inadequate storage allotted for circuit element.", 805);
@@ -263,7 +263,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	public void getInjCurrents(Complex[] Curr) {
 
 		getVterminalForSource();
-		YPrim.MVMult(Curr, Vterminal);  /* I = Y V */
+		YPrim.MVMult(Curr, VTerminal);  /* I = Y V */
 
 		setITerminalUpdated(false);
 	}
@@ -281,7 +281,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		if (Complete) {
 			F.println();
-			F.println("baseFrequency=" + BaseFrequency);
+			F.println("baseFrequency=" + baseFrequency);
 			F.println("vMag=" + VMag);
 			F.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {

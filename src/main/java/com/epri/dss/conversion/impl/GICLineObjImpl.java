@@ -53,7 +53,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -89,7 +89,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		if ((getSpectrumObj() == null) && (getSpectrum().length() > 0))
 			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device GICLine."+getName()+" not found.", 324);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override
@@ -103,17 +103,17 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
-		YprimFreq      = Globals.getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier  = YprimFreq / BaseFrequency;
+		YPrimFreq      = Globals.getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier  = YPrimFreq / baseFrequency;
 
 		/* Put in series RL adjusted for frequency */
 		for (i = 0; i < nPhases; i++) {
@@ -127,7 +127,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		if (C > 0.0) {  // add 1/wC into diagonals of Zinv
 
-			Xc = -1.0 / (DSSGlobals.TwoPi * YprimFreq * C * 1.0e-6);
+			Xc = -1.0 / (DSSGlobals.TwoPi * YPrimFreq * C * 1.0e-6);
 			for (i = 0; i < nPhases; i++)
 				Zinv.addElement(i, i, new Complex(0.0, Xc)) ;
 		}
@@ -148,19 +148,19 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		for (i = 0; i < nPhases; i++) {
 			for (j = 0; j < nPhases; j++) {
 				Value = Zinv.getElement(i, j);
-				YPrim_Series.setElement(i, j, Value);
-				YPrim_Series.setElement(i + nPhases, j + nPhases, Value);
-				YPrim_Series.setElemSym(i + nPhases, j, Value.negate());
+				YPrimSeries.setElement(i, j, Value);
+				YPrimSeries.setElement(i + nPhases, j + nPhases, Value);
+				YPrimSeries.setElemSym(i + nPhases, j, Value.negate());
 			}
 		}
 
-		YPrim.copyFrom(YPrim_Series);
+		YPrim.copyFrom(YPrimSeries);
 
 		/* Now account for open conductors */
 		/* For any conductor that is open, zero out row and column */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	private void getVterminalForSource() {
@@ -185,8 +185,8 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 				// rotate for phase 1 shift
 				Vharm = Utilities.rotatePhasorDeg(Vharm, SrcHarmonic, Angle);
 				for (i = 0; i < nPhases; i++) {
-					Vterminal[i] =  Vharm;
-	                Vterminal[i+nPhases] = Complex.ZERO;
+					VTerminal[i] =  Vharm;
+	                VTerminal[i+nPhases] = Complex.ZERO;
 	                if (i < nPhases) {
 	                	switch (ScanType) {
 						case 1:
@@ -211,16 +211,16 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 				for (i = 0; i < nPhases; i++) {
 					switch (SequenceType) {
 					case -1:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle + (i-1)* 360.0 / nPhases) );  // neg seq
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle + (i-1)* 360.0 / nPhases) );  // neg seq
 						break;
 					case 0:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle) );  // all the same for zero sequence
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle) );  // all the same for zero sequence
 						break;
 					default:
-						Vterminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle - (i-1)* 360.0 / nPhases) );
+						VTerminal[i] = ComplexUtil.polarDeg2Complex(Vmag, (360.0 + Angle - (i-1)* 360.0 / nPhases) );
 						break;
 					}
-	                Vterminal[i+nPhases] = Complex.ZERO;  // see comments in getInjCurrents
+	                VTerminal[i+nPhases] = Complex.ZERO;  // see comments in getInjCurrents
 				}
 			}
 		} catch (Exception e) {
@@ -246,15 +246,15 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		SolutionObj sol = Globals.getActiveCircuit().getSolution();
 
 		try {
-			for (i = 0; i < Yorder; i++)
-				Vterminal[i] = sol.getNodeV()[NodeRef[i]];
+			for (i = 0; i < YOrder; i++)
+				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(Curr, Vterminal);  // current from elements in system Y
+			YPrim.MVMult(Curr, VTerminal);  // current from elements in system Y
 
-			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
-			for (i = 0; i < Yorder; i++)
-				Curr[i] = Curr[i].subtract( ComplexBuffer[i] );
+			for (i = 0; i < YOrder; i++)
+				Curr[i] = Curr[i].subtract( complexBuffer[i] );
 
 		} catch (Exception e) {
 			Globals.doErrorMsg("getCurrents for Element: " + getName() + ".",
@@ -274,7 +274,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		 */
 
 		getVterminalForSource();  // gets voltage vector above
-		YPrim.MVMult(Curr, Vterminal);
+		YPrim.MVMult(Curr, VTerminal);
 
 		setITerminalUpdated(false);
 	}
@@ -292,7 +292,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		if (Complete) {
 			F.println();
-			F.println("baseFrequency=" + BaseFrequency);
+			F.println("baseFrequency=" + baseFrequency);
 			F.println("vMag=" + Vmag);
 			F.println("zMatrix=");
 			for (i = 0; i < nPhases; i++) {

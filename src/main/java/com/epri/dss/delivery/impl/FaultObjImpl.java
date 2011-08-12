@@ -66,7 +66,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -99,7 +99,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		// give the multiplier some skew to approximate more uniform/Gaussian current distributions
 		// RandomMult = cube(RandomMult);   removed 12/7/04
 
-		setYprimInvalid(true);  // force rebuilding of matrix
+		setYPrimInvalid(true);  // force rebuilding of matrix
 	}
 
 	@Override
@@ -110,26 +110,26 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		CMatrix YPrimTemp;
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
-			if (YPrim_Series != null)
-				YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
-			if (YPrim_Shunt != null)
-				YPrim_Shunt = null;
-			YPrim_Shunt = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null)
+				YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
+			if (YPrimShunt != null)
+				YPrimShunt = null;
+			YPrimShunt = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();  // zero out YPrim
-			YPrim_Shunt.clear();   // zero out YPrim
+			YPrimSeries.clear();  // zero out YPrim
+			YPrimShunt.clear();   // zero out YPrim
 			YPrim.clear();
 		}
 
 
 		if (isShunt()) {
-			YPrimTemp = YPrim_Shunt;
+			YPrimTemp = YPrimShunt;
 		} else {
-			YPrimTemp = YPrim_Series;
+			YPrimTemp = YPrimSeries;
 		}
 
 		// make sure randomMult is 1.0 if not solution mode MonteFault
@@ -179,7 +179,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		YPrim.copyFrom(YPrimTemp);
 
 		super.calcYPrim();
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				/* Turn it on unless it has been previously cleared */
 				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
 					Is_ON = true;
-					setYprimInvalid(true);
+					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
@@ -240,7 +240,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					if (!faultStillGoing()) {
 						Is_ON = false;
 						Cleared = true;
-						setYprimInvalid(true);
+						setYPrimInvalid(true);
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
@@ -250,7 +250,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 				/* Turn it on unless it has been previously cleared */
 				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
 					Is_ON = true;
-					setYprimInvalid(true);
+					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
@@ -258,7 +258,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 					if (!faultStillGoing()) {
 						Is_ON = false;
 						Cleared = true;
-						setYprimInvalid(true);
+						setYPrimInvalid(true);
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
@@ -267,9 +267,9 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	}
 
 	private boolean faultStillGoing() {
-		computeIterminal();
+		computeITerminal();
 		for (int i = 0; i < nPhases; i++)
-			if (Iterminal[i].abs() > MinAmps)
+			if (ITerminal[i].abs() > MinAmps)
 				return true;
 		return false;
 	}

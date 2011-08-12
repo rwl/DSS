@@ -251,7 +251,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 			// YPrim invalidation on anything that changes impedance values or no. of terminals
 			if ((ParamPointer >= 2) && (ParamPointer <= 7))
-				agt.setYprimInvalid(true);
+				agt.setYPrimInvalid(true);
 
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
@@ -279,7 +279,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				agt.setNConds(agt.getNPhases());  // force reallocation of terminals and conductors
 
 				agt.setYorder(agt.getNConds() * agt.getNTerms());
-				agt.setYprimInvalid(true);
+				agt.setYPrimInvalid(true);
 			}
 
 			agt.setBaseFrequency(OtherGICTrans.getBaseFrequency());

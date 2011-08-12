@@ -109,7 +109,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		}
 
 		ActiveFeederObj.recalcElementData();
-		ActiveFeederObj.setYprimInvalid(true);
+		ActiveFeederObj.setYPrimInvalid(true);
 
 		return Result;
 	}
@@ -126,7 +126,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 				ActiveFeederObj.setNConds(ActiveFeederObj.getNPhases());  // forces reallocation of terminal stuff
 
 				ActiveFeederObj.setYorder(ActiveFeederObj.getNConds() * ActiveFeederObj.getNTerms());
-				ActiveFeederObj.setYprimInvalid(true);
+				ActiveFeederObj.setYPrimInvalid(true);
 			}
 
 			// put properties to copy here

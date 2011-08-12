@@ -61,7 +61,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		this.FaultRate   = 0.0005;
 		this.PctPerm     = 100.0;
 		this.HrsToRepair = 3.0;
-		this.Yorder      = this.nTerms * this.nConds;
+		this.YOrder      = this.nTerms * this.nConds;
 		recalcElementData();
 
 		initPropertyValues(0);
@@ -154,27 +154,27 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		// bus1 != bus2
 
 		if (isYprimInvalid()) {  // reallocate YPrim if something has invalidated old allocation
-			if (YPrim_Shunt != null) YPrim_Shunt = null;
-			YPrim_Shunt = new CMatrixImpl(Yorder);
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimShunt != null) YPrimShunt = null;
+			YPrimShunt = new CMatrixImpl(YOrder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear(); // zero out YPrim
-			YPrim_Shunt.clear();  // zero out YPrim
+			YPrimSeries.clear(); // zero out YPrim
+			YPrimShunt.clear();  // zero out YPrim
 			YPrim.clear();
 		}
 
 		if (isShunt()) {
-			YPrimTemp = YPrim_Shunt;
+			YPrimTemp = YPrimShunt;
 		} else {
-			YPrimTemp = YPrim_Series;
+			YPrimTemp = YPrimSeries;
 		}
 
 
-		YprimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq = Globals.getActiveCircuit().getSolution().getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Now, put in Yprim matrix */
 
@@ -284,11 +284,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt()) {
 			if ((nPhases == 1) && (!Globals.getActiveCircuit().isPositiveSequence())) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
-				for (i = 0; i < Yorder; i++)
-					YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i));
+				for (i = 0; i < YOrder; i++)
+					YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i));
 			} else {
-				for (i = 0; i < Yorder; i++)
-					YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+				for (i = 0; i < YOrder; i++)
+					YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
 			}
 		}
 
@@ -296,7 +296,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	@Override
@@ -352,7 +352,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			noLoadLosses = Complex.ZERO;
 			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 			for (int i = 0; i < nPhases; i++) {
-				Complex V = sol.getNodeV()[NodeRef[i]];
+				Complex V = sol.getNodeV()[nodeRef[i]];
 				noLoadLosses = noLoadLosses.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
 			}
 

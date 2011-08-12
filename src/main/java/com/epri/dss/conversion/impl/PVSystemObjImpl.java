@@ -127,7 +127,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		setNPhases(3);
 		this.nConds = 4;   // defaults to wye
-		this.Yorder  = 0;  // to trigger an initial allocation
+		this.YOrder  = 0;  // to trigger an initial allocation
 		setNTerms(1);      // forces allocations
 
 		this.YearlyShape        = "";
@@ -163,7 +163,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		this.Vmaxpu           = 1.10;
 		this.VBase95          = this.Vminpu  * this.VBase;
 		this.VBase105         = this.Vmaxpu  * this.VBase;
-		this.Yorder           = this.nTerms * this.nConds;
+		this.YOrder           = this.nTerms * this.nConds;
 		this.RandomMult       = 1.0 ;
 
 		this.PFSpecified      = true;
@@ -498,7 +498,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		// initialize to zero - defaults to PQ PVSystem element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		/* Update any user-written models */
 		if (UserModel.exists())
@@ -513,8 +513,8 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 		SolutionObj sol = ckt.getSolution();
 
-		YprimFreq = sol.getFrequency();
-		FreqMultiplier = YprimFreq / BaseFrequency;
+		YPrimFreq = sol.getFrequency();
+		FreqMultiplier = YPrimFreq / baseFrequency;
 
 		if (/*sol.isDynamicModel() ||*/ sol.isIsHarmonicModel()) {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
@@ -640,26 +640,26 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		// build only shunt Yprim
 		// build a dummy Yprim Series so that calcV does not fail
 		if (isYprimInvalid()) {
-			if (YPrim_Shunt != null) YPrim_Shunt = null;
-			YPrim_Shunt = new CMatrixImpl(Yorder);
-			if (YPrim_Series != null) YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimShunt != null) YPrimShunt = null;
+			YPrimShunt = new CMatrixImpl(YOrder);
+			if (YPrimSeries != null) YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null) YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Shunt.clear();
-			YPrim_Series.clear();
+			YPrimShunt.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
 		setNominalPVSystemOuput();
-		calcYPrimMatrix(YPrim_Shunt);
+		calcYPrimMatrix(YPrimShunt);
 
 		// set YPrim_Series based on diagonals of YPrim_shunt so that calcVoltages doesn't fail
-		for (int i = 0; i < Yorder; i++)
-			YPrim_Series.setElement(i, i, YPrim_Shunt.getElement(i, i).multiply(1.0e-10));
+		for (int i = 0; i < YOrder; i++)
+			YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i).multiply(1.0e-10));
 
-		YPrim.copyFrom(YPrim_Shunt);
+		YPrim.copyFrom(YPrimShunt);
 
 		// account for open conductors
 		super.calcYPrim();
@@ -706,9 +706,9 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				for (i = 0; i < nPhases; i++)
 					TraceBuffer.write(getInjCurrent()[i].abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					TraceBuffer.write(getIterminal()[i].abs() + ", ");
+					TraceBuffer.write(getITerminal()[i].abs() + ", ");
 				for (i = 0; i < nPhases; i++)
-					TraceBuffer.write(getVterminal()[i].abs() + ", ");
+					TraceBuffer.write(getVTerminal()[i].abs() + ", ");
 
 				TraceBuffer.newLine();
 				TraceBuffer.close();
@@ -734,7 +734,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		calcVTerminalPhase();  // get actual voltage across each phase of the load
 		for (i = 0; i < getNPhases(); i++) {
-			V    = Vterminal[i];
+			V    = VTerminal[i];
 			VMag = V.abs();
 
 			switch (Connection) {
@@ -760,7 +760,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				break;
 			}
 
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -784,8 +784,8 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 
 		for (i = 0; i < getNPhases(); i++) {
-			Curr = YEQ2.multiply(Vterminal[i]);   // Yeq is always line to neutral
-			stickCurrInTerminalArray(getIterminal(), Curr.negate(), i);  // put into terminal array taking into account connection
+			Curr = YEQ2.multiply(VTerminal[i]);   // Yeq is always line to neutral
+			stickCurrInTerminalArray(getITerminal(), Curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
 			stickCurrInTerminalArray(getInjCurrent(), Curr, i);  // put into terminal array taking into account connection
 		}
@@ -800,11 +800,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		if (UserModel.exists()) {  // check automatically selects the user model if true
-			UserModel.calc(Vterminal, Iterminal);
+			UserModel.calc(VTerminal, ITerminal);
 			setITerminalUpdated(true);
 			// negate currents from user model for power flow PVSystem element model
 			for (int i = 0; i < nConds; i++)
-				getInjCurrent()[i] = getInjCurrent()[i].add( Iterminal[i].negate() );
+				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
 		} else {
 			Globals.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
@@ -831,7 +831,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Complex E;
 		double PVSystemHarmonic;
 
-		computeVterminal();
+		computeVTerminal();
 
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
@@ -851,7 +851,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		/* Handle wye connection */
 		if (Connection == 0)
-			cBuffer[nConds] = Vterminal[nConds];  // assume no neutral injection voltage
+			cBuffer[nConds] = VTerminal[nConds];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
 		YPrim.MVMult(getInjCurrent(), cBuffer);
@@ -866,14 +866,14 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		switch (Connection) {
 		case 0:
 			for (i = 0; i < nPhases; i++)
-				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[nConds]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[nConds]);
 			break;
 
 		case 1:
 			for (i = 0; i < nPhases; i++) {
 				j = i + 1;  // TODO Check zero based indexing
 				if (j >= nConds) j = 0;
-				Vterminal[i] = sol.vDiff(NodeRef[i], NodeRef[j]);
+				VTerminal[i] = sol.vDiff(nodeRef[i], nodeRef[j]);
 			}
 			break;
 		}
@@ -939,7 +939,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	public void getTerminalCurrents(Complex[] Curr) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		if (IterminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
+		if (ITerminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
 			if (!PVsystemObjSwitchOpen)
 				calcPVSystemModelContribution();  // adds totals in ITerminal as a side effect
 		}
@@ -978,7 +978,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		try {
 			// copy into buffer array
-			for (int i = 0; i < Yorder; i++)
+			for (int i = 0; i < YOrder; i++)
 				Curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doErrorMsg("PVSystem object: \"" + getName() + "\" in getInjCurrents method.",
@@ -1100,25 +1100,25 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		setYprimInvalid(true);  // force rebuild of YPrims
+		setYPrimInvalid(true);  // force rebuild of YPrims
 		PVSystemFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
 		YEQ = new Complex(RThev, XThev).invert();  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
-		computeIterminal();  // get present value of current
+		computeITerminal();  // get present value of current
 
 		switch (Connection) {
 		case 0:  /* wye - neutral is explicit */
-			Va = sol.getNodeV()[ NodeRef[0] ].subtract(sol.getNodeV()[ NodeRef[nConds] ]);
+			Va = sol.getNodeV()[ nodeRef[0] ].subtract(sol.getNodeV()[ nodeRef[nConds] ]);
 			break;
 		case 1:  /* delta -- assume neutral is at zero */
-			Va = sol.getNodeV()[ NodeRef[0] ];
+			Va = sol.getNodeV()[ nodeRef[0] ];
 			break;
 		}
 
-		E = Va.subtract( Iterminal[0].multiply(new Complex(RThev, XThev)) );
+		E = Va.subtract( ITerminal[0].multiply(new Complex(RThev, XThev)) );
 		Vthevharm = E.abs();   // establish base mag and angle
 		Thetaharm = E.getArgument();
 	}
@@ -1128,7 +1128,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	 */
 	@Override
 	public void initStateVars() {
-		setYprimInvalid(true);  // force rebuild of YPrims
+		setYPrimInvalid(true);  // force rebuild of YPrims
 	}
 
 	/**

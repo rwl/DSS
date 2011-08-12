@@ -439,7 +439,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			case 14:
 				if (al.isIsSwitch()) {
 					al.setSymComponentsChanged(true);
-					al.setYprimInvalid(true);
+					al.setYPrimInvalid(true);
 					al.setGeometrySpecified(false);
 					al.setSpacingSpecified(false);
 					al.setR1(1.0);
@@ -470,7 +470,7 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.setSymComponentsChanged(false);
 					al.killGeometrySpecified();
 				}
-				al.setYprimInvalid(true);
+				al.setYPrimInvalid(true);
 				break;
 			case 21:
 				if ((al.getLineSpacingObj() != null) && (al.getWireData() != null)) {
@@ -479,13 +479,13 @@ public class LineImpl extends PDClassImpl implements Line {
 					al.setSymComponentsChanged(false);
 					al.killGeometrySpecified();
 				}
-				al.setYprimInvalid(true);
+				al.setYPrimInvalid(true);
 				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
 			if ((ParamPointer >= 2) && (ParamPointer <= 13)) {
-				al.setYprimInvalid(true);
+				al.setYPrimInvalid(true);
 			} else if (ParamPointer == 17) {
 				if (al.isGeometrySpecified() && (al.getLineGeometryObj() != null))
 					al.getLineGeometryObj().setRhoEarth(al.getRho());
@@ -525,7 +525,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setNConds(al.getNPhases());  // force reallocation of terminals and conductors
 
 				al.setYorder(al.getNConds() * al.getNTerms());
-				al.setYprimInvalid(true);
+				al.setYPrimInvalid(true);
 
 				if (al.getZ() != null)
 					al.setZ(null);

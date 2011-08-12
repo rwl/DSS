@@ -50,7 +50,7 @@ public interface PCElement extends CktElement {
 	/** Get present values of terminal */
 	void getInjCurrents(Complex[] Curr);
 
-	void computeIterminal();
+	void computeITerminal();
 
 	int injCurrents();
 

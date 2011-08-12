@@ -274,7 +274,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 			// YPrim invalidation on anything that changes impedance values
 			if ((ParamPointer >= 2) && (ParamPointer <= 11))
-				ar.setYprimInvalid(true);
+				ar.setYPrimInvalid(true);
 
 			ParamName = parser.getNextParam();
 			Param = parser.makeString();
@@ -300,7 +300,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setNConds(ar.getNPhases());  // force reallocation of terminals and conductors
 
 				ar.setYorder(ar.getNConds() * ar.getNTerms());
-				ar.setYprimInvalid(true);
+				ar.setYPrimInvalid(true);
 			}
 
 			ar.setR(OtherReactor.getR());

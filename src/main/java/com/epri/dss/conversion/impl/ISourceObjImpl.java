@@ -40,14 +40,14 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		this.Amps     = 0.0;
 		this.Angle    = 0.0;
-		this.SrcFrequency = BaseFrequency;
+		this.SrcFrequency = baseFrequency;
 		this.PhaseShift = 120.0;
 		this.ScanType = 1;  // pos sequence
 		this.SequenceType = 1;
 
 		initPropertyValues(0);
 
-		this.Yorder = this.nTerms * this.nConds;
+		this.YOrder = this.nTerms * this.nConds;
 		recalcElementData();
 	}
 
@@ -60,7 +60,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		if (getSpectrumObj() == null)
 			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), Yorder) );
+		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override
@@ -68,14 +68,14 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
-			if (YPrim_Series != null)
-				YPrim_Series = null;
-			YPrim_Series = new CMatrixImpl(Yorder);
+			if (YPrimSeries != null)
+				YPrimSeries = null;
+			YPrimSeries = new CMatrixImpl(YOrder);
 			if (YPrim != null)
 				YPrim = null;
-			YPrim = new CMatrixImpl(Yorder);
+			YPrim = new CMatrixImpl(YOrder);
 		} else {
-			YPrim_Series.clear();
+			YPrimSeries.clear();
 			YPrim.clear();
 		}
 
@@ -87,7 +87,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		 */
 		super.calcYPrim();
 
-		setYprimInvalid(false);
+		setYPrimInvalid(false);
 	}
 
 	private Complex getBaseCurr() {
@@ -136,10 +136,10 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	@Override
 	public void getCurrents(Complex[] Curr) {
 		try {
-			getInjCurrents(ComplexBuffer);  // get present value of inj currents
+			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with YPrim currents
-			for (int i = 0; i < Yorder; i++)
-				Curr[i] = ComplexBuffer[i].negate();
+			for (int i = 0; i < YOrder; i++)
+				Curr[i] = complexBuffer[i].negate();
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for ISource element: " + getName() + "."), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 335);

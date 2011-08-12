@@ -45,8 +45,8 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	public int injCurrents() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		for (int i = 0; i < Yorder; i++)
-			sol.getCurrents()[NodeRef[i]] = sol.getCurrents()[NodeRef[i]].add( InjCurrent[i] );
+		for (int i = 0; i < YOrder; i++)
+			sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add( InjCurrent[i] );
 
 		return 0;
 	}
@@ -66,16 +66,16 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 */
 	protected void getTerminalCurrents(Complex[] Curr) {
 		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
-			if (Curr != getIterminal())
-				for (int i = 0; i < Yorder; i++)
-					Curr[i] = getIterminal()[i];
+			if (Curr != getITerminal())
+				for (int i = 0; i < YOrder; i++)
+					Curr[i] = getITerminal()[i];
 		} else {
-			YPrim.MVMult(Curr, getVterminal());
-			for (int i = 0; i < Yorder; i++)
+			YPrim.MVMult(Curr, getVTerminal());
+			for (int i = 0; i < YOrder; i++)
 				Curr[i] = Curr[i].add( getInjCurrent()[i].negate() );
 			setITerminalUpdated(true);
 		}
-		IterminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+		ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
 	}
 
 	/**
@@ -102,7 +102,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 				}
 
 			} else {  // not enabled
-				for (int i = 0; i < Yorder; i++)
+				for (int i = 0; i < YOrder; i++)
 					Curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
@@ -112,9 +112,9 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	public void calcYPrimContribution(Complex[] Curr) {
-		computeVterminal();
+		computeVTerminal();
 		// apply these voltages to Yprim
-		YPrim.MVMult(Curr, Vterminal);
+		YPrim.MVMult(Curr, VTerminal);
 	}
 
 	/**
@@ -189,24 +189,24 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		/* Do nothing */
 	}
 
-	public void computeIterminal() {
+	public void computeITerminal() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		if (IterminalSolutionCount != ckt.getSolution().getSolutionCount()) {
-			getCurrents(Iterminal);
-			IterminalSolutionCount = ckt.getSolution().getSolutionCount();
+		if (ITerminalSolutionCount != ckt.getSolution().getSolutionCount()) {
+			getCurrents(ITerminal);
+			ITerminalSolutionCount = ckt.getSolution().getSolutionCount();
 		}
 	}
 
 	public void zeroInjCurrent() {
-		for (int i = 0; i < Yorder; i++)
+		for (int i = 0; i < YOrder; i++)
 			InjCurrent[i] = Complex.ZERO;
 	}
 
 	public void setITerminalUpdated(boolean Value) {
 		IterminalUpdated = Value;
 		if (Value)
-			IterminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+			ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
 	}
 
 	public boolean getITerminalUpdated() {
