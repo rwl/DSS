@@ -52,404 +52,404 @@ import com.epri.dss.shared.impl.HashListImpl;
 public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public enum ReductionStrategyType {
-		rsDefault,
-		rsStubs,
-		rsTapEnds,
-		rsMergeParallel,
-		rsBreakLoop,
-		rsDangling,
-		rsSwitches
+		DEFAULT,
+		STUBS,
+		TAP_ENDS,
+		MERGE_PARALLEL,
+		BREAK_LOOP,
+		DANGLING,
+		SWITCHES
 	}
 
 	public class CktElementDef {
-		public int CktElementClass;
+		public int cktElementClass;
 		public int devHandle;
 	}
 
-	private int[] NodeBuffer;
-	private int NodeBufferMax;
-	private boolean BusNameRedefined;
-	private CktElement ActiveCktElement;
+	private int[] nodeBuffer;
+	private int nodeBufferMax;
+	private boolean busNameRedefined;
+	private CktElement activeCktElement;
 
 	// temp arrays for when the bus swap takes place
-	private Bus[] SavedBuses;
-	private String[] SavedBusNames;
-	private int SavedNumBuses;
+	private Bus[] savedBuses;
+	private String[] savedBusNames;
+	private int savedNumBuses;
 
 	/* Global multiplier for every load */
-	private double LoadMultiplier;
+	private double loadMultiplier;
 
-	private boolean AbortBusProcess;
+	private boolean abortBusProcess;
 
 	/* Topology from the first source, lazy evaluation */
-	private CktTree Branch_List;
+	private CktTree branchList;
 	/* Bus adjacency lists of PD and PC elements */
-	private List<PCElement>[] BusAdjPC;
-	private List<PDElement>[] BusAdjPD;
+	private List<PCElement>[] busAdjPC;
+	private List<PDElement>[] busAdjPD;
 
-	private String CaseName;
+	private String caseName;
 
-	protected int ActiveBusIndex;
+	protected int activeBusIndex;
 	/* Fundamental and default base frequency */
-	protected double Fundamental;
+	protected double fundamental;
 
 	/* Flag for use by control elements to detect redefinition of buses */
-	protected boolean Control_BusNameRedefined;
+	protected boolean controlBusNameRedefined;
 
-	protected HashList BusList;
-	protected HashList AutoAddBusList;
-	protected HashList DeviceList;
-	protected CktElementDef[] DeviceRef;  // type and handle of device
+	protected HashList busList;
+	protected HashList autoAddBusList;
+	protected HashList deviceList;
+	protected CktElementDef[] deviceRef;  // type and handle of device
 
 	// lists of pointers to different elements by class
-	protected ArrayList<FaultObj> Faults;
-	protected ArrayList<CktElement> CktElements;
+	protected ArrayList<FaultObj> faults;
+	protected ArrayList<CktElement> cktElements;
 	protected ArrayList<PDElement> PDElements;
 	protected ArrayList<PCElement> PCElements;
-	protected ArrayList<ControlElem> DSSControls;
-	protected ArrayList<PCElement> Sources;
-	protected ArrayList<MeterElement> MeterElements;
-	protected ArrayList<SensorObj> Sensors;
-	protected ArrayList<MonitorObj> Monitors;
-	protected ArrayList<EnergyMeterObj> EnergyMeters;
-	protected ArrayList<GeneratorObj> Generators;
-	protected ArrayList<StorageObj> StorageElements;
+	protected ArrayList<ControlElem> controls;
+	protected ArrayList<PCElement> sources;
+	protected ArrayList<MeterElement> meterElements;
+	protected ArrayList<SensorObj> sensors;
+	protected ArrayList<MonitorObj> monitors;
+	protected ArrayList<EnergyMeterObj> energyMeters;
+	protected ArrayList<GeneratorObj> generators;
+	protected ArrayList<StorageObj> storageElements;
 	protected ArrayList<PVSystemObj> PVSystems;
-	protected ArrayList<DSSObject> Substations;
-	protected ArrayList<TransformerObj> Transformers;
-	protected ArrayList<CapControlObj> CapControls;
-	protected ArrayList<RegControlObj> RegControls;
-	protected ArrayList<LineObj> Lines;
-	protected ArrayList<LoadObj> Loads;
-	protected ArrayList<CapacitorObj> ShuntCapacitors;
-	protected ArrayList<FeederObj> Feeders;
-	protected ArrayList<SwtControlObj> SwtControls;
+	protected ArrayList<DSSObject> substations;
+	protected ArrayList<TransformerObj> transformers;
+	protected ArrayList<CapControlObj> capControls;
+	protected ArrayList<RegControlObj> regControls;
+	protected ArrayList<LineObj> lines;
+	protected ArrayList<LoadObj> loads;
+	protected ArrayList<CapacitorObj> shuntCapacitors;
+	protected ArrayList<FeederObj> feeders;
+	protected ArrayList<SwtControlObj> swtControls;
 
-	protected ControlQueue ControlQueue;
+	protected ControlQueue controlQueue;
 
-	protected SolutionObj Solution;
-	protected AutoAdd AutoAddObj;
+	protected SolutionObj solution;
+	protected AutoAdd autoAddObj;
 
 	// for AutoAdd stuff
-	protected double UEWeight, LossWeight;
+	protected double UEWeight, lossWeight;
 
-	protected int NumUERegs, NumLossRegs;
-	protected int[] UERegs, LossRegs;
+	protected int numUERegs, numLossRegs;
+	protected int[] UERegs, lossRegs;
 
-	protected double CapacityStart, CapacityIncrement;
+	protected double capacityStart, capacityIncrement;
 
-	protected boolean TrapezoidalIntegration;  // flag for trapezoidal integration
-	protected boolean LogEvents;
+	protected boolean trapezoidalIntegration;  // flag for trapezoidal integration
+	protected boolean logEvents;
 
-	protected String LoadDurCurve;
-	protected LoadShapeObj LoadDurCurveObj;
-	protected String PriceCurve;
-	protected PriceShapeObj PriceCurveObj;
+	protected String loadDurCurve;
+	protected LoadShapeObj loadDurCurveObj;
+	protected String priceCurve;
+	protected PriceShapeObj priceCurveObj;
 
-	protected int NumDevices, NumBuses, NumNodes;
-	protected int MaxDevices, MaxBuses, MaxNodes;
-	protected int IncDevices, IncBuses, IncNodes;
+	protected int numDevices, numBuses, numNodes;
+	protected int maxDevices, maxBuses, maxNodes;
+	protected int incDevices, incBuses, incNodes;
 
 	// bus and node stuff
-	protected Bus[] Buses;
-	protected NodeBus[] MapNodeToBus;
+	protected Bus[] buses;
+	protected NodeBus[] mapNodeToBus;
 
 	// flags
-	protected boolean IsSolved;
-	protected boolean DuplicatesAllowed;
-	protected boolean ZonesLocked;
-	protected boolean MeterZonesComputed;
-	protected boolean PositiveSequence;  // model is to be interpreted as pos seq
+	protected boolean isSolved;
+	protected boolean duplicatesAllowed;
+	protected boolean zonesLocked;
+	protected boolean meterZonesComputed;
+	protected boolean positiveSequence;  // model is to be interpreted as pos seq
 
 	// voltage limits
 	/* Per unit voltage restraints for this circuit */
-	protected double NormalMinVolts, NormalMaxVolts, EmergMaxVolts, EmergMinVolts;
-	protected double[] LegalVoltageBases;
+	protected double normalMinVolts, normalMaxVolts, emergMaxVolts, emergMinVolts;
+	protected double[] legalVoltageBases;
 
 	// global circuit multipliers
-	protected double GeneratorDispatchReference,
-	DefaultGrowthFactor,
-	DefaultGrowthRate,
-	GenMultiplier,  // global multiplier for every generator
-	HarmMult;
-	protected Complex DefaultHourMult;
+	protected double generatorDispatchReference,
+		defaultGrowthFactor,
+		defaultGrowthRate,
+		genMultiplier,  // global multiplier for every generator
+		harmMult;
+	protected Complex defaultHourMult;
 
-	protected double PriceSignal;  // price signal for entire circuit
+	protected double priceSignal;  // price signal for entire circuit
 
 	// energy meter totals
-	protected double[] RegisterTotals;
+	protected double[] registerTotals;
 
-	protected LoadShapeObj DefaultDailyShapeObj, DefaultYearlyShapeObj;
+	protected LoadShapeObj defaultDailyShapeObj, defaultYearlyShapeObj;
 
-	protected String CurrentDirectory;
+	protected String currentDirectory;
 
-	protected ReductionStrategyType ReductionStrategy;
-	protected double ReductionMaxAngle, ReductionZmag;
-	protected String ReductionStrategyString;
+	protected ReductionStrategyType reductionStrategy;
+	protected double reductionMaxAngle, reductionZmag;
+	protected String reductionStrategyString;
 
-	protected double PctNormalFactor;
+	protected double pctNormalFactor;
 
 	/* Plot markers */
-	protected int NodeMarkerCode, NodeMarkerWidth, SwitchMarkerCode;
-	protected int TransMarkerSize, TransMarkerCode;
+	protected int nodeMarkerCode, nodeMarkerWidth, SwitchMarkerCode;
+	protected int transMarkerSize, transMarkerCode;
 
-	protected boolean MarkSwitches;
-	protected boolean MarkTransformers;
+	protected boolean markSwitches;
+	protected boolean markTransformers;
 
-	protected int ActiveLoadShapeClass;
+	protected int activeLoadShapeClass;
 
 	public DSSCircuit(String aName) {
 		super("Circuit");
 
-		this.IsSolved = false;
+		this.isSolved = false;
 		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
-		this.Solution = SolutionImpl.getActiveSolutionObj();
+		this.solution = SolutionImpl.getActiveSolutionObj();
 
 		setLocalName(aName.toLowerCase());
 
 		setCaseName(aName);  // default case name to "circuitname"; sets circuitName_
 
-		this.Fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
+		this.fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
 		setActiveCktElement(null);
-		this.ActiveBusIndex = 0;  // always a bus
+		this.activeBusIndex = 0;  // always a bus
 
 		// initial allocations increased from 100 to 1000 to speed things up
 
-		this.MaxBuses   = 1000;  // good sized allocation to start
-		this.MaxDevices = 1000;
-		this.MaxNodes   = 3 * MaxBuses;
-		this.IncDevices = 1000;
-		this.IncBuses   = 1000;
-		this.IncNodes   = 3000;
+		this.maxBuses   = 1000;  // good sized allocation to start
+		this.maxDevices = 1000;
+		this.maxNodes   = 3 * maxBuses;
+		this.incDevices = 1000;
+		this.incBuses   = 1000;
+		this.incNodes   = 3000;
 
 		// allocate some nominal sizes
-		this.BusList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
-		this.DeviceList = new HashListImpl(900);
-		this.AutoAddBusList = new HashListImpl(100);
+		this.busList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
+		this.deviceList = new HashListImpl(900);
+		this.autoAddBusList = new HashListImpl(100);
 
-		this.NumBuses   = 0;  // eventually allocate a single source
-		this.NumDevices = 0;
-		this.NumNodes   = 0;
+		this.numBuses   = 0;  // eventually allocate a single source
+		this.numDevices = 0;
+		this.numNodes   = 0;
 
-		this.Faults       = new ArrayList<FaultObj>(2);
-		this.CktElements  = new ArrayList<CktElement>(1000);
+		this.faults       = new ArrayList<FaultObj>(2);
+		this.cktElements  = new ArrayList<CktElement>(1000);
 		this.PDElements   = new ArrayList<PDElement>(1000);
 		this.PCElements   = new ArrayList<PCElement>(1000);
-		this.DSSControls  = new ArrayList<ControlElem>(10);
-		this.Sources      = new ArrayList<PCElement>(10);
-		this.MeterElements= new ArrayList<MeterElement>(20);
-		this.Monitors     = new ArrayList<MonitorObj>(20);
-		this.EnergyMeters = new ArrayList<EnergyMeterObj>(5);
-		this.Sensors      = new ArrayList<SensorObj>(5);
-		this.Generators   = new ArrayList<GeneratorObj>(5);
-		this.StorageElements = new ArrayList<StorageObj>(5);
+		this.controls  = new ArrayList<ControlElem>(10);
+		this.sources      = new ArrayList<PCElement>(10);
+		this.meterElements= new ArrayList<MeterElement>(20);
+		this.monitors     = new ArrayList<MonitorObj>(20);
+		this.energyMeters = new ArrayList<EnergyMeterObj>(5);
+		this.sensors      = new ArrayList<SensorObj>(5);
+		this.generators   = new ArrayList<GeneratorObj>(5);
+		this.storageElements = new ArrayList<StorageObj>(5);
 		this.PVSystems    = new ArrayList<PVSystemObj>(5);
-		this.Feeders      = new ArrayList<FeederObj>(10);
-		this.Substations  = new ArrayList<DSSObject>(5);
-		this.Transformers = new ArrayList<TransformerObj>(10);
-		this.CapControls  = new ArrayList<CapControlObj>(10);
-		this.SwtControls  = new ArrayList<SwtControlObj>(50);
-		this.RegControls  = new ArrayList<RegControlObj>(5);
-		this.Lines        = new ArrayList<LineObj>(1000);
-		this.Loads        = new ArrayList<LoadObj>(1000);
-		this.ShuntCapacitors = new ArrayList<CapacitorObj>(20);
+		this.feeders      = new ArrayList<FeederObj>(10);
+		this.substations  = new ArrayList<DSSObject>(5);
+		this.transformers = new ArrayList<TransformerObj>(10);
+		this.capControls  = new ArrayList<CapControlObj>(10);
+		this.swtControls  = new ArrayList<SwtControlObj>(50);
+		this.regControls  = new ArrayList<RegControlObj>(5);
+		this.lines        = new ArrayList<LineObj>(1000);
+		this.loads        = new ArrayList<LoadObj>(1000);
+		this.shuntCapacitors = new ArrayList<CapacitorObj>(20);
 
-		this.Buses     = new Bus[this.MaxBuses];
-		this.MapNodeToBus = new NodeBus[this.MaxNodes];
-		this.DeviceRef = new CktElementDef[MaxDevices];
+		this.buses     = new Bus[this.maxBuses];
+		this.mapNodeToBus = new NodeBus[this.maxNodes];
+		this.deviceRef = new CktElementDef[maxDevices];
 
-		this.ControlQueue = new ControlQueueImpl();
+		this.controlQueue = new ControlQueueImpl();
 
-		this.LegalVoltageBases = new double[8];
+		this.legalVoltageBases = new double[8];
 		// default voltage bases
-		this.LegalVoltageBases[0] =   0.208;
-		this.LegalVoltageBases[1] =   0.480;
-		this.LegalVoltageBases[2] =  12.47;
-		this.LegalVoltageBases[3] =  24.9;
-		this.LegalVoltageBases[4] =  34.5;
-		this.LegalVoltageBases[5] = 115.0;
-		this.LegalVoltageBases[6] = 230.0;
-		this.LegalVoltageBases[7] =   0.0;  // terminates array
+		this.legalVoltageBases[0] =   0.208;
+		this.legalVoltageBases[1] =   0.480;
+		this.legalVoltageBases[2] =  12.47;
+		this.legalVoltageBases[3] =  24.9;
+		this.legalVoltageBases[4] =  34.5;
+		this.legalVoltageBases[5] = 115.0;
+		this.legalVoltageBases[6] = 230.0;
+		this.legalVoltageBases[7] =   0.0;  // terminates array
 
-		this.NodeBufferMax = 20;
-		this.NodeBuffer    = new int[this.NodeBufferMax];  // to hold the nodes
+		this.nodeBufferMax = 20;
+		this.nodeBuffer    = new int[this.nodeBufferMax];  // to hold the nodes
 
 		// init global circuit load and harmonic source multipliers
 		setLoadMultiplier(1.0);
-		this.GenMultiplier = 1.0;
-		this.HarmMult = 1.0;
+		this.genMultiplier = 1.0;
+		this.harmMult = 1.0;
 
-		this.PriceSignal = 25.0;  // $25/MWh
+		this.priceSignal = 25.0;  // $25/MWh
 
 		// factors for AutoAdd
 		this.UEWeight    = 1.0;  // default to weighting UE same as losses
-		this.LossWeight  = 1.0;
-		this.NumUERegs   = 1;
-		this.NumLossRegs = 1;
-		this.UERegs      = new int[NumUERegs];
-		this.LossRegs    = new int[NumLossRegs];
+		this.lossWeight  = 1.0;
+		this.numUERegs   = 1;
+		this.numLossRegs = 1;
+		this.UERegs      = new int[numUERegs];
+		this.lossRegs    = new int[numLossRegs];
 		this.UERegs[0]   = 10;  // overload UE
-		this.LossRegs[0] = 13;  // zone losses
+		this.lossRegs[0] = 13;  // zone losses
 
-		this.CapacityStart = 0.9;  // for capacity search
-		this.CapacityIncrement = 0.005;
+		this.capacityStart = 0.9;  // for capacity search
+		this.capacityIncrement = 0.005;
 
-		this.LoadDurCurve    = "";
-		this.LoadDurCurveObj = null;
-		this.PriceCurve    = "";
-		this.PriceCurveObj = null;
+		this.loadDurCurve    = "";
+		this.loadDurCurveObj = null;
+		this.priceCurve    = "";
+		this.priceCurveObj = null;
 
 		// flags
-		this.DuplicatesAllowed  = false;
-		this.ZonesLocked        = false;  // meter zones recomputed after each change
-		this.MeterZonesComputed = false;
-		this.PositiveSequence   = false;
+		this.duplicatesAllowed  = false;
+		this.zonesLocked        = false;  // meter zones recomputed after each change
+		this.meterZonesComputed = false;
+		this.positiveSequence   = false;
 
-		this.NormalMinVolts = 0.95;
-		this.NormalMaxVolts = 1.05;
-		this.EmergMaxVolts  = 1.08;
-		this.EmergMinVolts  = 0.90;
+		this.normalMinVolts = 0.95;
+		this.normalMaxVolts = 1.05;
+		this.emergMaxVolts  = 1.08;
+		this.emergMinVolts  = 0.90;
 
-		this.NodeMarkerCode   = 16;
-		this.NodeMarkerWidth  = 1;
-		this.MarkSwitches     = false;
-		this.MarkTransformers = false;
+		this.nodeMarkerCode   = 16;
+		this.nodeMarkerWidth  = 1;
+		this.markSwitches     = false;
+		this.markTransformers = false;
 		this.SwitchMarkerCode = 5;
-		this.TransMarkerCode  = 35;
-		this.TransMarkerSize  = 1;
+		this.transMarkerCode  = 35;
+		this.transMarkerSize  = 1;
 
 
-		this.TrapezoidalIntegration = false;  // default to Euler method
-		this.LogEvents = false;
+		this.trapezoidalIntegration = false;  // default to Euler method
+		this.logEvents = false;
 
-		this.GeneratorDispatchReference = 0.0;
-		this.DefaultGrowthRate = 1.025;
-		this.DefaultGrowthFactor = 1.0;
+		this.generatorDispatchReference = 0.0;
+		this.defaultGrowthRate = 1.025;
+		this.defaultGrowthFactor = 1.0;
 
-		this.DefaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
-		this.DefaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		this.defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		this.defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
 
-		this.CurrentDirectory = "";
+		this.currentDirectory = "";
 
 		setBusNameRedefined(true);  // set to force rebuild of bus and node lists
 
-		this.SavedBuses = null;
-		this.SavedBusNames = null;
+		this.savedBuses = null;
+		this.savedBusNames = null;
 
-		this.ReductionStrategy = ReductionStrategyType.rsDefault;
-		this.ReductionMaxAngle = 15.0;
-		this.ReductionZmag = 0.02;
+		this.reductionStrategy = ReductionStrategyType.DEFAULT;
+		this.reductionMaxAngle = 15.0;
+		this.reductionZmag = 0.02;
 
 		/* Misc objects */
-		this.AutoAddObj = new AutoAddImpl();
+		this.autoAddObj = new AutoAddImpl();
 
-		this.Branch_List = null;
-		this.BusAdjPC = null;
-		this.BusAdjPD = null;
+		this.branchList = null;
+		this.busAdjPC = null;
+		this.busAdjPD = null;
 	}
 
-	private void addDeviceHandle(int Handle) {
-		if (NumDevices > MaxDevices) {
-			MaxDevices = MaxDevices + IncDevices;
-			DeviceRef = (CktElementDef[]) Utilities.resizeArray(DeviceRef, MaxDevices);
+	private void addDeviceHandle(int handle) {
+		if (numDevices > maxDevices) {
+			maxDevices = maxDevices + incDevices;
+			deviceRef = (CktElementDef[]) Utilities.resizeArray(deviceRef, maxDevices);
 		}
-		DeviceRef[NumDevices].devHandle = Handle;  // index into CktElements
-		DeviceRef[NumDevices].CktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
+		deviceRef[numDevices].devHandle = handle;  // index into CktElements
+		deviceRef[numDevices].cktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
 	}
 
 	private void addABus() {
-		if (NumBuses > MaxBuses) {
-			MaxBuses += IncBuses;
-			Buses = (Bus[]) Utilities.resizeArray(Buses, MaxBuses);
+		if (numBuses > maxBuses) {
+			maxBuses += incBuses;
+			buses = (Bus[]) Utilities.resizeArray(buses, maxBuses);
 		}
 	}
 
 	private void addANodeBus() {
-		if (NumNodes > MaxNodes) {
-			MaxNodes += IncNodes;
-			MapNodeToBus = (NodeBus[]) Utilities.resizeArray(MapNodeToBus, MaxNodes);
+		if (numNodes > maxNodes) {
+			maxNodes += incNodes;
+			mapNodeToBus = (NodeBus[]) Utilities.resizeArray(mapNodeToBus, maxNodes);
 		}
 	}
 
-	private int addBus(final String BusName, int NNodes) {
+	private int addBus(String busName, int nNodes) {
 
-		if (BusName.length() == 0) {  // error in busname
-			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + ActiveCktElement.getName() + "\" is null.",
+		if (busName.length() == 0) {  // error in busname
+			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
-			for (int i = 0; i < ActiveCktElement.getNConds(); i++) NodeBuffer[i] = 0;
+			for (int i = 0; i < activeCktElement.getNConds(); i++) nodeBuffer[i] = 0;
 			return 0;
 		}
 
-		int Result = BusList.find(BusName);
-		if (Result == 0) {
-			Result = BusList.add(BusName);  // result is index of bus
-			NumBuses += 1;
+		int result = busList.find(busName);
+		if (result == 0) {
+			result = busList.add(busName);  // result is index of bus
+			numBuses += 1;
 			addABus();  // allocates more memory if necessary
-			Buses[NumBuses] = new DSSBus();
+			buses[numBuses] = new DSSBus();
 		}
 
 		/* Define nodes belonging to the bus */
 		/* Replace nodeBuffer values with global reference number */
-		int NodeRef;
-		for (int i = 0; i < NNodes; i++) {
-			NodeRef = Buses[Result].add(NodeBuffer[i]);
-			if (NodeRef == NumNodes) {  // this was a new node so add a nodeToBus element ????
+		int nodeRef;
+		for (int i = 0; i < nNodes; i++) {
+			nodeRef = buses[result].add(nodeBuffer[i]);
+			if (nodeRef == numNodes) {  // this was a new node so add a nodeToBus element ????
 				addANodeBus();  // allocates more memory if necessary
-				MapNodeToBus[NumNodes].busRef  = Result;
-				MapNodeToBus[NumNodes].nodeNum = NodeBuffer[i];
+				mapNodeToBus[numNodes].busRef  = result;
+				mapNodeToBus[numNodes].nodeNum = nodeBuffer[i];
 			}
-			NodeBuffer[i] = NodeRef;  // swap out in preparation to setNodeRef call
+			nodeBuffer[i] = nodeRef;  // swap out in preparation to setNodeRef call
 		}
-		return Result;
+		return result;
 	}
 
-	public void setActiveCktElement(CktElement Value) {
-		ActiveCktElement = Value;
-		DSSGlobals.getInstance().setActiveDSSObject(Value);
+	public void setActiveCktElement(CktElement value) {
+		activeCktElement = value;
+		DSSGlobals.getInstance().setActiveDSSObject(value);
 	}
 
 	public CktElement getActiveCktElement() {
-		return ActiveCktElement;
+		return activeCktElement;
 	}
 
-	public void setBusNameRedefined(boolean Value) {
-		BusNameRedefined = Value;
+	public void setBusNameRedefined(boolean value) {
+		busNameRedefined = value;
 
-		if (Value) {
+		if (value) {
 			// force rebuilding of system Y if bus def has changed
-			Solution.setSystemYChanged(true);
+			solution.setSystemYChanged(true);
 			// so controls will know buses redefined
-			Control_BusNameRedefined = true;
+			controlBusNameRedefined = true;
 		}
 	}
 
 	public boolean isBusNameRedefined() {
-		return BusNameRedefined;
+		return busNameRedefined;
 	}
 
 	/* Total circuit PD element losses */
 	public Complex getLosses() {
-		Complex Result = Complex.ZERO;
+		Complex result = Complex.ZERO;
 		for (PDElement pdElem : PDElements) {
 			if (pdElem.isEnabled()) {
 				/* Ignore shunt elements */
 				if (!pdElem.isShunt())
-					Result = Result.add(pdElem.getLosses());
+					result = result.add(pdElem.getLosses());
 			}
 		}
-		return Result;
+		return result;
 	}
 
-	public void setLoadMultiplier(double Value) {
-		if (Value != LoadMultiplier) {
+	public void setLoadMultiplier(double value) {
+		if (value != loadMultiplier) {
 			// may have to change the Y matrix if the load multiplier has changed
-			switch (Solution.getLoadModel()) {
+			switch (solution.getLoadModel()) {
 			case DSSGlobals.ADMITTANCE:
 				invalidateAllPCElements();
 				break;
 			}
 		}
-		LoadMultiplier = Value;
+		loadMultiplier = value;
 	}
 
 	public double getLoadMultiplier() {
@@ -458,71 +458,71 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private void saveBusInfo() {
 		/* Save existing bus definitions and names for info that needs to be restored */
-		SavedBuses = new DSSBus[NumBuses];
-		SavedBusNames = new String[NumBuses];
+		savedBuses = new DSSBus[numBuses];
+		savedBusNames = new String[numBuses];
 
-		for (int i = 0; i < NumBuses; i++) {
-			SavedBuses[i] = Buses[i];
-			SavedBusNames[i] = BusList.get(i);
+		for (int i = 0; i < numBuses; i++) {
+			savedBuses[i] = buses[i];
+			savedBusNames[i] = busList.get(i);
 		}
-		SavedNumBuses = NumBuses;
+		savedNumBuses = numBuses;
 	}
 
 	private void restoreBusInfo() {
 		Bus bus;
 		/* Restore kV bases, other values to buses still in the list */
-		for (int i = 0; i < SavedNumBuses; i++) {
-			int idx = BusList.find(SavedBusNames[i]);
+		for (int i = 0; i < savedNumBuses; i++) {
+			int idx = busList.find(savedBusNames[i]);
 			if (idx != -1) {
-				bus = SavedBuses[i];
-				Buses[idx].setKVBase(bus.getKVBase());
-				Buses[idx].setX(bus.getX());
-				Buses[idx].setY(bus.getY());
-				Buses[idx].setCoordDefined(bus.isCoordDefined());
-				Buses[idx].setKeep(bus.isKeep());
+				bus = savedBuses[i];
+				buses[idx].setKVBase(bus.getKVBase());
+				buses[idx].setX(bus.getX());
+				buses[idx].setY(bus.getY());
+				buses[idx].setCoordDefined(bus.isCoordDefined());
+				buses[idx].setKeep(bus.isKeep());
 				/* Restore voltages in new bus def that existed in old bus def */
 				if (bus.getVBus() != null) {
 					for (int j = 0; j < bus.getNumNodesThisBus(); j++) {
 						// find index in new bus for j-th node in old bus
-						int jdx = Buses[idx].findIdx(bus.getNum(j));
-						if (jdx > -1) Buses[idx].getVBus()[jdx] = bus.getVBus()[j];
+						int jdx = buses[idx].findIdx(bus.getNum(j));
+						if (jdx > -1) buses[idx].getVBus()[jdx] = bus.getVBus()[j];
 					}
 				}
 			}
-			SavedBusNames[i] = "";  // de-allocate string
+			savedBusNames[i] = "";  // de-allocate string
 		}
 
-		if (SavedBuses != null)
-			for (int i = 0; i < SavedNumBuses; i++)
-				SavedBuses[i] = null;  // gets rid of old bus voltages too
+		if (savedBuses != null)
+			for (int i = 0; i < savedNumBuses; i++)
+				savedBuses[i] = null;  // gets rid of old bus voltages too
 
-		SavedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
-		SavedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
+		savedBuses = new Bus[0]; //ReallocMem(SavedBuses, 0);
+		savedBusNames = new String[0]; //ReallocMem(SavedBusNames, 0);
 	}
 
 	private boolean saveMasterFile() {
 		boolean Result = false;
 		try {
-			File FD = new File("Master.dss");
-			PrintStream F = new PrintStream(FD);
+			File fd = new File("Master.dss");
+			PrintStream f = new PrintStream(fd);
 
-			F.println("clear");
-			F.println("new circuit." + getName());
-			F.println();
-			if (PositiveSequence) F.println("set cktModel=Positive");
-			if (DuplicatesAllowed) F.println("set allowDup=yes");
-			F.println();
+			f.println("clear");
+			f.println("new circuit." + getName());
+			f.println();
+			if (positiveSequence) f.println("set cktModel=Positive");
+			if (duplicatesAllowed) f.println("set allowDup=yes");
+			f.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
 			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
-				F.println("redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
+				f.println("redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
 
 			if (new File("BusCoords.dss").exists()) {
-				F.println("makeBusList");
-				F.println("BusCoords BusCoords.dss");
+				f.println("makeBusList");
+				f.println("BusCoords BusCoords.dss");
 			}
 
-			F.close();
+			f.close();
 			Result = true;
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
@@ -545,67 +545,67 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	private boolean saveFeeders() {
-		String CurrDir, SaveDir;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		String currDir, saveDir;
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		boolean Result = true;
+		boolean result = true;
 		/* Write out all energy meter zones to separate subdirectories */
-		SaveDir = Globals.getCurrentDirectory();
-		for (EnergyMeterObj Meter : EnergyMeters) {
-			CurrDir = Meter.getName();
-			if (new File(CurrDir).mkdir()) {
-				Globals.setCurrentDirectory(CurrDir);
-				Meter.saveZone(CurrDir);
-				Globals.setCurrentDirectory(SaveDir);
+		saveDir = globals.getCurrentDirectory();
+		for (EnergyMeterObj Meter : energyMeters) {
+			currDir = Meter.getName();
+			if (new File(currDir).mkdir()) {
+				globals.setCurrentDirectory(currDir);
+				Meter.saveZone(currDir);
+				globals.setCurrentDirectory(saveDir);
 			} else {
-				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + CurrDir, 436);
-				Result = false;
-				Globals.setCurrentDirectory(SaveDir);
+				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + currDir, 436);
+				result = false;
+				globals.setCurrentDirectory(saveDir);
 				break;
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	private boolean saveBusCoords() {
-		boolean Result = false;
+		boolean result = false;
 
 		try {
-			File FD = new File("BusCoords.dss");
-			PrintStream F = new PrintStream(FD);
+			File fd = new File("BusCoords.dss");
+			PrintStream f = new PrintStream(fd);
 
-			for (int i = 0; i < NumBuses; i++)
-				if (Buses[i].isCoordDefined())
-					F.println(Utilities.checkForBlanks(BusList.get(i)) + String.format(", %-g, %-g", Buses[i].getX(), Buses[i].getY()));
+			for (int i = 0; i < numBuses; i++)
+				if (buses[i].isCoordDefined())
+					f.println(Utilities.checkForBlanks(busList.get(i)) + String.format(", %-g, %-g", buses[i].getX(), buses[i].getY()));
 
-			F.close();
+			f.close();
 
-			Result = true;
+			result = true;
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doSimpleMsg("Error creating BusCoords.dss.", 437);
 		}
 
-		return Result;
+		return result;
 	}
 
 	/* Reallocate the device list to improve the performance of searches */
 	private void reallocDeviceList() {
-		if (LogEvents) Utilities.logThisEvent("Reallocating device list");
-		HashListImpl TempList = new HashListImpl(2 * NumDevices);
+		if (logEvents) Utilities.logThisEvent("Reallocating device list");
+		HashListImpl tempList = new HashListImpl(2 * numDevices);
 
-		for (int i = 0; i < DeviceList.listSize(); i++)
-			TempList.add(DeviceList.get(i));
+		for (int i = 0; i < deviceList.listSize(); i++)
+			tempList.add(deviceList.get(i));
 
-		DeviceList = TempList;
+		deviceList = tempList;
 	}
 
-	public void setCaseName(final String Value) {
-		CaseName = Value;
-		DSSGlobals.getInstance().setCircuitName_(Value + "_");
+	public void setCaseName(String value) {
+		caseName = value;
+		DSSGlobals.getInstance().setCircuitName_(value + "_");
 	}
 
 	public String getCaseName() {
-		return CaseName;
+		return caseName;
 	}
 
 	public String getName() {
@@ -613,68 +613,68 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	/* Adds last DSS object created to circuit */
-	public void addCktElement(int Handle) {
+	public void addCktElement(int handle) {
 		// update lists that keep track of individual circuit elements
-		NumDevices += 1;
+		numDevices += 1;
 
 		// resize deviceList if no. of devices greatly exceeds allocation
-		if (NumDevices > 2 * DeviceList.getInitialAllocation())
+		if (numDevices > 2 * deviceList.getInitialAllocation())
 			reallocDeviceList();
-		DeviceList.add(ActiveCktElement.getName());
-		CktElements.add(ActiveCktElement);
+		deviceList.add(activeCktElement.getName());
+		cktElements.add(activeCktElement);
 
 		/* Build lists of PC and PD elements */
-		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
-			PDElements.add((PDElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
-			PCElements.add((PCElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CTRL_ELEMENT) {
-			DSSControls.add((ControlElem) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.METER_ELEMENT) {
-			MeterElements.add((MeterElement) ActiveCktElement);
+		if (activeCktElement.getDSSObjType() == DSSClassDefs.PD_ELEMENT) {
+			PDElements.add((PDElement) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.PC_ELEMENT) {
+			PCElements.add((PCElement) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.CTRL_ELEMENT) {
+			controls.add((ControlElem) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.METER_ELEMENT) {
+			meterElements.add((MeterElement) activeCktElement);
 		}
 
 		/* Build lists of special elements and generic types */
-		if (ActiveCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
-			Monitors.add((MonitorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
-			EnergyMeters.add((EnergyMeterObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SENSOR_ELEMENT) {
-			Sensors.add((SensorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.GEN_ELEMENT) {
-			Generators.add((GeneratorObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SOURCE) {
-			Sources.add((PCElement) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_CONTROL) {
-			CapControls.add((CapControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.SWT_CONTROL) {
-			SwtControls.add((SwtControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.REG_CONTROL) {
-			RegControls.add((RegControlObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LOAD_ELEMENT) {
-			Loads.add((LoadObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
-			ShuntCapacitors.add((CapacitorObj) ActiveCktElement);
+		if (activeCktElement.getDSSObjType() == DSSClassDefs.MON_ELEMENT) {
+			monitors.add((MonitorObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.ENERGY_METER) {
+			energyMeters.add((EnergyMeterObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.SENSOR_ELEMENT) {
+			sensors.add((SensorObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.GEN_ELEMENT) {
+			generators.add((GeneratorObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.SOURCE) {
+			sources.add((PCElement) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.CAP_CONTROL) {
+			capControls.add((CapControlObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.SWT_CONTROL) {
+			swtControls.add((SwtControlObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.REG_CONTROL) {
+			regControls.add((RegControlObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.LOAD_ELEMENT) {
+			loads.add((LoadObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.CAP_ELEMENT) {
+			shuntCapacitors.add((CapacitorObj) activeCktElement);
 		}
 		/* Keep lines, transformer, and faults in PDElements and
 		 * separate lists so we can find them quickly. */
-		else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
-			Transformers.add((TransformerObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
-			Lines.add((LineObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FAULTOBJECT) {
-			Faults.add((FaultObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.FEEDER_ELEMENT) {
-			Feeders.add((FeederObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
-			StorageElements.add((StorageObj) ActiveCktElement);
-		} else if (ActiveCktElement.getDSSObjType() == DSSClassDefs.PVSYSTEM_ELEMENT) {
-			PVSystems.add((PVSystemObj) ActiveCktElement);
+		else if (activeCktElement.getDSSObjType() == DSSClassDefs.XFMR_ELEMENT) {
+			transformers.add((TransformerObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.LINE_ELEMENT) {
+			lines.add((LineObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.FAULTOBJECT) {
+			faults.add((FaultObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.FEEDER_ELEMENT) {
+			feeders.add((FeederObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.STORAGE_ELEMENT) {
+			storageElements.add((StorageObj) activeCktElement);
+		} else if (activeCktElement.getDSSObjType() == DSSClassDefs.PVSYSTEM_ELEMENT) {
+			PVSystems.add((PVSystemObj) activeCktElement);
 		}
 
 		// AddDeviceHandle(Handle);  // keep track of this device result is handle
-		addDeviceHandle(CktElements.size());  // handle is global index into CktElements
-		ActiveCktElement.setHandle(CktElements.size());
+		addDeviceHandle(cktElements.size());  // handle is global index into CktElements
+		activeCktElement.setHandle(cktElements.size());
 	}
 
 	/**
@@ -682,108 +682,108 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	 */
 	public void totalizeMeters() {
 		for (int i = 0; i < EnergyMeterObj.NumEMRegisters; i++)
-			RegisterTotals[i] = 0.0;
+			registerTotals[i] = 0.0;
 
-		for (int i = 0; i < EnergyMeters.size(); i++) {
-			EnergyMeterObj Meter = EnergyMeters.get(i);
+		for (int i = 0; i < energyMeters.size(); i++) {
+			EnergyMeterObj Meter = energyMeters.get(i);
 			for (int j = 0; j < EnergyMeterObj.NumEMRegisters; i++)
-				RegisterTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
+				registerTotals[i] += Meter.getRegisters()[i] * Meter.getTotalsMask()[i];
 		}
 	}
 
-	private double sumSelectedRegisters(double[] mtrRegisters, int[] Regs, int count) {
-		double Result = 0.0;
+	private double sumSelectedRegisters(double[] mtrRegisters, int[] regs, int count) {
+		double result = 0.0;
 		for (int i = 0; i < count; i++)
-			Result += mtrRegisters[Regs[i]];
-		return Result;
+			result += mtrRegisters[regs[i]];
+		return result;
 	}
 	public boolean computeCapacity() {
-		boolean Result = false;
-		if (EnergyMeters.size() == 0) {
+		boolean result = false;
+		if (energyMeters.size() == 0) {
 			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
-			return Result;
+			return result;
 		}
 
-		if (NumUERegs == 0) {
+		if (numUERegs == 0) {
 			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
-			return Result;
+			return result;
 		}
 
-		Solution.setMode(Dynamics.SNAPSHOT);
-		setLoadMultiplier(CapacityStart);
+		solution.setMode(Dynamics.SNAPSHOT);
+		setLoadMultiplier(capacityStart);
 		boolean CapacityFound = false;
 
-		while ((LoadMultiplier <= 1.0) && !CapacityFound) {
+		while ((loadMultiplier <= 1.0) && !CapacityFound) {
 			DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
-			Solution.solve();
+			solution.solve();
 			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
 			totalizeMeters();
 
 			// check for non-zero in UEregs
-			if (sumSelectedRegisters(RegisterTotals, UERegs, NumUERegs) != 0.0)
+			if (sumSelectedRegisters(registerTotals, UERegs, numUERegs) != 0.0)
 				CapacityFound = true;
 			// loadMultiplier is a property ...
 			if (!CapacityFound)
-				LoadMultiplier += CapacityIncrement;
+				loadMultiplier += capacityIncrement;
 		}
 
-		if (LoadMultiplier > 1.0) setLoadMultiplier(1.0);
-		Result = true;
+		if (loadMultiplier > 1.0) setLoadMultiplier(1.0);
+		result = true;
 
-		return Result;
+		return result;
 	}
 
-	public boolean save(String Dir) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		String CurrDir, SaveDir;
-		boolean Result = false;
+	public boolean save(String dir) {
+		DSSGlobals globals = DSSGlobals.getInstance();
+		String currDir, saveDir;
+		boolean result = false;
 
 		// make a new subfolder in the present folder based on the circuit
 		// name and a unique sequence number
-		SaveDir = Globals.getCurrentDirectory();
+		saveDir = globals.getCurrentDirectory();
 
-		boolean Success = false;
-		if (Dir.length() == 0) {
-			Dir = getName();
+		boolean success = false;
+		if (dir.length() == 0) {
+			dir = getName();
 
-			CurrDir = Dir;
+			currDir = dir;
 			for (int i = 0; i < 999; i++) {  // Find a unique dir name
-				File F = new File(CurrDir);
+				File F = new File(currDir);
 				if (!F.exists()) {
 					if (F.mkdir()) {
-		            	Globals.setCurrentDirectory(CurrDir);
-						Success = true;
+		            	globals.setCurrentDirectory(currDir);
+						success = true;
 						break;
 					}
 				}
-				CurrDir = Dir + String.format("%.3d", i);
+				currDir = dir + String.format("%.3d", i);
 			}
 		} else {
-			File F = new File(Dir);
+			File F = new File(dir);
 			if (!F.exists()) {
-				CurrDir = Dir;
-				F = new File(CurrDir);
+				currDir = dir;
+				F = new File(currDir);
 				if (F.mkdir()) {
-		            Globals.setCurrentDirectory(CurrDir);
-					Success = true;
+		            globals.setCurrentDirectory(currDir);
+					success = true;
 				}
 			} else {  // exists - overwrite
-				CurrDir = Dir;
-		        Globals.setCurrentDirectory(CurrDir);
-				Success = true;
+				currDir = dir;
+		        globals.setCurrentDirectory(currDir);
+				success = true;
 			}
 		}
 
-		if (!Success) {
-			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + Dir + "\" for saving the circuit.", 432);
-			return Result;
+		if (!success) {
+			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + dir + "\" for saving the circuit.", 432);
+			return result;
 		}
 
 		// this list keeps track of all files saved
 		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
 
 		// initialize so we will know when we have saved the circuit elements
-		for (CktElement elem : CktElements)
+		for (CktElement elem : cktElements)
 			elem.setHasBeenSaved(false);
 
 		// initialize so we don't save a class twice
@@ -794,68 +794,68 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		//Globals.getFeederClass().setSaved(true);
 
 		// Define voltage sources first
-		Success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
+		success = Utilities.writeVsourceClassFile(DSSClassDefs.getDSSClass("vsource"), true);
 		// write library files so that they will be available to lines, loads, etc
 		/* Use default filename=classname */
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
-		if (Success) Success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
-		if (Success) Success = saveFeeders();  // save feeders first
-		if (Success) Success = saveDSSObjects();  // save rest to the objects
-		if (Success) Success = saveBusCoords();
-		if (Success) Success = saveMasterFile();
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("wiredata"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("cndata"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("tsdata"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linegeometry"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linespacing"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("linecode"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("xfmrcode"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("growthshape"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("TCC_Curve"), "", false);
+		if (success) success = Utilities.writeClassFile(DSSClassDefs.getDSSClass("Spectrum"), "", false);
+		if (success) success = saveFeeders();  // save feeders first
+		if (success) success = saveDSSObjects();  // save rest to the objects
+		if (success) success = saveBusCoords();
+		if (success) success = saveMasterFile();
 
-		if (Success) {
-			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + Globals.getCurrentDirectory(), 433);
+		if (success) {
+			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + globals.getCurrentDirectory(), 433);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + Globals.getCurrentDirectory(), 434);
+			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + globals.getCurrentDirectory(), 434);
 		}
 		// return to original directory
-		Globals.setCurrentDirectory(SaveDir);
+		globals.setCurrentDirectory(saveDir);
 
 		return true;
 	}
 
 	public void processBusDefs() {
-		String BusName;
-		MutableInt NNodes = new MutableInt();
-		int np = ActiveCktElement.getNPhases();
-		int NCond = ActiveCktElement.getNConds();
+		String busName;
+		MutableInt nNodes = new MutableInt();
+		int np = activeCktElement.getNPhases();
+		int nCond = activeCktElement.getNConds();
 
 		// use parser functions to decode
-		Parser.getInstance().setToken(ActiveCktElement.getFirstBus());
+		Parser.getInstance().setToken(activeCktElement.getFirstBus());
 
-		for (int iTerm = 0; iTerm < ActiveCktElement.getNTerms(); iTerm++) {
-			boolean NodesOK = true;
+		for (int iTerm = 0; iTerm < activeCktElement.getNTerms(); iTerm++) {
+			boolean nodesOK = true;
 			// assume normal phase rotation for default
 			for (int i = 0; i < np; i++)
-				NodeBuffer[i] = i;  // set up buffer with defaults
+				nodeBuffer[i] = i;  // set up buffer with defaults
 
 			// default all other conductors to a ground connection
 			// uf user wants them ungrounded, must be specified explicitly!
-			for (int i = np + 1; i < NCond; i++)
-				NodeBuffer[i] = 0;
+			for (int i = np + 1; i < nCond; i++)
+				nodeBuffer[i] = 0;
 
 			// parser will override bus connection if any specified
-			BusName = Parser.getInstance().parseAsBusName(NNodes, NodeBuffer);
+			busName = Parser.getInstance().parseAsBusName(nNodes, nodeBuffer);
 
 			// check for error in node specification
-			for (int j = 0; j < NNodes.intValue(); j++) {
-				if (NodeBuffer[j] < 0) {
+			for (int j = 0; j < nNodes.intValue(); j++) {
+				if (nodeBuffer[j] < 0) {
 					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in node specification for element: \""
-						+ ActiveCktElement.getParentClass().getName() + "." + ActiveCktElement.getName() + "\"" + DSSGlobals.CRLF +
+						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSSGlobals.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
-					NodesOK = false;
+					nodesOK = false;
 					if (retval == -1) {
-						AbortBusProcess = true;
+						abortBusProcess = true;
 						DSSGlobals.getInstance().appendGlobalResult("Aborted bus process.");
 						return;
 					}
@@ -866,12 +866,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			// node-terminal connnections
 			// Caution: addBus replaces values in nodeBuffer to correspond
 			// with global node reference number
-			if (NodesOK) {
-				ActiveCktElement.setActiveTerminalIdx(iTerm);
-				ActiveCktElement.getActiveTerminal().setBusRef(addBus(BusName, NCond));
-				ActiveCktElement.setNodeRef(iTerm, NodeBuffer);  // for active circuit
+			if (nodesOK) {
+				activeCktElement.setActiveTerminalIdx(iTerm);
+				activeCktElement.getActiveTerminal().setBusRef(addBus(busName, nCond));
+				activeCktElement.setNodeRef(iTerm, nodeBuffer);  // for active circuit
 			}
-			Parser.getInstance().setToken(ActiveCktElement.getNextBus());
+			Parser.getInstance().setToken(activeCktElement.getNextBus());
 		}
 	}
 
@@ -879,33 +879,33 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	 * Redo all bus and node lists.
 	 */
 	public void reProcessBusDefs() {
-		if (LogEvents) Utilities.logThisEvent("Reprocessing bus definitions");
+		if (logEvents) Utilities.logThisEvent("Reprocessing bus definitions");
 
-		AbortBusProcess = false;
+		abortBusProcess = false;
 		saveBusInfo();  // so we don't have to keep re-doing this
 		// keeps present definitions of bus objects until new ones created
 
 		// get rid of old bus lists
-		BusList = null;  // clears hash list of bus names for adding more
-		BusList = new HashListImpl(NumDevices);  // won't have many more buses than this
+		busList = null;  // clears hash list of bus names for adding more
+		busList = new HashListImpl(numDevices);  // won't have many more buses than this
 
-		NumBuses = 0;  // leave allocations same, but start count over
-		NumNodes = 0;
+		numBuses = 0;  // leave allocations same, but start count over
+		numNodes = 0;
 
 		// now redo all enabled circuit elements
-		CktElement CktElementSave = ActiveCktElement;
-		for (int i = 0; i < CktElements.size(); i++) {
-			setActiveCktElement( CktElements.get(i) );
-			if (ActiveCktElement.isEnabled())
+		CktElement cktElementSave = activeCktElement;
+		for (int i = 0; i < cktElements.size(); i++) {
+			setActiveCktElement( cktElements.get(i) );
+			if (activeCktElement.isEnabled())
 				processBusDefs();
-			if (AbortBusProcess)
+			if (abortBusProcess)
 				return;
 		}
 
-		setActiveCktElement(CktElementSave);  // restore active circuit element
+		setActiveCktElement(cktElementSave);  // restore active circuit element
 
-		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusVoltages();
-		for (int i = 0; i < NumBuses; i++) Buses[i].allocateBusCurrents();
+		for (int i = 0; i < numBuses; i++) buses[i].allocateBusVoltages();
+		for (int i = 0; i < numBuses; i++) buses[i].allocateBusCurrents();
 
 		restoreBusInfo();     // frees old bus info too
 		doResetMeterZones();  // fix up meter zones to correspond
@@ -917,42 +917,42 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		/* Do this only if meterZones unlocked. Normally, zones will remain
 		 * unlocked so that all changes to the circuit will result in rebuilding
 		 * the lists */
-		if (!MeterZonesComputed || !ZonesLocked) {
-			if (LogEvents) Utilities.logThisEvent("Resetting meter zones");
+		if (!meterZonesComputed || !zonesLocked) {
+			if (logEvents) Utilities.logThisEvent("Resetting meter zones");
 			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
-			MeterZonesComputed = true;
-			if (LogEvents) Utilities.logThisEvent("Done resetting meter zones");
+			meterZonesComputed = true;
+			if (logEvents) Utilities.logThisEvent("Done resetting meter zones");
 		}
 
 		freeTopology();
 	}
 
-	public int setElementActive(String FullObjectName) {
-		int Result = 0;
-		StringBuffer DevType = new StringBuffer();
-		StringBuffer DevName = new StringBuffer();
+	public int setElementActive(String fullObjectName) {
+		int result = 0;
+		StringBuffer devType = new StringBuffer();
+		StringBuffer devName = new StringBuffer();
 
-		Utilities.parseObjectClassandName(FullObjectName, DevType, DevName);
-		int DevClassIndex = DSSGlobals.getInstance().getClassNames().find(DevType.toString());
-		if (DevClassIndex == 0)
-			DevClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
-		int DevIndex = DeviceList.find(DevName.toString());
-		while (DevIndex >= 0) {
-			if (DeviceRef[DevIndex].CktElementClass == DevClassIndex) {  // we got a match
-				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(DevClassIndex));
-				DSSGlobals.getInstance().setLastClassReferenced(DevClassIndex);
-				Result = DeviceRef[DevIndex].devHandle;
+		Utilities.parseObjectClassandName(fullObjectName, devType, devName);
+		int devClassIndex = DSSGlobals.getInstance().getClassNames().find(devType.toString());
+		if (devClassIndex == 0)
+			devClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
+		int devIndex = deviceList.find(devName.toString());
+		while (devIndex >= 0) {
+			if (deviceRef[devIndex].cktElementClass == devClassIndex) {  // we got a match
+				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(devClassIndex));
+				DSSGlobals.getInstance().setLastClassReferenced(devClassIndex);
+				result = deviceRef[devIndex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				// ActiveCktElement = ActiveDSSClass.getActiveObj;
-				setActiveCktElement( CktElements.get(Result) );
+				setActiveCktElement( cktElements.get(result) );
 				break;
 			}
-			DevIndex = DeviceList.findNext();  // could be duplicates
+			devIndex = deviceList.findNext();  // could be duplicates
 		}
 
-		DSSGlobals.getInstance().setCmdResult(Result);
+		DSSGlobals.getInstance().setCmdResult(result);
 
-		return Result;
+		return result;
 	}
 
 	public void invalidateAllPCElements() {
@@ -960,35 +960,35 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			p.setYprimInvalid(true);
 
 		// force rebuild of matrix on next solution
-		Solution.setSystemYChanged(true);
+		solution.setSystemYChanged(true);
 	}
 
-	public void debugDump(PrintStream F) {
-		F.println("numBuses= " + NumBuses);
-		F.println("numNodes= " + NumNodes);
-		F.println("numDevices= " + NumDevices);
-		F.println("BusList:");
-		for (int i = 0; i < NumBuses; i++) {
-			F.printf("  %12s", BusList.get(i));
-			F.printf(" (" + Buses[i].getNumNodesThisBus() + " nodes)");
-			for (int j = 0; j < Buses[i].getNumNodesThisBus(); j++) {
-				F.print(" " + Buses[i].getNum(j));
+	public void debugDump(PrintStream f) {
+		f.println("numBuses= " + numBuses);
+		f.println("numNodes= " + numNodes);
+		f.println("numDevices= " + numDevices);
+		f.println("BusList:");
+		for (int i = 0; i < numBuses; i++) {
+			f.printf("  %12s", busList.get(i));
+			f.printf(" (" + buses[i].getNumNodesThisBus() + " nodes)");
+			for (int j = 0; j < buses[i].getNumNodesThisBus(); j++) {
+				f.print(" " + buses[i].getNum(j));
 			}
-			F.println();
+			f.println();
 		}
-		F.println("DeviceList:");
-		for (int i = 0; i < NumDevices; i++) {
-			F.printf("  %12s%s", DeviceList.get(i), DSSGlobals.CRLF);
-			setActiveCktElement( CktElements.get(i) );
-			if (!ActiveCktElement.isEnabled())
-				F.print("  DISABLED");
-			F.println();
+		f.println("DeviceList:");
+		for (int i = 0; i < numDevices; i++) {
+			f.printf("  %12s%s", deviceList.get(i), DSSGlobals.CRLF);
+			setActiveCktElement( cktElements.get(i) );
+			if (!activeCktElement.isEnabled())
+				f.print("  DISABLED");
+			f.println();
 		}
-		F.println("NodeToBus Array:");
-		for (int i = 0; i < NumNodes; i++) {
-			int j = MapNodeToBus[i].busRef;
-			F.print("  " + i + " " + j + " (=" +BusList.get(j) + "." + MapNodeToBus[i].nodeNum + ")");
-			F.println();
+		f.println("NodeToBus Array:");
+		for (int i = 0; i < numNodes; i++) {
+			int j = mapNodeToBus[i].busRef;
+			f.print("  " + i + " " + j + " (=" +busList.get(j) + "." + mapNodeToBus[i].nodeNum + ")");
+			f.println();
 		}
 	}
 
@@ -996,112 +996,112 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	 * Access to topology from the first source
 	 */
 	public CktTree getTopology() {
-		if (Branch_List == null) {
+		if (branchList == null) {
 			/* Initialize all circuit elements and buses to not checked, then build a new tree */
-			for (CktElement elem : CktElements) {
+			for (CktElement elem : cktElements) {
 				elem.setChecked(false);
 				for (int i = 0; i < elem.getNTerms(); i++)
 					elem.getTerminals()[i].setChecked(false);
 				elem.setIsIsolated(true);  // till proven otherwise
 			}
 
-			for (int i = 0; i < NumBuses; i++)
-				Buses[i].setBusChecked(false);
+			for (int i = 0; i < numBuses; i++)
+				buses[i].setBusChecked(false);
 
-			Branch_List = CktTreeImpl.getIsolatedSubArea(Sources.get(0), true);  // calls back to build adjacency lists
+			branchList = CktTreeImpl.getIsolatedSubArea(sources.get(0), true);  // calls back to build adjacency lists
 		}
-		return Branch_List;
+		return branchList;
 	}
 
 	public void freeTopology() {
-		if (Branch_List != null)
-			Branch_List = null;
-		if (BusAdjPC != null)
-			CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		if (branchList != null)
+			branchList = null;
+		if (busAdjPC != null)
+			CktTreeImpl.freeAndNilBusAdjacencyLists(busAdjPD, busAdjPC);
 	}
 
 	public List<PDElement>[] getBusAdjacentPDLists() {
-		if (BusAdjPD == null)
-			CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
-		return BusAdjPD;
+		if (busAdjPD == null)
+			CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
+		return busAdjPD;
 	}
 
 	public List<PCElement>[] getBusAdjacentPCLists() {
-		if (BusAdjPC == null)
-			CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
-		return BusAdjPC;
+		if (busAdjPC == null)
+			CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
+		return busAdjPC;
 	}
 
 	public int getActiveBusIndex() {
-		return ActiveBusIndex;
+		return activeBusIndex;
 	}
 
-	public void setActiveBusIndex(int activeBusIndex) {
-		ActiveBusIndex = activeBusIndex;
+	public void setActiveBusIndex(int index) {
+		activeBusIndex = index;
 	}
 
 	public double getFundamental() {
-		return Fundamental;
+		return fundamental;
 	}
 
-	public void setFundamental(double fundamental) {
-		Fundamental = fundamental;
+	public void setFundamental(double value) {
+		fundamental = value;
 	}
 
-	public boolean isControl_BusNameRedefined() {
-		return Control_BusNameRedefined;
+	public boolean isControlBusNameRedefined() {
+		return controlBusNameRedefined;
 	}
 
-	public void setControl_BusNameRedefined(boolean control_BusNameRedefined) {
-		Control_BusNameRedefined = control_BusNameRedefined;
+	public void setControlBusNameRedefined(boolean redefined) {
+		controlBusNameRedefined = redefined;
 	}
 
 	public HashList getBusList() {
-		return BusList;
+		return busList;
 	}
 
-	public void setBusList(HashList busList) {
-		BusList = busList;
+	public void setBusList(HashList list) {
+		busList = list;
 	}
 
 	public HashList getAutoAddBusList() {
-		return AutoAddBusList;
+		return autoAddBusList;
 	}
 
-	public void setAutoAddBusList(HashList autoAddBusList) {
-		AutoAddBusList = autoAddBusList;
+	public void setAutoAddBusList(HashList list) {
+		autoAddBusList = list;
 	}
 
 	public HashList getDeviceList() {
-		return DeviceList;
+		return deviceList;
 	}
 
-	public void setDeviceList(HashList deviceList) {
-		DeviceList = deviceList;
+	public void setDeviceList(HashList list) {
+		deviceList = list;
 	}
 
 	public CktElementDef[] getDeviceRef() {
-		return DeviceRef;
+		return deviceRef;
 	}
 
-	public void setDeviceRef(CktElementDef[] deviceRef) {
-		DeviceRef = deviceRef;
+	public void setDeviceRef(CktElementDef[] ref) {
+		deviceRef = ref;
 	}
 
 	public ArrayList<FaultObj> getFaults() {
-		return Faults;
+		return faults;
 	}
 
-	public void setFaults(ArrayList<FaultObj> faults) {
-		Faults = faults;
+	public void setFaults(ArrayList<FaultObj> list) {
+		faults = list;
 	}
 
 	public ArrayList<CktElement> getCktElements() {
-		return CktElements;
+		return cktElements;
 	}
 
-	public void setCktElements(ArrayList<CktElement> cktElements) {
-		CktElements = cktElements;
+	public void setCktElements(ArrayList<CktElement> elements) {
+		cktElements = elements;
 	}
 
 	public ArrayList<PDElement> getPDElements() {
@@ -1121,67 +1121,67 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public ArrayList<ControlElem> getDSSControls() {
-		return DSSControls;
+		return controls;
 	}
 
 	public void setDSSControls(ArrayList<ControlElem> dSSControls) {
-		DSSControls = dSSControls;
+		controls = dSSControls;
 	}
 
 	public ArrayList<PCElement> getSources() {
-		return Sources;
+		return sources;
 	}
 
-	public void setSources(ArrayList<PCElement> sources) {
-		Sources = sources;
+	public void setSources(ArrayList<PCElement> list) {
+		sources = list;
 	}
 
 	public ArrayList<MeterElement> getMeterElements() {
-		return MeterElements;
+		return meterElements;
 	}
 
-	public void setMeterElements(ArrayList<MeterElement> meterElements) {
-		MeterElements = meterElements;
+	public void setMeterElements(ArrayList<MeterElement> elements) {
+		meterElements = elements;
 	}
 
 	public ArrayList<SensorObj> getSensors() {
-		return Sensors;
+		return sensors;
 	}
 
-	public void setSensors(ArrayList<SensorObj> sensors) {
-		Sensors = sensors;
+	public void setSensors(ArrayList<SensorObj> list) {
+		sensors = list;
 	}
 
 	public ArrayList<MonitorObj> getMonitors() {
-		return Monitors;
+		return monitors;
 	}
 
-	public void setMonitors(ArrayList<MonitorObj> monitors) {
-		Monitors = monitors;
+	public void setMonitors(ArrayList<MonitorObj> list) {
+		monitors = list;
 	}
 
 	public ArrayList<EnergyMeterObj> getEnergyMeters() {
-		return EnergyMeters;
+		return energyMeters;
 	}
 
-	public void setEnergyMeters(ArrayList<EnergyMeterObj> energyMeters) {
-		EnergyMeters = energyMeters;
+	public void setEnergyMeters(ArrayList<EnergyMeterObj> meters) {
+		energyMeters = meters;
 	}
 
 	public ArrayList<GeneratorObj> getGenerators() {
-		return Generators;
+		return generators;
 	}
 
-	public void setGenerators(ArrayList<GeneratorObj> generators) {
-		Generators = generators;
+	public void setGenerators(ArrayList<GeneratorObj> list) {
+		generators = list;
 	}
 
 	public ArrayList<StorageObj> getStorageElements() {
-		return StorageElements;
+		return storageElements;
 	}
 
-	public void setStorageElements(ArrayList<StorageObj> storageElements) {
-		StorageElements = storageElements;
+	public void setStorageElements(ArrayList<StorageObj> elements) {
+		storageElements = elements;
 	}
 
 	public ArrayList<PVSystemObj> getPVSystems() {
@@ -1193,99 +1193,99 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public ArrayList<DSSObject> getSubstations() {
-		return Substations;
+		return substations;
 	}
 
-	public void setSubstations(ArrayList<DSSObject> substations) {
-		Substations = substations;
+	public void setSubstations(ArrayList<DSSObject> stations) {
+		substations = stations;
 	}
 
 	public ArrayList<TransformerObj> getTransformers() {
-		return Transformers;
+		return transformers;
 	}
 
-	public void setTransformers(ArrayList<TransformerObj> transformers) {
-		Transformers = transformers;
+	public void setTransformers(ArrayList<TransformerObj> trx) {
+		transformers = trx;
 	}
 
 	public ArrayList<CapControlObj> getCapControls() {
-		return CapControls;
+		return capControls;
 	}
 
-	public void setCapControls(ArrayList<CapControlObj> capControls) {
-		CapControls = capControls;
+	public void setCapControls(ArrayList<CapControlObj> controls) {
+		capControls = controls;
 	}
 
 	public ArrayList<RegControlObj> getRegControls() {
-		return RegControls;
+		return regControls;
 	}
 
-	public void setRegControls(ArrayList<RegControlObj> regControls) {
-		RegControls = regControls;
+	public void setRegControls(ArrayList<RegControlObj> controls) {
+		regControls = controls;
 	}
 
 	public ArrayList<LineObj> getLines() {
-		return Lines;
+		return lines;
 	}
 
-	public void setLines(ArrayList<LineObj> lines) {
-		Lines = lines;
+	public void setLines(ArrayList<LineObj> list) {
+		lines = list;
 	}
 
 	public ArrayList<LoadObj> getLoads() {
-		return Loads;
+		return loads;
 	}
 
-	public void setLoads(ArrayList<LoadObj> loads) {
-		Loads = loads;
+	public void setLoads(ArrayList<LoadObj> list) {
+		loads = list;
 	}
 
 	public ArrayList<CapacitorObj> getShuntCapacitors() {
-		return ShuntCapacitors;
+		return shuntCapacitors;
 	}
 
-	public void setShuntCapacitors(ArrayList<CapacitorObj> shuntCapacitors) {
-		ShuntCapacitors = shuntCapacitors;
+	public void setShuntCapacitors(ArrayList<CapacitorObj> capacitors) {
+		shuntCapacitors = capacitors;
 	}
 
 	public ArrayList<FeederObj> getFeeders() {
-		return Feeders;
+		return feeders;
 	}
 
-	public void setFeeders(ArrayList<FeederObj> feeders) {
-		Feeders = feeders;
+	public void setFeeders(ArrayList<FeederObj> list) {
+		feeders = list;
 	}
 
 	public ArrayList<SwtControlObj> getSwtControls() {
-		return SwtControls;
+		return swtControls;
 	}
 
-	public void setSwtControls(ArrayList<SwtControlObj> swtControls) {
-		SwtControls = swtControls;
+	public void setSwtControls(ArrayList<SwtControlObj> controls) {
+		swtControls = controls;
 	}
 
 	public ControlQueue getControlQueue() {
-		return ControlQueue;
+		return controlQueue;
 	}
 
-	public void setControlQueue(ControlQueue controlQueue) {
-		ControlQueue = controlQueue;
+	public void setControlQueue(ControlQueue queue) {
+		controlQueue = queue;
 	}
 
 	public SolutionObj getSolution() {
-		return Solution;
+		return solution;
 	}
 
-	public void setSolution(SolutionObj solution) {
-		Solution = solution;
+	public void setSolution(SolutionObj sol) {
+		solution = sol;
 	}
 
 	public AutoAdd getAutoAddObj() {
-		return AutoAddObj;
+		return autoAddObj;
 	}
 
-	public void setAutoAddObj(AutoAdd autoAddObj) {
-		AutoAddObj = autoAddObj;
+	public void setAutoAddObj(AutoAdd autoAdd) {
+		autoAddObj = autoAdd;
 	}
 
 	public double getUEWeight() {
@@ -1297,27 +1297,27 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public double getLossWeight() {
-		return LossWeight;
+		return lossWeight;
 	}
 
-	public void setLossWeight(double lossWeight) {
-		LossWeight = lossWeight;
+	public void setLossWeight(double weight) {
+		lossWeight = weight;
 	}
 
 	public int getNumUERegs() {
-		return NumUERegs;
+		return numUERegs;
 	}
 
-	public void setNumUERegs(int numUERegs) {
-		NumUERegs = numUERegs;
+	public void setNumUERegs(int num) {
+		numUERegs = num;
 	}
 
 	public int getNumLossRegs() {
-		return NumLossRegs;
+		return numLossRegs;
 	}
 
-	public void setNumLossRegs(int numLossRegs) {
-		NumLossRegs = numLossRegs;
+	public void setNumLossRegs(int num) {
+		numLossRegs = num;
 	}
 
 	public int[] getUERegs() {
@@ -1329,435 +1329,435 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public int[] getLossRegs() {
-		return LossRegs;
+		return lossRegs;
 	}
 
-	public void setLossRegs(int[] lossRegs) {
-		LossRegs = lossRegs;
+	public void setLossRegs(int[] regs) {
+		lossRegs = regs;
 	}
 
 	public double getCapacityStart() {
-		return CapacityStart;
+		return capacityStart;
 	}
 
-	public void setCapacityStart(double capacityStart) {
-		CapacityStart = capacityStart;
+	public void setCapacityStart(double capacity) {
+		capacityStart = capacity;
 	}
 
 	public double getCapacityIncrement() {
-		return CapacityIncrement;
+		return capacityIncrement;
 	}
 
-	public void setCapacityIncrement(double capacityIncrement) {
-		CapacityIncrement = capacityIncrement;
+	public void setCapacityIncrement(double increment) {
+		capacityIncrement = increment;
 	}
 
 	public boolean isTrapezoidalIntegration() {
-		return TrapezoidalIntegration;
+		return trapezoidalIntegration;
 	}
 
-	public void setTrapezoidalIntegration(boolean trapezoidalIntegration) {
-		TrapezoidalIntegration = trapezoidalIntegration;
+	public void setTrapezoidalIntegration(boolean trapezoidal) {
+		trapezoidalIntegration = trapezoidal;
 	}
 
 	public boolean isLogEvents() {
-		return LogEvents;
+		return logEvents;
 	}
 
-	public void setLogEvents(boolean logEvents) {
-		LogEvents = logEvents;
+	public void setLogEvents(boolean log) {
+		logEvents = log;
 	}
 
 	public String getLoadDurCurve() {
-		return LoadDurCurve;
+		return loadDurCurve;
 	}
 
-	public void setLoadDurCurve(String loadDurCurve) {
-		LoadDurCurve = loadDurCurve;
+	public void setLoadDurCurve(String curve) {
+		loadDurCurve = curve;
 	}
 
 	public LoadShapeObj getLoadDurCurveObj() {
-		return LoadDurCurveObj;
+		return loadDurCurveObj;
 	}
 
-	public void setLoadDurCurveObj(LoadShapeObj loadDurCurveObj) {
-		LoadDurCurveObj = loadDurCurveObj;
+	public void setLoadDurCurveObj(LoadShapeObj curveObj) {
+		loadDurCurveObj = curveObj;
 	}
 
 	public String getPriceCurve() {
-		return PriceCurve;
+		return priceCurve;
 	}
 
-	public void setPriceCurve(String priceCurve) {
-		PriceCurve = priceCurve;
+	public void setPriceCurve(String curve) {
+		priceCurve = curve;
 	}
 
 	public PriceShapeObj getPriceCurveObj() {
-		return PriceCurveObj;
+		return priceCurveObj;
 	}
 
-	public void setPriceCurveObj(PriceShapeObj priceCurveObj) {
-		PriceCurveObj = priceCurveObj;
+	public void setPriceCurveObj(PriceShapeObj curveObj) {
+		priceCurveObj = curveObj;
 	}
 
 	public int getNumDevices() {
-		return NumDevices;
+		return numDevices;
 	}
 
-	public void setNumDevices(int numDevices) {
-		NumDevices = numDevices;
+	public void setNumDevices(int num) {
+		numDevices = num;
 	}
 
 	public int getNumBuses() {
-		return NumBuses;
+		return numBuses;
 	}
 
-	public void setNumBuses(int numBuses) {
-		NumBuses = numBuses;
+	public void setNumBuses(int num) {
+		numBuses = num;
 	}
 
 	public int getNumNodes() {
-		return NumNodes;
+		return numNodes;
 	}
 
-	public void setNumNodes(int numNodes) {
-		NumNodes = numNodes;
+	public void setNumNodes(int num) {
+		numNodes = num;
 	}
 
 	public int getMaxDevices() {
-		return MaxDevices;
+		return maxDevices;
 	}
 
-	public void setMaxDevices(int maxDevices) {
-		MaxDevices = maxDevices;
+	public void setMaxDevices(int max) {
+		maxDevices = max;
 	}
 
 	public int getMaxBuses() {
-		return MaxBuses;
+		return maxBuses;
 	}
 
-	public void setMaxBuses(int maxBuses) {
-		MaxBuses = maxBuses;
+	public void setMaxBuses(int max) {
+		maxBuses = max;
 	}
 
 	public int getMaxNodes() {
-		return MaxNodes;
+		return maxNodes;
 	}
 
-	public void setMaxNodes(int maxNodes) {
-		MaxNodes = maxNodes;
+	public void setMaxNodes(int max) {
+		maxNodes = max;
 	}
 
 	public int getIncDevices() {
-		return IncDevices;
+		return incDevices;
 	}
 
-	public void setIncDevices(int incDevices) {
-		IncDevices = incDevices;
+	public void setIncDevices(int inc) {
+		incDevices = inc;
 	}
 
 	public int getIncBuses() {
-		return IncBuses;
+		return incBuses;
 	}
 
-	public void setIncBuses(int incBuses) {
-		IncBuses = incBuses;
+	public void setIncBuses(int inc) {
+		incBuses = inc;
 	}
 
 	public int getIncNodes() {
-		return IncNodes;
+		return incNodes;
 	}
 
-	public void setIncNodes(int incNodes) {
-		IncNodes = incNodes;
+	public void setIncNodes(int inc) {
+		incNodes = inc;
 	}
 
 	public Bus[] getBuses() {
-		return Buses;
+		return buses;
 	}
 
-	public void setBuses(Bus[] buses) {
-		Buses = buses;
+	public void setBuses(Bus[] list) {
+		buses = list;
 	}
 
 	public NodeBus[] getMapNodeToBus() {
-		return MapNodeToBus;
+		return mapNodeToBus;
 	}
 
-	public void setMapNodeToBus(NodeBus[] mapNodeToBus) {
-		MapNodeToBus = mapNodeToBus;
+	public void setMapNodeToBus(NodeBus[] map) {
+		mapNodeToBus = map;
 	}
 
 	public boolean isSolved() {
-		return IsSolved;
+		return isSolved;
 	}
 
-	public void setIsSolved(boolean isSolved) {
-		IsSolved = isSolved;
+	public void setIsSolved(boolean solved) {
+		isSolved = solved;
 	}
 
 	public boolean isDuplicatesAllowed() {
-		return DuplicatesAllowed;
+		return duplicatesAllowed;
 	}
 
-	public void setDuplicatesAllowed(boolean duplicatesAllowed) {
-		DuplicatesAllowed = duplicatesAllowed;
+	public void setDuplicatesAllowed(boolean allowed) {
+		duplicatesAllowed = allowed;
 	}
 
 	public boolean isZonesLocked() {
-		return ZonesLocked;
+		return zonesLocked;
 	}
 
-	public void setZonesLocked(boolean zonesLocked) {
-		ZonesLocked = zonesLocked;
+	public void setZonesLocked(boolean locked) {
+		zonesLocked = locked;
 	}
 
 	public boolean isMeterZonesComputed() {
-		return MeterZonesComputed;
+		return meterZonesComputed;
 	}
 
-	public void setMeterZonesComputed(boolean meterZonesComputed) {
-		MeterZonesComputed = meterZonesComputed;
+	public void setMeterZonesComputed(boolean computed) {
+		meterZonesComputed = computed;
 	}
 
 	public boolean isPositiveSequence() {
-		return PositiveSequence;
+		return positiveSequence;
 	}
 
-	public void setPositiveSequence(boolean positiveSequence) {
-		PositiveSequence = positiveSequence;
+	public void setPositiveSequence(boolean value) {
+		positiveSequence = value;
 	}
 
 	public double getNormalMinVolts() {
-		return NormalMinVolts;
+		return normalMinVolts;
 	}
 
-	public void setNormalMinVolts(double normalMinVolts) {
-		NormalMinVolts = normalMinVolts;
+	public void setNormalMinVolts(double min) {
+		normalMinVolts = min;
 	}
 
 	public double getNormalMaxVolts() {
-		return NormalMaxVolts;
+		return normalMaxVolts;
 	}
 
-	public void setNormalMaxVolts(double normalMaxVolts) {
-		NormalMaxVolts = normalMaxVolts;
+	public void setNormalMaxVolts(double max) {
+		normalMaxVolts = max;
 	}
 
 	public double getEmergMaxVolts() {
-		return EmergMaxVolts;
+		return emergMaxVolts;
 	}
 
-	public void setEmergMaxVolts(double emergMaxVolts) {
-		EmergMaxVolts = emergMaxVolts;
+	public void setEmergMaxVolts(double max) {
+		emergMaxVolts = max;
 	}
 
 	public double getEmergMinVolts() {
-		return EmergMinVolts;
+		return emergMinVolts;
 	}
 
-	public void setEmergMinVolts(double emergMinVolts) {
-		EmergMinVolts = emergMinVolts;
+	public void setEmergMinVolts(double min) {
+		emergMinVolts = min;
 	}
 
 	public double[] getLegalVoltageBases() {
-		return LegalVoltageBases;
+		return legalVoltageBases;
 	}
 
-	public void setLegalVoltageBases(double[] legalVoltageBases) {
-		LegalVoltageBases = legalVoltageBases;
+	public void setLegalVoltageBases(double[] bases) {
+		legalVoltageBases = bases;
 	}
 
 	public double getGeneratorDispatchReference() {
-		return GeneratorDispatchReference;
+		return generatorDispatchReference;
 	}
 
-	public void setGeneratorDispatchReference(double generatorDispatchReference) {
-		GeneratorDispatchReference = generatorDispatchReference;
+	public void setGeneratorDispatchReference(double reference) {
+		generatorDispatchReference = reference;
 	}
 
 	public double getDefaultGrowthFactor() {
-		return DefaultGrowthFactor;
+		return defaultGrowthFactor;
 	}
 
-	public void setDefaultGrowthFactor(double defaultGrowthFactor) {
-		DefaultGrowthFactor = defaultGrowthFactor;
+	public void setDefaultGrowthFactor(double factor) {
+		defaultGrowthFactor = factor;
 	}
 
 	public double getDefaultGrowthRate() {
-		return DefaultGrowthRate;
+		return defaultGrowthRate;
 	}
 
-	public void setDefaultGrowthRate(double defaultGrowthRate) {
-		DefaultGrowthRate = defaultGrowthRate;
+	public void setDefaultGrowthRate(double rate) {
+		defaultGrowthRate = rate;
 	}
 
 	public double getGenMultiplier() {
-		return GenMultiplier;
+		return genMultiplier;
 	}
 
-	public void setGenMultiplier(double genMultiplier) {
-		GenMultiplier = genMultiplier;
+	public void setGenMultiplier(double multiplier) {
+		genMultiplier = multiplier;
 	}
 
 	public double getHarmMult() {
-		return HarmMult;
+		return harmMult;
 	}
 
-	public void setHarmMult(double harmMult) {
-		HarmMult = harmMult;
+	public void setHarmMult(double mult) {
+		harmMult = mult;
 	}
 
 	public Complex getDefaultHourMult() {
-		return DefaultHourMult;
+		return defaultHourMult;
 	}
 
-	public void setDefaultHourMult(Complex defaultHourMult) {
-		DefaultHourMult = defaultHourMult;
+	public void setDefaultHourMult(Complex mult) {
+		defaultHourMult = mult;
 	}
 
 	public double getPriceSignal() {
-		return PriceSignal;
+		return priceSignal;
 	}
 
-	public void setPriceSignal(double priceSignal) {
-		PriceSignal = priceSignal;
+	public void setPriceSignal(double signal) {
+		priceSignal = signal;
 	}
 
 	public double[] getRegisterTotals() {
-		return RegisterTotals;
+		return registerTotals;
 	}
 
-	public void setRegisterTotals(double[] registerTotals) {
-		RegisterTotals = registerTotals;
+	public void setRegisterTotals(double[] totals) {
+		registerTotals = totals;
 	}
 
 	public LoadShapeObj getDefaultDailyShapeObj() {
-		return DefaultDailyShapeObj;
+		return defaultDailyShapeObj;
 	}
 
-	public void setDefaultDailyShapeObj(LoadShapeObj defaultDailyShapeObj) {
-		DefaultDailyShapeObj = defaultDailyShapeObj;
+	public void setDefaultDailyShapeObj(LoadShapeObj shapeObj) {
+		defaultDailyShapeObj = shapeObj;
 	}
 
 	public LoadShapeObj getDefaultYearlyShapeObj() {
-		return DefaultYearlyShapeObj;
+		return defaultYearlyShapeObj;
 	}
 
-	public void setDefaultYearlyShapeObj(LoadShapeObj defaultYearlyShapeObj) {
-		DefaultYearlyShapeObj = defaultYearlyShapeObj;
+	public void setDefaultYearlyShapeObj(LoadShapeObj shapeObj) {
+		defaultYearlyShapeObj = shapeObj;
 	}
 
 	public String getCurrentDirectory() {
-		return CurrentDirectory;
+		return currentDirectory;
 	}
 
-	public void setCurrentDirectory(String currentDirectory) {
-		CurrentDirectory = currentDirectory;
+	public void setCurrentDirectory(String dir) {
+		currentDirectory = dir;
 	}
 
 	public ReductionStrategyType getReductionStrategy() {
-		return ReductionStrategy;
+		return reductionStrategy;
 	}
 
-	public void setReductionStrategy(ReductionStrategyType reductionStrategy) {
-		ReductionStrategy = reductionStrategy;
+	public void setReductionStrategy(ReductionStrategyType strategy) {
+		reductionStrategy = strategy;
 	}
 
 	public double getReductionMaxAngle() {
-		return ReductionMaxAngle;
+		return reductionMaxAngle;
 	}
 
-	public void setReductionMaxAngle(double reductionMaxAngle) {
-		ReductionMaxAngle = reductionMaxAngle;
+	public void setReductionMaxAngle(double maxAngle) {
+		reductionMaxAngle = maxAngle;
 	}
 
 	public double getReductionZmag() {
-		return ReductionZmag;
+		return reductionZmag;
 	}
 
-	public void setReductionZmag(double reductionZmag) {
-		ReductionZmag = reductionZmag;
+	public void setReductionZmag(double mag) {
+		reductionZmag = mag;
 	}
 
 	public String getReductionStrategyString() {
-		return ReductionStrategyString;
+		return reductionStrategyString;
 	}
 
-	public void setReductionStrategyString(String reductionStrategyString) {
-		ReductionStrategyString = reductionStrategyString;
+	public void setReductionStrategyString(String reductionStrategy) {
+		reductionStrategyString = reductionStrategy;
 	}
 
 	public double getPctNormalFactor() {
-		return PctNormalFactor;
+		return pctNormalFactor;
 	}
 
-	public void setPctNormalFactor(double pctNormalFactor) {
-		PctNormalFactor = pctNormalFactor;
+	public void setPctNormalFactor(double factor) {
+		pctNormalFactor = factor;
 	}
 
 	public int getNodeMarkerCode() {
-		return NodeMarkerCode;
+		return nodeMarkerCode;
 	}
 
-	public void setNodeMarkerCode(int nodeMarkerCode) {
-		NodeMarkerCode = nodeMarkerCode;
+	public void setNodeMarkerCode(int markerCode) {
+		nodeMarkerCode = markerCode;
 	}
 
 	public int getNodeMarkerWidth() {
-		return NodeMarkerWidth;
+		return nodeMarkerWidth;
 	}
 
-	public void setNodeMarkerWidth(int nodeMarkerWidth) {
-		NodeMarkerWidth = nodeMarkerWidth;
+	public void setNodeMarkerWidth(int markerWidth) {
+		nodeMarkerWidth = markerWidth;
 	}
 
 	public int getSwitchMarkerCode() {
 		return SwitchMarkerCode;
 	}
 
-	public void setSwitchMarkerCode(int switchMarkerCode) {
-		SwitchMarkerCode = switchMarkerCode;
+	public void setSwitchMarkerCode(int markerCode) {
+		SwitchMarkerCode = markerCode;
 	}
 
 	public int getTransMarkerSize() {
-		return TransMarkerSize;
+		return transMarkerSize;
 	}
 
-	public void setTransMarkerSize(int transMarkerSize) {
-		TransMarkerSize = transMarkerSize;
+	public void setTransMarkerSize(int markerSize) {
+		transMarkerSize = markerSize;
 	}
 
 	public int getTransMarkerCode() {
-		return TransMarkerCode;
+		return transMarkerCode;
 	}
 
-	public void setTransMarkerCode(int transMarkerCode) {
-		TransMarkerCode = transMarkerCode;
+	public void setTransMarkerCode(int markerCode) {
+		transMarkerCode = markerCode;
 	}
 
 	public boolean isMarkSwitches() {
-		return MarkSwitches;
+		return markSwitches;
 	}
 
-	public void setMarkSwitches(boolean markSwitches) {
-		MarkSwitches = markSwitches;
+	public void setMarkSwitches(boolean mark) {
+		markSwitches = mark;
 	}
 
 	public boolean isMarkTransformers() {
-		return MarkTransformers;
+		return markTransformers;
 	}
 
-	public void setMarkTransformers(boolean markTransformers) {
-		MarkTransformers = markTransformers;
+	public void setMarkTransformers(boolean mark) {
+		markTransformers = mark;
 	}
 
 	public int getActiveLoadShapeClass() {
-		return ActiveLoadShapeClass;
+		return activeLoadShapeClass;
 	}
 
-	public void setActiveLoadShapeClass(int activeLoadShapeClass) {
-		ActiveLoadShapeClass = activeLoadShapeClass;
+	public void setActiveLoadShapeClass(int loadShapeClass) {
+		activeLoadShapeClass = loadShapeClass;
 	}
 
 }

@@ -1242,12 +1242,12 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if (BranchList == null) makeMeterZoneLists();
 
 		switch (DSSGlobals.getInstance().getActiveCircuit().getReductionStrategy()) {
-		case rsStubs:         ReduceAlgs.doReduceStubs(BranchList); break;
-		case rsTapEnds:       ReduceAlgs.doReduceTapEnds (BranchList); break;
-		case rsMergeParallel: ReduceAlgs.doMergeParallelLines(BranchList); break;
-		case rsDangling:      ReduceAlgs.doReduceDangling(BranchList); break;
-		case rsBreakLoop:     ReduceAlgs.doBreakLoops(BranchList); break;
-		case rsSwitches:      ReduceAlgs.doReduceSwitches(BranchList); break;
+		case STUBS:         ReduceAlgs.doReduceStubs(BranchList); break;
+		case TAP_ENDS:       ReduceAlgs.doReduceTapEnds (BranchList); break;
+		case MERGE_PARALLEL: ReduceAlgs.doMergeParallelLines(BranchList); break;
+		case DANGLING:      ReduceAlgs.doReduceDangling(BranchList); break;
+		case BREAK_LOOP:     ReduceAlgs.doBreakLoops(BranchList); break;
+		case SWITCHES:      ReduceAlgs.doReduceSwitches(BranchList); break;
 		default:
 			ReduceAlgs.doReduceDefault(BranchList);
 			break;

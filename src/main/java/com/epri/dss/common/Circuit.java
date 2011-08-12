@@ -44,9 +44,9 @@ public interface Circuit extends NamedObject {
 
 	void setFundamental(double fundamental);
 
-	boolean isControl_BusNameRedefined();
+	boolean isControlBusNameRedefined();
 
-	void setControl_BusNameRedefined(boolean control_BusNameRedefined);
+	void setControlBusNameRedefined(boolean controlBusNameRedefined);
 
 	HashList getBusList();
 
@@ -74,15 +74,15 @@ public interface Circuit extends NamedObject {
 
 	ArrayList<PDElement> getPDElements();
 
-	void setPDElements(ArrayList<PDElement> pDElements);
+	void setPDElements(ArrayList<PDElement> PDElements);
 
 	ArrayList<PCElement> getPCElements();
 
-	void setPCElements(ArrayList<PCElement> pCElements);
+	void setPCElements(ArrayList<PCElement> PCElements);
 
 	ArrayList<ControlElem> getDSSControls();
 
-	void setDSSControls(ArrayList<ControlElem> dSSControls);
+	void setDSSControls(ArrayList<ControlElem> DSSControls);
 
 	ArrayList<PCElement> getSources();
 
@@ -114,7 +114,7 @@ public interface Circuit extends NamedObject {
 
 	ArrayList<PVSystemObj> getPVSystems();
 
-	void setPVSystems(ArrayList<PVSystemObj> pVSystems);
+	void setPVSystems(ArrayList<PVSystemObj> PVSystems);
 
 	ArrayList<DSSObject> getSubstations();
 
@@ -166,7 +166,7 @@ public interface Circuit extends NamedObject {
 
 	double getUEWeight();
 
-	void setUEWeight(double uEWeight);
+	void setUEWeight(double UEWeight);
 
 	double getLossWeight();
 
@@ -182,7 +182,7 @@ public interface Circuit extends NamedObject {
 
 	int[] getUERegs();
 
-	void setUERegs(int[] uEregs);
+	void setUERegs(int[] UEregs);
 
 	int[] getLossRegs();
 
@@ -404,32 +404,32 @@ public interface Circuit extends NamedObject {
 
 	CktElement getActiveCktElement();
 
-	void setBusNameRedefined(boolean Value);
+	void setBusNameRedefined(boolean value);
 
 	boolean isBusNameRedefined();
 
 	/** Total circuit PD element losses */
 	Complex getLosses();
 
-	void setLoadMultiplier(double Value);
+	void setLoadMultiplier(double value);
 
 	double getLoadMultiplier();
 
-	void setCaseName(String Value);
+	void setCaseName(String value);
 
 	String getCaseName();
 
 	String getName();
 
 	/** Adds last DSS object created to circuit */
-	void addCktElement(int Handle);
+	void addCktElement(int handle);
 
 	/** Totalize all energymeters in the problem */
 	void totalizeMeters();
 
 	boolean computeCapacity();
 
-	boolean save(String Dir);
+	boolean save(String dir);
 
 	void processBusDefs();
 
@@ -438,11 +438,11 @@ public interface Circuit extends NamedObject {
 
 	void doResetMeterZones();
 
-	int setElementActive(String FullObjectName);
+	int setElementActive(String fullObjectName);
 
 	void invalidateAllPCElements();
 
-	void debugDump(PrintStream F);
+	void debugDump(PrintStream f);
 
 	/** Access to topology from the first source */
 	CktTree getTopology();

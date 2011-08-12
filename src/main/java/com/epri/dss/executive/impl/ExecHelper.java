@@ -1780,35 +1780,35 @@ public class ExecHelper {
 		ParamName = Globals.getAuxParser().getNextParam();
 		String Param2 = Globals.getAuxParser().makeString();
 
-		Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDefault);
+		Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.DEFAULT);
 		if (Param.length() == 0)
 			return;  // No option given
 
 		switch (Param.charAt(0)) {
 		case 'B':
-			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsBreakLoop);
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.BREAK_LOOP);
 			break;
 		case 'D':
-			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDefault);
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.DEFAULT);
 			break;
 		case 'E':
-			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsDangling);
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.DANGLING);
 			break;
 		case 'M':
-			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsMergeParallel);
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.MERGE_PARALLEL);
 			break;
 		case 'T':
-			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsTapEnds);
+			Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.TAP_ENDS);
 			Globals.getActiveCircuit().setReductionMaxAngle(15.0);  // default
 			if (Param2.length() > 0)
 				Globals.getActiveCircuit().setReductionMaxAngle(Globals.getAuxParser().makeDouble());
 			break;
 		case 'S':  // Stubs
 			if (Utilities.compareTextShortest(Param, "SWITCH") == 0) {
-				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsSwitches);
+				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.SWITCHES);
 			} else {
 				Globals.getActiveCircuit().setReductionZmag(0.02);
-				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.rsStubs);
+				Globals.getActiveCircuit().setReductionStrategy(ReductionStrategyType.STUBS);
 				if (Param2.length() > 0)
 					Globals.getActiveCircuit().setReductionZmag(Globals.getAuxParser().makeDouble());
 			}

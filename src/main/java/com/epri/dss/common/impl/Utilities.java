@@ -927,7 +927,7 @@ public class Utilities {
 		Circuit ckt = Globals.getActiveCircuit();
 		DevIndex = ckt.getDeviceList().find(DevName.toString());
 		while (DevIndex > -1) {
-			if ((ckt.getDeviceRef()[DevIndex]).CktElementClass == DevClassIndex)  // we got a match
+			if ((ckt.getDeviceRef()[DevIndex]).cktElementClass == DevClassIndex)  // we got a match
 				return DevIndex;
 			DevIndex = ckt.getDeviceList().findNext();
 		}

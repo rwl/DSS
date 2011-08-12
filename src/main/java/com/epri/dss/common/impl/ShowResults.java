@@ -56,7 +56,7 @@ public abstract class ShowResults {
 		MaxDeviceNameLength = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++) {
 			DevName = ckt.getDeviceList().get(i);
-			DevClassName = ((DSSClass) Globals.getDSSClassList().get( ckt.getDeviceRef()[i].CktElementClass )).getName();
+			DevClassName = ((DSSClass) Globals.getDSSClassList().get( ckt.getDeviceRef()[i].cktElementClass )).getName();
 			MaxDeviceNameLength = Math.max(MaxDeviceNameLength, DevName.length() + DevClassName.length() + 1);
 		}
 	}

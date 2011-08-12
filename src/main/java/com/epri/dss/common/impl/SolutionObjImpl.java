@@ -965,7 +965,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 			doControlActions();
 
 			/* This variable lets control devices know the bus list has changed */
-			DSSGlobals.getInstance().getActiveCircuit().setControl_BusNameRedefined(false);  // reset until next change
+			DSSGlobals.getInstance().getActiveCircuit().setControlBusNameRedefined(false);  // reset until next change
 		}
 	}
 
