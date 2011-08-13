@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class VSourceImpl extends PCClassImpl implements VSource {
 
-	private static VSourceObj ActiveVsourceObj;
+	private static VSourceObj activeVSourceObj;
 
 	public VSourceImpl() {
 		super();
@@ -21,9 +21,9 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -100,15 +100,15 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
+	public int newObject(String objName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new VSourceObjImpl(this, ObjName));
+		Globals.getActiveCircuit().setActiveCktElement(new VSourceObjImpl(this, objName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
 
-	private void vSourceSetBus1(String S) {
-		String S2;
+	private void vSourceSetBus1(String s) {
+		String s2;
 		int i, dotpos;
 
 		// special handling for bus 1
@@ -116,56 +116,56 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 		VSourceObj avs = getActiveVsourceObj();
 
-		avs.setBus(1, S);  // TODO Check zero based indexing
+		avs.setBus(1, s);  // TODO Check zero based indexing
 
 		// default bus2 to zero node of bus1. (Grounded-Y connection)
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);
+			s2 = s.substring(0, dotpos);
 		} else {
-			S2 = S.substring(0);  // copy up to dot
+			s2 = s.substring(0);  // copy up to dot
 		}
 		for (i = 0; i < avs.getNPhases(); i++)
-			S2 = S2 + ".0";  // append series of ".0"'s
+			s2 = s2 + ".0";  // append series of ".0"'s
 
-		avs.setBus(2, S2);  // default setting for bus2
+		avs.setBus(2, s2);  // default setting for bus2
 	}
 
 	@Override
 	public int edit() {
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveVsourceObj((VSourceObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
 
-		int Result = 0;
+		int result = 0;
 
 		VSourceObj avs = getActiveVsourceObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param     = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param     = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				avs.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				avs.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"VSource."+avs.getName()+"\"", 320);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
 				break;
 			case 0:
-				vSourceSetBus1(Param);  // special handling of bus 1
+				vSourceSetBus1(param);  // special handling of bus 1
 				break;
 			case 1:
 				avs.setKVBase(parser.makeDouble());  // baseKV
@@ -214,7 +214,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setX0(parser.makeDouble());
 				break;
 			case 16:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					avs.setScanType(1);
 					break;
@@ -225,12 +225,12 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+Param, 321);
+					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
 			case 17:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					avs.setSequenceType(1);
 					break;
@@ -241,20 +241,20 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+Param, 321);
+					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
 					break;
 				}
 				break;
 			case 18:
-				avs.setBus(2, Param);  // TODO Check zero based indexing
+				avs.setBus(2, param);  // TODO Check zero based indexing
 				break;
 			default:
-				classEdit(ActiveVsourceObj, ParamPointer - VSource.NumPropsThisClass);
+				classEdit(activeVSourceObj, paramPointer - VSource.NumPropsThisClass);
 				break;
 			}
 
 			// set the Z spec type switch depending on which was specified
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 6:
 				avs.setZSpecType(1);
 				break;
@@ -281,28 +281,28 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		avs.recalcElementData();
 		avs.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherSource) {
+	protected int makeLike(String otherSource) {
 
-		int Result = 0;
+		int result = 0;
 
 		/* See if we can find this line name in the present collection */
-		VSourceObj OtherVSource = (VSourceObj) find(OtherSource);
-		if (OtherVSource != null) {
+		VSourceObj otherVSource = (VSourceObj) find(otherSource);
+		if (otherVSource != null) {
 			VSourceObj avs = getActiveVsourceObj();
 
-			if (avs.getNPhases() != OtherVSource.getNPhases()) {
-				avs.setNPhases(OtherVSource.getNPhases());
+			if (avs.getNPhases() != otherVSource.getNPhases()) {
+				avs.setNPhases(otherVSource.getNPhases());
 				avs.setNConds(avs.getNPhases());  // forces reallocation of terminal stuff
 
 				avs.setYorder(avs.getNConds() * avs.getNTerms());
@@ -315,45 +315,45 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				avs.setZinv( new CMatrixImpl(avs.getNPhases()) );
 			}
 
-			avs.getZ().copyFrom(OtherVSource.getZ());
+			avs.getZ().copyFrom(otherVSource.getZ());
 			// avs.getZinv().copyFrom(OtherLine.getZinv());
-			avs.setVMag(OtherVSource.getVMag());
-			avs.setKVBase(OtherVSource.getKVBase());
-			avs.setPerUnit(OtherVSource.getPerUnit());
-			avs.setAngle(OtherVSource.getAngle());
-			avs.setSrcFrequency(OtherVSource.getSrcFrequency());
-			avs.setMVAsc3(OtherVSource.getMVAsc3());
-			avs.setMVAsc1(OtherVSource.getMVAsc1());
-			avs.setX1R1(OtherVSource.getX1R1());
-			avs.setX0R0(OtherVSource.getX0R0());
-			avs.setScanType(OtherVSource.getScanType());
-			avs.setSequenceType(OtherVSource.getSequenceType());
+			avs.setVMag(otherVSource.getVMag());
+			avs.setKVBase(otherVSource.getKVBase());
+			avs.setPerUnit(otherVSource.getPerUnit());
+			avs.setAngle(otherVSource.getAngle());
+			avs.setSrcFrequency(otherVSource.getSrcFrequency());
+			avs.setMVAsc3(otherVSource.getMVAsc3());
+			avs.setMVAsc1(otherVSource.getMVAsc1());
+			avs.setX1R1(otherVSource.getX1R1());
+			avs.setX0R0(otherVSource.getX0R0());
+			avs.setScanType(otherVSource.getScanType());
+			avs.setSequenceType(otherVSource.getSequenceType());
 
-			classMakeLike(OtherVSource);
+			classMakeLike(otherVSource);
 
 			for (int i = 0; i < avs.getParentClass().getNumProperties(); i++)
-				avs.setPropertyValue(i, OtherVSource.getPropertyValue(i));
+				avs.setPropertyValue(i, otherVSource.getPropertyValue(i));
 
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in VSource makeLike: \"" + OtherSource + "\" not found.", 322);
+			DSSGlobals.getInstance().doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;
 	}
 
 	public static VSourceObj getActiveVsourceObj() {
-		return ActiveVsourceObj;
+		return activeVSourceObj;
 	}
 
-	public static void setActiveVsourceObj(VSourceObj activeVsourceObj) {
-		ActiveVsourceObj = activeVsourceObj;
+	public static void setActiveVsourceObj(VSourceObj VSourceObj) {
+		activeVSourceObj = VSourceObj;
 	}
 
 }

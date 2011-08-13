@@ -16,11 +16,11 @@ import com.epri.dss.shared.impl.Complex;
 
 public class StorageImpl extends PCClassImpl implements Storage {
 
-	public static StorageObj ActiveStorageObj;
+	public static StorageObj activeStorageObj;
 
 	public static Complex[] cBuffer = new Complex[24];
 
-	private String[] RegisterNames = new String[NumStorageRegisters];
+	private String[] registerNames = new String[NumStorageRegisters];
 
 	public StorageImpl() {
 		super();
@@ -30,18 +30,18 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		this.activeElement = -1;
 
 		// set register names
-		this.RegisterNames[0] = "kWh";
-		this.RegisterNames[1] = "kvarh";
-		this.RegisterNames[2] = "Max kW";
-		this.RegisterNames[3] = "Max kVA";
-		this.RegisterNames[4] = "Hours";
-		this.RegisterNames[5] = "$";
+		this.registerNames[0] = "kWh";
+		this.registerNames[1] = "kvarh";
+		this.registerNames[2] = "Max kW";
+		this.registerNames[3] = "Max kVA";
+		this.registerNames[4] = "Hours";
+		this.registerNames[5] = "$";
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -201,11 +201,11 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new StorageObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new StorageObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void setNcondsForConnection() {
@@ -245,10 +245,10 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	 *   delta or LL
 	 *   Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
+	private void interpretConnection(String s) {
 		StorageObj as = getActiveStorageObj();
-		String TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) {
+		String testS = s.toLowerCase();
+		switch (testS.charAt(0)) {
 		case 'y':
 			as.setConnection(0);  /* Wye */
 			break;
@@ -259,7 +259,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
-			switch (TestS.charAt(1)) {
+			switch (testS.charAt(1)) {
 			case 'n':
 				as.setConnection(0);
 				break;
@@ -293,8 +293,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		as.setYPrimInvalid(true);
 	}
 
-	private int interpretDispMode(String S) {
-		switch (S.toLowerCase().charAt(0)) {
+	private int interpretDispMode(String s) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'e':
 			return EXTERNAL_MODE;
 		case 'f':
@@ -312,45 +312,45 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	public int edit() {
 		int i, iCase;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveStorageObj((StorageObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
 
-		int Result = 0;
+		int result = 0;
 
 		StorageObj as = getActiveStorageObj();
 
-		int ParamPointer = 0;
-		String ParamName    = parser.getNextParam();  // parse next property off the command line
-		String Param        = parser.makeString();    // put the string value of the property value in local memory for faster access
-		while (Param.length() > 0) {
+		int paramPointer = 0;
+		String paramName    = parser.getNextParam();  // parse next property off the command line
+		String param        = parser.makeString();    // put the string value of the property value in local memory for faster access
+		while (param.length() > 0) {
 
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;  // if it is not a named property, assume the next property
+			if (paramName.length() == 0) {
+				paramPointer += 1;  // if it is not a named property, assume the next property
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);  // look up the name in the list for this class
+				paramPointer = commandList.getCommand(paramName);  // look up the name in the list for this class
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties)) {
-				as.setPropertyValue(propertyIdxMap[ParamPointer], Param);  // update the string value of the property
+			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
+				as.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for Storage \""+as.getName()+"\"", 560);
+				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
 			}
 
-			if (ParamPointer > 0) {
-				iCase = propertyIdxMap[ParamPointer];
+			if (paramPointer > 0) {
+				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
+					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
 					as.setNPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
-					as.setBus(1, Param);  // TODO Check zero based indexing
+					as.setBus(1, param);  // TODO Check zero based indexing
 					break;
 				case KV:
 					as.setPresentKV(parser.makeDouble());
@@ -365,22 +365,22 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setVoltageModel(parser.makeInteger());
 					break;
 				case YEARLY:
-					as.setYearlyShape(Param);
+					as.setYearlyShape(param);
 					break;
 				case DAILY:
-					as.setDailyShape(Param);
+					as.setDailyShape(param);
 					break;
 				case DUTY:
-					as.setDutyShape(Param);
+					as.setDutyShape(param);
 					break;
 				case DISP_MODE:
-					as.setDispatchMode(interpretDispMode(Param));
+					as.setDispatchMode(interpretDispMode(param));
 					break;
 				case IDLE_KVAR:
 					as.setPctIdleKVAr(parser.makeDouble());
 					break;
 				case CONNECTION:
-					interpretConnection(Param);
+					interpretConnection(param);
 					break;
 				case KVAR:
 					as.setPresentKVAr(parser.makeDouble());
@@ -419,7 +419,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.setVMaxPU(parser.makeDouble());
 					break;
 				case STATE:
-					as.setState(as.interpretState(Param));
+					as.setState(as.interpretState(param));
 					break;
 				case KVA:
 					as.setKVA_Rating(parser.makeDouble());
@@ -443,7 +443,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					as.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
 				case DEBUG_TRACE:
-					as.setDebugTrace(Utilities.interpretYesNo(Param));
+					as.setDebugTrace(Utilities.interpretYesNo(param));
 					break;
 				case PCT_KW_IN:
 					as.setPctKWin(parser.makeDouble());
@@ -456,7 +456,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveStorageObj(), ParamPointer - NumPropsThisClass);
+					classEdit(getActiveStorageObj(), paramPointer - NumPropsThisClass);
 					break;
 				}
 
@@ -473,13 +473,13 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 					/* Set load shape objects; returns nil if not valid */
 				case YEARLY:
-					as.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getYearlyShape()));
+					as.setYearlyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getYearlyShape()));
 					break;
 				case DAILY:
-					as.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDailyShape()));
+					as.setDailyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getDailyShape()));
 					break;
 				case DUTY:
-					as.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDutyShape()));
+					as.setDutyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getDutyShape()));
 					break;
 				case KW_RATED:
 					as.setKVA_Rating(as.getKWRating());
@@ -497,7 +497,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					if (as.isDebugTrace()) {
 						try {
 							// init trace file
-							File TraceFile = new File(Globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
+							File TraceFile = new File(globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -525,109 +525,109 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				}
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		as.recalcElementData();
 		as.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Copy over essential properties from other object.
 	 */
 	@Override
-	protected int makeLike(String OtherStorageObjName) {
-		int Result = 0;
+	protected int makeLike(String otherStorageObjName) {
+		int result = 0;
 		/* See if we can find this line name in the present collection */
-		StorageObj OtherStorageObj = (StorageObj) find(OtherStorageObjName);
-		if (OtherStorageObj != null) {
+		StorageObj otherStorageObj = (StorageObj) find(otherStorageObjName);
+		if (otherStorageObj != null) {
 			StorageObj as = getActiveStorageObj();
 
-			if (as.getNPhases() != OtherStorageObj.getNPhases()) {
-				as.setNPhases(OtherStorageObj.getNPhases());
+			if (as.getNPhases() != otherStorageObj.getNPhases()) {
+				as.setNPhases(otherStorageObj.getNPhases());
 				as.setNConds(as.getNPhases());  // forces reallocation of terminal stuff
 				as.setYorder(as.getNConds() * as.getNTerms());
 				as.setYPrimInvalid(true);
 			}
 
-			as.setKVStorageBase(OtherStorageObj.getKVStorageBase());
-			as.setVBase(OtherStorageObj.getVBase());
-			as.setVMinPU(OtherStorageObj.getVMinPU());
-			as.setVMaxPU(OtherStorageObj.getVMaxPU());
-			as.setVBase95(OtherStorageObj.getVBase95());
-			as.setVBase105(OtherStorageObj.getVBase105());
-			as.setKWOut(OtherStorageObj.getKWOut());
-			as.setKVArOut(OtherStorageObj.getKVArOut());
-			as.setPNominalPerPhase(OtherStorageObj.getPNominalPerPhase());
-			as.setPowerFactor(OtherStorageObj.getPowerFactor());
-			as.setQNominalPerPhase(OtherStorageObj.getQNominalPerPhase());
-			as.setConnection(OtherStorageObj.getConnection());
-			as.setYearlyShape(OtherStorageObj.getYearlyShape());
-			as.setYearlyShapeObj(OtherStorageObj.getYearlyShapeObj());
-			as.setDailyShape(OtherStorageObj.getDailyShape());
-			as.setDailyShapeObj(OtherStorageObj.getDailyShapeObj());
-			as.setDutyShape(OtherStorageObj.getDutyShape());
-			as.setDutyShapeObj(OtherStorageObj.getDutyShapeObj());
-			as.setDispatchMode(OtherStorageObj.getDispatchMode());
-			as.setStorageClass(OtherStorageObj.getStorageClass());
-			as.setVoltageModel(OtherStorageObj.getVoltageModel());
+			as.setKVStorageBase(otherStorageObj.getKVStorageBase());
+			as.setVBase(otherStorageObj.getVBase());
+			as.setVMinPU(otherStorageObj.getVMinPU());
+			as.setVMaxPU(otherStorageObj.getVMaxPU());
+			as.setVBase95(otherStorageObj.getVBase95());
+			as.setVBase105(otherStorageObj.getVBase105());
+			as.setKWOut(otherStorageObj.getKWOut());
+			as.setKVArOut(otherStorageObj.getKVArOut());
+			as.setPNominalPerPhase(otherStorageObj.getPNominalPerPhase());
+			as.setPowerFactor(otherStorageObj.getPowerFactor());
+			as.setQNominalPerPhase(otherStorageObj.getQNominalPerPhase());
+			as.setConnection(otherStorageObj.getConnection());
+			as.setYearlyShape(otherStorageObj.getYearlyShape());
+			as.setYearlyShapeObj(otherStorageObj.getYearlyShapeObj());
+			as.setDailyShape(otherStorageObj.getDailyShape());
+			as.setDailyShapeObj(otherStorageObj.getDailyShapeObj());
+			as.setDutyShape(otherStorageObj.getDutyShape());
+			as.setDutyShapeObj(otherStorageObj.getDutyShapeObj());
+			as.setDispatchMode(otherStorageObj.getDispatchMode());
+			as.setStorageClass(otherStorageObj.getStorageClass());
+			as.setVoltageModel(otherStorageObj.getVoltageModel());
 
-			as.setState(OtherStorageObj.getState());
-			as.setStateChanged(OtherStorageObj.isStateChanged());
-			as.setKVANotSet(OtherStorageObj.isKVANotSet());
+			as.setState(otherStorageObj.getState());
+			as.setStateChanged(otherStorageObj.isStateChanged());
+			as.setKVANotSet(otherStorageObj.isKVANotSet());
 
-			as.setKVA_Rating(OtherStorageObj.getKVArating());
+			as.setKVA_Rating(otherStorageObj.getKVArating());
 
-			as.setKWRating(OtherStorageObj.getKWRating());
-			as.setKWhRating(OtherStorageObj.getKWhRating());
-			as.setKWhStored(OtherStorageObj.getKWhStored());
-			as.setKWhReserve(OtherStorageObj.getKWhReserve());
-			as.setPctReserve(OtherStorageObj.getPctReserve());
-			as.setDischargeTrigger(OtherStorageObj.getDischargeTrigger());
-			as.setChargeTrigger(OtherStorageObj.getChargeTrigger());
-			as.setPctChargeEff(OtherStorageObj.getPctChargeEff());
-			as.setPctDischargeEff(OtherStorageObj.getPctDischargeEff());
-			as.setPctKWOut(OtherStorageObj.getPctKWOut());
-			as.setPctKWin(OtherStorageObj.getPctKWin());
-			as.setPctIdleKW(OtherStorageObj.getPctIdleKW());
-			as.setPctIdleKVAr(OtherStorageObj.getPctIdleKVAr());
-			as.setChargeTime(OtherStorageObj.getChargeTime());
+			as.setKWRating(otherStorageObj.getKWRating());
+			as.setKWhRating(otherStorageObj.getKWhRating());
+			as.setKWhStored(otherStorageObj.getKWhStored());
+			as.setKWhReserve(otherStorageObj.getKWhReserve());
+			as.setPctReserve(otherStorageObj.getPctReserve());
+			as.setDischargeTrigger(otherStorageObj.getDischargeTrigger());
+			as.setChargeTrigger(otherStorageObj.getChargeTrigger());
+			as.setPctChargeEff(otherStorageObj.getPctChargeEff());
+			as.setPctDischargeEff(otherStorageObj.getPctDischargeEff());
+			as.setPctKWOut(otherStorageObj.getPctKWOut());
+			as.setPctKWin(otherStorageObj.getPctKWin());
+			as.setPctIdleKW(otherStorageObj.getPctIdleKW());
+			as.setPctIdleKVAr(otherStorageObj.getPctIdleKVAr());
+			as.setChargeTime(otherStorageObj.getChargeTime());
 
-			as.setPctR(OtherStorageObj.getPctR());
-			as.setPctX(OtherStorageObj.getPctX());
+			as.setPctR(otherStorageObj.getPctR());
+			as.setPctX(otherStorageObj.getPctX());
 
-			as.setRandomMult(OtherStorageObj.getRandomMult());
+			as.setRandomMult(otherStorageObj.getRandomMult());
 
-			as.getUserModel().setName(OtherStorageObj.getUserModel().getName());  // connect to user written models
+			as.getUserModel().setName(otherStorageObj.getUserModel().getName());  // connect to user written models
 
-			classMakeLike(OtherStorageObj);
+			classMakeLike(otherStorageObj);
 
 			for (int i = 0; i < as.getParentClass().getNumProperties(); i++)
-				as.setPropertyValue(i, OtherStorageObj.getPropertyValue(i));
+				as.setPropertyValue(i, otherStorageObj.getPropertyValue(i));
 
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + OtherStorageObjName + "\" not found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + otherStorageObjName + "\" not found.", 562);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 
 		StorageObj pElem;
 
-		if (Handle == 0) {  // init all
+		if (handle == 0) {  // init all
 			for (int i = 0; i < elementList.size(); i++) {
 				pElem = (StorageObj) elementList.get(i);
 				pElem.randomize(0);
 			}
 		} else {
-			setActiveElement(Handle);
+			setActiveElement(handle);
 			pElem = (StorageObj) getActiveObj();
 			pElem.randomize(0);
 		}
@@ -662,19 +662,19 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	}
 
 	public String[] getRegisterNames() {
-		return RegisterNames;
+		return registerNames;
 	}
 
-	public void setRegisterNames(String[] registerNames) {
-		RegisterNames = registerNames;
+	public void setRegisterNames(String[] names) {
+		registerNames = names;
 	}
 
 	public static StorageObj getActiveStorageObj() {
-		return ActiveStorageObj;
+		return activeStorageObj;
 	}
 
-	public static void setActiveStorageObj(StorageObj activeStorageObj) {
-		ActiveStorageObj = activeStorageObj;
+	public static void setActiveStorageObj(StorageObj storageObj) {
+		activeStorageObj = storageObj;
 	}
 
 }

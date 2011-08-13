@@ -8,21 +8,21 @@ import com.epri.dss.shared.impl.GeneratorVars;
 
 public class GenUserModelImpl implements GenUserModel {
 
-	private int Handle;  // handle to DLL containing user model
-	private int ID;      // id of this instance of the user model
-	private String Name; // name of the DLL file containing user model
-	private boolean FuncError;
+	private int handle;  // handle to DLL containing user model
+	private int id;      // id of this instance of the user model
+	private String name; // name of the DLL file containing user model
+	private boolean funcError;
 
-	protected GeneratorVars ActiveGeneratorVars;
+	protected GeneratorVars activeGeneratorVars;
 
-	public GenUserModelImpl(GeneratorVars ActiveGeneratorVars) {
+	public GenUserModelImpl(GeneratorVars activeGeneratorVars) {
 
 	}
 
 	/**
 	 * Make a new instance.
 	 */
-	private int makeNew(GeneratorVars GenVars, DynamicsRec DynaData, DSSCallBacks CallBacks) {
+	private int makeNew(GeneratorVars genVars, DynamicsRec dynaData, DSSCallBacks callBacks) {
 		return 0;
 	}
 
@@ -41,17 +41,17 @@ public class GenUserModelImpl implements GenUserModel {
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
-	public void setName(String Value) {
+	public void setName(String value) {
 	}
 
-	private Object checkFuncError(Object Addr, String FuncName) {
+	private Object checkFuncError(Object addr, String funcName) {
 		return null;
 	}
 
-	public void edit(String Value) {
+	public void edit(String value) {
 
 	}
 
@@ -62,7 +62,7 @@ public class GenUserModelImpl implements GenUserModel {
 	/**
 	 * Send string to user model to handle
 	 */
-	public void edit(int s, int Maxlen) {
+	public void edit(int s, int maxlen) {
 	}
 
 	/**
@@ -94,11 +94,11 @@ public class GenUserModelImpl implements GenUserModel {
 	}
 
 	public GeneratorVars getActiveGeneratorVars() {
-		return ActiveGeneratorVars;
+		return activeGeneratorVars;
 	}
 
-	public void setActiveGeneratorVars(GeneratorVars activeGeneratorVars) {
-		ActiveGeneratorVars = activeGeneratorVars;
+	public void setActiveGeneratorVars(GeneratorVars generatorVars) {
+		activeGeneratorVars = generatorVars;
 	}
 
 	public void save() {
@@ -115,15 +115,15 @@ public class GenUserModelImpl implements GenUserModel {
 		return 0;
 	}
 
-	public void getAllVars(double[] Vars) {
+	public void getAllVars(double[] vars) {
 
 	}
 
-	public void getAllVars(double Var) {
+	public void getAllVars(double var) {
 
 	}
 
-	public double getVariable(int I) {
+	public double getVariable(int i) {
 		return 0.0;
 	}
 
@@ -131,7 +131,7 @@ public class GenUserModelImpl implements GenUserModel {
 
 	}
 
-	public void getVarName(int VarNum, int VarName, int maxlen) {
+	public void getVarName(int varNum, int varName, int maxlen) {
 
 	}
 

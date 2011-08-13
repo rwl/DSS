@@ -7,10 +7,10 @@ import com.epri.dss.shared.impl.GeneratorVars;
 
 public class StoreUserModelImpl implements StoreUserModel {
 
-	private int Handle;  // handle to DLL containing user model
-	private int ID;      // id of this instance of the user model
-	private String Name; // name of the DLL file containing user model
-	private boolean FuncError;
+	private int handle;  // handle to DLL containing user model
+	private int id;      // id of this instance of the user model
+	private String name; // name of the DLL file containing user model
+	private boolean funcError;
 
 	public StoreUserModelImpl() {
 		// TODO Auto-generated constructor stub
@@ -19,7 +19,7 @@ public class StoreUserModelImpl implements StoreUserModel {
 	/**
 	 * Make a new instance.
 	 */
-	private int makeNew(GeneratorVars GenVars, DSSCallBacks CallBacks) {
+	private int makeNew(GeneratorVars genVars, DSSCallBacks callBacks) {
 		return 0;
 	}
 
@@ -38,17 +38,17 @@ public class StoreUserModelImpl implements StoreUserModel {
 	}
 
 	public String getName() {
-		return Name;
+		return name;
 	}
 
 	public void setName(String Value) {
 	}
 
-	private Object checkFuncError(Object Addr, String FuncName) {
+	private Object checkFuncError(Object addr, String funcName) {
 		return null;
 	}
 
-	public void edit(String Value) {
+	public void edit(String value) {
 
 	}
 
@@ -59,7 +59,7 @@ public class StoreUserModelImpl implements StoreUserModel {
 	/**
 	 * Send string to user model to handle.
 	 */
-	public void edit(int s, int Maxlen) {
+	public void edit(int s, int maxlen) {
 	}
 
 	/**
@@ -104,15 +104,15 @@ public class StoreUserModelImpl implements StoreUserModel {
 		return 0;
 	}
 
-	public void getAllVars(double[] Vars) {
+	public void getAllVars(double[] vars) {
 
 	}
 
-	public void getAllVars(double Var) {
+	public void getAllVars(double var) {
 
 	}
 
-	public double getVariable(int I) {
+	public double getVariable(int i) {
 		return 0.0;
 	}
 
@@ -120,7 +120,7 @@ public class StoreUserModelImpl implements StoreUserModel {
 
 	}
 
-	public void getVarName(int VarNum, int VarName, int maxlen) {
+	public void getVarName(int varNum, int varName, int maxlen) {
 
 	}
 

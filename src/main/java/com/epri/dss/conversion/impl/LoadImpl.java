@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class LoadImpl extends PCClassImpl implements Load {
 
-	private static LoadObj ActiveLoadObj;
+	private static LoadObj activeLoadObj;
 
 	public LoadImpl() {
 		super();
@@ -22,9 +22,9 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -190,11 +190,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new LoadObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new LoadObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void setNcondsForConnection() {
@@ -225,11 +225,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 	 * 		delta or LL           (Case insensitive)
 	 * 		Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
+	private void interpretConnection(String s) {
 		LoadObj al = getActiveLoadObj();
 
-		String TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) {
+		String testS = s.toLowerCase();
+		switch (testS.charAt(0)) {
 		case 'y':
 			al.setConnection(0);  /* Wye */
 			break;
@@ -240,7 +240,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
-			switch (TestS.charAt(1)) {
+			switch (testS.charAt(1)) {
 			case 'n':
 				al.setConnection(0);
 				break;
@@ -279,39 +279,39 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveLoadObj((LoadObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveLoadObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveLoadObj());
 
-		int Result = 0;
+		int result = 0;
 
 		LoadObj al = getActiveLoadObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= numProperties))
-				al.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))
+				al.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
 				al.setNPhases(parser.makeInteger()); // num phases
 				break;
 			case 1:
-				al.setBus(1, Param);  // TODO: Check zero based indexing
+				al.setBus(1, param);  // TODO: Check zero based indexing
 				break;
 			case 2:
 				al.setKVLoadBase(parser.makeDouble());
@@ -326,19 +326,19 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setLoadModel(parser.makeInteger());
 				break;
 			case 6:
-				al.setYearlyShape(Param);
+				al.setYearlyShape(param);
 				break;
 			case 7:
-				al.setDailyShape(Param);
+				al.setDailyShape(param);
 				break;
 			case 8:
-				al.setDutyShape(Param);
+				al.setDutyShape(param);
 				break;
 			case 9:
-				al.setGrowthShape(Param);
+				al.setGrowthShape(param);
 				break;
 			case 10:
-				interpretConnection(Param);
+				interpretConnection(param);
 				break;
 			case 11:
 				al.setKVArBase(parser.makeDouble());
@@ -350,7 +350,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setXNeut(parser.makeDouble());
 				break;
 			case 14:
-				switch (Param.toLowerCase().charAt(0)) {
+				switch (param.toLowerCase().charAt(0)) {
 				case 'f':
 					al.setFixed(true);
 					al.setExemptFromLDCurve(false);
@@ -410,7 +410,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setCFactor(parser.makeDouble());
 				break;
 			case 30:
-				al.setCVRShape(Param);
+				al.setCVRShape(param);
 				break;
 			case 31:
 				al.setNumCustomers(parser.makeInteger());
@@ -421,13 +421,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 			default:
 				// Inherited edits
-				classEdit(getActiveLoadObj(), ParamPointer - Load.NumPropsThisClass);
+				classEdit(getActiveLoadObj(), paramPointer - Load.NumPropsThisClass);
 				break;
 			}
 
 			// side effects
 			// keep kvar nominal up to date with kW and PF
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				setNcondsForConnection();  // force reallocation of terminal info
 				al.updateVoltageBases();
@@ -444,13 +444,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 			case 6:
 				/* Set shape objects; returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-				al.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getYearlyShape()));
+				al.setYearlyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getYearlyShape()));
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
 				break;
 			case 7:
-				al.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDailyShape()));
+				al.setDailyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getDailyShape()));
 				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
@@ -459,13 +459,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 					al.setYearlyShapeObj(al.getDailyShapeObj());
 				break;
 			case 8:
-				al.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDutyShape()));
+				al.setDutyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getDutyShape()));
 				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
 				break;
 			case 9:
-				al.setGrowthShapeObj((GrowthShapeObj) Globals.getGrowthShapeClass().find(al.getGrowthShape()));
+				al.setGrowthShapeObj((GrowthShapeObj) globals.getGrowthShapeClass().find(al.getGrowthShape()));
 				break;
 			case 11:
 				al.setLoadSpecType(1);  // kW, kvar
@@ -476,103 +476,103 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 		/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getCVRShape()));
+				al.setCVRShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getCVRShape()));
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		al.recalcElementData();
 		al.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherLoadName) {
-		int Result = 0;
+	protected int makeLike(String otherLoadName) {
+		int result = 0;
 
 		/* See if we can find this line name in the present collection */
-		LoadObj OtherLoad = (LoadObj) find(OtherLoadName);
-		if (OtherLoad != null) {
+		LoadObj otherLoad = (LoadObj) find(otherLoadName);
+		if (otherLoad != null) {
 			LoadObj al = getActiveLoadObj();
 
-			if (al.getNPhases() != OtherLoad.getNPhases()) {
-				al.setNPhases(OtherLoad.getNPhases());
+			if (al.getNPhases() != otherLoad.getNPhases()) {
+				al.setNPhases(otherLoad.getNPhases());
 				al.setNConds(al.getNPhases());  // forces reallocation of terminal stuff
 				al.setYorder(al.getNConds() * al.getNTerms());
 				al.setYPrimInvalid(true);
 			}
 
-			al.setKVLoadBase(OtherLoad.getKVLoadBase());
-			al.setVBase(OtherLoad.getVBase());
-			al.setVMinPU(OtherLoad.getVMinPU());
-			al.setVMaxPU(OtherLoad.getVMaxPU());
-			al.setVBase95(OtherLoad.getVBase95());
-			al.setVBase105(OtherLoad.getVBase105());
-			al.setKWBase(OtherLoad.getKWBase());
-			al.setKVABase(OtherLoad.getKVABase());
-			al.setKVArBase(OtherLoad.getKVArBase());
-			al.setLoadSpecType(OtherLoad.getLoadSpecType());
-			al.setWNominal(OtherLoad.getWNominal());
-			al.setPFNominal(OtherLoad.getPFNominal());
-			al.setVArNominal(OtherLoad.getVArNominal());
-			al.setConnection(OtherLoad.getConnection());
-			al.setRNeut(OtherLoad.getRNeut());
-			al.setXNeut(OtherLoad.getXNeut());
-			al.setYearlyShape(OtherLoad.getYearlyShape());
-			al.setYearlyShapeObj(OtherLoad.getYearlyShapeObj());
-			al.setCVRShape(OtherLoad.getCVRShape());
-			al.setCVRShapeObj(OtherLoad.getCVRShapeObj());
-			al.setDailyShape(OtherLoad.getDailyShape());
-			al.setDailyShapeObj(OtherLoad.getDailyShapeObj());
-			al.setDutyShape(OtherLoad.getDutyShape());
-			al.setDutyShapeObj(OtherLoad.getDutyShapeObj());
-			al.setGrowthShape(OtherLoad.getGrowthShape());
-			al.setGrowthShapeObj(OtherLoad.getGrowthShapeObj());
+			al.setKVLoadBase(otherLoad.getKVLoadBase());
+			al.setVBase(otherLoad.getVBase());
+			al.setVMinPU(otherLoad.getVMinPU());
+			al.setVMaxPU(otherLoad.getVMaxPU());
+			al.setVBase95(otherLoad.getVBase95());
+			al.setVBase105(otherLoad.getVBase105());
+			al.setKWBase(otherLoad.getKWBase());
+			al.setKVABase(otherLoad.getKVABase());
+			al.setKVArBase(otherLoad.getKVArBase());
+			al.setLoadSpecType(otherLoad.getLoadSpecType());
+			al.setWNominal(otherLoad.getWNominal());
+			al.setPFNominal(otherLoad.getPFNominal());
+			al.setVArNominal(otherLoad.getVArNominal());
+			al.setConnection(otherLoad.getConnection());
+			al.setRNeut(otherLoad.getRNeut());
+			al.setXNeut(otherLoad.getXNeut());
+			al.setYearlyShape(otherLoad.getYearlyShape());
+			al.setYearlyShapeObj(otherLoad.getYearlyShapeObj());
+			al.setCVRShape(otherLoad.getCVRShape());
+			al.setCVRShapeObj(otherLoad.getCVRShapeObj());
+			al.setDailyShape(otherLoad.getDailyShape());
+			al.setDailyShapeObj(otherLoad.getDailyShapeObj());
+			al.setDutyShape(otherLoad.getDutyShape());
+			al.setDutyShapeObj(otherLoad.getDutyShapeObj());
+			al.setGrowthShape(otherLoad.getGrowthShape());
+			al.setGrowthShapeObj(otherLoad.getGrowthShapeObj());
 			//al.setSpectrum(OtherLoad.getSpectrum();  in base class now
 			//al.setSpectrumObj(OtherLoad.getSpectrumObj());
-			al.setLoadClass(OtherLoad.getLoadClass());
-			al.setNumCustomers(OtherLoad.getNumCustomers());
-			al.setLoadModel(OtherLoad.getLoadModel());
-			al.setFixed(OtherLoad.isFixed());
-			al.setExemptFromLDCurve(OtherLoad.isExemptFromLDCurve());
-			al.setKVAAllocationFactor(OtherLoad.getKVAAllocationFactor());
-			al.setConnectedKVA(OtherLoad.getConnectedKVA());
-			al.setCVRWattFactor(OtherLoad.getCVRWattFactor());
-			al.setCVRVArFactor(OtherLoad.getCVRVArFactor());
-			al.setShapeIsActual(OtherLoad.shapeIsActual());
+			al.setLoadClass(otherLoad.getLoadClass());
+			al.setNumCustomers(otherLoad.getNumCustomers());
+			al.setLoadModel(otherLoad.getLoadModel());
+			al.setFixed(otherLoad.isFixed());
+			al.setExemptFromLDCurve(otherLoad.isExemptFromLDCurve());
+			al.setKVAAllocationFactor(otherLoad.getKVAAllocationFactor());
+			al.setConnectedKVA(otherLoad.getConnectedKVA());
+			al.setCVRWattFactor(otherLoad.getCVRWattFactor());
+			al.setCVRVArFactor(otherLoad.getCVRVArFactor());
+			al.setShapeIsActual(otherLoad.shapeIsActual());
 
-			al.setZIPVSize(OtherLoad.getNZIPV());
+			al.setZIPVSize(otherLoad.getNZIPV());
 			for (int i = 0; i < al.getNZIPV(); i++)
-				al.getZIPV()[i] = OtherLoad.getZIPV()[i];
+				al.getZIPV()[i] = otherLoad.getZIPV()[i];
 
-			classMakeLike(OtherLoad);  // take care of inherited class properties
+			classMakeLike(otherLoad);  // take care of inherited class properties
 
 
 			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
-				al.setPropertyValue(i, OtherLoad.getPropertyValue(i));
+				al.setPropertyValue(i, otherLoad.getPropertyValue(i));
 
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherLoadName + "\" not found.", 581);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		LoadObj pLoad;
-		if (Handle == 0) {
+		if (handle == 0) {
 			for (int i = 0; i < elementList.size(); i++) {
 				pLoad = (LoadObj) elementList.get(i);
 				pLoad.randomize(0);
 			}
 		} else {
-			setActiveElement(Handle);
+			setActiveElement(handle);
 			pLoad = (LoadObj) getActiveObj();
 			pLoad.randomize(0);
 		}
@@ -582,11 +582,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 	}
 
 	public static LoadObj getActiveLoadObj() {
-		return ActiveLoadObj;
+		return activeLoadObj;
 	}
 
-	public static void setActiveLoadObj(LoadObj activeLoadObj) {
-		ActiveLoadObj = activeLoadObj;
+	public static void setActiveLoadObj(LoadObj loadObj) {
+		activeLoadObj = loadObj;
 	}
 
 }

@@ -61,7 +61,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		this.equivFrequency = baseFrequency;
 		this.angle = 0.0;
 
-		this.Spectrum = "defaultvsource";
+		this.spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 

@@ -221,7 +221,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		this.genSwitchOpen = false;
 		this.shapeIsActual = false;
 
-		this.Spectrum = "defaultgen";  // override base class
+		this.spectrum = "defaultgen";  // override base class
 
 		initPropertyValues(0);
 

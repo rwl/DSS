@@ -16,25 +16,25 @@ import com.epri.dss.general.SpectrumObj;
 
 public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
-	private boolean IterminalUpdated;
+	private boolean ITerminalUpdated;
 
-	protected String Spectrum;
-	protected SpectrumObj SpectrumObj;
+	protected String spectrum;
+	protected SpectrumObj spectrumObj;
 	/** Upline energy meter */
-	private MeterElement MeterObj;
+	private MeterElement meterObj;
 	/** Upline sensor for this element */
-	private MeterElement SensorObj;
+	private MeterElement sensorObj;
 
-	private Complex[] InjCurrent;
+	private Complex[] injCurrent;
 
 	public PCElementImpl(DSSClass ParClass) {
 		super(ParClass);
-		this.Spectrum = "default";
-		this.SpectrumObj = null;  // have to allocate later because not guaranteed there will be one now
-		this.SensorObj   = null;
-		this.MeterObj    = null;
-		this.InjCurrent  = null;
-		this.IterminalUpdated = false;
+		this.spectrum = "default";
+		this.spectrumObj = null;  // have to allocate later because not guaranteed there will be one now
+		this.sensorObj   = null;
+		this.meterObj    = null;
+		this.injCurrent  = null;
+		this.ITerminalUpdated = false;
 
 		this.DSSObjType = DSSClassDefs.PC_ELEMENT;
 	}
@@ -46,7 +46,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
 		for (int i = 0; i < YOrder; i++)
-			sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add( InjCurrent[i] );
+			sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add( injCurrent[i] );
 
 		return 0;
 	}
@@ -54,7 +54,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	/**
 	 * Get present values of terminal.
 	 */
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		DSSGlobals.getInstance().doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
 			"Called PCElement class virtual function instead of actual.", 640);
 	}
@@ -64,15 +64,15 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 *
 	 * Such as for harmonic model.
 	 */
-	protected void getTerminalCurrents(Complex[] Curr) {
+	protected void getTerminalCurrents(Complex[] curr) {
 		if (getITerminalUpdated()) {  // just copy ITerminal unless ITerminal=curr
-			if (Curr != getITerminal())
+			if (curr != getITerminal())
 				for (int i = 0; i < YOrder; i++)
-					Curr[i] = getITerminal()[i];
+					curr[i] = getITerminal()[i];
 		} else {
-			YPrim.MVMult(Curr, getVTerminal());
+			YPrim.MVMult(curr, getVTerminal());
 			for (int i = 0; i < YOrder; i++)
-				Curr[i] = Curr[i].add( getInjCurrent()[i].negate() );
+				curr[i] = curr[i].add( getInjCurrent()[i].negate() );
 			setITerminalUpdated(true);
 		}
 		ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
@@ -83,7 +83,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 *
 	 * Gets total currents going into a devices terminals.
 	 */
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		try {
 			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
@@ -94,16 +94,16 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 					// take a short cut and get currents from YPrim only
 					// for case where model is entirely in Y matrix
 
-					calcYPrimContribution(Curr);
+					calcYPrimContribution(curr);
 
 				} else {
 
-					getTerminalCurrents(Curr);
+					getTerminalCurrents(curr);
 				}
 
 			} else {  // not enabled
 				for (int i = 0; i < YOrder; i++)
-					Curr[i] = Complex.ZERO;
+					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doErrorMsg(("getCurrents for element: " + getName() + "."), e.getMessage(),
@@ -111,10 +111,10 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		}
 	}
 
-	public void calcYPrimContribution(Complex[] Curr) {
+	public void calcYPrimContribution(Complex[] curr) {
 		computeVTerminal();
 		// apply these voltages to Yprim
-		YPrim.MVMult(Curr, VTerminal);
+		YPrim.MVMult(curr, VTerminal);
 	}
 
 	/**
@@ -124,10 +124,10 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		// by default do nothing in the base class
 	}
 
-	public void initPropertyValues(int ArrayOffset) {
-		PropertyValue[ArrayOffset + 1] = Spectrum;
+	public void initPropertyValues(int arrayOffset) {
+		PropertyValue[arrayOffset + 1] = spectrum;
 
-		super.initPropertyValues(ArrayOffset + 1);
+		super.initPropertyValues(arrayOffset + 1);
 	}
 
 	/**
@@ -141,7 +141,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		// by default do nothing
 	}
 
-	public void getAllVariables(double[] States) {
+	public void getAllVariables(double[] states) {
 		/* Do nothing */
 	}
 
@@ -158,25 +158,25 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 * Search through variable name list and return index if found.
 	 * Compare up to length of S.
 	 */
-	public int lookupVariable(String S) {
-		int Result = -1;   // returns -1 for error not found
-		int TestLength = S.length();
+	public int lookupVariable(String s) {
+		int result = -1;   // returns -1 for error not found
+		int testLength = s.length();
 		for (int i = 0; i < numVariables(); i++) {
-			if (variableName(i).substring(0, TestLength).equalsIgnoreCase(S)) {
-				Result = i;
+			if (variableName(i).substring(0, testLength).equalsIgnoreCase(s)) {
+				result = i;
 				break;
 			}
 		}
-		return Result;
+		return result;
 	}
 
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
-		if (Complete) {
-			F.println("! VARIABLES");
+		if (complete) {
+			f.println("! VARIABLES");
 			for (int i = 0; i < numVariables(); i++)
-				F.println("! " + i + ": " + variableName(i) + " = " + String.format("%-.5g", getVariable(i)));
+				f.println("! " + i + ": " + variableName(i) + " = " + String.format("%-.5g", getVariable(i)));
 		}
 	}
 
@@ -185,7 +185,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		return -9999.99;
 	}
 
-	public void setVariable(int i, double Value) {
+	public void setVariable(int i, double value) {
 		/* Do nothing */
 	}
 
@@ -200,59 +200,59 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	public void zeroInjCurrent() {
 		for (int i = 0; i < YOrder; i++)
-			InjCurrent[i] = Complex.ZERO;
+			injCurrent[i] = Complex.ZERO;
 	}
 
-	public void setITerminalUpdated(boolean Value) {
-		IterminalUpdated = Value;
-		if (Value)
+	public void setITerminalUpdated(boolean value) {
+		ITerminalUpdated = value;
+		if (value)
 			ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
 	}
 
 	public boolean getITerminalUpdated() {
-		return IterminalUpdated;
+		return ITerminalUpdated;
 	}
 
 	public Complex[] getInjCurrent() {
-		return InjCurrent;
+		return injCurrent;
 	}
 
 	public String getSpectrum() {
-		return Spectrum;
+		return spectrum;
 	}
 
-	public void setSpectrum(String spectrum) {
-		Spectrum = spectrum;
+	public void setSpectrum(String value) {
+		spectrum = value;
 	}
 
 	/** Upline sensor for this element */
 	public SpectrumObj getSpectrumObj() {
-		return SpectrumObj;
+		return spectrumObj;
 	}
 
-	public void setSpectrumObj(SpectrumObj spectrumObj) {
-		SpectrumObj = spectrumObj;
+	public void setSpectrumObj(SpectrumObj spectrum) {
+		spectrumObj = spectrum;
 	}
 
 	/** Upline energy meter */
 	public MeterElement getMeterObj() {
-		return MeterObj;
+		return meterObj;
 	}
 
-	public void setMeterObj(MeterElement meterObj) {
-		MeterObj = meterObj;
+	public void setMeterObj(MeterElement meter) {
+		meterObj = meter;
 	}
 
 	public MeterElement getSensorObj() {
-		return SensorObj;
+		return sensorObj;
 	}
 
-	public void setSensorObj(MeterElement sensorObj) {
-		SensorObj = sensorObj;
+	public void setSensorObj(MeterElement sensor) {
+		sensorObj = sensor;
 	}
 
-	public void setInjCurrent(Complex[] injCurrent) {
-		InjCurrent = injCurrent;
+	public void setInjCurrent(Complex[] current) {
+		injCurrent = current;
 	}
 
 }

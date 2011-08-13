@@ -9,7 +9,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ISourceImpl extends PCClassImpl implements ISource {
 
-	private static ISourceObj ActiveISourceObj;
+	private static ISourceObj activeISourceObj;
 
 	public ISourceImpl() {
 		super();
@@ -20,9 +20,9 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -63,45 +63,45 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new ISourceObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new ISourceObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveISourceObj((ISourceObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
 
-		int Result = 0;
+		int result = 0;
 
 		ISourceObj ais  = getActiveISourceObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param     = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param     = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				ais.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				ais.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ ais.getName() + "\"", 330);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ais.getName() + "\"", 330);
 				break;
 			case 0:
-				ais.setBus(1, Param);  // TODO Check zero based indexing
+				ais.setBus(1, param);  // TODO Check zero based indexing
 				break;
 			case 1:
 				ais.setAmps(parser.makeDouble());
@@ -131,7 +131,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				ais.setNConds(ais.getNPhases());  // force reallocation of terminal info
 				break;
 			case 5:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					ais.setScanType(1);
 					break;
@@ -142,12 +142,12 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
+					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
 			case 6:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					ais.setSequenceType(1);
 					break;
@@ -158,74 +158,74 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+Param, 331);
+					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
 			default:
-				classEdit(getActiveISourceObj(), ParamPointer - ISource.NumPropsThisClass);
+				classEdit(getActiveISourceObj(), paramPointer - ISource.NumPropsThisClass);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		ais.recalcElementData();
 		ais.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherSource) {
-		int Result = 0;
+	protected int makeLike(String otherSource) {
+		int result = 0;
 
 		/* See if we can find this line name in the present collection */
-		ISourceObj OtherIsource = (ISourceObj) find(OtherSource);
+		ISourceObj otherISource = (ISourceObj) find(otherSource);
 
-		if (OtherIsource != null) {
+		if (otherISource != null) {
 			ISourceObj ais  = getActiveISourceObj();
 
-			if (ais.getNPhases() != OtherIsource.getNPhases()) {
-				ais.setNPhases(OtherIsource.getNPhases());
+			if (ais.getNPhases() != otherISource.getNPhases()) {
+				ais.setNPhases(otherISource.getNPhases());
 				ais.setNConds(ais.getNPhases());  // forces reallocation of terminal stuff
 
 				ais.setYorder(ais.getNConds() * ais.getNTerms());
 				ais.setYPrimInvalid(true);
 			}
 
-			ais.setAmps(OtherIsource.getAmps());
-			ais.setAngle(OtherIsource.getAngle());
-			ais.setSrcFrequency(OtherIsource.getSrcFrequency());
-			ais.setScanType(OtherIsource.getScanType());
-			ais.setSequenceType(OtherIsource.getSequenceType());
+			ais.setAmps(otherISource.getAmps());
+			ais.setAngle(otherISource.getAngle());
+			ais.setSrcFrequency(otherISource.getSrcFrequency());
+			ais.setScanType(otherISource.getScanType());
+			ais.setSequenceType(otherISource.getSequenceType());
 
-			classMakeLike(OtherIsource); // set spectrum, base frequency
+			classMakeLike(otherISource); // set spectrum, base frequency
 
 			for (int i = 0; i < ais.getParentClass().getNumProperties(); i++)
-				ais.setPropertyValue(i, OtherIsource.getPropertyValue(i));
+				ais.setPropertyValue(i, otherISource.getPropertyValue(i));
 
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in ISource makeLike: \"" + OtherSource + "\" not found.", 332);
+			DSSGlobals.getInstance().doSimpleMsg("Error in ISource makeLike: \"" + otherSource + "\" not found.", 332);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement ISource.init", -1);
 		return 0;
 	}
 
 	public static ISourceObj getActiveISourceObj() {
-		return ActiveISourceObj;
+		return activeISourceObj;
 	}
 
-	public static void setActiveISourceObj(ISourceObj activeISourceObj) {
-		ActiveISourceObj = activeISourceObj;
+	public static void setActiveISourceObj(ISourceObj sourceObj) {
+		activeISourceObj = sourceObj;
 	}
 
 }

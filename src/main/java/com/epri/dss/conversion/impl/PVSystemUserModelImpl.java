@@ -4,14 +4,13 @@ import com.epri.dss.common.impl.DSSCallBacks;
 import com.epri.dss.conversion.PVSystemUserModel;
 import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.DynamicsRec;
-import com.epri.dss.shared.impl.GeneratorVars;
 
 public class PVSystemUserModelImpl implements PVSystemUserModel {
 
-	private int Handle;  // handle to DLL containing user model
-	private int ID;      // id of this instance of the user model
+	private int handle;  // handle to DLL containing user model
+	private int id;      // id of this instance of the user model
 	private String name; // name of the DLL file containing user model
-	private boolean FuncError;
+	private boolean funcError;
 
 	public PVSystemUserModelImpl() {
 		// TODO Auto-generated constructor stub
@@ -20,7 +19,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 	/**
 	 * Make a new instance.
 	 */
-	private int makeNew(DynamicsRec DynaData, DSSCallBacks CallBacks) {
+	private int makeNew(DynamicsRec dynaData, DSSCallBacks callBacks) {
 		return 0;
 	}
 
@@ -42,14 +41,14 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 		return name;
 	}
 
-	public void setName(String Value) {
+	public void setName(String value) {
 	}
 
-	private Object checkFuncError(Object Addr, String FuncName) {
+	private Object checkFuncError(Object addr, String funcName) {
 		return null;
 	}
 
-	public void edit(String Value) {
+	public void edit(String value) {
 
 	}
 
@@ -60,7 +59,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 	/**
 	 * Send string to user model to handle.
 	 */
-	public void edit(int s, int Maxlen) {
+	public void edit(int s, int maxlen) {
 	}
 
 	/**
@@ -105,15 +104,15 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 		return 0;
 	}
 
-	public void getAllVars(double[] Vars) {
+	public void getAllVars(double[] vars) {
 
 	}
 
-	public void getAllVars(double Var) {
+	public void getAllVars(double var) {
 
 	}
 
-	public double getVariable(int I) {
+	public double getVariable(int i) {
 		return 0.0;
 	}
 
@@ -121,7 +120,7 @@ public class PVSystemUserModelImpl implements PVSystemUserModel {
 
 	}
 
-	public void getVarName(int VarNum, int VarName, int maxlen) {
+	public void getVarName(int varNum, int varName, int maxlen) {
 
 	}
 

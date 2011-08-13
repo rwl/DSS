@@ -31,7 +31,7 @@ public interface StorageObj extends PCElement {
 
 	double getKWIdlingLosses();
 
-	double getPresentkW();
+	double getPresentKW();
 
 	double getPresentKVAr();
 

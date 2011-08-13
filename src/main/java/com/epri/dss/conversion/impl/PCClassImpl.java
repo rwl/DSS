@@ -9,11 +9,11 @@ import com.epri.dss.parser.impl.Parser;
 
 public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
-	int NumPCClassProps;
+	int numPCClassProps;
 
 	public PCClassImpl() {
 		super();
-		this.NumPCClassProps = 1;
+		this.numPCClassProps = 1;
 		this.DSSClassType = DSSClassDefs.PC_ELEMENT;
 	}
 
@@ -21,7 +21,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	 * Add no. of intrinsic properties.
 	 */
 	protected void countProperties() {
-		numProperties = numProperties + NumPCClassProps;
+		numProperties = numProperties + numPCClassProps;
 		super.countProperties();
 	}
 
@@ -35,38 +35,38 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 
 		propertyHelp[activeProperty + 1] = "Name of harmonic spectrum for this device.";
 
-		activeProperty = activeProperty + NumPCClassProps;
+		activeProperty = activeProperty + numPCClassProps;
 
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object ActivePCObj, int ParamPointer) {
-		int Result = 0;
+	protected int classEdit(Object activePCObj, int paramPointer) {
+		int result = 0;
 		// continue parsing with contents of parser
-		if (ParamPointer >= 0) {
-			PCElement pElem = (PCElement) ActivePCObj;
+		if (paramPointer >= 0) {
+			PCElement pElem = (PCElement) activePCObj;
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 1:
 				pElem.setSpectrum(Parser.getInstance().makeString());
 				break;
 			default:
-				super.classEdit(ActivePCObj, ParamPointer - NumPCClassProps);
+				super.classEdit(activePCObj, paramPointer - numPCClassProps);
 				break;
 			}
 		}
-		return Result;
+		return result;
 	}
 
-	protected void classMakeLike(Object OtherObj) {
-		PCElement OtherPCObj = (PCElement) OtherObj;
+	protected void classMakeLike(Object otherObj) {
+		PCElement otherPCObj = (PCElement) otherObj;
 
 		PCElement pElem = (PCElement) DSSGlobals.getInstance().getActiveDSSObject();
 
-		pElem.setSpectrum(OtherPCObj.getSpectrum());
-		pElem.setSpectrumObj(OtherPCObj.getSpectrumObj());
+		pElem.setSpectrum(otherPCObj.getSpectrum());
+		pElem.setSpectrumObj(otherPCObj.getSpectrumObj());
 
-		super.classMakeLike(OtherObj);
+		super.classMakeLike(otherObj);
 	}
 
 }

@@ -16,34 +16,34 @@ import com.epri.dss.conversion.ISourceObj;
 
 public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
-	private double Amps;
+	private double amps;
 
-	private double Angle;
+	private double angle;
 
-	private double PhaseShift;
+	private double phaseShift;
 
-	private int ScanType;
+	private int scanType;
 
-	private int SequenceType;
+	private int sequenceType;
 
-	protected double SrcFrequency;
+	protected double srcFrequency;
 
-	public ISourceObjImpl(DSSClassImpl ParClass, String SourceName) {
-		super(ParClass);
+	public ISourceObjImpl(DSSClassImpl parClass, String sourceName) {
+		super(parClass);
 
-		setName(SourceName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
+		setName(sourceName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
 
 		setNPhases(3);
 		this.nConds = 3;
 		setNTerms(1);
 
-		this.Amps     = 0.0;
-		this.Angle    = 0.0;
-		this.SrcFrequency = baseFrequency;
-		this.PhaseShift = 120.0;
-		this.ScanType = 1;  // pos sequence
-		this.SequenceType = 1;
+		this.amps     = 0.0;
+		this.angle    = 0.0;
+		this.srcFrequency = baseFrequency;
+		this.phaseShift = 120.0;
+		this.scanType = 1;  // pos sequence
+		this.sequenceType = 1;
 
 		initPropertyValues(0);
 
@@ -53,12 +53,12 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		setSpectrumObj( (com.epri.dss.general.SpectrumObj) Globals.getSpectrumClass().find(getSpectrum()) );
+		setSpectrumObj( (com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()) );
 
 		if (getSpectrumObj() == null)
-			Globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
+			globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
@@ -91,33 +91,33 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	}
 
 	private Complex getBaseCurr() {
-		double SrcHarmonic;
-		Complex Result = null;
+		double srcHarmonic;
+		Complex result = null;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+			SolutionObj sol = globals.getActiveCircuit().getSolution();
 
 			/* Get first phase current */
 			if (sol.isHarmonicModel()) {
-				SrcHarmonic = sol.getFrequency() / SrcFrequency;
-				Result = getSpectrumObj().getMult(SrcHarmonic).multiply(Amps);  // base current for this harmonic
-				Result = Utilities.rotatePhasorDeg(Result, SrcHarmonic, Angle);
+				srcHarmonic = sol.getFrequency() / srcFrequency;
+				result = getSpectrumObj().getMult(srcHarmonic).multiply(amps);  // base current for this harmonic
+				result = Utilities.rotatePhasorDeg(result, srcHarmonic, angle);
 			} else {
-				if (Math.abs(sol.getFrequency() - SrcFrequency) < DSSGlobals.EPSILON2) {
-					Result = ComplexUtil.polarDeg2Complex(Amps, Angle);
+				if (Math.abs(sol.getFrequency() - srcFrequency) < DSSGlobals.EPSILON2) {
+					result = ComplexUtil.polarDeg2Complex(amps, angle);
 				} else {
-					Result = Complex.ZERO;
+					result = Complex.ZERO;
 				}
 			}
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
-			if (Globals.isInRedirect())
-				Globals.setRedirectAbort(true);
+			globals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
+			if (globals.isInRedirect())
+				globals.setRedirectAbort(true);
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -134,12 +134,12 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	 * Total currents into a device.
 	 */
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		try {
 			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with YPrim currents
 			for (int i = 0; i < YOrder; i++)
-				Curr[i] = complexBuffer[i].negate();
+				curr[i] = complexBuffer[i].negate();
 		} catch (Exception e) {
 			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for ISource element: " + getName() + "."), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 335);
@@ -150,37 +150,37 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	 * Fill up an array of injection currents.
 	 */
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		Complex BaseCurr = getBaseCurr();  // this func applies spectrum if needed
+		Complex baseCurr = getBaseCurr();  // this func applies spectrum if needed
 
 		for (int i = 0; i < getNPhases(); i++) {
-			Curr[i] = BaseCurr;
+			curr[i] = baseCurr;
 			if (i < getNPhases())
 				if (sol.isHarmonicModel()) {
-					switch (ScanType) {
+					switch (scanType) {
 					case 1:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource
+						baseCurr = Utilities.rotatePhasorDeg(baseCurr, 1.0, -getPhaseShift());  // maintain positive sequence for ISource
 						break;
 					case 0:
 						// do not rotate for zero sequence
 						break;
 					default:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
+						baseCurr = Utilities.rotatePhasorDeg(baseCurr, sol.getHarmonic(), -getPhaseShift());  // rotate by frequency
 						/* Harmonic 1 will be pos; 2 is neg; 3 is zero, and so on. */
 						break;
 					}
 				} else {
-					switch (SequenceType) {
+					switch (sequenceType) {
 					case -1:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, PhaseShift);  // neg seq
+						baseCurr = Utilities.rotatePhasorDeg(baseCurr, 1.0, phaseShift);  // neg seq
 						break;
 					case 0:
 						// do not rotate for zero sequence
 						break;
 					default:
-						BaseCurr = Utilities.rotatePhasorDeg(BaseCurr, 1.0, -PhaseShift);  // maintain pos seq
+						baseCurr = Utilities.rotatePhasorDeg(baseCurr, 1.0, -phaseShift);  // maintain pos seq
 						break;
 					}
 				}
@@ -188,25 +188,25 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete) {
-			F.println();
-			F.println();
+		if (complete) {
+			f.println();
+			f.println();
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, getBus(1));
 		setPropertyValue(1, "0");
 		setPropertyValue(2, "0");
-		setPropertyValue(3, String.format("%-.6g", SrcFrequency));
+		setPropertyValue(3, String.format("%-.6g", srcFrequency));
 		setPropertyValue(4, "3");
 		setPropertyValue(5, "pos");
 		setPropertyValue(6, "pos");
@@ -227,53 +227,53 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	}
 
 	public double getSrcFrequency() {
-		return SrcFrequency;
+		return srcFrequency;
 	}
 
-	public void setSrcFrequency(double srcFrequency) {
-		SrcFrequency = srcFrequency;
+	public void setSrcFrequency(double frequency) {
+		srcFrequency = frequency;
 	}
 
 	// FIXME Private members in OpenDSS
 
 	public double getAmps() {
-		return Amps;
+		return amps;
 	}
 
-	public void setAmps(double amps) {
-		Amps = amps;
+	public void setAmps(double value) {
+		amps = value;
 	}
 
 	public double getAngle() {
-		return Angle;
+		return angle;
 	}
 
-	public void setAngle(double angle) {
-		Angle = angle;
+	public void setAngle(double ang) {
+		angle = ang;
 	}
 
 	public double getPhaseShift() {
-		return PhaseShift;
+		return phaseShift;
 	}
 
-	public void setPhaseShift(double phaseShift) {
-		PhaseShift = phaseShift;
+	public void setPhaseShift(double shift) {
+		phaseShift = shift;
 	}
 
 	public int getScanType() {
-		return ScanType;
+		return scanType;
 	}
 
-	public void setScanType(int scanType) {
-		ScanType = scanType;
+	public void setScanType(int type) {
+		scanType = type;
 	}
 
 	public int getSequenceType() {
-		return SequenceType;
+		return sequenceType;
 	}
 
-	public void setSequenceType(int sequenceType) {
-		SequenceType = sequenceType;
+	public void setSequenceType(int type) {
+		sequenceType = type;
 	}
 
 }

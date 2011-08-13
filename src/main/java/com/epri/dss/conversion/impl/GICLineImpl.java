@@ -4,15 +4,13 @@ import com.epri.dss.common.impl.DSSClassDefs;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.conversion.GICLine;
 import com.epri.dss.conversion.GICLineObj;
-import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
-import com.ibm.icu.util.GlobalizationPreferences;
 
 public class GICLineImpl extends PCClassImpl implements GICLine {
 
-	private static GICLineObj ActiveGICLineObj;
+	private static GICLineObj activeGICLineObj;
 
 	public GICLineImpl() {
 		super();
@@ -23,14 +21,14 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSSGlobals.CRLF;
 
 		numProperties = NumPropsThisClass;
 		countProperties();   // get inherited property count
@@ -79,14 +77,14 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new GICLineObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new GICLineObjImpl(this, ObjName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
-	private void GICLineSetBus1(final String S) {
-		String S2;
+	private void GICLineSetBus1(final String s) {
+		String s2;
 		int dotpos;
 
 		// special handling for bus 1
@@ -94,56 +92,56 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 		GICLineObj agl = getActiveGICLineObj();
 
-		agl.setBus(1, S);
+		agl.setBus(1, s);
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos-1);  // copy up to dot
+			s2 = s.substring(0, dotpos-1);  // copy up to dot
 		} else {
-			S2 = S.substring(0);
+			s2 = s.substring(0);
 		}
 
-		agl.setBus(2, S2);  // default setting for bus2 is same as bus1
+		agl.setBus(2, s2);  // default setting for bus2 is same as bus1
 	}
 
 	@Override
 	public int edit() {
-		int ParamPointer;
-		String ParamName, Param;
+		int paramPointer;
+		String paramName, param;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveGICLineObj((GICLineObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveGICLineObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveGICLineObj());
 
-		int Result = 0;
+		int result = 0;
 		GICLineObj agl = getActiveGICLineObj();
 
-		ParamPointer = 0;
-		ParamName = parser.getNextParam();
-		Param     = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		paramPointer = 0;
+		paramName = parser.getNextParam();
+		param     = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				agl.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				agl.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"VSource."+agl.getName()+"\"", 320);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+agl.getName()+"\"", 320);
 				break;
 			case 0:
-				GICLineSetBus1(Param);   // special handling of bus 1
+				GICLineSetBus1(param);   // special handling of bus 1
 				break;
 			case 1:
-				agl.setBus(2, Param);
+				agl.setBus(2, param);
 				break;
 			case 2:
 				agl.setVolts(parser.makeDouble());  // basekv
@@ -168,7 +166,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				agl.setC(parser.makeDouble());
 				break;
 			case 9:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					agl.setScanType(1);
 					break;
@@ -179,12 +177,12 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setScanType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
+					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
 			case 10:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'P':
 					agl.setSequenceType(1);
 					break;
@@ -195,40 +193,40 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setSequenceType(-1);
 					break;
 				default:
-					Globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ agl.getName() + "\": "+Param, 321);
+					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
 			default:
-				classEdit(getActiveGICLineObj(), ParamPointer - NumPropsThisClass);
+				classEdit(getActiveGICLineObj(), paramPointer - NumPropsThisClass);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		agl.recalcElementData();
 		agl.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherLine) {
-		GICLineObj OtherGICLine;
+	protected int makeLike(String otherLine) {
+		GICLineObj otherGICLine;
 		int i;
 
-		int Result = 0;
+		int result = 0;
 
 		/* See if we can find this line name in the present collection */
-		OtherGICLine = (GICLineObj) find(OtherLine);
-		if (OtherGICLine != null) {
+		otherGICLine = (GICLineObj) find(otherLine);
+		if (otherGICLine != null) {
 			GICLineObj agl = getActiveGICLineObj();
 
-			if (agl.getNPhases() != OtherGICLine.getNPhases()) {
+			if (agl.getNPhases() != otherGICLine.getNPhases()) {
 
-				agl.setNPhases(OtherGICLine.getNPhases());
+				agl.setNPhases(otherGICLine.getNPhases());
 				agl.setNConds(agl.getNPhases());  // forces reallocation of terminal stuff
 
 				agl.setYorder(agl.getNConds() * agl.getNTerms());
@@ -241,28 +239,28 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				agl.setZInv( new CMatrixImpl(agl.getNPhases()) );
 			}
 
-			agl.getZ().copyFrom(OtherGICLine.getZ());
+			agl.getZ().copyFrom(otherGICLine.getZ());
 			// Zinv.CopyFrom(OtherLine.Zinv);
-			agl.setR(OtherGICLine.getR());
-			agl.setX(OtherGICLine.getX());
-			agl.setC(OtherGICLine.getC());
-			agl.setVolts(OtherGICLine.getVolts());
-			agl.setAngle(OtherGICLine.getAngle());
+			agl.setR(otherGICLine.getR());
+			agl.setX(otherGICLine.getX());
+			agl.setC(otherGICLine.getC());
+			agl.setVolts(otherGICLine.getVolts());
+			agl.setAngle(otherGICLine.getAngle());
 
-			agl.setSrcFrequency(OtherGICLine.getSrcFrequency());
-			agl.setScanType(OtherGICLine.getScanType());
-			agl.setSequenceType(OtherGICLine.getSequenceType());
+			agl.setSrcFrequency(otherGICLine.getSrcFrequency());
+			agl.setScanType(otherGICLine.getScanType());
+			agl.setSequenceType(otherGICLine.getSequenceType());
 
-			classMakeLike(OtherGICLine);
+			classMakeLike(otherGICLine);
 
 			for (i = 0; i < agl.getParentClass().getNumProperties(); i++) {
-				agl.setPropertyValue(i, OtherGICLine.getPropertyValue(i));
-				Result = 1;
+				agl.setPropertyValue(i, otherGICLine.getPropertyValue(i));
+				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GICLine makeLike: \"" + OtherLine + "\" not found.", 322);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GICLine makeLike: \"" + otherLine + "\" not found.", 322);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
@@ -272,11 +270,11 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 	}
 
 	public static GICLineObj getActiveGICLineObj() {
-		return ActiveGICLineObj;
+		return activeGICLineObj;
 	}
 
-	public static void setActiveGICLineObj(GICLineObj activeGICLineObj) {
-		ActiveGICLineObj = activeGICLineObj;
+	public static void setActiveGICLineObj(GICLineObj lineObj) {
+		activeGICLineObj = lineObj;
 	}
 
 }

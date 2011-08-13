@@ -254,7 +254,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		double result = 0;
 		for (int i = 0; i < fleetPointerList.size(); i++) {
 			pStorage = (StorageObj) fleetPointerList.get(i);
-			result = result + pStorage.getPresentkW();
+			result = result + pStorage.getPresentKW();
 		}
 		return result;
 	}
@@ -689,8 +689,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 						for (i = 0; i < fleetSize; i++) {
 							pStorage = (StorageObj) fleetPointerList.get(i);
 							// compute new dispatch value for this storage element ...
-							dispatchKW = Math.min(pStorage.getKWRating(), (pStorage.getPresentkW() + PDiff *(weights[i] / totalWeight)));
-							if (dispatchKW != pStorage.getPresentkW())  // redispatch only if change requested
+							dispatchKW = Math.min(pStorage.getKWRating(), (pStorage.getPresentKW() + PDiff *(weights[i] / totalWeight)));
+							if (dispatchKW != pStorage.getPresentKW())  // redispatch only if change requested
 								if (pStorage.getKWhStored() > pStorage.getKWhReserve()) {
 									// attempt to set discharge kW; storage element will revert to idling if out of capacity
 									pStorage.setPresentKW(dispatchKW);
