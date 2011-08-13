@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
-	private static EquivalentObj ActiveEquivalentObj;
+	private static EquivalentObj activeEquivalentObj;
 
 	public EquivalentImpl() {
 		super();
@@ -69,48 +69,48 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new EquivalentObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new EquivalentObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveEquivalentObj((EquivalentObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
 
-		int Result = 0;
+		int result = 0;
 
 		EquivalentObj ae = getActiveEquivalentObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param     = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param     = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				ae.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				ae.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
 				break;
 			case 0:
 				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));
 				break;
 			case 1:
-				interpretAllBuses(Param);
+				interpretAllBuses(param);
 				break;
 			case 2:
 				ae.setKVBase(parser.makeDouble());  // basekv
@@ -141,52 +141,52 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.parseDblMatrix(ae.getX0());
 				break;
 			default:
-				classEdit(getActiveEquivalentObj(), ParamPointer - Equivalent.NumPropsThisClass);
+				classEdit(getActiveEquivalentObj(), paramPointer - Equivalent.NumPropsThisClass);
 				break;
 			}
 
-			if ((ParamPointer == 0) || ((ParamPointer >= 7) && (ParamPointer <= 10))) {
+			if ((paramPointer == 0) || ((paramPointer >= 7) && (paramPointer <= 10))) {
 				ae.setNeedToDoRecalc(true);
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		// recalcElementData();
 		ae.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
 	protected int makeLike(String OtherSource) {
-		int i, Result = 0;
+		int i, result = 0;
 
 		/* See if we can find this line name in the present collection */
-		EquivalentObj OtherEquivalent = (EquivalentObj) find(OtherSource);
-		if (OtherEquivalent != null) {
+		EquivalentObj otherEquivalent = (EquivalentObj) find(OtherSource);
+		if (otherEquivalent != null) {
 			EquivalentObj ae = getActiveEquivalentObj();
 
-			if ((ae.getNPhases() != OtherEquivalent.getNPhases()) ||
-					(ae.getNTerms() != OtherEquivalent.getNTerms())) {
+			if ((ae.getNPhases() != otherEquivalent.getNPhases()) ||
+					(ae.getNTerms() != otherEquivalent.getNTerms())) {
 
-				ae.setNTerms( ae.doTerminalsDef(OtherEquivalent.getNTerms()) );
-				ae.setNPhases(OtherEquivalent.getNPhases());
+				ae.setNTerms( ae.doTerminalsDef(otherEquivalent.getNTerms()) );
+				ae.setNPhases(otherEquivalent.getNPhases());
 				ae.setNConds(ae.getNPhases());  // forces reallocation of terminal stuff
 
 				ae.setYorder(ae.getNConds() * ae.getNTerms());
 				ae.setYPrimInvalid(true);
 
 				for (i = 0; i < ae.getNTerms(); i++)
-					ae.getR1()[i] = OtherEquivalent.getR1()[i];
+					ae.getR1()[i] = otherEquivalent.getR1()[i];
 				for (i = 0; i < ae.getNTerms(); i++)
-					ae.getR0()[i] = OtherEquivalent.getR0()[i];
+					ae.getR0()[i] = otherEquivalent.getR0()[i];
 
 				for (i = 0; i < ae.getNTerms(); i++)
-					ae.getX1()[i] = OtherEquivalent.getX1()[i];
+					ae.getX1()[i] = otherEquivalent.getX1()[i];
 				for (i = 0; i < ae.getNTerms(); i++)
-					ae.getX0()[i] = OtherEquivalent.getX0()[i];
+					ae.getX0()[i] = otherEquivalent.getX0()[i];
 
 				if (ae.getZ() != null)
 					ae.setZ(null);
@@ -197,24 +197,24 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setZInv(new CMatrixImpl(ae.getNPhases()));
 			}
 
-			ae.getZ().copyFrom(OtherEquivalent.getZ());
+			ae.getZ().copyFrom(otherEquivalent.getZ());
 			// ae.getZinv().copyFrom(OtherLine.getZinv());
-			ae.setVMag(OtherEquivalent.getVMag());
-			ae.setKVBase(OtherEquivalent.getKVBase());
-			ae.setPerUnit(OtherEquivalent.getPerUnit());
-			ae.setAngle(OtherEquivalent.getAngle());
-			ae.setEquivFrequency(OtherEquivalent.getEquivFrequency());
+			ae.setVMag(otherEquivalent.getVMag());
+			ae.setKVBase(otherEquivalent.getKVBase());
+			ae.setPerUnit(otherEquivalent.getPerUnit());
+			ae.setAngle(otherEquivalent.getAngle());
+			ae.setEquivFrequency(otherEquivalent.getEquivFrequency());
 
-			classMakeLike(OtherEquivalent);
+			classMakeLike(otherEquivalent);
 
 			for (i = 0; i < ae.getParentClass().getNumProperties(); i++)
-				ae.setPropertyValue(i, OtherEquivalent.getPropertyValue(i));
-			Result = 1;
+				ae.setPropertyValue(i, otherEquivalent.getPropertyValue(i));
+			result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
@@ -226,28 +226,28 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	/**
 	 * Routine expecting all winding connections expressed in one array of strings.
 	 */
-	public void interpretAllBuses(String S) {
-		String BusNam;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public void interpretAllBuses(String s) {
+		String busName;
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj ae = getActiveEquivalentObj();
 		for (int i = 0; i < ae.getNTerms(); i++) {
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			BusNam = Globals.getAuxParser().makeString();
-			if (BusNam.length() > 0)
-				ae.setBus(i, BusNam);  // TODO Check zero based indexing
+			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			busName = globals.getAuxParser().makeString();
+			if (busName.length() > 0)
+				ae.setBus(i, busName);  // TODO Check zero based indexing
 		}
 	}
 
 	public static EquivalentObj getActiveEquivalentObj() {
-		return ActiveEquivalentObj;
+		return activeEquivalentObj;
 	}
 
-	public static void setActiveEquivalentObj(EquivalentObj activeEquivalentObj) {
-		ActiveEquivalentObj = activeEquivalentObj;
+	public static void setActiveEquivalentObj(EquivalentObj equivalentObj) {
+		activeEquivalentObj = equivalentObj;
 	}
 
 }

@@ -15,9 +15,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GeneratorImpl extends PCClassImpl implements Generator {
 
-	private static GeneratorObj ActiveGeneratorObj;
+	private static GeneratorObj activeGeneratorObj;
 
-	private String[] RegisterNames = new String[Generator.NumGenRegisters];
+	private String[] registerNames = new String[Generator.NumGenRegisters];
 
 	public GeneratorImpl() {
 		super();
@@ -27,18 +27,18 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		this.activeElement = -1;
 
 		// set register names
-		this.RegisterNames[0]  = "kWh";
-		this.RegisterNames[1]  = "kvarh";
-		this.RegisterNames[2]  = "Max kW";
-		this.RegisterNames[3]  = "Max kVA";
-		this.RegisterNames[4]  = "Hours";
-		this.RegisterNames[5]  = "$";
+		this.registerNames[0]  = "kWh";
+		this.registerNames[1]  = "kvarh";
+		this.registerNames[2]  = "Max kW";
+		this.registerNames[3]  = "Max kVA";
+		this.registerNames[4]  = "Hours";
+		this.registerNames[5]  = "$";
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -155,11 +155,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new GeneratorObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new GeneratorObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void setNcondsForConnection() {
@@ -190,12 +190,12 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 * 		delta or LL
 	 * 		Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
-		String TestS;
+	private void interpretConnection(String s) {
+		String testS;
 		GeneratorObj ag = getActiveGeneratorObj();
 
-		TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) {
+		testS = s.toLowerCase();
+		switch (testS.charAt(0)) {
 		case 'y':
 			ag.setConnection(0);  /* Wye */
 			break;
@@ -206,7 +206,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setConnection(1);  /* Delta or line-Line */
 			break;
 		case 'l':
-			switch (TestS.charAt(1)) {
+			switch (testS.charAt(1)) {
 			case 'n':
 				ag.setConnection(0);
 				break;
@@ -238,8 +238,8 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		ag.setYPrimInvalid(true);
 	}
 
-	private static int interpretDispMode(String S) {
-		switch (S.toLowerCase().charAt(0)) {
+	private static int interpretDispMode(String s) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'l':
 			return Generator.LOADMODE;
 		case 'p':
@@ -251,42 +251,42 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveGeneratorObj((GeneratorObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
 
-		int Result = 0;
+		int result = 0;
 		GeneratorObj ag = getActiveGeneratorObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties)) {
-				ag.setPropertyValue(propertyIdxMap[ParamPointer], Param);
+			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
+				ag.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for generator \""+ag.getName()+"\"", 560);
+				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
 			}
 
-			if (ParamPointer >= 0) {
-				switch (propertyIdxMap[ParamPointer]) {
+			if (paramPointer >= 0) {
+				switch (propertyIdxMap[paramPointer]) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
+					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
 					ag.setNPhases(parser.makeInteger());  // num phases
 					break;
 				case 1:
-					ag.setBus(1, Param);  // TODO Check zero based indexing
+					ag.setBus(1, param);  // TODO Check zero based indexing
 					break;
 				case 2:
 					ag.setPresentKV(parser.makeDouble());
@@ -301,34 +301,34 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setGenModel(parser.makeInteger());
 					break;
 				case 6:
-					ag.setYearlyShape(Param);
+					ag.setYearlyShape(param);
 					break;
 				case 7:
-					ag.setDailyDispShape(Param);
+					ag.setDailyDispShape(param);
 					break;
 				case 8:
-					ag.setDutyShape(Param);
+					ag.setDutyShape(param);
 					break;
 				case 9:
-					ag.setDispatchMode(interpretDispMode(Param));
+					ag.setDispatchMode(interpretDispMode(param));
 					break;
 				case 10:
 					ag.setDispatchValue(parser.makeDouble());
 					break;
 				case 11:
-					interpretConnection(Param);
+					interpretConnection(param);
 					break;
 				case 12:
 					ag.setPresentKVAr(parser.makeDouble());
 					break;
 				case 13:
-					Globals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
+					globals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
 					break;
 				case 14:
-					Globals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
+					globals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
 					break;
 				case 15:
-					if (Param.toLowerCase().charAt(0) == 'f') {
+					if (param.toLowerCase().charAt(0) == 'f') {
 						ag.setFixed(true);
 					} else {
 						ag.setFixed(false);
@@ -350,7 +350,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setPVFactor(parser.makeDouble());  // declaration factor
 					break;
 				case 21:
-					ag.setDebugTrace(Utilities.interpretYesNo(Param));
+					ag.setDebugTrace(Utilities.interpretYesNo(param));
 					break;
 				case 22:
 					ag.setVMinPU(parser.makeDouble());
@@ -359,7 +359,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setVMaxPU(parser.makeDouble());
 					break;
 				case 24:
-					ag.setForcedOn(Utilities.interpretYesNo(Param));
+					ag.setForcedOn(Utilities.interpretYesNo(param));
 					break;
 				case 25:
 					ag.getGenVars().kVArating = parser.makeDouble();
@@ -396,13 +396,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveGeneratorObj(), ParamPointer - Generator.NumPropsThisClass);
+					classEdit(getActiveGeneratorObj(), paramPointer - Generator.NumPropsThisClass);
 					break;
 				}
 			}
 
-			if (ParamPointer >= 0) {
-				switch (propertyIdxMap[ParamPointer]) {
+			if (paramPointer >= 0) {
+				switch (propertyIdxMap[paramPointer]) {
 				case 0:
 					setNcondsForConnection();  // force reallocation of terminal info
 					break;
@@ -417,21 +417,21 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 6:
 					/* Set shape objects; returns nil if not valid */
 					/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-					ag.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getYearlyShape()) );
+					ag.setYearlyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
 					break;
 				case 7:
-					ag.setDailyDispShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
+					ag.setDailyDispShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
 					break;
 				case 8:
-					ag.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDutyShape()) );
+					ag.setDutyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
@@ -440,7 +440,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
-							File TraceFile = new File(Globals.getDSSDataDirectory() + "GEN_"+ag.getName()+".csv");
+							File TraceFile = new File(globals.getDSSDataDirectory() + "GEN_"+ag.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -472,107 +472,107 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				}
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		ag.recalcElementData();
 		ag.setYPrimInvalid(true);
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String OtherGeneratorName) {
+	protected int makeLike(String otherGeneratorName) {
 		int i;
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this line name in the present collection */
-		GeneratorObj OtherGenerator = (GeneratorObj) find(OtherGeneratorName);
-		if (OtherGenerator != null) {
+		GeneratorObj otherGenerator = (GeneratorObj) find(otherGeneratorName);
+		if (otherGenerator != null) {
 			GeneratorObj ag = getActiveGeneratorObj();
 
-			if (ag.getNPhases() != OtherGenerator.getNPhases()) {
-				ag.setNPhases(OtherGenerator.getNPhases());
+			if (ag.getNPhases() != otherGenerator.getNPhases()) {
+				ag.setNPhases(otherGenerator.getNPhases());
 				ag.setNConds(ag.getNPhases());  // forces reallocation of terminal stuff
 
 				ag.setYorder(ag.getNConds() * ag.getNTerms());
 				ag.setYPrimInvalid(true);
 			}
 
-			ag.getGenVars().kVGeneratorBase = OtherGenerator.getGenVars().kVGeneratorBase;
-			ag.setVBase(OtherGenerator.getVBase());
-			ag.setVMinPU(OtherGenerator.getVMinPU());
-			ag.setVMaxPU(OtherGenerator.getVMaxPU());
-			ag.setVBase95(OtherGenerator.getVBase95());
-			ag.setVBase105(OtherGenerator.getVBase105());
-			ag.setKWBase(OtherGenerator.getKWBase());
-			ag.setKVArBase(OtherGenerator.getKVArBase());
-			ag.getGenVars().Pnominalperphase = OtherGenerator.getGenVars().Pnominalperphase;
-			ag.setPowerFactor(OtherGenerator.getPowerFactor());
-			ag.getGenVars().Qnominalperphase = OtherGenerator.getGenVars().Qnominalperphase;
-			ag.setVArMin(OtherGenerator.getVArMin());
-			ag.setVArMax(OtherGenerator.getVArMax());
-			ag.setConnection(OtherGenerator.getConnection());
+			ag.getGenVars().kVGeneratorBase = otherGenerator.getGenVars().kVGeneratorBase;
+			ag.setVBase(otherGenerator.getVBase());
+			ag.setVMinPU(otherGenerator.getVMinPU());
+			ag.setVMaxPU(otherGenerator.getVMaxPU());
+			ag.setVBase95(otherGenerator.getVBase95());
+			ag.setVBase105(otherGenerator.getVBase105());
+			ag.setKWBase(otherGenerator.getKWBase());
+			ag.setKVArBase(otherGenerator.getKVArBase());
+			ag.getGenVars().Pnominalperphase = otherGenerator.getGenVars().Pnominalperphase;
+			ag.setPowerFactor(otherGenerator.getPowerFactor());
+			ag.getGenVars().Qnominalperphase = otherGenerator.getGenVars().Qnominalperphase;
+			ag.setVArMin(otherGenerator.getVArMin());
+			ag.setVArMax(otherGenerator.getVArMax());
+			ag.setConnection(otherGenerator.getConnection());
 			//ag.setRneut(OtherGenerator.getRneut());
 			//ag.setXneut(OtherGenerator.getXneut());
-			ag.setYearlyShape(OtherGenerator.getYearlyShape());
-			ag.setYearlyShapeObj(OtherGenerator.getYearlyShapeObj());
-			ag.setDailyDispShape(OtherGenerator.getDailyDispShape());
-			ag.setDailyDispShapeObj(OtherGenerator.getDailyDispShapeObj());
-			ag.setDutyShape(OtherGenerator.getDutyShape());
-			ag.setDutyShapeObj(OtherGenerator.getDutyShapeObj());
-			ag.setDispatchMode(OtherGenerator.getDispatchMode());
-			ag.setDispatchValue(OtherGenerator.getDispatchValue());
-			ag.setGenClass(OtherGenerator.getGenClass());
-			ag.setGenModel(OtherGenerator.getGenModel());
-			ag.setFixed(OtherGenerator.isFixed());
-			ag.setVTarget(OtherGenerator.getVTarget());
-			ag.setVpu(OtherGenerator.getVpu());
-			ag.setKVArMax(OtherGenerator.getKVArMax());
-			ag.setKVArMin(OtherGenerator.getKVArMin());
-			ag.setForcedOn(OtherGenerator.isForcedOn());
-			ag.setkVANotSet(OtherGenerator.iskVANotSet());
+			ag.setYearlyShape(otherGenerator.getYearlyShape());
+			ag.setYearlyShapeObj(otherGenerator.getYearlyShapeObj());
+			ag.setDailyDispShape(otherGenerator.getDailyDispShape());
+			ag.setDailyDispShapeObj(otherGenerator.getDailyDispShapeObj());
+			ag.setDutyShape(otherGenerator.getDutyShape());
+			ag.setDutyShapeObj(otherGenerator.getDutyShapeObj());
+			ag.setDispatchMode(otherGenerator.getDispatchMode());
+			ag.setDispatchValue(otherGenerator.getDispatchValue());
+			ag.setGenClass(otherGenerator.getGenClass());
+			ag.setGenModel(otherGenerator.getGenModel());
+			ag.setFixed(otherGenerator.isFixed());
+			ag.setVTarget(otherGenerator.getVTarget());
+			ag.setVpu(otherGenerator.getVpu());
+			ag.setKVArMax(otherGenerator.getKVArMax());
+			ag.setKVArMin(otherGenerator.getKVArMin());
+			ag.setForcedOn(otherGenerator.isForcedOn());
+			ag.setkVANotSet(otherGenerator.iskVANotSet());
 
-			ag.getGenVars().kVArating      = OtherGenerator.getGenVars().kVArating;
-			ag.getGenVars().puXd           = OtherGenerator.getGenVars().puXd;
-			ag.getGenVars().puXdp          = OtherGenerator.getGenVars().puXdp;
-			ag.getGenVars().puXdpp         = OtherGenerator.getGenVars().puXdpp;
-			ag.getGenVars().Hmass          = OtherGenerator.getGenVars().Hmass;
-			ag.getGenVars().Theta          = OtherGenerator.getGenVars().Theta;
-			ag.getGenVars().Speed          = OtherGenerator.getGenVars().Speed;
-			ag.getGenVars().w0             = OtherGenerator.getGenVars().w0;
-			ag.getGenVars().dSpeed         = OtherGenerator.getGenVars().dSpeed;
-			ag.getGenVars().D              = OtherGenerator.getGenVars().D;
-			ag.getGenVars().Dpu            = OtherGenerator.getGenVars().Dpu;
+			ag.getGenVars().kVArating      = otherGenerator.getGenVars().kVArating;
+			ag.getGenVars().puXd           = otherGenerator.getGenVars().puXd;
+			ag.getGenVars().puXdp          = otherGenerator.getGenVars().puXdp;
+			ag.getGenVars().puXdpp         = otherGenerator.getGenVars().puXdpp;
+			ag.getGenVars().Hmass          = otherGenerator.getGenVars().Hmass;
+			ag.getGenVars().Theta          = otherGenerator.getGenVars().Theta;
+			ag.getGenVars().Speed          = otherGenerator.getGenVars().Speed;
+			ag.getGenVars().w0             = otherGenerator.getGenVars().w0;
+			ag.getGenVars().dSpeed         = otherGenerator.getGenVars().dSpeed;
+			ag.getGenVars().D              = otherGenerator.getGenVars().D;
+			ag.getGenVars().Dpu            = otherGenerator.getGenVars().Dpu;
 
-			ag.getUserModel().setName(OtherGenerator.getUserModel().getName());  // connect to user written models
-			ag.getShaftModel().setName(OtherGenerator.getShaftModel().getName());
+			ag.getUserModel().setName(otherGenerator.getUserModel().getName());  // connect to user written models
+			ag.getShaftModel().setName(otherGenerator.getShaftModel().getName());
 
-			classMakeLike(OtherGenerator);
+			classMakeLike(otherGenerator);
 
 			for (i = 0; i < ag.getParentClass().getNumProperties(); i++)
-				ag.setPropertyValue(i, OtherGenerator.getPropertyValue(i));
+				ag.setPropertyValue(i, otherGenerator.getPropertyValue(i));
 
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + OtherGeneratorName + "\" not found.", 562);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + otherGeneratorName + "\" not found.", 562);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		GeneratorObj p;
 
-		if (Handle == 0) {  // init all
+		if (handle == 0) {  // init all
 			for (int i = 0; i < elementList.size(); i++) {
 				p = (GeneratorObj) elementList.get(i);
 				p.randomize(0);
 			}
 		} else {
-			setActiveElement(Handle);
+			setActiveElement(handle);
 			p = (GeneratorObj) getActiveObj();
 			p.randomize(0);
 		}
@@ -598,19 +598,19 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	}
 
 	public String[] getRegisterNames() {
-		return RegisterNames;
+		return registerNames;
 	}
 
-	public void setRegisterNames(String[] registerNames) {
-		RegisterNames = registerNames;
+	public void setRegisterNames(String[] names) {
+		registerNames = names;
 	}
 
 	public static GeneratorObj getActiveGeneratorObj() {
-		return ActiveGeneratorObj;
+		return activeGeneratorObj;
 	}
 
-	public static void setActiveGeneratorObj(GeneratorObj activeGeneratorObj) {
-		ActiveGeneratorObj = activeGeneratorObj;
+	public static void setActiveGeneratorObj(GeneratorObj generatorObj) {
+		activeGeneratorObj = generatorObj;
 	}
 
 }
