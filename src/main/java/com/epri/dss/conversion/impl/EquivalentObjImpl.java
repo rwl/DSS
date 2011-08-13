@@ -378,17 +378,17 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		return Zinv;
 	}
 
-	public void setZinv(CMatrix zinv) {
+	public void setZInv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 
 	// FIXME Private members in OpenDSS
 
-	public double getkVBase() {
+	public double getKVBase() {
 		return kVBase;
 	}
 
-	public void setkVBase(double kVBase) {
+	public void setKVBase(double kVBase) {
 		this.kVBase = kVBase;
 	}
 

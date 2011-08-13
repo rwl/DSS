@@ -113,7 +113,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				interpretAllBuses(Param);
 				break;
 			case 2:
-				ae.setkVBase(parser.makeDouble());  // basekv
+				ae.setKVBase(parser.makeDouble());  // basekv
 				break;
 			case 3:
 				ae.setPerUnit(parser.makeDouble());  // pu
@@ -191,16 +191,16 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				if (ae.getZ() != null)
 					ae.setZ(null);
 				if (ae.getZinv() != null)
-					ae.setZinv(null);
+					ae.setZInv(null);
 
 				ae.setZ(new CMatrixImpl(ae.getNPhases()));
-				ae.setZinv(new CMatrixImpl(ae.getNPhases()));
+				ae.setZInv(new CMatrixImpl(ae.getNPhases()));
 			}
 
 			ae.getZ().copyFrom(OtherEquivalent.getZ());
 			// ae.getZinv().copyFrom(OtherLine.getZinv());
 			ae.setVMag(OtherEquivalent.getVMag());
-			ae.setkVBase(OtherEquivalent.getkVBase());
+			ae.setKVBase(OtherEquivalent.getKVBase());
 			ae.setPerUnit(OtherEquivalent.getPerUnit());
 			ae.setAngle(OtherEquivalent.getAngle());
 			ae.setEquivFrequency(OtherEquivalent.getEquivFrequency());

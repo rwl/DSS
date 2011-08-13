@@ -1505,7 +1505,7 @@ public class ExecHelper {
 			Globals.doSimpleMsg("Allocation factor must be greater than zero.", 271);
 		} else {
 			for (LoadObj load : Globals.getActiveCircuit().getLoads())
-				load.setkVAAllocationFactor(x);
+				load.setKVAAllocationFactor(x);
 		}
 	}
 
@@ -2598,9 +2598,9 @@ public class ExecHelper {
 			pBus = ckt.getBuses()[iBus];
 			kvln = pBus.getKVBase();
 			if ((pLoad.getConnection() == 1) || (pLoad.getNPhases() == 3)) {
-				pLoad.setkVLoadBase(kvln * DSSGlobals.SQRT3);
+				pLoad.setKVLoadBase(kvln * DSSGlobals.SQRT3);
 			} else {
-				pLoad.setkVLoadBase(kvln);
+				pLoad.setKVLoadBase(kvln);
 			}
 			pLoad.updateVoltageBases();
 			pLoad.recalcElementData();

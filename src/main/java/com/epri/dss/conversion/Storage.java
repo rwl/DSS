@@ -5,16 +5,16 @@ public interface Storage extends PCClass {
 	static int NumStorageRegisters = 6;
 	static int NumStorageVariables = 5;
 
-	static int STORE_CHARGING    = -1;
-	static int STORE_IDLING      =  0;
-	static int STORE_DISCHARGING =  1;
+	static int CHARGING    = -1;
+	static int IDLING      =  0;
+	static int DISCHARGING =  1;
 
 	/* Dispatch modes */
-	static int STORE_DEFAULT = 0;
-	static int STORE_LOADMODE = 1;
-	static int STORE_PRICEMODE = 2;
-	static int STORE_EXTERNALMODE = 3;
-	static int STORE_FOLLOW = 4;
+	static int DEFAULT = 0;
+	static int LOAD_MODE = 1;
+	static int PRICE_MODE = 2;
+	static int EXTERNAL_MODE = 3;
+	static int FOLLOW = 4;
 
 	/*
 	 * To add a property,
@@ -24,40 +24,40 @@ public interface Storage extends PCClass {
 	 *   4) add any special handlers to dumpProperties and getPropertyValue, if needed
 	 */
 
-	static int propKV         =  2;
-	static int propKW         =  3;
-	static int propPF         =  4;
-	static int propMODEL      =  5;
-	static int propYEARLY     =  6;
-	static int propDAILY      =  7;
-	static int propDUTY       =  8;
-	static int propDISPMODE   =  9;
-	static int propIDLEKVAR   = 10;
-	static int propCONNECTION = 11;
-	static int propKVAR       = 12;
-	static int propPCTR       = 13;
-	static int propPCTX       = 14;
-	static int propIDLEKW     = 15;
-	static int propCLASS      = 16;
-	static int propDISPOUTTRIG= 17;
-	static int propDISPINTRIG = 18;
-	static int propCHARGEEFF  = 19;
-	static int propDISCHARGEEFF = 20;
-	static int propPCTKWOUT   = 21;
-	static int propVMINPU     = 22;
-	static int propVMAXPU     = 23;
-	static int propSTATE      = 24;
-	static int propKVA        = 25;
-	static int propKWRATED    = 26;
-	static int propKWHRATED   = 27;
-	static int propKWHSTORED  = 28;
-	static int propPCTRESERVE = 29;
-	static int propUSERMODEL  = 30;
-	static int propUSERDATA   = 31;
-	static int propDEBUGTRACE = 32;
-	static int propPCTKWIN    = 33;
-	static int propPCTSTORED  = 34;
-	static int propCHARGETIME = 35;
+	static int KV         =  2;
+	static int KW         =  3;
+	static int PF         =  4;
+	static int MODEL      =  5;
+	static int YEARLY     =  6;
+	static int DAILY      =  7;
+	static int DUTY       =  8;
+	static int DISP_MODE   =  9;
+	static int IDLE_KVAR   = 10;
+	static int CONNECTION = 11;
+	static int KVAR       = 12;
+	static int PCTR       = 13;
+	static int PCTX       = 14;
+	static int IDLE_KW     = 15;
+	static int CLASS      = 16;
+	static int DISP_OUT_TRIG= 17;
+	static int DISP_IN_TRIG = 18;
+	static int CHARGE_EFF  = 19;
+	static int DISCHARGE_EFF = 20;
+	static int PCT_KW_OUT   = 21;
+	static int VMIN_PU     = 22;
+	static int VMAX_PU     = 23;
+	static int STATE      = 24;
+	static int KVA        = 25;
+	static int KW_RATED    = 26;
+	static int KWH_RATED   = 27;
+	static int KWH_STORED  = 28;
+	static int PCT_RESERVE = 29;
+	static int USER_MODEL  = 30;
+	static int USER_DATA   = 31;
+	static int DEBUG_TRACE = 32;
+	static int PCT_KW_IN    = 33;
+	static int PCT_STORED  = 34;
+	static int CHARGE_TIME = 35;
 
 	static int NumPropsThisClass = 36;  // make this agree with the last property constant
 

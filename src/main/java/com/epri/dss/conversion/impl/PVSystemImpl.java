@@ -55,100 +55,100 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				"Number of Phases, this PVSystem element.  Power is evenly divided among phases.");
 		addProperty("bus1", 1,
 				"Bus to which the PVSystem element is connected.  May include specific node specification.");
-		addProperty("kv", PVSystem.propKV,
+		addProperty("kv", PVSystem.KV,
 				"Nominal rated (1.0 per unit) voltage, kV, for PVSystem element. For 2- and 3-phase PVSystem elements, specify phase-phase kV. "+
 				"Otherwise, specify actual kV across each branch of the PVSystem element. "+
 				"If 1-phase wye (star or LN), specify phase-neutral kV. "+
 				"If 1-phase delta or phase-phase connected, specify phase-phase kV.");  // line-neutral voltage//  base voltage
-		addProperty("irradiance", PVSystem.propIrradiance,
+		addProperty("irradiance", PVSystem.IRRADIANCE,
 				"Get/set the present irradiance value in kW/sq-m. Used as base value for shape multipliers. "+
 				"Generally entered as peak value for the time period of interest and the yearly, daily, and duty load shape " +
 				"objects are defined as per unit multipliers (just like Loads/Generators)." );
-		addProperty("Pmpp", PVSystem.propPmpp,
+		addProperty("Pmpp", PVSystem.PMPP,
 				"Get/set the rated max power of the PV array for 1.0 kW/sq-m irradiance and a user-selected array temperature. " +
 				"The P-TCurve should be defined relative to the selected array temperature." );
-		addProperty("Temperature", PVSystem.propTemp,
+		addProperty("Temperature", PVSystem.TEMP,
 				"Get/set the present Temperature. Used as fixed value corresponding to PTCurve property. "+
 				"A multiplier is obtained from the Pmpp-Temp curve and applied to the nominal Pmpp from the irradiance " +
 				"to determine the net array output." );
-		addProperty("pf", PVSystem.propPF,
+		addProperty("pf", PVSystem.PF,
 				"Nominally, the power factor for the output power. Default is 1.0. " +
 				"Setting this property will cause the inverter to operate in constant power factor mode." +
 				"Enter negative when kW and kvar have opposite signs."+CRLF+
 				"A positive power factor signifies that the PVSystem element produces vars " + CRLF +
 				"as is typical for a generator.  ");
-		addProperty("conn", PVSystem.propCONNECTION,
+		addProperty("conn", PVSystem.CONNECTION,
 				"={wye|LN|delta|LL}.  Default is wye.");
-		addProperty("kvar", PVSystem.propKVAR,
+		addProperty("kvar", PVSystem.KVAR,
 				"Get/set the present kvar value.  Setting this property forces the inverter to operate in constant kvar mode.");
-		addProperty("kVA", propKVA,
+		addProperty("kVA", KVA,
 				"kVA rating of inverter. Used as the base for Dynamics mode and Harmonics mode values.");
-		addProperty("%Cutin", PVSystem.propCutin,
+		addProperty("%Cutin", PVSystem.CUT_IN,
 				"% cut-in power -- % of kVA rating of inverter. " +
 				"When the inverter is OFF, the power from the array must be greater than this for the inverter to turn on.");
-		addProperty("%Cutout", PVSystem.propCutout,
+		addProperty("%Cutout", PVSystem.CUT_OUT,
 				"% cut-out power -- % of kVA rating of inverter. "+
 				"When the inverter is ON, the inverter turns OFF when the power from the array drops below this valye.");
 
-		addProperty("EffCurve", PVSystem.propInvEffCurve,
+		addProperty("EffCurve", PVSystem.INV_EFF_CURVE,
 				"An XYCurve object, previously defined, that describes the PER UNIT efficiency vs PER UNIT of rated kVA for the inverter. " +
 				"Inverter output power is discounted by the multiplier obtained from this curve.");
 
-		addProperty("P-TCurve", PVSystem.propP_T_Curve,
+		addProperty("P-TCurve", PVSystem.P_T_CURVE,
 				"An XYCurve object, previously defined, that describes the PV array PER UNIT Pmpp vs Temperature curve. " +
 				"Temperature units must agree with the Temperature property and the Temperature shapes used for simulations. " +
 				"The Pmpp values are specified in per unit of the Pmpp value for 1 kW/sq-m irradiance. " +
 				"The value for the temperature at which Pmpp is defined should be 1.0. " +
 				"The net array power is determined by the irradiance * Pmpp * f(Temperature)");
-		addProperty("%R", propPCTR,
+		addProperty("%R", PCTR,
 				"Equivalent percent internal resistance, ohms. Default is 0. Placed in series with internal voltage source" +
 				" for harmonics and dynamics modes. Use a combination of %IdlekW and %EffCharge and %EffDischarge to account for " +
 				"losses in power flow modes.");
-		addProperty("%X", PVSystem.propPCTX,
+		addProperty("%X", PVSystem.PCTX,
 				"Equivalent percent internal reactance, ohms. Default is 50%. Placed in series with internal voltage source" +
 				" for harmonics and dynamics modes. (Limits fault current to 2 pu.) " +
 				"Use %Idlekvar and kvar properties to account for any reactive power during power flow solutions.");
-		addProperty("model", PVSystem.propMODEL,
+		addProperty("model", PVSystem.MODEL,
 				"Integer code (default=1) for the model to use for power output variation with voltage. "+
 				"Valid values are:" +CRLF+CRLF+
 				"1:PVSystem element injects a CONSTANT kW at specified power factor."+CRLF+
 				"2:PVSystem element is modeled as a CONSTANT ADMITTANCE."  +CRLF+
 				"3:Compute load injection from User-written Model.");
 
-		addProperty("Vminpu", PVSystem.propVMINPU,
+		addProperty("Vminpu", PVSystem.VMIN_PU,
 				"Default = 0.90.  Minimum per unit voltage for which the Model is assumed to apply. " +
 				"Below this value, the load model reverts to a constant impedance model.");
-		addProperty("Vmaxpu", PVSystem.propVMAXPU,
+		addProperty("Vmaxpu", PVSystem.VMAX_PU,
 				"Default = 1.10.  Maximum per unit voltage for which the Model is assumed to apply. " +
 				"Above this value, the load model reverts to a constant impedance model.");
-		addProperty("yearly", PVSystem.propYEARLY,
+		addProperty("yearly", PVSystem.YEARLY,
 				"Dispatch shape to use for yearly simulations.  Must be previously defined "+
 				"as a Loadshape object. If this is not specified, the Daily dispatch shape, If any, is repeated "+
 				"during Yearly solution modes. In the default dispatch mode, " +
 				"the PVSystem element uses this loadshape to trigger State changes.");
-		addProperty("daily", propDAILY,
+		addProperty("daily", DAILY,
 				"Dispatch shape to use for daily simulations.  Must be previously defined "+
 				"as a Loadshape object of 24 hrs, typically.  In the default dispatch mode, "+
 				"the PVSystem element uses this loadshape to trigger State changes."); // daily dispatch (hourly)
-		addProperty("duty", PVSystem.propDUTY,
+		addProperty("duty", PVSystem.DUTY,
 				"Load shape to use for duty cycle dispatch simulations such as for solar ramp rate studies. " +
 				"Must be previously defined as a Loadshape object. "+
 				"Typically would have time intervals of 1-5 seconds. "+
 				"Designate the number of points to solve using the Set Number=xxxx command. "+
 				"If there are fewer points in the actual shape, the shape is assumed to repeat.");  // as for wind generation
 
-		addProperty("Tyearly", PVSystem.propTYEARLY,
+		addProperty("Tyearly", PVSystem.T_YEARLY,
 				"Temperature shape to use for yearly simulations.  Must be previously defined "+
 				"as a TShape object. If this is not specified, the Daily dispatch shape, If any, is repeated "+
 				"during Yearly solution modes. " +
 				"The PVSystem element uses this TShape to determine the Pmpp from the Pmpp vs T curve. " +
 				"Units must agree with the Pmpp vs T curve.");
-		addProperty("Tdaily", PVSystem.propTDAILY,
+		addProperty("Tdaily", PVSystem.T_DAILY,
 				"Temperature shape to use for daily simulations.  Must be previously defined "+
 				"as a TShape object of 24 hrs, typically.  "+
 				"The PVSystem element uses this TShape to determine the Pmpp from the Pmpp vs T curve. " +
 				"Units must agree with the Pmpp vs T curve."); // daily dispatch (hourly)
-		addProperty("Tduty", PVSystem.propTDUTY,
+		addProperty("Tduty", PVSystem.T_DUTY,
 				"Temperature shape to use for duty cycle dispatch simulations such as for solar ramp rate studies. " +
 				"Must be previously defined as a TShape object. "+
 				"Typically would have time intervals of 1-5 seconds. "+
@@ -156,16 +156,16 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				"If there are fewer points in the actual shape, the shape is assumed to repeat. " +
 				"The PVSystem model uses this TShape to determine the Pmpp from the Pmpp vs T curve. " +
 				"Units must agree with the Pmpp vs T curve.");  // Cloud transient simulation
-		addProperty("class", propCLASS,
+		addProperty("class", CLASS,
 				"An arbitrary integer number representing the class of PVSystem element so that PVSystem values may "+
 				"be segregated by class."); // integer
 
-		addProperty("UserModel", propUSERMODEL,
+		addProperty("UserModel", USER_MODEL,
 				"Name of DLL containing user-written model, which computes the terminal currents for Dynamics studies, " +
 				"overriding the default model.  Set to \"none\" to negate previous setting.");
-		addProperty("UserData", PVSystem.propUSERDATA,
+		addProperty("UserData", PVSystem.USER_DATA,
 				"String (in quotes or parentheses) that gets passed to user-written model for defining the data required for that model.");
-		addProperty("debugtrace", PVSystem.propDEBUGTRACE,
+		addProperty("debugtrace", PVSystem.DEBUG_TRACE,
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the PVSystem model " +
 				"for each iteration.  Creates a separate file for each PVSystem element named \"PVSystem_name.csv\"." );
 
@@ -253,18 +253,18 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 		switch (apv.getNPhases()) {
 		case 2:
-			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
+			apv.setVBase(apv.getKVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
 			break;
 		case 3:
-			apv.setVBase(apv.getkVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
+			apv.setVBase(apv.getKVPVSystemBase() * DSSGlobals.InvSQRT3x1000);  // L-N volts
 			break;
 		default:
-			apv.setVBase(apv.getkVPVSystemBase() * 1000.0);  // just use what is supplied
+			apv.setVBase(apv.getKVPVSystemBase() * 1000.0);  // just use what is supplied
 			break;
 		}
 
-		apv.setVBase95(apv.getVminpu() * apv.getVBase());
-		apv.setVBase105(apv.getVmaxpu() * apv.getVBase());
+		apv.setVBase95(apv.getVMinPU() * apv.getVBase());
+		apv.setVBase105(apv.getVMaxPU() * apv.getVBase());
 
 		apv.setYorder(apv.getNConds() * apv.getNTerms());
 		apv.setYPrimInvalid(true);
@@ -314,89 +314,89 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				case 1:
 					apv.setBus(1, Param);  // TODO Check zero based indexing
 					break;
-				case propKV:
-					apv.setPresentkV(parser.makeDouble());
+				case KV:
+					apv.setPresentKV(parser.makeDouble());
 					break;
-				case propIrradiance:
+				case IRRADIANCE:
 					apv.setIrradiance(parser.makeDouble());
 					break;
-				case propPF:
+				case PF:
 					apv.setPFSpecified(true);
-					apv.setKvarSpecified(false);
+					apv.setKVArSpecified(false);
 					apv.setPowerFactor(parser.makeDouble());
 					break;
-				case propMODEL:
+				case MODEL:
 					apv.setVoltageModel(parser.makeInteger());
 					break;
-				case propYEARLY:
+				case YEARLY:
 					apv.setYearlyShape(Param);
 					break;
-				case propDAILY:
+				case DAILY:
 					apv.setDailyShape(Param);
 					break;
-				case propDUTY:
+				case DUTY:
 					apv.setDutyShape(Param);
 					break;
-				case propTYEARLY:
+				case T_YEARLY:
 					apv.setYearlyTShape(Param);
 					break;
-				case propTDAILY:
+				case T_DAILY:
 					apv.setDailyTShape(Param);
 					break;
-				case propTDUTY:
+				case T_DUTY:
 					apv.setDutyTShape(Param);
 					break;
-				case propCONNECTION:
+				case CONNECTION:
 					interpretConnection(Param);
 					break;
-				case propKVAR:
-					apv.setKvarSpecified(true);
+				case KVAR:
+					apv.setKVArSpecified(true);
 					apv.setPFSpecified(false);
-					apv.setPresentkvar(parser.makeDouble());
+					apv.setPresentKVAr(parser.makeDouble());
 					break;
-				case propPCTR:
+				case PCTR:
 					apv.setPctR(parser.makeDouble());
 					break;
-				case propPCTX:
+				case PCTX:
 					apv.setPctX(parser.makeDouble());
 					break;
-				case propCLASS:
+				case CLASS:
 					apv.setFClass(parser.makeInteger());
 					break;
-				case propInvEffCurve:
+				case INV_EFF_CURVE:
 					apv.setInverterCurve(Param);
 					break;
-				case propTemp:
+				case TEMP:
 					apv.setTemperature(parser.makeDouble());
 					break;
-				case propPmpp:
+				case PMPP:
 					apv.setPmpp(parser.makeDouble());
 					break;
-				case propP_T_Curve:
-					apv.setPower_TempCurve(Param);
+				case P_T_CURVE:
+					apv.setPowerTempCurve(Param);
 					break;
-				case propCutin:
+				case CUT_IN:
 					apv.setPctCutIn(parser.makeDouble());
 					break;
-				case propCutout:
+				case CUT_OUT:
 					apv.setPctCutOut(parser.makeDouble());
 					break;
-				case propVMINPU:
-					apv.setVminpu(parser.makeDouble());
+				case VMIN_PU:
+					apv.setVMinPU(parser.makeDouble());
 					break;
-				case propVMAXPU:
-					apv.setVmaxpu(parser.makeDouble());
+				case VMAX_PU:
+					apv.setVMaxPU(parser.makeDouble());
 					break;
-				case propKVA:
-					apv.setkVArating(parser.makeDouble());
+				case KVA:
+					apv.setKVArating(parser.makeDouble());
 					break;
-				case propUSERMODEL:
+				case USER_MODEL:
 					apv.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
-				case propUSERDATA:
+				case USER_DATA:
 					apv.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
-				case propDEBUGTRACE:
+				case DEBUG_TRACE:
 					apv.setDebugTrace(Utilities.interpretYesNo(Param));
 					break;
 				default:
@@ -410,34 +410,34 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					setNcondsForConnection();  // force reallocation of terminal info
 					break;
 				/* set loadshape objects; returns nil if not valid */
-				case propYEARLY:
+				case YEARLY:
 					apv.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getYearlyShape()) );
 					break;
-				case propDAILY:
+				case DAILY:
 					apv.setDailyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getDailyShape()) );
 					break;
-				case propDUTY:
+				case DUTY:
 					apv.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(apv.getDutyShape()) );
 					break;
 
-				case propTYEARLY:
+				case T_YEARLY:
 					apv.setYearlyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getYearlyTShape()) );
 					break;
-				case propTDAILY:
+				case T_DAILY:
 					apv.setDailyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getDailyTShape()) );
 					break;
-				case propTDUTY:
+				case T_DUTY:
 					apv.setDutyTShapeObj( (TShapeObj) Globals.getTShapeClass().find(apv.getDutyTShape()) );
 					break;
 
-				case propInvEffCurve:
+				case INV_EFF_CURVE:
 					apv.setInverterCurveObj( (XYCurveObj) Globals.getXYCurveClass().find(apv.getInverterCurve()) );
 					break;
-				case propP_T_Curve:
-					apv.setPower_TempCurveObj( (XYCurveObj) Globals.getXYCurveClass().find(apv.getPower_TempCurve()) );
+				case P_T_CURVE:
+					apv.setPowerTempCurveObj( (XYCurveObj) Globals.getXYCurveClass().find(apv.getPowerTempCurve()) );
 					break;
 
-				case propDEBUGTRACE:
+				case DEBUG_TRACE:
 					if (apv.isDebugTrace()) {  // init trace file
 						try {
 							FileWriter TraceStream = new FileWriter(Globals.getDSSDataDirectory() + "STOR_"+apv.getName()+".csv", false);
@@ -488,17 +488,17 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 				apv.setYPrimInvalid(true);
 			}
 
-			apv.setkVPVSystemBase(OtherPVsystemObj.getkVPVSystemBase());
+			apv.setKVPVSystemBase(OtherPVsystemObj.getKVPVSystemBase());
 			apv.setVBase(OtherPVsystemObj.getVBase());
-			apv.setVminpu(OtherPVsystemObj.getVminpu());
-			apv.setVmaxpu(OtherPVsystemObj.getVmaxpu());
+			apv.setVMinPU(OtherPVsystemObj.getVMinPU());
+			apv.setVMaxPU(OtherPVsystemObj.getVMaxPU());
 			apv.setVBase95(OtherPVsystemObj.getVBase95());
 			apv.setVBase105(OtherPVsystemObj.getVBase105());
-			apv.setkW_out(OtherPVsystemObj.getkW_out());
-			apv.setKvar_out(OtherPVsystemObj.getKvar_out());
-			apv.setPnominalperphase(OtherPVsystemObj.getPnominalperphase());
+			apv.setKWOut(OtherPVsystemObj.getKWOut());
+			apv.setKVArOut(OtherPVsystemObj.getKVArOut());
+			apv.setPNominalPerPhase(OtherPVsystemObj.getPNominalPerPhase());
 			apv.setPowerFactor(OtherPVsystemObj.getPowerFactor());
-			apv.setQnominalperphase(OtherPVsystemObj.getQnominalperphase());
+			apv.setQNominalPerPhase(OtherPVsystemObj.getQNominalPerPhase());
 			apv.setConnection(OtherPVsystemObj.getConnection());
 			apv.setYearlyShape(OtherPVsystemObj.getYearlyShape());
 			apv.setYearlyShapeObj(OtherPVsystemObj.getYearlyShapeObj());
@@ -514,8 +514,8 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			apv.setDutyTShapeObj(OtherPVsystemObj.getDutyTShapeObj());
 			apv.setInverterCurve(OtherPVsystemObj.getInverterCurve());
 			apv.setInverterCurveObj(OtherPVsystemObj.getInverterCurveObj());
-			apv.setPower_TempCurve(OtherPVsystemObj.getPower_TempCurve());
-			apv.setPower_TempCurveObj(OtherPVsystemObj.getPower_TempCurveObj());
+			apv.setPowerTempCurve(OtherPVsystemObj.getPowerTempCurve());
+			apv.setPowerTempCurveObj(OtherPVsystemObj.getPowerTempCurveObj());
 			apv.setFClass(OtherPVsystemObj.getFClass());
 			apv.setVoltageModel(OtherPVsystemObj.getVoltageModel());
 
@@ -525,7 +525,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 			apv.setPctCutOut(OtherPVsystemObj.getPctCutOut());
 			apv.setIrradiance(OtherPVsystemObj.getIrradiance());
 
-			apv.setkVArating(OtherPVsystemObj.getkVArating());
+			apv.setKVArating(OtherPVsystemObj.getKVARating());
 
 			apv.setPctR(OtherPVsystemObj.getPctR());
 			apv.setPctX(OtherPVsystemObj.getPctX());

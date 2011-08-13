@@ -362,11 +362,11 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		Z = z;
 	}
 
-	public CMatrix getZinv() {
+	public CMatrix getZInv() {
 		return Zinv;
 	}
 
-	public void setZinv(CMatrix zinv) {
+	public void setZInv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 
@@ -388,11 +388,11 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		Volts = volts;
 	}
 
-	public double getVmag() {
+	public double getVMag() {
 		return Vmag;
 	}
 
-	public void setVmag(double vmag) {
+	public void setVMag(double vmag) {
 		Vmag = vmag;
 	}
 

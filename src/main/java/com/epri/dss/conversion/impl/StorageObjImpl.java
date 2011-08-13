@@ -165,7 +165,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		this.kWrating     = 25.0;
 		this.kVArating    = this.kWrating *1.0;
 
-		this.State        = Storage.STORE_IDLING;  // idling and fully charged
+		this.State        = Storage.IDLING;  // idling and fully charged
 		this.StateChanged = true;  // force building of YPrim
 		this.kWhRating    = 50;
 		this.kWhStored    = kWhRating;
@@ -208,9 +208,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	private String decodeState() {
 		switch (State) {
-		case Storage.STORE_CHARGING:
+		case Storage.CHARGING:
 			return "CHARGING";
-		case Storage.STORE_DISCHARGING:
+		case Storage.DISCHARGING:
 			return "DISCHARGING";
 		default:
 			return "IDLING";
@@ -226,57 +226,57 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		PropertyValue[0] = "3";         // "phases";
 		PropertyValue[1] = getBus(1);   // "bus1";
 
-		PropertyValue[Storage.propKV]      = String.format("%-g", kVStorageBase);
-		PropertyValue[Storage.propKW]      = String.format("%-g", kW_out);
-		PropertyValue[Storage.propPF]      = String.format("%-g", PFNominal);
-		PropertyValue[Storage.propMODEL]     = "1";
-		PropertyValue[Storage.propYEARLY]    = "";
-		PropertyValue[Storage.propDAILY]     = "";
-		PropertyValue[Storage.propDUTY]      = "";
-		PropertyValue[Storage.propDISPMODE]  = "Default";
-		PropertyValue[Storage.propIDLEKVAR]  = "0";
-		PropertyValue[Storage.propCONNECTION]= "wye";
-		PropertyValue[Storage.propKVAR]      = String.format("%-g", getPresentKVar());
+		PropertyValue[Storage.KV]      = String.format("%-g", kVStorageBase);
+		PropertyValue[Storage.KW]      = String.format("%-g", kW_out);
+		PropertyValue[Storage.PF]      = String.format("%-g", PFNominal);
+		PropertyValue[Storage.MODEL]     = "1";
+		PropertyValue[Storage.YEARLY]    = "";
+		PropertyValue[Storage.DAILY]     = "";
+		PropertyValue[Storage.DUTY]      = "";
+		PropertyValue[Storage.DISP_MODE]  = "Default";
+		PropertyValue[Storage.IDLE_KVAR]  = "0";
+		PropertyValue[Storage.CONNECTION]= "wye";
+		PropertyValue[Storage.KVAR]      = String.format("%-g", getPresentKVAr());
 
-		PropertyValue[Storage.propPCTR]      = String.format("%-g", pctR);
-		PropertyValue[Storage.propPCTX]      = String.format("%-g", pctX);
+		PropertyValue[Storage.PCTR]      = String.format("%-g", pctR);
+		PropertyValue[Storage.PCTX]      = String.format("%-g", pctX);
 
-		PropertyValue[Storage.propIDLEKW]    = "1";       // percent
-		PropertyValue[Storage.propCLASS]     = "1"; //"class"
-		PropertyValue[Storage.propDISPOUTTRIG] = "0";   // 0 - no trigger level
-		PropertyValue[Storage.propDISPINTRIG] = "0";
-		PropertyValue[Storage.propCHARGEEFF] = "90";
-		PropertyValue[Storage.propDISCHARGEEFF] = "90";
-		PropertyValue[Storage.propPCTKWOUT]  = "100";
-		PropertyValue[Storage.propPCTKWIN]   = "100";
+		PropertyValue[Storage.IDLE_KW]    = "1";       // percent
+		PropertyValue[Storage.CLASS]     = "1"; //"class"
+		PropertyValue[Storage.DISP_OUT_TRIG] = "0";   // 0 - no trigger level
+		PropertyValue[Storage.DISP_IN_TRIG] = "0";
+		PropertyValue[Storage.CHARGE_EFF] = "90";
+		PropertyValue[Storage.DISCHARGE_EFF] = "90";
+		PropertyValue[Storage.PCT_KW_OUT]  = "100";
+		PropertyValue[Storage.PCT_KW_IN]   = "100";
 
-		PropertyValue[Storage.propVMINPU]    = "0.90";
-		PropertyValue[Storage.propVMAXPU]    = "1.10";
-		PropertyValue[Storage.propSTATE]     = "IDLING";
-		PropertyValue[Storage.propKVA]       = String.format("%-g", kVArating);
-		PropertyValue[Storage.propKWRATED]   = String.format("%-g", kWrating);
-		PropertyValue[Storage.propKWHRATED]  = String.format("%-g", kWhRating);
-		PropertyValue[Storage.propKWHSTORED] = String.format("%-g", kWhStored);
-		PropertyValue[Storage.propPCTSTORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
-		PropertyValue[Storage.propPCTRESERVE]= String.format("%-g", pctReserve);
-		PropertyValue[Storage.propCHARGETIME]= String.format("%-g", ChargeTime);
+		PropertyValue[Storage.VMIN_PU]    = "0.90";
+		PropertyValue[Storage.VMAX_PU]    = "1.10";
+		PropertyValue[Storage.STATE]     = "IDLING";
+		PropertyValue[Storage.KVA]       = String.format("%-g", kVArating);
+		PropertyValue[Storage.KW_RATED]   = String.format("%-g", kWrating);
+		PropertyValue[Storage.KWH_RATED]  = String.format("%-g", kWhRating);
+		PropertyValue[Storage.KWH_STORED] = String.format("%-g", kWhStored);
+		PropertyValue[Storage.PCT_STORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
+		PropertyValue[Storage.PCT_RESERVE]= String.format("%-g", pctReserve);
+		PropertyValue[Storage.CHARGE_TIME]= String.format("%-g", ChargeTime);
 
-		PropertyValue[Storage.propUSERMODEL] = "";  // UserModel
-		PropertyValue[Storage.propUSERDATA]  = "";  // UserData
-		PropertyValue[Storage.propDEBUGTRACE]= "NO";
+		PropertyValue[Storage.USER_MODEL] = "";  // UserModel
+		PropertyValue[Storage.USER_DATA]  = "";  // UserData
+		PropertyValue[Storage.DEBUG_TRACE]= "NO";
 
 		super.initPropertyValues(Storage.NumPropsThisClass);
 	}
 
 	private String returnDispMode(int imode) {
 		switch (imode) {
-		case Storage.STORE_EXTERNALMODE:
+		case Storage.EXTERNAL_MODE:
 			return "External";
-		case Storage.STORE_FOLLOW:
+		case Storage.FOLLOW:
 			return "Follow";
-		case Storage.STORE_LOADMODE:
+		case Storage.LOAD_MODE:
 			return "Loadshape";
-		case Storage.STORE_PRICEMODE:
+		case Storage.PRICE_MODE:
 			return "Price";
 		default:
 			return "default";
@@ -287,70 +287,70 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public String getPropertyValue(int Index) {
 
 		switch (Index) {
-		case Storage.propKV:
+		case Storage.KV:
 			return String.format("%.6g", kVStorageBase);
-		case Storage.propKW:
+		case Storage.KW:
 			return String.format("%.6g", kW_out);
-		case Storage.propPF:
+		case Storage.PF:
 			return String.format("%.6g", PFNominal);
-		case Storage.propMODEL:
+		case Storage.MODEL:
 			return String.format("%d", VoltageModel);
-		case Storage.propYEARLY:
+		case Storage.YEARLY:
 			return YearlyShape;
-		case Storage.propDAILY:
+		case Storage.DAILY:
 			return DailyShape;
-		case Storage.propDUTY:
+		case Storage.DUTY:
 			return DutyShape;
-		case Storage.propDISPMODE:
+		case Storage.DISP_MODE:
 			return returnDispMode(DispatchMode);
-		case Storage.propIDLEKVAR:
+		case Storage.IDLE_KVAR:
 			return String.format("%.6g", pctIdlekvar);
 		//case Storage.propCONNECTION:;
-		case Storage.propKVAR:
+		case Storage.KVAR:
 			return String.format("%.6g", kvar_out);
-		case Storage.propPCTR:
+		case Storage.PCTR:
 			return String.format("%.6g", pctR);
-		case Storage.propPCTX:
+		case Storage.PCTX:
 			return String.format("%.6g", pctX);
-		case Storage.propIDLEKW:
+		case Storage.IDLE_KW:
 			return String.format("%.6g", pctIdlekW);
 		//case Storage.propCLASS      = 17;
-		case Storage.propDISPOUTTRIG:
+		case Storage.DISP_OUT_TRIG:
 			return String.format("%.6g", DischargeTrigger);
-		case Storage.propDISPINTRIG:
+		case Storage.DISP_IN_TRIG:
 			return String.format("%.6g", ChargeTrigger);
-		case Storage.propCHARGEEFF:
+		case Storage.CHARGE_EFF:
 			return String.format("%.6g", pctChargeEff);
-		case Storage.propDISCHARGEEFF:
+		case Storage.DISCHARGE_EFF:
 			return String.format("%.6g", pctDischargeEff);
-		case Storage.propPCTKWOUT:
+		case Storage.PCT_KW_OUT:
 			return String.format("%.6g", pctKWout);
-		case Storage.propVMINPU:
+		case Storage.VMIN_PU:
 			return String.format("%.6g", Vminpu);
-		case Storage.propVMAXPU:
+		case Storage.VMAX_PU:
 			return String.format("%.6g", Vmaxpu);
-		case Storage.propSTATE:
+		case Storage.STATE:
 			return decodeState();
-		case Storage.propKVA:
+		case Storage.KVA:
 			return String.format("%.6g", kVArating);
-		case Storage.propKWRATED:
+		case Storage.KW_RATED:
 			return String.format("%.6g", kWrating);
-		case Storage.propKWHRATED:
+		case Storage.KWH_RATED:
 			return String.format("%.6g", kWhRating);
-		case Storage.propKWHSTORED:
+		case Storage.KWH_STORED:
 			return String.format("%.6g", kWhStored);
-		case Storage.propPCTRESERVE:
+		case Storage.PCT_RESERVE:
 			return String.format("%.6g", pctReserve);
-		case Storage.propUSERMODEL:
+		case Storage.USER_MODEL:
 			return UserModel.getName();
-		case Storage.propUSERDATA:
+		case Storage.USER_DATA:
 			return "(" + super.getPropertyValue(Index) + ")";
 		//case Storage.propDEBUGTRACE = 33;
-		case Storage.propPCTKWIN:
+		case Storage.PCT_KW_IN:
 			return String.format("%.6g", pctKWin);
-		case Storage.propPCTSTORED:
+		case Storage.PCT_STORED:
 			return String.format("%.6g", kWhStored / kWhRating * 100.0);
-		case Storage.propCHARGETIME:
+		case Storage.CHARGE_TIME:
 			return String.format("%.6g", ChargeTime);
 		default:  // take the generic handler
 			return super.getPropertyValue(Index);
@@ -407,10 +407,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	private void setKWandKvarOut() {
 		switch (State) {
-		case Storage.STORE_CHARGING:
+		case Storage.CHARGING:
 			if (kWhStored < kWhRating) {
 				switch (DispatchMode) {
-				case Storage.STORE_FOLLOW:
+				case Storage.FOLLOW:
 					kW_out   = kWrating * ShapeFactor.getReal();
 					kvar_out = kvarBase * ShapeFactor.getImaginary();  // ???
 				default:
@@ -422,14 +422,14 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				setState(Storage.STORE_IDLING);   // all charged up
+				setState(Storage.IDLING);   // all charged up
 			}
 			break;
 
-		case Storage.STORE_DISCHARGING:
+		case Storage.DISCHARGING:
 			if (kWhStored > kWhReserve) {
 				switch (DispatchMode) {
-				case Storage.STORE_FOLLOW:
+				case Storage.FOLLOW:
 					kW_out   = kWrating * ShapeFactor.getReal();
 					kvar_out = kvarBase * ShapeFactor.getImaginary();
 				default:
@@ -441,7 +441,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					}
 				}
 			} else {
-				setState(Storage.STORE_IDLING);   // not enough storage to discharge
+				setState(Storage.IDLING);   // not enough storage to discharge
 			}
 			break;
 		}
@@ -458,13 +458,13 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			// check dispatch to see what state the storage element should be in
 			switch (DispatchMode) {
-			case Storage.STORE_EXTERNALMODE:
+			case Storage.EXTERNAL_MODE:
 				// Do nothing
 				break;
-			case Storage.STORE_LOADMODE:
+			case Storage.LOAD_MODE:
 				checkStateTriggerLevel(ckt.getGeneratorDispatchReference());
 				break;
-			case Storage.STORE_PRICEMODE:
+			case Storage.PRICE_MODE:
 				checkStateTriggerLevel(ckt.getPriceSignal());
 				break;
 
@@ -517,10 +517,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			setKWandKvarOut();  // based on state and amount of energy left in storage
 
-			if (State == Storage.STORE_IDLING) {
+			if (State == Storage.IDLING) {
 				// YeqIdle will be in the Yprim matrix so set this to zero
 				PNominalPerPhase = 0.0;  // -0.1 * kWRating / nPhases;  // watts
-				if (DispatchMode == Storage.STORE_EXTERNALMODE) {  // check for requested kVAr
+				if (DispatchMode == Storage.EXTERNAL_MODE) {  // check for requested kVAr
 					QNominalPerPhase = kvarRequested / nPhases * 1000.0;
 				} else {
 					QNominalPerPhase = 0.0;
@@ -627,10 +627,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (/*sol.isIsDynamicModel() ||*/ sol.isHarmonicModel()) {
 			/* Yeq is computed from %R and %X -- inverse of Rthev + j Xthev */
 			switch (State) {
-			case Storage.STORE_IDLING:
+			case Storage.IDLING:
 				Y = YeqIdling;
 				break;
-			case Storage.STORE_DISCHARGING:
+			case Storage.DISCHARGING:
 				Y = Yeq.negate().add(YeqIdling);
 				break;
 			default:
@@ -663,7 +663,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			/* Yeq is always expected as the equivalent line-neutral admittance */
 
 			switch (State) {
-			case Storage.STORE_IDLING:
+			case Storage.IDLING:
 				Y = YeqIdling;
 				break;
 			default:
@@ -731,15 +731,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		int OldState = State;
 
-		if (DispatchMode == Storage.STORE_FOLLOW) {
+		if (DispatchMode == Storage.FOLLOW) {
 
 			// set charge and discharge modes based on sign of load shape
 			if ((Level > 0.0) && (kWhStored > kWhReserve)) {
-				setState(Storage.STORE_DISCHARGING);
+				setState(Storage.DISCHARGING);
 			} else if ((Level < 0.0) && (kWhStored < kWhRating)) {
-				setState(Storage.STORE_CHARGING);
+				setState(Storage.CHARGING);
 			} else {
-				setState(Storage.STORE_IDLING);
+				setState(Storage.IDLING);
 			}
 		} else {
 			// all other dispatch modes, just compare to trigger value
@@ -748,33 +748,33 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			// first see If we want to turn off charging or discharging state
 			switch (getState()) {
-			case Storage.STORE_CHARGING:
+			case Storage.CHARGING:
 				if (ChargeTrigger != 0.0)
 					if ((ChargeTrigger < Level) || (kWhStored >= kWhRating))
-						setState(Storage.STORE_IDLING);
+						setState(Storage.IDLING);
 				break;
-			case Storage.STORE_DISCHARGING:
+			case Storage.DISCHARGING:
 				if (DischargeTrigger != 0.0)
 					if ((DischargeTrigger > Level) || (kWhStored <= kWhReserve))
-						setState(Storage.STORE_IDLING);
+						setState(Storage.IDLING);
 				break;
 			}
 
 			// now check to see if we want to turn on the opposite state
 			switch (getState()) {
-			case Storage.STORE_IDLING:
+			case Storage.IDLING:
 				if ((DischargeTrigger != 0.0) && (DischargeTrigger < Level) && (kWhStored > kWhReserve)) {
-					setState(Storage.STORE_DISCHARGING);
+					setState(Storage.DISCHARGING);
 				} else if ((ChargeTrigger != 0.0) && (ChargeTrigger > Level) && (kWhStored < kWhRating)) {
-					setState(Storage.STORE_CHARGING);
+					setState(Storage.CHARGING);
 				}
 
 				// check to see if it is time to turn the charge cycle on If it is not already on
-				if (!(getState() == Storage.STORE_CHARGING))
+				if (!(getState() == Storage.CHARGING))
 					if (ChargeTime > 0.0) {
 						SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - ChargeTime) < sol.getDynaVars().h / 3600.0)
-							setState(Storage.STORE_CHARGING);
+							setState(Storage.CHARGING);
 					}
 				break;
 			}
@@ -1180,8 +1180,8 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (isEnabled()) {
 
 			// only tabulate discharge hours
-			if (State == Storage.STORE_DISCHARGING) {
-				S = new Complex(getPresentkW(), getPresentKVar());
+			if (State == Storage.DISCHARGING) {
+				S = new Complex(getPresentkW(), getPresentKVAr());
 				Smag = S.abs();
 				HourValue = 1.0;
 			} else {
@@ -1190,7 +1190,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				HourValue = 0.0;
 			}
 
-			if ((State == Storage.STORE_DISCHARGING) || ckt.isTrapezoidalIntegration()) {
+			if ((State == Storage.DISCHARGING) || ckt.isTrapezoidalIntegration()) {
 				/* Make sure we always integrate for Trapezoidal case.
 				 * Don't need to for gen off and normal integration.
 				 */
@@ -1219,20 +1219,20 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
 		switch (State) {
-		case Storage.STORE_DISCHARGING:
+		case Storage.DISCHARGING:
 			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() / DischargeEff;
 			if (kWhStored < kWhReserve) {
 				kWhStored = kWhReserve;
-				setState(Storage.STORE_IDLING);  // it's empty turn it off
+				setState(Storage.IDLING);  // it's empty turn it off
 				StateChanged = true;
 			}
 			break;
 
-		case Storage.STORE_CHARGING:
+		case Storage.CHARGING:
 			kWhStored = kWhStored - getPresentkW() * sol.getIntervalHrs() * ChargeEff;
 			if (kWhStored > kWhRating) {
 				kWhStored = kWhRating;
-				setState(Storage.STORE_IDLING);  // it's full turn it off
+				setState(Storage.IDLING);  // it's full turn it off
 				StateChanged = true;
 			}
 			break;
@@ -1243,19 +1243,19 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		return kW_out; //PNominalPerPhase * 0.001 * nPhases;
 	}
 
-	public double getkWChargeLosses() {
+	public double getKWChargeLosses() {
 		switch (getState()) {
-		case Storage.STORE_CHARGING:
+		case Storage.CHARGING:
 			return Math.abs(getPower(0).getReal() * (100.0 - pctChargeEff) / 100000.0);  // kW
-		case Storage.STORE_IDLING:
-			return getkWIdlingLosses();
-		case Storage.STORE_DISCHARGING:
+		case Storage.IDLING:
+			return getKWIdlingLosses();
+		case Storage.DISCHARGING:
 			return Math.abs(getPower(0).getReal() * (100.0 - pctDischargeEff) / 100000.0);  // kW
 		}
 		return 0;
 	}
 
-	public double getkWIdlingLosses() {
+	public double getKWIdlingLosses() {
 		return pctIdlekW * kWrating / 100.0;
 	}
 
@@ -1263,7 +1263,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		return kVStorageBase;
 	}
 
-	public double getPresentKVar() {
+	public double getPresentKVAr() {
 		return kvar_out;  // QNominalPerPhase * 0.001 * nPhases;
 	}
 
@@ -1276,7 +1276,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
 			idx = getParentClass().getPropertyIdxMap()[i] ;
 			switch (idx) {
-			case Storage.propUSERDATA:
+			case Storage.USER_DATA:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
 				break;
 			default:
@@ -1303,7 +1303,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
-		if (State == Storage.STORE_DISCHARGING) {
+		if (State == Storage.DISCHARGING) {
 			computeITerminal();  // get present value of current
 
 			switch (Connection) {
@@ -1345,11 +1345,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		switch (S.toLowerCase().charAt(0)) {
 		case 'c':
-			return Storage.STORE_CHARGING;
+			return Storage.CHARGING;
 		case 'd':
-			return Storage.STORE_DISCHARGING;
+			return Storage.DISCHARGING;
 		default:
-			return Storage.STORE_IDLING;
+			return Storage.IDLING;
 		}
 	}
 
@@ -1521,10 +1521,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		}
 	}
 
-	public void setPctKVarOut(double Value) {
+	public void setPctKVArOut(double Value) {
 		pctKVarout = Value;
 		// force recompute of target PF and requested kVAr
-		setPresentKVar( kWrating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVarout / 100.0 );
+		setPresentKVAr( kWrating * Math.sqrt(1.0 / Math.pow(PFNominal, 2) - 1.0) * pctKVarout / 100.0 );
 	}
 
 	public void setPctKWOut(double Value) {
@@ -1555,7 +1555,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	/**
 	 * Set the kvar to requested value within rating of inverter
 	 */
-	public void setPresentKVar(double Value) {
+	public void setPresentKVAr(double Value) {
 		double kVA_Gen;
 
 		kvar_out = Value;
@@ -1608,7 +1608,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		return State;
 	}
 
-	public double getPctKVarOut() {
+	public double getPctKVArOut() {
 		return pctKVarout;
 	}
 
@@ -1688,35 +1688,35 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		YearlyShapeObj = yearlyShapeObj;
 	}
 
-	public double getkWrating() {
+	public double getKWRating() {
 		return kWrating;
 	}
 
-	public void setkWrating(double kWrating) {
+	public void setKWRating(double kWrating) {
 		this.kWrating = kWrating;
 	}
 
-	public double getkWhRating() {
+	public double getKWhRating() {
 		return kWhRating;
 	}
 
-	public void setkWhRating(double kWhRating) {
+	public void setKWhRating(double kWhRating) {
 		this.kWhRating = kWhRating;
 	}
 
-	public double getkWhStored() {
+	public double getKWhStored() {
 		return kWhStored;
 	}
 
-	public void setkWhStored(double kWhStored) {
+	public void setKWhStored(double kWhStored) {
 		this.kWhStored = kWhStored;
 	}
 
-	public double getkWhReserve() {
+	public double getKWhReserve() {
 		return kWhReserve;
 	}
 
-	public void setkWhReserve(double kWhReserve) {
+	public void setKWhReserve(double kWhReserve) {
 		this.kWhReserve = kWhReserve;
 	}
 
@@ -1842,67 +1842,67 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		StorageObjSwitchOpen = storageObjSwitchOpen;
 	}
 
-	public boolean iskVANotSet() {
+	public boolean isKVANotSet() {
 		return kVANotSet;
 	}
 
-	public void setkVANotSet(boolean kVANotSet) {
+	public void setKVANotSet(boolean kVANotSet) {
 		this.kVANotSet = kVANotSet;
 	}
 
-	public double getkVArating() {
+	public double getKVArating() {
 		return kVArating;
 	}
 
-	public void setkVArating(double kVArating) {
+	public void setKVA_Rating(double kVArating) {
 		this.kVArating = kVArating;
 	}
 
-	public double getkVStorageBase() {
+	public double getKVStorageBase() {
 		return kVStorageBase;
 	}
 
-	public void setkVStorageBase(double kVStorageBase) {
+	public void setKVStorageBase(double kVStorageBase) {
 		this.kVStorageBase = kVStorageBase;
 	}
 
-	public double getKvar_out() {
+	public double getKVArOut() {
 		return kvar_out;
 	}
 
-	public void setKvar_out(double kvar_out) {
+	public void setKVArOut(double kvar_out) {
 		this.kvar_out = kvar_out;
 	}
 
-	public double getkW_out() {
+	public double getKWOut() {
 		return kW_out;
 	}
 
-	public void setkW_out(double kW_out) {
+	public void setKWOut(double kW_out) {
 		this.kW_out = kW_out;
 	}
 
-	public double getKvarRequested() {
+	public double getKVArRequested() {
 		return kvarRequested;
 	}
 
-	public void setKvarRequested(double kvarRequested) {
+	public void setKVArRequested(double kvarRequested) {
 		this.kvarRequested = kvarRequested;
 	}
 
-	public double getPctIdlekW() {
+	public double getPctIdleKW() {
 		return pctIdlekW;
 	}
 
-	public void setPctIdlekW(double pctIdlekW) {
+	public void setPctIdleKW(double pctIdlekW) {
 		this.pctIdlekW = pctIdlekW;
 	}
 
-	public double getPctIdlekvar() {
+	public double getPctIdleKVAr() {
 		return pctIdlekvar;
 	}
 
-	public void setPctIdlekvar(double pctIdlekvar) {
+	public void setPctIdleKVAr(double pctIdlekvar) {
 		this.pctIdlekvar = pctIdlekvar;
 	}
 
@@ -2010,51 +2010,51 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		RandomMult = randomMult;
 	}
 
-	public int getReg_Hours() {
+	public int getRegHours() {
 		return Reg_Hours;
 	}
 
-	public void setReg_Hours(int reg_Hours) {
+	public void setRegHours(int reg_Hours) {
 		Reg_Hours = reg_Hours;
 	}
 
-	public int getReg_kvarh() {
+	public int getRegKVArh() {
 		return Reg_kvarh;
 	}
 
-	public void setReg_kvarh(int reg_kvarh) {
+	public void setRegKVArh(int reg_kvarh) {
 		Reg_kvarh = reg_kvarh;
 	}
 
-	public int getReg_kWh() {
+	public int getRegKWh() {
 		return Reg_kWh;
 	}
 
-	public void setReg_kWh(int reg_kWh) {
+	public void setRegKWh(int reg_kWh) {
 		Reg_kWh = reg_kWh;
 	}
 
-	public int getReg_MaxkVA() {
+	public int getRegMaxKVA() {
 		return Reg_MaxkVA;
 	}
 
-	public void setReg_MaxkVA(int reg_MaxkVA) {
+	public void setRegMaxKVA(int reg_MaxkVA) {
 		Reg_MaxkVA = reg_MaxkVA;
 	}
 
-	public int getReg_MaxkW() {
+	public int getRegMaxKW() {
 		return Reg_MaxkW;
 	}
 
-	public void setReg_MaxkW(int reg_MaxkW) {
+	public void setRegMaxKW(int reg_MaxkW) {
 		Reg_MaxkW = reg_MaxkW;
 	}
 
-	public int getReg_Price() {
+	public int getRegPrice() {
 		return Reg_Price;
 	}
 
-	public void setReg_Price(int reg_Price) {
+	public void setRegPrice(int reg_Price) {
 		Reg_Price = reg_Price;
 	}
 
@@ -2082,11 +2082,11 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		TraceFile = traceFile;
 	}
 
-	public double getkVarBase() {
+	public double getKVArBase() {
 		return kvarBase;
 	}
 
-	public void setkVarBase(double kvarBase) {
+	public void setKVArBase(double kvarBase) {
 		this.kvarBase = kvarBase;
 	}
 
@@ -2114,19 +2114,19 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		VBase95 = vBase95;
 	}
 
-	public double getVmaxpu() {
+	public double getVMaxPU() {
 		return Vmaxpu;
 	}
 
-	public void setVmaxpu(double vmaxpu) {
+	public void setVMaxPU(double vmaxpu) {
 		Vmaxpu = vmaxpu;
 	}
 
-	public double getVminpu() {
+	public double getVMinPU() {
 		return Vminpu;
 	}
 
-	public void setVminpu(double vminpu) {
+	public void setVMinPU(double vminpu) {
 		Vminpu = vminpu;
 	}
 

@@ -208,38 +208,38 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		setPropertyValue(0, "3");         // "phases";
 		setPropertyValue(1, getBus(1));   // "bus1";
 
-		setPropertyValue(PVSystem.propKV, String.format("%-g", kVPVSystemBase));
-		setPropertyValue(PVSystem.propIrradiance, String.format("%-g", Irradiance));
-		setPropertyValue(PVSystem.propPF, String.format("%-g", PFnominal));
-		setPropertyValue(PVSystem.propMODEL, "1");
-		setPropertyValue(PVSystem.propYEARLY, "");
-		setPropertyValue(PVSystem.propDAILY, "");
-		setPropertyValue(PVSystem.propDUTY, "");
-		setPropertyValue(PVSystem.propTYEARLY, "");
-		setPropertyValue(PVSystem.propTDAILY, "");
-		setPropertyValue(PVSystem.propTDUTY, "");
-		setPropertyValue(PVSystem.propCONNECTION, "wye");
-		setPropertyValue(PVSystem.propKVAR, String.format("%-g", getPresentkvar()));
+		setPropertyValue(PVSystem.KV, String.format("%-g", kVPVSystemBase));
+		setPropertyValue(PVSystem.IRRADIANCE, String.format("%-g", Irradiance));
+		setPropertyValue(PVSystem.PF, String.format("%-g", PFnominal));
+		setPropertyValue(PVSystem.MODEL, "1");
+		setPropertyValue(PVSystem.YEARLY, "");
+		setPropertyValue(PVSystem.DAILY, "");
+		setPropertyValue(PVSystem.DUTY, "");
+		setPropertyValue(PVSystem.T_YEARLY, "");
+		setPropertyValue(PVSystem.T_DAILY, "");
+		setPropertyValue(PVSystem.T_DUTY, "");
+		setPropertyValue(PVSystem.CONNECTION, "wye");
+		setPropertyValue(PVSystem.KVAR, String.format("%-g", getPresentKVAr()));
 
-		setPropertyValue(PVSystem.propPCTR, String.format("%-g", pctR));
-		setPropertyValue(PVSystem.propPCTX, String.format("%-g", pctX));
+		setPropertyValue(PVSystem.PCTR, String.format("%-g", pctR));
+		setPropertyValue(PVSystem.PCTX, String.format("%-g", pctX));
 
-		setPropertyValue(PVSystem.propCLASS, "1"); //"class"
+		setPropertyValue(PVSystem.CLASS, "1"); //"class"
 
-		setPropertyValue(PVSystem.propInvEffCurve, "");
-		setPropertyValue(PVSystem.propTemp, String.format("%-g", Temperature));
-		setPropertyValue(PVSystem.propPmpp, String.format("%-g", Pmpp));
-		setPropertyValue(PVSystem.propP_T_Curve, "");
-		setPropertyValue(PVSystem.propCutin, "20");
-		setPropertyValue(PVSystem.propCutout, "20");
+		setPropertyValue(PVSystem.INV_EFF_CURVE, "");
+		setPropertyValue(PVSystem.TEMP, String.format("%-g", Temperature));
+		setPropertyValue(PVSystem.PMPP, String.format("%-g", Pmpp));
+		setPropertyValue(PVSystem.P_T_CURVE, "");
+		setPropertyValue(PVSystem.CUT_IN, "20");
+		setPropertyValue(PVSystem.CUT_OUT, "20");
 
-		setPropertyValue(PVSystem.propVMINPU, "0.90");
-		setPropertyValue(PVSystem.propVMAXPU, "1.10");
-		setPropertyValue(PVSystem.propKVA, String.format("%-g", kVArating));
+		setPropertyValue(PVSystem.VMIN_PU, "0.90");
+		setPropertyValue(PVSystem.VMAX_PU, "1.10");
+		setPropertyValue(PVSystem.KVA, String.format("%-g", kVArating));
 
-		setPropertyValue(PVSystem.propUSERMODEL, "");  // UserModel
-		setPropertyValue(PVSystem.propUSERDATA, "");   // UserData
-		setPropertyValue(PVSystem.propDEBUGTRACE, "NO");
+		setPropertyValue(PVSystem.USER_MODEL, "");  // UserModel
+		setPropertyValue(PVSystem.USER_DATA, "");   // UserData
+		setPropertyValue(PVSystem.DEBUG_TRACE, "NO");
 
 		super.initPropertyValues(PVSystem.NumPropsThisClass);
 	}
@@ -247,35 +247,35 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	@Override
 	public String getPropertyValue(int Index) {
 		switch (Index) {
-		case PVSystem.propKV         : return String.format("%.6g", kVPVSystemBase);
-		case PVSystem.propIrradiance : return String.format("%.6g", Irradiance);
-		case PVSystem.propPF         : return String.format("%.6g", PFnominal);
-		case PVSystem.propMODEL      : return String.format("%d",   VoltageModel);
-		case PVSystem.propYEARLY     : return YearlyShape;
-		case PVSystem.propDAILY      : return DailyShape;
-		case PVSystem.propDUTY       : return DutyShape;
+		case PVSystem.KV         : return String.format("%.6g", kVPVSystemBase);
+		case PVSystem.IRRADIANCE : return String.format("%.6g", Irradiance);
+		case PVSystem.PF         : return String.format("%.6g", PFnominal);
+		case PVSystem.MODEL      : return String.format("%d",   VoltageModel);
+		case PVSystem.YEARLY     : return YearlyShape;
+		case PVSystem.DAILY      : return DailyShape;
+		case PVSystem.DUTY       : return DutyShape;
 
-		case PVSystem.propTYEARLY    : return YearlyTShape;
-		case PVSystem.propTDAILY     : return DailyTShape;
-		case PVSystem.propTDUTY      : return DutyTShape;
+		case PVSystem.T_YEARLY    : return YearlyTShape;
+		case PVSystem.T_DAILY     : return DailyTShape;
+		case PVSystem.T_DUTY      : return DutyTShape;
 
 		/*case PVSystem.propCONNECTION :;*/
-		case PVSystem.propKVAR       : return String.format("%.6g", kvar_out);
-		case PVSystem.propPCTR       : return String.format("%.6g", pctR);
-		case PVSystem.propPCTX       : return String.format("%.6g", pctX);
+		case PVSystem.KVAR       : return String.format("%.6g", kvar_out);
+		case PVSystem.PCTR       : return String.format("%.6g", pctR);
+		case PVSystem.PCTX       : return String.format("%.6g", pctX);
 		/*case PVSystem.propCLASS      = 17;*/
-		case PVSystem.propInvEffCurve: return InverterCurve;
-		case PVSystem.propTemp       : return String.format("%.6g", Temperature);
-		case PVSystem.propPmpp       : return String.format("%.6g", Pmpp);
-		case PVSystem.propP_T_Curve  : return Power_TempCurve;
-		case PVSystem.propCutin      : return String.format("%.6g", pctCutIn);
-		case PVSystem.propCutout     : return String.format("%.6g", pctCutOut);
-		case PVSystem.propVMINPU     : return String.format("%.6g", Vminpu);
-		case PVSystem.propVMAXPU     : return String.format("%.6g", Vmaxpu);
-		case PVSystem.propKVA        : return String.format("%.6g", kVArating);
+		case PVSystem.INV_EFF_CURVE: return InverterCurve;
+		case PVSystem.TEMP       : return String.format("%.6g", Temperature);
+		case PVSystem.PMPP       : return String.format("%.6g", Pmpp);
+		case PVSystem.P_T_CURVE  : return Power_TempCurve;
+		case PVSystem.CUT_IN      : return String.format("%.6g", pctCutIn);
+		case PVSystem.CUT_OUT     : return String.format("%.6g", pctCutOut);
+		case PVSystem.VMIN_PU     : return String.format("%.6g", Vminpu);
+		case PVSystem.VMAX_PU     : return String.format("%.6g", Vmaxpu);
+		case PVSystem.KVA        : return String.format("%.6g", kVArating);
 
-		case PVSystem.propUSERMODEL  : return UserModel.getName();
-		case PVSystem.propUSERDATA   : return "(" + super.getPropertyValue(Index) + ")";
+		case PVSystem.USER_MODEL  : return UserModel.getName();
+		case PVSystem.USER_DATA   : return "(" + super.getPropertyValue(Index) + ")";
 		/*case PVSystem.propDEBUGTRACE = 33;*/
 
 		default:  // take the generic handler
@@ -459,8 +459,8 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		varBase = 1000.0 * kvar_out / nPhases;
 
 		// values in ohms for Thevenin equivalents
-		RThev = pctR * 0.01 * MathUtil.sqr(getPresentkV()) / kVArating * 1000.0;
-		XThev = pctX * 0.01 * MathUtil.sqr(getPresentkV()) / kVArating * 1000.0;
+		RThev = pctR * 0.01 * MathUtil.sqr(getPresentKV()) / kVArating * 1000.0;
+		XThev = pctX * 0.01 * MathUtil.sqr(getPresentKV()) / kVArating * 1000.0;
 
 		CutInkW  = pctCutIn  * kVArating / 100.0;
 		CutOutkW = pctCutOut * kVArating / 100.0;
@@ -1022,7 +1022,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		// compute energy in PVSystem element branch
 		if (isEnabled()) {
-			S = new Complex(getPresentkW(), getPresentkvar());
+			S = new Complex(getPresentKW(), getPresentKVAr());
 			Smag = S.abs();
 			HourValue = 1.0;
 
@@ -1055,7 +1055,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		// do nothing
 	}
 
-	public double getPresentkW() {
+	public double getPresentKW() {
 		return Pnominalperphase * 0.001 * nPhases;
 	}
 
@@ -1063,11 +1063,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		return Irradiance * ShapeFactor.getReal();
 	}
 
-	public double getPresentkV() {
+	public double getPresentKV() {
 		return kVPVSystemBase;
 	}
 
-	public double getPresentkvar() {
+	public double getPresentKVAr() {
 		return Qnominalperphase * 0.001 * nPhases;
 	}
 
@@ -1080,7 +1080,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		for (i = 0; i < getParentClass().getNumProperties(); i++) {
 			idx = getParentClass().getPropertyIdxMap()[i];
 			switch (idx) {
-			case PVSystem.propUSERDATA:
+			case PVSystem.USER_DATA:
 				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(idx) + ")");
 				break;
 			default:
@@ -1154,7 +1154,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		case 0:
 			return getPresentIrradiance();
 		case 1:
-			return getPanelkW();
+			return getPanelKW();
 		case 2:
 			return getTempFactor();
 		case 3:
@@ -1303,7 +1303,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Irradiance = Value;
 	}
 
-	public void setPresentkV(double Value) {
+	public void setPresentKV(double Value) {
 		kVPVSystemBase = Value;
 		switch (nPhases) {
 		case 2:
@@ -1318,7 +1318,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		}
 	}
 
-	public void setPresentkvar(double Value) {
+	public void setPresentKVAr(double Value) {
 		kvarRequested = Value;
 	}
 
@@ -1451,19 +1451,19 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		InverterCurveObj = inverterCurveObj;
 	}
 
-	public String getPower_TempCurve() {
+	public String getPowerTempCurve() {
 		return Power_TempCurve;
 	}
 
-	public void setPower_TempCurve(String power_TempCurve) {
+	public void setPowerTempCurve(String power_TempCurve) {
 		Power_TempCurve = power_TempCurve;
 	}
 
-	public XYCurveObj getPower_TempCurveObj() {
+	public XYCurveObj getPowerTempCurveObj() {
 		return Power_TempCurveObj;
 	}
 
-	public void setPower_TempCurveObj(XYCurveObj power_TempCurveObj) {
+	public void setPowerTempCurveObj(XYCurveObj power_TempCurveObj) {
 		Power_TempCurveObj = power_TempCurveObj;
 	}
 
@@ -1502,27 +1502,27 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	// FIXME Private members in OpenDSS.
 
-	public Complex getYEQ() {
+	public Complex getYeq() {
 		return YEQ;
 	}
 
-	public void setYEQ(Complex yEQ) {
+	public void setYeq(Complex yEQ) {
 		YEQ = yEQ;
 	}
 
-	public Complex getYEQ95() {
+	public Complex getYeq95() {
 		return YEQ95;
 	}
 
-	public void setYEQ95(Complex yEQ95) {
+	public void setYeq95(Complex yEQ95) {
 		YEQ95 = yEQ95;
 	}
 
-	public Complex getYEQ105() {
+	public Complex getYeq105() {
 		return YEQ105;
 	}
 
-	public void setYEQ105(Complex yEQ105) {
+	public void setYeq105(Complex yEQ105) {
 		YEQ105 = yEQ105;
 	}
 
@@ -1550,11 +1550,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		PVSystemFundamental = pVSystemFundamental;
 	}
 
-	public boolean isPVsystemObjSwitchOpen() {
+	public boolean isPVSystemObjSwitchOpen() {
 		return PVsystemObjSwitchOpen;
 	}
 
-	public void setPVsystemObjSwitchOpen(boolean pVsystemObjSwitchOpen) {
+	public void setPVSystemObjSwitchOpen(boolean pVsystemObjSwitchOpen) {
 		PVsystemObjSwitchOpen = pVsystemObjSwitchOpen;
 	}
 
@@ -1574,51 +1574,51 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		PFSpecified = pFSpecified;
 	}
 
-	public boolean isKvarSpecified() {
+	public boolean isKVArSpecified() {
 		return kvarSpecified;
 	}
 
-	public void setKvarSpecified(boolean kvarSpecified) {
+	public void setKVArSpecified(boolean kvarSpecified) {
 		this.kvarSpecified = kvarSpecified;
 	}
 
-	public double getkVArating() {
+	public double getKVARating() {
 		return kVArating;
 	}
 
-	public void setkVArating(double kVArating) {
+	public void setKVArating(double kVArating) {
 		this.kVArating = kVArating;
 	}
 
-	public double getkVPVSystemBase() {
+	public double getKVPVSystemBase() {
 		return kVPVSystemBase;
 	}
 
-	public void setkVPVSystemBase(double kVPVSystemBase) {
+	public void setKVPVSystemBase(double kVPVSystemBase) {
 		this.kVPVSystemBase = kVPVSystemBase;
 	}
 
-	public double getKvar_out() {
+	public double getKVArOut() {
 		return kvar_out;
 	}
 
-	public void setKvar_out(double kvar_out) {
+	public void setKVArOut(double kvar_out) {
 		this.kvar_out = kvar_out;
 	}
 
-	public double getkW_out() {
+	public double getKWOut() {
 		return kW_out;
 	}
 
-	public void setkW_out(double kW_out) {
+	public void setKWOut(double kW_out) {
 		this.kW_out = kW_out;
 	}
 
-	public double getPanelkW() {
+	public double getPanelKW() {
 		return PanelkW;
 	}
 
-	public void setPanelkW(double panelkW) {
+	public void setPanelKW(double panelkW) {
 		PanelkW = panelkW;
 	}
 
@@ -1630,11 +1630,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		Irradiance = irradiance;
 	}
 
-	public double getKvarRequested() {
+	public double getKVArRequested() {
 		return kvarRequested;
 	}
 
-	public void setKvarRequested(double kvarRequested) {
+	public void setKVArRequested(double kvarRequested) {
 		this.kvarRequested = kvarRequested;
 	}
 
@@ -1670,11 +1670,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		TempFactor = tempFactor;
 	}
 
-	public boolean isInverterON() {
+	public boolean isInverterOn() {
 		return InverterON;
 	}
 
-	public void setInverterON(boolean inverterON) {
+	public void setInverterOn(boolean inverterON) {
 		InverterON = inverterON;
 	}
 
@@ -1694,19 +1694,19 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		this.pctCutOut = pctCutOut;
 	}
 
-	public double getCutInkW() {
+	public double getCutInKW() {
 		return CutInkW;
 	}
 
-	public void setCutInkW(double cutInkW) {
+	public void setCutInKW(double cutInkW) {
 		CutInkW = cutInkW;
 	}
 
-	public double getCutOutkW() {
+	public double getCutOutKW() {
 		return CutOutkW;
 	}
 
-	public void setCutOutkW(double cutOutkW) {
+	public void setCutOutKW(double cutOutkW) {
 		CutOutkW = cutOutkW;
 	}
 
@@ -1734,19 +1734,19 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		OpenPVSystemSolutionCount = openPVSystemSolutionCount;
 	}
 
-	public double getPnominalperphase() {
+	public double getPNominalPerPhase() {
 		return Pnominalperphase;
 	}
 
-	public void setPnominalperphase(double pnominalperphase) {
+	public void setPNominalPerPhase(double pnominalperphase) {
 		Pnominalperphase = pnominalperphase;
 	}
 
-	public double getQnominalperphase() {
+	public double getQNominalPerPhase() {
 		return Qnominalperphase;
 	}
 
-	public void setQnominalperphase(double qnominalperphase) {
+	public void setQNominalPerPhase(double qnominalperphase) {
 		Qnominalperphase = qnominalperphase;
 	}
 
@@ -1758,51 +1758,51 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		RandomMult = randomMult;
 	}
 
-	public int getReg_Hours() {
+	public int getRegHours() {
 		return Reg_Hours;
 	}
 
-	public void setReg_Hours(int reg_Hours) {
+	public void setRegHours(int reg_Hours) {
 		Reg_Hours = reg_Hours;
 	}
 
-	public int getReg_kvarh() {
+	public int getRegKVArh() {
 		return Reg_kvarh;
 	}
 
-	public void setReg_kvarh(int reg_kvarh) {
+	public void setRegKVArh(int reg_kvarh) {
 		Reg_kvarh = reg_kvarh;
 	}
 
-	public int getReg_kWh() {
+	public int getRegKWh() {
 		return Reg_kWh;
 	}
 
-	public void setReg_kWh(int reg_kWh) {
+	public void setRegKWh(int reg_kWh) {
 		Reg_kWh = reg_kWh;
 	}
 
-	public int getReg_MaxkVA() {
+	public int getRegMaxKVA() {
 		return Reg_MaxkVA;
 	}
 
-	public void setReg_MaxkVA(int reg_MaxkVA) {
+	public void setRegMaxKVA(int reg_MaxkVA) {
 		Reg_MaxkVA = reg_MaxkVA;
 	}
 
-	public int getReg_MaxkW() {
+	public int getRegMaxKW() {
 		return Reg_MaxkW;
 	}
 
-	public void setReg_MaxkW(int reg_MaxkW) {
+	public void setRegMaxKW(int reg_MaxkW) {
 		Reg_MaxkW = reg_MaxkW;
 	}
 
-	public int getReg_Price() {
+	public int getRegPrice() {
 		return Reg_Price;
 	}
 
-	public void setReg_Price(int reg_Price) {
+	public void setRegPrice(int reg_Price) {
 		Reg_Price = reg_Price;
 	}
 
@@ -1822,19 +1822,19 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		TShapeValue = tShapeValue;
 	}
 
-	public double getThetaharm() {
+	public double getThetaHarm() {
 		return Thetaharm;
 	}
 
-	public void setThetaharm(double thetaharm) {
+	public void setThetaHarm(double thetaharm) {
 		Thetaharm = thetaharm;
 	}
 
-	public File getTracefile() {
+	public File getTraceFile() {
 		return Tracefile;
 	}
 
-	public void setTracefile(File tracefile) {
+	public void setTraceFile(File tracefile) {
 		Tracefile = tracefile;
 	}
 
@@ -1846,11 +1846,11 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		UserModel = userModel;
 	}
 
-	public double getVarBase() {
+	public double getVArBase() {
 		return varBase;
 	}
 
-	public void setVarBase(double varBase) {
+	public void setVArBase(double varBase) {
 		this.varBase = varBase;
 	}
 
@@ -1878,27 +1878,27 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		VBase95 = vBase95;
 	}
 
-	public double getVmaxpu() {
+	public double getVMaxPU() {
 		return Vmaxpu;
 	}
 
-	public void setVmaxpu(double vmaxpu) {
+	public void setVMaxPU(double vmaxpu) {
 		Vmaxpu = vmaxpu;
 	}
 
-	public double getVminpu() {
+	public double getVMinPU() {
 		return Vminpu;
 	}
 
-	public void setVminpu(double vminpu) {
+	public void setVMinPU(double vminpu) {
 		Vminpu = vminpu;
 	}
 
-	public double getVthevharm() {
+	public double getVThevHarm() {
 		return Vthevharm;
 	}
 
-	public void setVthevharm(double vthevharm) {
+	public void setVThevHarm(double vthevharm) {
 		Vthevharm = vthevharm;
 	}
 

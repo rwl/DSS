@@ -255,23 +255,23 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		switch (al.getConnection()) {
 		case 1:
-			al.setVBase(al.getkVLoadBase() * 1000.0);
+			al.setVBase(al.getKVLoadBase() * 1000.0);
 		default:
 			switch (al.getNPhases()) {
 			case 2:
-				al.setVBase(al.getkVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				al.setVBase(al.getKVLoadBase() * DSSGlobals.InvSQRT3x1000);
 				break;
 			case 3:
-				al.setVBase(al.getkVLoadBase() * DSSGlobals.InvSQRT3x1000);
+				al.setVBase(al.getKVLoadBase() * DSSGlobals.InvSQRT3x1000);
 				break;
 			default:
-				al.setVBase(al.getkVLoadBase() * 1000.0);
+				al.setVBase(al.getKVLoadBase() * 1000.0);
 				break;
 			}
 			break;
 		}
-		al.setVBase95(al.getVminpu() * al.getVBase());
-		al.setVBase105(al.getVmaxpu() * al.getVBase());
+		al.setVBase95(al.getVMinPU() * al.getVBase());
+		al.setVBase105(al.getVMaxPU() * al.getVBase());
 
 		al.setYorder(al.getNConds() * al.getNTerms());
 		al.setYPrimInvalid(true);
@@ -314,10 +314,10 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setBus(1, Param);  // TODO: Check zero based indexing
 				break;
 			case 2:
-				al.setkVLoadBase(parser.makeDouble());
+				al.setKVLoadBase(parser.makeDouble());
 				break;
 			case 3:
-				al.setkWBase(parser.makeDouble());
+				al.setKWBase(parser.makeDouble());
 				break;
 			case 4:
 				al.setPFNominal(parser.makeDouble());
@@ -341,13 +341,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 				interpretConnection(Param);
 				break;
 			case 11:
-				al.setKvarBase(parser.makeDouble());
+				al.setKVArBase(parser.makeDouble());
 				break;
 			case 12:
-				al.setRneut(parser.makeDouble());
+				al.setRNeut(parser.makeDouble());
 				break;
 			case 13:
-				al.setXneut(parser.makeDouble());
+				al.setXNeut(parser.makeDouble());
 				break;
 			case 14:
 				switch (Param.toLowerCase().charAt(0)) {
@@ -368,37 +368,37 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setLoadClass(parser.makeInteger());
 				break;
 			case 16:
-				al.setVminpu(parser.makeDouble());
+				al.setVMinPU(parser.makeDouble());
 				break;
 			case 17:
-				al.setVmaxpu(parser.makeDouble());
+				al.setVMaxPU(parser.makeDouble());
 				break;
 			case 18:
-				al.setVminNormal(parser.makeDouble());
+				al.setVMinNormal(parser.makeDouble());
 				break;
 			case 19:
-				al.setVminEmerg(parser.makeDouble());
+				al.setVMinEmerg(parser.makeDouble());
 				break;
 			case 20:
-				al.setConnectedkVA(parser.makeDouble());
+				al.setConnectedKVA(parser.makeDouble());
 				break;
 			case 21:
-				al.setkVAAllocationFactor(parser.makeDouble());
+				al.setKVAAllocationFactor(parser.makeDouble());
 				break;
 			case 22:
-				al.setkVABase(parser.makeDouble());
+				al.setKVABase(parser.makeDouble());
 				break;
 			case 23:
-				al.setPuMean(parser.makeDouble() / 100.0);
+				al.setPUMean(parser.makeDouble() / 100.0);
 				break;
 			case 24:
-				al.setPuStdDev(parser.makeDouble() / 100.0);
+				al.setPUStdDev(parser.makeDouble() / 100.0);
 				break;
 			case 25:
-				al.setCVRwattFactor(parser.makeDouble());
+				al.setCVRWattFactor(parser.makeDouble());
 				break;
 			case 26:
-				al.setCVRvarFactor(parser.makeDouble());
+				al.setCVRVArFactor(parser.makeDouble());
 				break;
 			case 27:
 				al.setKWh(parser.makeDouble());
@@ -410,7 +410,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setCFactor(parser.makeDouble());
 				break;
 			case 30:
-				al.setCVRshape(Param);
+				al.setCVRShape(Param);
 				break;
 			case 31:
 				al.setNumCustomers(parser.makeInteger());
@@ -447,13 +447,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getYearlyShape()));
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
-						al.setkWkvar(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
+						al.setKW_KVAr(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
 				break;
 			case 7:
 				al.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDailyShape()));
 				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
-						al.setkWkvar(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
+						al.setKW_KVAr(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
 				/* If yearly load shape is not yet defined, make it the same as daily */
 				if (al.getYearlyShapeObj() == null)
 					al.setYearlyShapeObj(al.getDailyShapeObj());
@@ -462,7 +462,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getDutyShape()));
 				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
-						al.setkWkvar(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
+						al.setKW_KVAr(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
 				break;
 			case 9:
 				al.setGrowthShapeObj((GrowthShapeObj) Globals.getGrowthShapeClass().find(al.getGrowthShape()));
@@ -476,7 +476,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 		/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getCVRshape()));
+				al.setCVRShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(al.getCVRShape()));
 				break;
 			}
 
@@ -506,25 +506,25 @@ public class LoadImpl extends PCClassImpl implements Load {
 				al.setYPrimInvalid(true);
 			}
 
-			al.setkVLoadBase(OtherLoad.getkVLoadBase());
+			al.setKVLoadBase(OtherLoad.getKVLoadBase());
 			al.setVBase(OtherLoad.getVBase());
-			al.setVminpu(OtherLoad.getVminpu());
-			al.setVmaxpu(OtherLoad.getVmaxpu());
+			al.setVMinPU(OtherLoad.getVMinPU());
+			al.setVMaxPU(OtherLoad.getVMaxPU());
 			al.setVBase95(OtherLoad.getVBase95());
 			al.setVBase105(OtherLoad.getVBase105());
-			al.setkWBase(OtherLoad.getkWBase());
-			al.setkVABase(OtherLoad.getkVABase());
-			al.setKvarBase(OtherLoad.getKvarBase());
+			al.setKWBase(OtherLoad.getKWBase());
+			al.setKVABase(OtherLoad.getKVABase());
+			al.setKVArBase(OtherLoad.getKVArBase());
 			al.setLoadSpecType(OtherLoad.getLoadSpecType());
 			al.setWNominal(OtherLoad.getWNominal());
 			al.setPFNominal(OtherLoad.getPFNominal());
-			al.setVarNominal(OtherLoad.getVarNominal());
+			al.setVArNominal(OtherLoad.getVArNominal());
 			al.setConnection(OtherLoad.getConnection());
-			al.setRneut(OtherLoad.getRneut());
-			al.setXneut(OtherLoad.getXneut());
+			al.setRNeut(OtherLoad.getRNeut());
+			al.setXNeut(OtherLoad.getXNeut());
 			al.setYearlyShape(OtherLoad.getYearlyShape());
 			al.setYearlyShapeObj(OtherLoad.getYearlyShapeObj());
-			al.setCVRshape(OtherLoad.getCVRshape());
+			al.setCVRShape(OtherLoad.getCVRShape());
 			al.setCVRShapeObj(OtherLoad.getCVRShapeObj());
 			al.setDailyShape(OtherLoad.getDailyShape());
 			al.setDailyShapeObj(OtherLoad.getDailyShapeObj());
@@ -539,14 +539,14 @@ public class LoadImpl extends PCClassImpl implements Load {
 			al.setLoadModel(OtherLoad.getLoadModel());
 			al.setFixed(OtherLoad.isFixed());
 			al.setExemptFromLDCurve(OtherLoad.isExemptFromLDCurve());
-			al.setkVAAllocationFactor(OtherLoad.getkVAAllocationFactor());
-			al.setConnectedkVA(OtherLoad.getConnectedkVA());
-			al.setCVRwattFactor(OtherLoad.getCVRwattFactor());
-			al.setCVRvarFactor(OtherLoad.getCVRvarFactor());
-			al.setShapeIsActual(OtherLoad.isShapeIsActual());
+			al.setKVAAllocationFactor(OtherLoad.getKVAAllocationFactor());
+			al.setConnectedKVA(OtherLoad.getConnectedKVA());
+			al.setCVRWattFactor(OtherLoad.getCVRWattFactor());
+			al.setCVRVArFactor(OtherLoad.getCVRVArFactor());
+			al.setShapeIsActual(OtherLoad.shapeIsActual());
 
-			al.setZIPVSize(OtherLoad.getnZIPV());
-			for (int i = 0; i < al.getnZIPV(); i++)
+			al.setZIPVSize(OtherLoad.getNZIPV());
+			for (int i = 0; i < al.getNZIPV(); i++)
 				al.getZIPV()[i] = OtherLoad.getZIPV()[i];
 
 			classMakeLike(OtherLoad);  // take care of inherited class properties

@@ -292,7 +292,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setPresentKV(parser.makeDouble());
 					break;
 				case 3:
-					ag.setkWBase(parser.makeDouble());
+					ag.setKWBase(parser.makeDouble());
 					break;
 				case 4:
 					ag.setPowerFactor(parser.makeDouble());
@@ -319,7 +319,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					interpretConnection(Param);
 					break;
 				case 12:
-					ag.setPresentKVar(parser.makeDouble());
+					ag.setPresentKVAr(parser.makeDouble());
 					break;
 				case 13:
 					Globals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
@@ -341,10 +341,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setVpu(parser.makeDouble());
 					break;
 				case 18:
-					ag.setKvarMax(parser.makeDouble());
+					ag.setKVArMax(parser.makeDouble());
 					break;
 				case 19:
-					ag.setKvarMin(parser.makeDouble());
+					ag.setKVArMin(parser.makeDouble());
 					break;
 				case 20:
 					ag.setPVFactor(parser.makeDouble());  // declaration factor
@@ -359,7 +359,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setVMaxPU(parser.makeDouble());
 					break;
 				case 24:
-					ag.setForcedON(Utilities.interpretYesNo(Param));
+					ag.setForcedOn(Utilities.interpretYesNo(Param));
 					break;
 				case 25:
 					ag.getGenVars().kVArating = parser.makeDouble();
@@ -420,21 +420,21 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setYearlyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
-							ag.setKwKVar(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
+							ag.setKwKVAr(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
 					break;
 				case 7:
 					ag.setDailyDispShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
-							ag.setKwKVar(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
+							ag.setKwKVAr(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
 					break;
 				case 8:
 					ag.setDutyShapeObj( (LoadShapeObj) Globals.getLoadShapeClass().find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
-							ag.setKwKVar(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
+							ag.setKwKVAr(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
 					}
 					break;
 				case 21:
@@ -506,13 +506,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setVMaxPU(OtherGenerator.getVMaxPU());
 			ag.setVBase95(OtherGenerator.getVBase95());
 			ag.setVBase105(OtherGenerator.getVBase105());
-			ag.setkWBase(OtherGenerator.getkWBase());
-			ag.setKvarBase(OtherGenerator.getKvarBase());
+			ag.setKWBase(OtherGenerator.getKWBase());
+			ag.setKVArBase(OtherGenerator.getKVArBase());
 			ag.getGenVars().Pnominalperphase = OtherGenerator.getGenVars().Pnominalperphase;
 			ag.setPowerFactor(OtherGenerator.getPowerFactor());
 			ag.getGenVars().Qnominalperphase = OtherGenerator.getGenVars().Qnominalperphase;
-			ag.setVarMin(OtherGenerator.getVarMin());
-			ag.setVarMax(OtherGenerator.getVarMax());
+			ag.setVArMin(OtherGenerator.getVArMin());
+			ag.setVArMax(OtherGenerator.getVArMax());
 			ag.setConnection(OtherGenerator.getConnection());
 			//ag.setRneut(OtherGenerator.getRneut());
 			//ag.setXneut(OtherGenerator.getXneut());
@@ -529,9 +529,9 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setFixed(OtherGenerator.isFixed());
 			ag.setVTarget(OtherGenerator.getVTarget());
 			ag.setVpu(OtherGenerator.getVpu());
-			ag.setKvarMax(OtherGenerator.getKvarMax());
-			ag.setKvarMin(OtherGenerator.getKvarMin());
-			ag.setForcedON(OtherGenerator.isForcedON());
+			ag.setKVArMax(OtherGenerator.getKVArMax());
+			ag.setKVArMin(OtherGenerator.getKVArMin());
+			ag.setForcedOn(OtherGenerator.isForcedOn());
 			ag.setkVANotSet(OtherGenerator.iskVANotSet());
 
 			ag.getGenVars().kVArating      = OtherGenerator.getGenVars().kVArating;

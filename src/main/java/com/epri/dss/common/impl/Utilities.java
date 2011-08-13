@@ -964,7 +964,7 @@ public class Utilities {
 		for (LoadObj pLoad : globals.getActiveCircuit().getLoads()) {
 			switch (pLoad.getLoadSpecType()) {
 			case 3:
-				pw.println("Load."+pLoad.getName()+".AllocationFactor=" + String.format("%-.5g", pLoad.getkVAAllocationFactor()));
+				pw.println("Load."+pLoad.getName()+".AllocationFactor=" + String.format("%-.5g", pLoad.getKVAAllocationFactor()));
 				break;
 			case 4:
 				pw.println("Load."+pLoad.getName()+".CFactor=" + String.format("%-.5g", pLoad.getCFactor()));
@@ -1663,7 +1663,7 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
 				pw.printf(" kW=%-g", kWEach);
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
@@ -1703,7 +1703,7 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
 				pw.printf(" kW=%-g", kWEach * Math.random() * 2.0);
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
@@ -1733,7 +1733,7 @@ public class Utilities {
 			if (pLoad.isEnabled())
 				/* Do not count skipped loads */
 				if (skipCount == 0) {
-					totalKW = totalKW + pLoad.getkWBase();  // will be right value if pos seq, too
+					totalKW = totalKW + pLoad.getKWBase();  // will be right value if pos seq, too
 					skipCount = skip;  // start counter over again
 				} else {
 					skipCount -= 1;
@@ -1752,8 +1752,8 @@ public class Utilities {
 			if (pLoad.isEnabled())
 				if (skipCount == 0) {
 					pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-					pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
-					pw.printf(" kW=%-g ", kWEach * pLoad.getkWBase());
+					pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+					pw.printf(" kW=%-g ", kWEach * pLoad.getKWBase());
 					pw.printf(" PF=%-.3g", PF);
 					pw.print(" model=1");
 					pw.println();
@@ -1781,7 +1781,7 @@ public class Utilities {
 		for (int i = 0; i < count; i++) {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled())
-				totalKW = totalKW + pLoad.getkWBase();  // will be right value if pos seq, too
+				totalKW = totalKW + pLoad.getKWBase();  // will be right value if pos seq, too
 		}
 
 		if (ckt.isPositiveSequence()) {
@@ -1794,8 +1794,8 @@ public class Utilities {
 			pLoad = (LoadObj) loadClass.getElementList().get(i);
 			if (pLoad.isEnabled()) {
 				pw.printf("new generator.DG_%d  bus1=%s", i, pLoad.getBus(0));
-				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getkVLoadBase());
-				pw.printf(" kW=%-g", kWEach * pLoad.getkWBase());
+				pw.printf(" phases=%d kV=%-g", pLoad.getNPhases(), pLoad.getKVLoadBase());
+				pw.printf(" kW=%-g", kWEach * pLoad.getKWBase());
 				pw.printf(" PF=%-.3g", PF);
 				pw.print(" model=1");
 				pw.println();

@@ -29,7 +29,7 @@ public interface PVSystemObj extends PCElement {
 	/**
 	 * 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform
 	 */
-	void randomize(int Opt);
+	void randomize(int opt);
 
 	void resetRegisters();
 
@@ -95,13 +95,13 @@ public interface PVSystemObj extends PCElement {
 
 	void setInverterCurveObj(XYCurveObj inverterCurveObj);
 
-	String getPower_TempCurve();
+	String getPowerTempCurve();
 
-	void setPower_TempCurve(String power_TempCurve);
+	void setPowerTempCurve(String powerTempCurve);
 
-	XYCurveObj getPower_TempCurveObj();
+	XYCurveObj getPowerTempCurveObj();
 
-	void setPower_TempCurveObj(XYCurveObj power_TempCurveObj);
+	void setPowerTempCurveObj(XYCurveObj powerTempCurveObj);
 
 	int getFClass();
 
@@ -111,23 +111,23 @@ public interface PVSystemObj extends PCElement {
 
 	void setVoltageModel(int voltageModel);
 
-	double getPresentkW();
+	double getPresentKW();
 
-	double getPresentkvar();
+	double getPresentKVAr();
 
-	double getPresentkV();
+	double getPresentKV();
 
 	double getPresentIrradiance();
 
-	void setPresentkV(double Value);
+	void setPresentKV(double value);
 
-	void setPresentkvar(double Value);
+	void setPresentKVAr(double value);
 
-	void setPowerFactor(double Value);
+	void setPowerFactor(double value);
 
 	double getPowerFactor();  // FIXME Check interface for properties
 
-	public void setPresentIrradiance(double Value);
+	public void setPresentIrradiance(double value);
 
 	double[] getRegisters();
 
@@ -143,17 +143,17 @@ public interface PVSystemObj extends PCElement {
 
 	// FIXME Private members in OpenDSS.
 
-	Complex getYEQ();
+	Complex getYeq();
 
-	void setYEQ(Complex yEQ);
+	void setYeq(Complex yeq);
 
-	Complex getYEQ95();
+	Complex getYeq95();
 
-	void setYEQ95(Complex yEQ95);
+	void setYeq95(Complex yeq95);
 
-	Complex getYEQ105();
+	Complex getYeq105();
 
-	void setYEQ105(Complex yEQ105);
+	void setYeq105(Complex yeq105);
 
 	boolean isDebugTrace();
 
@@ -161,15 +161,15 @@ public interface PVSystemObj extends PCElement {
 
 	int getPVSystemSolutionCount();
 
-	void setPVSystemSolutionCount(int pVSystemSolutionCount);
+	void setPVSystemSolutionCount(int PVSystemSolutionCount);
 
 	double getPVSystemFundamental();
 
-	void setPVSystemFundamental(double pVSystemFundamental);
+	void setPVSystemFundamental(double PVSystemFundamental);
 
-	boolean isPVsystemObjSwitchOpen();
+	boolean isPVSystemObjSwitchOpen();
 
-	void setPVsystemObjSwitchOpen(boolean pVsystemObjSwitchOpen);
+	void setPVSystemObjSwitchOpen(boolean PVSystemObjSwitchOpen);
 
 	boolean isFirstSampleAfterReset();
 
@@ -177,39 +177,39 @@ public interface PVSystemObj extends PCElement {
 
 	boolean isPFSpecified();
 
-	void setPFSpecified(boolean pFSpecified);
+	void setPFSpecified(boolean PFSpecified);
 
-	boolean isKvarSpecified();
+	boolean isKVArSpecified();
 
-	void setKvarSpecified(boolean kvarSpecified);
+	void setKVArSpecified(boolean kvarSpecified);
 
-	double getkVArating();
+	double getKVARating();
 
-	void setkVArating(double kVArating);
+	void setKVArating(double kVArating);
 
-	double getkVPVSystemBase();
+	double getKVPVSystemBase();
 
-	void setkVPVSystemBase(double kVPVSystemBase);
+	void setKVPVSystemBase(double kVPVSystemBase);
 
-	double getKvar_out();
+	double getKVArOut();
 
-	void setKvar_out(double kvar_out);
+	void setKVArOut(double kvar_out);
 
-	double getkW_out();
+	double getKWOut();
 
-	void setkW_out(double kW_out);
+	void setKWOut(double kwout);
 
-	double getPanelkW();
+	double getPanelKW();
 
-	void setPanelkW(double panelkW);
+	void setPanelKW(double panelKW);
 
 	double getIrradiance();
 
 	void setIrradiance(double irradiance);
 
-	double getKvarRequested();
+	double getKVArRequested();
 
-	void setKvarRequested(double kvarRequested);
+	void setKVArRequested(double kvarRequested);
 
 	double getTemperature();
 
@@ -227,9 +227,9 @@ public interface PVSystemObj extends PCElement {
 
 	void setTempFactor(double tempFactor);
 
-	boolean isInverterON();
+	boolean isInverterOn();
 
-	void setInverterON(boolean inverterON);
+	void setInverterOn(boolean inverterOn);
 
 	double getPctCutIn();
 
@@ -239,13 +239,13 @@ public interface PVSystemObj extends PCElement {
 
 	void setPctCutOut(double pctCutOut);
 
-	double getCutInkW();
+	double getCutInKW();
 
-	void setCutInkW(double cutInkW);
+	void setCutInKW(double cutInKW);
 
-	double getCutOutkW();
+	double getCutOutKW();
 
-	void setCutOutkW(double cutOutkW);
+	void setCutOutKW(double cutOutKW);
 
 	double getPctR();
 
@@ -259,41 +259,41 @@ public interface PVSystemObj extends PCElement {
 
 	void setOpenPVSystemSolutionCount(int openPVSystemSolutionCount);
 
-	double getPnominalperphase();
+	double getPNominalPerPhase();
 
-	void setPnominalperphase(double pnominalperphase);
+	void setPNominalPerPhase(double pnominalperphase);
 
-	double getQnominalperphase();
+	double getQNominalPerPhase();
 
-	void setQnominalperphase(double qnominalperphase);
+	void setQNominalPerPhase(double qnominalperphase);
 
 	double getRandomMult();
 
 	void setRandomMult(double randomMult);
 
-	int getReg_Hours();
+	int getRegHours();
 
-	void setReg_Hours(int reg_Hours);
+	void setRegHours(int regHours);
 
-	int getReg_kvarh();
+	int getRegKVArh();
 
-	void setReg_kvarh(int reg_kvarh);
+	void setRegKVArh(int reg_kvarh);
 
-	int getReg_kWh();
+	int getRegKWh();
 
-	void setReg_kWh(int reg_kWh);
+	void setRegKWh(int reg_kWh);
 
-	int getReg_MaxkVA();
+	int getRegMaxKVA();
 
-	void setReg_MaxkVA(int reg_MaxkVA);
+	void setRegMaxKVA(int reg_MaxkVA);
 
-	int getReg_MaxkW();
+	int getRegMaxKW();
 
-	void setReg_MaxkW(int reg_MaxkW);
+	void setRegMaxKW(int regMaxKW);
 
-	int getReg_Price();
+	int getRegPrice();
 
-	void setReg_Price(int reg_Price);
+	void setRegPrice(int regPrice);
 
 	Complex getShapeFactor();
 
@@ -303,21 +303,21 @@ public interface PVSystemObj extends PCElement {
 
 	void setTShapeValue(double tShapeValue);
 
-	double getThetaharm();
+	double getThetaHarm();
 
-	void setThetaharm(double thetaharm);
+	void setThetaHarm(double thetaharm);
 
-	File getTracefile();
+	File getTraceFile();
 
-	void setTracefile(File tracefile);
+	void setTraceFile(File tracefile);
 
 	PVSystemUserModel getUserModel();
 
 	void setUserModel(PVSystemUserModel userModel);
 
-	double getVarBase();
+	double getVArBase();
 
-	void setVarBase(double varBase);
+	void setVArBase(double varBase);
 
 	double getVBase();
 
@@ -331,17 +331,17 @@ public interface PVSystemObj extends PCElement {
 
 	void setVBase95(double vBase95);
 
-	double getVmaxpu();
+	double getVMaxPU();
 
-	void setVmaxpu(double vmaxpu);
+	void setVMaxPU(double vmaxpu);
 
-	double getVminpu();
+	double getVMinPU();
 
-	void setVminpu(double vminpu);
+	void setVMinPU(double vminpu);
 
-	double getVthevharm();
+	double getVThevHarm();
 
-	void setVthevharm(double vthevharm);
+	void setVThevHarm(double vthevharm);
 
 	CMatrix getYPrimOpenCond();
 

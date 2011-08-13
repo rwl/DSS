@@ -2019,7 +2019,7 @@ public abstract class ShowResults {
 					if (doIt) {
 						pw.print(Utilities.pad(pLoad.getName(), 20));
 						pw.print(Utilities.pad(pLoad.getBus(1), 10));
-						pw.print(pLoad.getkWBase());
+						pw.print(pLoad.getKWBase());
 						pw.print(pLoad.getEEN_Factor());
 						pw.print(pLoad.getUE_Factor());
 						pw.println();
@@ -2974,16 +2974,16 @@ public abstract class ShowResults {
 				busName = ckt.getBusList().get( pLoad.getTerminals()[0].busRef );
 				if (pBus.getKVBase() != 0.0) {
 					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
-						if (Math.abs(pLoad.getkVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
-							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), pBus.getKVBase()));
-							pw.println(String.format("!setkvbase %s kVLN=%.6g", busName, pLoad.getkVLoadBase()));
+						if (Math.abs(pLoad.getKVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
+							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(1), pBus.getKVBase()));
+							pw.println(String.format("!setkvbase %s kVLN=%.6g", busName, pLoad.getKVLoadBase()));
 							pw.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), pBus.getKVBase()));
 						}
 					} else {
 						busKV = pBus.getKVBase() * DSSGlobals.SQRT3;
-						if (Math.abs(pLoad.getkVLoadBase() - busKV) > 0.10 * busKV) {
-							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getkVLoadBase(), pLoad.getBus(1), busKV));
-							pw.println(String.format("!setkvbase %s kVLL=%.6g", busName, pLoad.getkVLoadBase()));
+						if (Math.abs(pLoad.getKVLoadBase() - busKV) > 0.10 * busKV) {
+							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(1), busKV));
+							pw.println(String.format("!setkvbase %s kVLL=%.6g", busName, pLoad.getKVLoadBase()));
 							pw.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), busKV));
 						}
 					}

@@ -168,9 +168,9 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				for (i = 0; i < listSize; i++) {
 					gen = genPointerList.get(i);
 					// compute new dispatch value for this generator ...
-					genKW = Math.max(1.0, (gen.getkWBase() + PDiff * (weights[i] / totalWeight)));
-					if (genKW != gen.getkWBase()) {
-						gen.setkWBase(genKW);
+					genKW = Math.max(1.0, (gen.getKWBase() + PDiff * (weights[i] / totalWeight)));
+					if (genKW != gen.getKWBase()) {
+						gen.setKWBase(genKW);
 						genKWChanged = true;
 					}
 				}
@@ -181,9 +181,9 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				for (i = 0; i < listSize; i++) {
 					gen = genPointerList.get(i);
 					// compute new dispatch value for this generator ...
-					genKVAr = Math.max(0.0, (gen.getKvarBase() + QDiff * (weights[i] / totalWeight)));
-					if (genKVAr != gen.getKvarBase()) {
-						gen.setKvarBase(genKVAr);
+					genKVAr = Math.max(0.0, (gen.getKVArBase() + QDiff * (weights[i] / totalWeight)));
+					if (genKVAr != gen.getKVArBase()) {
+						gen.setKVArBase(genKVAr);
 						genKVArChanged = true;
 					}
 				}

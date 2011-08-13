@@ -1294,11 +1294,11 @@ public class ExportResults {
 			for (LoadObj pElem : ckt.getLoads()) {
 				if (pElem.isEnabled()) {
 					writer.print(pElem.getName());
-					writer.print(sep + pElem.getConnectedkVA());
-					writer.print(sep + pElem.getkVAAllocationFactor());
+					writer.print(sep + pElem.getConnectedKVA());
+					writer.print(sep + pElem.getKVAAllocationFactor());
 					writer.print(sep + pElem.getNPhases());
-					writer.print(sep + pElem.getkWBase());
-					writer.print(sep + pElem.getKvarBase());
+					writer.print(sep + pElem.getKWBase());
+					writer.print(sep + pElem.getKVArBase());
 					writer.print(sep + pElem.getPFNominal());
 					writer.print(sep + pElem.getLoadModel());
 				}
@@ -1478,7 +1478,7 @@ public class ExportResults {
 					if (doIt) {
 						writer.print(pLoad.getName() + ", ");
 						writer.print(pLoad.getBus(1) + ", ");  // TODO Check zero based indexing
-						writer.print(pLoad.getkWBase() + ", ");
+						writer.print(pLoad.getKWBase() + ", ");
 						writer.print(pLoad.getEEN_Factor() + ", ");
 						writer.print(pLoad.getUE_Factor());
 						writer.println();

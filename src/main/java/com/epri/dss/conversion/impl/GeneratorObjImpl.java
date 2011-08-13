@@ -1355,7 +1355,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (isEnabled()) {
 
 			if (GenON) {
-				S = new Complex(getPresentkW(), getPresentKVar());
+				S = new Complex(getPresentKW(), getPresentKVAr());
 				Smag = S.abs();
 				HourValue = 1.0;
 			} else {
@@ -1385,7 +1385,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
-	public double getPresentkW() {
+	public double getPresentKW() {
 		return GenVars.Pnominalperphase * 0.001 * nPhases;
 	}
 
@@ -1393,7 +1393,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		return GenVars.kVGeneratorBase;
 	}
 
-	public double getPresentKVar() {
+	public double getPresentKVAr() {
 		return GenVars.Qnominalperphase * 0.001 * nPhases;
 	}
 
@@ -1991,7 +1991,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		}
 	}
 
-	public void setPresentKVar(double Value) {
+	public void setPresentKVAr(double Value) {
 		double kVA_Gen;
 
 		kvarBase = Value;
@@ -2037,9 +2037,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 
 	// FIXME Private method in OpenDSS
-	public void setKwKVar(double PkW, double QkVar) {
-		setkWBase(PkW);
-		setPresentKVar(QkVar);
+	public void setKwKVAr(double PkW, double QkVar) {
+		setKWBase(PkW);
+		setPresentKVAr(QkVar);
 	}
 
 	/**
@@ -2051,11 +2051,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		Vthev = ComplexUtil.pclx(VThevMag, GenVars.Theta);
 	}
 
-	public boolean isForcedON() {
+	public boolean isForcedOn() {
 		return ForcedON;
 	}
 
-	public void setForcedON(boolean forcedON) {
+	public void setForcedOn(boolean forcedON) {
 		ForcedON = forcedON;
 	}
 
@@ -2127,35 +2127,35 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		GenVars = genVars;
 	}
 
-	public double getKvarBase() {
+	public double getKVArBase() {
 		return kvarBase;
 	}
 
-	public void setKvarBase(double kvarBase) {
+	public void setKVArBase(double kvarBase) {
 		this.kvarBase = kvarBase;
 	}
 
-	public double getKvarMax() {
+	public double getKVArMax() {
 		return kvarMax;
 	}
 
-	public void setKvarMax(double kvarMax) {
+	public void setKVArMax(double kvarMax) {
 		this.kvarMax = kvarMax;
 	}
 
-	public double getKvarMin() {
+	public double getKVArMin() {
 		return kvarMin;
 	}
 
-	public void setKvarMin(double kvarMin) {
+	public void setKVArMin(double kvarMin) {
 		this.kvarMin = kvarMin;
 	}
 
-	public double getkWBase() {
+	public double getKWBase() {
 		return kWBase;
 	}
 
-	public void setkWBase(double kWBase) {
+	public void setKWBase(double kWBase) {
 		this.kWBase = kWBase;
 	}
 
@@ -2273,19 +2273,19 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		DispatchValue = dispatchValue;
 	}
 
-	public double getdQdV() {
+	public double getDQDV() {
 		return dQdV;
 	}
 
-	public void setdQdV(double dQdV) {
+	public void setDQDV(double dQdV) {
 		this.dQdV = dQdV;
 	}
 
-	public double getdQdVSaved() {
+	public double getDQDVSaved() {
 		return dQdVSaved;
 	}
 
-	public void setdQdVSaved(double dQdVSaved) {
+	public void setDQDVSaved(double dQdVSaved) {
 		this.dQdVSaved = dQdVSaved;
 	}
 
@@ -2321,11 +2321,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		GenFundamental = genFundamental;
 	}
 
-	public boolean isGenON() {
+	public boolean isGenOn() {
 		return GenON;
 	}
 
-	public void setGenON(boolean genON) {
+	public void setGenOn(boolean genON) {
 		GenON = genON;
 	}
 
@@ -2385,31 +2385,31 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		RandomMult = randomMult;
 	}
 
-	public int getReg_Hours() {
+	public int getRegHours() {
 		return Reg_Hours;
 	}
 
-	public void setReg_Hours(int reg_Hours) {
+	public void setRegHours(int reg_Hours) {
 		Reg_Hours = reg_Hours;
 	}
 
-	public int getReg_kvarh() {
+	public int getRegKVArh() {
 		return Reg_kvarh;
 	}
 
-	public void setReg_kvarh(int reg_kvarh) {
+	public void setRegKVArh(int reg_kvarh) {
 		Reg_kvarh = reg_kvarh;
 	}
 
-	public int getReg_kWh() {
+	public int getRegKWh() {
 		return Reg_kWh;
 	}
 
-	public void setReg_kWh(int reg_kWh) {
+	public void setRegKWh(int reg_kWh) {
 		Reg_kWh = reg_kWh;
 	}
 
-	public int getReg_MaxkVA() {
+	public int getRegMaxKVA() {
 		return Reg_MaxkVA;
 	}
 
@@ -2421,15 +2421,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		return Reg_MaxkW;
 	}
 
-	public void setReg_MaxkW(int reg_MaxkW) {
+	public void setRegMaxKW(int reg_MaxkW) {
 		Reg_MaxkW = reg_MaxkW;
 	}
 
-	public int getReg_Price() {
+	public int getRegPrice() {
 		return Reg_Price;
 	}
 
-	public void setReg_Price(int reg_Price) {
+	public void setRegPrice(int reg_Price) {
 		Reg_Price = reg_Price;
 	}
 
@@ -2465,43 +2465,43 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		V_Avg = v_Avg;
 	}
 
-	public double getV_Remembered() {
+	public double getVRemembered() {
 		return V_Remembered;
 	}
 
-	public void setV_Remembered(double v_Remembered) {
+	public void setVRemembered(double v_Remembered) {
 		V_Remembered = v_Remembered;
 	}
 
-	public double getVar_Remembered() {
+	public double getVArRemembered() {
 		return var_Remembered;
 	}
 
-	public void setVar_Remembered(double var_Remembered) {
+	public void setVArRemembered(double var_Remembered) {
 		this.var_Remembered = var_Remembered;
 	}
 
-	public double getVarBase() {
+	public double getVArBase() {
 		return varBase;
 	}
 
-	public void setVarBase(double varBase) {
+	public void setVArBase(double varBase) {
 		this.varBase = varBase;
 	}
 
-	public double getVarMax() {
+	public double getVArMax() {
 		return varMax;
 	}
 
-	public void setVarMax(double varMax) {
+	public void setVArMax(double varMax) {
 		this.varMax = varMax;
 	}
 
-	public double getVarMin() {
+	public double getVArMin() {
 		return varMin;
 	}
 
-	public void setVarMin(double varMin) {
+	public void setVArMin(double varMin) {
 		this.varMin = varMin;
 	}
 
@@ -2545,11 +2545,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		VMinPU = vMinPU;
 	}
 
-	public Complex getVthev() {
+	public Complex getVThev() {
 		return Vthev;
 	}
 
-	public void setVthev(Complex vthev) {
+	public void setVThev(Complex vthev) {
 		Vthev = vthev;
 	}
 

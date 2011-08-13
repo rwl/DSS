@@ -168,7 +168,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 				vSourceSetBus1(Param);  // special handling of bus 1
 				break;
 			case 1:
-				avs.setkVBase(parser.makeDouble());  // baseKV
+				avs.setKVBase(parser.makeDouble());  // baseKV
 				break;
 			case 2:
 				avs.setPerUnit(parser.makeDouble());  // pu
@@ -318,7 +318,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 			avs.getZ().copyFrom(OtherVSource.getZ());
 			// avs.getZinv().copyFrom(OtherLine.getZinv());
 			avs.setVMag(OtherVSource.getVMag());
-			avs.setkVBase(OtherVSource.getkVBase());
+			avs.setKVBase(OtherVSource.getKVBase());
 			avs.setPerUnit(OtherVSource.getPerUnit());
 			avs.setAngle(OtherVSource.getAngle());
 			avs.setSrcFrequency(OtherVSource.getSrcFrequency());

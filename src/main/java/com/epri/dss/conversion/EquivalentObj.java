@@ -10,10 +10,10 @@ public interface EquivalentObj extends PCElement {
 
 	CMatrix getZinv();
 
-	void setZinv(CMatrix zinv);
+	void setZInv(CMatrix zinv);
 
 	// Private method in OpenDSS
-	int doTerminalsDef(int N);
+	int doTerminalsDef(int n);
 
 	// Private method in OpenDSS
 	void parseDblMatrix(double[] Mat);
@@ -21,9 +21,9 @@ public interface EquivalentObj extends PCElement {
 
 	// FIXME Private members in OpenDSS
 
-	double getkVBase();
+	double getKVBase();
 
-	void setkVBase(double kVBase);
+	void setKVBase(double kVBase);
 
 	double getVMag();
 

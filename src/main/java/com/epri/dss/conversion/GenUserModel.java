@@ -12,16 +12,16 @@ public interface GenUserModel {
 
 	String getName();
 
-	void setName(String Value);
+	void setName(String value);
 
-	void edit(String Value);
+	void edit(String value);
 
 	boolean exists();
 
 	/**
 	 * Send string to user model to handle
 	 */
-	void edit(int s, int Maxlen);
+	void edit(int s, int maxlen);
 
 	/**
 	 * For dynamics
@@ -55,14 +55,14 @@ public interface GenUserModel {
 
 	int numVars();
 
-	void getAllVars(double[] Vars);
+	void getAllVars(double[] vars);
 
 	void getAllVars(double d);
 
-	double getVariable(int I);
+	double getVariable(int i);
 
 	void setVariable(int i, double value);
 
-	void getVarName(int VarNum, int VarName, int maxlen);
+	void getVarName(int varNum, int varName, int maxlen);
 
 }

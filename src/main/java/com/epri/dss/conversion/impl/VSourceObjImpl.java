@@ -494,11 +494,11 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		VMag = vMag;
 	}
 
-	public double getkVBase() {
+	public double getKVBase() {
 		return kVBase;
 	}
 
-	public void setkVBase(double kVBase) {
+	public void setKVBase(double kVBase) {
 		this.kVBase = kVBase;
 	}
 

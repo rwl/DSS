@@ -53,23 +53,23 @@ import com.epri.dss.shared.impl.GeneratorVars;
  */
 public interface GeneratorObj extends PCElement {
 
-	double getPresentkW();
+	double getPresentKW();
 
-	double getPresentKVar();
+	double getPresentKVAr();
 
 	double getPresentKV();
 
-	void setPresentKV(double Value);
+	void setPresentKV(double value);
 
-	void setPresentKVar(double Value);
+	void setPresentKVAr(double value);
 
-	void setPresentKW(double Value);
+	void setPresentKW(double value);
 
-	boolean isForcedON();
+	boolean isForcedOn();
 
-	void setForcedON(boolean forcedON);
+	void setForcedOn(boolean forcedOn);
 
-	void setPowerFactor(double Value);
+	void setPowerFactor(double value);
 
 	double getPowerFactor();
 
@@ -105,21 +105,21 @@ public interface GeneratorObj extends PCElement {
 
 	void setGenVars(GeneratorVars genVars);
 
-	double getKvarBase();
+	double getKVArBase();
 
-	void setKvarBase(double kvarBase);
+	void setKVArBase(double kvarBase);
 
-	double getKvarMax();
+	double getKVArMax();
 
-	void setKvarMax(double kvarMax);
+	void setKVArMax(double kvarMax);
 
-	double getKvarMin();
+	double getKVArMin();
 
-	void setKvarMin(double kvarMin);
+	void setKVArMin(double kvarMin);
 
-	double getkWBase();
+	double getKWBase();
 
-	void setkWBase(double kWBase);
+	void setKWBase(double kWBase);
 
 	double getVpu();
 
@@ -148,7 +148,7 @@ public interface GeneratorObj extends PCElement {
 	void setNominalGeneration();
 
 	/** 0 = reset to 1.0; 1 = Gaussian around mean and std Dev; 2 = uniform */
-	void randomize(int Opt);
+	void randomize(int opt);
 
 	void resetRegisters();
 
@@ -172,7 +172,7 @@ public interface GeneratorObj extends PCElement {
 	void syncUpPowerQuantities();
 
 	// FIXME Private method in OpenDSS
-	void setKwKVar(double PkW, double QkVar);
+	void setKwKVAr(double PkW, double QkVAr);
 
 
 	// FIXME Private members in OpenDSS
@@ -209,13 +209,13 @@ public interface GeneratorObj extends PCElement {
 
 	void setDispatchValue(double dispatchValue);
 
-	double getdQdV();
+	double getDQDV();
 
-	void setdQdV(double dQdV);
+	void setDQDV(double dQdV);
 
-	double getdQdVSaved();
+	double getDQDVSaved();
 
-	void setdQdVSaved(double dQdVSaved);
+	void setDQDVSaved(double dQdVSaved);
 
 	boolean isFirstSampleAfterReset();
 
@@ -233,9 +233,9 @@ public interface GeneratorObj extends PCElement {
 
 	void setGenFundamental(double genFundamental);
 
-	boolean isGenON();
+	boolean isGenOn();
 
-	void setGenON(boolean genON);
+	void setGenOn(boolean genOn);
 
 	boolean isGenSwitchOpen();
 
@@ -259,35 +259,35 @@ public interface GeneratorObj extends PCElement {
 
 	double getPVFactor();
 
-	void setPVFactor(double pVFactor);
+	void setPVFactor(double PVFactor);
 
 	double getRandomMult();
 
 	void setRandomMult(double randomMult);
 
-	int getReg_Hours();
+	int getRegHours();
 
-	void setReg_Hours(int reg_Hours);
+	void setRegHours(int regHours);
 
-	int getReg_kvarh();
+	int getRegKVArh();
 
-	void setReg_kvarh(int reg_kvarh);
+	void setRegKVArh(int regKVArh);
 
-	int getReg_kWh();
+	int getRegKWh();
 
-	void setReg_kWh(int reg_kWh);
+	void setRegKWh(int regKWh);
 
-	int getReg_MaxkVA();
+	int getRegMaxKVA();
 
 	void setReg_MaxkVA(int reg_MaxkVA);
 
 	int getReg_MaxkW();
 
-	void setReg_MaxkW(int reg_MaxkW);
+	void setRegMaxKW(int regMaxKW);
 
-	int getReg_Price();
+	int getRegPrice();
 
-	void setReg_Price(int reg_Price);
+	void setRegPrice(int regPrice);
 
 	Complex getShapeFactor();
 
@@ -303,27 +303,27 @@ public interface GeneratorObj extends PCElement {
 
 	double getV_Avg();
 
-	void setV_Avg(double v_Avg);
+	void setV_Avg(double vAvg);
 
-	double getV_Remembered();
+	double getVRemembered();
 
-	void setV_Remembered(double v_Remembered);
+	void setVRemembered(double vRemembered);
 
-	double getVar_Remembered();
+	double getVArRemembered();
 
-	void setVar_Remembered(double var_Remembered);
+	void setVArRemembered(double varRemembered);
 
-	double getVarBase();
+	double getVArBase();
 
-	void setVarBase(double varBase);
+	void setVArBase(double varBase);
 
-	double getVarMax();
+	double getVArMax();
 
-	void setVarMax(double varMax);
+	void setVArMax(double varMax);
 
-	double getVarMin();
+	double getVArMin();
 
-	void setVarMin(double varMin);
+	void setVArMin(double varMin);
 
 	double getVBase();
 
@@ -345,9 +345,9 @@ public interface GeneratorObj extends PCElement {
 
 	void setVMinPU(double vMinPU);
 
-	Complex getVthev();
+	Complex getVThev();
 
-	void setVthev(Complex vthev);
+	void setVThev(Complex vthev);
 
 	double getVThevHarm();
 

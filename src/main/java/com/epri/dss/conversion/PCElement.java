@@ -38,25 +38,25 @@ public interface PCElement extends CktElement {
 
 	double getVariable(int i);
 
-	void setVariable(int i, double Value);
+	void setVariable(int i, double value);
 
 	void zeroInjCurrent();
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
 	/** Get present values of terminal */
-	void getCurrents(Complex[] Curr);
+	void getCurrents(Complex[] curr);
 
 	/** Get present values of terminal */
-	void getInjCurrents(Complex[] Curr);
+	void getInjCurrents(Complex[] curr);
 
 	void computeITerminal();
 
 	int injCurrents();
 
-	void calcYPrimContribution(Complex[] Curr);
+	void calcYPrimContribution(Complex[] curr);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	/* For harmonics mode */
 
@@ -70,7 +70,7 @@ public interface PCElement extends CktElement {
 
 	int numVariables();
 
-	void getAllVariables(double[] States);
+	void getAllVariables(double[] states);
 
 	String variableName(int i);
 

@@ -16,9 +16,9 @@ public interface VSourceObj extends PCElement {
 
 	void setVMag(double vMag);
 
-	double getkVBase();
+	double getKVBase();
 
-	void setkVBase(double kVBase);
+	void setKVBase(double kVBase);
 
 	double getPerUnit();
 

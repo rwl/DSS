@@ -8,9 +8,9 @@ public interface GICLineObj extends PCElement {
 
 	void setZ(CMatrix z);
 
-	CMatrix getZinv();
+	CMatrix getZInv();
 
-	void setZinv(CMatrix zinv);
+	void setZInv(CMatrix zinv);
 
 	// FIXME: Private members in OpenDSS
 
@@ -22,9 +22,9 @@ public interface GICLineObj extends PCElement {
 
 	void setVolts(double volts);
 
-	double getVmag();
+	double getVMag();
 
-	void setVmag(double vmag);
+	void setVMag(double vmag);
 
 	double getSrcFrequency();
 

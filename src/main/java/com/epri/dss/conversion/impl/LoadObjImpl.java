@@ -299,7 +299,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		return LastGrowthFactor;  // for now
 	}
 
-	public void setkWkvar(double PkW, double Qkvar) {
+	public void setKW_KVAr(double PkW, double Qkvar) {
 		kWBase = PkW;
 		kvarBase = Qkvar;
 		LoadSpecType = 1;
@@ -1279,8 +1279,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	/**
 	 * Allocate load from connected kVA or kWh billing.
 	 */
-	public void setkVAAllocationFactor(double Value) {
-		setkVAAllocationFactor(Value);
+	public void setKVAAllocationFactor(double Value) {
+		setKVAAllocationFactor(Value);
 		AllocationFactor = Value;
 		LoadSpecType = 3;
 		computeAllocatedLoad();
@@ -1296,7 +1296,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		AllocationFactor = Value;
 		switch (LoadSpecType) {
 		case 3:
-			setkVAAllocationFactor(Value);
+			setKVAAllocationFactor(Value);
 			break;
 		case 4:
 			setCFactor(Value);
@@ -1314,15 +1314,15 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		HasBeenAllocated = true;
 	}
 
-	public void setConnectedkVA(double Value) {
-		setConnectedkVA(Value);
+	public void setConnectedKVA(double Value) {
+		ConnectedkVA = Value;
 		LoadSpecType = 3;
 		AllocationFactor = kVAAllocationFactor;
 		computeAllocatedLoad();
 	}
 
 	public void setKWh(double Value) {
-		setKWh(Value);
+		kWh = Value;
 		LoadSpecType = 4;
 		AllocationFactor = CFactor;
 		computeAllocatedLoad();
@@ -1485,11 +1485,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		}
 	}
 
-	public double getkVAAllocationFactor() {
+	public double getKVAAllocationFactor() {
 		return kVAAllocationFactor;
 	}
 
-	public double getConnectedkVA() {
+	public double getConnectedKVA() {
 		return ConnectedkVA;
 	}
 
@@ -1581,35 +1581,35 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		HasBeenAllocated = hasBeenAllocated;
 	}
 
-	public double getkWBase() {
+	public double getKWBase() {
 		return kWBase;
 	}
 
-	public void setkWBase(double kWBase) {
+	public void setKWBase(double kWBase) {
 		this.kWBase = kWBase;
 	}
 
-	public double getkVABase() {
+	public double getKVABase() {
 		return kVABase;
 	}
 
-	public void setkVABase(double kVABase) {
+	public void setKVABase(double kVABase) {
 		this.kVABase = kVABase;
 	}
 
-	public double getKvarBase() {
+	public double getKVArBase() {
 		return kvarBase;
 	}
 
-	public void setKvarBase(double kvarBase) {
+	public void setKVArBase(double kvarBase) {
 		this.kvarBase = kvarBase;
 	}
 
-	public double getkVLoadBase() {
+	public double getKVLoadBase() {
 		return kVLoadBase;
 	}
 
-	public void setkVLoadBase(double kVLoadBase) {
+	public void setKVLoadBase(double kVLoadBase) {
 		this.kVLoadBase = kVLoadBase;
 	}
 
@@ -1645,11 +1645,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		PFNominal = pFNominal;
 	}
 
-	public double getRneut() {
+	public double getRNeut() {
 		return Rneut;
 	}
 
-	public void setRneut(double rneut) {
+	public void setRNeut(double rneut) {
 		Rneut = rneut;
 	}
 
@@ -1661,11 +1661,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		UE_Factor = uE_Factor;
 	}
 
-	public double getXneut() {
+	public double getXNeut() {
 		return Xneut;
 	}
 
-	public void setXneut(double xneut) {
+	public void setXNeut(double xneut) {
 		Xneut = xneut;
 	}
 
@@ -1685,11 +1685,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		YearlyShapeObj = yearlyShapeObj;
 	}
 
-	public String getCVRshape() {
+	public String getCVRShape() {
 		return CVRshape;
 	}
 
-	public void setCVRshape(String cVRshape) {
+	public void setCVRShape(String cVRshape) {
 		CVRshape = cVRshape;
 	}
 
@@ -1709,35 +1709,35 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		LoadModel = loadModel;
 	}
 
-	public double getPuMean() {
+	public double getPUMean() {
 		return puMean;
 	}
 
-	public double getPuStdDev() {
+	public double getPUStdDev() {
 		return puStdDev;
 	}
 
-	public double getCVRwattFactor() {
+	public double getCVRWattFactor() {
 		return CVRwattFactor;
 	}
 
-	public double getCVRvarFactor() {
+	public double getCVRVArFactor() {
 		return CVRvarFactor;
 	}
 
-	public double getVmaxpu() {
+	public double getVMaxPU() {
 		return Vmaxpu;
 	}
 
-	public double getVminEmerg() {
+	public double getVMinEmerg() {
 		return VminEmerg;
 	}
 
-	public double getVminNormal() {
+	public double getVMinNormal() {
 		return VminNormal;
 	}
 
-	public double getVminpu() {
+	public double getVMinPU() {
 		return Vminpu;
 	}
 
@@ -1759,11 +1759,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		PFChanged = pFChanged;
 	}
 
-	public double getAvgkW() {
+	public double getAvgKW() {
 		return AvgkW;
 	}
 
-	public void setAvgkW(double avgkW) {
+	public void setAvgKW(double avgkW) {
 		AvgkW = avgkW;
 	}
 
@@ -1839,19 +1839,19 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		ShapeFactor = shapeFactor;
 	}
 
-	public double getVarBase() {
+	public double getVArBase() {
 		return varBase;
 	}
 
-	public void setVarBase(double varBase) {
+	public void setVArBase(double varBase) {
 		this.varBase = varBase;
 	}
 
-	public double getVarNominal() {
+	public double getVArNominal() {
 		return varNominal;
 	}
 
-	public void setVarNominal(double varNominal) {
+	public void setVArNominal(double varNominal) {
 		this.varNominal = varNominal;
 	}
 
@@ -1935,35 +1935,35 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		YQFixed = yQFixed;
 	}
 
-	public void setPuMean(double puMean) {
+	public void setPUMean(double puMean) {
 		this.puMean = puMean;
 	}
 
-	public void setPuStdDev(double puStdDev) {
+	public void setPUStdDev(double puStdDev) {
 		this.puStdDev = puStdDev;
 	}
 
-	public void setCVRwattFactor(double cVRwattFactor) {
+	public void setCVRWattFactor(double cVRwattFactor) {
 		CVRwattFactor = cVRwattFactor;
 	}
 
-	public void setCVRvarFactor(double cVRvarFactor) {
+	public void setCVRVArFactor(double cVRvarFactor) {
 		CVRvarFactor = cVRvarFactor;
 	}
 
-	public void setVmaxpu(double vmaxpu) {
+	public void setVMaxPU(double vmaxpu) {
 		Vmaxpu = vmaxpu;
 	}
 
-	public void setVminEmerg(double vminEmerg) {
+	public void setVMinEmerg(double vminEmerg) {
 		VminEmerg = vminEmerg;
 	}
 
-	public void setVminNormal(double vminNormal) {
+	public void setVMinNormal(double vminNormal) {
 		VminNormal = vminNormal;
 	}
 
-	public void setVminpu(double vminpu) {
+	public void setVMinPU(double vminpu) {
 		Vminpu = vminpu;
 	}
 
@@ -1975,7 +1975,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		Fixed = fixed;
 	}
 
-	public boolean isShapeIsActual() {
+	public boolean shapeIsActual() {
 		return ShapeIsActual;
 	}
 
@@ -1991,11 +1991,11 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		ZIPV = zIPV;
 	}
 
-	public void setnZIPV(int nZIPV) {
+	public void setNZIPV(int nZIPV) {
 		this.nZIPV = nZIPV;
 	}
 
-	public int getnZIPV() {
+	public int getNZIPV() {
 		return nZIPV;
 	}
 

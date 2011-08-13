@@ -32,7 +32,7 @@ public interface LoadObj extends PCElement {
 
 	double getEEN_Factor();
 
-	void setEEN_Factor(double eEN_Factor);
+	void setEEN_Factor(double EEN_Factor);
 
 	String getGrowthShape();
 
@@ -46,21 +46,21 @@ public interface LoadObj extends PCElement {
 
 	void setHasBeenAllocated(Boolean hasBeenAllocated);
 
-	double getkWBase();
+	double getKWBase();
 
-	void setkWBase(double kWBase);
+	void setKWBase(double kWBase);
 
-	double getkVABase();
+	double getKVABase();
 
-	void setkVABase(double kVABase);
+	void setKVABase(double kVABase);
 
-	double getKvarBase();
+	double getKVArBase();
 
-	void setKvarBase(double kvarBase);
+	void setKVArBase(double kvarBase);
 
-	double getkVLoadBase();
+	double getKVLoadBase();
 
-	void setkVLoadBase(double kVLoadBase);
+	void setKVLoadBase(double kVLoadBase);
 
 	int getLoadClass();
 
@@ -76,19 +76,19 @@ public interface LoadObj extends PCElement {
 
 	double getPFNominal();
 
-	void setPFNominal(double pFNominal);
+	void setPFNominal(double PFNominal);
 
-	double getRneut();
+	double getRNeut();
 
-	void setRneut(double rneut);
+	void setRNeut(double rneut);
 
 	double getUE_Factor();
 
-	void setUE_Factor(double uE_Factor);
+	void setUE_Factor(double UE_Factor);
 
-	double getXneut();
+	double getXNeut();
 
-	void setXneut(double xneut);
+	void setXNeut(double xneut);
 
 	String getYearlyShape();
 
@@ -98,33 +98,33 @@ public interface LoadObj extends PCElement {
 
 	void setYearlyShapeObj(LoadShapeObj yearlyShapeObj);
 
-	String getCVRshape();
+	String getCVRShape();
 
-	void setCVRshape(String cVRshape);
+	void setCVRShape(String CVRshape);
 
 	LoadShapeObj getCVRShapeObj();
 
-	void setCVRShapeObj(LoadShapeObj cVRShapeObj);
+	void setCVRShapeObj(LoadShapeObj CVRShapeObj);
 
 	int getLoadModel();
 
 	void setLoadModel(int loadModel);
 
-	double getPuMean();
+	double getPUMean();
 
-	double getPuStdDev();
+	double getPUStdDev();
 
-	double getCVRwattFactor();
+	double getCVRWattFactor();
 
-	double getCVRvarFactor();
+	double getCVRVArFactor();
 
-	double getVmaxpu();
+	double getVMaxPU();
 
-	double getVminEmerg();
+	double getVMinEmerg();
 
-	double getVminNormal();
+	double getVMinNormal();
 
-	double getVminpu();
+	double getVMinPU();
 
 	boolean isExemptFromLDCurve();
 
@@ -135,36 +135,36 @@ public interface LoadObj extends PCElement {
 	boolean getExceedsNormal();
 
 	/* Allocate load from connected kva or kWh billing */
-	void setkVAAllocationFactor(double Value);
+	void setKVAAllocationFactor(double value);
 
-	double getkVAAllocationFactor();
+	double getKVAAllocationFactor();
 
-	void setConnectedkVA(double Value);
+	void setConnectedKVA(double value);
 
-	double getConnectedkVA();
+	double getConnectedKVA();
 
 	/** Set kWh properties ... */
 
-	void setCFactor(double Value);
+	void setCFactor(double value);
 
 	double getCFactor();
 
-	void setKWh(double Value);
+	void setKWh(double value);
 
 	double getKWh();
 
-	void setKWhDays(double Value);
+	void setKWhDays(double value);
 
 	double getKWhDays();
 
 	/* AllocationFactor adjusts either connected kVA allocation factor
 	 * or kWh CFactor
 	 */
-	void setAllocationFactor(double Value);
+	void setAllocationFactor(double value);
 
 	double getAllocationFactor();
 
-	void setkWkvar(double PkW, double Qkvar);
+	void setKW_KVAr(double PkW, double QkVAr);
 
 	void recalcElementData();
 
@@ -172,7 +172,7 @@ public interface LoadObj extends PCElement {
 
 	int injCurrents();
 
-	void getInjCurrents(Complex[] Curr);
+	void getInjCurrents(Complex[] curr);
 
 	void initHarmonics();
 
@@ -186,13 +186,13 @@ public interface LoadObj extends PCElement {
 	 * 1 = Gaussian around mean and std Dev
 	 * 2 = uniform
 	 */
-	void randomize(int Opt);
+	void randomize(int opt);
 
-	String getPropertyValue(int Index);
+	String getPropertyValue(int index);
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	void updateVoltageBases();
 
@@ -203,11 +203,11 @@ public interface LoadObj extends PCElement {
 
 	boolean isPFChanged();
 
-	void setPFChanged(boolean pFChanged);
+	void setPFChanged(boolean PFChanged);
 
-	double getAvgkW();
+	double getAvgKW();
 
-	void setAvgkW(double avgkW);
+	void setAvgKW(double avgKW);
 
 	double[] getHarmAng();
 
@@ -245,13 +245,13 @@ public interface LoadObj extends PCElement {
 
 	void setShapeFactor(Complex shapeFactor);
 
-	double getVarBase();
+	double getVArBase();
 
-	void setVarBase(double varBase);
+	void setVArBase(double varBase);
 
-	double getVarNominal();
+	double getVArNominal();
 
-	void setVarNominal(double varNominal);
+	void setVArNominal(double varNominal);
 
 	double getVBase();
 
@@ -287,33 +287,33 @@ public interface LoadObj extends PCElement {
 
 	CMatrix getYPrimOpenCond();
 
-	void setYPrimOpenCond(CMatrix yPrimOpenCond);
+	void setYPrimOpenCond(CMatrix YPrimOpenCond);
 
 	double getYQFixed();
 
 	void setYQFixed(double yQFixed);
 
-	void setPuMean(double puMean);
+	void setPUMean(double puMean);
 
-	void setPuStdDev(double puStdDev);
+	void setPUStdDev(double puStdDev);
 
-	void setCVRwattFactor(double cVRwattFactor);
+	void setCVRWattFactor(double CVRwattFactor);
 
-	void setCVRvarFactor(double cVRvarFactor);
+	void setCVRVArFactor(double cVRvarFactor);
 
-	void setVmaxpu(double vmaxpu);
+	void setVMaxPU(double vmaxpu);
 
-	void setVminEmerg(double vminEmerg);
+	void setVMinEmerg(double vminEmerg);
 
-	void setVminNormal(double vminNormal);
+	void setVMinNormal(double vminNormal);
 
-	void setVminpu(double vminpu);
+	void setVMinPU(double vminpu);
 
 	void setExemptFromLDCurve(boolean exemptFromLDCurve);
 
 	void setFixed(boolean fixed);
 
-	boolean isShapeIsActual();
+	boolean shapeIsActual();
 
 	void setShapeIsActual(boolean shapeIsActual);
 
@@ -321,8 +321,8 @@ public interface LoadObj extends PCElement {
 
 	void setZIPV(double[] zIPV);
 
-	void setnZIPV(int nZIPV);
+	void setNZIPV(int NZIPV);
 
-	int getnZIPV();
+	int getNZIPV();
 
 }

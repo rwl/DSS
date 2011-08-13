@@ -235,10 +235,10 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				agl.setYPrimInvalid(true);
 
 				if (agl.getZ() != null) agl.setZ(null);
-				if (agl.getZinv() != null) agl.setZinv(null);
+				if (agl.getZInv() != null) agl.setZInv(null);
 
 				agl.setZ( new CMatrixImpl(agl.getNPhases()) );
-				agl.setZinv( new CMatrixImpl(agl.getNPhases()) );
+				agl.setZInv( new CMatrixImpl(agl.getNPhases()) );
 			}
 
 			agl.getZ().copyFrom(OtherGICLine.getZ());

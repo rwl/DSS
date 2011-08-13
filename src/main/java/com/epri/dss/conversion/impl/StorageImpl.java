@@ -62,43 +62,43 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"Number of Phases, this Storage element.  Power is evenly divided among phases.");
 		addProperty("bus1", 1,
 				"Bus to which the Storage element is connected.  May include specific node specification.");
-		addProperty("kv", propKV,
+		addProperty("kv", KV,
 				"Nominal rated (1.0 per unit) voltage, kV, for Storage element. For 2- and 3-phase Storage elements, specify phase-phase kV. "+
 				"Otherwise, specify actual kV across each branch of the Storage element. "+
 				"If wye (star), specify phase-neutral kV. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"If delta or phase-phase connected, specify phase-phase kV.");  // line-neutral voltage//  base voltage
-		addProperty("kW", propKW,
+		addProperty("kW", KW,
 				"Get/set the present kW value.  A positive value denotes power coming OUT of the element, "+DSSGlobals.CRLF+
 				"which is the opposite of a Load element. A negative value indicates the Storage element is in Charging state. " +
 				"This value is modified internally depending on the dispatch mode. " );
-		addProperty("pf", propPF,
+		addProperty("pf", PF,
 				"Nominally, the power factor for discharging (acting as a generator). Default is 1.0. " +
 				"Setting this property will also set the kvar property." +
 				"Enter negative for leading powerfactor "+
 				"(when kW and kvar have opposite signs.)"+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"A positive power factor for a generator signifies that the Storage element produces vars " +
 				"as is typical for a generator.  ");
-		addProperty("conn", propCONNECTION,
+		addProperty("conn", CONNECTION,
 				"={wye|LN|delta|LL}.  Default is wye.");
-		addProperty("kvar", propKVAR,
+		addProperty("kvar", KVAR,
 				"Get/set the present kW value.  Alternative to specifying the power factor.  Side effect: "+
 				" the power factor value is altered to agree based on present value of kW.");
-		addProperty("kVA", propKVA,
+		addProperty("kVA", KVA,
 				"kVA rating of power output. Defaults to rated kW. Used as the base for Dynamics mode and Harmonics mode values.");
-		addProperty("kWrated", propKWRATED,
+		addProperty("kWrated", KW_RATED,
 				"kW rating of power output. Base for Loadshapes when DispMode=Follow. Side effect: Set KVA property.");
 
-		addProperty("kWhrated", propKWHRATED,
+		addProperty("kWhrated", KWH_RATED,
 				"Rated storage capacity in kWh. Default is 50.");
-		addProperty("kWhstored", propKWHSTORED,
+		addProperty("kWhstored", KWH_STORED,
 				"Present amount of energy stored, kWh. Default is same as kWh rated.");
-		addProperty("%stored", propPCTSTORED,
+		addProperty("%stored", PCT_STORED,
 				"Present amount of energy stored, % of rated kWh. Default is 100%.");
-		addProperty("%reserve", propPCTRESERVE,
+		addProperty("%reserve", PCT_RESERVE,
 				"Percent of rated kWh storage capacity to be held in reserve for normal operation. Default = 20. " + DSSGlobals.CRLF +
 				"This is treated as the minimum energy discharge level unless there is an emergency. For emergency operation " +
 				"set this property lower. Cannot be less than zero.");
-		addProperty("State", propSTATE,
+		addProperty("State", STATE,
 				"{IDLING | CHARGING | DISCHARGING}  Get/Set present operational state. In DISCHARGING mode, the Storage element " +
 				"acts as a generator and the kW property is positive. The element continues discharging at the scheduled output power level " +
 				"until the storage reaches the reserve value. Then the state reverts to IDLING. " +
@@ -106,57 +106,57 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"The element continues to charge until the max storage kWh is reached and Then switches to IDLING state. " +
 				"In IDLING state, the kW property shows zero. However, the resistive and reactive loss elements remain in the circuit " +
 				"and the power flow report will show power being consumed.");
-		addProperty("%Discharge", propPCTKWOUT,
+		addProperty("%Discharge", PCT_KW_OUT,
 				"Discharge rate (output power) in Percent of rated kW. Default = 100.");
-		addProperty("%Charge", propPCTKWIN,
+		addProperty("%Charge", PCT_KW_IN,
 				"Charging rate (input power) in Percent of rated kW. Default = 100.");
-		addProperty("%EffCharge", propCHARGEEFF,
+		addProperty("%EffCharge", CHARGE_EFF,
 				"Percent efficiency for CHARGING the storage element. Default = 90.");
-		addProperty("%EffDischarge", propDISCHARGEEFF,
+		addProperty("%EffDischarge", DISCHARGE_EFF,
 				"Percent efficiency for DISCHARGING the storage element. Default = 90." +
 				"Idling losses are handled by %IdlingkW property and are in addition to the charging and discharging efficiency losses " +
 				"in the power conversion process inside the unit.");
-		addProperty("%IdlingkW", propIDLEKW,
+		addProperty("%IdlingkW", IDLE_KW,
 				"Percent of rated kW consumed while idling. Default = 1.");
-		addProperty("%Idlingkvar", propIDLEKVAR,
+		addProperty("%Idlingkvar", IDLE_KVAR,
 				"Percent of rated kW consumed as reactive power (kvar) while idling. Default = 0.");
-		addProperty("%R", propPCTR,
+		addProperty("%R", PCTR,
 				"Equivalent percent internal resistance, ohms. Default is 0. Placed in series with internal voltage source" +
 				" for harmonics and dynamics modes. Use a combination of %IdlekW and %EffCharge and %EffDischarge to account for " +
 				"losses in power flow modes.");
-		addProperty("%X", propPCTX,
+		addProperty("%X", PCTX,
 				"Equivalent percent internal reactance, ohms. Default is 50%. Placed in series with internal voltage source" +
 				" for harmonics and dynamics modes. (Limits fault current to 2 pu.) " +
 				"Use %Idlekvar and kvar properties to account for any reactive power during power flow solutions.");
-		addProperty("model", propMODEL,
+		addProperty("model", MODEL,
 				"Integer code (default=1) for the model to use for powet output variation with voltage. "+
 				"Valid values are:" +DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"1:Storage element injects a CONSTANT kW at specified power factor."+DSSGlobals.CRLF+
 				"2:Storage element is modeled as a CONSTANT ADMITTANCE."  +DSSGlobals.CRLF+
 				"3:Compute load injection from User-written Model.");
 
-		addProperty("Vminpu", propVMINPU,
+		addProperty("Vminpu", VMIN_PU,
 				"Default = 0.90.  Minimum per unit voltage for which the Model is assumed to apply. " +
 				"Below this value, the load model reverts to a constant impedance model.");
-		addProperty("Vmaxpu", propVMAXPU,
+		addProperty("Vmaxpu", VMAX_PU,
 				"Default = 1.10.  Maximum per unit voltage for which the Model is assumed to apply. " +
 				"Above this value, the load model reverts to a constant impedance model.");
-		addProperty("yearly", propYEARLY,
+		addProperty("yearly", YEARLY,
 				"Dispatch shape to use for yearly simulations.  Must be previously defined "+
 				"as a Loadshape object. If this is not specified, the Daily dispatch shape, if any, is repeated "+
 				"during Yearly solution modes. In the default dispatch mode, " +
 				"the Storage element uses this loadshape to trigger State changes.");
-		addProperty("daily", propDAILY,
+		addProperty("daily", DAILY,
 				"Dispatch shape to use for daily simulations.  Must be previously defined "+
 				"as a Loadshape object of 24 hrs, typically.  In the default dispatch mode, "+
 				"the Storage element uses this loadshape to trigger State changes."); // daily dispatch (hourly)
-		addProperty("duty", propDUTY,
+		addProperty("duty", DUTY,
 				"Load shape to use for duty cycle dispatch simulations such as for solar ramp rate studies. " +
 				"Must be previously defined as a Loadshape object. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Typically would have time intervals of 1-5 seconds. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"Designate the number of points to solve using the Set Number=xxxx command. "+
 				"If there are fewer points in the actual shape, the shape is assumed to repeat.");  // as for wind generation
-		addProperty("DispMode", propDISPMODE,
+		addProperty("DispMode", DISP_MODE,
 				"{DEFAULT | FOLLOW | EXTERNAL | LOADLEVEL | PRICE } Default = \"DEFAULT\". Dispatch mode. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"In DEFAULT mode, Storage element state is triggered to discharge or charge at the specified rate by the " +
 				"loadshape curve corresponding to the solution mode. "+ DSSGlobals.CRLF + DSSGlobals.CRLF +
@@ -164,30 +164,30 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				"until storage is either exhausted or full. " +
 				"The element discharges for positive values and charges for negative values.  The loadshapes are based on the kW and kvar " +
 				"values in the most recent definition of kW and PF or kW and kvar properties. " + DSSGlobals.CRLF + DSSGlobals.CRLF);
-		addProperty("DischargeTrigger", propDISPOUTTRIG,
+		addProperty("DischargeTrigger", DISP_OUT_TRIG,
 				"Dispatch trigger value for discharging the storage. "+DSSGlobals.CRLF+
 				"If = 0.0 the Storage element state is changed by the State command or by a StorageController object. " +DSSGlobals.CRLF+
 				"If <> 0  the Storage element state is set to DISCHARGING when this trigger level is EXCEEDED by either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
-		addProperty("Chargetrigger", propDISPINTRIG,
+		addProperty("Chargetrigger", DISP_IN_TRIG,
 				"Dispatch trigger value for charging the storage. "+DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"If = 0.0 the Storage element state is changed by the State command or StorageController object.  " +DSSGlobals.CRLF+DSSGlobals.CRLF+
 				"If <> 0  the Storage element state is set to CHARGING when this trigger level is GREATER than either the specified " +
 				"Loadshape curve value or the price signal or global Loadlevel value, depending on dispatch mode. See State property.");
-		addProperty("TimeChargeTrig", propCHARGETIME,
+		addProperty("TimeChargeTrig", CHARGE_TIME,
 				"Time of day in fractional hours (0230 = 2.5) at which storage element will automatically go into charge state. " +
 				"Default is 2.0.  Enter a negative time value to disable this feature.");
 
-		addProperty("class", propCLASS,
+		addProperty("class", CLASS,
 				"An arbitrary integer number representing the class of Storage element so that Storage values may "+
 				"be segregated by class."); // integer
 
-		addProperty("UserModel", propUSERMODEL,
+		addProperty("UserModel", USER_MODEL,
 				"Name of DLL containing user-written model, which computes the terminal currents for Dynamics studies, " +
 				"overriding the default model.  Set to \"none\" to negate previous setting.");
-		addProperty("UserData", propUSERDATA,
+		addProperty("UserData", USER_DATA,
 				"String (in quotes or parentheses) that gets passed to user-written model for defining the data required for that model.");
-		addProperty("debugtrace", propDEBUGTRACE,
+		addProperty("debugtrace", DEBUG_TRACE,
 				"{Yes | No }  Default is no.  Turn this on to capture the progress of the Storage model " +
 				"for each iteration.  Creates a separate file for each Storage element named \"STORAGE_name.CSV\"." );
 
@@ -276,18 +276,18 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 		switch (as.getNPhases()) {
 		case 2:
-			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
+			as.setVBase(as.getKVStorageBase() * DSSGlobals.InvSQRT3x1000);  // L-N Volts
 			break;
 		case 3:
-			as.setVBase(as.getkVStorageBase() * DSSGlobals.InvSQRT3x1000);
+			as.setVBase(as.getKVStorageBase() * DSSGlobals.InvSQRT3x1000);
 			break;
 		default:
-			as.setVBase(as.getkVStorageBase() * 1000.0);  // just use what is supplied
+			as.setVBase(as.getKVStorageBase() * 1000.0);  // just use what is supplied
 			break;
 		}
 
-		as.setVBase95(as.getVminpu() * as.getVBase());
-		as.setVBase105(as.getVmaxpu() * as.getVBase());
+		as.setVBase95(as.getVMinPU() * as.getVBase());
+		as.setVBase105(as.getVMaxPU() * as.getVBase());
 
 		as.setYorder(as.getNConds() * as.getNTerms());
 		as.setYPrimInvalid(true);
@@ -296,15 +296,15 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	private int interpretDispMode(String S) {
 		switch (S.toLowerCase().charAt(0)) {
 		case 'e':
-			return STORE_EXTERNALMODE;
+			return EXTERNAL_MODE;
 		case 'f':
-			return STORE_FOLLOW;
+			return FOLLOW;
 		case 'l':
-			return STORE_LOADMODE;
+			return LOAD_MODE;
 		case 'p':
-			return STORE_PRICEMODE;
+			return PRICE_MODE;
 		default:
-			return STORE_DEFAULT;
+			return DEFAULT;
 		}
 	}
 
@@ -352,106 +352,106 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				case 1:
 					as.setBus(1, Param);  // TODO Check zero based indexing
 					break;
-				case propKV:
+				case KV:
 					as.setPresentKV(parser.makeDouble());
 					break;
-				case propKW:
-					as.setkW_out(parser.makeDouble());
+				case KW:
+					as.setKWOut(parser.makeDouble());
 					break;
-				case propPF:
+				case PF:
 					as.setPowerFactor(parser.makeDouble());
 					break;
-				case propMODEL:
+				case MODEL:
 					as.setVoltageModel(parser.makeInteger());
 					break;
-				case propYEARLY:
+				case YEARLY:
 					as.setYearlyShape(Param);
 					break;
-				case propDAILY:
+				case DAILY:
 					as.setDailyShape(Param);
 					break;
-				case propDUTY:
+				case DUTY:
 					as.setDutyShape(Param);
 					break;
-				case propDISPMODE:
+				case DISP_MODE:
 					as.setDispatchMode(interpretDispMode(Param));
 					break;
-				case propIDLEKVAR:
-					as.setPctIdlekvar(parser.makeDouble());
+				case IDLE_KVAR:
+					as.setPctIdleKVAr(parser.makeDouble());
 					break;
-				case propCONNECTION:
+				case CONNECTION:
 					interpretConnection(Param);
 					break;
-				case propKVAR:
-					as.setPresentKVar(parser.makeDouble());
+				case KVAR:
+					as.setPresentKVAr(parser.makeDouble());
 					break;
-				case propPCTR:
+				case PCTR:
 					as.setPctR(parser.makeDouble());
 					break;
-				case propPCTX:
+				case PCTX:
 					as.setPctX(parser.makeDouble());
 					break;
-				case propIDLEKW:
-					as.setPctIdlekW(parser.makeDouble());
+				case IDLE_KW:
+					as.setPctIdleKW(parser.makeDouble());
 					break;
-				case propCLASS:
+				case CLASS:
 					as.setStorageClass(parser.makeInteger());
 					break;
-				case propDISPOUTTRIG:
+				case DISP_OUT_TRIG:
 					as.setDischargeTrigger(parser.makeDouble());
 					break;
-				case propDISPINTRIG:
+				case DISP_IN_TRIG:
 					as.setChargeTrigger(parser.makeDouble());
 					break;
-				case propCHARGEEFF:
+				case CHARGE_EFF:
 					as.setPctChargeEff(parser.makeDouble());
 					break;
-				case propDISCHARGEEFF:
+				case DISCHARGE_EFF:
 					as.setPctDischargeEff(parser.makeDouble());
 					break;
-				case propPCTKWOUT:
+				case PCT_KW_OUT:
 					as.setPctKWOut(parser.makeDouble());
 					break;
-				case propVMINPU:
-					as.setVminpu(parser.makeDouble());
+				case VMIN_PU:
+					as.setVMinPU(parser.makeDouble());
 					break;
-				case propVMAXPU:
-					as.setVmaxpu(parser.makeDouble());
+				case VMAX_PU:
+					as.setVMaxPU(parser.makeDouble());
 					break;
-				case propSTATE:
+				case STATE:
 					as.setState(as.interpretState(Param));
 					break;
-				case propKVA:
-					as.setkVArating(parser.makeDouble());
+				case KVA:
+					as.setKVA_Rating(parser.makeDouble());
 					break;
-				case propKWRATED:
-					as.setkWrating(parser.makeDouble());
+				case KW_RATED:
+					as.setKWRating(parser.makeDouble());
 					break;
-				case propKWHRATED:
-					as.setkWhRating(parser.makeDouble());
+				case KWH_RATED:
+					as.setKWhRating(parser.makeDouble());
 					break;
-				case propKWHSTORED:
-					as.setkWhStored(parser.makeDouble());
+				case KWH_STORED:
+					as.setKWhStored(parser.makeDouble());
 					break;
-				case propPCTRESERVE:
+				case PCT_RESERVE:
 					as.setPctReserve(parser.makeDouble());
 					break;
-				case propUSERMODEL:
+				case USER_MODEL:
 					as.getUserModel().setName(parser.makeString());  // connect to user written models
 					break;
-				case propUSERDATA:
+				case USER_DATA:
 					as.getUserModel().edit(parser.makeString());  // send edit string to user model
 					break;
-				case propDEBUGTRACE:
+				case DEBUG_TRACE:
 					as.setDebugTrace(Utilities.interpretYesNo(Param));
 					break;
-				case propPCTKWIN:
+				case PCT_KW_IN:
 					as.setPctKWin(parser.makeDouble());
 					break;
-				case propPCTSTORED:
-					as.setkWhStored(parser.makeDouble() * 0.01 * as.getkWhRating());
+				case PCT_STORED:
+					as.setKWhStored(parser.makeDouble() * 0.01 * as.getKWhRating());
 					break;
-				case propCHARGETIME:
+				case CHARGE_TIME:
 					as.setChargeTime(parser.makeDouble());
 					break;
 				default:
@@ -464,36 +464,36 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				case 0:
 					setNcondsForConnection();  // force reallocation of terminal info
 					break;
-				case propKW:
+				case KW:
 					as.syncUpPowerQuantities();   // keep kVAr nominal up to date with kW and PF
 					break;
-				case propPF:
+				case PF:
 					as.syncUpPowerQuantities();
 					break;
 
 					/* Set load shape objects; returns nil if not valid */
-				case propYEARLY:
+				case YEARLY:
 					as.setYearlyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getYearlyShape()));
 					break;
-				case propDAILY:
+				case DAILY:
 					as.setDailyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDailyShape()));
 					break;
-				case propDUTY:
+				case DUTY:
 					as.setDutyShapeObj((LoadShapeObj) Globals.getLoadShapeClass().find(as.getDutyShape()));
 					break;
-				case propKWRATED:
-					as.setkVArating(as.getkWrating());
+				case KW_RATED:
+					as.setKVA_Rating(as.getKWRating());
 					break;
-				case propKWHRATED:
-					as.setkWhStored(as.getkWhRating());  // Assume fully charged
-					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
-					break;
-
-				case propPCTRESERVE:
-					as.setkWhReserve(as.getkWhRating() * as.getPctReserve() * 0.01);
+				case KWH_RATED:
+					as.setKWhStored(as.getKWhRating());  // Assume fully charged
+					as.setKWhReserve(as.getKWhRating() * as.getPctReserve() * 0.01);
 					break;
 
-				case propDEBUGTRACE:
+				case PCT_RESERVE:
+					as.setKWhReserve(as.getKWhRating() * as.getPctReserve() * 0.01);
+					break;
+
+				case DEBUG_TRACE:
 					if (as.isDebugTrace()) {
 						try {
 							// init trace file
@@ -519,8 +519,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					}
 					break;
 
-				case propKVA:
-					as.setkVANotSet(false);
+				case KVA:
+					as.setKVANotSet(false);
 					break;
 				}
 			}
@@ -553,14 +553,14 @@ public class StorageImpl extends PCClassImpl implements Storage {
 				as.setYPrimInvalid(true);
 			}
 
-			as.setkVStorageBase(OtherStorageObj.getkVStorageBase());
+			as.setKVStorageBase(OtherStorageObj.getKVStorageBase());
 			as.setVBase(OtherStorageObj.getVBase());
-			as.setVminpu(OtherStorageObj.getVminpu());
-			as.setVmaxpu(OtherStorageObj.getVmaxpu());
+			as.setVMinPU(OtherStorageObj.getVMinPU());
+			as.setVMaxPU(OtherStorageObj.getVMaxPU());
 			as.setVBase95(OtherStorageObj.getVBase95());
 			as.setVBase105(OtherStorageObj.getVBase105());
-			as.setkW_out(OtherStorageObj.getkW_out());
-			as.setKvar_out(OtherStorageObj.getKvar_out());
+			as.setKWOut(OtherStorageObj.getKWOut());
+			as.setKVArOut(OtherStorageObj.getKVArOut());
 			as.setPNominalPerPhase(OtherStorageObj.getPNominalPerPhase());
 			as.setPowerFactor(OtherStorageObj.getPowerFactor());
 			as.setQNominalPerPhase(OtherStorageObj.getQNominalPerPhase());
@@ -577,14 +577,14 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			as.setState(OtherStorageObj.getState());
 			as.setStateChanged(OtherStorageObj.isStateChanged());
-			as.setkVANotSet(OtherStorageObj.iskVANotSet());
+			as.setKVANotSet(OtherStorageObj.isKVANotSet());
 
-			as.setkVArating(OtherStorageObj.getkVArating());
+			as.setKVA_Rating(OtherStorageObj.getKVArating());
 
-			as.setkWrating(OtherStorageObj.getkWrating());
-			as.setkWhRating(OtherStorageObj.getkWhRating());
-			as.setkWhStored(OtherStorageObj.getkWhStored());
-			as.setkWhReserve(OtherStorageObj.getkWhReserve());
+			as.setKWRating(OtherStorageObj.getKWRating());
+			as.setKWhRating(OtherStorageObj.getKWhRating());
+			as.setKWhStored(OtherStorageObj.getKWhStored());
+			as.setKWhReserve(OtherStorageObj.getKWhReserve());
 			as.setPctReserve(OtherStorageObj.getPctReserve());
 			as.setDischargeTrigger(OtherStorageObj.getDischargeTrigger());
 			as.setChargeTrigger(OtherStorageObj.getChargeTrigger());
@@ -592,8 +592,8 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			as.setPctDischargeEff(OtherStorageObj.getPctDischargeEff());
 			as.setPctKWOut(OtherStorageObj.getPctKWOut());
 			as.setPctKWin(OtherStorageObj.getPctKWin());
-			as.setPctIdlekW(OtherStorageObj.getPctIdlekW());
-			as.setPctIdlekvar(OtherStorageObj.getPctIdlekvar());
+			as.setPctIdleKW(OtherStorageObj.getPctIdleKW());
+			as.setPctIdleKVAr(OtherStorageObj.getPctIdleKVAr());
 			as.setChargeTime(OtherStorageObj.getChargeTime());
 
 			as.setPctR(OtherStorageObj.getPctR());

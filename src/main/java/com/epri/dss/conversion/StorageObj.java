@@ -27,35 +27,35 @@ import com.epri.dss.shared.impl.Complex;
  */
 public interface StorageObj extends PCElement {
 
-	double getkWChargeLosses();
+	double getKWChargeLosses();
 
-	double getkWIdlingLosses();
+	double getKWIdlingLosses();
 
 	double getPresentkW();
 
-	double getPresentKVar();
+	double getPresentKVAr();
 
 	double getPresentKV();
 
-	void setPresentKV(double Value);
+	void setPresentKV(double value);
 
-	void setPresentKVar(double Value);
+	void setPresentKVAr(double value);
 
-	void setPresentKW(double Value);
+	void setPresentKW(double value);
 
-	void setPowerFactor(double Value);
+	void setPowerFactor(double calue);
 
 	double getPowerFactor();
 
-	void setState(int Value);
+	void setState(int value);
 
 	int getState();
 
-	void setPctKVarOut(double Value);
+	void setPctKVArOut(double value);
 
-	double getPctKVarOut();
+	double getPctKVArOut();
 
-	void setPctKWOut(double Value);
+	void setPctKWOut(double value);
 
 	double getPctKWOut();
 
@@ -95,21 +95,21 @@ public interface StorageObj extends PCElement {
 
 	void setYearlyShapeObj(LoadShapeObj yearlyShapeObj);
 
-	double getkWrating();
+	double getKWRating();
 
-	void setkWrating(double kWrating);
+	void setKWRating(double kWRating);
 
-	double getkWhRating();
+	double getKWhRating();
 
-	void setkWhRating(double kWhRating);
+	void setKWhRating(double kWhRating);
 
-	double getkWhStored();
+	double getKWhStored();
 
-	void setkWhStored(double kWhStored);
+	void setKWhStored(double kWhStored);
 
-	double getkWhReserve();
+	double getKWhReserve();
 
-	void setkWhReserve(double kWhReserve);
+	void setKWhReserve(double kWhReserve);
 
 	double getPctKWin();
 
@@ -192,37 +192,37 @@ public interface StorageObj extends PCElement {
 
 	void setStorageObjSwitchOpen(boolean storageObjSwitchOpen);
 
-	boolean iskVANotSet();
+	boolean isKVANotSet();
 
-	void setkVANotSet(boolean kVANotSet);
+	void setKVANotSet(boolean kVANotSet);
 
-	double getkVArating();
+	double getKVArating();
 
-	void setkVArating(double kVArating);
+	void setKVA_Rating(double kVArating);
 
-	double getkVStorageBase();
+	double getKVStorageBase();
 
-	void setkVStorageBase(double kVStorageBase);
+	void setKVStorageBase(double kVStorageBase);
 
-	double getKvar_out();
+	double getKVArOut();
 
-	void setKvar_out(double kvar_out);
+	void setKVArOut(double kvar_out);
 
-	double getkW_out();
+	double getKWOut();
 
-	void setkW_out(double kW_out);
+	void setKWOut(double kW_out);
 
-	double getKvarRequested();
+	double getKVArRequested();
 
-	void setKvarRequested(double kvarRequested);
+	void setKVArRequested(double kvarRequested);
 
-	double getPctIdlekW();
+	double getPctIdleKW();
 
-	void setPctIdlekW(double pctIdlekW);
+	void setPctIdleKW(double pctIdlekW);
 
-	double getPctIdlekvar();
+	double getPctIdleKVAr();
 
-	void setPctIdlekvar(double pctIdlekvar);
+	void setPctIdleKVAr(double pctIdlekvar);
 
 	double getPctChargeEff();
 
@@ -276,29 +276,29 @@ public interface StorageObj extends PCElement {
 
 	void setRandomMult(double randomMult);
 
-	int getReg_Hours();
+	int getRegHours();
 
-	void setReg_Hours(int reg_Hours);
+	void setRegHours(int regHours);
 
-	int getReg_kvarh();
+	int getRegKVArh();
 
-	void setReg_kvarh(int reg_kvarh);
+	void setRegKVArh(int reg_kvarh);
 
-	int getReg_kWh();
+	int getRegKWh();
 
-	void setReg_kWh(int reg_kWh);
+	void setRegKWh(int regkWh);
 
-	int getReg_MaxkVA();
+	int getRegMaxKVA();
 
-	void setReg_MaxkVA(int reg_MaxkVA);
+	void setRegMaxKVA(int reg_MaxkVA);
 
-	int getReg_MaxkW();
+	int getRegMaxKW();
 
-	void setReg_MaxkW(int reg_MaxkW);
+	void setRegMaxKW(int reg_MaxkW);
 
-	int getReg_Price();
+	int getRegPrice();
 
-	void setReg_Price(int reg_Price);
+	void setRegPrice(int regPrice);
 
 	Complex getShapeFactor();
 
@@ -312,9 +312,9 @@ public interface StorageObj extends PCElement {
 
 	void setTraceFile(File traceFile);
 
-	double getkVarBase();
+	double getKVArBase();
 
-	void setkVarBase(double kvarBase);
+	void setKVArBase(double kvarBase);
 
 	double getVBase();
 
@@ -328,13 +328,13 @@ public interface StorageObj extends PCElement {
 
 	void setVBase95(double vBase95);
 
-	double getVmaxpu();
+	double getVMaxPU();
 
-	void setVmaxpu(double vmaxpu);
+	void setVMaxPU(double vmaxpu);
 
-	double getVminpu();
+	double getVMinPU();
 
-	void setVminpu(double vminpu);
+	void setVMinPU(double vminpu);
 
 	double getVThevhH();
 
