@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class TransformerImpl extends PDClassImpl implements Transformer {
 
-	private static TransformerObj ActiveTransfObj;
+	private static TransformerObj activeTransfObj;
 
 	private static XfmrCode XfmrCodeClass = null;
 
@@ -26,9 +26,9 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		defineProperties();
 
 		/* Make space for transformer property list */
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
@@ -162,11 +162,11 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new TransformerObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new TransformerObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	/**
@@ -175,34 +175,34 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	@Override
 	public int edit() {
 		// continue parsing cmdline presently in parser
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		/* Make this object the active circuit element */
 		setActiveTransfObj((TransformerObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveTransfObj());  // use property to set this value
+		globals.getActiveCircuit().setActiveCktElement(getActiveTransfObj());  // use property to set this value
 
-		int Result = 0;
+		int result = 0;
 
 		TransformerObj at = getActiveTransfObj();
 
 		at.setXHLChanged(false);
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				at.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				at.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"Transformer." + at.getName() + "\"", 110);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Transformer." + at.getName() + "\"", 110);
 				break;
 			case 0:
 				at.setNPhases(parser.makeInteger());
@@ -214,10 +214,10 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setActiveWinding(parser.makeInteger());
 				break;
 			case 3:
-				at.setBus(at.getActiveWinding(), Param);
+				at.setBus(at.getActiveWinding(), param);
 				break;
 			case 4:
-				interpretConnection(Param);
+				interpretConnection(param);
 				break;
 			case 5:
 				at.getWinding()[at.getActiveWinding()].setKVLL(parser.makeDouble());
@@ -238,19 +238,19 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.getWinding()[at.getActiveWinding()].setXNeut(parser.makeDouble());
 				break;
 			case 11:
-				interpretAllBuses(Param);
+				interpretAllBuses(param);
 				break;
 			case 12:
-				interpretAllConns(Param);
+				interpretAllConns(param);
 				break;
 			case 13:
-				interpretAllkVRatings(Param);
+				interpretAllkVRatings(param);
 				break;
 			case 14:
-				interpretAllkVARatings(Param);
+				interpretAllkVARatings(param);
 				break;
 			case 15:
-				interpretAllTaps(Param);
+				interpretAllTaps(param);
 				break;
 			case 16:
 				at.setXHL(parser.makeDouble() * 0.01);
@@ -292,7 +292,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setEmergMaxHKVA(parser.makeDouble());
 				break;
 			case 29:
-				at.setSubstation(Utilities.interpretYesNo(Param));
+				at.setSubstation(Utilities.interpretYesNo(param));
 				break;
 			case 30:
 				at.getWinding()[at.getActiveWinding()].setMaxTap(parser.makeDouble());
@@ -304,7 +304,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.getWinding()[at.getActiveWinding()].setNumTaps(parser.makeInteger());
 				break;
 			case 33:
-				at.setSubstationName(Param);
+				at.setSubstationName(param);
 				break;
 			case 34:
 				at.setPctImag(parser.makeDouble());
@@ -313,22 +313,22 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setPPM_FloatFactor(parser.makeDouble() * 1.0e-6);
 				break;
 			case 36:
-				interpretAllRs(Param);
+				interpretAllRs(param);
 				break;
 			case 37:
-				at.setXfmrBank(Param);
+				at.setXfmrBank(param);
 				break;
 			case 38:
-				at.fetchXfmrCode(Param);
+				at.fetchXfmrCode(param);
 				break;
 			default:
 				// inherited properties
-				classEdit(getActiveTransfObj(), ParamPointer - Transformer.NumPropsThisClass);
+				classEdit(getActiveTransfObj(), paramPointer - Transformer.NumPropsThisClass);
 				break;
 			}
 
 			/* Take care of properties that require some additional work */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				// force redefinition of number of conductors and reallocation of matrices
 				at.setNConds(at.getNPhases() + 1);
@@ -374,10 +374,10 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((ParamPointer >= 4) && (ParamPointer <= 18)) {
+			if ((paramPointer >= 4) && (paramPointer <= 18)) {
 				at.setYPrimInvalid(true);
 			} else {
-				switch (ParamPointer) {
+				switch (paramPointer) {
 				case 25:
 					at.setYPrimInvalid(true);
 					break;
@@ -394,13 +394,13 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			}
 
 			/* Advance to next property on input line */
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		at.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	private void setActiveWinding(int w) {
@@ -418,11 +418,11 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 * 		delta or LL
 	 * 		Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
+	private void interpretConnection(String s) {
 		TransformerObj at = getActiveTransfObj();
 		Winding aw = at.getWinding()[at.getActiveWinding()];
 
-		switch (S.toLowerCase().charAt(0)) {
+		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
 			aw.setConnection(0);  /* Wye */
 			break;
@@ -433,7 +433,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 			aw.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
-			switch (S.toLowerCase().charAt(1)) {
+			switch (s.toLowerCase().charAt(1)) {
 			case 'n':
 				aw.setConnection(0);
 				break;
@@ -451,143 +451,143 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	/**
 	 * Routine expecting all winding connections expressed in one array of strings.
 	 */
-	private void interpretAllConns(String S) {
+	private void interpretAllConns(String s) {
 		@SuppressWarnings("unused")
-		String S1;
-		String S2;
+		String s1;
+		String s2;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			S1 = Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			S2 = Globals.getAuxParser().makeString();
-			if (S2.length() > 0)
-				interpretConnection(S2);
+			s1 = globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
+			s2 = globals.getAuxParser().makeString();
+			if (s2.length() > 0)
+				interpretConnection(s2);
 		}
 	}
 
 	/**
 	 * Routine expecting all winding bus connections expressed in one array of strings.
 	 */
-	private void interpretAllBuses(String S) {
-		String BusNam;
+	private void interpretAllBuses(String s) {
+		String busNam;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			BusNam = Globals.getAuxParser().makeString();
-			if (BusNam.length() > 0)
-				at.setBus(at.getActiveWinding(), BusNam);
+			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			busNam = globals.getAuxParser().makeString();
+			if (busNam.length() > 0)
+				at.setBus(at.getActiveWinding(), busNam);
 		}
 	}
 
 	/**
 	 * Routine expecting all winding kV ratings expressed in one array of strings.
 	 */
-	private void interpretAllkVRatings(String S) {
-		String DataStr;
+	private void interpretAllkVRatings(String s) {
+		String dataStr;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			DataStr = Globals.getAuxParser().makeString();
-			if (DataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVLL(Globals.getAuxParser().makeDouble());
+			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
+			dataStr = globals.getAuxParser().makeString();
+			if (dataStr.length() > 0)
+				at.getWinding()[at.getActiveWinding()].setKVLL(globals.getAuxParser().makeDouble());
 		}
 	}
 
 	/**
 	 * Routine expecting all winding ratings expressed in one array of strings.
 	 */
-	private void interpretAllkVARatings(String S) {
-		String DataStr;
+	private void interpretAllkVARatings(String s) {
+		String dataStr;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			DataStr = Globals.getAuxParser().makeString();
-			if (DataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVA(Globals.getAuxParser().makeDouble());
+			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
+			dataStr = globals.getAuxParser().makeString();
+			if (dataStr.length() > 0)
+				at.getWinding()[at.getActiveWinding()].setKVA(globals.getAuxParser().makeDouble());
 		}
 	}
 
 	/**
 	 * Routine expecting all winding ratings expressed in one array of strings.
 	 */
-	private void interpretAllRs(String S) {
-		String DataStr;
+	private void interpretAllRs(String s) {
+		String dataStr;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			DataStr = Globals.getAuxParser().makeString();
-			if (DataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setRpu(Globals.getAuxParser().makeDouble() * 0.01);
+			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
+			dataStr = globals.getAuxParser().makeString();
+			if (dataStr.length() > 0)
+				at.getWinding()[at.getActiveWinding()].setRpu(globals.getAuxParser().makeDouble() * 0.01);
 		}
 	}
 
 	/**
 	 * Routine expecting all winding taps expressed in one array of strings.
 	 */
-	private void interpretAllTaps(String S) {
-		String DataStr;
+	private void interpretAllTaps(String s) {
+		String dataStr;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(S);  // load up parser
+		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = getActiveTransfObj();
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name, not expecting any
-			DataStr = Globals.getAuxParser().makeString();
-			if (DataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setPUTap(Globals.getAuxParser().makeDouble());
+			globals.getAuxParser().getNextParam();  // ignore any parameter name, not expecting any
+			dataStr = globals.getAuxParser().makeString();
+			if (dataStr.length() > 0)
+				at.getWinding()[at.getActiveWinding()].setPUTap(globals.getAuxParser().makeDouble());
 		}
 	}
 
 	@Override
-	protected int makeLike(String TransfName) {
+	protected int makeLike(String transfName) {
 		int i;
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this Transf name in the present collection */
-		TransformerObj OtherTransf = (TransformerObj) find(TransfName);
-		if (OtherTransf != null) {
+		TransformerObj otherTransf = (TransformerObj) find(transfName);
+		if (otherTransf != null) {
 			TransformerObj at = getActiveTransfObj();
 
-			at.setNPhases(OtherTransf.getNPhases());
-			at.setNumWindings(OtherTransf.getNumWindings());
+			at.setNPhases(otherTransf.getNPhases());
+			at.setNumWindings(otherTransf.getNumWindings());
 			at.setNConds(at.getNPhases() + 1);  // forces reallocation of terminals and conductors
 
 			at.setYorder(at.getNConds() * at.getNTerms());
@@ -595,81 +595,81 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 			for (i = 0; i < at.getNumWindings(); i++) {
 				Winding w = at.getWinding()[i];
-				w.setConnection(OtherTransf.getWinding()[i].getConnection());
-				w.setKVLL(OtherTransf.getWinding()[i].getKVLL());
-				w.setVBase(OtherTransf.getWinding()[i].getVBase());
-				w.setKVA(OtherTransf.getWinding()[i].getKVA());
-				w.setPUTap(OtherTransf.getWinding()[i].getPUTap());
-				w.setRpu(OtherTransf.getWinding()[i].getRpu());
-				w.setRNeut(OtherTransf.getWinding()[i].getRNeut());
-				w.setXNeut(OtherTransf.getWinding()[i].getXNeut());
+				w.setConnection(otherTransf.getWinding()[i].getConnection());
+				w.setKVLL(otherTransf.getWinding()[i].getKVLL());
+				w.setVBase(otherTransf.getWinding()[i].getVBase());
+				w.setKVA(otherTransf.getWinding()[i].getKVA());
+				w.setPUTap(otherTransf.getWinding()[i].getPUTap());
+				w.setRpu(otherTransf.getWinding()[i].getRpu());
+				w.setRNeut(otherTransf.getWinding()[i].getRNeut());
+				w.setXNeut(otherTransf.getWinding()[i].getXNeut());
 				// copy the taps
-				w.setTapIncrement(OtherTransf.getWinding()[i].getTapIncrement());
-				w.setMinTap(OtherTransf.getWinding()[i].getMinTap());
-				w.setMaxTap(OtherTransf.getWinding()[i].getMaxTap());
-				w.setNumTaps(OtherTransf.getWinding()[i].getNumTaps());
+				w.setTapIncrement(otherTransf.getWinding()[i].getTapIncrement());
+				w.setMinTap(otherTransf.getWinding()[i].getMinTap());
+				w.setMaxTap(otherTransf.getWinding()[i].getMaxTap());
+				w.setNumTaps(otherTransf.getWinding()[i].getNumTaps());
 			}
 
 			at.setTermRef();
 
-			at.setXHL(OtherTransf.getXHL());
-			at.setXHT(OtherTransf.getXHT());
-			at.setXLT(OtherTransf.getXLT());
+			at.setXHL(otherTransf.getXHL());
+			at.setXHT(otherTransf.getXHT());
+			at.setXLT(otherTransf.getXLT());
 
 			for (i = 0; i < (at.getNumWindings() * (at.getNumWindings() - 1) / 2); i++)
-				at.getXSC()[i] = OtherTransf.getXsc(i);
+				at.getXSC()[i] = otherTransf.getXsc(i);
 
-			at.getZB().copyFrom(OtherTransf.getZB());
-			at.getY_1Volt().copyFrom(OtherTransf.getY_1Volt());
-			at.getY_Term().copyFrom(OtherTransf.getY_Term());
-			at.getY_1Volt_NL().copyFrom(OtherTransf.getY_1Volt_NL());
-			at.getYTermNL().copyFrom(OtherTransf.getYTermNL());
+			at.getZB().copyFrom(otherTransf.getZB());
+			at.getY_1Volt().copyFrom(otherTransf.getY_1Volt());
+			at.getY_Term().copyFrom(otherTransf.getY_Term());
+			at.getY_1Volt_NL().copyFrom(otherTransf.getY_1Volt_NL());
+			at.getYTermNL().copyFrom(otherTransf.getYTermNL());
 
-			at.setThermalTimeConst(OtherTransf.getThermalTimeConst());
-			at.setNThermal(OtherTransf.getNThermal());
-			at.setMThermal(OtherTransf.getMThermal());
-			at.setFLRise(OtherTransf.getFLRise());
-			at.setHSRise(OtherTransf.getHSRise());
-			at.setPctLoadLoss(OtherTransf.getPctLoadLoss());
-			at.setPctNoLoadLoss(OtherTransf.getPctNoLoadLoss());
-			at.setNormMaxHKVA(OtherTransf.getNormMaxHKVA());
-			at.setEmergMaxHKVA(OtherTransf.getEmergMaxHKVA());
+			at.setThermalTimeConst(otherTransf.getThermalTimeConst());
+			at.setNThermal(otherTransf.getNThermal());
+			at.setMThermal(otherTransf.getMThermal());
+			at.setFLRise(otherTransf.getFLRise());
+			at.setHSRise(otherTransf.getHSRise());
+			at.setPctLoadLoss(otherTransf.getPctLoadLoss());
+			at.setPctNoLoadLoss(otherTransf.getPctNoLoadLoss());
+			at.setNormMaxHKVA(otherTransf.getNormMaxHKVA());
+			at.setEmergMaxHKVA(otherTransf.getEmergMaxHKVA());
 
-			at.setXfmrBank(OtherTransf.getXfmrBank());
-			at.setXfmrCode(OtherTransf.getXfmrCode());
+			at.setXfmrBank(otherTransf.getXfmrBank());
+			at.setXfmrCode(otherTransf.getXfmrCode());
 
-			classMakeLike(OtherTransf);
+			classMakeLike(otherTransf);
 
 			for (i = 0; i < at.getParentClass().getNumProperties(); i++)
-				at.setPropertyValue(i, OtherTransf.getPropertyValue(i));
-			Result = 1;
+				at.setPropertyValue(i, otherTransf.getPropertyValue(i));
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Transf makeLike: \"" + TransfName + "\" not found.", 113);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Transf makeLike: \"" + transfName + "\" not found.", 113);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Transformer.init()", -1);
 		return 0;
 	}
 
 	public static TransformerObj getActiveTransfObj() {
-		return ActiveTransfObj;
+		return activeTransfObj;
 	}
 
-	public static void setActiveTransfObj(TransformerObj activeTransfObj) {
-		ActiveTransfObj = activeTransfObj;
+	public static void setActiveTransfObj(TransformerObj transfObj) {
+		activeTransfObj = transfObj;
 	}
 
 	public static XfmrCode getXfmrCodeClass() {
 		return XfmrCodeClass;
 	}
 
-	public static void setXfmrCodeClass(XfmrCode xfmrCodeClass) {
-		XfmrCodeClass = xfmrCodeClass;
+	public static void setXfmrCodeClass(XfmrCode cls) {
+		XfmrCodeClass = cls;
 	}
 
 }

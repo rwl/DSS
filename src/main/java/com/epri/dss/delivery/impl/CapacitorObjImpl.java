@@ -46,7 +46,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // default to grounded wye
 
-		this.IsShunt = true;  // defaults to shunt capacitor
+		this.isShunt = true;  // defaults to shunt capacitor
 
 		this.CMatrix = null;
 
@@ -75,11 +75,11 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		this.connection = 0;   // 0 or 1 for wye (default) or delta, respectively
 		this.specType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
 
-		this.NormAmps = this.kVArRating[0] * DSSGlobals.SQRT3 / this.kVRating * 1.35;  // 135%
-		this.EmergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
-		this.FaultRate = 0.0005;
-		this.PctPerm = 100.0;
-		this.HrsToRepair = 3.0;
+		this.normAmps = this.kVArRating[0] * DSSGlobals.SQRT3 / this.kVRating * 1.35;  // 135%
+		this.emergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
+		this.faultRate = 0.0005;
+		this.pctPerm = 100.0;
+		this.hrsToRepair = 3.0;
 		this.YOrder = this.nTerms * this.nConds;
 
 		this.doHarmonicRecalc = false;

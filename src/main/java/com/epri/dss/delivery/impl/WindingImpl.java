@@ -5,38 +5,38 @@ import com.epri.dss.delivery.Winding;
 
 public class WindingImpl implements Winding {
 
-	private int Connection;
-	private double kvll,
+	private int connection;
+	private double kVLL,
 		VBase,
-		kva,
+		kVA,
 		puTap,
 		Rpu,  // on transformer MVABase (1st winding)
-		Rneut,
-		Xneut;
+		RNeut,
+		XNeut;
 	private double Y_PPM;  // Anti float reactance adder
 
 	/* Tap changer data */
-	private double TapIncrement,
-		MinTap,
-		MaxTap;
-	private int NumTaps;
+	private double tapIncrement,
+		minTap,
+		maxTap;
+	private int numTaps;
 
 	public WindingImpl() {
 		super();
-		this.Connection = 0;
-		this.kvll       = 12.47;
-		this.VBase      = kvll / DSSGlobals.SQRT3 * 1000.0;
-		this.kva        = 1000.0;
+		this.connection = 0;
+		this.kVLL       = 12.47;
+		this.VBase      = kVLL / DSSGlobals.SQRT3 * 1000.0;
+		this.kVA        = 1000.0;
 		this.puTap      = 1.0;
 		this.Rpu        = 0.002;
-		this.Rneut      = -1.0;  // default to open - make user specify connection
-		this.Xneut      = 0.0;
-		computeAntiFloatAdder(1.0e-6, kva / 3.0 / 1000.0);  //  1 PPM
+		this.RNeut      = -1.0;  // default to open - make user specify connection
+		this.XNeut      = 0.0;
+		computeAntiFloatAdder(1.0e-6, kVA / 3.0 / 1000.0);  //  1 PPM
 
-		this.TapIncrement = 0.00625;
-		this.NumTaps      = 32;
-		this.MaxTap       = 1.10;
-		this.MinTap       = 0.90;
+		this.tapIncrement = 0.00625;
+		this.numTaps      = 32;
+		this.maxTap       = 1.10;
+		this.minTap       = 0.90;
 	}
 
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {
@@ -44,43 +44,43 @@ public class WindingImpl implements Winding {
 	}
 
 	public int getConnection() {
-		return Connection;
+		return connection;
 	}
 
-	public void setConnection(int connection) {
-		Connection = connection;
+	public void setConnection(int conn) {
+		connection = conn;
 	}
 
 	public double getKVLL() {
-		return kvll;
+		return kVLL;
 	}
 
 	public void setKVLL(double kvll) {
-		this.kvll = kvll;
+		kVLL = kvll;
 	}
 
 	public double getVBase() {
 		return VBase;
 	}
 
-	public void setVBase(double vBase) {
-		VBase = vBase;
+	public void setVBase(double base) {
+		VBase = base;
 	}
 
 	public double getKVA() {
-		return kva;
+		return kVA;
 	}
 
 	public void setKVA(double kva) {
-		this.kva = kva;
+		kVA = kva;
 	}
 
 	public double getPUTap() {
 		return puTap;
 	}
 
-	public void setPUTap(double puTap) {
-		this.puTap = puTap;
+	public void setPUTap(double tap) {
+		puTap = tap;
 	}
 
 	public double getRpu() {
@@ -92,59 +92,59 @@ public class WindingImpl implements Winding {
 	}
 
 	public double getRNeut() {
-		return Rneut;
+		return RNeut;
 	}
 
 	public void setRNeut(double rneut) {
-		Rneut = rneut;
+		RNeut = rneut;
 	}
 
 	public double getXNeut() {
-		return Xneut;
+		return XNeut;
 	}
 
 	public void setXNeut(double xneut) {
-		Xneut = xneut;
+		XNeut = xneut;
 	}
 
 	public double getY_PPM() {
 		return Y_PPM;
 	}
 
-	public void setY_PPM(double y_PPM) {
-		Y_PPM = y_PPM;
+	public void setY_PPM(double y) {
+		Y_PPM = y;
 	}
 
 	public double getTapIncrement() {
-		return TapIncrement;
+		return tapIncrement;
 	}
 
-	public void setTapIncrement(double tapIncrement) {
-		TapIncrement = tapIncrement;
+	public void setTapIncrement(double increment) {
+		tapIncrement = increment;
 	}
 
 	public double getMinTap() {
-		return MinTap;
+		return minTap;
 	}
 
-	public void setMinTap(double minTap) {
-		MinTap = minTap;
+	public void setMinTap(double min) {
+		minTap = min;
 	}
 
 	public double getMaxTap() {
-		return MaxTap;
+		return maxTap;
 	}
 
-	public void setMaxTap(double maxTap) {
-		MaxTap = maxTap;
+	public void setMaxTap(double max) {
+		maxTap = max;
 	}
 
 	public int getNumTaps() {
-		return NumTaps;
+		return numTaps;
 	}
 
-	public void setNumTaps(int numTaps) {
-		NumTaps = numTaps;
+	public void setNumTaps(int num) {
+		numTaps = num;
 	}
 
 }

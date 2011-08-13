@@ -58,11 +58,11 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		this.randomMult = 1;
 
-		this.NormAmps  = 0.0;
-		this.EmergAmps = 0.0;
-		this.FaultRate = 0.0;
-		this.PctPerm   = 100.0;
-		this.HrsToRepair = 0.0;
+		this.normAmps  = 0.0;
+		this.emergAmps = 0.0;
+		this.faultRate = 0.0;
+		this.pctPerm   = 100.0;
+		this.hrsToRepair = 0.0;
 
 		initPropertyValues(0);
 

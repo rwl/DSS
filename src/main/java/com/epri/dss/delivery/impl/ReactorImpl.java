@@ -21,9 +21,9 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -73,26 +73,26 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new ReactorObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new ReactorObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
-	private void doMatrix(double[] Matrix) {
+	private void doMatrix(double[] matrix) {
 		ReactorObj ar = getActiveReactorObj();
 
-		double[] MatBuffer = new double[ar.getNPhases() * ar.getNPhases()];
-		int OrderFound = Parser.getInstance().parseAsSymMatrix(ar.getNPhases(), MatBuffer);
+		double[] matBuffer = new double[ar.getNPhases() * ar.getNPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(ar.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // Parse was successful Else don't change Matrix
+		if (orderFound > 0) {  // Parse was successful Else don't change Matrix
 			/* X */
-			Matrix = (double[]) Utilities.resizeArray(Matrix, ar.getNPhases() * ar.getNPhases());
+			matrix = (double[]) Utilities.resizeArray(matrix, ar.getNPhases() * ar.getNPhases());
 			for (int j = 0; j < ar.getNPhases() * ar.getNPhases(); j++)
-				Matrix[j] = MatBuffer[j];
+				matrix[j] = matBuffer[j];
 
-			MatBuffer = null;
+			matBuffer = null;
 		}
 	}
 
@@ -101,11 +101,11 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	 * 		delta or LL
 	 * 		Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
+	private void interpretConnection(String s) {
 		ReactorObj ar = getActiveReactorObj();
 
-		String TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) {
+		String testS = s.toLowerCase();
+		switch (testS.charAt(0)) {
 		case 'y':
 			ar.setConnection(0);  /* Wye */
 			break;
@@ -116,7 +116,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			ar.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
-			switch (TestS.charAt(1)) {
+			switch (testS.charAt(1)) {
 			case 'n':
 				ar.setConnection(0);
 				break;
@@ -138,8 +138,8 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		}
 	}
 
-	private void reactorSetBus1(String S) {
-		String S2;
+	private void reactorSetBus1(String s) {
+		String s2;
 		int i, dotpos;
 
 		// special handling for bus 1
@@ -147,60 +147,60 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		ReactorObj ar = getActiveReactorObj();
 
-		ar.setBus(1, S);
+		ar.setBus(1, s);
 
 		// default bus2 to zero node of bus1. (wye grounded connection)
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);  // copy up to dot
+			s2 = s.substring(0, dotpos);  // copy up to dot
 		} else {
-			S2 = S.substring(0, S.length());
+			s2 = s.substring(0, s.length());
 		}
 
 		for (i = 0; i < ar.getNPhases(); i++)
-			S2 = S2 + ".0";
+			s2 = s2 + ".0";
 
-		ar.setBus(2, S2);
+		ar.setBus(2, s2);
 		ar.setShunt(true);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveReactorObj((ReactorObj) elementList.getActive());
 		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(getActiveReactorObj());
 
 		ReactorObj ar = getActiveReactorObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				ar.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				ar.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
-				reactorSetBus1(Param);
+				reactorSetBus1(param);
 				break;
 			case 1:
-				ar.setBus(2, Param);  // TODO Check zero based indexing
+				ar.setBus(2, param);  // TODO Check zero based indexing
 				break;
 			case 2:
 				/*nPhases = parser.makeInteger();*/  // see below
@@ -212,7 +212,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				ar.setKVRating(parser.makeDouble());
 				break;
 			case 5:
-				interpretConnection(Param);
+				interpretConnection(param);
 				break;
 			case 6:
 				doMatrix(ar.getRMatrix());
@@ -221,7 +221,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				doMatrix(ar.getXMatrix());
 				break;
 			case 8:
-				ar.setParallel(Utilities.interpretYesNo(Param));
+				ar.setParallel(Utilities.interpretYesNo(param));
 				break;
 			case 9:
 				ar.setR(parser.makeDouble());
@@ -234,12 +234,12 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				break;
 			default:
 				// inherited property edits
-				classEdit(ActiveReactorObj, ParamPointer - Reactor.NumPropsThisClass);
+				classEdit(ActiveReactorObj, paramPointer - Reactor.NumPropsThisClass);
 				break;
 			}
 
 			// some specials ...
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				ar.setPropertyValue(1, ar.getBus(2));  // this gets modified   TODO Check zero based indexing
 				ar.getPrpSequence()[1] = 0;            // reset this for save function
@@ -273,80 +273,80 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((ParamPointer >= 2) && (ParamPointer <= 11))
+			if ((paramPointer >= 2) && (paramPointer <= 11))
 				ar.setYPrimInvalid(true);
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		ar.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String ReactorName) {
+	protected int makeLike(String reactorName) {
 
-		int i, Result = 0;
+		int i, result = 0;
 
 		/* See if we can find this reactor name in the present collection */
-		ReactorObj OtherReactor = (ReactorObj) find(ReactorName);
-		if (OtherReactor != null) {
+		ReactorObj otherReactor = (ReactorObj) find(reactorName);
+		if (otherReactor != null) {
 			ReactorObj ar = getActiveReactorObj();
 
-			if (ar.getNPhases() != OtherReactor.getNPhases()) {
-				ar.setNPhases(OtherReactor.getNPhases());
+			if (ar.getNPhases() != otherReactor.getNPhases()) {
+				ar.setNPhases(otherReactor.getNPhases());
 				ar.setNConds(ar.getNPhases());  // force reallocation of terminals and conductors
 
 				ar.setYorder(ar.getNConds() * ar.getNTerms());
 				ar.setYPrimInvalid(true);
 			}
 
-			ar.setR(OtherReactor.getR());
-			ar.setX(OtherReactor.getX());
-			ar.setRp(OtherReactor.getRp());
-			ar.setRpSpecified(OtherReactor.isRpSpecified());
-			ar.setParallel(OtherReactor.isParallel());
+			ar.setR(otherReactor.getR());
+			ar.setX(otherReactor.getX());
+			ar.setRp(otherReactor.getRp());
+			ar.setRpSpecified(otherReactor.isRpSpecified());
+			ar.setParallel(otherReactor.isParallel());
 
-			ar.setKVArRating(OtherReactor.getKVArRating());
-			ar.setKVRating(OtherReactor.getKVRating());
-			ar.setConnection(OtherReactor.getConnection());
-			ar.setSpecType(OtherReactor.getSpecType());
+			ar.setKVArRating(otherReactor.getKVArRating());
+			ar.setKVRating(otherReactor.getKVRating());
+			ar.setConnection(otherReactor.getConnection());
+			ar.setSpecType(otherReactor.getSpecType());
 
-			if (OtherReactor.getRMatrix() == null) {
+			if (otherReactor.getRMatrix() == null) {
 				ar.setRMatrix(new double[0]);
 			} else {
 				ar.setRMatrix( (double[]) Utilities.resizeArray(ar.getRMatrix(), ar.getNPhases() * ar.getNPhases()) );
 				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++) {
-					ar.getRMatrix()[i] = OtherReactor.getRMatrix()[i];
+					ar.getRMatrix()[i] = otherReactor.getRMatrix()[i];
 				}
 			}
 
-			if (OtherReactor.getXMatrix() == null) {
+			if (otherReactor.getXMatrix() == null) {
 				ar.setXMatrix(new double[0]);
 			} else {
 				ar.setXMatrix( (double[]) Utilities.resizeArray(ar.getXMatrix(), ar.getNPhases() * ar.getNPhases()) );
 				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++) {
-					ar.getXMatrix()[i] = OtherReactor.getXMatrix()[i];
+					ar.getXMatrix()[i] = otherReactor.getXMatrix()[i];
 				}
 			}
 
-			classMakeLike(OtherReactor);  // take care of inherited class properties
+			classMakeLike(otherReactor);  // take care of inherited class properties
 
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++) {
-				ar.setPropertyValue(i, OtherReactor.getPropertyValue(i));
+				ar.setPropertyValue(i, otherReactor.getPropertyValue(i));
 			}
-			Result = 1;
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Reactor makeLike: \"" + ReactorName + "\" not found.", 231);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Reactor makeLike: \"" + reactorName + "\" not found.", 231);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Reactor.init()", -1);
 		return 0;
 	}
@@ -355,8 +355,8 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		return ActiveReactorObj;
 	}
 
-	public static void setActiveReactorObj(ReactorObj activeReactorObj) {
-		ActiveReactorObj = activeReactorObj;
+	public static void setActiveReactorObj(ReactorObj reactorObj) {
+		ActiveReactorObj = reactorObj;
 	}
 
 }

@@ -14,29 +14,29 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 	private double G1, G2;  // single G per phase (line rating)
 
-    private int SpecType;
+    private int specType;
 
-	public GICTransformerObjImpl(DSSClass ParClass, String TransformerName) {
-		super(ParClass);
-		this.DSSObjType = ParClass.getDSSClassType();
-		setName(TransformerName.toLowerCase());
+	public GICTransformerObjImpl(DSSClass parClass, String transformerName) {
+		super(parClass);
+		this.DSSObjType = parClass.getDSSClassType();
+		setName(transformerName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
 		setNTerms(2);  // force allocation of terminals and conductors
 
 		setBus(2, getBus(1) + ".0");  // default to grounded
-		this.IsShunt = true;
+		this.isShunt = true;
 
 		this.G1            = 10000.0;
 		this.G2            = 10000.0;
-		this.SpecType      = GICTransformer.SPEC_GSU;
+		this.specType      = GICTransformer.SPEC_GSU;
 
-		this.NormAmps  = 0.0;
-		this.EmergAmps = 0.0;
-		this.FaultRate = 0.0;
-		this.PctPerm   = 100.0;
-		this.HrsToRepair = 0.0;
+		this.normAmps  = 0.0;
+		this.emergAmps = 0.0;
+		this.faultRate = 0.0;
+		this.pctPerm   = 100.0;
+		this.hrsToRepair = 0.0;
 
 		initPropertyValues(0);
 
@@ -51,7 +51,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 	@Override
 	public void calcYPrim() {
-		Complex Value, Value2;
+		Complex value, value2;
 		int i;
 
 		CMatrix YPrimTemp;
@@ -81,55 +81,55 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		/* If the fault is not on, the set zero conductance */
 
-		switch (SpecType) {
+		switch (specType) {
 		case GICTransformer.SPEC_GSU:
 
-			Value = new Complex(G1, 0.0);
-			Value2 = Value.negate();
+			value = new Complex(G1, 0.0);
+			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases,Value);
-				YPrimTemp.setElemSym(i, i+nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i+nPhases, i+nPhases,value);
+				YPrimTemp.setElemSym(i, i+nPhases, value2);
 			}
 			break;
 
 		case GICTransformer.SPEC_AUTO:
 
 			// terminals 1 and 2
-			Value = new Complex(G1, 0.0);
-			Value2 = Value.negate();
+			value = new Complex(G1, 0.0);
+			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
-				YPrimTemp.setElemSym(i, i+nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
+				YPrimTemp.setElemSym(i, i+nPhases, value2);
 			}
 			// terminals 3 and 4
-			Value = new Complex(G2, 0.0);
-			Value2 = Value.negate();
+			value = new Complex(G2, 0.0);
+			value2 = value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
-				YPrimTemp.setElemSym(i, i+nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
+				YPrimTemp.setElemSym(i, i+nPhases, value2);
 			}
 			break;
 
 		case GICTransformer.SPEC_YY:
 
 			// terminals 1 and 2
-			Value = new Complex(G1, 0.0);
-			Value2 = Value.negate();
+			value = new Complex(G1, 0.0);
+			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
-				YPrimTemp.setElemSym(i, i+nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
+				YPrimTemp.setElemSym(i, i+nPhases, value2);
 			}
 			// terminals 3 and 4
-			Value = new Complex(G2, 0.0);
-			Value2 = Value.negate();
+			value = new Complex(G2, 0.0);
+			value2 = value.negate();
 			for (i = 2*nPhases+1; i < 3*nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i+nPhases, i+nPhases, Value);
-				YPrimTemp.setElemSym(i, i+nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i+nPhases, i+nPhases, value);
+				YPrimTemp.setElemSym(i, i+nPhases, value2);
 			}
 			break;
 		}
@@ -141,39 +141,39 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
+	public void dumpProperties(PrintStream f, boolean complete) {
 		int i;
 
-	    super.dumpProperties(F, Complete);
+	    super.dumpProperties(f, complete);
 
 	    DSSClass pc = getParentClass();
 
-	    F.println("~ " + pc.getPropertyName()[0]+"="+getFirstBus());
-	    F.println("~ " + pc.getPropertyName()[1]+"="+getNextBus());
-	    F.println("~ " + pc.getPropertyName()[2]+"="+getNextBus());
-	    F.println("~ " + pc.getPropertyName()[3]+"="+getNextBus());
+	    f.println("~ " + pc.getPropertyName()[0]+"="+getFirstBus());
+	    f.println("~ " + pc.getPropertyName()[1]+"="+getNextBus());
+	    f.println("~ " + pc.getPropertyName()[2]+"="+getNextBus());
+	    f.println("~ " + pc.getPropertyName()[3]+"="+getNextBus());
 
-	    F.println("~ " + pc.getPropertyName()[4]+"="+nPhases);
-	    switch (SpecType) {
+	    f.println("~ " + pc.getPropertyName()[4]+"="+nPhases);
+	    switch (specType) {
 		case GICTransformer.SPEC_GSU:
-			F.println("~ " + pc.getPropertyName()[6] + "= GSU");
+			f.println("~ " + pc.getPropertyName()[6] + "= GSU");
 			break;
 		case GICTransformer.SPEC_AUTO:
-			F.println("~ " + pc.getPropertyName()[6] + "= AUTO");
+			f.println("~ " + pc.getPropertyName()[6] + "= AUTO");
 			break;
 		case GICTransformer.SPEC_YY:
-			F.println("~ " + pc.getPropertyName()[6] + "= YY");
+			f.println("~ " + pc.getPropertyName()[6] + "= YY");
 			break;
 	    }
-	    F.println("~ " + pc.getPropertyName()[6]+"="+(1.0/G1));
-	    F.println("~ " + pc.getPropertyName()[7]+"="+(1.0/G2));
+	    f.println("~ " + pc.getPropertyName()[6]+"="+(1.0/G1));
+	    f.println("~ " + pc.getPropertyName()[7]+"="+(1.0/G2));
 
 	    for (i = GICTransformer.NumPropsThisClass; i < pc.getNumProperties(); i++)
-	    	F.println("~ " + pc.getPropertyName()[i]+"="+getPropertyValue(i));
+	    	f.println("~ " + pc.getPropertyName()[i]+"="+getPropertyValue(i));
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, getBus(1));
 		setPropertyValue(1, getBus(2));
@@ -195,9 +195,9 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
+	public String getPropertyValue(int index) {
 
-		switch (Index) {
+		switch (index) {
 		case 0:
 			return getBus(1);
 		case 1:
@@ -213,7 +213,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		case 7:
 			return String.format("%.8g", 1.0 / G2);
 		default:
-			return super.getPropertyValue(Index);
+			return super.getPropertyValue(index);
 		}
 	}
 
@@ -245,11 +245,11 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 	}
 
 	public int getSpecType() {
-		return SpecType;
+		return specType;
 	}
 
-	public void setSpecType(int specType) {
-		SpecType = specType;
+	public void setSpecType(int type) {
+		specType = type;
 	}
 
 }

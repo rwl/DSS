@@ -9,16 +9,16 @@ import com.epri.dss.parser.impl.Parser;
 
 public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
-	private int NumPDClassProps;
+	private int numPDClassProps;
 
 	public PDClassImpl() {
 		super();
-		this.NumPDClassProps = 5;
+		this.numPDClassProps = 5;
 		this.DSSClassType = DSSClassDefs.PD_ELEMENT;
 	}
 
 	protected void countProperties() {
-		numProperties = numProperties + NumPDClassProps;
+		numProperties = numProperties + numPDClassProps;
 		super.countProperties();
 	}
 
@@ -38,19 +38,19 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 		propertyHelp[activeProperty + 4] = "Percent of failures that become permanent.";
 		propertyHelp[activeProperty + 5] = "Hours to repair.";
 
-		activeProperty = activeProperty + NumPDClassProps;
+		activeProperty = activeProperty + numPDClassProps;
 
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object ActivePDObj, int ParamPointer) {
+	protected int classEdit(Object activePDObj, int paramPointer) {
 		// continue parsing with contents of parser
 		Parser parser = Parser.getInstance();
 
-		if (ParamPointer >= 0) {
-			PDElement PDElem = (PDElement) ActivePDObj;
+		if (paramPointer >= 0) {
+			PDElement PDElem = (PDElement) activePDObj;
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 1:
 				PDElem.setNormAmps(parser.makeDouble());
 				break;
@@ -67,32 +67,32 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 				PDElem.setHrsToRepair(parser.makeDouble());
 				break;
 			default:
-				super.classEdit(ActivePDObj, ParamPointer - NumPDClassProps);
+				super.classEdit(activePDObj, paramPointer - numPDClassProps);
 				break;
 			}
 		}
 		return 0;
 	}
 
-	protected void classMakeLike(Object OtherObj) {
-		PDElement OtherPDObj = (PDElement) OtherObj;
+	protected void classMakeLike(Object otherObj) {
+		PDElement otherPDObj = (PDElement) otherObj;
 		PDElement PDElem = (PDElement) DSSGlobals.getInstance().getActiveDSSObject();
 
-		PDElem.setNormAmps(OtherPDObj.getNormAmps());
-		PDElem.setEmergAmps(OtherPDObj.getEmergAmps());
-		PDElem.setFaultRate(OtherPDObj.getFaultRate());
-		PDElem.setPctPerm(OtherPDObj.getPctPerm());
-		PDElem.setHrsToRepair(OtherPDObj.getHrsToRepair());
+		PDElem.setNormAmps(otherPDObj.getNormAmps());
+		PDElem.setEmergAmps(otherPDObj.getEmergAmps());
+		PDElem.setFaultRate(otherPDObj.getFaultRate());
+		PDElem.setPctPerm(otherPDObj.getPctPerm());
+		PDElem.setHrsToRepair(otherPDObj.getHrsToRepair());
 
-		super.classMakeLike(OtherObj);
+		super.classMakeLike(otherObj);
 	}
 
 	public int getNumPDClassProps() {
-		return NumPDClassProps;
+		return numPDClassProps;
 	}
 
-	public void setNumPDClassProps(int numPDClassProps) {
-		NumPDClassProps = numPDClassProps;
+	public void setNumPDClassProps(int num) {
+		numPDClassProps = num;
 	}
 
 }

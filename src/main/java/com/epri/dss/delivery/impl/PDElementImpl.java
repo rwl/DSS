@@ -12,92 +12,92 @@ import com.epri.dss.meter.MeterElement;
 
 public class PDElementImpl extends DSSCktElement implements PDElement {
 
-	protected double NormAmps,
-		EmergAmps,
-		FaultRate,
-		PctPerm,
-		HrsToRepair;
-	private int FromTerminal,
-		ToTerminal;  // set by meter zone for radial feeder
-	protected boolean IsShunt;
+	protected double normAmps,
+		emergAmps,
+		faultRate,
+		pctPerm,
+		hrsToRepair;
+	private int fromTerminal,
+		toTerminal;  // set by meter zone for radial feeder
+	protected boolean isShunt;
 
-	private int NumCustomers;
-	private int TotalCustomers;
+	private int numCustomers;
+	private int totalCustomers;
 
-	private PDElement ParentPDElement;
+	private PDElement parentPDElement;
 
-	private MeterElement MeterObj,   // upline energymeter
-		SensorObj;  // upline sensor for this element for allocation and estimation
+	private MeterElement meterObj,   // upline energymeter
+		sensorObj;  // upline sensor for this element for allocation and estimation
 
-	private double Overload_UE,
-		OverLoad_EEN;  // indicate amount of branch overload
+	private double overloadUE,
+		overloadEEN;  // indicate amount of branch overload
 
-	public PDElementImpl(DSSClass ParClass) {
-		super(ParClass);
+	public PDElementImpl(DSSClass parClass) {
+		super(parClass);
 
-		this.IsShunt = false;
-		this.FromTerminal = 1;
-		this.NumCustomers = 0;
-		this.TotalCustomers = 0;
-		this.SensorObj = null;
-		this.MeterObj = null;
-		this.ParentPDElement = null;
+		this.isShunt = false;
+		this.fromTerminal = 1;
+		this.numCustomers = 0;
+		this.totalCustomers = 0;
+		this.sensorObj = null;
+		this.meterObj = null;
+		this.parentPDElement = null;
 		this.DSSObjType = DSSClassDefs.PD_ELEMENT;
 	}
 
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		int i;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			if (isEnabled()) {
-				SolutionObj sol = Globals.getActiveCircuit().getSolution();
+				SolutionObj sol = globals.getActiveCircuit().getSolution();
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-				YPrim.MVMult(Curr, VTerminal);
+				YPrim.MVMult(curr, VTerminal);
 			} else {
 				for (i = 0; i < YOrder; i++)
-					Curr[i] = Complex.ZERO;
+					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			Globals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
+			globals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
 					"Has circuit been solved?", 660);
 		}
 	}
 
 	public Complex getExcessKVANorm (int idxTerm) {
-		Complex Result;
+		Complex result;
 
-		if ((NormAmps == 0.0) || !isEnabled()) {
-			OverLoad_EEN = 0.0;
+		if ((normAmps == 0.0) || !isEnabled()) {
+			overloadEEN = 0.0;
 			return Complex.ZERO;
 		}
 
 		Complex kVA = getPower(idxTerm).multiply(0.001);  // also forces computation of current into iTemp
-		double Factor = maxTerminalOneIMag() / NormAmps - 1.0;
+		double Factor = maxTerminalOneIMag() / normAmps - 1.0;
 		if (Factor > 0.0) {
-			OverLoad_EEN = Factor;
+			overloadEEN = Factor;
 			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get factor
-			Result = kVA.multiply(Factor) ;
+			result = kVA.multiply(Factor) ;
 		} else {
-			OverLoad_EEN = 0.0;
-			Result = Complex.ZERO;
+			overloadEEN = 0.0;
+			result = Complex.ZERO;
 		}
 		/* **********DEBUG CODE: Use DLL Debug file  *** */
 		/* ****    WriteDLLDebugFile(String.format("%s.%s: Terminal=%u Factor=%.7g kW=%.7g kvar=%.7g Normamps=%.7g Overload_EEN=%.7g Result=%.7g +j %.7g ",
 			ParentClass.getName(), getName(), ActiveTerminalIdx, Factor, kVA.re, kVA.im, NormAmps, Overload_EEN, Result.re, Result.im));
 		*/
 
-		return Result;
+		return result;
 	}
 
 	public Complex getExcessKVAEmerg(int idxTerm) {
-		Complex Result;
+		Complex result;
 
 		if ((getEmergAmps() == 0.0) || !isEnabled()) {
-			Overload_UE = 0.0;
+			overloadUE = 0.0;
 			return Complex.ZERO;
 		}
 
@@ -105,147 +105,147 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 
 		double Factor = maxTerminalOneIMag() / getEmergAmps() - 1.0;
 		if (Factor > 0.0) {
-			Overload_UE = Factor;
+			overloadUE = Factor;
 			Factor = 1.0 - 1.0 / (Factor + 1.0);  // to get excess
-			Result = kVA.multiply(Factor);
+			result = kVA.multiply(Factor);
 		} else {
-			Overload_UE = 0.0;
-			Result = Complex.ZERO;
+			overloadUE = 0.0;
+			result = Complex.ZERO;
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[ArrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
-		PropertyValue[ArrayOffset + 2] = "600";  // emerAamps
-		PropertyValue[ArrayOffset + 3] = "0.1";  // faultRate
-		PropertyValue[ArrayOffset + 4] = "20";   // pctPerm
-		PropertyValue[ArrayOffset + 5] = "3";    // hrsToRepair
+		PropertyValue[arrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
+		PropertyValue[arrayOffset + 2] = "600";  // emerAamps
+		PropertyValue[arrayOffset + 3] = "0.1";  // faultRate
+		PropertyValue[arrayOffset + 4] = "20";   // pctPerm
+		PropertyValue[arrayOffset + 5] = "3";    // hrsToRepair
 
-		super.initPropertyValues(ArrayOffset + 5);
+		super.initPropertyValues(arrayOffset + 5);
 	}
 
 	public double getNormAmps() {
-		return NormAmps;
+		return normAmps;
 	}
 
-	public void setNormAmps(double normAmps) {
-		NormAmps = normAmps;
+	public void setNormAmps(double amps) {
+		normAmps = amps;
 	}
 
 	public double getEmergAmps() {
-		return EmergAmps;
+		return emergAmps;
 	}
 
-	public void setEmergAmps(double emergAmps) {
-		EmergAmps = emergAmps;
+	public void setEmergAmps(double amps) {
+		emergAmps = amps;
 	}
 
 	public double getFaultRate() {
-		return FaultRate;
+		return faultRate;
 	}
 
-	public void setFaultRate(double faultRate) {
-		FaultRate = faultRate;
+	public void setFaultRate(double rate) {
+		faultRate = rate;
 	}
 
 	public double getPctPerm() {
-		return PctPerm;
+		return pctPerm;
 	}
 
-	public void setPctPerm(double pctPerm) {
-		PctPerm = pctPerm;
+	public void setPctPerm(double pct) {
+		pctPerm = pct;
 	}
 
 	public double getHrsToRepair() {
-		return HrsToRepair;
+		return hrsToRepair;
 	}
 
-	public void setHrsToRepair(double hrsToRepair) {
-		HrsToRepair = hrsToRepair;
+	public void setHrsToRepair(double hrs) {
+		hrsToRepair = hrs;
 	}
 
 	public int getFromTerminal() {
-		return FromTerminal;
+		return fromTerminal;
 	}
 
-	public void setFromTerminal(int fromTerminal) {
-		FromTerminal = fromTerminal;
+	public void setFromTerminal(int terminal) {
+		fromTerminal = terminal;
 	}
 
 	public int getToTerminal() {
-		return ToTerminal;
+		return toTerminal;
 	}
 
-	public void setToTerminal(int toTerminal) {
-		ToTerminal = toTerminal;
+	public void setToTerminal(int terminal) {
+		toTerminal = terminal;
 	}
 
 	public boolean isShunt() {
-		return IsShunt;
+		return isShunt;
 	}
 
-	public void setShunt(boolean isShunt) {
-		IsShunt = isShunt;
+	public void setShunt(boolean value) {
+		isShunt = value;
 	}
 
 	public int getNumCustomers() {
-		return NumCustomers;
+		return numCustomers;
 	}
 
-	public void setNumCustomers(int numCustomers) {
-		NumCustomers = numCustomers;
+	public void setNumCustomers(int num) {
+		numCustomers = num;
 	}
 
 	public int getTotalCustomers() {
-		return TotalCustomers;
+		return totalCustomers;
 	}
 
-	public void setTotalCustomers(int totalCustomers) {
-		TotalCustomers = totalCustomers;
+	public void setTotalCustomers(int total) {
+		totalCustomers = total;
 	}
 
 	public PDElement getParentPDElement() {
-		return ParentPDElement;
+		return parentPDElement;
 	}
 
-	public void setParentPDElement(PDElement parentPDElement) {
-		ParentPDElement = parentPDElement;
+	public void setParentPDElement(PDElement parent) {
+		parentPDElement = parent;
 	}
 
 	public MeterElement getMeterObj() {
-		return MeterObj;
+		return meterObj;
 	}
 
-	public void setMeterObj(MeterElement meterObj) {
-		MeterObj = meterObj;
+	public void setMeterObj(MeterElement meter) {
+		meterObj = meter;
 	}
 
 	public MeterElement getSensorObj() {
-		return SensorObj;
+		return sensorObj;
 	}
 
-	public void setSensorObj(MeterElement sensorObj) {
-		SensorObj = sensorObj;
+	public void setSensorObj(MeterElement sensor) {
+		sensorObj = sensor;
 	}
 
 	public double getOverloadUE() {
-		return Overload_UE;
+		return overloadUE;
 	}
 
-	public void setOverload_UE(double overload_UE) {
-		Overload_UE = overload_UE;
+	public void setOverload_UE(double overload) {
+		overloadUE = overload;
 	}
 
 	public double getOverloadEEN() {
-		return OverLoad_EEN;
+		return overloadEEN;
 	}
 
-	public void setOverloadEEN(double overLoad_EEN) {
-		OverLoad_EEN = overLoad_EEN;
+	public void setOverloadEEN(double overload) {
+		overloadEEN = overload;
 	}
 
 }

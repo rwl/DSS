@@ -15,10 +15,10 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class LineImpl extends PDClassImpl implements Line {
 
-	private static LineObj ActiveLineObj;
-	private static LineGeometry LineGeometryClass;
+	private static LineObj activeLineObj;
+	private static LineGeometry lineGeometryClass;
 
-	private static LineCode LineCodeClass;
+	private static LineCode lineCodeClass;
 
 	public LineImpl() {
 		super();
@@ -26,14 +26,14 @@ public class LineImpl extends PDClassImpl implements Line {
 		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PD element list and line section lists
 
 		this.activeElement = -1;
-		LineCodeClass = null;
-		LineGeometryClass = null;
+		lineCodeClass = null;
+		lineGeometryClass = null;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -146,15 +146,15 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new LineObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new LineObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void doRmatrix() {
-		int Norder = 0;
+		int nOrder = 0;
 		Complex[] ZValues;
 
 		LineObj al = getActiveLineObj();
@@ -164,8 +164,8 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		if (OrderFound > 0) {  // parse was successful
 			/* R */
-			ZValues = al.getZ().asArray(Norder);
-			if (Norder == al.getNPhases())
+			ZValues = al.getZ().asArray(nOrder);
+			if (nOrder == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
 					ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
 		}
@@ -174,7 +174,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	private void doXmatrix() {
-		int Norder = 0;
+		int nOrder = 0;
 		Complex[] ZValues;
 
 		LineObj al = getActiveLineObj();
@@ -184,8 +184,8 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		if (OrderFound > 0) {  // parse was successful
 			/* X */
-			ZValues = al.getZ().asArray(Norder);
-			if (Norder == al.getNPhases())
+			ZValues = al.getZ().asArray(nOrder);
+			if (nOrder == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
 					ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
 		}
@@ -194,25 +194,25 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	private void doCmatrix() {
-		int Norder = 0;
+		int nOrder = 0;
 		Complex[] YValues;
-		double Factor;
+		double factor;
 
 		LineObj al = getActiveLineObj();
 
-		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
-		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
+		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // parse was successful
+		if (orderFound > 0) {  // parse was successful
 			/* X */
-			Factor = DSSGlobals.TWO_PI * al.getBaseFrequency() * 1.0e-9;
-			YValues = al.getYc().asArray(Norder);
-			if (Norder == al.getNPhases())
+			factor = DSSGlobals.TWO_PI * al.getBaseFrequency() * 1.0e-9;
+			YValues = al.getYc().asArray(nOrder);
+			if (nOrder == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
-					YValues[j] = new Complex(YValues[j].getReal(), Factor * MatBuffer[j]);
+					YValues[j] = new Complex(YValues[j].getReal(), factor * matBuffer[j]);
 		}
 
-		MatBuffer = null;
+		matBuffer = null;
 	}
 
 	/**
@@ -236,43 +236,43 @@ public class LineImpl extends PDClassImpl implements Line {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int NewLengthUnits;
+		int newLengthUnits;
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveLineObj((LineObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveLineObj());  // use property to set this value
+		globals.getActiveCircuit().setActiveCktElement(getActiveLineObj());  // use property to set this value
 
 		LineObj al = getActiveLineObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < getNumProperties()))
-				al.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < getNumProperties()))
+				al.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"Line." + al.getName() + "\"", 181);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
 				break;
 			case 0:
-				al.setBus(1, Param);  // TODO Check zero based indexing
+				al.setBus(1, param);  // TODO Check zero based indexing
 				break;
 			case 1:
-				al.setBus(2, Param);
+				al.setBus(2, param);
 				break;
 			case 2:
-				al.fetchLineCode(Param);  // define line by conductor code
+				al.fetchLineCode(param);  // define line by conductor code
 				break;
 			case 3:
 				al.setLen(parser.makeDouble());
@@ -308,7 +308,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				doCmatrix();
 				break;
 			case 14:
-				al.setSwitch(Utilities.interpretYesNo(Param));
+				al.setSwitch(Utilities.interpretYesNo(param));
 				break;
 			case 15:
 				al.setRg(parser.makeDouble());
@@ -321,40 +321,40 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setRhoSpecified(true);
 				break;
 			case 18:
-				al.fetchGeometryCode(Param);
+				al.fetchGeometryCode(param);
 				break;
 			case 19:  // update units conversion factor that might have been changed previously
-				NewLengthUnits = LineUnits.getUnitsCode(Param);
+				newLengthUnits = LineUnits.getUnitsCode(param);
 				if (al.isLineCodeSpecified()) {
-					al.setUnitsConvert(LineUnits.convertLineUnits(al.getLineCodeUnits(), NewLengthUnits));
+					al.setUnitsConvert(LineUnits.convertLineUnits(al.getLineCodeUnits(), newLengthUnits));
 				} else {
-					al.setUnitsConvert(al.getUnitsConvert() * LineUnits.convertLineUnits(al.getLengthUnits(), NewLengthUnits));
+					al.setUnitsConvert(al.getUnitsConvert() * LineUnits.convertLineUnits(al.getLengthUnits(), newLengthUnits));
 				}
-				al.setLengthUnits(NewLengthUnits);
+				al.setLengthUnits(newLengthUnits);
 				break;
 			case 20:
-				al.fetchLineSpacing(Param);
+				al.fetchLineSpacing(param);
 				break;
 			case 21:
-				al.fetchWireList(Param);
+				al.fetchWireList(param);
 				break;
 			case 22:
-				al.setEarthModel(Utilities.interpretEarthModel(Param));
+				al.setEarthModel(Utilities.interpretEarthModel(param));
 				break;
 			case 24:
-				al.fetchCNCableList(Param);
+				al.fetchCNCableList(param);
 				break;
 			case 25:
-				al.fetchTSCableList(Param);
+				al.fetchTSCableList(param);
 				break;
 			default:
 				// inherited property edits
-				classEdit(getActiveLineObj(), ParamPointer - Line.NumPropsThisClass);
+				classEdit(getActiveLineObj(), paramPointer - Line.NumPropsThisClass);
 				break;
 			}
 
 			// side effects ...
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 4:  /* Change the number of phases ... only valid if symComponentsModel=true */
 				if (al.getNPhases() != parser.makeInteger())
 					if (!al.isGeometrySpecified() && al.isSymComponentsModel()) {  // ignore change of nPhases if geometry used
@@ -364,7 +364,7 @@ public class LineImpl extends PDClassImpl implements Line {
 						/*al.setYprimInvalid(true);*/  // now set below
 						al.recalcElementData();  // reallocate Z, etc.
 					} else {
-						Globals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
+						globals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
 					}
 				break;
 			case 5:
@@ -484,14 +484,14 @@ public class LineImpl extends PDClassImpl implements Line {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			if ((ParamPointer >= 2) && (ParamPointer <= 13)) {
+			if ((paramPointer >= 2) && (paramPointer <= 13)) {
 				al.setYPrimInvalid(true);
-			} else if (ParamPointer == 17) {
+			} else if (paramPointer == 17) {
 				if (al.isGeometrySpecified() && (al.getLineGeometryObj() != null))
 					al.getLineGeometryObj().setRhoEarth(al.getRho());
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 9:
 				al.setCapSpecified(true);
 				break;
@@ -503,25 +503,25 @@ public class LineImpl extends PDClassImpl implements Line {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
 
 		//if (al.isSymComponentsChanged()) al.recalcElementData();
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String LineName) {
+	protected int makeLike(String lineName) {
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this line name in the present collection */
-		LineObj OtherLine = (LineObj) find(LineName);
-		if (OtherLine != null) {
+		LineObj otherLine = (LineObj) find(lineName);
+		if (otherLine != null) {
 			LineObj al = getActiveLineObj();
 
-			if (al.getNPhases() != OtherLine.getNPhases()) {
-				al.setNPhases(OtherLine.getNPhases());
+			if (al.getNPhases() != otherLine.getNPhases()) {
+				al.setNPhases(otherLine.getNPhases());
 				al.setNConds(al.getNPhases());  // force reallocation of terminals and conductors
 
 				al.setYorder(al.getNConds() * al.getNTerms());
@@ -540,59 +540,59 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setYc(new CMatrixImpl(al.getNPhases()));
 			}
 
-			al.getZ().copyFrom(OtherLine.getZ());
+			al.getZ().copyFrom(otherLine.getZ());
 			// al.getZinv().copyFrom(OtherLine.getZinv());
-			al.getYc().copyFrom(OtherLine.getYc());
-			al.setR1(OtherLine.getR1());
-			al.setX1(OtherLine.getX1());
-			al.setR0(OtherLine.getR0());
-			al.setX0(OtherLine.getX0());
-			al.setC1(OtherLine.getC1());
-			al.setC0(OtherLine.getC0());
-			al.setLen(OtherLine.getLen());
-			al.setSymComponentsModel(OtherLine.isSymComponentsModel());
-			al.setCapSpecified(OtherLine.isCapSpecified());
+			al.getYc().copyFrom(otherLine.getYc());
+			al.setR1(otherLine.getR1());
+			al.setX1(otherLine.getX1());
+			al.setR0(otherLine.getR0());
+			al.setX0(otherLine.getX0());
+			al.setC1(otherLine.getC1());
+			al.setC0(otherLine.getC0());
+			al.setLen(otherLine.getLen());
+			al.setSymComponentsModel(otherLine.isSymComponentsModel());
+			al.setCapSpecified(otherLine.isCapSpecified());
 
-			classMakeLike(OtherLine);  // take care of inherited class properties
+			classMakeLike(otherLine);  // take care of inherited class properties
 
 			for (int i = 0; i < al.getParentClass().getNumProperties(); i++)
-				al.setPropertyValue(i, OtherLine.getPropertyValue(i));
-			Result = 1;
+				al.setPropertyValue(i, otherLine.getPropertyValue(i));
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Line makeLike: \"" + LineName + "\" not found.", 182);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Line.init()", -1);
 		return 0;
 	}
 
 	public static LineObj getActiveLineObj() {
-		return ActiveLineObj;
+		return activeLineObj;
 	}
 
-	public static void setActiveLineObj(LineObj activeLineObj) {
-		ActiveLineObj = activeLineObj;
+	public static void setActiveLineObj(LineObj lineObj) {
+		activeLineObj = lineObj;
 	}
 
 	public static LineGeometry getLineGeometryClass() {
-		return LineGeometryClass;
+		return lineGeometryClass;
 	}
 
-	public static void setLineGeometryClass(LineGeometry lineGeometryClass) {
-		LineGeometryClass = lineGeometryClass;
+	public static void setLineGeometryClass(LineGeometry cls) {
+		lineGeometryClass = cls;
 	}
 
 	public static LineCode getLineCodeClass() {
-		return LineCodeClass;
+		return lineCodeClass;
 	}
 
-	public static void setLineCodeClass(LineCode lineCodeClass) {
-		LineCodeClass = lineCodeClass;
+	public static void setLineCodeClass(LineCode cls) {
+		lineCodeClass = cls;
 	}
 
 }

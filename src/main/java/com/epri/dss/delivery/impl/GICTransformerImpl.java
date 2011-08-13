@@ -9,7 +9,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
-	private static GICTransformerObj ActiveGICTransformerObj;
+	private static GICTransformerObj activeGICTransformerObj;
 
 	public GICTransformerImpl() {
 		super();
@@ -20,9 +20,9 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
@@ -65,41 +65,41 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new GICTransformerObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new GICTransformerObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
-	private void GICTransSetBusH(final String S) {
-		String S2;
+	private void GICTransSetBusH(final String s) {
+		String s2;
 		int dotpos;
 
 		// set bus2 = busH1.0.0.0
 
 		GICTransformerObj agt = getActiveGICTransformerObj();
 
-		agt.setBus(1, S);
+		agt.setBus(1, s);
 
 		// default bus2 to zero node of bus1. (wye grounded connection)
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);  // copy up to dot
+			s2 = s.substring(0, dotpos);  // copy up to dot
 		} else {
-			S2 = S.substring(0);
+			s2 = s.substring(0);
 		}
 
-		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
+		s2 = s2 + ".0.0.0";  // set default for up to 3 phases
 
-		agt.setBus(2, S2);
+		agt.setBus(2, s2);
 		agt.setShunt(true);
 	}
 
-    private void GICTransSetBusX(final String S) {
-    	String S2;
+    private void GICTransSetBusX(final String s) {
+    	String s2;
     	int dotpos;
 
 		// special handling for bus X
@@ -114,75 +114,75 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			agt.setNConds(agt.getNPhases());  // force reallocation of terminals and conductors
 		}
 
-		agt.setBus(3, S);
+		agt.setBus(3, s);
 
 		// default bus4 to zero node of bus3. (wye grounded connection)
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);  // copy up to dot
+			s2 = s.substring(0, dotpos);  // copy up to dot
 		} else {
-			S2 = S.substring(0);
+			s2 = s.substring(0);
 		}
 
-		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
+		s2 = s2 + ".0.0.0";  // set default for up to 3 phases
 
-		agt.setBus(4, S2);
+		agt.setBus(4, s2);
 		agt.setShunt(true);
     }
 
 	@Override
 	public int edit() {
-		int ParamPointer;
-		String ParamName;
-		String Param;
+		int paramPointer;
+		String paramName;
+		String param;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 
 		// continue parsing with contents of parser
 		setActiveGICTransformerObj((GICTransformerObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveGICTransformerObj());  // use property to set this value
+		globals.getActiveCircuit().setActiveCktElement(getActiveGICTransformerObj());  // use property to set this value
 
 		GICTransformerObj agt = getActiveGICTransformerObj();
 
-		ParamPointer = 0;
-		ParamName = parser.getNextParam();
-		Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		paramPointer = 0;
+		paramName = parser.getNextParam();
+		param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				agt.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				agt.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ getName() + "\"", 350);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 350);
 				break;
 			case 0:
-				GICTransSetBusH(Param);
+				GICTransSetBusH(param);
 				break;
 			case 1:
-				agt.setBus(2, Param);
+				agt.setBus(2, param);
 				break;
 			case 2:
-				GICTransSetBusX(Param);
+				GICTransSetBusX(param);
 				break;
 			case 3:
-				agt.setBus(4, Param);
+				agt.setBus(4, param);
 				break;
 			case 4:
 				// see below
 				break;
 			case 5:
-				switch (Param.toUpperCase().charAt(0)) {
+				switch (param.toUpperCase().charAt(0)) {
 				case 'G':
 					agt.setSpecType(SPEC_GSU);
 					break;
@@ -212,12 +212,12 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				break;
 			default:
 				// inherited
-				classEdit(getActiveGICTransformerObj(), ParamPointer - NumPropsThisClass);
+				classEdit(getActiveGICTransformerObj(), paramPointer - NumPropsThisClass);
 				break;
 			}
 
 			// some specials ...
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				agt.setPropertyValue(1, agt.getBus(2));  // bus2 gets modified if bus1 is set
 				break;
@@ -233,7 +233,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				if (agt.getNPhases() != parser.makeInteger()) {
 					agt.setNPhases(parser.makeInteger());
 					agt.setNConds(agt.getNPhases());  // force reallocation of terminal info if different size
-					Globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
+					globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 5:
@@ -250,52 +250,52 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			}
 
 			// YPrim invalidation on anything that changes impedance values or no. of terminals
-			if ((ParamPointer >= 2) && (ParamPointer <= 7))
+			if ((paramPointer >= 2) && (paramPointer <= 7))
 				agt.setYPrimInvalid(true);
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		agt.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
 	protected int makeLike(String GICTransName) {
-		GICTransformerObj OtherGICTrans;
+		GICTransformerObj otherGICTrans;
 		int i;
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this Fault name in the present collection */
-		OtherGICTrans = (GICTransformerObj) find(GICTransName);
-		if (OtherGICTrans != null) {
+		otherGICTrans = (GICTransformerObj) find(GICTransName);
+		if (otherGICTrans != null) {
 			GICTransformerObj agt = getActiveGICTransformerObj();
 
-			if (agt.getNPhases() != OtherGICTrans.getNPhases()) {
-				agt.setNPhases(OtherGICTrans.getNPhases());
-				agt.setNTerms(OtherGICTrans.getNTerms());
+			if (agt.getNPhases() != otherGICTrans.getNPhases()) {
+				agt.setNPhases(otherGICTrans.getNPhases());
+				agt.setNTerms(otherGICTrans.getNTerms());
 				agt.setNConds(agt.getNPhases());  // force reallocation of terminals and conductors
 
 				agt.setYorder(agt.getNConds() * agt.getNTerms());
 				agt.setYPrimInvalid(true);
 			}
 
-			agt.setBaseFrequency(OtherGICTrans.getBaseFrequency());
-			agt.setG1(OtherGICTrans.getG1());
-			agt.setG2(OtherGICTrans.getG2());
-			agt.setSpecType(OtherGICTrans.getSpecType());
+			agt.setBaseFrequency(otherGICTrans.getBaseFrequency());
+			agt.setG1(otherGICTrans.getG1());
+			agt.setG2(otherGICTrans.getG2());
+			agt.setSpecType(otherGICTrans.getSpecType());
 
-			classMakeLike(OtherGICTrans);
+			classMakeLike(otherGICTrans);
 
 			for (i = 0; i < agt.getParentClass().getNumProperties(); i++)
-				agt.setPropertyValue(i, OtherGICTrans.getPropertyValue(i));
-			Result = 1;
+				agt.setPropertyValue(i, otherGICTrans.getPropertyValue(i));
+			result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in GICTransformer makeLike: \"" + GICTransName + "\" not found.", 351);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
@@ -305,11 +305,11 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 	}
 
 	public static GICTransformerObj getActiveGICTransformerObj() {
-		return ActiveGICTransformerObj;
+		return activeGICTransformerObj;
 	}
 
-	public static void setActiveGICTransformerObj(GICTransformerObj activeGICTransformerObj) {
-		ActiveGICTransformerObj = activeGICTransformerObj;
+	public static void setActiveGICTransformerObj(GICTransformerObj transformerObj) {
+		activeGICTransformerObj = transformerObj;
 	}
 
 }
