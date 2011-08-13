@@ -16,29 +16,29 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	private double[] C,
 		XL,
-		kvarrating,
+		kVArRating,
 		R,
-		Harm;  // single C per phase (line rating) if Cmatrix not specified
-	private int[] States;
+		harm;  // single C per phase (line rating) if Cmatrix not specified
+	private int[] states;
 
-	private double totalkvar,
-		kvrating;
-	private int NumSteps,
-		LastStepInService;
-	private double[] Cmatrix;  // if not nil then overrides C
+	private double totalKVAr,
+		kVRating;
+	private int numSteps,
+		lastStepInService;
+	private double[] CMatrix;  // if not nil then overrides C
 
 	private boolean doHarmonicRecalc;
 
-	private int SpecType;
+	private int specType;
 
 	/* 0 or 1 for wye (default) or delta, respectively */
-	protected int Connection;
+	protected int connection;
 
-	public CapacitorObjImpl(DSSClass ParClass, String CapacitorName) {
-		super(ParClass);
+	public CapacitorObjImpl(DSSClass parClass, String capacitorName) {
+		super(parClass);
 
-		setName(CapacitorName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(capacitorName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -48,34 +48,34 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		this.IsShunt = true;  // defaults to shunt capacitor
 
-		this.Cmatrix = null;
+		this.CMatrix = null;
 
 		/* Initialize these pointers to nil so reallocmem will work reliably. */
 		this.C = null;
 		this.XL = null;
-		this.kvarrating = null;
+		this.kVArRating = null;
 		this.R = null;
-		this.Harm = null;
-		this.States = null;
+		this.harm = null;
+		this.states = null;
 
 		setNumSteps(1);  // initial allocation for the arrays, too
-		this.LastStepInService = this.NumSteps;
+		this.lastStepInService = this.numSteps;
 
-		Utilities.initDblArray(this.NumSteps, this.R, 0.0);
-		Utilities.initDblArray(this.NumSteps, this.XL, 0.0);
-		Utilities.initDblArray(this.NumSteps, this.Harm, 0.0);
-		Utilities.initDblArray(this.NumSteps, this.kvarrating, 1200.0);
+		Utilities.initDblArray(this.numSteps, this.R, 0.0);
+		Utilities.initDblArray(this.numSteps, this.XL, 0.0);
+		Utilities.initDblArray(this.numSteps, this.harm, 0.0);
+		Utilities.initDblArray(this.numSteps, this.kVArRating, 1200.0);
 
-		this.States[0] = 1;
+		this.states[0] = 1;
 
-		this.kvrating = 12.47;
-		Utilities.initDblArray(this.NumSteps, this.C,
-				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kvrating, 2) * 1000.0 / this.kvarrating[0]));
+		this.kVRating = 12.47;
+		Utilities.initDblArray(this.numSteps, this.C,
+				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / this.kVArRating[0]));
 
-		this.Connection = 0;   // 0 or 1 for wye (default) or delta, respectively
-		this.SpecType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
+		this.connection = 0;   // 0 or 1 for wye (default) or delta, respectively
+		this.specType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
 
-		this.NormAmps = this.kvarrating[0] * DSSGlobals.SQRT3 / this.kvrating * 1.35;  // 135%
+		this.NormAmps = this.kVArRating[0] * DSSGlobals.SQRT3 / this.kVRating * 1.35;  // 135%
 		this.EmergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
 		this.FaultRate = 0.0005;
 		this.PctPerm = 100.0;
@@ -91,58 +91,58 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	@Override
 	public void recalcElementData() {
-		double KvarPerPhase, PhasekV, w;
+		double kVArPerPhase, phaseKV, w;
 		int i;
 
-		totalkvar = 0.0;
-		PhasekV = 1.0;
+		totalKVAr = 0.0;
+		phaseKV = 1.0;
 		w = DSSGlobals.TWO_PI * baseFrequency;
-		switch (SpecType) {
+		switch (specType) {
 		case 1:// kvar
-			switch (Connection) {
+			switch (connection) {
 			case 1:  // line-to-line
-				PhasekV = kvrating;
+				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
 				switch (nPhases) {
 				case 2:
-					PhasekV = kvrating / DSSGlobals.SQRT3;  // assume three phase system
+					phaseKV = kVRating / DSSGlobals.SQRT3;  // assume three phase system
 					break;
 				case 3:
-					PhasekV = kvrating / DSSGlobals.SQRT3;
+					phaseKV = kVRating / DSSGlobals.SQRT3;
 					break;
 				default:
-					PhasekV = kvrating;
+					phaseKV = kVRating;
 					break;
 				}
 				break;
 			}
-			for (i = 0; i < NumSteps; i++)
-				C[i] = 1.0 / (w * Math.pow(PhasekV, 2) * 1000.0 / (kvarrating[0] / nPhases));
-			for (i = 0; i < NumSteps; i++)
-				totalkvar = totalkvar + kvarrating[i];
+			for (i = 0; i < numSteps; i++)
+				C[i] = 1.0 / (w * Math.pow(phaseKV, 2) * 1000.0 / (kVArRating[0] / nPhases));
+			for (i = 0; i < numSteps; i++)
+				totalKVAr = totalKVAr + kVArRating[i];
 			break;
 		case 2:  // Cuf
-			switch (Connection) {
+			switch (connection) {
 			case 1:  // line-to-line
-				PhasekV = kvrating;
+				phaseKV = kVRating;
 				break;
 			default:  // line-to-neutral
 				switch (nPhases) {
 				case 2:
-					PhasekV = kvrating / DSSGlobals.SQRT3;  // assume three phase system
+					phaseKV = kVRating / DSSGlobals.SQRT3;  // assume three phase system
 					break;
 				case 3:
-					PhasekV = kvrating / DSSGlobals.SQRT3;
+					phaseKV = kVRating / DSSGlobals.SQRT3;
 					break;
 				default:
-					PhasekV = kvrating;
+					phaseKV = kVRating;
 					break;
 				}
 				break;
 			}
-			for (i = 0; i < NumSteps; i++)
-				totalkvar = totalkvar + w * C[i] * Math.pow(PhasekV, 2) / 1000.0;
+			for (i = 0; i < numSteps; i++)
+				totalKVAr = totalKVAr + w * C[i] * Math.pow(phaseKV, 2) / 1000.0;
 			break;
 		case 3:  // Cmatrix
 			// Nothing to do
@@ -150,9 +150,9 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		}
 
 		if (doHarmonicRecalc)  // if harmonic specified, compute filter reactance
-			for (i = 0; i < NumSteps; i++) {
-				if (Harm[i] != 0.0) {
-					XL[i] = (1.0 / (w * C[i])) / Math.pow(Harm[i], 2);
+			for (i = 0; i < numSteps; i++) {
+				if (harm[i] != 0.0) {
+					XL[i] = (1.0 / (w * C[i])) / Math.pow(harm[i], 2);
 				} else {
 					XL[i] = 0.0;  // assume 0 harmonic means no filter
 				}
@@ -160,8 +160,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 					R[i] = XL[i] / 1000.0;
 			}
 
-		KvarPerPhase = totalkvar / nPhases;
-		setNormAmps(KvarPerPhase / PhasekV * 1.35);
+		kVArPerPhase = totalKVAr / nPhases;
+		setNormAmps(kVArPerPhase / phaseKV * 1.35);
 		setEmergAmps(getNormAmps() * 1.8 / 1.35);
 	}
 
@@ -197,8 +197,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 		YPrimWork = new CMatrixImpl(YOrder);
 
-		for (i = 0; i < NumSteps; i++)
-			if (States[i] == 1) {
+		for (i = 0; i < numSteps; i++)
+			if (states[i] == 1) {
 				makeYprimWork(YPrimWork, i);
 				YPrimTemp.addFrom(YPrimWork);
 			}
@@ -218,55 +218,55 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
-		F.println("~ " + ParentClass.getPropertyName()[0] + "=" + getFirstBus());
-		F.println("~ " + ParentClass.getPropertyName()[1] + "=" + getNextBus());
+		f.println("~ " + ParentClass.getPropertyName()[0] + "=" + getFirstBus());
+		f.println("~ " + ParentClass.getPropertyName()[1] + "=" + getNextBus());
 
-		F.println("~ " + ParentClass.getPropertyName()[2] + "=" + getNPhases());
-		F.println("~ " + ParentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
+		f.println("~ " + ParentClass.getPropertyName()[2] + "=" + getNPhases());
+		f.println("~ " + ParentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
 
-		F.println("~ " + ParentClass.getPropertyName()[4] + "=" + getKvrating());
+		f.println("~ " + ParentClass.getPropertyName()[4] + "=" + getKVRating());
 		switch (getConnection()) {
 		case 0:
-			F.println("~ " + ParentClass.getPropertyName()[5] + "=wye");
+			f.println("~ " + ParentClass.getPropertyName()[5] + "=wye");
 			break;
 		case 1:
-			F.println("~ " + ParentClass.getPropertyName()[6] + "=delta");
+			f.println("~ " + ParentClass.getPropertyName()[6] + "=delta");
 			break;
 		}
-		if (getCmatrix() != null) {
-			F.print(ParentClass.getPropertyName()[6] + "= (");
+		if (getCMatrix() != null) {
+			f.print(ParentClass.getPropertyName()[6] + "= (");
 			for (int i = 0; i < getNPhases(); i++) {
 				for (int j = 0; j < i; j++) {
 					// TODO: Check zero based indexing
-					F.print((getCmatrix()[(i - 1) * getNPhases() + j] * 1.0e6) + " ");
+					f.print((getCMatrix()[(i - 1) * getNPhases() + j] * 1.0e6) + " ");
 				}
 				if (i != getNPhases())
-					F.print("|");
+					f.print("|");
 			}
-			F.println(")");
+			f.println(")");
 		}
 
-		F.println("~ " + ParentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
-		F.println("~ " + ParentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
-		F.println("~ " + ParentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
-		F.println("~ " + ParentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
-		F.println("~ " + ParentClass.getPropertyName()[11] + "=" + getNumSteps());
-		F.println("~ " + ParentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
+		f.println("~ " + ParentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
+		f.println("~ " + ParentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
+		f.println("~ " + ParentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
+		f.println("~ " + ParentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
+		f.println("~ " + ParentClass.getPropertyName()[11] + "=" + getNumSteps());
+		f.println("~ " + ParentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
 
 		for (int i = Capacitor.NumPropsThisClass + 1; i < ParentClass.getNumProperties(); i++) {  // TODO: Check zero based indexing
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 		}
 
-		if (Complete) {
-			F.println("SpecType=" + getSpecType());
+		if (complete) {
+			f.println("SpecType=" + getSpecType());
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		PropertyValue[0] = getBus(1);  // TODO: Check zero based indexing
 		PropertyValue[1] = getBus(2);  // TODO: Check zero based indexing
 		PropertyValue[2] = "3";
@@ -294,8 +294,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	@Override
 	public void makePosSequence() {
-		String S = null;
-		double kvarPerPhase, PhasekV, Cs, Cm;
+		String s = null;
+		double kVArPerPhase, phaseKV, Cs, Cm;
 		int i, j;
 
 		if (getNPhases() > 1) {
@@ -303,57 +303,57 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			case 1:  // kvar
 
 				if ((getNPhases() > 1) || (getConnection() != 0)) {
-					PhasekV = getKvrating() / DSSGlobals.SQRT3;
+					phaseKV = getKVRating() / DSSGlobals.SQRT3;
 				} else {
-					PhasekV = getKvrating();
+					phaseKV = getKVRating();
 				}
 
-				S = "Phases=1 " + String.format(" kV=%-.5g kvar=(", PhasekV);
+				s = "Phases=1 " + String.format(" kV=%-.5g kvar=(", phaseKV);
 
 				for (i = 0; i < getNumSteps(); i++) {
-					kvarPerPhase = getKvarrating()[i] / getNPhases();
-					S = S + String.format(" %-.5g", kvarPerPhase);
+					kVArPerPhase = getKVArRating()[i] / getNPhases();
+					s = s + String.format(" %-.5g", kVArPerPhase);
 				}
 
-				S = S + ")";
+				s = s + ")";
 
 				break;
 				/* Leave R as specified */
 			case 2:
-				S = "Phases=1 ";
+				s = "Phases=1 ";
 				break;
 			case 3:  // C matrix
-				S = "Phases=1 ";
+				s = "Phases=1 ";
 				// r1
 				Cs = 0.0;  // avg self
 				for (i = 0; i < getNPhases(); i++)
-					Cs = Cs + getCmatrix()[(i - 1) * getNPhases() + i];  // TODO: Check zero based indexing
+					Cs = Cs + getCMatrix()[(i - 1) * getNPhases() + i];  // TODO: Check zero based indexing
 				Cs = Cs / getNPhases();
 
 				Cm = 0.0;  // avg mutual
 				for (i = 1; i < getNPhases(); i++)
 					for (j = i; j < getNPhases(); j++)
-						Cm = Cm + getCmatrix()[(i - 1) * getNPhases() + j];
+						Cm = Cm + getCMatrix()[(i - 1) * getNPhases() + j];
 				Cm = Cm / (getNPhases() * (getNPhases() - 1.0) / 2.0);
 
-				S = S + String.format(" Cuf=%-.5g", (Cs - Cm));
+				s = s + String.format(" Cuf=%-.5g", (Cs - Cm));
 				break;
 			}
 
-			Parser.getInstance().setCmdString(S);
+			Parser.getInstance().setCmdString(s);
 			edit();
 		}
 
 		super.makePosSequence();
 	}
 
-	public int getStates(int Idx) {
-		return getStates()[Idx];
+	public int getStates(int idx) {
+		return getStates()[idx];
 	}
 
-	public void setStates(int Idx, int Value) {
-		if (getStates()[Idx] != Value) {
-			getStates()[Idx] = Value;
+	public void setStates(int idx, int value) {
+		if (getStates()[idx] != value) {
+			getStates()[idx] = value;
 			setYPrimInvalid(true);
 		}
 	}
@@ -363,42 +363,42 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	 *
 	 * 1=kvar, 2=Cuf, 3=Cmatrix
 	 */
-	public void setNumSteps(int Value) {
-		double StepSize, Rstep, XLstep;
+	public void setNumSteps(int value) {
+		double stepSize, RStep, XLStep;
 		int i;
 
 		/* Reallocate all arrays associated with steps */
 
-		if ((getNumSteps() != Value) && (Value > 0)) {
-			Rstep = 0.0;
-			XLstep = 0.0;
+		if ((getNumSteps() != value) && (value > 0)) {
+			RStep = 0.0;
+			XLStep = 0.0;
 			if (getNumSteps() == 1) {
 				/* Save total values to be divided up */
-				setTotalkvar(getKvarrating()[0]);
-				Rstep = getR()[0] * Value;
-				XLstep = getXL()[0] * Value;
+				setTotalKVAr(getKVArRating()[0]);
+				RStep = getR()[0] * value;
+				XLStep = getXL()[0] * value;
 			}
 
 			// reallocate arrays (must be initialized to nil for first call)
-			setC( (double[]) Utilities.resizeArray(getC(), Value) );
-			setXL( (double[]) Utilities.resizeArray(getXL(), Value) );
-			setKvarrating( (double[]) Utilities.resizeArray(getKvarrating(), Value) );
-			setR( (double[]) Utilities.resizeArray(getR(), Value) );
-			setHarm( (double[]) Utilities.resizeArray(getHarm(), Value) );
-			setStates( (int[]) Utilities.resizeArray(getStates(), Value) );
+			setC( (double[]) Utilities.resizeArray(getC(), value) );
+			setXL( (double[]) Utilities.resizeArray(getXL(), value) );
+			setKVArRating( (double[]) Utilities.resizeArray(getKVArRating(), value) );
+			setR( (double[]) Utilities.resizeArray(getR(), value) );
+			setHarm( (double[]) Utilities.resizeArray(getHarm(), value) );
+			setStates( (int[]) Utilities.resizeArray(getStates(), value) );
 
 			// special case for numSteps=1
 
 			if (getNumSteps() == 1) {
 				switch (getSpecType()) {
 				case 1:  // kvar   /* We'll make a multi-step bank of same net size as at present */
-					StepSize = getTotalkvar() / Value;
-					for (i = 0; i < Value; i++)
-						getKvarrating()[i] = StepSize;
+					stepSize = getTotalKVAr() / value;
+					for (i = 0; i < value; i++)
+						getKVArRating()[i] = stepSize;
 					break;
 
 				case 2:  // Cuf   /* We'll make a multi-step bank with all the same as first */
-					for (i = 1; i < Value; i++)
+					for (i = 1; i < value; i++)
 						getC()[i] = getC()[0];  // make same as first step
 					break;
 
@@ -409,53 +409,53 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 				switch (getSpecType()) {
 				case 1:
-					for (i = 0; i < Value; i++)
-						getR()[i] = Rstep;
-					for (i = 0; i < Value; i++)
-						getXL()[i] = XLstep;
+					for (i = 0; i < value; i++)
+						getR()[i] = RStep;
+					for (i = 0; i < value; i++)
+						getXL()[i] = XLStep;
 					break;
 
 				case 2:  // make R and XL same as first step
-					for (i = 1; i < Value; i++)
+					for (i = 1; i < value; i++)
 						getR()[i] = getR()[0];
-					for (i = 1; i < Value; i++)
+					for (i = 1; i < value; i++)
 						getXL()[i] = getXL()[0];
 					break;
 				case 3:  // make R and XL same as first step
-					for (i = 1; i < Value; i++)
+					for (i = 1; i < value; i++)
 						getR()[i] = getR()[0];
-					for (i = 1; i < Value; i++)
+					for (i = 1; i < value; i++)
 						getXL()[i] = getXL()[0];
 					break;
 				}
 
-				for (i = 0; i < Value; i++)
+				for (i = 0; i < value; i++)
 					getStates()[i] = 1;  // turn them all ON
-				setLastStepInService(Value);
-				for (i = 1; i < Value; i++)
+				setLastStepInService(value);
+				for (i = 1; i < value; i++)
 					getHarm()[i] = getHarm()[0];  // tune them all the same as first
 			}
 		}
 
-		setNumSteps(Value);
+		setNumSteps(value);
 	}
 
 	// FIXME Private member in OpenDSS
-	public void processHarmonicSpec(String Param) {
-		Utilities.interpretDblArray(Param, getNumSteps(), getHarm());
+	public void processHarmonicSpec(String param) {
+		Utilities.interpretDblArray(param, getNumSteps(), getHarm());
 
 		setDoHarmonicRecalc(true);
 	}
 
 	// FIXME Private member in OpenDSS
-	public void processStatesSpec(String Param) {
-		Utilities.interpretIntArray(Param, getNumSteps(), getStates());
+	public void processStatesSpec(String param) {
+		Utilities.interpretIntArray(param, getNumSteps(), getStates());
 
-		LastStepInService = 0;
+		lastStepInService = 0;
 
 		for (int i = getNumSteps(); i < 0; i--)  // TODO Check zero based indexing
 			if (getStates()[i] == 1) {
-				LastStepInService = i;
+				lastStepInService = i;
 				break;
 			}
 	}
@@ -463,77 +463,77 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	/**
 	 * Call this routine only if step is energized.
 	 */
-	private void makeYprimWork(CMatrix YprimWork, int iStep) {
-		Complex Value, Value2, ZL = null;
-		int i,j, ioffset;
-		double w, FreqMultiple;
-		boolean HasZL;
+	private void makeYprimWork(CMatrix YPrimWork, int iStep) {
+		Complex value, value2, Zl = null;
+		int i, j, ioffset;
+		double w, freqMultiple;
+		boolean hasZl;
 
 		setYPrimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
-		FreqMultiple = getYPrimFreq() / getBaseFrequency();
+		freqMultiple = getYPrimFreq() / getBaseFrequency();
 		w = DSSGlobals.TWO_PI * getYPrimFreq();
 
 		if ((getR()[iStep] + Math.abs(getXL()[iStep])) > 0.0) {
-			HasZL = true;
+			hasZl = true;
 		} else {
-			HasZL = false;
+			hasZl = false;
 		}
 
-		if (HasZL)
-			ZL = new Complex(getR()[iStep], getXL()[iStep] * FreqMultiple);
+		if (hasZl)
+			Zl = new Complex(getR()[iStep], getXL()[iStep] * freqMultiple);
 
 		/* Now, put C into in Yprim matrix */
 
 		switch (getSpecType()) {
 		case 1:
-			Value = new Complex(0.0, getC()[iStep] * w);
+			value = new Complex(0.0, getC()[iStep] * w);
 			switch (getConnection()) {
 			case 1:  // line-line
-				Value2 = Value.multiply(2.0);
-				Value = Value.negate();
+				value2 = value.multiply(2.0);
+				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YprimWork.setElement(i, i, Value2);
+					YPrimWork.setElement(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YprimWork.setElemSym(i, j, Value);
+						YPrimWork.setElemSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
 				break;
 			default:  // wye
-				if (HasZL)
-					Value = ZL.add(Value.invert()).invert(); // add in ZL
-				Value2 = Value.negate();
+				if (hasZl)
+					value = Zl.add(value.invert()).invert(); // add in ZL
+				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YprimWork.setElement(i, i, Value);  // elements are only on the diagonals
-					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
-					YprimWork.setElemSym(i, i + getNPhases(), Value2);
+					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals
+					YPrimWork.setElement(i + getNPhases(), i + getNPhases(), value);
+					YPrimWork.setElemSym(i, i + getNPhases(), value2);
 				}
 				break;
 			}
 			break;
 		case 2:  // identical to case 1
 
-			Value = new Complex(0.0, getC()[iStep] * w);
+			value = new Complex(0.0, getC()[iStep] * w);
 			switch (getConnection()) {
 			case 1:  // line-line
-				Value2 = Value.multiply(2.0);
-				Value = Value.negate();
+				value2 = value.multiply(2.0);
+				value = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YprimWork.setElement(i, i, Value2);
+					YPrimWork.setElement(i, i, value2);
 					for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
-						YprimWork.setElemSym(i, j, Value);
+						YPrimWork.setElemSym(i, j, value);
 					}
 					// remainder of the matrix is all zero
 				}
 				break;
 			default:  // wye
-				if (HasZL)
-					Value = ZL.add(Value.invert()).invert();  // add in ZL
-				Value2 = Value.negate();
+				if (hasZl)
+					value = Zl.add(value.invert()).invert();  // add in ZL
+				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
-					YprimWork.setElement(i, i, Value);  // elements are only on the diagonals
-					YprimWork.setElement(i + getNPhases(), i + getNPhases(), Value);
-					YprimWork.setElemSym(i, i + getNPhases(), Value2);
+					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals
+					YPrimWork.setElement(i + getNPhases(), i + getNPhases(), value);
+					YPrimWork.setElemSym(i, i + getNPhases(), value2);
 				}
 				break;
 			}
@@ -542,18 +542,18 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			for (i = 0; i < getNPhases(); i++) {
 				ioffset = (i - 1) * getNPhases();  // TODO Check zero based indexing
 				for (j = 0; j < getNPhases(); j++) {
-					Value = new Complex(0.0, getCmatrix()[(ioffset + j)] * w);
-					YprimWork.setElement(i, j, Value);
-					YprimWork.setElement(i + getNPhases(), j + getNPhases(), Value);
-					Value = Value.negate();
-					YprimWork.setElemSym(i, j + getNPhases(), Value);
+					value = new Complex(0.0, getCMatrix()[(ioffset + j)] * w);
+					YPrimWork.setElement(i, j, value);
+					YPrimWork.setElement(i + getNPhases(), j + getNPhases(), value);
+					value = value.negate();
+					YPrimWork.setElemSym(i, j + getNPhases(), value);
 				}
 			}
 			break;
 		}
 
 		/* Add line reactance for filter reactor, if any */
-		if (HasZL) {
+		if (hasZl) {
 			switch (getSpecType()) {
 			case 1:
 
@@ -561,13 +561,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNPhases(); i++)
-						YprimWork.setElement(i, i, YprimWork.getElement(i, i).multiply(1.000001));
-					YprimWork.invert();
+						YPrimWork.setElement(i, i, YPrimWork.getElement(i, i).multiply(1.000001));
+					YPrimWork.invert();
 					for (i = 0; i < getNPhases(); i++) {
-						Value = ZL.add(YprimWork.getElement(i, i));
-						YprimWork.setElement(i, i, Value);
+						value = Zl.add(YPrimWork.getElement(i, i));
+						YPrimWork.setElement(i, i, value);
 					}
-					YprimWork.invert();
+					YPrimWork.invert();
 					break;
 				default:  /* Wye - just put ZL in series */
 					/* Do nothing; already in - see above */
@@ -580,13 +580,13 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				case 1:  // line-line
 					/* Add a little bit to each phase so it will invert */
 					for (i = 0; i < getNPhases(); i++)
-						YprimWork.setElement(i, i, YprimWork.getElement(i, i).multiply(1.000001));
-					YprimWork.invert();
+						YPrimWork.setElement(i, i, YPrimWork.getElement(i, i).multiply(1.000001));
+					YPrimWork.invert();
 					for (i = 0; i < getNPhases(); i++) {
-						Value = ZL.add(YprimWork.getElement(i, i));
-						YprimWork.setElement(i, i, Value);
+						value = Zl.add(YPrimWork.getElement(i, i));
+						YPrimWork.setElement(i, i, value);
 					}
-					YprimWork.invert();
+					YPrimWork.invert();
 					break;
 				default:  /* Wye - just put ZL in series */
 					/* Do nothing; already in - see above */
@@ -594,78 +594,78 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				}
 				break;
 			case 3:
-				YprimWork.invert();
+				YPrimWork.invert();
 				for (i = 0; i < getNPhases(); i++) {
-					Value = ZL.add(YprimWork.getElement(i, i));
-					YprimWork.setElement(i, i, Value);
+					value = Zl.add(YPrimWork.getElement(i, i));
+					YPrimWork.setElement(i, i, value);
 				}
-				YprimWork.invert();
+				YPrimWork.invert();
 				break;
 			}
 		}
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		double[] Temp;
+	public String getPropertyValue(int index) {
+		double[] temp;
 
-		String Result = "";
-		switch (Index) {  // special cases
+		String result = "";
+		switch (index) {  // special cases
 		case 0:
-			Result = getBus(1);  // TODO: Check zero based indexing
+			result = getBus(1);  // TODO: Check zero based indexing
 			break;
 		case 1:
-			Result = getBus(2);  // TODO: Check zero based indexing
+			result = getBus(2);  // TODO: Check zero based indexing
 			break;
 		case 3:
-			Result = Utilities.getDSSArray_Real(getNumSteps(), getKvarrating());
+			result = Utilities.getDSSArray_Real(getNumSteps(), getKVArRating());
 			break;
 		case 7:
-			Temp = new double[getNumSteps()];
+			temp = new double[getNumSteps()];
 			for (int i = 0; i < getNumSteps(); i++) {
-				Temp[i] = getC()[i] * 1.0e6;  // to microfarads
+				temp[i] = getC()[i] * 1.0e6;  // to microfarads
 			}
-			Result = Utilities.getDSSArray_Real(getNumSteps(), Temp);
-			Temp = null;  // throw away temp storage
+			result = Utilities.getDSSArray_Real(getNumSteps(), temp);
+			temp = null;  // throw away temp storage
 			break;
 		case 8:
-			Result = Utilities.getDSSArray_Real(getNumSteps(), getR());
+			result = Utilities.getDSSArray_Real(getNumSteps(), getR());
 			break;
 		case 10:
-			Result = Utilities.getDSSArray_Real(getNumSteps(), getXL());
+			result = Utilities.getDSSArray_Real(getNumSteps(), getXL());
 			break;
 		case 11:
-			Result = Utilities.getDSSArray_Real(getNumSteps(), getHarm());
+			result = Utilities.getDSSArray_Real(getNumSteps(), getHarm());
 			break;
 		case 12:
-			Result = Utilities.getDSSArray_Integer(getNumSteps(), getStates());
+			result = Utilities.getDSSArray_Integer(getNumSteps(), getStates());
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
-		return Result;
+		return result;
 	}
 
 	public boolean addStep() {
 		// start with last step in service and see if we can add more; if not return false.
 
-		if (LastStepInService == getNumCustomers()) {
+		if (lastStepInService == getNumCustomers()) {
 			return false;
 		} else {
-			LastStepInService += 1;
-			getStates()[LastStepInService] = 1;  // TODO Check zero based indexing
+			lastStepInService += 1;
+			getStates()[lastStepInService] = 1;  // TODO Check zero based indexing
 			return true;
 		}
 	}
 
 	public boolean subtractStep() {
-		if (LastStepInService == 0) {  // TODO Check zero based indexing
+		if (lastStepInService == 0) {  // TODO Check zero based indexing
 			return false;
 		} else {
-			getStates()[LastStepInService] = 0;  // TODO Check zero based indexing
-			LastStepInService -= 1;
-			if (LastStepInService == 0) {
+			getStates()[lastStepInService] = 0;  // TODO Check zero based indexing
+			lastStepInService -= 1;
+			if (lastStepInService == 0) {
 				return false;
 			} else {
 				return true;  // signify bank open
@@ -674,27 +674,27 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	}
 
 	public int availableSteps() {
-		return getNumSteps() - LastStepInService;
+		return getNumSteps() - lastStepInService;
 	}
 
 	public int getNumSteps() {
-		return NumSteps;
+		return numSteps;
 	}
 
 	public int getConnection() {
-		return Connection;
+		return connection;
 	}
 
-	public void setConnection(int connection) {
-		Connection = connection;
+	public void setConnection(int conn) {
+		connection = conn;
 	}
 
-	public double getTotalkvar() {
-		return totalkvar;
+	public double getTotalKVAr() {
+		return totalKVAr;
 	}
 
-	public double getKvrating() {
-		return kvrating;
+	public double getKVRating() {
+		return kVRating;
 	}
 
 	// FIXME Private members in OpenDSS
@@ -703,24 +703,24 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		return C;
 	}
 
-	public void setC(double[] c) {
-		C = c;
+	public void setC(double[] value) {
+		C = value;
 	}
 
 	public double[] getXL() {
 		return XL;
 	}
 
-	public void setXL(double[] xL) {
-		XL = xL;
+	public void setXL(double[] xl) {
+		XL = xl;
 	}
 
-	public double[] getKvarrating() {
-		return kvarrating;
+	public double[] getKVArRating() {
+		return kVArRating;
 	}
 
-	public void setKvarrating(double[] kvarrating) {
-		this.kvarrating = kvarrating;
+	public void setKVArRating(double[] rating) {
+		this.kVArRating = rating;
 	}
 
 	public double[] getR() {
@@ -732,59 +732,59 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	}
 
 	public double[] getHarm() {
-		return Harm;
+		return harm;
 	}
 
-	public void setHarm(double[] harm) {
-		Harm = harm;
+	public void setHarm(double[] values) {
+		harm = values;
 	}
 
 	public int[] getStates() {
-		return States;
+		return states;
 	}
 
-	public void setStates(int[] states) {
-		States = states;
+	public void setStates(int[] values) {
+		states = values;
 	}
 
 	public int getLastStepInService() {
-		return LastStepInService;
+		return lastStepInService;
 	}
 
-	public void setLastStepInService(int lastStepInService) {
-		LastStepInService = lastStepInService;
+	public void setLastStepInService(int lastStep) {
+		lastStepInService = lastStep;
 	}
 
-	public double[] getCmatrix() {
-		return Cmatrix;
+	public double[] getCMatrix() {
+		return CMatrix;
 	}
 
-	public void setCmatrix(double[] cmatrix) {
-		Cmatrix = cmatrix;
+	public void setCMatrix(double[] cmatrix) {
+		CMatrix = cmatrix;
 	}
 
 	public boolean isDoHarmonicRecalc() {
 		return doHarmonicRecalc;
 	}
 
-	public void setDoHarmonicRecalc(boolean doHarmonicRecalc) {
-		this.doHarmonicRecalc = doHarmonicRecalc;
+	public void setDoHarmonicRecalc(boolean value) {
+		this.doHarmonicRecalc = value;
 	}
 
 	public int getSpecType() {
-		return SpecType;
+		return specType;
 	}
 
-	public void setSpecType(int specType) {
-		SpecType = specType;
+	public void setSpecType(int type) {
+		specType = type;
 	}
 
-	public void setTotalkvar(double totalkvar) {
-		this.totalkvar = totalkvar;
+	public void setTotalKVAr(double total) {
+		this.totalKVAr = total;
 	}
 
-	public void setKvrating(double kvrating) {
-		this.kvrating = kvrating;
+	public void setKVARating(double rating) {
+		this.kVRating = rating;
 	}
 
 }

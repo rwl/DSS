@@ -492,35 +492,35 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		X = x;
 	}
 
-	public double getKvarrating() {
+	public double getKVArRating() {
 		return kvarrating;
 	}
 
-	public void setKvarrating(double kvarrating) {
+	public void setKVArRating(double kvarrating) {
 		this.kvarrating = kvarrating;
 	}
 
-	public double getKvrating() {
+	public double getKVRating() {
 		return kvrating;
 	}
 
-	public void setKvrating(double kvrating) {
+	public void setKVRating(double kvrating) {
 		this.kvrating = kvrating;
 	}
 
-	public double[] getRmatrix() {
+	public double[] getRMatrix() {
 		return Rmatrix;
 	}
 
-	public void setRmatrix(double[] rmatrix) {
+	public void setRMatrix(double[] rmatrix) {
 		Rmatrix = rmatrix;
 	}
 
-	public double[] getGmatrix() {
+	public double[] getGMatrix() {
 		return Gmatrix;
 	}
 
-	public void setGmatrix(double[] gmatrix) {
+	public void setGMatrix(double[] gmatrix) {
 		Gmatrix = gmatrix;
 	}
 
@@ -532,11 +532,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		XMatrix = xMatrix;
 	}
 
-	public double[] getBmatrix() {
+	public double[] getBMatrix() {
 		return Bmatrix;
 	}
 
-	public void setBmatrix(double[] bmatrix) {
+	public void setBMatrix(double[] bmatrix) {
 		Bmatrix = bmatrix;
 	}
 
@@ -556,11 +556,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		SpecType = specType;
 	}
 
-	public boolean isIsParallel() {
+	public boolean isParallel() {
 		return IsParallel;
 	}
 
-	public void setIsParallel(boolean isParallel) {
+	public void setParallel(boolean isParallel) {
 		IsParallel = isParallel;
 	}
 

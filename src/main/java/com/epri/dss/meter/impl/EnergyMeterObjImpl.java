@@ -501,8 +501,8 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			// use the larger of the two factors
 			ParenElem = (PDElement) BranchList.getParent();
 			if (ParenElem != null) {
-				CktElem.setOverLoad_EEN( Math.max(CktElem.getOverLoad_EEN(), ParenElem.getOverLoad_EEN()) );
-				CktElem.setOverload_UE( Math.max(CktElem.getOverload_UE(), ParenElem.getOverload_UE()) );
+				CktElem.setOverloadEEN( Math.max(CktElem.getOverloadEEN(), ParenElem.getOverloadEEN()) );
+				CktElem.setOverload_UE( Math.max(CktElem.getOverloadUE(), ParenElem.getOverloadUE()) );
 			}
 
 			// mark loads (not generators) by the degree of overload if the meter's zone is to be considered radial
@@ -512,14 +512,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			while (PCelem != null) {
 				if ((PCelem.getDSSObjType() & DSSClassDefs.CLASSMASK) == DSSClassDefs.LOAD_ELEMENT) {
 					pLoad = (LoadObj) PCelem;
-					if ((CktElem.getOverLoad_EEN() > 0.0) && (ZoneIsRadial) && !VoltageUEOnly) {
-						pLoad.setEEN_Factor(CktElem.getOverLoad_EEN());
+					if ((CktElem.getOverloadEEN() > 0.0) && (ZoneIsRadial) && !VoltageUEOnly) {
+						pLoad.setEEN_Factor(CktElem.getOverloadEEN());
 					} else {
 						pLoad.setEEN_Factor(0.0);
 					}
 
-					if ((CktElem.getOverload_UE() > 0.0) && ZoneIsRadial && !VoltageUEOnly) {
-						pLoad.setUE_Factor(CktElem.getOverload_UE());
+					if ((CktElem.getOverloadUE() > 0.0) && ZoneIsRadial && !VoltageUEOnly) {
+						pLoad.setUE_Factor(CktElem.getOverloadUE());
 					} else {
 						pLoad.setUE_Factor(0.0);
 					}

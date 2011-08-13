@@ -19,7 +19,7 @@ import com.epri.dss.shared.impl.Complex;
 public interface FuseObj extends ControlElem {
 
 	// FIXME: Private in OpenDSS
-	void interpretFuseAction(String Action);
+	void interpretFuseAction(String action);
 
 	TCC_CurveObj getFuseCurve();
 
@@ -45,9 +45,9 @@ public interface FuseObj extends ControlElem {
 
 	void setMonitoredElement(DSSCktElement monitoredElement);
 
-	int[] gethAction();
+	int[] getHAction();
 
-	void sethAction(int[] hAction);
+	void setHAction(int[] hAction);
 
 	ControlAction[] getPresentState();
 
@@ -61,7 +61,8 @@ public interface FuseObj extends ControlElem {
 
 	void setCondOffset(int condOffset);
 
-	Complex[] getcBuffer();
+	Complex[] getCBuffer();
 
-	void setcBuffer(Complex[] cBuffer);
+	void setCBuffer(Complex[] cBuffer);
+
 }

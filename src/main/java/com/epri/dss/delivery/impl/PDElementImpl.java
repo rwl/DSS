@@ -232,7 +232,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		SensorObj = sensorObj;
 	}
 
-	public double getOverload_UE() {
+	public double getOverloadUE() {
 		return Overload_UE;
 	}
 
@@ -240,11 +240,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		Overload_UE = overload_UE;
 	}
 
-	public double getOverLoad_EEN() {
+	public double getOverloadEEN() {
 		return OverLoad_EEN;
 	}
 
-	public void setOverLoad_EEN(double overLoad_EEN) {
+	public void setOverloadEEN(double overLoad_EEN) {
 		OverLoad_EEN = overLoad_EEN;
 	}
 

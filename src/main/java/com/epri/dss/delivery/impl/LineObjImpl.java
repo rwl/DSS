@@ -871,7 +871,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					/* Parallel */
 					if (IsSwitch) {
 						S = "";   /* Leave as is if switch; just dummy z anyway */
-					} else if (OtherLine.isIsSwitch()) {
+					} else if (OtherLine.isSwitch()) {
 						S = " switch=yes";  /* This will take care of setting Z's */
 					} else {
 						/* ********* Will This work with length multiplier? did it ever work? ************************* */
@@ -1411,11 +1411,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		SymComponentsModel = symComponentsModel;
 	}
 
-	public boolean isIsSwitch() {
+	public boolean isSwitch() {
 		return IsSwitch;
 	}
 
-	public void setIsSwitch(boolean isSwitch) {
+	public void setSwitch(boolean isSwitch) {
 		IsSwitch = isSwitch;
 	}
 
@@ -1505,11 +1505,11 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		LineCodeSpecified = lineCodeSpecified;
 	}
 
-	public CMatrix getZinv() {
+	public CMatrix getZInv() {
 		return Zinv;
 	}
 
-	public void setZinv(CMatrix zinv) {
+	public void setZInv(CMatrix zinv) {
 		Zinv = zinv;
 	}
 

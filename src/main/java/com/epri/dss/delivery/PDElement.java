@@ -63,12 +63,12 @@ public interface PDElement extends CktElement {
 
 	void setSensorObj(MeterElement sensorObj);
 
-	double getOverload_UE();
+	double getOverloadUE();
 
 	void setOverload_UE(double overload_UE);
 
-	double getOverLoad_EEN();
+	double getOverloadEEN();
 
-	void setOverLoad_EEN(double overLoad_EEN);
+	void setOverloadEEN(double overoad_EEN);
 
 }

@@ -25,7 +25,7 @@ public interface FaultObj extends PDElement {
 
 	void randomize();
 
-	void checkStatus(int ControlMode);
+	void checkStatus(int controlMode);
 
 	void reset();
 
@@ -33,21 +33,21 @@ public interface FaultObj extends PDElement {
 
 	void setMinAmps(double minAmps);
 
-	boolean isIsTemporary();
+	boolean isTemporary();
 
-	void setIsTemporary(boolean isTemporary);
+	void setTemporary(boolean temporary);
 
 	boolean isCleared();
 
 	void setCleared(boolean cleared);
 
-	boolean isIs_ON();
+	boolean isOn();
 
-	void setIs_ON(boolean is_ON);
+	void setOn(boolean on);
 
-	double getOn_Time();
+	double getOnTime();
 
-	void setOn_Time(double on_Time);
+	void setOnTime(double onTime);
 
 	double getRandomMult();
 
@@ -57,13 +57,13 @@ public interface FaultObj extends PDElement {
 
 	void setG(double g);
 
-	double[] getGmatrix();
+	double[] getGMatrix();
 
-	void setGmatrix(double[] gmatrix);
+	void setGMatrix(double[] gmatrix);
 
-	double getStddev();
+	double getStdDev();
 
-	void setStddev(double stddev);
+	void setStdDev(double stddev);
 
 	int getSpecType();
 

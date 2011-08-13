@@ -7,7 +7,7 @@ public interface TransformerObj extends PDElement {
 
 	public double getPresentTap(int i);
 
-	public void setPresentTap(int i, double Value);
+	public void setPresentTap(int i, double value);
 
 	public double getMinTap(int i);
 
@@ -33,19 +33,15 @@ public interface TransformerObj extends PDElement {
 
 	public double getXsc(int i);
 
-	public double getWdgRneutral(int i);
+	public double getWdgRNeutral(int i);
 
-	public double getWdgXneutral(int i);
+	public double getWdgXNeutral(int i);
 
 	public double getWdgYPPM(int i);
 
 	public int getActiveWinding();
 
 	public void setActiveWinding(int activeWinding);
-
-	public boolean isSubstation();
-
-	public void setSubstation(boolean isSubstation);
 
 	public String getSubstationName();
 
@@ -65,7 +61,7 @@ public interface TransformerObj extends PDElement {
 
 	public void setNumWindings(int N);
 
-	public double getPpm_FloatFactor();
+	public double getPPM_FloatFactor();
 
 	public double getPctImag();
 
@@ -87,9 +83,9 @@ public interface TransformerObj extends PDElement {
 
 	public double getThM();
 
-	public double getFLrise();
+	public double getFLRise();
 
-	public double getHSrise();
+	public double getHSRise();
 
 	public double getPctLoadLoss();
 
@@ -100,7 +96,7 @@ public interface TransformerObj extends PDElement {
 	public void getWindingVoltages(int iWind, Complex[] VBuffer);
 
 	// FIXME Private method in OpenDSS
-	void fetchXfmrCode(String Code);
+	void fetchXfmrCode(String code);
 
 	// FIXME Protected method in OpenDSS
 	void setTermRef();
@@ -120,9 +116,9 @@ public interface TransformerObj extends PDElement {
 
 	void setTermRef(int[] termRef);
 
-	double getZbase();
+	double getZBase();
 
-	void setZbase(double zbase);
+	void setZBase(double zbase);
 
 	double[] getXSC();
 
@@ -146,37 +142,37 @@ public interface TransformerObj extends PDElement {
 
 	CMatrix getY_1Volt_NL();
 
-	void setY_1Volt_NL(CMatrix y_1Volt_NL);
+	void setY1VoltNL(CMatrix y1VoltNL);
 
-	CMatrix getY_Term_NL();
+	CMatrix getYTermNL();
 
-	void setY_Term_NL(CMatrix y_Term_NL);
+	void setYTermNL(CMatrix yTermNL);
 
-	double getY_Terminal_Freqmult();
+	double getYTerminalFreqMult();
 
-	void setY_Terminal_Freqmult(double y_Terminal_Freqmult);
+	void setYTerminalFreqMult(double yTerminalFreqMult);
 
 	double getThermalTimeConst();
 
 	void setThermalTimeConst(double thermalTimeConst);
 
-	double getN_thermal();
+	double getNThermal();
 
-	void setN_thermal(double n_thermal);
+	void setNThermal(double n_thermal);
 
-	double getM_thermal();
+	double getMThermal();
 
-	void setM_thermal(double m_thermal);
+	void setMThermal(double m_thermal);
 
 	boolean isXHLChanged();
 
 	void setXHLChanged(boolean xHLChanged);
 
-	boolean isIsSubstation();
+	boolean isSubstation();
 
-	void setIsSubstation(boolean isSubstation);
+	void setSubstation(boolean isSubstation);
 
-	void setPpm_FloatFactor(double ppm_FloatFactor);
+	void setPPM_FloatFactor(double ppm_FloatFactor);
 
 	void setPctImag(double pctImag);
 
@@ -190,9 +186,9 @@ public interface TransformerObj extends PDElement {
 
 	void setEmergMaxHKVA(double emergMaxHKVA);
 
-	void setFLrise(double fLrise);
+	void setFLRise(double flrise);
 
-	void setHSrise(double hSrise);
+	void setHSRise(double hsrise);
 
 	void setPctLoadLoss(double pctLoadLoss);
 

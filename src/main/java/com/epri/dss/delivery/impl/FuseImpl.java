@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FuseImpl extends ControlClassImpl implements Fuse {
 
-	private static FuseObj ActiveFuseObj;
+	private static FuseObj activeFuseObj;
 
 	private static DSSClass TCC_CurveClass;
 
@@ -24,9 +24,9 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 
 		setTCC_CurveClass( DSSClassDefs.getDSSClass("TCC_Curve") );
@@ -35,22 +35,20 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 	/**
 	 * General module function
 	 */
-	public static TCC_CurveObj getTccCurve(String CurveName) {
+	public static TCC_CurveObj getTccCurve(String curveName) {
 
-		TCC_CurveObj Result = (TCC_CurveObj) TCC_CurveClass.find(CurveName);
+		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
-		if (Result == null)
-			DSSGlobals.getInstance().doSimpleMsg("TCC Curve object: \"" + CurveName + "\" not found.", 401);
+		if (result == null)
+			DSSGlobals.getInstance().doSimpleMsg("TCC Curve object: \"" + curveName + "\" not found.", 401);
 
-		return Result;
+		return result;
 	}
 
 	protected void defineProperties() {
-
 		numProperties = Fuse.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
-
 
 		// define property names
 		propertyName[0]  = "MonitoredObj";
@@ -88,57 +86,57 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new FuseObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new FuseObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveFuseObj((FuseObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
 
-		int Result = 0;
+		int result = 0;
 
 		FuseObj af = getActiveFuseObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))  // TODO Check zero based indexing
-				af.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))  // TODO Check zero based indexing
+				af.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() + "." + getName() + "\"", 402);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
 				break;
 			case 0:
-				af.setMonitoredElementName(Param.toLowerCase());
+				af.setMonitoredElementName(param.toLowerCase());
 				break;
 			case 1:
 				af.setMonitoredElementTerminal(parser.makeInteger());
 				break;
 			case 2:
-				af.setElementName(Param.toLowerCase());
+				af.setElementName(param.toLowerCase());
 				break;
 			case 3:
 				af.setElementTerminal(parser.makeInteger());
 				break;
 			case 4:
-				af.setFuseCurve(getTccCurve(Param));
+				af.setFuseCurve(getTccCurve(param));
 				break;
 			case 5:
 				af.setRatedCurrent(parser.makeDouble());
@@ -147,16 +145,16 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				af.setDelayTime(parser.makeDouble());
 				break;
 			case 7:
-				af.interpretFuseAction(Param);
+				af.interpretFuseAction(param);
 				break;
 
 			default:
 				// inherited parameters
-				classEdit(getActiveFuseObj(), ParamPointer - Fuse.NumPropsThisClass);
+				classEdit(getActiveFuseObj(), paramPointer - Fuse.NumPropsThisClass);
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			/* Default the controlled element to the monitored element */
 			case 0:
 				af.setElementName(af.getMonitoredElementName());
@@ -166,66 +164,66 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		af.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String FuseName) {
+	protected int makeLike(String fuseName) {
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this Fuse name in the present collection */
-		FuseObj OtherFuse = (FuseObj) find(FuseName);
-		if (OtherFuse != null) {
+		FuseObj otherFuse = (FuseObj) find(fuseName);
+		if (otherFuse != null) {
 			FuseObj af = getActiveFuseObj();
 
-			af.setNPhases(OtherFuse.getNPhases());
-			af.setNConds(OtherFuse.getNConds()); // force reallocation of terminal stuff
+			af.setNPhases(otherFuse.getNPhases());
+			af.setNConds(otherFuse.getNConds()); // force reallocation of terminal stuff
 
-			af.setElementName(OtherFuse.getElementName());
-			af.setElementTerminal(OtherFuse.getElementTerminal());
-			af.setControlledElement(OtherFuse.getControlledElement());  // target circuit element
+			af.setElementName(otherFuse.getElementName());
+			af.setElementTerminal(otherFuse.getElementTerminal());
+			af.setControlledElement(otherFuse.getControlledElement());  // target circuit element
 
-			af.setMonitoredElement(OtherFuse.getMonitoredElement());  // target circuit element
-			af.setMonitoredElementName(OtherFuse.getMonitoredElementName());  // target circuit element
-			af.setMonitoredElementTerminal(OtherFuse.getMonitoredElementTerminal());  // target circuit element
+			af.setMonitoredElement(otherFuse.getMonitoredElement());  // target circuit element
+			af.setMonitoredElementName(otherFuse.getMonitoredElementName());  // target circuit element
+			af.setMonitoredElementTerminal(otherFuse.getMonitoredElementTerminal());  // target circuit element
 
-			af.setFuseCurve(OtherFuse.getFuseCurve());
-			af.setRatedCurrent(OtherFuse.getRatedCurrent());
+			af.setFuseCurve(otherFuse.getFuseCurve());
+			af.setRatedCurrent(otherFuse.getRatedCurrent());
 
 			// can't copy action handles
-			af.setPresentState(OtherFuse.getPresentState());
-			af.setCondOffset(OtherFuse.getCondOffset());
+			af.setPresentState(otherFuse.getPresentState());
+			af.setCondOffset(otherFuse.getCondOffset());
 
 			for (int i = 0; i < af.getParentClass().getNumProperties(); i++)
-				af.setPropertyValue(i, OtherFuse.getPropertyValue(i));
+				af.setPropertyValue(i, otherFuse.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fuse makeLike: \"" + FuseName + "\" not found.", 403);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Fuse makeLike: \"" + fuseName + "\" not found.", 403);
 		}
 
-		return Result;
+		return result;
 	}
 
 	public static FuseObj getActiveFuseObj() {
-		return ActiveFuseObj;
+		return activeFuseObj;
 	}
 
-	public static void setActiveFuseObj(FuseObj activeFuseObj) {
-		ActiveFuseObj = activeFuseObj;
+	public static void setActiveFuseObj(FuseObj fuseObj) {
+		activeFuseObj = fuseObj;
 	}
 
 	public static DSSClass getTCC_CurveClass() {
 		return TCC_CurveClass;
 	}
 
-	public static void setTCC_CurveClass(DSSClass tCC_CurveClass) {
-		TCC_CurveClass = tCC_CurveClass;
+	public static void setTCC_CurveClass(DSSClass curveClass) {
+		TCC_CurveClass = curveClass;
 	}
 
 }

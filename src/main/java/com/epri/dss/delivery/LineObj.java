@@ -10,9 +10,9 @@ import com.epri.dss.shared.CMatrix;
 
 public interface LineObj extends PDElement {
 
-	void fetchTSCableList(String Code);
+	void fetchTSCableList(String code);
 
-	void fetchCNCableList(String Code);
+	void fetchCNCableList(String code);
 
 	CMatrix getZ();
 
@@ -102,24 +102,24 @@ public interface LineObj extends PDElement {
 
 	void setSymComponentsModel(boolean symComponentsModel);
 
-	boolean isIsSwitch();
+	boolean isSwitch();
 
-	void setIsSwitch(boolean isSwitch);
+	void setSwitch(boolean isSwitch);
 
-	void getSeqLosses(Complex PosSeqLosses, Complex NegSeqLosses,
-			Complex ZeroSeqLosses);
+	void getSeqLosses(Complex posSeqLosses, Complex negSeqLosses,
+			Complex zeroSeqLosses);
 
-	boolean mergeWith(LineObj OtherLine, boolean Series);
+	boolean mergeWith(LineObj otherLine, boolean series);
 
-	void updateControlElements(String NewName, String OldName);
+	void updateControlElements(String newName, String oldName);
 
-	void fetchLineCode(String Code);
+	void fetchLineCode(String code);
 
-	void fetchGeometryCode(String Code);
+	void fetchGeometryCode(String code);
 
-	void fetchLineSpacing(String Code);
+	void fetchLineSpacing(String code);
 
-	void fetchWireList(String Code);
+	void fetchWireList(String code);
 
 	boolean isLineCodeSpecified();
 
@@ -175,9 +175,9 @@ public interface LineObj extends PDElement {
 
 	void setLineCodeSpecified(boolean lineCodeSpecified);
 
-	CMatrix getZinv();
+	CMatrix getZInv();
 
-	void setZinv(CMatrix zinv);
+	void setZInv(CMatrix zinv);
 
 	boolean isCapSpecified();
 

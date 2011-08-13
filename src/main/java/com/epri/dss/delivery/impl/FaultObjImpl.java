@@ -17,25 +17,25 @@ import com.epri.dss.shared.impl.MathUtil;
 
 public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
-	private double MinAmps;
-	private boolean IsTemporary, Cleared, Is_ON;
-	private double On_Time;
-	private double RandomMult;
+	private double minAmps;
+	private boolean isTemporary, cleared, isOn;
+	private double onTime;
+	private double randomMult;
 
 	/* Single G per phase (line rating) if GMatrix not specified */
 	protected double G;
 	/* If not null then overrides G */
-	protected double[] Gmatrix;
+	protected double[] GMatrix;
 
 	/* Per unit std dev */
-	protected double Stddev;
-	protected int SpecType;
+	protected double stdDev;
+	protected int specType;
 
-	public FaultObjImpl(DSSClass ParClass, String FaultName) {
-		super(ParClass);
+	public FaultObjImpl(DSSClass parClass, String faultName) {
+		super(parClass);
 
-		this.DSSObjType = ParClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
-		setName(FaultName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
+		setName(faultName.toLowerCase());
 
 		// default to SLG fault
 		setNPhases(1);  // directly set conds and phases
@@ -45,18 +45,18 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		setBus(2, (getBus(1) + ".0"));  // default to grounded   TODO Check zero based indexing
 		setShunt(true);
 
-		this.Gmatrix       = null;
+		this.GMatrix       = null;
 		this.G             = 10000.0;
-		this.SpecType      = 1;  // G 2=Gmatrix
+		this.specType      = 1;  // G 2=Gmatrix
 
-		this.MinAmps       = 5.0;
-		this.IsTemporary   = false;
-		this.Cleared       = false;
-		this.Is_ON         = true;
-		this.On_Time       = 0.0;  // always enabled at the start of a solution
+		this.minAmps       = 5.0;
+		this.isTemporary   = false;
+		this.cleared       = false;
+		this.isOn         = true;
+		this.onTime       = 0.0;  // always enabled at the start of a solution
 
 
-		this.RandomMult = 1;
+		this.randomMult = 1;
 
 		this.NormAmps  = 0.0;
 		this.EmergAmps = 0.0;
@@ -83,16 +83,16 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		switch (sol.getRandomType()) {
 		case DSSGlobals.GAUSSIAN:
-			RandomMult = MathUtil.gauss(1.0, Stddev);
+			randomMult = MathUtil.gauss(1.0, stdDev);
 			break;
 		case DSSGlobals.UNIFORM:
-			RandomMult = Math.random();
+			randomMult = Math.random();
 			break;
 		case DSSGlobals.LOGNORMAL:
-			RandomMult = MathUtil.quasiLognormal(1.0);
+			randomMult = MathUtil.quasiLognormal(1.0);
 			break;
 		default:
-			RandomMult = 1.0;
+			randomMult = 1.0;
 			break;
 		}
 
@@ -104,7 +104,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 	@Override
 	public void calcYPrim() {
-		Complex Value, Value2;
+		Complex value, value2;
 		int i, j, ioffset;
 
 		CMatrix YPrimTemp;
@@ -135,42 +135,42 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		// make sure randomMult is 1.0 if not solution mode MonteFault
 
 		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != Dynamics.MONTEFAULT)
-			RandomMult = 1.0;
+			randomMult = 1.0;
 
-		if (RandomMult == 0.0)
-			RandomMult = 0.000001;
+		if (randomMult == 0.0)
+			randomMult = 0.000001;
 
 		/* Now, put in Yprim matrix */
 
 		/* If the fault is not on, the set zero conductance */
-		switch (SpecType) {
+		switch (specType) {
 		case 1:
 
-			if (Is_ON) {
-				Value = new Complex(G / RandomMult, 0.0);
+			if (isOn) {
+				value = new Complex(G / randomMult, 0.0);
 			} else {
-				Value = Complex.ZERO;
+				value = Complex.ZERO;
 			}
-			Value2 = Value.negate();
+			value2 = value.negate();
 			for (i = 0; i < nPhases; i++) {
-				YPrimTemp.setElement(i, i, Value);  // elements are only on the diagonals
-				YPrimTemp.setElement(i + nPhases, i + nPhases, Value);
-				YPrimTemp.setElemSym(i, i + nPhases, Value2);
+				YPrimTemp.setElement(i, i, value);  // elements are only on the diagonals
+				YPrimTemp.setElement(i + nPhases, i + nPhases, value);
+				YPrimTemp.setElemSym(i, i + nPhases, value2);
 			}
 			break;
 		case 2:  // G matrix specified
 			for (i = 0; i < nPhases; i++) {
 				ioffset = (i - 1) * nPhases;
 				for (j = 0; j < nPhases; j++) {
-					if (Is_ON) {
-						Value = new Complex(Gmatrix[(ioffset + j)] / RandomMult, 0.0);
+					if (isOn) {
+						value = new Complex(GMatrix[(ioffset + j)] / randomMult, 0.0);
 					} else {
-						Value = Complex.ZERO;
+						value = Complex.ZERO;
 					}
-					YPrimTemp.setElement(i, j, Value);
-					YPrimTemp.setElement(i + nPhases, j + nPhases, Value);
-					Value = Value.negate();
-					YPrimTemp.setElemSym(i, j + nPhases, Value);
+					YPrimTemp.setElement(i, j, value);
+					YPrimTemp.setElement(i + nPhases, j + nPhases, value);
+					value = value.negate();
+					YPrimTemp.setElemSym(i, j + nPhases, value);
 				}
 			}
 			break;
@@ -183,81 +183,81 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
+	public void dumpProperties(PrintStream f, boolean complete) {
 		int i, j;
 
-		super.dumpProperties(F, Complete);
+		super.dumpProperties(f, complete);
 
 		DSSClass pc = getParentClass();
 
-		F.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
-		F.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
+		f.println("~ " + pc.getPropertyName()[0] + "=" + getFirstBus());
+		f.println("~ " + pc.getPropertyName()[1] + "=" + getNextBus());
 
-		F.println("~ " + pc.getPropertyName()[2] + "=" + nPhases);
-		F.println("~ " + pc.getPropertyName()[3] + "=" + (1.0 / G));
-		F.println("~ " + pc.getPropertyName()[4] + "=" + (Stddev * 100.0));
-		if (Gmatrix != null) {
-			F.print("~ " + pc.getPropertyName()[5] + "= (");
+		f.println("~ " + pc.getPropertyName()[2] + "=" + nPhases);
+		f.println("~ " + pc.getPropertyName()[3] + "=" + (1.0 / G));
+		f.println("~ " + pc.getPropertyName()[4] + "=" + (stdDev * 100.0));
+		if (GMatrix != null) {
+			f.print("~ " + pc.getPropertyName()[5] + "= (");
 			for (i = 0; i < nPhases; i++) {
 				for (j = 0; j < i; j++)
-					F.print(Gmatrix[(i - 1) * nPhases + j] + " ");
+					f.print(GMatrix[(i - 1) * nPhases + j] + " ");
 				if (i != nPhases)
-					F.print("|");
+					f.print("|");
 			}
-			F.println(")");
+			f.println(")");
 		}
-		F.println("~ " + pc.getPropertyName()[6] + "=" + On_Time);
-		if (IsTemporary) {
-			F.println("~ " + pc.getPropertyName()[7] + "= Yes");
+		f.println("~ " + pc.getPropertyName()[6] + "=" + onTime);
+		if (isTemporary) {
+			f.println("~ " + pc.getPropertyName()[7] + "= Yes");
 		} else {
-			F.println("~ " + pc.getPropertyName()[7] + "= No");
+			f.println("~ " + pc.getPropertyName()[7] + "= No");
 		}
-		F.println("~ " + pc.getPropertyName()[8] + "=" + MinAmps);
+		f.println("~ " + pc.getPropertyName()[8] + "=" + minAmps);
 
 
 		for (i = Fault.NumPropsThisClass; i < pc.getNumProperties(); i++)
-			F.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + pc.getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete)
-			F.println("// SpecType=" + SpecType);
+		if (complete)
+			f.println("// SpecType=" + specType);
 	}
 
-	public void checkStatus(int ControlMode) {
+	public void checkStatus(int controlMode) {
 
-		switch (ControlMode) {
+		switch (controlMode) {
 		case DSSGlobals.CTRLSTATIC:  /* Leave it however it is defined by other processes */
 			break;
 		case DSSGlobals.EVENTDRIVEN:
-			if (!Is_ON) {
+			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
-					Is_ON = true;
+				if ((Utilities.presentTimeInSec() > onTime) && !cleared) {
+					isOn = true;
 					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
-				if (IsTemporary)
+				if (isTemporary)
 					if (!faultStillGoing()) {
-						Is_ON = false;
-						Cleared = true;
+						isOn = false;
+						cleared = true;
 						setYPrimInvalid(true);
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
 			}
 			break;
 		case DSSGlobals.TIMEDRIVEN:  // identical to event driven case.
-			if (!Is_ON) {
+			if (!isOn) {
 				/* Turn it on unless it has been previously cleared */
-				if ((Utilities.presentTimeInSec() > On_Time) && !Cleared) {
-					Is_ON = true;
+				if ((Utilities.presentTimeInSec() > onTime) && !cleared) {
+					isOn = true;
 					setYPrimInvalid(true);
 					Utilities.appendToEventLog("Fault." + getName(), "**APPLIED**");
 				}
 			} else {
-				if (IsTemporary)
+				if (isTemporary)
 					if (!faultStillGoing()) {
-						Is_ON = false;
-						Cleared = true;
+						isOn = false;
+						cleared = true;
 						setYPrimInvalid(true);
 						Utilities.appendToEventLog("Fault." + getName(), "**CLEARED**");
 					}
@@ -269,7 +269,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	private boolean faultStillGoing() {
 		computeITerminal();
 		for (int i = 0; i < nPhases; i++)
-			if (ITerminal[i].abs() > MinAmps)
+			if (ITerminal[i].abs() > minAmps)
 				return true;
 		return false;
 	}
@@ -302,29 +302,29 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result;
+	public String getPropertyValue(int index) {
+		String result;
 
-		switch (Index) {
+		switch (index) {
 		case 5:
-			Result = "(";
-			if (Gmatrix != null) {
+			result = "(";
+			if (GMatrix != null) {
 				for (int i = 0; i < nPhases; i++) {
 					for (int j = 0; j < i; j++)
-						Result = Result + String.format("%-g", Gmatrix[(i - 1) * nPhases + j]) + " ";
+						result = result + String.format("%-g", GMatrix[(i - 1) * nPhases + j]) + " ";
 				if (i < nPhases)
-					Result = Result + "|";
+					result = result + "|";
 				}
 			}
 
-			Result = Result + ")";
+			result = result + ")";
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
@@ -339,51 +339,51 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	// FIXME Private members in OpenDSS
 
 	public double getMinAmps() {
-		return MinAmps;
+		return minAmps;
 	}
 
-	public void setMinAmps(double minAmps) {
-		MinAmps = minAmps;
+	public void setMinAmps(double min) {
+		minAmps = min;
 	}
 
-	public boolean isIsTemporary() {
-		return IsTemporary;
+	public boolean isTemporary() {
+		return isTemporary;
 	}
 
-	public void setIsTemporary(boolean isTemporary) {
-		IsTemporary = isTemporary;
+	public void setTemporary(boolean temp) {
+		isTemporary = temp;
 	}
 
 	public boolean isCleared() {
-		return Cleared;
+		return cleared;
 	}
 
-	public void setCleared(boolean cleared) {
-		Cleared = cleared;
+	public void setCleared(boolean value) {
+		cleared = value;
 	}
 
-	public boolean isIs_ON() {
-		return Is_ON;
+	public boolean isOn() {
+		return isOn;
 	}
 
-	public void setIs_ON(boolean is_ON) {
-		Is_ON = is_ON;
+	public void setOn(boolean on) {
+		isOn = on;
 	}
 
-	public double getOn_Time() {
-		return On_Time;
+	public double getOnTime() {
+		return onTime;
 	}
 
-	public void setOn_Time(double on_Time) {
-		On_Time = on_Time;
+	public void setOnTime(double value) {
+		onTime = value;
 	}
 
 	public double getRandomMult() {
-		return RandomMult;
+		return randomMult;
 	}
 
-	public void setRandomMult(double randomMult) {
-		RandomMult = randomMult;
+	public void setRandomMult(double mult) {
+		randomMult = mult;
 	}
 
 	public double getG() {
@@ -394,28 +394,28 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		G = g;
 	}
 
-	public double[] getGmatrix() {
-		return Gmatrix;
+	public double[] getGMatrix() {
+		return GMatrix;
 	}
 
-	public void setGmatrix(double[] gmatrix) {
-		Gmatrix = gmatrix;
+	public void setGMatrix(double[] value) {
+		GMatrix = value;
 	}
 
-	public double getStddev() {
-		return Stddev;
+	public double getStdDev() {
+		return stdDev;
 	}
 
-	public void setStddev(double stddev) {
-		Stddev = stddev;
+	public void setStdDev(double value) {
+		stdDev = value;
 	}
 
 	public int getSpecType() {
-		return SpecType;
+		return specType;
 	}
 
-	public void setSpecType(int specType) {
-		SpecType = specType;
+	public void setSpecType(int type) {
+		specType = type;
 	}
 
 }

@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FaultImpl extends PDClassImpl implements Fault {
 
-	private static FaultObj ActiveFaultObj;
+	private static FaultObj activeFaultObj;
 
 	public FaultImpl() {
 		super();
@@ -21,9 +21,9 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -72,90 +72,89 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new FaultObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new FaultObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void doGmatrix() {
-
 		FaultObj af = getActiveFaultObj();
 
-		double[] MatBuffer = new double[af.getNPhases() * af.getNPhases()];
-		int OrderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), MatBuffer);
+		double[] matBuffer = new double[af.getNPhases() * af.getNPhases()];
+		int orderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // parse was successful  TODO Check zero based indexing
+		if (orderFound > 0) {  // parse was successful  TODO Check zero based indexing
 			/* X */
-			af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) );
+			af.setGMatrix( (double[]) Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
 			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
-				af.getGmatrix()[j] = MatBuffer[j];
+				af.getGMatrix()[j] = matBuffer[j];
 		}
 
-		MatBuffer = null;
+		matBuffer = null;
 	}
 
-	private void fltSetBus1(String S) {
-		String S2;
+	private void fltSetBus1(String s) {
+		String s2;
 
 		// special handling for bus 1
 		// set bus2 = bus1.0.0.0
 
 		FaultObj af = getActiveFaultObj();
 
-		af.setBus(1, S);  // TODO Check zero based indexing
+		af.setBus(1, s);  // TODO Check zero based indexing
 
 		// default bus2 to zero node of bus1. (wye grounded connection)
 
 		// strip node designations from s
-		int dotpos = S.indexOf('.');
+		int dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos);  // copy up to dot
+			s2 = s.substring(0, dotpos);  // copy up to dot
 		} else {
-			S2 = S.substring(S.length());
+			s2 = s.substring(s.length());
 		}
 
-		S2 = S2 + ".0.0.0";  // set default for up to 3 phases
+		s2 = s2 + ".0.0.0";  // set default for up to 3 phases
 
-		af.setBus(2, S2);  // TODO Check zero based indexing
+		af.setBus(2, s2);  // TODO Check zero based indexing
 		af.setShunt(true);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveFaultObj((FaultObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
+		globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
 
 		FaultObj af = getActiveFaultObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer <= numProperties))
-				af.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer <= numProperties))
+				af.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
-				fltSetBus1(Param);
+				fltSetBus1(param);
 				break;
 			case 1:
-				af.setBus(2, Param);  // TODO Check zero based indexing
+				af.setBus(2, param);  // TODO Check zero based indexing
 				break;
 			case 2:
 				//NumPhases = parser.makeInteger();  // see below
@@ -169,28 +168,28 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				}
 				break;
 			case 4:
-				af.setStddev(parser.makeDouble() * 0.01);
+				af.setStdDev(parser.makeDouble() * 0.01);
 				break;
 			case 5:
 				doGmatrix();
 				break;
 			case 6:
-				af.setOn_Time(parser.makeDouble());
+				af.setOnTime(parser.makeDouble());
 				break;
 			case 7:
-				af.setIsTemporary(Utilities.interpretYesNo(Param));
+				af.setTemporary(Utilities.interpretYesNo(param));
 				break;
 			case 8:
 				af.setMinAmps(parser.makeDouble());
 				break;
 			default:
 				// inherited
-				classEdit(getActiveFaultObj(), ParamPointer - Fault.NumPropsThisClass);
+				classEdit(getActiveFaultObj(), paramPointer - Fault.NumPropsThisClass);
 				break;
 			}
 
 			// some specials ...
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				af.setPropertyValue(1, af.getBus(2));  // bus2 gets modified if bus1 is   TODO Check zero based indexing
 				break;
@@ -202,7 +201,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				if (af.getNPhases() != parser.makeInteger()) {
 					af.setNPhases(parser.makeInteger());
 					af.setNConds(af.getNPhases());  // force reallocation of terminal info
-					Globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
+					globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 3:
@@ -212,13 +211,13 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setSpecType(2);
 				break;
 			case 6:
-				if (af.getOn_Time() > 0.0)
-					af.setIs_ON(false);  // assume fault will be on later
+				if (af.getOnTime() > 0.0)
+					af.setOn(false);  // assume fault will be on later
 				break;
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 3:
 				af.setYPrimInvalid(true);
 				break;
@@ -230,74 +229,74 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		af.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String FaultName) {
+	protected int makeLike(String faultName) {
 
-		int Result = 0;
+		int result = 0;
 		/* See if we can find this fault name in the present collection */
-		FaultObj OtherFault = (FaultObj) find(FaultName);
-		if (OtherFault != null) {
+		FaultObj otherFault = (FaultObj) find(faultName);
+		if (otherFault != null) {
 			FaultObj af = getActiveFaultObj();
 
-			if (af.getNPhases() != OtherFault.getNPhases()) {
-				af.setNPhases(OtherFault.getNPhases());
+			if (af.getNPhases() != otherFault.getNPhases()) {
+				af.setNPhases(otherFault.getNPhases());
 				af.setNConds(af.getNPhases());  // force reallocation of terminals and conductors
 
 				af.setYorder(af.getNConds() * af.getNTerms());
 				af.setYPrimInvalid(true);
 			}
 
-			af.setBaseFrequency(OtherFault.getBaseFrequency());
-			af.setG(OtherFault.getG());
-			af.setSpecType(OtherFault.getSpecType());
+			af.setBaseFrequency(otherFault.getBaseFrequency());
+			af.setG(otherFault.getG());
+			af.setSpecType(otherFault.getSpecType());
 
-			af.setMinAmps(OtherFault.getMinAmps());
-			af.setIsTemporary(OtherFault.isIsTemporary());
-			af.setCleared(OtherFault.isCleared());
-			af.setIs_ON(OtherFault.isIs_ON());
-			af.setOn_Time(OtherFault.getOn_Time());
+			af.setMinAmps(otherFault.getMinAmps());
+			af.setTemporary(otherFault.isTemporary());
+			af.setCleared(otherFault.isCleared());
+			af.setOn(otherFault.isOn());
+			af.setOnTime(otherFault.getOnTime());
 
 
-			if (OtherFault.getGmatrix() == null) {
-				af.setGmatrix(null);
+			if (otherFault.getGMatrix() == null) {
+				af.setGMatrix(null);
 			} else {
-				af.setGmatrix( (double[]) Utilities.resizeArray(af.getGmatrix(), af.getNPhases() * af.getNPhases()) );
+				af.setGMatrix( (double[]) Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
 				for (int i = 0; i < af.getNPhases() * af.getNPhases(); i++)
-					af.getGmatrix()[i] = OtherFault.getGmatrix()[i];
+					af.getGMatrix()[i] = otherFault.getGMatrix()[i];
 			}
 
-			classMakeLike(OtherFault);
+			classMakeLike(otherFault);
 
 			for (int i = 0; i < af.getParentClass().getNumProperties(); i++)
-				af.setPropertyValue(i, OtherFault.getPropertyValue(i));
-			Result = 1;
+				af.setPropertyValue(i, otherFault.getPropertyValue(i));
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fault.makeLike(): \"" + FaultName + "\" not found.", 351);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Fault.makeLike(): \"" + faultName + "\" not found.", 351);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Fault.init()", -1);
 		return 0;
 	}
 
 	public static FaultObj getActiveFaultObj() {
-		return ActiveFaultObj;
+		return activeFaultObj;
 	}
 
-	public static void setActiveFaultObj(FaultObj activeFaultObj) {
-		ActiveFaultObj = activeFaultObj;
+	public static void setActiveFaultObj(FaultObj faultObj) {
+		activeFaultObj = faultObj;
 	}
 
 }

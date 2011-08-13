@@ -60,29 +60,29 @@ public interface ReactorObj extends PDElement {
 
 	void setX(double x);
 
-	double getKvarrating();
+	double getKVArRating();
 
-	void setKvarrating(double kvarrating);
+	void setKVArRating(double kvarrating);
 
-	double getKvrating();
+	double getKVRating();
 
-	void setKvrating(double kvrating);
+	void setKVRating(double kvrating);
 
-	double[] getRmatrix();
+	double[] getRMatrix();
 
-	void setRmatrix(double[] rmatrix);
+	void setRMatrix(double[] rmatrix);
 
-	double[] getGmatrix();
+	double[] getGMatrix();
 
-	void setGmatrix(double[] gmatrix);
+	void setGMatrix(double[] gmatrix);
 
 	double[] getXMatrix();
 
 	void setXMatrix(double[] xMatrix);
 
-	double[] getBmatrix();
+	double[] getBMatrix();
 
-	void setBmatrix(double[] bmatrix);
+	void setBMatrix(double[] bmatrix);
 
 	int getConnection();
 
@@ -92,9 +92,9 @@ public interface ReactorObj extends PDElement {
 
 	void setSpecType(int specType);
 
-	boolean isIsParallel();
+	boolean isParallel();
 
-	void setIsParallel(boolean isParallel);
+	void setParallel(boolean isParallel);
 
 	boolean isRpSpecified();
 

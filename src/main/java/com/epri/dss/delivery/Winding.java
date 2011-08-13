@@ -6,33 +6,33 @@ public interface Winding {
 
 	void setConnection(int connection);
 
-	double getKvll();
+	double getKVLL();
 
-	void setKvll(double kvll);
+	void setKVLL(double kvll);
 
 	double getVBase();
 
 	void setVBase(double vBase);
 
-	double getKva();
+	double getKVA();
 
-	void setKva(double kva);
+	void setKVA(double kva);
 
-	double getPuTap();
+	double getPUTap();
 
-	void setPuTap(double puTap);
+	void setPUTap(double puTap);
 
 	double getRpu();
 
 	void setRpu(double rpu);
 
-	double getRneut();
+	double getRNeut();
 
-	void setRneut(double rneut);
+	void setRNeut(double rneut);
 
-	double getXneut();
+	double getXNeut();
 
-	void setXneut(double xneut);
+	void setXNeut(double xneut);
 
 	double getY_PPM();
 

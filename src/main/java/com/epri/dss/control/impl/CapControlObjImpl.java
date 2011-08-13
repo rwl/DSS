@@ -602,7 +602,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 				switch (presentState) {
 				case OPEN:
-					if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalkvar() * 0.5)) {  // make sure we don't go too far leading
+					if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() * 0.5)) {  // make sure we don't go too far leading
 						setPendingChange(ControlAction.CLOSE);
 						shouldSwitch = true;
 					} else {  // reset
@@ -614,7 +614,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 						setPendingChange(ControlAction.OPEN);
 						shouldSwitch = true;
 					} else if (controlledCapacitor.availableSteps() > 0) {
-						if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalkvar() / controlledCapacitor.getNumSteps() * 0.5)) {
+						if ((PF < PFOnValue) && (S.getImaginary() * 0.001 > controlledCapacitor.getTotalKVAr() / controlledCapacitor.getNumSteps() * 0.5)) {
 							setPendingChange(ControlAction.CLOSE);  // we can go some more
 							shouldSwitch = true;
 						}

@@ -38,12 +38,12 @@ package com.epri.dss.delivery;
  */
 public interface CapacitorObj extends PDElement {
 
-	int getStates(int Idx);
+	int getStates(int idx);
 
-	void setStates(int Idx, int Value);
+	void setStates(int idx, int value);
 
 	/** 1=kvar, 2=Cuf, 3=Cmatrix */
-	void setNumSteps(int Value);
+	void setNumSteps(int value);
 
 	int getNumSteps();
 
@@ -57,15 +57,15 @@ public interface CapacitorObj extends PDElement {
 
 	int availableSteps();
 
-	double getTotalkvar();
+	double getTotalKVAr();
 
-	double getKvrating();
-
-	// FIXME Private member in OpenDSS
-	void processHarmonicSpec(String Param);
+	double getKVRating();
 
 	// FIXME Private member in OpenDSS
-	void processStatesSpec(String Param);
+	void processHarmonicSpec(String param);
+
+	// FIXME Private member in OpenDSS
+	void processStatesSpec(String param);
 
 
 	// FIXME Private members in OpenDSS
@@ -78,9 +78,9 @@ public interface CapacitorObj extends PDElement {
 
 	void setXL(double[] xL);
 
-	double[] getKvarrating();
+	double[] getKVArRating();
 
-	void setKvarrating(double[] kvarrating);
+	void setKVArRating(double[] kvarrating);
 
 	double[] getR();
 
@@ -98,9 +98,9 @@ public interface CapacitorObj extends PDElement {
 
 	void setLastStepInService(int lastStepInService);
 
-	double[] getCmatrix();
+	double[] getCMatrix();
 
-	void setCmatrix(double[] cmatrix);
+	void setCMatrix(double[] cmatrix);
 
 	boolean isDoHarmonicRecalc();
 
@@ -110,8 +110,8 @@ public interface CapacitorObj extends PDElement {
 
 	void setSpecType(int specType);
 
-	void setTotalkvar(double totalkvar);
+	void setTotalKVAr(double totalkvar);
 
-	void setKvrating(double kvrating);
+	void setKVARating(double kvrating);
 
 }

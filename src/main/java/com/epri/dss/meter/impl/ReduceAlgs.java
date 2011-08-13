@@ -186,7 +186,7 @@ public class ReduceAlgs {
 
 				if (LineElement1.isEnabled()) {  // maybe we threw it away already
 					if (Utilities.isLineElement(LineElement1))
-						if (LineElement1.isIsSwitch()) {
+						if (LineElement1.isSwitch()) {
 							CktTreeNode pb = BranchList.getPresentBranch();
 							/* See if eligble for merging */
 							switch (pb.getNumChildren()) {
@@ -201,7 +201,7 @@ public class ReduceAlgs {
 										/* Let's consider merging */
 										LineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(LineElement2))
-											if (!LineElement2.isIsSwitch())
+											if (!LineElement2.isSwitch())
 												LineElement2.mergeWith(LineElement1, true);  /* Series Merge */
 									}
 								break;
@@ -223,7 +223,7 @@ public class ReduceAlgs {
 			LineElement1 = (LineObj) BranchList.GoForward();  // always keep the first element
 			while (LineElement1 != null) {
 				if (Utilities.isLineElement(LineElement1))
-					if (!LineElement1.isIsSwitch())
+					if (!LineElement1.isSwitch())
 						if (LineElement1.isEnabled()) {  // maybe we threw it away already
 							CktTreeNode pb = BranchList.getPresentBranch();
 							/* see if eligble for merging */
@@ -233,7 +233,7 @@ public class ReduceAlgs {
 										/* Let's consider merging */
 										LineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(LineElement2))
-											if (!LineElement2.isIsSwitch())
+											if (!LineElement2.isSwitch())
 												LineElement2.mergeWith(LineElement1, true);  /* Series merge */
 									}
 						}

@@ -308,7 +308,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				doCmatrix();
 				break;
 			case 14:
-				al.setIsSwitch(Utilities.interpretYesNo(Param));
+				al.setSwitch(Utilities.interpretYesNo(Param));
 				break;
 			case 15:
 				al.setRg(parser.makeDouble());
@@ -437,7 +437,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.killSpacingSpecified();
 				break;
 			case 14:
-				if (al.isIsSwitch()) {
+				if (al.isSwitch()) {
 					al.setSymComponentsChanged(true);
 					al.setYPrimInvalid(true);
 					al.setGeometrySpecified(false);
@@ -529,14 +529,14 @@ public class LineImpl extends PDClassImpl implements Line {
 
 				if (al.getZ() != null)
 					al.setZ(null);
-				if (al.getZinv() != null)
-					al.setZinv(null);
+				if (al.getZInv() != null)
+					al.setZInv(null);
 				if (al.getYc() != null)
 					al.setYc(null);
 
 				// for a line, nPhases = nCond, for now
 				al.setZ(new CMatrixImpl(al.getNPhases()));
-				al.setZinv(new CMatrixImpl(al.getNPhases()));
+				al.setZInv(new CMatrixImpl(al.getNPhases()));
 				al.setYc(new CMatrixImpl(al.getNPhases()));
 			}
 

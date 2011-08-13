@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
-	private static CapacitorObj ActiveCapacitorObj;
+	private static CapacitorObj activeCapacitorObj;
 
 	public CapacitorImpl() {
 		super();
@@ -21,14 +21,14 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSSGlobals.CRLF;
 
 		numProperties = Capacitor.NumPropsThisClass;
 		countProperties();  // get inherited property count
@@ -81,30 +81,30 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new CapacitorObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new CapacitorObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	private void doCmatrix() {
-		int OrderFound, j;
-		double[] MatBuffer;
+		int orderFound, j;
+		double[] matBuffer;
 
 		CapacitorObj aco = getActiveCapacitorObj();
 
-		MatBuffer = new double[aco.getNPhases() * aco.getNPhases()];
-		OrderFound = Parser.getInstance().parseAsSymMatrix(aco.getNPhases(), MatBuffer);
+		matBuffer = new double[aco.getNPhases() * aco.getNPhases()];
+		orderFound = Parser.getInstance().parseAsSymMatrix(aco.getNPhases(), matBuffer);
 
-		if (OrderFound > 0) {  // parse was successful
+		if (orderFound > 0) {  // parse was successful
 			/* C */
-			aco.setCmatrix((double[]) Utilities.resizeArray(aco.getCmatrix(), aco.getNPhases() * aco.getNPhases()));
+			aco.setCMatrix((double[]) Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()));
 			for (j = 0; j < aco.getNPhases() * aco.getNPhases(); j++)
-				aco.getCmatrix()[j] = 1.0e-6 * MatBuffer[j];
+				aco.getCMatrix()[j] = 1.0e-6 * matBuffer[j];
 		}
 
-		MatBuffer = null;
+		matBuffer = null;
 	}
 
 	/**
@@ -112,11 +112,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	 *   delta or LL
 	 *   Y, wye, or LN
 	 */
-	private void interpretConnection(String S) {
+	private void interpretConnection(String s) {
 		CapacitorObj aco = getActiveCapacitorObj();
 
-		String TestS = S.toLowerCase();
-		switch (TestS.charAt(0)) {
+		String testS = s.toLowerCase();
+		switch (testS.charAt(0)) {
 		case 'y':
 			aco.setConnection(0);  /* Wye */
 			break;
@@ -127,7 +127,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			aco.setConnection(1);  /* Delta or Line-Line */
 			break;
 		case 'l':
-			switch (TestS.charAt(1)) {
+			switch (testS.charAt(1)) {
 			case 'n':
 				aco.setConnection(0);
 				break;
@@ -149,8 +149,8 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		}
 	}
 
-	private void capSetBus1(String S) {
-		String S2;
+	private void capSetBus1(String s) {
+		String s2;
 		int i, dotpos;
 
 		// special handling for bus 1
@@ -158,100 +158,100 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		CapacitorObj aco = getActiveCapacitorObj();
 
-		aco.setBus(0, S);
+		aco.setBus(0, s);
 
 		// default bus2 to zero node of bus1. (grounded-Y connection)
 
 		// strip node designations from s
-		dotpos = S.indexOf('.');
+		dotpos = s.indexOf('.');
 		if (dotpos >= 0) {
-			S2 = S.substring(0, dotpos - 1);
+			s2 = s.substring(0, dotpos - 1);
 		} else {
-			S2 = S.substring(0, S.length());  // copy up to dot
+			s2 = s.substring(0, s.length());  // copy up to dot
 		}
 		for (i = 0; i < aco.getNPhases(); i++)
-			S2 = S2 + ".0";   // append series of ".0"'s
+			s2 = s2 + ".0";   // append series of ".0"'s
 
-		aco.setBus(1, S2);    // default setting for bus2
+		aco.setBus(1, s2);    // default setting for bus2
 		aco.setShunt(true);
 	}
 
 	@Override
 	public int edit() {
-		int Result = 0;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		int result = 0;
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveCapacitorObj((CapacitorObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveCapacitorObj());  // use property to set this value
+		globals.getActiveCircuit().setActiveCktElement(getActiveCapacitorObj());  // use property to set this value
 
 		CapacitorObj aco = getActiveCapacitorObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= numProperties))  // TODO Check zero based indexing
-				aco.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))  // TODO Check zero based indexing
+				aco.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
-				Globals.doSimpleMsg("Unknown parameter \""+ParamName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
+				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
 				break;
 			case 1:
-				capSetBus1(Param);
+				capSetBus1(param);
 				break;
 			case 2:
-				aco.setBus(1, Param);
+				aco.setBus(1, param);
 				break;
 			case 3:
 				//aco.setNumPhases(parser.makeInteger());  // see below
 				break;
 			case 4:
-				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getKvarrating());
+				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getKVArRating());
 				break;
 			case 5:
-				aco.setKvrating(parser.makeDouble());
+				aco.setKVARating(parser.makeDouble());
 				break;
 			case 6:
-				interpretConnection(Param);
+				interpretConnection(param);
 				break;
 			case 7:
 				doCmatrix();
 				break;
 			case 8:
-				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getC());
+				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getC());
 				break;
 			case 9:
-				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getR());
+				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getR());
 				break;
 			case 10:
-				Utilities.interpretDblArray(Param, aco.getNumSteps(), aco.getXL());
+				Utilities.interpretDblArray(param, aco.getNumSteps(), aco.getXL());
 				break;
 			case 11:
-				aco.processHarmonicSpec(Param);
+				aco.processHarmonicSpec(param);
 				break;
 			case 12:
 				aco.setNumSteps(parser.makeInteger());
 				break;
 			case 13:
-				aco.processStatesSpec(Param);
+				aco.processStatesSpec(param);
 				break;
 			default:
 				// inherited property edits
-				classEdit(getActiveCapacitorObj(), ParamPointer - Capacitor.NumPropsThisClass);
+				classEdit(getActiveCapacitorObj(), paramPointer - Capacitor.NumPropsThisClass);
 				break;
 			}
 
 			// some specials ...
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				aco.setPropertyValue(1, aco.getBus(1));  // this gets modified
 				aco.getPrpSequence()[1] = 0;  // reset this for save function
@@ -288,7 +288,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			}
 
 			// YPrim invalidation on anything that changes impedance values
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 3:
 				aco.setYPrimInvalid(true);
 				break;
@@ -315,80 +315,80 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		aco.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String CapacitorName) {
-		int Result = 0;
+	protected int makeLike(String capacitorName) {
+		int result = 0;
 		/* See if we can find this capacitor name in the present collection */
-		CapacitorObj OtherCapacitor = (CapacitorObj) find(CapacitorName);
-		if (OtherCapacitor != null) {
+		CapacitorObj otherCapacitor = (CapacitorObj) find(capacitorName);
+		if (otherCapacitor != null) {
 			CapacitorObj aco = getActiveCapacitorObj();
 
-			if (aco.getNPhases() != OtherCapacitor.getNPhases()) {
-				aco.setNPhases(OtherCapacitor.getNPhases());
+			if (aco.getNPhases() != otherCapacitor.getNPhases()) {
+				aco.setNPhases(otherCapacitor.getNPhases());
 				aco.setNConds(aco.getNPhases());  // force reallocation of terminals and conductors
 
 				aco.setYorder(aco.getNConds() * aco.getNTerms());
 				aco.setYPrimInvalid(true);
 			}
 
-			aco.setNumSteps(OtherCapacitor.getNumSteps());
+			aco.setNumSteps(otherCapacitor.getNumSteps());
 
 			for (int i = 0; i < aco.getNumSteps(); i++) {
-				aco.getC()[i] = OtherCapacitor.getC()[i];
-				aco.getKvarrating()[i] = OtherCapacitor.getKvarrating()[i];
-				aco.getR()[i]  = OtherCapacitor.getR()[i];
-				aco.getXL()[i] = OtherCapacitor.getXL()[i];
-				aco.getXL()[i] = OtherCapacitor.getXL()[i];
-				aco.getHarm()[i] = OtherCapacitor.getHarm()[i];
-				aco.getStates()[i] = OtherCapacitor.getStates()[i];
+				aco.getC()[i] = otherCapacitor.getC()[i];
+				aco.getKVArRating()[i] = otherCapacitor.getKVArRating()[i];
+				aco.getR()[i]  = otherCapacitor.getR()[i];
+				aco.getXL()[i] = otherCapacitor.getXL()[i];
+				aco.getXL()[i] = otherCapacitor.getXL()[i];
+				aco.getHarm()[i] = otherCapacitor.getHarm()[i];
+				aco.getStates()[i] = otherCapacitor.getStates()[i];
 			}
 
-			aco.setKvrating(OtherCapacitor.getKvrating());
-			aco.setConnection(OtherCapacitor.getConnection());
-			aco.setSpecType(OtherCapacitor.getSpecType());
+			aco.setKVARating(otherCapacitor.getKVRating());
+			aco.setConnection(otherCapacitor.getConnection());
+			aco.setSpecType(otherCapacitor.getSpecType());
 
-			if (OtherCapacitor.getCmatrix() == null) {
-				aco.setCmatrix(new double[0]);
+			if (otherCapacitor.getCMatrix() == null) {
+				aco.setCMatrix(new double[0]);
 			} else {
-				aco.setCmatrix((double[]) Utilities.resizeArray(aco.getCmatrix(), aco.getNPhases() * aco.getNPhases()));
+				aco.setCMatrix((double[]) Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()));
 				for (int i = 0; i < aco.getNPhases() * aco.getNPhases(); i++)
-					aco.getCmatrix()[i] = OtherCapacitor.getCmatrix()[i];
+					aco.getCMatrix()[i] = otherCapacitor.getCMatrix()[i];
 			}
 
-			classMakeLike(OtherCapacitor);  // take care of inherited class properties
+			classMakeLike(otherCapacitor);  // take care of inherited class properties
 
 			for (int i = 0; i < aco.getParentClass().getNumProperties(); i++) {
-				aco.setPropertyValue(i, OtherCapacitor.getPropertyValue(i));
-				Result = 1;
+				aco.setPropertyValue(i, otherCapacitor.getPropertyValue(i));
+				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Capacitor.makeLike(): \"" + CapacitorName + "\" not found.", 451);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Capacitor.makeLike(): \"" + capacitorName + "\" not found.", 451);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Capacitor.init()", 452);
 		return 0;
 	}
 
 	public static CapacitorObj getActiveCapacitorObj() {
-		return ActiveCapacitorObj;
+		return activeCapacitorObj;
 	}
 
-	public static void setActiveCapacitorObj(CapacitorObj activeCapacitorObj) {
-		ActiveCapacitorObj = activeCapacitorObj;
+	public static void setActiveCapacitorObj(CapacitorObj capacitorObj) {
+		activeCapacitorObj = capacitorObj;
 	}
 
 }

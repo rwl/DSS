@@ -84,14 +84,14 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		this.XfmrBank = "";
 		this.XfmrCode = "";
 
-		this.VABase           = this.Winding[0].getKva() * 1000.0;
+		this.VABase           = this.Winding[0].getKVA() * 1000.0;
 		this.ThermalTimeConst = 2.0;
 		this.n_thermal        = 0.8;
 		this.m_thermal        = 0.8;
 		this.FLrise           = 65.0;
 		this.HSrise           = 15.0;  // hot spot rise
-		this.NormMaxHKVA      = 1.1 * this.Winding[1].getKva();
-		this.EmergMaxHKVA     = 1.5 * this.Winding[1].getKva();
+		this.NormMaxHKVA      = 1.1 * this.Winding[1].getKVA();
+		this.EmergMaxHKVA     = 1.5 * this.Winding[1].getKVA();
 		this.pctLoadLoss      = 2.0 * this.Winding[1].getRpu() * 100.0;  // assume two windings
 		this.ppm_FloatFactor  = 0.000001;
 		/* Compute antifloat added for each winding */
@@ -167,7 +167,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		if (Winding[0].getConnection() == Winding[1].getConnection()) {
 			DeltaDirection = 1;
 		} else {
-			if (Winding[0].getKvll() >= Winding[1].getKvll()) {
+			if (Winding[0].getKVLL() >= Winding[1].getKVLL()) {
 				iHVolt = 1;
 			} else {
 				iHVolt = 2;
@@ -222,24 +222,24 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			case 0:
 				switch (nPhases) {  // wye
 				case 2:
-					w.setVBase(w.getKvll() * DSSGlobals.InvSQRT3x1000);  // assume 3-phase for 2-phase designation
+					w.setVBase(w.getKVLL() * DSSGlobals.InvSQRT3x1000);  // assume 3-phase for 2-phase designation
 					break;
 				case 3:
-					w.setVBase(w.getKvll() * DSSGlobals.InvSQRT3x1000);
+					w.setVBase(w.getKVLL() * DSSGlobals.InvSQRT3x1000);
 					break;
 				default:
-					w.setVBase(w.getKvll() * 1000.0);
+					w.setVBase(w.getKVLL() * 1000.0);
 					break;
 				}
 				break;
 			case 1:
-				w.setVBase(w.getKvll() * 1000.0);  // delta
+				w.setVBase(w.getKVLL() * 1000.0);  // delta
 				break;
 			}
 		}
 
 		/* Base rating of winding 1 */
-		VABase = Winding[0].getKva() * 1000.0;
+		VABase = Winding[0].getKVA() * 1000.0;
 
 		for (i = 0; i < NumWindings; i++)
 			Winding[i].computeAntiFloatAdder(ppm_FloatFactor, VABase / nPhases);
@@ -434,12 +434,12 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				F.println("~ conn=delta");
 				break;
 			}
-			F.println("~ kv=" + W.getKvll());
-			F.println("~ kva=" + W.getKva());
-			F.println("~ tap=" + W.getPuTap());
+			F.println("~ kv=" + W.getKVLL());
+			F.println("~ kva=" + W.getKVA());
+			F.println("~ tap=" + W.getPUTap());
 			F.println("~ %r=" + (W.getRpu() * 100.0));
-			F.println("~ rneut=" + W.getRneut());
-			F.println("~ xneut=" + W.getXneut());
+			F.println("~ rneut=" + W.getRNeut());
+			F.println("~ xneut=" + W.getXNeut());
 		}
 
 		F.println("~ " + "xhl=" + XHL * 100.0);
@@ -526,8 +526,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				TempVal = W.getMaxTap();
 			}
 
-			if (TempVal != W.getPuTap()) {  /* Only if there's been a change */
-				W.setPuTap(TempVal);
+			if (TempVal != W.getPUTap()) {  /* Only if there's been a change */
+				W.setPUTap(TempVal);
 				setYPrimInvalid(true);  // this property triggers setting systemYChanged=true
 				recalcElementData();
 			}
@@ -544,23 +544,23 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 	public double getWdgKVA(int i) {
 		if ((i >= 0) && (i < NumWindings)) {
-			return Winding[i].getKva();
+			return Winding[i].getKVA();
 		} else {
 			return 0.0;
 		}
 	}
 
-	public double getWdgRneutral(int i) {
+	public double getWdgRNeutral(int i) {
 		if ((i >= 0) && (i < NumWindings)) {
-			return Winding[i].getRneut();
+			return Winding[i].getRNeut();
 		} else {
 			return 0.0;
 		}
 	}
 
-	public double getWdgXneutral(int i) {
+	public double getWdgXNeutral(int i) {
 		if ((i >= 0) && (i < NumWindings)) {
-			return Winding[i].getXneut();
+			return Winding[i].getXNeut();
 		} else {
 			return 0.0;
 		}
@@ -746,22 +746,22 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 			break;
 		case 5:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKvll());
+			Result = String.format("%.7g", Winding[ActiveWinding].getKVLL());
 			break;
 		case 6:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKva());
+			Result = String.format("%.7g", Winding[ActiveWinding].getKVA());
 			break;
 		case 7:
-			Result = String.format("%.7g", Winding[ActiveWinding].getPuTap());
+			Result = String.format("%.7g", Winding[ActiveWinding].getPUTap());
 			break;
 		case 8:
 			Result = String.format("%.7g", Winding[ActiveWinding].getRpu() * 100.0);  // %R
 			break;
 		case 9:
-			Result = String.format("%.7g", Winding[ActiveWinding].getRneut());
+			Result = String.format("%.7g", Winding[ActiveWinding].getRNeut());
 			break;
 		case 10:
-			Result = String.format("%.7g", Winding[ActiveWinding].getXneut());
+			Result = String.format("%.7g", Winding[ActiveWinding].getXNeut());
 			break;
 
 		case 11:
@@ -781,15 +781,15 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			break;
 		case 13:
 			for (i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKvll());
+				Result = Result + String.format("%.7g, ", Winding[i].getKVLL());
 			break;
 		case 14:
 			for (i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKva());
+				Result = Result + String.format("%.7g, ", Winding[i].getKVA());
 			break;
 		case 15:
 			for (i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getPuTap());  // interpretAllTaps(Param);
+				Result = Result + String.format("%.7g, ", Winding[i].getPUTap());  // interpretAllTaps(Param);
 			break;
 		case 16:
 			Result = String.format("%.7g", XHL * 100.0);
@@ -974,16 +974,16 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		for (i = 0; i < NumWindings; i++) {
 			Winding W = Winding[i];
 			if ((nPhases > 1) || (W.getConnection() != 0)) {
-				S = S + String.format(" %-.5g", W.getKvll() / DSSGlobals.SQRT3);
+				S = S + String.format(" %-.5g", W.getKVLL() / DSSGlobals.SQRT3);
 			} else {
-				S = S + String.format(" %-.5g", W.getKvll());
+				S = S + String.format(" %-.5g", W.getKVLL());
 			}
 		}
 		S = S + ")  kVAs=(";
 
 		for (i = 0; i < NumWindings; i++) {
 			Winding W = Winding[i];
-			S = S + String.format(" %-.5g", W.getKva() / nPhases);
+			S = S + String.format(" %-.5g", W.getKVA() / nPhases);
 		}
 		S = S + ")";
 
@@ -1004,14 +1004,14 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Winding W = Winding[i];
 			if (W.getConnection() == 0) {
 				// handle wye, but ignore delta (and open wye)
-				if (W.getRneut() >= 0) {
+				if (W.getRNeut() >= 0) {
 					// <0 is flag for open neutral (Ignore)
-					if ((W.getRneut() == 0) && (W.getXneut() == 0))
+					if ((W.getRNeut() == 0) && (W.getXNeut() == 0))
 						// solidly grounded
 						Value = new Complex(1000000, 0);
 				} else {
 					// 1 microohm resistor
-					Value = new Complex(W.getRneut(), W.getXneut() * FreqMultiplier).invert();
+					Value = new Complex(W.getRNeut(), W.getXNeut() * FreqMultiplier).invert();
 				}
 				j = i * nConds;
 				YPrimSeries.addElement(j, j, Value);
@@ -1043,7 +1043,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	}
 
 	public double getBasekVLL(int i) {
-		return Winding[i].getKvll();
+		return Winding[i].getKVLL();
 	}
 
 	private void calcY_Terminal(double FreqMult) {
@@ -1058,7 +1058,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		Zbase = 1.0 / (VABase / nPhases);  // base ohms on 1.0 volt basis
 		for (i = 0; i < NumWindings - 1; i++)
 			/* convert pu to ohms on one volt base as we go... */
-			ZB.setElement(i, i, new Complex((Winding[0].getRpu() + Winding[i + 1].getRneut()), FreqMult * XSC[i]).multiply(Zbase));
+			ZB.setElement(i, i, new Complex((Winding[0].getRpu() + Winding[i + 1].getRNeut()), FreqMult * XSC[i]).multiply(Zbase));
 
 		// off diagonals
 		k = NumWindings;
@@ -1164,19 +1164,19 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		AT = new CMatrixImpl(NumWindings * 2);
 
 		for (i = 0; i < NumWindings; i++)
-			AT.setElement(2 * i - 1, i, new Complex(1.0 / (Winding[i].getVBase() * Winding[i].getPuTap()), 0.0));
+			AT.setElement(2 * i - 1, i, new Complex(1.0 / (Winding[i].getVBase() * Winding[i].getPUTap()), 0.0));
 		for (i = 0; i < NumWindings; i++)
-			AT.setElement(2 * i,     i, new Complex(-1.0 / (Winding[i].getVBase() * Winding[i].getPuTap()), 0.0));
+			AT.setElement(2 * i,     i, new Complex(-1.0 / (Winding[i].getVBase() * Winding[i].getPUTap()), 0.0));
 		for (i = 0; i < 2 * NumWindings; i++)
 			ctempArray1[i] = Complex.ZERO;
 
 		for (i = 0; i < 2 * NumWindings; i++) {
 			for (k = 0; k < NumWindings; k++) {
 				if (i == (2 * k - 1)) {
-					A[k] = new Complex((1.0 / (Winding[k].getVBase() * Winding[k].getPuTap())), 0.0);
+					A[k] = new Complex((1.0 / (Winding[k].getVBase() * Winding[k].getPUTap())), 0.0);
 				} else {
 					if (i == 2 * k) {
-						A[k] = new Complex((-1.0 / (Winding[k].getVBase() * Winding[k].getPuTap())), 0.0);
+						A[k] = new Complex((-1.0 / (Winding[k].getVBase() * Winding[k].getPUTap())), 0.0);
 					} else {
 						A[k] = Complex.ZERO;
 					}
@@ -1250,13 +1250,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			for (i = 0; i < NumWindings; i++) {
 				Winding W = Winding[i];
 				W.setConnection(Obj.getWinding()[i].getConnection());
-				W.setKvll(Obj.getWinding()[i].getKvll());
+				W.setKVLL(Obj.getWinding()[i].getKVLL());
 				W.setVBase(Obj.getWinding()[i].getVBase());
-				W.setKva(Obj.getWinding()[i].getKva());
-				W.setPuTap(Obj.getWinding()[i].getPuTap());
+				W.setKVA(Obj.getWinding()[i].getKVA());
+				W.setPUTap(Obj.getWinding()[i].getPUTap());
 				W.setRpu(Obj.getWinding()[i].getRpu());
-				W.setRneut(Obj.getWinding()[i].getRneut());
-				W.setXneut(Obj.getWinding()[i].getXneut());
+				W.setRNeut(Obj.getWinding()[i].getRNeut());
+				W.setXNeut(Obj.getWinding()[i].getXNeut());
 				W.setTapIncrement(Obj.getWinding()[i].getTapIncrement());
 				W.setMinTap(Obj.getWinding()[i].getMinTap());
 				W.setMaxTap(Obj.getWinding()[i].getMaxTap());
@@ -1306,10 +1306,6 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ActiveWinding = activeWinding;
 	}
 
-	public boolean isSubstation() {
-		return IsSubstation;
-	}
-
 	public void setSubstation(boolean isSubstation) {
 		IsSubstation = isSubstation;
 	}
@@ -1346,7 +1342,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		XfmrCode = xfmrCode;
 	}
 
-	public double getPpm_FloatFactor() {
+	public double getPPM_FloatFactor() {
 		return ppm_FloatFactor;
 	}
 
@@ -1390,11 +1386,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		return m_thermal;
 	}
 
-	public double getFLrise() {
+	public double getFLRise() {
 		return FLrise;
 	}
 
-	public double getHSrise() {
+	public double getHSRise() {
 		return HSrise;
 	}
 
@@ -1432,11 +1428,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		TermRef = termRef;
 	}
 
-	public double getZbase() {
+	public double getZBase() {
 		return Zbase;
 	}
 
-	public void setZbase(double zbase) {
+	public void setZBase(double zbase) {
 		Zbase = zbase;
 	}
 
@@ -1484,23 +1480,23 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		return Y_1Volt_NL;
 	}
 
-	public void setY_1Volt_NL(CMatrix y_1Volt_NL) {
+	public void setY1VoltNL(CMatrix y_1Volt_NL) {
 		Y_1Volt_NL = y_1Volt_NL;
 	}
 
-	public CMatrix getY_Term_NL() {
+	public CMatrix getYTermNL() {
 		return Y_Term_NL;
 	}
 
-	public void setY_Term_NL(CMatrix y_Term_NL) {
+	public void setYTermNL(CMatrix y_Term_NL) {
 		Y_Term_NL = y_Term_NL;
 	}
 
-	public double getY_Terminal_Freqmult() {
+	public double getYTerminalFreqMult() {
 		return Y_Terminal_Freqmult;
 	}
 
-	public void setY_Terminal_Freqmult(double y_Terminal_Freqmult) {
+	public void setYTerminalFreqMult(double y_Terminal_Freqmult) {
 		Y_Terminal_Freqmult = y_Terminal_Freqmult;
 	}
 
@@ -1512,19 +1508,19 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ThermalTimeConst = thermalTimeConst;
 	}
 
-	public double getN_thermal() {
+	public double getNThermal() {
 		return n_thermal;
 	}
 
-	public void setN_thermal(double n_thermal) {
+	public void setNThermal(double n_thermal) {
 		this.n_thermal = n_thermal;
 	}
 
-	public double getM_thermal() {
+	public double getMThermal() {
 		return m_thermal;
 	}
 
-	public void setM_thermal(double m_thermal) {
+	public void setMThermal(double m_thermal) {
 		this.m_thermal = m_thermal;
 	}
 
@@ -1536,15 +1532,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		XHLChanged = xHLChanged;
 	}
 
-	public boolean isIsSubstation() {
+	public boolean isSubstation() {
 		return IsSubstation;
 	}
 
-	public void setIsSubstation(boolean isSubstation) {
-		IsSubstation = isSubstation;
-	}
-
-	public void setPpm_FloatFactor(double ppm_FloatFactor) {
+	public void setPPM_FloatFactor(double ppm_FloatFactor) {
 		this.ppm_FloatFactor = ppm_FloatFactor;
 	}
 
@@ -1572,11 +1564,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		EmergMaxHKVA = emergMaxHKVA;
 	}
 
-	public void setFLrise(double fLrise) {
+	public void setFLRise(double fLrise) {
 		FLrise = fLrise;
 	}
 
-	public void setHSrise(double hSrise) {
+	public void setHSRise(double hSrise) {
 		HSrise = hSrise;
 	}
 

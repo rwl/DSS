@@ -18,33 +18,33 @@ import com.epri.dss.general.TCC_CurveObj;
 
 public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
-	private TCC_CurveObj FuseCurve;
+	private TCC_CurveObj fuseCurve;
 
-	private double RatedCurrent;
+	private double ratedCurrent;
 
-	private double DelayTime;
+	private double delayTime;
 
-	private String MonitoredElementName;
-	private int MonitoredElementTerminal;
-	private DSSCktElement MonitoredElement;
+	private String monitoredElementName;
+	private int monitoredElementTerminal;
+	private DSSCktElement monitoredElement;
 
 	/* Handle to control queue actions */
 	private int[] hAction = new int[Fuse.FUSEMAXDIM];
 	/* 0 = open 1 = close */
-	private ControlAction[] PresentState = new ControlAction[Fuse.FUSEMAXDIM];
-	private boolean[] ReadyToBlow = new boolean[Fuse.FUSEMAXDIM];
+	private ControlAction[] presentState = new ControlAction[Fuse.FUSEMAXDIM];
+	private boolean[] readyToBlow = new boolean[Fuse.FUSEMAXDIM];
 
 	/* Offset for monitored terminal */
-	private int CondOffset;
+	private int condOffset;
 	private Complex[] cBuffer;
 
-	public FuseObjImpl(DSSClassImpl ParClass, String FuseName) {
-		super(ParClass);
+	public FuseObjImpl(DSSClassImpl parClass, String fuseName) {
+		super(parClass);
 
 		int i;
 
-		setName(FuseName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(fuseName.toLowerCase());
+		this.DSSObjType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -54,24 +54,24 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		setControlledElement(null);
 		this.elementTerminal = 1;
 
-		this.MonitoredElementName = "";
-		this.MonitoredElementTerminal = 1;
-		this.MonitoredElement = null;
+		this.monitoredElementName = "";
+		this.monitoredElementTerminal = 1;
+		this.monitoredElement = null;
 
-		this.FuseCurve = FuseImpl.getTccCurve("tlink");
+		this.fuseCurve = FuseImpl.getTccCurve("tlink");
 
-		this.RatedCurrent = 1.0;
+		this.ratedCurrent = 1.0;
 
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
-			this.PresentState[i] = ControlAction.CLOSE;
+			this.presentState[i] = ControlAction.CLOSE;
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
-			this.ReadyToBlow[i] = false;
+			this.readyToBlow[i] = false;
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
 			this.hAction[i] = 0;
 
 		this.cBuffer = null;  // complex buffer
 
-		this.DSSObjType = ParClass.getDSSClassType(); //CAP_CONTROL;
+		this.DSSObjType = parClass.getDSSClassType(); //CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -80,49 +80,49 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		int i;
 
-		int DevIndex = Utilities.getCktElementIndex(MonitoredElementName);
-		if (DevIndex >= 0) {
-			MonitoredElement = (DSSCktElement) Globals.getActiveCircuit().getCktElements().get(DevIndex);
-			setNPhases( MonitoredElement.getNPhases() );  // force number of phases to be same
+		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
+		if (devIndex >= 0) {
+			monitoredElement = (DSSCktElement) globals.getActiveCircuit().getCktElements().get(devIndex);
+			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
 			if (getNPhases() > Fuse.FUSEMAXDIM)
-				Globals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
-			if (MonitoredElementTerminal > MonitoredElement.getNTerms()) {
-				Globals.doErrorMsg("Fuse: \"" + getName() + "\"",
+				globals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
+			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
+				globals.doErrorMsg("Fuse: \"" + getName() + "\"",
 										"Terminal no. \"" +"\" does not exist.",
 										"Re-specify terminal no.", 404);
 			} else {
 				// sets name of i-th terminal's connected bus in fuse's bus list
-				setBus(1, MonitoredElement.getBus(MonitoredElementTerminal));  // TODO Check zero based indexing
+				setBus(1, monitoredElement.getBus(monitoredElementTerminal));  // TODO Check zero based indexing
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, MonitoredElement.getYorder());
-				CondOffset = (MonitoredElementTerminal - 1) * MonitoredElement.getNConds();  // for speedy sampling
+				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}
 
 		/* Check for existence of controlled element */
 
-		DevIndex = Utilities.getCktElementIndex(elementName);
-		if (DevIndex >= 0) {  // both CktElement and monitored element must already exist
-			setControlledBus( (Bus) Globals.getActiveCircuit().getCktElements().get(DevIndex) );
+		devIndex = Utilities.getCktElementIndex(elementName);
+		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
+			setControlledBus( (Bus) globals.getActiveCircuit().getCktElements().get(devIndex) );
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
 
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++) {
 				if (getControlledElement().getConductorClosed(i)) {  // check state of i-th phase of active terminal
-					PresentState[i] = ControlAction.CLOSE;
+					presentState[i] = ControlAction.CLOSE;
 				} else {
-					PresentState[i] = ControlAction.OPEN;
+					presentState[i] = ControlAction.OPEN;
 				}
 			}
 			for (i = 0; i < getControlledElement().getNPhases(); i++)
 				hAction[i] = 0;
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
-				ReadyToBlow[i] = false;
+				readyToBlow[i] = false;
 		} else {
 			setControlledElement(null);  // element not found
-			Globals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
+			globals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 405);
 		}
 	}
@@ -139,18 +139,18 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	 * Get present value of terminal current.
 	 */
 	@Override
-	public void getCurrents(Complex[] Curr) {
+	public void getCurrents(Complex[] curr) {
 		for (int i = 0; i < getNConds(); i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	/**
 	 * Returns injection currents.
 	 */
 	@Override
-	public void getInjCurrents(Complex[] Curr) {
+	public void getInjCurrents(Complex[] curr) {
 		for (int i = 0; i < getNConds(); i++)
-			Curr[i] = Complex.ZERO;
+			curr[i] = Complex.ZERO;
 	}
 
 	/**
@@ -161,15 +161,15 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	 * Only legal action is to open one phase.
 	 */
 	@Override
-	public void doPendingAction(int Phs, int ProxyHdl) {
-		if (Phs <= Fuse.FUSEMAXDIM) {
+	public void doPendingAction(int phs, int proxyHdl) {
+		if (phs <= Fuse.FUSEMAXDIM) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal of CktElement to terminal 1
-			switch (PresentState[Phs]) {
+			switch (presentState[phs]) {
 			case CLOSE:
-				if (ReadyToBlow[Phs]) {  // ignore if we became disarmed in meantime
-					getControlledElement().setConductorClosed(Phs, false);  // open all phases of active terminal
-					Utilities.appendToEventLog("Fuse." + getName(), "Phase "+String.valueOf(Phs)+" Blown");
-					hAction[Phs] = 0;
+				if (readyToBlow[phs]) {  // ignore if we became disarmed in meantime
+					getControlledElement().setConductorClosed(phs, false);  // open all phases of active terminal
+					Utilities.appendToEventLog("Fuse." + getName(), "Phase "+String.valueOf(phs)+" Blown");
+					hAction[phs] = 0;
 				}
 				break;
 			default:
@@ -179,10 +179,10 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		}
 	}
 
-	public void interpretFuseAction(String Action) {
+	public void interpretFuseAction(String action) {
 		if (getControlElement() != null) {
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
-			switch (Action.toLowerCase().charAt(0)) {
+			switch (action.toLowerCase().charAt(0)) {
 			case 'o':
 				getControlledElement().setConductorClosed(0, false);  // open all phases of active terminal   TODO Check zero based indexing
 				break;
@@ -201,42 +201,42 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	 */
 	@Override
 	public void sample() {
-		double Cmag;
-		double TripTime;
+		double CMag;
+		double tripTime;
 
 		getControlledElement().setActiveTerminalIdx(elementTerminal);
-		MonitoredElement.getCurrents(cBuffer);
+		monitoredElement.getCurrents(cBuffer);
 
-		for (int i = 0; i < Math.min(Fuse.FUSEMAXDIM, MonitoredElement.getNPhases()); i++) {
+		for (int i = 0; i < Math.min(Fuse.FUSEMAXDIM, monitoredElement.getNPhases()); i++) {
 			if (getControlledElement().getConductorClosed(i)) {  // check state of phases of active terminal
-				PresentState[i] = ControlAction.CLOSE;
+				presentState[i] = ControlAction.CLOSE;
 			} else {
-				PresentState[i] = ControlAction.OPEN;
+				presentState[i] = ControlAction.OPEN;
 			}
 
-			if (PresentState[i] == ControlAction.CLOSE) {
-				TripTime = -1.0;
+			if (presentState[i] == ControlAction.CLOSE) {
+				tripTime = -1.0;
 
 				/* Check phase trip, if any */
 
-				if (FuseCurve != null) {
-					Cmag     = cBuffer[i].abs();
-					TripTime = FuseCurve.getTCCTime(Cmag / RatedCurrent);
+				if (fuseCurve != null) {
+					CMag     = cBuffer[i].abs();
+					tripTime = fuseCurve.getTCCTime(CMag / ratedCurrent);
 				}
 
-				if (TripTime > 0.0) {
-					if (!ReadyToBlow[i]) {
+				if (tripTime > 0.0) {
+					if (!readyToBlow[i]) {
 						Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 						// then arm for an open operation
 						hAction[i] = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
-								ckt.getSolution().getDynaVars().t + TripTime + DelayTime, i, 0, this);
-						ReadyToBlow[i] = true;
+								ckt.getSolution().getDynaVars().t + tripTime + delayTime, i, 0, this);
+						readyToBlow[i] = true;
 					}
 				} else {
-					if (ReadyToBlow[i]) {
+					if (readyToBlow[i]) {
 						// current has dropped below pickup and it hasn't blown yet
 						DSSGlobals.getInstance().getActiveCircuit().getControlQueue().delete(hAction[i]);  // delete the fuse blow action
-						ReadyToBlow[i] = false;
+						readyToBlow[i] = false;
 					}
 				}
 			}
@@ -244,19 +244,19 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		if (Complete)
-			F.println();
+		if (complete)
+			f.println();
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		return super.getPropertyValue(Index);
+	public String getPropertyValue(int index) {
+		return super.getPropertyValue(index);
 	}
 
 	/**
@@ -268,9 +268,9 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		if (getControlledElement() != null) {
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
-				PresentState[i] = ControlAction.CLOSE;
+				presentState[i] = ControlAction.CLOSE;
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
-				ReadyToBlow[i] = false;
+				readyToBlow[i] = false;
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++)
 				hAction[i] = 0;
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // set active terminal
@@ -279,7 +279,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		PropertyValue[1]  = "";  // "element";
 		PropertyValue[2]  = "1"; // "terminal";
 		PropertyValue[3]  = "";
@@ -295,91 +295,91 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 	// FIXME: Private members in OpenDSS
 
 	public TCC_CurveObj getFuseCurve() {
-		return FuseCurve;
+		return fuseCurve;
 	}
 
-	public void setFuseCurve(TCC_CurveObj fuseCurve) {
-		FuseCurve = fuseCurve;
+	public void setFuseCurve(TCC_CurveObj curve) {
+		fuseCurve = curve;
 	}
 
 	public double getRatedCurrent() {
-		return RatedCurrent;
+		return ratedCurrent;
 	}
 
-	public void setRatedCurrent(double ratedCurrent) {
-		RatedCurrent = ratedCurrent;
+	public void setRatedCurrent(double current) {
+		ratedCurrent = current;
 	}
 
 	public double getDelayTime() {
-		return DelayTime;
+		return delayTime;
 	}
 
-	public void setDelayTime(double delayTime) {
-		DelayTime = delayTime;
+	public void setDelayTime(double time) {
+		delayTime = time;
 	}
 
 	public String getMonitoredElementName() {
-		return MonitoredElementName;
+		return monitoredElementName;
 	}
 
-	public void setMonitoredElementName(String monitoredElementName) {
-		MonitoredElementName = monitoredElementName;
+	public void setMonitoredElementName(String name) {
+		monitoredElementName = name;
 	}
 
 	public int getMonitoredElementTerminal() {
-		return MonitoredElementTerminal;
+		return monitoredElementTerminal;
 	}
 
-	public void setMonitoredElementTerminal(int monitoredElementTerminal) {
-		MonitoredElementTerminal = monitoredElementTerminal;
+	public void setMonitoredElementTerminal(int terminal) {
+		monitoredElementTerminal = terminal;
 	}
 
 	public DSSCktElement getMonitoredElement() {
-		return MonitoredElement;
+		return monitoredElement;
 	}
 
-	public void setMonitoredElement(DSSCktElement monitoredElement) {
-		MonitoredElement = monitoredElement;
+	public void setMonitoredElement(DSSCktElement element) {
+		monitoredElement = element;
 	}
 
-	public int[] gethAction() {
+	public int[] getHAction() {
 		return hAction;
 	}
 
-	public void sethAction(int[] hAction) {
-		this.hAction = hAction;
+	public void setHAction(int[] action) {
+		this.hAction = action;
 	}
 
 	public ControlAction[] getPresentState() {
-		return PresentState;
+		return presentState;
 	}
 
-	public void setPresentState(ControlAction[] presentState) {
-		PresentState = presentState;
+	public void setPresentState(ControlAction[] state) {
+		presentState = state;
 	}
 
 	public boolean[] getReadyToBlow() {
-		return ReadyToBlow;
+		return readyToBlow;
 	}
 
-	public void setReadyToBlow(boolean[] readyToBlow) {
-		ReadyToBlow = readyToBlow;
+	public void setReadyToBlow(boolean[] ready) {
+		readyToBlow = ready;
 	}
 
 	public int getCondOffset() {
-		return CondOffset;
+		return condOffset;
 	}
 
-	public void setCondOffset(int condOffset) {
-		CondOffset = condOffset;
+	public void setCondOffset(int offset) {
+		condOffset = offset;
 	}
 
-	public Complex[] getcBuffer() {
+	public Complex[] getCBuffer() {
 		return cBuffer;
 	}
 
-	public void setcBuffer(Complex[] cBuffer) {
-		this.cBuffer = cBuffer;
+	public void setCBuffer(Complex[] buffer) {
+		cBuffer = buffer;
 	}
 
 }

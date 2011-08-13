@@ -51,14 +51,14 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		XHT = 0.35;
 		XLT = 0.30;
 		XSC = new double[(NumWindings - 1) * NumWindings / 2];
-		VABase           = Winding[0].getKva() * 1000.0;
+		VABase           = Winding[0].getKVA() * 1000.0;
 		ThermalTimeConst = 2.0;
 		n_thermal        = 0.8;
 		m_thermal        = 0.8;
 		Lrise            = 65.0;
 		HSrise           = 15.0;  // hot spot rise
-		NormMaxHKVA      = 1.1 * Winding[0].getKva();
-		EmergMaxHKVA     = 1.5 * Winding[0].getKva();
+		NormMaxHKVA      = 1.1 * Winding[0].getKVA();
+		EmergMaxHKVA     = 1.5 * Winding[0].getKVA();
 		pctLoadLoss      = 2.0 * Winding[0].getRpu() * 100.0;  // assume two windings
 		ppm_FloatFactor  = 0.000001;
 		/* Compute antifloat added for each winding */
@@ -103,23 +103,23 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		ThermalTimeConst = obj.getThTau();
 		n_thermal = obj.getThN();
 		m_thermal = obj.getThM();
-		Lrise = obj.getFLrise();
-		HSrise = obj.getHSrise();
+		Lrise = obj.getFLRise();
+		HSrise = obj.getHSRise();
 		pctLoadLoss = obj.getPctLoadLoss();
 		pctNoLoadLoss = obj.getPctNoLoadLoss();
-		ppm_FloatFactor = obj.getPpm_FloatFactor();
+		ppm_FloatFactor = obj.getPPM_FloatFactor();
 		pctImag = obj.getPctImag();
 		for (i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)
 			XSC[i] = obj.getXsc(i);
 		for (i = 0; i < NumWindings; i++) {
 			Winding[i].setConnection(obj.getWdgConnection(i));
-			Winding[i].setKvll(obj.getBasekVLL(i));
+			Winding[i].setKVLL(obj.getBasekVLL(i));
 			Winding[i].setVBase(obj.getBaseVoltage(i));
-			Winding[i].setKva(obj.getWdgKVA(i));
-			Winding[i].setPuTap(obj.getPresentTap(i));
+			Winding[i].setKVA(obj.getWdgKVA(i));
+			Winding[i].setPUTap(obj.getPresentTap(i));
 			Winding[i].setRpu(obj.getWdgResistance(i));
-			Winding[i].setRneut(obj.getWdgRneutral(i));
-			Winding[i].setXneut(obj.getWdgXneutral(i));
+			Winding[i].setRNeut(obj.getWdgRNeutral(i));
+			Winding[i].setXNeut(obj.getWdgXNeutral(i));
 			Winding[i].setY_PPM(obj.getWdgYPPM(i));
 			Winding[i].setTapIncrement(obj.getTapIncrement(i));
 			Winding[i].setMinTap(obj.getMinTap(i));
@@ -152,12 +152,12 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 				F.println("~ conn=delta");
 				break;
 			}
-			F.println("~ kv=" + wdg.getKvll());
-			F.println("~ kva=" + wdg.getKva());
-			F.println("~ tap=" + wdg.getPuTap());
+			F.println("~ kv=" + wdg.getKVLL());
+			F.println("~ kva=" + wdg.getKVA());
+			F.println("~ tap=" + wdg.getPUTap());
 			F.println("~ %r=" + wdg.getRpu() * 100.0);
-			F.println("~ rneut=" + wdg.getRneut());
-			F.println("~ xneut=" + wdg.getXneut());
+			F.println("~ rneut=" + wdg.getRNeut());
+			F.println("~ xneut=" + wdg.getXNeut());
 		}
 
 		F.println("~ " + "xhl=" + XHL * 100.0);
@@ -230,22 +230,22 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 			}
 			break;
 		case 5:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKvll());
+			Result = String.format("%.7g", Winding[ActiveWinding].getKVLL());
 			break;
 		case 6:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKva());
+			Result = String.format("%.7g", Winding[ActiveWinding].getKVA());
 			break;
 		case 7:
-			Result = String.format("%.7g", Winding[ActiveWinding].getPuTap());
+			Result = String.format("%.7g", Winding[ActiveWinding].getPUTap());
 			break;
 		case 8:
 			Result = String.format("%.7g", Winding[ActiveWinding].getRpu() * 100.0);   // %R
 			break;
 		case 9:
-			Result = String.format("%.7g", Winding[ActiveWinding].getRneut());
+			Result = String.format("%.7g", Winding[ActiveWinding].getRNeut());
 			break;
 		case 10:
-			Result = String.format("%.7g", Winding[ActiveWinding].getXneut());
+			Result = String.format("%.7g", Winding[ActiveWinding].getXNeut());
 			break;
 		case 11:
 			for (int i = 0; i < NumWindings; i++)
@@ -260,15 +260,15 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 			break;
 		case 12:
 			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKvll());
+				Result = Result + String.format("%.7g, ", Winding[i].getKVLL());
 			break;
 		case 13:
 			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKva());
+				Result = Result + String.format("%.7g, ", Winding[i].getKVA());
 			break;
 		case 14:
 			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getPuTap());
+				Result = Result + String.format("%.7g, ", Winding[i].getPUTap());
 			break;
 		case 18:
 			for (int i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)

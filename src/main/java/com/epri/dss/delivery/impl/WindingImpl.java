@@ -51,11 +51,11 @@ public class WindingImpl implements Winding {
 		Connection = connection;
 	}
 
-	public double getKvll() {
+	public double getKVLL() {
 		return kvll;
 	}
 
-	public void setKvll(double kvll) {
+	public void setKVLL(double kvll) {
 		this.kvll = kvll;
 	}
 
@@ -67,19 +67,19 @@ public class WindingImpl implements Winding {
 		VBase = vBase;
 	}
 
-	public double getKva() {
+	public double getKVA() {
 		return kva;
 	}
 
-	public void setKva(double kva) {
+	public void setKVA(double kva) {
 		this.kva = kva;
 	}
 
-	public double getPuTap() {
+	public double getPUTap() {
 		return puTap;
 	}
 
-	public void setPuTap(double puTap) {
+	public void setPUTap(double puTap) {
 		this.puTap = puTap;
 	}
 
@@ -91,19 +91,19 @@ public class WindingImpl implements Winding {
 		Rpu = rpu;
 	}
 
-	public double getRneut() {
+	public double getRNeut() {
 		return Rneut;
 	}
 
-	public void setRneut(double rneut) {
+	public void setRNeut(double rneut) {
 		Rneut = rneut;
 	}
 
-	public double getXneut() {
+	public double getXNeut() {
 		return Xneut;
 	}
 
-	public void setXneut(double xneut) {
+	public void setXNeut(double xneut) {
 		Xneut = xneut;
 	}
 

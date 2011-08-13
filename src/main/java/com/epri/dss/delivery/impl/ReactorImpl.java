@@ -206,22 +206,22 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				/*nPhases = parser.makeInteger();*/  // see below
 				break;
 			case 3:
-				ar.setKvarrating(parser.makeDouble());
+				ar.setKVArRating(parser.makeDouble());
 				break;
 			case 4:
-				ar.setKvrating(parser.makeDouble());
+				ar.setKVRating(parser.makeDouble());
 				break;
 			case 5:
 				interpretConnection(Param);
 				break;
 			case 6:
-				doMatrix(ar.getRmatrix());
+				doMatrix(ar.getRMatrix());
 				break;
 			case 7:
 				doMatrix(ar.getXMatrix());
 				break;
 			case 8:
-				ar.setIsParallel(Utilities.interpretYesNo(Param));
+				ar.setParallel(Utilities.interpretYesNo(Param));
 				break;
 			case 9:
 				ar.setR(parser.makeDouble());
@@ -307,19 +307,19 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			ar.setX(OtherReactor.getX());
 			ar.setRp(OtherReactor.getRp());
 			ar.setRpSpecified(OtherReactor.isRpSpecified());
-			ar.setIsParallel(OtherReactor.isIsParallel());
+			ar.setParallel(OtherReactor.isParallel());
 
-			ar.setKvarrating(OtherReactor.getKvarrating());
-			ar.setKvrating(OtherReactor.getKvrating());
+			ar.setKVArRating(OtherReactor.getKVArRating());
+			ar.setKVRating(OtherReactor.getKVRating());
 			ar.setConnection(OtherReactor.getConnection());
 			ar.setSpecType(OtherReactor.getSpecType());
 
-			if (OtherReactor.getRmatrix() == null) {
-				ar.setRmatrix(new double[0]);
+			if (OtherReactor.getRMatrix() == null) {
+				ar.setRMatrix(new double[0]);
 			} else {
-				ar.setRmatrix( (double[]) Utilities.resizeArray(ar.getRmatrix(), ar.getNPhases() * ar.getNPhases()) );
+				ar.setRMatrix( (double[]) Utilities.resizeArray(ar.getRMatrix(), ar.getNPhases() * ar.getNPhases()) );
 				for (i = 0; i < ar.getNPhases() * ar.getNPhases(); i++) {
-					ar.getRmatrix()[i] = OtherReactor.getRmatrix()[i];
+					ar.getRMatrix()[i] = OtherReactor.getRMatrix()[i];
 				}
 			}
 
