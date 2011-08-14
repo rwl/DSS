@@ -14,9 +14,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class DSSExecutive implements Executive {
 
-	private boolean RecorderOn;
-	private String RecorderFile;
-	private FileWriter RecorderFileWriter;
+	private boolean recorderOn;
+	private String recorderFile;
+	private FileWriter recorderFileWriter;
 
 	/**
 	 * Private constructor prevents instantiation from other classes
@@ -44,7 +44,7 @@ public class DSSExecutive implements Executive {
 		ExecCommands.getInstance().setRedirFile("");
 
 		setRecorderOn(false);
-		this.RecorderFile = "";
+		this.recorderFile = "";
 
 		//DSSGlobals.getInstance().readDSS_Registry();
 	}
@@ -106,14 +106,14 @@ public class DSSExecutive implements Executive {
 		return ExecCommands.getInstance().getLastCmdLine();
 	}
 
-	public void setCommand(String Value) {
-		ExecCommands.getInstance().processCommand(Value);
+	public void setCommand(String value) {
+		ExecCommands.getInstance().processCommand(value);
 	}
 
 	public void clear() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (Globals.getNumCircuits() > 0) {
+		if (globals.getNumCircuits() > 0) {
 			/* First get rid of all existing stuff */
 			DSSGlobals.getInstance().clearAllCircuits();
 			DSSClassDefs.disposeDSSClasses();
@@ -121,36 +121,36 @@ public class DSSExecutive implements Executive {
 			/* Start over */
 			DSSClassDefs.createDSSClasses();
 			createDefaultDSSItems();
-			Globals.getDSSForms().setRebuildHelpForm(true);  // because class strings have changed
+			globals.getDSSForms().setRebuildHelpForm(true);  // because class strings have changed
 		}
 	}
 
-	public void setRecorderOn(boolean Value) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public void setRecorderOn(boolean value) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (Value) {
-				if (!RecorderOn) {
-					RecorderFile = Globals.getDSSDataDirectory() + "DSSRecorder.dss";
-					RecorderFileWriter = new FileWriter(RecorderFile);
+			if (value) {
+				if (!recorderOn) {
+					recorderFile = globals.getDSSDataDirectory() + "DSSRecorder.dss";
+					recorderFileWriter = new FileWriter(recorderFile);
 				}
-			} else if (RecorderOn) {
-				RecorderFileWriter.close();
+			} else if (recorderOn) {
+				recorderFileWriter.close();
 			}
 		} catch (IOException e) {
-			Globals.doErrorMsg("setRecorderOn", e.getMessage(),
+			globals.doErrorMsg("setRecorderOn", e.getMessage(),
 					"Lack of write access", 678);
 		}
-		DSSGlobals.getInstance().setGlobalResult(RecorderFile);
-		RecorderOn = Value;
+		DSSGlobals.getInstance().setGlobalResult(recorderFile);
+		recorderOn = value;
 	}
 
 	public boolean isRecorderOn() {
-		return RecorderOn;
+		return recorderOn;
 	}
 
-	public void writeToRecorderFile(String S) {
-		new PrintWriter(RecorderFileWriter).println(S);
+	public void writeToRecorderFile(String s) {
+		new PrintWriter(recorderFileWriter).println(s);
 	}
 
 }

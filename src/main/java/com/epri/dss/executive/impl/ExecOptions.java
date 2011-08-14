@@ -19,17 +19,17 @@ public class ExecOptions {
 
 	public final static int NumExecOptions = 79;
 
-	private String[] ExecOption;
-	private String[] OptionHelp;
+	private String[] execOption;
+	private String[] optionHelp;
 
-	private CommandList OptionList;
+	private CommandList optionList;
 
 	// private constructor prevents instantiation from other classes
 	private ExecOptions() {
 		defineOptions();
 
-		OptionList = new CommandListImpl(ExecOption);
-		OptionList.setAbbrevAllowed(true);
+		optionList = new CommandListImpl(execOption);
+		optionList.setAbbrevAllowed(true);
 	}
 
 	/**
@@ -47,106 +47,106 @@ public class ExecOptions {
 
 	private void defineOptions() {
 
-		ExecOption = new String[NumExecOptions];
+		execOption = new String[NumExecOptions];
 
-		ExecOption[0]  = "type";
-		ExecOption[1]  = "element";
-		ExecOption[2]  = "hour";
-		ExecOption[3]  = "sec";
-		ExecOption[4]  = "year";
-		ExecOption[5]  = "frequency";
-		ExecOption[6]  = "stepsize";
-		ExecOption[7]  = "mode";
-		ExecOption[8]  = "random";
-		ExecOption[9] =  "number";
-		ExecOption[10] = "time";
-		ExecOption[11] = "class";
-		ExecOption[12] = "object";
-		ExecOption[13] = "circuit";
-		ExecOption[14] = "editor";
-		ExecOption[15] = "tolerance";
-		ExecOption[16] = "maxiterations";
-		ExecOption[17] = "h";
-		ExecOption[18] = "Loadmodel";
-		ExecOption[19] = "Loadmult";
-		ExecOption[20] = "normvminpu";
-		ExecOption[21] = "normvmaxpu";
-		ExecOption[22] = "emergvminpu";
-		ExecOption[23] = "emergvmaxpu";
-		ExecOption[24] = "%mean";
-		ExecOption[25] = "%stddev";
-		ExecOption[26] = "LDCurve";  // load duration curve
-		ExecOption[27] = "%growth";  // default growth rate
-		ExecOption[28] = "Genkw";
-		ExecOption[29] = "Genpf";
-		ExecOption[30] = "CapkVAR";
-		ExecOption[31] = "Addtype";
-		ExecOption[32] = "Allowduplicates";
-		ExecOption[33] = "Zonelock";
-		ExecOption[34] = "UEweight";
-		ExecOption[35] = "Lossweight";
-		ExecOption[36] = "UEregs";
-		ExecOption[37] = "Lossregs";
-		ExecOption[38] = "Voltagebases";  // changes the default voltage base rules
-		ExecOption[39] = "Algorithm";     // changes the default voltage base rules
-		ExecOption[40] = "Trapezoidal";
-		ExecOption[41] = "Autobuslist";   // array of bus names to include in auto add solutions
-		ExecOption[42] = "Controlmode";
-		ExecOption[43] = "Tracecontrol";
-		ExecOption[44] = "Genmult";
-		ExecOption[45] = "Defaultdaily";
-		ExecOption[46] = "Defaultyearly";
-		ExecOption[47] = "Allocationfactors";
-		ExecOption[48] = "Cktmodel";
-		ExecOption[49] = "Pricesignal";
-		ExecOption[50] = "Pricecurve";
-		ExecOption[51] = "Terminal";
-		ExecOption[52] = "Basefrequency";
-		ExecOption[53] = "Harmonics";
-		ExecOption[54] = "Maxcontroliter";
-		ExecOption[55] = "Bus";
-		ExecOption[56] = "Datapath";
-		ExecOption[57] = "KeepList";
-		ExecOption[58] = "ReduceOption";
-		ExecOption[59] = "DemandInterval";
-		ExecOption[60] = "%Normal";
-		ExecOption[61] = "DIVerbose";
-		ExecOption[62] = "Casename";
-		ExecOption[63] = "Markercode";
-		ExecOption[64] = "Nodewidth";
-		ExecOption[65] = "Log";
-		ExecOption[66] = "Recorder";
-		ExecOption[67] = "Overloadreport";
-		ExecOption[68] = "Voltexceptionreport";
-		ExecOption[69] = "Cfactors";
-		ExecOption[70] = "Showexport";
-		ExecOption[71] = "Numallociterations";
-		ExecOption[72] = "DefaultBaseFrequency";
-		ExecOption[73] = "Markswitches";
-		ExecOption[74] = "Switchmarkercode";
-		ExecOption[75] = "Daisysize";
-		ExecOption[76] = "Marktransformers";
-		ExecOption[77] = "TransMarkerCode";
-		ExecOption[78] = "TransMarkerSize";
+		execOption[0]  = "type";
+		execOption[1]  = "element";
+		execOption[2]  = "hour";
+		execOption[3]  = "sec";
+		execOption[4]  = "year";
+		execOption[5]  = "frequency";
+		execOption[6]  = "stepsize";
+		execOption[7]  = "mode";
+		execOption[8]  = "random";
+		execOption[9] =  "number";
+		execOption[10] = "time";
+		execOption[11] = "class";
+		execOption[12] = "object";
+		execOption[13] = "circuit";
+		execOption[14] = "editor";
+		execOption[15] = "tolerance";
+		execOption[16] = "maxiterations";
+		execOption[17] = "h";
+		execOption[18] = "Loadmodel";
+		execOption[19] = "Loadmult";
+		execOption[20] = "normvminpu";
+		execOption[21] = "normvmaxpu";
+		execOption[22] = "emergvminpu";
+		execOption[23] = "emergvmaxpu";
+		execOption[24] = "%mean";
+		execOption[25] = "%stddev";
+		execOption[26] = "LDCurve";  // load duration curve
+		execOption[27] = "%growth";  // default growth rate
+		execOption[28] = "Genkw";
+		execOption[29] = "Genpf";
+		execOption[30] = "CapkVAR";
+		execOption[31] = "Addtype";
+		execOption[32] = "Allowduplicates";
+		execOption[33] = "Zonelock";
+		execOption[34] = "UEweight";
+		execOption[35] = "Lossweight";
+		execOption[36] = "UEregs";
+		execOption[37] = "Lossregs";
+		execOption[38] = "Voltagebases";  // changes the default voltage base rules
+		execOption[39] = "Algorithm";     // changes the default voltage base rules
+		execOption[40] = "Trapezoidal";
+		execOption[41] = "Autobuslist";   // array of bus names to include in auto add solutions
+		execOption[42] = "Controlmode";
+		execOption[43] = "Tracecontrol";
+		execOption[44] = "Genmult";
+		execOption[45] = "Defaultdaily";
+		execOption[46] = "Defaultyearly";
+		execOption[47] = "Allocationfactors";
+		execOption[48] = "Cktmodel";
+		execOption[49] = "Pricesignal";
+		execOption[50] = "Pricecurve";
+		execOption[51] = "Terminal";
+		execOption[52] = "Basefrequency";
+		execOption[53] = "Harmonics";
+		execOption[54] = "Maxcontroliter";
+		execOption[55] = "Bus";
+		execOption[56] = "Datapath";
+		execOption[57] = "KeepList";
+		execOption[58] = "ReduceOption";
+		execOption[59] = "DemandInterval";
+		execOption[60] = "%Normal";
+		execOption[61] = "DIVerbose";
+		execOption[62] = "Casename";
+		execOption[63] = "Markercode";
+		execOption[64] = "Nodewidth";
+		execOption[65] = "Log";
+		execOption[66] = "Recorder";
+		execOption[67] = "Overloadreport";
+		execOption[68] = "Voltexceptionreport";
+		execOption[69] = "Cfactors";
+		execOption[70] = "Showexport";
+		execOption[71] = "Numallociterations";
+		execOption[72] = "DefaultBaseFrequency";
+		execOption[73] = "Markswitches";
+		execOption[74] = "Switchmarkercode";
+		execOption[75] = "Daisysize";
+		execOption[76] = "Marktransformers";
+		execOption[77] = "TransMarkerCode";
+		execOption[78] = "TransMarkerSize";
 
-		String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSSGlobals.CRLF;
 
-		OptionHelp = new String[NumExecOptions];
+		optionHelp = new String[NumExecOptions];
 
-		OptionHelp[0]  = "Sets the active DSS class type.  Same as Class=...";
-		OptionHelp[1]  = "Sets the active DSS element by name. You can use "+
+		optionHelp[0]  = "Sets the active DSS class type.  Same as Class=...";
+		optionHelp[1]  = "Sets the active DSS element by name. You can use "+
 							"the complete object spec (class.name) or just the "+
 							"name.  if full name is specifed, class becomes the active "+
 							"class, also.";
-		OptionHelp[2]  = "Sets the hour used for the start time of the solution.";
-		OptionHelp[3]  = "Sets the seconds from the hour for the start time of the solution.";
-		OptionHelp[4]  = "Sets the Year (integer number) to be used for the solution. "+
+		optionHelp[2]  = "Sets the hour used for the start time of the solution.";
+		optionHelp[3]  = "Sets the seconds from the hour for the start time of the solution.";
+		optionHelp[4]  = "Sets the Year (integer number) to be used for the solution. "+
 							"for certain solution types, this determines the growth multiplier.";
-		OptionHelp[5]  = "Sets the frequency for the solution of the active circuit.";
-		OptionHelp[6]  = "Sets the time step size for the active circuit.  Default units are s. " +
+		optionHelp[5]  = "Sets the frequency for the solution of the active circuit.";
+		optionHelp[6]  = "Sets the time step size for the active circuit.  Default units are s. " +
 							"May also be specified in minutes or hours by appending \"m\" or \"h\" to the value. For example:" + CRLF + CRLF +
 							"   stepsize=.25h " + CRLF + "  stepsize=15m" + CRLF + "  stepsize=900s";
-		OptionHelp[7]  = "Set the solution Mode: One of"+
+		optionHelp[7]  = "Set the solution Mode: One of"+
 							CRLF+"  Snapshot,"+
 							CRLF+"  Daily,"+
 							CRLF+"  DIrect,"+
@@ -166,72 +166,72 @@ public class ExecOptions {
 							"Side effect: setting the Mode propergy resets all monitors and energy meters. It also " +
 							"resets the time step, etc. to defaults for each mode.  After the initial reset, the user " +
 							"must explicitly reset the monitors and/or meters until another Set Mode= command.";
-		OptionHelp[8]  = "One of [Uniform | Gaussian | Lognormal | None ] for Monte Carlo Variables.";
-		OptionHelp[9] = "Number of solutions to perform for Monte Carlo or dutycycle solutions.";
-		OptionHelp[10] = "Specify the solution start time as an array:"+CRLF+
+		optionHelp[8]  = "One of [Uniform | Gaussian | Lognormal | None ] for Monte Carlo Variables.";
+		optionHelp[9] = "Number of solutions to perform for Monte Carlo or dutycycle solutions.";
+		optionHelp[10] = "Specify the solution start time as an array:"+CRLF+
 							"time=(hour, secs)";
-		OptionHelp[11] = "Synonym for Type=. (See above)";
-		OptionHelp[12] = "Synonym for Element=. (See above)";
-		OptionHelp[13] = "Set the active circuit by name.";
-		OptionHelp[14] = "Set the command string required to start up the editor preferred by the user. Does not require a circuit defined.";
-		OptionHelp[15] = "Sets the solution tolerance.  Default is 0.0001.";
-		OptionHelp[16] = "Sets the maximum allowable iterations for power flow solutions. Default is 15.";
-		OptionHelp[17] = "Alternate name for time step size.";
-		OptionHelp[18] = "{Powerflow | Admittance} depending on the type of solution you wish to perform. "+
+		optionHelp[11] = "Synonym for Type=. (See above)";
+		optionHelp[12] = "Synonym for Element=. (See above)";
+		optionHelp[13] = "Set the active circuit by name.";
+		optionHelp[14] = "Set the command string required to start up the editor preferred by the user. Does not require a circuit defined.";
+		optionHelp[15] = "Sets the solution tolerance.  Default is 0.0001.";
+		optionHelp[16] = "Sets the maximum allowable iterations for power flow solutions. Default is 15.";
+		optionHelp[17] = "Alternate name for time step size.";
+		optionHelp[18] = "{Powerflow | Admittance} depending on the type of solution you wish to perform. "+
 							"If admittance, a non-iterative, direct solution is done with all loads and generators modeled by their "+
 							"equivalent admittance.";
-		OptionHelp[19] = "Global load multiplier for this circuit.  Does not affect loads "+
+		optionHelp[19] = "Global load multiplier for this circuit.  Does not affect loads "+
 							"designated to be \"fixed\".  All other base kW values are multiplied by this number. "+
 							"Defaults to 1.0 when the circuit is created. As with other values, it always stays "+
 							"at the last value to which it was set until changed again.";
-		OptionHelp[20] = "Minimum permissible per unit voltage for normal conditions. Default is 0.95.";
-		OptionHelp[21] = "Maximum permissible per unit voltage for normal conditions. Default is 1.05.";
-		OptionHelp[22] = "Minimum permissible per unit voltage for emergency (contingency) conditions. Default is 0.90.";
-		OptionHelp[23] = "Maximum permissible per unit voltage for emergency (contingency) conditions. Default is 1.08.";
-		OptionHelp[24] = "Percent mean to use for global load multiplier. Default is 65%.";
-		OptionHelp[25] = "Percent Standard deviation to use for global load multiplier. Default is 9%.";
-		OptionHelp[26] = "Set Load-Duration Curve. Global load multiplier is defined by this curve for LD1 and LD2 solution modes. Default is Nil.";
-		OptionHelp[27] = "Set default annual growth rate, percent, for loads with no growth curve specified. Default is 2.5.";
-		OptionHelp[28] = "Size of generator, kW, to automatically add to system. Default is 1000.0";
-		OptionHelp[29] = "Power factor of generator to assume for automatic addition. Default is 1.0.";
-		OptionHelp[30] = "Size of capacitor, kVAR, to automatically add to system.  Default is 600.0.";
-		OptionHelp[31] = "{Generator | Capacitor} Default is Generator. Type of device for AutoAdd Mode.";
-		OptionHelp[32] = "{YES/TRUE | NO/FALSE}   Default is No. Flag to indicate if it is OK to have devices of same name in the same class. " +
+		optionHelp[20] = "Minimum permissible per unit voltage for normal conditions. Default is 0.95.";
+		optionHelp[21] = "Maximum permissible per unit voltage for normal conditions. Default is 1.05.";
+		optionHelp[22] = "Minimum permissible per unit voltage for emergency (contingency) conditions. Default is 0.90.";
+		optionHelp[23] = "Maximum permissible per unit voltage for emergency (contingency) conditions. Default is 1.08.";
+		optionHelp[24] = "Percent mean to use for global load multiplier. Default is 65%.";
+		optionHelp[25] = "Percent Standard deviation to use for global load multiplier. Default is 9%.";
+		optionHelp[26] = "Set Load-Duration Curve. Global load multiplier is defined by this curve for LD1 and LD2 solution modes. Default is Nil.";
+		optionHelp[27] = "Set default annual growth rate, percent, for loads with no growth curve specified. Default is 2.5.";
+		optionHelp[28] = "Size of generator, kW, to automatically add to system. Default is 1000.0";
+		optionHelp[29] = "Power factor of generator to assume for automatic addition. Default is 1.0.";
+		optionHelp[30] = "Size of capacitor, kVAR, to automatically add to system.  Default is 600.0.";
+		optionHelp[31] = "{Generator | Capacitor} Default is Generator. Type of device for AutoAdd Mode.";
+		optionHelp[32] = "{YES/TRUE | NO/FALSE}   Default is No. Flag to indicate if it is OK to have devices of same name in the same class. " +
 							"If No, then a New command is treated as an Edit command. "+
 							"If Yes, then a New command will always result in a device being added.";
-		OptionHelp[33] = "{YES/TRUE | NO/FALSE}  Default is No. if No, then meter zones are recomputed each time there is a change in the circuit. "+
+		optionHelp[33] = "{YES/TRUE | NO/FALSE}  Default is No. if No, then meter zones are recomputed each time there is a change in the circuit. "+
 							"If Yes, then meter zones are not recomputed unless they have not yet been computed. "+
 							"Meter zones are normally recomputed on Solve command following a circuit change.";
-		OptionHelp[34] = "Weighting factor for UE/EEN in AutoAdd functions.  Defaults to 1.0." + CRLF + CRLF +
+		optionHelp[34] = "Weighting factor for UE/EEN in AutoAdd functions.  Defaults to 1.0." + CRLF + CRLF +
 							"Autoadd mode minimizes"  + CRLF + CRLF +
 							"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
 							"If you wish to ignore UE, set to 0. " +
 							"This applies only when there are EnergyMeter objects. " +
 							"Otherwise, AutoAdd mode minimizes total system losses.";
-		OptionHelp[35] = "Weighting factor for Losses in AutoAdd functions.  Defaults to 1.0." + CRLF+CRLF+
+		optionHelp[35] = "Weighting factor for Losses in AutoAdd functions.  Defaults to 1.0." + CRLF+CRLF+
 							"Autoadd mode minimizes"  + CRLF+CRLF+
 							"(Lossweight * Losses + UEweight * UE). " + CRLF + CRLF +
 							"If you wish to ignore Losses, set to 0. "+
 							"This applies only when there are EnergyMeter objects. " +
 							"Otherwise, AutoAdd mode minimizes total system losses.";
-		OptionHelp[36] = "Which EnergyMeter register(s) to use for UE in AutoAdd Mode. " +
+		optionHelp[36] = "Which EnergyMeter register(s) to use for UE in AutoAdd Mode. " +
 							"May be one or more registers.  if more than one, register values are summed together. " +
 							"Array of integer values > 0.  Defaults to 11 (for Load EEN). " + CRLF+CRLF+
 							"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
-		OptionHelp[37] = "Which EnergyMeter register(s) to use for Losses in AutoAdd Mode. " +
+		optionHelp[37] = "Which EnergyMeter register(s) to use for Losses in AutoAdd Mode. " +
 							"May be one or more registers.  if more than one, register values are summed together. " +
 							"Array of integer values > 0.  Defaults to 13 (for Zone kWh Losses). " +  CRLF+CRLF+
 							"for a list of EnergyMeter register numbers, do the \"Show Meters\" command after defining a circuit.";
-		OptionHelp[38] = "Define legal bus voltage bases for this circuit.  Enter an array "+
+		optionHelp[38] = "Define legal bus voltage bases for this circuit.  Enter an array "+
 							"of the legal voltage bases, in phase-to-phase voltages, for example:" +CRLF+CRLF+
 							"set voltagebases=\".208, .480, 12.47, 24.9, 34.5, 115.0, 230.0\" "+CRLF+CRLF+
 							"When the CalcVoltageBases command is issued, a snapshot solution is performed "+
 							"with no load injections and the bus base voltage is set to the nearest legal voltage base. "+
 							"The defaults are as shown in the example above.";
-		OptionHelp[39] = "{Normal | Newton}  Solution algorithm type.  Normal is a fixed point iteration " +
+		optionHelp[39] = "{Normal | Newton}  Solution algorithm type.  Normal is a fixed point iteration " +
 							"that is a little quicker than the Newton iteration.  Normal is adequate for most radial "+
 							"distribution circuits.  Newton is more robust for circuits that are difficult to solve.";
-		OptionHelp[40] = "{YES/TRUE | NO/FALSE}  Default is \"No\". Specifies whether to use trapezoidal integration for accumulating energy meter registers. " +
+		optionHelp[40] = "{YES/TRUE | NO/FALSE}  Default is \"No\". Specifies whether to use trapezoidal integration for accumulating energy meter registers. " +
 							"Applies to EnergyMeter and Generator objects.  Default method simply multiplies the " +
 							"present value of the registers times the width of the interval. " +
 							"Trapezoidal is more accurate when there are sharp changes in a load shape or unequal intervals. " +
@@ -240,7 +240,7 @@ public class ExecOptions {
 							"Keep in mind that for Trapezoidal, you have to solve one more point than the number of intervals. " +
 							"That is, to do a Daily simulation on a 24-hr load shape, you would set Number=25 to force a solution " +
 							"at the first point again to establish the last (24th) interval.";
-		OptionHelp[41] = "Array of bus names to include in AutoAdd searches. Or, you can specify a text file holding the names, one to a line, " +
+		optionHelp[41] = "Array of bus names to include in AutoAdd searches. Or, you can specify a text file holding the names, one to a line, " +
 							"by using the syntax (file=filename) instead of the actual array elements. "  +
 							"Default is null, which results in the program " +
 							"using either the buses in the EnergyMeter object zones or, if no EnergyMeters, all the buses, which can " +
@@ -248,7 +248,7 @@ public class ExecOptions {
 							"Examples:"+CRLF+CRLF+
 							"Set autobuslist=(bus1, bus2, bus3, ... )" +CRLF+
 							"Set autobuslist=(file=buslist.txt)";
-		OptionHelp[42] = "{OFF | STATIC |EVENT | TIME}  Default is \"STATIC\".  Control mode for the solution. " +
+		optionHelp[42] = "{OFF | STATIC |EVENT | TIME}  Default is \"STATIC\".  Control mode for the solution. " +
 							"Set to OFF to prevent controls from changing." + CRLF +
 							"STATIC = Time does not advance.  Control actions are executed in order of shortest time to act " +
 							"until all actions are cleared from the control queue.  Use this mode for power flow solutions which may require several " +
@@ -260,34 +260,34 @@ public class ExecOptions {
 							"Controls may reset and may choose not to act when it comes their time. " +CRLF+
 							"Use TIME mode when modeling a control externally to the DSS and a solution mode such as " +
 							"DAILY or DUTYCYCLE that advances time, or set the time (hour and sec) explicitly from the external program. ";
-		OptionHelp[43] = "{YES/TRUE | NO/FALSE}  Set to YES to trace the actions taken in the control queue.  "  +
+		optionHelp[43] = "{YES/TRUE | NO/FALSE}  Set to YES to trace the actions taken in the control queue.  "  +
 							"Creates a file named TRACE_CONTROLQUEUE.CSV in the default directory. " +
 							"The names of all circuit elements taking an action are logged.";
-		OptionHelp[44] = "Global multiplier for the kW output of every generator in the circuit. Default is 1.0. " +
+		optionHelp[44] = "Global multiplier for the kW output of every generator in the circuit. Default is 1.0. " +
 							"Applies to all but Autoadd solution modes. " +
 							"Ignored for generators designated as Status=Fixed.";
-		OptionHelp[45] = "Default daily load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
-		OptionHelp[46] = "Default yearly load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
-		OptionHelp[47] = "Sets the connected kVA allocation factors for all loads in the active circuit to the value given.";
-		OptionHelp[48] = "{Multiphase | Positive}  Default = Multiphase.  Designates whether circuit model is to interpreted as a normal multi-phase "+
+		optionHelp[45] = "Default daily load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
+		optionHelp[46] = "Default yearly load shape name. Default value is \"default\", which is a 24-hour curve defined when the DSS is started.";
+		optionHelp[47] = "Sets the connected kVA allocation factors for all loads in the active circuit to the value given.";
+		optionHelp[48] = "{Multiphase | Positive}  Default = Multiphase.  Designates whether circuit model is to interpreted as a normal multi-phase "+
 							"model or a positive-sequence only model";
-		OptionHelp[49] = "Sets the present price signal ($/MWh) for the circuit.  Default value is 25.";
-		OptionHelp[50] = "Sets the PRICESHAPE object to use to obtain for price signal. Default is none (null string). If none, " +
+		optionHelp[49] = "Sets the present price signal ($/MWh) for the circuit.  Default value is 25.";
+		optionHelp[50] = "Sets the PRICESHAPE object to use to obtain for price signal. Default is none (null string). If none, " +
 							"price signal either remains constant or is set by an external process using Set Price= option. " +
 							"Curve is defined as a PRICESHAPE in actual values (not normalized) and should be defined to correspond to " +
 							"the type of analysis being performed (daily, yearly, load-duration, etc.).";
-		OptionHelp[51] = "Set the active terminal of the active circuit element. May also be done with Select command.";
-		OptionHelp[52] = "Default = 60. Set the fundamental frequency for harmonic solution and the default base frequency for all impedance quantities. " +
+		optionHelp[51] = "Set the active terminal of the active circuit element. May also be done with Select command.";
+		optionHelp[52] = "Default = 60. Set the fundamental frequency for harmonic solution and the default base frequency for all impedance quantities. " +
 							"Side effect: also changes the value of the solution frequency. Saved as default for next circuit.";
-		OptionHelp[53] = "{ALL | (list of harmonics) }  Default = ALL. Array of harmonics for which to perform a solution in Harmonics mode. " +
+		optionHelp[53] = "{ALL | (list of harmonics) }  Default = ALL. Array of harmonics for which to perform a solution in Harmonics mode. " +
 							"If ALL, then solution is performed for all harmonics defined in spectra currently being used. " +
 							"Otherwise, specify a more limited list such as: " +CRLF+CRLF+
 							"   Set Harmonics=(1 5 7 11 13)";
-		OptionHelp[54] = "Max control iterations per solution.  Default is 10.";
-		OptionHelp[55] = "Set Active Bus by name.  Can also be done with Select and SetkVBase commands and the \"Set Terminal=\"  option. " +
+		optionHelp[54] = "Max control iterations per solution.  Default is 10.";
+		optionHelp[55] = "Set Active Bus by name.  Can also be done with Select and SetkVBase commands and the \"Set Terminal=\"  option. " +
 							"The bus connected to the active terminal becomes the active bus. See Zsc and Zsc012 commands.";
-		OptionHelp[56] = "Set the data path for files written or read by the DSS.  Defaults to the startup path. May be Null.  Executes a CHDIR to this path if non-null. Does not require a circuit defined.";
-		OptionHelp[57] = "Array of bus names to keep when performing circuit reductions. You can specify a text file holding the names, one to a line, " +
+		optionHelp[56] = "Set the data path for files written or read by the DSS.  Defaults to the startup path. May be Null.  Executes a CHDIR to this path if non-null. Does not require a circuit defined.";
+		optionHelp[57] = "Array of bus names to keep when performing circuit reductions. You can specify a text file holding the names, one to a line, " +
 							"by using the syntax (file=filename) instead of the actual array elements. "  +
 							"Command is cumulative (reset keeplist first). " +
 							"Reduction algorithm may keep other buses automatically. " +CRLF+CRLF+
@@ -295,7 +295,7 @@ public class ExecOptions {
 							"Reset Keeplist (sets all buses to FALSE (no keep))" +CRLF+
 							"Set KeepList=(bus1, bus2, bus3, ... )" +CRLF+
 							"Set KeepList=(file=buslist.txt)";
-		OptionHelp[58] = "{ Default or [null] | Stubs [Zmag=nnn] | MergeParallel | BreakLoops | Switches | TapEnds [maxangle=nnn] | Ends}  Strategy for reducing feeders. " +
+		optionHelp[58] = "{ Default or [null] | Stubs [Zmag=nnn] | MergeParallel | BreakLoops | Switches | TapEnds [maxangle=nnn] | Ends}  Strategy for reducing feeders. " +
 							"Default is to eliminate all dangling end buses and buses without load, caps, or taps. " +  CRLF +
 							"\"Stubs [Zmag=0.02]\" merges short branches with impedance less than Zmag (default = 0.02 ohms) " + CRLF +
 							"\"MergeParallel\" merges lines that have been found to be in parallel " +CRLF+
@@ -304,67 +304,67 @@ public class ExecOptions {
 							"\"Ends\" eliminates dangling ends only."+CRLF+
 							"\"Switches\" merges switches with downline lines and eliminates dangling switches."+CRLF+
 							"Marking buses with \"Keeplist\" will prevent their elimination.";
-		OptionHelp[59] = "{YES/TRUE | NO/FALSE} Default = no. Set for keeping demand interval data for daily, yearly, etc, simulations. "+
+		optionHelp[59] = "{YES/TRUE | NO/FALSE} Default = no. Set for keeping demand interval data for daily, yearly, etc, simulations. "+
 							"Side Effect:  Resets all meters!!!";
-		OptionHelp[60] = "Sets the Normal rating of all lines to a specified percent of the emergency rating.  Note: This action takes place immediately. "+
+		optionHelp[60] = "Sets the Normal rating of all lines to a specified percent of the emergency rating.  Note: This action takes place immediately. "+
 							"Only the in-memory value is changed for the duration of the run.";
-		OptionHelp[61] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Set to Yes/True if you wish a separate demand interval (DI) file written " +
+		optionHelp[61] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Set to Yes/True if you wish a separate demand interval (DI) file written " +
 							"for each meter.  Otherwise, only the totalizing meters are written.";
-		OptionHelp[62] = "Name of case for yearly simulations with demand interval data. "+
+		optionHelp[62] = "Name of case for yearly simulations with demand interval data. "+
 							"Becomes the name of the subdirectory under which all the year data are stored. "+
 							"Default = circuit name "+CRLF+CRLF+
 							"Side Effect: Sets the prefix for output files";
-		OptionHelp[63] = "Number code for node marker on circuit plots. Number from 0 to 47. Default is 16 (open circle). 24 is solid circle. Try other values for other symbols. See also Nodewidth";
-		OptionHelp[64] = "Width of node marker. Default=1. See MarkerCode";
-		OptionHelp[65] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Significant solution events are added to the Event Log, primarily for debugging.";
-		OptionHelp[66] = "{YES/TRUE | NO/FALSE} Default = FALSE. Opens DSSRecorder.DSS in DSS install folder and enables recording of all commands that come through " +
+		optionHelp[63] = "Number code for node marker on circuit plots. Number from 0 to 47. Default is 16 (open circle). 24 is solid circle. Try other values for other symbols. See also Nodewidth";
+		optionHelp[64] = "Width of node marker. Default=1. See MarkerCode";
+		optionHelp[65] = "{YES/TRUE | NO/FALSE} Default = FALSE.  Significant solution events are added to the Event Log, primarily for debugging.";
+		optionHelp[66] = "{YES/TRUE | NO/FALSE} Default = FALSE. Opens DSSRecorder.DSS in DSS install folder and enables recording of all commands that come through " +
 							"the text command interface. Closed by either setting to NO/FALSE or exiting the program. " +
 							"When closed by this command, the file name can be found in the Result. Does not require a circuit defined.";
-		OptionHelp[67] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets overload reporting on/off. DemandInterval must be set to true for this to have effect.";
-		OptionHelp[68] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets voltage exception reporting on/off. DemandInterval must be set to true for this to have effect.";
-		OptionHelp[69] = "Sets the CFactors for for all loads in the active circuit to the value given.";
-		OptionHelp[70] = "{YES/TRUE | NO/FALSE} Default = FALSE. If YES/TRUE will automatically show the results of an Export Command after it is written.";
-		OptionHelp[71] = "Default is 2. Maximum number of iterations for load allocations for each time the AllocateLoads or Estimate command is given.";
-		OptionHelp[72] = "Set Default Base Frequency, Hz. Side effect: Sets solution Frequency and default Circuit Base Frequency. This value is saved when the DSS closes down.";
-		OptionHelp[73] = "{YES/TRUE | NO/FALSE}  Default is NO. Mark lines that are switches or are isolated with a symbol. See SwitchMarkerCode.";
-		OptionHelp[74] = "Numeric marker code for lines with switches or are isolated from the circuit. Default is 4. See markswitches option.";
-		OptionHelp[75] = "Default is 1.0. Relative size (a multiplier applied to default size) of daisy circles on daisy plot.";
-		OptionHelp[76] = "{YES/TRUE | NO/FALSE}  Default is NO. Mark transformer locations with a symbol. See TransMarkerCode. " +
+		optionHelp[67] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets overload reporting on/off. DemandInterval must be set to true for this to have effect.";
+		optionHelp[68] = "{YES/TRUE | NO/FALSE} Default = FALSE. For yearly solution mode, sets voltage exception reporting on/off. DemandInterval must be set to true for this to have effect.";
+		optionHelp[69] = "Sets the CFactors for for all loads in the active circuit to the value given.";
+		optionHelp[70] = "{YES/TRUE | NO/FALSE} Default = FALSE. If YES/TRUE will automatically show the results of an Export Command after it is written.";
+		optionHelp[71] = "Default is 2. Maximum number of iterations for load allocations for each time the AllocateLoads or Estimate command is given.";
+		optionHelp[72] = "Set Default Base Frequency, Hz. Side effect: Sets solution Frequency and default Circuit Base Frequency. This value is saved when the DSS closes down.";
+		optionHelp[73] = "{YES/TRUE | NO/FALSE}  Default is NO. Mark lines that are switches or are isolated with a symbol. See SwitchMarkerCode.";
+		optionHelp[74] = "Numeric marker code for lines with switches or are isolated from the circuit. Default is 4. See markswitches option.";
+		optionHelp[75] = "Default is 1.0. Relative size (a multiplier applied to default size) of daisy circles on daisy plot.";
+		optionHelp[76] = "{YES/TRUE | NO/FALSE}  Default is NO. Mark transformer locations with a symbol. See TransMarkerCode. " +
 							"The coordinate of one of the buses for winding 1 or 2 must be defined for the symbol to show";
-		OptionHelp[77] = "Numeric marker code for transformers. Default is 35. See markstransformers option.";
-		OptionHelp[78] = "Size of transformer marker. Default is 1.";
+		optionHelp[77] = "Numeric marker code for transformers. Default is 35. See markstransformers option.";
+		optionHelp[78] = "Size of transformer marker. Default is 1.";
 	}
 
 	public String[] getExecOption() {
-		return ExecOption;
+		return execOption;
 	}
 
-	public void setExecOption(String[] execOption) {
-		ExecOption = execOption;
+	public void setExecOption(String[] values) {
+		execOption = values;
 	}
 
 	public String[] getOptionHelp() {
-		return OptionHelp;
+		return optionHelp;
 	}
 
-	public void setOptionHelp(String[] optionHelp) {
-		OptionHelp = optionHelp;
+	public void setOptionHelp(String[] values) {
+		optionHelp = values;
 	}
 
 	public String getExecOption(int i) {
-		return ExecOption[i];
+		return execOption[i];
 	}
 
 	public String getOptionHelp(int i) {
-		return OptionHelp[i];
+		return optionHelp[i];
 	}
 
 	public CommandList getOptionList() {
-		return OptionList;
+		return optionList;
 	}
 
-	public void setOptionList(CommandList optionList) {
-		OptionList = optionList;
+	public void setOptionList(CommandList list) {
+		optionList = list;
 	}
 
 	/**
@@ -373,50 +373,50 @@ public class ExecOptions {
 	 * This is for setting global options that do not require an active circuit.
 	 */
 	public boolean doSetCmd_NoCircuit() {
-		boolean Result = true;
+		boolean result = true;
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// Continue parsing command line
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = OptionList.getCommand(ParamName);
+				paramPointer = optionList.getCommand(paramName);
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set command ", 130);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
 				break;
 			case 14:
-				Globals.setDefaultEditor(Param);  // 'Editor='
+				globals.setDefaultEditor(param);  // 'Editor='
 				break;
 			case 56:
-				Globals.setDataPath(Param);  // set a legal data path
+				globals.setDataPath(param);  // set a legal data path
 				break;
 			case 66:
-				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(param));
 				break;
 			case 72:
-				Globals.setDefaultBaseFreq(parser.makeDouble());
+				globals.setDefaultBaseFreq(parser.makeDouble());
 				break;
 			default:
-				Globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
-				Result = false;  // indicate that we could not process all set command
+				globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
+				result = false;  // indicate that we could not process all set command
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -424,334 +424,334 @@ public class ExecOptions {
 	 *
 	 * Solve command is re-routed here first to set options before solving.
 	 */
-	public int doSetCmd(int SolveOption) {
-		LoadShapeObj TestLoadShapeObj;
-		MutableInt NumRegs;
+	public int doSetCmd(int solveOption) {
+		LoadShapeObj testLoadShapeObj;
+		MutableInt numRegs;
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Circuit ckt;
 		SolutionObj solution;
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing command line
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = OptionList.getCommand(ParamName);
+				paramPointer = optionList.getCommand(paramName);
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Set command ", 130);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
 				break;
 			case 0:
-				DSSClassDefs.setObjectClass(Param);
+				DSSClassDefs.setObjectClass(param);
 				break;
 			case 11:
-				DSSClassDefs.setObjectClass(Param);
+				DSSClassDefs.setObjectClass(param);
 				break;
 			case 1:
-				Globals.setObject(Param);
+				globals.setObject(param);
 				break;
 			case 12:
-				Globals.setObject(Param);
+				globals.setObject(param);
 				break;
 			case 2:
-				Globals.getActiveCircuit().getSolution().setIntHour(parser.makeInteger());
+				globals.getActiveCircuit().getSolution().setIntHour(parser.makeInteger());
 				break;
 			case 3:
-				Globals.getActiveCircuit().getSolution().getDynaVars().t = parser.makeDouble();
+				globals.getActiveCircuit().getSolution().getDynaVars().t = parser.makeDouble();
 				break;
 			case 4:
-				ckt = Globals.getActiveCircuit();
+				ckt = globals.getActiveCircuit();
 				ckt.getSolution().setYear(parser.makeInteger());
 				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1));
 				break;
 			case 5:
-				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 6:
-				Globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(Param);
+				globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
 				break;
 			case 17:
-				Globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(Param);
+				globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
 				break;
 			case 7:
-				Globals.getActiveCircuit().getSolution().setMode( Utilities.interpretSolveMode(Param) );  // see DSSGlobals
+				globals.getActiveCircuit().getSolution().setMode( Utilities.interpretSolveMode(param) );  // see DSSGlobals
 				break;
 			case 8:
-				Globals.getActiveCircuit().getSolution().setRandomType( Utilities.interpretRandom(Param) );
+				globals.getActiveCircuit().getSolution().setRandomType( Utilities.interpretRandom(param) );
 				break;
 			case 9:
-				Globals.getActiveCircuit().getSolution().setNumberOfTimes(parser.makeInteger());
+				globals.getActiveCircuit().getSolution().setNumberOfTimes(parser.makeInteger());
 				break;
 			case 10:
 				ExecHelper.setTime();
 				break;
 			case 13:
-				ExecHelper.setActiveCircuit(Param);
+				ExecHelper.setActiveCircuit(param);
 				break;
 			case 14:
-				Globals.setDefaultEditor(Param);  // 'Editor='
+				globals.setDefaultEditor(param);  // 'Editor='
 				break;
 			case 15:
-				Globals.getActiveCircuit().getSolution().setConvergenceTolerance(parser.makeDouble());
+				globals.getActiveCircuit().getSolution().setConvergenceTolerance(parser.makeDouble());
 				break;
 			case 16:
-				Globals.getActiveCircuit().getSolution().setMaxIterations(parser.makeInteger());
+				globals.getActiveCircuit().getSolution().setMaxIterations(parser.makeInteger());
 				break;
 			case 18:
-				solution = Globals.getActiveCircuit().getSolution();
-				solution.setDefaultLoadModel(Utilities.interpretLoadModel(Param)); // for reverting to last on specified
+				solution = globals.getActiveCircuit().getSolution();
+				solution.setDefaultLoadModel(Utilities.interpretLoadModel(param)); // for reverting to last on specified
 				solution.setLoadModel(solution.getDefaultLoadModel());
 				break;
 			case 19:
-				Globals.getActiveCircuit().setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
+				globals.getActiveCircuit().setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
 				break;
 			case 20:
-				Globals.getActiveCircuit().setNormalMinVolts(parser.makeDouble());
+				globals.getActiveCircuit().setNormalMinVolts(parser.makeDouble());
 				break;
 			case 21:
-				Globals.getActiveCircuit().setNormalMaxVolts(parser.makeDouble());
+				globals.getActiveCircuit().setNormalMaxVolts(parser.makeDouble());
 				break;
 			case 22:
-				Globals.getActiveCircuit().setEmergMinVolts(parser.makeDouble());
+				globals.getActiveCircuit().setEmergMinVolts(parser.makeDouble());
 				break;
 			case 23:
-				Globals.getActiveCircuit().setEmergMaxVolts(parser.makeDouble());
+				globals.getActiveCircuit().setEmergMaxVolts(parser.makeDouble());
 				break;
 			case 24:
-				Globals.getActiveCircuit().getDefaultDailyShapeObj().setMean(parser.makeDouble() / 100.0);
+				globals.getActiveCircuit().getDefaultDailyShapeObj().setMean(parser.makeDouble() / 100.0);
 				break;
 			case 25:
-				Globals.getActiveCircuit().getDefaultDailyShapeObj().setStdDev(parser.makeDouble() / 100.0);
+				globals.getActiveCircuit().getDefaultDailyShapeObj().setStdDev(parser.makeDouble() / 100.0);
 				break;
 			case 26:
-				ckt = Globals.getActiveCircuit();
-				ckt.setLoadDurCurve(Param);
-				ckt.setLoadDurCurveObj((LoadShapeObj) Globals.getLoadShapeClass().find(Param));
+				ckt = globals.getActiveCircuit();
+				ckt.setLoadDurCurve(param);
+				ckt.setLoadDurCurveObj((LoadShapeObj) globals.getLoadShapeClass().find(param));
 				if (ckt.getLoadDurCurveObj() == null)
-					Globals.doSimpleMsg("Load-duration curve not found.", 131);
+					globals.doSimpleMsg("Load-duration curve not found.", 131);
 				break;
 			case 27:
-				ckt = Globals.getActiveCircuit();
+				ckt = globals.getActiveCircuit();
 				ckt.setDefaultGrowthRate(1.0 + parser.makeDouble() / 100.0);
 				ckt.setDefaultGrowthFactor( Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
 				break;
 			case 28:
-				Globals.getActiveCircuit().getAutoAddObj().setGenKW(parser.makeDouble());
+				globals.getActiveCircuit().getAutoAddObj().setGenKW(parser.makeDouble());
 				break;
 			case 29:
-				Globals.getActiveCircuit().getAutoAddObj().setGenPF(parser.makeDouble());
+				globals.getActiveCircuit().getAutoAddObj().setGenPF(parser.makeDouble());
 				break;
 			case 30:
-				Globals.getActiveCircuit().getAutoAddObj().setCapKVAr(parser.makeDouble());
+				globals.getActiveCircuit().getAutoAddObj().setCapKVAr(parser.makeDouble());
 				break;
 			case 31:
-				Globals.getActiveCircuit().getAutoAddObj().setAddType(Utilities.interpretAddType(Param));
+				globals.getActiveCircuit().getAutoAddObj().setAddType(Utilities.interpretAddType(param));
 				break;
 			case 32:
-				Globals.getActiveCircuit().setDuplicatesAllowed(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setDuplicatesAllowed(Utilities.interpretYesNo(param));
 				break;
 			case 33:
-				Globals.getActiveCircuit().setZonesLocked(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setZonesLocked(Utilities.interpretYesNo(param));
 				break;
 			case 34:
-				Globals.getActiveCircuit().setUEWeight(parser.makeDouble());
+				globals.getActiveCircuit().setUEWeight(parser.makeDouble());
 				break;
 			case 35:
-				Globals.getActiveCircuit().setLossWeight(parser.makeDouble());
+				globals.getActiveCircuit().setLossWeight(parser.makeDouble());
 				break;
 			case 36:
-				NumRegs = new MutableInt();
-				Globals.getActiveCircuit().setUERegs(
-						Utilities.parseIntArray(Globals.getActiveCircuit().getUERegs(), NumRegs, Param)
+				numRegs = new MutableInt();
+				globals.getActiveCircuit().setUERegs(
+						Utilities.parseIntArray(globals.getActiveCircuit().getUERegs(), numRegs, param)
 				);
-				Globals.getActiveCircuit().setNumUERegs(NumRegs.intValue());
+				globals.getActiveCircuit().setNumUERegs(numRegs.intValue());
 				break;
 			case 37:
-				NumRegs = new MutableInt();
-				Globals.getActiveCircuit().setLossRegs(
-						Utilities.parseIntArray(Globals.getActiveCircuit().getLossRegs(), NumRegs, Param)
+				numRegs = new MutableInt();
+				globals.getActiveCircuit().setLossRegs(
+						Utilities.parseIntArray(globals.getActiveCircuit().getLossRegs(), numRegs, param)
 				);
-				Globals.getActiveCircuit().setNumLossRegs(NumRegs.intValue());
+				globals.getActiveCircuit().setNumLossRegs(numRegs.intValue());
 				break;
 			case 38:
 				ExecHelper.doLegalVoltageBases();
 				break;
 			case 39:
-				Globals.getActiveCircuit().getSolution().setAlgorithm(Utilities.interpretSolveAlg(Param));
+				globals.getActiveCircuit().getSolution().setAlgorithm(Utilities.interpretSolveAlg(param));
 				break;
 			case 40:
-				Globals.getActiveCircuit().setTrapezoidalIntegration(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setTrapezoidalIntegration(Utilities.interpretYesNo(param));
 				break;
 			case 41:
-				ExecHelper.doAutoAddBusList(Param);
+				ExecHelper.doAutoAddBusList(param);
 				break;
 			case 42:
-				solution = Globals.getActiveCircuit().getSolution();
-				solution.setControlMode(Utilities.interpretControlMode(Param));
+				solution = globals.getActiveCircuit().getSolution();
+				solution.setControlMode(Utilities.interpretControlMode(param));
 				solution.setDefaultControlMode(solution.getControlMode());  // always revert to last one specified in a script
 				break;
 			case 43:
-				Globals.getActiveCircuit().getControlQueue().setTrace(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().getControlQueue().setTrace(Utilities.interpretYesNo(param));
 				break;
 			case 44:
-				Globals.getActiveCircuit().setGenMultiplier(parser.makeDouble());
+				globals.getActiveCircuit().setGenMultiplier(parser.makeDouble());
 				break;
 			case 45:
-				TestLoadShapeObj = (LoadShapeObj) Globals.getLoadShapeClass().find(Param);
-				if (TestLoadShapeObj != null)
-					Globals.getActiveCircuit().setDefaultDailyShapeObj(TestLoadShapeObj);
+				testLoadShapeObj = (LoadShapeObj) globals.getLoadShapeClass().find(param);
+				if (testLoadShapeObj != null)
+					globals.getActiveCircuit().setDefaultDailyShapeObj(testLoadShapeObj);
 				break;
 			case 46:
-				TestLoadShapeObj = (LoadShapeObj) Globals.getLoadShapeClass().find(Param);
-				if (TestLoadShapeObj != null)
-					Globals.getActiveCircuit().setDefaultYearlyShapeObj(TestLoadShapeObj);
+				testLoadShapeObj = (LoadShapeObj) globals.getLoadShapeClass().find(param);
+				if (testLoadShapeObj != null)
+					globals.getActiveCircuit().setDefaultYearlyShapeObj(testLoadShapeObj);
 				break;
 			case 47:
 				ExecHelper.doSetAllocationFactors(parser.makeDouble());
 				break;
 			case 48:
-				Globals.getActiveCircuit().setPositiveSequence(Utilities.interpretCktModel(Param));
+				globals.getActiveCircuit().setPositiveSequence(Utilities.interpretCktModel(param));
 				break;
 			case 49:
-				Globals.getActiveCircuit().setPriceSignal(parser.makeDouble());
+				globals.getActiveCircuit().setPriceSignal(parser.makeDouble());
 				break;
 			case 50:
-				ckt = Globals.getActiveCircuit();
-				ckt.setPriceCurve(Param);
-				ckt.setPriceCurveObj((PriceShapeObj) Globals.getLoadShapeClass().find(Param));
+				ckt = globals.getActiveCircuit();
+				ckt.setPriceCurve(param);
+				ckt.setPriceCurveObj((PriceShapeObj) globals.getLoadShapeClass().find(param));
 				if (ckt.getPriceCurveObj() == null)
-					Globals.doSimpleMsg("PriceShape: \"" +Param+ "\" not found.", 132);
+					globals.doSimpleMsg("PriceShape: \"" +param+ "\" not found.", 132);
 				break;
 			case 51:
-				ckt = Globals.getActiveCircuit();
+				ckt = globals.getActiveCircuit();
 				if (ckt.getActiveCktElement() != null) {
 					CktElement cktElem = ckt.getActiveCktElement();
 					cktElem.setActiveTerminalIdx(parser.makeInteger());
-					Globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );  // bus connected to terminal
+					globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );  // bus connected to terminal
 				}
 				break;
 			case 52:
-				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
+				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 53:
-				ExecHelper.doHarmonicsList(Param);
+				ExecHelper.doHarmonicsList(param);
 				break;
 			case 54:
-				Globals.getActiveCircuit().getSolution().setMaxControlIterations(parser.makeInteger());
+				globals.getActiveCircuit().getSolution().setMaxControlIterations(parser.makeInteger());
 				break;
 			case 55:
-				Result = Globals.setActiveBus(Param);  // see DSSGlobals
+				result = globals.setActiveBus(param);  // see DSSGlobals
 				break;
 			case 56:
-				Globals.setDataPath(Param);  // set a legal data path
+				globals.setDataPath(param);  // set a legal data path
 				break;
 			case 57:
-				ExecHelper.doKeeperBusList(Param);
+				ExecHelper.doKeeperBusList(param);
 				break;
 			case 58:
-				ExecHelper.doSetReduceStrategy(Param);
+				ExecHelper.doSetReduceStrategy(param);
 				break;
 			case 59:
-				Globals.getEnergyMeterClass().setSaveDemandInterval(Utilities.interpretYesNo(Param));
+				globals.getEnergyMeterClass().setSaveDemandInterval(Utilities.interpretYesNo(param));
 				break;
 			case 60:
-				Globals.getActiveCircuit().setPctNormalFactor(parser.makeDouble());
-				ExecHelper.doSetNormal(Globals.getActiveCircuit().getPctNormalFactor());
+				globals.getActiveCircuit().setPctNormalFactor(parser.makeDouble());
+				ExecHelper.doSetNormal(globals.getActiveCircuit().getPctNormalFactor());
 				break;
 			case 61:
-				Globals.getEnergyMeterClass().setDIVerbose(Utilities.interpretYesNo(Param));
+				globals.getEnergyMeterClass().setDIVerbose(Utilities.interpretYesNo(param));
 				break;
 			case 62:
-				Globals.getActiveCircuit().setCaseName(parser.makeString());
+				globals.getActiveCircuit().setCaseName(parser.makeString());
 				break;
 			case 63:
-				Globals.getActiveCircuit().setNodeMarkerCode(parser.makeInteger());
+				globals.getActiveCircuit().setNodeMarkerCode(parser.makeInteger());
 				break;
 			case 64:
-				Globals.getActiveCircuit().setNodeMarkerWidth(parser.makeInteger());
+				globals.getActiveCircuit().setNodeMarkerWidth(parser.makeInteger());
 				break;
 			case 65:
-				Globals.getActiveCircuit().setLogEvents(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setLogEvents(Utilities.interpretYesNo(param));
 				break;
 			case 66:
-				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(Param));
+				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(param));
 				break;
 			case 67:
-				Globals.getEnergyMeterClass().setDo_OverloadReport(Utilities.interpretYesNo(Param));
+				globals.getEnergyMeterClass().setDo_OverloadReport(Utilities.interpretYesNo(param));
 				break;
 			case 68:
-				Globals.getEnergyMeterClass().setDo_VoltageExceptionReport(Utilities.interpretYesNo(Param));
+				globals.getEnergyMeterClass().setDo_VoltageExceptionReport(Utilities.interpretYesNo(param));
 				break;
 			case 69:
 				ExecHelper.doSetCFactors(parser.makeDouble());
 				break;
 			case 70:
-				Globals.setAutoShowExport(Utilities.interpretYesNo(Param));
+				globals.setAutoShowExport(Utilities.interpretYesNo(param));
 				break;
 			case 71:
-				Globals.setMaxAllocationIterations(parser.makeInteger());
+				globals.setMaxAllocationIterations(parser.makeInteger());
 				break;
 			case 72:
-				Globals.setDefaultBaseFreq(parser.makeDouble());
-				Globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				Globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				globals.setDefaultBaseFreq(parser.makeDouble());
+				globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
+				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 73:
-				Globals.getActiveCircuit().setMarkSwitches(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setMarkSwitches(Utilities.interpretYesNo(param));
 				break;
 			case 74:
-				Globals.getActiveCircuit().setSwitchMarkerCode(parser.makeInteger());
+				globals.getActiveCircuit().setSwitchMarkerCode(parser.makeInteger());
 				break;
 			case 75:
-				Globals.setDaisySize(parser.makeDouble());
+				globals.setDaisySize(parser.makeDouble());
 				break;
 			case 76:
-				Globals.getActiveCircuit().setMarkTransformers(Utilities.interpretYesNo(Param));
+				globals.getActiveCircuit().setMarkTransformers(Utilities.interpretYesNo(param));
 				break;
 			case 77:
-				Globals.getActiveCircuit().setTransMarkerCode(parser.makeInteger());
+				globals.getActiveCircuit().setTransMarkerCode(parser.makeInteger());
 				break;
 			case 78:
-				Globals.getActiveCircuit().setTransMarkerSize(parser.makeInteger());
+				globals.getActiveCircuit().setTransMarkerSize(parser.makeInteger());
 				break;
 			case 79:
-				Globals.getActiveCircuit().setActiveLoadShapeClass(Utilities.interpretLoadShapeClass(Param));
+				globals.getActiveCircuit().setActiveLoadShapeClass(Utilities.interpretLoadShapeClass(param));
 				break;
 			case 80:
-				Globals.setDefaultEarthModel(Utilities.interpretEarthModel(Param));
+				globals.setDefaultEarthModel(Utilities.interpretEarthModel(param));
 				break;
 			default:
 				// ignore excess parameters
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 3:
-				Globals.getActiveCircuit().getSolution().updateDblHour();
+				globals.getActiveCircuit().getSolution().updateDblHour();
 				break;
 			case 4:
-				Globals.getActiveCircuit().getSolution().updateDblHour();
+				globals.getActiveCircuit().getSolution().updateDblHour();
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		if (SolveOption == 1)
+		if (solveOption == 1)
 			ExecHelper.doSolveCmd();
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -759,367 +759,367 @@ public class ExecOptions {
 	 * may be retrieved by result property of the DSSText interface.
 	 */
 	public int doGetCmd() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Circuit ckt;
 
-		int Result = 0;
-		int ParamPointer;
+		int result = 0;
+		int paramPointer;
 		try {
-			Globals.setGlobalResult("");  // initialize for appending
+			globals.setGlobalResult("");  // initialize for appending
 
 			// continue parsing command line
-			String ParamName = Parser.getInstance().getNextParam();
-			String Param = Parser.getInstance().makeString();
+			String paramName = Parser.getInstance().getNextParam();
+			String param = Parser.getInstance().makeString();
 			// there will be no named parameters in this command and the params
 			// themselves will be the parameter name to return
-			while (Param.length() > 0) {
-				ParamPointer = OptionList.getCommand(Param);
+			while (param.length() > 0) {
+				paramPointer = optionList.getCommand(param);
 
-				switch (ParamPointer) {
+				switch (paramPointer) {
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Get command ", 133);
+					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Get command ", 133);
 					break;
 				case 0:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
 					break;
 				case 11:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
 					break;
 				case 1:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getActiveCktElement().getName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getName());
 					break;
 				case 12:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getActiveCktElement().getName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getName());
 					break;
 				case 2:
-					Globals.appendGlobalResult(String.valueOf(Globals.getActiveCircuit().getSolution().getIntHour()));
+					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getIntHour()));
 					break;
 				case 3:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getSolution().getDynaVars().t));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().t));
 					break;
 				case 4:
-					Globals.appendGlobalResult(String.valueOf(Globals.getActiveCircuit().getSolution().getYear()));
+					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getYear()));
 					break;
 				case 5:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getSolution().getFrequency()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getFrequency()));
 					break;
 				case 6:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getSolution().getDynaVars().h));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().h));
 					break;
 				case 17:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getSolution().getDynaVars().h));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().h));
 					break;
 				case 7:
-					Globals.appendGlobalResult(Utilities.getSolutionModeID());
+					globals.appendGlobalResult(Utilities.getSolutionModeID());
 					break;
 				case 8:
-					Globals.appendGlobalResult(Utilities.getRandomModeID());
+					globals.appendGlobalResult(Utilities.getRandomModeID());
 					break;
 				case 9:
-					Globals.appendGlobalResult(String.valueOf(Globals.getActiveCircuit().getSolution().getNumberOfTimes()));
+					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getNumberOfTimes()));
 					break;
 				case 10:
-					Globals.appendGlobalResult(String.format("[ %d, %-g ]", String.valueOf(Globals.getActiveCircuit().getSolution().getIntHour()), Globals.getActiveCircuit().getSolution().getDynaVars().t));
+					globals.appendGlobalResult(String.format("[ %d, %-g ]", String.valueOf(globals.getActiveCircuit().getSolution().getIntHour()), globals.getActiveCircuit().getSolution().getDynaVars().t));
 					break;
 				case 13:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getName());
 					break;
 				case 14:
-					Globals.appendGlobalResult(Globals.getDefaultEditor());
+					globals.appendGlobalResult(globals.getDefaultEditor());
 					break;
 				case 15:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getSolution().getConvergenceTolerance()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getConvergenceTolerance()));
 					break;
 				case 16:
-					Globals.appendGlobalResult(String.valueOf(Globals.getActiveCircuit().getSolution().getMaxIterations()));
+					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getMaxIterations()));
 					break;
 				case 18:
-					Globals.appendGlobalResult(Utilities.getLoadModel());
+					globals.appendGlobalResult(Utilities.getLoadModel());
 					break;
 				case 19:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getLoadMultiplier()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getLoadMultiplier()));
 					break;
 				case 20:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getNormalMinVolts()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getNormalMinVolts()));
 					break;
 				case 21:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getNormalMaxVolts()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getNormalMaxVolts()));
 					break;
 				case 22:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getEmergMinVolts()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getEmergMinVolts()));
 					break;
 				case 23:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getEmergMaxVolts()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getEmergMaxVolts()));
 					break;
 				case 24:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getDefaultDailyShapeObj().getMean() * 100.0));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getDefaultDailyShapeObj().getMean() * 100.0));
 					break;
 				case 25:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getDefaultDailyShapeObj().getStdDev() * 100.0));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getDefaultDailyShapeObj().getStdDev() * 100.0));
 					break;
 				case 26:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getLoadDurCurve());
+					globals.appendGlobalResult(globals.getActiveCircuit().getLoadDurCurve());
 					break;
 				case 27:
-					Globals.appendGlobalResult(String.format("%-g", (Globals.getActiveCircuit().getDefaultGrowthRate() - 1.0) * 100.0));
+					globals.appendGlobalResult(String.format("%-g", (globals.getActiveCircuit().getDefaultGrowthRate() - 1.0) * 100.0));
 					break;
 				case 28:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getGenKW()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getGenKW()));
 					break;
 				case 29:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getGenPF()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getGenPF()));
 					break;
 				case 30:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getAutoAddObj().getCapKVAr()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getCapKVAr()));
 					break;
 				case 31:
-					switch (Globals.getActiveCircuit().getAutoAddObj().getAddType()) {
+					switch (globals.getActiveCircuit().getAutoAddObj().getAddType()) {
 					case DSSGlobals.GENADD:
-						Globals.appendGlobalResult("generator");
+						globals.appendGlobalResult("generator");
 						break;
 					case DSSGlobals.CAPADD:
-						Globals.appendGlobalResult("capacitor");
+						globals.appendGlobalResult("capacitor");
 						break;
 					}
 					break;
 				case 32:
-					if (Globals.getActiveCircuit().isDuplicatesAllowed()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isDuplicatesAllowed()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 33:
-					if (Globals.getActiveCircuit().isZonesLocked()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isZonesLocked()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 34:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getUEWeight()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getUEWeight()));
 					break;
 				case 35:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getLossWeight()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getLossWeight()));
 					break;
 				case 36:
-					Globals.appendGlobalResult(Utilities.intArrayToString(Globals.getActiveCircuit().getUERegs(), Globals.getActiveCircuit().getNumUERegs()));
+					globals.appendGlobalResult(Utilities.intArrayToString(globals.getActiveCircuit().getUERegs(), globals.getActiveCircuit().getNumUERegs()));
 					break;
 				case 37:
-					Globals.appendGlobalResult(Utilities.intArrayToString(Globals.getActiveCircuit().getLossRegs(), Globals.getActiveCircuit().getNumLossRegs()));
+					globals.appendGlobalResult(Utilities.intArrayToString(globals.getActiveCircuit().getLossRegs(), globals.getActiveCircuit().getNumLossRegs()));
 					break;
 				case 38:
-					ckt = Globals.getActiveCircuit();
-					Globals.setGlobalResult("(");
+					ckt = globals.getActiveCircuit();
+					globals.setGlobalResult("(");
 					for (double vBase : ckt.getLegalVoltageBases())
-						Globals.setGlobalResult(Globals.getGlobalResult() + String.format("%-g, ", vBase));
-					Globals.setGlobalResult(Globals.getGlobalResult() + ")");
+						globals.setGlobalResult(globals.getGlobalResult() + String.format("%-g, ", vBase));
+					globals.setGlobalResult(globals.getGlobalResult() + ")");
 					break;
 				case 39:
-					switch (Globals.getActiveCircuit().getSolution().getAlgorithm()) {
+					switch (globals.getActiveCircuit().getSolution().getAlgorithm()) {
 					case Solution.NORMALSOLVE:
-						Globals.appendGlobalResult("normal");
+						globals.appendGlobalResult("normal");
 						break;
 					case Solution.NEWTONSOLVE:
-						Globals.appendGlobalResult("newton");
+						globals.appendGlobalResult("newton");
 						break;
 					}
 					break;
 				case 40:
-					if (Globals.getActiveCircuit().isTrapezoidalIntegration()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isTrapezoidalIntegration()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 41:
-					for (int i = 0; i < Globals.getActiveCircuit().getAutoAddBusList().listSize(); i++)
-						Globals.appendGlobalResult(Globals.getActiveCircuit().getAutoAddBusList().get(i));
+					for (int i = 0; i < globals.getActiveCircuit().getAutoAddBusList().listSize(); i++)
+						globals.appendGlobalResult(globals.getActiveCircuit().getAutoAddBusList().get(i));
 					break;
 				case 42:
-					Globals.appendGlobalResult(Utilities.getControlModeID());
+					globals.appendGlobalResult(Utilities.getControlModeID());
 					break;
 				case 43:
-					if (Globals.getActiveCircuit().getControlQueue().getTrace()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().getControlQueue().getTrace()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 44:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getGenMultiplier()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getGenMultiplier()));
 					break;
 				case 45:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getDefaultDailyShapeObj().getName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getDefaultDailyShapeObj().getName());
 					break;
 				case 46:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getDefaultYearlyShapeObj().getName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getDefaultYearlyShapeObj().getName());
 					break;
 				case 47:
-					Globals.appendGlobalResult("Get function not applicable.");
+					globals.appendGlobalResult("Get function not applicable.");
 					break;
 				case 48:
-					if (Globals.getActiveCircuit().isPositiveSequence()) {
-						Globals.appendGlobalResult("positive");
+					if (globals.getActiveCircuit().isPositiveSequence()) {
+						globals.appendGlobalResult("positive");
 					} else {
-						Globals.appendGlobalResult("multiphase");
+						globals.appendGlobalResult("multiphase");
 					}
 					break;
 				case 49:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getPriceSignal()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getPriceSignal()));
 					break;
 				case 50:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getPriceCurve());
+					globals.appendGlobalResult(globals.getActiveCircuit().getPriceCurve());
 					break;
 				case 51:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()));
 					break;
 				case 52:
-					Globals.appendGlobalResult(String.format("%-g", Globals.getActiveCircuit().getFundamental()));
+					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getFundamental()));
 					break;
 				case 53:
-					SolutionObj sol = Globals.getActiveCircuit().getSolution();
+					SolutionObj sol = globals.getActiveCircuit().getSolution();
 					if (sol.isDoAllHarmonics()) {
-						Globals.appendGlobalResult("ALL");
+						globals.appendGlobalResult("ALL");
 					} else {
 						for (int i = 0; i < sol.getHarmonicListSize(); i++)
-							Globals.appendGlobalResult(String.format("%-g", sol.getHarmonicList()[i]));
+							globals.appendGlobalResult(String.format("%-g", sol.getHarmonicList()[i]));
 					}
 					break;
 				case 54:
-					Globals.appendGlobalResult(String.valueOf(Globals.getActiveCircuit().getSolution().getMaxControlIterations()));
+					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getMaxControlIterations()));
 					break;
 				case 55:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getBusList().get(Globals.getActiveCircuit().getActiveBusIndex()));
+					globals.appendGlobalResult(globals.getActiveCircuit().getBusList().get(globals.getActiveCircuit().getActiveBusIndex()));
 					break;
 				case 56:
-					Globals.appendGlobalResult(Globals.getDSSDataDirectory());
+					globals.appendGlobalResult(globals.getDSSDataDirectory());
 					break;
 				case 57:
-					ckt = Globals.getActiveCircuit();
+					ckt = globals.getActiveCircuit();
 					for (int i = 0; i < ckt.getNumBuses(); i++)
 						if (ckt.getBuses()[i].isKeep())
-							Globals.appendGlobalResult(ckt.getBusList().get(i));
+							globals.appendGlobalResult(ckt.getBusList().get(i));
 					break;
 				case 58:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getReductionStrategyString());
+					globals.appendGlobalResult(globals.getActiveCircuit().getReductionStrategyString());
 					break;
 				case 59:
-					if (Globals.getEnergyMeterClass().isSaveDemandInterval()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getEnergyMeterClass().isSaveDemandInterval()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 60:
-					Globals.appendGlobalResult(String.format("%-.g", Globals.getActiveCircuit().getPctNormalFactor()));
+					globals.appendGlobalResult(String.format("%-.g", globals.getActiveCircuit().getPctNormalFactor()));
 					break;
 				case 61:
-					if (Globals.getEnergyMeterClass().isDIVerbose()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getEnergyMeterClass().isDIVerbose()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 62:
-					Globals.appendGlobalResult(Globals.getActiveCircuit().getCaseName());
+					globals.appendGlobalResult(globals.getActiveCircuit().getCaseName());
 					break;
 				case 63:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getNodeMarkerCode()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getNodeMarkerCode()));
 					break;
 				case 64:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getNodeMarkerWidth()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getNodeMarkerWidth()));
 					break;
 				case 65:
-					if (Globals.getActiveCircuit().isLogEvents()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isLogEvents()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 66:
 					if (DSSExecutive.getInstance().isRecorderOn()) {
-						Globals.appendGlobalResult("Yes");
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 67:
-					if (Globals.getEnergyMeterClass().isDo_OverloadReport()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getEnergyMeterClass().isDo_OverloadReport()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 68:
-					if (Globals.getEnergyMeterClass().isDo_VoltageExceptionReport()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getEnergyMeterClass().isDo_VoltageExceptionReport()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 69:
-					Globals.appendGlobalResult("Get function not applicable.");
+					globals.appendGlobalResult("Get function not applicable.");
 					break;
 				case 70:
-					if (Globals.isAutoShowExport()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.isAutoShowExport()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 71:
-					Globals.appendGlobalResult(String.format("%d", Globals.getMaxAllocationIterations())) ;
+					globals.appendGlobalResult(String.format("%d", globals.getMaxAllocationIterations())) ;
 					break;
 				case 72:
-					Globals.appendGlobalResult(String.format("%d", Globals.getDefaultBaseFreq()));
+					globals.appendGlobalResult(String.format("%d", globals.getDefaultBaseFreq()));
 					break;
 				case 73:
-					if (Globals.getActiveCircuit().isMarkSwitches()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isMarkSwitches()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 74:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getSwitchMarkerCode()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getSwitchMarkerCode()));
 					break;
 				case 75:
-					Globals.appendGlobalResult(String.format("%-.6g", Globals.getDaisySize()));
+					globals.appendGlobalResult(String.format("%-.6g", globals.getDaisySize()));
 					break;
 				case 76:
-					if (Globals.getActiveCircuit().isMarkTransformers()) {
-						Globals.appendGlobalResult("Yes");
+					if (globals.getActiveCircuit().isMarkTransformers()) {
+						globals.appendGlobalResult("Yes");
 					} else {
-						Globals.appendGlobalResult("No");
+						globals.appendGlobalResult("No");
 					}
 					break;
 				case 77:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getTransMarkerCode()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getTransMarkerCode()));
 					break;
 				case 78:
-					Globals.appendGlobalResult(String.format("%d", Globals.getActiveCircuit().getTransMarkerSize()));
+					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getTransMarkerSize()));
 					break;
 				case 79:
-					Globals.appendGlobalResult(Utilities.getActiveLoadShapeClass());
+					globals.appendGlobalResult(Utilities.getActiveLoadShapeClass());
 					break;
 				case 80:
-					Globals.appendGlobalResult(Utilities.getEarthModel(Globals.getDefaultEarthModel()));
+					globals.appendGlobalResult(Utilities.getEarthModel(globals.getDefaultEarthModel()));
 					break;
 				default:
 					// ignore excess parameters
 					break;
 				}
 
-				ParamName = Parser.getInstance().getNextParam();
-				Param = Parser.getInstance().makeString();
+				paramName = Parser.getInstance().getNextParam();
+				param = Parser.getInstance().makeString();
 			}
 
 		} catch (Exception e) {
-			Globals.appendGlobalResult("***Error***");
+			globals.appendGlobalResult("***Error***");
 		}
 
-		return Result;
+		return result;
 	}
 
 }

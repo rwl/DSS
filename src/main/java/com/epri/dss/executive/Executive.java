@@ -8,15 +8,15 @@ public interface Executive {
 
 	String getCommand();
 
-	void setCommand(String Value);
+	void setCommand(String value);
 
-	void setRecorderOn(boolean Value);
+	void setRecorderOn(boolean value);
 
 	boolean isRecorderOn();
 
 	void createDefaultDSSItems();
 
-	void writeToRecorderFile(String S);
+	void writeToRecorderFile(String s);
 
 	void clear();
 
