@@ -11,31 +11,31 @@ import com.epri.dss.shared.impl.MathUtil;
 
 public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 
-	private int LastValueAccessed, NumPoints;  // number of points in curve
-	private int ArrayPropertyIndex;
+	private int lastValueAccessed, numPoints;  // number of points in curve
+	private int arrayPropertyIndex;
 
-	private boolean StdDevCalculated;
-	private MutableDouble Mean = new MutableDouble();
-	private MutableDouble StdDev = new MutableDouble();
+	private boolean stdDevCalculated;
+	private MutableDouble mean = new MutableDouble();
+	private MutableDouble stdDev = new MutableDouble();
 
-	protected double Interval;  // =0.0 then random interval (hr)
-	protected double[] Hours;   // time values (hr) if interval > 0.0 else nil
-	protected double[] PriceValues;  // prices
+	protected double interval;  // =0.0 then random interval (hr)
+	protected double[] hours;   // time values (hr) if interval > 0.0 else nil
+	protected double[] priceValues;  // prices
 
-	public PriceShapeObjImpl(DSSClass ParClass, String PriceShapeName) {
-		super(ParClass);
-		setName(PriceShapeName.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
+	public PriceShapeObjImpl(DSSClass parClass, String priceShapeName) {
+		super(parClass);
+		setName(priceShapeName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.LastValueAccessed = 0;
+		this.lastValueAccessed = 0;
 
-		this.NumPoints   = 0;
-		this.Interval    = 1.0;  // hr
-		this.Hours       = null;
-		this.PriceValues = null;
-		this.StdDevCalculated = false;  // calculate on demand
+		this.numPoints   = 0;
+		this.interval    = 1.0;  // hr
+		this.hours       = null;
+		this.priceValues = null;
+		this.stdDevCalculated = false;  // calculate on demand
 
-		this.ArrayPropertyIndex = -1;
+		this.arrayPropertyIndex = -1;
 
 		initPropertyValues(0);
 	}
@@ -51,20 +51,20 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	 * The value returned is the nearest to the interval requested. Thus if you request
 	 * hour=12.25 and the interval is 1.0, you will get interval 12.
 	 */
-	public double getPrice(double Hr) {
-		int Index, i;
+	public double getPrice(double hr) {
+		int index, i;
 
-		double Result = 0.0;  // default return value if no points in curve
+		double result = 0.0;  // default return value if no points in curve
 
-		if (NumPoints > 0)  // handle exceptional cases
-			if (NumPoints == 1) {
-				Result = PriceValues[0];
+		if (numPoints > 0)  // handle exceptional cases
+			if (numPoints == 1) {
+				result = priceValues[0];
 			} else {
-				if (Interval > 0.0) {
-					Index = (int) Math.round(Hr / Interval);
-					if (Index > NumPoints) Index = Index % NumPoints;  // wrap around using remainder
-					if (Index == 0) Index = NumPoints;
-					Result = PriceValues[Index];
+				if (interval > 0.0) {
+					index = (int) Math.round(hr / interval);
+					if (index > numPoints) index = index % numPoints;  // wrap around using remainder
+					if (index == 0) index = numPoints;
+					result = priceValues[index];
 				} else {
 					// for random interval
 
@@ -73,65 +73,65 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 					 */
 
 					/* Normalize Hr to max hour in curve to get wraparound */
-					if (Hr > Hours[NumPoints]) {
-						Hr = Hr - (int) (Hr / Hours[NumPoints]) * Hours[NumPoints];
+					if (hr > hours[numPoints]) {
+						hr = hr - (int) (hr / hours[numPoints]) * hours[numPoints];
 					}
 
-					if (Hours[LastValueAccessed] > Hr) LastValueAccessed = 1;  // start over from beginning
-					for (i = LastValueAccessed; i < NumPoints; i++) {  // TODO Check zero based indexing
-						if (Math.abs(Hours[i] - Hr) < 0.00001) {  // if close to an actual point, just use it.
-							Result = PriceValues[i];
-							LastValueAccessed = i;
-							return Result;
-						} else if (Hours[i] > Hr) {  // interpolate for price
-							LastValueAccessed = i - 1;
-							Result = PriceValues[LastValueAccessed] +
-									(Hr - Hours[LastValueAccessed]) / (Hours[i] - Hours[LastValueAccessed]) *
-									(PriceValues[i] - PriceValues[LastValueAccessed]);
-							return Result;
+					if (hours[lastValueAccessed] > hr) lastValueAccessed = 1;  // start over from beginning
+					for (i = lastValueAccessed; i < numPoints; i++) {  // TODO Check zero based indexing
+						if (Math.abs(hours[i] - hr) < 0.00001) {  // if close to an actual point, just use it.
+							result = priceValues[i];
+							lastValueAccessed = i;
+							return result;
+						} else if (hours[i] > hr) {  // interpolate for price
+							lastValueAccessed = i - 1;
+							result = priceValues[lastValueAccessed] +
+									(hr - hours[lastValueAccessed]) / (hours[i] - hours[lastValueAccessed]) *
+									(priceValues[i] - priceValues[lastValueAccessed]);
+							return result;
 						}
 					}
 
 					// if we fall through the loop, just use last value
-					LastValueAccessed = NumPoints - 1;
-					Result            = PriceValues[NumPoints];
+					lastValueAccessed = numPoints - 1;
+					result            = priceValues[numPoints];
 				}
 			}
 
-		return Result;
+		return result;
 	}
 
 	private void calcMeanandStdDev() {
-		if (NumPoints > 0)
-			if (Interval > 0.0) {
-				MathUtil.RCDMeanandStdDev(PriceValues, NumPoints, Mean, StdDev);
+		if (numPoints > 0)
+			if (interval > 0.0) {
+				MathUtil.RCDMeanandStdDev(priceValues, numPoints, mean, stdDev);
 			} else {
-				MathUtil.curveMeanAndStdDev(PriceValues, Hours, NumPoints, Mean, StdDev);
+				MathUtil.curveMeanAndStdDev(priceValues, hours, numPoints, mean, stdDev);
 			}
 
-		setPropertyValue(4, String.format("%.8g", Mean.doubleValue()));
-		setPropertyValue(5, String.format("%.8g", StdDev.doubleValue()));
+		setPropertyValue(4, String.format("%.8g", mean.doubleValue()));
+		setPropertyValue(5, String.format("%.8g", stdDev.doubleValue()));
 
-		StdDevCalculated = true;
+		stdDevCalculated = true;
 	}
 
 	public double getMean() {
-		if (!StdDevCalculated) calcMeanandStdDev();
-		return Mean.doubleValue();
+		if (!stdDevCalculated) calcMeanandStdDev();
+		return mean.doubleValue();
 	}
 
 	public double getStdDev() {
-		if (!StdDevCalculated) calcMeanandStdDev();
-		return StdDev.doubleValue();
+		if (!stdDevCalculated) calcMeanandStdDev();
+		return stdDev.doubleValue();
 	}
 
 	/**
 	 * Get prices by index.
 	 */
 	public double getPrice(int i) {
-		if ((i < NumPoints) && (i >= 0)) {
-			LastValueAccessed = i;
-			return PriceValues[i];
+		if ((i < numPoints) && (i >= 0)) {
+			lastValueAccessed = i;
+			return priceValues[i];
 		} else {
 			return 0.0;
 		}
@@ -141,97 +141,97 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	 * Get hour corresponding to point index.
 	 */
 	public double getHour(int i) {
-		if (Interval == 0) {
-			if ((i < NumPoints) && (i >= 0)) {
-				LastValueAccessed = i;
-				return Hours[i];
+		if (interval == 0) {
+			if ((i < numPoints) && (i >= 0)) {
+				lastValueAccessed = i;
+				return hours[i];
 			} else {
 				return 0.0;
 			}
 		} else {
-			LastValueAccessed = i;
-			return Hours[i] * Interval;
+			lastValueAccessed = i;
+			return hours[i] * interval;
 		}
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 2:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			case 3:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result;
-		switch (Index) {
+	public String getPropertyValue(int index) {
+		String result;
+		switch (index) {
 		case 2:
-			Result = "[";
+			result = "[";
 			break;
 		case 3:
-			Result = "[";
+			result = "[";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 1:
-			Result = String.format("%.8g", Interval);
+			result = String.format("%.8g", interval);
 			break;
 		case 2:
-			for (int i = 0; i < NumPoints; i++)
-				Result = Result + String.format("%-g, " , PriceValues[i]);
+			for (int i = 0; i < numPoints; i++)
+				result = result + String.format("%-g, " , priceValues[i]);
 			break;
 		case 3:
-			if (Hours != null)
-				for (int i = 0; i < NumPoints; i++)
-					Result = Result + String.format("%-g, ", Hours[i]);
+			if (hours != null)
+				for (int i = 0; i < numPoints; i++)
+					result = result + String.format("%-g, ", hours[i]);
 			break;
 		case 4:
-			Result = String.format("%.8g", Mean.doubleValue());
+			result = String.format("%.8g", mean.doubleValue());
 			break;
 		case 5:
-			Result = String.format("%.8g", StdDev.doubleValue());
+			result = String.format("%.8g", stdDev.doubleValue());
 			break;
 		case 9:
-			Result = String.format("%.8g", Interval * 3600.0);
+			result = String.format("%.8g", interval * 3600.0);
 			break;
 		case 10:
-			Result = String.format("%.8g", Interval * 60.0);
+			result = String.format("%.8g", interval * 60.0);
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 2:
-			Result = Result + "]";
+			result = result + "]";
 			break;
 		case 3:
-			Result = Result + "]";
+			result = result + "]";
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");  // number of points to expect
 		setPropertyValue(1, "1");  // default = 1.0 hr;
@@ -259,25 +259,25 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setMean(double mean) {
-		StdDevCalculated = true;
-		Mean.setValue(mean);
+	public void setMean(double value) {
+		stdDevCalculated = true;
+		mean.setValue(value);
 	}
 
-	public void setNumPoints(int numPoints) {
-		setPropertyValue(0, String.valueOf(numPoints));  // update property list variable
+	public void setNumPoints(int num) {
+		setPropertyValue(0, String.valueOf(num));  // update property list variable
 
 		// reset array property values to keep them in proper order in save
 
-		if (ArrayPropertyIndex >= 0)
-			setPropertyValue(ArrayPropertyIndex, getPropertyValue(ArrayPropertyIndex));
+		if (arrayPropertyIndex >= 0)
+			setPropertyValue(arrayPropertyIndex, getPropertyValue(arrayPropertyIndex));
 
-		NumPoints = numPoints;
+		numPoints = num;
 	}
 
-	public void setStdDev(double stdDev) {
-		StdDevCalculated = true;
-		StdDev.setValue(stdDev);
+	public void setStdDev(double stddev) {
+		stdDevCalculated = true;
+		stdDev.setValue(stddev);
 	}
 
 	public int getNumPoints() {
@@ -285,53 +285,53 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	}
 
 	public double getInterval() {
-		return Interval;
+		return interval;
 	}
 
 	public double[] getHours() {
-		return Hours;
+		return hours;
 	}
 
-	public void setHours(double[] hours) {
-		Hours = hours;
+	public void setHours(double[] values) {
+		hours = values;
 	}
 
 	public double[] getPriceValues() {
-		return PriceValues;
+		return priceValues;
 	}
 
-	public void setPriceValues(double[] priceValues) {
-		PriceValues = priceValues;
+	public void setPriceValues(double[] values) {
+		priceValues = values;
 	}
 
 	// FIXME Private members in OpenDSS
 
 	public int getLastValueAccessed() {
-		return LastValueAccessed;
+		return lastValueAccessed;
 	}
 
-	public void setLastValueAccessed(int lastValueAccessed) {
-		LastValueAccessed = lastValueAccessed;
+	public void setLastValueAccessed(int lastValue) {
+		lastValueAccessed = lastValue;
 	}
 
 	public int getArrayPropertyIndex() {
-		return ArrayPropertyIndex;
+		return arrayPropertyIndex;
 	}
 
-	public void setArrayPropertyIndex(int arrayPropertyIndex) {
-		ArrayPropertyIndex = arrayPropertyIndex;
+	public void setArrayPropertyIndex(int index) {
+		arrayPropertyIndex = index;
 	}
 
 	public boolean isStdDevCalculated() {
-		return StdDevCalculated;
+		return stdDevCalculated;
 	}
 
-	public void setStdDevCalculated(boolean stdDevCalculated) {
-		StdDevCalculated = stdDevCalculated;
+	public void setStdDevCalculated(boolean calculated) {
+		stdDevCalculated = calculated;
 	}
 
-	public void setInterval(double interval) {
-		Interval = interval;
+	public void setInterval(double value) {
+		interval = value;
 	}
 
 }

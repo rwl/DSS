@@ -16,60 +16,59 @@ public class NamedObjectImpl implements NamedObject {
 	/**
 	 * Path name, or class name for DSS.
 	 */
-	private String PName;
+	private String pathName;
 
 	/**
 	 * LocalName is unique within a class.
 	 */
-	private String LName;
+	private String localName;
 
 	/**
 	 * For optional display, does not have to be unique.
 	 */
-	private String DName;
+	private String displayName;
 
-	private UUID pGuid;
+	private UUID uuid;
 
 
-	public NamedObjectImpl(String ClassName) {
+	public NamedObjectImpl(String className) {
 		super();
-		this.PName = ClassName;
-		this.LName = "";
-		this.DName = "";
-		this.pGuid = null;
+		this.pathName = className;
+		this.localName = "";
+		this.displayName = "";
+		this.uuid = null;
 	}
 
 	protected void finalize() throws Throwable {
-		if (pGuid != null)
-			pGuid = null;
+		if (uuid != null)
+			uuid = null;
 	}
 
 	public String getDisplayName() {
-		if (this.DName == "") {
-			return PName + "_" + LName;
+		if (this.displayName == "") {
+			return pathName + "_" + localName;
 		} else {
-			return DName;
+			return displayName;
 		}
 	}
 
-	public void setDisplayName(String Value) {
-		DName = Value;
+	public void setDisplayName(String value) {
+		displayName = value;
 	}
 
 	public String getQualifiedName() {
-		return PName + "." + LName;
+		return pathName + "." + localName;
 	}
 
 	private UUID getUUID() {
-		if (pGuid == null) {
-			pGuid = UUID.randomUUID();
-		}
-		return pGuid;
+		if (uuid == null)
+			uuid = UUID.randomUUID();
+		return uuid;
 	}
 
-	public void setUUID(UUID Value) {
+	public void setUUID(UUID value) {
 		//if (pGuid == null) {}
-		pGuid = Value;
+		uuid = value;
 	}
 
 	public String getID() {
@@ -82,19 +81,19 @@ public class NamedObjectImpl implements NamedObject {
 
 
 	public String getDSSClassName() {
-		return PName;
+		return pathName;
 	}
 
-	public void setDSSClassName(String Value) {
-		PName = Value;
+	public void setDSSClassName(String value) {
+		pathName = value;
 	}
 
 	public String getLocalName() {
-		return LName;
+		return localName;
 	}
 
-	public void setLocalName(String Value) {
-		LName = Value;
+	public void setLocalName(String value) {
+		localName = value;
 	}
 
 

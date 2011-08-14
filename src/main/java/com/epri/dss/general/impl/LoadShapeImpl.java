@@ -18,7 +18,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 /* Superstructure for all LoadShape objects */
 public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
-	private static LoadShapeObj ActiveLoadShapeObj;
+	private static LoadShapeObj activeLoadShapeObj;
 
 	public LoadShapeImpl() {
 		super();
@@ -29,19 +29,18 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-		String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSSGlobals.CRLF;
 
 		numProperties = LoadShape.NumPropsThisClass;
 		countProperties();   // get inherited property count
 		allocatePropertyArrays();
-
 
 		// define property names
 		propertyName[0] = "npts";     // number of points to expect
@@ -117,39 +116,39 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.setActiveDSSObject(new LoadShapeObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.setActiveDSSObject(new LoadShapeObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveLoadShapeObj((LoadShapeObj) elementList.getActive());
-		Globals.setActiveDSSObject(getActiveLoadShapeObj());
+		globals.setActiveDSSObject(getActiveLoadShapeObj());
 
 		LoadShapeObj als = getActiveLoadShapeObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0){
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0){
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 
-				if ((ParamPointer > 0) && (ParamPointer <= numProperties))
-					als.setPropertyValue(ParamPointer, Param);
+				if ((paramPointer > 0) && (paramPointer <= numProperties))
+					als.setPropertyValue(paramPointer, param);
 
-				switch (ParamPointer) {  // TODO Check zero based indexing
+				switch (paramPointer) {  // TODO Check zero based indexing
 				case -1:
-					Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
+					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
 					break;
 				case 0:
 					als.setNumPoints(parser.makeInteger());
@@ -160,11 +159,11 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				case 2:
 					als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 					// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
-					als.setNumPoints( Utilities.interpretDblArray(Param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
+					als.setNumPoints( Utilities.interpretDblArray(param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
 					break;
 				case 3:
 					als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
-					Utilities.interpretDblArray(Param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
+					Utilities.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
 					break;
 				case 4:
 					als.setMean(parser.makeDouble());
@@ -173,16 +172,16 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					als.setStdDev(parser.makeDouble());
 					break;
 				case 6:
-					doCSVFile(Param);
+					doCSVFile(param);
 					break;
 				case 7:
-					doSngFile(Param);
+					doSngFile(param);
 					break;
 				case 8:
-					doDblFile(Param);
+					doDblFile(param);
 					break;
 				case 9:
-					switch (Param.toLowerCase().charAt(0)) {
+					switch (param.toLowerCase().charAt(0)) {
 					case 'n':
 						als.normalize();
 						break;
@@ -196,10 +195,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					break;
 				case 10:
 					als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-					Utilities.interpretDblArray(Param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
+					Utilities.interpretDblArray(param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
 					break;
 				case 11:
-					als.setUseActual(Utilities.interpretYesNo(Param));
+					als.setUseActual(Utilities.interpretYesNo(param));
 					break;
 				case 12:
 					als.setMaxP(parser.makeDouble());
@@ -215,86 +214,86 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					break;
 				default:
 					// inherited parameters
-					classEdit(ActiveLoadShapeObj, ParamPointer - LoadShape.NumPropsThisClass);
+					classEdit(activeLoadShapeObj, paramPointer - LoadShape.NumPropsThisClass);
 					break;
 				}
 
-				switch (ParamPointer) {
+				switch (paramPointer) {
 				case 2:  // TODO Check zero based indexing
 					als.setStdDevCalculated(false);   // now calculated on demand
-					als.setArrayPropertyIndex(ParamPointer);
+					als.setArrayPropertyIndex(paramPointer);
 					als.setNumPoints(als.getNumPoints());  // keep properties in order for save command
 					break;
 				case 6:
 					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(ParamPointer);
+					als.setArrayPropertyIndex(paramPointer);
 					als.setNumPoints(als.getNumPoints());
 					break;
 				case 7:
 					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(ParamPointer);
+					als.setArrayPropertyIndex(paramPointer);
 					als.setNumPoints(als.getNumPoints());
 					break;
 				case 8:
 					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(ParamPointer);
+					als.setArrayPropertyIndex(paramPointer);
 					als.setNumPoints(als.getNumPoints());
 					break;
 				case 10:
 					als.setStdDevCalculated(false);
-					als.setArrayPropertyIndex(ParamPointer);
+					als.setArrayPropertyIndex(paramPointer);
 					als.setNumPoints(als.getNumPoints());
 					break;
 				}
 
-				ParamName = parser.getNextParam();
-				Param = parser.makeString();
+				paramName = parser.getNextParam();
+				param = parser.makeString();
 			}
 		}
 
 		if (als.getPMultipliers() != null)
 			als.setMaxPandQ();
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Find an obj of this class by name.
 	 */
-	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || (ObjName.equalsIgnoreCase("none"))) {
+	public Object find(String objName) {
+		if ((objName.length() == 0) || (objName.equalsIgnoreCase("none"))) {
 			return null;
 		} else {
-			return super.find(ObjName);
+			return super.find(objName);
 		}
 	}
 
-	protected int makeLike(String ShapeName) {
-		int Result = 0;
+	protected int makeLike(String shapeName) {
+		int result = 0;
 		/* See if we can find this line code in the present collection */
-		LoadShapeObj OtherLoadShape = (LoadShapeObj) find(ShapeName);
-		if (OtherLoadShape != null) {
+		LoadShapeObj otherLoadShape = (LoadShapeObj) find(shapeName);
+		if (otherLoadShape != null) {
 			LoadShapeObj als = getActiveLoadShapeObj();
 
-			als.setNumPoints(OtherLoadShape.getNumPoints());
-			als.setInterval(OtherLoadShape.getInterval());
+			als.setNumPoints(otherLoadShape.getNumPoints());
+			als.setInterval(otherLoadShape.getInterval());
 			als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 			for (int i = 0; i < als.getNumPoints(); i++)
-				als.getPMultipliers()[i] = OtherLoadShape.getPMultipliers()[i];
-			if (OtherLoadShape.getQMultipliers() != null)
+				als.getPMultipliers()[i] = otherLoadShape.getPMultipliers()[i];
+			if (otherLoadShape.getQMultipliers() != null)
 				als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
 			als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
 			for (int i = 0; i < als.getNumPoints(); i++)
-				als.getQMultipliers()[i] = OtherLoadShape.getQMultipliers()[i];
+				als.getQMultipliers()[i] = otherLoadShape.getQMultipliers()[i];
 			if (als.getInterval() > 0.0) {
 				als.setHours(new double[0]);
 			} else {
 				als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 				for (int i = 0; i < als.getNumPoints(); i++)
-					als.getHours()[i] = OtherLoadShape.getHours()[i];
+					als.getHours()[i] = otherLoadShape.getHours()[i];
 			}
 			als.setMaxPandQ();
-			als.setUseActual(OtherLoadShape.isUseActual());
+			als.setUseActual(otherLoadShape.isUseActual());
 
 
 			/*als.setMaxP(OtherLoadShape.getMaxP());
@@ -303,15 +302,15 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			als.setStdDev(OtherLoadShape.getStdDev());*/
 
 			for (int i = 0; i < als.getParentClass().getNumProperties(); i++)
-				als.setPropertyValue(i, OtherLoadShape.getPropertyValue(i));
+				als.setPropertyValue(i, otherLoadShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in LoadShape makeLike: \"" + ShapeName + "\" not found.", 611);
+			DSSGlobals.getInstance().doSimpleMsg("Error in LoadShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
-		return Result;
+		return result;
 	}
 
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement LoadShape.init()", -1);
 		return 0;
 	}
@@ -327,34 +326,34 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	/**
 	 * Sets the active LoadShape.
 	 */
-	public void setCode(String Value) {
+	public void setCode(String value) {
 		setActiveLoadShapeObj(null);
 
 		LoadShapeObj pShape;
 		for (int i = 0; i < elementList.size(); i++) {
 			pShape = (LoadShapeObj) elementList.get(i);
-			if (pShape.getName().equalsIgnoreCase(Value)) {
+			if (pShape.getName().equalsIgnoreCase(value)) {
 				setActiveLoadShapeObj(pShape);
 				return;
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("LoadShape: \"" + Value + "\" not found.", 612);
+		DSSGlobals.getInstance().doSimpleMsg("LoadShape: \"" + value + "\" not found.", 612);
 	}
 
-	private void doCSVFile(String FileName) {
-		FileInputStream fileStream;
-		DataInputStream dataStream;
-		BufferedReader reader;
+	private void doCSVFile(String fileName) {
+		FileInputStream fis;
+		DataInputStream dis;
+		BufferedReader br;
 
 		String s;
 		Parser parser;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			fileStream = new FileInputStream(FileName);
-			dataStream = new DataInputStream(fileStream);
-			reader = new BufferedReader(new InputStreamReader(dataStream));
+			fis = new FileInputStream(fileName);
+			dis = new DataInputStream(fis);
+			br = new BufferedReader(new InputStreamReader(dis));
 
 			LoadShapeObj als = getActiveLoadShapeObj();
 
@@ -363,10 +362,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			if (als.getInterval() == 0.0)
 				als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 			int i = 0;
-			while (((s = reader.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
+			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
 				/* aux parser allows commas or white space */
-				parser = Globals.getAuxParser();
+				parser = globals.getAuxParser();
 				parser.setCmdString(s);
 				if (als.getInterval() == 0.0) {
 					parser.getNextParam();
@@ -375,42 +374,42 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 				parser.getNextParam();
 				als.getPMultipliers()[i] = parser.makeDouble();
 			}
-			fileStream.close();
-			dataStream.close();
-			reader.close();
+			fis.close();
+			dis.close();
+			br.close();
 			if (i != als.getNumPoints())
 				als.setNumPoints(i);
 
-			fileStream.close();
-			dataStream.close();
-			reader.close();
+			fis.close();
+			dis.close();
+			br.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
+			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}
 
-	private void doSngFile(String FileName) {
+	private void doSngFile(String fileName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
-	private void doDblFile(String FileName) {
+	private void doDblFile(String fileName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
-	public void TOPExport(String ObjName) {
+	public void TOPExport(String objName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
 	public static LoadShapeObj getActiveLoadShapeObj() {
-		return ActiveLoadShapeObj;
+		return activeLoadShapeObj;
 	}
 
-	public static void setActiveLoadShapeObj(LoadShapeObj activeLoadShapeObj) {
-		ActiveLoadShapeObj = activeLoadShapeObj;
+	public static void setActiveLoadShapeObj(LoadShapeObj loadShapeObj) {
+		activeLoadShapeObj = loadShapeObj;
 	}
 
 }

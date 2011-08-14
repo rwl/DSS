@@ -9,72 +9,73 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj {
 
-	private int NConds;
-	private int NPhases;
+	private int nConds;
+	private int nPhases;
 	private double[] X;
 	private double[] Y;
-	private int Units;
-	private boolean DataChanged;
+	private int units;
+	private boolean dataChanged;
 
-	public LineSpacingObjImpl(DSSClass ParClass, String LineSpacingName) {
-		super(ParClass);
+	public LineSpacingObjImpl(DSSClass parClass, String lineSpacingName) {
+		super(parClass);
 
-		setName(LineSpacingName.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
+		setName(lineSpacingName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.DataChanged = true;
+		this.dataChanged = true;
 		this.X           = null;
 		this.Y           = null;
-		this.Units       = LineUnits.UNITS_FT;
+		this.units       = LineUnits.UNITS_FT;
 
 		setNWires(3);  // allocates terminals
-		this.NPhases = 3;
+		this.nPhases = 3;
 
 		initPropertyValues(0);
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < 5; i++)  // TODO Check zero based indexing
-			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 	}
 
-	private String arrayString(double[] pF, int N) {
+	private String arrayString(double[] pf, int n) {
+		// FIXME Use StringBuffer
 		String r = "[";
-		if (N > 0)
-			r = r + String.format("%-g", pF[0]);  // TODO Check zero based indexing
-		for (int i = 1; i < N; i++)
-			r = r + String.format(",%-g", pF[i]);
+		if (n > 0)
+			r = r + String.format("%-g", pf[0]);  // TODO Check zero based indexing
+		for (int i = 1; i < n; i++)
+			r = r + String.format(",%-g", pf[i]);
 		return r + "]";
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		switch (Index) {
+	public String getPropertyValue(int index) {
+		switch (index) {
 		case 3:
-			return arrayString(X, NConds);
+			return arrayString(X, nConds);
 		case 4:
-			return arrayString(Y, NConds);
+			return arrayString(Y, nConds);
 		case 5:
-			LineUnits.lineUnitsStr(Units);
+			LineUnits.lineUnitsStr(units);
 		default:
 			// inherited parameters
-			return super.getPropertyValue(Index);
+			return super.getPropertyValue(index);
 		}
 	}
 
 	public double getXCoord(int i) {
-		return i <= NConds ? X[i] : 0.0;
+		return i <= nConds ? X[i] : 0.0;
 	}
 
 	public double getYCoord(int i) {
-		return i <= NConds ? Y[i] : 0.0;
+		return i <= nConds ? Y[i] : 0.0;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		propertyValue[0] = "3";
 		propertyValue[1] = "3";
 		propertyValue[2] = "0";
@@ -84,33 +85,33 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		super.initPropertyValues(LineSpacing.NumPropsThisClass);
 	}
 
-	public void setNWires(int Value) {
-		NConds = Value;
-		X = new double[NConds];
-		Y = new double[NConds];
-		Units = LineUnits.UNITS_FT;
+	public void setNWires(int value) {
+		nConds = value;
+		X = new double[nConds];
+		Y = new double[nConds];
+		units = LineUnits.UNITS_FT;
 	}
 
 	public int getNWires() {
-		return NConds;
+		return nConds;
 	}
 
 	public int getNPhases() {
-		return NPhases;
+		return nPhases;
 	}
 
 	public int getUnits() {
-		return Units;
+		return units;
 	}
 
 	// FIXME Private members in OpenDSS.
 
 	public int getNConds() {
-		return NConds;
+		return nConds;
 	}
 
-	public void setNConds(int nConds) {
-		NConds = nConds;
+	public void setNConds(int num) {
+		nConds = num;
 	}
 
 	public double[] getX() {
@@ -130,19 +131,19 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 	}
 
 	public boolean isDataChanged() {
-		return DataChanged;
+		return dataChanged;
 	}
 
-	public void setDataChanged(boolean dataChanged) {
-		DataChanged = dataChanged;
+	public void setDataChanged(boolean changed) {
+		dataChanged = changed;
 	}
 
-	public void setNPhases(int nPhases) {
-		NPhases = nPhases;
+	public void setNPhases(int num) {
+		nPhases = num;
 	}
 
-	public void setUnits(int units) {
-		Units = units;
+	public void setUnits(int value) {
+		units = value;
 	}
 
 }
