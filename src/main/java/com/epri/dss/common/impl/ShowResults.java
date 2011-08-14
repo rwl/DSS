@@ -1668,13 +1668,13 @@ public abstract class ShowResults {
 				pw.println("No Energymeter Elements Defined.");
 			} else {
 				EnergyMeterObj pMeter = ckt.getEnergyMeters().get(0);  // write registernames for first meter only
-				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 					pw.println("Reg " + String.valueOf(i) + " = " + pMeter.getRegisterNames()[i]);
 				pw.println();
 
 				if (pMeter != null) {
 					pw.print("Meter        ");
-					for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+					for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 						pw.print(Utilities.pad("   Reg " + String.valueOf(i), 11));
 					pw.println();
 					pw.println();
@@ -1684,7 +1684,7 @@ public abstract class ShowResults {
 					if (pElem != null) {
 						if (pElem.isEnabled()) {
 							pw.print(Utilities.pad(pElem.getName(), 12));
-							for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+							for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 								pw.print(pElem.getRegisters()[j] + " ");
 						}
 					}

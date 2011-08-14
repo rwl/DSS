@@ -139,10 +139,10 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				am.setIncludeResidual( Utilities.interpretYesNo(Param) );
 				break;
 			case 5:
-				am.setVIpolar( Utilities.interpretYesNo(Param) );
+				am.setVIPolar( Utilities.interpretYesNo(Param) );
 				break;
 			case 6:
-				am.setPpolar( Utilities.interpretYesNo(Param) );
+				am.setPPolar( Utilities.interpretYesNo(Param) );
 				break;
 			default:
 				// Inherited parameters

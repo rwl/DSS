@@ -9,11 +9,11 @@ package com.epri.dss.meter;
 public interface SensorObj extends MeterElement {
 
 	/** Connection code */
-	void setConn(int Value);
+	void setConn(int value);
 
 	int getConn();
 
-	void setAction(String Value);
+	void setAction(String value);
 
 	double getWLSCurrentError();
 
@@ -21,9 +21,9 @@ public interface SensorObj extends MeterElement {
 
 	double[] getSensorKW();
 
-	double[] getSensorKVar();
+	double[] getSensorKVAr();
 
-	double getkVBase();
+	double getKVBase();
 
 	int getDeltaDirection();
 
@@ -53,25 +53,25 @@ public interface SensorObj extends MeterElement {
 
 	void setValidSensor(boolean validSensor);
 
-	double getVbase();
+	double getVBase();
 
-	void setVbase(double vbase);
+	void setVBase(double vbase);
 
-	boolean isVspecified();
+	boolean isVSpecified();
 
-	void setVspecified(boolean vspecified);
+	void setVSpecified(boolean vspecified);
 
-	boolean isIspecified();
+	boolean isISpecified();
 
-	void setIspecified(boolean ispecified);
+	void setISpecified(boolean ispecified);
 
-	boolean isPspecified();
+	boolean isPSpecified();
 
-	void setPspecified(boolean pspecified);
+	void setPSpecified(boolean pspecified);
 
-	boolean isQspecified();
+	boolean isQSpecified();
 
-	void setQspecified(boolean qspecified);
+	void setQSpecified(boolean qspecified);
 
 	boolean isClearSpecified();
 
@@ -79,9 +79,9 @@ public interface SensorObj extends MeterElement {
 
 	void setSensorKW(double[] sensorKW);
 
-	void setSensorKVar(double[] sensorKVar);
+	void setSensorKVAr(double[] sensorKVar);
 
-	void setkVBase(double kVBase);
+	void setKVBase(double kVBase);
 
 	void setDeltaDirection(int deltaDirection);
 

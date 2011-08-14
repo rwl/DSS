@@ -9,6 +9,6 @@ public interface Monitor extends MeterClass {
 
 	static final int NumPropsThisClass = 7;
 
-	void TOPExport(String ObjName);
+	void TOPExport(String objName);
 
 }

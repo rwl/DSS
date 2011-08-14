@@ -124,7 +124,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setMeteredTerminal(parser.makeInteger());
 				break;
 			case 2:
-				as.setkVBase(parser.makeDouble());
+				as.setKVBase(parser.makeDouble());
 				break;
 			case 3:
 				as.setClearSpecified(Utilities.interpretYesNo(Param));
@@ -139,7 +139,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				parser.parseAsVector(as.getNPhases(), as.getSensorKW());
 				break;
 			case 7:
-				parser.parseAsVector(as.getNPhases(), as.getSensorKVar());
+				parser.parseAsVector(as.getNPhases(), as.getSensorKVAr());
 				break;
 			case 8:
 				as.setConn(Utilities.interpretConnection(Param));
@@ -180,16 +180,16 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				if (as.isClearSpecified()) as.clearSensor();
 				break;
 			case 4:
-				as.setVspecified(true);
+				as.setVSpecified(true);
 				break;
 			case 5:
-				as.setIspecified(true);
+				as.setISpecified(true);
 				break;
 			case 6:
-				as.setPspecified(true);
+				as.setPSpecified(true);
 				break;
 			case 7:
-				as.setQspecified(true);
+				as.setQSpecified(true);
 				break;
 			case 8:
 				DoRecalcElementData = true;

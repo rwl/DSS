@@ -1018,7 +1018,7 @@ public class ExportResults {
 
 						/* Write new header */
 						writer.print("Year, LDCurve, Hour, Meter");
-						for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+						for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 							writer.write(sep + "\""+ pElem.getRegisterNames()[i]+"\"");
 						writer.println();
 
@@ -1033,7 +1033,7 @@ public class ExportResults {
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
 					writer.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
-					for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 						writer.print(sep + pElem.getRegisters()[j]);
 					writer.println();
 
@@ -1089,7 +1089,7 @@ public class ExportResults {
 				/* Write New Header */
 				EnergyMeterObj pElem = ckt.getEnergyMeters().get(0);
 				writer.print("Year, LDCurve, Hour, Meter");
-				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 					writer.print(sep + "\""+ pElem.getRegisterNames()[i]+"\"");
 				writer.println();
 			} else {
@@ -1103,7 +1103,7 @@ public class ExportResults {
 					writer.print(ckt.getLoadDurCurve() + sep);
 					writer.print(ckt.getSolution().getIntHour() + sep);
 					writer.print(Utilities.pad("\""+pElem.getName()+"\"", 14));
-					for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+					for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 						writer.printf(sep + pElem.getRegisters()[j]);
 					writer.println();
 				}

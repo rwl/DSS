@@ -319,11 +319,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		return SensorKW;
 	}
 
-	public double[] getSensorKVar() {
+	public double[] getSensorKVAr() {
 		return SensorKVar;
 	}
 
-	public double getkVBase() {
+	public double getKVBase() {
 		return kVBase;
 	}
 
@@ -358,43 +358,43 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		ValidSensor = validSensor;
 	}
 
-	public double getVbase() {
+	public double getVBase() {
 		return Vbase;
 	}
 
-	public void setVbase(double vbase) {
+	public void setVBase(double vbase) {
 		Vbase = vbase;
 	}
 
-	public boolean isVspecified() {
+	public boolean isVSpecified() {
 		return Vspecified;
 	}
 
-	public void setVspecified(boolean vspecified) {
+	public void setVSpecified(boolean vspecified) {
 		Vspecified = vspecified;
 	}
 
-	public boolean isIspecified() {
+	public boolean isISpecified() {
 		return Ispecified;
 	}
 
-	public void setIspecified(boolean ispecified) {
+	public void setISpecified(boolean ispecified) {
 		Ispecified = ispecified;
 	}
 
-	public boolean isPspecified() {
+	public boolean isPSpecified() {
 		return Pspecified;
 	}
 
-	public void setPspecified(boolean pspecified) {
+	public void setPSpecified(boolean pspecified) {
 		Pspecified = pspecified;
 	}
 
-	public boolean isQspecified() {
+	public boolean isQSpecified() {
 		return Qspecified;
 	}
 
-	public void setQspecified(boolean qspecified) {
+	public void setQSpecified(boolean qspecified) {
 		Qspecified = qspecified;
 	}
 
@@ -410,11 +410,11 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		SensorKW = sensorKW;
 	}
 
-	public void setSensorKVar(double[] sensorKVar) {
+	public void setSensorKVAr(double[] sensorKVar) {
 		SensorKVar = sensorKVar;
 	}
 
-	public void setkVBase(double kVBase) {
+	public void setKVBase(double kVBase) {
 		this.kVBase = kVBase;
 	}
 

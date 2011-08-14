@@ -18,7 +18,7 @@ import com.epri.dss.meter.SystemMeter;
 
 public class SystemMeterImpl implements SystemMeter {
 
-	private static double[] RegisterArray = new double[EnergyMeter.NumEMRegisters];
+	private static double[] RegisterArray = new double[EnergyMeter.NUM_EM_REGISTERS];
 
 	private MutableDouble kWh = new MutableDouble();
 	private MutableDouble dkWh = new MutableDouble();

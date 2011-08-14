@@ -8,27 +8,27 @@ import com.epri.dss.general.XYCurveObj;
 
 public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 
-	private int LastValueAccessed,
-			NumPoints;  // number of points in curve
-	private int ArrayPropertyIndex;
+	private int lastValueAccessed,
+			numPoints;  // number of points in curve
+	private int arrayPropertyIndex;
 	private double X, Y;
 	private double[] XValues, YValues;
 
-	public XYCurveObjImpl(DSSClass ParClass, String XYCurveName) {
-		super(ParClass);
+	public XYCurveObjImpl(DSSClass parClass, String XYCurveName) {
+		super(parClass);
 		setName(XYCurveName.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
-		this.LastValueAccessed = 0;
+		this.lastValueAccessed = 0;
 
-		this.NumPoints = 0;
+		this.numPoints = 0;
 		this.XValues = null;
 		this.YValues = null;
 
 		this.X = 0.0;
 		this.Y = 0.0;
 
-		ArrayPropertyIndex = -1;
+		arrayPropertyIndex = -1;
 
 		initPropertyValues(0);
 	}
@@ -44,40 +44,40 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	public double getYValue(double X) {
 		double Result = 0.0;  // default return value if no points in curve
 
-		if (NumPoints > 0)  // handle exceptional cases
-			if (NumPoints == 1) {
+		if (numPoints > 0)  // handle exceptional cases
+			if (numPoints == 1) {
 				return YValues[0];
 			} else {
 				/* Start with previous value accessed under the assumption that most
 				 * of the time, the values won't change much.
 				 */
 
-				if (XValues[LastValueAccessed] > X)
-					LastValueAccessed = 1;  // start over from beginning
+				if (XValues[lastValueAccessed] > X)
+					lastValueAccessed = 1;  // start over from beginning
 
 				// if off the curve for the first point, extrapolate from the first two points
-				if ((LastValueAccessed == 0) && (XValues[0] > X)) {
+				if ((lastValueAccessed == 0) && (XValues[0] > X)) {
 					Result = interpolatePoints(0, 1, X, XValues, YValues);
 					return Result;
 				}
 
 				// in the middle of the arrays
-				for (int i = LastValueAccessed; i < NumPoints; i++) {
+				for (int i = lastValueAccessed; i < numPoints; i++) {
 					if (Math.abs(XValues[i] - X) < 0.00001) {  // if close to an actual point, just use it
 						Result = YValues[i];
-						LastValueAccessed = i;
+						lastValueAccessed = i;
 						return Result;
 					} else if (XValues[i] > X) {
 						// interpolate between two values
-						LastValueAccessed = i - 1;  // TODO Check zero based indexing
-						Result = interpolatePoints(i, LastValueAccessed, X, XValues, YValues);
+						lastValueAccessed = i - 1;  // TODO Check zero based indexing
+						Result = interpolatePoints(i, lastValueAccessed, X, XValues, YValues);
 						return Result;
 					}
 				}
 
 				// if we fall through the loop, Extrapolate from last two points
-				LastValueAccessed = NumPoints - 1;
-				Result = interpolatePoints(NumPoints, LastValueAccessed,  X, XValues, YValues);
+				lastValueAccessed = numPoints - 1;
+				Result = interpolatePoints(numPoints, lastValueAccessed,  X, XValues, YValues);
 			}
 
 		return Result;
@@ -87,8 +87,8 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * Get Y value by index.
 	 */
 	public double getYValue(int i) {
-		if ((i < NumPoints) && (i >= 0)) {
-			LastValueAccessed = i;
+		if ((i < numPoints) && (i >= 0)) {
+			lastValueAccessed = i;
 			return YValues[i];
 		} else {
 			return 0.0;
@@ -99,8 +99,8 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * Get X value corresponding to point index.
 	 */
 	public double getXValue(int i) {
-		if ((i < NumPoints) && (i >= 0)) {
-			LastValueAccessed = i;
+		if ((i < numPoints) && (i >= 0)) {
+			lastValueAccessed = i;
 			return XValues[i];
 		} else {
 			return 0.0;
@@ -108,92 +108,92 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
 			switch (i) {
 			case 2:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			case 3:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result;
+	public String getPropertyValue(int index) {
+		String result;
 
-		switch (Index) {
+		switch (index) {
 		case 1:
-			Result = "[";
+			result = "[";
 			break;
 		case 2:
-			Result = "[";
+			result = "[";
 			break;
 		case 3:
-			Result = "[";
+			result = "[";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 1:
 			if ((XValues != null) && (YValues != null)) {
-				for (int i = 0; i < NumPoints; i++)
-					Result = Result + String.format("%.8g, %.8g ", XValues[i], YValues[i]);
+				for (int i = 0; i < numPoints; i++)
+					result = result + String.format("%.8g, %.8g ", XValues[i], YValues[i]);
 			} else {
-				Result = "0, 0";
+				result = "0, 0";
 			}
 			break;
 		case 2:
 			if (YValues != null) {
-				for (int i = 0; i < NumPoints; i++)
-					Result = Result + String.format("%-g, ", YValues[i]);
+				for (int i = 0; i < numPoints; i++)
+					result = result + String.format("%-g, ", YValues[i]);
 			} else {
-				Result = "0";
+				result = "0";
 			}
 			break;
 		case 3:
 			if (XValues != null) {
-				for (int i = 0; i < NumPoints; i++)
-					Result = Result + String.format("%-g, ", XValues[i]);
+				for (int i = 0; i < numPoints; i++)
+					result = result + String.format("%-g, ", XValues[i]);
 			} else {
-				Result = "0";
+				result = "0";
 			}
 			break;
 		case 7:
-			Result = String.format("%.8g", getXValue(Y));
+			result = String.format("%.8g", getXValue(Y));
 			break;
 		case 8:
-			Result = String.format("%.8g", getYValue(X));
+			result = String.format("%.8g", getYValue(X));
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 1:
-			Result = "[";
+			result = "[";
 			break;
 		case 2:
-			Result = "[";
+			result = "[";
 			break;
 		case 3:
-			Result = "[";
+			result = "[";
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -205,48 +205,48 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	 * the curve is extrapolated from the Ends.
 	 */
 	public double getXValue(double Y) {
-		double Result = 0.0;  // default return value if no points in curve
+		double result = 0.0;  // default return value if no points in curve
 
-		if (NumPoints > 0)  // handle exceptional cases
-			if (NumPoints == 1) {
-				Result = XValues[0];
+		if (numPoints > 0)  // handle exceptional cases
+			if (numPoints == 1) {
+				result = XValues[0];
 			} else {
 				/* Start with previous value accessed under the assumption that most
 				 * of the time, this function will be called sequentially
 				 */
 
-				if (YValues[LastValueAccessed] > Y)
-					LastValueAccessed = 0;  // start over from beginning
+				if (YValues[lastValueAccessed] > Y)
+					lastValueAccessed = 0;  // start over from beginning
 
 				// if off the curve for the first point, extrapolate from the first two points
-				if ((LastValueAccessed == 0) && (YValues[0] > Y)) {
-					Result = interpolatePoints(0, 1, Y, YValues, XValues);
-					return Result;
+				if ((lastValueAccessed == 0) && (YValues[0] > Y)) {
+					result = interpolatePoints(0, 1, Y, YValues, XValues);
+					return result;
 				}
 
-				for (int i = LastValueAccessed; i < NumPoints; i++) {  // TODO Check zero based indexing
+				for (int i = lastValueAccessed; i < numPoints; i++) {  // TODO Check zero based indexing
 					if (Math.abs(YValues[i] - Y) < 0.00001) {  // if close to an actual point, just use it.
-						Result = XValues[i];
-						LastValueAccessed = i;
-						return Result;
+						result = XValues[i];
+						lastValueAccessed = i;
+						return result;
 					} else if (YValues[i] > Y) {
 						// interpolate
-						LastValueAccessed = i - 1;  // TODO Check zero based indexing
-						Result = interpolatePoints(i, LastValueAccessed, Y, YValues, XValues);
-						return Result;
+						lastValueAccessed = i - 1;  // TODO Check zero based indexing
+						result = interpolatePoints(i, lastValueAccessed, Y, YValues, XValues);
+						return result;
 					}
 				}
 
 				// if we fall through the loop, extrapolate from last two points
-				LastValueAccessed = NumPoints - 1;
-				Result = interpolatePoints(NumPoints, LastValueAccessed,  Y, YValues, XValues);
+				lastValueAccessed = numPoints - 1;
+				result = interpolatePoints(numPoints, lastValueAccessed,  Y, YValues, XValues);
 			}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		setPropertyValue(0, "0");  // number of points to expect
 		setPropertyValue(1, "");
@@ -259,46 +259,46 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 		super.initPropertyValues(XYCurve.NumPropsThisClass);
 	}
 
-	private double interpolatePoints(int i, int j, double X, double[] Xarray, double[] Yarray) {
-		double Den = (Xarray[i] - Xarray[j]);
-		if (Den != 0.0) {
-			return Yarray[j] + (X - Xarray[j]) / Den * (Yarray[i] - Yarray[j]);
+	private double interpolatePoints(int i, int j, double X, double[] XArray, double[] YArray) {
+		double den = (XArray[i] - XArray[j]);
+		if (den != 0.0) {
+			return YArray[j] + (X - XArray[j]) / den * (YArray[i] - YArray[j]);
 		} else {
-			return Yarray[i];  // Y is undefined, return i-th value
+			return YArray[i];  // Y is undefined, return i-th value
 		}
 	}
 
 	public int getNumPoints() {
-		return NumPoints;
+		return numPoints;
 	}
 
-	public void setNumPoints(int numPoints) {
-		setPropertyValue(0, String.valueOf(numPoints));  // update property list variable
+	public void setNumPoints(int num) {
+		setPropertyValue(0, String.valueOf(num));  // update property list variable
 
 		// reset array property values to keep them in proper order in save
 
-		if (ArrayPropertyIndex >= 0)
-			setPropertyValue(ArrayPropertyIndex, getPropertyValue(ArrayPropertyIndex));
+		if (arrayPropertyIndex >= 0)
+			setPropertyValue(arrayPropertyIndex, getPropertyValue(arrayPropertyIndex));
 
-		NumPoints = numPoints;  // now assign the value
+		numPoints = num;  // now assign the value
 	}
 
 	// FIXME Private members in OpenDSS
 
 	public int getLastValueAccessed() {
-		return LastValueAccessed;
+		return lastValueAccessed;
 	}
 
-	public void setLastValueAccessed(int lastValueAccessed) {
-		LastValueAccessed = lastValueAccessed;
+	public void setLastValueAccessed(int lastValue) {
+		lastValueAccessed = lastValue;
 	}
 
 	public int getArrayPropertyIndex() {
-		return ArrayPropertyIndex;
+		return arrayPropertyIndex;
 	}
 
-	public void setArrayPropertyIndex(int arrayPropertyIndex) {
-		ArrayPropertyIndex = arrayPropertyIndex;
+	public void setArrayPropertyIndex(int index) {
+		arrayPropertyIndex = index;
 	}
 
 	public double getX() {
@@ -321,16 +321,16 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 		return XValues;
 	}
 
-	public void setXValues(double[] xValues) {
-		XValues = xValues;
+	public void setXValues(double[] xvalues) {
+		XValues = xvalues;
 	}
 
 	public double[] getYValues() {
 		return YValues;
 	}
 
-	public void setYValues(double[] yValues) {
-		YValues = yValues;
+	public void setYValues(double[] yvalues) {
+		YValues = yvalues;
 	}
 
 }

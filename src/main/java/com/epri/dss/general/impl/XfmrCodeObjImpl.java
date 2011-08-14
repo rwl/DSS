@@ -14,77 +14,77 @@ import com.epri.dss.delivery.impl.WindingImpl;
 
 public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 
-	private int NPhases;
-	private int ActiveWinding;
-	private int NumWindings;
-	private int MaxWindings;
+	private int nPhases;
+	private int activeWinding;
+	private int numWindings;
+	private int maxWindings;
 	private double XHL, XHT, XLT;  // per unit
 	private double[] XSC;     // per unit SC measurements
 	private double VABase;    // for impedances
-	private double NormMaxHKVA;
-	private double EmergMaxHKVA;
-	private double ThermalTimeConst;  // hr
-	private double n_thermal;
-	private double m_thermal;  // exponents
-	private double Lrise;
-	private double HSrise;
+	private double normMaxHKVA;
+	private double emergMaxHKVA;
+	private double thermalTimeConst;  // hr
+	private double nThermal;
+	private double mThermal;  // exponents
+	private double LRise;
+	private double HSRise;
 	private double pctLoadLoss;
 	private double pctNoLoadLoss;
-	private double ppm_FloatFactor;  // parts per million winding float factor
+	private double ppmFloatFactor;  // parts per million winding float factor
 	private double pctImag;
-	private Winding[] Winding;
+	private Winding[] winding;
 
-	public XfmrCodeObjImpl(DSSClass ParClass, String XfmrCodeName) {
-		super(ParClass);
-		setName(XfmrCodeName.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
+	public XfmrCodeObjImpl(DSSClass parClass, String xfmrCodeName) {
+		super(parClass);
+		setName(xfmrCodeName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
 		// default values and sizes
-		this.NPhases       = 3;
-		this.NumWindings   = 2;
-		this.MaxWindings   = 2;
-		this.ActiveWinding = 1;  // TODO Check zero based indexing
-		this.Winding = new Winding[MaxWindings];
-		for (int i = 0; i < MaxWindings; i++)
-			Winding[i] = new WindingImpl();
+		this.nPhases       = 3;
+		this.numWindings   = 2;
+		this.maxWindings   = 2;
+		this.activeWinding = 1;  // TODO Check zero based indexing
+		this.winding = new Winding[maxWindings];
+		for (int i = 0; i < maxWindings; i++)
+			winding[i] = new WindingImpl();
 		XHL = 0.07;
 		XHT = 0.35;
 		XLT = 0.30;
-		XSC = new double[(NumWindings - 1) * NumWindings / 2];
-		VABase           = Winding[0].getKVA() * 1000.0;
-		ThermalTimeConst = 2.0;
-		n_thermal        = 0.8;
-		m_thermal        = 0.8;
-		Lrise            = 65.0;
-		HSrise           = 15.0;  // hot spot rise
-		NormMaxHKVA      = 1.1 * Winding[0].getKVA();
-		EmergMaxHKVA     = 1.5 * Winding[0].getKVA();
-		pctLoadLoss      = 2.0 * Winding[0].getRpu() * 100.0;  // assume two windings
-		ppm_FloatFactor  = 0.000001;
+		XSC = new double[(numWindings - 1) * numWindings / 2];
+		VABase           = winding[0].getKVA() * 1000.0;
+		thermalTimeConst = 2.0;
+		nThermal        = 0.8;
+		mThermal        = 0.8;
+		LRise            = 65.0;
+		HSRise           = 15.0;  // hot spot rise
+		normMaxHKVA      = 1.1 * winding[0].getKVA();
+		emergMaxHKVA     = 1.5 * winding[0].getKVA();
+		pctLoadLoss      = 2.0 * winding[0].getRpu() * 100.0;  // assume two windings
+		ppmFloatFactor  = 0.000001;
 		/* Compute antifloat added for each winding */
-		for (int i = 0; i < NumWindings; i++)
-			Winding[i].computeAntiFloatAdder(ppm_FloatFactor, VABase / NPhases);
+		for (int i = 0; i < numWindings; i++)
+			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
 		pctNoLoadLoss = 0.0;
 		pctImag = 0.0;
 
 		initPropertyValues(0);
 	}
 
-	public void setNumWindings(int N) {
-		if (N > 1) {
-			for (int i = 0; i < NumWindings; i++)
-				Winding[i] = null;  // free old winding objects
-			int OldWdgSize = (NumWindings - 1) * NumWindings / 2;
-			NumWindings = N;
-			MaxWindings = N;
-			Winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(Winding, MaxWindings);  // reallocate collector array
-			for (int i = 0; i < MaxWindings; i++)
-				Winding[i] = new WindingImpl();
-			XSC = (double[]) Utilities.resizeArray(XSC, ((NumWindings - 1) * NumWindings / 2));
-			for (int i = OldWdgSize + 1; i < (NumWindings-1) * NumWindings / 2; i++)
+	public void setNumWindings(int n) {
+		if (n > 1) {
+			for (int i = 0; i < numWindings; i++)
+				winding[i] = null;  // free old winding objects
+			int OldWdgSize = (numWindings - 1) * numWindings / 2;
+			numWindings = n;
+			maxWindings = n;
+			winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
+			for (int i = 0; i < maxWindings; i++)
+				winding[i] = new WindingImpl();
+			XSC = (double[]) Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
+			for (int i = OldWdgSize + 1; i < (numWindings-1) * numWindings / 2; i++)
 				XSC[i] = 0.30;   // default to something
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Invalid number of windings: " + String.valueOf(N) + " for Transformer " +
+			DSSGlobals.getInstance().doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for Transformer " +
 					TransformerImpl.getActiveTransfObj().getName(), 111);
 		}
 	}
@@ -93,95 +93,94 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		int i;
 
 		setNumWindings(obj.getNumWindings());
-		NPhases = obj.getNPhases();
+		nPhases = obj.getNPhases();
 		XHL = obj.getXHL();
 		XHT = obj.getXHT();
 		XLT = obj.getXLT();
 		VABase = obj.getBaseVA();
-		NormMaxHKVA = obj.getNormMaxHKVA();
-		EmergMaxHKVA = obj.getEmergMaxHKVA();
-		ThermalTimeConst = obj.getThTau();
-		n_thermal = obj.getThN();
-		m_thermal = obj.getThM();
-		Lrise = obj.getFLRise();
-		HSrise = obj.getHSRise();
+		normMaxHKVA = obj.getNormMaxHKVA();
+		emergMaxHKVA = obj.getEmergMaxHKVA();
+		thermalTimeConst = obj.getThTau();
+		nThermal = obj.getThN();
+		mThermal = obj.getThM();
+		LRise = obj.getFLRise();
+		HSRise = obj.getHSRise();
 		pctLoadLoss = obj.getPctLoadLoss();
 		pctNoLoadLoss = obj.getPctNoLoadLoss();
-		ppm_FloatFactor = obj.getPPM_FloatFactor();
+		ppmFloatFactor = obj.getPPM_FloatFactor();
 		pctImag = obj.getPctImag();
-		for (i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)
+		for (i = 0; i < (numWindings - 1) * numWindings / 2; i++)
 			XSC[i] = obj.getXsc(i);
-		for (i = 0; i < NumWindings; i++) {
-			Winding[i].setConnection(obj.getWdgConnection(i));
-			Winding[i].setKVLL(obj.getBasekVLL(i));
-			Winding[i].setVBase(obj.getBaseVoltage(i));
-			Winding[i].setKVA(obj.getWdgKVA(i));
-			Winding[i].setPUTap(obj.getPresentTap(i));
-			Winding[i].setRpu(obj.getWdgResistance(i));
-			Winding[i].setRNeut(obj.getWdgRNeutral(i));
-			Winding[i].setXNeut(obj.getWdgXNeutral(i));
-			Winding[i].setY_PPM(obj.getWdgYPPM(i));
-			Winding[i].setTapIncrement(obj.getTapIncrement(i));
-			Winding[i].setMinTap(obj.getMinTap(i));
-			Winding[i].setMaxTap(obj.getMaxTap(i));
-			Winding[i].setNumTaps(obj.getNumTaps(i));
+		for (i = 0; i < numWindings; i++) {
+			winding[i].setConnection(obj.getWdgConnection(i));
+			winding[i].setKVLL(obj.getBasekVLL(i));
+			winding[i].setVBase(obj.getBaseVoltage(i));
+			winding[i].setKVA(obj.getWdgKVA(i));
+			winding[i].setPUTap(obj.getPresentTap(i));
+			winding[i].setRpu(obj.getWdgResistance(i));
+			winding[i].setRNeut(obj.getWdgRNeutral(i));
+			winding[i].setXNeut(obj.getWdgXNeutral(i));
+			winding[i].setY_PPM(obj.getWdgYPPM(i));
+			winding[i].setTapIncrement(obj.getTapIncrement(i));
+			winding[i].setMinTap(obj.getMinTap(i));
+			winding[i].setMaxTap(obj.getMaxTap(i));
+			winding[i].setNumTaps(obj.getNumTaps(i));
 		}
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		/* Basic property dump */
+		f.println("~ " + "NumWindings=" + numWindings);
+		f.println("~ " + "phases=" + nPhases);
 
-		F.println("~ " + "NumWindings=" + NumWindings);
-		F.println("~ " + "phases=" + NPhases);
-
-		for (int i = 0; i < NumWindings; i++) {
-			Winding wdg = Winding[i];
+		for (int i = 0; i < numWindings; i++) {
+			Winding wdg = winding[i];
 			if (i == 0) {  // TODO Check zero based indexing
-				F.println("~ " + "Wdg=" + i);
+				f.println("~ " + "Wdg=" + i);
 			} else {
-				F.println("~ " + "Wdg=" + i);
+				f.println("~ " + "Wdg=" + i);
 			}
 			switch (wdg.getConnection()) {
 			case 0:
-				F.println("~ conn=wye");
+				f.println("~ conn=wye");
 				break;
 			case 1:
-				F.println("~ conn=delta");
+				f.println("~ conn=delta");
 				break;
 			}
-			F.println("~ kv=" + wdg.getKVLL());
-			F.println("~ kva=" + wdg.getKVA());
-			F.println("~ tap=" + wdg.getPUTap());
-			F.println("~ %r=" + wdg.getRpu() * 100.0);
-			F.println("~ rneut=" + wdg.getRNeut());
-			F.println("~ xneut=" + wdg.getXNeut());
+			f.println("~ kv=" + wdg.getKVLL());
+			f.println("~ kva=" + wdg.getKVA());
+			f.println("~ tap=" + wdg.getPUTap());
+			f.println("~ %r=" + wdg.getRpu() * 100.0);
+			f.println("~ rneut=" + wdg.getRNeut());
+			f.println("~ xneut=" + wdg.getXNeut());
 		}
 
-		F.println("~ " + "xhl=" + XHL * 100.0);
-		F.println("~ " + "xht=" + XHT * 100.0);
-		F.println("~ " + "xlt=" + XLT * 100.0);
-		F.print("~ Xscmatrix= \"");
-		for (int i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)
-			F.print(XSC[i] * 100.0 + " ");
-		F.println("\"");
-		F.println("~ " + "NormMAxHkVA=" + NormMaxHKVA);
-		F.println("~ " + "EmergMAxHkVA=" + EmergMaxHKVA);
-		F.println("~ " + "thermal=" + ThermalTimeConst);
-		F.println("~ " + "n=" + n_thermal);
-		F.println("~ " + "m=" + m_thermal);
-		F.println("~ " + "flrise=" + Lrise);
-		F.println("~ " + "hsrise=" + HSrise);
-		F.println("~ " + "%loadloss=" + pctLoadLoss);
-		F.println("~ " + "%noloadloss=" + pctNoLoadLoss);
+		f.println("~ " + "xhl=" + XHL * 100.0);
+		f.println("~ " + "xht=" + XHT * 100.0);
+		f.println("~ " + "xlt=" + XLT * 100.0);
+		f.print("~ Xscmatrix= \"");
+		for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
+			f.print(XSC[i] * 100.0 + " ");
+		f.println("\"");
+		f.println("~ " + "NormMAxHkVA=" + normMaxHKVA);
+		f.println("~ " + "EmergMAxHkVA=" + emergMaxHKVA);
+		f.println("~ " + "thermal=" + thermalTimeConst);
+		f.println("~ " + "n=" + nThermal);
+		f.println("~ " + "m=" + mThermal);
+		f.println("~ " + "flrise=" + LRise);
+		f.println("~ " + "hsrise=" + HSRise);
+		f.println("~ " + "%loadloss=" + pctLoadLoss);
+		f.println("~ " + "%noloadloss=" + pctNoLoadLoss);
 
 		for (int i = 27; i < XfmrCode.NumPropsThisClass; i++)  // TODO Check zero based indexing
-			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		for (int i = XfmrCode.NumPropsThisClass + 1; i < parentClass.getNumProperties(); i++)  // TODO Check zero based indexing
-			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 	}
 
 	/**
@@ -189,144 +188,144 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	 * Set the active winding before calling.
 	 */
 	@Override
-	public String getPropertyValue(int Index) {
-		String Result;
-		switch (Index) {
+	public String getPropertyValue(int index) {
+		String result;
+		switch (index) {
 		case 10:
-			Result = "[";
+			result = "[";
 			break;
 		case 11:
-			Result = "[";
+			result = "[";
 			break;
 		case 12:
-			Result = "[";
+			result = "[";
 			break;
 		case 13:
-			Result = "[";
+			result = "[";
 			break;
 		case 17:
-			Result = "[";
+			result = "[";
 			break;
 		case 32:
-			Result = "[";
+			result = "[";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 3:
-			Result = String.valueOf(ActiveWinding);  // return active winding
+			result = String.valueOf(activeWinding);  // return active winding
 			break;
 		case 4:
-			switch (Winding[ActiveWinding].getConnection()) {
+			switch (winding[activeWinding].getConnection()) {
 			case 0:
-				Result = "wye ";
+				result = "wye ";
 				break;
 			case 1:
-				Result = "delta ";
+				result = "delta ";
 				break;
 			}
 			break;
 		case 5:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKVLL());
+			result = String.format("%.7g", winding[activeWinding].getKVLL());
 			break;
 		case 6:
-			Result = String.format("%.7g", Winding[ActiveWinding].getKVA());
+			result = String.format("%.7g", winding[activeWinding].getKVA());
 			break;
 		case 7:
-			Result = String.format("%.7g", Winding[ActiveWinding].getPUTap());
+			result = String.format("%.7g", winding[activeWinding].getPUTap());
 			break;
 		case 8:
-			Result = String.format("%.7g", Winding[ActiveWinding].getRpu() * 100.0);   // %R
+			result = String.format("%.7g", winding[activeWinding].getRpu() * 100.0);   // %R
 			break;
 		case 9:
-			Result = String.format("%.7g", Winding[ActiveWinding].getRNeut());
+			result = String.format("%.7g", winding[activeWinding].getRNeut());
 			break;
 		case 10:
-			Result = String.format("%.7g", Winding[ActiveWinding].getXNeut());
+			result = String.format("%.7g", winding[activeWinding].getXNeut());
 			break;
 		case 11:
-			for (int i = 0; i < NumWindings; i++)
-				switch (Winding[i].getConnection()) {
+			for (int i = 0; i < numWindings; i++)
+				switch (winding[i].getConnection()) {
 				case 0:
-					Result = Result + "wye, ";
+					result = result + "wye, ";
 					break;
 				case 1:
-					Result = Result + "delta, ";
+					result = result + "delta, ";
 					break;
 				}
 			break;
 		case 12:
-			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKVLL());
+			for (int i = 0; i < numWindings; i++)
+				result = result + String.format("%.7g, ", winding[i].getKVLL());
 			break;
 		case 13:
-			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getKVA());
+			for (int i = 0; i < numWindings; i++)
+				result = result + String.format("%.7g, ", winding[i].getKVA());
 			break;
 		case 14:
-			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getPUTap());
+			for (int i = 0; i < numWindings; i++)
+				result = result + String.format("%.7g, ", winding[i].getPUTap());
 			break;
 		case 18:
-			for (int i = 0; i < (NumWindings - 1) * NumWindings / 2; i++)
-				Result = Result + String.format("%-g, ", XSC[i] * 100.0);
+			for (int i = 0; i < (numWindings - 1) * numWindings / 2; i++)
+				result = result + String.format("%-g, ", XSC[i] * 100.0);
 		case 24:
-			Result = String.format("%.7g", pctLoadLoss);
+			result = String.format("%.7g", pctLoadLoss);
 			break;
 		case 25:
-			Result = String.format("%.7g", pctNoLoadLoss);
+			result = String.format("%.7g", pctNoLoadLoss);
 			break;
 		case 28:
-			Result = String.format("%.7g", Winding[ActiveWinding].getMaxTap());
+			result = String.format("%.7g", winding[activeWinding].getMaxTap());
 			break;
 		case 29:
-			Result = String.format("%.7g", Winding[ActiveWinding].getMinTap());
+			result = String.format("%.7g", winding[activeWinding].getMinTap());
 			break;
 		case 30:
-			Result = String.format("%-d", Winding[ActiveWinding].getNumTaps());
+			result = String.format("%-d", winding[activeWinding].getNumTaps());
 			break;
 		case 33:
-			for (int i = 0; i < NumWindings; i++)
-				Result = Result + String.format("%.7g, ", Winding[i].getRpu() * 100.0);
+			for (int i = 0; i < numWindings; i++)
+				result = result + String.format("%.7g, ", winding[i].getRpu() * 100.0);
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
 
-		switch (Index) {
+		switch (index) {
 		case 10:
-			Result = "]";
+			result = "]";
 			break;
 		case 11:
-			Result = "]";
+			result = "]";
 			break;
 		case 12:
-			Result = "]";
+			result = "]";
 			break;
 		case 13:
-			Result = "]";
+			result = "]";
 			break;
 		case 17:
-			Result = "]";
+			result = "]";
 			break;
 		case 32:
-			Result = "]";
+			result = "]";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0] = "3"; // "phases";
 		propertyValue[1] = "2"; // "windings";
@@ -368,167 +367,167 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	// FIXME Private members in OpenDSS
 
 	public int getNPhases() {
-		return NPhases;
+		return nPhases;
 	}
 
-	public void setNPhases(int nPhases) {
-		NPhases = nPhases;
+	public void setNPhases(int num) {
+		nPhases = num;
 	}
 
 	public int getActiveWinding() {
-		return ActiveWinding;
+		return activeWinding;
 	}
 
-	public void setActiveWinding(int activeWinding) {
-		ActiveWinding = activeWinding;
+	public void setActiveWinding(int winding) {
+		activeWinding = winding;
 	}
 
 	public int getMaxWindings() {
-		return MaxWindings;
+		return maxWindings;
 	}
 
-	public void setMaxWindings(int maxWindings) {
-		MaxWindings = maxWindings;
+	public void setMaxWindings(int max) {
+		maxWindings = max;
 	}
 
 	public double getXHL() {
 		return XHL;
 	}
 
-	public void setXHL(double xHL) {
-		XHL = xHL;
+	public void setXHL(double value) {
+		XHL = value;
 	}
 
 	public double getXHT() {
 		return XHT;
 	}
 
-	public void setXHT(double xHT) {
-		XHT = xHT;
+	public void setXHT(double value) {
+		XHT = value;
 	}
 
 	public double getXLT() {
 		return XLT;
 	}
 
-	public void setXLT(double xLT) {
-		XLT = xLT;
+	public void setXLT(double value) {
+		XLT = value;
 	}
 
 	public double[] getXSC() {
 		return XSC;
 	}
 
-	public void setXSC(double[] xSC) {
-		XSC = xSC;
+	public void setXSC(double[] value) {
+		XSC = value;
 	}
 
 	public double getVABase() {
 		return VABase;
 	}
 
-	public void setVABase(double vABase) {
-		VABase = vABase;
+	public void setVABase(double base) {
+		VABase = base;
 	}
 
 	public double getNormMaxHKVA() {
-		return NormMaxHKVA;
+		return normMaxHKVA;
 	}
 
-	public void setNormMaxHKVA(double normMaxHKVA) {
-		NormMaxHKVA = normMaxHKVA;
+	public void setNormMaxHKVA(double max) {
+		normMaxHKVA = max;
 	}
 
 	public double getEmergMaxHKVA() {
-		return EmergMaxHKVA;
+		return emergMaxHKVA;
 	}
 
-	public void setEmergMaxHKVA(double emergMaxHKVA) {
-		EmergMaxHKVA = emergMaxHKVA;
+	public void setEmergMaxHKVA(double max) {
+		emergMaxHKVA = max;
 	}
 
 	public double getThermalTimeConst() {
-		return ThermalTimeConst;
+		return thermalTimeConst;
 	}
 
-	public void setThermalTimeConst(double thermalTimeConst) {
-		ThermalTimeConst = thermalTimeConst;
+	public void setThermalTimeConst(double timeConst) {
+		thermalTimeConst = timeConst;
 	}
 
 	public double getNThermal() {
-		return n_thermal;
+		return nThermal;
 	}
 
-	public void setNThermal(double n_thermal) {
-		this.n_thermal = n_thermal;
+	public void setNThermal(double n) {
+		this.nThermal = n;
 	}
 
 	public double getMThermal() {
-		return m_thermal;
+		return mThermal;
 	}
 
-	public void setMThermal(double m_thermal) {
-		this.m_thermal = m_thermal;
+	public void setMThermal(double m) {
+		this.mThermal = m;
 	}
 
 	public double getLRise() {
-		return Lrise;
+		return LRise;
 	}
 
-	public void setLRise(double lrise) {
-		Lrise = lrise;
+	public void setLRise(double rise) {
+		LRise = rise;
 	}
 
 	public double getHSRise() {
-		return HSrise;
+		return HSRise;
 	}
 
-	public void setHSRise(double hSrise) {
-		HSrise = hSrise;
+	public void setHSRise(double rise) {
+		HSRise = rise;
 	}
 
 	public double getPctLoadLoss() {
 		return pctLoadLoss;
 	}
 
-	public void setPctLoadLoss(double pctLoadLoss) {
-		this.pctLoadLoss = pctLoadLoss;
+	public void setPctLoadLoss(double pct) {
+		this.pctLoadLoss = pct;
 	}
 
 	public double getPctNoLoadLoss() {
 		return pctNoLoadLoss;
 	}
 
-	public void setPctNoLoadLoss(double pctNoLoadLoss) {
-		this.pctNoLoadLoss = pctNoLoadLoss;
+	public void setPctNoLoadLoss(double pct) {
+		this.pctNoLoadLoss = pct;
 	}
 
 	public double getPpmFloatFactor() {
-		return ppm_FloatFactor;
+		return ppmFloatFactor;
 	}
 
-	public void setPpmFloatFactor(double ppm_FloatFactor) {
-		this.ppm_FloatFactor = ppm_FloatFactor;
+	public void setPpmFloatFactor(double factor) {
+		this.ppmFloatFactor = factor;
 	}
 
 	public double getPctImag() {
 		return pctImag;
 	}
 
-	public void setPctImag(double pctImag) {
-		this.pctImag = pctImag;
+	public void setPctImag(double pct) {
+		this.pctImag = pct;
 	}
 
 	public Winding[] getWinding() {
-		return Winding;
+		return winding;
 	}
 
-	public void setWinding(Winding[] winding) {
-		Winding = winding;
+	public void setWinding(Winding[] values) {
+		winding = values;
 	}
 
 	public int getNumWindings() {
-		return NumWindings;
+		return numWindings;
 	}
 
 }

@@ -19,9 +19,9 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -35,16 +35,16 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.setActiveDSSObject(new WireDataObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.setActiveDSSObject(new WireDataObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
 		DSSGlobals.getInstance().setActiveDSSObject(getActiveConductorDataObj());
@@ -53,58 +53,58 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 		ConductorDataObj acd = getActiveConductorDataObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= numProperties))
-				acd.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))
+				acd.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
+				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveConductorDataObj(), ParamPointer - WireData.NumPropsThisClass);
+				classEdit(getActiveConductorDataObj(), paramPointer - WireData.NumPropsThisClass);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	protected int makeLike(String Name) {
-		int Result = 0;
+	protected int makeLike(String name) {
+		int result = 0;
 		/* See if we can find this line code in the present collection */
-		WireDataObj OtherWireData = (WireDataObj) find(Name);
-		if (OtherWireData != null) {
+		WireDataObj otherWireData = (WireDataObj) find(name);
+		if (otherWireData != null) {
 
 			ConductorDataObj awo = getActiveConductorDataObj();
 
-			classMakeLike(OtherWireData);
+			classMakeLike(otherWireData);
 
 			for (int i = 0; i < awo.getParentClass().getNumProperties(); i++)
-				awo.setPropertyValue(i, OtherWireData.getPropertyValue(i));
-			Result = 1;
+				awo.setPropertyValue(i, otherWireData.getPropertyValue(i));
+			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in WireData.makeLike: \"" + Name + "\" not found.", 102);
+			DSSGlobals.getInstance().doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement WireData.init()", -1);
 		return 0;
 	}
@@ -114,19 +114,19 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		return active.getName();
 	}
 
-	public void setCode(String Value) {
+	public void setCode(String value) {
 
 		setActiveConductorDataObj(null);
-		WireDataObj pWireData;
+		WireDataObj wireData;
 		for (int i = 0; i < elementList.size(); i++) {
-			pWireData = (WireDataObj) elementList.get(i);
-			if (pWireData.getName().equalsIgnoreCase(Value)) {
-				setActiveConductorDataObj(pWireData);
+			wireData = (WireDataObj) elementList.get(i);
+			if (wireData.getName().equalsIgnoreCase(value)) {
+				setActiveConductorDataObj(wireData);
 				return;
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("WireData: \"" + Value + "\" not found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("WireData: \"" + value + "\" not found.", 103);
 	}
 
 }

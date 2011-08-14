@@ -84,7 +84,7 @@ public interface MonitorObj extends MeterElement {
 
 	void closeMonitorStream();
 
-	void translateToCSV(boolean Show);
+	void translateToCSV(boolean show);
 
 
 	// FIXME Private members in OpenDSS
@@ -129,13 +129,13 @@ public interface MonitorObj extends MeterElement {
 
 	void setIncludeResidual(boolean includeResidual);
 
-	boolean isVIpolar();
+	boolean isVIPolar();
 
-	void setVIpolar(boolean vIpolar);
+	void setVIPolar(boolean polar);
 
-	boolean isPpolar();
+	boolean isPPolar();
 
-	void setPpolar(boolean ppolar);
+	void setPPolar(boolean polar);
 
 	int getFileSignature();
 
@@ -149,9 +149,9 @@ public interface MonitorObj extends MeterElement {
 
 	void setBufferFile(String bufferFile);
 
-	boolean isIsFileOpen();
+	boolean isFileOpen();
 
-	void setIsFileOpen(boolean isFileOpen);
+	void setFileOpen(boolean isFileOpen);
 
 	boolean isValidMonitor();
 

@@ -19,14 +19,13 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {
-
 		numProperties = TSData.NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
@@ -44,10 +43,10 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Globals.setActiveDSSObject(new TSDataObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
+		globals.setActiveDSSObject(new TSDataObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	/**
@@ -55,32 +54,32 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
-		Globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
+		globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
 
 		TSDataObj tsd = (TSDataObj) ConductorDataImpl.getActiveConductorDataObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				tsd.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				tsd.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ tsd.getName() + "\"", 101);
 				break;
 			case 0:
 				tsd.setDiaShield(parser.makeDouble());
@@ -93,55 +92,55 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 				break;
 			default:
 				// Inherited parameters
-				classEdit(ConductorDataImpl.getActiveConductorDataObj(), ParamPointer - NumPropsThisClass);
+				classEdit(ConductorDataImpl.getActiveConductorDataObj(), paramPointer - NumPropsThisClass);
 				break;
 			}
 
 			/* Check for critical errors */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				if (tsd.getDiaShield() <= 0.0)
-					Globals.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
+					globals.doSimpleMsg("Error: Diameter over shield must be positive for TapeShieldData " + tsd.getName(), 999);
 				break;
 			case 1:
 				if (tsd.getTapeLayer() <= 0.0)
-					Globals.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
+					globals.doSimpleMsg("Error: Tape shield thickness must be positive for TapeShieldData " + tsd.getName(), 999);
 				break;
 			case 2:
 				if ((tsd.getTapeLap() < 0.0) || (tsd.getTapeLap() > 100.0))
-					Globals.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
+					globals.doSimpleMsg("Error: Tap lap must range from 0 to 100 for TapeShieldData " + tsd.getName(), 999);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
 	protected int makeLike(String TSName) {
-		int Result = 0;
-		TSDataObj OtherData = (TSDataObj) find(TSName);
-		if (OtherData != null) {
+		int result = 0;
+		TSDataObj otherData = (TSDataObj) find(TSName);
+		if (otherData != null) {
 			TSDataObj tsd = (TSDataObj) ConductorDataImpl.getActiveConductorDataObj();
 
-			tsd.setDiaShield(OtherData.getDiaShield());
-			tsd.setTapeLayer(OtherData.getTapeLayer());
-			tsd.setTapeLap(OtherData.getTapeLap());
-			classMakeLike(OtherData);
+			tsd.setDiaShield(otherData.getDiaShield());
+			tsd.setTapeLayer(otherData.getTapeLayer());
+			tsd.setTapeLap(otherData.getTapeLap());
+			classMakeLike(otherData);
 			for (int i = 0; i < tsd.getParentClass().getNumProperties(); i++)
-				tsd.setPropertyValue(i, OtherData.getPropertyValue(i));
-			Result = 1;
+				tsd.setPropertyValue(i, otherData.getPropertyValue(i));
+			result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in TapeShield makeLike: \"" + TSName + "\" not found.", 102);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement TSData.init", -1);
 		return 0;
 	}
@@ -150,17 +149,17 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		return ((TSDataObj) elementList.getActive()).getName();
 	}
 
-	public void setCode(String Value) {
+	public void setCode(String value) {
 		ConductorDataImpl.setActiveConductorDataObj(null);
 		TSDataObj pTSDataObj = (TSDataObj) elementList.getFirst();
 		while (pTSDataObj != null) {
-			if (pTSDataObj.getName().equalsIgnoreCase(Value)) {
+			if (pTSDataObj.getName().equalsIgnoreCase(value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pTSDataObj);
 				return;
 			}
 			pTSDataObj = (TSDataObj) elementList.getNext();
 		}
-		DSSGlobals.getInstance().doSimpleMsg("TSData: \"" + Value + "\" not found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("TSData: \"" + value + "\" not found.", 103);
 	}
 
 }

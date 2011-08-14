@@ -17,9 +17,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
-	private static XYCurveObj ActiveXYCurveObj;
+	private static XYCurveObj activeXYCurveObj;
 
-	private double[] TempPointsBuffer;
+	private double[] tempPointsBuffer;
 
 	public XYCurveImpl() {
 		super();
@@ -27,13 +27,13 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
-		this.TempPointsBuffer = null;
+		this.tempPointsBuffer = null;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -91,10 +91,10 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Globals.setActiveDSSObject(new XYCurveObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
+		globals.setActiveDSSObject(new XYCurveObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	/**
@@ -102,69 +102,69 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveXYCurveObj((XYCurveObj) elementList.getActive());
-		Globals.setActiveDSSObject(getActiveXYCurveObj());
+		globals.setActiveDSSObject(getActiveXYCurveObj());
 
 		XYCurveObj xyc = getActiveXYCurveObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				xyc.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				xyc.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ xyc.getName() + "\"", 610);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ xyc.getName() + "\"", 610);
 				break;
 			case 0:
 				xyc.setNumPoints(parser.makeInteger());
 				break;
 			case 1:
-				TempPointsBuffer = (double[]) Utilities.resizeArray(TempPointsBuffer, xyc.getNumPoints() * 2);
+				tempPointsBuffer = (double[]) Utilities.resizeArray(tempPointsBuffer, xyc.getNumPoints() * 2);
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
-				xyc.setNumPoints( Utilities.interpretDblArray(Param, (xyc.getNumPoints() * 2), TempPointsBuffer) / 2);  // parser.parseAsVector(Npts, Temperatures);
+				xyc.setNumPoints( Utilities.interpretDblArray(param, (xyc.getNumPoints() * 2), tempPointsBuffer) / 2);  // parser.parseAsVector(Npts, Temperatures);
 				xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 				xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 				for (int i = 0; i < xyc.getNumPoints(); i++) {
-					xyc.getXValues()[i] = TempPointsBuffer[2 * i - 1];
-					xyc.getYValues()[i] = TempPointsBuffer[2 * i];
+					xyc.getXValues()[i] = tempPointsBuffer[2 * i - 1];
+					xyc.getYValues()[i] = tempPointsBuffer[2 * i];
 				}
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
-				TempPointsBuffer = null;  // throw away temp array
+				tempPointsBuffer = null;  // throw away temp array
 				break;
 			case 2:
 				xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
-				xyc.setNumPoints( Utilities.interpretDblArray(Param, xyc.getNumPoints(), xyc.getYValues()) );
+				xyc.setNumPoints( Utilities.interpretDblArray(param, xyc.getNumPoints(), xyc.getYValues()) );
 				xyc.setY(xyc.getYValues()[0]);
 				break;
 			case 3:
 				xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
-				xyc.setNumPoints( Utilities.interpretDblArray(Param, xyc.getNumPoints(), xyc.getXValues()) );
+				xyc.setNumPoints( Utilities.interpretDblArray(param, xyc.getNumPoints(), xyc.getXValues()) );
 				xyc.setX( xyc.getXValues()[0] );
 				break;
 			case 4:
-				doCSVFile(Param);  // file of x,y points, one to a line
+				doCSVFile(param);  // file of x,y points, one to a line
 				break;
 			case 5:
-				doSngFile(Param);
+				doSngFile(param);
 				break;
 			case 6:
-				doDblFile(Param);
+				doDblFile(param);
 				break;
 			case 7:
 				xyc.setX(parser.makeDouble());
@@ -174,11 +174,11 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveXYCurveObj(), ParamPointer - XYCurve.NumPropsThisClass);
+				classEdit(getActiveXYCurveObj(), paramPointer - XYCurve.NumPropsThisClass);
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 4:
 				xyc.setX(xyc.getXValues()[0]);
 				xyc.setY(xyc.getYValues()[0]);
@@ -193,55 +193,55 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 1:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			case 2:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			case 3:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			case 4:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			case 5:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			case 6:
-				xyc.setArrayPropertyIndex(ParamPointer);
+				xyc.setArrayPropertyIndex(paramPointer);
 				xyc.setNumPoints(xyc.getNumPoints());  // FIXME Keep properties in order for save command
 				xyc.setLastValueAccessed(0);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param     = parser.makeString();
+			paramName = parser.getNextParam();
+			param     = parser.makeString();
 		}
-		return Result;
+		return result;
 	}
 
 	public String getCode() {
 		return ((XYCurveObj) elementList.getActive()).getName();
 	}
 
-	public void setCode(String Value) {
+	public void setCode(String value) {
 		setActiveXYCurveObj(null);
 		XYCurveObj pXYCurveObj = (XYCurveObj) elementList.getFirst();
 		while (pXYCurveObj != null) {
 
-			if (pXYCurveObj.getName().equalsIgnoreCase(Value)) {
+			if (pXYCurveObj.getName().equalsIgnoreCase(value)) {
 				setActiveXYCurveObj(pXYCurveObj);
 				return;
 			}
@@ -249,22 +249,22 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			pXYCurveObj = (XYCurveObj) elementList.getNext();
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("XYCurve: \"" + Value + "\" not found.", 612);
+		DSSGlobals.getInstance().doSimpleMsg("XYCurve: \"" + value + "\" not found.", 612);
 	}
 
-	private void doCSVFile(String FileName) {
-		FileInputStream fileStream;
-		DataInputStream dataStream;
-		BufferedReader reader;
+	private void doCSVFile(String fileName) {
+		FileInputStream fis;
+		DataInputStream dis;
+		BufferedReader br;
 
 		String s;
 		Parser parser;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			fileStream = new FileInputStream(FileName);
-			dataStream = new DataInputStream(fileStream);
-			reader = new BufferedReader(new InputStreamReader(dataStream));
+			fis = new FileInputStream(fileName);
+			dis = new DataInputStream(fis);
+			br = new BufferedReader(new InputStreamReader(dis));
 
 			XYCurveObj xyc = getActiveXYCurveObj();
 
@@ -272,66 +272,66 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 
 			int i = -1;  // TODO Check zero based indexing
-			while (((s = reader.readLine()) != null) && i < xyc.getNumPoints()) {  // TODO: Check zero based indexing
+			while (((s = br.readLine()) != null) && i < xyc.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
 				/* Aux parser allows commas or white space */
-				parser = Globals.getAuxParser();
+				parser = globals.getAuxParser();
 				parser.setCmdString(s);
 				parser.getNextParam();
 				xyc.getXValues()[i] = parser.makeDouble();
 				parser.getNextParam();
 				xyc.getYValues()[i] = parser.makeDouble();
 			}
-			fileStream.close();
-			dataStream.close();
-			reader.close();
+			fis.close();
+			dis.close();
+			br.close();
 			if (i != xyc.getNumPoints())  // TODO: Check zero based indexing
 				xyc.setNumPoints(i);
 
-			fileStream.close();
-			dataStream.close();
-			reader.close();
+			fis.close();
+			dis.close();
+			br.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error processing XYCurve CSV file: \"" + FileName + ". " + e.getMessage(), 604);
+			globals.doSimpleMsg("Error processing XYCurve CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}
 
-	private void doSngFile(String FileName) {
+	private void doSngFile(String fileName) {
 		throw new UnsupportedOperationException();
 	}
 
-	private void doDblFile(String FileName) {
+	private void doDblFile(String fileName) {
 		throw new UnsupportedOperationException();
 	}
 
 	@Override
-	protected int makeLike(String CurveName) {
-		int i, Result = 0;
+	protected int makeLike(String curveName) {
+		int i, result = 0;
 
 		/* See if we can find this curve in the present collection */
-		XYCurveObj OtherXYCurve = (XYCurveObj) find(CurveName);
-		if (OtherXYCurve != null) {
+		XYCurveObj otherXYCurve = (XYCurveObj) find(curveName);
+		if (otherXYCurve != null) {
 			XYCurveObj xyc = getActiveXYCurveObj();
 
-			xyc.setNumPoints(OtherXYCurve.getNumPoints());
+			xyc.setNumPoints(otherXYCurve.getNumPoints());
 			xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 			xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 			for (i = 0; i < xyc.getNumPoints(); i++)
-				xyc.getXValues()[i] = OtherXYCurve.getXValues()[i];
+				xyc.getXValues()[i] = otherXYCurve.getXValues()[i];
 			for (i = 0; i < xyc.getNumPoints(); i++)
-				xyc.getYValues()[i] = OtherXYCurve.getYValues()[i];
+				xyc.getYValues()[i] = otherXYCurve.getYValues()[i];
 
 			for (i = 0; i < xyc.getParentClass().getNumProperties(); i++)
-				xyc.setPropertyValue(i, OtherXYCurve.getPropertyValue(i));
+				xyc.setPropertyValue(i, otherXYCurve.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in XYCurve makeLike: \"" + CurveName + "\" not found.", 611);
+			DSSGlobals.getInstance().doSimpleMsg("Error in XYCurve makeLike: \"" + curveName + "\" not found.", 611);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement XYcurve.init", -1);
 		return 0;
 	}
@@ -340,20 +340,20 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 * Find an obj of this class by name.
 	 */
 	@Override
-	public Object find(String ObjName) {
-		if ((ObjName.length() == 0) || ObjName.equalsIgnoreCase("none")) {
+	public Object find(String objName) {
+		if ((objName.length() == 0) || objName.equalsIgnoreCase("none")) {
 			return null;
 		} else {
-			return super.find(ObjName);
+			return super.find(objName);
 		}
 	}
 
-	public static void setActiveXYCurveObj(XYCurveObj activeXYCurveObj) {
-		ActiveXYCurveObj = activeXYCurveObj;
+	public static void setActiveXYCurveObj(XYCurveObj XYCurveObj) {
+		activeXYCurveObj = XYCurveObj;
 	}
 
 	public static XYCurveObj getActiveXYCurveObj() {
-		return ActiveXYCurveObj;
+		return activeXYCurveObj;
 	}
 
 }

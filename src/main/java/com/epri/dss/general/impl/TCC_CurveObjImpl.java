@@ -8,25 +8,25 @@ import com.epri.dss.general.TCC_CurveObj;
 
 public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
-	private int LastValueAccessed,
-		Npts;  // Number of points in curve
+	private int lastValueAccessed,
+		npts;  // Number of points in curve
 
-	private double[] LogT, LogC,  // logarithms of t_values and c_values
-		t_values,  // time values (hr) if interval > 0.0  else null
-		c_values;
+	private double[] logT, logC,  // logarithms of t_values and c_values
+		tValues,  // time values (hr) if interval > 0.0  else null
+		cValues;
 
-	public TCC_CurveObjImpl(DSSClass ParClass, String Name) {
-		super(ParClass);
+	public TCC_CurveObjImpl(DSSClass parClass, String name) {
+		super(parClass);
 
-		setName(Name.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
+		setName(name.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.LastValueAccessed = 0;  // TODO Check zero based indexing
-		this.Npts = 0;
-		this.c_values = null;
-		this.t_values = null;
-		this.LogC     = null;
-		this.LogT     = null;
+		this.lastValueAccessed = 0;  // TODO Check zero based indexing
+		this.npts = 0;
+		this.cValues = null;
+		this.tValues = null;
+		this.logC     = null;
+		this.logT     = null;
 
 		initPropertyValues(0);
 	}
@@ -36,106 +36,106 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 * If the value is less than the first entry, return = -1 for no operation.
 	 * Log-log interpolation is used.
 	 */
-	public double getTCCTime(double C_Value) {
+	public double getTCCTime(double cValue) {
 		int i;
-		double LogTest;
+		double logTest;
 
-		double Result = -1.0;  // default return value
+		double result = -1.0;  // default return value
 
 		/* If current is less than first point, just leave. */
-		if (C_Value < c_values[0])
-			return Result;
+		if (cValue < cValues[0])
+			return result;
 
-		if (Npts > 0)  // Handle exceptional cases
-			if (Npts == 1) {
-				Result = t_values[0];
+		if (npts > 0)  // Handle exceptional cases
+			if (npts == 1) {
+				result = tValues[0];
 			} else {
 				/* Start with previous value accessed under the assumption that most
 				 * of the time, this function will be called sequentially}
 				 */
-				if (c_values[LastValueAccessed] > C_Value)
-					LastValueAccessed = 0;  // start over from beginning
-				for (i = LastValueAccessed + 1; i < Npts; i++) {  // TODO Check zero based indexing
-					if (c_values[i] == C_Value) {
-						Result = t_values[i];
-						LastValueAccessed = i;
-						return Result;
-					} else if (c_values[i] > C_Value) {  // log-log interpolation
-						LastValueAccessed = i - 1;  // TODO Check zero based indexing
-						if (C_Value > 0.0) {
-							LogTest = Math.log(C_Value);
+				if (cValues[lastValueAccessed] > cValue)
+					lastValueAccessed = 0;  // start over from beginning
+				for (i = lastValueAccessed + 1; i < npts; i++) {  // TODO Check zero based indexing
+					if (cValues[i] == cValue) {
+						result = tValues[i];
+						lastValueAccessed = i;
+						return result;
+					} else if (cValues[i] > cValue) {  // log-log interpolation
+						lastValueAccessed = i - 1;  // TODO Check zero based indexing
+						if (cValue > 0.0) {
+							logTest = Math.log(cValue);
 						} else {
-							LogTest = Math.log(0.001);
+							logTest = Math.log(0.001);
 						}
-						Result = Math.exp( LogT[LastValueAccessed] +
-								(LogTest - LogC[LastValueAccessed]) / (LogC[i] - LogC[LastValueAccessed]) *
-								(LogT[i] - LogT[LastValueAccessed]) );
-						return Result;
+						result = Math.exp( logT[lastValueAccessed] +
+								(logTest - logC[lastValueAccessed]) / (logC[i] - logC[lastValueAccessed]) *
+								(logT[i] - logT[lastValueAccessed]) );
+						return result;
 					}
 				}
 
 				// if we fall through the loop, just use last value
-				LastValueAccessed = Npts - 1;  // TODO Check zero based indexing
-				Result = t_values[Npts];
+				lastValueAccessed = npts - 1;  // TODO Check zero based indexing
+				result = tValues[npts];
 			}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Return operating time for over-voltage relay.
 	 */
-	public double getOVTime(double V_Value) {
+	public double getOVTime(double vValue) {
 		int i;
-		double Result = -1.0;  // no op return
+		double result = -1.0;  // no op return
 
-		if (V_Value > c_values[0]) {
-			if (Npts == 1) {
-				Result = t_values[0];
+		if (vValue > cValues[0]) {
+			if (npts == 1) {
+				result = tValues[0];
 			} else {
 				i = 0;  // TODO Check zero based indexing
-				while (c_values[i] < V_Value) {
+				while (cValues[i] < vValue) {
 					i += 1;
-					if (i > Npts)
+					if (i > npts)
 						break;
 				}
-				Result = t_values[i - 1];
+				result = tValues[i - 1];
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Return operating time for under-voltage relay.
 	 */
-	public double getUVTime(double V_Value) {
+	public double getUVTime(double vValue) {
 		int i;
-		double Result = -1.0;  // no op return
+		double result = -1.0;  // no op return
 
-		if (V_Value < c_values[Npts])  {
-			if (Npts == 1) {
-				Result = t_values[0];
+		if (vValue < cValues[npts])  {
+			if (npts == 1) {
+				result = tValues[0];
 			} else {
-				i = Npts;
-				while (c_values[i] > V_Value) {
+				i = npts;
+				while (cValues[i] > vValue) {
 					i -= 1;
 					if (i == 0)
 						break;
 				}
-				Result = t_values[i + 1];
+				result = tValues[i + 1];
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Get C_Value by index.
 	 */
 	public double value(int i) {
-		if ((i <= Npts) && (i > 0)) {
-			LastValueAccessed = i;
-			return c_values[i];
+		if ((i <= npts) && (i > 0)) {
+			lastValueAccessed = i;
+			return cValues[i];
 		} else {
 			return 0.0;
 		}
@@ -145,67 +145,67 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	 * Get time value (sec) corresponding to point index.
 	 */
 	public double time(int i) {
-		if ((i <= Npts) && (i > 0)) {
-			LastValueAccessed = i;
-			return t_values[i];
+		if ((i <= npts) && (i > 0)) {
+			lastValueAccessed = i;
+			return tValues[i];
 		} else {
 			return 0.0;
 		}
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < parentClass.getNumProperties(); i++)
-			F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
 	}
 
 	@Override
-	public String getPropertyValue(int Index) {
+	public String getPropertyValue(int index) {
 		int i;
-		String Result;
+		String result;
 
-		switch (Index) {
+		switch (index) {
 		case 1:
-			Result = "(";
+			result = "(";
 			break;
 		case 2:
-			Result = "(";
+			result = "(";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 2:
-			for (i = 0; i < Npts; i++)
-				Result = Result + String.format("%-g, ", c_values[i]);
+			for (i = 0; i < npts; i++)
+				result = result + String.format("%-g, ", cValues[i]);
 			break;
 		case 3:
-			for (i = 0; i < Npts; i++)
-				Result = Result + String.format("%-g, ", t_values[i]);
+			for (i = 0; i < npts; i++)
+				result = result + String.format("%-g, ", tValues[i]);
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 1:
-			Result = Result + ")";
+			result = result + ")";
 			break;
 		case 2:
-			Result = Result + ")";
+			result = result + ")";
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		propertyValue[0] = "0";  // number of points to expect
 		propertyValue[1] = "";   // vector of multiplier values
 		propertyValue[2] = "";   // vector of sec values
@@ -214,55 +214,55 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	}
 
 	public int getNumPoints() {
-		return Npts;
+		return npts;
 	}
 
 	public int getLastValueAccessed() {
-		return LastValueAccessed;
+		return lastValueAccessed;
 	}
 
-	public void setLastValueAccessed(int lastValueAccessed) {
-		LastValueAccessed = lastValueAccessed;
+	public void setLastValueAccessed(int lastValue) {
+		lastValueAccessed = lastValue;
 	}
 
 	public int getNPts() {
-		return Npts;
+		return npts;
 	}
 
-	public void setNPts(int npts) {
-		Npts = npts;
+	public void setNPts(int n) {
+		npts = n;
 	}
 
 	public double[] getLogT() {
-		return LogT;
+		return logT;
 	}
 
 	public void setLogT(double[] logt) {
-		LogT = logt;
+		logT = logt;
 	}
 
 	public double[] getLogC() {
-		return LogC;
+		return logC;
 	}
 
-	public void setLogC(double[] logC) {
-		LogC = logC;
+	public void setLogC(double[] logc) {
+		logC = logc;
 	}
 
 	public double[] getCValues() {
-		return c_values;
+		return cValues;
 	}
 
-	public void setCValues(double[] c_values) {
-		this.c_values = c_values;
+	public void setCValues(double[] values) {
+		cValues = values;
 	}
 
 	public double[] getTValues() {
-		return t_values;
+		return tValues;
 	}
 
-	public void setTValues(double[] t_values) {
-		this.t_values = t_values;
+	public void setTValues(double[] values) {
+		tValues = values;
 	}
 
 }

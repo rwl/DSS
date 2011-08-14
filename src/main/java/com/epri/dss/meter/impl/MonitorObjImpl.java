@@ -917,19 +917,19 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		IncludeResidual = includeResidual;
 	}
 
-	public boolean isVIpolar() {
+	public boolean isVIPolar() {
 		return VIpolar;
 	}
 
-	public void setVIpolar(boolean vIpolar) {
+	public void setVIPolar(boolean vIpolar) {
 		VIpolar = vIpolar;
 	}
 
-	public boolean isPpolar() {
+	public boolean isPPolar() {
 		return Ppolar;
 	}
 
-	public void setPpolar(boolean ppolar) {
+	public void setPPolar(boolean ppolar) {
 		Ppolar = ppolar;
 	}
 
@@ -957,11 +957,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		BufferFile = bufferFile;
 	}
 
-	public boolean isIsFileOpen() {
+	public boolean isFileOpen() {
 		return IsFileOpen;
 	}
 
-	public void setIsFileOpen(boolean isFileOpen) {
+	public void setFileOpen(boolean isFileOpen) {
 		IsFileOpen = isFileOpen;
 	}
 

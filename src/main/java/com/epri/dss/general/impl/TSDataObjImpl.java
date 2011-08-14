@@ -8,74 +8,74 @@ import com.epri.dss.general.TSDataObj;
 
 public class TSDataObjImpl extends CableDataObjImpl implements TSDataObj {
 
-	private double DiaShield;
-	private double TapeLayer;
-	private double TapeLap;
+	private double diaShield;
+	private double tapeLayer;
+	private double tapeLap;
 
-	public TSDataObjImpl(DSSClass ParClass, String TSDataName) {
-		super(ParClass, TSDataName);
+	public TSDataObjImpl(DSSClass parClass, String TSDataName) {
+		super(parClass, TSDataName);
 
 		setName(TSDataName.toLowerCase());
-		this.objType = ParClass.getDSSClassType();
-		this.DiaShield = -1.0;
-		this.TapeLayer = -1.0;
-		this.TapeLap = 20.0;
+		this.objType = parClass.getDSSClassType();
+		this.diaShield = -1.0;
+		this.tapeLayer = -1.0;
+		this.tapeLap = 20.0;
 
 		initPropertyValues(0);
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			F.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
 			switch (i) {
 			case 0:
-				F.println(String.format("%.6g", DiaShield));
+				f.println(String.format("%.6g", diaShield));
 				break;
 			case 1:
-				F.println(String.format("%.6g", TapeLayer));
+				f.println(String.format("%.6g", tapeLayer));
 				break;
 			case 2:
-				F.println(String.format("%.2g", TapeLap));
+				f.println(String.format("%.2g", tapeLap));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "-1");
 		setPropertyValue(1, "-1");
 		setPropertyValue(2, "20.0");
-		super.initPropertyValues(ArrayOffset + TSData.NumPropsThisClass);
+		super.initPropertyValues(arrayOffset + TSData.NumPropsThisClass);
 	}
 
 	public double getDiaShield() {
-		return DiaShield;
+		return diaShield;
 	}
 
 	public double getTapeLayer() {
-		return TapeLayer;
+		return tapeLayer;
 	}
 
 	public double getTapeLap() {
-		return TapeLap;
+		return tapeLap;
 	}
 
 	// FIXME Private members in OpenDSS
 
-	public void setDiaShield(double diaShield) {
-		DiaShield = diaShield;
+	public void setDiaShield(double shield) {
+		diaShield = shield;
 	}
 
-	public void setTapeLayer(double tapeLayer) {
-		TapeLayer = tapeLayer;
+	public void setTapeLayer(double layer) {
+		tapeLayer = layer;
 	}
 
-	public void setTapeLap(double tapeLap) {
-		TapeLap = tapeLap;
+	public void setTapeLap(double lap) {
+		tapeLap = lap;
 	}
 
 }

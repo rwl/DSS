@@ -108,7 +108,7 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setExcessFlag(boolean excessFlag);
 
-	boolean isZoneIsRadial();
+	boolean zoneIsRadial();
 
 	void setZoneIsRadial(boolean zoneIsRadial);
 
@@ -120,7 +120,7 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setLocalOnly(boolean localOnly);
 
-	boolean isHasFeeder();
+	boolean hasFeeder();
 
 	void setHasFeeder(boolean hasFeeder);
 
@@ -140,9 +140,9 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setSeqLosses(boolean seqLosses);
 
-	boolean isThreePhaseLosses();
+	boolean is3PhaseLosses();
 
-	void setThreePhaseLosses(boolean threePhaseLosses);
+	void set3PhaseLosses(boolean threePhaseLosses);
 
 	boolean isVBaseLosses();
 
@@ -164,13 +164,13 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setDefinedZoneListSize(int definedZoneListSize);
 
-	double getMaxZonekVA_Norm();
+	double getMaxZoneKVANorm();
 
-	void setMaxZonekVA_Norm(double maxZonekVA_Norm);
+	void setMaxZoneKVANorm(double maxZoneKVANorm);
 
-	double getMaxZonekVA_Emerg();
+	double getMaxZoneKVAEmerg();
 
-	void setMaxZonekVA_Emerg(double maxZonekVA_Emerg);
+	void setMaxZoneKVAEmerg(double maxZoneKVAEmerg);
 
 	double[] getVBaseTotalLosses();
 
@@ -204,9 +204,9 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setMaxVBaseCount(int maxVBaseCount);
 
-	double[] getVphaseMax();
+	double[] getVPhaseMax();
 
-	void setVphaseMax(double[] vphaseMax);
+	void setVPhaseMax(double[] vPhaseMax);
 
 	double[] getVPhaseMin();
 
@@ -220,20 +220,20 @@ public interface EnergyMeterObj extends MeterElement {
 
 	void setVPhaseAccumCount(int[] vPhaseAccumCount);
 
-	FileWriter getVPhase_File();
+	FileWriter getVPhaseFile();
 
-	void setVPhase_File(FileWriter vPhase_File);
+	void setVPhaseFile(FileWriter vPhaseFile);
 
-	boolean isVPhaseReportFileIsOpen();
+	boolean isVPhaseReportFileOpen();
 
-	void setVPhaseReportFileIsOpen(boolean vPhaseReportFileIsOpen);
+	void setVPhaseReportFileOpen(boolean vPhaseReportFileOpen);
 
-	FileWriter getDI_File();
+	FileWriter getDIFile();
 
-	void setDI_File(FileWriter dI_File);
+	void setDIFile(FileWriter DIFile);
 
-	boolean isThis_Meter_DIFileIsOpen();
+	boolean isThisMeterDIFileOpen();
 
-	void setThis_Meter_DIFileIsOpen(boolean this_Meter_DIFileIsOpen);
+	void setThisMeterDIFileOpen(boolean thisMeterDIFileOpen);
 
 }

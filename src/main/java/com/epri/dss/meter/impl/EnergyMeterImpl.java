@@ -232,10 +232,10 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				processOptions(Param);
 				break;
 			case 4:
-				aem.setMaxZonekVA_Norm(parser.makeDouble());
+				aem.setMaxZoneKVANorm(parser.makeDouble());
 				break;
 			case 5:
-				aem.setMaxZonekVA_Emerg(parser.makeDouble());
+				aem.setMaxZoneKVAEmerg(parser.makeDouble());
 				break;
 			case 6:
 				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());  // inits to zero
@@ -262,7 +262,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				aem.setSeqLosses(Utilities.interpretYesNo(Param));
 				break;
 			case 14:
-				aem.setThreePhaseLosses(Utilities.interpretYesNo(Param));
+				aem.set3PhaseLosses(Utilities.interpretYesNo(Param));
 				break;
 			case 15:
 				aem.setVBaseLosses(Utilities.interpretYesNo(Param));
@@ -286,7 +286,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				DoRecalc = true;
 				break;
 			case 10:
-				if (aem.isHasFeeder()) {
+				if (aem.hasFeeder()) {
 					DoRecalc = true;
 				} else {
 					aem.removeFeederObj();
@@ -320,8 +320,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			aem.setMeteredTerminal(OtherEnergyMeter.getMeteredTerminal());
 			aem.setExcessFlag(OtherEnergyMeter.isExcessFlag());
 
-			aem.setMaxZonekVA_Norm(OtherEnergyMeter.getMaxZonekVA_Norm());
-			aem.setMaxZonekVA_Emerg(OtherEnergyMeter.getMaxZonekVA_Emerg());
+			aem.setMaxZoneKVANorm(OtherEnergyMeter.getMaxZoneKVANorm());
+			aem.setMaxZoneKVAEmerg(OtherEnergyMeter.getMaxZoneKVAEmerg());
 
 			aem.setDefinedZoneListSize(OtherEnergyMeter.getDefinedZoneListSize());
 			aem.setDefinedZoneList(new String[aem.getDefinedZoneListSize()]);
@@ -337,7 +337,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			aem.setLineLosses(OtherEnergyMeter.isLineLosses());
 			aem.setXfmrLosses(OtherEnergyMeter.isXfmrLosses());
 			aem.setSeqLosses(OtherEnergyMeter.isSeqLosses());
-			aem.setThreePhaseLosses(OtherEnergyMeter.isThreePhaseLosses());
+			aem.set3PhaseLosses(OtherEnergyMeter.is3PhaseLosses());
 			aem.setVBaseLosses(OtherEnergyMeter.isVBaseLosses());
 			aem.setPhaseVoltageReport(OtherEnergyMeter.isPhaseVoltageReport());
 
@@ -469,7 +469,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			PrintWriter DI_TotalsPrinter = new PrintWriter(DI_Totals);
 
 			DI_TotalsPrinter.printf("%-.6g ", ckt.getSolution().getDblHour());
-			for (int i = 0; i < NumEMRegisters; i++)
+			for (int i = 0; i < NUM_EM_REGISTERS; i++)
 				DI_TotalsPrinter.printf(", %-.6g", DI_RegisterTotals[i]);
 			DI_TotalsPrinter.println();
 			DI_TotalsPrinter.close();
@@ -673,7 +673,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	private void clearDI_Totals() {
-		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			DI_RegisterTotals[i] = 0.0;
 	}
 
@@ -713,7 +713,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			MeterTotalsBuffer.write("Name");
 			mtr = ckt.getEnergyMeters().get(0);
 			if (mtr != null)
-				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 					MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
 			MeterTotalsBuffer.newLine();
 
@@ -731,19 +731,19 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	private void writeTotalsFile() {
 		EnergyMeterObj mtr;
-		double[] RegSum = new double[EnergyMeter.NumEMRegisters];
+		double[] RegSum = new double[EnergyMeter.NUM_EM_REGISTERS];
 		int i, j;
 		File F;
 
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
 		/* Sum up all registers of all meters and write to Totals.csv */
-		for (i = 0; i < EnergyMeter.NumEMRegisters; i++) RegSum[i] = 0.0;
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) RegSum[i] = 0.0;
 
 		for (i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
 			mtr = Globals.getActiveCircuit().getEnergyMeters().get(i);
 			if (mtr.isEnabled())
-				for (j = 0; j < EnergyMeter.NumEMRegisters; j++)
+				for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
 					RegSum[j] = RegSum[j] + mtr.getRegisters()[j] * mtr.getTotalsMask()[j];
 		}
 
@@ -756,12 +756,12 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			FBuffer.write("Year");
 			mtr = Globals.getActiveCircuit().getEnergyMeters().get(0);
 			if (mtr != null)
-				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 					FBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
 			FBuffer.newLine();
 
 			FBuffer.write(Globals.getActiveCircuit().getSolution().getYear());
-			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 				FBuffer.write(String.format(", %-g ", RegSum[i]));
 			FBuffer.newLine();
 
@@ -818,8 +818,8 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	private void interpretRegisterMaskArray(double[] Mask) {
-		int n = Parser.getInstance().parseAsVector(NumEMRegisters, Mask);
-		for (int i = n; i < EnergyMeter.NumEMRegisters; i++)  // TODO Check zero based indexing
+		int n = Parser.getInstance().parseAsVector(NUM_EM_REGISTERS, Mask);
+		for (int i = n; i < EnergyMeter.NUM_EM_REGISTERS; i++)  // TODO Check zero based indexing
 			Mask[i] = 1.0;  // set the rest to 1
 	}
 

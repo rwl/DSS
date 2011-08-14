@@ -138,7 +138,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		this.VBaseNoLoadLosses  = null;
 		this.VBaseLoad          = null;
 		this.VBaseCount         = 0;
-		this.MaxVBaseCount      = (EnergyMeter.NumEMRegisters - EnergyMeter.Reg_VBaseStart) / 5;
+		this.MaxVBaseCount      = (EnergyMeter.NUM_EM_REGISTERS - EnergyMeter.REG_VBASE_START) / 5;
 		this.VBaseList          = new double[this.MaxVBaseCount];
 		this.VBaseTotalLosses   = new double[this.MaxVBaseCount];
 		this.VBaseLineLosses    = new double[this.MaxVBaseCount];
@@ -193,11 +193,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		RegisterNames[31] = "Gen Max kVA";
 
 		/* Registers for capturing losses by base voltage, names assigned later */
-		for (i = EnergyMeter.Reg_VBaseStart + 1; i < EnergyMeter.NumEMRegisters; i++)
+		for (i = EnergyMeter.REG_VBASE_START + 1; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 		RegisterNames[i] = "";
 
 		resetRegisters();
-		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 		TotalsMask[i] = 1.0;
 
 		allocateSensorArrays();
@@ -281,23 +281,23 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 	public void resetRegisters() {
 		int i;
 
-		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 		Registers[i] = 0.0;
-		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 		Derivatives[i] = 0.0;
 
 		/* Initialise drag hand registers to some big negative number */
-		Registers[EnergyMeter.Reg_MaxkW]           = -1.0e50;
-		Registers[EnergyMeter.Reg_MaxkVA]          = -1.0e50;
-		Registers[EnergyMeter.Reg_ZoneMaxkW]       = -1.0e50;
-		Registers[EnergyMeter.Reg_ZoneMaxkVA]      = -1.0e50;
-		Registers[EnergyMeter.Reg_MaxLoadLosses]   = -1.0e50;
-		Registers[EnergyMeter.Reg_MaxNoLoadLosses] = -1.0e50;
-		Registers[EnergyMeter.Reg_LossesMaxkW]     = -1.0e50;
-		Registers[EnergyMeter.Reg_LossesMaxkvar]   = -1.0e50;
+		Registers[EnergyMeter.REG_MAX_KW]           = -1.0e50;
+		Registers[EnergyMeter.REG_MAX_KVA]          = -1.0e50;
+		Registers[EnergyMeter.REG_ZONE_MAX_KW]       = -1.0e50;
+		Registers[EnergyMeter.REG_ZONE_MAX_KVA]      = -1.0e50;
+		Registers[EnergyMeter.REG_MAX_LOAD_LOSSES]   = -1.0e50;
+		Registers[EnergyMeter.REG_MAX_NO_LOAD_LOSSES] = -1.0e50;
+		Registers[EnergyMeter.REG_LOSSES_MAX_KW]     = -1.0e50;
+		Registers[EnergyMeter.REG_LOSSES_MAX_KVAR]   = -1.0e50;
 
-		Registers[EnergyMeter.Reg_GenMaxkW]        = -1.0e50;
-		Registers[EnergyMeter.Reg_GenMaxkVA]       = -1.0e50;
+		Registers[EnergyMeter.REG_GEN_MAX_KW]        = -1.0e50;
+		Registers[EnergyMeter.REG_GEN_MAX_KVA]       = -1.0e50;
 
 		FirstSampleAfterReset = true;  // initialise for trapezoidal integration
 		// Removed .. open in solution loop See Solve Yearly if (EnergyMeterClass.SaveDemandInterval) openDemandIntervalFile();
@@ -327,7 +327,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 			FBuffer.write("Year, " + Globals.getActiveCircuit().getSolution().getYear() + ",");
 			FBuffer.newLine();
 
-			for (int i = 0; i < EnergyMeter.NumEMRegisters; i++) {
+			for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) {
 				FBuffer.write("\"" + RegisterNames[i] + "\"," + Registers[i]);
 				FBuffer.newLine();
 			}
@@ -421,10 +421,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		S_Local     = MeteredElement.getPower(MeteredTerminal).multiply(0.001);
 		S_Local_kVA = S_Local.abs();
 		Delta_Hrs   = Globals.getActiveCircuit().getSolution().getIntervalHrs();
-		integrate(EnergyMeter.Reg_kWh,   S_Local.getReal(), Delta_Hrs);  // accumulate the power
-		integrate(EnergyMeter.Reg_kvarh, S_Local.getImaginary(), Delta_Hrs);
-		setDragHandRegister(EnergyMeter.Reg_MaxkW,  S_Local.getReal());   // 3-10-04 removed abs()
-		setDragHandRegister(EnergyMeter.Reg_MaxkVA, S_Local_kVA);
+		integrate(EnergyMeter.REG_KWH,   S_Local.getReal(), Delta_Hrs);  // accumulate the power
+		integrate(EnergyMeter.REG_KVARH, S_Local.getImaginary(), Delta_Hrs);
+		setDragHandRegister(EnergyMeter.REG_MAX_KW,  S_Local.getReal());   // 3-10-04 removed abs()
+		setDragHandRegister(EnergyMeter.REG_MAX_KVA, S_Local_kVA);
 
 		// compute maximum overload energy in all branches in zone
 		// and mark all load downline from an overloaded branch as unserved
@@ -648,29 +648,29 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		}
 
 		/* NOTE: integrate proc automatically sets derivatives array */
-		integrate(EnergyMeter.Reg_LoadEEN, TotalLoad_EEN, Delta_Hrs);
-		integrate(EnergyMeter.Reg_LoadUE , TotalLoad_UE,  Delta_Hrs);
+		integrate(EnergyMeter.REG_LOAD_EEN, TotalLoad_EEN, Delta_Hrs);
+		integrate(EnergyMeter.REG_LOAD_UE , TotalLoad_UE,  Delta_Hrs);
 
 		/* Accumulate losses in appropriate registers */
-		integrate(EnergyMeter.Reg_ZoneLosseskWh,     TotalLosses.getReal(),          Delta_Hrs);
-		integrate(EnergyMeter.Reg_ZoneLosseskvarh,   TotalLosses.getImaginary(),     Delta_Hrs);
-		integrate(EnergyMeter.Reg_LoadLosseskWh,     TotalLoadLosses.getReal(),      Delta_Hrs);
-		integrate(EnergyMeter.Reg_LoadLosseskvarh,   TotalLoadLosses.getImaginary(), Delta_Hrs);
-		integrate(EnergyMeter.Reg_NoLoadLosseskWh,   TotalNoLoadLosses.getReal(),    Delta_Hrs);
-		integrate(EnergyMeter.Reg_NoLoadLosseskvarh, TotalNoLoadLosses.getImaginary(),    Delta_Hrs);
-		integrate(EnergyMeter.Reg_LineLosseskWh,     TotalLineLosses.getReal(),      Delta_Hrs);
-		integrate(EnergyMeter.Reg_LineModeLineLoss,  TotalLineModeLosses.getReal(),  Delta_Hrs);
-		integrate(EnergyMeter.Reg_ZeroModeLineLoss,  TotalZeroModeLosses.getReal(),  Delta_Hrs);
-		integrate(EnergyMeter.Reg_3_phaseLineLoss,   Total3phaseLosses.getReal(),    Delta_Hrs);
-		integrate(EnergyMeter.Reg_1_phaseLineLoss,   Total1phaseLosses.getReal(),    Delta_Hrs);
-		integrate(EnergyMeter.Reg_TransformerLosseskWh,  TotalTransformerLosses.getReal(),  Delta_Hrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KWH,     TotalLosses.getReal(),          Delta_Hrs);
+		integrate(EnergyMeter.REG_ZONE_LOSSES_KVARH,   TotalLosses.getImaginary(),     Delta_Hrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KWH,     TotalLoadLosses.getReal(),      Delta_Hrs);
+		integrate(EnergyMeter.REG_LOAD_LOSSES_KVARH,   TotalLoadLosses.getImaginary(), Delta_Hrs);
+		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KWH,   TotalNoLoadLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.REG_NO_LOAD_LOSSES_KVARH, TotalNoLoadLosses.getImaginary(),    Delta_Hrs);
+		integrate(EnergyMeter.REG_LINE_LOSSES_KWH,     TotalLineLosses.getReal(),      Delta_Hrs);
+		integrate(EnergyMeter.REG_LINE_MODE_LINE_LOSS,  TotalLineModeLosses.getReal(),  Delta_Hrs);
+		integrate(EnergyMeter.REG_ZERO_MODE_LINE_LOSS,  TotalZeroModeLosses.getReal(),  Delta_Hrs);
+		integrate(EnergyMeter.REG_3_PHASE_LINE_LOSS,   Total3phaseLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.REG_1_PHASE_LINE_LOSS,   Total1phaseLosses.getReal(),    Delta_Hrs);
+		integrate(EnergyMeter.REG_TRANSFORMER_LOSSES_KWH,  TotalTransformerLosses.getReal(),  Delta_Hrs);
 
 		for (i = 0; i < MaxVBaseCount; i++) {
-			integrate(EnergyMeter.Reg_VBaseStart + i, VBaseTotalLosses[i],  Delta_Hrs);
-			integrate(EnergyMeter.Reg_VBaseStart + 1 * MaxVBaseCount + i, VBaseLineLosses[i],    Delta_Hrs);
-			integrate(EnergyMeter.Reg_VBaseStart + 2 * MaxVBaseCount + i, VBaseLoadLosses[i],    Delta_Hrs);
-			integrate(EnergyMeter.Reg_VBaseStart + 3 * MaxVBaseCount + i, VBaseNoLoadLosses[i],  Delta_Hrs);
-			integrate(EnergyMeter.Reg_VBaseStart + 4 * MaxVBaseCount + i, VBaseLoad[i],          Delta_Hrs);
+			integrate(EnergyMeter.REG_VBASE_START + i, VBaseTotalLosses[i],  Delta_Hrs);
+			integrate(EnergyMeter.REG_VBASE_START + 1 * MaxVBaseCount + i, VBaseLineLosses[i],    Delta_Hrs);
+			integrate(EnergyMeter.REG_VBASE_START + 2 * MaxVBaseCount + i, VBaseLoadLosses[i],    Delta_Hrs);
+			integrate(EnergyMeter.REG_VBASE_START + 3 * MaxVBaseCount + i, VBaseNoLoadLosses[i],  Delta_Hrs);
+			integrate(EnergyMeter.REG_VBASE_START + 4 * MaxVBaseCount + i, VBaseLoad[i],          Delta_Hrs);
 		}
 
 
@@ -678,10 +678,10 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* ---------------   Total Zone Load and Generation ----------------- */
 		/* ------------------------------------------------------------------ */
 
-		integrate(EnergyMeter.Reg_ZonekWh,   TotalZonekw,   Delta_Hrs);
-		integrate(EnergyMeter.Reg_Zonekvarh, TotalZonekvar, Delta_Hrs);
-		integrate(EnergyMeter.Reg_GenkWh,    TotalGenkW,    Delta_Hrs);
-		integrate(EnergyMeter.Reg_Genkvarh,  TotalGenkVAr,  Delta_Hrs);
+		integrate(EnergyMeter.REG_ZONE_KWH,   TotalZonekw,   Delta_Hrs);
+		integrate(EnergyMeter.REG_ZONE_KVARH, TotalZonekvar, Delta_Hrs);
+		integrate(EnergyMeter.REG_GEN_KWH,    TotalGenkW,    Delta_Hrs);
+		integrate(EnergyMeter.REG_GEN_KVARH,  TotalGenkVAr,  Delta_Hrs);
 		GenkVA  = Math.sqrt(Math.pow(TotalGenkVAr, 2)  + Math.pow(TotalGenkW, 2));
 		LoadkVA = Math.sqrt(Math.pow(TotalZonekvar, 2) + Math.pow(TotalZonekw, 2));
 
@@ -689,15 +689,15 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* ---------------   Set Drag Hand Registers  ----------------------- */
 		/* ------------------------------------------------------------------ */
 
-		setDragHandRegister(EnergyMeter.Reg_LossesMaxkW,     Math.abs(TotalLosses.getReal()));
-		setDragHandRegister(EnergyMeter.Reg_LossesMaxkvar,   Math.abs(TotalLosses.getImaginary()));
-		setDragHandRegister(EnergyMeter.Reg_MaxLoadLosses,   Math.abs(TotalLoadLosses.getReal()));
-		setDragHandRegister(EnergyMeter.Reg_MaxNoLoadLosses, Math.abs(TotalNoLoadLosses.getReal()));
-		setDragHandRegister(EnergyMeter.Reg_ZoneMaxkW,       TotalZonekw);  // Removed abs()  3-10-04
-		setDragHandRegister(EnergyMeter.Reg_ZoneMaxkVA,      LoadkVA);
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KW,     Math.abs(TotalLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_LOSSES_MAX_KVAR,   Math.abs(TotalLosses.getImaginary()));
+		setDragHandRegister(EnergyMeter.REG_MAX_LOAD_LOSSES,   Math.abs(TotalLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_MAX_NO_LOAD_LOSSES, Math.abs(TotalNoLoadLosses.getReal()));
+		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KW,       TotalZonekw);  // Removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.REG_ZONE_MAX_KVA,      LoadkVA);
 		/* Max total generator registers */
-		setDragHandRegister(EnergyMeter.Reg_GenMaxkW,        TotalGenkW); // Removed abs()  3-10-04
-		setDragHandRegister(EnergyMeter.Reg_GenMaxkVA,       GenkVA);
+		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KW,        TotalGenkW); // Removed abs()  3-10-04
+		setDragHandRegister(EnergyMeter.REG_GEN_MAX_KVA,       GenkVA);
 
 		/* ------------------------------------------------------------------ */
 		/* ---------------------   Overload Energy  ------------------------- */
@@ -715,16 +715,16 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* Fixed these formulas 2-7-07 per discussions with Daniel Brooks */
 		if (MaxZonekVA_Norm > 0.0) {
 			if (S_Local_kVA == 0.0) S_Local_kVA = MaxZonekVA_Norm;
-			integrate(EnergyMeter.Reg_OverloadkWhNorm, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Norm / S_Local_kVA))), Delta_Hrs);
+			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Norm / S_Local_kVA))), Delta_Hrs);
 		} else {
-			integrate(EnergyMeter.Reg_OverloadkWhNorm, MaxExcesskWNorm, Delta_Hrs);
+			integrate(EnergyMeter.REG_OVERLOAD_KWH_NORM, MaxExcesskWNorm, Delta_Hrs);
 		}
 
 		if (MaxZonekVA_Emerg > 0.0) {
 			if (S_Local_kVA == 0.0) S_Local_kVA = MaxZonekVA_Emerg;
-			integrate(EnergyMeter.Reg_OverloadkWhEmerg, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Emerg / S_Local_kVA))), Delta_Hrs);
+			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG, Math.max(0.0, (ZonekW * (1.0 - MaxZonekVA_Emerg / S_Local_kVA))), Delta_Hrs);
 		} else {
-			integrate(EnergyMeter.Reg_OverloadkWhEmerg, MaxExcesskWEmerg,  Delta_Hrs);
+			integrate(EnergyMeter.REG_OVERLOAD_KWH_EMERG, MaxExcesskWEmerg,  Delta_Hrs);
 		}
 
 		FirstSampleAfterReset = false;
@@ -1067,7 +1067,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		if (Complete) {
 			F.println("Registers");
-			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 				F.println("\"" + RegisterNames[i] + "\" = " + Registers[i]);
 			F.println();
 
@@ -1164,7 +1164,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		setPropertyValue(8, "No");
 		/* Define mask as 1 for all registers */
 		S = "[";
-		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			S = S + "1 ";
 		setPropertyValue(9, S + "]");
 		setPropertyValue(10, "Yes");
@@ -1606,7 +1606,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		/* Write registers to totals file */
 		PrintWriter MeterTotalsPrinter = new PrintWriter(Globals.getEnergyMeterClass().getMeterTotals());
 		MeterTotalsPrinter.print("\"" + getName() + "\"");
-		for (int i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (int i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			MeterTotalsPrinter.printf(", %-g", Registers[i]);
 		MeterTotalsPrinter.println();
 		MeterTotalsPrinter.close();
@@ -1629,7 +1629,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 				This_Meter_DIFileIsOpen = true;
 				DI_Printer.print("\"Hour\"");
-				for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 					DI_Printer.print(", \"" + RegisterNames[i] + "\"");
 				DI_Printer.println();
 				DI_Printer.close();
@@ -1677,14 +1677,14 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		if ((Globals.getEnergyMeterClass().isDIVerbose()) && This_Meter_DIFileIsOpen) {
 			PrintWriter DI_Printer = new PrintWriter(DI_File);
 			DI_Printer.printf("%-.6g", sol.getDblHour());
-			for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 				DI_Printer.printf(", %-.6g", Derivatives[i]);
 			DI_Printer.println();
 			DI_Printer.close();
 		}
 
 		/* Add to class demand interval registers */
-		for (i = 0; i < EnergyMeter.NumEMRegisters; i++)
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
 			Globals.getEnergyMeterClass().getDI_RegisterTotals()[i] += Derivatives[i] * TotalsMask[i];
 
 		/* Phase voltage report, if requested */
@@ -1741,25 +1741,25 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		for (i = 0; i < MaxVBaseCount; i++) {
 			if (VBaseList[i] > 0.0) {
 				Vbase = VBaseList[i] * DSSGlobals.SQRT3;
-				RegisterNames[i + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Losses", Vbase);
-				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Line Loss", Vbase);
-				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Load Loss", Vbase);
-				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV No Load Loss", Vbase);
-				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("%.3g kV Load Energy", Vbase);
+				RegisterNames[i + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Losses", Vbase);
+				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Line Loss", Vbase);
+				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Load Loss", Vbase);
+				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV No Load Loss", Vbase);
+				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("%.3g kV Load Energy", Vbase);
 			} else {
-				RegisterNames[i + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				RegisterNames[i + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
 				ireg += 1;
-				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				RegisterNames[i + 1 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
 				ireg += 1;
-				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				RegisterNames[i + 2 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
 				ireg += 1;
-				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				RegisterNames[i + 3 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
 				ireg += 1;
-				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.Reg_VBaseStart] = String.format("Aux%d", ireg);
+				RegisterNames[i + 4 * MaxVBaseCount + EnergyMeter.REG_VBASE_START] = String.format("Aux%d", ireg);
 				ireg += 1;
 			}
 		}
-		for (i = EnergyMeter.Reg_VBaseStart + 5; i < EnergyMeter.NumEMRegisters; i++) {  // TODO Check zero based indexing
+		for (i = EnergyMeter.REG_VBASE_START + 5; i < EnergyMeter.NUM_EM_REGISTERS; i++) {  // TODO Check zero based indexing
 			RegisterNames[i] = String.format("Aux%d", ireg);
 			ireg += 1;
 		}
@@ -1865,7 +1865,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		ExcessFlag = excessFlag;
 	}
 
-	public boolean isZoneIsRadial() {
+	public boolean zoneIsRadial() {
 		return ZoneIsRadial;
 	}
 
@@ -1889,7 +1889,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		LocalOnly = localOnly;
 	}
 
-	public boolean isHasFeeder() {
+	public boolean hasFeeder() {
 		return HasFeeder;
 	}
 
@@ -1929,11 +1929,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		SeqLosses = seqLosses;
 	}
 
-	public boolean isThreePhaseLosses() {
+	public boolean is3PhaseLosses() {
 		return ThreePhaseLosses;
 	}
 
-	public void setThreePhaseLosses(boolean threePhaseLosses) {
+	public void set3PhaseLosses(boolean threePhaseLosses) {
 		ThreePhaseLosses = threePhaseLosses;
 	}
 
@@ -1977,19 +1977,19 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		DefinedZoneListSize = definedZoneListSize;
 	}
 
-	public double getMaxZonekVA_Norm() {
+	public double getMaxZoneKVANorm() {
 		return MaxZonekVA_Norm;
 	}
 
-	public void setMaxZonekVA_Norm(double maxZonekVA_Norm) {
+	public void setMaxZoneKVANorm(double maxZonekVA_Norm) {
 		MaxZonekVA_Norm = maxZonekVA_Norm;
 	}
 
-	public double getMaxZonekVA_Emerg() {
+	public double getMaxZoneKVAEmerg() {
 		return MaxZonekVA_Emerg;
 	}
 
-	public void setMaxZonekVA_Emerg(double maxZonekVA_Emerg) {
+	public void setMaxZoneKVAEmerg(double maxZonekVA_Emerg) {
 		MaxZonekVA_Emerg = maxZonekVA_Emerg;
 	}
 
@@ -2057,11 +2057,11 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		MaxVBaseCount = maxVBaseCount;
 	}
 
-	public double[] getVphaseMax() {
+	public double[] getVPhaseMax() {
 		return VphaseMax;
 	}
 
-	public void setVphaseMax(double[] vphaseMax) {
+	public void setVPhaseMax(double[] vphaseMax) {
 		VphaseMax = vphaseMax;
 	}
 
@@ -2089,35 +2089,35 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		VPhaseAccumCount = vPhaseAccumCount;
 	}
 
-	public FileWriter getVPhase_File() {
+	public FileWriter getVPhaseFile() {
 		return VPhase_File;
 	}
 
-	public void setVPhase_File(FileWriter vPhase_File) {
+	public void setVPhaseFile(FileWriter vPhase_File) {
 		VPhase_File = vPhase_File;
 	}
 
-	public boolean isVPhaseReportFileIsOpen() {
+	public boolean isVPhaseReportFileOpen() {
 		return VPhaseReportFileIsOpen;
 	}
 
-	public void setVPhaseReportFileIsOpen(boolean vPhaseReportFileIsOpen) {
+	public void setVPhaseReportFileOpen(boolean vPhaseReportFileIsOpen) {
 		VPhaseReportFileIsOpen = vPhaseReportFileIsOpen;
 	}
 
-	public FileWriter getDI_File() {
+	public FileWriter getDIFile() {
 		return DI_File;
 	}
 
-	public void setDI_File(FileWriter dI_File) {
+	public void setDIFile(FileWriter dI_File) {
 		DI_File = dI_File;
 	}
 
-	public boolean isThis_Meter_DIFileIsOpen() {
+	public boolean isThisMeterDIFileOpen() {
 		return This_Meter_DIFileIsOpen;
 	}
 
-	public void setThis_Meter_DIFileIsOpen(boolean this_Meter_DIFileIsOpen) {
+	public void setThisMeterDIFileOpen(boolean this_Meter_DIFileIsOpen) {
 		This_Meter_DIFileIsOpen = this_Meter_DIFileIsOpen;
 	}
 
