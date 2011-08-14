@@ -6,6 +6,6 @@ public interface TSData extends CableData {
 
 	String getCode();
 
-	void setCode(String Value);
+	void setCode(String value);
 
 }

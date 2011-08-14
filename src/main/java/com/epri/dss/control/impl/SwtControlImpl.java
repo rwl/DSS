@@ -16,7 +16,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		super();
 
 		this.className = "SwtControl";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.SWT_CONTROL;
+		this.classType = this.classType + DSSClassDefs.SWT_CONTROL;
 
 		defineProperties();
 

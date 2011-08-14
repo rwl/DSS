@@ -7,88 +7,88 @@ import com.epri.dss.general.CableDataObj;
 
 public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataObj {
 
-	private double EpsR;
+	private double epsR;
 	// next 3 use parent radiusUnits
-	private double InsLayer;
-	private double DiaIns;
-	private double DiaCable;
+	private double insLayer;
+	private double diaIns;
+	private double diaCable;
 
-	public CableDataObjImpl(DSSClass ParClass, String CableDataName) {
-		super(ParClass, CableDataName);
+	public CableDataObjImpl(DSSClass parClass, String cableDataName) {
+		super(parClass, cableDataName);
 
-		setName(CableDataName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(cableDataName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.EpsR     =  2.3;
-		this.InsLayer = -1.0;
-		this.DiaIns   = -1.0;
-		this.DiaCable = -1.0;
+		this.epsR     =  2.3;
+		this.insLayer = -1.0;
+		this.diaIns   = -1.0;
+		this.diaCable = -1.0;
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			F.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
 			switch (i) {
 			case 0:
-				F.println(String.format("%.3g", EpsR));
+				f.println(String.format("%.3g", epsR));
 				break;
 			case 1:
-				F.println(String.format("%.6g", InsLayer));
+				f.println(String.format("%.6g", insLayer));
 				break;
 			case 2:
-				F.println(String.format("%.6g", DiaIns));
+				f.println(String.format("%.6g", diaIns));
 				break;
 			case 3:
-				F.println(String.format("%.6g", DiaCable));
+				f.println(String.format("%.6g", diaCable));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
-		setPropertyValue(ArrayOffset + 0, "2.3");
-		setPropertyValue(ArrayOffset + 1, "-1");
-		setPropertyValue(ArrayOffset + 2, "-1");
-		setPropertyValue(ArrayOffset + 3, "-1");
-		super.initPropertyValues(ArrayOffset + 4);
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(arrayOffset + 0, "2.3");  // TODO Check zero based indexing
+		setPropertyValue(arrayOffset + 1, "-1");
+		setPropertyValue(arrayOffset + 2, "-1");
+		setPropertyValue(arrayOffset + 3, "-1");
+		super.initPropertyValues(arrayOffset + 4);
 	}
 
 	public double getEpsR() {
-		return EpsR;
+		return epsR;
 	}
 
 	public double getInsLayer() {
-		return InsLayer;
+		return insLayer;
 	}
 
 	public double getDiaIns() {
-		return DiaIns;
+		return diaIns;
 	}
 
 	public double getDiaCable() {
-		return DiaCable;
+		return diaCable;
 	}
 
 	// FIXME Private members in OpenDSS.
 
-	public void setEpsR(double epsR) {
-		EpsR = epsR;
+	public void setEpsR(double epsr) {
+		epsR = epsr;
 	}
 
-	public void setInsLayer(double insLayer) {
-		InsLayer = insLayer;
+	public void setInsLayer(double inslayer) {
+		insLayer = inslayer;
 	}
 
-	public void setDiaIns(double diaIns) {
-		DiaIns = diaIns;
+	public void setDiaIns(double diains) {
+		diaIns = diains;
 	}
 
-	public void setDiaCable(double diaCable) {
-		DiaCable = diaCable;
+	public void setDiaCable(double diacable) {
+		diaCable = diacable;
 	}
 
 }

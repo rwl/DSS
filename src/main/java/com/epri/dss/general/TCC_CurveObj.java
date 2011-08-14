@@ -12,17 +12,17 @@ public interface TCC_CurveObj extends DSSObject {
 	/**
 	 * Return operating time for a particular time value.
 	 */
-	double getTCCTime(double C_Value);
+	double getTCCTime(double value);
 
 	/**
 	 * Return operating time for undervoltage relay.
 	 */
-	double getUVTime(double V_Value);
+	double getUVTime(double value);
 
 	/**
 	 * Return operating time for overvoltage relay.
 	 */
-	double getOVTime(double V_Value);
+	double getOVTime(double value);
 
 	/**
 	 * Get C_Value by index.
@@ -42,9 +42,9 @@ public interface TCC_CurveObj extends DSSObject {
 
 	void setLastValueAccessed(int lastValueAccessed);
 
-	int getNpts();
+	int getNPts();
 
-	void setNpts(int npts);
+	void setNPts(int npts);
 
 	double[] getLogT();
 
@@ -54,11 +54,12 @@ public interface TCC_CurveObj extends DSSObject {
 
 	void setLogC(double[] logC);
 
-	double[] getC_values();
+	double[] getCValues();
 
-	void setC_values(double[] c_values);
+	void setCValues(double[] values);
 
-	double[] getT_values();
+	double[] getTValues();
 
-	void setT_values(double[] t_values);
+	void setTValues(double[] values);
+
 }

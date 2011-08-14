@@ -56,7 +56,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	public CapControlObjImpl(DSSClassImpl parClass, String capControlName) {
 		super(parClass);
 		setName(capControlName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -98,7 +98,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		this.cBuffer = null;
 
-		this.DSSObjType = parClass.getDSSClassType();  // CAP_CONTROL;
+		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -704,22 +704,22 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0]  = "";   // "element";
-		PropertyValue[1]  = "1";  // "terminal";
-		PropertyValue[2]  = "";
-		PropertyValue[3]  = "current";
-		PropertyValue[4]  = "60";
-		PropertyValue[5]  = "60";
-		PropertyValue[6]  = "300";
-		PropertyValue[7]  = "200";
-		PropertyValue[8]  = "15";
-		PropertyValue[9]  = "NO";
-		PropertyValue[10] = "126";
-		PropertyValue[11] = "115";
-		PropertyValue[12] = "15";
-		PropertyValue[13] = "300";
-		PropertyValue[14] = "1";
-		PropertyValue[15] = "1";
+		propertyValue[0]  = "";   // "element";
+		propertyValue[1]  = "1";  // "terminal";
+		propertyValue[2]  = "";
+		propertyValue[3]  = "current";
+		propertyValue[4]  = "60";
+		propertyValue[5]  = "60";
+		propertyValue[6]  = "300";
+		propertyValue[7]  = "200";
+		propertyValue[8]  = "15";
+		propertyValue[9]  = "NO";
+		propertyValue[10] = "126";
+		propertyValue[11] = "115";
+		propertyValue[12] = "15";
+		propertyValue[13] = "300";
+		propertyValue[14] = "1";
+		propertyValue[15] = "1";
 
 		super.initPropertyValues(CapControl.NumPropsThisClass);
 	}

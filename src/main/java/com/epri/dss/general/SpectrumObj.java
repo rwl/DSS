@@ -25,9 +25,9 @@ public interface SpectrumObj extends DSSObject {
 
 	Complex getMult(double h);
 
-	double[] getPuMagArray();
+	double[] getPUMagArray();
 
-	void setPuMagArray(double[] puMagArray);
+	void setPUMagArray(double[] puMagArray);
 
 	double[] getAngleArray();
 

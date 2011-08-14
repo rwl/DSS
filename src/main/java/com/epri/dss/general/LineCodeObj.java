@@ -16,7 +16,7 @@ import com.epri.dss.shared.CMatrix;
  */
 public interface LineCodeObj extends DSSObject {
 
-	void setNPhases(int Value);
+	void setNPhases(int value);
 
 	int getNPhases();
 
@@ -40,7 +40,7 @@ public interface LineCodeObj extends DSSObject {
 
 	CMatrix getYC();
 
-	void setYC(CMatrix yC);
+	void setYc(CMatrix yc);
 
 	double getBaseFrequency();
 

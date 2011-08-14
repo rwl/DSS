@@ -21,29 +21,29 @@ public interface LineGeometryObj extends DSSObject {
 
 	void changeLineConstantsType(ConductorChoice newPhaseChoice);
 
-	void setNconds(int Value);
+	void setNConds(int value);
 
-	void setNphases(int Value);
+	void setNPhases(int value);
 
-	int getNphases();
+	int getNPhases();
 
-	void setActiveCond(int Value);
+	void setActiveCond(int value);
 
 	int getActiveCond();
 
-	CMatrix getYCmatrix(double f, double Length, int Units);
+	CMatrix getYcMatrix(double f, double length, int units);
 
-	CMatrix getZmatrix(double f, double Length, int Units);
+	CMatrix getZMatrix(double f, double length, int units);
 
 	double getRhoEarth();
 
-	void setRhoEarth(double Value);
+	void setRhoEarth(double value);
 
-	int getNconds();
+	int getNConds();
 
-	double getXcoord(int i);
+	double getXCoord(int i);
 
-	double getYcoord(int i);
+	double getYCoord(int i);
 
 	String getConductorName(int i);
 
@@ -55,7 +55,7 @@ public interface LineGeometryObj extends DSSObject {
 	 * Called from a Line object that has its own Spacing and Wires input
 	 * automatically sets reduce=y if the spacing has more wires than phases
 	 */
-	void loadSpacingAndWires(LineSpacingObj Spc, ConductorDataObj[] Wires);
+	void loadSpacingAndWires(LineSpacingObj spc, ConductorDataObj[] wires);
 
 	double getNormAmps();
 

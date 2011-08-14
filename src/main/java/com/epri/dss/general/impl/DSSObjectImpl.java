@@ -16,93 +16,93 @@ import com.epri.dss.general.DSSObject;
 
 public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 
-	protected int PropSeqCount;
+	protected int propSeqCount;
 
-	protected String[] PropertyValue;
+	protected String[] propertyValue;
 
-	protected int[] PrpSequence;
+	protected int[] prpSequence;
 
 	/** PD, PC, Monitor, CondCode, etc. */
-	protected int DSSObjType;
+	protected int objType;
 
-	protected DSSClass ParentClass;
+	protected DSSClass parentClass;
 
 	/** Index into the class collection list */
-	protected int ClassIndex;
+	protected int classIndex;
 
-	protected boolean HasBeenSaved;
+	protected boolean hasBeenSaved;
 
 	/** General purpose flag for each object  don't assume inited */
-	protected boolean Flag;
+	protected boolean flag;
 
 	public void clearPropSeqArray() {
-		PropSeqCount = 0;
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
-			PrpSequence[i] = 0;
+		propSeqCount = 0;
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
+			prpSequence[i] = 0;
 		}
 	}
 
-	public DSSObjectImpl(DSSClass ParClass) {
-		super(ParClass.getName());
+	public DSSObjectImpl(DSSClass parClass) {
+		super(parClass.getName());
 
-		DSSObjType = 0;
-		PropSeqCount = 0;
-		ParentClass = ParClass;
-		PropertyValue = new String[ParentClass.getNumProperties()];
+		objType = 0;
+		propSeqCount = 0;
+		parentClass = parClass;
+		propertyValue = new String[parentClass.getNumProperties()];
 
 		// init'd to zero when allocated
-		PrpSequence = new int[ParentClass.getNumProperties()];
+		prpSequence = new int[parentClass.getNumProperties()];
 
-		HasBeenSaved = false;
+		hasBeenSaved = false;
 	}
 
 	protected void finalize() throws Throwable {
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
-			PropertyValue[i] = "";
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
+			propertyValue[i] = "";
 		}
-		PropertyValue = new String[0];
-		PrpSequence = new int[0];
+		propertyValue = new String[0];
+		prpSequence = new int[0];
 
 		super.finalize();
 	}
 
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		F.println();
-		F.println("New " + getDSSClassName() + '.' + getName());
+	public void dumpProperties(PrintStream f, boolean complete) {
+		f.println();
+		f.println("new " + getDSSClassName() + '.' + getName());
 	}
 
 	/**
 	 * Allow calls to edit from object itself.
 	 */
 	public int edit() {
-		ParentClass.setActiveElement(ClassIndex);
-		return ParentClass.edit();
+		parentClass.setActiveElement(classIndex);
+		return parentClass.edit();
 	}
 
 	/**
 	 * Use DSSClass.propertyIndex() to get index by name.
 	 */
-	public String getPropertyValue(int Index) {
-		// Default behavior for all DSS Objects
-		return this.PropertyValue[Index];
+	public String getPropertyValue(int index) {
+		// default behavior for all DSS objects
+		return propertyValue[index];
 	}
 
-	public void initPropertyValues(int ArrayOffset) {
-		this.PropertyValue[ArrayOffset] = "";
+	public void initPropertyValues(int arrayOffset) {
+		this.propertyValue[arrayOffset] = "";
 
 		// clear propertySequence array after initialization
 		clearPropSeqArray();
 	}
 
-	public void saveWrite(PrintWriter F) {
+	public void saveWrite(PrintWriter f) {
 		/* Write only properties that were explicitly set in the
 		 * final order they were actually set.
 		 */
 		int iProp = getNextPropertySet(0); // works on activeDSSObject
 		while (iProp > 0) {
-			DSSClass pc = ParentClass;
-			F.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
-			F.print("=" + Utilities.checkForBlanks(PropertyValue[iProp]));
+			DSSClass pc = parentClass;
+			f.print(" " + pc.getPropertyName()[ pc.getRevPropertyIdxMap()[iProp] ]);
+			f.print("=" + Utilities.checkForBlanks(propertyValue[iProp]));
 			iProp = getNextPropertySet(iProp);
 		}
 	}
@@ -112,37 +112,37 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	 * return 0 if none found
 	 */
 	protected int getNextPropertySet(int idx) {
-		int Smallest = 9999999; // some big number
-		int Result = 0;
+		int smallest = 9999999; // some big number
+		int result = 0;
 
 		if (idx > 0)
-			idx = PrpSequence[idx];
+			idx = prpSequence[idx];
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++)
-			if (PrpSequence[i] > idx)
-				if (PrpSequence[i] < Smallest) {
-					Smallest = PrpSequence[i];
-					Result = i;
+		for (int i = 0; i < parentClass.getNumProperties(); i++)
+			if (prpSequence[i] > idx)
+				if (prpSequence[i] < smallest) {
+					smallest = prpSequence[i];
+					result = i;
 				}
 
-		return Result;
+		return result;
 	}
 
-	public void setName(String Value) {
+	public void setName(String value) {
 		// if renamed, then let someone know so hash list can be updated
 		if (getLocalName().length() > 0)
-			ParentClass.setElementNamesOutOfSynch(true);
+			parentClass.setElementNamesOutOfSynch(true);
 
-		setLocalName(Value);
+		setLocalName(value);
 	}
 
-	public void setPropertyValue(int Index, String Value) {
-		PropertyValue[Index] = Value;
+	public void setPropertyValue(int index, String value) {
+		propertyValue[index] = value;
 
 		// keep track of the order in which this property was
 		// accessed for save command
-		PropSeqCount += 1;
-		PrpSequence[Index] = PropSeqCount;
+		propSeqCount += 1;
+		prpSequence[index] = propSeqCount;
 	}
 
 	public String getName() {
@@ -150,48 +150,48 @@ public class DSSObjectImpl extends NamedObjectImpl implements DSSObject {
 	}
 
 	public int getDSSObjType() {
-		return DSSObjType;
+		return objType;
 	}
 
-	public void setDSSObjType(int dSSObjType) {
-		DSSObjType = dSSObjType;
+	public void setDSSObjType(int type) {
+		objType = type;
 	}
 
 	public DSSClass getParentClass() {
-		return ParentClass;
+		return parentClass;
 	}
 
-	public void setParentClass(DSSClass parentClass) {
-		ParentClass = parentClass;
+	public void setParentClass(DSSClass parent) {
+		parentClass = parent;
 	}
 
 	public int getClassIndex() {
-		return ClassIndex;
+		return classIndex;
 	}
 
-	public void setClassIndex(int classIndex) {
-		ClassIndex = classIndex;
+	public void setClassIndex(int index) {
+		classIndex = index;
 	}
 
 	public boolean isHasBeenSaved() {
-		return HasBeenSaved;
+		return hasBeenSaved;
 	}
 
-	public void setHasBeenSaved(boolean hasBeenSaved) {
-		HasBeenSaved = hasBeenSaved;
+	public void setHasBeenSaved(boolean saved) {
+		hasBeenSaved = saved;
 	}
 
 	public boolean isFlag() {
-		return Flag;
+		return flag;
 	}
 
-	public void setFlag(boolean flag) {
-		Flag = flag;
+	public void setFlag(boolean value) {
+		flag = value;
 	}
 
 	// FIXME Protected member in OpenDSS
 	public int[] getPrpSequence() {
-		return PrpSequence;
+		return prpSequence;
 	}
 
 }

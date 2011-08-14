@@ -21,29 +21,27 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	public GrowthShapeImpl() {
 		super();
 		this.className = "GrowthShape";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(false);
 	}
 
 	protected void defineProperties() {
-		String CRLF = DSSGlobals.CRLF;
+		final String CRLF = DSSGlobals.CRLF;
 
 		numProperties = GrowthShape.NumPropsThisClass;
-		countProperties();   // Get inherited property count
+		countProperties();   // get inherited property count
 
 		allocatePropertyArrays();
 
-
 		// define property names
-
 		propertyName[0] = "npts";     // number of points to expect
 		propertyName[1] = "year";     // vextor of year values
 		propertyName[2] = "mult";     // vector of multiplier values corresponding to years
@@ -71,104 +69,104 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
-	public int newObject(String ObjName) {
+	public int newObject(String objName) {
 		// create a new object of this class and add to list.
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Globals.setActiveDSSObject(new GrowthShapeObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		DSSGlobals globals = DSSGlobals.getInstance();
+		globals.setActiveDSSObject(new GrowthShapeObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		double[] YrBuffer;
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		setActiveGrowthShapeObj((GrowthShapeObj) elementList.getActive());
-		Globals.setActiveDSSObject(getActiveGrowthShapeObj());
+		globals.setActiveDSSObject(getActiveGrowthShapeObj());
 
 		GrowthShapeObj pShape = getActiveGrowthShapeObj();
 
-		int ParamPointer = 0;
-		String ParamName = Parser.getInstance().getNextParam();
-		String Param = Parser.getInstance().makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = Parser.getInstance().getNextParam();
+		String param = Parser.getInstance().makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= numProperties))  // TODO Check zero based indexing
-				pShape.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))  // TODO Check zero based indexing
+				pShape.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for Object \"" + getName() +"."+ getName() + "\"", 600);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 600);
 				break;
 			case 1:
-				pShape.setNpts(Parser.getInstance().makeInteger());
+				pShape.setNPts(Parser.getInstance().makeInteger());
 				break;
 			case 2:
-				pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNpts()) );
-				YrBuffer = new double[pShape.getNpts()];
-				Utilities.interpretDblArray(Param, pShape.getNpts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
+				pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
+				YrBuffer = new double[pShape.getNPts()];
+				Utilities.interpretDblArray(param, pShape.getNPts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
 
-				for (int i = 0; i < pShape.getNpts(); i++)
+				for (int i = 0; i < pShape.getNPts(); i++)
 					pShape.getYear()[i] = (int) Math.round(YrBuffer[i]);
 				pShape.setBaseYear(pShape.getYear()[0]);
 				YrBuffer = null;
 				break;
 			case 3:
-				pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
-				Utilities.interpretDblArray(Param, pShape.getNpts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
+				pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
+				Utilities.interpretDblArray(param, pShape.getNPts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
 				break;
 			case 4:
-				doCSVFile(Param);
+				doCSVFile(param);
 				break;
 			case 5:
-				doSngFile(Param);
+				doSngFile(param);
 				break;
 			case 6:
-				doDblFile(Param);
+				doDblFile(param);
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveGrowthShapeObj(), ParamPointer - GrowthShape.NumPropsThisClass);
+				classEdit(getActiveGrowthShapeObj(), paramPointer - GrowthShape.NumPropsThisClass);
 				break;
 			}
 
-			ParamName = Parser.getInstance().getNextParam();
-			Param = Parser.getInstance().makeString();
+			paramName = Parser.getInstance().getNextParam();
+			param = Parser.getInstance().makeString();
 		}
 
 		pShape.reCalcYearMult();
 
-		return Result;
+		return result;
 	}
 
-	protected int makeLike(String ShapeName) {
+	protected int makeLike(String shapeName) {
 		/* See if we can find this line code in the present collection */
-		GrowthShapeObj OtherGrowthShape = (GrowthShapeObj) find(ShapeName);
-		if (OtherGrowthShape != null) {
+		GrowthShapeObj otherGrowthShape = (GrowthShapeObj) find(shapeName);
+		if (otherGrowthShape != null) {
 			GrowthShapeObj pShape = getActiveGrowthShapeObj();
-			pShape.setNpts(OtherGrowthShape.getNpts());
-			pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNpts()) );
-			for (int i = 0; i < pShape.getNpts(); i++)
-				pShape.getMultiplier()[i] = OtherGrowthShape.getMultiplier()[i];
-			pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNpts()) );
-			for (int i = 0; i < pShape.getNpts(); i++)
-				pShape.getYear()[i] = OtherGrowthShape.getYear()[i];
+			pShape.setNPts(otherGrowthShape.getNPts());
+			pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
+			for (int i = 0; i < pShape.getNPts(); i++)
+				pShape.getMultiplier()[i] = otherGrowthShape.getMultiplier()[i];
+			pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
+			for (int i = 0; i < pShape.getNPts(); i++)
+				pShape.getYear()[i] = otherGrowthShape.getYear()[i];
 			for (int i = 0; i < pShape.getParentClass().getNumProperties(); i++)
-				pShape.setPropertyValue(i, OtherGrowthShape.getPropertyValue(i));
+				pShape.setPropertyValue(i, otherGrowthShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GrowthShape makeLike: \"" + ShapeName + "\" not found.", 601);
+			DSSGlobals.getInstance().doSimpleMsg("Error in GrowthShape makeLike: \"" + shapeName + "\" not found.", 601);
 		}
 		return 0;
 	}
 
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement GrowthShape.init()", -1);
 		return 0;
 	}
@@ -183,41 +181,42 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	/**
 	 * Sets the active GrowthShape.
 	 */
-	public void setCode(String Value) {
+	public void setCode(String value) {
+		GrowthShapeObj pShape;
 		setActiveGrowthShapeObj(null);
 
 		for (int i = 0; i < elementList.size(); i++) {
-			GrowthShapeObj pShape = (GrowthShapeObj) elementList.get(i);
-			if (pShape.getName().equalsIgnoreCase(Value)) {
+			pShape = (GrowthShapeObj) elementList.get(i);
+			if (pShape.getName().equalsIgnoreCase(value)) {
 				setActiveGrowthShapeObj(pShape);
 				return;
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("GrowthShape: \"" + Value + "\" not found.", 602);
+		DSSGlobals.getInstance().doSimpleMsg("GrowthShape: \"" + value + "\" not found.", 602);
 	}
 
-	private void doCSVFile(String FileName) {
-		FileInputStream fileStream;
-		DataInputStream dataStream;
-		BufferedReader reader;
+	private void doCSVFile(String fileName) {
+		FileInputStream fis;
+		DataInputStream dis;
+		BufferedReader br;
 		String s;
 
 		Parser parser;
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			fileStream = new FileInputStream(FileName);
-			dataStream = new DataInputStream(fileStream);
-			reader = new BufferedReader(new InputStreamReader(dataStream));
+			fis = new FileInputStream(fileName);
+			dis = new DataInputStream(fis);
+			br = new BufferedReader(new InputStreamReader(dis));
 
 			GrowthShapeObj pShape = getActiveGrowthShapeObj();
 
 			int i = 0;
-			while (((s = reader.readLine()) != null) && i < pShape.getNpts()) {  // TODO: Check zero based indexing
+			while (((s = br.readLine()) != null) && i < pShape.getNPts()) {  // TODO: Check zero based indexing
 				i += 1;
 				// use aux parser to allow flexible formats
-				parser = Globals.getAuxParser();
+				parser = globals.getAuxParser();
 				parser.setCmdString(s);
 				parser.getNextParam();
 				pShape.getYear()[i] = parser.makeInteger();
@@ -225,21 +224,21 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				pShape.getMultiplier()[i] = parser.makeDouble();
 			}
 
-			fileStream.close();
-			dataStream.close();
-			reader.close();
+			fis.close();
+			dis.close();
+			br.close();
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error processing CSV file: \"" + FileName + ". " + e.getMessage(), 604);
+			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}
 
-	private void doSngFile(String FileName) {
+	private void doSngFile(String fileName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
 
-	private void doDblFile(String FileName) {
+	private void doDblFile(String fileName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
 	}
@@ -248,8 +247,8 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		return ActiveGrowthShapeObj;
 	}
 
-	public void setActiveGrowthShapeObj(GrowthShapeObj activeGrowthShapeObj) {
-		ActiveGrowthShapeObj = activeGrowthShapeObj;
+	public void setActiveGrowthShapeObj(GrowthShapeObj growthShapeObj) {
+		ActiveGrowthShapeObj = growthShapeObj;
 	}
 
 }

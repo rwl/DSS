@@ -15,7 +15,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	public ReactorImpl() {
 		super();
 		this.className = "Reactor";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.REACTOR_ELEMENT;
+		this.classType = this.classType + DSSClassDefs.REACTOR_ELEMENT;
 
 		this.activeElement = -1;
 

@@ -24,7 +24,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	public PVSystemImpl() {
 		super();
 		this.className = "PVSystem";
-		this.DSSClassType = DSSClassType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
+		this.classType = classType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
 
 		this.activeElement = -1;
 

@@ -6,6 +6,6 @@ public interface WireData extends ConductorData {
 
 	String getCode();
 
-	void setCode(String Value);
+	void setCode(String value);
 
 }

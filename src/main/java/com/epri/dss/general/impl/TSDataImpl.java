@@ -13,7 +13,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	public TSDataImpl() {
 		super();
 		this.className = "TSData";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 

@@ -14,19 +14,19 @@ public interface LoadShape extends DSSClass {
 	/**
 	 * Sets the active LoadShape.
 	 */
-	void setCode(String Value);
+	void setCode(String value);
 
 	int edit();
 
-	int init(int Handle);
+	int init(int handle);
 
-	int newObject(String ObjName);
+	int newObject(String objName);
 
 	/**
 	 * Find an obj of this class by name.
 	 */
-	Object find(String ObjName);
+	Object find(String objName);
 
-	void TOPExport(String ObjName);
+	void TOPExport(String objName);
 
 }

@@ -43,7 +43,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super(parClass);
 
 		setName(sourceName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		this.objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
 		this.nConds = 3;
@@ -382,7 +382,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++)
-			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[i]);
+			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[i]);
 
 		if (complete) {
 			f.println();
@@ -403,25 +403,25 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		/* PropertyValue allocated in DSSObject constructor */
-		PropertyValue[1]  = getBus(1);
-		PropertyValue[2]  = "115";
-		PropertyValue[3]  = "1";
-		PropertyValue[4]  = "0";
-		PropertyValue[5]  = String.format("%d", Math.round(DSSGlobals.getInstance().getDefaultBaseFreq()));
-		PropertyValue[6]  = "3";
-		PropertyValue[7]  = "2000";
-		PropertyValue[8]  = "2100";
-		PropertyValue[9]  = "4";
-		PropertyValue[10] = "3";
-		PropertyValue[11] = "10000";
-		PropertyValue[12] = "10500";
-		PropertyValue[13] = "1.65";
-		PropertyValue[14] = "6.6";
-		PropertyValue[15] = "1.9";
-		PropertyValue[16] = "5.7";
-		PropertyValue[17] = "Pos";
-		PropertyValue[18] = "Pos";
-		PropertyValue[19] = getBus(2);
+		propertyValue[1]  = getBus(1);
+		propertyValue[2]  = "115";
+		propertyValue[3]  = "1";
+		propertyValue[4]  = "0";
+		propertyValue[5]  = String.format("%d", Math.round(DSSGlobals.getInstance().getDefaultBaseFreq()));
+		propertyValue[6]  = "3";
+		propertyValue[7]  = "2000";
+		propertyValue[8]  = "2100";
+		propertyValue[9]  = "4";
+		propertyValue[10] = "3";
+		propertyValue[11] = "10000";
+		propertyValue[12] = "10500";
+		propertyValue[13] = "1.65";
+		propertyValue[14] = "6.6";
+		propertyValue[15] = "1.9";
+		propertyValue[16] = "5.7";
+		propertyValue[17] = "Pos";
+		propertyValue[18] = "Pos";
+		propertyValue[19] = getBus(2);
 
 		super.initPropertyValues(VSource.NumPropsThisClass);
 	}

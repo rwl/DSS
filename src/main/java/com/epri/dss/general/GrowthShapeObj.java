@@ -7,20 +7,20 @@ public interface GrowthShapeObj extends DSSObject {
 	/* FIXME Private method in OpenDSS */
 	void reCalcYearMult();
 
-	String getPropertyValue(int Index);
+	String getPropertyValue(int index);
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	/**
 	 * Get multiplier for specified year.
 	 */
-	double getMult(int Yr);
+	double getMult(int yr);
 
-	int getNpts();
+	int getNPts();
 
-	void setNpts(int npts);
+	void setNPts(int npts);
 
 	int[] getYear();
 

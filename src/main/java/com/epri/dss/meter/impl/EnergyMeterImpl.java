@@ -51,7 +51,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	public EnergyMeterImpl() {
 		super();
 		this.className = "EnergyMeter";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.ENERGY_METER;
+		this.classType = this.classType + DSSClassDefs.ENERGY_METER;
 
 		this.activeElement = -1;
 

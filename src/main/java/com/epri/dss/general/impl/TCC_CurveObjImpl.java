@@ -19,7 +19,7 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		super(ParClass);
 
 		setName(Name.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.LastValueAccessed = 0;  // TODO Check zero based indexing
 		this.Npts = 0;
@@ -157,8 +157,8 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++)
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
+		for (int i = 0; i < parentClass.getNumProperties(); i++)
+			F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
 	}
 
 	@Override
@@ -206,9 +206,9 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		PropertyValue[0] = "0";  // number of points to expect
-		PropertyValue[1] = "";   // vector of multiplier values
-		PropertyValue[2] = "";   // vector of sec values
+		propertyValue[0] = "0";  // number of points to expect
+		propertyValue[1] = "";   // vector of multiplier values
+		propertyValue[2] = "";   // vector of sec values
 
 		super.initPropertyValues(TCC_Curve.NumPropsThisClass);
 	}
@@ -225,11 +225,11 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		LastValueAccessed = lastValueAccessed;
 	}
 
-	public int getNpts() {
+	public int getNPts() {
 		return Npts;
 	}
 
-	public void setNpts(int npts) {
+	public void setNPts(int npts) {
 		Npts = npts;
 	}
 
@@ -249,19 +249,19 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		LogC = logC;
 	}
 
-	public double[] getC_values() {
+	public double[] getCValues() {
 		return c_values;
 	}
 
-	public void setC_values(double[] c_values) {
+	public void setCValues(double[] c_values) {
 		this.c_values = c_values;
 	}
 
-	public double[] getT_values() {
+	public double[] getTValues() {
 		return t_values;
 	}
 
-	public void setT_values(double[] t_values) {
+	public void setTValues(double[] t_values) {
 		this.t_values = t_values;
 	}
 

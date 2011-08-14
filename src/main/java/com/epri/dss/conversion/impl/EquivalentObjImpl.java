@@ -35,7 +35,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	public EquivalentObjImpl(DSSClassImpl parClass, String sourceName) {
 		super(parClass);
 		setName(sourceName.toLowerCase());
-		DSSObjType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
 		this.nConds = 3;
@@ -297,17 +297,17 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0]  = "1";
-		PropertyValue[1]  = getBus(1);  // TODO Check zero based indexing
-		PropertyValue[2]  = "115";
-		PropertyValue[3]  = "1";
-		PropertyValue[4]  = "0";
-		PropertyValue[5]  = "60";
-		PropertyValue[6]  = "3";
-		PropertyValue[7]  = "1.65";
-		PropertyValue[8]  = "6.6";
-		PropertyValue[9]  = "1.9";
-		PropertyValue[10] = "5.7";
+		propertyValue[0]  = "1";
+		propertyValue[1]  = getBus(1);  // TODO Check zero based indexing
+		propertyValue[2]  = "115";
+		propertyValue[3]  = "1";
+		propertyValue[4]  = "0";
+		propertyValue[5]  = "60";
+		propertyValue[6]  = "3";
+		propertyValue[7]  = "1.65";
+		propertyValue[8]  = "6.6";
+		propertyValue[9]  = "1.9";
+		propertyValue[10] = "5.7";
 
 		super.initPropertyValues(Equivalent.NumPropsThisClass);
 	}

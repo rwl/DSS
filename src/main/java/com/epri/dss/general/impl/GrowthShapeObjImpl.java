@@ -10,26 +10,26 @@ import com.epri.dss.general.GrowthShapeObj;
 public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj {
 
 	/** Number of points in curve */
-	private int Npts;
+	private int npts;
 	/** Number of years presently allocated in look up table */
-	private int NYears;
-	private int BaseYear;
+	private int nYears;
+	private int baseYear;
 
 	/** Year values */
-	private int[] Year;
-	private double[] YearMult, Multiplier;
+	private int[] year;
+	private double[] yearMult, multiplier;
 
-	public GrowthShapeObjImpl(DSSClass ParClass, String GrowthShapeName) {
-		super(ParClass);
+	public GrowthShapeObjImpl(DSSClass parClass, String growthShapeName) {
+		super(parClass);
 
-		setName(GrowthShapeName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(growthShapeName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.Npts = 0;
-		this.Year = null;
-		this.Multiplier = null;
-		this.NYears = 30;
-		this.YearMult = new double[this.NYears];
+		this.npts = 0;
+		this.year = null;
+		this.multiplier = null;
+		this.nYears = 30;
+		this.yearMult = new double[this.nYears];
 
 		initPropertyValues(0);
 	}
@@ -41,155 +41,151 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 	 * The first year specified in the curve is the base year.  The base value
 	 * is the beginning of the first year.
 	 */
-	public double getMult(int Yr) {
-		int Index;
+	public double getMult(int yr) {
+		int index;
 
-		double Result = 1.0;  // default return value if no points in curve
+		double result = 1.0;  // default return value if no points in curve
 
-		if (Npts > 0) {  // handle exceptional cases
-			Index = Yr - BaseYear;
-			if (Index > 0) {  // returns 1.0 for base year or any year previous  TODO Check zero based indexing
-
-				if (Index > NYears) {  // make some more space
-					NYears = Index + 10;
-					YearMult = (double[]) Utilities.resizeArray(YearMult, NYears);
+		if (npts > 0) {  // handle exceptional cases
+			index = yr - baseYear;
+			if (index > 0) {  // returns 1.0 for base year or any year previous  TODO Check zero based indexing
+				if (index > nYears) {  // make some more space
+					nYears = index + 10;
+					yearMult = (double[]) Utilities.resizeArray(yearMult, nYears);
 					reCalcYearMult();
 				}
-
-				Result = YearMult[Index];
-
+				result = yearMult[index];
 			}
-
 		}
 
-		return Result;
+		return result;
 	}
 
 	/* FIXME Private procedure in OpenDSS */
 	public void reCalcYearMult() {
 		// fill up the yearMult array with total yearly multiplier from base year
-		double Mult = Multiplier[1];
-		double MultInc = Mult;
-		YearMult[0] = Mult;  // TODO Check zero based indexing
-		int DataPtr = 1;  // TODO Check zero based indexing
-		int Yr = BaseYear;
-		for (int i = 1; i < NYears; i++) {  // TODO Check zero based indexing
-			Yr += 1;
-			if (DataPtr < Npts) {
-				if (Year[DataPtr + 1] == Yr) {
-					DataPtr += 1;
-					MultInc = Multiplier[DataPtr];
+		double mult = multiplier[1];
+		double multInc = mult;
+		yearMult[0] = mult;  // TODO Check zero based indexing
+		int dataPtr = 1;  // TODO Check zero based indexing
+		int yr = baseYear;
+		for (int i = 1; i < nYears; i++) {  // TODO Check zero based indexing
+			yr += 1;
+			if (dataPtr < npts) {
+				if (year[dataPtr + 1] == yr) {
+					dataPtr += 1;
+					multInc = multiplier[dataPtr];
 				}
 			}
-			Mult = Mult * MultInc;
-			YearMult[i] = Mult;
+			mult = mult * multInc;
+			yearMult[i] = mult;
 		}
 	}
 
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 2:  // TODO Check zero based indexing
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			case 3:
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
+				f.println("~ " + parentClass.getPropertyName()[i] + "=(" + getPropertyValue(i) + ")");
 				break;
 			default:
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 				break;
 			}
 		}
 	}
 
-	public String getPropertyValue(int Index) {
+	public String getPropertyValue(int index) {
 		int i;
-		String Result;
+		String result;
 
-		switch (Index) {
+		switch (index) {
 		case 2:  // TODO Check zero based indexing
-			Result = "(";
+			result = "(";
 			break;
 		case 3:
-			Result = "(";
+			result = "(";
 			break;
 		default:
-			Result = "";
+			result = "";
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 2:
-			for (i = 0; i < Npts; i++)
-				Result = Result + String.format("%-d, ", Year[i]);
+			for (i = 0; i < npts; i++)
+				result = result + String.format("%-d, ", year[i]);
 			break;
 		case 3:
-			for (i = 0; i < Npts; i++)
-				Result = Result + String.format("%-g, ", Multiplier[i]);
+			for (i = 0; i < npts; i++)
+				result = result + String.format("%-g, ", multiplier[i]);
 			break;
 		default:
-			Result = super.getPropertyValue(Index);
+			result = super.getPropertyValue(index);
 			break;
 		}
 
-		switch (Index) {
+		switch (index) {
 		case 2:
-			Result = Result + ")";
+			result = result + ")";
 			break;
 		case 3:
-			Result = Result + ")";
+			result = result + ")";
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "0";  // number of points to expect
-		PropertyValue[1] = "";   // vector of year values
-		PropertyValue[2] = "";   // vector of multiplier values corresponding to years
-		PropertyValue[3] = "";   // switch input to a csvfile                (year, mult)
-		PropertyValue[4] = "";   // switch input to a binary file of singles (year, mult)
-		PropertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
+		propertyValue[0] = "0";  // number of points to expect
+		propertyValue[1] = "";   // vector of year values
+		propertyValue[2] = "";   // vector of multiplier values corresponding to years
+		propertyValue[3] = "";   // switch input to a csvfile                (year, mult)
+		propertyValue[4] = "";   // switch input to a binary file of singles (year, mult)
+		propertyValue[5] = "";   // switch input to a binary file of doubles (year, mult)
 
 		super.initPropertyValues(GrowthShape.NumPropsThisClass);
 	}
 
 
 	/* FIXME Private members in OpenDSS */
-	public int getNpts() {
-		return Npts;
+	public int getNPts() {
+		return npts;
 	}
 
-	public void setNpts(int npts) {
-		Npts = npts;
+	public void setNPts(int n) {
+		npts = n;
 	}
 
 	public int[] getYear() {
-		return Year;
+		return year;
 	}
 
-	public void setYear(int[] year) {
-		Year = year;
+	public void setYear(int[] values) {
+		year = values;
 	}
 
 	public double[] getMultiplier() {
-		return Multiplier;
+		return multiplier;
 	}
 
-	public void setMultiplier(double[] multiplier) {
-		Multiplier = multiplier;
+	public void setMultiplier(double[] mult) {
+		multiplier = mult;
 	}
 
 	public int getBaseYear() {
-		return BaseYear;
+		return baseYear;
 	}
 
-	public void setBaseYear(int baseYear) {
-		BaseYear = baseYear;
+	public void setBaseYear(int year) {
+		baseYear = year;
 	}
 
 }

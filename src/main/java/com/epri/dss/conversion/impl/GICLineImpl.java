@@ -15,7 +15,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 	public GICLineImpl() {
 		super();
 		this.className = "GICLine";
-		this.DSSClassType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
+		this.classType = DSSClassDefs.GIC_LINE + DSSClassDefs.PC_ELEMENT;
 
 		this.activeElement = -1;
 

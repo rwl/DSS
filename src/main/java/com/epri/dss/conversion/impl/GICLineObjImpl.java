@@ -31,7 +31,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	public GICLineObjImpl(DSSClass parClass, String lineName) {
 		super(parClass);
 		setName(lineName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		this.objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
 		this.nConds = 3;

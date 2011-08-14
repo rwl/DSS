@@ -26,7 +26,7 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	public TShapeObjImpl(DSSClass ParClass, String TShapeName) {
 		super(ParClass);
 		setName(TShapeName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.LastValueAccessed = 0;
 

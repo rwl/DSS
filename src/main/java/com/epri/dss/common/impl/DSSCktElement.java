@@ -75,7 +75,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		this.nTerms      = 0;
 		this.nConds      = 0;
 		this.nPhases     = 0;
-		this.DSSObjType  = 0;
+		this.objType  = 0;
 		this.YOrder      = 0;
 
 		this.YPrimInvalid   = true;
@@ -168,7 +168,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		// check for an almost certain programming error
 		if (value <= 0) {
 			DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
-					value, ParentClass.getName(), getName()), 749);
+					value, parentClass.getName(), getName()), 749);
 			return;
 		}
 
@@ -198,7 +198,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		// check for an almost certain programming error
 		if (value <= 0) {
 			globals.doSimpleMsg(String.format("Invalid number of terminals (%d) for \"%s.%s\"",
-								value, ParentClass.getName(), getName()), 749);
+								value, parentClass.getName(), getName()), 749);
 			return;
 		}
 
@@ -210,7 +210,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			if (nConds > 101) {
 				globals.doSimpleMsg(String.format("Warning: Number of conductors is very large (%d) for circuit element: \"%s.%s." +
 						"Possible error in specifying the number of phases for element.",
-						nConds, ParentClass.getName(), getName()), 750);
+						nConds, parentClass.getName(), getName()), 750);
 			}
 
 			/* ReAllocate bus names */
@@ -684,8 +684,8 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void initPropertyValues(int arrayOffset) {  // TODO Check zero based indexing
-		PropertyValue[arrayOffset + 1] = String.format("%-g", baseFrequency);  // base freq
-		PropertyValue[arrayOffset + 2] = "true";  // enabled
+		propertyValue[arrayOffset + 1] = String.format("%-g", baseFrequency);  // base freq
+		propertyValue[arrayOffset + 2] = "true";  // enabled
 		enabledProperty = arrayOffset + 2;  // keep track of this
 
 		super.initPropertyValues(arrayOffset + 2);

@@ -4,11 +4,11 @@ import com.epri.dss.delivery.TransformerObj;
 import com.epri.dss.delivery.Winding;
 
 public interface XfmrCodeObj extends DSSObject {
-	
-	void setNumWindings(int N);
-	
+
+	void setNumWindings(int n);
+
 	void pullFromTransformer(TransformerObj obj);
-	
+
 	// FIXME Private members in OpenDSS
 
 	int getNPhases();
@@ -25,23 +25,23 @@ public interface XfmrCodeObj extends DSSObject {
 
 	double getXHL();
 
-	void setXHL(double xHL);
+	void setXHL(double XHL);
 
 	double getXHT();
 
-	void setXHT(double xHT);
+	void setXHT(double XHT);
 
 	double getXLT();
 
-	void setXLT(double xLT);
+	void setXLT(double XLT);
 
 	double[] getXSC();
 
-	void setXSC(double[] xSC);
+	void setXSC(double[] XSC);
 
 	double getVABase();
 
-	void setVABase(double vABase);
+	void setVABase(double base);
 
 	double getNormMaxHKVA();
 
@@ -55,21 +55,21 @@ public interface XfmrCodeObj extends DSSObject {
 
 	void setThermalTimeConst(double thermalTimeConst);
 
-	double getN_thermal();
+	double getNThermal();
 
-	void setN_thermal(double n_thermal);
+	void setNThermal(double nthermal);
 
-	double getM_thermal();
+	double getMThermal();
 
-	void setM_thermal(double m_thermal);
+	void setMThermal(double mthermal);
 
-	double getLrise();
+	double getLRise();
 
-	void setLrise(double lrise);
+	void setLRise(double lrise);
 
-	double getHSrise();
+	double getHSRise();
 
-	void setHSrise(double hSrise);
+	void setHSRise(double hsrise);
 
 	double getPctLoadLoss();
 
@@ -79,9 +79,9 @@ public interface XfmrCodeObj extends DSSObject {
 
 	void setPctNoLoadLoss(double pctNoLoadLoss);
 
-	double getPpm_FloatFactor();
+	double getPpmFloatFactor();
 
-	void setPpm_FloatFactor(double ppm_FloatFactor);
+	void setPpmFloatFactor(double ppmFloatFactor);
 
 	double getPctImag();
 

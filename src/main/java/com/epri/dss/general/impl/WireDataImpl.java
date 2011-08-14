@@ -13,7 +13,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	public WireDataImpl() {
 		super();
 		this.className = "WireData";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 

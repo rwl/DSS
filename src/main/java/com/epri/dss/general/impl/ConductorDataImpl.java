@@ -11,16 +11,16 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 
-	private static ConductorDataObj ActiveConductorDataObj;
+	private static ConductorDataObj activeConductorDataObj;
 
-	private static ConductorChoice[] ConductorChoiceArray = new ConductorChoice[100];
+	private static ConductorChoice[] conductorChoiceArray = new ConductorChoice[100];
 
-	private int NumConductorClassProps;
+	private int numConductorClassProps;
 
 	public ConductorDataImpl() {
 		super();
-		this.NumConductorClassProps = 10;
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.numConductorClassProps = 10;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 	}
 
 	protected void countProperties() {
@@ -51,19 +51,19 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 		propertyHelp[activeProperty + 9] = "Emergency ampacity, amperes. Defaults to 1.5 * Normal Amps if not specified.";
 		propertyHelp[activeProperty + 10] = "Diameter; Alternative method for entering radius.";
 
-		activeProperty = activeProperty + NumConductorClassProps;
+		activeProperty = activeProperty + numConductorClassProps;
 		super.defineProperties();
 	}
 
-	protected int classEdit(DSSObject ActiveObj, int ParamPointer) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	protected int classEdit(DSSObject activeObj, int paramPointer) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
-		if (ParamPointer >= 0) {
-			ConductorDataObj cd = (ConductorDataObj) ActiveObj;
-			switch (ParamPointer) {
+		if (paramPointer >= 0) {
+			ConductorDataObj cd = (ConductorDataObj) activeObj;
+			switch (paramPointer) {
 			case 0:
 				cd.setRDC(parser.makeDouble());
 				break;
@@ -95,11 +95,11 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 				cd.setRadius(parser.makeDouble() / 2.0);
 				break;
 			default:
-				super.classEdit(ActiveObj, ParamPointer - NumConductorClassProps);
+				super.classEdit(activeObj, paramPointer - numConductorClassProps);
 				break;
 			}
 			/* Set defaults */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				if (cd.getR60() < 0.0)
 					cd.setR60(1.02 * cd.getRDC());
@@ -138,53 +138,53 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 				break;
 			}
 			/* Check for critical errors */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 3:
 				if (cd.getRadius() == 0.0)
-					Globals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
+					globals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			case 5:
 				if (cd.getGMR60() == 0.0)
-					Globals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
+					globals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
-	protected void classMakeLike(DSSObject OtherObj) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	protected void classMakeLike(DSSObject otherObj) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		ConductorDataObj OtherConductorData = (ConductorDataObj) OtherObj;
-		ConductorDataObj cd = (ConductorDataObj) Globals.getActiveDSSObject();
+		ConductorDataObj otherConductorData = (ConductorDataObj) otherObj;
+		ConductorDataObj cd = (ConductorDataObj) globals.getActiveDSSObject();
 
-		cd.setRDC(OtherConductorData.getRDC());
-		cd.setR60(OtherConductorData.getR60());
-		cd.setResistanceUnits(OtherConductorData.getResistanceUnits());
-		cd.setGMR60(OtherConductorData.getGMR60());
-		cd.setGMRUnits(OtherConductorData.getGMRUnits());
-		cd.setRadius(OtherConductorData.getRadius());
-		cd.setRadiusUnits(OtherConductorData.getRadiusUnits());
-		cd.setNormAmps(OtherConductorData.getNormAmps());
-		cd.setEmergAmps(OtherConductorData.getEmergAmps());
+		cd.setRDC(otherConductorData.getRDC());
+		cd.setR60(otherConductorData.getR60());
+		cd.setResistanceUnits(otherConductorData.getResistanceUnits());
+		cd.setGMR60(otherConductorData.getGMR60());
+		cd.setGMRUnits(otherConductorData.getGMRUnits());
+		cd.setRadius(otherConductorData.getRadius());
+		cd.setRadiusUnits(otherConductorData.getRadiusUnits());
+		cd.setNormAmps(otherConductorData.getNormAmps());
+		cd.setEmergAmps(otherConductorData.getEmergAmps());
 		//super.classMakeLike(OtherObj);
 	}
 
-	public void setNumConductorClassProps(int numConductorClassProps) {
-		NumConductorClassProps = numConductorClassProps;
+	public void setNumConductorClassProps(int num) {
+		numConductorClassProps = num;
 	}
 
 	public int getNumConductorClassProps() {
-		return NumConductorClassProps;
+		return numConductorClassProps;
 	}
 
-	public static void setActiveConductorDataObj(ConductorDataObj activeConductorDataObj) {
-		ActiveConductorDataObj = activeConductorDataObj;
+	public static void setActiveConductorDataObj(ConductorDataObj conductorDataObj) {
+		activeConductorDataObj = conductorDataObj;
 	}
 
 	public static ConductorDataObj getActiveConductorDataObj() {
-		return ActiveConductorDataObj;
+		return activeConductorDataObj;
 	}
 
 }

@@ -17,7 +17,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		super();
 
 		this.className = "CapControl";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.CAP_CONTROL;
+		this.classType = this.classType + DSSClassDefs.CAP_CONTROL;
 
 		defineProperties();
 

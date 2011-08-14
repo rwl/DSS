@@ -123,7 +123,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		super(parClass);
 
 		setName(PVSystemName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
+		this.objType = parClass.getDSSClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
 
 		setNPhases(3);
 		this.nConds = 4;   // defaults to wye

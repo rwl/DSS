@@ -48,7 +48,7 @@ public interface LoadShapeObj extends DSSObject {
 
 	double getInterval();
 
-	void setNumPoints(int Value);
+	void setNumPoints(int value);
 
 	int getNumPoints();
 
@@ -74,11 +74,11 @@ public interface LoadShapeObj extends DSSObject {
 
 	void calcMeanAndStdDev();
 
-	String getPropertyValue(int Index);
+	String getPropertyValue(int index);
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	double[] getHours();
 

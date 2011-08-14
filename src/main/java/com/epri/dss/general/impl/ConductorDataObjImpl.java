@@ -8,109 +8,109 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorDataObj {
 
-	private double RDC;
+	private double Rdc;
 	private double R60;
-	private double GMR60;
+	private double gmr60;
 	private double radius;
-	private int GMRUnits;
-	private int ResistanceUnits;
-	private int RadiusUnits;
+	private int gmrUnits;
+	private int resistanceUnits;
+	private int radiusUnits;
 
-	protected double NormAmps;
-	protected double EmergAmps;
+	protected double normAmps;
+	protected double emergAmps;
 
-	public ConductorDataObjImpl(DSSClass ParClass, String ConductorDataName) {
-		super(ParClass);
+	public ConductorDataObjImpl(DSSClass parClass, String conductorDataName) {
+		super(parClass);
 
-		setName(ConductorDataName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		setName(conductorDataName.toLowerCase());
+		this.objType = parClass.getDSSClassType();
 
-		this.RDC             = -1.0;
+		this.Rdc             = -1.0;
 		this.R60             = -1.0;
-		this.GMR60           = -1.0;
+		this.gmr60           = -1.0;
 		this.radius          = -1.0;
-		this.GMRUnits        = 0;
-		this.ResistanceUnits = 0;
-		this.RadiusUnits     = 0;
+		this.gmrUnits        = 0;
+		this.resistanceUnits = 0;
+		this.radiusUnits     = 0;
 
-		this.NormAmps  = -1.0;
-		this.EmergAmps = -1.0;
+		this.normAmps  = -1.0;
+		this.emergAmps = -1.0;
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			F.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
 			switch (i) {
 			case 0:
-				F.println(String.format("%.6g", getRDC()));
+				f.println(String.format("%.6g", getRDC()));
 				break;
 			case 1:
-				F.println(String.format("%.6g", getR60()));
+				f.println(String.format("%.6g", getR60()));
 				break;
 			case 2:
-				F.println(String.format("%s", LineUnits.lineUnitsStr(getResistanceUnits())));
+				f.println(String.format("%s", LineUnits.lineUnitsStr(getResistanceUnits())));
 				break;
 			case 3:
-				F.println(String.format("%.6g", getGMR60()));
+				f.println(String.format("%.6g", getGMR60()));
 				break;
 			case 4:
-				F.println(String.format("%s", LineUnits.lineUnitsStr(getGMRUnits())));
+				f.println(String.format("%s", LineUnits.lineUnitsStr(getGMRUnits())));
 				break;
 			case 5:
-				F.println(String.format("%.6g", getRadius()));
+				f.println(String.format("%.6g", getRadius()));
 				break;
 			case 6:
-				F.println(String.format("%s", LineUnits.lineUnitsStr(getRadiusUnits())));
+				f.println(String.format("%s", LineUnits.lineUnitsStr(getRadiusUnits())));
 				break;
 			case 7:
-				F.println(String.format("%.6g", getNormAmps()));
+				f.println(String.format("%.6g", getNormAmps()));
 				break;
 			case 8:
-				F.println(String.format("%.6g", getEmergAmps()));
+				f.println(String.format("%.6g", getEmergAmps()));
 				break;
 			case 9:
-				F.println(String.format("%.6g", getRadius() * 2.0));
+				f.println(String.format("%.6g", getRadius() * 2.0));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
-		setPropertyValue(ArrayOffset + 0, "-1");
-		setPropertyValue(ArrayOffset + 1, "-1");
-		setPropertyValue(ArrayOffset + 2, "none");
-		setPropertyValue(ArrayOffset + 3, "-1");
-		setPropertyValue(ArrayOffset + 4, "none");
-		setPropertyValue(ArrayOffset + 5, "-1");
-		setPropertyValue(ArrayOffset + 6, "none");
-		setPropertyValue(ArrayOffset + 7, "-1");
-		setPropertyValue(ArrayOffset + 8, "-1");
-		setPropertyValue(ArrayOffset + 9, "-1");
-		super.initPropertyValues(ArrayOffset + 10);
+	public void initPropertyValues(int arrayOffset) {
+		setPropertyValue(arrayOffset + 0, "-1");
+		setPropertyValue(arrayOffset + 1, "-1");
+		setPropertyValue(arrayOffset + 2, "none");
+		setPropertyValue(arrayOffset + 3, "-1");
+		setPropertyValue(arrayOffset + 4, "none");
+		setPropertyValue(arrayOffset + 5, "-1");
+		setPropertyValue(arrayOffset + 6, "none");
+		setPropertyValue(arrayOffset + 7, "-1");
+		setPropertyValue(arrayOffset + 8, "-1");
+		setPropertyValue(arrayOffset + 9, "-1");
+		super.initPropertyValues(arrayOffset + 10);
 	}
 
 	public double getNormAmps() {
-		return NormAmps;
+		return normAmps;
 	}
 
-	public void setNormAmps(double normAmps) {
-		NormAmps = normAmps;
+	public void setNormAmps(double amps) {
+		normAmps = amps;
 	}
 
 	public double getEmergAmps() {
-		return EmergAmps;
+		return emergAmps;
 	}
 
-	public void setEmergAmps(double emergAmps) {
-		EmergAmps = emergAmps;
+	public void setEmergAmps(double amps) {
+		emergAmps = amps;
 	}
 
 	public double getRDC() {
-		return RDC;
+		return Rdc;
 	}
 
 	public double getR60() {
@@ -118,7 +118,7 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 	}
 
 	public double getGMR60() {
-		return GMR60;
+		return gmr60;
 	}
 
 	public double getRadius() {
@@ -126,45 +126,45 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 	}
 
 	public int getGMRUnits() {
-		return GMRUnits;
+		return gmrUnits;
 	}
 
 	public int getResistanceUnits() {
-		return ResistanceUnits;
+		return resistanceUnits;
 	}
 
 	public int getRadiusUnits() {
-		return RadiusUnits;
+		return radiusUnits;
 	}
 
 	// FIXME Private members in OpenDSS.
 
-	public void setRDC(double rDC) {
-		RDC = rDC;
+	public void setRDC(double rdc) {
+		Rdc = rdc;
 	}
 
 	public void setR60(double r60) {
 		R60 = r60;
 	}
 
-	public void setGMR60(double gMR60) {
-		GMR60 = gMR60;
+	public void setGMR60(double gmr) {
+		gmr60 = gmr;
 	}
 
-	public void setRadius(double radius) {
-		this.radius = radius;
+	public void setRadius(double value) {
+		radius = value;
 	}
 
-	public void setGMRUnits(int gMRUnits) {
-		GMRUnits = gMRUnits;
+	public void setGMRUnits(int units) {
+		gmrUnits = units;
 	}
 
-	public void setResistanceUnits(int resistanceUnits) {
-		ResistanceUnits = resistanceUnits;
+	public void setResistanceUnits(int units) {
+		resistanceUnits = units;
 	}
 
-	public void setRadiusUnits(int radiusUnits) {
-		RadiusUnits = radiusUnits;
+	public void setRadiusUnits(int units) {
+		radiusUnits = units;
 	}
 
 }

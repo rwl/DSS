@@ -14,7 +14,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	public PCClassImpl() {
 		super();
 		this.numPCClassProps = 1;
-		this.DSSClassType = DSSClassDefs.PC_ELEMENT;
+		this.classType = DSSClassDefs.PC_ELEMENT;
 	}
 
 	/**

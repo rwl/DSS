@@ -2563,8 +2563,8 @@ public abstract class ShowResults {
 				try {
 					// get impedances per unit length
 					pElem.setRhoEarth(rho);
-					Z  = pElem.getZmatrix(freq, 1.0, units);
-					Yc = pElem.getYCmatrix(freq, 1.0, units);
+					Z  = pElem.getZMatrix(freq, 1.0, units);
+					Yc = pElem.getYcMatrix(freq, 1.0, units);
 				} catch (Exception e) {
 					globals.doSimpleMsg("Error computing line constants for LineGeometry." + pElem.getName() +
 							"; Error message: " + e.getMessage(), 9934);

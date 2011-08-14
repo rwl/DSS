@@ -34,7 +34,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	public FaultObjImpl(DSSClass parClass, String faultName) {
 		super(parClass);
 
-		this.DSSObjType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
+		this.objType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
 		setName(faultName.toLowerCase());
 
 		// default to SLG fault
@@ -281,24 +281,24 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = getBus(1);  // TODO Check zero based indexing
-		PropertyValue[1] = getBus(2);
-		PropertyValue[2] = "1";
-		PropertyValue[3] = "0.0001";
-		PropertyValue[4] = "0";
-		PropertyValue[5] = "";
-		PropertyValue[6] = "0.0";
-		PropertyValue[7] = "no";
-		PropertyValue[8] = "5.0";
+		propertyValue[0] = getBus(1);  // TODO Check zero based indexing
+		propertyValue[1] = getBus(2);
+		propertyValue[2] = "1";
+		propertyValue[3] = "0.0001";
+		propertyValue[4] = "0";
+		propertyValue[5] = "";
+		propertyValue[6] = "0.0";
+		propertyValue[7] = "no";
+		propertyValue[8] = "5.0";
 
 		super.initPropertyValues(Fault.NumPropsThisClass);
 
 		// override inherited properties
-		PropertyValue[Fault.NumPropsThisClass + 1] = "0";  // normAmps   TODO Check zero based indexing
-		PropertyValue[Fault.NumPropsThisClass + 2] = "0";  // emergAmps
-		PropertyValue[Fault.NumPropsThisClass + 3] = "0";  // faultRate
-		PropertyValue[Fault.NumPropsThisClass + 4] = "0";  // pctPerm
-		PropertyValue[Fault.NumPropsThisClass + 5] = "0";  // hrsToRepair
+		propertyValue[Fault.NumPropsThisClass + 1] = "0";  // normAmps   TODO Check zero based indexing
+		propertyValue[Fault.NumPropsThisClass + 2] = "0";  // emergAmps
+		propertyValue[Fault.NumPropsThisClass + 3] = "0";  // faultRate
+		propertyValue[Fault.NumPropsThisClass + 4] = "0";  // pctPerm
+		propertyValue[Fault.NumPropsThisClass + 5] = "0";  // hrsToRepair
 	}
 
 	@Override

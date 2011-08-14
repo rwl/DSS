@@ -8,8 +8,8 @@ public interface TShape extends DSSClass {
 
 	String getCode();
 
-	void setCode(String Value);
+	void setCode(String value);
 
-	void TOPExport(String ObjName);
+	void TOPExport(String objName);
 
 }

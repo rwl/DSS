@@ -17,7 +17,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		super();
 
 		this.className = "StorageController";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_CONTROL;
+		this.classType = this.classType + DSSClassDefs.STORAGE_CONTROL;
 
 		defineProperties();
 

@@ -19,7 +19,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	public XfmrCodeImpl() {
 		super();
 		this.className = "XfmrCode";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 
@@ -278,16 +278,16 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				axc.setThermalTimeConst(parser.makeDouble());
 				break;
 			case 20:
-				axc.setN_thermal(parser.makeDouble());
+				axc.setNThermal(parser.makeDouble());
 				break;
 			case 21:
-				axc.setM_thermal(parser.makeDouble());
+				axc.setMThermal(parser.makeDouble());
 				break;
 			case 22:
-				axc.setLrise(parser.makeDouble());
+				axc.setLRise(parser.makeDouble());
 				break;
 			case 23:
-				axc.setHSrise(parser.makeDouble());
+				axc.setHSRise(parser.makeDouble());
 				break;
 			case 24:
 				axc.setPctLoadLoss(parser.makeDouble());
@@ -314,7 +314,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				axc.setPctImag(parser.makeDouble());
 				break;
 			case 32:
-				axc.setPpm_FloatFactor(parser.makeDouble() * 1.0e-6);
+				axc.setPpmFloatFactor(parser.makeDouble() * 1.0e-6);
 				break;
 			case 33:
 				interpretWindings(Param, WdgParmChoice.R);
@@ -425,10 +425,10 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 			for (i = 0; i < (axc.getNumWindings() * (axc.getNumWindings() - 1) / 2); i++)
 				axc.getXSC()[i] = Other.getXSC()[i];
 			axc.setThermalTimeConst(Other.getThermalTimeConst());
-			axc.setN_thermal(Other.getN_thermal());
-			axc.setM_thermal(Other.getM_thermal());
-			axc.setLrise(Other.getLrise());
-			axc.setHSrise(Other.getHSrise());
+			axc.setNThermal(Other.getNThermal());
+			axc.setMThermal(Other.getMThermal());
+			axc.setLRise(Other.getLRise());
+			axc.setHSRise(Other.getHSRise());
 			axc.setPctLoadLoss(Other.getPctLoadLoss());
 			axc.setPctNoLoadLoss(Other.getPctNoLoadLoss());
 			axc.setNormMaxHKVA(Other.getNormMaxHKVA());

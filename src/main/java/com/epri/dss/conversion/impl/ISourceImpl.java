@@ -14,7 +14,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 	public ISourceImpl() {
 		super();
 		this.className = "Isource";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
+		this.classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
 		this.activeElement = -1;
 

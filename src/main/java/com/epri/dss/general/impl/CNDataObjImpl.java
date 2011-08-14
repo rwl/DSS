@@ -9,53 +9,53 @@ import com.epri.dss.general.CNDataObj;
 public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 
 	private int kStrand;
-	private double DiaStrand;
-	private double GmrStrand;
-	private double RStrand;
+	private double diaStrand;
+	private double gmrStrand;
+	private double rStrand;
 
-	public CNDataObjImpl(DSSClass ParClass, String CNDataName) {
-		super(ParClass, CNDataName);
+	public CNDataObjImpl(DSSClass parClass, String CNDataName) {
+		super(parClass, CNDataName);
 		setName(CNDataName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		this.kStrand   = 2;
-		this.DiaStrand = -1.0;
-		this.GmrStrand = -1.0;
-		this.RStrand   = -1.0;
+		this.diaStrand = -1.0;
+		this.gmrStrand = -1.0;
+		this.rStrand   = -1.0;
 
 		initPropertyValues(0);
 	}
 
 	@Override
-	public void dumpProperties(PrintStream F, boolean Complete) {
-		super.dumpProperties(F, Complete);
+	public void dumpProperties(PrintStream f, boolean complete) {
+		super.dumpProperties(f, complete);
 
 		for (int i = 0; i < getParentClass().getNumProperties(); i++) {
-			F.print("~ " + getParentClass().getPropertyName()[i] + "=");
+			f.print("~ " + getParentClass().getPropertyName()[i] + "=");
 			switch (i) {
 			case 0:
-				F.println(String.format("%d", kStrand));
+				f.println(String.format("%d", kStrand));
 				break;
 			case 1:
-				F.println(String.format("%.6g", DiaStrand));
+				f.println(String.format("%.6g", diaStrand));
 				break;
 			case 2:
-				F.println(String.format("%.6g", GmrStrand));
+				f.println(String.format("%.6g", gmrStrand));
 				break;
 			case 3:
-				F.println(String.format("%.6g", RStrand));
+				f.println(String.format("%.6g", rStrand));
 				break;
 			}
 		}
 	}
 
 	@Override
-	public void initPropertyValues(int ArrayOffset) {
+	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "2");
 		setPropertyValue(1, "-1");
 		setPropertyValue(2, "-1");
 		setPropertyValue(3, "-1");
-		super.initPropertyValues(ArrayOffset + CNData.NumPropsThisClass);
+		super.initPropertyValues(arrayOffset + CNData.NumPropsThisClass);
 	}
 
 	public int getkStrand() {
@@ -63,33 +63,33 @@ public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 	}
 
 	public double getDiaStrand() {
-		return DiaStrand;
+		return diaStrand;
 	}
 
 	public double getGmrStrand() {
-		return GmrStrand;
+		return gmrStrand;
 	}
 
 	public double getRStrand() {
-		return RStrand;
+		return rStrand;
 	}
 
 	// FIXME: Private members in OpenDSS
 
-	public void setkStrand(int kStrand) {
-		this.kStrand = kStrand;
+	public void setkStrand(int kstrand) {
+		this.kStrand = kstrand;
 	}
 
-	public void setDiaStrand(double diaStrand) {
-		DiaStrand = diaStrand;
+	public void setDiaStrand(double diastrand) {
+		diaStrand = diastrand;
 	}
 
-	public void setGmrStrand(double gmrStrand) {
-		GmrStrand = gmrStrand;
+	public void setGmrStrand(double gmrstrand) {
+		gmrStrand = gmrstrand;
 	}
 
-	public void setRStrand(double rStrand) {
-		RStrand = rStrand;
+	public void setRStrand(double rstrand) {
+		rStrand = rstrand;
 	}
 
 }

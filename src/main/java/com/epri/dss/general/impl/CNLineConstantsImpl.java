@@ -11,17 +11,17 @@ import com.epri.dss.shared.impl.MathUtil;
 public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineConstants {
 
 	private int[] kStrand;
-	private double[] DiaStrand;
-	private double[] GmrStrand;
-	private double[] RStrand;
+	private double[] diaStrand;
+	private double[] gmrStrand;
+	private double[] rStrand;
 
-	public CNLineConstantsImpl(int NumConductors) {
-		super(NumConductors);
+	public CNLineConstantsImpl(int numConductors) {
+		super(numConductors);
 
 		this.kStrand = new int[getNumConds()];
-		this.DiaStrand = new double[getNumConds()];
-		this.GmrStrand = new double[getNumConds()];
-		this.RStrand = new double[getNumConds()];
+		this.diaStrand = new double[getNumConds()];
+		this.gmrStrand = new double[getNumConds()];
+		this.rStrand = new double[getNumConds()];
 	}
 
 	/**
@@ -29,74 +29,74 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 	 */
 	@Override
 	public void calc(double f) {
-		Complex Zi, Zspacing;
-		boolean PowerFreq;
+		Complex Zi, ZSpacing;
+		boolean powerFreq;
 		Complex LFactor;
 		int i, j;
-		double Dij, Yfactor;
-		int ReducedSize;
-		int N, idxi, idxj;
-		CMatrix Zmat, Ztemp;
-		double ResCN, RadCN;
-		double GmrCN;
-		double Denom, RadIn, RadOut;
+		double Dij, YFactor;
+		int reducedSize;
+		int n, idxi, idxj;
+		CMatrix ZMat, ZTemp;
+		double resCN, radCN;
+		double gmrCN;
+		double denom, radIn, radOut;
 
 		setFrequency(f);  // this has side effects
 
-		if (Zreduced != null) {
-			ReducedSize = Zreduced.getNOrder();
-			Zreduced = null;
+		if (ZReduced != null) {
+			reducedSize = ZReduced.getNOrder();
+			ZReduced = null;
 		} else {
-			ReducedSize = 0;
+			reducedSize = 0;
 		}
-		if (YCreduced != null) YCreduced = null;
-		Zreduced = null;
-		YCreduced = null;
+		if (YcReduced != null) YcReduced = null;
+		ZReduced = null;
+		YcReduced = null;
 
-		Zmatrix.clear();
-		YCmatrix.clear();
+		ZMatrix.clear();
+		YcMatrix.clear();
 
 		// add concentric neutrals to the end of conductor list; they are always reduced
-		N = getNumConds() + getNPhases();
-		Zmat = new CMatrixImpl(N);
+		n = getNumConds() + getNPhases();
+		ZMat = new CMatrixImpl(n);
 
 		/* For less than 1 kHz use GMR to better match published data */
-		LFactor = new Complex(0.0, w * mu0 / LineConstants.TwoPI);
+		LFactor = new Complex(0.0, w * MU0 / LineConstants.TWO_PI);
 		if ((f < 1000.0) && (f > 40.0)) {
-			PowerFreq = true;
+			powerFreq = true;
 		} else {
-			PowerFreq= false;
+			powerFreq= false;
 		}
 
 		// self impedances - CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			Zi = getZint(i);
-			if (PowerFreq) {  // for less than 1 kHz, use published GMR
+			if (powerFreq) {  // for less than 1 kHz, use published GMR
 				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = LFactor.multiply( Math.log(1.0 / GMR[i]) );  // use GMR
+				ZSpacing = LFactor.multiply( Math.log(1.0 / GMR[i]) );  // use GMR
 			} else {
-				Zspacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
+				ZSpacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
 			}
-			Zmat.setElement(i, i, Zi.add( Zspacing.add(getZe(i, i)) ));
+			ZMat.setElement(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// CN self impedances
 		for (i = 0; i < getNPhases(); i++) {
-			ResCN = RStrand[i] / kStrand[i];
-			RadCN = 0.5 * (DiaCable[i] - DiaStrand[i]);
-			GmrCN = Math.pow(GmrStrand[i] * kStrand[i] * Math.pow(RadCN, kStrand[i] - 1.0),
+			resCN = rStrand[i] / kStrand[i];
+			radCN = 0.5 * (diaCable[i] - diaStrand[i]);
+			gmrCN = Math.pow(gmrStrand[i] * kStrand[i] * Math.pow(radCN, kStrand[i] - 1.0),
 					1.0 / kStrand[i]);
-			Zspacing = LFactor.multiply(Math.log(1.0 / GmrCN));
-			Zi = new Complex(ResCN, 0.0);
+			ZSpacing = LFactor.multiply(Math.log(1.0 / gmrCN));
+			Zi = new Complex(resCN, 0.0);
 			idxi = i + getNumConds();
-			Zmat.setElement(idxi, idxi, Zi.add( Zspacing.add(getZe(i, i)) ));
+			ZMat.setElement(idxi, idxi, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		// mutual impedances - between CN cores and bare neutrals
 		for (i = 0; i < getNumConds(); i++) {
 			for (j = 0; j < i - 1; j++) {
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setElemSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setElemSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
 
@@ -106,82 +106,82 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 			for (j = 0; j < i - 1; j++) {  // CN to other CN
 				idxj = j + getNumConds();
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-				Zmat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 			for (j = 0; j < getNumConds(); j++) {  // CN to cores and bare neutrals
 				idxj = j;
-				RadCN = 0.5 * (DiaCable[i] - DiaStrand[i]);
+				radCN = 0.5 * (diaCable[i] - diaStrand[i]);
 				if (i == j) {  // CN to its own phase core
-					Dij = RadCN;
+					Dij = radCN;
 				} else {  // CN to another phase or bare neutral
 					Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
-					Dij = Math.pow(Math.pow(Dij, kStrand[i]) - Math.pow(RadCN, kStrand[i]),
+					Dij = Math.pow(Math.pow(Dij, kStrand[i]) - Math.pow(radCN, kStrand[i]),
 							1.0 / kStrand[i]);
 				}
-				Zmat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
+				ZMat.setElemSym(idxi, idxj, LFactor.multiply( Math.log(1.0 / Dij)).add(getZe(i, j)));
 			}
 		}
 
 		// reduce out the CN
-		while (Zmat.getNOrder() > getNumConds()) {
-			Ztemp = Zmat.kron(Zmat.getNOrder());
-			Zmat = null;
-			Zmat = Ztemp;
+		while (ZMat.getNOrder() > getNumConds()) {
+			ZTemp = ZMat.kron(ZMat.getNOrder());
+			ZMat = null;
+			ZMat = ZTemp;
 		}
-		Zmatrix.copyFrom(Zmat);
-		Zmat = null;
+		ZMatrix.copyFrom(ZMat);
+		ZMat = null;
 
 		// for shielded cables, build the capacitance matrix directly
 		// assumes the insulation may lie between semicon layers
 		for (i = 0; i < getNPhases(); i++) {
-			Yfactor = LineConstants.TwoPI * LineConstants.e0 * EpsR[i] * w;  // includes frequency so C==>Y
-		    RadOut = 0.5 * DiaIns[i];
-		    RadIn = RadOut - InsLayer[i];
-		    Denom = Math.log(RadOut / RadIn);
-			YCmatrix.setElement(i, i, new Complex(0.0, Yfactor / Denom));
+			YFactor = LineConstants.TWO_PI * LineConstants.E0 * epsR[i] * w;  // includes frequency so C==>Y
+		    radOut = 0.5 * diaIns[i];
+		    radIn = radOut - insLayer[i];
+		    denom = Math.log(radOut / radIn);
+			YcMatrix.setElement(i, i, new Complex(0.0, YFactor / denom));
 		}
 
-		if (ReducedSize > 0)
-			Kron(ReducedSize);  // was reduced so reduce again to same size
+		if (reducedSize > 0)
+			Kron(reducedSize);  // was reduced so reduce again to same size
 
 		/* else the Zmatrix is OK as last computed */
-		RhoChanged = false;
+		rhoChanged = false;
 	}
 
-	public int getkStrand(int i) {
+	public int getKStrand(int i) {
 		return kStrand[i];
 	}
 
 	public double getDiaStrand(int i) {
-		return DiaStrand[i];
+		return diaStrand[i];
 	}
 
 	public double getGmrStrand(int i) {
-		return GmrStrand[i];
+		return gmrStrand[i];
 	}
 
 	public double getRStrand(int i) {
-		return RStrand[i];
+		return rStrand[i];
 	}
 
-	public void setkStrand(int i, int kStrand) {
+	public void setKStrand(int i, int kstrand) {
 		if ((i >= 0) && (i <= getNumConds()))
-			this.kStrand[i] = kStrand;
+			this.kStrand[i] = kstrand;
 	}
 
-	public void setDiaStrand(int i, int units, double diaStrand) {
+	public void setDiaStrand(int i, int units, double diastrand) {
 		if ((i >= 0) && (i <= getNumConds()))
-			DiaStrand[i] = diaStrand * LineUnits.toMeters(units);
+			diaStrand[i] = diastrand * LineUnits.toMeters(units);
 	}
 
-	public void setGmrStrand(int i, int units, double gmrStrand) {
+	public void setGmrStrand(int i, int units, double gmrstrand) {
 		if ((i >= 0) && (i <= getNumConds()))
-			GmrStrand[i] = gmrStrand * LineUnits.toMeters(units);
+			gmrStrand[i] = gmrstrand * LineUnits.toMeters(units);
 	}
 
-	public void setRStrand(int i, int units, double rStrand) {
+	public void setRStrand(int i, int units, double rstrand) {
 		if ((i >= 0) && (i <= getNumConds()))
-			RStrand[i] = rStrand * LineUnits.toPerMeter(units);
+			rStrand[i] = rstrand * LineUnits.toPerMeter(units);
 	}
 
 }

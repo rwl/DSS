@@ -15,8 +15,8 @@ import com.epri.dss.shared.impl.MathUtil;
  */
 public class LineConstantsImpl implements LineConstants {
 
-	protected int NumConds;
-	protected int NumPhases;
+	protected int numConds;
+	protected int numPhases;
 	protected double[] X;
 	protected double[] Y;
 	protected double[] Rdc;  // ohms/m
@@ -24,46 +24,46 @@ public class LineConstantsImpl implements LineConstants {
 	protected double[] GMR;  // m
 	protected double[] radius;
 
-	protected CMatrix Zmatrix;   // in ohms/m
-	protected CMatrix YCmatrix;  // siemens/m   --- jwC
+	protected CMatrix ZMatrix;   // in ohms/m
+	protected CMatrix YcMatrix;  // siemens/m   --- jwC
 
-	protected CMatrix Zreduced;   // these two do not exist until Kron reduction
-	protected CMatrix YCreduced;  // is executed
+	protected CMatrix ZReduced;   // these two do not exist until Kron reduction
+	protected CMatrix YcReduced;  // is executed
 
-	protected double Frequency;  // frequency for which impedances are computed
+	protected double frequency;  // frequency for which impedances are computed
 	protected double w;  // 2piF
 	protected double rhoEarth;  // ohm-m
 	protected Complex me;  // factor for earth impedance
-	protected boolean RhoChanged;
+	protected boolean rhoChanged;
 
-	public LineConstantsImpl(int NumConductors) {
+	public LineConstantsImpl(int numConductors) {
 
-		this.NumConds = NumConductors;
-		setNPhases(this.NumConds);
+		this.numConds = numConductors;
+		setNPhases(this.numConds);
 
-		X = new double[this.NumConds];
-		Y = new double[this.NumConds];
-		GMR = new double[this.NumConds];
-		radius = new double[this.NumConds];
-		Rdc = new double[this.NumConds];
-		Rac = new double[this.NumConds];
+		X = new double[this.numConds];
+		Y = new double[this.numConds];
+		GMR = new double[this.numConds];
+		radius = new double[this.numConds];
+		Rdc = new double[this.numConds];
+		Rac = new double[this.numConds];
 
 		/* Initialize to not set */
-		for (int i = 0; i < this.NumConds; i++) {
+		for (int i = 0; i < this.numConds; i++) {
 			this.GMR[i] = -1.0;
 			this.radius[i] = -1.0;
 			this.Rdc[i] = -1.0;
 		}
 
-		this.Zmatrix = new CMatrixImpl(this.NumConds);
-		this.YCmatrix = new CMatrixImpl(this.NumConds);
+		this.ZMatrix = new CMatrixImpl(this.numConds);
+		this.YcMatrix = new CMatrixImpl(this.numConds);
 
 		setFrequency(-1.0);  // not computed
 		setRhoEarth(100.0);  // default value
-		this.RhoChanged= true;
+		this.rhoChanged= true;
 
-		this.Zreduced = null;
-		this.YCreduced = null;
+		this.ZReduced = null;
+		this.YcReduced = null;
 	}
 
 	/**
@@ -72,119 +72,119 @@ public class LineConstantsImpl implements LineConstants {
 	 * Compute base Z and Yc matrices in ohms/m for this frequency and earth impedance.
 	 */
 	public void calc(double f) {
-		Complex Zi, Zspacing;
-		boolean PowerFreq;
-		Complex Lfactor;
+		Complex Zi, ZSpacing;
+		boolean powerFreq;
+		Complex LFactor;
 		int i, j;
-		double Dij, Dijp, Pfactor;
-		int ReducedSize;
+		double Dij, Dijp, PFactor;
+		int reducedSize;
 
-		// RhoEarth = rho;
+		// rhoEarth = rho;
 		setFrequency(f);  // this has side effects
 
-		if (Zreduced != null) {
-			ReducedSize = Zreduced.getNOrder();
-			Zreduced = null;
+		if (ZReduced != null) {
+			reducedSize = ZReduced.getNOrder();
+			ZReduced = null;
 		} else {
-			ReducedSize = 0;
+			reducedSize = 0;
 		}
 
-		if (YCreduced != null)
-			YCreduced = null;
-		Zreduced = null;
-		YCreduced = null;
+		if (YcReduced != null)
+			YcReduced = null;
+		ZReduced = null;
+		YcReduced = null;
 
-		Zmatrix.clear();
-		YCmatrix.clear();
+		ZMatrix.clear();
+		YcMatrix.clear();
 
 		/* For less than 1 kHz use GMR to better match published data */
 
-		Lfactor = new Complex(0.0, w * mu0/ TwoPI);
+		LFactor = new Complex(0.0, w * MU0/ TWO_PI);
 		if ((f < 1000.0) && (f > 40.0)) {
-			PowerFreq = true;
+			powerFreq = true;
 		} else {
-			PowerFreq = false;
+			powerFreq = false;
 		}
 
 		/* Self impedances */
 
-		for (i = 0; i < NumConds; i++) {
+		for (i = 0; i < numConds; i++) {
 			Zi = getZint(i);
-			if (PowerFreq) {  // for less than 1 kHz, use published GMR
+			if (powerFreq) {  // for less than 1 kHz, use published GMR
 				Zi = new Complex(Zi.getReal(), 0.0);
-				Zspacing = Lfactor.multiply( Math.log(1.0 / GMR[i]) );  // use GMR
+				ZSpacing = LFactor.multiply( Math.log(1.0 / GMR[i]) );  // use GMR
 			} else {
-				Zspacing = Lfactor.multiply( Math.log(1.0 / radius[i]) );
+				ZSpacing = LFactor.multiply( Math.log(1.0 / radius[i]) );
 			}
 
-			Zmatrix.setElement(i, i, Zi.add( Zspacing.add(getZe(i, i)) ));
+			ZMatrix.setElement(i, i, Zi.add( ZSpacing.add(getZe(i, i)) ));
 		}
 
 		/* Mutual impedances */
 
-		for (i = 0; i < NumConds; i++) {
+		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
 				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
-				Zmatrix.setElemSym(i, j, Lfactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
+				ZMatrix.setElemSym(i, j, LFactor.multiply( Math.log(1.0 / Dij) ).add(getZe(i, j)));
 			}
 		}
 
 		/* Capacitance matrix */
 
-		Pfactor = -1.0 / TwoPI / e0 / w;  // include frequency
+		PFactor = -1.0 / TWO_PI / E0 / w;  // include frequency
 
 		/* Construct P matrix and then invert */
 
-		for (i = 0; i < NumConds; i++)
-			YCmatrix.setElement(i, i, new Complex(0.0, Pfactor * Math.log(2.0 * Y[i] / radius[i])));
+		for (i = 0; i < numConds; i++)
+			YcMatrix.setElement(i, i, new Complex(0.0, PFactor * Math.log(2.0 * Y[i] / radius[i])));
 
-		for (i = 0; i < NumConds; i++) {
+		for (i = 0; i < numConds; i++) {
 			for (j = 0; j < i - 1; j++) {  // TODO Check zero based indexing
 				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
 				Dijp = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] + Y[j], 2));  // distance to image j
-				YCmatrix.setElemSym(i, j, new Complex(0.0, Pfactor * Math.log(Dijp / Dij)));
+				YcMatrix.setElemSym(i, j, new Complex(0.0, PFactor * Math.log(Dijp / Dij)));
 			}
 		}
 
-		YCmatrix.invert();  // now should be nodal C matrix
+		YcMatrix.invert();  // now should be nodal C matrix
 
-		if (ReducedSize > 0)
-			Kron(ReducedSize);  // was reduced so reduce again to same size
+		if (reducedSize > 0)
+			Kron(reducedSize);  // was reduced so reduce again to same size
 
 		/* else the Zmatrix is OK as last computed */
 
-		RhoChanged = false;
+		rhoChanged = false;
 	}
 
-	public boolean conductorsInSameSpace(StringBuffer ErrorMessage) {
+	public boolean conductorsInSameSpace(StringBuffer errorMessage) {
 		int i, j;
 		double Dij;
 
 		/* Check all conductors to make sure none occupy the same space or are defined at 0,0 */
-		boolean Result = false;
+		boolean result = false;
 
 		/* Check for 0 Y coordinate */
-		for (i = 0; i < NumConds; i++) {
+		for (i = 0; i < numConds; i++) {
 			if (Y[i] <= 0.0) {
-				Result = true;
-				ErrorMessage.append(String.format("Conductor %d height must be  > 0. ", i));
-				return Result;
+				result = true;
+				errorMessage.append(String.format("Conductor %d height must be  > 0. ", i));
+				return result;
 			}
 		}
 
 		/* Check for overlapping conductors */
-		for (i = 0; i < NumConds; i++) {
-			for (j = i + 1; j < NumConds; j++) {  // TODO Check zero based indexing
+		for (i = 0; i < numConds; i++) {
+			for (j = i + 1; j < numConds; j++) {  // TODO Check zero based indexing
 				Dij = Math.sqrt(Math.pow(X[i] - X[j], 2) + Math.pow(Y[i] - Y[j], 2));
 				if (Dij < (radius[i] + radius[j])) {
-					Result = true;
-					ErrorMessage.append(String.format("Conductors %d and %d occupy the same space.", i, j));
-					return Result;
+					result = true;
+					errorMessage.append(String.format("Conductors %d and %d occupy the same space.", i, j));
+					return result;
 				}
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
 	public double getGMR(int i, int units) {
@@ -218,26 +218,26 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new YCmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public CMatrix getYCmatrix(double f, double Lngth, int Units) {
-		int NewSize;
-		double UnitLengthConversion;
-		CMatrix YC;
-		Complex[] YCValues;
+	public CMatrix getYcMatrix(double f, double length, int units) {
+		int newSize;
+		double unitLengthConversion;
+		CMatrix Yc;
+		Complex[] YcValues;
 
-		if (YCreduced != null) {
-			YC = YCreduced;
+		if (YcReduced != null) {
+			Yc = YcReduced;
 		} else {
-			YC = YCmatrix;
+			Yc = YcMatrix;
 		}
 
-		NewSize = YC.getNOrder();
-		CMatrix Result = new CMatrixImpl(NewSize);
+		newSize = Yc.getNOrder();
+		CMatrix Result = new CMatrixImpl(newSize);
 
-		Result.copyFrom(YC);
-		YCValues = Result.asArray(NewSize);
-		UnitLengthConversion = LineUnits.fromPerMeter(Units) * Lngth;
-		for (int i = 0; i < NewSize * NewSize; i++)
-			YCValues[i] = YCValues[i].multiply(UnitLengthConversion);  // a=a*b
+		Result.copyFrom(Yc);
+		YcValues = Result.asArray(newSize);
+		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
+		for (int i = 0; i < newSize * newSize; i++)
+			YcValues[i] = YcValues[i].multiply(unitLengthConversion);  // a=a*b
 
 		return Result;
 	}
@@ -246,7 +246,7 @@ public class LineConstantsImpl implements LineConstants {
 	 * Earth return impedance at present frequency for ij element.
 	 */
 	public Complex getZe(int i, int j) {
-		Complex LnArg, hterm, xterm, Result = null;
+		Complex lnArg, hterm, xterm, result = null;
 		double mij , thetaij, Dij, Yi, Yj;
 		double term1, term2, term3, term4, term5;
 
@@ -255,7 +255,7 @@ public class LineConstantsImpl implements LineConstants {
 
 		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
 		case DSSGlobals.SIMPLECARSON:
-			Result = new Complex(w * mu0 / 8.0, (w * mu0 / TwoPI) * Math.log(658.5 * Math.sqrt(rhoEarth / Frequency)));
+			result = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * Math.log(658.5 * Math.sqrt(rhoEarth / frequency)));
 			break;
 		case DSSGlobals.FULLCARSON:
 			/* notation from Tleis book Power System Modelling and Fault Analysis */
@@ -266,65 +266,65 @@ public class LineConstantsImpl implements LineConstants {
 				Dij = Math.sqrt(Math.pow((Yi + Yj) + Math.pow(X[i] - X[j], 2), 2));
 				thetaij = Math.acos( (Yi + Yj) / Dij );
 			}
-			mij = 2.8099e-3 * Dij * Math.sqrt(Frequency / rhoEarth);
+			mij = 2.8099e-3 * Dij * Math.sqrt(frequency / rhoEarth);
 
-			double re = Math.PI / 8.0 - b1 * mij * Math.cos(thetaij) + b2 * Math.pow(mij, 2) * (Math.log(Math.exp(c2) / mij) * Math.cos(2.0 * thetaij) + thetaij * Math.sin(2.0 * thetaij))
-					+ b3 * mij * mij * mij * Math.cos(3.0 * thetaij) - d4 * mij * mij * mij * mij * Math.cos(4.0 * thetaij);
+			double re = Math.PI / 8.0 - B1 * mij * Math.cos(thetaij) + B2 * Math.pow(mij, 2) * (Math.log(Math.exp(C2) / mij) * Math.cos(2.0 * thetaij) + thetaij * Math.sin(2.0 * thetaij))
+					+ B3 * mij * mij * mij * Math.cos(3.0 * thetaij) - D4 * mij * mij * mij * mij * Math.cos(4.0 * thetaij);
 
 			term1 = 0.5 * Math.log(1.85138 / mij);
-			term2 = b1 * mij * Math.cos(thetaij);
-			term3 = -d2 * Math.pow(mij, 2) * Math.cos(2.0 * thetaij);
-			term4 = b3 * mij * mij * mij * Math.cos(3.0 * thetaij);
-			term5 = -b4 * mij * mij * mij * mij * (Math.log(Math.exp(c4) / mij) * Math.cos(4.0 * thetaij) + thetaij * Math.sin(4.0 * thetaij));
+			term2 = B1 * mij * Math.cos(thetaij);
+			term3 = -D2 * Math.pow(mij, 2) * Math.cos(2.0 * thetaij);
+			term4 = B3 * mij * mij * mij * Math.cos(3.0 * thetaij);
+			term5 = -B4 * mij * mij * mij * mij * (Math.log(Math.exp(C4) / mij) * Math.cos(4.0 * thetaij) + thetaij * Math.sin(4.0 * thetaij));
 			double im = term1 + term2 + term3 + term4 + term5;
-			Result = new Complex(re, im);
-			Result = new Complex(Result.getReal(), Result.getImaginary() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
+			result = new Complex(re, im);
+			result = new Complex(result.getReal(), result.getImaginary() + 0.5 * Math.log(Dij));  // correction term to work with DSS structure
 
-			Result = Result.multiply(w * mu0 / Math.PI);
+			result = result.multiply(w * MU0 / Math.PI);
 			break;
 
 		case DSSGlobals.DERI:
 			if (i != j) {
 				hterm  = new Complex(Yi + Yj, 0.0).add( me.invert().multiply(2.0) );
 				xterm  = new Complex(X[i] - X[j], 0.0);
-				LnArg  = hterm.multiply(hterm).add(xterm.multiply(xterm)).sqrt();
-				Result = new Complex(0.0, w * mu0 / TwoPI).multiply(LnArg.log());
+				lnArg  = hterm.multiply(hterm).add(xterm.multiply(xterm)).sqrt();
+				result = new Complex(0.0, w * MU0 / TWO_PI).multiply(lnArg.log());
 			} else {
 				hterm  = new Complex(Yi, 0.0).add(me.invert());
-				Result = new Complex(0.0, w * mu0 / TwoPI).multiply( hterm.multiply(2.0).log() );
+				result = new Complex(0.0, w * MU0 / TWO_PI).multiply( hterm.multiply(2.0).log() );
 			}
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Internal impedance of i-th conductor for present frequency.
 	 */
 	public Complex getZint(int i) {
-		Complex Alpha, I0I1, Result = null;
+		Complex alpha, I0I1, result = null;
 
 		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
 		case DSSGlobals.SIMPLECARSON:
-			Result = new Complex(Rac[i], w * mu0/ (8 * Math.PI));
+			result = new Complex(Rac[i], w * MU0/ (8 * Math.PI));
 			break;
 		case DSSGlobals.FULLCARSON:  // no skin effect
-			Result = new Complex(Rac[i], w * mu0 / (8 * Math.PI));
+			result = new Complex(Rac[i], w * MU0 / (8 * Math.PI));
 			break;
 		case DSSGlobals.DERI:  // with skin effect model
 			/* Assume round conductor */
-			Alpha = C1_j1.multiply( Math.sqrt(Frequency * mu0 / Rdc[i]) );
-			if (Alpha.abs() > 35.0) {
+			alpha = C1_j1.multiply( Math.sqrt(frequency * MU0 / Rdc[i]) );
+			if (alpha.abs() > 35.0) {
 				I0I1 = Complex.ONE;
 			} else {
-				I0I1 = MathUtil.Bessel_I0(Alpha).divide( MathUtil.Bessel_I0(Alpha) );
+				I0I1 = MathUtil.Bessel_I0(alpha).divide( MathUtil.Bessel_I0(alpha) );
 			}
-			Result = C1_j1.multiply(I0I1).multiply( Math.sqrt(Rdc[i] * Frequency * mu0) / 2.0 );
+			result = C1_j1.multiply(I0I1).multiply( Math.sqrt(Rdc[i] * frequency * MU0) / 2.0 );
 			break;
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -334,30 +334,30 @@ public class LineConstantsImpl implements LineConstants {
 	 * Makes a new Zmatrix and correct for lengths and units as it copies.
 	 * Uses the reduced Zmatrix by default if it exists.
 	 */
-	public CMatrix getZmatrix(double f, double Lngth, int Units) {
-		int NewSize, i;
-		double UnitLengthConversion;
+	public CMatrix getZMatrix(double f, double length, int units) {
+		int newSize, i;
+		double unitLengthConversion;
 		CMatrix Z;
 		Complex[] ZValues;
 
-		if ((f != Frequency) || RhoChanged)
+		if ((f != frequency) || rhoChanged)
 			calc(f);  // only recalcs if f changed or rho earth changed
 
-		if (Zreduced != null) {
-			Z = Zreduced;
+		if (ZReduced != null) {
+			Z = ZReduced;
 		} else {
-			Z = Zmatrix;
+			Z = ZMatrix;
 		}
 
-		NewSize = Z.getNOrder();
-		CMatrix Result = new CMatrixImpl(NewSize);
+		newSize = Z.getNOrder();
+		CMatrix Result = new CMatrixImpl(newSize);
 
 		Result.copyFrom(Z);  // gets ohms/meter
-		ZValues = Result.asArray(NewSize);  // ptr to the values in the new copy
+		ZValues = Result.asArray(newSize);  // ptr to the values in the new copy
 		/* Convert the values by units and length */
-		UnitLengthConversion = LineUnits.fromPerMeter(Units) * Lngth;
-		for (i = 0; i < NewSize * NewSize; i++)
-			ZValues[i] = ZValues[i].multiply(UnitLengthConversion);  // a=a*b
+		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
+		for (i = 0; i < newSize * newSize; i++)
+			ZValues[i] = ZValues[i].multiply(unitLengthConversion);  // a=a*b
 
 		return null;
 	}
@@ -367,32 +367,32 @@ public class LineConstantsImpl implements LineConstants {
 	 */
 	public void Kron(int nOrder) {
 
-		CMatrix Ztemp  = Zmatrix;
-		CMatrix YCTemp = YCmatrix;
-		boolean FirstTime = true;
+		CMatrix ZTemp  = ZMatrix;
+		CMatrix YcTemp = YcMatrix;
+		boolean firstTime = true;
 
-		if ((Frequency >= 0.0) && (nOrder > 0) && (nOrder < NumConds)) {
+		if ((frequency >= 0.0) && (nOrder > 0) && (nOrder < numConds)) {
 
-			if (Zreduced != null)
-				Zreduced = null;
-			if (YCreduced != null)
-				YCreduced = null;
+			if (ZReduced != null)
+				ZReduced = null;
+			if (YcReduced != null)
+				YcReduced = null;
 
 			/* Reduce computed matrix one row/col at a time until it is norder */
 
-			while (Ztemp.getNOrder() > nOrder) {
+			while (ZTemp.getNOrder() > nOrder) {
 
-				Zreduced = Ztemp.kron(Ztemp.getNOrder());  // eliminate last row
-				YCreduced = YCTemp.kron(Ztemp.getNOrder());
+				ZReduced = ZTemp.kron(ZTemp.getNOrder());  // eliminate last row
+				YcReduced = YcTemp.kron(ZTemp.getNOrder());
 
-				if (!FirstTime) {
-					Ztemp = null;  // Ztemp points to intermediate matrix
-					YCTemp = null;
+				if (!firstTime) {
+					ZTemp = null;  // Ztemp points to intermediate matrix
+					YcTemp = null;
 				}
-				Ztemp  = Zreduced;
-				YCTemp = YCreduced;
+				ZTemp  = ZReduced;
+				YcTemp = YcReduced;
 
-				FirstTime = false;
+				firstTime = false;
 			}
 
 			/* Left with reduced matrix */
@@ -403,61 +403,61 @@ public class LineConstantsImpl implements LineConstants {
 	 * Kron reduce to num phases only.
 	 */
 	public void reduce() {
-		Kron(NumPhases);
+		Kron(numPhases);
 	}
 
-	protected void setFrequency(double Value) {
-		setFrequency(Value);
-		w = TwoPI * Frequency;
-		me = new Complex(0.0, w * mu0 / rhoEarth).sqrt();
+	protected void setFrequency(double value) {
+		setFrequency(value);
+		w = TWO_PI * frequency;
+		me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}
 
-	public void setRhoEarth(double Value) {
-		if (Value != rhoEarth)
-			RhoChanged = true;
-		rhoEarth = Value;
-		if (Frequency >= 0.0)
-			me = new Complex(0.0, w * mu0 / rhoEarth).sqrt();
+	public void setRhoEarth(double value) {
+		if (value != rhoEarth)
+			rhoChanged = true;
+		rhoEarth = value;
+		if (frequency >= 0.0)
+			me = new Complex(0.0, w * MU0 / rhoEarth).sqrt();
 	}
 
-	public void setGMR(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds)) {  // TODO Check zero based indexing
-			GMR[i] = Value * LineUnits.toMeters(units);
+	public void setGMR(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds)) {  // TODO Check zero based indexing
+			GMR[i] = value * LineUnits.toMeters(units);
 			if (radius[i] < 0.0)
 				radius[i] = GMR[i] / 0.7788;  // equivalent round conductor
 		}
 	}
 
-	public void setNPhases(int Value) {
-		NumPhases = Value;
+	public void setNPhases(int value) {
+		numPhases = value;
 	}
 
-	public void setRac(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds))  // TODO Check zero based indexing
-			Rac[i] = Value * LineUnits.toPerMeter(units);
+	public void setRac(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds))  // TODO Check zero based indexing
+			Rac[i] = value * LineUnits.toPerMeter(units);
 	}
 
-	public void setRadius(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds)) {  // TODO Check zero based indexing
-			radius[i] = Value * LineUnits.toMeters(units);
+	public void setRadius(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds)) {  // TODO Check zero based indexing
+			radius[i] = value * LineUnits.toMeters(units);
 			if (GMR[i] < 0.0)
 				GMR[i] = radius[i] * 0.7788;  // default to round conductor
 		}
 	}
 
-	public void setRdc(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds))
-			Rdc[i] = Value * LineUnits.toPerMeter(units);
+	public void setRdc(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds))
+			Rdc[i] = value * LineUnits.toPerMeter(units);
 	}
 
-	public void setX(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds))
-			X[i] = Value * LineUnits.toMeters(units);
+	public void setX(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds))
+			X[i] = value * LineUnits.toMeters(units);
 	}
 
-	public void setY(int i, int units, double Value) {
-		if ((i > 0) && (i <= NumConds))
-			Y[i] = Value * LineUnits.toMeters(units);
+	public void setY(int i, int units, double value) {
+		if ((i > 0) && (i <= numConds))
+			Y[i] = value * LineUnits.toMeters(units);
 	}
 
 	public double getRhoEarth() {
@@ -465,15 +465,15 @@ public class LineConstantsImpl implements LineConstants {
 	}
 
 	public int getNumConds() {
-		return NumConds;
+		return numConds;
 	}
 
 	private double getFrequency() {
-		return Frequency;
+		return frequency;
 	}
 
 	public int getNPhases() {
-		return NumPhases;
+		return numPhases;
 	}
 
 }

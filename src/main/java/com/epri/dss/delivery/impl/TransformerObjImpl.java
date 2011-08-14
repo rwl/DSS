@@ -65,7 +65,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		super(parClass);
 
 		setName(transfName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
+		this.objType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = this.nPhases + 1;
@@ -288,10 +288,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int iProp = getNextPropertySet(0);  // works on ActiveDSSObject   TODO Check zero based indexing
 		while (iProp > 0) {
 			/* Trap wdg= and write out array properties instead */
-			switch (ParentClass.getRevPropertyIdxMap()[iProp]) {
+			switch (parentClass.getRevPropertyIdxMap()[iProp]) {
 			case 2:  // if wdg= was ever used write out arrays ...   TODO Check zero based indexing
 				for (i = 11; i < 16; i++)
-					f.printf(" %s=%s", ParentClass.getPropertyName()[i], getPropertyValue(i));
+					f.printf(" %s=%s", parentClass.getPropertyName()[i], getPropertyValue(i));
 				for (i = 0; i < numWindings; i++)
 					f.printf(" wdg=%d %sR=%.7g", i, "%", winding[i].getRpu() * 100.0);
 				break;
@@ -314,7 +314,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 				/* do nothing; */
 				break;
 			default:
-				f.printf(" %s=%s", ParentClass.getPropertyName()[ParentClass.getRevPropertyIdxMap()[iProp]],
+				f.printf(" %s=%s", parentClass.getPropertyName()[parentClass.getRevPropertyIdxMap()[iProp]],
 						Utilities.checkForBlanks(getPropertyValue(iProp)));
 				break;
 			}
@@ -460,10 +460,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		f.println("~ " + "%noloadloss=" + pctNoLoadLoss);
 
 		for (i = 27; i < Transformer.NumPropsThisClass; i++)
-			f.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		for (i = Transformer.NumPropsThisClass; i < ParentClass.getNumProperties(); i++)
-			f.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+		for (i = Transformer.NumPropsThisClass; i < parentClass.getNumProperties(); i++)
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		if (complete) {
 			f.println();
@@ -854,55 +854,55 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "3";  // "phases";
-		PropertyValue[1] = "2";  // "windings";
+		propertyValue[0] = "3";  // "phases";
+		propertyValue[1] = "2";  // "windings";
 		// winding definition
-		PropertyValue[2] = "1";  // "wdg";
-		PropertyValue[3] = getBus(1);  // "bus";  // TODO Check zero based indexing
-		PropertyValue[4] = "wye";  // "conn";
-		PropertyValue[5] = "12.47";  // if 2 or 3-phase:  phase-phase else actual winding
-		PropertyValue[6] = "1000";
-		PropertyValue[7] = "1.0";
-		PropertyValue[8] = "0.2";
-		PropertyValue[9] = "-1";
-		PropertyValue[10] = "0";
+		propertyValue[2] = "1";  // "wdg";
+		propertyValue[3] = getBus(1);  // "bus";  // TODO Check zero based indexing
+		propertyValue[4] = "wye";  // "conn";
+		propertyValue[5] = "12.47";  // if 2 or 3-phase:  phase-phase else actual winding
+		propertyValue[6] = "1000";
+		propertyValue[7] = "1.0";
+		propertyValue[8] = "0.2";
+		propertyValue[9] = "-1";
+		propertyValue[10] = "0";
 
 		// general data
-		PropertyValue[11] = "";
-		PropertyValue[12] = "";
-		PropertyValue[13] = ""; // if 1-phase: actual winding rating; else phase-phase
-		PropertyValue[14] = ""; // if 1-phase: actual winding rating; else phase-phase
-		PropertyValue[15] = "";
-		PropertyValue[16] = "7";
-		PropertyValue[17] = "35";
-		PropertyValue[18] = "30";
-		PropertyValue[19] = "";  // x12 13 14... 23 24.. 34 ..
-		PropertyValue[20] = "2";
-		PropertyValue[21] = ".8";
-		PropertyValue[22] = ".8";
-		PropertyValue[23] = "65";
-		PropertyValue[24] = "15";
-		PropertyValue[25] = String.format("%.7g", pctLoadLoss);
-		PropertyValue[26] = String.format("%.7g", pctNoLoadLoss);  // defaults to zero
-		PropertyValue[27] = "";
-		PropertyValue[28] = "";
-		PropertyValue[29] = "n";  // =y/n
-		PropertyValue[30] = "1.10";
-		PropertyValue[31] = "0.90";
-		PropertyValue[32] = "32";
-		PropertyValue[33] = "";
-		PropertyValue[34] = "0";
-		PropertyValue[35] = "1";
-		PropertyValue[36] = "";
+		propertyValue[11] = "";
+		propertyValue[12] = "";
+		propertyValue[13] = ""; // if 1-phase: actual winding rating; else phase-phase
+		propertyValue[14] = ""; // if 1-phase: actual winding rating; else phase-phase
+		propertyValue[15] = "";
+		propertyValue[16] = "7";
+		propertyValue[17] = "35";
+		propertyValue[18] = "30";
+		propertyValue[19] = "";  // x12 13 14... 23 24.. 34 ..
+		propertyValue[20] = "2";
+		propertyValue[21] = ".8";
+		propertyValue[22] = ".8";
+		propertyValue[23] = "65";
+		propertyValue[24] = "15";
+		propertyValue[25] = String.format("%.7g", pctLoadLoss);
+		propertyValue[26] = String.format("%.7g", pctNoLoadLoss);  // defaults to zero
+		propertyValue[27] = "";
+		propertyValue[28] = "";
+		propertyValue[29] = "n";  // =y/n
+		propertyValue[30] = "1.10";
+		propertyValue[31] = "0.90";
+		propertyValue[32] = "32";
+		propertyValue[33] = "";
+		propertyValue[34] = "0";
+		propertyValue[35] = "1";
+		propertyValue[36] = "";
 
 		super.initPropertyValues(Transformer.NumPropsThisClass);
 
 		// override some inherited properties
-		PropertyValue[Transformer.NumPropsThisClass + 1] = "400";    // normAmps  // TODO Check zero based indexing
-		PropertyValue[Transformer.NumPropsThisClass + 2] = "600";    // emergAmps
-		PropertyValue[Transformer.NumPropsThisClass + 3] = "0.007";  // faultRate
-		PropertyValue[Transformer.NumPropsThisClass + 4] = "100";    // pctPerm
-		PropertyValue[Transformer.NumPropsThisClass + 5] = "36";     // hrsToRepair
+		propertyValue[Transformer.NumPropsThisClass + 1] = "400";    // normAmps  // TODO Check zero based indexing
+		propertyValue[Transformer.NumPropsThisClass + 2] = "600";    // emergAmps
+		propertyValue[Transformer.NumPropsThisClass + 3] = "0.007";  // faultRate
+		propertyValue[Transformer.NumPropsThisClass + 4] = "100";    // pctPerm
+		propertyValue[Transformer.NumPropsThisClass + 5] = "36";     // hrsToRepair
 
 		clearPropSeqArray();  // so the overrides don't show up on save
 	}
@@ -1270,10 +1270,10 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			for (i = 0; i < (numWindings * (numWindings - 1) / 2); i++)
 				XSC[i] = obj.getXSC()[i];
 			thermalTimeConst = obj.getThermalTimeConst();
-			nThermal        = obj.getN_thermal();
-			mThermal        = obj.getM_thermal();
-			FLRise           = obj.getLrise();
-			HSRise           = obj.getHSrise();
+			nThermal        = obj.getNThermal();
+			mThermal        = obj.getMThermal();
+			FLRise           = obj.getLRise();
+			HSRise           = obj.getHSRise();
 			pctLoadLoss      = obj.getPctLoadLoss();
 			pctNoLoadLoss    = obj.getPctNoLoadLoss();
 			setNormMaxHKVA(obj.getNormMaxHKVA());

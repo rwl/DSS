@@ -17,7 +17,7 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	public XYCurveObjImpl(DSSClass ParClass, String XYCurveName) {
 		super(ParClass);
 		setName(XYCurveName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.LastValueAccessed = 0;
 

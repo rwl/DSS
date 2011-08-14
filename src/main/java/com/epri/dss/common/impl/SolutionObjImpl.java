@@ -1205,7 +1205,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	public void initPropertyValues(int arrayOffset) {
-		PropertyValue[0] = "";  // TODO Check zero based indexing
+		propertyValue[0] = "";  // TODO Check zero based indexing
 
 		super.initPropertyValues(SolutionImpl.NumPropsThisClass);
 	}

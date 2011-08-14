@@ -20,7 +20,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		super();
 
 		this.className = "Sensor";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.SENSOR_ELEMENT;
+		this.classType = this.classType + DSSClassDefs.SENSOR_ELEMENT;
 
 		defineProperties();
 

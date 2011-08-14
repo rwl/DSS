@@ -19,7 +19,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		super();
 
 		this.className    = "LineSpacing";
-		this.DSSClassType  = DSSClassDefs.DSS_OBJECT;
+		this.classType  = DSSClassDefs.DSS_OBJECT;
 		this.activeElement = -1;
 
 		defineProperties();

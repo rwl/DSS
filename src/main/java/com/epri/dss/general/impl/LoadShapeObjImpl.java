@@ -38,7 +38,7 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public LoadShapeObjImpl(DSSClass ParClass, String LoadShapeName) {
 		super(ParClass);
 		setName(LoadShapeName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.LastValueAccessed = 1;
 
@@ -189,8 +189,8 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 			}
 
 		// TODO Check indenting
-		PropertyValue[4] = String.format("%.8g", Mean.doubleValue());  // TODO Check zero based indexing.
-		PropertyValue[5] = String.format("%.8g", StdDev.doubleValue());
+		propertyValue[4] = String.format("%.8g", Mean.doubleValue());  // TODO Check zero based indexing.
+		propertyValue[5] = String.format("%.8g", StdDev.doubleValue());
 
 		StdDevCalculated = true;
 		/* No action is taken on Q multipliers */
@@ -252,16 +252,16 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 2:  // TODO Check zero based indexing
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + PropertyValue[i] + ")");
+				F.println("~ " + parentClass.getPropertyName()[i] + "=(" + propertyValue[i] + ")");
 				break;
 			case 3:
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=(" + PropertyValue[i] + ")");
+				F.println("~ " + parentClass.getPropertyName()[i] + "=(" + propertyValue[i] + ")");
 				break;
 			default:
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
+				F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
 				break;
 			}
 		}
@@ -347,22 +347,22 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "0";  // number of points to expect
-		PropertyValue[1] = "1";  // default = 1.0 hr;
-		PropertyValue[2] = "";   // vector of multiplier values
-		PropertyValue[3] = "";   // vector of hour values
-		PropertyValue[4] = "0";  // set the mean (otherwise computed)
-		PropertyValue[5] = "0";  // set the std dev (otherwise computed)
-		PropertyValue[6] = "";   // switch input to a csvfile
-		PropertyValue[7] = "";   // switch input to a binary file of singles
-		PropertyValue[8] = "";   // switch input to a binary file of singles
-		PropertyValue[9] = "";   // action option.
-		PropertyValue[10] = "";  // Qmult.
-		PropertyValue[11] = "No";
-		PropertyValue[12] = "0";
-		PropertyValue[13] = "0";
-		PropertyValue[14] = "3600";  // seconds
-		PropertyValue[15] = "60";    // minutes
+		propertyValue[0] = "0";  // number of points to expect
+		propertyValue[1] = "1";  // default = 1.0 hr;
+		propertyValue[2] = "";   // vector of multiplier values
+		propertyValue[3] = "";   // vector of hour values
+		propertyValue[4] = "0";  // set the mean (otherwise computed)
+		propertyValue[5] = "0";  // set the std dev (otherwise computed)
+		propertyValue[6] = "";   // switch input to a csvfile
+		propertyValue[7] = "";   // switch input to a binary file of singles
+		propertyValue[8] = "";   // switch input to a binary file of singles
+		propertyValue[9] = "";   // action option.
+		propertyValue[10] = "";  // Qmult.
+		propertyValue[11] = "No";
+		propertyValue[12] = "0";
+		propertyValue[13] = "0";
+		propertyValue[14] = "3600";  // seconds
+		propertyValue[15] = "60";    // minutes
 
 		super.initPropertyValues(LoadShape.NumPropsThisClass);
 	}
@@ -402,14 +402,14 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 
 	public void setNumPoints(int Value) {
 
-		PropertyValue[0] = String.valueOf(Value);  // update property list variable
+		propertyValue[0] = String.valueOf(Value);  // update property list variable
 
 		// reset array property values to keep them in proper order in save
 
 		if (ArrayPropertyIndex >= 0)  // TODO Check zero based indexing
-			PropertyValue[ArrayPropertyIndex] = PropertyValue[ArrayPropertyIndex];
+			propertyValue[ArrayPropertyIndex] = propertyValue[ArrayPropertyIndex];
 		if (QMultipliers != null)
-			PropertyValue[10] = PropertyValue[10];  // TODO Check zero based indexing
+			propertyValue[10] = propertyValue[10];  // TODO Check zero based indexing
 
 		NumPoints = Value;  // now assign the value
 	}

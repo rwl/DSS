@@ -15,10 +15,10 @@ public interface Spectrum extends DSSClass {
 	/**
 	 * Sets the active spectrum.
 	 */
-	void setCode(String Value);
+	void setCode(String value);
 
 	int edit();
 
-	int newObject(String ObjName);
+	int newObject(String objName);
 
 }

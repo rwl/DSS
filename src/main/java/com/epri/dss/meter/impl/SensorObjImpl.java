@@ -46,7 +46,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 		clearSensor();
 
-		this.DSSObjType = ParClass.getDSSClassType();  // SENSOR_ELEMENT;
+		this.objType = ParClass.getDSSClassType();  // SENSOR_ELEMENT;
 
 		initPropertyValues(0);
 

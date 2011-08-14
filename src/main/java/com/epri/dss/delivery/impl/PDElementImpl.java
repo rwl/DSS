@@ -42,7 +42,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 		this.sensorObj = null;
 		this.meterObj = null;
 		this.parentPDElement = null;
-		this.DSSObjType = DSSClassDefs.PD_ELEMENT;
+		this.objType = DSSClassDefs.PD_ELEMENT;
 	}
 
 	@Override
@@ -119,11 +119,11 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[arrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
-		PropertyValue[arrayOffset + 2] = "600";  // emerAamps
-		PropertyValue[arrayOffset + 3] = "0.1";  // faultRate
-		PropertyValue[arrayOffset + 4] = "20";   // pctPerm
-		PropertyValue[arrayOffset + 5] = "3";    // hrsToRepair
+		propertyValue[arrayOffset + 1] = "400";  // normAmps   TODO Check zero based indexing
+		propertyValue[arrayOffset + 2] = "600";  // emerAamps
+		propertyValue[arrayOffset + 3] = "0.1";  // faultRate
+		propertyValue[arrayOffset + 4] = "20";   // pctPerm
+		propertyValue[arrayOffset + 5] = "3";    // hrsToRepair
 
 		super.initPropertyValues(arrayOffset + 5);
 	}

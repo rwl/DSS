@@ -15,7 +15,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	public EquivalentImpl() {
 		super();
 		this.className = "Equivalent";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
+		this.classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
 		this.activeElement = -1;
 

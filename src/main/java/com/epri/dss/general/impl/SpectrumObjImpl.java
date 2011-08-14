@@ -23,7 +23,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	public SpectrumObjImpl(DSSClass ParClass, String SpectrumName) {
 		super(ParClass);
 		setName(SpectrumName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.NumHarm    = 0;
 		this.HarmArray  = null;
@@ -40,28 +40,28 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 		super.dumpProperties(F, Complete);
 
-		for (i = 0; i < ParentClass.getNumProperties(); i++) {
+		for (i = 0; i < parentClass.getNumProperties(); i++) {
 			switch (i) {
 			case 1:  // TODO Check zero based indexing
-				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
+				F.print("~ " + parentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", HarmArray[j]);
 				F.println(")");
 				break;
 			case 2:
-				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
+				F.print("~ " + parentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", puMagArray[j] * 100.0);
 				F.println(")");
 				break;
 			case 3:
-				F.print("~ " + ParentClass.getPropertyName()[i] + "=(");
+				F.print("~ " + parentClass.getPropertyName()[i] + "=(");
 				for (j = 0; j < NumHarm; j++)
 					F.printf("%-g, ", AngleArray[j]);
 				F.println(")");
 				break;
 			default:
-				F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+				F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 				break;
 			}
 		}
@@ -145,11 +145,11 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "0";
-		PropertyValue[1] =  "";
-		PropertyValue[2] =  "";
-		PropertyValue[3] =  "";
-		PropertyValue[4] =  "";
+		propertyValue[0] = "0";
+		propertyValue[1] =  "";
+		propertyValue[2] =  "";
+		propertyValue[3] =  "";
+		propertyValue[4] =  "";
 
 		super.initPropertyValues(Spectrum.NumPropsThisClass);
 	}
@@ -201,11 +201,11 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
 	// FIXME Private members in OpenDSS
 
-	public double[] getPuMagArray() {
+	public double[] getPUMagArray() {
 		return puMagArray;
 	}
 
-	public void setPuMagArray(double[] puMagArray) {
+	public void setPUMagArray(double[] puMagArray) {
 		this.puMagArray = puMagArray;
 	}
 

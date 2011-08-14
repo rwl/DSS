@@ -1,5 +1,6 @@
 package com.epri.dss.general;
 
+import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.Complex;
 
@@ -23,19 +24,19 @@ import com.epri.dss.shared.impl.Complex;
  */
 public interface LineConstants {
 
-	static final double e0 = 8.854e-12;  // dielectric constant  F/m
-	static final double mu0 = 12.56637e-7; // hy/m
-	static final double TwoPI = 6.283185307;
+	static final double E0 = 8.854e-12;  // dielectric constant  F/m
+	static final double MU0 = 12.56637e-7; // hy/m
+	static final double TWO_PI = DSSGlobals.TWO_PI;
 
-	static Complex C1_j1 = new Complex(1, 1);
-	static double b1 = 1.0 / (3.0 * Math.sqrt(2.0));;
-	static double b2 = 1.0 / 16.0;
-	static double b3 = b1 / 3.0 / 5.0;
-	static double b4 = b2 / 4.0 / 6.0;
-	static double d2 = b2 * Math.PI / 4.0;
-	static double d4 = b4 * Math.PI / 4.0;
-	static double c2 = 1.3659315;
-	static double c4 = c2 + 1.0 / 4.0 + 1.0 / 6.0;
+	static final Complex C1_j1 = new Complex(1, 1);
+	static final double B1 = 1.0 / (3.0 * Math.sqrt(2.0));;
+	static final double B2 = 1.0 / 16.0;
+	static final double B3 = B1 / 3.0 / 5.0;
+	static final double B4 = B2 / 4.0 / 6.0;
+	static final double D2 = B2 * Math.PI / 4.0;
+	static final double D4 = B4 * Math.PI / 4.0;
+	static final double C2 = 1.3659315;
+	static final double C4 = C2 + 1.0 / 4.0 + 1.0 / 6.0;
 
 	double getGMR(int i, int units);
 
@@ -69,9 +70,9 @@ public interface LineConstants {
 	 * These two properties will auto recalc the impedance matrices if frequency is different.
 	 * Converts to desired units when executed; Returns pointer to working version.
 	 */
-	CMatrix getZmatrix(double f, double Lngth, int Units);
+	CMatrix getZMatrix(double f, double length, int units);
 
-	CMatrix getYCmatrix(double f, double Lngth, int Units);
+	CMatrix getYcMatrix(double f, double length, int units);
 
 	int getNPhases();
 
@@ -83,7 +84,7 @@ public interface LineConstants {
 
 	int getNumConds();
 
-	boolean conductorsInSameSpace(StringBuffer ErrorMessage);
+	boolean conductorsInSameSpace(StringBuffer errorMessage);
 
 	/**
 	 * Force a calc of impedances.

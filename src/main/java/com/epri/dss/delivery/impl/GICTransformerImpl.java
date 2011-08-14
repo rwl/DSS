@@ -14,7 +14,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 	public GICTransformerImpl() {
 		super();
 		this.className = "GICTransformer";
-		this.DSSClassType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
+		this.classType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
 
 		this.activeElement = -1;
 

@@ -8,6 +8,6 @@ public interface LineGeometry extends DSSClass {
 
 	String getCode();
 
-	void setCode(String Value);
+	void setCode(String value);
 
 }

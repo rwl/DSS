@@ -22,7 +22,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	public PriceShapeImpl() {
 		super();
 		this.className   = "PriceShape";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 

@@ -16,7 +16,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	public FeederImpl() {
 		super();
 		this.className = "Feeder";
-		this.DSSClassType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
+		this.classType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
 		this.activeElement = -1;
 

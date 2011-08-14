@@ -20,7 +20,7 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		super(ParClass);
 
 		setName(LineSpacingName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.DataChanged = true;
 		this.X           = null;
@@ -38,7 +38,7 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		super.dumpProperties(F, Complete);
 
 		for (int i = 0; i < 5; i++)  // TODO Check zero based indexing
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 	}
 
 	private String arrayString(double[] pF, int N) {
@@ -65,21 +65,21 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		}
 	}
 
-	public double getXcoord(int i) {
+	public double getXCoord(int i) {
 		return i <= NConds ? X[i] : 0.0;
 	}
 
-	public double getYcoord(int i) {
+	public double getYCoord(int i) {
 		return i <= NConds ? Y[i] : 0.0;
 	}
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		PropertyValue[0] = "3";
-		PropertyValue[1] = "3";
-		PropertyValue[2] = "0";
-		PropertyValue[3] = "32";
-		PropertyValue[4] = "ft";
+		propertyValue[0] = "3";
+		propertyValue[1] = "3";
+		propertyValue[2] = "0";
+		propertyValue[3] = "32";
+		propertyValue[4] = "ft";
 
 		super.initPropertyValues(LineSpacing.NumPropsThisClass);
 	}

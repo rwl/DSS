@@ -47,12 +47,12 @@ public interface GrowthShape extends DSSClass {
 	/**
 	 * Sets the active growth shape.
 	 */
-	void setCode(String Value);
+	void setCode(String value);
 
 	int edit();
 
-	int init(int Handle);
+	int init(int handle);
 
-	int newObject(String ObjName);
+	int newObject(String objName);
 
 }

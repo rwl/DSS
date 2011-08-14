@@ -16,7 +16,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 	public TCC_CurveImpl() {
 		super();
 		this.className = "TCC_Curve";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 
@@ -99,13 +99,13 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 1:
-				atc.setNpts(parser.makeInteger());
+				atc.setNPts(parser.makeInteger());
 				break;
 			case 2:
-				Utilities.interpretDblArray(Param, atc.getNpts(), atc.getC_values());   // Parser.ParseAsVector(Npts, Multipliers);
+				Utilities.interpretDblArray(Param, atc.getNPts(), atc.getCValues());   // Parser.ParseAsVector(Npts, Multipliers);
 				break;
 			case 3:
-				Utilities.interpretDblArray(Param, atc.getNpts(), atc.getT_values());   // Parser.ParseAsVector(Npts, Hours);
+				Utilities.interpretDblArray(Param, atc.getNPts(), atc.getTValues());   // Parser.ParseAsVector(Npts, Hours);
 				break;
 			default:
 				// inherited parameters
@@ -115,16 +115,16 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 			switch (ParamPointer) {
 			case 0:  // reallocate arrays to correspond to npts
-				atc.setC_values( (double[]) Utilities.resizeArray(atc.getC_values(), atc.getNpts()) );
-				atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNpts()) );
-				atc.setT_values( (double[]) Utilities.resizeArray(atc.getT_values(), atc.getNpts()) );
-				atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNpts()) );
+				atc.setCValues( (double[]) Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
+				atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
+				atc.setTValues( (double[]) Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
+				atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
 				break;
 			case 1:
-				calcLogPoints(atc.getC_values(), atc.getLogC(), atc.getNpts());
+				calcLogPoints(atc.getCValues(), atc.getLogC(), atc.getNPts());
 				break;
 			case 2:
-				calcLogPoints(atc.getT_values(), atc.getLogT(), atc.getNpts());
+				calcLogPoints(atc.getTValues(), atc.getLogT(), atc.getNPts());
 				break;
 			}
 
@@ -142,18 +142,18 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		TCC_CurveObj OtherTCC_Curve = (TCC_CurveObj) find(Name);
 		if (OtherTCC_Curve != null) {
 			TCC_CurveObj atc = getActiveTCC_CurveObj();
-			atc.setNpts(OtherTCC_Curve.getNpts());
-			atc.setC_values( (double[]) Utilities.resizeArray(atc.getC_values(), atc.getNpts()) );
-			atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNpts()) );
-			atc.setT_values( (double[]) Utilities.resizeArray(atc.getT_values(), atc.getNpts()) );
-			atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNpts()) );
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getC_values()[i] = OtherTCC_Curve.getC_values()[i];
-			for (i = 0; i < atc.getNpts(); i++)
-				atc.getT_values()[i] = OtherTCC_Curve.getT_values()[i];
-			for (i = 0; i < atc.getNpts(); i++)
+			atc.setNPts(OtherTCC_Curve.getNPts());
+			atc.setCValues( (double[]) Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
+			atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
+			atc.setTValues( (double[]) Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
+			atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
+			for (i = 0; i < atc.getNPts(); i++)
+				atc.getCValues()[i] = OtherTCC_Curve.getCValues()[i];
+			for (i = 0; i < atc.getNPts(); i++)
+				atc.getTValues()[i] = OtherTCC_Curve.getTValues()[i];
+			for (i = 0; i < atc.getNPts(); i++)
 				atc.getLogC()[i] = OtherTCC_Curve.getLogC()[i];
-			for (i = 0; i < atc.getNpts(); i++)
+			for (i = 0; i < atc.getNPts(); i++)
 				atc.getLogT()[i] = OtherTCC_Curve.getLogT()[i];
 
 			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)

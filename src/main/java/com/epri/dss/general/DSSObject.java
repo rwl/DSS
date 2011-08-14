@@ -12,7 +12,7 @@ public interface DSSObject extends NamedObject {
 	 */
 	int getDSSObjType();
 
-	void setDSSObjType(int dSSObjType);
+	void setDSSObjType(int DSSObjType);
 
 	DSSClass getParentClass();
 
@@ -39,22 +39,22 @@ public interface DSSObject extends NamedObject {
 	/**
 	 * Use DSSClass.PropertyIndex to get index by name.
 	 */
-	String getPropertyValue(int Index);
+	String getPropertyValue(int index);
 
-	void setPropertyValue(int Index, String Value);
+	void setPropertyValue(int index, String value);
 
 	String getName();
 
-	void setName(String Value);
+	void setName(String value);
 
 	/**
 	 * Allow Calls to edit from object itself.
 	 */
 	int edit();
 
-	void initPropertyValues(int ArrayOffset);
+	void initPropertyValues(int arrayOffset);
 
-	void dumpProperties(PrintStream F, boolean Complete);
+	void dumpProperties(PrintStream f, boolean complete);
 
 	void saveWrite(PrintWriter f);
 

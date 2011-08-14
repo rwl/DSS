@@ -100,7 +100,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		setName(EnergyMeterName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();  // ENERGY_METER;
+		this.objType = ParClass.getDSSClassType();  // ENERGY_METER;
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;

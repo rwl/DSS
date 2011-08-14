@@ -139,7 +139,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public GeneratorObjImpl(DSSClassImpl parClass, String generatorName) {
 		super(parClass);
 		setName(generatorName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
+		this.objType = parClass.getDSSClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
 
 		setNPhases(3);
 		this.nConds = 4;   // defaults to wye
@@ -1459,13 +1459,13 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			idx = getParentClass().getPropertyIdxMap()[i];
 			switch (idx) {
 			case 33:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
 				break;
 			case 35:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
 				break;
 			default:
-				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[idx]);
+				F.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[idx]);
 				break;
 			}
 		}
@@ -1516,42 +1516,42 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0]      = "3";        // phases;
-		PropertyValue[1]      = getBus(1);  // bus1  TODO Check zero based indexing
-		PropertyValue[2]      = "12.47";
-		PropertyValue[3]      = "100";
-		PropertyValue[4]      = ".80";
-		PropertyValue[5]      = "1";
-		PropertyValue[6]      = "";
-		PropertyValue[7]      = "";
-		PropertyValue[8]      = "";
-		PropertyValue[9]      = "Default";
-		PropertyValue[10]     = "0.0";
-		PropertyValue[11]     = "wye";
-		PropertyValue[12]     = "60";
-		PropertyValue[13]     = "0";  // "rneut"; // if entered -, assume open
-		PropertyValue[14]     = "0";  // "xneut";
-		PropertyValue[15]     = "variable"; //"status"  fixed or variable
-		PropertyValue[16]     = "1"; //"class"
-		PropertyValue[17]     = "1.0";
-		PropertyValue[18]     = Utilities.strReal(kVArMax, 3);
-		PropertyValue[19]     = Utilities.strReal(kVArMin, 3);
-		PropertyValue[20]     = "0.1";
-		PropertyValue[21]     = "no";
-		PropertyValue[22]     = "0.90";
-		PropertyValue[23]     = "1.10";
-		PropertyValue[24]     = "No";
-		PropertyValue[25]     = String.format("%-g", genVars.kVArating);
-		PropertyValue[26]     = String.format("%-g", genVars.kVArating * 0.001);
-		PropertyValue[27]     = String.format("%-g", genVars.puXd);
-		PropertyValue[28]     = String.format("%-g", genVars.puXdp);
-		PropertyValue[29]     = String.format("%-g", genVars.puXdpp);
-		PropertyValue[30]     = String.format("%-g", genVars.Hmass);
-		PropertyValue[31]     = String.format("%-g", genVars.Dpu);
-		PropertyValue[32]     = "";
-		PropertyValue[33]     = "";
-		PropertyValue[34]     = "";
-		PropertyValue[35]     = "";
+		propertyValue[0]      = "3";        // phases;
+		propertyValue[1]      = getBus(1);  // bus1  TODO Check zero based indexing
+		propertyValue[2]      = "12.47";
+		propertyValue[3]      = "100";
+		propertyValue[4]      = ".80";
+		propertyValue[5]      = "1";
+		propertyValue[6]      = "";
+		propertyValue[7]      = "";
+		propertyValue[8]      = "";
+		propertyValue[9]      = "Default";
+		propertyValue[10]     = "0.0";
+		propertyValue[11]     = "wye";
+		propertyValue[12]     = "60";
+		propertyValue[13]     = "0";  // "rneut"; // if entered -, assume open
+		propertyValue[14]     = "0";  // "xneut";
+		propertyValue[15]     = "variable"; //"status"  fixed or variable
+		propertyValue[16]     = "1"; //"class"
+		propertyValue[17]     = "1.0";
+		propertyValue[18]     = Utilities.strReal(kVArMax, 3);
+		propertyValue[19]     = Utilities.strReal(kVArMin, 3);
+		propertyValue[20]     = "0.1";
+		propertyValue[21]     = "no";
+		propertyValue[22]     = "0.90";
+		propertyValue[23]     = "1.10";
+		propertyValue[24]     = "No";
+		propertyValue[25]     = String.format("%-g", genVars.kVArating);
+		propertyValue[26]     = String.format("%-g", genVars.kVArating * 0.001);
+		propertyValue[27]     = String.format("%-g", genVars.puXd);
+		propertyValue[28]     = String.format("%-g", genVars.puXdp);
+		propertyValue[29]     = String.format("%-g", genVars.puXdpp);
+		propertyValue[30]     = String.format("%-g", genVars.Hmass);
+		propertyValue[31]     = String.format("%-g", genVars.Dpu);
+		propertyValue[32]     = "";
+		propertyValue[33]     = "";
+		propertyValue[34]     = "";
+		propertyValue[35]     = "";
 
 		super.initPropertyValues(Generator.NumPropsThisClass);
 	}
@@ -1943,11 +1943,11 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		// divide the load by no. phases
 		if (nPhases > 1) {
 			s = s + String.format(" kW=%-.5g  PF=%-.5g", kWBase / nPhases, PFNominal);
-			if ((PrpSequence[18] != 0) || (PrpSequence[19] != 0))
+			if ((prpSequence[18] != 0) || (prpSequence[19] != 0))
 				s = s + String.format(" maxkvar=%-.5g  minkvar=%-.5g", kVArMax / nPhases, kVArMin / nPhases);
-			if (PrpSequence[25] > 0)
+			if (prpSequence[25] > 0)
 				s = s + String.format(" kva=%-.5g  ", genVars.kVArating / nPhases);
-			if (PrpSequence[26] > 0)
+			if (prpSequence[26] > 0)
 				s = s + String.format(" MVA=%-.5g  ", genVars.kVArating / 1000.0 / nPhases);
 		}
 

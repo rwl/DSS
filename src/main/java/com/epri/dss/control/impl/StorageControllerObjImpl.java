@@ -83,7 +83,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	public StorageControllerObjImpl(DSSClassImpl parClass, String storageControllerName) {
 		super(parClass);
 		setName(storageControllerName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;

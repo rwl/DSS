@@ -44,7 +44,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		int i;
 
 		setName(fuseName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -71,7 +71,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		this.cBuffer = null;  // complex buffer
 
-		this.DSSObjType = parClass.getDSSClassType(); //CAP_CONTROL;
+		this.objType = parClass.getDSSClassType(); //CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -280,14 +280,14 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		PropertyValue[1]  = "";  // "element";
-		PropertyValue[2]  = "1"; // "terminal";
-		PropertyValue[3]  = "";
-		PropertyValue[4]  = "1"; // "terminal";
-		PropertyValue[5]  = "Tlink";
-		PropertyValue[6]  = "1.0";
-		PropertyValue[7]  = "0";
-		PropertyValue[8]  = "";
+		propertyValue[1]  = "";  // "element";
+		propertyValue[2]  = "1"; // "terminal";
+		propertyValue[3]  = "";
+		propertyValue[4]  = "1"; // "terminal";
+		propertyValue[5]  = "Tlink";
+		propertyValue[6]  = "1.0";
+		propertyValue[7]  = "0";
+		propertyValue[8]  = "";
 
 		super.initPropertyValues(Fuse.NumPropsThisClass);
 	}

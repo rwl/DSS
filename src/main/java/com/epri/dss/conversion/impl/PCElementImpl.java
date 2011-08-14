@@ -36,7 +36,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 		this.injCurrent  = null;
 		this.ITerminalUpdated = false;
 
-		this.DSSObjType = DSSClassDefs.PC_ELEMENT;
+		this.objType = DSSClassDefs.PC_ELEMENT;
 	}
 
 	/**
@@ -125,7 +125,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	public void initPropertyValues(int arrayOffset) {
-		PropertyValue[arrayOffset + 1] = spectrum;
+		propertyValue[arrayOffset + 1] = spectrum;
 
 		super.initPropertyValues(arrayOffset + 1);
 	}

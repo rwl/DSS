@@ -16,7 +16,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		super();
 
 		this.className   = "Monitor";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.MON_ELEMENT;
+		this.classType = this.classType + DSSClassDefs.MON_ELEMENT;
 
 		defineProperties();
 

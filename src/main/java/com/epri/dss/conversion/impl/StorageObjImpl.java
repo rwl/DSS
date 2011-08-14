@@ -128,7 +128,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		super(parClass);
 
 		setName(storageName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
+		this.objType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
 
 		setNPhases(3);
 		this.nConds = 4;  // defaults to wye
@@ -223,47 +223,47 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "3";         // "phases";
-		PropertyValue[1] = getBus(1);   // "bus1";
+		propertyValue[0] = "3";         // "phases";
+		propertyValue[1] = getBus(1);   // "bus1";
 
-		PropertyValue[Storage.KV]      = String.format("%-g", kVStorageBase);
-		PropertyValue[Storage.KW]      = String.format("%-g", kWOut);
-		PropertyValue[Storage.PF]      = String.format("%-g", PFNominal);
-		PropertyValue[Storage.MODEL]     = "1";
-		PropertyValue[Storage.YEARLY]    = "";
-		PropertyValue[Storage.DAILY]     = "";
-		PropertyValue[Storage.DUTY]      = "";
-		PropertyValue[Storage.DISP_MODE]  = "Default";
-		PropertyValue[Storage.IDLE_KVAR]  = "0";
-		PropertyValue[Storage.CONNECTION]= "wye";
-		PropertyValue[Storage.KVAR]      = String.format("%-g", getPresentKVAr());
+		propertyValue[Storage.KV]      = String.format("%-g", kVStorageBase);
+		propertyValue[Storage.KW]      = String.format("%-g", kWOut);
+		propertyValue[Storage.PF]      = String.format("%-g", PFNominal);
+		propertyValue[Storage.MODEL]     = "1";
+		propertyValue[Storage.YEARLY]    = "";
+		propertyValue[Storage.DAILY]     = "";
+		propertyValue[Storage.DUTY]      = "";
+		propertyValue[Storage.DISP_MODE]  = "Default";
+		propertyValue[Storage.IDLE_KVAR]  = "0";
+		propertyValue[Storage.CONNECTION]= "wye";
+		propertyValue[Storage.KVAR]      = String.format("%-g", getPresentKVAr());
 
-		PropertyValue[Storage.PCTR]      = String.format("%-g", pctR);
-		PropertyValue[Storage.PCTX]      = String.format("%-g", pctX);
+		propertyValue[Storage.PCTR]      = String.format("%-g", pctR);
+		propertyValue[Storage.PCTX]      = String.format("%-g", pctX);
 
-		PropertyValue[Storage.IDLE_KW]    = "1";       // percent
-		PropertyValue[Storage.CLASS]     = "1"; //"class"
-		PropertyValue[Storage.DISP_OUT_TRIG] = "0";   // 0 - no trigger level
-		PropertyValue[Storage.DISP_IN_TRIG] = "0";
-		PropertyValue[Storage.CHARGE_EFF] = "90";
-		PropertyValue[Storage.DISCHARGE_EFF] = "90";
-		PropertyValue[Storage.PCT_KW_OUT]  = "100";
-		PropertyValue[Storage.PCT_KW_IN]   = "100";
+		propertyValue[Storage.IDLE_KW]    = "1";       // percent
+		propertyValue[Storage.CLASS]     = "1"; //"class"
+		propertyValue[Storage.DISP_OUT_TRIG] = "0";   // 0 - no trigger level
+		propertyValue[Storage.DISP_IN_TRIG] = "0";
+		propertyValue[Storage.CHARGE_EFF] = "90";
+		propertyValue[Storage.DISCHARGE_EFF] = "90";
+		propertyValue[Storage.PCT_KW_OUT]  = "100";
+		propertyValue[Storage.PCT_KW_IN]   = "100";
 
-		PropertyValue[Storage.VMIN_PU]    = "0.90";
-		PropertyValue[Storage.VMAX_PU]    = "1.10";
-		PropertyValue[Storage.STATE]     = "IDLING";
-		PropertyValue[Storage.KVA]       = String.format("%-g", kVARating);
-		PropertyValue[Storage.KW_RATED]   = String.format("%-g", kWRating);
-		PropertyValue[Storage.KWH_RATED]  = String.format("%-g", kWhRating);
-		PropertyValue[Storage.KWH_STORED] = String.format("%-g", kWhStored);
-		PropertyValue[Storage.PCT_STORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
-		PropertyValue[Storage.PCT_RESERVE]= String.format("%-g", pctReserve);
-		PropertyValue[Storage.CHARGE_TIME]= String.format("%-g", chargeTime);
+		propertyValue[Storage.VMIN_PU]    = "0.90";
+		propertyValue[Storage.VMAX_PU]    = "1.10";
+		propertyValue[Storage.STATE]     = "IDLING";
+		propertyValue[Storage.KVA]       = String.format("%-g", kVARating);
+		propertyValue[Storage.KW_RATED]   = String.format("%-g", kWRating);
+		propertyValue[Storage.KWH_RATED]  = String.format("%-g", kWhRating);
+		propertyValue[Storage.KWH_STORED] = String.format("%-g", kWhStored);
+		propertyValue[Storage.PCT_STORED] = String.format("%-g", kWhStored / kWhRating * 100.0);
+		propertyValue[Storage.PCT_RESERVE]= String.format("%-g", pctReserve);
+		propertyValue[Storage.CHARGE_TIME]= String.format("%-g", chargeTime);
 
-		PropertyValue[Storage.USER_MODEL] = "";  // UserModel
-		PropertyValue[Storage.USER_DATA]  = "";  // UserData
-		PropertyValue[Storage.DEBUG_TRACE]= "NO";
+		propertyValue[Storage.USER_MODEL] = "";  // UserModel
+		propertyValue[Storage.USER_DATA]  = "";  // UserData
+		propertyValue[Storage.DEBUG_TRACE]= "NO";
 
 		super.initPropertyValues(Storage.NumPropsThisClass);
 	}
@@ -1277,10 +1277,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			idx = getParentClass().getPropertyIdxMap()[i] ;
 			switch (idx) {
 			case Storage.USER_DATA:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + PropertyValue[idx] + ")");
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=(" + propertyValue[idx] + ")");
 				break;
 			default:
-				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + PropertyValue[idx]);
+				f.println("~ " + getParentClass().getPropertyName()[i] + "=" + propertyValue[idx]);
 				break;
 			}
 		}

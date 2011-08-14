@@ -35,7 +35,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		super(ParClass);
 
 		setName(LineCodeName.toLowerCase());
-		DSSObjType = ParClass.getDSSClassType();
+		objType = ParClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		NeutralConductor = NPhases - 1;  // initialize to last conductor  TODO Check zero indexing
@@ -162,15 +162,15 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		F.println("~ " + ParentClass.getPropertyName()[1] + "=" + NPhases);
-		F.println("~ " + ParentClass.getPropertyName()[2] + "=" + R1);
-		F.println("~ " + ParentClass.getPropertyName()[3] + "=" + X1);
-		F.println("~ " + ParentClass.getPropertyName()[4] + "=" + R0);
-		F.println("~ " + ParentClass.getPropertyName()[5] + "=" + X0);
-		F.println("~ " + ParentClass.getPropertyName()[6] + "=" + C1 * 1.0e9);
-		F.println("~ " + ParentClass.getPropertyName()[7] + "=" + C0 * 1.0e9);
-		F.println("~ " + ParentClass.getPropertyName()[8] + "=" + PropertyValue[8]);
-		F.print("~ " + ParentClass.getPropertyName()[9] + "=\"");
+		F.println("~ " + parentClass.getPropertyName()[1] + "=" + NPhases);
+		F.println("~ " + parentClass.getPropertyName()[2] + "=" + R1);
+		F.println("~ " + parentClass.getPropertyName()[3] + "=" + X1);
+		F.println("~ " + parentClass.getPropertyName()[4] + "=" + R0);
+		F.println("~ " + parentClass.getPropertyName()[5] + "=" + X0);
+		F.println("~ " + parentClass.getPropertyName()[6] + "=" + C1 * 1.0e9);
+		F.println("~ " + parentClass.getPropertyName()[7] + "=" + C0 * 1.0e9);
+		F.println("~ " + parentClass.getPropertyName()[8] + "=" + propertyValue[8]);
+		F.print("~ " + parentClass.getPropertyName()[9] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
 				F.print(Z.getElement(i, j).getReal() + " ");
@@ -178,7 +178,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		}
 		F.println("\"");
 
-		F.print("~ " + ParentClass.getPropertyName()[10] + "=\"");
+		F.print("~ " + parentClass.getPropertyName()[10] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
 				F.print(Z.getElement(i, j).getImaginary() + " ");
@@ -186,7 +186,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		}
 		F.println("\"");
 
-		F.print("~ " + ParentClass.getPropertyName()[11] + "=\"");
+		F.print("~ " + parentClass.getPropertyName()[11] + "=\"");
 		for (int i = 0; i < NPhases; i++) {
 			for (int j = 0; j < NPhases; j++)
 				F.print((Yc.getElement(i, j).getImaginary() / DSSGlobals.TWO_PI / BaseFrequency * 1.e9) + " ");
@@ -195,9 +195,9 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		F.println("\"");
 
 		for (int i = 12; i < 21; i++)
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + PropertyValue[i]);
+			F.println("~ " + parentClass.getPropertyName()[i] + "=" + propertyValue[i]);
 
-		F.println(String.format("~ %s=%d", ParentClass.getPropertyName()[22], NeutralConductor));
+		F.println(String.format("~ %s=%d", parentClass.getPropertyName()[22], NeutralConductor));
 	}
 
 	@Override
@@ -245,28 +245,28 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] =  "3";      // "nphases";
-		PropertyValue[1] =  ".058";   // "r1";
-		PropertyValue[2] =  ".1206";  // "x1";
-		PropertyValue[3] =  "0.1784"; // "r0";
-		PropertyValue[4] =  "0.4047"; // "x0";
-		PropertyValue[5] =  "3.4";  // "c1";
-		PropertyValue[6] =  "1.6";  // "c0";
-		PropertyValue[7] =  "none"; // "units";
-		PropertyValue[8] =  "";     // "rmatrix";
-		PropertyValue[9] =  "";     // "xmatrix";
-		PropertyValue[10] = "";     // "cmatrix";
-		PropertyValue[11] = String.format("%6.1f", DSSGlobals.getInstance().getDefaultBaseFreq());  // "baseFreq";
-		PropertyValue[12] = "400";  // "normamps";
-		PropertyValue[13] = "600";  // "emergamps";
-		PropertyValue[14] = "0.1";  // "faultrate";
-		PropertyValue[15] = "20";   // "pctperm";
-		PropertyValue[16] = "3";    // "Hrs to repair";
-		PropertyValue[17] = "N";    // "Kron";
-		PropertyValue[18] = ".01805";  // "Rg";
-		PropertyValue[19] = ".155081"; // "Xg";
-		PropertyValue[20] = "100";     // "rho";
-		PropertyValue[21] = "3";       // "Neutral";
+		propertyValue[0] =  "3";      // "nphases";
+		propertyValue[1] =  ".058";   // "r1";
+		propertyValue[2] =  ".1206";  // "x1";
+		propertyValue[3] =  "0.1784"; // "r0";
+		propertyValue[4] =  "0.4047"; // "x0";
+		propertyValue[5] =  "3.4";  // "c1";
+		propertyValue[6] =  "1.6";  // "c0";
+		propertyValue[7] =  "none"; // "units";
+		propertyValue[8] =  "";     // "rmatrix";
+		propertyValue[9] =  "";     // "xmatrix";
+		propertyValue[10] = "";     // "cmatrix";
+		propertyValue[11] = String.format("%6.1f", DSSGlobals.getInstance().getDefaultBaseFreq());  // "baseFreq";
+		propertyValue[12] = "400";  // "normamps";
+		propertyValue[13] = "600";  // "emergamps";
+		propertyValue[14] = "0.1";  // "faultrate";
+		propertyValue[15] = "20";   // "pctperm";
+		propertyValue[16] = "3";    // "Hrs to repair";
+		propertyValue[17] = "N";    // "Kron";
+		propertyValue[18] = ".01805";  // "Rg";
+		propertyValue[19] = ".155081"; // "Xg";
+		propertyValue[20] = "100";     // "rho";
+		propertyValue[21] = "3";       // "Neutral";
 
 		super.initPropertyValues(LineCode.NumPropsThisClass);
 	}
@@ -310,10 +310,10 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				ReduceByKron = false;
 
 				/* Change property values to reflect Kron reduction for save circuit function */
-				PropertyValue[0] = String.format("%d", NPhases);
-				PropertyValue[8] = getRMatrix();
-				PropertyValue[9] = getXMatrix();
-				PropertyValue[10] = getCMatrix();
+				propertyValue[0] = String.format("%d", NPhases);
+				propertyValue[8] = getRMatrix();
+				propertyValue[9] = getXMatrix();
+				propertyValue[10] = getCMatrix();
 
 			} else {
 				Globals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
@@ -360,7 +360,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		return Yc;
 	}
 
-	public void setYC(CMatrix Yc) {
+	public void setYc(CMatrix Yc) {
 		this.Yc = Yc;
 	}
 

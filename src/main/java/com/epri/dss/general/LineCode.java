@@ -14,6 +14,6 @@ public interface LineCode extends DSSClass {
 	/**
 	 * Sets the active line code.
 	 */
-	void setCode(String Value);
+	void setCode(String value);
 
 }

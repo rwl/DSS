@@ -8,60 +8,60 @@ import com.epri.dss.shared.impl.MathUtil;
 
 public class CableConstantsImpl extends LineConstantsImpl implements CableConstants {
 
-	protected double[] EpsR;
-	protected double[] InsLayer;
-	protected double[] DiaIns;
-	protected double[] DiaCable;
+	protected double[] epsR;
+	protected double[] insLayer;
+	protected double[] diaIns;
+	protected double[] diaCable;
 
-	public CableConstantsImpl(int NumConductors) {
-		super(NumConductors);
-		this.EpsR = new double[getNumConds()];
-		this.InsLayer = new double[getNumConds()];
-		this.DiaIns = new double[getNumConds()];
-		this.DiaCable = new double[getNumConds()];
+	public CableConstantsImpl(int numConductors) {
+		super(numConductors);
+		this.epsR = new double[getNumConds()];
+		this.insLayer = new double[getNumConds()];
+		this.diaIns = new double[getNumConds()];
+		this.diaCable = new double[getNumConds()];
 	}
 
 	/**
 	 * Don't reduce Y, it has zero neutral capacitance.
 	 */
 	@Override
-	public void Kron(int Norder) {
-		CMatrix Ztemp;
-		boolean FirstTime;
+	public void Kron(int norder) {
+		CMatrix ZTemp;
+		boolean firstTime;
 		int i, j;
 
-		Ztemp = Zmatrix;
-		FirstTime = true;
-		if ((Frequency >= 0.0) && (Norder > 0) && (Norder < getNumConds())) {
-			if (Zreduced != null) Zreduced = null;
-			if (YCreduced != null) YCreduced = null;
-			while (Ztemp.getNOrder() > Norder) {
-				Zreduced = Ztemp.kron(Ztemp.getNOrder());  // Eliminate last row
-				if (!FirstTime) Ztemp = null;  // Ztemp points to intermediate matrix
-				Ztemp = Zreduced;
-				FirstTime = false;
+		ZTemp = ZMatrix;
+		firstTime = true;
+		if ((frequency >= 0.0) && (norder > 0) && (norder < getNumConds())) {
+			if (ZReduced != null) ZReduced = null;
+			if (YcReduced != null) YcReduced = null;
+			while (ZTemp.getNOrder() > norder) {
+				ZReduced = ZTemp.kron(ZTemp.getNOrder());  // Eliminate last row
+				if (!firstTime) ZTemp = null;  // Ztemp points to intermediate matrix
+				ZTemp = ZReduced;
+				firstTime = false;
 			}
 			// now copy part of FYCmatrix to FYCreduced
-			YCreduced = new CMatrixImpl(Norder);
-			for (i = 0; i < Norder; i++)
-				for (j = 0; j < Norder; j++)
-					YCreduced.setElement(i, j, YCmatrix.getElement(i, j));
+			YcReduced = new CMatrixImpl(norder);
+			for (i = 0; i < norder; i++)
+				for (j = 0; j < norder; j++)
+					YcReduced.setElement(i, j, YcMatrix.getElement(i, j));
 		}
 	}
 
 	@Override
-	public boolean conductorsInSameSpace(StringBuffer ErrorMessage) {
+	public boolean conductorsInSameSpace(StringBuffer errorMessage) {
 		int i, j;
 		double Dij;
 		double Ri, Rj;
 
-		boolean Result = false;
+		boolean result = false;
 
 		for (i = 0; i < getNumConds(); i++) {
 			if (Y[i] >= 0.0) {
-				Result = true;
-				ErrorMessage.append(String.format("Cable %d height must be < 0. ", i));  // FIXME Pass by reference
-				return Result;
+				result = true;
+				errorMessage.append(String.format("Cable %d height must be < 0. ", i));  // FIXME Pass by reference
+				return result;
 			}
 		}
 
@@ -69,58 +69,58 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 			if (i <= getNPhases()) {
 				Ri = radius[i];
 			} else {
-				Ri = 0.5 * DiaCable[i];
+				Ri = 0.5 * diaCable[i];
 			}
 			for (j = i; j < getNumConds(); j++) {  // TODO Check zero based indexing
 				if (j <= getNPhases()) {
 					Rj = radius[j];
 				} else {
-					Rj = 0.5 * DiaCable[j];
+					Rj = 0.5 * diaCable[j];
 				}
 				Dij = Math.sqrt(MathUtil.sqr(X[i] - X[j]) + MathUtil.sqr(Y[i] - Y[j]));
 				if (Dij < (Ri + Rj)) {
-					Result = true;
-					ErrorMessage.append(String.format("Cable conductors %d and %d occupy the same space.", i, j));
-					return Result;
+					result = true;
+					errorMessage.append(String.format("Cable conductors %d and %d occupy the same space.", i, j));
+					return result;
 				}
 			}
 		}
-		return Result;
+		return result;
 	}
 
 	public double getEpsR(int i) {
-		return EpsR[i];
+		return epsR[i];
 	}
 
-	public void setEpsR(int i, double epsR) {
-		EpsR[i] = epsR;
+	public void setEpsR(int i, double epsr) {
+		epsR[i] = epsr;
 	}
 
 	public double getInsLayer(int i, int units) {
-		return InsLayer[i] * LineUnits.fromMeters(units);
+		return insLayer[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setInsLayer(int i, int units, double insLayer) {
+	public void setInsLayer(int i, int units, double inslayer) {
 		if ((i >= 0) && (i < getNumConds()))
-			InsLayer[i] = insLayer * LineUnits.toMeters(units);
+			insLayer[i] = inslayer * LineUnits.toMeters(units);
 	}
 
 	public double getDiaIns(int i, int units) {
-		return DiaIns[i] * LineUnits.fromMeters(units);
+		return diaIns[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setDiaIns(int i, int units, double diaIns) {
+	public void setDiaIns(int i, int units, double diains) {
 		if ((i >= 0) && (i < getNumConds()))
-			DiaIns[i] = diaIns * LineUnits.toMeters(units);
+			diaIns[i] = diains * LineUnits.toMeters(units);
 	}
 
 	public double getDiaCable(int i, int units) {
-		return DiaCable[i] * LineUnits.fromMeters(units);
+		return diaCable[i] * LineUnits.fromMeters(units);
 	}
 
-	public void setDiaCable(int i, int units, double diaCable) {
+	public void setDiaCable(int i, int units, double diacable) {
 		if ((i >= 0) && (i < getNumConds()))
-			DiaCable[i] = diaCable * LineUnits.toMeters(units);
+			diaCable[i] = diacable * LineUnits.toMeters(units);
 	}
 
 }

@@ -25,7 +25,7 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	public PriceShapeObjImpl(DSSClass ParClass, String PriceShapeName) {
 		super(ParClass);
 		setName(PriceShapeName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		this.LastValueAccessed = 0;
 

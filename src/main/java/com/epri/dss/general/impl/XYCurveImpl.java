@@ -24,7 +24,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	public XYCurveImpl() {
 		super();
 		this.className   = "XYcurve";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 		this.TempPointsBuffer = null;

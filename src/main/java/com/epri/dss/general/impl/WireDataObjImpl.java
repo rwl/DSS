@@ -17,8 +17,8 @@ public class WireDataObjImpl extends ConductorDataObjImpl implements WireDataObj
 	public void dumpProperties(PrintStream F, boolean Complete) {
 		super.dumpProperties(F, Complete);
 
-		for (int i = 0; i < ParentClass.getNumProperties(); i++) {
-			F.print("~ " + ParentClass.getPropertyName()[i] + "=");
+		for (int i = 0; i < parentClass.getNumProperties(); i++) {
+			F.print("~ " + parentClass.getPropertyName()[i] + "=");
 			switch (i) {
 			case 0:
 				F.println(String.format("%.6g", getRDC()));
@@ -56,16 +56,16 @@ public class WireDataObjImpl extends ConductorDataObjImpl implements WireDataObj
 
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
-		PropertyValue[1] = "-1";
-		PropertyValue[2] =  "-1";
-		PropertyValue[3] =  "none";
-		PropertyValue[4] =  "-1";
-		PropertyValue[5] =  "none";
-		PropertyValue[6] =  "-1";
-		PropertyValue[7] =  "none";
-		PropertyValue[8] =  "-1";
-		PropertyValue[9] =  "-1";
-		PropertyValue[10] =  "-1";
+		propertyValue[1] = "-1";
+		propertyValue[2] =  "-1";
+		propertyValue[3] =  "none";
+		propertyValue[4] =  "-1";
+		propertyValue[5] =  "none";
+		propertyValue[6] =  "-1";
+		propertyValue[7] =  "none";
+		propertyValue[8] =  "-1";
+		propertyValue[9] =  "-1";
+		propertyValue[10] =  "-1";
 
 		super.initPropertyValues(WireData.NumPropsThisClass);
 	}

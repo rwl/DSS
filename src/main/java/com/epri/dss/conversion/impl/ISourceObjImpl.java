@@ -32,7 +32,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		super(parClass);
 
 		setName(sourceName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
+		this.objType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
 
 		setNPhases(3);
 		this.nConds = 3;

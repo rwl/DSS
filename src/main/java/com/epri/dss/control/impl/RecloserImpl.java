@@ -20,7 +20,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		super();
 
 		this.className = "Recloser";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.RECLOSER_CONTROL;
+		this.classType = this.classType + DSSClassDefs.RECLOSER_CONTROL;
 
 		defineProperties();
 

@@ -61,7 +61,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	public RegControlObjImpl(DSSClassImpl parClass, String regControlName) {
 		super(parClass);
 		setName(regControlName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -105,7 +105,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		this.VBuffer = null;
 		this.CBuffer = null;
 
-		this.DSSObjType = parClass.getDSSClassType();  // REG_CONTROL;
+		this.objType = parClass.getDSSClassType();  // REG_CONTROL;
 
 		initPropertyValues(0);
 		this.inverseTime = false;
@@ -662,31 +662,31 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "";   // "element";
-		PropertyValue[1] = "1";  // "terminal";
-		PropertyValue[2] = "120";
-		PropertyValue[3] = "3";
-		PropertyValue[4] = "60";
-		PropertyValue[5] = "300";
-		PropertyValue[6] = "0";
-		PropertyValue[7] = "0";
-		PropertyValue[8] = "";
-		PropertyValue[9] = "15";
-		PropertyValue[10] = "no";
-		PropertyValue[11] = "120";
-		PropertyValue[12] = "3";
-		PropertyValue[13] = "0";
-		PropertyValue[14] = "0";
-		PropertyValue[15] = "2";
-		PropertyValue[16] = "no";
-		PropertyValue[17] = "16";
-		PropertyValue[18] = "no";
-		PropertyValue[19] = "1";
-		PropertyValue[20] = "0.0";
-		PropertyValue[21] = "1";
-		PropertyValue[22] = "100";
-		PropertyValue[23] = "60";
-		PropertyValue[24] = "No";
+		propertyValue[0] = "";   // "element";
+		propertyValue[1] = "1";  // "terminal";
+		propertyValue[2] = "120";
+		propertyValue[3] = "3";
+		propertyValue[4] = "60";
+		propertyValue[5] = "300";
+		propertyValue[6] = "0";
+		propertyValue[7] = "0";
+		propertyValue[8] = "";
+		propertyValue[9] = "15";
+		propertyValue[10] = "no";
+		propertyValue[11] = "120";
+		propertyValue[12] = "3";
+		propertyValue[13] = "0";
+		propertyValue[14] = "0";
+		propertyValue[15] = "2";
+		propertyValue[16] = "no";
+		propertyValue[17] = "16";
+		propertyValue[18] = "no";
+		propertyValue[19] = "1";
+		propertyValue[20] = "0.0";
+		propertyValue[21] = "1";
+		propertyValue[22] = "100";
+		propertyValue[23] = "60";
+		propertyValue[24] = "No";
 
 		super.initPropertyValues(RegControl.NumPropsThisClass);
 	}

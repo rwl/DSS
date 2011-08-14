@@ -19,7 +19,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		super(parClass);
 
 		setName(swtControlName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;

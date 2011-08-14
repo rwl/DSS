@@ -19,7 +19,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	public TransformerImpl() {
 		super();
 		this.className   = "Transformer";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.XFMR_ELEMENT; // override PDElement (kept in both actually)
+		this.classType = this.classType + DSSClassDefs.XFMR_ELEMENT; // override PDElement (kept in both actually)
 
 		this.activeElement = -1;
 

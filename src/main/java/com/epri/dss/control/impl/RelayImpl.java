@@ -20,7 +20,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		super();
 
 		this.className = "Relay";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.RELAY_CONTROL;
+		this.classType = this.classType + DSSClassDefs.RELAY_CONTROL;
 
 		defineProperties();
 

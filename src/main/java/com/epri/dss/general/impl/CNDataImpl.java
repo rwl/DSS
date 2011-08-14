@@ -13,15 +13,15 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	public CNDataImpl() {
 		super();
 		this.className = "CNData";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -45,10 +45,10 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Globals.setActiveDSSObject(new CNDataObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
+		globals.setActiveDSSObject(new CNDataObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	/**
@@ -56,33 +56,33 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
-		int Result = 0;
+		int result = 0;
 		// continue parsing with contents of parser
 		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
-		Globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
+		globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
 
 		CNDataObj acd = (CNDataObj) ConductorDataImpl.getActiveConductorDataObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
 
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				acd.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				acd.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
 				break;
 			case 0:
 				acd.setkStrand(parser.makeInteger());
@@ -98,12 +98,12 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				break;
 			default:
 				// inherited parameters
-				classEdit(ConductorDataImpl.getActiveConductorDataObj(), ParamPointer - CNData.NumPropsThisClass);
+				classEdit(ConductorDataImpl.getActiveConductorDataObj(), paramPointer - CNData.NumPropsThisClass);
 				break;
 			}
 
 			/* Set defaults */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 1:
 				if (acd.getGmrStrand() <= 0.0)
 					acd.setGmrStrand(0.7788 * 0.5 * acd.getDiaStrand());
@@ -111,49 +111,49 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			}
 
 			/* Check for critical errors */
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				if (acd.getkStrand() < 2)
-					Globals.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
+					globals.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
 				break;
 			case 1:
 				if (acd.getDiaStrand() <= 0.0)
-					Globals.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
+					globals.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
 				break;
 			case 2:
 				if (acd.getGmrStrand() <= 0.0)
-					Globals.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
+					globals.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
 				break;
 			}
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
 	protected int makeLike(String CNName) {
 		CNDataObj acd = (CNDataObj) ConductorDataImpl.getActiveConductorDataObj();
 
-		int Result = 0;
-		CNDataObj OtherData = (CNDataObj) find(CNName);
-		if (OtherData != null) {
-			acd.setkStrand(OtherData.getkStrand());
-			acd.setDiaStrand(OtherData.getDiaStrand());
-			acd.setGmrStrand(OtherData.getGmrStrand());
-			acd.setRStrand(OtherData.getRStrand());
-			classMakeLike(OtherData);
+		int result = 0;
+		CNDataObj otherData = (CNDataObj) find(CNName);
+		if (otherData != null) {
+			acd.setkStrand(otherData.getkStrand());
+			acd.setDiaStrand(otherData.getDiaStrand());
+			acd.setGmrStrand(otherData.getGmrStrand());
+			acd.setRStrand(otherData.getRStrand());
+			classMakeLike(otherData);
 			for (int i = 0; i < acd.getParentClass().getNumProperties(); i++)
-				acd.setPropertyValue(i, OtherData.getPropertyValue(i));
-			Result = 1;
+				acd.setPropertyValue(i, otherData.getPropertyValue(i));
+			result = 1;
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in concentric neutral makeLike: \"" + CNName + "\" not found.", 102);
 		}
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement CNData.init().", -1);
 		return 0;
 	}
@@ -168,17 +168,17 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	/**
 	 * Sets the active CNData.
 	 */
-	public void setCode(String Value) {
+	public void setCode(String value) {
 		ConductorDataImpl.setActiveConductorDataObj(null);
 		CNDataObj pCNDataObj = (CNDataObj) elementList.getFirst();
 		while (pCNDataObj != null) {
-			if (pCNDataObj.getName().equalsIgnoreCase(Value)) {
+			if (pCNDataObj.getName().equalsIgnoreCase(value)) {
 				ConductorDataImpl.setActiveConductorDataObj(pCNDataObj);
 				return;
 			}
 			pCNDataObj = (CNDataObj) elementList.getNext();
 		}
-		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + Value + "\" not found.", 103);
+		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + value + "\" not found.", 103);
 	}
 
 }

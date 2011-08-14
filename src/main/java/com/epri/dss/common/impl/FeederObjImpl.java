@@ -25,7 +25,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 		super(ParClass);
 
 		setName(MeterName.toLowerCase());
-		DSSObjType = ParClass.getDSSClassType();  // this will be a current source (PCElement)
+		objType = ParClass.getDSSClassType();  // this will be a current source (PCElement)
 
 		sequenceList = new ArrayList<CktElement>(50);
 		shuntList = new ArrayList<CktElement>(50);

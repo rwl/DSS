@@ -18,7 +18,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 	public GICTransformerObjImpl(DSSClass parClass, String transformerName) {
 		super(parClass);
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 		setName(transformerName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases

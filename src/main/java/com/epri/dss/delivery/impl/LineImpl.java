@@ -23,7 +23,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	public LineImpl() {
 		super();
 		this.className = "Line";
-		this.DSSClassType = DSSClassType + DSSClassDefs.LINE_ELEMENT;  // in both PD element list and line section lists
+		this.classType = classType + DSSClassDefs.LINE_ELEMENT;  // in both PD element list and line section lists
 
 		this.activeElement = -1;
 		lineCodeClass = null;

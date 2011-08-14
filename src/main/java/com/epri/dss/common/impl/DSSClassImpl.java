@@ -41,7 +41,7 @@ public class DSSClassImpl implements DSSClass {
 	/** Maps property to internal command number */
 	protected int[] revPropertyIdxMap;
 
-	protected int DSSClassType;
+	protected int classType;
 
 	protected PointerList elementList;
 
@@ -373,11 +373,11 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public int getDSSClassType() {
-		return DSSClassType;
+		return classType;
 	}
 
 	public void setDSSClassType(int type) {
-		DSSClassType = type;
+		classType = type;
 	}
 
 	public PointerList getElementList() {

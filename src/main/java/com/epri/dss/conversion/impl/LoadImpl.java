@@ -16,7 +16,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	public LoadImpl() {
 		super();
 		this.className = "Load";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.LOAD_ELEMENT;
+		this.classType = this.classType + DSSClassDefs.LOAD_ELEMENT;
 
 		this.activeElement = -1;
 

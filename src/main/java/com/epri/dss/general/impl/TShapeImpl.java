@@ -22,7 +22,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	public TShapeImpl() {
 		super();
 		this.className   = "TShape";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 

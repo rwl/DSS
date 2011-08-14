@@ -15,7 +15,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	public FaultImpl() {
 		super();
 		this.className = "Fault";
-		this.DSSClassType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // only in fault object class
+		this.classType = DSSClassDefs.FAULTOBJECT + DSSClassDefs.NON_PCPD_ELEM;  // only in fault object class
 
 		this.activeElement = -1;
 

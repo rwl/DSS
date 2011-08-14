@@ -53,7 +53,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		super(parClass);
 
 		setName(recloserName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -105,7 +105,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 		this.cBuffer = null;
 
-		this.DSSObjType = parClass.getDSSClassType();  // CAP_CONTROL;
+		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -441,28 +441,28 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0]  = "";   // "element";
-		PropertyValue[1]  = "1";  // "terminal";
-		PropertyValue[2]  = "";
-		PropertyValue[3]  = "1";  // "terminal";
-		PropertyValue[4]  = String.valueOf(numFast);
-		PropertyValue[5]  = "";
-		PropertyValue[6]  = "";
-		PropertyValue[7]  = "";
-		PropertyValue[8]  = "";
-		PropertyValue[9]  = "1.0";
-		PropertyValue[10] = "1.0";
-		PropertyValue[11] = "0";
-		PropertyValue[12] = "0";
-		PropertyValue[13] = "15";
-		PropertyValue[14] = "4";
-		PropertyValue[15] = "(0.5, 2.0, 2.0)";
-		PropertyValue[16] = "0.0";
-		PropertyValue[17] = "";
-		PropertyValue[18] = "1.0";
-		PropertyValue[19] = "1.0";
-		PropertyValue[20] = "1.0";
-		PropertyValue[21] = "1.0";
+		propertyValue[0]  = "";   // "element";
+		propertyValue[1]  = "1";  // "terminal";
+		propertyValue[2]  = "";
+		propertyValue[3]  = "1";  // "terminal";
+		propertyValue[4]  = String.valueOf(numFast);
+		propertyValue[5]  = "";
+		propertyValue[6]  = "";
+		propertyValue[7]  = "";
+		propertyValue[8]  = "";
+		propertyValue[9]  = "1.0";
+		propertyValue[10] = "1.0";
+		propertyValue[11] = "0";
+		propertyValue[12] = "0";
+		propertyValue[13] = "15";
+		propertyValue[14] = "4";
+		propertyValue[15] = "(0.5, 2.0, 2.0)";
+		propertyValue[16] = "0.0";
+		propertyValue[17] = "";
+		propertyValue[18] = "1.0";
+		propertyValue[19] = "1.0";
+		propertyValue[20] = "1.0";
+		propertyValue[21] = "1.0";
 
 		super.initPropertyValues(Recloser.NumPropsThisClass);
 	}

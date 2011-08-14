@@ -32,7 +32,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	public ReactorObjImpl(DSSClass parClass, String reactorName) {
 		super(parClass);
 		setName(reactorName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -305,11 +305,11 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		super.dumpProperties(f, complete);
 
-		for (k = 0; k < ParentClass.getNumProperties(); k++) {
+		for (k = 0; k < parentClass.getNumProperties(); k++) {
 			switch (k) {
 			case 6:
 				if (RMatrix != null) {
-					f.print(ParentClass.getPropertyName()[k] + "= (");
+					f.print(parentClass.getPropertyName()[k] + "= (");
 					for (i = 0; i < nPhases; i++) {
 						for (j = 0; j < i; j++)
 							f.printf("%-.5g", RMatrix[(i - 1) * nPhases + j] + " ");
@@ -321,7 +321,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				break;
 			case 7:
 				if (XMatrix != null) {
-					f.print(ParentClass.getPropertyName()[k] + "= (");
+					f.print(parentClass.getPropertyName()[k] + "= (");
 					for (i = 0; i < nPhases; i++) {
 						for (j = 0; j < i; j++)
 							f.printf("%-.5g", XMatrix[(i - 1) * nPhases + j] + " ");
@@ -330,7 +330,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 					}
 					f.println(")");
 				} else {
-					f.println("~ " + ParentClass.getPropertyName()[k] + "=" + getPropertyValue(k));
+					f.println("~ " + parentClass.getPropertyName()[k] + "=" + getPropertyValue(k));
 				}
 				break;
 			}
@@ -376,27 +376,27 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[1] = getBus(1);  // TODO Check zero based indexing
-		PropertyValue[2] = getBus(2);
-		PropertyValue[3] = "3";
-		PropertyValue[4] = "1200";
-		PropertyValue[5] = "12.47";
-		PropertyValue[6] = "wye";
-		PropertyValue[7] = "";
-		PropertyValue[8] = "";
-		PropertyValue[9] = "NO";  // parallel
-		PropertyValue[10] = "0";  // r series
-		PropertyValue[11] = String.format("%-.6g", X);  // X
-		PropertyValue[12] = "0";  // Rp
+		propertyValue[1] = getBus(1);  // TODO Check zero based indexing
+		propertyValue[2] = getBus(2);
+		propertyValue[3] = "3";
+		propertyValue[4] = "1200";
+		propertyValue[5] = "12.47";
+		propertyValue[6] = "wye";
+		propertyValue[7] = "";
+		propertyValue[8] = "";
+		propertyValue[9] = "NO";  // parallel
+		propertyValue[10] = "0";  // r series
+		propertyValue[11] = String.format("%-.6g", X);  // X
+		propertyValue[12] = "0";  // Rp
 
 		super.initPropertyValues(Reactor.NumPropsThisClass);
 
 		// override inherited properties
-		PropertyValue[Reactor.NumPropsThisClass + 1] = String.valueOf(getNormAmps());  // TODO Check zero based indexing
-		PropertyValue[Reactor.NumPropsThisClass + 2] = String.valueOf(getEmergAmps());
-		PropertyValue[Reactor.NumPropsThisClass + 3] = String.valueOf(getFaultRate());
-		PropertyValue[Reactor.NumPropsThisClass + 4] = String.valueOf(getPctPerm());
-		PropertyValue[Reactor.NumPropsThisClass + 5] = String.valueOf(getHrsToRepair());
+		propertyValue[Reactor.NumPropsThisClass + 1] = String.valueOf(getNormAmps());  // TODO Check zero based indexing
+		propertyValue[Reactor.NumPropsThisClass + 2] = String.valueOf(getEmergAmps());
+		propertyValue[Reactor.NumPropsThisClass + 3] = String.valueOf(getFaultRate());
+		propertyValue[Reactor.NumPropsThisClass + 4] = String.valueOf(getPctPerm());
+		propertyValue[Reactor.NumPropsThisClass + 5] = String.valueOf(getHrsToRepair());
 
 		clearPropSeqArray();
 	}

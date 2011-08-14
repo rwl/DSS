@@ -25,7 +25,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	public StorageImpl() {
 		super();
 		className = "Storage";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.STORAGE_ELEMENT;  // in both PCElement and Storage element list
+		this.classType = this.classType + DSSClassDefs.STORAGE_ELEMENT;  // in both PCElement and Storage element list
 
 		this.activeElement = -1;
 

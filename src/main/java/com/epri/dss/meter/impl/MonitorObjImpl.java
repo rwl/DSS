@@ -96,7 +96,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		this.FileVersion     = 1;
 		this.SampleCount     = 0;
 
-		this.DSSObjType = ParClass.getDSSClassType();  // MON_ELEMENT;
+		this.objType = ParClass.getDSSClassType();  // MON_ELEMENT;
 
 		initPropertyValues(0);
 	}

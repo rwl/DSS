@@ -79,7 +79,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	public RelayObjImpl(DSSClassImpl parClass, String relayName) {
 		super(parClass);
 		setName(relayName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -138,7 +138,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 		this.cBuffer = null;
 
-		this.DSSObjType = parClass.getDSSClassType();  // CAP_CONTROL;
+		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 
@@ -428,35 +428,35 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "";   // "element";
-		PropertyValue[1] = "1";  // "terminal";
-		PropertyValue[2] = "";
-		PropertyValue[3] = "1";  // "terminal";
-		PropertyValue[4] = "current";
-		PropertyValue[5] = "";
-		PropertyValue[6] = "";
-		PropertyValue[7] = "1.0";
-		PropertyValue[8] = "1.0";
-		PropertyValue[9] = "0.0";
-		PropertyValue[10] = "0.0";
-		PropertyValue[11] = "15";
-		PropertyValue[12] = "4";
-		PropertyValue[13] = "(0.5, 2.0, 2.0)";
-		PropertyValue[14] = "";
-		PropertyValue[15] = "";
-		PropertyValue[16] = "0.0";
-		PropertyValue[17] = "0.0";
-		PropertyValue[18] = "";
-		PropertyValue[19] = "";
-		PropertyValue[20] = "20";
-		PropertyValue[21] = "1";
-		PropertyValue[22] = "100";
-		PropertyValue[23] = "0";
-		PropertyValue[24] = "2";
-		PropertyValue[25] = "1.2";
-		PropertyValue[26] = "0.8";
-		PropertyValue[27] = "1.0";
-		PropertyValue[28] = "1.0";
+		propertyValue[0] = "";   // "element";
+		propertyValue[1] = "1";  // "terminal";
+		propertyValue[2] = "";
+		propertyValue[3] = "1";  // "terminal";
+		propertyValue[4] = "current";
+		propertyValue[5] = "";
+		propertyValue[6] = "";
+		propertyValue[7] = "1.0";
+		propertyValue[8] = "1.0";
+		propertyValue[9] = "0.0";
+		propertyValue[10] = "0.0";
+		propertyValue[11] = "15";
+		propertyValue[12] = "4";
+		propertyValue[13] = "(0.5, 2.0, 2.0)";
+		propertyValue[14] = "";
+		propertyValue[15] = "";
+		propertyValue[16] = "0.0";
+		propertyValue[17] = "0.0";
+		propertyValue[18] = "";
+		propertyValue[19] = "";
+		propertyValue[20] = "20";
+		propertyValue[21] = "1";
+		propertyValue[22] = "100";
+		propertyValue[23] = "0";
+		propertyValue[24] = "2";
+		propertyValue[25] = "1.2";
+		propertyValue[26] = "0.8";
+		propertyValue[27] = "1.0";
+		propertyValue[28] = "1.0";
 
 		super.initPropertyValues(Relay.NumPropsThisClass);
 	}
@@ -513,7 +513,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			break;
 		}
 
-		PropertyValue[23] = String.format("%-.g", delayTime);
+		propertyValue[23] = String.format("%-.g", delayTime);
 	}
 
 	/**

@@ -22,7 +22,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	public SpectrumImpl() {
 		super();
 		this.className = "Spectrum";
-		this.DSSClassType = DSSClassDefs.DSS_OBJECT;
+		this.classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 
@@ -113,10 +113,10 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getHarmArray());
 					break;
 				case 3:
-					aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
-					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getPuMagArray());
+					aso.setPUMagArray((double[]) Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()));
+					Utilities.interpretDblArray(Param, aso.getNumHarm(), aso.getPUMagArray());
 					for (int i = 0; i < aso.getNumHarm(); i++)
-						aso.getPuMagArray()[i] = aso.getPuMagArray()[i] * 0.01;  // convert to per unit
+						aso.getPUMagArray()[i] = aso.getPUMagArray()[i] * 0.01;  // convert to per unit
 					break;
 				case 4:
 					aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
@@ -136,7 +136,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			}
 		}
 
-		if ((aso.getHarmArray() != null) && (aso.getPuMagArray() != null) && (aso.getAngleArray() != null))
+		if ((aso.getHarmArray() != null) && (aso.getPUMagArray() != null) && (aso.getAngleArray() != null))
 			aso.setMultArray();
 
 		return Result;
@@ -155,12 +155,12 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			aso.setNumHarm(OtherSpectrum.getNumHarm());
 
 			aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
-			aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
+			aso.setPUMagArray((double[]) Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()));
 			aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
 
 			for (int i = 0; i < aso.getNumHarm(); i++) {
 				aso.getHarmArray()[i] = OtherSpectrum.getHarmArray()[i];
-				aso.getPuMagArray()[i] = OtherSpectrum.getPuMagArray()[i];
+				aso.getPUMagArray()[i] = OtherSpectrum.getPUMagArray()[i];
 				aso.getAngleArray()[i] = OtherSpectrum.getAngleArray()[i];
 			}
 
@@ -217,7 +217,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			SpectrumObj aso = getActiveSpectrumObj();
 
 			aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
-			aso.setPuMagArray((double[]) Utilities.resizeArray(aso.getPuMagArray(), aso.getNumHarm()));
+			aso.setPUMagArray((double[]) Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()));
 			aso.setAngleArray((double[]) Utilities.resizeArray(aso.getAngleArray(), aso.getNumHarm()));
 
 			int i = 0;
@@ -229,7 +229,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				parser.getNextParam();
 				aso.getHarmArray()[i] = parser.makeDouble();
 				parser.getNextParam();
-				aso.getPuMagArray()[i] = parser.makeDouble() * 0.01;
+				aso.getPUMagArray()[i] = parser.makeDouble() * 0.01;
 				parser.getNextParam();
 				aso.getAngleArray()[i] = parser.makeDouble();
 			}

@@ -36,7 +36,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		super(parClass);
 
 		setName(genDispatcherName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -203,13 +203,13 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = "";  // "element";
-		PropertyValue[1] = "1";  // "terminal";
-		PropertyValue[2] = "8000";
-		PropertyValue[3] = "100";
-		PropertyValue[4] = "0";
-		PropertyValue[5] = "";
-		PropertyValue[6] = "";
+		propertyValue[0] = "";  // "element";
+		propertyValue[1] = "1";  // "terminal";
+		propertyValue[2] = "8000";
+		propertyValue[3] = "100";
+		propertyValue[4] = "0";
+		propertyValue[5] = "";
+		propertyValue[6] = "";
 
 		super.initPropertyValues(GenDispatcher.NumPropsThisClass);	// TODO Check zero based indexing
 	}

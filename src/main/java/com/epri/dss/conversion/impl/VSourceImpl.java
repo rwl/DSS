@@ -15,7 +15,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	public VSourceImpl() {
 		super();
 		this.className = "Vsource";
-		this.DSSClassType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don't want this in PC element list
+		this.classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don't want this in PC element list
 
 		this.activeElement = -1;
 

@@ -70,7 +70,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public LineObjImpl(DSSClass parClass, String lineName) {
 		super(parClass);
 		setName(lineName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
+		this.objType = parClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -116,7 +116,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		this.spacingSpecified = false;
 		this.lineSpacingObj = null;
 		this.wireData = null;
-		this.phaseChoice = ConductorChoice.Unknown;
+		this.phaseChoice = ConductorChoice.UNKNOWN;
 		this.spacingCode = "";
 
 		this.ZFrequency = -1.0;  // indicate Z not computed.
@@ -662,38 +662,38 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0] = getBus(1);  // TODO Check zero based indexing
-		PropertyValue[1] = getBus(2);
-		PropertyValue[2] = "";
-		PropertyValue[3] = "1.0";  // "5.28"; Changed 2/17/00
-		PropertyValue[4] = "3";
-		PropertyValue[5] = ".058";
-		PropertyValue[6] = ".1206";
-		PropertyValue[7] = ".1784";
-		PropertyValue[8] = ".4047";
-		PropertyValue[9] = "3.4";
-		PropertyValue[10] = "1.6";
-		PropertyValue[11] = "";
-		PropertyValue[12] = "";
-		PropertyValue[13] = "";
-		PropertyValue[14] = "false";
-		PropertyValue[15] = "0.01805";
-		PropertyValue[16] = "0.155081";
-		PropertyValue[17] = "100";
-		PropertyValue[18] = "";
-		PropertyValue[19] = "NONE";
-		PropertyValue[20] = "";
-		PropertyValue[21] = "";
-		PropertyValue[22] = Utilities.getEarthModel(DSSGlobals.SIMPLECARSON);
+		propertyValue[0] = getBus(1);  // TODO Check zero based indexing
+		propertyValue[1] = getBus(2);
+		propertyValue[2] = "";
+		propertyValue[3] = "1.0";  // "5.28"; Changed 2/17/00
+		propertyValue[4] = "3";
+		propertyValue[5] = ".058";
+		propertyValue[6] = ".1206";
+		propertyValue[7] = ".1784";
+		propertyValue[8] = ".4047";
+		propertyValue[9] = "3.4";
+		propertyValue[10] = "1.6";
+		propertyValue[11] = "";
+		propertyValue[12] = "";
+		propertyValue[13] = "";
+		propertyValue[14] = "false";
+		propertyValue[15] = "0.01805";
+		propertyValue[16] = "0.155081";
+		propertyValue[17] = "100";
+		propertyValue[18] = "";
+		propertyValue[19] = "NONE";
+		propertyValue[20] = "";
+		propertyValue[21] = "";
+		propertyValue[22] = Utilities.getEarthModel(DSSGlobals.SIMPLECARSON);
 
 		super.initPropertyValues(Line.NumPropsThisClass);
 
 		// override inherited properties just in case
-		PropertyValue[Line.NumPropsThisClass + 1] = "400";  // normAmps    // TODO Check zero based indexing
-		PropertyValue[Line.NumPropsThisClass + 2] = "600";  // emergAmps
-		PropertyValue[Line.NumPropsThisClass + 3] = "0.1";  // faultRate
-		PropertyValue[Line.NumPropsThisClass + 4] = "20";   // pctPerm
-		PropertyValue[Line.NumPropsThisClass + 5] = "3";    // hrsToRepair
+		propertyValue[Line.NumPropsThisClass + 1] = "400";  // normAmps    // TODO Check zero based indexing
+		propertyValue[Line.NumPropsThisClass + 2] = "600";  // emergAmps
+		propertyValue[Line.NumPropsThisClass + 3] = "0.1";  // faultRate
+		propertyValue[Line.NumPropsThisClass + 4] = "20";   // pctPerm
+		propertyValue[Line.NumPropsThisClass + 5] = "3";    // hrsToRepair
 
 		clearPropSeqArray();
 	}
@@ -709,9 +709,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		// if already single phase, let alone
 		if (nPhases > 1) {
 			// kill certain propertyValue elements to get a cleaner looking save
-			PrpSequence[2] = 0;  // TODO Check zero based indexing
+			prpSequence[2] = 0;  // TODO Check zero based indexing
 			for (i = 5; i < 13; i++)
-				PrpSequence[i] = 0;
+				prpSequence[i] = 0;
 
 			if (isSwitch) {
 				s = " R1=1 X1=1 C1=1.1 Phases=1 Len=0.001";
@@ -995,12 +995,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (getLineSpacingObj() == null)
 			globals.doSimpleMsg("Must assign the LineSpacing before wires.", 181);
 
-		if (phaseChoice == ConductorChoice.Unknown) {  // it's an overhead line
+		if (phaseChoice == ConductorChoice.UNKNOWN) {  // it's an overhead line
 			lineCodeSpecified = false;
 			killGeometrySpecified();
 			wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
 			istart = 1;
-			phaseChoice = ConductorChoice.Overhead;
+			phaseChoice = ConductorChoice.OVERHEAD;
 		} else {  // adding bare neutrals to an underground line - TODO what about repeat invocation?
 			istart = lineSpacingObj.getNPhases() + 1;
 		}
@@ -1026,7 +1026,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (lineSpacingObj == null)
 			globals.doSimpleMsg("Must assign the LineSpacing before CN cables.", 181);
 
-		phaseChoice = ConductorChoice.ConcentricNeutral;
+		phaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
 		globals.getAuxParser().setCmdString(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
@@ -1049,7 +1049,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (lineSpacingObj == null)
 			globals.doSimpleMsg("Must assign the LineSpacing before TS cables.", 181);
 
-		phaseChoice = ConductorChoice.TapeShield;
+		phaseChoice = ConductorChoice.TAPE_SHIELD;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
 		globals.getAuxParser().setCmdString(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
@@ -1085,7 +1085,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			setEmergAmps(lineGeometryObj.getEmergAmps());
 			updatePDProperties();
 
-			setNPhases( lineGeometryObj.getNconds() );
+			setNPhases( lineGeometryObj.getNConds() );
 			setNConds(nPhases);  // force reallocation of terminal info
 			YOrder = nConds * nTerms;
 			setYPrimInvalid(true);  // force rebuild of Y matrix
@@ -1111,8 +1111,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 			DSSGlobals.getInstance().setActiveEarthModel(getEarthModel());
 
-			Z    = getLineGeometryObj().getZmatrix(f, len, lengthUnits);
-			Yc   = getLineGeometryObj().getYCmatrix(f, len, lengthUnits);
+			Z    = getLineGeometryObj().getZMatrix(f, len, lengthUnits);
+			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
 			/* init Zinv */
 			if (Z != null) {
 				ZInv = new CMatrixImpl(Z.getNOrder());  // either no. phases or no. conductors
@@ -1152,8 +1152,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		globals.setActiveEarthModel(earthModel);
 
-		Z  = pGeo.getZmatrix(f, len, lengthUnits);
-		Yc = pGeo.getYCmatrix(f, len, lengthUnits);
+		Z  = pGeo.getZMatrix(f, len, lengthUnits);
+		Yc = pGeo.getYcMatrix(f, len, lengthUnits);
 		if (Z != null) {
 			ZInv = new CMatrixImpl(Z.getNOrder());  // either no. phases or no. conductors
 			ZInv.copyFrom(Z);
@@ -1180,7 +1180,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (spacingSpecified) {
 			lineSpacingObj = null;
 			wireData = new WireDataObj[0];
-			phaseChoice = ConductorChoice.Unknown;
+			phaseChoice = ConductorChoice.UNKNOWN;
 			ZFrequency = -1.0;
 			spacingSpecified = false;
 		}

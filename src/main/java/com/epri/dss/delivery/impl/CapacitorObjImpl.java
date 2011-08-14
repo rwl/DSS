@@ -38,7 +38,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		super(parClass);
 
 		setName(capacitorName.toLowerCase());
-		this.DSSObjType = parClass.getDSSClassType();
+		this.objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
 		this.nConds = 3;
@@ -221,23 +221,23 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 	public void dumpProperties(PrintStream f, boolean complete) {
 		super.dumpProperties(f, complete);
 
-		f.println("~ " + ParentClass.getPropertyName()[0] + "=" + getFirstBus());
-		f.println("~ " + ParentClass.getPropertyName()[1] + "=" + getNextBus());
+		f.println("~ " + parentClass.getPropertyName()[0] + "=" + getFirstBus());
+		f.println("~ " + parentClass.getPropertyName()[1] + "=" + getNextBus());
 
-		f.println("~ " + ParentClass.getPropertyName()[2] + "=" + getNPhases());
-		f.println("~ " + ParentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
+		f.println("~ " + parentClass.getPropertyName()[2] + "=" + getNPhases());
+		f.println("~ " + parentClass.getPropertyName()[3] + "=" + getPropertyValue(3));
 
-		f.println("~ " + ParentClass.getPropertyName()[4] + "=" + getKVRating());
+		f.println("~ " + parentClass.getPropertyName()[4] + "=" + getKVRating());
 		switch (getConnection()) {
 		case 0:
-			f.println("~ " + ParentClass.getPropertyName()[5] + "=wye");
+			f.println("~ " + parentClass.getPropertyName()[5] + "=wye");
 			break;
 		case 1:
-			f.println("~ " + ParentClass.getPropertyName()[6] + "=delta");
+			f.println("~ " + parentClass.getPropertyName()[6] + "=delta");
 			break;
 		}
 		if (getCMatrix() != null) {
-			f.print(ParentClass.getPropertyName()[6] + "= (");
+			f.print(parentClass.getPropertyName()[6] + "= (");
 			for (int i = 0; i < getNPhases(); i++) {
 				for (int j = 0; j < i; j++) {
 					// TODO: Check zero based indexing
@@ -249,15 +249,15 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			f.println(")");
 		}
 
-		f.println("~ " + ParentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
-		f.println("~ " + ParentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
-		f.println("~ " + ParentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
-		f.println("~ " + ParentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
-		f.println("~ " + ParentClass.getPropertyName()[11] + "=" + getNumSteps());
-		f.println("~ " + ParentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
+		f.println("~ " + parentClass.getPropertyName()[7] + "=" + getPropertyValue(7));
+		f.println("~ " + parentClass.getPropertyName()[8] + "=" + getPropertyValue(8));
+		f.println("~ " + parentClass.getPropertyName()[9] + "=" + getPropertyValue(9));
+		f.println("~ " + parentClass.getPropertyName()[10] + "=" + getPropertyValue(10));
+		f.println("~ " + parentClass.getPropertyName()[11] + "=" + getNumSteps());
+		f.println("~ " + parentClass.getPropertyName()[12] + "=" + getPropertyValue(12));
 
-		for (int i = Capacitor.NumPropsThisClass + 1; i < ParentClass.getNumProperties(); i++) {  // TODO: Check zero based indexing
-			f.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+		for (int i = Capacitor.NumPropsThisClass + 1; i < parentClass.getNumProperties(); i++) {  // TODO: Check zero based indexing
+			f.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 		}
 
 		if (complete) {
@@ -267,28 +267,28 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		PropertyValue[0] = getBus(1);  // TODO: Check zero based indexing
-		PropertyValue[1] = getBus(2);  // TODO: Check zero based indexing
-		PropertyValue[2] = "3";
-		PropertyValue[3] = "1200";
-		PropertyValue[4] = "12.47";
-		PropertyValue[5] = "wye";
-		PropertyValue[6] = "";
-		PropertyValue[7] = "";
-		PropertyValue[8] = "0";
-		PropertyValue[9] = "0";
-		PropertyValue[10] = "0";
-		PropertyValue[11] = "1";
-		PropertyValue[12] = "1";  // states
+		propertyValue[0] = getBus(1);  // TODO: Check zero based indexing
+		propertyValue[1] = getBus(2);  // TODO: Check zero based indexing
+		propertyValue[2] = "3";
+		propertyValue[3] = "1200";
+		propertyValue[4] = "12.47";
+		propertyValue[5] = "wye";
+		propertyValue[6] = "";
+		propertyValue[7] = "";
+		propertyValue[8] = "0";
+		propertyValue[9] = "0";
+		propertyValue[10] = "0";
+		propertyValue[11] = "1";
+		propertyValue[12] = "1";  // states
 
 		super.initPropertyValues(Capacitor.NumPropsThisClass);
 
 		// override inherited properties
-		PropertyValue[Capacitor.NumPropsThisClass + 1] = Utilities.strReal(getNormAmps(), 0);  // TODO: Check zero based indexing
-		PropertyValue[Capacitor.NumPropsThisClass + 2] = Utilities.strReal(getEmergAmps(), 0);
-		PropertyValue[Capacitor.NumPropsThisClass + 3] = Utilities.strReal(getFaultRate(), 0);
-		PropertyValue[Capacitor.NumPropsThisClass + 4] = Utilities.strReal(getPctPerm(), 0);
-		PropertyValue[Capacitor.NumPropsThisClass + 5] = Utilities.strReal(getHrsToRepair(), 0);
+		propertyValue[Capacitor.NumPropsThisClass + 1] = Utilities.strReal(getNormAmps(), 0);  // TODO: Check zero based indexing
+		propertyValue[Capacitor.NumPropsThisClass + 2] = Utilities.strReal(getEmergAmps(), 0);
+		propertyValue[Capacitor.NumPropsThisClass + 3] = Utilities.strReal(getFaultRate(), 0);
+		propertyValue[Capacitor.NumPropsThisClass + 4] = Utilities.strReal(getPctPerm(), 0);
+		propertyValue[Capacitor.NumPropsThisClass + 5] = Utilities.strReal(getHrsToRepair(), 0);
 		clearPropSeqArray();
 	}
 

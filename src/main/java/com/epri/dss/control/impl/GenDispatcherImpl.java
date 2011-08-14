@@ -16,7 +16,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		super();
 
 		this.className = "GenDispatcher";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_CONTROL;
+		this.classType = this.classType + DSSClassDefs.GEN_CONTROL;
 
 		defineProperties();
 

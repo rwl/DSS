@@ -20,7 +20,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		super();
 
 		this.className = "Fuse";
-		this.DSSClassType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
+		this.classType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
 
 		defineProperties();
 

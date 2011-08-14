@@ -26,7 +26,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 	public MeterElementImpl(DSSClass ParClass) {
 		super(ParClass);
-		this.DSSObjType = DSSClassDefs.METER_ELEMENT;
+		this.objType = DSSClassDefs.METER_ELEMENT;
 
 		this.ElementName         = "";
 		this.MeteredElement      = null;

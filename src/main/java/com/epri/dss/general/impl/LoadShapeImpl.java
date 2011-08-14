@@ -23,7 +23,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	public LoadShapeImpl() {
 		super();
 		className = "LoadShape";
-		DSSClassType = DSSClassDefs.DSS_OBJECT;
+		classType = DSSClassDefs.DSS_OBJECT;
 
 		this.activeElement = -1;
 

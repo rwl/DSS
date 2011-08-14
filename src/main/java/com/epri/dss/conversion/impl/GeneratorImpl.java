@@ -22,7 +22,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	public GeneratorImpl() {
 		super();
 		this.className = "Generator";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.GEN_ELEMENT;  // in both PCElement and GenElement list
+		this.classType = this.classType + DSSClassDefs.GEN_ELEMENT;  // in both PCElement and GenElement list
 
 		this.activeElement = -1;
 

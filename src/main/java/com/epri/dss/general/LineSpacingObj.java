@@ -1,19 +1,19 @@
 package com.epri.dss.general;
 
 public interface LineSpacingObj extends DSSObject {
-	
-	void setNWires(int Value);
-	
+
+	void setNWires(int value);
+
 	int getNWires();
-	
-	double getXcoord(int i);
-	
-	double getYcoord(int i);
-	
+
+	double getXCoord(int i);
+
+	double getYCoord(int i);
+
 	int getNPhases();
 
 	int getUnits();
-	
+
 	// FIXME Private members in OpenDSS.
 
 	int getNConds();

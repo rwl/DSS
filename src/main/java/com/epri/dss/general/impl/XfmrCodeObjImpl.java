@@ -37,7 +37,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	public XfmrCodeObjImpl(DSSClass ParClass, String XfmrCodeName) {
 		super(ParClass);
 		setName(XfmrCodeName.toLowerCase());
-		this.DSSObjType = ParClass.getDSSClassType();
+		this.objType = ParClass.getDSSClassType();
 
 		// default values and sizes
 		this.NPhases       = 3;
@@ -178,10 +178,10 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		F.println("~ " + "%noloadloss=" + pctNoLoadLoss);
 
 		for (int i = 27; i < XfmrCode.NumPropsThisClass; i++)  // TODO Check zero based indexing
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 
-		for (int i = XfmrCode.NumPropsThisClass + 1; i < ParentClass.getNumProperties(); i++)  // TODO Check zero based indexing
-			F.println("~ " + ParentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
+		for (int i = XfmrCode.NumPropsThisClass + 1; i < parentClass.getNumProperties(); i++)  // TODO Check zero based indexing
+			F.println("~ " + parentClass.getPropertyName()[i] + "=" + getPropertyValue(i));
 	}
 
 	/**
@@ -328,39 +328,39 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		PropertyValue[0] = "3"; // "phases";
-		PropertyValue[1] = "2"; // "windings";
-		PropertyValue[2] = "1"; // "wdg";
-		PropertyValue[3] = "wye";   // "conn";
-		PropertyValue[4] = "12.47"; // if 2or 3-phase: phase-phase else actual winding
-		PropertyValue[5] = "1000";
-		PropertyValue[6] = "1.0";
-		PropertyValue[7] = "0.2";
-		PropertyValue[8] = "-1";
-		PropertyValue[9] = "0";
-		PropertyValue[10] = "";
-		PropertyValue[11] = "";  // if 1-phase: actual winding rating; else phase-phase
-		PropertyValue[12] = "";  // if 1-phase: actual winding rating; else phase-phase
-		PropertyValue[13] = "";
-		PropertyValue[14] = "7";
-		PropertyValue[15] = "35";
-		PropertyValue[16] = "30";
-		PropertyValue[17] = "";  // x12 13 14... 23 24.. 34 ..
-		PropertyValue[18] = "2";
-		PropertyValue[19] = ".8";
-		PropertyValue[20] = ".8";
-		PropertyValue[21] = "65";
-		PropertyValue[22] = "15";
-		PropertyValue[23] = "0";
-		PropertyValue[24] = "0";
-		PropertyValue[25] = "";
-		PropertyValue[26] = "";
-		PropertyValue[27] = "1.10";
-		PropertyValue[28] = "0.90";
-		PropertyValue[29] = "32";
-		PropertyValue[30] = "0";
-		PropertyValue[31] = "1";
-		PropertyValue[32] = "";
+		propertyValue[0] = "3"; // "phases";
+		propertyValue[1] = "2"; // "windings";
+		propertyValue[2] = "1"; // "wdg";
+		propertyValue[3] = "wye";   // "conn";
+		propertyValue[4] = "12.47"; // if 2or 3-phase: phase-phase else actual winding
+		propertyValue[5] = "1000";
+		propertyValue[6] = "1.0";
+		propertyValue[7] = "0.2";
+		propertyValue[8] = "-1";
+		propertyValue[9] = "0";
+		propertyValue[10] = "";
+		propertyValue[11] = "";  // if 1-phase: actual winding rating; else phase-phase
+		propertyValue[12] = "";  // if 1-phase: actual winding rating; else phase-phase
+		propertyValue[13] = "";
+		propertyValue[14] = "7";
+		propertyValue[15] = "35";
+		propertyValue[16] = "30";
+		propertyValue[17] = "";  // x12 13 14... 23 24.. 34 ..
+		propertyValue[18] = "2";
+		propertyValue[19] = ".8";
+		propertyValue[20] = ".8";
+		propertyValue[21] = "65";
+		propertyValue[22] = "15";
+		propertyValue[23] = "0";
+		propertyValue[24] = "0";
+		propertyValue[25] = "";
+		propertyValue[26] = "";
+		propertyValue[27] = "1.10";
+		propertyValue[28] = "0.90";
+		propertyValue[29] = "32";
+		propertyValue[30] = "0";
+		propertyValue[31] = "1";
+		propertyValue[32] = "";
 
 		super.initPropertyValues(XfmrCode.NumPropsThisClass);
 	}
@@ -455,35 +455,35 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		ThermalTimeConst = thermalTimeConst;
 	}
 
-	public double getN_thermal() {
+	public double getNThermal() {
 		return n_thermal;
 	}
 
-	public void setN_thermal(double n_thermal) {
+	public void setNThermal(double n_thermal) {
 		this.n_thermal = n_thermal;
 	}
 
-	public double getM_thermal() {
+	public double getMThermal() {
 		return m_thermal;
 	}
 
-	public void setM_thermal(double m_thermal) {
+	public void setMThermal(double m_thermal) {
 		this.m_thermal = m_thermal;
 	}
 
-	public double getLrise() {
+	public double getLRise() {
 		return Lrise;
 	}
 
-	public void setLrise(double lrise) {
+	public void setLRise(double lrise) {
 		Lrise = lrise;
 	}
 
-	public double getHSrise() {
+	public double getHSRise() {
 		return HSrise;
 	}
 
-	public void setHSrise(double hSrise) {
+	public void setHSRise(double hSrise) {
 		HSrise = hSrise;
 	}
 
@@ -503,11 +503,11 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 		this.pctNoLoadLoss = pctNoLoadLoss;
 	}
 
-	public double getPpm_FloatFactor() {
+	public double getPpmFloatFactor() {
 		return ppm_FloatFactor;
 	}
 
-	public void setPpm_FloatFactor(double ppm_FloatFactor) {
+	public void setPpmFloatFactor(double ppm_FloatFactor) {
 		this.ppm_FloatFactor = ppm_FloatFactor;
 	}
 

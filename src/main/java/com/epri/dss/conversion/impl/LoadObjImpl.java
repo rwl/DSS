@@ -134,7 +134,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public LoadObjImpl(DSSClassImpl parClass, String sourceName) {
 		super(parClass);
 		setName(sourceName.toLowerCase());
-		DSSObjType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);
 		this.nConds = 4;  // defaults to wye so it has a 4th conductor
@@ -1384,39 +1384,39 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void initPropertyValues(int arrayOffset) {
 
-		PropertyValue[0]  = "3";        // "phases";
-		PropertyValue[1]  = getBus(1);  // "bus1";
-		PropertyValue[2]  = "12.47";
-		PropertyValue[3]  = "10";
-		PropertyValue[4]  = ".88";
-		PropertyValue[5]  = "1";
-		PropertyValue[6]  = "";
-		PropertyValue[7]  = "";
-		PropertyValue[8]  = "";
-		PropertyValue[9]  = "";
-		PropertyValue[10] = "wye";
-		PropertyValue[11] = "5";
-		PropertyValue[12] = "-1"; // "rneut"; // if entered -, assume open or user defined
-		PropertyValue[13] = "0";  // "xneut";
-		PropertyValue[14] = "variable"; //"status";  // fixed or variable
-		PropertyValue[15] = "1";  // class
-		PropertyValue[16] = "0.95";
-		PropertyValue[17] = "1.05";
-		PropertyValue[18] = "0.0";
-		PropertyValue[19] = "0.0";
-		PropertyValue[20] = "0.0";
-		PropertyValue[21] = "0.5";  // allocation factor
-		PropertyValue[22] = "11.3636";
-		PropertyValue[23] = "50";
-		PropertyValue[24] = "10";
-		PropertyValue[25] = "1";    // CVR watt factor
-		PropertyValue[26] = "2";    // CVR var factor
-		PropertyValue[27] = "0";    // kwh bulling
-		PropertyValue[28] = "30";   // kwhdays
-		PropertyValue[29] = "4";    // Cfactor
-		PropertyValue[30] = "";     // CVRCurve
-		PropertyValue[31] = "1";    // NumCust
-		PropertyValue[32] = "";     // ZIPV coefficient array
+		propertyValue[0]  = "3";        // "phases";
+		propertyValue[1]  = getBus(1);  // "bus1";
+		propertyValue[2]  = "12.47";
+		propertyValue[3]  = "10";
+		propertyValue[4]  = ".88";
+		propertyValue[5]  = "1";
+		propertyValue[6]  = "";
+		propertyValue[7]  = "";
+		propertyValue[8]  = "";
+		propertyValue[9]  = "";
+		propertyValue[10] = "wye";
+		propertyValue[11] = "5";
+		propertyValue[12] = "-1"; // "rneut"; // if entered -, assume open or user defined
+		propertyValue[13] = "0";  // "xneut";
+		propertyValue[14] = "variable"; //"status";  // fixed or variable
+		propertyValue[15] = "1";  // class
+		propertyValue[16] = "0.95";
+		propertyValue[17] = "1.05";
+		propertyValue[18] = "0.0";
+		propertyValue[19] = "0.0";
+		propertyValue[20] = "0.0";
+		propertyValue[21] = "0.5";  // allocation factor
+		propertyValue[22] = "11.3636";
+		propertyValue[23] = "50";
+		propertyValue[24] = "10";
+		propertyValue[25] = "1";    // CVR watt factor
+		propertyValue[26] = "2";    // CVR var factor
+		propertyValue[27] = "0";    // kwh bulling
+		propertyValue[28] = "30";   // kwhdays
+		propertyValue[29] = "4";    // Cfactor
+		propertyValue[30] = "";     // CVRCurve
+		propertyValue[31] = "1";    // NumCust
+		propertyValue[32] = "";     // ZIPV coefficient array
 
 		super.initPropertyValues(Load.NumPropsThisClass);
 	}

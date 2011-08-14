@@ -20,7 +20,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		super();
 
 		this.className   = "RegControl";
-		this.DSSClassType = this.DSSClassType + DSSClassDefs.REG_CONTROL;
+		this.classType = this.classType + DSSClassDefs.REG_CONTROL;
 
 		defineProperties();
 
