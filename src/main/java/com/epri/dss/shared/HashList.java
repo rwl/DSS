@@ -25,19 +25,19 @@ public interface HashList {
 
 	void setInitialAllocation(int initialAllocation);
 
-	int add(String S);
+	int add(String s);
 
 	/** Repeat find for duplicate string in same hash list */
-	int find(String S);
+	int find(String s);
 
 	int findNext();
 
-	int findAbbrev(String S);
+	int findAbbrev(String s);
 
 	String get(int i);
 
 	/** Expands number of elements */
-	void expand(int NewSize);
+	void expand(int newSize);
 
 	void dumpToFile(String fname);
 

@@ -10,7 +10,7 @@ public interface CommandList {
 
 	void addCommand(String cmd);
 
-	int getCommand(String Cmd);
+	int getCommand(String cmd);
 
 	String get(int i);
 

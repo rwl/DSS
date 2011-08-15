@@ -6,27 +6,27 @@ import com.epri.dss.shared.PStack;
 
 public class PStackImpl extends StackBaseImpl implements PStack {
 
-	private DSSObject[] Items;
+	private DSSObject[] items;
 
 	public PStackImpl(int initSize) {
 		super(initSize);
-		this.Items = new DSSObject[initSize];
+		this.items = new DSSObject[initSize];
 	}
 
 	public void push(DSSObject p) {
-		NumItems += 1;
-		if (NumItems > MaxItems) {
-			MaxItems += Increment;
-			Utilities.resizeArray(Items, MaxItems);
+		numItems += 1;
+		if (numItems > maxItems) {
+			maxItems += increment;
+			Utilities.resizeArray(items, maxItems);
 		}
-		Items[NumItems] = p;
+		items[numItems] = p;
 	}
 
 	public DSSObject pop() {
 		DSSObject Result;
-		if (NumItems > 0) {
-			Result = Items[NumItems - 1];
-			NumItems -= 1;
+		if (numItems > 0) {
+			Result = items[numItems - 1];
+			numItems -= 1;
 		} else {
 			Result = null;
 		}

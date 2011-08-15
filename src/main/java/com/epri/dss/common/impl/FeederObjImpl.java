@@ -78,7 +78,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 					shuntList.add(pShunt);
 					pShunt = (CktElement) BranchList.getPresentBranch().getNextObject();
 				}
-				pElement = (CktElement) BranchList.GoForward();
+				pElement = (CktElement) BranchList.goForward();
 			}
 
 			isSynched = true;

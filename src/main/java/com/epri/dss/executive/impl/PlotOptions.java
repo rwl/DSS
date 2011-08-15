@@ -169,64 +169,64 @@ public class PlotOptions {
 			case 0:
 				switch (param.charAt(0)) {
 				case 'A':
-					plot.setPlotType(PlotType.AutoAddLogPlot);
+					plot.setPlotType(PlotType.AUTO_ADD_LOG_PLOT);
 					plot.setObjectName(globals.getCircuitName_() + "AutoAddLog.csv");
 					plot.setValueIndex(2);
 					break;
 				case 'C':
-					plot.setPlotType(PlotType.CircuitPlot);
+					plot.setPlotType(PlotType.CIRCUIT_PLOT);
 					break;
 				case 'G':
-					plot.setPlotType(PlotType.GeneralDataPlot);
+					plot.setPlotType(PlotType.GENERAL_DATA_PLOT);
 					break;
 				case 'L':
-					plot.setPlotType(PlotType.LoadShape);
+					plot.setPlotType(PlotType.LOAD_SHAPE);
 					break;
 				case 'M':
-					plot.setPlotType(PlotType.MonitorPlot);
+					plot.setPlotType(PlotType.MONITOR_PLOT);
 					break;
 				case 'P':
 					if (Utilities.compareTextShortest("pro", param) == 0) {
-						plot.setPlotType(PlotType.Profile);
+						plot.setPlotType(PlotType.PROFILE);
 					} else {
-						plot.setPlotType(PlotType.PriceShape);
+						plot.setPlotType(PlotType.PRICE_SHAPE);
 					}
 					break;
 				case 'T':
-					plot.setPlotType(PlotType.TShape);
+					plot.setPlotType(PlotType.TSHAPE);
 					break;
 				case 'D':
-					plot.setPlotType(PlotType.DaisyPlot);
+					plot.setPlotType(PlotType.DAISY_PLOT);
 					plot.getDaisyBusList().clear();
 					break;
 				case 'Z':
-					plot.setPlotType(PlotType.MeterZones);
+					plot.setPlotType(PlotType.METER_ZONES);
 					break;
 				}
 				break;
 			case 1:
 				switch (param.charAt(0)) {
 				case 'V':
-					plot.setQuantity(PlotQuantity.Voltage);
+					plot.setQuantity(PlotQuantity.VOLTAGE);
 					break;
 				case 'C':
 					switch (param.charAt(1)) {
 					case 'A':
-						plot.setQuantity(PlotQuantity.Capacity);
+						plot.setQuantity(PlotQuantity.CAPACITY);
 						break;
 					case 'U':
-						plot.setQuantity(PlotQuantity.Current);
+						plot.setQuantity(PlotQuantity.CURRENT);
 						break;
 					}
 					break;
 				case 'P':
-					plot.setQuantity(PlotQuantity.Power);
+					plot.setQuantity(PlotQuantity.POWER);
 					break;
 				case 'L':
-					plot.setQuantity(PlotQuantity.Losses);
+					plot.setQuantity(PlotQuantity.LOSSES);
 					break;
 				default:
-					plot.setQuantity(PlotQuantity.None);
+					plot.setQuantity(PlotQuantity.NONE);
 					plot.setValueIndex(parser.makeInteger());
 					break;
 				}
@@ -248,7 +248,7 @@ public class PlotOptions {
 			case 6:
 				plot.setShowLoops(Utilities.interpretYesNo(param));
 				if (plot.isShowLoops())
-					plot.setPlotType(PlotType.MeterZones);
+					plot.setPlotType(PlotType.METER_ZONES);
 				break;
 			case 7:
 				plot.setTriColorMax(parser.makeDouble());
@@ -322,7 +322,7 @@ public class PlotOptions {
 		}
 
 		if (globals.getActiveCircuit().isSolved())
-			DSSPlotImpl.getDSSPlotObj().setQuantity(PlotQuantity.None);
+			DSSPlotImpl.getDSSPlotObj().setQuantity(PlotQuantity.NONE);
 
 		DSSPlotImpl.getDSSPlotObj().execute();  // makes a new plot based on these options
 

@@ -9,136 +9,136 @@ public class RPNCalcImpl implements RPNCalc {
 	private static final double DegToRad = 3.14159265359 / 180.0;
 	private static final double RadToDeg = 1.0 / DegToRad;
 
-	private double[] Stack = new double[MaxStackSize];
+	private double[] stack = new double[MaxStackSize];
 
 	public RPNCalcImpl() {
 		for (int i = 0; i < MaxStackSize; i++) 
-			Stack[i] = 0.0;
+			stack[i] = 0.0;
 	}
 
 	public void aCosDeg() {
-		Stack[0] = RadToDeg * Math.acos(Stack[0]);
+		stack[0] = RadToDeg * Math.acos(stack[0]);
 	}
 
 	public void add() {
-		Stack[1] = Stack[0] + Stack[1];
+		stack[1] = stack[0] + stack[1];
 		rollDn();
 	}
 
 	public void aSinDeg() {
-		Stack[0] = RadToDeg * Math.asin(Stack[0]);
+		stack[0] = RadToDeg * Math.asin(stack[0]);
 	}
 
 	public void aTanDeg() {
-		Stack[0] = RadToDeg * Math.atan(Stack[0]);
+		stack[0] = RadToDeg * Math.atan(stack[0]);
 	}
 
 	public void aTan2Deg() {
-		Stack[1] = RadToDeg * Math.atan2(Stack[1], Stack[0]);
+		stack[1] = RadToDeg * Math.atan2(stack[1], stack[0]);
 		rollDn();
 	}
 
 	public void cosDeg() {
-		Stack[0] = Math.cos(DegToRad * Stack[0]);
+		stack[0] = Math.cos(DegToRad * stack[0]);
 	}
 
 	public void divide() {
-		Stack[1] = Stack[1] / Stack[0];
+		stack[1] = stack[1] / stack[0];
 		rollDn();
 	}
 
 	public double getX() {
-		return Stack[0];
+		return stack[0];
 	}
 
 	public double getY() {
-		return Stack[1];
+		return stack[1];
 	}
 
 	public double getZ() {
-		return Stack[2];
+		return stack[2];
 	}
 
 	public void multiply() {
-		Stack[1] = Stack[1] * Stack[0];
+		stack[1] = stack[1] * stack[0];
 		rollDn();
 	}
 
 	public void rollDn() {
 		for (int i = 1; i < MaxStackSize; i++) 
-			Stack[i - 1] = Stack[i];
+			stack[i - 1] = stack[i];
 	}
 
 	public void rollUp() {
 		for (int i = 1; i < MaxStackSize; i++) 
-			Stack[i] = Stack[i - 1];
+			stack[i] = stack[i - 1];
 		
 	}
 
 	public void setX(double x) {
 		rollUp();
-		Stack[0] = x;
+		stack[0] = x;
 	}
 
 	public void setY(double y) {
-		Stack[1] = y;
+		stack[1] = y;
 	}
 
 	public void setZ(double z) {
-		Stack[2] = z;
+		stack[2] = z;
 	}
 
 	public void sinDeg() {
-		Stack[0] = Math.sin(DegToRad * Stack[0]);
+		stack[0] = Math.sin(DegToRad * stack[0]);
 	}
 
 	public void sqrt() {
-		Stack[0] = Math.sqrt(Stack[0]);
+		stack[0] = Math.sqrt(stack[0]);
 	}
 
 	public void square() {
-		Stack[0] = Math.pow(Stack[0], 2);
+		stack[0] = Math.pow(stack[0], 2);
 	}
 
 	public void subtract() {
-		Stack[1] = Stack[1] - Stack[0];
+		stack[1] = stack[1] - stack[0];
 		rollDn();
 	}
 	
 	public void swapXY() {
-		double Temp = Stack[0];
-		Stack[0] = Stack[1];
-		Stack[1] = Temp;
+		double Temp = stack[0];
+		stack[0] = stack[1];
+		stack[1] = Temp;
 	}
 
 	public void tanDeg() {
-		Stack[0] = Math.tan(DegToRad * Stack[0]);
+		stack[0] = Math.tan(DegToRad * stack[0]);
 	}
 
 	public void yToTheXPower() {
-		Stack[1] = Math.pow(Stack[1], Stack[0]);
+		stack[1] = Math.pow(stack[1], stack[0]);
 		rollDn();
 	}
 
 	public void enterPi() {
 		rollUp();
-		Stack[0] = Math.PI;
+		stack[0] = Math.PI;
 	}
 
 	public void eToTheX() {
-		Stack[0] = Math.exp(Stack[0]);
+		stack[0] = Math.exp(stack[0]);
 	}
 
 	public void natLog() {
-		Stack[0] = Math.log(Stack[0]);
+		stack[0] = Math.log(stack[0]);
 	}
 
 	public void tenLog() {
-		Stack[0] = Math.log10(Stack[0]);
+		stack[0] = Math.log10(stack[0]);
 	}
 
 	public void inv() {
-		Stack[0] = 1.0 / Stack[0];
+		stack[0] = 1.0 / stack[0];
 	}
 
 }

@@ -6,9 +6,9 @@ package com.epri.dss.shared.impl;
 public class GeneratorVars {
 
 	/** Direct-axis voltage magnitude & angle */
-	public double Theta;
-	public double Pshaft;
-	public double Speed;
+	public double theta;
+	public double PShaft;
+	public double speed;
 	/**
 	 * Present shaft power and relative speed, rad/sec, difference from
 	 * synchronous speed, w0
@@ -16,12 +16,12 @@ public class GeneratorVars {
 	 */
 	public double w0;
 	/** Per unit mass constant */
-	public double Hmass;
+	public double HMass;
 	/** Mass constant actual values (Joule-sec/rad) */
-	public double Mmass;
+	public double MMass;
 	/** Actual and per unit damping factors */
 	public double D, Dpu;
-	public double kVArating;
+	public double kVARating;
 	public double kVGeneratorBase;
 	/** Machine reactances, ohms */
 	public double Xd, Xdp, Xdpp;
@@ -31,16 +31,16 @@ public class GeneratorVars {
 	/** Derivatives of theta and speed */
 	public double dSpeed;
 	/** History variables for integration */
-	public double ThetaHistory, SpeedHistory;
+	public double thetaHistory, speedHistory;
 	/** Target P and Q for power flow solution, watts, vars */
-	public double Pnominalperphase, Qnominalperphase;
+	public double PNominalPerPhase, QNominalPerPhase;
 
 	/** Number of phases */
-	public int NumPhases;
+	public int numPhases;
 	/** Total number of conductors (wye-connected will have 4) */
-	public int NumConductors;
+	public int numConductors;
 	/** 0 = wye; 1 = delta */
-	public int Conn;
+	public int conn;
 
 	// FIXME Generate getters and setters
 

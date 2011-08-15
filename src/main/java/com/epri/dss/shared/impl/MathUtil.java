@@ -102,19 +102,19 @@ public abstract class MathUtil {
 	 * stuff.
 	 *
 	 */
-	public static void ETKInvert(double[] A, int Norder, MutableInt Error) {  // TODO Check zero based indexing
+	public static void ETKInvert(double[] A, int norder, MutableInt error) {  // TODO Check zero based indexing
 
 		int j, k, LL, M, i;
 		int[] LT;
 		double RMY, T1;
 
-		L = Norder;
-		Error.setValue(0);
+		L = norder;
+		error.setValue(0);
 
 		/* Allocate LT */
 		LT = new int[L];
 		if (LT.length == 0) {
-			Error.setValue(1);
+			error.setValue(1);
 			return;
 		}
 
@@ -141,7 +141,7 @@ public abstract class MathUtil {
 			/* Error Check. If RMY ends up zero, matrix is non-inversible */
 			RMY = Math.abs(T1);
 			if (RMY == 0.0) {
-				Error.setValue(2);
+				error.setValue(2);
 				return;
 			}
 
@@ -186,33 +186,33 @@ public abstract class MathUtil {
 	 * Computes total complex power given terminal voltages and currents.
 	 */
 	public static Complex terminalPowerIn(Complex[] V, Complex[] I, int nPhases) {
-		Complex Result = Complex.ZERO;
+		Complex result = Complex.ZERO;
 		for (int j = 0; j < nPhases; j++)
-			Result = Result.add(V[j].multiply( I[j].conjugate() ));
-		return Result;
+			result = result.add(V[j].multiply( I[j].conjugate() ));
+		return result;
 	}
 
 	/**
 	 * Compute complex power in kW and kvar in each phase.
 	 */
-	public static void calckPowers(Complex[] kWkvar, Complex[] V, Complex[] I, int N) {
-		for (int j = 0; j < N; j++)
-			kWkvar[j] = V[j].multiply(I[j].conjugate()).multiply(0.001);
+	public static void calckPowers(Complex[] kWkVAr, Complex[] V, Complex[] I, int n) {
+		for (int j = 0; j < n; j++)
+			kWkVAr[j] = V[j].multiply(I[j].conjugate()).multiply(0.001);
 	}
 
-	public static void calckPowers(Complex[] kWkvar, Complex[] V, Complex I, int N) {
-		calckPowers(kWkvar, V, new Complex[] {I}, N);
+	public static void calckPowers(Complex[] kWkVAr, Complex[] V, Complex I, int n) {
+		calckPowers(kWkVAr, V, new Complex[] {I}, n);
 	}
 
 	/**
 	 * Returns a normally distributed random variable.
 	 */
-	public static double gauss(double Mean, double StdDev) {
+	public static double gauss(double mean, double stdDev) {
 		double A = 0.0;
 		for (int i = 0; i < 12; i++)
 			A = A + Math.random();
 
-		return (A - 6.0) * StdDev + Mean;
+		return (A - 6.0) * stdDev + mean;
 	}
 
 	/**
@@ -223,61 +223,61 @@ public abstract class MathUtil {
 		return Math.exp(gauss(0.0, 1.0)) * mean;
 	}
 
-	public static double sum(double[] Data, int Count) {
+	public static double sum(double[] data, int count) {
 		double sum = 0;
-		for (int i = 0; i < Count; i++)
-			sum += Data[i];
+		for (int i = 0; i < count; i++)
+			sum += data[i];
 		return sum;
 	}
 
 	public static void RCDMeanandStdDev(double[] pData, int nData, MutableDouble mean, MutableDouble stdDev) {
-		double[] Data = new double[100];
+		double[] data = new double[100];
 		double S;
 
-		Data = pData;  // make a double pointer
+		data = pData;  // make a double pointer
 		if (nData == 1) {
-			mean.setValue(Data[0]);
-			stdDev.setValue(Data[0]);
+			mean.setValue(data[0]);
+			stdDev.setValue(data[0]);
 			return;
 		}
-		mean.setValue(sum(Data, (nData)) / nData);
+		mean.setValue(sum(data, (nData)) / nData);
 		S = 0;  // sum differences from the mean, for greater accuracy
 		for (int i = 0; i < nData; i++)
-			S = S + Math.pow(mean.doubleValue() - Data[i], 2);
+			S = S + Math.pow(mean.doubleValue() - data[i], 2);
 		stdDev.setValue(Math.sqrt(S / (nData - 1)));
 	}
 
-	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, MutableDouble Mean, MutableDouble StdDev) {
+	public static void curveMeanAndStdDev(double[] pY, double[] pX, int N, MutableDouble mean, MutableDouble stdDev) {
 		double s, dy1, dy2;
 		int i;
 
 		if (N == 1) {
-			Mean.setValue(pY[0]);
-			StdDev.setValue(pY[0]);
+			mean.setValue(pY[0]);
+			stdDev.setValue(pY[0]);
 			return;
 		}
 		s = 0;
 		for (i = 0; i < N - 1; i++)
 			s += 0.5 * (pY[i] + pY[i + 1]) * (pX[i + 1] - pX[i]);
-		Mean.setValue(s / (pX[N] - pX[0]));  // TODO Check zero based indexing
+		mean.setValue(s / (pX[N] - pX[0]));  // TODO Check zero based indexing
 
 		s = 0;  // sum differences from the mean, for greater accuracy
 		for (i = 0; i < N - 1; i++) {
-			dy1 = (pY[i] - Mean.doubleValue());
-			dy2 = (pY[i + 1] - Mean.doubleValue());
+			dy1 = (pY[i] - mean.doubleValue());
+			dy2 = (pY[i + 1] - mean.doubleValue());
 			s += 0.5 * (dy1 * dy1 + dy2 * dy2) * (pX[i + 1] - pX[i]);
 		}
 
-		StdDev.setValue(Math.sqrt(s / (pX[N] - pX[0])));
+		stdDev.setValue(Math.sqrt(s / (pX[N] - pX[0])));
 	}
 
 	/**
 	 * Parallel two complex impedances.
 	 */
 	public static Complex parallelZ(Complex Z1, Complex Z2) {
-		Complex Denom = Z1.add(Z2) ;
-		if ((Math.abs(Denom.getReal()) > 0.0) || (Math.abs(Denom.getImaginary()) > 0.0)) {
-			return Z1.multiply(Z2).divide(Denom);
+		Complex denom = Z1.add(Z2) ;
+		if ((Math.abs(denom.getReal()) > 0.0) || (Math.abs(denom.getImaginary()) > 0.0)) {
+			return Z1.multiply(Z2).divide(denom);
 		} else {  /* Error */
 			return Complex.ZERO;
 		}
@@ -287,29 +287,29 @@ public abstract class MathUtil {
 	 * z = I0(a)
 	 */
 	public static Complex Bessel_I0(Complex a) {
-		int MaxTerm = 1000;
-		double EpsilonSqr = 1.0E-20;
+		int maxTerm = 1000;
+		double epsilonSqr = 1.0E-20;
 
 		int i;
-		double SizeSqr = 1;
+		double sizeSqr = 1;
 		Complex term;
 		Complex zSQR25;
 
-		Complex Result = Complex.ONE;  // term 0
+		Complex result = Complex.ONE;  // term 0
 		zSQR25 = a.multiply(a).multiply(0.25);
 		term = zSQR25;
-		Result = Result.add(zSQR25);  // term 1
+		result = result.add(zSQR25);  // term 1
 
 		i = 0;
-		while ((i < MaxTerm) && (SizeSqr > EpsilonSqr)) {
+		while ((i < maxTerm) && (sizeSqr > epsilonSqr)) {
 			term = zSQR25.multiply(term);
 			i += 1;
 			term = term.divide(Math.pow(i, 2));
-			Result = Result.add(term);  // sum = sum + term
-			SizeSqr = Math.pow(term.getReal(), 2) + Math.pow(term.getImaginary(), 2);
+			result = result.add(term);  // sum = sum + term
+			sizeSqr = Math.pow(term.getReal(), 2) + Math.pow(term.getImaginary(), 2);
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -318,39 +318,39 @@ public abstract class MathUtil {
 	 */
 	public static double pctNemaUnbalance(Complex[] Vph) {
 		int i;
-		double Vavg;
-		double MaxDiff;
+		double VAvg;
+		double maxDiff;
 		double[] VMag = new double[3];
 
 		for (i = 0; i < 3; i++)
 			VMag[i] = Vph[i].abs();
 
-		Vavg = 0.0;
+		VAvg = 0.0;
 		for (i = 0; i < 3; i++)
-			Vavg = Vavg + VMag[i];
-		Vavg = Vavg / 3.0;
+			VAvg = VAvg + VMag[i];
+		VAvg = VAvg / 3.0;
 
-		MaxDiff = 0.0;
+		maxDiff = 0.0;
 		for (i = 0; i < 3; i++)
-			MaxDiff = Math.max(MaxDiff, Math.abs( VMag[i] - Vavg ));
+			maxDiff = Math.max(maxDiff, Math.abs( VMag[i] - VAvg ));
 
-		if (Vavg != 0.0) {
-			return MaxDiff / Vavg * 100.0;  // pct difference
+		if (VAvg != 0.0) {
+			return maxDiff / VAvg * 100.0;  // pct difference
 		} else {
 			return 0;
 		}
 	}
 
-	public static double getXR(Complex A) {
-		double Result;
-		if (A.getReal() != 0.0) {
-			Result = A.getImaginary() / A.getReal();
-			if (Math.abs(Result) > 9999.0)
-				Result = 9999.0;
+	public static double getXR(Complex a) {
+		double result;
+		if (a.getReal() != 0.0) {
+			result = a.getImaginary() / a.getReal();
+			if (Math.abs(result) > 9999.0)
+				result = 9999.0;
 		} else{
-			Result = 9999.0;;
+			result = 9999.0;;
 		}
-		return Result;
+		return result;
 	}
 
 	public static double sqr(double a) {

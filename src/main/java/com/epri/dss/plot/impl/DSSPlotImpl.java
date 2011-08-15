@@ -13,65 +13,65 @@ public class DSSPlotImpl implements DSSPlot {
 
 	private static DSSPlot DSSPlotObj;
 
-	private static int AddMarkerColor;
-	private static int AddMarkerCode, AddMarkerSize;
-	private static int SinglePhLineStyle;
-	private static int ThreePhLineStyle;
+	private static int addMarkerColor;
+	private static int addMarkerCode, addMarkerSize;
+	private static int singlePhLineStyle;
+	private static int threePhLineStyle;
 
 	public enum PlotType {
-		AutoAddLogPlot,
-		CircuitPlot,
-		GeneralDataPlot,
-		GeneralCircuitPlot,
-		MonitorPlot,
-		DaisyPlot,
-		MeterZones,
-		LoadShape,
-		TShape,
-		PriceShape,
-		Profile
+		AUTO_ADD_LOG_PLOT,
+		CIRCUIT_PLOT,
+		GENERAL_DATA_PLOT,
+		GENERAL_CIRCUIT_PLOT,
+		MONITOR_PLOT,
+		DAISY_PLOT,
+		METER_ZONES,
+		LOAD_SHAPE,
+		TSHAPE,
+		PRICE_SHAPE,
+		PROFILE
 	}
 
 	public enum PlotQuantity {
-		Voltage, Current, Power, Losses, Capacity, None
+		VOLTAGE, CURRENT, POWER, LOSSES, CAPACITY, NONE
 	}
 
-	private int ActiveColorIdx;
-	private int[] ColorArray = new int[17];
-	private LineObj Line;
-	private TransformerObj Transf;
-	private int Bus1Idx;
-	private int Bus2Idx;
-	private String GeneralCircuitPlotQuantity;
-	private int MaxLineThickness;
+	private int activeColorIdx;
+	private int[] colorArray = new int[17];
+	private LineObj line;
+	private TransformerObj transf;
+	private int bus1Idx;
+	private int bus2Idx;
+	private String generalCircuitPlotQuantity;
+	private int maxLineThickness;
 
-	protected PlotType PlotType;
-	protected double MaxScale;
-	protected double MinScale;
-	protected boolean Dots,
-		Labels,
-		ShowLoops,  // applies to meterZone plots only
-		ShowSubs;
-	protected PlotQuantity Quantity;
-	protected String ObjectName,
-		FeederName;
-	protected int ValueIndex,
-		MarkerIdx;  // for general & autoAdd
+	protected PlotType plotType;
+	protected double maxScale;
+	protected double minScale;
+	protected boolean dots,
+		labels,
+		showLoops,  // applies to meterZone plots only
+		showSubs;
+	protected PlotQuantity quantity;
+	protected String objectName,
+		feederName;
+	protected int valueIndex,
+		markerIdx;  // for general & autoAdd
 
-	protected int PhasesToPlot;  // profile plot
+	protected int phasesToPlot;  // profile plot
 
-	protected int[] Channels;  // for monitor plot
-	protected double[] Bases;  // for monitor plot
+	protected int[] channels;  // for monitor plot
+	protected double[] bases;  // for monitor plot
 
-	protected Color Color1, Color2, Color3;
+	protected Color color1, color2, color3;
 
 	/* Tri-color plots */
-	protected double TriColorMax, TriColorMid;
+	protected double triColorMax, triColorMid;
 
-	protected boolean MaxScaleIsSpecified;
-	protected boolean MinScaleIsSpecified;
+	protected boolean maxScaleIsSpecified;
+	protected boolean minScaleIsSpecified;
 
-	protected List<String> DaisyBusList;
+	protected List<String> daisyBusList;
 
 	public DSSPlotImpl() {
 		// TODO Auto-generated constructor stub
@@ -118,11 +118,11 @@ public class DSSPlotImpl implements DSSPlot {
 
 	}
 
-	private void doBusLabels(int Idx1, int Idx2) {
+	private void doBusLabels(int idx1, int idx2) {
 
 	}
 
-	private void doBusLabel(int Idx, String BusLabel) {
+	private void doBusLabel(int idx, String busLabel) {
 
 	}
 
@@ -162,11 +162,11 @@ public class DSSPlotImpl implements DSSPlot {
 		return null;
 	}
 
-//	private PenStyle style(int Code) {
+//	private PenStyle style(int code) {
 //		return null;
 //	}
 
-	private Color getAutoColor(double Scale) {
+	private Color getAutoColor(double scale) {
 		return null;
 	}
 
@@ -178,200 +178,200 @@ public class DSSPlotImpl implements DSSPlot {
 		return false;
 	}
 
-	private Color interpolateGradientColor(Color Color1, Color Color2, double Ratio) {
+	private Color interpolateGradientColor(Color color1, Color color2, double ratio) {
 		return null;
 	}
 
-	public void setMaxLineThickness(int Value) {
+	public void setMaxLineThickness(int value) {
 
 	}
 
 	public int getMaxLineThickness() {
-		return MaxLineThickness;
+		return maxLineThickness;
 	}
 
 	public PlotType getPlotType() {
-		return PlotType;
+		return plotType;
 	}
 
-	public void setPlotType(PlotType plotType) {
-		PlotType = plotType;
+	public void setPlotType(PlotType type) {
+		plotType = type;
 	}
 
 	public double getMaxScale() {
-		return MaxScale;
+		return maxScale;
 	}
 
-	public void setMaxScale(double maxScale) {
-		MaxScale = maxScale;
+	public void setMaxScale(double max) {
+		maxScale = max;
 	}
 
 	public double getMinScale() {
-		return MinScale;
+		return minScale;
 	}
 
-	public void setMinScale(double minScale) {
-		MinScale = minScale;
+	public void setMinScale(double min) {
+		minScale = min;
 	}
 
 	public boolean isDots() {
-		return Dots;
+		return dots;
 	}
 
-	public void setDots(boolean dots) {
-		Dots = dots;
+	public void setDots(boolean value) {
+		dots = value;
 	}
 
 	public boolean isLabels() {
-		return Labels;
+		return labels;
 	}
 
-	public void setLabels(boolean labels) {
-		Labels = labels;
+	public void setLabels(boolean lbl) {
+		labels = lbl;
 	}
 
 	public boolean isShowLoops() {
-		return ShowLoops;
+		return showLoops;
 	}
 
-	public void setShowLoops(boolean showLoops) {
-		ShowLoops = showLoops;
+	public void setShowLoops(boolean show) {
+		showLoops = show;
 	}
 
 	public boolean isShowSubs() {
-		return ShowSubs;
+		return showSubs;
 	}
 
-	public void setShowSubs(boolean showSubs) {
-		ShowSubs = showSubs;
+	public void setShowSubs(boolean show) {
+		showSubs = show;
 	}
 
 	public PlotQuantity getQuantity() {
-		return Quantity;
+		return quantity;
 	}
 
-	public void setQuantity(PlotQuantity quantity) {
-		Quantity = quantity;
+	public void setQuantity(PlotQuantity qty) {
+		quantity = qty;
 	}
 
 	public String getObjectName() {
-		return ObjectName;
+		return objectName;
 	}
 
-	public void setObjectName(String objectName) {
-		ObjectName = objectName;
+	public void setObjectName(String name) {
+		objectName = name;
 	}
 
 	public String getFeederName() {
-		return FeederName;
+		return feederName;
 	}
 
-	public void setFeederName(String feederName) {
-		FeederName = feederName;
+	public void setFeederName(String name) {
+		feederName = name;
 	}
 
 	public int getValueIndex() {
-		return ValueIndex;
+		return valueIndex;
 	}
 
-	public void setValueIndex(int valueIndex) {
-		ValueIndex = valueIndex;
+	public void setValueIndex(int index) {
+		valueIndex = index;
 	}
 
 	public int getMarkerIdx() {
-		return MarkerIdx;
+		return markerIdx;
 	}
 
-	public void setMarkerIdx(int markerIdx) {
-		MarkerIdx = markerIdx;
+	public void setMarkerIdx(int idx) {
+		markerIdx = idx;
 	}
 
 	public int getPhasesToPlot() {
-		return PhasesToPlot;
+		return phasesToPlot;
 	}
 
-	public void setPhasesToPlot(int phasesToPlot) {
-		PhasesToPlot = phasesToPlot;
+	public void setPhasesToPlot(int phases) {
+		phasesToPlot = phases;
 	}
 
 	public int[] getChannels() {
-		return Channels;
+		return channels;
 	}
 
-	public void setChannels(int[] channels) {
-		Channels = channels;
+	public void setChannels(int[] values) {
+		channels = values;
 	}
 
 	public double[] getBases() {
-		return Bases;
+		return bases;
 	}
 
-	public void setBases(double[] bases) {
-		Bases = bases;
+	public void setBases(double[] values) {
+		bases = values;
 	}
 
 	public Color getColor1() {
-		return Color1;
+		return color1;
 	}
 
-	public void setColor1(Color color1) {
-		Color1 = color1;
+	public void setColor1(Color value) {
+		color1 = value;
 	}
 
 	public Color getColor2() {
-		return Color2;
+		return color2;
 	}
 
-	public void setColor2(Color color2) {
-		Color2 = color2;
+	public void setColor2(Color value) {
+		color2 = value;
 	}
 
 	public Color getColor3() {
-		return Color3;
+		return color3;
 	}
 
-	public void setColor3(Color color3) {
-		Color3 = color3;
+	public void setColor3(Color value) {
+		color3 = value;
 	}
 
 	public double getTriColorMax() {
-		return TriColorMax;
+		return triColorMax;
 	}
 
-	public void setTriColorMax(double triColorMax) {
-		TriColorMax = triColorMax;
+	public void setTriColorMax(double max) {
+		triColorMax = max;
 	}
 
 	public double getTriColorMid() {
-		return TriColorMid;
+		return triColorMid;
 	}
 
-	public void setTriColorMid(double triColorMid) {
-		TriColorMid = triColorMid;
+	public void setTriColorMid(double mid) {
+		triColorMid = mid;
 	}
 
 	public boolean isMaxScaleIsSpecified() {
-		return MaxScaleIsSpecified;
+		return maxScaleIsSpecified;
 	}
 
-	public void setMaxScaleIsSpecified(boolean maxScaleIsSpecified) {
-		MaxScaleIsSpecified = maxScaleIsSpecified;
+	public void setMaxScaleIsSpecified(boolean isSpecified) {
+		maxScaleIsSpecified = isSpecified;
 	}
 
 	public boolean isMinScaleIsSpecified() {
-		return MinScaleIsSpecified;
+		return minScaleIsSpecified;
 	}
 
-	public void setMinScaleIsSpecified(boolean minScaleIsSpecified) {
-		MinScaleIsSpecified = minScaleIsSpecified;
+	public void setMinScaleIsSpecified(boolean isSpecified) {
+		minScaleIsSpecified = isSpecified;
 	}
 
 	public List<String> getDaisyBusList() {
-		return DaisyBusList;
+		return daisyBusList;
 	}
 
-	public void setDaisyBusList(List<String> daisyBusList) {
-		DaisyBusList = daisyBusList;
+	public void setDaisyBusList(List<String> list) {
+		daisyBusList = list;
 	}
 
 	public void execute() {
@@ -382,36 +382,36 @@ public class DSSPlotImpl implements DSSPlot {
 
 	}
 
-	public void doLoadShapePlot(String LoadShapeName) {
+	public void doLoadShapePlot(String loadShapeName) {
 
 	}
 
-	public void doTempShapePlot(String TempShapeName) {
+	public void doTempShapePlot(String tempShapeName) {
 
 	}
 
-	public void doPriceShapePlot(String PriceShapeName) {
+	public void doPriceShapePlot(String priceShapeName) {
 
 	}
 
-	public void doDI_Plot(String CaseName, int CaseYear, int[] iRegisters, boolean PeakDay, String MeterName) {
+	public void doDI_Plot(String caseName, int caseYear, int[] iRegisters, boolean peakDay, String meterName) {
 
 	}
 
-	public void doCompareCases(String CaseName1, String CaseName2, String WhichFile, int Reg) {
+	public void doCompareCases(String caseName1, String caseName2, String whichFile, int reg) {
 
 	}
 
-	public void doYearlyCurvePlot(ArrayList<String> CaseNames, String WhichFile, int[] iRegisters) {
+	public void doYearlyCurvePlot(ArrayList<String> caseNames, String whichFile, int[] iRegisters) {
 
 	}
 
-	public void doVisualizationPlot(CktElement Element, int Quantity) {
+	public void doVisualizationPlot(CktElement element, int quantity) {
 
 	}
 
-	public static void setDSSPlotObj(DSSPlot dSSPlotObj) {
-		DSSPlotObj = dSSPlotObj;
+	public static void setDSSPlotObj(DSSPlot plotObj) {
+		DSSPlotObj = plotObj;
 	}
 
 	public static DSSPlot getDSSPlotObj() {
@@ -419,43 +419,43 @@ public class DSSPlotImpl implements DSSPlot {
 	}
 
 	public static int getAddMarkerColor() {
-		return AddMarkerColor;
+		return addMarkerColor;
 	}
 
-	public static void setAddMarkerColor(int addMarkerColor) {
-		AddMarkerColor = addMarkerColor;
+	public static void setAddMarkerColor(int color) {
+		addMarkerColor = color;
 	}
 
 	public static int getAddMarkerCode() {
-		return AddMarkerCode;
+		return addMarkerCode;
 	}
 
-	public static void setAddMarkerCode(int addMarkerCode) {
-		AddMarkerCode = addMarkerCode;
+	public static void setAddMarkerCode(int code) {
+		addMarkerCode = code;
 	}
 
 	public static int getAddMarkerSize() {
-		return AddMarkerSize;
+		return addMarkerSize;
 	}
 
-	public static void setAddMarkerSize(int addMarkerSize) {
-		AddMarkerSize = addMarkerSize;
+	public static void setAddMarkerSize(int size) {
+		addMarkerSize = size;
 	}
 
 	public static int getSinglePhLineStyle() {
-		return SinglePhLineStyle;
+		return singlePhLineStyle;
 	}
 
-	public static void setSinglePhLineStyle(int singlePhLineStyle) {
-		SinglePhLineStyle = singlePhLineStyle;
+	public static void setSinglePhLineStyle(int style) {
+		singlePhLineStyle = style;
 	}
 
 	public static int getThreePhLineStyle() {
-		return ThreePhLineStyle;
+		return threePhLineStyle;
 	}
 
-	public static void setThreePhLineStyle(int threePhLineStyle) {
-		ThreePhLineStyle = threePhLineStyle;
+	public static void setThreePhLineStyle(int style) {
+		threePhLineStyle = style;
 	}
 
 }

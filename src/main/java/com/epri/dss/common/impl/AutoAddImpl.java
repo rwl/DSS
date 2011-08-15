@@ -139,7 +139,7 @@ public class AutoAddImpl implements AutoAdd {
 									busList.add(bName);  // return value is index of bus
 								}
 							}
-							PDElem = (PDElement) pMeter.getBranchList().GoForward();
+							PDElem = (PDElement) pMeter.getBranchList().goForward();
 						}
 					}
 				}

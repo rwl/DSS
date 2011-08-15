@@ -8,7 +8,7 @@ public interface PointerList {
 
 	Object getActive();
 
-	void setNew(Object Value);
+	void setNew(Object value);
 
 	void clear();
 

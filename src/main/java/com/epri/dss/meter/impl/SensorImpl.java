@@ -14,7 +14,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SensorImpl extends MeterClassImpl implements Sensor {
 
-	private static SensorObj ActiveSensorObj;
+	private static SensorObj activeSensorObj;
 
 	public SensorImpl() {
 		super();
@@ -24,9 +24,9 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -79,46 +79,46 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
+	public int newObject(String objName) {
 		DSSGlobals Globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new SensorObjImpl(this, ObjName));
+		Globals.getActiveCircuit().setActiveCktElement(new SensorObjImpl(this, objName));
 		return addObjectToList(Globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveSensorObj((SensorObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveSensorObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveSensorObj());
 
-		int Result = 0;
-		boolean DoRecalcElementData = false;
+		int result = 0;
+		boolean doRecalcElementData = false;
 
 		SensorObj as = getActiveSensorObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				as.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				as.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
-				as.setElementName(Param.toLowerCase());
+				as.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				as.setMeteredTerminal(parser.makeInteger());
@@ -127,7 +127,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setKVBase(parser.makeDouble());
 				break;
 			case 3:
-				as.setClearSpecified(Utilities.interpretYesNo(Param));
+				as.setClearSpecified(Utilities.interpretYesNo(param));
 				break;
 			case 4:
 				parser.parseAsVector(as.getNPhases(), as.getSensorVoltage());  // inits to zero
@@ -142,7 +142,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				parser.parseAsVector(as.getNPhases(), as.getSensorKVAr());
 				break;
 			case 8:
-				as.setConn(Utilities.interpretConnection(Param));
+				as.setConn(Utilities.interpretConnection(param));
 				break;
 			case 9:
 				as.setDeltaDirection( as.limitToPlusMinusOne(parser.makeInteger()) );
@@ -154,25 +154,25 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setWeight(parser.makeDouble());
 				break;
 			case 12:
-				as.setAction(Param);  // put sq error in global result
+				as.setAction(param);  // put sq error in global result
 				break;
 			default:
 				// inherited parameters
-				classEdit(ActiveSensorObj, ParamPointer - Sensor.NumPropsThisClass);
+				classEdit(activeSensorObj, paramPointer - Sensor.NumPropsThisClass);
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
-				DoRecalcElementData = true;
+				doRecalcElementData = true;
 				as.setMeteredElementChanged(true);
 				break;
 			case 1:
-				DoRecalcElementData = true;
+				doRecalcElementData = true;
 				as.setMeteredElementChanged(true);
 				break;
 			case 2:
-				DoRecalcElementData = true;
+				doRecalcElementData = true;
 				break;
 
 			/* Do not recalc element data for setting of sensor quantities */
@@ -192,21 +192,21 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 				as.setQSpecified(true);
 				break;
 			case 8:
-				DoRecalcElementData = true;
+				doRecalcElementData = true;
 				break;
 			case 9:
-				DoRecalcElementData = true;
+				doRecalcElementData = true;
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		if (DoRecalcElementData)
+		if (doRecalcElementData)
 			as.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -214,8 +214,8 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void resetAll() {
-		for (SensorObj pSensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
-			pSensor.resetIt();
+		for (SensorObj sensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
+			sensor.resetIt();
 	}
 
 	/**
@@ -223,8 +223,8 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void sampleAll() {
-		for (SensorObj pSensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
-			pSensor.takeSample();
+		for (SensorObj sensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
+			sensor.takeSample();
 	}
 
 	/**
@@ -241,86 +241,86 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	public void setHasSensorFlag() {
 		int i;
-		SensorObj ThisSensor;
-		CktElement CktElem;
+		SensorObj thisSensor;
+		CktElement cktElem;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		/* Initialize all to false */
 		for (i = 0; i < ckt.getPDElements().size(); i++) {
-			CktElem = ckt.getPDElements().get(i);
-			CktElem.setHasSensorObj(false);
+			cktElem = ckt.getPDElements().get(i);
+			cktElem.setHasSensorObj(false);
 		}
 		for (i = 0; i < ckt.getPCElements().size(); i++) {
-			CktElem = ckt.getPCElements().get(i);
-			CktElem.setHasSensorObj(false);
+			cktElem = ckt.getPCElements().get(i);
+			cktElem.setHasSensorObj(false);
 		}
 
 		for (i = 0; i < ckt.getSensors().size(); i++) {
-			ThisSensor = ckt.getSensors().get(i);
-			if (ThisSensor.getMeteredElement() != null) {
-				ThisSensor.getMeteredElement().setHasSensorObj(true);
-				if (ThisSensor.getMeteredElement() instanceof PCElement) {
-					((PCElement) ThisSensor.getMeteredElement()).setSensorObj(ThisSensor);
+			thisSensor = ckt.getSensors().get(i);
+			if (thisSensor.getMeteredElement() != null) {
+				thisSensor.getMeteredElement().setHasSensorObj(true);
+				if (thisSensor.getMeteredElement() instanceof PCElement) {
+					((PCElement) thisSensor.getMeteredElement()).setSensorObj(thisSensor);
 				} else {
-					((PDElement) ThisSensor.getMeteredElement()).setSensorObj(ThisSensor);
+					((PDElement) thisSensor.getMeteredElement()).setSensorObj(thisSensor);
 				}
 			}
 		}
 	}
 
 	@Override
-	protected int makeLike(String SensorName) {
-		SensorObj OtherSensor;
-		int i, Result = 0;
+	protected int makeLike(String sensorName) {
+		SensorObj otherSensor;
+		int i, result = 0;
 
 		/* See if we can find this sensor name in the present collection */
-		OtherSensor = (SensorObj) find(SensorName);
-		if (OtherSensor != null) {
+		otherSensor = (SensorObj) find(sensorName);
+		if (otherSensor != null) {
 			SensorObj as = getActiveSensorObj();
 
-			as.setNPhases(OtherSensor.getNPhases());
-			as.setNConds(OtherSensor.getNConds());  // force reallocation of terminal stuff
+			as.setNPhases(otherSensor.getNPhases());
+			as.setNConds(otherSensor.getNConds());  // force reallocation of terminal stuff
 
-			as.setElementName(OtherSensor.getElementName());
-			as.setMeteredElement(OtherSensor.getMeteredElement());  // target circuit element
-			as.setMeteredTerminal(OtherSensor.getMeteredTerminal());
+			as.setElementName(otherSensor.getElementName());
+			as.setMeteredElement(otherSensor.getMeteredElement());  // target circuit element
+			as.setMeteredTerminal(otherSensor.getMeteredTerminal());
 
 			for (i = 0; i < as.getParentClass().getNumProperties(); i++)
-				as.setPropertyValue(i, OtherSensor.getPropertyValue(i));
+				as.setPropertyValue(i, otherSensor.getPropertyValue(i));
 
-			as.setBaseFrequency(OtherSensor.getBaseFrequency());
+			as.setBaseFrequency(otherSensor.getBaseFrequency());
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Sensor makeLike: \"" + SensorName + "\" not found.", 662);
+			DSSGlobals.getInstance().doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
-		SensorObj pSensor;
+	public int init(int handle) {
+		SensorObj sensor;
 		int Result = 0;
 
-		if (Handle >= 0) {
-			pSensor = (SensorObj) elementList.get(Handle);
-			pSensor.resetIt();
+		if (handle >= 0) {
+			sensor = (SensorObj) elementList.get(handle);
+			sensor.resetIt();
 		} else {  // Do 'em all
 			for (int i = 0; i < elementList.size(); i++) {
-				pSensor = (SensorObj) elementList.get(i);
-				pSensor.resetIt();
+				sensor = (SensorObj) elementList.get(i);
+				sensor.resetIt();
 			}
 		}
 
 		return Result;
 	}
 
-	public static void setActiveSensorObj(SensorObj activeSensorObj) {
-		ActiveSensorObj = activeSensorObj;
+	public static void setActiveSensorObj(SensorObj sensorObj) {
+		activeSensorObj = sensorObj;
 	}
 
 	public static SensorObj getActiveSensorObj() {
-		return ActiveSensorObj;
+		return activeSensorObj;
 	}
 
 }

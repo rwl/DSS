@@ -8,34 +8,34 @@ import com.epri.dss.meter.MeterClass;
 
 public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 
-	private int NumMeterClassProps;
+	private int numMeterClassProps;
 
 	public MeterClassImpl() {
 		super();
-		this.NumMeterClassProps = 0;
+		this.numMeterClassProps = 0;
 		this.classType = DSSClassDefs.METER_ELEMENT;
 	}
 
 	protected void countProperties() {
-		numProperties = numProperties + NumMeterClassProps;
+		numProperties = numProperties + numMeterClassProps;
 		super.countProperties();
 	}
 
 	protected void defineProperties() {
-		activeProperty = activeProperty + NumMeterClassProps;
+		activeProperty = activeProperty + numMeterClassProps;
 		super.defineProperties();
 	}
 
-	protected int classEdit(Object ActiveMeterObj, int ParamPointer) {
+	protected int classEdit(Object activeMeterObj, int paramPointer) {
 
-		if (ParamPointer > 0)
-			super.classEdit(ActiveMeterObj, ParamPointer - NumMeterClassProps);
+		if (paramPointer > 0)
+			super.classEdit(activeMeterObj, paramPointer - numMeterClassProps);
 
 		return 0;
 	}
 
-	protected void classMakeLike(Object OtherObj) {
-		new MeterElementImpl((DSSClass) OtherObj);
+	protected void classMakeLike(Object otherObj) {
+		new MeterElementImpl((DSSClass) otherObj);
 	}
 
 	public void resetAll() {
@@ -57,11 +57,11 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 	}
 
 	public int getNumMeterClassProps() {
-		return NumMeterClassProps;
+		return numMeterClassProps;
 	}
 
-	public void setNumMeterClassProps(int numMeterClassProps) {
-		this.NumMeterClassProps = numMeterClassProps;
+	public void setNumMeterClassProps(int numProps) {
+		this.numMeterClassProps = numProps;
 	}
 
 }

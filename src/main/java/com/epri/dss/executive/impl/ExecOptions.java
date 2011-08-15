@@ -687,10 +687,10 @@ public class ExecOptions {
 				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(param));
 				break;
 			case 67:
-				globals.getEnergyMeterClass().setDo_OverloadReport(Utilities.interpretYesNo(param));
+				globals.getEnergyMeterClass().setDoOverloadReport(Utilities.interpretYesNo(param));
 				break;
 			case 68:
-				globals.getEnergyMeterClass().setDo_VoltageExceptionReport(Utilities.interpretYesNo(param));
+				globals.getEnergyMeterClass().setDoVoltageExceptionReport(Utilities.interpretYesNo(param));
 				break;
 			case 69:
 				ExecHelper.doSetCFactors(parser.makeDouble());

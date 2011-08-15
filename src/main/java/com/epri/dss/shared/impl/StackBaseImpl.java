@@ -4,21 +4,21 @@ import com.epri.dss.shared.StackBase;
 
 public class StackBaseImpl implements StackBase {
 
-	protected int NumItems, Increment, MaxItems;
+	protected int numItems, increment, maxItems;
 
 	public StackBaseImpl(int initSize) {
 		super();
-		this.MaxItems = initSize;
-		this.Increment = initSize;
-		this.NumItems = 0;
+		this.maxItems = initSize;
+		this.increment = initSize;
+		this.numItems = 0;
 	}
 
 	public void clear() {
-		NumItems = 0;
+		numItems = 0;
 	}
 
 	public int size() {
-		return NumItems;
+		return numItems;
 	}
 
 }

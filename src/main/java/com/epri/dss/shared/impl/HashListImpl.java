@@ -16,130 +16,130 @@ public class HashListImpl implements HashList {
 		public int[] idx;
 	}
 
-	private int NumElementsAllocated;
+	private int numElementsAllocated;
 
-	private int NumLists;
+	private int numLists;
 
-	private int NumElements;
+	private int numElements;
 
-	private String[] StringArray;
+	private String[] stringArray;
 
-	private SubList[] ListArray;
+	private SubList[] listArray;
 
-	private int AllocationInc;
+	private int allocationInc;
 
-	private int LastFind;
+	private int lastFind;
 
-	private int LastHash;
+	private int lastHash;
 
-	private String LastSearchString;
+	private String lastSearchString;
 
-	protected int InitialAllocation;
+	protected int initialAllocation;
 
-	public HashListImpl(int Nelements) {
+	public HashListImpl(int nelements) {
 		super();
-		this.NumElements = 0;
-		this.InitialAllocation = Nelements;
-		this.StringArray = new String[this.NumElements];
+		this.numElements = 0;
+		this.initialAllocation = nelements;
+		this.stringArray = new String[this.numElements];
 
-		this.NumLists = (int) Math.round(Math.sqrt(Nelements));
-		int ElementsPerList = Nelements / NumLists + 1;
-		this.AllocationInc = ElementsPerList;
-		if (this.NumLists < 1) this.NumLists = 1;  // make sure at least one list
-		this.ListArray = new SubList[NumLists];
-		for (int i = 0; i < this.NumLists; i++) {
-			this.ListArray[i] = new SubList();
+		this.numLists = (int) Math.round(Math.sqrt(nelements));
+		int ElementsPerList = nelements / numLists + 1;
+		this.allocationInc = ElementsPerList;
+		if (this.numLists < 1) this.numLists = 1;  // make sure at least one list
+		this.listArray = new SubList[numLists];
+		for (int i = 0; i < this.numLists; i++) {
+			this.listArray[i] = new SubList();
 			/* Allocate initial sublists to zero; allocated on demand */
-			this.ListArray[i].str = new String[0];
-			this.ListArray[i].idx = new int[0];
-			this.ListArray[i].nAllocated = 0;
-			this.ListArray[i].nElem = 0;
+			this.listArray[i].str = new String[0];
+			this.listArray[i].idx = new int[0];
+			this.listArray[i].nAllocated = 0;
+			this.listArray[i].nElem = 0;
 		}
-		this.NumElementsAllocated = 0;
-		this.LastFind = 0;
-		this.LastHash = 0;
-		this.LastSearchString = "";
+		this.numElementsAllocated = 0;
+		this.lastFind = 0;
+		this.lastHash = 0;
+		this.lastSearchString = "";
 	}
 
 	public int getInitialAllocation() {
-		return InitialAllocation;
+		return initialAllocation;
 	}
 
-	public void setInitialAllocation(int initialAllocation) {
-		InitialAllocation = initialAllocation;
+	public void setInitialAllocation(int allocation) {
+		initialAllocation = allocation;
 	}
 
 	public int listSize() {
-		return NumElements;
+		return numElements;
 	}
 
 	private void resizeSubList(SubList subList) {
 		// resize by reasonable amount
-		int OldAllocation = subList.nAllocated;
-		subList.nAllocated = OldAllocation + AllocationInc;
+		int oldAllocation = subList.nAllocated;
+		subList.nAllocated = oldAllocation + allocationInc;
 		subList.str = (String[]) Utilities.resizeArray(subList.str, subList.nAllocated);
 		subList.idx = (int[]) Utilities.resizeArray(subList.idx, subList.nAllocated);
 	}
 
-	private int hash(String S) {
+	private int hash(String s) {
 //		int HashValue = 0;//S.hashCode();
 //		for (int i = 0; i < S.length(); i++) {
 //			HashValue = ((HashValue << 5) | (HashValue >> 27)) ^ S.charAt(i);
 //		}
 
-		int HashValue = S.hashCode();
-		return Math.abs(HashValue % NumLists);  // FIXME: negative modulus
+		int HashValue = s.hashCode();
+		return Math.abs(HashValue % numLists);  // FIXME: negative modulus
 	}
 
 	/** Makes the linear string list larger. */
 	private void resizeStrArray() {
-		NumElementsAllocated += AllocationInc * NumLists;
-		StringArray = (String[]) Utilities.resizeArray(StringArray, NumElementsAllocated);
+		numElementsAllocated += allocationInc * numLists;
+		stringArray = (String[]) Utilities.resizeArray(stringArray, numElementsAllocated);
 	}
 
-	public int add(String S) {
-		int HashNum;
-		String SS;
+	public int add(String s) {
+		int hashNum;
+		String ss;
 
-		SS = S.toLowerCase();
-		HashNum = hash(SS);
+		ss = s.toLowerCase();
+		hashNum = hash(ss);
 
-		NumElements += 1;
-		if (NumElements > NumElementsAllocated)
+		numElements += 1;
+		if (numElements > numElementsAllocated)
 			resizeStrArray();
 
-		ListArray[HashNum].nElem += 1;
-		if (ListArray[HashNum].nElem > ListArray[HashNum].nAllocated)
-			resizeSubList(ListArray[HashNum]);
+		listArray[hashNum].nElem += 1;
+		if (listArray[hashNum].nElem > listArray[hashNum].nAllocated)
+			resizeSubList(listArray[hashNum]);
 
 		// make copy of whole string, lower case
-		ListArray[HashNum].str[ListArray[HashNum].nElem - 1] = SS;
+		listArray[hashNum].str[listArray[hashNum].nElem - 1] = ss;
 		// increments count to string
-		StringArray[NumElements - 1] = SS;
+		stringArray[numElements - 1] = ss;
 
-		ListArray[HashNum].idx[ListArray[HashNum].nElem - 1] = NumElements - 1;
+		listArray[hashNum].idx[listArray[hashNum].nElem - 1] = numElements - 1;
 
-		return NumElements;
+		return numElements;
 	}
 
 	/**
 	 * Repeat find for duplicate string in same hash list.
 	 */
-	public int find(String S) {
+	public int find(String s) {
 
-		LastSearchString = S.toLowerCase();
-		LastHash = hash(LastSearchString);
-		int Result = -1;
-		LastFind = -1;
+		lastSearchString = s.toLowerCase();
+		lastHash = hash(lastSearchString);
+		int result = -1;
+		lastFind = -1;
 
-		for (int i = 0; i < ListArray[LastHash].nElem; i++)
-			if (LastSearchString.equalsIgnoreCase(ListArray[LastHash].str[i])) {
-				Result = ListArray[LastHash].idx[i];
-				LastFind = i;
+		for (int i = 0; i < listArray[lastHash].nElem; i++)
+			if (lastSearchString.equalsIgnoreCase(listArray[lastHash].str[i])) {
+				result = listArray[lastHash].idx[i];
+				lastFind = i;
 				break;
 			}
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -147,46 +147,46 @@ public class HashListImpl implements HashList {
 	 */
 	public int findNext() {
 		// TODO: Check zero indexing.
-		int Result = -1;  // default return
-		LastFind += 1;    // start with next item in hash list
+		int result = -1;  // default return
+		lastFind += 1;    // start with next item in hash list
 
-		if ((LastHash > 0) && (LastHash <= NumLists)) {
-			for (int i = LastFind; i < ListArray[LastHash].nElem; i++)
-				if (LastSearchString.equalsIgnoreCase(ListArray[LastHash].str[i])) {
-					Result = ListArray[LastHash].idx[i];
-					LastFind = i;
+		if ((lastHash > 0) && (lastHash <= numLists)) {
+			for (int i = lastFind; i < listArray[lastHash].nElem; i++)
+				if (lastSearchString.equalsIgnoreCase(listArray[lastHash].str[i])) {
+					result = listArray[lastHash].idx[i];
+					lastFind = i;
 					break;
 				}
 		}
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Makes a linear search and tests each string until a string is found
 	 * that matches all the characters entered in s.
 	 */
-	public int findAbbrev(String S) {
-		String Test1, Test2;
+	public int findAbbrev(String s) {
+		String test1, test2;
 
-		int Result = 0;
-		if (S.length() > 0) {
-			Test1 = S.toLowerCase();
-			for (int i = 0; i < NumElements; i++) {
-				Test2 = StringArray[i].substring(0, Test1.length());
-				if (Test1.equalsIgnoreCase(Test2)) {
-					Result = i;
+		int result = 0;
+		if (s.length() > 0) {
+			test1 = s.toLowerCase();
+			for (int i = 0; i < numElements; i++) {
+				test2 = stringArray[i].substring(0, test1.length());
+				if (test1.equalsIgnoreCase(test2)) {
+					result = i;
 					break;
 				}
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
 	public String get(int i) {
 		// TODO: Check zero indexing
-		return ((i > 0) && (i <= NumElements)) ? StringArray[i] : "";
+		return ((i > 0) && (i <= numElements)) ? stringArray[i] : "";
 	}
 
 	/**
@@ -195,100 +195,100 @@ public class HashListImpl implements HashList {
 	 * Creates a new set of string lists and copies the old strings
 	 * into the new, hashing for the new number of lists.
 	 */
-	public void expand(int NewSize) {
+	public void expand(int newSize) {
 
-		String[] NewStringArray;
-		int NewNumLists;
-		int ElementsPerList;
-		SubList[] NewListArray;
-		int HashNum;
-		String S;
+		String[] newStringArray;
+		int newNumLists;
+		int elementsPerList;
+		SubList[] newListArray;
+		int hashNum;
+		String s;
 //		int OldNumLists;
 
-		if (NewSize > NumElementsAllocated) {
+		if (newSize > numElementsAllocated) {
 
 //			OldNumLists = NumLists;
 
-			NewStringArray = new String[NewSize];
-			NewNumLists = (int) Math.sqrt(NewSize);
-			ElementsPerList = NewSize / NewNumLists + 1;
-			if (NewNumLists < 1) NewNumLists = 1;  // make sure at least one list
-			NewListArray = new SubList[NewNumLists];
-			for (int i = 0; i < NumLists; i++) {  // TODO: Check zero indexing.
+			newStringArray = new String[newSize];
+			newNumLists = (int) Math.sqrt(newSize);
+			elementsPerList = newSize / newNumLists + 1;
+			if (newNumLists < 1) newNumLists = 1;  // make sure at least one list
+			newListArray = new SubList[newNumLists];
+			for (int i = 0; i < numLists; i++) {  // TODO: Check zero indexing.
 				/* Allocate initial sublists */
-				NewListArray[i].str = new String[ElementsPerList];
-				NewListArray[i].idx = new int[ElementsPerList];
-				NewListArray[i].nAllocated = ElementsPerList;
-				NewListArray[i].nElem = 0;
+				newListArray[i].str = new String[elementsPerList];
+				newListArray[i].idx = new int[elementsPerList];
+				newListArray[i].nAllocated = elementsPerList;
+				newListArray[i].nElem = 0;
 			}
 
-			NumLists = NewNumLists;  // has to be set so hash function will work
+			numLists = newNumLists;  // has to be set so hash function will work
 
 			/* Add elements from old hash list to new hash list */
 
-			for (int i = 0; i < NumElements; i++) {  // TODO: Check zero indexing
-				S = StringArray[i];
-				HashNum = hash(S);
-				NewListArray[HashNum].nElem += 1;
-				if (NewListArray[HashNum].nElem > NewListArray[HashNum].nAllocated) {
-					resizeSubList(NewListArray[HashNum]);
+			for (int i = 0; i < numElements; i++) {  // TODO: Check zero indexing
+				s = stringArray[i];
+				hashNum = hash(s);
+				newListArray[hashNum].nElem += 1;
+				if (newListArray[hashNum].nElem > newListArray[hashNum].nAllocated) {
+					resizeSubList(newListArray[hashNum]);
 				}
 
-				NewListArray[HashNum].str[NewListArray[HashNum].nElem] = S;
-				NewStringArray[NumElements] = NewListArray[HashNum].str[NewListArray[HashNum].nElem];
-				NewListArray[HashNum].idx[NewListArray[HashNum].nElem] = i;
+				newListArray[hashNum].str[newListArray[hashNum].nElem] = s;
+				newStringArray[numElements] = newListArray[hashNum].str[newListArray[hashNum].nElem];
+				newListArray[hashNum].idx[newListArray[hashNum].nElem] = i;
 			}
 
 			/* Assign new string and list pointers */
 
-			StringArray = NewStringArray;
-			ListArray = NewListArray;
-			NumElementsAllocated = NewSize;
+			stringArray = newStringArray;
+			listArray = newListArray;
+			numElementsAllocated = newSize;
 
 		}
 	}
 
 	public void dumpToFile(String fname) {
-		File FD = new File(fname);
+		File f = new File(fname);
 		try {
-			PrintWriter F = new PrintWriter(FD);
+			PrintWriter pw = new PrintWriter(f);
 
-			F.println(String.format("Number of Hash Lists = %d, Number of Elements = %d", NumLists, NumElements));
+			pw.println(String.format("Number of Hash Lists = %d, Number of Elements = %d", numLists, numElements));
 
-			F.println();
-			F.println("Hash List Distribution");
-			for (int i = 0; i < NumLists; i++)
-				F.println(String.format("List = %d, Number of elements = %d", i, ListArray[i].nElem));
-			F.println();
+			pw.println();
+			pw.println("Hash List Distribution");
+			for (int i = 0; i < numLists; i++)
+				pw.println(String.format("List = %d, Number of elements = %d", i, listArray[i].nElem));
+			pw.println();
 
-			for (int i = 0; i < NumLists; i++) {
-				F.println(String.format("List = %d, Number of elements = %d", i, ListArray[i].nElem));
-				for (int j = 0; j < ListArray[i].nElem; j++)
-					F.println("\"" + ListArray[i].str[j] + "\"  Idx= " + ListArray[i].idx[j]);
-				F.println();
+			for (int i = 0; i < numLists; i++) {
+				pw.println(String.format("List = %d, Number of elements = %d", i, listArray[i].nElem));
+				for (int j = 0; j < listArray[i].nElem; j++)
+					pw.println("\"" + listArray[i].str[j] + "\"  Idx= " + listArray[i].idx[j]);
+				pw.println();
 			}
 
-			F.println("LINEAR LISTING...");
-			for (int i = 0; i < NumElements; i++)
-				F.println(i + " = \"" + StringArray[i] + "\"");
+			pw.println("LINEAR LISTING...");
+			for (int i = 0; i < numElements; i++)
+				pw.println(i + " = \"" + stringArray[i] + "\"");
 
-			F.close();
+			pw.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 		}
 	}
 
 	public void clear() {
-		for (int i = 0; i < NumLists; i++) {
-			ListArray[i].nElem = 0;
-			for (int j = 0; j < ListArray[i].nAllocated; j++)
-				ListArray[i].str[j] = "";
+		for (int i = 0; i < numLists; i++) {
+			listArray[i].nElem = 0;
+			for (int j = 0; j < listArray[i].nAllocated; j++)
+				listArray[i].str[j] = "";
 		}
 
-		for (int i = 0; i < NumElementsAllocated; i++)
-			StringArray[i] = "";
+		for (int i = 0; i < numElementsAllocated; i++)
+			stringArray[i] = "";
 
-		NumElements = 0;
+		numElements = 0;
 	}
 
 }

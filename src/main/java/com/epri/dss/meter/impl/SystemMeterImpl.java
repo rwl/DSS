@@ -18,7 +18,7 @@ import com.epri.dss.meter.SystemMeter;
 
 public class SystemMeterImpl implements SystemMeter {
 
-	private static double[] RegisterArray = new double[EnergyMeter.NUM_EM_REGISTERS];
+	private static double[] registerArray = new double[EnergyMeter.NUM_EM_REGISTERS];
 
 	private MutableDouble kWh = new MutableDouble();
 	private MutableDouble dkWh = new MutableDouble();
@@ -29,14 +29,14 @@ public class SystemMeterImpl implements SystemMeter {
 	private MutableDouble Losseskvarh = new MutableDouble();
 	private MutableDouble dlosseskvarh = new MutableDouble();
 
-	private double peakkW, peakkVA, PeakLosseskW;
-	private boolean FirstSampleAfterReset, This_Meter_DIFileIsOpen;
-	private FileWriter SystemDIFile;
+	private double peakKW, peakKVA, peakLossesKW;
+	private boolean firstSampleAfterReset, thisMeterDIFileIsOpen;
+	private FileWriter systemDIFile;
 	private Complex cPower, cLosses;
 
 	public SystemMeterImpl() {
 		clear();
-		this.This_Meter_DIFileIsOpen = false;
+		this.thisMeterDIFileIsOpen = false;
 	}
 
 	/**
@@ -44,87 +44,87 @@ public class SystemMeterImpl implements SystemMeter {
 	 */
 	// FIXME Protected method in OpenDSS
 	public void appendDemandIntervalFile() {
-		String FileNm = "";
+		String fileName = "";
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (This_Meter_DIFileIsOpen) return;
+		if (thisMeterDIFileIsOpen) return;
 
 		try {
-			FileNm = Globals.getEnergyMeterClass().getDI_Dir() + "/DI_SystemMeter.csv";
+			fileName = globals.getEnergyMeterClass().getDI_Dir() + "/DI_SystemMeter.csv";
 			/* File must exist */
-			if (new File(FileNm).exists()) {
-				SystemDIFile = new FileWriter(FileNm, true);
+			if (new File(fileName).exists()) {
+				systemDIFile = new FileWriter(fileName, true);
 			} else {
-				SystemDIFile = new FileWriter(FileNm, false);;
+				systemDIFile = new FileWriter(fileName, false);;
 			}
 
-			This_Meter_DIFileIsOpen = true;
+			thisMeterDIFileIsOpen = true;
 
 		} catch (IOException e) {
-			Globals.doSimpleMsg("Error opening demand interval file \""+FileNm+" for appending."+DSSGlobals.CRLF+e.getMessage(), 540);
+			globals.doSimpleMsg("Error opening demand interval file \""+fileName+" for appending."+DSSGlobals.CRLF+e.getMessage(), 540);
 		}
 	}
 
 	private void clear() {
 		kWh.setValue(0.0);
 		kvarh.setValue(0.0);
-		peakkW = 0.0;
-		peakkVA = 0.0;
+		peakKW = 0.0;
+		peakKVA = 0.0;
 		Losseskwh.setValue(0.0);
 		Losseskvarh.setValue(0.0);
-		PeakLosseskW = 0.0;
+		peakLossesKW = 0.0;
 		dkWh.setValue(0.0);
 		dkvarh.setValue(0.0);
 		dLosseskWh.setValue(0.0);
 		dlosseskvarh.setValue(0.0);
-		FirstSampleAfterReset = true;
+		firstSampleAfterReset = true;
 	}
 
 	// FIXME Protected method in OpenDSS
 	public void closeDemandIntervalFile() {
-		if (This_Meter_DIFileIsOpen) {
+		if (thisMeterDIFileIsOpen) {
 			try {
-				SystemDIFile.close();
-				This_Meter_DIFileIsOpen = false;
+				systemDIFile.close();
+				thisMeterDIFileIsOpen = false;
 			} catch (IOException e) {
 				DSSGlobals.getInstance().doSimpleMsg("Error closing demand interval file."+DSSGlobals.CRLF+e.getMessage(), 540);
 			}
 		}
 	}
 
-	private void integrate(MutableDouble Reg, double Value, MutableDouble Deriv) {
+	private void integrate(MutableDouble reg, double value, MutableDouble deriv) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
-			if (!FirstSampleAfterReset)
-				Reg.add(0.5 * ckt.getSolution().getIntervalHrs() * (Value + Deriv.doubleValue()));
+			if (!firstSampleAfterReset)
+				reg.add(0.5 * ckt.getSolution().getIntervalHrs() * (value + deriv.doubleValue()));
 		} else {
 			/* Plain Euler integration */
-			Reg.add(ckt.getSolution().getIntervalHrs() * Value);
+			reg.add(ckt.getSolution().getIntervalHrs() * value);
 		}
 
-		Deriv.setValue(Value);
+		deriv.setValue(value);
 	}
 
 	// FIXME Protected method in OpenDSS
 	public void openDemandIntervalFile() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (This_Meter_DIFileIsOpen)
-				SystemDIFile.close();
+			if (thisMeterDIFileIsOpen)
+				systemDIFile.close();
 
-			SystemDIFile = new FileWriter(Globals.getEnergyMeterClass().getDI_Dir()+"/DI_SystemMeter.csv");
-			PrintWriter SystemDIPrinter = new PrintWriter(SystemDIFile);
+			systemDIFile = new FileWriter(globals.getEnergyMeterClass().getDI_Dir()+"/DI_SystemMeter.csv");
+			PrintWriter systemDIPrinter = new PrintWriter(systemDIFile);
 
-			This_Meter_DIFileIsOpen = true;
-			SystemDIPrinter.print("\"Hour\", ");
-			writeRegisterNames(SystemDIPrinter);
-			SystemDIPrinter.println();
+			thisMeterDIFileIsOpen = true;
+			systemDIPrinter.print("\"Hour\", ");
+			writeRegisterNames(systemDIPrinter);
+			systemDIPrinter.println();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening demand interval file \"DI_SystemMeter.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+			globals.doSimpleMsg("Error opening demand interval file \"DI_SystemMeter.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
 	}
 
@@ -133,36 +133,36 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	public void save() {
-		String CSVName = "SystemMeter.csv", Folder;
+		String csvName = "SystemMeter.csv", Folder;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			/* If we are doing a simulation and saving interval data, create this in the
 			 * same directory as the demand interval data.
 			 */
-			if (Globals.getEnergyMeterClass().isSaveDemandInterval()) {
-				Folder = Globals.getEnergyMeterClass().getDI_Dir() + "/";
+			if (globals.getEnergyMeterClass().isSaveDemandInterval()) {
+				Folder = globals.getEnergyMeterClass().getDI_Dir() + "/";
 			} else {
-				Folder = Globals.getDSSDataDirectory();
+				Folder = globals.getDSSDataDirectory();
 			}
-			FileWriter FStream = new FileWriter(Folder + CSVName, false);
-			PrintWriter FPrinter = new PrintWriter(FStream);
+			FileWriter fw = new FileWriter(Folder + csvName, false);
+			PrintWriter pw = new PrintWriter(fw);
 
-			Globals.setGlobalResult(CSVName);
+			globals.setGlobalResult(csvName);
 
-			FPrinter.write("Year, ");
-			writeRegisterNames(FPrinter);
-			FPrinter.println();
+			pw.write("Year, ");
+			writeRegisterNames(pw);
+			pw.println();
 
-			FPrinter.print(Globals.getActiveCircuit().getSolution().getYear());
-			writeRegisters(FPrinter);
-			FPrinter.println();
+			pw.print(globals.getActiveCircuit().getSolution().getYear());
+			writeRegisters(pw);
+			pw.println();
 
-			FPrinter.close();
-			FStream.close();
+			pw.close();
+			fw.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening system meter file \"" + DSSGlobals.CRLF + CSVName + "\": " + e.getMessage(), 542);
+			globals.doSimpleMsg("Error opening system meter file \"" + DSSGlobals.CRLF + csvName + "\": " + e.getMessage(), 542);
 		}
 	}
 
@@ -170,14 +170,13 @@ public class SystemMeterImpl implements SystemMeter {
 	 * Get total system energy out of the sources.
 	 */
 	public void takeSample() {
-
 		cPower = Utilities.getTotalPowerFromSources().multiply(0.001);  // convert to kW
 
 		integrate(kWh, cPower.getReal(), dkWh);
 		integrate(kvarh, cPower.getImaginary(), dkvarh);
 
-		peakkW  = Math.max(cPower.getReal(), peakkW);
-		peakkVA = Math.max(cPower.abs(), peakkVA);
+		peakKW  = Math.max(cPower.getReal(), peakKW);
+		peakKVA = Math.max(cPower.abs(), peakKVA);
 
 		/* Get total circuit losses */
 		cLosses = DSSGlobals.getInstance().getActiveCircuit().getLosses();  // PD elements except shunts
@@ -186,44 +185,44 @@ public class SystemMeterImpl implements SystemMeter {
 		integrate(Losseskwh, cLosses.getReal(), dLosseskWh);
 		integrate(Losseskvarh, cLosses.getImaginary(), dlosseskvarh);
 
-		PeakLosseskW = Math.max(cLosses.getReal(), PeakLosseskW);
+		peakLossesKW = Math.max(cLosses.getReal(), peakLossesKW);
 
-		FirstSampleAfterReset = false;
-		if (This_Meter_DIFileIsOpen) writeDemandIntervalData();
+		firstSampleAfterReset = false;
+		if (thisMeterDIFileIsOpen) writeDemandIntervalData();
 	}
 
 	protected void writeDemandIntervalData() {
 		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 
-		PrintWriter SystemDIPrinter = new PrintWriter(SystemDIFile);
+		PrintWriter pw = new PrintWriter(systemDIFile);
 
-		SystemDIPrinter.printf("%-.6g", sol.getDblHour());
-		SystemDIPrinter.printf(", %-g", cPower.getReal());
-		SystemDIPrinter.printf(", %-g", cPower.getImaginary());
-		SystemDIPrinter.printf(", %-g", peakkW);
-		SystemDIPrinter.printf(", %-g", peakkVA);
+		pw.printf("%-.6g", sol.getDblHour());
+		pw.printf(", %-g", cPower.getReal());
+		pw.printf(", %-g", cPower.getImaginary());
+		pw.printf(", %-g", peakKW);
+		pw.printf(", %-g", peakKVA);
 
-		SystemDIPrinter.printf(", %-g", cLosses.getReal());
-		SystemDIPrinter.printf(", %-g", cLosses.getImaginary());
-		SystemDIPrinter.printf(", %-g", PeakLosseskW);
-		SystemDIPrinter.println();
+		pw.printf(", %-g", cLosses.getReal());
+		pw.printf(", %-g", cLosses.getImaginary());
+		pw.printf(", %-g", peakLossesKW);
+		pw.println();
 
-		SystemDIPrinter.close();
+		pw.close();
 	}
 
-	private void writeRegisterNames(PrintWriter F) {
-		F.print("kWh, kvarh, \"Peak kW\", \"peak kVA\", \"Losses kWh\", \"Losses kvarh\", \"Peak Losses kW\"");
+	private void writeRegisterNames(PrintWriter f) {
+		f.print("kWh, kvarh, \"Peak kW\", \"peak kVA\", \"Losses kWh\", \"Losses kvarh\", \"Peak Losses kW\"");
 	}
 
-	private void writeRegisters(PrintWriter F) {
+	private void writeRegisters(PrintWriter f) {
 
-		F.printf(", %-g", kWh.doubleValue());
-		F.printf(", %-g", kvarh.doubleValue());
-		F.printf(", %-g", peakkW);
-		F.printf(", %-g", peakkVA);
-		F.printf(", %-g", Losseskwh.doubleValue());
-		F.printf(", %-g", Losseskvarh.doubleValue());
-		F.printf(", %-g", PeakLosseskW);
+		f.printf(", %-g", kWh.doubleValue());
+		f.printf(", %-g", kvarh.doubleValue());
+		f.printf(", %-g", peakKW);
+		f.printf(", %-g", peakKVA);
+		f.printf(", %-g", Losseskwh.doubleValue());
+		f.printf(", %-g", Losseskvarh.doubleValue());
+		f.printf(", %-g", peakLossesKW);
 	}
 
 }

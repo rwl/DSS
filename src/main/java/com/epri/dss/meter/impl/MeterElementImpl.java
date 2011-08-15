@@ -12,62 +12,62 @@ import com.epri.dss.meter.MeterElement;
 
 public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
-	protected String ElementName;
-	protected CktElement MeteredElement;
-	protected int MeteredTerminal;
-	protected boolean MeteredElementChanged;
+	protected String elementName;
+	protected CktElement meteredElement;
+	protected int meteredTerminal;
+	protected boolean meteredElementChanged;
 
-	protected double[] SensorCurrent;
-	protected double[] SensorVoltage;
-	protected double[] PhsAllocationFactor;
-	protected Complex[] CalculatedCurrent;
-	protected Complex[] CalculatedVoltage;
-	protected double AvgAllocFactor;
+	protected double[] sensorCurrent;
+	protected double[] sensorVoltage;
+	protected double[] phsAllocationFactor;
+	protected Complex[] calculatedCurrent;
+	protected Complex[] calculatedVoltage;
+	protected double avgAllocFactor;
 
-	public MeterElementImpl(DSSClass ParClass) {
-		super(ParClass);
+	public MeterElementImpl(DSSClass parClass) {
+		super(parClass);
 		this.objType = DSSClassDefs.METER_ELEMENT;
 
-		this.ElementName         = "";
-		this.MeteredElement      = null;
-		this.MeteredTerminal     = 1;
-		this.SensorCurrent       = null;
-		this.SensorVoltage       = null;
-		this.PhsAllocationFactor = null;
-		this.CalculatedCurrent   = null;
-		this.CalculatedVoltage   = null;
+		this.elementName         = "";
+		this.meteredElement      = null;
+		this.meteredTerminal     = 1;
+		this.sensorCurrent       = null;
+		this.sensorVoltage       = null;
+		this.phsAllocationFactor = null;
+		this.calculatedCurrent   = null;
+		this.calculatedVoltage   = null;
 	}
 
 	public void allocateSensorArrays() {
-		if (MeteredElement != null)
-			CalculatedCurrent = (Complex[]) Utilities.resizeArray(CalculatedCurrent, MeteredElement.getYorder());
-		if (MeteredElement != null)
-			CalculatedVoltage = (Complex[]) Utilities.resizeArray(CalculatedVoltage, MeteredElement.getYorder());
-		SensorCurrent = (double[]) Utilities.resizeArray(SensorCurrent, nPhases);
-		SensorVoltage = (double[]) Utilities.resizeArray(SensorVoltage, nPhases);
-		PhsAllocationFactor = (double[]) Utilities.resizeArray(PhsAllocationFactor, nPhases);
+		if (meteredElement != null)
+			calculatedCurrent = (Complex[]) Utilities.resizeArray(calculatedCurrent, meteredElement.getYorder());
+		if (meteredElement != null)
+			calculatedVoltage = (Complex[]) Utilities.resizeArray(calculatedVoltage, meteredElement.getYorder());
+		sensorCurrent = (double[]) Utilities.resizeArray(sensorCurrent, nPhases);
+		sensorVoltage = (double[]) Utilities.resizeArray(sensorVoltage, nPhases);
+		phsAllocationFactor = (double[]) Utilities.resizeArray(phsAllocationFactor, nPhases);
 	}
 
 	public void calcAllocationFactors() {
 		int iOffset;
 		int i;
-		double Mag;
+		double mag;
 
-		MeteredElement.getCurrents(CalculatedCurrent);
+		meteredElement.getCurrents(calculatedCurrent);
 
-		// The phase allocation factor is the amount that the load must change to match the measured peak
-		iOffset = (MeteredTerminal - 1) * MeteredElement.getNConds();
-		AvgAllocFactor = 0.0;
+		// the phase allocation factor is the amount that the load must change to match the measured peak
+		iOffset = (meteredTerminal - 1) * meteredElement.getNConds();
+		avgAllocFactor = 0.0;
 		for (i = 0; i < nPhases; i++) {
-			Mag = CalculatedCurrent[i + iOffset].abs();
-			if (Mag > 0.0) {
-				PhsAllocationFactor[i] = SensorCurrent[i] / Mag;
+			mag = calculatedCurrent[i + iOffset].abs();
+			if (mag > 0.0) {
+				phsAllocationFactor[i] = sensorCurrent[i] / mag;
 			} else {
-				PhsAllocationFactor[i] = 1.0;  // no change
+				phsAllocationFactor[i] = 1.0;  // no change
 			}
-			AvgAllocFactor = AvgAllocFactor + PhsAllocationFactor[i];
+			avgAllocFactor = avgAllocFactor + phsAllocationFactor[i];
 		}
-		AvgAllocFactor = AvgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
+		avgAllocFactor = avgAllocFactor / nPhases;  // factor for 2- and 3-phase loads
 	}
 
 	/**
@@ -78,83 +78,83 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 	}
 
 	public String getElementName() {
-		return ElementName;
+		return elementName;
 	}
 
-	public void setElementName(String elementName) {
-		ElementName = elementName;
+	public void setElementName(String name) {
+		elementName = name;
 	}
 
 	public CktElement getMeteredElement() {
-		return MeteredElement;
+		return meteredElement;
 	}
 
-	public void setMeteredElement(CktElement meteredElement) {
-		MeteredElement = meteredElement;
+	public void setMeteredElement(CktElement element) {
+		meteredElement = element;
 	}
 
 	public int getMeteredTerminal() {
-		return MeteredTerminal;
+		return meteredTerminal;
 	}
 
-	public void setMeteredTerminal(int meteredTerminal) {
-		MeteredTerminal = meteredTerminal;
+	public void setMeteredTerminal(int terminal) {
+		meteredTerminal = terminal;
 	}
 
 	public boolean isMeteredElementChanged() {
-		return MeteredElementChanged;
+		return meteredElementChanged;
 	}
 
-	public void setMeteredElementChanged(boolean meteredElementChanged) {
-		MeteredElementChanged = meteredElementChanged;
+	public void setMeteredElementChanged(boolean changed) {
+		meteredElementChanged = changed;
 	}
 
 	public double[] getSensorCurrent() {
-		return SensorCurrent;
+		return sensorCurrent;
 	}
 
-	public void setSensorCurrent(double[] sensorCurrent) {
-		SensorCurrent = sensorCurrent;
+	public void setSensorCurrent(double[] current) {
+		sensorCurrent = current;
 	}
 
 	public double[] getSensorVoltage() {
-		return SensorVoltage;
+		return sensorVoltage;
 	}
 
-	public void setSensorVoltage(double[] sensorVoltage) {
-		SensorVoltage = sensorVoltage;
+	public void setSensorVoltage(double[] voltage) {
+		sensorVoltage = voltage;
 	}
 
 	public double[] getPhsAllocationFactor() {
-		return PhsAllocationFactor;
+		return phsAllocationFactor;
 	}
 
-	public void setPhsAllocationFactor(double[] phsAllocationFactor) {
-		PhsAllocationFactor = phsAllocationFactor;
+	public void setPhsAllocationFactor(double[] factor) {
+		phsAllocationFactor = factor;
 	}
 
 	public Complex[] getCalculatedCurrent() {
-		return CalculatedCurrent;
+		return calculatedCurrent;
 	}
 
-	public void setCalculatedCurrent(Complex[] calculatedCurrent) {
-		CalculatedCurrent = calculatedCurrent;
+	public void setCalculatedCurrent(Complex[] current) {
+		calculatedCurrent = current;
 	}
 
 	public Complex[] getCalculatedVoltage() {
-		return CalculatedVoltage;
+		return calculatedVoltage;
 	}
 
-	public void setCalculatedVoltage(Complex[] calculatedVoltage) {
-		CalculatedVoltage = calculatedVoltage;
+	public void setCalculatedVoltage(Complex[] voltage) {
+		calculatedVoltage = voltage;
 	}
 
 	public double getAvgAllocFactor() {
-		return AvgAllocFactor;
+		return avgAllocFactor;
 	}
 
-	public void setAvgAllocFactor(double avgAllocFactor) {
-		AvgAllocFactor = avgAllocFactor;
+	public void setAvgAllocFactor(double factor) {
+		avgAllocFactor = factor;
 	}
 
 }

@@ -154,7 +154,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 		this.solutionCount = 0;
 
-		this.dynaVars.SolutionMode = Dynamics.SNAPSHOT;
+		this.dynaVars.solutionMode = Dynamics.SNAPSHOT;
 		this.controlMode           = DSSGlobals.CTRLSTATIC;
 		this.defaultControlMode    = controlMode;
 		this.algorithm             = Solution.NORMALSOLVE;
@@ -210,7 +210,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 
 			/* CheckFaultStatus;  ???? needed here?? */
 
-			switch (dynaVars.SolutionMode) {
+			switch (dynaVars.solutionMode) {
 			case Dynamics.SNAPSHOT:
 				solveSnap();
 				break;
@@ -366,7 +366,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	public void setGeneratorDispRef() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		switch (dynaVars.SolutionMode) {
+		switch (dynaVars.solutionMode) {
 		case Dynamics.SNAPSHOT:
 			ckt.setGeneratorDispatchReference(ckt.getLoadMultiplier() * ckt.getDefaultGrowthFactor());
 			break;
@@ -983,7 +983,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		if (!oKForHarmonics(Value))
 			return;
 
-		dynaVars.SolutionMode = Value;
+		dynaVars.solutionMode = Value;
 
 		controlMode = defaultControlMode;  // revert to default mode
 		loadModel   = defaultLoadModel;
@@ -995,7 +995,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		preserveNodeVoltages = false;  // don't do this unless we have to
 
 		// reset defaults for solution modes
-		switch (dynaVars.SolutionMode) {
+		switch (dynaVars.solutionMode) {
 		case Dynamics.PEAKDAY:
 			dynaVars.h    = 3600.0;
 			numberOfTimes = 24;
@@ -1079,7 +1079,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 //			Currents[i] = Currents[i].add(AuxCurrents[i]);
 		// for now, only AutoAddObj uses this.
 
-		if (dynaVars.SolutionMode == Dynamics.AUTOADDFLAG)
+		if (dynaVars.solutionMode == Dynamics.AUTOADDFLAG)
 			ckt.getAutoAddObj().addCurrents(solveType);
 	}
 
@@ -1334,7 +1334,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	}
 
 	public int getMode() {
-		return dynaVars.SolutionMode;
+		return dynaVars.solutionMode;
 	}
 
 	public int getYear() {

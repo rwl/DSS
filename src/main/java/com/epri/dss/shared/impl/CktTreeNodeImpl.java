@@ -7,197 +7,197 @@ import com.epri.dss.shared.PointerList;
 
 public class CktTreeNodeImpl implements CktTreeNode {
 
-	private PointerList ChildBranches;  // TODO Replace with List and Iterator
-	private int NumToBuses, ToBusPtr;
-	private int[] ToBusList;
+	private PointerList childBranches;  // TODO Replace with List and Iterator
+	private int numToBuses, toBusPtr;
+	private int[] toBusList;
 
-	protected boolean ChildAdded;
-	protected int LexicalLevel;
-	protected CktTreeNode ParentBranch;
-	protected PointerList ShuntObjects;  // generic objects attached to the tree at this node
+	protected boolean childAdded;
+	protected int lexicalLevel;
+	protected CktTreeNode parentBranch;
+	protected PointerList shuntObjects;  // generic objects attached to the tree at this node
 
-	protected Object CktObject;  // pointer to the circuit object referenced
-	protected int FromBusReference;
-	protected int VoltBaseIndex;
-	protected int FromTerminal;
-	protected boolean IsLoopedHere, IsParallel, IsDangling;
-	protected Object LoopLineObj;
+	protected Object cktObject;  // pointer to the circuit object referenced
+	protected int fromBusReference;
+	protected int voltBaseIndex;
+	protected int fromTerminal;
+	protected boolean isLoopedHere, isParallel, isDangling;
+	protected Object loopLineObj;
 
 
-	public CktTreeNodeImpl(CktTreeNode pParent, Object pSelfObj) {
+	public CktTreeNodeImpl(CktTreeNode parent, Object selfObj) {
 		super();
-		this.CktObject = pSelfObj;
-		this.ParentBranch = pParent;
-		if (this.ParentBranch != null) {
-			LexicalLevel = this.ParentBranch.getLexicalLevel() + 1;
+		this.cktObject = selfObj;
+		this.parentBranch = parent;
+		if (this.parentBranch != null) {
+			lexicalLevel = this.parentBranch.getLexicalLevel() + 1;
 		} else {
-			LexicalLevel = 0;
+			lexicalLevel = 0;
 		}
-		this.ChildBranches   = new PointerListImpl(2);
-		this.ShuntObjects    = new PointerListImpl(1);
-		this.FromBusReference = 0;
-		this.VoltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
-		this.NumToBuses = 0;
-		this.ToBusList = null;
-		this.ToBusPtr = 0;
-		this.ChildAdded = false;
+		this.childBranches   = new PointerListImpl(2);
+		this.shuntObjects    = new PointerListImpl(1);
+		this.fromBusReference = 0;
+		this.voltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
+		this.numToBuses = 0;
+		this.toBusList = null;
+		this.toBusPtr = 0;
+		this.childAdded = false;
 		// TEMc - initialize some topology variables, 10/2009
-		this.IsDangling = true;
-		this.IsLoopedHere = false;
-		this.IsParallel = false;
-		this.LoopLineObj = null;
+		this.isDangling = true;
+		this.isLoopedHere = false;
+		this.isParallel = false;
+		this.loopLineObj = null;
 	}
 
-	public void addChild(CktTreeNode Value) {
-		ChildBranches.add(Value);
-		ChildAdded = true;
+	public void addChild(CktTreeNode value) {
+		childBranches.add(value);
+		childAdded = true;
 	}
 
-	public void addObject(DSSObject Value) {
-		ShuntObjects.add(Value);
+	public void addObject(DSSObject value) {
+		shuntObjects.add(value);
 	}
 
 	public CktTreeNode getFirstChild() {
-		return (CktTreeNode) ChildBranches.getFirst();
+		return (CktTreeNode) childBranches.getFirst();
 	}
 
 	public CktTreeNode getNextChild() {
-		return (CktTreeNode) ChildBranches.getNext();
+		return (CktTreeNode) childBranches.getNext();
 	}
 
 	public CktTreeNode getParent() {
-		return ParentBranch;
+		return parentBranch;
 	}
 
 	/**
 	 * Number of children at present node.
 	 */
 	public int getNumChildren() {
-		return ChildBranches.size();
+		return childBranches.size();
 	}
 
 	/**
 	 * Number of objects at present node.
 	 */
 	public int getNumObjects() {
-		return ShuntObjects.size();
+		return shuntObjects.size();
 	}
 
 	/**
 	 * Sequentially access the toBus list if more than one with each invocation of the property.
 	 */
 	public int getToBusReference() {
-		if (NumToBuses == 1)  {
-			return ToBusList[0];  // always return the first
+		if (numToBuses == 1)  {
+			return toBusList[0];  // always return the first
 		} else {
-			ToBusPtr += 1;
-			if (ToBusPtr >= NumToBuses) {  // TODO Check zero based indexing
-				ToBusPtr = 0;  // ready for next sequence of access
+			toBusPtr += 1;
+			if (toBusPtr >= numToBuses) {  // TODO Check zero based indexing
+				toBusPtr = 0;  // ready for next sequence of access
 				return -1;
 			} else {
-				return ToBusList[ToBusPtr];
+				return toBusList[toBusPtr];
 			}
 		}
 	}
 
-	public void setToBusReference(int Value) {
-		NumToBuses += 1;
-		ToBusList = (int[]) Utilities.resizeArray(ToBusList, NumToBuses);
-		ToBusList[NumToBuses] = Value;
+	public void setToBusReference(int value) {
+		numToBuses += 1;
+		toBusList = (int[]) Utilities.resizeArray(toBusList, numToBuses);
+		toBusList[numToBuses] = value;
 	}
 
 	public void resetToBusList() {
-		ToBusPtr = 0;  // TODO Check zero based indexing
+		toBusPtr = 0;  // TODO Check zero based indexing
 	}
 
 	public DSSObject getFirstObject() {
-		return (DSSObject) ShuntObjects.getFirst();  // TODO Make generic
+		return (DSSObject) shuntObjects.getFirst();  // TODO Make generic
 	}
 
 	public DSSObject getNextObject() {
-		return (DSSObject) ShuntObjects.getNext();
+		return (DSSObject) shuntObjects.getNext();
 	}
 
 	public DSSObject getCktObject() {
-		return (DSSObject) CktObject;
+		return (DSSObject) cktObject;
 	}
 
-	public void setCktObject(DSSObject cktObject) {
-		CktObject = cktObject;
+	public void setCktObject(DSSObject ckt) {
+		cktObject = ckt;
 	}
 
 	public int getFromBusReference() {
-		return FromBusReference;
+		return fromBusReference;
 	}
 
-	public void setFromBusReference(int fromBusReference) {
-		FromBusReference = fromBusReference;
+	public void setFromBusReference(int reference) {
+		fromBusReference = reference;
 	}
 
 	public int getVoltBaseIndex() {
-		return VoltBaseIndex;
+		return voltBaseIndex;
 	}
 
-	public void setVoltBaseIndex(int voltBaseIndex) {
-		VoltBaseIndex = voltBaseIndex;
+	public void setVoltBaseIndex(int index) {
+		voltBaseIndex = index;
 	}
 
 	public int getFromTerminal() {
-		return FromTerminal;
+		return fromTerminal;
 	}
 
-	public void setFromTerminal(int fromTerminal) {
-		FromTerminal = fromTerminal;
+	public void setFromTerminal(int terminal) {
+		fromTerminal = terminal;
 	}
 
-	public boolean isIsLoopedHere() {
-		return IsLoopedHere;
+	public boolean isLoopedHere() {
+		return isLoopedHere;
 	}
 
-	public void setIsLoopedHere(boolean isLoopedHere) {
-		IsLoopedHere = isLoopedHere;
+	public void setLoopedHere(boolean value) {
+		isLoopedHere = value;
 	}
 
-	public boolean isIsParallel() {
-		return IsParallel;
+	public boolean isParallel() {
+		return isParallel;
 	}
 
-	public void setIsParallel(boolean isParallel) {
-		IsParallel = isParallel;
+	public void setParallel(boolean value) {
+		isParallel = value;
 	}
 
-	public boolean isIsDangling() {
-		return IsDangling;
+	public boolean isDangling() {
+		return isDangling;
 	}
 
-	public void setIsDangling(boolean isDangling) {
-		IsDangling = isDangling;
+	public void setDangling(boolean value) {
+		isDangling = value;
 	}
 
 	public Object getLoopLineObj() {
-		return LoopLineObj;
+		return loopLineObj;
 	}
 
-	public void setLoopLineObj(Object loopLineObj) {
-		LoopLineObj = loopLineObj;
+	public void setLoopLineObj(Object lineObj) {
+		loopLineObj = lineObj;
 	}
 
 	// FIXME Protected members in OpenDSS
 
 	public boolean isChildAdded() {
-		return ChildAdded;
+		return childAdded;
 	}
 
-	public void setChildAdded(boolean childAdded) {
-		ChildAdded = childAdded;
+	public void setChildAdded(boolean added) {
+		childAdded = added;
 	}
 
 	public int getLexicalLevel() {
-		return LexicalLevel;
+		return lexicalLevel;
 	}
 
-	public void setLexicalLevel(int lexicalLevel) {
-		LexicalLevel = lexicalLevel;
+	public void setLexicalLevel(int level) {
+		lexicalLevel = level;
 	}
 
 }

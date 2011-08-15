@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class MonitorImpl extends MeterClassImpl implements Monitor {
 
-	private static MonitorObj ActiveMonitorObj;
+	private static MonitorObj activeMonitorObj;
 
 	public MonitorImpl() {
 		super();
@@ -20,9 +20,9 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 	}
 
@@ -73,45 +73,45 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	}
 
 	@Override
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new MonitorObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new MonitorObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveMonitorObj((MonitorObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveMonitorObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveMonitorObj());
 
-		int Result = 0;
+		int result = 0;
 
 		MonitorObj am = getActiveMonitorObj();
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer >= 0) && (ParamPointer < numProperties))
-				am.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer >= 0) && (paramPointer < numProperties))
+				am.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
-				am.setElementName(Param.toLowerCase());
+				am.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				am.setMeteredTerminal(parser.makeInteger());
@@ -120,7 +120,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				am.setMode(parser.makeInteger());
 				break;
 			case 3:
-				switch (Param.toLowerCase().charAt(0)) {
+				switch (param.toLowerCase().charAt(0)) {
 				case 's':
 					am.save();
 					break;
@@ -136,27 +136,27 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				}
 				break;
 			case 4:
-				am.setIncludeResidual( Utilities.interpretYesNo(Param) );
+				am.setIncludeResidual( Utilities.interpretYesNo(param) );
 				break;
 			case 5:
-				am.setVIPolar( Utilities.interpretYesNo(Param) );
+				am.setVIPolar( Utilities.interpretYesNo(param) );
 				break;
 			case 6:
-				am.setPPolar( Utilities.interpretYesNo(Param) );
+				am.setPPolar( Utilities.interpretYesNo(param) );
 				break;
 			default:
 				// Inherited parameters
-				classEdit(getActiveMonitorObj(), ParamPointer - Monitor.NumPropsThisClass);
+				classEdit(getActiveMonitorObj(), paramPointer - Monitor.NumPropsThisClass);
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
 		am.recalcElementData();
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -191,64 +191,64 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 	@Override
 	protected int makeLike(String MonitorName) {
-		int i, Result = 0;
+		int i, result = 0;
 		/* See if we can find this monitor name in the present collection */
-		MonitorObj OtherMonitor = (MonitorObj) find(MonitorName);
-		if (OtherMonitor != null) {
+		MonitorObj otherMonitor = (MonitorObj) find(MonitorName);
+		if (otherMonitor != null) {
 			MonitorObj am = getActiveMonitorObj();
 
-			am.setNPhases(OtherMonitor.getNPhases());
-			am.setNConds(OtherMonitor.getNConds());  // force reallocation of terminal stuff
+			am.setNPhases(otherMonitor.getNPhases());
+			am.setNConds(otherMonitor.getNConds());  // force reallocation of terminal stuff
 
-			am.setBufferSize(OtherMonitor.getBufferSize());
-			am.setElementName(OtherMonitor.getElementName());
-			am.setMeteredElement(OtherMonitor.getMeteredElement());  // target circuit element
-			am.setMeteredTerminal(OtherMonitor.getMeteredTerminal());
-			am.setMode(OtherMonitor.getMode());
-			am.setIncludeResidual(OtherMonitor.isIncludeResidual());
+			am.setBufferSize(otherMonitor.getBufferSize());
+			am.setElementName(otherMonitor.getElementName());
+			am.setMeteredElement(otherMonitor.getMeteredElement());  // target circuit element
+			am.setMeteredTerminal(otherMonitor.getMeteredTerminal());
+			am.setMode(otherMonitor.getMode());
+			am.setIncludeResidual(otherMonitor.isIncludeResidual());
 
 			for (i = 0; i < am.getParentClass().getNumProperties(); i++)
-				am.setPropertyValue(i, OtherMonitor.getPropertyValue(i));
+				am.setPropertyValue(i, otherMonitor.getPropertyValue(i));
 
-			am.setBaseFrequency(OtherMonitor.getBaseFrequency());
+			am.setBaseFrequency(otherMonitor.getBaseFrequency());
 
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
 		}
 
-		return Result;
+		return result;
 	}
 
 	@Override
-	public int init(int Handle) {
-		MonitorObj Mon;
-		int Result = 0;
+	public int init(int handle) {
+		MonitorObj mon;
+		int result = 0;
 
-		if (Handle >= 0) {
-			Mon = (MonitorObj) elementList.get(Handle);
-			Mon.resetIt();
+		if (handle >= 0) {
+			mon = (MonitorObj) elementList.get(handle);
+			mon.resetIt();
 		} else {
 			// Do 'em all
 			for (int i = 0; i < elementList.size(); i++) {
-				Mon = (MonitorObj) elementList.get(i);
-				Mon.resetIt();
+				mon = (MonitorObj) elementList.get(i);
+				mon.resetIt();
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
-	public void TOPExport(String ObjName) {
+	public void TOPExport(String objName) {
 		// FIXME Implement or remove this
 		throw new UnsupportedOperationException();
 	}
 
-	public static void setActiveMonitorObj(MonitorObj activeMonitorObj) {
-		ActiveMonitorObj = activeMonitorObj;
+	public static void setActiveMonitorObj(MonitorObj monitorObj) {
+		activeMonitorObj = monitorObj;
 	}
 
 	public static MonitorObj getActiveMonitorObj() {
-		return ActiveMonitorObj;
+		return activeMonitorObj;
 	}
 
 }

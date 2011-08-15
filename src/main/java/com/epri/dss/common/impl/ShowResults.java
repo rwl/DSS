@@ -1836,9 +1836,9 @@ public abstract class ShowResults {
 							//F.print(pMtr.getBranchList().getLevel() +" ");
 							pw.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
 							CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
-							if (pb.isIsParallel())
+							if (pb.isParallel())
 								pw.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName()+")");
-							if (pb.isIsLoopedHere())
+							if (pb.isLoopedHere())
 								pw.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
 
 							if (PDElem.getSensorObj() != null) {
@@ -1860,7 +1860,7 @@ public abstract class ShowResults {
 								pw.println();
 								loadElem = (LoadObj) pMtr.getBranchList().getNextObject();
 							}
-							PDElem = (PDElement) pMtr.getBranchList().GoForward();
+							PDElem = (PDElement) pMtr.getBranchList().goForward();
 						}
 					}
 				}
@@ -2227,7 +2227,7 @@ public abstract class ShowResults {
 									pw.println("[SHUNT], " + pElem.getParentClass().getName() + "." + pElem.getName());
 									pElem = (CktElement) subArea.getNextObject();
 								}
-								testBranch = (CktElement) subArea.GoForward();
+								testBranch = (CktElement) subArea.goForward();
 							}
 							subArea = null;
 							pw.println();
@@ -2280,7 +2280,7 @@ public abstract class ShowResults {
 					pw.println("[SHUNT], " + testElem.getParentClass().getName() + "." + testElem.getName());
 					testElem = (CktElement) branchList.getNextObject();
 				}
-				testBranch = (CktElement) branchList.GoForward();
+				testBranch = (CktElement) branchList.goForward();
 			}
 
 			branchList = null;
@@ -2352,12 +2352,12 @@ public abstract class ShowResults {
 					while (PDElem != null) {
 
 						CktTreeNode pb = pMtr.getBranchList().getPresentBranch();
-						if (pb.isIsParallel())
+						if (pb.isParallel())
 							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName() +": PARALLEL WITH " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
-						if (pb.isIsLoopedHere())
+						if (pb.isLoopedHere())
 							pw.println("(" + pMtr.getName() + ") " + PDElem.getParentClass().getName() + "." + PDElem.getName() + ": LOOPED TO     " + ((CktElement) pb.getLoopLineObj()).getParentClass().getName() + "." + ((CktElement) pb.getLoopLineObj()).getName());
 
-						PDElem = (PDElement) pMtr.getBranchList().GoForward();
+						PDElem = (PDElement) pMtr.getBranchList().goForward();
 					}
 				}
 
@@ -2424,11 +2424,11 @@ public abstract class ShowResults {
 				topoLevelTabs(pwTree, topo.getLevel());
 				pwTree.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
 				CktTreeNode pb = topo.getPresentBranch();
-				if (pb.isIsParallel()) {
+				if (pb.isParallel()) {
 					nParallel += 1;
 					pwTree.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName() + ")");
 				}
-				if (pb.isIsLoopedHere()) {
+				if (pb.isLoopedHere()) {
 					nLoops++;
 					pwTree.print("(LOOP:" + ((CktElement) pb.getLoopLineObj()).getParentClass().getName()
 					+"."+((CktElement) pb.getLoopLineObj()).getName()+")");
@@ -2466,7 +2466,7 @@ public abstract class ShowResults {
 						loadElem = (LoadObj) topo.getNextObject();
 					}
 
-					PDElem = (PDElement) topo.GoForward();
+					PDElem = (PDElement) topo.goForward();
 				}
 			}
 

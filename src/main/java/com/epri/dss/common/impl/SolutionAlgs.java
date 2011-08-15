@@ -272,11 +272,11 @@ public class SolutionAlgs {
 					ckt.setDefaultHourMult(ckt.getDefaultDailyShapeObj().getMult(sol.getDblHour()));
 					// assume price signal stays constant for dynamic calcs
 					/* Predictor */
-					sol.getDynaVars().IterationFlag = 0;
+					sol.getDynaVars().iterationFlag = 0;
 					integratePCStates();
 					sol.solveSnap();
 					/* Corrector */
-					sol.getDynaVars().IterationFlag = 1;
+					sol.getDynaVars().iterationFlag = 1;
 					integratePCStates();
 					sol.solveSnap();
 					globals.getMonitorClass().sampleAll();  // make all monitors take a sample

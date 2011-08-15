@@ -2053,7 +2053,7 @@ public class ExportResults {
 							}
 						}
 					}
-					presentCktElement = (CktElement) activeEnergyMeter.getBranchList().GoForward();
+					presentCktElement = (CktElement) activeEnergyMeter.getBranchList().goForward();
 				}
 				iEnergyMeter = globals.getEnergyMeterClass().getNext();
 			}

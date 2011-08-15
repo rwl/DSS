@@ -24,7 +24,7 @@ public interface IParser {
 
 	String getRemainder();
 
-	void setCmdString(String Value);
+	void setCmdString(String value);
 
 	String getCmdString();
 
@@ -38,15 +38,15 @@ public interface IParser {
 
 	String getToken();
 
-	void setToken(String Value);
+	void setToken(String value);
 
-	String parseAsBusName(int NumNodes, int[] NodeArray);
+	String parseAsBusName(int numNodes, int[] nodeArray);
 
-	int parseAsVector(int ExpectedSize, double[] VectorBuffer);
+	int parseAsVector(int expectedSize, double[] vectorBuffer);
 
-	int parseAsMatrix(int ExpectedOrder, double[] MatrixBuffer);
+	int parseAsMatrix(int expectedOrder, double[] matrixBuffer);
 
-	int parseAsSymMatrix(int ExpectedOrder, double[] MatrixBuffer);
+	int parseAsSymMatrix(int expectedOrder, double[] matrixBuffer);
 
 	/* resets delimiters to default */
 	void resetDelims();

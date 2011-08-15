@@ -73,11 +73,11 @@ public interface EnergyMeter extends MeterClass {
 
 	boolean isDo_OverloadReport();
 
-	void setDo_OverloadReport(boolean do_OverloadReport);
+	void setDoOverloadReport(boolean do_OverloadReport);
 
 	boolean isDo_VoltageExceptionReport();
 
-	void setDo_VoltageExceptionReport(boolean do_VoltageExceptionReport);
+	void setDoVoltageExceptionReport(boolean do_VoltageExceptionReport);
 
 	boolean isOverLoadFileIsOpen();
 

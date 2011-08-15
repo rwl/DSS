@@ -4,98 +4,98 @@ import com.epri.dss.shared.PointerList;
 
 public class PointerListImpl implements PointerList {
 
-	private int NumInList;
+	private int numInList;
 
-	private int MaxAllocated;
+	private int maxAllocated;
 
-	private int ActiveItem;
+	private int activeItem;
 
-	private Object[] List;
+	private Object[] list;
 
-	private int IncrementSize;
+	private int incrementSize;
 
-	public PointerListImpl(int Size) {
+	public PointerListImpl(int size) {
 		super();
-		this.MaxAllocated = Size;
+		this.maxAllocated = size;
 		// default size & increment
-		if (this.MaxAllocated <= 0) this.MaxAllocated = 10;
-		this.List = new Object[MaxAllocated];
-		this.NumInList = 0;
-		this.ActiveItem = 0;
+		if (this.maxAllocated <= 0) this.maxAllocated = 10;
+		this.list = new Object[maxAllocated];
+		this.numInList = 0;
+		this.activeItem = 0;
 		// increment is equal to original allocation
-		this.IncrementSize = MaxAllocated;
+		this.incrementSize = maxAllocated;
 	}
 
 	public Object getFirst() {
-		if (NumInList > 0) {
-		ActiveItem = 0;
-		return List[ActiveItem];
+		if (numInList > 0) {
+		activeItem = 0;
+		return list[activeItem];
 		} else {
-			ActiveItem = -1;
+			activeItem = -1;
 			return null;
 		}
 	}
 
 	public Object getNext() {
-		if (NumInList > 0) {
-		ActiveItem += 1;
-		if (ActiveItem > NumInList) {
-			ActiveItem = NumInList;
+		if (numInList > 0) {
+		activeItem += 1;
+		if (activeItem > numInList) {
+			activeItem = numInList;
 			return null;
 		} else {
-			return List[ActiveItem];
+			return list[activeItem];
 		}
 		} else {
-			ActiveItem = -1;
+			activeItem = -1;
 			return null;
 		}
 	}
 
 	public Object getActive() {
-		if ((ActiveItem > 0) && (ActiveItem <= NumInList)) {
-			return get(ActiveItem);
+		if ((activeItem > 0) && (activeItem <= numInList)) {
+			return get(activeItem);
 		} else {
 			return null;
 		}
 	}
 
-	public void setNew(Object Value) {
-		add(Value);
+	public void setNew(Object value) {
+		add(value);
 	}
 
 	public void clear() {
-		ActiveItem = -1;
-		NumInList = 0;
+		activeItem = -1;
+		numInList = 0;
 	}
 
 	/** Returns index of item */
 	public int add(Object p) {
-		NumInList += 1;
-		if (NumInList > MaxAllocated) {
-			MaxAllocated = MaxAllocated + IncrementSize;
+		numInList += 1;
+		if (numInList > maxAllocated) {
+			maxAllocated = maxAllocated + incrementSize;
 			// FIXME: Resize array
-			List = new Object[MaxAllocated];
+			list = new Object[maxAllocated];
 		}
-		List[NumInList] = p;
-		ActiveItem = NumInList;
-		return NumInList;
+		list[numInList] = p;
+		activeItem = numInList;
+		return numInList;
 	}
 
 	public Object get(int i) {
-		if ((i < 1) || (i > NumInList)) {
+		if ((i < 1) || (i > numInList)) {
 			return null;
 		} else {
-			ActiveItem = i;
-			return List[i];
+			activeItem = i;
+			return list[i];
 		}
 	}
 
 	public int size() {
-		return NumInList;
+		return numInList;
 	}
 
 	public int getActiveIndex() {
-		return ActiveItem;
+		return activeItem;
 	}
 
 }

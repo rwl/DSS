@@ -12,9 +12,9 @@ public class DynamicsRec {
 	public double tstop;
 
 	/* 0 = new time step; 1 = same time step as last iteration */
-	public int IterationFlag;
+	public int iterationFlag;
 	/* PEAKSNAP, DAILYMODE, YEARLYMODE, MONTECARLO, etc. (see DSSGlobals) */
-	public int SolutionMode;
+	public int solutionMode;
 
 	// FIXME Generate getters and setters
 

@@ -10,9 +10,9 @@ public interface CktTreeNode {
 
 	CktTreeNode getParent();
 
-	void addChild(CktTreeNode Value);
+	void addChild(CktTreeNode value);
 
-	void addObject(DSSObject Value);
+	void addObject(DSSObject value);
 
 	/**
 	 * Number of children at present node.
@@ -26,7 +26,7 @@ public interface CktTreeNode {
 
 	int getToBusReference();
 
-	void setToBusReference(int Value);
+	void setToBusReference(int value);
 
 	DSSObject getFirstObject();
 
@@ -51,17 +51,17 @@ public interface CktTreeNode {
 
 	void setFromTerminal(int fromTerminal);
 
-	boolean isIsLoopedHere();
+	boolean isLoopedHere();
 
-	void setIsLoopedHere(boolean isLoopedHere);
+	void setLoopedHere(boolean isLoopedHere);
 
-	boolean isIsParallel();
+	boolean isParallel();
 
-	void setIsParallel(boolean isParallel);
+	void setParallel(boolean isParallel);
 
-	boolean isIsDangling();
+	boolean isDangling();
 
-	void setIsDangling(boolean isDangling);
+	void setDangling(boolean isDangling);
 
 	Object getLoopLineObj();
 

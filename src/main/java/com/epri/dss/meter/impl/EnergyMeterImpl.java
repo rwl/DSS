@@ -27,26 +27,26 @@ import com.epri.dss.shared.impl.CommandListImpl;
 public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	// adjacency lists for PC and PD elements at each bus, built for faster searches
-	public static List<PCElement>[] BusAdjPC;  // also includes shunt PD elements
-	public static List<PDElement>[] BusAdjPD;
+	public static List<PCElement>[] busAdjPC;  // also includes shunt PD elements
+	public static List<PDElement>[] busAdjPD;
 
-	private static EnergyMeterObj ActiveEnergyMeterObj;
+	private static EnergyMeterObj activeEnergyMeterObj;
 
-	private Generator GeneratorClass;
-	private boolean SaveDemandInterval;
+	private Generator generatorClass;
+	private boolean saveDemandInterval;
 	private boolean DI_Verbose;
-	private FileWriter OverLoadFile;
-	private FileWriter VoltageFile;
+	private FileWriter overloadFile;
+	private FileWriter voltageFile;
 
 	protected double[] DI_RegisterTotals;
 	protected String DI_Dir;
 	protected FileWriter DI_Totals;
-	protected FileWriter MeterTotals;
-	protected SystemMeter SystemMeter;
-	protected boolean Do_OverloadReport;
-	protected boolean Do_VoltageExceptionReport;
-	protected boolean OverLoadFileIsOpen;
-	protected boolean VoltageFileIsOpen;
+	protected FileWriter meterTotals;
+	protected SystemMeter systemMeter;
+	protected boolean doOverloadReport;
+	protected boolean doVoltageExceptionReport;
+	protected boolean overloadFileIsOpen;
+	protected boolean voltageFileIsOpen;
 
 	public EnergyMeterImpl() {
 		super();
@@ -56,25 +56,25 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		this.activeElement = -1;
 
 		/* Initialise demand interval options to off */
-		this.SaveDemandInterval = false;
+		this.saveDemandInterval = false;
 		this.DI_Verbose         = false;
-		this.Do_OverloadReport  = false;  // saveDemandInterval must be true for this to have an effect
-		this.OverLoadFileIsOpen = false;
-		this.VoltageFileIsOpen  = false;
+		this.doOverloadReport  = false;  // saveDemandInterval must be true for this to have an effect
+		this.overloadFileIsOpen = false;
+		this.voltageFileIsOpen  = false;
 
 		this.DI_Dir = "";
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
+		String[] commands = new String[this.numProperties];
+		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
+		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		this.GeneratorClass = (Generator) Globals.getDSSClassList().get(Globals.getClassNames().find("generator"));
+		DSSGlobals globals = DSSGlobals.getInstance();
+		this.generatorClass = (Generator) globals.getDSSClassList().get(globals.getClassNames().find("generator"));
 
-		this.SystemMeter = new SystemMeterImpl();
+		this.systemMeter = new SystemMeterImpl();
 	}
 
 	protected void defineProperties() {
@@ -160,54 +160,54 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		super.defineProperties();  // add defs of inherited properties to bottom of list
 	}
 
-	public int newObject(String ObjName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	public int newObject(String objName) {
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getActiveCircuit().setActiveCktElement(new EnergyMeterObjImpl(this, ObjName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		globals.getActiveCircuit().setActiveCktElement(new EnergyMeterObjImpl(this, objName));
+		return addObjectToList(globals.getActiveDSSObject());
 	}
 
 	public int edit() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		setActiveEnergyMeterObj((EnergyMeterObj) elementList.getActive());
-		Globals.getActiveCircuit().setActiveCktElement(getActiveEnergyMeterObj());
+		globals.getActiveCircuit().setActiveCktElement(getActiveEnergyMeterObj());
 
-		int Result = 0;
+		int result = 0;
 
-		boolean DoRecalc = false;
+		boolean doRecalc = false;
 
 		EnergyMeterObj aem = getActiveEnergyMeterObj();
 
 		aem.setMeteredElementChanged(false);
 
-		int ParamPointer = 0;
-		String ParamName = parser.getNextParam();
-		String Param     = parser.makeString();
-		while (Param.length() > 0) {
-			if (ParamName.length() == 0) {
-				ParamPointer += 1;
+		int paramPointer = 0;
+		String paramName = parser.getNextParam();
+		String param     = parser.makeString();
+		while (param.length() > 0) {
+			if (paramName.length() == 0) {
+				paramPointer += 1;
 			} else {
-				ParamPointer = commandList.getCommand(ParamName);
+				paramPointer = commandList.getCommand(paramName);
 			}
 
-			if ((ParamPointer > 0) && (ParamPointer <= numProperties))
-				aem.setPropertyValue(ParamPointer, Param);
+			if ((paramPointer > 0) && (paramPointer <= numProperties))
+				aem.setPropertyValue(paramPointer, param);
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case -1:
-				Globals.doSimpleMsg("Unknown parameter \"" + ParamName + "\" for object \"" + getName() +"."+ aem.getName() + "\"", 520);
+				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ aem.getName() + "\"", 520);
 				break;
 			case 0:
-				aem.setElementName(Param.toLowerCase());
+				aem.setElementName(param.toLowerCase());
 				break;
 			case 1:
 				aem.setMeteredTerminal(parser.makeInteger());
 				break;
 			case 2:  /* Actions */
-				switch (Param.toLowerCase().charAt(0)) {
+				switch (param.toLowerCase().charAt(0)) {
 				case 'a':
 					aem.allocateLoad();
 					break;
@@ -229,7 +229,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				}
 				break;
 			case 3:
-				processOptions(Param);
+				processOptions(param);
 				break;
 			case 4:
 				aem.setMaxZoneKVANorm(parser.makeDouble());
@@ -241,116 +241,116 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				parser.parseAsVector(aem.getNPhases(), aem.getSensorCurrent());  // inits to zero
 				break;
 			case 7:
-				Utilities.interpretAndAllocStrArray(Param, aem.getDefinedZoneListSize(), aem.getDefinedZoneList());
+				Utilities.interpretAndAllocStrArray(param, aem.getDefinedZoneListSize(), aem.getDefinedZoneList());
 				break;
 			case 8:
-				aem.setLocalOnly(Utilities.interpretYesNo(Param));
+				aem.setLocalOnly(Utilities.interpretYesNo(param));
 				break;
 			case 9:
 				interpretRegisterMaskArray(aem.getTotalsMask());
 				break;
 			case 10:
-				aem.setLosses(Utilities.interpretYesNo(Param));
+				aem.setLosses(Utilities.interpretYesNo(param));
 				break;
 			case 11:
-				aem.setLineLosses(Utilities.interpretYesNo(Param));
+				aem.setLineLosses(Utilities.interpretYesNo(param));
 				break;
 			case 12:
-				aem.setXfmrLosses(Utilities.interpretYesNo(Param));
+				aem.setXfmrLosses(Utilities.interpretYesNo(param));
 				break;
 			case 13:
-				aem.setSeqLosses(Utilities.interpretYesNo(Param));
+				aem.setSeqLosses(Utilities.interpretYesNo(param));
 				break;
 			case 14:
-				aem.set3PhaseLosses(Utilities.interpretYesNo(Param));
+				aem.set3PhaseLosses(Utilities.interpretYesNo(param));
 				break;
 			case 15:
-				aem.setVBaseLosses(Utilities.interpretYesNo(Param));
+				aem.setVBaseLosses(Utilities.interpretYesNo(param));
 				break;
 			case 16:
-				aem.setPhaseVoltageReport(Utilities.interpretYesNo(Param));
+				aem.setPhaseVoltageReport(Utilities.interpretYesNo(param));
 				break;
 			/* case 10: aem.setHasFeeder(Utilities.interpretYesNo(Param)); break;*/
 			default:
-				classEdit(ActiveEnergyMeterObj, ParamPointer - EnergyMeter.NumPropsThisClass);
+				classEdit(activeEnergyMeterObj, paramPointer - EnergyMeter.NumPropsThisClass);
 				break;
 			}
 
-			switch (ParamPointer) {
+			switch (paramPointer) {
 			case 0:
 				aem.setMeteredElementChanged(true);
-				DoRecalc = true;
+				doRecalc = true;
 				break;
 			case 1:
 				aem.setMeteredElementChanged(true);
-				DoRecalc = true;
+				doRecalc = true;
 				break;
 			case 10:
 				if (aem.hasFeeder()) {
-					DoRecalc = true;
+					doRecalc = true;
 				} else {
 					aem.removeFeederObj();
 				}
 				break;
 			}
 
-			ParamName = parser.getNextParam();
-			Param = parser.makeString();
+			paramName = parser.getNextParam();
+			param = parser.makeString();
 		}
 
-		if (DoRecalc)
+		if (doRecalc)
 			aem.recalcElementData();  // when some basic data have changed
 
-		return Result;
+		return result;
 	}
 
-	protected int makeLike(String EnergyMeterName) {
-		int Result = 0;
+	protected int makeLike(String energyMeterName) {
+		int result = 0;
 		/* See if we can find this EnergyMeter name in the present collection */
-		EnergyMeterObj OtherEnergyMeter = (EnergyMeterObj) find(EnergyMeterName);
-		if (OtherEnergyMeter != null) {
+		EnergyMeterObj otherEnergyMeter = (EnergyMeterObj) find(energyMeterName);
+		if (otherEnergyMeter != null) {
 
 			EnergyMeterObj aem = getActiveEnergyMeterObj();
 
-			aem.setNPhases(OtherEnergyMeter.getNPhases());
-			aem.setNConds(OtherEnergyMeter.getNConds());  // force reallocation of terminal stuff
+			aem.setNPhases(otherEnergyMeter.getNPhases());
+			aem.setNConds(otherEnergyMeter.getNConds());  // force reallocation of terminal stuff
 
-			aem.setElementName(OtherEnergyMeter.getElementName());
-			aem.setMeteredElement(OtherEnergyMeter.getMeteredElement());  // pointer to target circuit element
-			aem.setMeteredTerminal(OtherEnergyMeter.getMeteredTerminal());
-			aem.setExcessFlag(OtherEnergyMeter.isExcessFlag());
+			aem.setElementName(otherEnergyMeter.getElementName());
+			aem.setMeteredElement(otherEnergyMeter.getMeteredElement());  // pointer to target circuit element
+			aem.setMeteredTerminal(otherEnergyMeter.getMeteredTerminal());
+			aem.setExcessFlag(otherEnergyMeter.isExcessFlag());
 
-			aem.setMaxZoneKVANorm(OtherEnergyMeter.getMaxZoneKVANorm());
-			aem.setMaxZoneKVAEmerg(OtherEnergyMeter.getMaxZoneKVAEmerg());
+			aem.setMaxZoneKVANorm(otherEnergyMeter.getMaxZoneKVANorm());
+			aem.setMaxZoneKVAEmerg(otherEnergyMeter.getMaxZoneKVAEmerg());
 
-			aem.setDefinedZoneListSize(OtherEnergyMeter.getDefinedZoneListSize());
+			aem.setDefinedZoneListSize(otherEnergyMeter.getDefinedZoneListSize());
 			aem.setDefinedZoneList(new String[aem.getDefinedZoneListSize()]);
 			// copy strings over (actually incr ref count on string)
 			for (int i = 0; i < aem.getDefinedZoneListSize(); i++)
-				aem.getDefinedZoneList()[i] = OtherEnergyMeter.getDefinedZoneList()[i];
+				aem.getDefinedZoneList()[i] = otherEnergyMeter.getDefinedZoneList()[i];
 
-			aem.setLocalOnly(OtherEnergyMeter.isLocalOnly());
-			aem.setVoltageUEOnly(OtherEnergyMeter.isVoltageUEOnly());
+			aem.setLocalOnly(otherEnergyMeter.isLocalOnly());
+			aem.setVoltageUEOnly(otherEnergyMeter.isVoltageUEOnly());
 
 			/* Boolean flags */
-			aem.setLosses(OtherEnergyMeter.isLosses());
-			aem.setLineLosses(OtherEnergyMeter.isLineLosses());
-			aem.setXfmrLosses(OtherEnergyMeter.isXfmrLosses());
-			aem.setSeqLosses(OtherEnergyMeter.isSeqLosses());
-			aem.set3PhaseLosses(OtherEnergyMeter.is3PhaseLosses());
-			aem.setVBaseLosses(OtherEnergyMeter.isVBaseLosses());
-			aem.setPhaseVoltageReport(OtherEnergyMeter.isPhaseVoltageReport());
+			aem.setLosses(otherEnergyMeter.isLosses());
+			aem.setLineLosses(otherEnergyMeter.isLineLosses());
+			aem.setXfmrLosses(otherEnergyMeter.isXfmrLosses());
+			aem.setSeqLosses(otherEnergyMeter.isSeqLosses());
+			aem.set3PhaseLosses(otherEnergyMeter.is3PhaseLosses());
+			aem.setVBaseLosses(otherEnergyMeter.isVBaseLosses());
+			aem.setPhaseVoltageReport(otherEnergyMeter.isPhaseVoltageReport());
 
 			for (int i = 0; i < aem.getParentClass().getNumProperties(); i++)
-				aem.setPropertyValue(i, OtherEnergyMeter.getPropertyValue(i));
+				aem.setPropertyValue(i, otherEnergyMeter.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in EnergyMeter makeLike: \"" + EnergyMeterName + "\" not found.", 521);
+			DSSGlobals.getInstance().doSimpleMsg("Error in EnergyMeter makeLike: \"" + energyMeterName + "\" not found.", 521);
 		}
 
-		return Result;
+		return result;
 	}
 
-	public int init(int Handle) {
+	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement EnergyMeter.init", -1);
 		return 0;
 	}
@@ -384,7 +384,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		}
 
 		// set up the bus adjacency lists for faster searches to build meter zone lists
-		CktTreeImpl.buildActiveBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		CktTreeImpl.buildActiveBusAdjacencyLists(busAdjPD, busAdjPC);
 
 		/* Set hasMeter flag for all cktElements */
 		setHasMeterFlag();
@@ -398,7 +398,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			if (pMeter.isEnabled())
 				pMeter.makeMeterZoneLists();
 
-		CktTreeImpl.freeAndNilBusAdjacencyLists(BusAdjPD, BusAdjPC);
+		CktTreeImpl.freeAndNilBusAdjacencyLists(busAdjPD, busAdjPC);
 	}
 
 	/**
@@ -406,13 +406,13 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	 */
 	@Override
 	public void resetAll() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Circuit ckt = Globals.getActiveCircuit();
+		DSSGlobals globals = DSSGlobals.getInstance();
+		Circuit ckt = globals.getActiveCircuit();
 
-		if (Globals.isDIFilesAreOpen())
+		if (globals.isDIFilesAreOpen())
 			closeAllDIFiles();
 
-		if (SaveDemandInterval) {
+		if (saveDemandInterval) {
 
 			/* Make directories to save data */
 			File dir = new File(ckt.getCaseName());
@@ -420,7 +420,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				try {
 					dir.mkdir();
 				} catch (Exception e) {
-					Globals.doSimpleMsg("Error making directory: \""+ckt.getCaseName()+"\". " + e.getMessage(), 522);
+					globals.doSimpleMsg("Error making directory: \""+ckt.getCaseName()+"\". " + e.getMessage(), 522);
 				}
 			}
 			DI_Dir = ckt.getCaseName() + "/DI_yr_" + String.valueOf(ckt.getSolution().getYear()).trim();
@@ -429,7 +429,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 				try {
 					dir.mkdir();
 				} catch (Exception e) {
-					Globals.doSimpleMsg("Error making demand interval directory: \""+DI_Dir+"\". " + e.getMessage(), 523);
+					globals.doSimpleMsg("Error making demand interval directory: \""+DI_Dir+"\". " + e.getMessage(), 523);
 				}
 			}
 
@@ -444,11 +444,11 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
 			pMeter.resetRegisters();
 
-		SystemMeter.reset();
+		systemMeter.reset();
 
 		// reset generator objects, too
-		GeneratorClass.resetRegistersAll();
-		Globals.getStorageClass().resetRegistersAll();
+		generatorClass.resetRegistersAll();
+		globals.getStorageClass().resetRegistersAll();
 	}
 
 	/**
@@ -456,16 +456,16 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	 */
 	@Override
 	public void sampleAll() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Circuit ckt = Globals.getActiveCircuit();
+		DSSGlobals globals = DSSGlobals.getInstance();
+		Circuit ckt = globals.getActiveCircuit();
 
-		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
-			if (pMeter.isEnabled())
-				pMeter.takeSample();
+		for (EnergyMeterObj meter : ckt.getEnergyMeters())
+			if (meter.isEnabled())
+				meter.takeSample();
 
-		SystemMeter.takeSample();
+		systemMeter.takeSample();
 
-		if (SaveDemandInterval) {  /* Write totals demand interval file */
+		if (saveDemandInterval) {  /* Write totals demand interval file */
 			PrintWriter DI_TotalsPrinter = new PrintWriter(DI_Totals);
 
 			DI_TotalsPrinter.printf("%-.6g ", ckt.getSolution().getDblHour());
@@ -475,13 +475,13 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			DI_TotalsPrinter.close();
 
 			clearDI_Totals();
-			if (OverLoadFileIsOpen) writeOverloadReport();
-			if (VoltageFileIsOpen) writeVoltageReport();
+			if (overloadFileIsOpen) writeOverloadReport();
+			if (voltageFileIsOpen) writeVoltageReport();
 		}
 
 		// sample generator and storage objects, too
-		GeneratorClass.sampleAll();
-		Globals.getStorageClass().sampleAll();  // samples energymeter part of storage elements (not update)
+		generatorClass.sampleAll();
+		globals.getStorageClass().sampleAll();  // samples energymeter part of storage elements (not update)
 	}
 
 	/**
@@ -491,11 +491,11 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	public void saveAll() {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		for (EnergyMeterObj pMeter : ckt.getEnergyMeters())
-			if (pMeter.isEnabled())
-				pMeter.saveRegisters();
+		for (EnergyMeterObj meter : ckt.getEnergyMeters())
+			if (meter.isEnabled())
+				meter.saveRegisters();
 
-		SystemMeter.save();
+		systemMeter.save();
 	}
 
 	/**
@@ -503,38 +503,38 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	 */
 	protected void setHasMeterFlag() {
 		int i;
-		EnergyMeterObj ThisMeter;
-		DSSCktElement CktElem;
+		EnergyMeterObj thisMeter;
+		DSSCktElement cktElem;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		/* Initialize all to false */
 		for (i = 0; i < ckt.getPDElements().size(); i++) {
-			CktElem = (DSSCktElement) ckt.getPDElements().get(i);
-			CktElem.setHasEnergyMeter(false);
+			cktElem = (DSSCktElement) ckt.getPDElements().get(i);
+			cktElem.setHasEnergyMeter(false);
 		}
 
 		for (i = 0; i < ckt.getEnergyMeters().size(); i++) {
-			ThisMeter = ckt.getEnergyMeters().get(i);
-			if (ThisMeter.getMeteredElement() != null)
-				ThisMeter.getMeteredElement().setHasEnergyMeter(true);
+			thisMeter = ckt.getEnergyMeters().get(i);
+			if (thisMeter.getMeteredElement() != null)
+				thisMeter.getMeteredElement().setHasEnergyMeter(true);
 		}
 	}
 
-	private void processOptions(String Opts) {
-		String S2 = " ";
-		DSSGlobals Globals = DSSGlobals.getInstance();
+	private void processOptions(String opts) {
+		String s2 = " ";
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		Globals.getAuxParser().setCmdString(Opts);  // load up aux parser
+		globals.getAuxParser().setCmdString(opts);  // load up aux parser
 
 		EnergyMeterObj aem = getActiveEnergyMeterObj();
 
 		/* Loop until no more options found */
-		while (S2.length() > 0) {
-			Globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			S2 = Globals.getAuxParser().makeString().toLowerCase();
-			if (S2.length() > 0)
-				switch (S2.charAt(0)) {
+		while (s2.length() > 0) {
+			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
+			s2 = globals.getAuxParser().makeString().toLowerCase();
+			if (s2.length() > 0)
+				switch (s2.charAt(0)) {
 				case 'e':
 					aem.setExcessFlag(true);
 					break;
@@ -558,54 +558,54 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	public void closeAllDIFiles() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (SaveDemandInterval) {
+		if (saveDemandInterval) {
 			/* While closing DI files, write all meter registers to one file */
 			try {
 				createMeterTotals();
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error on rewrite of totals file: "+e.getMessage(), 536);
+				globals.doSimpleMsg("Error on rewrite of totals file: "+e.getMessage(), 536);
 			}
 
 			/* Close all the DI file for each meter */
-			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
-				if (pMeter.isEnabled())
-					pMeter.closeDemandIntervalFile();
+			for (EnergyMeterObj meter : globals.getActiveCircuit().getEnergyMeters())
+				if (meter.isEnabled())
+					meter.closeDemandIntervalFile();
 
 			writeTotalsFile();  // sum all EnergyMeter registers to "Totals.csv"
-			SystemMeter.closeDemandIntervalFile();
-			SystemMeter.save();
+			systemMeter.closeDemandIntervalFile();
+			systemMeter.save();
 			try {
-				MeterTotals.close();
+				meterTotals.close();
 				DI_Totals.close();
-				Globals.setDIFilesAreOpen(false);
-				if (OverLoadFileIsOpen) {
-					OverLoadFile.close();
-					OverLoadFileIsOpen = false;
+				globals.setDIFilesAreOpen(false);
+				if (overloadFileIsOpen) {
+					overloadFile.close();
+					overloadFileIsOpen = false;
 				}
-				if (VoltageFileIsOpen) {
-					VoltageFile.close();
-					VoltageFileIsOpen = false;
+				if (voltageFileIsOpen) {
+					voltageFile.close();
+					voltageFileIsOpen = false;
 				}
 			} catch (IOException e) {
-				Globals.doSimpleMsg("Error closing file: "+e.getMessage(), 537);
+				globals.doSimpleMsg("Error closing file: "+e.getMessage(), 537);
 			}
 		}
 	}
 
 	public void appendAllDIFiles() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (SaveDemandInterval) {
+		if (saveDemandInterval) {
 
 			clearDI_Totals();  // clears accumulator arrays
 
-			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
-				if (pMeter.isEnabled())
-					pMeter.appendDemandIntervalFile();
+			for (EnergyMeterObj meter : globals.getActiveCircuit().getEnergyMeters())
+				if (meter.isEnabled())
+					meter.appendDemandIntervalFile();
 
-			SystemMeter.appendDemandIntervalFile();
+			systemMeter.appendDemandIntervalFile();
 
 			/* Open DI_Totals */
 			try {
@@ -617,15 +617,15 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 					createDI_Totals();
 				}
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
+				globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
 			}
 
-			Globals.setDIFilesAreOpen(true);
+			globals.setDIFilesAreOpen(true);
 		}
 	}
 
-	public void setSaveDemandInterval(boolean Value) {
-		SaveDemandInterval = Value;
+	public void setSaveDemandInterval(boolean value) {
+		saveDemandInterval = value;
 		resetAll();
 	}
 
@@ -634,11 +634,11 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	 * This is called only if in Demand Interval (DI) mode and the file is open.
 	 */
 	private void writeOverloadReport() {
-		double Cmax;
+		double CMax;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		PrintWriter OverLoadPrinter = new PrintWriter(OverLoadFile);
+		PrintWriter pw = new PrintWriter(overloadFile);
 
 		/* Check PDElements only */
 		for (PDElement PDElem : ckt.getPDElements()) {
@@ -646,30 +646,30 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 				if ((PDElem.getNormAmps() > 0.0) || (PDElem.getEmergAmps() > 0.0)) {
 					PDElem.computeITerminal();
-					Cmax = PDElem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
-					if ((Cmax > PDElem.getNormAmps()) || (Cmax > PDElem.getEmergAmps())) {
-						OverLoadPrinter.printf("%-.6g,", ckt.getSolution().getDblHour());
-						OverLoadPrinter.printf(" %s, %-.4g, %-.4g,", Utilities.fullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps());
+					CMax = PDElem.maxTerminalOneIMag();  // for now, check only terminal 1 for overloads
+					if ((CMax > PDElem.getNormAmps()) || (CMax > PDElem.getEmergAmps())) {
+						pw.printf("%-.6g,", ckt.getSolution().getDblHour());
+						pw.printf(" %s, %-.4g, %-.4g,", Utilities.fullName(PDElem), PDElem.getNormAmps(), PDElem.getEmergAmps());
 						if (PDElem.getNormAmps() > 0.0) {
-							OverLoadPrinter.printf(" %-.7g,", Cmax / PDElem.getNormAmps() * 100.0);
+							pw.printf(" %-.7g,", CMax / PDElem.getNormAmps() * 100.0);
 						} else {
-							OverLoadPrinter.print(" 0.0,");
+							pw.print(" 0.0,");
 						}
 						if (PDElem.getEmergAmps() > 0.0) {
-							OverLoadPrinter.printf(" %-.7g,", Cmax / PDElem.getEmergAmps() * 100.0);
+							pw.printf(" %-.7g,", CMax / PDElem.getEmergAmps() * 100.0);
 						} else {
-							OverLoadPrinter.print(" 0.0,");
+							pw.print(" 0.0,");
 						}
 						/* Find bus of first terminal */
-						OverLoadPrinter.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef].getKVBase());
+						pw.printf(" %-.3g ", ckt.getBuses()[ckt.getMapNodeToBus()[ PDElem.getNodeRef()[0] ].busRef].getKVBase());
 
-						OverLoadPrinter.println();
+						pw.println();
 					}
 				}
 			}
 		}
 
-		OverLoadPrinter.close();
+		pw.close();
 	}
 
 	private void clearDI_Totals() {
@@ -678,9 +678,9 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	}
 
 	private void createDI_Totals() {
-		EnergyMeterObj pMeter;
+		EnergyMeterObj meter;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			DI_Totals = new FileWriter(DI_Dir + "/DI_Totals.csv");
@@ -688,14 +688,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			BufferedWriter DI_TotalsBuffer = new BufferedWriter(DI_Totals);
 
 			DI_TotalsBuffer.write("Time");
-			for (int i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
-				pMeter = Globals.getActiveCircuit().getEnergyMeters().get(i);
-				DI_TotalsBuffer.write(", \"" + pMeter.getRegisterNames()[i] + "\"");
+			for (int i = 0; i < globals.getActiveCircuit().getEnergyMeters().size(); i++) {
+				meter = globals.getActiveCircuit().getEnergyMeters().get(i);
+				DI_TotalsBuffer.write(", \"" + meter.getRegisterNames()[i] + "\"");
 			}
 			DI_TotalsBuffer.newLine();
 			DI_TotalsBuffer.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error creating: \""+DI_Dir+"/DI_Totals.csv\": "+e.getMessage(), 539);
+			globals.doSimpleMsg("Error creating: \""+DI_Dir+"/DI_Totals.csv\": "+e.getMessage(), 539);
 		}
 	}
 
@@ -706,103 +706,103 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		try {
-			File MeterTotalsFile = new File(DI_Dir + "/EnergyMeterTotals.csv");
-			MeterTotals = new FileWriter(MeterTotalsFile);
-			BufferedWriter MeterTotalsBuffer = new BufferedWriter(MeterTotals);
+			File meterTotalsFile = new File(DI_Dir + "/EnergyMeterTotals.csv");
+			meterTotals = new FileWriter(meterTotalsFile);
+			BufferedWriter meterTotalsBuffer = new BufferedWriter(meterTotals);
 
-			MeterTotalsBuffer.write("Name");
+			meterTotalsBuffer.write("Name");
 			mtr = ckt.getEnergyMeters().get(0);
 			if (mtr != null)
 				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-					MeterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
-			MeterTotalsBuffer.newLine();
+					meterTotalsBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
+			meterTotalsBuffer.newLine();
 
-			MeterTotalsBuffer.close();
+			meterTotalsBuffer.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void setDIVerbose(boolean Value) {
-		DI_Verbose = Value;
+	public void setDIVerbose(boolean value) {
+		DI_Verbose = value;
 		resetAll();
 	}
 
 	private void writeTotalsFile() {
 		EnergyMeterObj mtr;
-		double[] RegSum = new double[EnergyMeter.NUM_EM_REGISTERS];
+		double[] regSum = new double[EnergyMeter.NUM_EM_REGISTERS];
 		int i, j;
-		File F;
+		File f;
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		/* Sum up all registers of all meters and write to Totals.csv */
-		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) RegSum[i] = 0.0;
+		for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++) regSum[i] = 0.0;
 
-		for (i = 0; i < Globals.getActiveCircuit().getEnergyMeters().size(); i++) {
-			mtr = Globals.getActiveCircuit().getEnergyMeters().get(i);
+		for (i = 0; i < globals.getActiveCircuit().getEnergyMeters().size(); i++) {
+			mtr = globals.getActiveCircuit().getEnergyMeters().get(i);
 			if (mtr.isEnabled())
 				for (j = 0; j < EnergyMeter.NUM_EM_REGISTERS; j++)
-					RegSum[j] = RegSum[j] + mtr.getRegisters()[j] * mtr.getTotalsMask()[j];
+					regSum[j] = regSum[j] + mtr.getRegisters()[j] * mtr.getTotalsMask()[j];
 		}
 
 		try {  // Write the file
-			F = new File(DI_Dir + "/Totals.csv");
+			f = new File(DI_Dir + "/Totals.csv");
 
-			FileWriter FStream = new FileWriter(F, false);
-			BufferedWriter FBuffer = new BufferedWriter(FStream);
+			FileWriter fw = new FileWriter(f, false);
+			BufferedWriter bw = new BufferedWriter(fw);
 
-			FBuffer.write("Year");
-			mtr = Globals.getActiveCircuit().getEnergyMeters().get(0);
+			bw.write("Year");
+			mtr = globals.getActiveCircuit().getEnergyMeters().get(0);
 			if (mtr != null)
 				for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-					FBuffer.write(", \"" + mtr.getRegisterNames()[i] + "\"");
-			FBuffer.newLine();
+					bw.write(", \"" + mtr.getRegisterNames()[i] + "\"");
+			bw.newLine();
 
-			FBuffer.write(Globals.getActiveCircuit().getSolution().getYear());
+			bw.write(globals.getActiveCircuit().getSolution().getYear());
 			for (i = 0; i < EnergyMeter.NUM_EM_REGISTERS; i++)
-				FBuffer.write(String.format(", %-g ", RegSum[i]));
-			FBuffer.newLine();
+				bw.write(String.format(", %-g ", regSum[i]));
+			bw.newLine();
 
-			FBuffer.close();
-			FStream.close();
+			bw.close();
+			fw.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening demand interval file Totals.csv."+DSSGlobals.CRLF+e.getMessage(), 543);
+			globals.doSimpleMsg("Error opening demand interval file Totals.csv."+DSSGlobals.CRLF+e.getMessage(), 543);
 		}
 	}
 
 	private void writeVoltageReport() {
 		int i, j;
-		double Vmagpu;
-		int UnderCount;
-		int OverCount;
-		double OverVmax;
-		double UnderVmin;
+		double VMagPU;
+		int underCount;
+		int overCount;
+		double overVMax;
+		double underVMin;
 		Bus bus;
 
 		/* For any bus with a defined voltage base, test for > Vmax or < Vmin */
 
-		OverCount  = 0;
-		UnderCount = 0;
+		overCount  = 0;
+		underCount = 0;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
-		OverVmax   = ckt.getNormalMinVolts();
-		UnderVmin  = ckt.getNormalMaxVolts();
+		overVMax   = ckt.getNormalMinVolts();
+		underVMin  = ckt.getNormalMaxVolts();
 		for (i = 0; i < ckt.getNumBuses(); i++) {
 			bus = ckt.getBuses()[i];
 			if (bus.getKVBase() > 0.0) {
 				for (j = 0; j < bus.getNumNodesThisBus(); j++) {
-					Vmagpu = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getKVBase() * 0.001;
-					if (Vmagpu > 0.1) {  // ignore neutral buses
-						UnderVmin = Math.min(UnderVmin, Vmagpu);
-						OverVmax  = Math.max(OverVmax,  Vmagpu);
-						if (Vmagpu < ckt.getNormalMinVolts()) {
-							UnderCount += 1;
+					VMagPU = ckt.getSolution().getNodeV()[ bus.getRef(j) ].abs() / bus.getKVBase() * 0.001;
+					if (VMagPU > 0.1) {  // ignore neutral buses
+						underVMin = Math.min(underVMin, VMagPU);
+						overVMax  = Math.max(overVMax,  VMagPU);
+						if (VMagPU < ckt.getNormalMinVolts()) {
+							underCount += 1;
 							break;  /* next i */
-						} else if (Vmagpu > ckt.getNormalMaxVolts()) {
-							OverCount += 1;
+						} else if (VMagPU > ckt.getNormalMaxVolts()) {
+							overCount += 1;
 							break;
 						}
 					}
@@ -810,87 +810,87 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 			}
 		}  /* for i */
 
-		PrintWriter VoltagePrinter = new PrintWriter(VoltageFile);
+		PrintWriter VoltagePrinter = new PrintWriter(voltageFile);
 		VoltagePrinter.printf("%-.6g,", ckt.getSolution().getDblHour());
-		VoltagePrinter.printf(" %d, %-.6g, %d, %-.6g", UnderCount, UnderVmin, OverCount, OverVmax);
+		VoltagePrinter.printf(" %d, %-.6g, %d, %-.6g", underCount, underVMin, overCount, overVMax);
 		VoltagePrinter.println();
 		VoltagePrinter.close();
 	}
 
-	private void interpretRegisterMaskArray(double[] Mask) {
-		int n = Parser.getInstance().parseAsVector(NUM_EM_REGISTERS, Mask);
+	private void interpretRegisterMaskArray(double[] mask) {
+		int n = Parser.getInstance().parseAsVector(NUM_EM_REGISTERS, mask);
 		for (int i = n; i < EnergyMeter.NUM_EM_REGISTERS; i++)  // TODO Check zero based indexing
-			Mask[i] = 1.0;  // set the rest to 1
+			mask[i] = 1.0;  // set the rest to 1
 	}
 
 	/**
 	 * Similar to "append", by creates the files.
 	 */
 	public void openAllDIFiles() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (SaveDemandInterval) {
+		if (saveDemandInterval) {
 
 			clearDI_Totals();  // clears accumulator arrays
 
-			for (EnergyMeterObj pMeter : Globals.getActiveCircuit().getEnergyMeters())
-				if (pMeter.isEnabled())
-					pMeter.openDemandIntervalFile();
+			for (EnergyMeterObj meter : globals.getActiveCircuit().getEnergyMeters())
+				if (meter.isEnabled())
+					meter.openDemandIntervalFile();
 
-			SystemMeter.openDemandIntervalFile();
+			systemMeter.openDemandIntervalFile();
 
 			/* Optional exception reporting */
-			if (Do_OverloadReport) openOverloadReportFile();
-			if (Do_VoltageExceptionReport) openVoltageReportFile();
+			if (doOverloadReport) openOverloadReportFile();
+			if (doVoltageExceptionReport) openVoltageReportFile();
 
 			/* Open DI_Totals */
 			try {
 				createDI_Totals();  // TODO Add throws exception
 			} catch (Exception e) {
-				Globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
+				globals.doSimpleMsg("Error opening demand interval file \""+getName()+".csv" + " for appending."+DSSGlobals.CRLF+e.getMessage(), 538);
 			}
 
-			Globals.setDIFilesAreOpen(true);
+			globals.setDIFilesAreOpen(true);
 		}
 	}
 
 	private void openOverloadReportFile() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (OverLoadFileIsOpen) OverLoadFile.close();
+			if (overloadFileIsOpen) overloadFile.close();
 
-			OverLoadFile = new FileWriter(Globals.getEnergyMeterClass().getDI_Dir() + "/DI_Overloads.csv");
-			PrintWriter OverLoadPrinter = new PrintWriter(OverLoadFile);
+			overloadFile = new FileWriter(globals.getEnergyMeterClass().getDI_Dir() + "/DI_Overloads.csv");
+			PrintWriter pw = new PrintWriter(overloadFile);
 
-			OverLoadFileIsOpen = true;
-			OverLoadPrinter.print("\"Hour\", \"Element\", \"Normal Amps\", \"Emerg Amps\", \"% Normal\", \"% Emerg\", \"kVBase\"");
-			OverLoadPrinter.println();
-			OverLoadPrinter.close();
+			overloadFileIsOpen = true;
+			pw.print("\"Hour\", \"Element\", \"Normal Amps\", \"Emerg Amps\", \"% Normal\", \"% Emerg\", \"kVBase\"");
+			pw.println();
+			pw.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_Overloads.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+			globals.doSimpleMsg("Error opening demand interval file \""+globals.getEnergyMeterClass().getDI_Dir()+"/DI_Overloads.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
 	}
 
 	private void openVoltageReportFile() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
+		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (VoltageFileIsOpen) VoltageFile.close();
+			if (voltageFileIsOpen) voltageFile.close();
 
-			VoltageFile = new FileWriter(Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv");
+			voltageFile = new FileWriter(globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv");
 
-			VoltageFileIsOpen = true;
-			PrintWriter VoltagePrinter = new PrintWriter(VoltageFile);
-			VoltagePrinter.println("\"Hour\", \"Undervoltages\", \"Min Voltage\", \"Overvoltage\", \"Max Voltage\"");
-			VoltagePrinter.close();
+			voltageFileIsOpen = true;
+			PrintWriter pw = new PrintWriter(voltageFile);
+			pw.println("\"Hour\", \"Undervoltages\", \"Min Voltage\", \"Overvoltage\", \"Max Voltage\"");
+			pw.close();
 		} catch (Exception e) {
-			Globals.doSimpleMsg("Error opening demand interval file \""+Globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv\" for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+			globals.doSimpleMsg("Error opening demand interval file \""+globals.getEnergyMeterClass().getDI_Dir()+"/DI_VoltExceptions.csv\" for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
 	}
 
 	public boolean isSaveDemandInterval() {
-		return SaveDemandInterval;
+		return saveDemandInterval;
 	}
 
 	public boolean isDIVerbose() {
@@ -901,80 +901,80 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		return DI_RegisterTotals;
 	}
 
-	public void setDI_RegisterTotals(double[] dI_RegisterTotals) {
-		DI_RegisterTotals = dI_RegisterTotals;
+	public void setDI_RegisterTotals(double[] totals) {
+		DI_RegisterTotals = totals;
 	}
 
 	public String getDI_Dir() {
 		return DI_Dir;
 	}
 
-	public void setDI_Dir(String dI_Dir) {
-		DI_Dir = dI_Dir;
+	public void setDI_Dir(String dir) {
+		DI_Dir = dir;
 	}
 
 	public FileWriter getDI_Totals() {
 		return DI_Totals;
 	}
 
-	public void setDI_Totals(FileWriter dI_Totals) {
-		DI_Totals = dI_Totals;
+	public void setDI_Totals(FileWriter totals) {
+		DI_Totals = totals;
 	}
 
 	public FileWriter getMeterTotals() {
-		return MeterTotals;
+		return meterTotals;
 	}
 
-	public void setMeterTotals(FileWriter meterTotals) {
-		MeterTotals = meterTotals;
+	public void setMeterTotals(FileWriter totals) {
+		meterTotals = totals;
 	}
 
 	public SystemMeter getSystemMeter() {
-		return SystemMeter;
+		return systemMeter;
 	}
 
-	public void setSystemMeter(SystemMeter systemMeter) {
-		SystemMeter = systemMeter;
+	public void setSystemMeter(SystemMeter meter) {
+		systemMeter = meter;
 	}
 
 	public boolean isDo_OverloadReport() {
-		return Do_OverloadReport;
+		return doOverloadReport;
 	}
 
-	public void setDo_OverloadReport(boolean do_OverloadReport) {
-		Do_OverloadReport = do_OverloadReport;
+	public void setDoOverloadReport(boolean doReport) {
+		doOverloadReport = doReport;
 	}
 
 	public boolean isDo_VoltageExceptionReport() {
-		return Do_VoltageExceptionReport;
+		return doVoltageExceptionReport;
 	}
 
-	public void setDo_VoltageExceptionReport(boolean do_VoltageExceptionReport) {
-		Do_VoltageExceptionReport = do_VoltageExceptionReport;
+	public void setDoVoltageExceptionReport(boolean doReport) {
+		doVoltageExceptionReport = doReport;
 	}
 
 	public boolean isOverLoadFileIsOpen() {
-		return OverLoadFileIsOpen;
+		return overloadFileIsOpen;
 	}
 
-	public void setOverLoadFileIsOpen(boolean overLoadFileIsOpen) {
-		OverLoadFileIsOpen = overLoadFileIsOpen;
+	public void setOverLoadFileIsOpen(boolean fileIsOpen) {
+		overloadFileIsOpen = fileIsOpen;
 	}
 
 	public boolean isVoltageFileIsOpen() {
-		return VoltageFileIsOpen;
+		return voltageFileIsOpen;
 	}
 
-	public void setVoltageFileIsOpen(boolean voltageFileIsOpen) {
-		VoltageFileIsOpen = voltageFileIsOpen;
+	public void setVoltageFileIsOpen(boolean fileIsOpen) {
+		voltageFileIsOpen = fileIsOpen;
 	}
 
-	public static void setActiveEnergyMeterObj(EnergyMeterObj activeEnergyMeterObj) {
-		ActiveEnergyMeterObj = activeEnergyMeterObj;
+	public static void setActiveEnergyMeterObj(EnergyMeterObj energyMeterObj) {
+		activeEnergyMeterObj = energyMeterObj;
 	}
 
 	public static EnergyMeterObj getActiveEnergyMeterObj() {
-		return ActiveEnergyMeterObj;
+		return activeEnergyMeterObj;
 	}
 
 }

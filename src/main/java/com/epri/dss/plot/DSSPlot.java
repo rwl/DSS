@@ -14,7 +14,7 @@ public interface DSSPlot {
 	static final int vizVOLTAGE = 2;
 	static final int vizPOWER   = 3;
 
-	void setMaxLineThickness(int Value);
+	void setMaxLineThickness(int value);
 
 	int getMaxLineThickness();
 
@@ -114,18 +114,18 @@ public interface DSSPlot {
 
 	void setDefaults();
 
-	void doLoadShapePlot(String LoadShapeName);
+	void doLoadShapePlot(String loadShapeName);
 
-	void doTempShapePlot(String TempShapeName);
+	void doTempShapePlot(String tempShapeName);
 
-	void doPriceShapePlot(String PriceShapeName);
+	void doPriceShapePlot(String priceShapeName);
 
-	void doDI_Plot(String CaseName, int CaseYear, int[] iRegisters, boolean PeakDay, String MeterName);
+	void doDI_Plot(String caseName, int caseYear, int[] iRegisters, boolean peakDay, String meterName);
 
-	void doCompareCases(String CaseName1, String CaseName2, String WhichFile, int Reg);
+	void doCompareCases(String caseName1, String caseName2, String whichFile, int reg);
 
-	void doYearlyCurvePlot(ArrayList<String> caseNames, String WhichFile, int[] iRegisters);
+	void doYearlyCurvePlot(ArrayList<String> caseNames, String whichFile, int[] iRegisters);
 
-	void doVisualizationPlot(CktElement Element, int Quantity);
+	void doVisualizationPlot(CktElement element, int quantity);
 
 }

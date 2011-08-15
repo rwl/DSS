@@ -362,10 +362,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setForcedOn(Utilities.interpretYesNo(param));
 					break;
 				case 25:
-					ag.getGenVars().kVArating = parser.makeDouble();
+					ag.getGenVars().kVARating = parser.makeDouble();
 					break;
 				case 26:
-					ag.getGenVars().kVArating = parser.makeDouble() * 1000.0;  // "MVA";
+					ag.getGenVars().kVARating = parser.makeDouble() * 1000.0;  // "MVA";
 					break;
 				case 27:
 					ag.getGenVars().puXd = parser.makeDouble();
@@ -377,7 +377,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.getGenVars().puXdpp = parser.makeDouble();
 					break;
 				case 30:
-					ag.getGenVars().Hmass = parser.makeDouble();
+					ag.getGenVars().HMass = parser.makeDouble();
 					break;
 				case 31:
 					ag.getGenVars().Dpu = parser.makeDouble();
@@ -508,9 +508,9 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setVBase105(otherGenerator.getVBase105());
 			ag.setKWBase(otherGenerator.getKWBase());
 			ag.setKVArBase(otherGenerator.getKVArBase());
-			ag.getGenVars().Pnominalperphase = otherGenerator.getGenVars().Pnominalperphase;
+			ag.getGenVars().PNominalPerPhase = otherGenerator.getGenVars().PNominalPerPhase;
 			ag.setPowerFactor(otherGenerator.getPowerFactor());
-			ag.getGenVars().Qnominalperphase = otherGenerator.getGenVars().Qnominalperphase;
+			ag.getGenVars().QNominalPerPhase = otherGenerator.getGenVars().QNominalPerPhase;
 			ag.setVArMin(otherGenerator.getVArMin());
 			ag.setVArMax(otherGenerator.getVArMax());
 			ag.setConnection(otherGenerator.getConnection());
@@ -534,13 +534,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			ag.setForcedOn(otherGenerator.isForcedOn());
 			ag.setkVANotSet(otherGenerator.iskVANotSet());
 
-			ag.getGenVars().kVArating      = otherGenerator.getGenVars().kVArating;
+			ag.getGenVars().kVARating      = otherGenerator.getGenVars().kVARating;
 			ag.getGenVars().puXd           = otherGenerator.getGenVars().puXd;
 			ag.getGenVars().puXdp          = otherGenerator.getGenVars().puXdp;
 			ag.getGenVars().puXdpp         = otherGenerator.getGenVars().puXdpp;
-			ag.getGenVars().Hmass          = otherGenerator.getGenVars().Hmass;
-			ag.getGenVars().Theta          = otherGenerator.getGenVars().Theta;
-			ag.getGenVars().Speed          = otherGenerator.getGenVars().Speed;
+			ag.getGenVars().HMass          = otherGenerator.getGenVars().HMass;
+			ag.getGenVars().theta          = otherGenerator.getGenVars().theta;
+			ag.getGenVars().speed          = otherGenerator.getGenVars().speed;
 			ag.getGenVars().w0             = otherGenerator.getGenVars().w0;
 			ag.getGenVars().dSpeed         = otherGenerator.getGenVars().dSpeed;
 			ag.getGenVars().D              = otherGenerator.getGenVars().D;

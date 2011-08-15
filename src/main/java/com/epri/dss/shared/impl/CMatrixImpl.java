@@ -31,12 +31,12 @@ public class CMatrixImpl implements CMatrix {
 	 * b = Ax
 	 */
 	public void MVMult(Complex[] b, Complex[] x) {
-		Complex Sum;
+		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
-			Sum = Complex.ZERO;
+			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				Sum = Sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
-			b[i] = Sum;
+				sum = sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
+			b[i] = sum;
 		}
 	}
 
@@ -46,12 +46,12 @@ public class CMatrixImpl implements CMatrix {
 	 * Same as MVMult except accumulates b.
 	 */
 	public void MVMultAccum(Complex[] b, Complex[] x) {
-		Complex Sum;
+		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
-			Sum = Complex.ZERO;
+			sum = Complex.ZERO;
 			for (int j = 0; j < nOrder; j++)
-				Sum = Sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
-			b[i] = b[i].add(Sum);
+				sum = sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
+			b[i] = b[i].add(sum);
 		}
 	}
 
@@ -166,24 +166,24 @@ public class CMatrixImpl implements CMatrix {
 		}
 	}
 
-	public void setElement(int i, int j, Complex Value) {
-		values[((j - 1) * nOrder + i)] = Value;
+	public void setElement(int i, int j, Complex value) {
+		values[((j - 1) * nOrder + i)] = value;
 	}
 
-	public void setElemSym(int i, int j, Complex Value) {
-		values[((j - 1) * nOrder + i)] = Value;
+	public void setElemSym(int i, int j, Complex value) {
+		values[((j - 1) * nOrder + i)] = value;
 		if (i != j)
-			values[((i - 1) * nOrder + j)] = Value;  // ensure symmetry
+			values[((i - 1) * nOrder + j)] = value;  // ensure symmetry
 	}
 
-	public void addElement(int i, int j, Complex Value) {
-		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(Value);
+	public void addElement(int i, int j, Complex value) {
+		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(value);
 	}
 
-	public void addElemSym(int i, int j, Complex Value) {
-		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(Value);
+	public void addElemSym(int i, int j, Complex value) {
+		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(value);
 		if (i != j)
-			values[((i - 1) * nOrder + j)] = values[((i - 1) * nOrder + j)].add(Value);  // ensure symmetry
+			values[((i - 1) * nOrder + j)] = values[((i - 1) * nOrder + j)].add(value);  // ensure symmetry
 	}
 
 	public Complex getElement(int i, int j) {
@@ -199,16 +199,16 @@ public class CMatrixImpl implements CMatrix {
 	 */
 	public Complex sumBlock(int row1, int row2, int col1, int col2) {
 		int rowstart;
-		Complex Sum = Complex.ZERO;
+		Complex sum = Complex.ZERO;
 
 		for (int j = col1; j < col2; j++) {
 			rowstart = (j - 1) * nOrder;
 			for (int i = rowstart + row1; i < rowstart + row2; i++) {
-				Sum = Sum.add(values[i]);
+				sum = sum.add(values[i]);
 			}
 		}
 
-		return Sum;
+		return sum;
 	}
 
 	public Complex[] asArray(int order) {
@@ -234,33 +234,33 @@ public class CMatrixImpl implements CMatrix {
 	 * Average of diagonal elements
 	 */
 	public Complex avgDiagonal() {
-		Complex Result = Complex.ZERO;
+		Complex result = Complex.ZERO;
 		for (int i = 0; i < nOrder; i++)
-			Result = Result.add(values[((i - 1) * nOrder + i)]);
+			result = result.add(values[((i - 1) * nOrder + i)]);
 
 		if (nOrder > 0)
-			Result = Result.divide(nOrder);
+			result = result.divide(nOrder);
 
-		return Result;
+		return result;
 	}
 
 	/**
 	 * Average the upper triangle off diagonals.
 	 */
 	public Complex avgOffDiagonal() {
-		Complex Result = Complex.ZERO;
+		Complex result = Complex.ZERO;
 		int nTimes = 0;
 		for (int i = 0; i < nOrder; i++) {
 			for (int j = i+1; j < nOrder; j++) {
 				nTimes += 1;
-				Result = Result.add(values[((j - 1) * nOrder + i)]);
+				result = result.add(values[((j - 1) * nOrder + i)]);
 			}
 		}
 
 		if (nTimes > 0)
-			Result = Result.divide(nTimes);
+			result = result.divide(nTimes);
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -276,9 +276,9 @@ public class CMatrixImpl implements CMatrix {
 	 */
 	public CMatrix kron(int eliminationRow) {
 		int ii, jj;
-		CMatrix Result = null;   // Null result means it failed
+		CMatrix result = null;   // Null result means it failed
 		if ((nOrder > 1) && (eliminationRow <= nOrder) && (eliminationRow > 0)) {
-			Result = new CMatrixImpl(nOrder - 1);
+			result = new CMatrixImpl(nOrder - 1);
 			int N = eliminationRow;
 			Complex NNElement = getElement(N, N);
 
@@ -290,7 +290,7 @@ public class CMatrixImpl implements CMatrix {
 					for (int j = 0; j < nOrder; j++) {
 						if (j != N) {
 							jj += 1;
-							Result.setElement(ii, jj,
+							result.setElement(ii, jj,
 									getElement(i, j).subtract( getElement(i, N).multiply(getElement(N, j)).divide(NNElement) )
 							);
 						}
@@ -299,7 +299,7 @@ public class CMatrixImpl implements CMatrix {
 			}
 		}
 
-		return Result;
+		return result;
 	}
 
 }

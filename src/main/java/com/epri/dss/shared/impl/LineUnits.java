@@ -13,37 +13,37 @@ public abstract class LineUnits {
 	public static final int UNITS_CM    = 7;
 	public static final int UNITS_MM    = 8;
 
-	public static int getUnitsCode(String S) {
+	public static int getUnitsCode(String s) {
 
-		String Stest = S.substring(0, 2);  // copy first 2 chars for most of the test  TODO Check indexing
-		if (Stest.equalsIgnoreCase("no")) {
+		String sTest = s.substring(0, 2);  // copy first 2 chars for most of the test  TODO Check indexing
+		if (sTest.equalsIgnoreCase("no")) {
 			return UNITS_NONE;  // no units specified
-		} else if (Stest.equalsIgnoreCase("mi")) {
+		} else if (sTest.equalsIgnoreCase("mi")) {
 			return UNITS_MILES;  // per mile
-		} else if (Stest.equalsIgnoreCase("kf")) {
+		} else if (sTest.equalsIgnoreCase("kf")) {
 			return UNITS_KFT;  // per 1000 ft (kft)
-		} else if (Stest.equalsIgnoreCase("km")) {
+		} else if (sTest.equalsIgnoreCase("km")) {
 			return UNITS_KM;  // per km
-		} else if (Stest.equalsIgnoreCase("m")) {
+		} else if (sTest.equalsIgnoreCase("m")) {
 			return UNITS_M;  // per meter
-		} else if (Stest.equalsIgnoreCase("me")) {
+		} else if (sTest.equalsIgnoreCase("me")) {
 			return UNITS_M;  // per meter
-		} else if (Stest.equalsIgnoreCase("ft")) {
+		} else if (sTest.equalsIgnoreCase("ft")) {
 			return UNITS_FT;
-		} else if (Stest.equalsIgnoreCase("in")) {
+		} else if (sTest.equalsIgnoreCase("in")) {
 			return UNITS_IN;
-		} else if (Stest.equalsIgnoreCase("cm")) {
+		} else if (sTest.equalsIgnoreCase("cm")) {
 			return UNITS_CM;
-		} else if (Stest.equalsIgnoreCase("mm")) {
+		} else if (sTest.equalsIgnoreCase("mm")) {
 			return UNITS_MM;
 		}
 
 		return 0;
 	}
 
-	public static String lineUnitsStr(int Units) {
+	public static String lineUnitsStr(int units) {
 
-		switch (Units) {
+		switch (units) {
 		case 0:
 			return "none";
 		case UNITS_MILES:
@@ -69,8 +69,8 @@ public abstract class LineUnits {
 
 	// Conversion to and from meters and per meter
 
-	public static double toMeters(int Units) {
-		switch (Units) {
+	public static double toMeters(int units) {
+		switch (units) {
 		case UNITS_MILES:
 			return 1609.3;
 		case UNITS_KFT:
@@ -92,23 +92,23 @@ public abstract class LineUnits {
 		}
 	}
 
-	public static double toPerMeter(int Units) {
-		return 1.0 / toMeters(Units);
+	public static double toPerMeter(int units) {
+		return 1.0 / toMeters(units);
 	}
 
-	public static double fromPerMeter(int Units) {
-		return toMeters(Units);
+	public static double fromPerMeter(int units) {
+		return toMeters(units);
 	}
 
-	public static double fromMeters(int Units) {
-		return 1.0 / toMeters(Units);
+	public static double fromMeters(int units) {
+		return 1.0 / toMeters(units);
 	}
 
-	public static double convertLineUnits(int FromUnits, int ToUnits) {
-		if ((FromUnits == UNITS_NONE) || (ToUnits == UNITS_NONE)) {
+	public static double convertLineUnits(int fromUnits, int toUnits) {
+		if ((fromUnits == UNITS_NONE) || (toUnits == UNITS_NONE)) {
 			return 1.0;  // Don't know what to convert
 		} else {
-			return fromMeters(ToUnits) * toMeters(FromUnits);
+			return fromMeters(toUnits) * toMeters(fromUnits);
 		}
 	}
 

@@ -1993,7 +1993,7 @@ public class Utilities {
 		while (pPDelem != null) {
 			if (fromLine.equals(pPDelem))
 				break;
-			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+			pPDelem = (PDElement) pMeter.getBranchList().goForward();
 		}
 
 		/* Error check */
@@ -2011,7 +2011,7 @@ public class Utilities {
 
 			int i;
 			pMeter.getBranchList().startHere();
-			pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+			pPDelem = (PDElement) pMeter.getBranchList().goForward();
 
 			while (pPDelem != null) {
 				s = "edit " + pPDelem.getParentClass().getName() + "." + pPDelem.getName();
@@ -2050,7 +2050,7 @@ public class Utilities {
 						pShuntObject = (CktElement) pMeter.getBranchList().getNextObject();
 					}
 
-					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+					pPDelem = (PDElement) pMeter.getBranchList().goForward();
 				} // isLine
 
 				/* ----------------TRANSFORMERS------------------------------ */
@@ -2069,12 +2069,12 @@ public class Utilities {
 					/* Be default go forward in the tree until we bounce back up to a line section above the transformer */
 					if (transStop) {
 						while ((pPDelem != null) && (pMeter.getBranchList().getLevel() > xfmrLevel)) {
-							pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+							pPDelem = (PDElement) pMeter.getBranchList().goForward();
 						}
 					}
 				} else {
 					// then we get lines and loads beyond transformer
-					pPDelem = (PDElement) pMeter.getBranchList().GoForward();
+					pPDelem = (PDElement) pMeter.getBranchList().goForward();
 				}
 			}
 		} catch (IOException e) {

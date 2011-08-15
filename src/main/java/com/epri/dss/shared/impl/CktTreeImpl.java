@@ -19,113 +19,113 @@ public class CktTreeImpl implements CktTree {
 
 	public class ZoneEndsList {
 
-		private PointerList EndNodeList;
-		private int[] EndBuses;
+		private PointerList endNodeList;
+		private int[] endBuses;
 
-		protected int NumEnds;
+		protected int numEnds;
 
 		public ZoneEndsList() {
-			EndNodeList = new PointerListImpl(10);
-			NumEnds = 0;
-			EndBuses = null;
+			endNodeList = new PointerListImpl(10);
+			numEnds = 0;
+			endBuses = null;
 		}
 
-		public void add(CktTreeNode Node, int EndBusRef) {
-			NumEnds += 1;
-			EndNodeList.add(Node);
-			EndBuses = (int[]) Utilities.resizeArray(EndBuses, NumEnds);
-			EndBuses[NumEnds - 1] = EndBusRef;  // TODO Check zero based indexing
+		public void add(CktTreeNode node, int endBusRef) {
+			numEnds += 1;
+			endNodeList.add(node);
+			endBuses = (int[]) Utilities.resizeArray(endBuses, numEnds);
+			endBuses[numEnds - 1] = endBusRef;  // TODO Check zero based indexing
 		}
 
-		public int get(int i, CktTreeNode Node) {
-			Node = (CktTreeNode) EndNodeList.get(i);  // FIXME Make generic
-			return EndBuses[i];
+		public int get(int i, CktTreeNode node) {
+			node = (CktTreeNode) endNodeList.get(i);  // FIXME Make generic
+			return endBuses[i];
 		}
 
 		public int getNumEnds() {
-			return NumEnds;
+			return numEnds;
 		}
 
-		public void setNumEnds(int numEnds) {
-			NumEnds = numEnds;
+		public void setNumEnds(int num) {
+			numEnds = num;
 		}
 
 	}
 
-	private CktTreeNode FirstNode;
-	private PStack ForwardStack;
+	private CktTreeNode firstNode;
+	private PStack forwardStack;
 
-	protected CktTreeNode PresentBranch;
-	protected ZoneEndsList ZoneEndsList;
+	protected CktTreeNode presentBranch;
+	protected ZoneEndsList zoneEndsList;
 
 	public CktTreeImpl() {
 		super();
-		FirstNode = null;
-		PresentBranch = null;
-		ZoneEndsList = new ZoneEndsList();
-		ForwardStack = new PStackImpl(20);
+		firstNode = null;
+		presentBranch = null;
+		zoneEndsList = new ZoneEndsList();
+		forwardStack = new PStackImpl(20);
 	}
 
 	/**
 	 * Adds child and makes it present.
 	 */
-	public void setNew(DSSObject Value) {
-		PresentBranch = new CktTreeNodeImpl(PresentBranch, Value);
-		if (FirstNode == null)
-			FirstNode = PresentBranch;
+	public void setNew(DSSObject value) {
+		presentBranch = new CktTreeNodeImpl(presentBranch, value);
+		if (firstNode == null)
+			firstNode = presentBranch;
 	}
 
-	public void addNewChild(DSSObject Value, int BusRef, int TerminalNo) {
-		if (PresentBranch == null) {
-			setNew(Value);
+	public void addNewChild(DSSObject value, int busRef, int terminalNo) {
+		if (presentBranch == null) {
+			setNew(value);
 		} else {
-			CktTreeNode TempNode = new CktTreeNodeImpl(PresentBranch, Value);
+			CktTreeNode TempNode = new CktTreeNodeImpl(presentBranch, value);
 
-			TempNode.setFromBusReference(BusRef);
-			TempNode.setFromTerminal(TerminalNo);
+			TempNode.setFromBusReference(busRef);
+			TempNode.setFromTerminal(terminalNo);
 
-			PresentBranch.addChild(TempNode);
+			presentBranch.addChild(TempNode);
 		}
 	}
 
 	/**
 	 * Adds a pointer to an object to be associated with the current node.
 	 */
-	public void setNewObject(DSSObject Value) {
-		if (PresentBranch != null) {
-			PresentBranch.addObject(Value);
+	public void setNewObject(DSSObject value) {
+		if (presentBranch != null) {
+			presentBranch.addObject(value);
 		}
 	}
 
 	private void pushAllChildren() {
-		if (PresentBranch != null) {
+		if (presentBranch != null) {
 			// push all children of present node onto stack
-			CktTreeNode pChild = PresentBranch.getFirstChild();
+			CktTreeNode pChild = presentBranch.getFirstChild();
 			while (pChild != null) {
-				ForwardStack.push((DSSObject) pChild);  // FIXME Implement generics
-				pChild = PresentBranch.getNextChild();
+				forwardStack.push((DSSObject) pChild);  // FIXME Implement generics
+				pChild = presentBranch.getNextChild();
 			}
-			PresentBranch.setChildAdded(false);
+			presentBranch.setChildAdded(false);
 		}
 	}
 
 	/**
 	 * Move forward from present node.
 	 */
-	public DSSObject GoForward() {
+	public DSSObject goForward() {
 		// if we have added children to the present node since we opened it push them on
-		if (PresentBranch != null)
-			if (PresentBranch.isChildAdded())
+		if (presentBranch != null)
+			if (presentBranch.isChildAdded())
 				pushAllChildren();
 
 		// if the forward stack is empty push stuff on it to get started
-		if (ForwardStack.size() == 0)
+		if (forwardStack.size() == 0)
 			pushAllChildren();
 
-		PresentBranch = (CktTreeNode) ForwardStack.pop();  // FIXME Implement generics
+		presentBranch = (CktTreeNode) forwardStack.pop();  // FIXME Implement generics
 		pushAllChildren();  // push all children of latest
-		if (PresentBranch != null) {
-			return PresentBranch.getCktObject();
+		if (presentBranch != null) {
+			return presentBranch.getCktObject();
 		} else {
 			return null;
 		}
@@ -134,19 +134,19 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Move backward from present node and reset forward stack.
 	 */
-	public DSSObject GoBackward() {
-		PresentBranch = PresentBranch.getParent();
-		ForwardStack.clear();
-		if (PresentBranch != null) {
-			return PresentBranch.getCktObject();
+	public DSSObject goBackward() {
+		presentBranch = presentBranch.getParent();
+		forwardStack.clear();
+		if (presentBranch != null) {
+			return presentBranch.getCktObject();
 		} else {
 			return null;
 		}
 	}
 
 	public Object getParent() {
-		if (PresentBranch.getParent() != null) {
-			return PresentBranch.getParent().getCktObject();
+		if (presentBranch.getParent() != null) {
+			return presentBranch.getParent().getCktObject();
 		} else {
 			return null;
 		}
@@ -158,64 +158,64 @@ public class CktTreeImpl implements CktTree {
 	 * Go to beginning and reset forward stack.
 	 */
 	public DSSObject getFirst() {
-		PresentBranch = FirstNode;
-		ForwardStack.clear();
+		presentBranch = firstNode;
+		forwardStack.clear();
 		pushAllChildren();
-		if (PresentBranch != null) {
-			return (DSSObject) PresentBranch.getCktObject();
+		if (presentBranch != null) {
+			return (DSSObject) presentBranch.getCktObject();
 		} else {
 			return null;
 		}
 	}
 
 	public Object getFirstObject() {
-		if (PresentBranch != null) {
-			return PresentBranch.getFirstObject();
+		if (presentBranch != null) {
+			return presentBranch.getFirstObject();
 		} else {
 			return null;
 		}
 	}
 
 	public Object getNextObject() {
-		if (PresentBranch != null) {
-			return PresentBranch.getNextObject();
+		if (presentBranch != null) {
+			return presentBranch.getNextObject();
 		} else {
 			return null;
 		}
 	}
 
 	public Object getActive() {
-		if (PresentBranch != null) {
-			return PresentBranch.getCktObject();
+		if (presentBranch != null) {
+			return presentBranch.getCktObject();
 		} else {
 			return null;
 		}
 	}
 
 	public void setActive(DSSObject p) {
-		DSSObject Temp = getFirst();
-		while (Temp != null) {
-			if (PresentBranch.getCktObject() == p) break;
-			Temp = GoForward();
+		DSSObject temp = getFirst();
+		while (temp != null) {
+			if (presentBranch.getCktObject() == p) break;
+			temp = goForward();
 		}
-		ForwardStack.clear();
+		forwardStack.clear();
 	}
 
 	/**
 	 * Start forward search at the present location (can also use active).
 	 */
 	public void startHere() {
-		ForwardStack.clear();
-		if (PresentBranch != null)
-			ForwardStack.push((DSSObject) PresentBranch);  // FIXME Implement generics
+		forwardStack.clear();
+		if (presentBranch != null)
+			forwardStack.push((DSSObject) presentBranch);  // FIXME Implement generics
 	}
 
 	/**
 	 * Get lexical level of present node.
 	 */
 	public int getLevel() {
-		if (PresentBranch != null) {
-			return PresentBranch.getLexicalLevel();
+		if (presentBranch != null) {
+			return presentBranch.getLexicalLevel();
 		} else {
 			return 0;
 		}
@@ -228,20 +228,20 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Sources are excluded from the PC element list, so this is a brute-force search.
 	 */
-	private static void getSourcesConnectedToBus(int BusNum, CktTree BranchList, boolean Analyze) {
+	private static void getSourcesConnectedToBus(int busNum, CktTree branchList, boolean analyze) {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		for (PCElement psrc : ckt.getSources()) {  // Sources are special PC elements
 			if (psrc.isEnabled()) {
-				if (Analyze || (!psrc.isChecked())) {
-					if (psrc.getTerminals()[0].getBusRef() == BusNum) {  // ? Connected to this bus ?
-						if (Analyze) {
+				if (analyze || (!psrc.isChecked())) {
+					if (psrc.getTerminals()[0].getBusRef() == busNum) {  // ? Connected to this bus ?
+						if (analyze) {
 							psrc.setIsolated(false);
-							BranchList.getPresentBranch().setIsDangling(false);
+							branchList.getPresentBranch().setDangling(false);
 						}
 
 						if (!psrc.isChecked()) {
-							BranchList.setNewObject(psrc);
+							branchList.setNewObject(psrc);
 							psrc.setChecked(true);
 						}
 					}
@@ -250,18 +250,18 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	private static void getPCElementsConnectedToBus(List<CktElement> adjLst, CktTree BranchList, boolean Analyze) {
+	private static void getPCElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
 		CktElement p;
 
 		for (int i = 0; i < adjLst.size() - 1; i++) {
 			p = adjLst.get(i);
 			if (p.isEnabled()) {
-				if (Analyze) {
+				if (analyze) {
 					p.setIsolated(false);
-					BranchList.getPresentBranch().setIsDangling(false);
+					branchList.getPresentBranch().setDangling(false);
 				}
 				if (!p.isChecked()) {
-					BranchList.setNewObject(p);
+					branchList.setNewObject(p);
 					p.setChecked(true);
 				}
 			}
@@ -269,31 +269,31 @@ public class CktTreeImpl implements CktTree {
 	}
 
 
-	private static void findAllChildBranches(List<CktElement>adjLst, int BusNum, CktTree BranchList,
-			boolean Analyze, CktElement ActiveBranch) {
+	private static void findAllChildBranches(List<CktElement> adjLst, int busNum, CktTree branchList,
+			boolean analyze, CktElement activeBranch) {
 		int i, j;
 		CktElement p;
 
 		for (i = 0; i < adjLst.size() - 1; i++) {
 			p = adjLst.get(i);
-			if (p.isEnabled() && (p != ActiveBranch)) {
-				if (Analyze || (!p.isChecked())) {
+			if (p.isEnabled() && (p != activeBranch)) {
+				if (analyze || (!p.isChecked())) {
 					if (!Utilities.isShuntElement(p) && Utilities.allTerminalsClosed(p)) {
 						for (j = 0; j < p.getNTerms(); j++) {
-							if (BusNum == p.getTerminals()[j].getBusRef()) {
-								if (Analyze) {
+							if (busNum == p.getTerminals()[j].getBusRef()) {
+								if (analyze) {
 									p.setIsolated(false);
-									BranchList.getPresentBranch().setIsDangling(false);
-									if (p.isChecked() && (BranchList.getLevel() > 0)) {
-										BranchList.getPresentBranch().setIsLoopedHere(true);
-										BranchList.getPresentBranch().setLoopLineObj(p);
-										if (Utilities.isLineElement(p) && Utilities.isLineElement(ActiveBranch))
-											if (Utilities.checkParallel(ActiveBranch, p))
-												BranchList.getPresentBranch().setIsParallel(true);
+									branchList.getPresentBranch().setDangling(false);
+									if (p.isChecked() && (branchList.getLevel() > 0)) {
+										branchList.getPresentBranch().setLoopedHere(true);
+										branchList.getPresentBranch().setLoopLineObj(p);
+										if (Utilities.isLineElement(p) && Utilities.isLineElement(activeBranch))
+											if (Utilities.checkParallel(activeBranch, p))
+												branchList.getPresentBranch().setParallel(true);
 									}
 								}
 								if (!p.isChecked()) {
-									BranchList.addNewChild(p, BusNum, j);
+									branchList.addNewChild(p, busNum, j);
 									p.getTerminals()[j].setChecked(true);
 									p.setChecked(true);
 									break;  /* for */
@@ -306,36 +306,36 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	private static void getShuntPDElementsConnectedToBus(List<CktElement> adjLst, CktTree BranchList, boolean Analyze) {
+	private static void getShuntPDElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
 		CktElement p;
 		for (int i = 0; i < adjLst.size() - 1; i++) {
 			p = adjLst.get(i);
 			if (p.isEnabled() && Utilities.isShuntElement(p)) {
-				if (Analyze) {
+				if (analyze) {
 					p.setIsolated(false);
-					BranchList.getPresentBranch().setIsDangling(false);
+					branchList.getPresentBranch().setDangling(false);
 				}
 				if (!p.isChecked()) {
-					BranchList.setNewObject(p);
+					branchList.setNewObject(p);
 					p.setChecked(true);
 				}
 			}
 		}
 	}
 
-	public static CktTree getIsolatedSubArea(CktElement StartElement) {
-		return getIsolatedSubArea(StartElement, false);
+	public static CktTree getIsolatedSubArea(CktElement startElement) {
+		return getIsolatedSubArea(startElement, false);
 	}
 
 	/**
 	 * Build a tree of connected elements beginning at StartElement.
 	 * Analyze = true; will check for loops, isolated components, and parallel lines (takes longer)
 	 */
-	public static CktTree getIsolatedSubArea(CktElement StartElement, boolean Analyze) {
-		int TestBusNum;
-		CktTree BranchList;
+	public static CktTree getIsolatedSubArea(CktElement startElement, boolean analyze) {
+		int testBusNum;
+		CktTree branchList;
 		int iTerm;
-		CktElement TestBranch, TestElement;
+		CktElement testBranch, testElement;
 		List[] lstPD, lstPC;
 
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
@@ -343,40 +343,40 @@ public class CktTreeImpl implements CktTree {
 		lstPD = ckt.getBusAdjacentPDLists();
 		lstPC = ckt.getBusAdjacentPCLists();
 
-		BranchList = new CktTreeImpl();
-		TestElement = StartElement;
+		branchList = new CktTreeImpl();
+		testElement = startElement;
 
-		BranchList.setNew(TestElement);
-		if (Analyze)
-			TestElement.setIsolated(false);
-		TestElement.setLastTerminalChecked(0);  // we'll check things connected to both sides
+		branchList.setNew(testElement);
+		if (analyze)
+			testElement.setIsolated(false);
+		testElement.setLastTerminalChecked(0);  // we'll check things connected to both sides
 
 		// check off this element so we don't use it again
-		TestElement.setChecked(true);
+		testElement.setChecked(true);
 
 		// now start looking for other branches
 		// finds any branch connected to the TestBranch and adds it to the list
 		// goes until end of circuit, another energy meter, an open terminal, or disabled device
-		TestBranch = TestElement;
-		while (TestBranch != null) {
-			for (iTerm = 0; iTerm < TestBranch.getNTerms(); iTerm++) {
-				if (!TestBranch.getTerminals()[iTerm].isChecked()) {
+		testBranch = testElement;
+		while (testBranch != null) {
+			for (iTerm = 0; iTerm < testBranch.getNTerms(); iTerm++) {
+				if (!testBranch.getTerminals()[iTerm].isChecked()) {
 					// now find all PC elements connected to the bus on this end of branch
 					// attach them as generic objects to cktTree node.
-					TestBusNum = TestBranch.getTerminals()[iTerm].getBusRef();
-					BranchList.getPresentBranch().setToBusReference(TestBusNum);  // add this as a "to" bus reference
-					if (TestBusNum > 0) {
-						ckt.getBuses()[TestBusNum].setBusChecked(true);
-						getSourcesConnectedToBus(TestBusNum, BranchList, Analyze);
-						getPCElementsConnectedToBus(lstPC[TestBusNum], BranchList, Analyze);
-						getShuntPDElementsConnectedToBus(lstPD[TestBusNum], BranchList, Analyze);
-						findAllChildBranches(lstPD[TestBusNum], TestBusNum, BranchList, Analyze, TestBranch);
+					testBusNum = testBranch.getTerminals()[iTerm].getBusRef();
+					branchList.getPresentBranch().setToBusReference(testBusNum);  // add this as a "to" bus reference
+					if (testBusNum > 0) {
+						ckt.getBuses()[testBusNum].setBusChecked(true);
+						getSourcesConnectedToBus(testBusNum, branchList, analyze);
+						getPCElementsConnectedToBus(lstPC[testBusNum], branchList, analyze);
+						getShuntPDElementsConnectedToBus(lstPD[testBusNum], branchList, analyze);
+						findAllChildBranches(lstPD[testBusNum], testBusNum, branchList, analyze, testBranch);
 					}
 				}
 			}
-			TestBranch = (CktElement) BranchList.GoForward();
+			testBranch = (CktElement) branchList.goForward();
 		}
-		return BranchList;
+		return branchList;
 	}
 
 	public static void buildActiveBusAdjacencyLists(List<PDElement>[] lstPD, List<PCElement>[] lstPC) {
@@ -426,19 +426,19 @@ public class CktTreeImpl implements CktTree {
 	}
 
 	public CktTreeNode getPresentBranch() {
-		return PresentBranch;
+		return presentBranch;
 	}
 
-	public void setPresentBranch(CktTreeNode presentBranch) {
-		PresentBranch = presentBranch;
+	public void setPresentBranch(CktTreeNode branch) {
+		presentBranch = branch;
 	}
 
 	public ZoneEndsList getZoneEndsList() {
-		return ZoneEndsList;
+		return zoneEndsList;
 	}
 
-	public void setZoneEndsList(ZoneEndsList zoneEndsList) {
-		ZoneEndsList = zoneEndsList;
+	public void setZoneEndsList(ZoneEndsList list) {
+		zoneEndsList = list;
 	}
 
 }

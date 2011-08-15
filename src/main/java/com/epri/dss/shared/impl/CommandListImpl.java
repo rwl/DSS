@@ -5,48 +5,48 @@ import com.epri.dss.shared.HashList;
 
 public class CommandListImpl implements CommandList {
 
-	private HashList CommandList;
-	private boolean AbbrevAllowed;
+	private HashList commandList;
+	private boolean abbrevAllowed;
 
-	public CommandListImpl(String[] Commands) {
+	public CommandListImpl(String[] commands) {
 		super();
-		this.CommandList = new HashListImpl(Commands.length);
+		this.commandList = new HashListImpl(commands.length);
 
-		for (int i = 0; i < Commands.length; i++)
-			this.CommandList.add(Commands[i]);
+		for (int i = 0; i < commands.length; i++)
+			this.commandList.add(commands[i]);
 
-		AbbrevAllowed = true;
+		abbrevAllowed = true;
 	}
 
 	public void addCommand(String cmd) {
-		CommandList.add(cmd);
+		commandList.add(cmd);
 	}
 
-	public int getCommand(String Cmd) {
-		int Result = CommandList.find(Cmd);
+	public int getCommand(String cmd) {
+		int result = commandList.find(cmd);
 		/* If no match found on whole command, check for abbrev */
 		/* This routine will generally be faster if one enters the whole command */
-		if (Result == -1)
-			if (AbbrevAllowed)
-				Result = CommandList.findAbbrev(Cmd);
+		if (result == -1)
+			if (abbrevAllowed)
+				result = commandList.findAbbrev(cmd);
 
-		return Result;
+		return result;
 	}
 
 	public String get(int i) {
-		return CommandList.get(i);
+		return commandList.get(i);
 	}
 
 	public int getNumCommands() {
-		return CommandList.listSize();
+		return commandList.listSize();
 	}
 
 	public boolean isAbbrevAllowed() {
-		return AbbrevAllowed;
+		return abbrevAllowed;
 	}
 
-	public void setAbbrevAllowed(boolean abbrevAllowed) {
-		AbbrevAllowed = abbrevAllowed;
+	public void setAbbrevAllowed(boolean allowed) {
+		abbrevAllowed = allowed;
 	}
 
 }
