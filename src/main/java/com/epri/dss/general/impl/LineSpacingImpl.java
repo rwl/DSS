@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
-	private static LineSpacingObj activeLineSpacingObj;
+	public static LineSpacingObj activeLineSpacingObj;
 
 	private enum SpcParmChoice {X, H};
 
@@ -67,7 +67,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		String Str;
 
 		globals.getAuxParser().setCmdString(s);
-		LineSpacingObj als = getActiveLineSpacingObj();
+		LineSpacingObj als = activeLineSpacingObj;
 
 		for (int i = 0; i < als.getNWires(); i++) {
 			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
@@ -90,10 +90,10 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveLineSpacingObj((LineSpacingObj) elementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject(getActiveLineSpacingObj());
+		activeLineSpacingObj = (LineSpacingObj) elementList.getActive();
+		DSSGlobals.getInstance().setActiveDSSObject(activeLineSpacingObj);
 
-		LineSpacingObj als = getActiveLineSpacingObj();
+		LineSpacingObj als = activeLineSpacingObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -128,7 +128,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveLineSpacingObj(), paramPointer - LineSpacing.NumPropsThisClass);
+					classEdit(activeLineSpacingObj, paramPointer - LineSpacing.NumPropsThisClass);
 					break;
 				}
 
@@ -166,7 +166,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 		/* See if we can find this line code in the present collection */
 		LineSpacingObj otherLineSpacing = (LineSpacingObj) find(lineName);
 		if (otherLineSpacing != null) {
-			LineSpacingObj als = getActiveLineSpacingObj();
+			LineSpacingObj als = activeLineSpacingObj;
 
 			als.setNWires(otherLineSpacing.getNWires());  // allocates
 			als.setNPhases(otherLineSpacing.getNPhases());
@@ -206,25 +206,17 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	public void setCode(String value) {
 		LineSpacingObj pSpacing;
 
-		setActiveLineSpacingObj(null);
+		activeLineSpacingObj = null;
 		for (int i = 0; i < elementList.size(); i++) {
 			pSpacing = (LineSpacingObj) elementList.get(i);
 
 			if (pSpacing.getName().equalsIgnoreCase(value)) {
-				setActiveLineSpacingObj(pSpacing);
+				activeLineSpacingObj = pSpacing;
 				return;
 			}
 		}
 
 		DSSGlobals.getInstance().doSimpleMsg("LineSpacing: \"" + value + "\" not found.", 103);
-	}
-
-	public static LineSpacingObj getActiveLineSpacingObj() {
-		return activeLineSpacingObj;
-	}
-
-	public static void setActiveLineSpacingObj(LineSpacingObj lineSpacingObj) {
-		activeLineSpacingObj = lineSpacingObj;
 	}
 
 }

@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
-	private static XYCurveObj activeXYCurveObj;
+	public static XYCurveObj activeXYCurveObj;
 
 	private double[] tempPointsBuffer;
 
@@ -107,10 +107,10 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveXYCurveObj((XYCurveObj) elementList.getActive());
-		globals.setActiveDSSObject(getActiveXYCurveObj());
+		activeXYCurveObj = (XYCurveObj) elementList.getActive();
+		globals.setActiveDSSObject(activeXYCurveObj);
 
-		XYCurveObj xyc = getActiveXYCurveObj();
+		XYCurveObj xyc = activeXYCurveObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -174,7 +174,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveXYCurveObj(), paramPointer - XYCurve.NumPropsThisClass);
+				classEdit(activeXYCurveObj, paramPointer - XYCurve.NumPropsThisClass);
 				break;
 			}
 
@@ -237,12 +237,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	}
 
 	public void setCode(String value) {
-		setActiveXYCurveObj(null);
+		activeXYCurveObj = null;
 		XYCurveObj pXYCurveObj = (XYCurveObj) elementList.getFirst();
 		while (pXYCurveObj != null) {
 
 			if (pXYCurveObj.getName().equalsIgnoreCase(value)) {
-				setActiveXYCurveObj(pXYCurveObj);
+				activeXYCurveObj = pXYCurveObj;
 				return;
 			}
 
@@ -266,7 +266,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-			XYCurveObj xyc = getActiveXYCurveObj();
+			XYCurveObj xyc = activeXYCurveObj;
 
 			xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 			xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
@@ -312,7 +312,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		/* See if we can find this curve in the present collection */
 		XYCurveObj otherXYCurve = (XYCurveObj) find(curveName);
 		if (otherXYCurve != null) {
-			XYCurveObj xyc = getActiveXYCurveObj();
+			XYCurveObj xyc = activeXYCurveObj;
 
 			xyc.setNumPoints(otherXYCurve.getNumPoints());
 			xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
@@ -346,14 +346,6 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 		} else {
 			return super.find(objName);
 		}
-	}
-
-	public static void setActiveXYCurveObj(XYCurveObj XYCurveObj) {
-		activeXYCurveObj = XYCurveObj;
-	}
-
-	public static XYCurveObj getActiveXYCurveObj() {
-		return activeXYCurveObj;
 	}
 
 }

@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
-	private static PriceShapeObj activePriceShapeObj;
+	public static PriceShapeObj activePriceShapeObj;
 
 	public PriceShapeImpl() {
 		super();
@@ -116,10 +116,10 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActivePriceShapeObj((PriceShapeObj) elementList.getActive());
-		globals.setActiveDSSObject(getActivePriceShapeObj());
+		activePriceShapeObj = (PriceShapeObj) elementList.getActive();
+		globals.setActiveDSSObject(activePriceShapeObj);
 
-		PriceShapeObj aps = getActivePriceShapeObj();
+		PriceShapeObj aps = activePriceShapeObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -187,7 +187,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActivePriceShapeObj(), paramPointer - PriceShape.NumPropsThisClass);
+				classEdit(activePriceShapeObj, paramPointer - PriceShape.NumPropsThisClass);
 				break;
 			}
 
@@ -237,7 +237,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 		/* See if we can find this line code in the present collection */
 		otherPriceShape = (PriceShapeObj) find(shapeName);
 		if (otherPriceShape != null) {
-			PriceShapeObj aps = getActivePriceShapeObj();
+			PriceShapeObj aps = activePriceShapeObj;
 
 			aps.setNumPoints(otherPriceShape.getNumPoints());
 			aps.setInterval(otherPriceShape.getInterval());
@@ -272,11 +272,11 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 	}
 
 	public void setCode(String value) {
-		setActivePriceShapeObj(null);
+		activePriceShapeObj = null;
 		PriceShapeObj pPriceShapeObj = (PriceShapeObj) elementList.getFirst();
 		while (pPriceShapeObj != null) {
 			if (pPriceShapeObj.getName().equalsIgnoreCase(value)) {
-				setActivePriceShapeObj(pPriceShapeObj);
+				activePriceShapeObj = pPriceShapeObj;
 				return;
 			}
 
@@ -300,7 +300,7 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-			PriceShapeObj aps = getActivePriceShapeObj();
+			PriceShapeObj aps = activePriceShapeObj;
 
 			aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 
@@ -340,14 +340,6 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 	private void doDblFile(String fileName) {
 		throw new UnsupportedOperationException();
-	}
-
-	public static void setActivePriceShapeObj(PriceShapeObj priceShapeObj) {
-		activePriceShapeObj = priceShapeObj;
-	}
-
-	public static PriceShapeObj getActivePriceShapeObj() {
-		return activePriceShapeObj;
 	}
 
 }

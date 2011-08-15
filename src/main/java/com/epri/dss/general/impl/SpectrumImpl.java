@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
-	private static SpectrumObj activeSpectrumObj;
+	public static SpectrumObj activeSpectrumObj;
 
 	public SpectrumImpl() {
 		super();
@@ -81,10 +81,10 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 		int result = 0;
 		// continue parsing with contents of Parser
-		setActiveSpectrumObj((SpectrumObj) elementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject(getActiveSpectrumObj());
+		activeSpectrumObj = (SpectrumObj) elementList.getActive();
+		DSSGlobals.getInstance().setActiveDSSObject(activeSpectrumObj);
 
-		SpectrumObj aso = getActiveSpectrumObj();
+		SpectrumObj aso = activeSpectrumObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -127,7 +127,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveSpectrumObj(), paramPointer - Spectrum.NumPropsThisClass);
+					classEdit(activeSpectrumObj, paramPointer - Spectrum.NumPropsThisClass);
 					break;
 				}
 
@@ -150,7 +150,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		/* See if we can find this line code in the present collection */
 		otherSpectrum = (SpectrumObj) find(name);
 		if (otherSpectrum != null) {
-			SpectrumObj aso = getActiveSpectrumObj();
+			SpectrumObj aso = activeSpectrumObj;
 
 			aso.setNumHarm(otherSpectrum.getNumHarm());
 
@@ -188,11 +188,11 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 	 */
 	public void setCode(String value) {
 		SpectrumObj spectrum;
-		setActiveSpectrumObj(null);
+		activeSpectrumObj = null;
 		for (int i = 0; i < elementList.size(); i++) {
 			spectrum = (SpectrumObj) elementList.get(i);
 			if (spectrum.getName().equalsIgnoreCase(value)) {
-				setActiveSpectrumObj(spectrum);
+				activeSpectrumObj = spectrum;
 				return;
 			}
 		};
@@ -215,7 +215,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			br = new BufferedReader(new InputStreamReader(dis));
 
 
-			SpectrumObj aso = getActiveSpectrumObj();
+			SpectrumObj aso = activeSpectrumObj;
 
 			aso.setHarmArray((double[]) Utilities.resizeArray(aso.getHarmArray(), aso.getNumHarm()));
 			aso.setPUMagArray((double[]) Utilities.resizeArray(aso.getPUMagArray(), aso.getNumHarm()));
@@ -248,14 +248,6 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 654);
 			return;
 		}
-	}
-
-	public static SpectrumObj getActiveSpectrumObj() {
-		return activeSpectrumObj;
-	}
-
-	public static void setActiveSpectrumObj(SpectrumObj spectrumObj) {
-		activeSpectrumObj = spectrumObj;
 	}
 
 }

@@ -14,7 +14,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 	private enum WdgParmChoice {CONN, KV, KVA, R, TAP};
 
-	private static XfmrCodeObj activeXfmrCodeObj;
+	public static XfmrCodeObj activeXfmrCodeObj;
 
 	public XfmrCodeImpl() {
 		super();
@@ -153,12 +153,12 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	}
 
 	private void setActiveWinding(int w) {
-		XfmrCodeObj axc = getActiveXfmrCodeObj();
+		XfmrCodeObj axc = activeXfmrCodeObj;
 
 		if ((w > 0) && (w <= axc.getNumWindings())) {
 			axc.setActiveWinding(w);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Wdg parameter invalid for \"" + getActiveXfmrCodeObj().getName() + "\"", 112);
+			DSSGlobals.getInstance().doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		DSSGlobals globals = DSSGlobals.getInstance();
 
 		globals.getAuxParser().setCmdString(s);
-		XfmrCodeObj axc = getActiveXfmrCodeObj();
+		XfmrCodeObj axc = activeXfmrCodeObj;
 		for (int i = 0; i < axc.getNumWindings(); i++) {
 			axc.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
@@ -196,12 +196,12 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 	@Override
 	public int edit() {
-		setActiveXfmrCodeObj((XfmrCodeObj) elementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject(getActiveXfmrCodeObj());
+		activeXfmrCodeObj = (XfmrCodeObj) elementList.getActive();
+		DSSGlobals.getInstance().setActiveDSSObject(activeXfmrCodeObj);
 		boolean updateXsc = false;
 
 		Parser parser = Parser.getInstance();
-		XfmrCodeObj axc = getActiveXfmrCodeObj();
+		XfmrCodeObj axc = activeXfmrCodeObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -320,7 +320,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				interpretWindings(param, WdgParmChoice.R);
 				break;
 			default:
-				classEdit(getActiveXfmrCodeObj(), paramPointer - XfmrCode.NumPropsThisClass);
+				classEdit(activeXfmrCodeObj, paramPointer - XfmrCode.NumPropsThisClass);
 				break;
 			}
 
@@ -399,7 +399,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		/* See if we can find this ode in the present collection */
 		XfmrCodeObj other = (XfmrCodeObj) find(name);
 		if (other != null) {
-			XfmrCodeObj axc = getActiveXfmrCodeObj();
+			XfmrCodeObj axc = activeXfmrCodeObj;
 
 			axc.setNPhases(other.getNPhases());
 			axc.setNumWindings(other.getNumWindings());
@@ -458,23 +458,15 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	public void setCode(String value) {
 		XfmrCodeObj xfmrCode;
 
-		setActiveXfmrCodeObj(null);
+		activeXfmrCodeObj = null;
 		for (int i = 0; i < elementList.size(); i++) {
 			xfmrCode = (XfmrCodeObj) elementList.get(i);
 			if (xfmrCode.getName().equalsIgnoreCase(value)) {
-				setActiveXfmrCodeObj(xfmrCode);
+				activeXfmrCodeObj = xfmrCode;
 				return;
 			}
 		}
 		DSSGlobals.getInstance().doSimpleMsg("XfmrCode: \"" + value + "\" not found.", 103);
-	}
-
-	public static XfmrCodeObj getActiveXfmrCodeObj() {
-		return activeXfmrCodeObj;
-	}
-
-	public static void setActiveXfmrCodeObj(XfmrCodeObj xfmrCodeObj) {
-		activeXfmrCodeObj = xfmrCodeObj;
 	}
 
 }

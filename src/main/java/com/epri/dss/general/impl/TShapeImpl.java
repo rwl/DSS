@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class TShapeImpl extends DSSClassImpl implements TShape {
 
-	private static TShapeObj activeTShapeObj;
+	public static TShapeObj activeTShapeObj;
 
 	public TShapeImpl() {
 		super();
@@ -116,10 +116,10 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveTShapeObj((TShapeObj) elementList.getActive());
-		globals.setActiveDSSObject(getActiveTShapeObj());
+		activeTShapeObj = (TShapeObj) elementList.getActive();
+		globals.setActiveDSSObject(activeTShapeObj);
 
-		TShapeObj ats = getActiveTShapeObj();
+		TShapeObj ats = activeTShapeObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -187,7 +187,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveTShapeObj(), paramPointer - TShape.NumPropsThisClass);
+				classEdit(activeTShapeObj, paramPointer - TShape.NumPropsThisClass);
 				break;
 			}
 
@@ -237,7 +237,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 		/* See if we can find this line code in the present collection */
 		otherTShape = (TShapeObj) find(shapeName);
 		if (otherTShape != null) {
-			TShapeObj aps = getActiveTShapeObj();
+			TShapeObj aps = activeTShapeObj;
 
 			aps.setNumPoints(otherTShape.getNumPoints());
 			aps.setInterval(otherTShape.getInterval());
@@ -272,11 +272,11 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	}
 
 	public void setCode(String value) {
-		setActiveTShapeObj(null);
+		activeTShapeObj = null;
 		TShapeObj pTShapeObj = (TShapeObj) elementList.getFirst();
 		while (pTShapeObj != null) {
 			if (pTShapeObj.getName().equalsIgnoreCase(value)) {
-				setActiveTShapeObj(pTShapeObj);
+				activeTShapeObj = pTShapeObj;
 				return;
 			}
 
@@ -300,7 +300,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-			TShapeObj ats = getActiveTShapeObj();
+			TShapeObj ats = activeTShapeObj;
 
 			ats.setTValues( (double[]) Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 
@@ -402,14 +402,6 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	 */
 	public void TOPExport(String objName) {
 		throw new UnsupportedOperationException();  // FIXME Implement
-	}
-
-	public static void setActiveTShapeObj(TShapeObj TShapeObj) {
-		activeTShapeObj = TShapeObj;
-	}
-
-	public static TShapeObj getActiveTShapeObj() {
-		return activeTShapeObj;
 	}
 
 }

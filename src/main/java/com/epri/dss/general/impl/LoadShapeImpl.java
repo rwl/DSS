@@ -18,7 +18,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 /* Superstructure for all LoadShape objects */
 public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
-	private static LoadShapeObj activeLoadShapeObj;
+	public static LoadShapeObj activeLoadShapeObj;
 
 	public LoadShapeImpl() {
 		super();
@@ -129,10 +129,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveLoadShapeObj((LoadShapeObj) elementList.getActive());
-		globals.setActiveDSSObject(getActiveLoadShapeObj());
+		activeLoadShapeObj = (LoadShapeObj) elementList.getActive();
+		globals.setActiveDSSObject(activeLoadShapeObj);
 
-		LoadShapeObj als = getActiveLoadShapeObj();
+		LoadShapeObj als = activeLoadShapeObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -273,7 +273,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 		/* See if we can find this line code in the present collection */
 		LoadShapeObj otherLoadShape = (LoadShapeObj) find(shapeName);
 		if (otherLoadShape != null) {
-			LoadShapeObj als = getActiveLoadShapeObj();
+			LoadShapeObj als = activeLoadShapeObj;
 
 			als.setNumPoints(otherLoadShape.getNumPoints());
 			als.setInterval(otherLoadShape.getInterval());
@@ -327,13 +327,13 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	 * Sets the active LoadShape.
 	 */
 	public void setCode(String value) {
-		setActiveLoadShapeObj(null);
+		activeLoadShapeObj = null;
 
 		LoadShapeObj pShape;
 		for (int i = 0; i < elementList.size(); i++) {
 			pShape = (LoadShapeObj) elementList.get(i);
 			if (pShape.getName().equalsIgnoreCase(value)) {
-				setActiveLoadShapeObj(pShape);
+				activeLoadShapeObj = pShape;
 				return;
 			}
 		}
@@ -355,7 +355,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-			LoadShapeObj als = getActiveLoadShapeObj();
+			LoadShapeObj als = activeLoadShapeObj;
 
 			als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 
@@ -402,14 +402,6 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	public void TOPExport(String objName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
-	}
-
-	public static LoadShapeObj getActiveLoadShapeObj() {
-		return activeLoadShapeObj;
-	}
-
-	public static void setActiveLoadShapeObj(LoadShapeObj loadShapeObj) {
-		activeLoadShapeObj = loadShapeObj;
 	}
 
 }
