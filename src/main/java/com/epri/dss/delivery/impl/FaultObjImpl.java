@@ -34,39 +34,39 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	public FaultObjImpl(DSSClass parClass, String faultName) {
 		super(parClass);
 
-		this.objType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
+		objType = parClass.getDSSClassType(); //FAULTOBJECT + NON_PCPD_ELEM;  // only in fault object class
 		setName(faultName.toLowerCase());
 
 		// default to SLG fault
 		setNPhases(1);  // directly set conds and phases
-		this.nConds = 1;
+		nConds = 1;
 		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0"));  // default to grounded   TODO Check zero based indexing
 		setShunt(true);
 
-		this.GMatrix       = null;
-		this.G             = 10000.0;
-		this.specType      = 1;  // G 2=Gmatrix
+		GMatrix       = null;
+		G             = 10000.0;
+		specType      = 1;  // G 2=Gmatrix
 
-		this.minAmps       = 5.0;
-		this.isTemporary   = false;
-		this.cleared       = false;
-		this.isOn         = true;
-		this.onTime       = 0.0;  // always enabled at the start of a solution
+		minAmps       = 5.0;
+		isTemporary   = false;
+		cleared       = false;
+		isOn         = true;
+		onTime       = 0.0;  // always enabled at the start of a solution
 
 
-		this.randomMult = 1;
+		randomMult = 1;
 
-		this.normAmps  = 0.0;
-		this.emergAmps = 0.0;
-		this.faultRate = 0.0;
-		this.pctPerm   = 100.0;
-		this.hrsToRepair = 0.0;
+		normAmps  = 0.0;
+		emergAmps = 0.0;
+		faultRate = 0.0;
+		pctPerm   = 100.0;
+		hrsToRepair = 0.0;
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

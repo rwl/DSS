@@ -60,41 +60,41 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	public DSSCktElement(DSSClass parClass) {
 		super(parClass);
 
-		this.nodeRef     = null;
-		this.YPrimSeries = null;
-		this.YPrimShunt  = null;
-		this.YPrim       = null;
-		this.terminals   = null;
-		this.busNames    = null;
-		this.VTerminal   = null;
-		this.ITerminal   = null;  // present value of terminal current
-		this.complexBuffer = null;
+		nodeRef     = null;
+		YPrimSeries = null;
+		YPrimShunt  = null;
+		YPrim       = null;
+		terminals   = null;
+		busNames    = null;
+		VTerminal   = null;
+		ITerminal   = null;  // present value of terminal current
+		complexBuffer = null;
 
-		this.handle      = -1;
-		this.busIndex    = 0;
-		this.nTerms      = 0;
-		this.nConds      = 0;
-		this.nPhases     = 0;
-		this.objType  = 0;
-		this.YOrder      = 0;
+		handle      = -1;
+		busIndex    = 0;
+		nTerms      = 0;
+		nConds      = 0;
+		nPhases     = 0;
+		objType  = 0;
+		YOrder      = 0;
 
-		this.YPrimInvalid   = true;
-		this.enabled        = true;
-		this.hasEnergyMeter = false;
-		this.hasSensorObj   = false;
-		this.isPartOfFeeder = false;
-		this.isIsolated     = false;
+		YPrimInvalid   = true;
+		enabled        = true;
+		hasEnergyMeter = false;
+		hasSensorObj   = false;
+		isPartOfFeeder = false;
+		isIsolated     = false;
 
-		this.controlElement = null;  // init to no control on this element
-		this.hasControl     = false;
+		controlElement = null;  // init to no control on this element
+		hasControl     = false;
 
-		this.activeTerminalIdx   = 1;
-		this.lastTerminalChecked = 0;
+		activeTerminalIdx   = 1;
+		lastTerminalChecked = 0;
 
 		/* Indicates which solution ITemp is computed for */
-		this.ITerminalSolutionCount = -1;
+		ITerminalSolutionCount = -1;
 
-		this.baseFrequency = DSSGlobals.getInstance().getActiveCircuit().getFundamental();
+		baseFrequency = DSSGlobals.getInstance().getActiveCircuit().getFundamental();
 	}
 
 	public void setYPrimInvalid(boolean value) {

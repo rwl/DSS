@@ -23,20 +23,20 @@ public class WindingImpl implements Winding {
 
 	public WindingImpl() {
 		super();
-		this.connection = 0;
-		this.kVLL       = 12.47;
-		this.VBase      = kVLL / DSSGlobals.SQRT3 * 1000.0;
-		this.kVA        = 1000.0;
-		this.puTap      = 1.0;
-		this.Rpu        = 0.002;
-		this.RNeut      = -1.0;  // default to open - make user specify connection
-		this.XNeut      = 0.0;
+		connection = 0;
+		kVLL       = 12.47;
+		VBase      = kVLL / DSSGlobals.SQRT3 * 1000.0;
+		kVA        = 1000.0;
+		puTap      = 1.0;
+		Rpu        = 0.002;
+		RNeut      = -1.0;  // default to open - make user specify connection
+		XNeut      = 0.0;
 		computeAntiFloatAdder(1.0e-6, kVA / 3.0 / 1000.0);  //  1 PPM
 
-		this.tapIncrement = 0.00625;
-		this.numTaps      = 32;
-		this.maxTap       = 1.10;
-		this.minTap       = 0.90;
+		tapIncrement = 0.00625;
+		numTaps      = 32;
+		maxTap       = 1.10;
+		minTap       = 0.90;
 	}
 
 	public void computeAntiFloatAdder(double PPM_Factor, double VABase1ph) {

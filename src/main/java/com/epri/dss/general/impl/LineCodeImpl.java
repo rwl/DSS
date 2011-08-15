@@ -22,16 +22,16 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 	public LineCodeImpl() {
 		super();
-		this.className = "LineCode";
-		this.classType= DSSClassDefs.DSS_OBJECT;
-		this.activeElement = -1;
+		className = "LineCode";
+		classType= DSSClassDefs.DSS_OBJECT;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

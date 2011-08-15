@@ -29,14 +29,14 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 
 	public PCElementImpl(DSSClass ParClass) {
 		super(ParClass);
-		this.spectrum = "default";
-		this.spectrumObj = null;  // have to allocate later because not guaranteed there will be one now
-		this.sensorObj   = null;
-		this.meterObj    = null;
-		this.injCurrent  = null;
-		this.ITerminalUpdated = false;
+		spectrum = "default";
+		spectrumObj = null;  // have to allocate later because not guaranteed there will be one now
+		sensorObj   = null;
+		meterObj    = null;
+		injCurrent  = null;
+		ITerminalUpdated = false;
 
-		this.objType = DSSClassDefs.PC_ELEMENT;
+		objType = DSSClassDefs.PC_ELEMENT;
 	}
 
 	/**

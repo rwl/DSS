@@ -18,16 +18,16 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 	public LineSpacingImpl() {
 		super();
 
-		this.className = "LineSpacing";
-		this.classType = DSSClassDefs.DSS_OBJECT;
-		this.activeElement = -1;
+		className = "LineSpacing";
+		classType = DSSClassDefs.DSS_OBJECT;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

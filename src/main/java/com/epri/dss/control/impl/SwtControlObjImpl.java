@@ -19,18 +19,18 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 		super(parClass);
 
 		setName(swtControlName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.elementName   = "";
+		elementName   = "";
 		setControlledElement(null);
-		this.elementTerminal = 1;
-		this.presentState  = ControlAction.CLOSE;
-		this.locked        = false;
-		this.timeDelay     = 120.0;
+		elementTerminal = 1;
+		presentState  = ControlAction.CLOSE;
+		locked        = false;
+		timeDelay     = 120.0;
 
 		initPropertyValues(0);
 	}

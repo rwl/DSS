@@ -19,15 +19,15 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 	public RegControlImpl() {
 		super();
 
-		this.className   = "RegControl";
-		this.classType = this.classType + DSSClassDefs.REG_CONTROL;
+		className   = "RegControl";
+		classType = classType + DSSClassDefs.REG_CONTROL;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

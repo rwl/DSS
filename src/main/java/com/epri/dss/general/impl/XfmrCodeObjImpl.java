@@ -37,14 +37,14 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 	public XfmrCodeObjImpl(DSSClass parClass, String xfmrCodeName) {
 		super(parClass);
 		setName(xfmrCodeName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		// default values and sizes
-		this.nPhases       = 3;
-		this.numWindings   = 2;
-		this.maxWindings   = 2;
-		this.activeWinding = 1;  // TODO Check zero based indexing
-		this.winding = new Winding[maxWindings];
+		nPhases       = 3;
+		numWindings   = 2;
+		maxWindings   = 2;
+		activeWinding = 1;  // TODO Check zero based indexing
+		winding = new Winding[maxWindings];
 		for (int i = 0; i < maxWindings; i++)
 			winding[i] = new WindingImpl();
 		XHL = 0.07;

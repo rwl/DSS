@@ -18,29 +18,29 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 	public GICTransformerObjImpl(DSSClass parClass, String transformerName) {
 		super(parClass);
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 		setName(transformerName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);  // force allocation of terminals and conductors
 
 		setBus(2, getBus(1) + ".0");  // default to grounded
-		this.isShunt = true;
+		isShunt = true;
 
-		this.G1            = 10000.0;
-		this.G2            = 10000.0;
-		this.specType      = GICTransformer.SPEC_GSU;
+		G1            = 10000.0;
+		G2            = 10000.0;
+		specType      = GICTransformer.SPEC_GSU;
 
-		this.normAmps  = 0.0;
-		this.emergAmps = 0.0;
-		this.faultRate = 0.0;
-		this.pctPerm   = 100.0;
-		this.hrsToRepair = 0.0;
+		normAmps  = 0.0;
+		emergAmps = 0.0;
+		faultRate = 0.0;
+		pctPerm   = 100.0;
+		hrsToRepair = 0.0;
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

@@ -50,31 +50,31 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	public EnergyMeterImpl() {
 		super();
-		this.className = "EnergyMeter";
-		this.classType = this.classType + DSSClassDefs.ENERGY_METER;
+		className = "EnergyMeter";
+		classType = classType + DSSClassDefs.ENERGY_METER;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		/* Initialise demand interval options to off */
-		this.saveDemandInterval = false;
-		this.DI_Verbose         = false;
-		this.doOverloadReport  = false;  // saveDemandInterval must be true for this to have an effect
-		this.overloadFileIsOpen = false;
-		this.voltageFileIsOpen  = false;
+		saveDemandInterval = false;
+		DI_Verbose         = false;
+		doOverloadReport  = false;  // saveDemandInterval must be true for this to have an effect
+		overloadFileIsOpen = false;
+		voltageFileIsOpen  = false;
 
-		this.DI_Dir = "";
+		DI_Dir = "";
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 
 		DSSGlobals globals = DSSGlobals.getInstance();
-		this.generatorClass = (Generator) globals.getDSSClassList().get(globals.getClassNames().find("generator"));
+		generatorClass = (Generator) globals.getDSSClassList().get(globals.getClassNames().find("generator"));
 
-		this.systemMeter = new SystemMeterImpl();
+		systemMeter = new SystemMeterImpl();
 	}
 
 	protected void defineProperties() {

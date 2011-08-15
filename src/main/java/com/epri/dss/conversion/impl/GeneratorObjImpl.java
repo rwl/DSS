@@ -139,89 +139,89 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public GeneratorObjImpl(DSSClassImpl parClass, String generatorName) {
 		super(parClass);
 		setName(generatorName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
+		objType = parClass.getDSSClassType(); // + GEN_ELEMENT;  // in both PC element and gen element list
 
 		setNPhases(3);
-		this.nConds = 4;   // defaults to wye
-		this.YOrder  = 0;  // to trigger an initial allocation
+		nConds = 4;   // defaults to wye
+		YOrder  = 0;  // to trigger an initial allocation
 		setNTerms(1);      // forces allocations
-		this.kWBase  = 1000.0;
-		this.kVArBase = 60.0;
+		kWBase  = 1000.0;
+		kVArBase = 60.0;
 
-		this.kVArMax   = this.kVArBase * 2.0;
-		this.kVArMin   = -this.kVArMax;
-		this.PFNominal = 0.88;
-		//this.Rneut     = 0.0;
-		//this.Xneut     = 0.0;
-		this.yearlyShape    = "";
-		this.yearlyShapeObj = null;     // if YearlyShapeObj = null then the load alway stays nominal * global multipliers
-		this.dailyDispShape = "";
-		this.dailyDispShapeObj = null;  // if DaillyShapeObj = null then the load alway stays nominal * global multipliers
-		this.dutyShape         = "";
-		this.dutyShapeObj      = null;  // if DutyShapeObj = null then the load alway stays nominal * global multipliers
-		this.connection        = 0;     // Wye (star)
-		this.genModel          = 1;  /* Typical fixed kW negative load */
-		this.genClass          = 1;
-		this.lastYear          = 0;
-		this.lastGrowthFactor  = 1.0;
+		kVArMax   = kVArBase * 2.0;
+		kVArMin   = -kVArMax;
+		PFNominal = 0.88;
+		//Rneut     = 0.0;
+		//Xneut     = 0.0;
+		yearlyShape    = "";
+		yearlyShapeObj = null;     // if YearlyShapeObj = null then the load alway stays nominal * global multipliers
+		dailyDispShape = "";
+		dailyDispShapeObj = null;  // if DaillyShapeObj = null then the load alway stays nominal * global multipliers
+		dutyShape         = "";
+		dutyShapeObj      = null;  // if DutyShapeObj = null then the load alway stays nominal * global multipliers
+		connection        = 0;     // Wye (star)
+		genModel          = 1;  /* Typical fixed kW negative load */
+		genClass          = 1;
+		lastYear          = 0;
+		lastGrowthFactor  = 1.0;
 
-		this.dQdVSaved = 0.0;  // initialize this here; allows generators to be turned off and on
+		dQdVSaved = 0.0;  // initialize this here; allows generators to be turned off and on
 
 
-		this.generatorSolutionCount     = -1;  // for keep track of the present solution in injcurrent calcs
-		this.openGeneratorSolutionCount = -1;
-		this.YPrimOpenCond              = null;
+		generatorSolutionCount     = -1;  // for keep track of the present solution in injcurrent calcs
+		openGeneratorSolutionCount = -1;
+		YPrimOpenCond              = null;
 
-		this.genVars.kVGeneratorBase  = 12.47;
-		this.Vpu              = 1.0;
-		this.VTarget          = 1000.0 * this.Vpu * this.genVars.kVGeneratorBase / DSSGlobals.SQRT3;  /* Line-to-Neutral target */
-		this.VBase            = 7200.0;
-		this.VMinPU           = 0.90;
-		this.VMaxPU           = 1.10;
-		this.VBase95          = this.VMinPU * this.VBase;
-		this.VBase105         = this.VMaxPU * this.VBase;
-		this.YOrder           = this.nTerms * this.nConds;
-		this.randomMult       = 1.0 ;
-		this.fixed            = false;
+		genVars.kVGeneratorBase  = 12.47;
+		Vpu              = 1.0;
+		VTarget          = 1000.0 * Vpu * genVars.kVGeneratorBase / DSSGlobals.SQRT3;  /* Line-to-Neutral target */
+		VBase            = 7200.0;
+		VMinPU           = 0.90;
+		VMaxPU           = 1.10;
+		VBase95          = VMinPU * VBase;
+		VBase105         = VMaxPU * VBase;
+		YOrder           = nTerms * nConds;
+		randomMult       = 1.0 ;
+		fixed            = false;
 
 		/* Machine rating stuff */
-		this.genVars.kVARating  = this.kWBase * 1.2;
-		this.kVANotSet = true;  // flag for default value for kVA
+		genVars.kVARating  = kWBase * 1.2;
+		kVANotSet = true;  // flag for default value for kVA
 
-		//this.GenVars.Vd = 7200.0;
+		//GenVars.Vd = 7200.0;
 
-		this.genVars.puXd       = 1.0;
-		this.genVars.puXdp      = 0.28;
-		this.genVars.puXdpp     = 0.20;
-		this.genVars.Xd         = this.genVars.puXd * Math.pow(this.genVars.kVGeneratorBase, 2) * 1000.0 / this.genVars.kVARating;
-		this.genVars.Xdp        = this.genVars.puXdp * Math.pow(this.genVars.kVGeneratorBase, 2) * 1000.0 / this.genVars.kVARating;
-		this.genVars.Xdpp       = this.genVars.puXdpp * Math.pow(this.genVars.kVGeneratorBase, 2) * 1000.0 / this.genVars.kVARating;
-		this.genVars.HMass      = 1.0;  // W-sec/VA rating
-		this.genVars.theta      = 0.0;
-		this.genVars.w0         = DSSGlobals.TWO_PI * getBaseFrequency();
-		this.genVars.speed      = 0.0;
-		this.genVars.dSpeed     = 0.0;
-		this.genVars.D          = 1.0;
+		genVars.puXd       = 1.0;
+		genVars.puXdp      = 0.28;
+		genVars.puXdpp     = 0.20;
+		genVars.Xd         = genVars.puXd * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.Xdp        = genVars.puXdp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.Xdpp       = genVars.puXdpp * Math.pow(genVars.kVGeneratorBase, 2) * 1000.0 / genVars.kVARating;
+		genVars.HMass      = 1.0;  // W-sec/VA rating
+		genVars.theta      = 0.0;
+		genVars.w0         = DSSGlobals.TWO_PI * getBaseFrequency();
+		genVars.speed      = 0.0;
+		genVars.dSpeed     = 0.0;
+		genVars.D          = 1.0;
 
-		this.userModel  = new GenUserModelImpl(this.genVars) ;
-		this.shaftModel = new GenUserModelImpl(this.genVars);
+		userModel  = new GenUserModelImpl(genVars) ;
+		shaftModel = new GenUserModelImpl(genVars);
 
-		this.dispatchValue = 0.0;  // follow curves
+		dispatchValue = 0.0;  // follow curves
 
-		this.regKWh    = 1;
-		this.regKVArh  = 2;
-		this.regMaxKW  = 3;
-		this.regMaxKVA = 4;
-		this.regHours  = 5;
-		this.regPrice  = 6;
+		regKWh    = 1;
+		regKVArh  = 2;
+		regMaxKW  = 3;
+		regMaxKVA = 4;
+		regHours  = 5;
+		regPrice  = 6;
 
-		this.PVFactor      = 0.1;
-		this.debugTrace    = false;
-		this.forcedON     = false;
-		this.genSwitchOpen = false;
-		this.shapeIsActual = false;
+		PVFactor      = 0.1;
+		debugTrace    = false;
+		forcedON     = false;
+		genSwitchOpen = false;
+		shapeIsActual = false;
 
-		this.spectrum = "defaultgen";  // override base class
+		spectrum = "defaultgen";  // override base class
 
 		initPropertyValues(0);
 

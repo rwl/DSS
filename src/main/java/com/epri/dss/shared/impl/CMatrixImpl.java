@@ -12,11 +12,11 @@ public class CMatrixImpl implements CMatrix {
 	protected int invertError;
 
 	public CMatrixImpl(int n) {
-		this.nOrder = n;
-		this.invertError = 0;
-		this.values = new Complex[n * n];
+		nOrder = n;
+		invertError = 0;
+		values = new Complex[n * n];
 		for (int i = 0; i < n * n; i++)
-			this.values[i] = Complex.ZERO;
+			values[i] = Complex.ZERO;
 	}
 
 	/**

@@ -32,21 +32,21 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 		setName(sensorName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.sensorKW   = null;
-		this.sensorKVAr = null;
+		sensorKW   = null;
+		sensorKVAr = null;
 
-		this.KVBase = 12.47;  // default 3-phase voltage
-		this.weight = 1.0;
-		this.pctError = 1.0;
+		KVBase = 12.47;  // default 3-phase voltage
+		weight = 1.0;
+		pctError = 1.0;
 
 		setConn(0);  // wye
 
 		clearSensor();
 
-		this.objType = parClass.getDSSClassType();  // SENSOR_ELEMENT;
+		objType = parClass.getDSSClassType();  // SENSOR_ELEMENT;
 
 		initPropertyValues(0);
 

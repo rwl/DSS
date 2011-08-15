@@ -35,14 +35,14 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	public PDElementImpl(DSSClass parClass) {
 		super(parClass);
 
-		this.isShunt = false;
-		this.fromTerminal = 1;
-		this.numCustomers = 0;
-		this.totalCustomers = 0;
-		this.sensorObj = null;
-		this.meterObj = null;
-		this.parentPDElement = null;
-		this.objType = DSSClassDefs.PD_ELEMENT;
+		isShunt = false;
+		fromTerminal = 1;
+		numCustomers = 0;
+		totalCustomers = 0;
+		sensorObj = null;
+		meterObj = null;
+		parentPDElement = null;
+		objType = DSSClassDefs.PD_ELEMENT;
 	}
 
 	@Override

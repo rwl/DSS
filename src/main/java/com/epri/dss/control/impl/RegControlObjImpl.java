@@ -61,56 +61,56 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	public RegControlObjImpl(DSSClassImpl parClass, String regControlName) {
 		super(parClass);
 		setName(regControlName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.Vreg         = 120.0;
-		this.bandwidth    = 3.0;
-		this.PTRatio      = 60.0;
-		this.CTRating     = 300.0;
-		this.R            = 0.0;
-		this.X            = 0.0;
-		this.timeDelay    = 15.0;
+		Vreg         = 120.0;
+		bandwidth    = 3.0;
+		PTRatio      = 60.0;
+		CTRating     = 300.0;
+		R            = 0.0;
+		X            = 0.0;
+		timeDelay    = 15.0;
 
-		this.PTPhase = 1;
+		PTPhase = 1;
 
-		this.LDCActive    = false;
-		this.tapDelay = 2.0;
-		this.tapLimitPerChange = 16;
+		LDCActive    = false;
+		tapDelay = 2.0;
+		tapLimitPerChange = 16;
 
-		this.debugTrace = false;
-		this.armed      = false;
+		debugTrace = false;
+		armed      = false;
 
 		/* Reverse mode variables */
-		this.revVreg      = 120.0;
-		this.revBandwidth = 3.0;
-		this.revR         = 0.0;
-		this.revX         = 0.0;
-		this.revDelay     =  60.0;  // power must be reversed this long before it will reverse
-		this.revPowerThreshold   = 100000.0;  // 100 kW
-		this.kWRevPowerThreshold = 100.0;
-		this.isReversible = false;
-		this.reversePending = false;
-		this.inReverseMode  = false;
-		this.reverseNeutral = false;
+		revVreg      = 120.0;
+		revBandwidth = 3.0;
+		revR         = 0.0;
+		revX         = 0.0;
+		revDelay     =  60.0;  // power must be reversed this long before it will reverse
+		revPowerThreshold   = 100000.0;  // 100 kW
+		kWRevPowerThreshold = 100.0;
+		isReversible = false;
+		reversePending = false;
+		inReverseMode  = false;
+		reverseNeutral = false;
 
-		this.elementName = "";
+		elementName = "";
 		setControlledElement(null);
-		this.elementTerminal = 1;
-		this.tapWinding = elementTerminal;
+		elementTerminal = 1;
+		tapWinding = elementTerminal;
 
-		this.VBuffer = null;
-		this.CBuffer = null;
+		VBuffer = null;
+		CBuffer = null;
 
-		this.objType = parClass.getDSSClassType();  // REG_CONTROL;
+		objType = parClass.getDSSClassType();  // REG_CONTROL;
 
 		initPropertyValues(0);
-		this.inverseTime = false;
-		this.regulatedBus = "";
-		this.VLimit = 0.0;
+		inverseTime = false;
+		regulatedBus = "";
+		VLimit = 0.0;
 		//recalcElementData();
 	}
 

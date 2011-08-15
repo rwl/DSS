@@ -15,10 +15,10 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 
 	public CableConstantsImpl(int numConductors) {
 		super(numConductors);
-		this.epsR = new double[getNumConds()];
-		this.insLayer = new double[getNumConds()];
-		this.diaIns = new double[getNumConds()];
-		this.diaCable = new double[getNumConds()];
+		epsR = new double[getNumConds()];
+		insLayer = new double[getNumConds()];
+		diaIns = new double[getNumConds()];
+		diaCable = new double[getNumConds()];
 	}
 
 	/**

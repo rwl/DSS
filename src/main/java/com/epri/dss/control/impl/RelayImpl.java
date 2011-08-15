@@ -19,17 +19,17 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 	public RelayImpl() {
 		super();
 
-		this.className = "Relay";
-		this.classType = this.classType + DSSClassDefs.RELAY_CONTROL;
+		className = "Relay";
+		classType = classType + DSSClassDefs.RELAY_CONTROL;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 
-		this.TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
+		TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
 	protected void defineProperties() {

@@ -13,8 +13,8 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
 	public PDClassImpl() {
 		super();
-		this.numPDClassProps = 5;
-		this.classType = DSSClassDefs.PD_ELEMENT;
+		numPDClassProps = 5;
+		classType = DSSClassDefs.PD_ELEMENT;
 	}
 
 	protected void countProperties() {

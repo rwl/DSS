@@ -19,15 +19,15 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 	public RecloserImpl() {
 		super();
 
-		this.className = "Recloser";
-		this.classType = this.classType + DSSClassDefs.RECLOSER_CONTROL;
+		className = "Recloser";
+		classType = classType + DSSClassDefs.RECLOSER_CONTROL;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] Commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, Commands, 0, numProperties);
+		commandList = new CommandListImpl(Commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	public static TCC_CurveObj getTCC_Curve(String curveName) {

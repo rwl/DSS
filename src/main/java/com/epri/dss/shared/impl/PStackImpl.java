@@ -10,7 +10,7 @@ public class PStackImpl extends StackBaseImpl implements PStack {
 
 	public PStackImpl(int initSize) {
 		super(initSize);
-		this.items = new DSSObject[initSize];
+		items = new DSSObject[initSize];
 	}
 
 	public void push(DSSObject p) {

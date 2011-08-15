@@ -19,15 +19,15 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	public SensorImpl() {
 		super();
 
-		this.className = "Sensor";
-		this.classType = this.classType + DSSClassDefs.SENSOR_ELEMENT;
+		className = "Sensor";
+		classType = classType + DSSClassDefs.SENSOR_ELEMENT;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

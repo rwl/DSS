@@ -25,17 +25,17 @@ public class PriceShapeObjImpl extends DSSObjectImpl implements PriceShapeObj {
 	public PriceShapeObjImpl(DSSClass parClass, String priceShapeName) {
 		super(parClass);
 		setName(priceShapeName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.lastValueAccessed = 0;
+		lastValueAccessed = 0;
 
-		this.numPoints   = 0;
-		this.interval    = 1.0;  // hr
-		this.hours       = null;
-		this.priceValues = null;
-		this.stdDevCalculated = false;  // calculate on demand
+		numPoints   = 0;
+		interval    = 1.0;  // hr
+		hours       = null;
+		priceValues = null;
+		stdDevCalculated = false;  // calculate on demand
 
-		this.arrayPropertyIndex = -1;
+		arrayPropertyIndex = -1;
 
 		initPropertyValues(0);
 	}

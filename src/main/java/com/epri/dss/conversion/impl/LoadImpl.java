@@ -15,17 +15,17 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 	public LoadImpl() {
 		super();
-		this.className = "Load";
-		this.classType = this.classType + DSSClassDefs.LOAD_ELEMENT;
+		className = "Load";
+		classType = classType + DSSClassDefs.LOAD_ELEMENT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	/**

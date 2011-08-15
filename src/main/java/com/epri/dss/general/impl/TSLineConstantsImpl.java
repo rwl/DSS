@@ -16,9 +16,9 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 	public TSLineConstantsImpl(int numConductors) {
 		super(numConductors);
 
-		this.diaShield = new double[numConds];
-		this.tapeLayer = new double[numConds];
-		this.tapeLap   = new double[numConds];
+		diaShield = new double[numConds];
+		tapeLayer = new double[numConds];
+		tapeLap   = new double[numConds];
 	}
 
 	public double getDiaShield(int i, int units) {

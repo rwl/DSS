@@ -11,8 +11,8 @@ public abstract class ControlClassImpl extends CktElementClassImpl implements Co
 
 	public ControlClassImpl() {
 		super();
-		this.numControlClassProps = 0;
-		this.classType = DSSClassDefs.CTRL_ELEMENT;
+		numControlClassProps = 0;
+		classType = DSSClassDefs.CTRL_ELEMENT;
 	}
 
 	protected void countProperties() {

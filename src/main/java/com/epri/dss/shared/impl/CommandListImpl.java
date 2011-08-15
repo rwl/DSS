@@ -10,10 +10,10 @@ public class CommandListImpl implements CommandList {
 
 	public CommandListImpl(String[] commands) {
 		super();
-		this.commandList = new HashListImpl(commands.length);
+		commandList = new HashListImpl(commands.length);
 
 		for (int i = 0; i < commands.length; i++)
-			this.commandList.add(commands[i]);
+			commandList.add(commands[i]);
 
 		abbrevAllowed = true;
 	}

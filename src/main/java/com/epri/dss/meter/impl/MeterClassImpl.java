@@ -12,8 +12,8 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 
 	public MeterClassImpl() {
 		super();
-		this.numMeterClassProps = 0;
-		this.classType = DSSClassDefs.METER_ELEMENT;
+		numMeterClassProps = 0;
+		classType = DSSClassDefs.METER_ELEMENT;
 	}
 
 	protected void countProperties() {

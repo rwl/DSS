@@ -79,66 +79,66 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 	public RelayObjImpl(DSSClassImpl parClass, String relayName) {
 		super(parClass);
 		setName(relayName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
-		this.elementName   = "";
+		elementName   = "";
 		setControlledElement(null);
-		this.elementTerminal = 0;  // TODO Check zero based indexing
+		elementTerminal = 0;  // TODO Check zero based indexing
 
-		this.monitoredElementName = "";
-		this.monitoredElementTerminal = 0;
-		this.monitoredElement = null;
+		monitoredElementName = "";
+		monitoredElementTerminal = 0;
+		monitoredElement = null;
 
-		this.relayTarget = "";
+		relayTarget = "";
 
-		this.phaseCurve     = null;
-		this.groundCurve    = null;
-		this.OVCurve        = null;
-		this.UVCurve        = null;
-		this.phaseTrip      = 1.0;
-		this.groundTrip     = 1.0;
-		this.TDPhase        = 1.0;
-		this.TDGround       = 1.0;
-		this.phaseInst      = 0.0;
-		this.groundInst     = 0.0;
-		this.resetTime      = 15.0;
-		this.numReclose     = 3;
-		this.recloseIntervals = null;
+		phaseCurve     = null;
+		groundCurve    = null;
+		OVCurve        = null;
+		UVCurve        = null;
+		phaseTrip      = 1.0;
+		groundTrip     = 1.0;
+		TDPhase        = 1.0;
+		TDGround       = 1.0;
+		phaseInst      = 0.0;
+		groundInst     = 0.0;
+		resetTime      = 15.0;
+		numReclose     = 3;
+		recloseIntervals = null;
 
-		this.recloseIntervals = (double[]) Utilities.resizeArray(this.recloseIntervals, 4);  // fixed allocation of 4
-		this.recloseIntervals[0] = 0.5;
-		this.recloseIntervals[1] = 2.0;
-		this.recloseIntervals[2] = 2.0;
+		recloseIntervals = (double[]) Utilities.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
+		recloseIntervals[0] = 0.5;
+		recloseIntervals[1] = 2.0;
+		recloseIntervals[2] = 2.0;
 
-		this.presentState = ControlAction.CLOSE;
+		presentState = ControlAction.CLOSE;
 
-		this.isqt46 = 1.0;
-		this.baseAmps46 = 100.0;
-		this.pctPickup46 = 20.0;
-		this.pickupAmps46 = this.baseAmps46 * this.pctPickup46 * 0.01;
+		isqt46 = 1.0;
+		baseAmps46 = 100.0;
+		pctPickup46 = 20.0;
+		pickupAmps46 = baseAmps46 * pctPickup46 * 0.01;
 
-		this.pctPickup47 = 2.0;
+		pctPickup47 = 2.0;
 
-		this.overTrip  = 1.2;
-		this.underTrip = 0.8;
+		overTrip  = 1.2;
+		underTrip = 0.8;
 
-		this.operationCount   = 1;
-		this.lockedOut        = false;
-		this.armedForOpen     = false;
-		this.armedForClose    = false;
-		this.phaseTarget      = false;
-		this.groundTarget     = false;
+		operationCount   = 1;
+		lockedOut        = false;
+		armedForOpen     = false;
+		armedForClose    = false;
+		phaseTarget      = false;
+		groundTarget     = false;
 
-		this.nextTripTime     = -1.0;  // not set to trip
+		nextTripTime     = -1.0;  // not set to trip
 
-		this.cBuffer = null;
+		cBuffer = null;
 
-		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
+		objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 

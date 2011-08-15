@@ -18,10 +18,10 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 	public CNLineConstantsImpl(int numConductors) {
 		super(numConductors);
 
-		this.kStrand = new int[getNumConds()];
-		this.diaStrand = new double[getNumConds()];
-		this.gmrStrand = new double[getNumConds()];
-		this.rStrand = new double[getNumConds()];
+		kStrand = new int[getNumConds()];
+		diaStrand = new double[getNumConds()];
+		gmrStrand = new double[getNumConds()];
+		rStrand = new double[getNumConds()];
 	}
 
 	/**

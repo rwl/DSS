@@ -20,15 +20,15 @@ public class LineSpacingObjImpl extends DSSObjectImpl implements LineSpacingObj 
 		super(parClass);
 
 		setName(lineSpacingName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.dataChanged = true;
-		this.X           = null;
-		this.Y           = null;
-		this.units       = LineUnits.UNITS_FT;
+		dataChanged = true;
+		X           = null;
+		Y           = null;
+		units       = LineUnits.UNITS_FT;
 
 		setNWires(3);  // allocates terminals
-		this.nPhases = 3;
+		nPhases = 3;
 
 		initPropertyValues(0);
 	}

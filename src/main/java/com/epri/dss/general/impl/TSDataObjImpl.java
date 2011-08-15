@@ -16,10 +16,10 @@ public class TSDataObjImpl extends CableDataObjImpl implements TSDataObj {
 		super(parClass, TSDataName);
 
 		setName(TSDataName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
-		this.diaShield = -1.0;
-		this.tapeLayer = -1.0;
-		this.tapeLap = 20.0;
+		objType = parClass.getDSSClassType();
+		diaShield = -1.0;
+		tapeLayer = -1.0;
+		tapeLap = 20.0;
 
 		initPropertyValues(0);
 	}

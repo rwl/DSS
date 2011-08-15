@@ -83,55 +83,55 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	public StorageControllerObjImpl(DSSClassImpl parClass, String storageControllerName) {
 		super(parClass);
 		setName(storageControllerName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors
 
-		this.elementName       = "";
+		elementName       = "";
 		setControlledElement(null);  // not used in this control
-		this.elementTerminal   = 1;
-		this.monitoredElement  = null;
+		elementTerminal   = 1;
+		monitoredElement  = null;
 
-		this.storageNameList  = new ArrayList<String>();
-		this.weights          = null;
-		this.fleetPointerList = new ArrayList<Object>(20);  // default size and increment
-		this.fleetSize        = 0;
-		this.fleetState       = Storage.IDLING;
-		this.kWTarget         = 8000.0;
-		this.kWThreshold      = 6000.0;
-		this.pctkWBand        = 2.0;
-		this.totalWeight      = 1.0;
-		this.halfKWBand       = this.pctkWBand / 200.0 * this.kWTarget;
-		this.PFTarget         = 0.96;
+		storageNameList  = new ArrayList<String>();
+		weights          = null;
+		fleetPointerList = new ArrayList<Object>(20);  // default size and increment
+		fleetSize        = 0;
+		fleetState       = Storage.IDLING;
+		kWTarget         = 8000.0;
+		kWThreshold      = 6000.0;
+		pctkWBand        = 2.0;
+		totalWeight      = 1.0;
+		halfKWBand       = pctkWBand / 200.0 * kWTarget;
+		PFTarget         = 0.96;
 		setPFBand(0.04);
-		this.halfPFBand       = this.PFBand / 2.0;
-		this.kWNeeded         = 0.0;
+		halfPFBand       = PFBand / 2.0;
+		kWNeeded         = 0.0;
 
-		this.dischargeMode = StorageController.PEAKSHAVE;
-		this.chargeMode    = StorageController.TIME;
+		dischargeMode = StorageController.PEAKSHAVE;
+		chargeMode    = StorageController.TIME;
 
-		this.dischargeTriggerTime = -1.0;  // disabled
-		this.chargeTriggerTime    = 2.0;   // 2 AM
-		this.elementListSpecified = false;
-		this.fleetListChanged     = true;  // force building of list
-		this.pctKWRate            = 20.0;
-		this.pctKVArRate          = 20.0;
-		this.pctChargeRate        = 20.0;
-		this.pctFleetReserve      = 25.0;
+		dischargeTriggerTime = -1.0;  // disabled
+		chargeTriggerTime    = 2.0;   // 2 AM
+		elementListSpecified = false;
+		fleetListChanged     = true;  // force building of list
+		pctKWRate            = 20.0;
+		pctKVArRate          = 20.0;
+		pctChargeRate        = 20.0;
+		pctFleetReserve      = 25.0;
 
-		this.showEventLog         = false;
-		this.dispatchVars         = false;
-		this.dischargeTriggeredByTime = false;
-		this.dischargeInhibited   = false;
-		this.outOfEnergy           = false;
-		this.inhibitHrs           = 5;   // no. hours to inhibit discharging after going into charge mode
+		showEventLog         = false;
+		dispatchVars         = false;
+		dischargeTriggeredByTime = false;
+		dischargeInhibited   = false;
+		outOfEnergy           = false;
+		inhibitHrs           = 5;   // no. hours to inhibit discharging after going into charge mode
 
-		this.upRampTime = 0.25;  // hr
-		this.flatTime   = 2.0;
-		this.dnRampTime = 0.25;
-		this.lastPctDischargeRate = 0.0;
+		upRampTime = 0.25;  // hr
+		flatTime   = 2.0;
+		dnRampTime = 0.25;
+		lastPctDischargeRate = 0.0;
 
 		initPropertyValues(0);
 	}

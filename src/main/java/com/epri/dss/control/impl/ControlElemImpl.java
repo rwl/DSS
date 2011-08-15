@@ -24,11 +24,11 @@ public class ControlElemImpl extends DSSCktElement implements ControlElem {
 	public ControlElemImpl(DSSClass parClass) {
 		super(parClass);
 
-		this.objType = DSSClassDefs.CTRL_ELEMENT;
-		this.dblTraceParameter = 0.0;
-		this.monitorVariable = "";
-		this.monitorVarIndex = 0;
-		this.controlledElement = null;
+		objType = DSSClassDefs.CTRL_ELEMENT;
+		dblTraceParameter = 0.0;
+		monitorVariable = "";
+		monitorVarIndex = 0;
+		controlledElement = null;
 	}
 
 	/**

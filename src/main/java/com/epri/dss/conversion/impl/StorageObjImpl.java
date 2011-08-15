@@ -128,79 +128,79 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		super(parClass);
 
 		setName(storageName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
+		objType = parClass.getDSSClassType(); // + STORAGE_ELEMENT;  // in both PCElement and StorageElement list
 
 		setNPhases(3);
-		this.nConds = 4;  // defaults to wye
-		this.YOrder = 0;  // to trigger an initial allocation
+		nConds = 4;  // defaults to wye
+		YOrder = 0;  // to trigger an initial allocation
 		setNTerms(1);     // forces allocations
 
-		this.yearlyShape       = "";
-		this.yearlyShapeObj    = null;  // if yearlyShapeObj = null then the load always stays nominal * global multipliers
-		this.dailyShape        = "";
-		this.dailyShapeObj     = null;  // if dailyShapeObj = null then the load always stays nominal * global multipliers
-		this.dutyShape         = "";
-		this.dutyShapeObj      = null;  // if dutyShapeObj = null then the load always stays nominal * global multipliers
-		this.connection        = 0;     // Wye (star)
-		this.voltageModel      = 1;  /* Typical fixed kW negative load */
-		this.storageClass      = 1;
+		yearlyShape       = "";
+		yearlyShapeObj    = null;  // if yearlyShapeObj = null then the load always stays nominal * global multipliers
+		dailyShape        = "";
+		dailyShapeObj     = null;  // if dailyShapeObj = null then the load always stays nominal * global multipliers
+		dutyShape         = "";
+		dutyShapeObj      = null;  // if dutyShapeObj = null then the load always stays nominal * global multipliers
+		connection        = 0;     // Wye (star)
+		voltageModel      = 1;  /* Typical fixed kW negative load */
+		storageClass      = 1;
 
-		this.storageSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
-		this.openStorageSolutionCount = -1;
-		this.YPrimOpenCond            = null;
+		storageSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
+		openStorageSolutionCount = -1;
+		YPrimOpenCond            = null;
 
-		this.kVStorageBase    = 12.47;
-		this.VBase            = 7200.0;
-		this.VMinPU           = 0.90;
-		this.VMaxPU           = 1.10;
-		this.VBase95          = this.VMinPU * this.VBase;
-		this.VBase105         = this.VMaxPU * this.VBase;
-		this.YOrder           = this.nTerms * this.nConds;
-		this.randomMult       = 1.0 ;
+		kVStorageBase    = 12.47;
+		VBase            = 7200.0;
+		VMinPU           = 0.90;
+		VMaxPU           = 1.10;
+		VBase95          = VMinPU * VBase;
+		VBase105         = VMaxPU * VBase;
+		YOrder           = nTerms * nConds;
+		randomMult       = 1.0 ;
 
 		/* Output rating stuff */
-		this.kWOut       = 25.0;
-		this.kVArOut     = 0.0;
-		this.PFNominal    = 1.0;
-		this.kWRating     = 25.0;
-		this.kVARating    = this.kWRating *1.0;
+		kWOut       = 25.0;
+		kVArOut     = 0.0;
+		PFNominal    = 1.0;
+		kWRating     = 25.0;
+		kVARating    = kWRating *1.0;
 
-		this.state        = Storage.IDLING;  // idling and fully charged
-		this.stateChanged = true;  // force building of YPrim
-		this.kWhRating    = 50;
-		this.kWhStored    = kWhRating;
-		this.pctReserve   = 20.0;  // per cent of kWhRating
-		this.kWhReserve   = kWhRating * pctReserve /100.0;
-		this.pctR         = 0.0;;
-		this.pctX         = 50.0;
-		this.pctIdleKW    = 1.0;
-		this.pctIdleKVAr  = 0.0;
+		state        = Storage.IDLING;  // idling and fully charged
+		stateChanged = true;  // force building of YPrim
+		kWhRating    = 50;
+		kWhStored    = kWhRating;
+		pctReserve   = 20.0;  // per cent of kWhRating
+		kWhReserve   = kWhRating * pctReserve /100.0;
+		pctR         = 0.0;;
+		pctX         = 50.0;
+		pctIdleKW    = 1.0;
+		pctIdleKVAr  = 0.0;
 
-		this.dischargeTrigger = 0.0;
-		this.chargeTrigger    = 0.0;
-		this.pctChargeEff     = 90.0;
-		this.pctDischargeEff  = 90.0;
-		this.pctKWout         = 100.0;
-		this.pctKVArOut       = 100.0;
-		this.pctKWIn          = 100.0;
+		dischargeTrigger = 0.0;
+		chargeTrigger    = 0.0;
+		pctChargeEff     = 90.0;
+		pctDischargeEff  = 90.0;
+		pctKWout         = 100.0;
+		pctKVArOut       = 100.0;
+		pctKWIn          = 100.0;
 
-		this.chargeTime       = 2.0;  // 2 AM
+		chargeTime       = 2.0;  // 2 AM
 
-		this.kVANotSet  = true;  // flag to set the default value for kVA
+		kVANotSet  = true;  // flag to set the default value for kVA
 
-		this.userModel  = new StoreUserModelImpl();
+		userModel  = new StoreUserModelImpl();
 
-		this.regKWh    = 1;
-		this.regKVArh  = 2;
-		this.regMaxKW  = 3;
-		this.regMaxKVA = 4;
-		this.regHours  = 5;
-		this.regPrice  = 6;
+		regKWh    = 1;
+		regKVArh  = 2;
+		regMaxKW  = 3;
+		regMaxKVA = 4;
+		regHours  = 5;
+		regPrice  = 6;
 
-		this.debugTrace = false;
-		this.storageObjSwitchOpen = false;
-		this.spectrum = "";  // override base class
-		this.spectrumObj = null;
+		debugTrace = false;
+		storageObjSwitchOpen = false;
+		spectrum = "";  // override base class
+		spectrumObj = null;
 
 		initPropertyValues(0);
 		recalcElementData();

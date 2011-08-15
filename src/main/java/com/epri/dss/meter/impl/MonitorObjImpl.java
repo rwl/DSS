@@ -62,41 +62,41 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		setName(monitorName.toLowerCase());
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 		/** Current buffer has to be big enough to hold all terminals */
-		this.currentBuffer = null;
-		this.voltageBuffer = null;
-		this.stateBuffer   = null;
+		currentBuffer = null;
+		voltageBuffer = null;
+		stateBuffer   = null;
 
-		this.baseFrequency = 60.0;
-		this.hour          = 0;
-		this.sec           = 0.0;
+		baseFrequency = 60.0;
+		hour          = 0;
+		sec           = 0.0;
 
-		this.mode = 0;  // standard mode: V & I, complex values
+		mode = 0;  // standard mode: V & I, complex values
 
-		this.bufferSize = 1024;  // makes a 4K buffer
-		this.monBuffer  = new float[bufferSize];
-		this.bufPtr     = 0;
+		bufferSize = 1024;  // makes a 4K buffer
+		monBuffer  = new float[bufferSize];
+		bufPtr     = 0;
 
 		// default to first circuit element (source)
-		this.elementName    = ((CktElement) DSSGlobals.getInstance().getActiveCircuit().getCktElements().get(0)).getName();
-		this.meteredElement = null;
-		this.bufferFile     = "";
+		elementName    = ((CktElement) DSSGlobals.getInstance().getActiveCircuit().getCktElements().get(0)).getName();
+		meteredElement = null;
+		bufferFile     = "";
 
-		this.monitorStream = new CharArrayWriter();  // create memory stream
+		monitorStream = new CharArrayWriter();  // create memory stream
 
-		this.isFileOpen      = false;
-		this.meteredTerminal = 1;
-		this.includeResidual = false;
-		this.VIPolar         = true;
-		this.PPolar          = true;
-		this.fileSignature   = 43756;
-		this.fileVersion     = 1;
-		this.sampleCount     = 0;
+		isFileOpen      = false;
+		meteredTerminal = 1;
+		includeResidual = false;
+		VIPolar         = true;
+		PPolar          = true;
+		fileSignature   = 43756;
+		fileVersion     = 1;
+		sampleCount     = 0;
 
-		this.objType = parClass.getDSSClassType();  // MON_ELEMENT;
+		objType = parClass.getDSSClassType();  // MON_ELEMENT;
 
 		initPropertyValues(0);
 	}

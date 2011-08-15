@@ -19,15 +19,15 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 	public FuseImpl() {
 		super();
 
-		this.className = "Fuse";
-		this.classType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
+		className = "Fuse";
+		classType = getDSSClassType() + DSSClassDefs.FUSE_CONTROL;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 
 		TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}

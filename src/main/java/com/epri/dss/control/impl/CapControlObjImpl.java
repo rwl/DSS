@@ -56,49 +56,49 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 	public CapControlObjImpl(DSSClassImpl parClass, String capControlName) {
 		super(parClass);
 		setName(capControlName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.CTPhase = 1;
-		this.PTPhase = 1;
+		CTPhase = 1;
+		PTPhase = 1;
 
-		this.PTRatio     = 60.0;
-		this.CTRatio     = 60.0;
-		this.controlType = CapControlType.CURRENT;
-		this.OnDelay     = 15.0;
-		this.OffDelay    = 15.0;
-		this.DeadTime    = 300.0;
-		this.LastOpenTime = -DeadTime;
+		PTRatio     = 60.0;
+		CTRatio     = 60.0;
+		controlType = CapControlType.CURRENT;
+		OnDelay     = 15.0;
+		OffDelay    = 15.0;
+		DeadTime    = 300.0;
+		LastOpenTime = -DeadTime;
 
-		this.onValue    = 300.0;
-		this.offValue   = 200.0;
+		onValue    = 300.0;
+		offValue   = 200.0;
 
-		this.PFOnValue  = 0.95;
-		this.PFOffValue = 1.05;
+		PFOnValue  = 0.95;
+		PFOffValue = 1.05;
 
-		this.VOverride = false;
-		this.VMax      = 126;
-		this.VMin      = 115;
+		VOverride = false;
+		VMax      = 126;
+		VMin      = 115;
 
-		this.elementName = "";
+		elementName = "";
 		setControlledElement(null);
-		this.elementTerminal = 1;
-		this.capacitorName = "";
-		this.monitoredElement = null;
+		elementTerminal = 1;
+		capacitorName = "";
+		monitoredElement = null;
 
-		this.presentState = ControlAction.CLOSE;
+		presentState = ControlAction.CLOSE;
 
-		this.shouldSwitch = false;
-		this.armed        = false;
+		shouldSwitch = false;
+		armed        = false;
 		setPendingChange(ControlAction.NONE);
-		this.controlActionHandle = 0;
+		controlActionHandle = 0;
 
-		this.cBuffer = null;
+		cBuffer = null;
 
-		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
+		objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 

@@ -93,75 +93,75 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 		super(parClass);
 		setName(solutionName.toLowerCase());
 
-		this.year = 0;
-		this.intHour = 0;
-		this.dynaVars.t = 0.0;
-		this.dblHour = 0.0;
-		this.dynaVars.tstart = 0.0;
-		this.dynaVars.tstop = 0.0;
+		year = 0;
+		intHour = 0;
+		dynaVars.t = 0.0;
+		dblHour = 0.0;
+		dynaVars.tstart = 0.0;
+		dynaVars.tstop = 0.0;
 		//duration = 0.0;
-		this.dynaVars.h = 0.001;  // default for dynasolve
+		dynaVars.h = 0.001;  // default for dynasolve
 
-		this.loadsNeedUpdating = true;
-		this.voltageBaseChanged = true;  // forces building of convergence check arrays
+		loadsNeedUpdating = true;
+		voltageBaseChanged = true;  // forces building of convergence check arrays
 
-		this.maxIterations = 15;
-		this.maxControlIterations = 10;
-		this.convergenceTolerance = 0.0001;
-		this.convergedFlag = false;
+		maxIterations = 15;
+		maxControlIterations = 10;
+		convergenceTolerance = 0.0001;
+		convergedFlag = false;
 
-		this.isDynamicModel  = false;
-		this.isHarmonicModel = false;
+		isDynamicModel  = false;
+		isHarmonicModel = false;
 
 		setFrequency( DSSGlobals.getInstance().getDefaultBaseFreq() );
-		/*this.Fundamental = 60.0; moved to circuit and used as default base frequency*/
-		this.harmonic = 1.0;
+		/*Fundamental = 60.0; moved to circuit and used as default base frequency*/
+		harmonic = 1.0;
 
-		this.frequencyChanged = true;  // force building of YPrim matrices
-		this.doAllHarmonics   = true;
-		this.firstIteration   = true;
-		this.dynamicsAllowed  = false;
-		this.systemYChanged   = true;
-		this.seriesYInvalid   = true;
+		frequencyChanged = true;  // force building of YPrim matrices
+		doAllHarmonics   = true;
+		firstIteration   = true;
+		dynamicsAllowed  = false;
+		systemYChanged   = true;
+		seriesYInvalid   = true;
 
 		/* Define default harmonic list */
-		this.harmonicListSize = 5;
-		this.harmonicList = new double[this.harmonicListSize];
-		this.harmonicList[0] = 1.0;
-		this.harmonicList[1] = 5.0;
-		this.harmonicList[2] = 7.0;
-		this.harmonicList[3] = 11.0;
-		this.harmonicList[4] = 13.0;
+		harmonicListSize = 5;
+		harmonicList = new double[harmonicListSize];
+		harmonicList[0] = 1.0;
+		harmonicList[1] = 5.0;
+		harmonicList[2] = 7.0;
+		harmonicList[3] = 11.0;
+		harmonicList[4] = 13.0;
 
-		this.solutionInitialized = false;
-		this.loadModel = DSSGlobals.POWERFLOW;
-		this.defaultLoadModel = loadModel;
-		this.lastSolutionWasDirect = false;
+		solutionInitialized = false;
+		loadModel = DSSGlobals.POWERFLOW;
+		defaultLoadModel = loadModel;
+		lastSolutionWasDirect = false;
 
-		this.YSeries = null;
-		this.YSystem = null;
-		this.Y = null;
+		YSeries = null;
+		YSystem = null;
+		Y = null;
 
-		this.nodeV      = null;
-		this.dV         = null;
-		this.currents   = null;
-		this.auxCurrents= null;
-		this.VMagSaved  = null;
-		this.errorSaved = null;
-		this.nodeVBase  = null;
+		nodeV      = null;
+		dV         = null;
+		currents   = null;
+		auxCurrents= null;
+		VMagSaved  = null;
+		errorSaved = null;
+		nodeVBase  = null;
 
-		this.useAuxCurrents = false;
+		useAuxCurrents = false;
 
-		this.solutionCount = 0;
+		solutionCount = 0;
 
-		this.dynaVars.solutionMode = Dynamics.SNAPSHOT;
-		this.controlMode           = DSSGlobals.CTRLSTATIC;
-		this.defaultControlMode    = controlMode;
-		this.algorithm             = Solution.NORMALSOLVE;
+		dynaVars.solutionMode = Dynamics.SNAPSHOT;
+		controlMode           = DSSGlobals.CTRLSTATIC;
+		defaultControlMode    = controlMode;
+		algorithm             = Solution.NORMALSOLVE;
 
-		this.randomType    = DSSGlobals.GAUSSIAN;  // default to Gaussian
-		this.numberOfTimes = 100;
-		this.intervalHrs   = 1.0;
+		randomType    = DSSGlobals.GAUSSIAN;  // default to Gaussian
+		numberOfTimes = 100;
+		intervalHrs   = 1.0;
 
 		initPropertyValues(0);
 	}

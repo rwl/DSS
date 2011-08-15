@@ -23,13 +23,13 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 		super(parClass);
 
 		setName(growthShapeName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.npts = 0;
-		this.year = null;
-		this.multiplier = null;
-		this.nYears = 30;
-		this.yearMult = new double[this.nYears];
+		npts = 0;
+		year = null;
+		multiplier = null;
+		nYears = 30;
+		yearMult = new double[nYears];
 
 		initPropertyValues(0);
 	}

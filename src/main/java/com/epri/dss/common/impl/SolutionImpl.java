@@ -14,10 +14,10 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 
 	public SolutionImpl() {
 		super();
-		this.className = "Solution";
-		this.classType = DSSClassDefs.DSS_OBJECT + DSSClassDefs.HIDDEN_ELEMENT;
+		className = "Solution";
+		classType = DSSClassDefs.DSS_OBJECT + DSSClassDefs.HIDDEN_ELEMENT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 

@@ -53,59 +53,59 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 		super(parClass);
 
 		setName(recloserName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
-		this.elementName       = "";
+		elementName       = "";
 		setControlledElement(null);
-		this.elementTerminal   = 1;
+		elementTerminal   = 1;
 
-		this.monitoredElementName = "";
-		this.monitoredElementTerminal = 1;
-		this.monitoredElement = null;
+		monitoredElementName = "";
+		monitoredElementTerminal = 1;
+		monitoredElement = null;
 
-		this.phaseFast      = RecloserImpl.getTCC_Curve("a");
-		this.phaseDelayed   = RecloserImpl.getTCC_Curve("d");
-		this.groundFast     = null;
-		this.groundDelayed  = null;
+		phaseFast      = RecloserImpl.getTCC_Curve("a");
+		phaseDelayed   = RecloserImpl.getTCC_Curve("d");
+		groundFast     = null;
+		groundDelayed  = null;
 
-		this.phaseTrip      = 1.0;
-		this.groundTrip     = 1.0;
-		this.phaseInst      = 0.0;
-		this.groundInst     = 0.0;
+		phaseTrip      = 1.0;
+		groundTrip     = 1.0;
+		phaseInst      = 0.0;
+		groundInst     = 0.0;
 
-		this.TDGrDelayed    = 1.0;
-		this.TDPhDelayed    = 1.0;
-		this.TDGrFast       = 1.0;
-		this.TDPhFast       = 1.0;
+		TDGrDelayed    = 1.0;
+		TDPhDelayed    = 1.0;
+		TDGrFast       = 1.0;
+		TDPhFast       = 1.0;
 
-		this.resetTime      = 15.0;
-		this.numReclose     = 3;
-		this.numFast	    = 1;
+		resetTime      = 15.0;
+		numReclose     = 3;
+		numFast	    = 1;
 
-		this.recloseIntervals = new double[4];  // fixed allocation of 4
-		this.recloseIntervals[0] = 0.5;
-		this.recloseIntervals[1] = 2.0;
-		this.recloseIntervals[2] = 2.0;
-
-
-		this.presentState  = ControlAction.CLOSE;
+		recloseIntervals = new double[4];  // fixed allocation of 4
+		recloseIntervals[0] = 0.5;
+		recloseIntervals[1] = 2.0;
+		recloseIntervals[2] = 2.0;
 
 
-		this.operationCount = 1;
-		this.lockedOut      = false;
-		this.armedForOpen   = false;
-		this.armedForClose  = false;
-		this.groundTarget   = false;
-		this.phaseTarget    = false;
+		presentState  = ControlAction.CLOSE;
 
 
-		this.cBuffer = null;
+		operationCount = 1;
+		lockedOut      = false;
+		armedForOpen   = false;
+		armedForClose  = false;
+		groundTarget   = false;
+		phaseTarget    = false;
 
-		this.objType = parClass.getDSSClassType();  // CAP_CONTROL;
+
+		cBuffer = null;
+
+		objType = parClass.getDSSClassType();  // CAP_CONTROL;
 
 		initPropertyValues(0);
 

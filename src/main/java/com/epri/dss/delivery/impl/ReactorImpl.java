@@ -14,17 +14,17 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	public ReactorImpl() {
 		super();
-		this.className = "Reactor";
-		this.classType = this.classType + DSSClassDefs.REACTOR_ELEMENT;
+		className = "Reactor";
+		classType = classType + DSSClassDefs.REACTOR_ELEMENT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

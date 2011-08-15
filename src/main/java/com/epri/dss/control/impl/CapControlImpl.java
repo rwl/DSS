@@ -16,15 +16,15 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 	public CapControlImpl() {
 		super();
 
-		this.className = "CapControl";
-		this.classType = this.classType + DSSClassDefs.CAP_CONTROL;
+		className = "CapControl";
+		classType = classType + DSSClassDefs.CAP_CONTROL;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

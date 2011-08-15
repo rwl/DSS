@@ -27,14 +27,14 @@ public class Parser {
 	private Parser() {
 		super();
 
-		this.delimChars          = ",=";
-		this.whiteSpaceChars     = " " + "\t";  // blank + tab
-		this.beginQuoteChars     = "(\"'[{";
-		this.endQuoteChars       = ")\"']}";
-		this.position            = 0;
-		this.matrixRowTerminator = '|';
-		this.autoIncrement       = false;
-		this.RPNCalculator       = new RPNCalcImpl();
+		delimChars          = ",=";
+		whiteSpaceChars     = " " + "\t";  // blank + tab
+		beginQuoteChars     = "(\"'[{";
+		endQuoteChars       = ")\"']}";
+		position            = 0;
+		matrixRowTerminator = '|';
+		autoIncrement       = false;
+		RPNCalculator       = new RPNCalcImpl();
 	}
 
 	private static class ParserHolder {

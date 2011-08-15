@@ -17,16 +17,16 @@ public class XYCurveObjImpl extends DSSObjectImpl implements XYCurveObj {
 	public XYCurveObjImpl(DSSClass parClass, String XYCurveName) {
 		super(parClass);
 		setName(XYCurveName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.lastValueAccessed = 0;
+		lastValueAccessed = 0;
 
-		this.numPoints = 0;
-		this.XValues = null;
-		this.YValues = null;
+		numPoints = 0;
+		XValues = null;
+		YValues = null;
 
-		this.X = 0.0;
-		this.Y = 0.0;
+		X = 0.0;
+		Y = 0.0;
 
 		arrayPropertyIndex = -1;
 

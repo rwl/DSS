@@ -23,24 +23,24 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	public PVSystemImpl() {
 		super();
-		this.className = "PVSystem";
-		this.classType = classType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
+		className = "PVSystem";
+		classType = classType + DSSClassDefs.PVSYSTEM_ELEMENT;  // In both PCelement and PVSystem element list
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		// set register names
-		this.registerNames[0] = "kWh";
-		this.registerNames[1] = "kvarh";
-		this.registerNames[2] = "Max kW";
-		this.registerNames[3] = "Max kVA";
-		this.registerNames[4] = "Hours";
+		registerNames[0] = "kWh";
+		registerNames[1] = "kvarh";
+		registerNames[2] = "Max kW";
+		registerNames[3] = "Max kVA";
+		registerNames[4] = "Hours";
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

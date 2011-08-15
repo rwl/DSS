@@ -53,31 +53,31 @@ public class DSSClassImpl implements DSSClass {
 	public DSSClassImpl() {
 		super();
 		// init size and increment
-		this.elementList = new PointerListImpl(20);
-		this.propertyName = null;
-		this.propertyHelp = null;
-		this.propertyIdxMap = null;
-		this.revPropertyIdxMap = null;
+		elementList = new PointerListImpl(20);
+		propertyName = null;
+		propertyHelp = null;
+		propertyIdxMap = null;
+		revPropertyIdxMap = null;
 
-		this.activeElement = -1;
-		this.activeProperty = -1;
+		activeElement = -1;
+		activeProperty = -1;
 
-		this.elementNameList = new HashListImpl(100);
-		this.elementNamesOutOfSynch = false;
+		elementNameList = new HashListImpl(100);
+		elementNamesOutOfSynch = false;
 	}
 
 	protected void finalize() throws Throwable {
 		// get rid of space occupied by strings
-		for (int i = 0; i < this.numProperties; i++) this.propertyName[i] = "";
-		for (int i = 0; i < this.numProperties; i++) this.propertyHelp[i] = "";
+		for (int i = 0; i < numProperties; i++) propertyName[i] = "";
+		for (int i = 0; i < numProperties; i++) propertyHelp[i] = "";
 
-		this.propertyName = new String[0];
-		this.propertyHelp = new String[0];
-		this.propertyIdxMap = new int[0];
-		this.revPropertyIdxMap = new int[0];
-		this.elementList = null;
-		this.elementNameList = null;
-		this.commandList = null;
+		propertyName = new String[0];
+		propertyHelp = new String[0];
+		propertyIdxMap = new int[0];
+		revPropertyIdxMap = new int[0];
+		elementList = null;
+		elementNameList = null;
+		commandList = null;
 
 		super.finalize();
 	}

@@ -15,15 +15,15 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	public MonitorImpl() {
 		super();
 
-		this.className   = "Monitor";
-		this.classType = this.classType + DSSClassDefs.MON_ELEMENT;
+		className   = "Monitor";
+		classType = classType + DSSClassDefs.MON_ELEMENT;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

@@ -26,17 +26,17 @@ public class TShapeObjImpl extends DSSObjectImpl implements TShapeObj {
 	public TShapeObjImpl(DSSClass parClass, String TShapeName) {
 		super(parClass);
 		setName(TShapeName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.lastValueAccessed = 0;
+		lastValueAccessed = 0;
 
-		this.numPoints = 0;
-		this.interval  = 1.0;  // hr
-		this.hours     = null;
-		this.TValues   = null;
-		this.stdDevCalculated = false;  // calculate on demand
+		numPoints = 0;
+		interval  = 1.0;  // hr
+		hours     = null;
+		TValues   = null;
+		stdDevCalculated = false;  // calculate on demand
 
-		this.arrayPropertyIndex = -1;
+		arrayPropertyIndex = -1;
 
 		initPropertyValues(0);
 	}

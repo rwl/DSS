@@ -36,7 +36,7 @@ public class SystemMeterImpl implements SystemMeter {
 
 	public SystemMeterImpl() {
 		clear();
-		this.thisMeterDIFileIsOpen = false;
+		thisMeterDIFileIsOpen = false;
 	}
 
 	/**

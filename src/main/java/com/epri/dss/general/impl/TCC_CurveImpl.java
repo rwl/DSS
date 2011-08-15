@@ -15,17 +15,17 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 	public TCC_CurveImpl() {
 		super();
-		this.className = "TCC_Curve";
-		this.classType = DSSClassDefs.DSS_OBJECT;
+		className = "TCC_Curve";
+		classType = DSSClassDefs.DSS_OBJECT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

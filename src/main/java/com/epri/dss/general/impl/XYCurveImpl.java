@@ -23,18 +23,18 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 	public XYCurveImpl() {
 		super();
-		this.className   = "XYcurve";
-		this.classType = DSSClassDefs.DSS_OBJECT;
+		className   = "XYcurve";
+		classType = DSSClassDefs.DSS_OBJECT;
 
-		this.activeElement = -1;
-		this.tempPointsBuffer = null;
+		activeElement = -1;
+		tempPointsBuffer = null;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

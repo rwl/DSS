@@ -43,37 +43,37 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		super(parClass);
 
 		setName(sourceName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);  // now a 2-terminal device
-		this.Z        = null;
-		this.ZInv     = null;
-		//this.Basefrequency = 60.0;  // set in base class
-		this.MVAsc3   = 2000.0;
-		this.MVAsc1   = 2100.0;
-		this.ZSpecType = 1;  // default to MVAsc
-		this.R1       = 1.65;
-		this.X1       = 6.6;
-		this.R0       = 1.9;
-		this.X0       = 5.7;
-		this.Isc3     = 10000.0;
-		this.Isc1     = 10540.0;
-		this.kVBase   = 115.0;
-		this.X1R1     = 4.0;
-		this.X0R0     = 3.0;
-		this.perUnit  = 1.0;
-		this.srcFrequency = this.baseFrequency;
-		this.angle    = 0.0;
-		this.scanType = 1;
-		this.sequenceType = 1;
+		Z        = null;
+		ZInv     = null;
+		//Basefrequency = 60.0;  // set in base class
+		MVAsc3   = 2000.0;
+		MVAsc1   = 2100.0;
+		ZSpecType = 1;  // default to MVAsc
+		R1       = 1.65;
+		X1       = 6.6;
+		R0       = 1.9;
+		X0       = 5.7;
+		Isc3     = 10000.0;
+		Isc1     = 10540.0;
+		kVBase   = 115.0;
+		X1R1     = 4.0;
+		X0R0     = 3.0;
+		perUnit  = 1.0;
+		srcFrequency = baseFrequency;
+		angle    = 0.0;
+		scanType = 1;
+		sequenceType = 1;
 
-		this.spectrum = "defaultvsource";
+		spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

@@ -15,15 +15,15 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 	public GenDispatcherImpl() {
 		super();
 
-		this.className = "GenDispatcher";
-		this.classType = this.classType + DSSClassDefs.GEN_CONTROL;
+		className = "GenDispatcher";
+		classType = classType + DSSClassDefs.GEN_CONTROL;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

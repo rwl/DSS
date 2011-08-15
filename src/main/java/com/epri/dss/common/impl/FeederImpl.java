@@ -15,17 +15,17 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 	public FeederImpl() {
 		super();
-		this.className = "Feeder";
-		this.classType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
+		className = "Feeder";
+		classType = DSSClassDefs.FEEDER_ELEMENT; /*+ PC_ELEMENT; */ // add to PCElement list
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
 		String[] commands = new String[numProperties];
 		System.arraycopy(propertyName, 0, commands, 0, numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

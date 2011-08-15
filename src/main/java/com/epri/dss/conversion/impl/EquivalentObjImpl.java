@@ -38,34 +38,34 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);
-		this.Z    = null;
-		this.ZInv = null;
-		/*this.Basefrequency = 60.0;*/  // set in base class
+		Z    = null;
+		ZInv = null;
+		/*Basefrequency = 60.0;*/  // set in base class
 
-		this.R1 = null;
-		this.X1 = null;
-		this.R0 = null;
-		this.X0 = null;
+		R1 = null;
+		X1 = null;
+		R0 = null;
+		X0 = null;
 
 		reallocRX();
 
-		this.R1[0]   = 1.65;
-		this.X1[0]   = 6.6;
-		this.R0[0]   = 1.9;
-		this.X0[0]   = 5.7;
+		R1[0]   = 1.65;
+		X1[0]   = 6.6;
+		R0[0]   = 1.9;
+		X0[0]   = 5.7;
 
-		this.kVBase = 115.0;
-		this.perUnit = 1.0;
-		this.equivFrequency = baseFrequency;
-		this.angle = 0.0;
+		kVBase = 115.0;
+		perUnit = 1.0;
+		equivFrequency = baseFrequency;
+		angle = 0.0;
 
-		this.spectrum = "defaultvsource";
+		spectrum = "defaultvsource";
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

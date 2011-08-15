@@ -32,36 +32,36 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	public ReactorObjImpl(DSSClass parClass, String reactorName) {
 		super(parClass);
 		setName(reactorName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 
 		setBus(2, (getBus(1) + ".0.0.0"));  // default to grounded wye   TODO Check zero based indexing
 
-		this.isShunt = true;
+		isShunt = true;
 
-		this.RMatrix = null;
-		this.XMatrix = null;
-		this.GMatrix = null;
-		this.BMatrix = null;
+		RMatrix = null;
+		XMatrix = null;
+		GMatrix = null;
+		BMatrix = null;
 
-		this.kVArRating = 100.0;
-		this.kVRating   = 12.47;
-		this.X          = Math.pow(kVRating, 2) * 1000.0 / this.kVArRating;
-		this.R          = 0.0;
-		this.Rp         = 0.0;  // indicates it has not been set to a proper value
-		this.isParallel  = false;
-		this.RpSpecified = false;
-		this.connection  = 0;  // 0 or 1 for wye (default) or delta, respectively
-		this.specType    = 1;  // 1=kVAr, 2=Cuf, 3=CMatrix
-		this.normAmps    = this.kVArRating * DSSGlobals.SQRT3 / this.kVRating;
-		this.emergAmps   = getNormAmps() * 1.35;
-		this.faultRate   = 0.0005;
-		this.pctPerm     = 100.0;
-		this.hrsToRepair = 3.0;
-		this.YOrder      = this.nTerms * this.nConds;
+		kVArRating = 100.0;
+		kVRating   = 12.47;
+		X          = Math.pow(kVRating, 2) * 1000.0 / kVArRating;
+		R          = 0.0;
+		Rp         = 0.0;  // indicates it has not been set to a proper value
+		isParallel  = false;
+		RpSpecified = false;
+		connection  = 0;  // 0 or 1 for wye (default) or delta, respectively
+		specType    = 1;  // 1=kVAr, 2=Cuf, 3=CMatrix
+		normAmps    = kVArRating * DSSGlobals.SQRT3 / kVRating;
+		emergAmps   = getNormAmps() * 1.35;
+		faultRate   = 0.0005;
+		pctPerm     = 100.0;
+		hrsToRepair = 3.0;
+		YOrder      = nTerms * nConds;
 		recalcElementData();
 
 		initPropertyValues(0);

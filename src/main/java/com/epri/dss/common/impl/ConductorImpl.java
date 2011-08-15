@@ -15,10 +15,10 @@ public class ConductorImpl implements Conductor {
 
 	public ConductorImpl() {
 		super();
-		this.closed = true;
-		this.fuseBlown = false;
-		this.accumIsqt = 0.0;
-		this.TCCName = "";
+		closed = true;
+		fuseBlown = false;
+		accumIsqt = 0.0;
+		TCCName = "";
 	}
 
 	public void setAmbient(double Value) {

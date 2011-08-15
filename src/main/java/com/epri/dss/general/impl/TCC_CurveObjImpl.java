@@ -19,14 +19,14 @@ public class TCC_CurveObjImpl extends DSSObjectImpl implements TCC_CurveObj {
 		super(parClass);
 
 		setName(name.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.lastValueAccessed = 0;  // TODO Check zero based indexing
-		this.npts = 0;
-		this.cValues = null;
-		this.tValues = null;
-		this.logC     = null;
-		this.logT     = null;
+		lastValueAccessed = 0;  // TODO Check zero based indexing
+		npts = 0;
+		cValues = null;
+		tValues = null;
+		logC     = null;
+		logT     = null;
 
 		initPropertyValues(0);
 	}

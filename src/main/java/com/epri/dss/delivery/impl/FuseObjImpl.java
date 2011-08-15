@@ -44,34 +44,34 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 		int i;
 
 		setName(fuseName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors in base class
 
-		this.elementName = "";
+		elementName = "";
 		setControlledElement(null);
-		this.elementTerminal = 1;
+		elementTerminal = 1;
 
-		this.monitoredElementName = "";
-		this.monitoredElementTerminal = 1;
-		this.monitoredElement = null;
+		monitoredElementName = "";
+		monitoredElementTerminal = 1;
+		monitoredElement = null;
 
-		this.fuseCurve = FuseImpl.getTccCurve("tlink");
+		fuseCurve = FuseImpl.getTccCurve("tlink");
 
-		this.ratedCurrent = 1.0;
+		ratedCurrent = 1.0;
 
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
-			this.presentState[i] = ControlAction.CLOSE;
+			presentState[i] = ControlAction.CLOSE;
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
-			this.readyToBlow[i] = false;
+			readyToBlow[i] = false;
 		for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getNPhases()); i++)
-			this.hAction[i] = 0;
+			hAction[i] = 0;
 
-		this.cBuffer = null;  // complex buffer
+		cBuffer = null;  // complex buffer
 
-		this.objType = parClass.getDSSClassType(); //CAP_CONTROL;
+		objType = parClass.getDSSClassType(); //CAP_CONTROL;
 
 		initPropertyValues(0);
 

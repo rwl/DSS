@@ -38,51 +38,51 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		super(parClass);
 
 		setName(capacitorName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);  // force allocation of terminals and conductors
 
 		setBus(1, (getBus(0) + ".0.0.0"));  // default to grounded wye
 
-		this.isShunt = true;  // defaults to shunt capacitor
+		isShunt = true;  // defaults to shunt capacitor
 
-		this.CMatrix = null;
+		CMatrix = null;
 
 		/* Initialize these pointers to nil so reallocmem will work reliably. */
-		this.C = null;
-		this.XL = null;
-		this.kVArRating = null;
-		this.R = null;
-		this.harm = null;
-		this.states = null;
+		C = null;
+		XL = null;
+		kVArRating = null;
+		R = null;
+		harm = null;
+		states = null;
 
 		setNumSteps(1);  // initial allocation for the arrays, too
-		this.lastStepInService = this.numSteps;
+		lastStepInService = numSteps;
 
-		Utilities.initDblArray(this.numSteps, this.R, 0.0);
-		Utilities.initDblArray(this.numSteps, this.XL, 0.0);
-		Utilities.initDblArray(this.numSteps, this.harm, 0.0);
-		Utilities.initDblArray(this.numSteps, this.kVArRating, 1200.0);
+		Utilities.initDblArray(numSteps, R, 0.0);
+		Utilities.initDblArray(numSteps, XL, 0.0);
+		Utilities.initDblArray(numSteps, harm, 0.0);
+		Utilities.initDblArray(numSteps, kVArRating, 1200.0);
 
-		this.states[0] = 1;
+		states[0] = 1;
 
-		this.kVRating = 12.47;
-		Utilities.initDblArray(this.numSteps, this.C,
-				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / this.kVArRating[0]));
+		kVRating = 12.47;
+		Utilities.initDblArray(numSteps, C,
+				1.0 / (DSSGlobals.TWO_PI * baseFrequency * Math.pow(kVRating, 2) * 1000.0 / kVArRating[0]));
 
-		this.connection = 0;   // 0 or 1 for wye (default) or delta, respectively
-		this.specType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
+		connection = 0;   // 0 or 1 for wye (default) or delta, respectively
+		specType = 1; // 1=kvar, 2=Cuf, 3=Cmatrix
 
-		this.normAmps = this.kVArRating[0] * DSSGlobals.SQRT3 / this.kVRating * 1.35;  // 135%
-		this.emergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
-		this.faultRate = 0.0005;
-		this.pctPerm = 100.0;
-		this.hrsToRepair = 3.0;
-		this.YOrder = this.nTerms * this.nConds;
+		normAmps = kVArRating[0] * DSSGlobals.SQRT3 / kVRating * 1.35;  // 135%
+		emergAmps = getNormAmps() * 1.8 / 1.35;  // 180%
+		faultRate = 0.0005;
+		pctPerm = 100.0;
+		hrsToRepair = 3.0;
+		YOrder = nTerms * nConds;
 
-		this.doHarmonicRecalc = false;
+		doHarmonicRecalc = false;
 
 		recalcElementData();
 

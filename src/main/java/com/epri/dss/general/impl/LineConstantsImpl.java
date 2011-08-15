@@ -38,32 +38,32 @@ public class LineConstantsImpl implements LineConstants {
 
 	public LineConstantsImpl(int numConductors) {
 
-		this.numConds = numConductors;
-		setNPhases(this.numConds);
+		numConds = numConductors;
+		setNPhases(numConds);
 
-		X = new double[this.numConds];
-		Y = new double[this.numConds];
-		GMR = new double[this.numConds];
-		radius = new double[this.numConds];
-		Rdc = new double[this.numConds];
-		Rac = new double[this.numConds];
+		X = new double[numConds];
+		Y = new double[numConds];
+		GMR = new double[numConds];
+		radius = new double[numConds];
+		Rdc = new double[numConds];
+		Rac = new double[numConds];
 
 		/* Initialize to not set */
-		for (int i = 0; i < this.numConds; i++) {
-			this.GMR[i] = -1.0;
-			this.radius[i] = -1.0;
-			this.Rdc[i] = -1.0;
+		for (int i = 0; i < numConds; i++) {
+			GMR[i] = -1.0;
+			radius[i] = -1.0;
+			Rdc[i] = -1.0;
 		}
 
-		this.ZMatrix = new CMatrixImpl(this.numConds);
-		this.YcMatrix = new CMatrixImpl(this.numConds);
+		ZMatrix = new CMatrixImpl(numConds);
+		YcMatrix = new CMatrixImpl(numConds);
 
 		setFrequency(-1.0);  // not computed
 		setRhoEarth(100.0);  // default value
-		this.rhoChanged= true;
+		rhoChanged= true;
 
-		this.ZReduced = null;
-		this.YcReduced = null;
+		ZReduced = null;
+		YcReduced = null;
 	}
 
 	/**

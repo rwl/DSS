@@ -8,9 +8,9 @@ public class StackBaseImpl implements StackBase {
 
 	public StackBaseImpl(int initSize) {
 		super();
-		this.maxItems = initSize;
-		this.increment = initSize;
-		this.numItems = 0;
+		maxItems = initSize;
+		increment = initSize;
+		numItems = 0;
 	}
 
 	public void clear() {

@@ -123,81 +123,81 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		super(parClass);
 
 		setName(PVSystemName.toLowerCase());
-		this.objType = parClass.getDSSClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
+		objType = parClass.getDSSClassType();  // + PVSystem_ELEMENT;  // in both PCElement and PVSystemElement list
 
 		setNPhases(3);
-		this.nConds = 4;   // defaults to wye
-		this.YOrder  = 0;  // to trigger an initial allocation
+		nConds = 4;   // defaults to wye
+		YOrder  = 0;  // to trigger an initial allocation
 		setNTerms(1);      // forces allocations
 
-		this.yearlyShape        = "";
-		this.yearlyShapeObj     = null;  // if yearlyShapeObj = null then the irradiance always stays nominal
-		this.dailyShape         = "";
-		this.dailyShapeObj      = null;  // if dailyShapeObj = null then the irradiance always stays nominal
-		this.dutyShape          = "";
-		this.dutyShapeObj       = null;  // if dutyShapeObj = null then the irradiance always stays nominal
+		yearlyShape        = "";
+		yearlyShapeObj     = null;  // if yearlyShapeObj = null then the irradiance always stays nominal
+		dailyShape         = "";
+		dailyShapeObj      = null;  // if dailyShapeObj = null then the irradiance always stays nominal
+		dutyShape          = "";
+		dutyShapeObj       = null;  // if dutyShapeObj = null then the irradiance always stays nominal
 
-		this.yearlyTShape       = "";
-		this.yearlyTShapeObj    = null;  // if yearlyShapeObj = null then the temperature always stays nominal
-		this.dailyTShape        = "";
-		this.dailyTShapeObj     = null;  // if dailyShapeObj = null then the temperature always stays nominal
-		this.dutyTShape         = "";
-		this.dutyTShapeObj      = null;  // if dutyShapeObj = null then the temperature always stays nominal
+		yearlyTShape       = "";
+		yearlyTShapeObj    = null;  // if yearlyShapeObj = null then the temperature always stays nominal
+		dailyTShape        = "";
+		dailyTShapeObj     = null;  // if dailyShapeObj = null then the temperature always stays nominal
+		dutyTShape         = "";
+		dutyTShapeObj      = null;  // if dutyShapeObj = null then the temperature always stays nominal
 
-		this.inverterCurveObj   = null;
-		this.powerTempCurveObj = null;
-		this.inverterCurve      = "";
-		this.powerTempCurve    = "";
+		inverterCurveObj   = null;
+		powerTempCurveObj = null;
+		inverterCurve      = "";
+		powerTempCurve    = "";
 
-		this.connection         = 0;  // wye (star, L-N)
-		this.voltageModel       = 1;  // typical fixed kW negative load
-		this.FClass             = 1;
+		connection         = 0;  // wye (star, L-N)
+		voltageModel       = 1;  // typical fixed kW negative load
+		FClass             = 1;
 
-		this.PVSystemSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
-		this.openPVSystemSolutionCount = -1;
-		this.YPrimOpenCond             = null;
+		PVSystemSolutionCount     = -1;  // for keep track of the present solution in injCurrent calcs
+		openPVSystemSolutionCount = -1;
+		YPrimOpenCond             = null;
 
-		this.kVPVSystemBase   = 12.47;
-		this.VBase            = 7200.0;
-		this.VMinPU           = 0.90;
-		this.VMaxPU           = 1.10;
-		this.VBase95          = this.VMinPU  * this.VBase;
-		this.VBase105         = this.VMaxPU  * this.VBase;
-		this.YOrder           = this.nTerms * this.nConds;
-		this.randomMult       = 1.0 ;
+		kVPVSystemBase   = 12.47;
+		VBase            = 7200.0;
+		VMinPU           = 0.90;
+		VMaxPU           = 1.10;
+		VBase95          = VMinPU  * VBase;
+		VBase105         = VMaxPU  * VBase;
+		YOrder           = nTerms * nConds;
+		randomMult       = 1.0 ;
 
-		this.PFSpecified      = true;
-		this.kVArSpecified    = false;
-		this.inverterON       = true; // start with inverterOn
+		PFSpecified      = true;
+		kVArSpecified    = false;
+		inverterON       = true; // start with inverterOn
 
-		this.temperature     = 25.0;
-		this.irradiance      = 1.0;  // kW / sq-m
-		this.pctCutIn        = 20.0;
-		this.pctCutOut       = 20.0;
+		temperature     = 25.0;
+		irradiance      = 1.0;  // kW / sq-m
+		pctCutIn        = 20.0;
+		pctCutOut       = 20.0;
 
 		/* Output rating stuff */
-		this.kWOut      = 500.0;
-		this.kVArOut    = 0.0;
-		this.PFNominal   = 1.0;
-		this.kVARating   = 500.0;
-		this.Pmpp        = 500.0;
+		kWOut      = 500.0;
+		kVArOut    = 0.0;
+		PFNominal   = 1.0;
+		kVARating   = 500.0;
+		Pmpp        = 500.0;
 
-		this.pctR         = 0.0;;
-		this.pctX         = 50.0;
+		pctR         = 0.0;;
+		pctX         = 50.0;
 
-		this.userModel  = new PVSystemUserModelImpl();
+		userModel  = new PVSystemUserModelImpl();
 
-		this.regKWh    = 0;
-		this.regKVArh  = 1;
-		this.regMaxKW  = 2;
-		this.regMaxKVA = 3;
-		this.regHours  = 4;
-		this.regPrice  = 5;
+		regKWh    = 0;
+		regKVArh  = 1;
+		regMaxKW  = 2;
+		regMaxKVA = 3;
+		regHours  = 4;
+		regPrice  = 5;
 
-		this.debugTrace            = false;
-		this.PVSystemObjSwitchOpen = false;
-		this.spectrum              = "";  // override base class
-		this.spectrumObj           = null;
+		debugTrace            = false;
+		PVSystemObjSwitchOpen = false;
+		spectrum              = "";  // override base class
+		spectrumObj           = null;
 
 		initPropertyValues(0);
 		recalcElementData();

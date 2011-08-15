@@ -16,11 +16,11 @@ public class PowerTerminal implements Terminal {
 
 	public PowerTerminal(int nCond) {
 		super();
-		this.numCond = nCond;
-		this.busRef = -1;  // signify not set
-		this.termNodeRef = new int[this.numCond];
-		this.conductors = new Conductor[this.numCond];
-		for (int i = 0; i < this.numCond; i++)
+		numCond = nCond;
+		busRef = -1;  // signify not set
+		termNodeRef = new int[numCond];
+		conductors = new Conductor[numCond];
+		for (int i = 0; i < numCond; i++)
 			conductors[i] = new ConductorImpl();
 		activeConductor = 0;  // TODO Check zero based indexing
 	}

@@ -26,26 +26,26 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 	public CktTreeNodeImpl(CktTreeNode parent, Object selfObj) {
 		super();
-		this.cktObject = selfObj;
-		this.parentBranch = parent;
-		if (this.parentBranch != null) {
-			lexicalLevel = this.parentBranch.getLexicalLevel() + 1;
+		cktObject = selfObj;
+		parentBranch = parent;
+		if (parentBranch != null) {
+			lexicalLevel = parentBranch.getLexicalLevel() + 1;
 		} else {
 			lexicalLevel = 0;
 		}
-		this.childBranches   = new PointerListImpl(2);
-		this.shuntObjects    = new PointerListImpl(1);
-		this.fromBusReference = 0;
-		this.voltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
-		this.numToBuses = 0;
-		this.toBusList = null;
-		this.toBusPtr = 0;
-		this.childAdded = false;
+		childBranches   = new PointerListImpl(2);
+		shuntObjects    = new PointerListImpl(1);
+		fromBusReference = 0;
+		voltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
+		numToBuses = 0;
+		toBusList = null;
+		toBusPtr = 0;
+		childAdded = false;
 		// TEMc - initialize some topology variables, 10/2009
-		this.isDangling = true;
-		this.isLoopedHere = false;
-		this.isParallel = false;
-		this.loopLineObj = null;
+		isDangling = true;
+		isLoopedHere = false;
+		isParallel = false;
+		loopLineObj = null;
 	}
 
 	public void addChild(CktTreeNode value) {

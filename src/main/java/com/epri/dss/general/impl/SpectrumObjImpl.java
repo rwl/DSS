@@ -23,13 +23,13 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 	public SpectrumObjImpl(DSSClass parClass, String spectrumName) {
 		super(parClass);
 		setName(spectrumName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.numHarm    = 0;
-		this.harmArray  = null;
-		this.puMagArray = null;
-		this.angleArray = null;
-		this.multArray  = null;
+		numHarm    = 0;
+		harmArray  = null;
+		puMagArray = null;
+		angleArray = null;
+		multArray  = null;
 
 		initPropertyValues(0);
 	}

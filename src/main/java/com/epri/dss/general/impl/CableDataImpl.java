@@ -12,8 +12,8 @@ public class CableDataImpl extends ConductorDataImpl implements CableData {
 	private int numCableClassProps;
 
 	public CableDataImpl() {
-		this.numCableClassProps = 4;
-		this.classType = DSSClassDefs.DSS_OBJECT;
+		numCableClassProps = 4;
+		classType = DSSClassDefs.DSS_OBJECT;
 	}
 
 	protected void countProperties() {

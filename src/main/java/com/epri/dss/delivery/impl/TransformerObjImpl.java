@@ -65,50 +65,50 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		super(parClass);
 
 		setName(transfName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
+		objType = parClass.getDSSClassType(); //DSSObjType + XFMR; // override PDElement (kept in both actually)
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = this.nPhases + 1;
+		nConds = nPhases + 1;
 		setNumWindings(2);  // must do this after setting number of phases
-		this.activeWinding = 0;  // TODO Check zero based indexing
+		activeWinding = 0;  // TODO Check zero based indexing
 
-		setNTerms(this.numWindings);  // force allocation of terminals and conductors
+		setNTerms(numWindings);  // force allocation of terminals and conductors
 
-		this.XHL = 0.07;
-		this.XHT = 0.35;
-		this.XLT = 0.30;
-		this.XHLChanged = true;  // set flag to for calc of XSC array from XHL, etc.
+		XHL = 0.07;
+		XHT = 0.35;
+		XLT = 0.30;
+		XHLChanged = true;  // set flag to for calc of XSC array from XHL, etc.
 
-		this.deltaDirection = 1;
-		this.substationName = "";
-		this.XfmrBank = "";
-		this.XfmrCode = "";
+		deltaDirection = 1;
+		substationName = "";
+		XfmrBank = "";
+		XfmrCode = "";
 
-		this.VABase           = this.winding[0].getKVA() * 1000.0;
-		this.thermalTimeConst = 2.0;
-		this.nThermal        = 0.8;
-		this.mThermal        = 0.8;
-		this.FLRise           = 65.0;
-		this.HSRise           = 15.0;  // hot spot rise
-		this.normMaxHKVA      = 1.1 * this.winding[1].getKVA();
-		this.emergMaxHKVA     = 1.5 * this.winding[1].getKVA();
-		this.pctLoadLoss      = 2.0 * this.winding[1].getRpu() * 100.0;  // assume two windings
-		this.ppmFloatFactor  = 0.000001;
+		VABase           = winding[0].getKVA() * 1000.0;
+		thermalTimeConst = 2.0;
+		nThermal        = 0.8;
+		mThermal        = 0.8;
+		FLRise           = 65.0;
+		HSRise           = 15.0;  // hot spot rise
+		normMaxHKVA      = 1.1 * winding[1].getKVA();
+		emergMaxHKVA     = 1.5 * winding[1].getKVA();
+		pctLoadLoss      = 2.0 * winding[1].getRpu() * 100.0;  // assume two windings
+		ppmFloatFactor  = 0.000001;
 		/* Compute antifloat added for each winding */
-		for (int i = 0; i < this.numWindings; i++)
-			this.winding[i].computeAntiFloatAdder(this.ppmFloatFactor, this.VABase / this.nPhases);
+		for (int i = 0; i < numWindings; i++)
+			winding[i].computeAntiFloatAdder(ppmFloatFactor, VABase / nPhases);
 
 		/* Default the no load properties to zero */
-		this.pctNoLoadLoss    = 0.0;
-		this.pctImag          = 0.0;
+		pctNoLoadLoss    = 0.0;
+		pctImag          = 0.0;
 
-		/*this.BaseFrequency = 60.0; set in base class to circuit fundamental freq; do not reset here*/
+		/*BaseFrequency = 60.0; set in base class to circuit fundamental freq; do not reset here*/
 		setFaultRate(0.007);
-		this.isSubstation = false;
+		isSubstation = false;
 
-		this.Y_Terminal_FreqMult = 0.0;
+		Y_Terminal_FreqMult = 0.0;
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		initPropertyValues(0);
 		recalcElementData();
 	}

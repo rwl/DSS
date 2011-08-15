@@ -100,57 +100,57 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		setName(energyMeterName.toLowerCase());
-		this.objType = parClass.getDSSClassType();  // ENERGY_METER;
+		objType = parClass.getDSSClassType();  // ENERGY_METER;
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);  // this forces allocation of terminals and conductors in base class
-		this.excessFlag     = true;  // default to excess energy for UE
-		this.elementName    = "Vsource." + ckt.getCktElements().get(0).getName();  // default to first circuit element (source)
-		this.meteredElement = null;
-		this.branchList     = null;  // initialize to null, set later when inited
+		excessFlag     = true;  // default to excess energy for UE
+		elementName    = "Vsource." + ckt.getCktElements().get(0).getName();  // default to first circuit element (source)
+		meteredElement = null;
+		branchList     = null;  // initialize to null, set later when inited
 
-		this.thisMeterDI_FileIsOpen = false;
-		this.VPhaseReportFileIsOpen  = false;
+		thisMeterDI_FileIsOpen = false;
+		VPhaseReportFileIsOpen  = false;
 
 		initPropertyValues(0);
 
 		// max zone kW limits ignored unless the user provides a rating
-		this.maxZoneKVANorm     = 0.0;
-		this.maxZoneKVAEmerg    = 0.0;
+		maxZoneKVANorm     = 0.0;
+		maxZoneKVAEmerg    = 0.0;
 
-		this.zoneIsRadial        = true;
-		this.hasFeeder           = false;
-		this.feederObj           = null;  // initialise to not assigned
-		this.definedZoneList     = null;
-		this.definedZoneListSize = 0;
-		this.losses             = true;  /* Loss reporting switches */
-		this.lineLosses         = true;
-		this.xfmrLosses         = true;
-		this.seqLosses          = true;
-		this.threePhaseLosses   = true;
-		this.VBaseLosses        = true;
-		this.phaseVoltageReport = false;
-		this.VBaseList          = null;
-		this.VBaseTotalLosses   = null;
-		this.VBaseLineLosses    = null;
-		this.VBaseLoadLosses    = null;
-		this.VBaseNoLoadLosses  = null;
-		this.VBaseLoad          = null;
-		this.VBaseCount         = 0;
-		this.maxVBaseCount      = (EnergyMeter.NUM_EM_REGISTERS - EnergyMeter.REG_VBASE_START) / 5;
-		this.VBaseList          = new double[this.maxVBaseCount];
-		this.VBaseTotalLosses   = new double[this.maxVBaseCount];
-		this.VBaseLineLosses    = new double[this.maxVBaseCount];
-		this.VBaseLoadLosses    = new double[this.maxVBaseCount];
-		this.VBaseNoLoadLosses  = new double[this.maxVBaseCount];
-		this.VBaseLoad          = new double[this.maxVBaseCount];
+		zoneIsRadial        = true;
+		hasFeeder           = false;
+		feederObj           = null;  // initialise to not assigned
+		definedZoneList     = null;
+		definedZoneListSize = 0;
+		losses             = true;  /* Loss reporting switches */
+		lineLosses         = true;
+		xfmrLosses         = true;
+		seqLosses          = true;
+		threePhaseLosses   = true;
+		VBaseLosses        = true;
+		phaseVoltageReport = false;
+		VBaseList          = null;
+		VBaseTotalLosses   = null;
+		VBaseLineLosses    = null;
+		VBaseLoadLosses    = null;
+		VBaseNoLoadLosses  = null;
+		VBaseLoad          = null;
+		VBaseCount         = 0;
+		maxVBaseCount      = (EnergyMeter.NUM_EM_REGISTERS - EnergyMeter.REG_VBASE_START) / 5;
+		VBaseList          = new double[maxVBaseCount];
+		VBaseTotalLosses   = new double[maxVBaseCount];
+		VBaseLineLosses    = new double[maxVBaseCount];
+		VBaseLoadLosses    = new double[maxVBaseCount];
+		VBaseNoLoadLosses  = new double[maxVBaseCount];
+		VBaseLoad          = new double[maxVBaseCount];
 
 		// arrays for phase voltage report
-		this.VPhaseMax   = new double[this.maxVBaseCount * 3];
-		this.VPhaseMin   = new double[this.maxVBaseCount * 3];
-		this.VPhaseAccum = new double[this.maxVBaseCount * 3];
-		this.VPhaseAccumCount = new int[this.maxVBaseCount * 3];
+		VPhaseMax   = new double[maxVBaseCount * 3];
+		VPhaseMin   = new double[maxVBaseCount * 3];
+		VPhaseAccum = new double[maxVBaseCount * 3];
+		VPhaseAccumCount = new int[maxVBaseCount * 3];
 
 		localOnly     = false;
 		voltageUEOnly = false;
@@ -202,7 +202,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 		allocateSensorArrays();
 
-		for (i = 0; i < this.nPhases; i++)
+		for (i = 0; i < nPhases; i++)
 		sensorCurrent[i] = 400.0;
 
 		//recalcElementData();

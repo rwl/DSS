@@ -19,8 +19,8 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 
 	public ConductorDataImpl() {
 		super();
-		this.numConductorClassProps = 10;
-		this.classType = DSSClassDefs.DSS_OBJECT;
+		numConductorClassProps = 10;
+		classType = DSSClassDefs.DSS_OBJECT;
 	}
 
 	protected void countProperties() {

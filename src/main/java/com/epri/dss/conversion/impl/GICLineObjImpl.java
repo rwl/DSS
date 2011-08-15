@@ -31,29 +31,29 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	public GICLineObjImpl(DSSClass parClass, String lineName) {
 		super(parClass);
 		setName(lineName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
+		objType = parClass.getDSSClassType(); //SOURCE + NON_PCPD_ELEM;  // don't want this in PC element list
 
 		setNPhases(3);
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);  // now a 2-terminal device
-		this.Z        = null;
-		this.ZInv     = null;
-		/*this.Basefrequency = 60.0;*/ // set in base class
+		Z        = null;
+		ZInv     = null;
+		/*Basefrequency = 60.0;*/ // set in base class
 
-		this.R        = 1.0;
-		this.X        = 0.0;
-		this.C        = 0.0;
+		R        = 1.0;
+		X        = 0.0;
+		C        = 0.0;
 
-		this.srcFrequency = 0.1;  // typical GIC study frequency
-		this.angle        = 0.0;
-		this.scanType     = 0;
-		this.sequenceType = 0;  // default to zero sequence (same voltage induced in all phases)
+		srcFrequency = 0.1;  // typical GIC study frequency
+		angle        = 0.0;
+		scanType     = 0;
+		sequenceType = 0;  // default to zero sequence (same voltage induced in all phases)
 
-		this.spectrum = "";  // no default
+		spectrum = "";  // no default
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

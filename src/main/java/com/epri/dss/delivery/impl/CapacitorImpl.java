@@ -14,17 +14,17 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	public CapacitorImpl() {
 		super();
-		this.className = "Capacitor";
-		this.classType = classType + DSSClassDefs.CAP_ELEMENT;
+		className = "Capacitor";
+		classType = classType + DSSClassDefs.CAP_ELEMENT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

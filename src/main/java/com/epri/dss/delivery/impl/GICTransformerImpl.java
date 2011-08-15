@@ -13,17 +13,17 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 	public GICTransformerImpl() {
 		super();
-		this.className = "GICTransformer";
-		this.classType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
+		className = "GICTransformer";
+		classType = DSSClassDefs.GIC_TRANSFORMER + DSSClassDefs.PD_ELEMENT;
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);  // allow property list abbreviations
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
 	protected void defineProperties() {

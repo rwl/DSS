@@ -16,14 +16,14 @@ public class PointerListImpl implements PointerList {
 
 	public PointerListImpl(int size) {
 		super();
-		this.maxAllocated = size;
+		maxAllocated = size;
 		// default size & increment
-		if (this.maxAllocated <= 0) this.maxAllocated = 10;
-		this.list = new Object[maxAllocated];
-		this.numInList = 0;
-		this.activeItem = 0;
+		if (maxAllocated <= 0) maxAllocated = 10;
+		list = new Object[maxAllocated];
+		numInList = 0;
+		activeItem = 0;
 		// increment is equal to original allocation
-		this.incrementSize = maxAllocated;
+		incrementSize = maxAllocated;
 	}
 
 	public Object getFirst() {

@@ -53,27 +53,27 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		super(parClass);
 
 		setName(lineGeometryName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.dataChanged = true;
+		dataChanged = true;
 
-		this.phaseChoice = ConductorChoice.UNKNOWN;
-		this.condName = null;
-		this.wireData = null;
-		this.X = null;
-		this.Y = null;
-		this.units = null;
-		this.lineData = null;
-		this.spacingType = "";
+		phaseChoice = ConductorChoice.UNKNOWN;
+		condName = null;
+		wireData = null;
+		X = null;
+		Y = null;
+		units = null;
+		lineData = null;
+		spacingType = "";
 
 		setNConds(3);  // allocates terminals
-		this.nPhases = 3;
+		nPhases = 3;
 		setActiveCond(1);  // TODO Check zero based indexing
-		this.lastUnit  = LineUnits.UNITS_FT;
-		this.normAmps  = 0.0;
-		this.emergAmps = 0.0;
+		lastUnit  = LineUnits.UNITS_FT;
+		normAmps  = 0.0;
+		emergAmps = 0.0;
 
-		this.reduce = false;
+		reduce = false;
 
 		initPropertyValues(0);
 	}

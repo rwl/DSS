@@ -33,10 +33,10 @@ public class NamedObjectImpl implements NamedObject {
 
 	public NamedObjectImpl(String className) {
 		super();
-		this.pathName = className;
-		this.localName = "";
-		this.displayName = "";
-		this.uuid = null;
+		pathName = className;
+		localName = "";
+		displayName = "";
+		uuid = null;
 	}
 
 	protected void finalize() throws Throwable {

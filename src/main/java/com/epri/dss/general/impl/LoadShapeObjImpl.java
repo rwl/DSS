@@ -38,21 +38,21 @@ public class LoadShapeObjImpl extends DSSObjectImpl implements LoadShapeObj {
 	public LoadShapeObjImpl(DSSClass parClass, String loadShapeName) {
 		super(parClass);
 		setName(loadShapeName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.lastValueAccessed = 1;
+		lastValueAccessed = 1;
 
-		this.numPoints    = 0;
-		this.interval     = 1.0;  // hr
-		this.hours        = null;
-		this.PMultipliers = null;
-		this.QMultipliers = null;
-		this.maxP         = 1.0;
-		this.maxQ         = 0.0;
-		this.useActual    = false;
-		this.stdDevCalculated = false;  // calculate on demand
+		numPoints    = 0;
+		interval     = 1.0;  // hr
+		hours        = null;
+		PMultipliers = null;
+		QMultipliers = null;
+		maxP         = 1.0;
+		maxQ         = 0.0;
+		useActual    = false;
+		stdDevCalculated = false;  // calculate on demand
 
-		this.arrayPropertyIndex = 0;
+		arrayPropertyIndex = 0;
 
 		initPropertyValues(0);
 	}

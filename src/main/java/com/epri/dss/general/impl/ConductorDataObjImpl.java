@@ -23,18 +23,18 @@ public class ConductorDataObjImpl extends DSSObjectImpl implements ConductorData
 		super(parClass);
 
 		setName(conductorDataName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.Rdc             = -1.0;
-		this.R60             = -1.0;
-		this.gmr60           = -1.0;
-		this.radius          = -1.0;
-		this.gmrUnits        = 0;
-		this.resistanceUnits = 0;
-		this.radiusUnits     = 0;
+		Rdc             = -1.0;
+		R60             = -1.0;
+		gmr60           = -1.0;
+		radius          = -1.0;
+		gmrUnits        = 0;
+		resistanceUnits = 0;
+		radiusUnits     = 0;
 
-		this.normAmps  = -1.0;
-		this.emergAmps = -1.0;
+		normAmps  = -1.0;
+		emergAmps = -1.0;
 	}
 
 	@Override

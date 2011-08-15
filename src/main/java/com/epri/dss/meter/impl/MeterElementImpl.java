@@ -26,16 +26,16 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 	public MeterElementImpl(DSSClass parClass) {
 		super(parClass);
-		this.objType = DSSClassDefs.METER_ELEMENT;
+		objType = DSSClassDefs.METER_ELEMENT;
 
-		this.elementName         = "";
-		this.meteredElement      = null;
-		this.meteredTerminal     = 1;
-		this.sensorCurrent       = null;
-		this.sensorVoltage       = null;
-		this.phsAllocationFactor = null;
-		this.calculatedCurrent   = null;
-		this.calculatedVoltage   = null;
+		elementName         = "";
+		meteredElement      = null;
+		meteredTerminal     = 1;
+		sensorCurrent       = null;
+		sensorVoltage       = null;
+		phsAllocationFactor = null;
+		calculatedCurrent   = null;
+		calculatedVoltage   = null;
 	}
 
 	public void allocateSensorArrays() {

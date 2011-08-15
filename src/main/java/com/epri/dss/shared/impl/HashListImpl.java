@@ -38,27 +38,27 @@ public class HashListImpl implements HashList {
 
 	public HashListImpl(int nelements) {
 		super();
-		this.numElements = 0;
-		this.initialAllocation = nelements;
-		this.stringArray = new String[this.numElements];
+		numElements = 0;
+		initialAllocation = nelements;
+		stringArray = new String[numElements];
 
-		this.numLists = (int) Math.round(Math.sqrt(nelements));
+		numLists = (int) Math.round(Math.sqrt(nelements));
 		int ElementsPerList = nelements / numLists + 1;
-		this.allocationInc = ElementsPerList;
-		if (this.numLists < 1) this.numLists = 1;  // make sure at least one list
-		this.listArray = new SubList[numLists];
-		for (int i = 0; i < this.numLists; i++) {
-			this.listArray[i] = new SubList();
+		allocationInc = ElementsPerList;
+		if (numLists < 1) numLists = 1;  // make sure at least one list
+		listArray = new SubList[numLists];
+		for (int i = 0; i < numLists; i++) {
+			listArray[i] = new SubList();
 			/* Allocate initial sublists to zero; allocated on demand */
-			this.listArray[i].str = new String[0];
-			this.listArray[i].idx = new int[0];
-			this.listArray[i].nAllocated = 0;
-			this.listArray[i].nElem = 0;
+			listArray[i].str = new String[0];
+			listArray[i].idx = new int[0];
+			listArray[i].nAllocated = 0;
+			listArray[i].nElem = 0;
 		}
-		this.numElementsAllocated = 0;
-		this.lastFind = 0;
-		this.lastHash = 0;
-		this.lastSearchString = "";
+		numElementsAllocated = 0;
+		lastFind = 0;
+		lastHash = 0;
+		lastSearchString = "";
 	}
 
 	public int getInitialAllocation() {

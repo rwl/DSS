@@ -36,28 +36,28 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 		super(parClass);
 
 		setName(genDispatcherName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);   // this forces allocation of terminals and conductors in base class
 
 
-		this.elementName   = "";
+		elementName   = "";
 		setControlledElement(null);  // not used in this control
-		this.elementTerminal  = 1;
-		this.monitoredElement = null;
+		elementTerminal  = 1;
+		monitoredElement = null;
 
-		this.generatorNameList = new ArrayList<String>();
-		this.weights   = null;
-		this.genPointerList = new ArrayList<GeneratorObj>(20);  // default size and increment
-		this.listSize    = 0;
-		this.kWLimit     = 8000.0;
-		this.kWBand      = 100.0;
-		this.totalWeight = 1.0;
-		this.halfKWBand  = this.kWBand / 2.0;
+		generatorNameList = new ArrayList<String>();
+		weights   = null;
+		genPointerList = new ArrayList<GeneratorObj>(20);  // default size and increment
+		listSize    = 0;
+		kWLimit     = 8000.0;
+		kWBand      = 100.0;
+		totalWeight = 1.0;
+		halfKWBand  = kWBand / 2.0;
 		initPropertyValues(0);
-		this.kVArLimit   = this.kWLimit / 2.0;
+		kVArLimit   = kWLimit / 2.0;
 
 		//recalcElementData();
 	}

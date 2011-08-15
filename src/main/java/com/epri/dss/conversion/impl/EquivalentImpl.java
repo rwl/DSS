@@ -14,17 +14,17 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	public EquivalentImpl() {
 		super();
-		this.className = "Equivalent";
-		this.classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
+		className = "Equivalent";
+		classType = DSSClassDefs.SOURCE + DSSClassDefs.NON_PCPD_ELEM;  // don"t want this in PC element list
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
-		String[] Commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, Commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(Commands);
-		this.commandList.setAbbrevAllowed(true);
+		String[] Commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, Commands, 0, numProperties);
+		commandList = new CommandListImpl(Commands);
+		commandList.setAbbrevAllowed(true);
 	}
 
 	protected void defineProperties() {

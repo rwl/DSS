@@ -18,18 +18,18 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	public TransformerImpl() {
 		super();
-		this.className   = "Transformer";
-		this.classType = this.classType + DSSClassDefs.XFMR_ELEMENT; // override PDElement (kept in both actually)
+		className   = "Transformer";
+		classType = classType + DSSClassDefs.XFMR_ELEMENT; // override PDElement (kept in both actually)
 
-		this.activeElement = -1;
+		activeElement = -1;
 
 		defineProperties();
 
 		/* Make space for transformer property list */
-		String[] commands = new String[this.numProperties];
-		System.arraycopy(this.propertyName, 0, commands, 0, this.numProperties);
-		this.commandList = new CommandListImpl(commands);
-		this.commandList.setAbbrevAllowed(true);  // allow property list abbreviations
+		String[] commands = new String[numProperties];
+		System.arraycopy(propertyName, 0, commands, 0, numProperties);
+		commandList = new CommandListImpl(commands);
+		commandList.setAbbrevAllowed(true);  // allow property list abbreviations
 	}
 
 	protected void defineProperties() {

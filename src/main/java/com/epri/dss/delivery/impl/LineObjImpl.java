@@ -70,61 +70,61 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public LineObjImpl(DSSClass parClass, String lineName) {
 		super(parClass);
 		setName(lineName.toLowerCase());
-		this.objType = parClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
+		objType = parClass.getDSSClassType();  // DSSObjType + LINESECTION; // in both PD element list and line section lists
 
 		setNPhases(3);  // directly set conds and phases
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
-		this.isSwitch = false;
-		this.R1 = 0.0580;  // ohms per 1000 ft
-		this.X1 = 0.1206;
-		this.R0 = 0.1784;
-		this.X0 = 0.4047;
-		this.C1 = 3.4e-9;  // nf per 1000ft
-		this.C0 = 1.6e-9;
-		this.len = 1.0;   // 1 kFt
-		this.Z    = null;
-		this.ZInv = null;
-		this.Yc   = null;
-		this.condCode = "";
+		isSwitch = false;
+		R1 = 0.0580;  // ohms per 1000 ft
+		X1 = 0.1206;
+		R0 = 0.1784;
+		X0 = 0.4047;
+		C1 = 3.4e-9;  // nf per 1000ft
+		C0 = 1.6e-9;
+		len = 1.0;   // 1 kFt
+		Z    = null;
+		ZInv = null;
+		Yc   = null;
+		condCode = "";
 
-		this.Rg = 0.01805;  // ohms per 1000 ft
-		this.Xg = 0.155081;
-		this.rho = 100.0;
-		this.KXg = this.Xg / Math.log(658.5 * Math.sqrt(this.rho / this.baseFrequency));
-		this.rhoSpecified = false;
-		this.capSpecified = false;
+		Rg = 0.01805;  // ohms per 1000 ft
+		Xg = 0.155081;
+		rho = 100.0;
+		KXg = Xg / Math.log(658.5 * Math.sqrt(rho / baseFrequency));
+		rhoSpecified = false;
+		capSpecified = false;
 
 		/*baseFrequency = 60.0;*/  // set in base class
-		this.normAmps = 400.0;
-		this.emergAmps = 600.0;
-		this.pctPerm   = 20.0;
-		this.faultRate = 0.1;
-		this.hrsToRepair = 3.0;
+		normAmps = 400.0;
+		emergAmps = 600.0;
+		pctPerm   = 20.0;
+		faultRate = 0.1;
+		hrsToRepair = 3.0;
 
-		this.symComponentsChanged = false;
-		this.symComponentsModel = true;
+		symComponentsChanged = false;
+		symComponentsModel = true;
 
-		this.geometrySpecified = false;
-		this.geometryCode      = "";
-		this.lengthUnits       = LineUnits.UNITS_NONE;  // assume everything matches
-		this.unitsConvert      = 1.0;
-		this.lineCodeUnits     = LineUnits.UNITS_NONE;
-		this.lineCodeSpecified = false;
-		this.earthModel        = DSSGlobals.getInstance().getDefaultEarthModel();
+		geometrySpecified = false;
+		geometryCode      = "";
+		lengthUnits       = LineUnits.UNITS_NONE;  // assume everything matches
+		unitsConvert      = 1.0;
+		lineCodeUnits     = LineUnits.UNITS_NONE;
+		lineCodeSpecified = false;
+		earthModel        = DSSGlobals.getInstance().getDefaultEarthModel();
 
-		this.spacingSpecified = false;
-		this.lineSpacingObj = null;
-		this.wireData = null;
-		this.phaseChoice = ConductorChoice.UNKNOWN;
-		this.spacingCode = "";
+		spacingSpecified = false;
+		lineSpacingObj = null;
+		wireData = null;
+		phaseChoice = ConductorChoice.UNKNOWN;
+		spacingCode = "";
 
-		this.ZFrequency = -1.0;  // indicate Z not computed.
-		this.lineGeometryObj = null;
+		ZFrequency = -1.0;  // indicate Z not computed.
+		lineGeometryObj = null;
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

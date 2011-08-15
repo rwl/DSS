@@ -201,151 +201,151 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	public DSSCircuit(String aName) {
 		super("Circuit");
 
-		this.isSolved = false;
+		isSolved = false;
 		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
-		this.solution = SolutionImpl.activeSolutionObj;
+		solution = SolutionImpl.activeSolutionObj;
 
 		setLocalName(aName.toLowerCase());
 
 		setCaseName(aName);  // default case name to "circuitname"; sets circuitName_
 
-		this.fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
+		fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
 		setActiveCktElement(null);
-		this.activeBusIndex = 0;  // always a bus
+		activeBusIndex = 0;  // always a bus
 
 		// initial allocations increased from 100 to 1000 to speed things up
 
-		this.maxBuses   = 1000;  // good sized allocation to start
-		this.maxDevices = 1000;
-		this.maxNodes   = 3 * maxBuses;
-		this.incDevices = 1000;
-		this.incBuses   = 1000;
-		this.incNodes   = 3000;
+		maxBuses   = 1000;  // good sized allocation to start
+		maxDevices = 1000;
+		maxNodes   = 3 * maxBuses;
+		incDevices = 1000;
+		incBuses   = 1000;
+		incNodes   = 3000;
 
 		// allocate some nominal sizes
-		this.busList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
-		this.deviceList = new HashListImpl(900);
-		this.autoAddBusList = new HashListImpl(100);
+		busList    = new HashListImpl(900);  // bus name list nominal size to start; gets reallocated
+		deviceList = new HashListImpl(900);
+		autoAddBusList = new HashListImpl(100);
 
-		this.numBuses   = 0;  // eventually allocate a single source
-		this.numDevices = 0;
-		this.numNodes   = 0;
+		numBuses   = 0;  // eventually allocate a single source
+		numDevices = 0;
+		numNodes   = 0;
 
-		this.faults       = new ArrayList<FaultObj>(2);
-		this.cktElements  = new ArrayList<CktElement>(1000);
-		this.PDElements   = new ArrayList<PDElement>(1000);
-		this.PCElements   = new ArrayList<PCElement>(1000);
-		this.controls  = new ArrayList<ControlElem>(10);
-		this.sources      = new ArrayList<PCElement>(10);
-		this.meterElements= new ArrayList<MeterElement>(20);
-		this.monitors     = new ArrayList<MonitorObj>(20);
-		this.energyMeters = new ArrayList<EnergyMeterObj>(5);
-		this.sensors      = new ArrayList<SensorObj>(5);
-		this.generators   = new ArrayList<GeneratorObj>(5);
-		this.storageElements = new ArrayList<StorageObj>(5);
-		this.PVSystems    = new ArrayList<PVSystemObj>(5);
-		this.feeders      = new ArrayList<FeederObj>(10);
-		this.substations  = new ArrayList<DSSObject>(5);
-		this.transformers = new ArrayList<TransformerObj>(10);
-		this.capControls  = new ArrayList<CapControlObj>(10);
-		this.swtControls  = new ArrayList<SwtControlObj>(50);
-		this.regControls  = new ArrayList<RegControlObj>(5);
-		this.lines        = new ArrayList<LineObj>(1000);
-		this.loads        = new ArrayList<LoadObj>(1000);
-		this.shuntCapacitors = new ArrayList<CapacitorObj>(20);
+		faults       = new ArrayList<FaultObj>(2);
+		cktElements  = new ArrayList<CktElement>(1000);
+		PDElements   = new ArrayList<PDElement>(1000);
+		PCElements   = new ArrayList<PCElement>(1000);
+		controls  = new ArrayList<ControlElem>(10);
+		sources      = new ArrayList<PCElement>(10);
+		meterElements= new ArrayList<MeterElement>(20);
+		monitors     = new ArrayList<MonitorObj>(20);
+		energyMeters = new ArrayList<EnergyMeterObj>(5);
+		sensors      = new ArrayList<SensorObj>(5);
+		generators   = new ArrayList<GeneratorObj>(5);
+		storageElements = new ArrayList<StorageObj>(5);
+		PVSystems    = new ArrayList<PVSystemObj>(5);
+		feeders      = new ArrayList<FeederObj>(10);
+		substations  = new ArrayList<DSSObject>(5);
+		transformers = new ArrayList<TransformerObj>(10);
+		capControls  = new ArrayList<CapControlObj>(10);
+		swtControls  = new ArrayList<SwtControlObj>(50);
+		regControls  = new ArrayList<RegControlObj>(5);
+		lines        = new ArrayList<LineObj>(1000);
+		loads        = new ArrayList<LoadObj>(1000);
+		shuntCapacitors = new ArrayList<CapacitorObj>(20);
 
-		this.buses     = new Bus[this.maxBuses];
-		this.mapNodeToBus = new NodeBus[this.maxNodes];
-		this.deviceRef = new CktElementDef[maxDevices];
+		buses     = new Bus[maxBuses];
+		mapNodeToBus = new NodeBus[maxNodes];
+		deviceRef = new CktElementDef[maxDevices];
 
-		this.controlQueue = new ControlQueueImpl();
+		controlQueue = new ControlQueueImpl();
 
-		this.legalVoltageBases = new double[8];
+		legalVoltageBases = new double[8];
 		// default voltage bases
-		this.legalVoltageBases[0] =   0.208;
-		this.legalVoltageBases[1] =   0.480;
-		this.legalVoltageBases[2] =  12.47;
-		this.legalVoltageBases[3] =  24.9;
-		this.legalVoltageBases[4] =  34.5;
-		this.legalVoltageBases[5] = 115.0;
-		this.legalVoltageBases[6] = 230.0;
-		this.legalVoltageBases[7] =   0.0;  // terminates array
+		legalVoltageBases[0] =   0.208;
+		legalVoltageBases[1] =   0.480;
+		legalVoltageBases[2] =  12.47;
+		legalVoltageBases[3] =  24.9;
+		legalVoltageBases[4] =  34.5;
+		legalVoltageBases[5] = 115.0;
+		legalVoltageBases[6] = 230.0;
+		legalVoltageBases[7] =   0.0;  // terminates array
 
-		this.nodeBufferMax = 20;
-		this.nodeBuffer    = new int[this.nodeBufferMax];  // to hold the nodes
+		nodeBufferMax = 20;
+		nodeBuffer    = new int[nodeBufferMax];  // to hold the nodes
 
 		// init global circuit load and harmonic source multipliers
 		setLoadMultiplier(1.0);
-		this.genMultiplier = 1.0;
-		this.harmMult = 1.0;
+		genMultiplier = 1.0;
+		harmMult = 1.0;
 
-		this.priceSignal = 25.0;  // $25/MWh
+		priceSignal = 25.0;  // $25/MWh
 
 		// factors for AutoAdd
-		this.UEWeight    = 1.0;  // default to weighting UE same as losses
-		this.lossWeight  = 1.0;
-		this.numUERegs   = 1;
-		this.numLossRegs = 1;
-		this.UERegs      = new int[numUERegs];
-		this.lossRegs    = new int[numLossRegs];
-		this.UERegs[0]   = 10;  // overload UE
-		this.lossRegs[0] = 13;  // zone losses
+		UEWeight    = 1.0;  // default to weighting UE same as losses
+		lossWeight  = 1.0;
+		numUERegs   = 1;
+		numLossRegs = 1;
+		UERegs      = new int[numUERegs];
+		lossRegs    = new int[numLossRegs];
+		UERegs[0]   = 10;  // overload UE
+		lossRegs[0] = 13;  // zone losses
 
-		this.capacityStart = 0.9;  // for capacity search
-		this.capacityIncrement = 0.005;
+		capacityStart = 0.9;  // for capacity search
+		capacityIncrement = 0.005;
 
-		this.loadDurCurve    = "";
-		this.loadDurCurveObj = null;
-		this.priceCurve    = "";
-		this.priceCurveObj = null;
+		loadDurCurve    = "";
+		loadDurCurveObj = null;
+		priceCurve    = "";
+		priceCurveObj = null;
 
 		// flags
-		this.duplicatesAllowed  = false;
-		this.zonesLocked        = false;  // meter zones recomputed after each change
-		this.meterZonesComputed = false;
-		this.positiveSequence   = false;
+		duplicatesAllowed  = false;
+		zonesLocked        = false;  // meter zones recomputed after each change
+		meterZonesComputed = false;
+		positiveSequence   = false;
 
-		this.normalMinVolts = 0.95;
-		this.normalMaxVolts = 1.05;
-		this.emergMaxVolts  = 1.08;
-		this.emergMinVolts  = 0.90;
+		normalMinVolts = 0.95;
+		normalMaxVolts = 1.05;
+		emergMaxVolts  = 1.08;
+		emergMinVolts  = 0.90;
 
-		this.nodeMarkerCode   = 16;
-		this.nodeMarkerWidth  = 1;
-		this.markSwitches     = false;
-		this.markTransformers = false;
-		this.SwitchMarkerCode = 5;
-		this.transMarkerCode  = 35;
-		this.transMarkerSize  = 1;
+		nodeMarkerCode   = 16;
+		nodeMarkerWidth  = 1;
+		markSwitches     = false;
+		markTransformers = false;
+		SwitchMarkerCode = 5;
+		transMarkerCode  = 35;
+		transMarkerSize  = 1;
 
 
-		this.trapezoidalIntegration = false;  // default to Euler method
-		this.logEvents = false;
+		trapezoidalIntegration = false;  // default to Euler method
+		logEvents = false;
 
-		this.generatorDispatchReference = 0.0;
-		this.defaultGrowthRate = 1.025;
-		this.defaultGrowthFactor = 1.0;
+		generatorDispatchReference = 0.0;
+		defaultGrowthRate = 1.025;
+		defaultGrowthFactor = 1.0;
 
-		this.defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
-		this.defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
 
-		this.currentDirectory = "";
+		currentDirectory = "";
 
 		setBusNameRedefined(true);  // set to force rebuild of bus and node lists
 
-		this.savedBuses = null;
-		this.savedBusNames = null;
+		savedBuses = null;
+		savedBusNames = null;
 
-		this.reductionStrategy = ReductionStrategyType.DEFAULT;
-		this.reductionMaxAngle = 15.0;
-		this.reductionZmag = 0.02;
+		reductionStrategy = ReductionStrategyType.DEFAULT;
+		reductionMaxAngle = 15.0;
+		reductionZmag = 0.02;
 
 		/* Misc objects */
-		this.autoAddObj = new AutoAddImpl();
+		autoAddObj = new AutoAddImpl();
 
-		this.branchList = null;
-		this.busAdjPC = null;
-		this.busAdjPD = null;
+		branchList = null;
+		busAdjPC = null;
+		busAdjPD = null;
 	}
 
 	private void addDeviceHandle(int handle) {

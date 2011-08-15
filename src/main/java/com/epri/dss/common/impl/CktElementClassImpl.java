@@ -11,7 +11,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 
 	public CktElementClassImpl() {
 		super();
-		this.numCktElemClassProps = 2;
+		numCktElemClassProps = 2;
 	}
 
 	protected int classEdit(Object activeCktElemObj, int paramPointer) {

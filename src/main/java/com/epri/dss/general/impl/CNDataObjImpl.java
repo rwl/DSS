@@ -16,12 +16,12 @@ public class CNDataObjImpl extends CableDataObjImpl implements CNDataObj {
 	public CNDataObjImpl(DSSClass parClass, String CNDataName) {
 		super(parClass, CNDataName);
 		setName(CNDataName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.kStrand   = 2;
-		this.diaStrand = -1.0;
-		this.gmrStrand = -1.0;
-		this.rStrand   = -1.0;
+		kStrand   = 2;
+		diaStrand = -1.0;
+		gmrStrand = -1.0;
+		rStrand   = -1.0;
 
 		initPropertyValues(0);
 	}

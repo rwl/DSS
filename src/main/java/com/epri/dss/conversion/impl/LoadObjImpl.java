@@ -137,72 +137,72 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		objType = parClass.getDSSClassType();
 
 		setNPhases(3);
-		this.nConds = 4;  // defaults to wye so it has a 4th conductor
-		this.YOrder        = 0;  // to trigger an initial allocation
+		nConds = 4;  // defaults to wye so it has a 4th conductor
+		YOrder        = 0;  // to trigger an initial allocation
 		setNTerms(1);  // forces allocations
-		this.kWBase        = 10.0;
-		this.kVArBase      = 5.0;
-		this.PFNominal     = 0.88;
-		this.kVABase       = kWBase / PFNominal;
-		this.loadSpecType  = 0;
-		this.RNeut         = -1.0;  // signify neutral is open
-		this.XNeut         = 0.0;
+		kWBase        = 10.0;
+		kVArBase      = 5.0;
+		PFNominal     = 0.88;
+		kVABase       = kWBase / PFNominal;
+		loadSpecType  = 0;
+		RNeut         = -1.0;  // signify neutral is open
+		XNeut         = 0.0;
 
-		this.yearlyShape    = "";
-		this.yearlyShapeObj = null;  // if yearlyShapeObj = null then the load alway stays nominal * global multipliers
-		this.dailyShape     = "";
-		this.dailyShapeObj  = null;  // if dailyShapeObj = null then the load alway stays nominal * global multipliers
-		this.dutyShape      = "";
-		this.dutyShapeObj   = null;  // if dutyShapeObj = null then the load alway stays nominal * global multipliers
-		this.growthShape    = "";
-		this.growthShapeObj = null;  // if growthShapeObj = null then the load alway stays nominal * global multipliers
-		this.CVRshape       = "";
-		this.CVRShapeObj    = null;
-		this.connection     = 0;  // wye (star)
-		this.loadModel      = 1;  // changed from 2 RCD (easiest to solve)
-		this.loadClass      = 1;
-		this.numCustomers   = 1;
-		this.lastYear       = 0;
-		this.CVRwattFactor  = 1.0;
-		this.CVRvarFactor   = 2.0;
+		yearlyShape    = "";
+		yearlyShapeObj = null;  // if yearlyShapeObj = null then the load alway stays nominal * global multipliers
+		dailyShape     = "";
+		dailyShapeObj  = null;  // if dailyShapeObj = null then the load alway stays nominal * global multipliers
+		dutyShape      = "";
+		dutyShapeObj   = null;  // if dutyShapeObj = null then the load alway stays nominal * global multipliers
+		growthShape    = "";
+		growthShapeObj = null;  // if growthShapeObj = null then the load alway stays nominal * global multipliers
+		CVRshape       = "";
+		CVRShapeObj    = null;
+		connection     = 0;  // wye (star)
+		loadModel      = 1;  // changed from 2 RCD (easiest to solve)
+		loadClass      = 1;
+		numCustomers   = 1;
+		lastYear       = 0;
+		CVRwattFactor  = 1.0;
+		CVRvarFactor   = 2.0;
 
-		this.lastGrowthFactor = 1.0;
-		this.kVAAllocationFactor = 0.5;
-		this.allocationFactor = this.kVAAllocationFactor;
-		this.hasBeenAllocated = false;
-		this.PFChanged        = false;
-		this.shapeIsActual    = false;
+		lastGrowthFactor = 1.0;
+		kVAAllocationFactor = 0.5;
+		allocationFactor = kVAAllocationFactor;
+		hasBeenAllocated = false;
+		PFChanged        = false;
+		shapeIsActual    = false;
 
-		this.loadSolutionCount     = -1;  // for keeping track of the present solution in injcurrent calcs
-		this.openLoadSolutionCount = -1;
-		this.YPrimOpenCond         = null;
+		loadSolutionCount     = -1;  // for keeping track of the present solution in injcurrent calcs
+		openLoadSolutionCount = -1;
+		YPrimOpenCond         = null;
 
-		this.connectedkVA = 0.0;  // loadSpecType=3
-		this.kWh        = 0.0;    // loadSpecType=4
-		this.CFactor    = 4.0;
-		this.kWhDays    = 30.0;
-		this.VMinNormal = 0.0;    // indicates for program to use circuit quantities
-		this.VMinEmerg  = 0.0;
-		this.kVLoadBase = 12.47;
-		this.VBase      = 7200.0;
-		this.VMinPU     = 0.95;
-		this.VMaxPU     = 1.05;
-		this.VBase95    = this.VMinPU * this.VBase;
-		this.VBase105   = this.VMaxPU * this.VBase;
-		this.YOrder     = this.nTerms * this.nConds;
-		this.randomMult = 1.0 ;
-		this.fixed      = false;
-		this.exemptFromLDCurve = false;
+		connectedkVA = 0.0;  // loadSpecType=3
+		kWh        = 0.0;    // loadSpecType=4
+		CFactor    = 4.0;
+		kWhDays    = 30.0;
+		VMinNormal = 0.0;    // indicates for program to use circuit quantities
+		VMinEmerg  = 0.0;
+		kVLoadBase = 12.47;
+		VBase      = 7200.0;
+		VMinPU     = 0.95;
+		VMaxPU     = 1.05;
+		VBase95    = VMinPU * VBase;
+		VBase105   = VMaxPU * VBase;
+		YOrder     = nTerms * nConds;
+		randomMult = 1.0 ;
+		fixed      = false;
+		exemptFromLDCurve = false;
 
-		this.puMean     = 0.5;
-		this.puStdDev   = 0.1;
-		this.UE_Factor  = 0.0;
-		this.EEN_Factor = 0.0;
-		this.spectrum   = "defaultload";  // override base class definition
-		this.harmMag    = null;
-		this.harmAng    = null;
-		this.ZIPV       = null;
-		this.setZIPVSize(0);
+		puMean     = 0.5;
+		puStdDev   = 0.1;
+		UE_Factor  = 0.0;
+		EEN_Factor = 0.0;
+		spectrum   = "defaultload";  // override base class definition
+		harmMag    = null;
+		harmAng    = null;
+		ZIPV       = null;
+		setZIPVSize(0);
 
 		initPropertyValues(0);
 

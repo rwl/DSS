@@ -32,22 +32,22 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		super(parClass);
 
 		setName(sourceName.toLowerCase());
-		this.objType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
+		objType = parClass.getDSSClassType(); // SOURCE + NON_PCPD_ELEM;  // don't want this in PC Element List
 
 		setNPhases(3);
-		this.nConds = 3;
+		nConds = 3;
 		setNTerms(1);
 
-		this.amps     = 0.0;
-		this.angle    = 0.0;
-		this.srcFrequency = baseFrequency;
-		this.phaseShift = 120.0;
-		this.scanType = 1;  // pos sequence
-		this.sequenceType = 1;
+		amps     = 0.0;
+		angle    = 0.0;
+		srcFrequency = baseFrequency;
+		phaseShift = 120.0;
+		scanType = 1;  // pos sequence
+		sequenceType = 1;
 
 		initPropertyValues(0);
 
-		this.YOrder = this.nTerms * this.nConds;
+		YOrder = nTerms * nConds;
 		recalcElementData();
 	}
 

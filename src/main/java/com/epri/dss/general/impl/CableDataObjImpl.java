@@ -17,12 +17,12 @@ public class CableDataObjImpl extends ConductorDataObjImpl implements CableDataO
 		super(parClass, cableDataName);
 
 		setName(cableDataName.toLowerCase());
-		this.objType = parClass.getDSSClassType();
+		objType = parClass.getDSSClassType();
 
-		this.epsR     =  2.3;
-		this.insLayer = -1.0;
-		this.diaIns   = -1.0;
-		this.diaCable = -1.0;
+		epsR     =  2.3;
+		insLayer = -1.0;
+		diaIns   = -1.0;
+		diaCable = -1.0;
 	}
 
 	@Override
