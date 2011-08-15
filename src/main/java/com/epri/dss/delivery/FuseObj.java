@@ -4,7 +4,7 @@ import com.epri.dss.common.impl.DSSCktElement;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.general.TCC_CurveObj;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A control element that is connected to a terminal of a

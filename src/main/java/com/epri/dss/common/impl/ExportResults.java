@@ -27,7 +27,9 @@ import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.meter.SensorObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 public class ExportResults {
@@ -174,7 +176,7 @@ public class ExportResults {
 					}
 
 					writer.printf(", %d, %10.6g, %6.1f, %9.5g",
-							bus.getNum(nodeIdx), Vmag, volts.degArg(), Vpu);
+							bus.getNum(nodeIdx), Vmag, ComplexUtil.degArg(volts), Vpu);
 				}
 				/* Zero fill row */
 				for (j = ckt.getBuses()[i].getNumNodesThisBus(); j < maxNumNodes + 1; j++)  // TODO Check zero based indexing
@@ -324,12 +326,12 @@ public class ExportResults {
 			IResid = Complex.ZERO;
 			for (i = 0; i < pElem.getNConds(); i++) {
 				k += 1;
-				writer.printf(", %10.6g, %8.2f", cBuffer[k].abs(), cBuffer[k].degArg());
+				writer.printf(", %10.6g, %8.2f", cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
 				IResid = IResid.add(cBuffer[k]);
 			}
 			for (i = pElem.getNConds(); i < condWidth; i++)  // TODO Check zero based indexing
 				writer.printf(", %10.6g, %8.2f", 0.0, 0.0);
-			writer.printf(", %10.6g, %8.2f", IResid.abs(), IResid.degArg());
+			writer.printf(", %10.6g, %8.2f", IResid.abs(), ComplexUtil.degArg(IResid));
 		}
 
 		/* Filler if no. terms less than termwidth */

@@ -20,7 +20,9 @@ import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
@@ -430,16 +432,16 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				break;
 
 			default:
-				Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide( MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
+				Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), MathUtil.sqr(VBase) );  // VBase must be L-N for 3-phase
 
 				if (VMinPU != 0.0) {
-					Yeq95 = Yeq.divide( MathUtil.sqr(VMinPU));  // at 95% voltage
+					Yeq95 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMinPU));  // at 95% voltage
 				} else {
 					Yeq95 = Yeq; // Always a constant Z model
 				}
 
 				if (VMaxPU != 0.0) {
-					Yeq105 = Yeq.divide(MathUtil.sqr(VMaxPU));  // at 105% voltage
+					Yeq105 = ComplexUtil.divide(Yeq, MathUtil.sqr(VMaxPU));  // at 105% voltage
 				} else {
 					Yeq105 = Yeq;
 				}
@@ -521,7 +523,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			Y = Yeq;  // L-N value computed in initialization routines
 
 			if (connection == 1)
-				Y = Y.divide(3.0);  // convert to delta impedance
+				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
@@ -559,7 +561,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 				}
 				break;
 			case 1:  // delta or L-L
-				Y   = Y.divide(3.0);  // convert to delta impedance
+				Y   = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;  // TODO Check zero based indexing
@@ -751,9 +753,9 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			case 1:  /* Delta */
 				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
-					curr = Yeq95.divide(3.0).multiply(V);   // below 95% use an impedance model
+					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = Yeq105.divide(3.0).multiply(V);  // above 105% use an impedance model
+					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
 				}
@@ -780,7 +782,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		if (connection == 0) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = Yeq.divide(3.0);
+			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
 		}
 
 		for (i = 0; i < getNPhases(); i++) {
@@ -1103,7 +1105,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		PVSystemFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = new Complex(RThev, XThev).invert();  // used for current calcs; always L-N
+		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 

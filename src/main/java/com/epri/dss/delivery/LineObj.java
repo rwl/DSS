@@ -4,7 +4,7 @@ import com.epri.dss.general.ConductorDataObj;
 import com.epri.dss.general.LineGeometryObj;
 import com.epri.dss.general.LineSpacingObj;
 import com.epri.dss.general.impl.ConductorChoice;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
 

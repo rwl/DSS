@@ -7,7 +7,7 @@ import java.util.List;
 import org.apache.commons.lang.mutable.MutableDouble;
 
 import com.epri.dss.shared.Dynamics;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;

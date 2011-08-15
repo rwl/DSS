@@ -10,7 +10,7 @@ import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.impl.FaultImpl;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.SpectrumObj;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 /**

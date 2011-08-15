@@ -1,6 +1,6 @@
 package com.epri.dss.shared.impl;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
 
@@ -239,7 +239,7 @@ public class CMatrixImpl implements CMatrix {
 			result = result.add(values[((i - 1) * nOrder + i)]);
 
 		if (nOrder > 0)
-			result = result.divide(nOrder);
+			result = ComplexUtil.divide(result, nOrder);
 
 		return result;
 	}
@@ -258,7 +258,7 @@ public class CMatrixImpl implements CMatrix {
 		}
 
 		if (nTimes > 0)
-			result = result.divide(nTimes);
+			result = ComplexUtil.divide(result, nTimes);
 
 		return result;
 	}

@@ -8,7 +8,7 @@ import com.epri.dss.delivery.GICTransformerObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 public class GICTransformerObjImpl extends PDElementImpl implements GICTransformerObj {
 

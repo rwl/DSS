@@ -21,7 +21,9 @@ import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.parser.impl.Parser;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+import org.apache.commons.math.complex.ComplexUtils;
+
 import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.HashListImpl;
 
@@ -1139,11 +1141,11 @@ public class Utilities {
 	 * Rotate a phasor by an angle and harmonic.
 	 */
 	public static Complex rotatePhasorDeg(Complex phasor, double h, double angleDeg) {
-		return phasor.multiply( ComplexUtil.polar2Complex(1.0, Math.toRadians(h * angleDeg)) );
+		return phasor.multiply( ComplexUtils.polar2Complex(1.0, Math.toRadians(h * angleDeg)) );
 	}
 
 	public static Complex rotatePhasorRad(Complex phasor, double h, double angleRad) {
-		return phasor.multiply( ComplexUtil.polar2Complex(1.0, h * angleRad) );
+		return phasor.multiply( ComplexUtils.polar2Complex(1.0, h * angleRad) );
 	}
 
 	private static double pFSign(Complex S) {
@@ -1172,7 +1174,7 @@ public class Utilities {
 
 	public static void convertComplexArrayToPolar(Complex[] buffer, int n) {
 		for (int i = 0; i < n; i++)
-			buffer[i] = new Complex(buffer[i].abs(), buffer[i].degArg());
+			buffer[i] = new Complex(buffer[i].abs(), ComplexUtil.degArg(buffer[i]));
 	}
 
 	/**
@@ -1193,7 +1195,7 @@ public class Utilities {
 	 */
 	public static Complex residualPolar(Object p, int nph) {
 		Complex x = residual(p, nph);
-		return new Complex(x.abs(), x.degArg());
+		return new Complex(x.abs(), ComplexUtil.degArg(x));
 	}
 
 	private static double sign(double x) {

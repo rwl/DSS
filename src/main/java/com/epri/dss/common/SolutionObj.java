@@ -2,7 +2,7 @@ package com.epri.dss.common;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.DynamicsRec;
 
 import com.epri.dss.common.impl.ControlProblem;

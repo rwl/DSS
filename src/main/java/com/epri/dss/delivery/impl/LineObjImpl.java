@@ -4,7 +4,9 @@ import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -241,8 +243,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				gammaL = gammaL.multiply(len);
 				expP = new Complex(Math.cos(gammaL.getImaginary()), Math.sin(gammaL.getImaginary())).multiply(Math.exp(gammaL.getReal()));
 				exp2P = new Complex(Math.cos(0.5 * gammaL.getImaginary()), Math.sin(0.5 * gammaL.getImaginary())).multiply(Math.exp(0.5 * gammaL.getReal()));
-				expM = expP.invert();
-				exp2M = exp2P.invert();
+				expM = ComplexUtil.invert(expP);
+				exp2M = ComplexUtil.invert(exp2P);
 				sinhGL = expP.subtract(expM).multiply(0.5);
 				tanh2GL = exp2P.subtract(exp2M).divide(exp2P.add(exp2M));
 				Zm = Zs.multiply(len).multiply(sinhGL).divide(gammaL);
@@ -392,7 +394,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			for (int j = 0; j < getNPhases(); j++) {
 				for (int i = 0; i < getNPhases(); i++) {
 					k += 1;  // assume matrix in col order (1,1  2,1  3,1 ...)
-					value = YValues[k].divide(2.0);  // half at each end ...
+					value = ComplexUtil.divide(YValues[k], 2.0);  // half at each end ...
 					YPrimShunt.addElement(i, j, value);
 					YPrimShunt.addElement(i + getNPhases(), j + getNPhases(), value);
 				}
@@ -724,14 +726,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					ZS = Complex.ZERO;
 					for (i = 0; i < nPhases; i++)
 						ZS = ZS.add(Z.getElement(i, i));
-					ZS = ZS.divide(nPhases);
+					ZS = ComplexUtil.divide(ZS, nPhases);
 					Zm = Complex.ZERO;
 					for (i = 0; i < nPhases - 1; i++) {  // TODO Check zero based indexing
 						for (j = i + 1; j < nPhases; j++) {
 							Zm = Zm.add(Z.getElement(i, j));
 						}
 					}
-					Zm = Zm.divide(nPhases * (nPhases - 1.0) / 2.0);
+					Zm = ComplexUtil.divide(Zm, nPhases * (nPhases - 1.0) / 2.0);
 					Z1 = ZS.subtract(Zm);
 
 					// do same for capacitances
@@ -903,7 +905,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 					// Z <= (Z1 + Z2) / TotalLen to get equiv ohms per unit length
 					for (i = 0; i < order1 * order1; i++)
-						values1[i] = values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)).divide(totalLen);
+						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)), totalLen);
 
 					// merge Yc matrices
 					values1 = Yc.asArray(order1);
@@ -913,7 +915,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 						return result;  // lines not same size for some reason
 
 					for (i = 0; i < order1 * order1; i++)
-						values1[i] = values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ).divide(totalLen);
+						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ), totalLen);
 
 					/* R matrix */
 					s = "Rmatrix=[";

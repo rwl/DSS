@@ -6,7 +6,7 @@ import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.general.TShapeObj;
 import com.epri.dss.general.XYCurveObj;
 import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * The PVsystem element is essentially a generator that consists of a PV panel and an inverter.

@@ -1,7 +1,7 @@
 package com.epri.dss.common.impl;
 
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;

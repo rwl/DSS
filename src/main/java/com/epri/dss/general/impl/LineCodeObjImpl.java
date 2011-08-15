@@ -8,7 +8,7 @@ import com.epri.dss.general.LineCode;
 import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
 public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {

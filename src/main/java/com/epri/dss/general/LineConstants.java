@@ -2,7 +2,7 @@ package com.epri.dss.general;
 
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * Manages the geometry data and calculates the impedance matrices for an overhead line

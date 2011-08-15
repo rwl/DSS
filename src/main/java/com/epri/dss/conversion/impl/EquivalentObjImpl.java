@@ -12,8 +12,9 @@ import com.epri.dss.conversion.EquivalentObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 
 public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
@@ -91,8 +92,8 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		for (int i = 0; i < nTerms; i++)
 			for (int j = 0; j < nTerms; j++) {
 				indx = idx(i, j);
-				Zs = new Complex(2.0 * R1[indx] + R0[indx], 2.0 * X1[indx] + X0[indx] ).divide(3.0);
-				Zm = new Complex(R0[indx] - R1[indx], X0[indx] - X1[indx]).divide(3.0);
+				Zs = ComplexUtil.divide(new Complex(2.0 * R1[indx] + R0[indx], 2.0 * X1[indx] + X0[indx] ), 3.0);
+				Zm = ComplexUtil.divide(new Complex(R0[indx] - R1[indx], X0[indx] - X1[indx]), 3.0);
 
 				iOffset = (i - 1) * nPhases;
 				jOffset = (j - 1) * nPhases;

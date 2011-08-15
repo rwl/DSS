@@ -1,6 +1,6 @@
 package com.epri.dss.shared;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 public interface CMatrix {
 

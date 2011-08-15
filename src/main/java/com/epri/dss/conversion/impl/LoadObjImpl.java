@@ -4,7 +4,9 @@ import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;
@@ -441,15 +443,15 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			varNominal = 1000.0 * kVArBase * factor * shapeFactor.getImaginary() / nPhases;
 		}
 
-		Yeq = new Complex(WNominal, -varNominal).divide( Math.pow(VBase, 2) );
+		Yeq = ComplexUtil.divide(new Complex(WNominal, -varNominal), Math.pow(VBase, 2) );
 		if (VMinPU != 0.0) {
-			Yeq95 = Yeq.divide( Math.pow(VMinPU, 2) );  // at 95% voltage
+			Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2) );  // at 95% voltage
 		} else {
 			Yeq95 = Complex.ZERO;
 		}
 
 		if (VMaxPU != 0.0) {
-			Yeq105 = Yeq.divide( Math.pow(VMaxPU, 2) );  // at 105% voltage
+			Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2) );  // at 105% voltage
 		} else {
 			Yeq105 = Yeq;
 		}
@@ -540,7 +542,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		} else if ((RNeut == 0.0) && (XNeut == 0.0)) {  // solidly grounded
 			Yneut = new Complex(1.0e6, 0.0);  // 1 microohm resistor
 		} else {
-			Yneut = new Complex(RNeut, XNeut).invert();
+			Yneut = ComplexUtil.invert(new Complex(RNeut, XNeut));
 		}
 
 		varBase = 1000.0 * kVArBase / nPhases;
@@ -771,7 +773,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		for (int i = 0; i < nPhases; i++) {
 			V    = VTerminal[i];
 
-			curr = new Complex(WNominal, varNominal).divide( V.divide( V.abs() ).multiply(VBase) ).conjugate();
+			curr = new Complex(WNominal, varNominal).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
 
 			stickCurrInTerminalArray(getITerminal(), curr.negate(), i);  // put into terminal array taking into account connection
 			setITerminalUpdated(true);
@@ -798,7 +800,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				curr = Yeq105.multiply(V);
 			} else {
 				currZ = new Complex(Yeq.getReal() * ZIPV[0], Yeq.getImaginary() * ZIPV[3]).multiply( VTerminal[i] );
-				currI = new Complex(WNominal * ZIPV[1], varNominal * ZIPV[4]).divide( V.divide(V.abs()).multiply(VBase) ).conjugate();
+				currI = new Complex(WNominal * ZIPV[1], varNominal * ZIPV[4]).divide( ComplexUtil.divide(V, V.abs()).multiply(VBase) ).conjugate();
 				currP = new Complex(WNominal * ZIPV[2], varNominal * ZIPV[5]).divide(V).conjugate();
 				curr  = currZ.add(currI.add(currP));
 			}
@@ -1376,7 +1378,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		 */
 		for (int i = 0; i < nPhases; i++) {
 			harmMag[i] = currents[i].abs();
-			harmAng[i] = currents[i].degArg();
+			harmAng[i] = ComplexUtil.degArg(currents[i]);
 		}
 
 		currents = null;

@@ -50,7 +50,9 @@ import com.epri.dss.plot.impl.DSSPlotImpl;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.Dynamics;
 import com.epri.dss.shared.impl.CommandListImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 public class ExecHelper {
@@ -1130,7 +1132,7 @@ public class ExecHelper {
 			cBuffer = new Complex[nValues];
 			cktElem.getCurrents(cBuffer);
 			for (int i = 0; i < nValues; i++)
-				globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f,", cBuffer[i].abs(), cBuffer[i].degArg()) );
+				globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f,", cBuffer[i].abs(), ComplexUtil.degArg( cBuffer[i] )) );
 			cBuffer = null;
 		} else {
 			globals.setGlobalResult("No active circuit");
@@ -1382,9 +1384,9 @@ public class ExecHelper {
 					VMag = volts.abs();
 					if (perUnit && (activeBus.getKVBase() > 0.0)) {
 						VMag = VMag * 0.001 / activeBus.getKVBase();
-						globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", VMag, volts.degArg()));
+						globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", VMag, ComplexUtil.degArg( volts )));
 					} else {
-						globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", VMag, volts.degArg()));
+						globals.setGlobalResult( globals.getGlobalResult() + String.format("%10.5g, %6.1f, ", VMag, ComplexUtil.degArg( volts )));
 					}
 				}
 			} else {
@@ -2730,7 +2732,7 @@ public class ExecHelper {
 		V2 = globals.getActiveCircuit().getSolution().getNodeV()[b2ref];
 
 		VNodeDiff = V1.subtract(V2);
-		globals.setGlobalResult(String.format("%.7g, V,    %.7g, deg  ", VNodeDiff.abs(), VNodeDiff.degArg()));
+		globals.setGlobalResult(String.format("%.7g, V,    %.7g, deg  ", VNodeDiff.abs(), ComplexUtil.degArg( VNodeDiff )));
 
 		return result;
 	}

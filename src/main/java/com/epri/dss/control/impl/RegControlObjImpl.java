@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.SolutionObj;
@@ -15,6 +15,7 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.control.RegControl;
 import com.epri.dss.control.RegControlObj;
 import com.epri.dss.delivery.TransformerObj;
+import com.epri.dss.shared.impl.ComplexUtil;
 
 public class RegControlObjImpl extends ControlElemImpl implements RegControlObj {
 
@@ -200,7 +201,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					controlledPhase = i;
 				}
 			}
-			result = VBuffer[controlledPhase].divide(PTRatio);
+			result = ComplexUtil.divide(VBuffer[controlledPhase], PTRatio);
 			break;
 		case RegControl.MINPHASE:
 			controlledPhase = 1;
@@ -211,11 +212,11 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 					controlledPhase = i;
 				}
 			}
-			result = VBuffer[controlledPhase].divide(PTRatio);
+			result = ComplexUtil.divide(VBuffer[controlledPhase], PTRatio);
 			break;
 		default:
 			/* Just use one phase because that's what most controls do. */
-			result = VBuffer[PTPhase].divide(PTRatio);
+			result = ComplexUtil.divide(VBuffer[PTPhase], PTRatio);
 			controlledPhase = PTPhase;
 			break;
 		}
@@ -491,7 +492,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 				controlledTransformer.getWindingVoltages(elementTerminal,
 						VBuffer);
-				VLocalBus = VBuffer[1].divide( PTRatio ).abs();
+				VLocalBus = ComplexUtil.divide(VBuffer[1], PTRatio).abs();
 			} else {
 				VLocalBus = Vcontrol.abs();
 			}
@@ -503,7 +504,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		if ((!usingRegulatedBus) && LDCActive) {
 
 			getControlledElement().getCurrents(CBuffer);
-			ILDC  = CBuffer[getControlledElement().getNConds() * (elementTerminal-1) + controlledPhase].divide(CTRating);
+			ILDC  = ComplexUtil.divide(CBuffer[getControlledElement().getNConds() * (elementTerminal-1) + controlledPhase], CTRating);
 			if (inReverseMode) {
 				VLDC  = new Complex(revR, revX).multiply(ILDC);
 			} else {

@@ -1,6 +1,6 @@
 package com.epri.dss.conversion;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.GeneratorVars;
 
 public interface GenUserModel {

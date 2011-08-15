@@ -11,8 +11,10 @@ import com.epri.dss.conversion.GICLineObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
+import org.apache.commons.math.complex.ComplexUtils;
 
 public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 

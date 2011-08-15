@@ -8,7 +8,8 @@ import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+
 import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.GeneratorVars;
 import com.epri.dss.shared.impl.MathUtil;
@@ -418,18 +419,18 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			switch (genModel) {
 			case 6:
-				Yeq = new Complex(0.0, -genVars.Xd).invert();  // gets negated in calcYPrim
+				Yeq = ComplexUtil.invert(new Complex(0.0, -genVars.Xd));  // gets negated in calcYPrim
 				break;
 			default:
-				Yeq = new Complex(genVars.PNominalPerPhase, -genVars.QNominalPerPhase).divide(Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+				Yeq = ComplexUtil.divide(new Complex(genVars.PNominalPerPhase, -genVars.QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 				if (VMinPU != 0.0) {
-					Yeq95 = Yeq.divide(Math.pow(VMinPU, 2));  // at 95% voltage
+					Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));  // at 95% voltage
 				} else {
 					Yeq95 = Yeq;  // always a constant Z model
 				}
 
 				if (VMaxPU != 0.0) {
-					Yeq105 = Yeq.divide(Math.pow(VMaxPU, 2));  // at 105% voltage
+					Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
 				} else {
 					Yeq105 = Yeq;
 				}
@@ -438,7 +439,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 			/* When we leave here, all the Yeq's are in L-N values */
 			if (genModel == 7)
-				currentLimit = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(VBase95);
+				currentLimit = ComplexUtil.divide(new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase), VBase95);
 		}
 
 		// if generator state changes, force re-calc of Y matrix
@@ -533,7 +534,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			}
 
 			if (connection == 1)
-				Y = Y.divide(3.0);  // convert to delta impedance
+				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
@@ -583,7 +584,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				}
 				break;
 			case 1:  // delta or L-L
-				Y    = Y.divide(3.0);  // convert to delta impedance
+				Y    = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij  = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
@@ -786,9 +787,9 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			case 1:  /* Delta */
 				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
-					curr = Yeq95.divide(3.0).multiply(V);  // below 95% use an impedance model
+					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);  // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = Yeq105.divide(3.0).multiply(V);  // above 105% use an impedance model
+					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
 				}
@@ -812,7 +813,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		if (connection == 0) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = Yeq.divide(3.0);
+			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
 		}
 
 		for (i = 0; i < nPhases; i++) {
@@ -1007,7 +1008,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			switch (connection) {
 			case 0:
 				if ((VMag <= VBase95) || (VMag > VBase105)) {  // limit the current magnitude when voltage drops outside normal range
-					curr = currentLimit.divide( V.divide(VMag) ).conjugate();  // current limit expression
+					curr = currentLimit.divide( ComplexUtil.divide(V, VMag) ).conjugate();  // current limit expression
 				} else {
 					curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(V).conjugate();  // above vMinPU, constant PQ
 				}
@@ -1015,7 +1016,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			case 1:
 				VMagLN = VMag / DSSGlobals.SQRT3;
 				if ((VMagLN <= VBase95) || (VMagLN > VBase105)) {  // limit the current magnitude when voltage drops outside normal range
-					curr = currentLimit.divide( V.divide(VMag) ).conjugate();  // Current limit expression
+					curr = currentLimit.divide( ComplexUtil.divide(V, VMag) ).conjugate();  // Current limit expression
 				} else {
 					curr = new Complex(genVars.PNominalPerPhase, genVars.QNominalPerPhase).divide(V).conjugate();  // above vMinPU, constant PQ
 				}
@@ -1487,7 +1488,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		genFundamental = sol.getFrequency();  // whatever the frequency is when we enter here.
 
 
-		Yeq = new Complex(0.0, genVars.Xdpp).invert();  // used for current calcs; always L-N
+		Yeq = ComplexUtil.invert(new Complex(0.0, genVars.Xdpp));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 
@@ -1571,7 +1572,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		setYPrimInvalid(true);  // force rebuild of YPrims
 
-		Yeq = new Complex(0.0, genVars.Xdp).invert();
+		Yeq = ComplexUtil.invert(new Complex(0.0, genVars.Xdp));
 
 		/* Compute nominal positive sequence voltage behind transient reactance */
 

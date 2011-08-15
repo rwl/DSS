@@ -4,7 +4,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.control.impl.ControlAction;
 import com.epri.dss.control.impl.CapControlObjImpl.CapControlType;
 import com.epri.dss.delivery.CapacitorObj;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A control element that is connected to a terminal of another

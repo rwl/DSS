@@ -2,7 +2,7 @@ package com.epri.dss.meter.impl;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.impl.DSSClassImpl;
 import com.epri.dss.common.impl.DSSGlobals;

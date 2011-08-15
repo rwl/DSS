@@ -2,7 +2,7 @@ package com.epri.dss.control.impl;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;

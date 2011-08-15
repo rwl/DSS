@@ -8,7 +8,9 @@ import java.io.PrintWriter;
 import org.apache.commons.lang.mutable.MutableDouble;
 import org.apache.commons.lang.mutable.MutableInt;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.DynamicsRec;
 
 import com.epri.dss.common.Bus;
@@ -1240,7 +1242,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 				busName = ckt.getBusList().get(i);
 				for (int j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
 					volts = nodeV[ckt.getBuses()[i].getRef(j)];
-					f.println(busName + ", " + ckt.getBuses()[i].getNum(j) + String.format(", %-.7g, %-.7g", volts.abs(), volts.degArg()));
+					f.println(busName + ", " + ckt.getBuses()[i].getNum(j) + String.format(", %-.7g, %-.7g", volts.abs(), ComplexUtil.degArg(volts)));
 				}
 			}
 

@@ -28,8 +28,9 @@ import com.epri.dss.shared.CktTreeNode;
 import com.epri.dss.shared.Polar;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CktTreeImpl;
-import com.epri.dss.shared.impl.Complex;
 import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -153,7 +154,7 @@ public abstract class ShowResults {
 			} else {
 				BName = Utilities.pad("   -", maxBusNameLength);
 			}
-			pw.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f", BName, ckt.getBuses()[i].getNum(j), Vmag, volts.degArg(), Vpu, ckt.getBuses()[i].getKVBase() * DSSGlobals.SQRT3);
+			pw.printf("%s %2d %10.5g /_ %6.1f %9.5g %9.3f", BName, ckt.getBuses()[i].getNum(j), Vmag, ComplexUtil.degArg(volts), Vpu, ckt.getBuses()[i].getKVBase() * DSSGlobals.SQRT3);
 			pw.println();
 		}
 	}
@@ -188,7 +189,7 @@ public abstract class ShowResults {
 					}
 				}
 				if (LL) Vpu = Vpu / DSSGlobals.SQRT3;
-				pw.printf("%s  (%3d) %4d    %13.5g (%8.4g) /_ %6.1f", busName, nref, i,Vmag, Vpu, volts.degArg());
+				pw.printf("%s  (%3d) %4d    %13.5g (%8.4g) /_ %6.1f", busName, nref, i,Vmag, Vpu, ComplexUtil.degArg(volts));
 				pw.println();
 			}
 			if (j < nTerm)
@@ -235,7 +236,7 @@ public abstract class ShowResults {
 						Vmag = 0.0;
 					}
 				}
-				pw.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f", elemName, i, volts1.abs(), Vmag, ckt.getBuses()[bus1].getKVBase(), volts1.degArg());
+				pw.printf("%s,  %4d,    %12.5g, %12.5g, %12.5g, %6.1f", elemName, i, volts1.abs(), Vmag, ckt.getBuses()[bus1].getKVBase(), ComplexUtil.degArg(volts1));
 				pw.println();
 			}
 		}
@@ -418,7 +419,7 @@ public abstract class ShowResults {
 				k++;
 				if (showResidual)
 					CTotal = CTotal.add(cBuffer[k]);
-				pw.printf("%s  %4d    %13.5g /_ %6.1f", fromBus, Utilities.getNodeNum(pElem.getNodeRef()[k]), cBuffer[k].abs(), cBuffer[k].degArg());
+				pw.printf("%s  %4d    %13.5g /_ %6.1f", fromBus, Utilities.getNodeNum(pElem.getNodeRef()[k]), cBuffer[k].abs(), ComplexUtil.degArg(cBuffer[k]));
 				pw.println();
 			}
 			if (showResidual && (pElem.getNPhases() > 1)) {
@@ -2671,8 +2672,8 @@ public abstract class ShowResults {
 						for (j = 0; j < i-1; j++)  // TODO Check zero based indexing
 							Zm = Zm.add( Z.getElement(i, j) );
 
-					Z1 = Zs.subtract(Zm).divide(3.0);
-					Z0 = Zm.multiply(2.0).add(Zs).divide(3.0);
+					Z1 = ComplexUtil.divide(Zs.subtract(Zm), 3.0);
+					Z0 = ComplexUtil.divide(Zm.multiply(2.0).add(Zs), 3.0);
 					w = freq * DSSGlobals.TWO_PI / 1000.0;
 					pw.println();
 					pw.println("Z1, ohms per " + LineUnits.lineUnitsStr(units) + String.format(" = %.6g + j %.6g (L1 = %.6g mH) ", Z1.getReal(), Z1.getImaginary(), Z1.getImaginary() / w));
@@ -2685,7 +2686,7 @@ public abstract class ShowResults {
 					for (i = 0; i < 3; i++)
 						for (j = 0; j < 3; j++)
 							Ycm = Ycm.add(Z.getElement(i, j));
-					Xcm = Ycm.invert().getImaginary();
+					Xcm = ComplexUtil.invert(Ycm).getImaginary();
 
 					w = freq * DSSGlobals.TWO_PI /1.e9;
 					/* Capacitance */

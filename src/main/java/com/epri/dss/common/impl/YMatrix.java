@@ -10,7 +10,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.common.impl.DSSBus.NodeBus;
 import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 public class YMatrix {
 

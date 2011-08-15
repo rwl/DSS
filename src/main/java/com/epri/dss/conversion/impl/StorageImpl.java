@@ -12,7 +12,7 @@ import com.epri.dss.conversion.StorageObj;
 import com.epri.dss.general.LoadShapeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CommandListImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 public class StorageImpl extends PCClassImpl implements Storage {
 

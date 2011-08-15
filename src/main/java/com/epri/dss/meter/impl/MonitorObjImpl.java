@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.CktElement;
@@ -651,9 +653,9 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		default:
 			addDblsToBuffer(voltageBuffer[1].getReal(), numVI * 2);
 			if (!isPower) {
-				if (includeResidual) addDblsToBuffer(residualVolt.asArray(), 2);
+				if (includeResidual) addDblsToBuffer(ComplexUtil.asArray( residualVolt ), 2);
 				addDblsToBuffer(currentBuffer[offset + 1].getReal(), numVI * 2);
-				if (includeResidual) addDblsToBuffer(residualCurr.asArray(), 2);
+				if (includeResidual) addDblsToBuffer(ComplexUtil.asArray( residualCurr ), 2);
 			}
 			break;
 		}

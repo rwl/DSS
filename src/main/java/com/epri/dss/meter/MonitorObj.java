@@ -1,6 +1,6 @@
 package com.epri.dss.meter;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A monitor is a circuit element that is connected to a terminal of another

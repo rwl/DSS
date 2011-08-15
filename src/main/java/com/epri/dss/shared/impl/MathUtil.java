@@ -2,6 +2,7 @@ package com.epri.dss.shared.impl;
 
 import org.apache.commons.lang.mutable.MutableDouble;
 import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
 
@@ -304,7 +305,7 @@ public abstract class MathUtil {
 		while ((i < maxTerm) && (sizeSqr > epsilonSqr)) {
 			term = zSQR25.multiply(term);
 			i += 1;
-			term = term.divide(Math.pow(i, 2));
+			term = ComplexUtil.divide(term, Math.pow(i, 2));
 			result = result.add(term);  // sum = sum + term
 			sizeSqr = Math.pow(term.getReal(), 2) + Math.pow(term.getImaginary(), 2);
 		}

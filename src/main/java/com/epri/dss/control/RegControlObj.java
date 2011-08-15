@@ -3,7 +3,7 @@ package com.epri.dss.control;
 import java.io.File;
 
 import com.epri.dss.delivery.TransformerObj;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A control element that is connected to a terminal of another

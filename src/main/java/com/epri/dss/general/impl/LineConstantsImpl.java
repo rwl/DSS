@@ -4,7 +4,9 @@ import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.general.LineConstants;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
+
+import com.epri.dss.shared.impl.ComplexUtil;
 import com.epri.dss.shared.impl.LineUnits;
 import com.epri.dss.shared.impl.MathUtil;
 
@@ -285,12 +287,12 @@ public class LineConstantsImpl implements LineConstants {
 
 		case DSSGlobals.DERI:
 			if (i != j) {
-				hterm  = new Complex(Yi + Yj, 0.0).add( me.invert().multiply(2.0) );
+				hterm  = new Complex(Yi + Yj, 0.0).add( ComplexUtil.invert(me).multiply(2.0) );
 				xterm  = new Complex(X[i] - X[j], 0.0);
 				lnArg  = hterm.multiply(hterm).add(xterm.multiply(xterm)).sqrt();
 				result = new Complex(0.0, w * MU0 / TWO_PI).multiply(lnArg.log());
 			} else {
-				hterm  = new Complex(Yi, 0.0).add(me.invert());
+				hterm  = new Complex(Yi, 0.0).add( ComplexUtil.invert(me) );
 				result = new Complex(0.0, w * MU0 / TWO_PI).multiply( hterm.multiply(2.0).log() );
 			}
 			break;

@@ -2,14 +2,14 @@ package com.epri.dss.general.impl;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
-import com.epri.dss.shared.impl.ComplexUtil;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.impl.DSSGlobals;
 import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.general.Spectrum;
 import com.epri.dss.general.SpectrumObj;
+import com.epri.dss.shared.impl.ComplexUtil;
 
 public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 
@@ -72,7 +72,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 			for (i = 0; i < numHarm; i++) {
 				f.printf("%-g, ", harmArray[i]);
 				f.printf("%-g, %-g, ", multArray[i].getReal(), multArray[i].getImaginary());
-				f.printf("%-g, %-g", multArray[i].abs(), multArray[i].degArg());
+				f.printf("%-g, %-g", multArray[i].abs(), ComplexUtil.degArg( multArray[i] ));
 				f.println();
 			}
 		}

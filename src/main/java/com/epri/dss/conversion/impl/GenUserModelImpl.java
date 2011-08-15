@@ -2,7 +2,7 @@ package com.epri.dss.conversion.impl;
 
 import com.epri.dss.common.impl.DSSCallBacks;
 import com.epri.dss.conversion.GenUserModel;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.DynamicsRec;
 import com.epri.dss.shared.impl.GeneratorVars;
 

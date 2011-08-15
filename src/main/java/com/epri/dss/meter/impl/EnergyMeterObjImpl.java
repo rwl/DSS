@@ -10,7 +10,7 @@ import java.util.List;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CktTreeImpl;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
 import com.epri.dss.common.impl.DSSCktElement;

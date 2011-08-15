@@ -7,7 +7,9 @@ import org.apache.commons.lang.mutable.MutableInt;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.DSSClass;
@@ -181,7 +183,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		switch (specType) {
 		case 1:  /* Some form of r and x specified */
 			// adjust for frequency
-			value = new Complex(R, X * freqMultiplier).invert();
+			value = ComplexUtil.invert(new Complex(R, X * freqMultiplier));
 			// add in rP value if specified
 			if (RpSpecified)
 				value = value.add(new Complex(Gp, 0.0));
@@ -209,7 +211,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			break;
 		case 2:  /* Some form of r and x specified */
 			// adjust for frequency
-			value = new Complex(R, X * freqMultiplier).invert();
+			value = ComplexUtil.invert(new Complex(R, X * freqMultiplier));
 			// add in rP value if specified
 			if (RpSpecified)
 				value = value.add(new Complex(Gp, 0.0));

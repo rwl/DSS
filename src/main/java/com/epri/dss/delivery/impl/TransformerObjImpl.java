@@ -7,7 +7,9 @@ import org.apache.commons.lang.mutable.MutableInt;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.SolutionObj;
@@ -1011,7 +1013,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 						value = new Complex(1000000, 0);
 				} else {
 					// 1 microohm resistor
-					value = new Complex(W.getRNeut(), W.getXNeut() * freqMultiplier).invert();
+					value = ComplexUtil.invert(new Complex(W.getRNeut(), W.getXNeut() * freqMultiplier));
 				}
 				j = i * nConds;
 				YPrimSeries.addElement(j, j, value);

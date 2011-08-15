@@ -8,7 +8,7 @@ import java.io.PrintStream;
 
 import com.epri.dss.meter.EnergyMeterObj;
 import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.HashListImpl;
 
 import com.epri.dss.common.AutoAdd;

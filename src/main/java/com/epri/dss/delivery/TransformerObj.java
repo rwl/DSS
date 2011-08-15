@@ -1,7 +1,7 @@
 package com.epri.dss.delivery;
 
 import com.epri.dss.shared.CMatrix;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 public interface TransformerObj extends PDElement {
 

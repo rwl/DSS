@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.epri.dss.common.CktElement;
 import com.epri.dss.general.LoadShapeObj;
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A control element that is connected to a terminal

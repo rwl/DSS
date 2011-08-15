@@ -2,7 +2,7 @@ package com.epri.dss.general;
 
 import java.io.PrintStream;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 /**
  * A general DSS object used by all circuits as a reference for obtaining

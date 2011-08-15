@@ -7,7 +7,9 @@ import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.MathUtil;
 
 import com.epri.dss.common.Circuit;
@@ -525,7 +527,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				} else {
 					QNominalPerPhase = 0.0;
 				}
-				Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide(Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+				Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 				Yeq95  = Yeq;
 				Yeq105 = Yeq;
 			} else {
@@ -538,15 +540,15 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 					// Yeq = new Complex(0.0, -StoreVARs.Xd)).invert();  // gets negated in calcYPrim
 					break;
 				default:
-					Yeq = new Complex(PNominalPerPhase, -QNominalPerPhase).divide(Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
+					Yeq = ComplexUtil.divide(new Complex(PNominalPerPhase, -QNominalPerPhase), Math.pow(VBase, 2));  // VBase must be L-N for 3-phase
 					if (VMinPU != 0.0) {
-						Yeq95 = Yeq.divide(Math.pow(VMinPU, 2));   // at 95% voltage
+						Yeq95 = ComplexUtil.divide(Yeq, Math.pow(VMinPU, 2));   // at 95% voltage
 					} else {
 						Yeq95 = Yeq;  // always a constant Z model
 					}
 
 					if (VMaxPU != 0.0) {
-						Yeq105 = Yeq.divide(Math.pow(VMaxPU, 2));  // at 105% voltage
+						Yeq105 = ComplexUtil.divide(Yeq, Math.pow(VMaxPU, 2));  // at 105% voltage
 					} else {
 						Yeq105 = Yeq;
 					}
@@ -639,7 +641,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			}
 
 			if (connection == 1)
-				Y = Y.divide(3.0);  // convert to delta impedance
+				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 			Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);
 			Yij = Y.negate();
 			for (i = 0; i < nPhases; i++) {
@@ -687,7 +689,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 			case 1:
 				// delta or L-L
-				Y = Y.divide(3.0);  // convert to delta impedance
+				Y = ComplexUtil.divide(Y, 3.0);  // convert to delta impedance
 				Yij = Y.negate();
 				for (i = 0; i < nPhases; i++) {
 					j = i + 1;
@@ -904,9 +906,9 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			case 1:  /* Delta */
 				VMag = VMag / DSSGlobals.SQRT3;  // L-N magnitude
 				if (VMag <= VBase95) {
-					curr = Yeq95.divide(3.0).multiply(V);   // below 95% use an impedance model
+					curr = ComplexUtil.divide(Yeq95, 3.0).multiply(V);   // below 95% use an impedance model
 				} else if (VMag > VBase105) {
-					curr = Yeq105.divide(3.0).multiply(V);  // above 105% use an impedance model
+					curr = ComplexUtil.divide(Yeq105, 3.0).multiply(V);  // above 105% use an impedance model
 				} else {
 					curr = new Complex(PNominalPerPhase, QNominalPerPhase).divide(V).conjugate();  // between 95% -105%, constant PQ
 				}
@@ -933,7 +935,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		if (connection == 0) {
 			Yeq2 = Yeq;
 		} else {
-			Yeq2 = Yeq.divide(3.0);
+			Yeq2 = ComplexUtil.divide(Yeq, 3.0);
 		}
 
 		for (int i = 0; i < nPhases; i++) {
@@ -1299,7 +1301,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		storageFundamental = sol.getFrequency();  // whatever the frequency is when we enter here
 
-		Yeq = new Complex(RThev, XThev).invert();  // used for current calcs; always L-N
+		Yeq = ComplexUtil.invert(new Complex(RThev, XThev));  // used for current calcs; always L-N
 
 		/* Compute reference Thevinen voltage from phase 1 current */
 

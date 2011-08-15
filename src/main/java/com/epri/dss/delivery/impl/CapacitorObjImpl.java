@@ -10,7 +10,9 @@ import com.epri.dss.delivery.CapacitorObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CMatrix;
 import com.epri.dss.shared.impl.CMatrixImpl;
-import com.epri.dss.shared.impl.Complex;
+import com.epri.dss.shared.impl.ComplexUtil;
+
+import org.apache.commons.math.complex.Complex;
 
 public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
@@ -501,7 +503,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 			default:  // wye
 				if (hasZl)
-					value = Zl.add(value.invert()).invert(); // add in ZL
+					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) ); // add in ZL
 				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
 					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals
@@ -528,7 +530,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 				break;
 			default:  // wye
 				if (hasZl)
-					value = Zl.add(value.invert()).invert();  // add in ZL
+					value = ComplexUtil.invert( Zl.add(ComplexUtil.invert( value )) );  // add in ZL
 				value2 = value.negate();
 				for (i = 0; i < getNPhases(); i++) {
 					YPrimWork.setElement(i, i, value);  // elements are only on the diagonals

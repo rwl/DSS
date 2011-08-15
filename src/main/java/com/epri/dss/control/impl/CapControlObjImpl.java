@@ -4,7 +4,7 @@ import java.io.PrintStream;
 
 import org.apache.commons.lang.mutable.MutableDouble;
 
-import com.epri.dss.shared.impl.Complex;
+import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
