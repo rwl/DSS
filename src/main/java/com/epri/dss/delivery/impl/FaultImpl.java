@@ -73,10 +73,9 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new FaultObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new FaultObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void doGmatrix() {
@@ -123,13 +122,12 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		activeFaultObj = (FaultObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeFaultObj);  // use property to set this value
+		DSSGlobals.activeCircuit.setActiveCktElement(activeFaultObj);  // use property to set this value
 
 		FaultObj af = activeFaultObj;
 
@@ -148,7 +146,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ af.getName() + "\"", 350);
 				break;
 			case 0:
 				fltSetBus1(param);
@@ -201,7 +199,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				if (af.getNPhases() != parser.makeInteger()) {
 					af.setNPhases(parser.makeInteger());
 					af.setNConds(af.getNPhases());  // force reallocation of terminal info
-					globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
+					DSSGlobals.activeCircuit.setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 3:
@@ -280,14 +278,14 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				af.setPropertyValue(i, otherFault.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fault.makeLike(): \"" + faultName + "\" not found.", 351);
+			DSSGlobals.doSimpleMsg("Error in Fault.makeLike(): \"" + faultName + "\" not found.", 351);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Fault.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Fault.init()", -1);
 		return 0;
 	}
 

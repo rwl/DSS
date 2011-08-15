@@ -64,20 +64,18 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new ISourceObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new ISourceObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeISourceObj = (ISourceObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeISourceObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeISourceObj);
 
 		int result = 0;
 
@@ -98,7 +96,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ais.getName() + "\"", 330);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ais.getName() + "\"", 330);
 				break;
 			case 0:
 				ais.setBus(1, param);  // TODO Check zero based indexing
@@ -142,7 +140,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setScanType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
+					DSSGlobals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
@@ -158,7 +156,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 					ais.setSequenceType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
+					DSSGlobals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ ais.getName() + "\": "+param, 331);
 					break;
 				}
 				break;
@@ -208,7 +206,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in ISource makeLike: \"" + otherSource + "\" not found.", 332);
+			DSSGlobals.doSimpleMsg("Error in ISource makeLike: \"" + otherSource + "\" not found.", 332);
 		}
 
 		return result;
@@ -216,7 +214,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement ISource.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement ISource.init", -1);
 		return 0;
 	}
 

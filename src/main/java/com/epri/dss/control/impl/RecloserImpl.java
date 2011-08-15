@@ -35,7 +35,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.getInstance().doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 388);
+			DSSGlobals.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 388);
 
 		return result;
 	}
@@ -118,20 +118,18 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new RecloserObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new RecloserObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeRecloserObj = (RecloserObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeRecloserObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeRecloserObj);
 
 		int result = 0;
 
@@ -152,7 +150,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() +"\"", 390);
 				break;
 			case 0:
 				ar.setMonitoredElementName(param.toLowerCase());
@@ -289,7 +287,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			for (i = 0; i < ar.getParentClass().getNumProperties(); i++)
 				ar.setPropertyValue(i, otherRecloser.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Recloser makeLike: \"" + recloserName + "\" not found.", 391);
+			DSSGlobals.doSimpleMsg("Error in Recloser makeLike: \"" + recloserName + "\" not found.", 391);
 		}
 
 		return result;

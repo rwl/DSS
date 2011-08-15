@@ -40,7 +40,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.getInstance().doSimpleMsg("TCC Curve object: \"" + curveName + "\" not found.", 401);
+			DSSGlobals.doSimpleMsg("TCC Curve object: \"" + curveName + "\" not found.", 401);
 
 		return result;
 	}
@@ -87,20 +87,18 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new FuseObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new FuseObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeFuseObj = (FuseObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeFuseObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeFuseObj);
 
 		int result = 0;
 
@@ -121,7 +119,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() + "." + getName() + "\"", 402);
 				break;
 			case 0:
 				af.setMonitoredElementName(param.toLowerCase());
@@ -204,7 +202,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 				af.setPropertyValue(i, otherFuse.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Fuse makeLike: \"" + fuseName + "\" not found.", 403);
+			DSSGlobals.doSimpleMsg("Error in Fuse makeLike: \"" + fuseName + "\" not found.", 403);
 		}
 
 		return result;

@@ -293,7 +293,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			lastGrowthFactor = 1.0;  // default all to 1 in year 0 ; use base values
 		} else {
 			if (growthShapeObj == null) {
-				lastGrowthFactor = DSSGlobals.getInstance().getActiveCircuit().getDefaultGrowthFactor();
+				lastGrowthFactor = DSSGlobals.activeCircuit.getDefaultGrowthFactor();
 			} else if (year != lastYear) {  // search growth curve
 				lastGrowthFactor = growthShapeObj.getMult(year);
 			}
@@ -310,7 +310,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public void setNominalLoad() {
 		double factor;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		shapeFactor = CDOUBLEONE;
@@ -458,8 +458,6 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	}
 
 	public void recalcElementData() {
-		DSSGlobals global = DSSGlobals.getInstance();
-
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
 
@@ -519,23 +517,23 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 		if (yearlyShapeObj == null)
 			if (yearlyShape.length() > 0)
-				global.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 583);
+				DSSGlobals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 583);
 		if (dailyShapeObj == null)
 			if (dailyShape.length() > 0)
-				global.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 584);
+				DSSGlobals.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 584);
 		if (dutyShapeObj == null)
 			if (dutyShape.length() > 0)
-				global.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 585);
+				DSSGlobals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 585);
 		if (growthShapeObj == null)
 			if (growthShape.length() > 0)
-				global.doSimpleMsg("Warning: Yearly growth shape: \""+ growthShape +"\" not found.", 586);
+				DSSGlobals.doSimpleMsg("Warning: Yearly growth shape: \""+ growthShape +"\" not found.", 586);
 		if (CVRShapeObj == null)
 			if (CVRshape.length() > 0)
-				global.doSimpleMsg("Warning: CVR shape shape: \""+ CVRshape +"\" not found.", 586);
+				DSSGlobals.doSimpleMsg("Warning: CVR shape shape: \""+ CVRshape +"\" not found.", 586);
 
-		setSpectrumObj( (com.epri.dss.general.SpectrumObj) global.getSpectrumClass().find(getSpectrum()) );
+		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 		if (getSpectrumObj() == null)
-			global.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 587);
+			DSSGlobals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 587);
 
 		if (RNeut < 0.0) {  // flag for open neutral
 			Yneut = new Complex(0.0, 0.0);
@@ -558,7 +556,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		int i, j;
 		double freqMultiplier;
 
-		YPrimFreq = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 		Y = Yeq;
 		Y = new Complex(Y.getReal(), Y.getImaginary() / freqMultiplier);  /* Correct reactive part for frequency */
@@ -614,7 +612,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			YPrim.clear();
 		}
 
-		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
+		if (DSSGlobals.activeCircuit.getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
 
 			setNominalLoad();  // same as admittance model
 			calcYPrimMatrix(YPrimShunt);
@@ -872,7 +870,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				stickCurrInTerminalArray(getInjCurrent(), curr, i);  // put into terminal array taking into account connection
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg(String.format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
+			DSSGlobals.doSimpleMsg(String.format("Error in Load.%s: %s ", getName(), e.getMessage()), 5871);
 		}
 	}
 
@@ -944,7 +942,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		zeroInjCurrent();
 		zeroITerminal();
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		loadHarmonic = sol.getFrequency() / loadFundamental;  // loadFundamental = frequency of solution when harmonic mode entered
 		mult = getSpectrumObj().getMult(loadHarmonic);
@@ -967,7 +965,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	private void calcVTerminalPhase() {
 		int j;
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		/* Establish phase voltages and stick in VTemp */
 		switch (connection) {
@@ -992,7 +990,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Calculates total load current and adds it properly into the injCurrent array.
 	 */
 	private void calcLoadModelContribution() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		setITerminalUpdated(false);
@@ -1039,7 +1037,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Fill injCurrent array with the current values to use for injections.
 	 */
 	private void calcInjCurrentArray() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		// if a terminal is open, then standard load models don't apply, so check it out first
 		if (allTerminalsClosed()) {
@@ -1098,7 +1096,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Always return total terminal currents in the curr array
 	 */
 	protected void getTerminalCurrents(Complex[] Curr) {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (ITerminalSolutionCount != sol.getSolutionCount())  // recalc the contribution
 			calcLoadModelContribution();  // adds totals in ITerminal as a side effect
@@ -1110,7 +1108,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	 * Get the injection currents and add them directly into the currents array.
 	 */
 	public int injCurrents() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		int result = 0;
 		if (isEnabled()) {
@@ -1139,7 +1137,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg("Load object: \"" + getName() + "\" in getInjCurrents function.",
+			DSSGlobals.doErrorMsg("Load object: \"" + getName() + "\" in getInjCurrents function.",
 					e.getMessage(), "Current buffer may not big enough.", 588);
 		}
 	}
@@ -1153,7 +1151,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		double Vpu, VMag;
 		double normMinCriteria, emergMinCriteria;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (UE_Factor > 0.0)
 			return true;
@@ -1204,7 +1202,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		double Vpu, VMag;
 		double normMinCriteria, emergMinCriteria;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (EEN_Factor > 0.0)
 			return true;
@@ -1370,7 +1368,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		harmAng = (double[]) Utilities.resizeArray(harmAng, nPhases);
 		currents = new Complex[YOrder];  // to hold currents
 
-		loadFundamental = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
+		loadFundamental = DSSGlobals.activeCircuit.getSolution().getFrequency();
 
 		getCurrents(currents);
 		/* Store the currents at fundamental frequency.

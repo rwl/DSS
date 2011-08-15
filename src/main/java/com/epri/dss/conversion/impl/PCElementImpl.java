@@ -43,7 +43,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 * Add injection currents into system currents array.
 	 */
 	public int injCurrents() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		for (int i = 0; i < YOrder; i++)
 			sol.getCurrents()[nodeRef[i]] = sol.getCurrents()[nodeRef[i]].add( injCurrent[i] );
@@ -55,7 +55,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 * Get present values of terminal.
 	 */
 	public void getInjCurrents(Complex[] curr) {
-		DSSGlobals.getInstance().doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
+		DSSGlobals.doErrorMsg("PCElement.InjCurrents", ("Improper call to getInjCurrents for element: " + getName() + "."),
 			"Called PCElement class virtual function instead of actual.", 640);
 	}
 
@@ -75,7 +75,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 				curr[i] = curr[i].add( getInjCurrent()[i].negate() );
 			setITerminalUpdated(true);
 		}
-		ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+		ITerminalSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	 */
 	public void getCurrents(Complex[] curr) {
 		try {
-			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			if (isEnabled()) {
 
@@ -106,7 +106,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg(("getCurrents for element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.doErrorMsg(("getCurrents for element: " + getName() + "."), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 641);
 		}
 	}
@@ -190,7 +190,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	}
 
 	public void computeITerminal() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ITerminalSolutionCount != ckt.getSolution().getSolutionCount()) {
 			getCurrents(ITerminal);
@@ -206,7 +206,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	public void setITerminalUpdated(boolean value) {
 		ITerminalUpdated = value;
 		if (value)
-			ITerminalSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+			ITerminalSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
 	}
 
 	public boolean getITerminalUpdated() {

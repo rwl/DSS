@@ -56,29 +56,27 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new LineSpacingObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new LineSpacingObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void interpretArray(String s, SpcParmChoice which) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		String Str;
 
-		globals.getAuxParser().setCmdString(s);
+		DSSGlobals.auxParser.setCmdString(s);
 		LineSpacingObj als = activeLineSpacingObj;
 
 		for (int i = 0; i < als.getNWires(); i++) {
-			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			Str = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			Str = DSSGlobals.auxParser.makeString();
 			if (Str.length() > 0)
 				switch (which) {
 				case X:
-					als.getX()[i] = globals.getAuxParser().makeDouble();
+					als.getX()[i] = DSSGlobals.auxParser.makeDouble();
 					break;
 				case H:
-					als.getY()[i] = globals.getAuxParser().makeDouble();
+					als.getY()[i] = DSSGlobals.auxParser.makeDouble();
 					break;
 				}
 		}
@@ -91,7 +89,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 		// continue parsing with contents of parser
 		activeLineSpacingObj = (LineSpacingObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeLineSpacingObj);
+		DSSGlobals.activeDSSObject = activeLineSpacingObj;
 
 		LineSpacingObj als = activeLineSpacingObj;
 
@@ -109,7 +107,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 				switch (paramPointer) {
 				case 0:  // TODO Check zero based indexing
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 10101);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 10101);
 					break;
 				case 1:
 					als.setNWires(parser.makeInteger());  // use property value to force reallocations
@@ -180,7 +178,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 				als.setPropertyValue(i, otherLineSpacing.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in LineSpacing makeLike: \"" + lineName + "\" not found.", 102);
+			DSSGlobals.doSimpleMsg("Error in LineSpacing makeLike: \"" + lineName + "\" not found.", 102);
 		}
 
 		return result;
@@ -188,7 +186,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement LineSpacing.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement LineSpacing.init()", -1);
 		return 0;
 	}
 
@@ -216,7 +214,7 @@ public class LineSpacingImpl extends DSSClassImpl implements LineSpacing {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("LineSpacing: \"" + value + "\" not found.", 103);
+		DSSGlobals.doSimpleMsg("LineSpacing: \"" + value + "\" not found.", 103);
 	}
 
 }

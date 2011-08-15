@@ -55,15 +55,14 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		validSensor = false;
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // sensored element must already exist
-			meteredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			meteredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 
 			if (meteredTerminal > meteredElement.getNTerms()) {  // TODO Check zero based indexing
-				globals.doErrorMsg("Sensor: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("Sensor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
 			} else {
@@ -84,7 +83,7 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 			}
 		} else {
 			meteredElement = null;   // element not found
-			globals.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("Sensor: \"" + getName() + "\"", "Circuit Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 666);
 		}
 	}

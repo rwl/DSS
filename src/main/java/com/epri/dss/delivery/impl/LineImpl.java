@@ -147,10 +147,9 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new LineObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new LineObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void doRmatrix() {
@@ -236,7 +235,6 @@ public class LineImpl extends PDClassImpl implements Line {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int newLengthUnits;
@@ -244,7 +242,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeLineObj = (LineObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeLineObj);  // use property to set this value
+		DSSGlobals.activeCircuit.setActiveCktElement(activeLineObj);  // use property to set this value
 
 		LineObj al = activeLineObj;
 
@@ -263,7 +261,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Line." + al.getName() + "\"", 181);
 				break;
 			case 0:
 				al.setBus(1, param);  // TODO Check zero based indexing
@@ -364,7 +362,7 @@ public class LineImpl extends PDClassImpl implements Line {
 						/*al.setYprimInvalid(true);*/  // now set below
 						al.recalcElementData();  // reallocate Z, etc.
 					} else {
-						globals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
+						DSSGlobals.doSimpleMsg("Illegal change of number of phases for Line."+al.getName(), 181);
 					}
 				break;
 			case 5:
@@ -559,7 +557,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				al.setPropertyValue(i, otherLine.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
+			DSSGlobals.doSimpleMsg("Error in Line makeLike: \"" + lineName + "\" not found.", 182);
 		}
 
 		return result;
@@ -567,7 +565,7 @@ public class LineImpl extends PDClassImpl implements Line {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Line.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Line.init()", -1);
 		return 0;
 	}
 

@@ -152,7 +152,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			Y_Term     = new CMatrixImpl(2 * numWindings);
 			Y_Term_NL  = new CMatrixImpl(2 * numWindings);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for transformer " + getName(), 111);
+			DSSGlobals.doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for transformer " + getName(), 111);
 		}
 	}
 
@@ -387,7 +387,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		}
 
 		// Setfrequency multipliers for this calculation
-		YPrimFreq      = DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq      = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 		// Check for rebuilding Y_Terminal; only rebuild if freq is different than last time
 		if (freqMultiplier != Y_Terminal_FreqMult)
@@ -634,7 +634,6 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 	public void getWindingVoltages(int iWind, Complex[] VBuffer) {
 		int i, ii, k, neutTerm;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			/* Return zero if winding number improperly specified */
@@ -645,7 +644,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 
 			/* Load up VTemp - already allocated for all cktelements */
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
@@ -666,7 +665,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error filling voltage buffer in getWindingVoltages for circuit element: Transformer."+getName()+DSSGlobals.CRLF+
+			DSSGlobals.doSimpleMsg("Error filling voltage buffer in getWindingVoltages for circuit element: Transformer."+getName()+DSSGlobals.CRLF+
 					"Probable Cause: Invalid definition of element."+DSSGlobals.CRLF+
 					"System error message: "+e.getMessage(), 114);
 		}
@@ -941,16 +940,15 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		int[] nodes = new int[5];  // integer buffer
 		boolean onPhase1;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		/* First, determine if we can convert this one. */
 		if ((nPhases == 1) || (nPhases == 2)) {  // disable if any terminal not connected to phase one
 			for (iW = 0; iW < numWindings; iW++) {
 				onPhase1 = false;
 				/* Load up auxiliary parser */
-				globals.getAuxParser().setCmdString(getBus(iW));
-				globals.getAuxParser().getNextParam();
-				s = globals.getAuxParser().parseAsBusName(n, nodes);  // TODO Check N gets set
+				DSSGlobals.auxParser.setCmdString(getBus(iW));
+				DSSGlobals.auxParser.getNextParam();
+				s = DSSGlobals.auxParser.parseAsBusName(n, nodes);  // TODO Check N gets set
 				if (n.intValue() == 0)
 					onPhase1 = true;
 				for (i = 0; i < n.intValue(); i++)
@@ -1084,7 +1082,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		ZB.invert();  // mhos on one volt base
 
 		if (ZB.getInvertError() > 0) {
-			DSSGlobals.getInstance().doErrorMsg("TransformerObj.calcYPrim", "Matrix inversion error for transformer \"" + getName() + "\"",
+			DSSGlobals.doErrorMsg("TransformerObj.calcYPrim", "Matrix inversion error for transformer \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with tiny conductance to ground.", 117);
 			ZB.clear();
 			for (i = 0; i < ZB.getNOrder(); i++)
@@ -1237,10 +1235,9 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		XfmrCodeObj obj;
 		int i;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (TransformerImpl.XfmrCodeClass == null)
-			TransformerImpl.XfmrCodeClass = (com.epri.dss.general.XfmrCode) globals.getDSSClassList().get(globals.getClassNames().find("xfmrcode"));
+			TransformerImpl.XfmrCodeClass = (com.epri.dss.general.XfmrCode) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("xfmrcode"));
 
 		if (TransformerImpl.XfmrCodeClass.setActive(code)) {
 			obj = (XfmrCodeObj) TransformerImpl.XfmrCodeClass.getActiveObj();
@@ -1286,7 +1283,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 			recalcElementData();
 		} else {
-			globals.doSimpleMsg("Xfmr Code:" + code + " not found.", 180);
+			DSSGlobals.doSimpleMsg("Xfmr Code:" + code + " not found.", 180);
 		}
 	}
 

@@ -48,7 +48,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		Z    = null;
 		Zinv = null;
 		Yc   = null;
-		BaseFrequency = DSSGlobals.getInstance().getActiveCircuit().getFundamental();
+		BaseFrequency = DSSGlobals.activeCircuit.getFundamental();
 		Units = LineUnits.UNITS_NONE;  // default to none  (no conversion)
 		NormAmps = 400.0;
 		EmergAmps = 600.0;
@@ -226,7 +226,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		case 11:
 			return getCMatrix();
 		case 12:
-			return String.format("%.g", DSSGlobals.getInstance().getDefaultBaseFreq());  // "baseFreq";
+			return String.format("%.g", DSSGlobals.defaultBaseFreq);  // "baseFreq";
 		case 18:
 			return ReduceByKron ? "Y" : "N";
 		case 19:
@@ -256,7 +256,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 		propertyValue[8] =  "";     // "rmatrix";
 		propertyValue[9] =  "";     // "xmatrix";
 		propertyValue[10] = "";     // "cmatrix";
-		propertyValue[11] = String.format("%6.1f", DSSGlobals.getInstance().getDefaultBaseFreq());  // "baseFreq";
+		propertyValue[11] = String.format("%6.1f", DSSGlobals.defaultBaseFreq);  // "baseFreq";
 		propertyValue[12] = "400";  // "normamps";
 		propertyValue[13] = "600";  // "emergamps";
 		propertyValue[14] = "0.1";  // "faultrate";
@@ -273,8 +273,6 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 	// FIXME Private method in OpenDSS
 	public void doKronReduction() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-
 		if (NeutralConductor == 0)  // TODO Check zero based indexing
 			return;   // Do Nothing
 
@@ -288,7 +286,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				Yc.invert();  // Vn = 0 not In
 				NewYc = Yc.kron(NeutralConductor);
 			} catch (Exception e) {
-				Globals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
+				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
 			}
 
 			// Reallocate into smaller space if Kron was successful
@@ -316,11 +314,11 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 				propertyValue[10] = getCMatrix();
 
 			} else {
-				Globals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
+				DSSGlobals.doSimpleMsg(String.format("Kron reduction failed: LineCode.%s. Attempting to eliminate neutral conductor %d.", getName(), NeutralConductor), 103);
 			}
 
 		} else {
-			Globals.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
+			DSSGlobals.doSimpleMsg("Cannot perform Kron Reduction on a 1-phase LineCode: LineCode." + getName(), 103);
 		}
 	}
 

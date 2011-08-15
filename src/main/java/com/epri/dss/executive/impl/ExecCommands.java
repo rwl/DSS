@@ -465,18 +465,17 @@ public class ExecCommands {
 		String param;
 		StringBuffer objName = new StringBuffer();
 		StringBuffer propName = new StringBuffer();
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		try {
-			globals.setCmdResult(0);
-			globals.setErrorNumber(0);  // reset error number
-			globals.setGlobalResult("");
+			DSSGlobals.cmdResult = 0;
+			DSSGlobals.errorNumber = 0;  // reset error number
+			DSSGlobals.globalResult = "";
 
 			/* Load up the parser and process the first parameter only */
 			lastCmdLine = cmdLine;
 			parser.setCmdString(lastCmdLine);  // load up command parser
-			globals.setLastCommandWasCompile(false);
+			DSSGlobals.lastCommandWasCompile = false;
 
 			paramPointer = 0;
 			paramName = parser.getNextParam();
@@ -493,12 +492,12 @@ public class ExecCommands {
 			case 13:
 				if (DSSExecutive.getInstance().isRecorderOn())
 					DSSExecutive.getInstance().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+cmdLine);
-				globals.setCmdResult(ExecHelper.doRedirect(true));
+				DSSGlobals.cmdResult = ExecHelper.doRedirect(true);
 				return;
 			case 19:
 				if (DSSExecutive.getInstance().isRecorderOn())
 					DSSExecutive.getInstance().writeToRecorderFile(DSSGlobals.CRLF+"!*********"+cmdLine);
-				globals.setCmdResult(ExecHelper.doRedirect(false));
+				DSSGlobals.cmdResult = ExecHelper.doRedirect(false);
 				return;
 			default:  // write everything direct to recorder, if on
 				if (DSSExecutive.getInstance().isRecorderOn())
@@ -509,10 +508,10 @@ public class ExecCommands {
 			// things that are ok to do before a circuit is defined
 			switch (paramPointer) {
 			case 0:
-				globals.setCmdResult(ExecHelper.doNewCmd());  // new
+				DSSGlobals.cmdResult = ExecHelper.doNewCmd();  // new
 				break;
 			case 14:
-				if (globals.getActiveCircuit() == null) {
+				if (DSSGlobals.activeCircuit == null) {
 					ExecOptions.getInstance().doSetCmd_NoCircuit();  // can only call this if no circuit active
 					return;  // we exit with either a good outcome or bad
 				}
@@ -521,14 +520,14 @@ public class ExecCommands {
 				// do nothing - comment
 				break;
 			case 20:
-				globals.setCmdResult(ExecHelper.doHelpCmd());
+				DSSGlobals.cmdResult = ExecHelper.doHelpCmd();
 				break;
 			case 21:
-				if (!globals.isDLL())
-					globals.getDSSForms().exitControlPanel();
+				if (!DSSGlobals.isDLL)
+					DSSGlobals.DSSForms.exitControlPanel();
 				break;
 			case 24:
-				globals.getDSSForms().showControlPanel();
+				DSSGlobals.DSSForms.showControlPanel();
 				break;
 			case 26:
 				ExecHelper.doClearCmd();
@@ -537,35 +536,35 @@ public class ExecCommands {
 				ExecHelper.doAboutBox();
 				break;
 			case 34:
-				globals.setCmdResult(ExecHelper.doFileEditCmd());
+				DSSGlobals.cmdResult = ExecHelper.doFileEditCmd();
 				break;
 			case 48:
-				globals.setCmdResult(ExecHelper.doClassesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doClassesCmd();
 				break;
 			case 49:
-				globals.setCmdResult(ExecHelper.doUserClassesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doUserClassesCmd();
 				break;
 			case 62:
-				globals.setCmdResult(ExecHelper.doAlignFileCmd());
+				DSSGlobals.cmdResult = ExecHelper.doAlignFileCmd();
 				break;
 			case 68:
-				globals.setCmdResult(ExecHelper.doDI_PlotCmd());
+				DSSGlobals.cmdResult = ExecHelper.doDI_PlotCmd();
 				break;
 			case 69:
-				globals.setCmdResult(ExecHelper.doCompareCasesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doCompareCasesCmd();
 				break;
 			case 70:
-				globals.setCmdResult(ExecHelper.doYearlyCurvesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doYearlyCurvesCmd();
 				break;
 			case 71:
 				paramName = parser.getNextParam();
 				param = parser.makeString();
-				if (new File(globals.getCurrentDirectory()).exists()) {
-					globals.setCurrentDirectory(param);
-					globals.setCmdResult(0);
-					globals.setDataPath(param);  // change DSSDataDirectory
+				if (new File(DSSGlobals.currentDirectory).exists()) {
+					DSSGlobals.currentDirectory = param;
+					DSSGlobals.cmdResult = 0;
+					DSSGlobals.setDataPath(param);  // change DSS data directory
 				} else {
-					globals.doSimpleMsg("Directory \""+param+"\" not found.", 282);
+					DSSGlobals.doSimpleMsg("Directory \""+param+"\" not found.", 282);
 				}
 				break;
 			case 74:
@@ -575,8 +574,8 @@ public class ExecCommands {
 				ExecHelper.doCvrtLoadshapesCmd();
 				break;
 			default:
-				if (globals.getActiveCircuit() == null)
-					globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this command.", 301);
+				if (DSSGlobals.activeCircuit == null)
+					DSSGlobals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this command.", 301);
 				break;
 			}
 
@@ -587,17 +586,17 @@ public class ExecCommands {
 
 				/* If a command or no text before the = sign, then error */
 				if ((paramName.length() == 0) || paramName.equalsIgnoreCase("command")) {
-					globals.doSimpleMsg("Unknown Command: \"" + param + "\" "+ DSSGlobals.CRLF + parser.getCmdString(), 302);
-					globals.setCmdResult(1);
+					DSSGlobals.doSimpleMsg("Unknown Command: \"" + param + "\" "+ DSSGlobals.CRLF + parser.getCmdString(), 302);
+					DSSGlobals.cmdResult = 1;
 				} else {
 					ExecHelper.parseObjName(paramName, objName, propName);
 					if (objName.length() > 0)
-						globals.setObject(objName.toString());  // set active element
-					if (globals.getActiveDSSObject() != null) {
+						DSSGlobals.setObject(objName.toString());  // set active element
+					if (DSSGlobals.activeDSSObject != null) {
 						// rebuild command line and pass to editor
 						// use quotes to ensure first parameter is interpreted ok after rebuild
 						parser.setCmdString(propName.toString() + "=\"" + param + "\" " + parser.getRemainder());
-						globals.getActiveDSSClass().edit();
+						DSSGlobals.activeDSSClass.edit();
 					}
 				}
 				return;
@@ -606,61 +605,61 @@ public class ExecCommands {
 			// process the rest of the commands
 			switch (paramPointer) {
 			case 1:
-				globals.setCmdResult(ExecHelper.doEditCmd());  // edit
+				DSSGlobals.cmdResult = ExecHelper.doEditCmd();  // edit
 				break;
 			case 2:
-				globals.setCmdResult(ExecHelper.doMoreCmd()); // more
+				DSSGlobals.cmdResult = ExecHelper.doMoreCmd(); // more
 				break;
 			case 3:
-				globals.setCmdResult(ExecHelper.doMoreCmd()); // m
+				DSSGlobals.cmdResult = ExecHelper.doMoreCmd(); // m
 				break;
 			case 4:
-				globals.setCmdResult(ExecHelper.doMoreCmd()); // ~
+				DSSGlobals.cmdResult = ExecHelper.doMoreCmd(); // ~
 				break;
 			case 5:
-				globals.setCmdResult(ExecHelper.doSelectCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSelectCmd();
 				break;
 			case 6:
-				globals.setCmdResult(ExecHelper.doSaveCmd()); // save
+				DSSGlobals.cmdResult = ExecHelper.doSaveCmd(); // save
 				break;
 			case 7:
-				globals.setCmdResult(ShowOptions.getInstance().doShowCmd()); // show
+				DSSGlobals.cmdResult = ShowOptions.getInstance().doShowCmd(); // show
 				break;
 			case 8:
-				globals.setCmdResult(ExecOptions.getInstance().doSetCmd(1)); // solve
+				DSSGlobals.cmdResult = ExecOptions.getInstance().doSetCmd(1); // solve
 				break;
 			case 9:
-				globals.setCmdResult(ExecHelper.doEnableCmd());
+				DSSGlobals.cmdResult = ExecHelper.doEnableCmd();
 				break;
 			case 10:
-				globals.setCmdResult(ExecHelper.doDisableCmd());
+				DSSGlobals.cmdResult = ExecHelper.doDisableCmd();
 				break;
 			case 11:
-				globals.setCmdResult(PlotOptions.getInstance().doPlotCmd());
+				DSSGlobals.cmdResult = PlotOptions.getInstance().doPlotCmd();
 				break;
 			case 12:
-				globals.setCmdResult(ExecHelper.doResetCmd());
+				DSSGlobals.cmdResult = ExecHelper.doResetCmd();
 				break;
 			case 14:
-				globals.setCmdResult(ExecOptions.getInstance().doSetCmd(0));  // set with no solve
+				DSSGlobals.cmdResult = ExecOptions.getInstance().doSetCmd(0);  // set with no solve
 				break;
 			case 15:
-				globals.setCmdResult(ExecHelper.doPropertyDump());
+				DSSGlobals.cmdResult = ExecHelper.doPropertyDump();
 				break;
 			case 17:
-				globals.setCmdResult(ExecHelper.doCloseCmd());
+				DSSGlobals.cmdResult = ExecHelper.doCloseCmd();
 				break;
 			case 22:
-				globals.setCmdResult(ExecHelper.doQueryCmd());
+				DSSGlobals.cmdResult = ExecHelper.doQueryCmd();
 				break;
 			case 23:
-				globals.setCmdResult(ExecHelper.doNextCmd());
+				DSSGlobals.cmdResult = ExecHelper.doNextCmd();
 				break;
 //			case 24:
 //				DSSForms.showControlPanel()
 //				break;
 			case 25:
-				globals.setCmdResult(ExecHelper.doSampleCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSampleCmd();
 				break;
 //			case 26:
 //				clearAllCircuits();
@@ -671,62 +670,62 @@ public class ExecCommands {
 //				doAboutBox();
 //				break;
 			case 28:
-				globals.setCmdResult(ExecHelper.doSetVoltageBases());
+				DSSGlobals.cmdResult = ExecHelper.doSetVoltageBases();
 				break;
 			case 29:
-				globals.setCmdResult(ExecHelper.doSetkVBase());
+				DSSGlobals.cmdResult = ExecHelper.doSetkVBase();
 				break;
 			case 30:
 				// force rebuilding of Y
-				globals.getActiveCircuit().invalidateAllPCElements();
+				DSSGlobals.activeCircuit.invalidateAllPCElements();
 				break;
 			case 31:
-				globals.setCmdResult(ExecOptions.getInstance().doGetCmd());
+				DSSGlobals.cmdResult = ExecOptions.getInstance().doGetCmd();
 				break;
 			case 32:
-				globals.getActiveCircuit().getSolution().setSolutionInitialized(false);
+				DSSGlobals.activeCircuit.getSolution().setSolutionInitialized(false);
 				break;
 			case 33:
-				globals.setCmdResult(ExportOptions.getInstance().doExportCmd());
+				DSSGlobals.cmdResult = ExportOptions.getInstance().doExportCmd();
 				break;
 			case 34:
-				globals.setCmdResult(ExecHelper.doFileEditCmd());
+				DSSGlobals.cmdResult = ExecHelper.doFileEditCmd();
 				break;
 			case 35:
-				globals.setCmdResult(ExecHelper.doVoltagesCmd(false));
+				DSSGlobals.cmdResult = ExecHelper.doVoltagesCmd(false);
 				break;
 			case 36:
-				globals.setCmdResult(ExecHelper.doCurrentsCmd());
+				DSSGlobals.cmdResult = ExecHelper.doCurrentsCmd();
 				break;
 			case 37:
-				globals.setCmdResult(ExecHelper.doPowersCmd());
+				DSSGlobals.cmdResult = ExecHelper.doPowersCmd();
 				break;
 			case 38:
-				globals.setCmdResult(ExecHelper.doSeqVoltagesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSeqVoltagesCmd();
 				break;
 			case 39:
-				globals.setCmdResult(ExecHelper.doSeqCurrentsCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSeqCurrentsCmd();
 				break;
 			case 40:
-				globals.setCmdResult(ExecHelper.doSeqPowersCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSeqPowersCmd();
 				break;
 			case 42:
-				globals.setCmdResult(ExecHelper.doLossesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doLossesCmd();
 				break;
 			case 43:
-				globals.setCmdResult(ExecHelper.doCktLossesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doCktLossesCmd();
 				break;
 			case 44:
-				globals.setCmdResult(ExecHelper.doAllocateLoadsCmd());
+				DSSGlobals.cmdResult = ExecHelper.doAllocateLoadsCmd();
 				break;
 			case 45:
-				globals.setCmdResult(ExecHelper.doFormEditCmd());
+				DSSGlobals.cmdResult = ExecHelper.doFormEditCmd();
 				break;
 			case 46:
-				globals.setCmdResult(ExecHelper.doMeterTotals());
+				DSSGlobals.cmdResult = ExecHelper.doMeterTotals();
 				break;
 			case 47:
-				globals.setCmdResult(ExecHelper.doCapacityCmd());
+				DSSGlobals.cmdResult = ExecHelper.doCapacityCmd();
 				break;
 //			case 48:
 //				Globals.setCmdResult(ExecHelper.doClassesCmd());
@@ -735,56 +734,56 @@ public class ExecCommands {
 //				Globals.setCmdResult(ExecHelper.doUserClassesCmd();
 //				break;
 			case 50:
-				globals.setCmdResult(ExecHelper.doZscCmd(true));
+				DSSGlobals.cmdResult = ExecHelper.doZscCmd(true);
 				break;
 			case 51:
-				globals.setCmdResult(ExecHelper.doZsc10Cmd());
+				DSSGlobals.cmdResult = ExecHelper.doZsc10Cmd();
 				break;
 			case 52:
-				globals.setCmdResult(ExecHelper.doZscRefresh());
+				DSSGlobals.cmdResult = ExecHelper.doZscRefresh();
 				break;
 			case 53:
-				globals.setCmdResult(ExecHelper.doZscCmd(false));
+				DSSGlobals.cmdResult = ExecHelper.doZscCmd(false);
 				break;
 			case 54:
-				globals.setCmdResult(ExecHelper.doVoltagesCmd(true));
+				DSSGlobals.cmdResult = ExecHelper.doVoltagesCmd(true);
 				break;
 			case 55:
-				globals.setCmdResult(ExecHelper.doVarValuesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doVarValuesCmd();
 				break;
 			case 56:
-				globals.setCmdResult(ExecHelper.doVarNamesCmd());
+				DSSGlobals.cmdResult = ExecHelper.doVarNamesCmd();
 				break;
 			case 57:
-				globals.setCmdResult(ExecHelper.doBusCoordsCmd());
+				DSSGlobals.cmdResult = ExecHelper.doBusCoordsCmd();
 				break;
 			case 58:
-				if (globals.getActiveCircuit().isBusNameRedefined())
-					globals.getActiveCircuit().reProcessBusDefs();
+				if (DSSGlobals.activeCircuit.isBusNameRedefined())
+					DSSGlobals.activeCircuit.reProcessBusDefs();
 				break;
 			case 59:
-				globals.setCmdResult(ExecHelper.doMakePosSeq());
+				DSSGlobals.cmdResult = ExecHelper.doMakePosSeq();
 				break;
 			case 60:
-				globals.setCmdResult(ExecHelper.doReduceCmd());
+				DSSGlobals.cmdResult = ExecHelper.doReduceCmd();
 				break;
 			case 61:
-				globals.setCmdResult(ExecHelper.doInterpolateCmd());
+				DSSGlobals.cmdResult = ExecHelper.doInterpolateCmd();
 				break;
 			case 63:
-				globals.setCmdResult(ExecHelper.doTOPCmd());
+				DSSGlobals.cmdResult = ExecHelper.doTOPCmd();
 				break;
 			case 64:
-				globals.setCmdResult(ExecHelper.doRotateCmd());
+				DSSGlobals.cmdResult = ExecHelper.doRotateCmd();
 				break;
 			case 65:
-				globals.setCmdResult(ExecHelper.doVDiffCmd());
+				DSSGlobals.cmdResult = ExecHelper.doVDiffCmd();
 				break;
 			case 66:
-				globals.setCmdResult(ExecHelper.doSummaryCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSummaryCmd();
 				break;
 			case 67:
-				globals.setCmdResult(ExecHelper.doDistributeCmd());
+				DSSGlobals.cmdResult = ExecHelper.doDistributeCmd();
 				break;
 			case 68:
 				break;
@@ -795,61 +794,61 @@ public class ExecCommands {
 			case 71:
 				break;
 			case 72:
-				globals.setCmdResult(ExecHelper.doVisualizeCmd());
+				DSSGlobals.cmdResult = ExecHelper.doVisualizeCmd();
 				break;
 			case 73:
-				globals.setCmdResult(ExecHelper.doCloseDICmd());
+				DSSGlobals.cmdResult = ExecHelper.doCloseDICmd();
 				break;
 			case 75:
-				globals.setCmdResult(ExecHelper.doEstimateCmd());
+				DSSGlobals.cmdResult = ExecHelper.doEstimateCmd();
 				break;
 			case 76:
-				globals.setCmdResult(ExecHelper.doReconductorCmd());
+				DSSGlobals.cmdResult = ExecHelper.doReconductorCmd();
 				break;
 			/* Step solution commands */
 			case 77:
-				globals.getActiveCircuit().getSolution().snapShotInit();
+				DSSGlobals.activeCircuit.getSolution().snapShotInit();
 				break;
 			case 78:
-				globals.getActiveCircuit().getSolution().solveCircuit();
+				DSSGlobals.activeCircuit.getSolution().solveCircuit();
 				break;
 			case 79:
-				globals.getActiveCircuit().getSolution().sampleControlDevices();
+				DSSGlobals.activeCircuit.getSolution().sampleControlDevices();
 				break;
 			case 80:
-				globals.getActiveCircuit().getSolution().doControlActions();
+				DSSGlobals.activeCircuit.getSolution().doControlActions();
 				break;
 			case 81:
-				globals.getActiveCircuit().getControlQueue().showQueue(globals.getDSSDirectory() + globals.getCircuitName_() + "ControlQueue.csv");
+				DSSGlobals.activeCircuit.getControlQueue().showQueue(DSSGlobals.DSSDirectory + DSSGlobals.circuitName_ + "ControlQueue.csv");
 				break;
 			case 82:
-				globals.getActiveCircuit().getSolution().solveDirect();
+				DSSGlobals.activeCircuit.getSolution().solveDirect();
 				break;
 			case 83:
-				globals.getActiveCircuit().getSolution().doPFlowSolution();
+				DSSGlobals.activeCircuit.getSolution().doPFlowSolution();
 				break;
 			case 84:
-				globals.setCmdResult(ExecHelper.doAddMarkerCmd());
+				DSSGlobals.cmdResult = ExecHelper.doAddMarkerCmd();
 				break;
 			case 85:
-				globals.setCmdResult(ExecHelper.doUUIDsCmd());
+				DSSGlobals.cmdResult = ExecHelper.doUUIDsCmd();
 				break;
 			case 86:
-				globals.setCmdResult(ExecHelper.doSetLoadAndGenKVCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSetLoadAndGenKVCmd();
 				break;
 			case 87:
 				break;
 			case 88:
-				globals.setCmdResult(ExecHelper.doNodeDiffCmd());
+				DSSGlobals.cmdResult = ExecHelper.doNodeDiffCmd();
 				break;
 			case 89:
-				globals.setCmdResult(ExecHelper.doRephaseCmd());
+				DSSGlobals.cmdResult = ExecHelper.doRephaseCmd();
 				break;
 			case 90:
-				globals.setCmdResult(ExecHelper.doSetBusXYCmd());
+				DSSGlobals.cmdResult = ExecHelper.doSetBusXYCmd();
 				break;
 			case 91:
-				globals.setCmdResult(ExecHelper.doUpdateStorageCmd());
+				DSSGlobals.cmdResult = ExecHelper.doUpdateStorageCmd();
 				break;
 			case 92:
 				Utilities.obfuscate();

@@ -72,7 +72,7 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 				addANode();
 				nodes[numNodesThisBus] = nodeNum;
 
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 
 				ckt.setNumNodes(ckt.getNumNodes() + 1);  // global node number for circuit
 				refNo[numNodesThisBus] = ckt.getNumNodes();

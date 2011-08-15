@@ -471,7 +471,7 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		double w, freqMultiple;
 		boolean hasZl;
 
-		setYPrimFreq(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
+		setYPrimFreq(DSSGlobals.activeCircuit.getSolution().getFrequency());
 		freqMultiple = getYPrimFreq() / getBaseFrequency();
 		w = DSSGlobals.TWO_PI * getYPrimFreq();
 

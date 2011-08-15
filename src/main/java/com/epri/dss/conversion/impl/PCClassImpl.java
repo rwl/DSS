@@ -61,7 +61,7 @@ public class PCClassImpl extends CktElementClassImpl implements PCClass {
 	protected void classMakeLike(Object otherObj) {
 		PCElement otherPCObj = (PCElement) otherObj;
 
-		PCElement pElem = (PCElement) DSSGlobals.getInstance().getActiveDSSObject();
+		PCElement pElem = (PCElement) DSSGlobals.activeDSSObject;
 
 		pElem.setSpectrum(otherPCObj.getSpectrum());
 		pElem.setSpectrumObj(otherPCObj.getSpectrumObj());

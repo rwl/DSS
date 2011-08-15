@@ -80,17 +80,16 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		int i;
 
 		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
 		if (devIndex >= 0) {
-			monitoredElement = (DSSCktElement) globals.getActiveCircuit().getCktElements().get(devIndex);
+			monitoredElement = (DSSCktElement) DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
 			if (getNPhases() > Fuse.FUSEMAXDIM)
-				globals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
+				DSSGlobals.doSimpleMsg("Warning: Fuse "+getName()+": Number of phases > max fuse dimension.", 404);
 			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
-				globals.doErrorMsg("Fuse: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("Fuse: \"" + getName() + "\"",
 										"Terminal no. \"" +"\" does not exist.",
 										"Re-specify terminal no.", 404);
 			} else {
@@ -106,7 +105,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 		devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // both CktElement and monitored element must already exist
-			setControlledBus( (Bus) globals.getActiveCircuit().getCktElements().get(devIndex) );
+			setControlledBus( (Bus) DSSGlobals.activeCircuit.getCktElements().get(devIndex) );
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1st terminal active
 
 			for (i = 0; i < Math.min(Fuse.FUSEMAXDIM, getControlledElement().getNPhases()); i++) {
@@ -122,7 +121,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				readyToBlow[i] = false;
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("Fuse: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 405);
 		}
 	}
@@ -226,7 +225,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 
 				if (tripTime > 0.0) {
 					if (!readyToBlow[i]) {
-						Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+						Circuit ckt = DSSGlobals.activeCircuit;
 						// then arm for an open operation
 						hAction[i] = ckt.getControlQueue().push(ckt.getSolution().getIntHour(),
 								ckt.getSolution().getDynaVars().t + tripTime + delayTime, i, 0, this);
@@ -235,7 +234,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				} else {
 					if (readyToBlow[i]) {
 						// current has dropped below pickup and it hasn't blown yet
-						DSSGlobals.getInstance().getActiveCircuit().getControlQueue().delete(hAction[i]);  // delete the fuse blow action
+						DSSGlobals.activeCircuit.getControlQueue().delete(hAction[i]);  // delete the fuse blow action
 						readyToBlow[i] = false;
 					}
 				}

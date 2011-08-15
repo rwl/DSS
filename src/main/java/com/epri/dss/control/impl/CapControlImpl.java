@@ -102,20 +102,18 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new CapControlObjImpl(this, ObjName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new CapControlObjImpl(this, ObjName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeCapControlObj = (CapControlObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeCapControlObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeCapControlObj);
 
 		int result = 0;
 
@@ -136,7 +134,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ acc.getName() + "\"", 352);
 				break;
 			case 0:
 				acc.setElementName(param.toLowerCase());
@@ -168,7 +166,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 					acc.setControlType(CapControlType.SRP);
 					break;
 				default:
-					globals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
+					DSSGlobals.doSimpleMsg(String.format("Unrecognized CapControl type: \"%s\" (CapControl.%s)", param, acc.getName()), 352);
 					break;
 				}
 				break;
@@ -246,7 +244,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFOnValue(acc.getOnValue());
 						}
 					} else {
-						globals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
+						DSSGlobals.doSimpleMsg("Invalid PF on value for CapControl."+acc.getName(), 353);
 					}
 					break;
 				case 7:
@@ -257,18 +255,18 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 							acc.setPFOffValue(acc.getOffValue());
 						}
 					} else {
-						globals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
+						DSSGlobals.doSimpleMsg("Invalid PF off value for CapControl."+acc.getName(), 35301);
 					}
 					break;
 				case 14:
 					if (acc.getCTPhase() > acc.getNPhases()) {
-						globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
+						DSSGlobals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getCTPhase(), acc.getNPhases()), 35302);
 						acc.setCTPhase(1);
 					}
 					break;
 				case 15:
 					if (acc.getPTPhase() > acc.getNPhases()) {
-						globals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
+						DSSGlobals.doSimpleMsg(String.format("Error: Monitored phase(%d) must be less than or equal to number of phases(%d). ", acc.getPTPhase(), acc.getNPhases()), 35303);
 						acc.setPTPhase(1);
 					}
 					break;
@@ -321,7 +319,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				acc.setPropertyValue(i, otherCapControl.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
+			DSSGlobals.doSimpleMsg("Error in CapControl makeLike: \"" + capControlName + "\" not found.", 360);
 		}
 
 		return result;

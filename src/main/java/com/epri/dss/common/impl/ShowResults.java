@@ -43,7 +43,7 @@ public abstract class ShowResults {
 
 	private static void setMaxBusNameLength() {
 		maxBusNameLength = 4;
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++)
 			maxBusNameLength = Math.max(maxBusNameLength, ckt.getBusList().get(i).length());
 	}
@@ -51,13 +51,12 @@ public abstract class ShowResults {
 	private static void setMaxDeviceNameLength() {
 		String devName, devClassName;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		maxDeviceNameLength = 0;
 		for (int i = 0; i < ckt.getNumDevices(); i++) {
 			devName = ckt.getDeviceList().get(i);
-			devClassName = ((DSSClass) globals.getDSSClassList().get( ckt.getDeviceRef()[i].cktElementClass )).getName();
+			devClassName = ((DSSClass) DSSGlobals.DSSClassList.get( ckt.getDeviceRef()[i].cktElementClass )).getName();
 			maxDeviceNameLength = Math.max(maxDeviceNameLength, devName.length() + devClassName.length() + 1);
 		}
 	}
@@ -69,7 +68,7 @@ public abstract class ShowResults {
 		Complex[] V012 = new Complex[3];
 		double V0, V1, V2, Vpu, V2V1, V0V1;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.getBuses()[i].getNumNodesThisBus() >= 3) {
 
@@ -127,7 +126,7 @@ public abstract class ShowResults {
 		double Vmag, Vpu;
 		String BName;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (j = 0; j < ckt.getBuses()[i].getNumNodesThisBus(); j++) {
 			nref = ckt.getBuses()[i].getRef(j);
@@ -165,7 +164,7 @@ public abstract class ShowResults {
 		Complex volts;
 		double Vpu, Vmag;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		nCond = pElem.getNConds();
 		nTerm = pElem.getNTerms();
@@ -204,7 +203,7 @@ public abstract class ShowResults {
 		Complex volts1, volts2;
 		String elemName;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		nCond = pElem.getNConds();
 
@@ -250,7 +249,7 @@ public abstract class ShowResults {
 		PrintWriter pw;
 		int i;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			setMaxBusNameLength();
@@ -441,7 +440,7 @@ public abstract class ShowResults {
 		int nCond, nTerm, j;
 		double I0 = 0, I1 = 0, I2 = 0, CMax = 0;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxDeviceNameLength();
 		setMaxBusNameLength();
@@ -570,7 +569,7 @@ public abstract class ShowResults {
 
 			Utilities.fireOffEditor(fileName);
 		} catch (IOException e) {
-			DSSGlobals.getInstance().doSimpleMsg("Exception raised in ShowCurrents: " + e.getMessage(), 2190);
+			DSSGlobals.doSimpleMsg("Exception raised in ShowCurrents: " + e.getMessage(), 2190);
 		}
 	}
 
@@ -592,7 +591,7 @@ public abstract class ShowResults {
 		Complex[] Iph = new Complex[3];
 		Complex[] I012 = new Complex[3];
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxDeviceNameLength();
 		setMaxBusNameLength();
@@ -953,7 +952,7 @@ public abstract class ShowResults {
 		Complex[] I012 = new Complex[3];
 		Complex[] cBuffer;  // Allocate to max total conductors
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			/* Allocate cBuffer big enough for this circuit element */
@@ -1025,7 +1024,7 @@ public abstract class ShowResults {
 		Complex[] cBuffer;  // allocate to max total conductors
 		String fromBus;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			cBuffer = new Complex[cktElem.getYorder()];
@@ -1074,14 +1073,14 @@ public abstract class ShowResults {
 		int busReference;
 		int jTerm = 0;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxDeviceNameLength();
 
 		/* Get bus reference */
 		busReference = ckt.getBusList().find(busName);
 		if (busReference == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Bus \""+busName+"\" not found.", 219);
+			DSSGlobals.doSimpleMsg("Bus \""+busName+"\" not found.", 219);
 			return;
 		}
 		try {
@@ -1339,7 +1338,7 @@ public abstract class ShowResults {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
-			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			Circuit ckt = DSSGlobals.activeCircuit;
 			SolutionObj sol = ckt.getSolution();
 
 			/* Set source voltage injection currents */
@@ -1484,8 +1483,7 @@ public abstract class ShowResults {
 		int i;
 		String disabledFileName;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxBusNameLength();
 		setMaxDeviceNameLength();
@@ -1505,17 +1503,17 @@ public abstract class ShowResults {
 					pw.println();
 					pwDisabled.println("All DISABLED Elements in Class \"" + className + "\"");
 					pwDisabled.println();
-					globals.setActiveDSSClass( globals.getDSSClassList().get(globals.getLastClassReferenced()) );
-					for (i = 0; i < globals.getActiveDSSClass().getElementCount(); i++) {
-						globals.getActiveDSSClass().setActiveElement(i);
-						if ((globals.getActiveDSSClass().getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
-							if (((CktElement) globals.getActiveDSSObject()).isEnabled()) {
-								pw.println(globals.getActiveDSSObject().getName());
+					DSSGlobals.activeDSSClass = DSSGlobals.DSSClassList.get(DSSGlobals.lastClassReferenced);
+					for (i = 0; i < DSSGlobals.activeDSSClass.getElementCount(); i++) {
+						DSSGlobals.activeDSSClass.setActiveElement(i);
+						if ((DSSGlobals.activeDSSClass.getDSSClassType() & DSSClassDefs.BASECLASSMASK) > 0) {
+							if (((CktElement) DSSGlobals.activeDSSObject).isEnabled()) {
+								pw.println(DSSGlobals.activeDSSObject.getName());
 							} else {
-								pwDisabled.println(globals.getActiveDSSObject().getName());
+								pwDisabled.println(DSSGlobals.activeDSSObject.getName());
 							}
 						} else {
-							pw.println(globals.getActiveDSSObject().getName());  // non cktelements
+							pw.println(DSSGlobals.activeDSSObject.getName());  // non cktelements
 						}
 					}
 				}
@@ -1591,7 +1589,7 @@ public abstract class ShowResults {
 		int i, j;
 		Bus pBus;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			setMaxBusNameLength();
@@ -1652,7 +1650,7 @@ public abstract class ShowResults {
 		int i, j;
 		EnergyMeter meterClass;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -1711,7 +1709,7 @@ public abstract class ShowResults {
 		int i, j;
 		Generator generatorClass;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -1774,7 +1772,7 @@ public abstract class ShowResults {
 			pw.println("Name            Tap      Min       Max     Step  Position");
 			pw.println();
 
-			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			Circuit ckt = DSSGlobals.activeCircuit;
 
 			for (RegControlObj pReg : ckt.getRegControls()) {
 				TransformerObj t = pReg.getTransformer();
@@ -1804,7 +1802,7 @@ public abstract class ShowResults {
 		String paramName;
 		String param;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
+
 		Parser parser = Parser.getInstance();
 
 		try {
@@ -1817,14 +1815,14 @@ public abstract class ShowResults {
 			fw = new FileWriter(fileName);
 			pw = new PrintWriter(fw);
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
-			pMtrClass = (EnergyMeter) globals.getDSSClassList().get(globals.getClassNames().find("energymeter"));
+			pMtrClass = (EnergyMeter) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("energymeter"));
 
 			if (param.length() > 0) {
 				pMtr = (EnergyMeterObj) pMtrClass.find(param);  // FIXME make generic
 				if (pMtr == null) {
-					globals.doSimpleMsg("EnergyMeter \"" + param + "\" not found.", 220);
+					DSSGlobals.doSimpleMsg("EnergyMeter \"" + param + "\" not found.", 220);
 				} else {
 					if (pMtr.getBranchList() != null) {
 						pw.println("Branches and Load in Zone for EnergyMeter " + param);
@@ -1866,7 +1864,7 @@ public abstract class ShowResults {
 					}
 				}
 			} else {
-				globals.doSimpleMsg("Meter name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 221);
+				DSSGlobals.doSimpleMsg("Meter name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 221);
 			}
 
 			pw.close();
@@ -1882,7 +1880,7 @@ public abstract class ShowResults {
 				Utilities.fireOffEditor(fileName);
 				break;
 			default:
-				globals.getDSSForms().showTreeView(fileName);
+				DSSGlobals.DSSForms.showTreeView(fileName);
 				break;
 			}
 		}
@@ -1897,7 +1895,7 @@ public abstract class ShowResults {
 		Complex[] I012 = new Complex[3];
 		double I0, I1, I2, Cmag, Cmax;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxDeviceNameLength();
 
@@ -1993,7 +1991,7 @@ public abstract class ShowResults {
 //		LoadObj PLoad;
 		boolean doIt;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -2048,7 +2046,7 @@ public abstract class ShowResults {
 			termPower,
 			loadPower;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		setMaxDeviceNameLength();
 
@@ -2129,7 +2127,7 @@ public abstract class ShowResults {
 		PrintWriter pw;
 		int i;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -2172,7 +2170,7 @@ public abstract class ShowResults {
 
 		int i, j;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		// make sure bus list is built
 		if (ckt.isBusNameRedefined()) ckt.reProcessBusDefs();
@@ -2298,7 +2296,7 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -2332,7 +2330,6 @@ public abstract class ShowResults {
 		int hMeter;
 		EnergyMeterObj pMtr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fw = new FileWriter(fileName);
@@ -2341,11 +2338,11 @@ public abstract class ShowResults {
 			pw.println("Loops and Paralleled Lines in all EnergyMeter Zones");
 			pw.println();
 
-			hMeter = globals.getEnergyMeterClass().getFirst();
+			hMeter = DSSGlobals.energyMeterClass.getFirst();
 
 			while (hMeter > 0) {
 
-				pMtr = (EnergyMeterObj) globals.getActiveDSSObject();
+				pMtr = (EnergyMeterObj) DSSGlobals.activeDSSObject;
 
 				if (pMtr.getBranchList() != null) {
 
@@ -2362,7 +2359,7 @@ public abstract class ShowResults {
 					}
 				}
 
-				hMeter = globals.getEnergyMeterClass().getNext();
+				hMeter = DSSGlobals.energyMeterClass.getNext();
 			}
 			pw.close();
 			fw.close();
@@ -2395,7 +2392,7 @@ public abstract class ShowResults {
 		CktTree topo;
 		int nLoops, nParallel, nLevels, nIsolated, nSwitches;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fileName = fileRoot + "TopoSumm.txt";
@@ -2506,7 +2503,7 @@ public abstract class ShowResults {
 			fwTree.close();
 
 			Utilities.fireOffEditor(fileName);
-			DSSGlobals.getInstance().getDSSForms().showTreeView(treeName);
+			DSSGlobals.DSSForms.showTreeView(treeName);
 		} catch (IOException e) {
 			// TODO: handle exception
 		}
@@ -2530,7 +2527,6 @@ public abstract class ShowResults {
 		double Ccm;  // common mode capacitance
 		String lineCodesFileNm;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fw = new FileWriter(fileNm);
@@ -2538,7 +2534,7 @@ public abstract class ShowResults {
 
 			pw.println("LINE CONSTANTS");
 			pw.println(String.format("Frequency = %.6g Hz, Earth resistivity = %.6g ohm-m", freq, rho));
-			pw.println("Earth Model = " + Utilities.getEarthModel(globals.getDefaultEarthModel()));
+			pw.println("Earth Model = " + Utilities.getEarthModel(DSSGlobals.defaultEarthModel));
 			pw.println();
 
 			lineCodesFileNm = "LineConstantsCode.dss";
@@ -2547,13 +2543,13 @@ public abstract class ShowResults {
 
 			pw2.println("!--- OpenDSS Linecodes file generated from Show LINECONSTANTS command");
 			pw2.println(String.format("!--- Frequency = %.6g Hz, Earth resistivity = %.6g ohm-m", freq, rho));
-			pw2.println("!--- Earth Model = " + Utilities.getEarthModel(globals.getDefaultEarthModel()));
+			pw2.println("!--- Earth Model = " + Utilities.getEarthModel(DSSGlobals.defaultEarthModel));
 
-			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
+			LineImpl.lineGeometryClass = (LineGeometry) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("LineGeometry"));
 			Z = null;
 			Yc = null;
 
-			globals.setActiveEarthModel(globals.getDefaultEarthModel());
+			DSSGlobals.activeEarthModel = DSSGlobals.defaultEarthModel;
 
 			p = LineImpl.lineGeometryClass.getFirst();
 			while (p > 0) {
@@ -2567,7 +2563,7 @@ public abstract class ShowResults {
 					Z  = pElem.getZMatrix(freq, 1.0, units);
 					Yc = pElem.getYcMatrix(freq, 1.0, units);
 				} catch (Exception e) {
-					globals.doSimpleMsg("Error computing line constants for LineGeometry." + pElem.getName() +
+					DSSGlobals.doSimpleMsg("Error computing line constants for LineGeometry." + pElem.getName() +
 							"; Error message: " + e.getMessage(), 9934);
 				}
 
@@ -2743,7 +2739,7 @@ public abstract class ShowResults {
 		Complex[] cValues;
 		int i, j;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt != null) {
 			if (ckt.getActiveCktElement() != null) {
@@ -2804,14 +2800,14 @@ public abstract class ShowResults {
 		long[] colIdx, rowIdx;
 		Complex[] cVals;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt == null)
 			return;
 
 		hY = ckt.getSolution().getY();
 		if (hY == null) {
-			DSSGlobals.getInstance().doSimpleMsg("Y Matrix not Built.", 222);
+			DSSGlobals.doSimpleMsg("Y Matrix not Built.", 222);
 			return;
 		}
 
@@ -2870,7 +2866,7 @@ public abstract class ShowResults {
 		String pctError;
 		double dTemp;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		maxNodeCurrent = null;
@@ -2956,7 +2952,7 @@ public abstract class ShowResults {
 		double busKV;
 		String busName;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);
@@ -3034,7 +3030,7 @@ public abstract class ShowResults {
 		FileWriter fw;
 		PrintWriter pw;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			fw = new FileWriter(fileName);

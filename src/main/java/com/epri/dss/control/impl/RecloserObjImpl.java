@@ -114,8 +114,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
 
@@ -123,7 +122,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			monitoredElement = ckt.getCktElements().get(devIndex);
 			setNPhases(monitoredElement.getNPhases());  // force number of phases to be same
 			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
-				globals.doErrorMsg("Recloser: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("Recloser: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 392);
 			} else {
@@ -156,7 +155,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("Recloser: \"" + getName() + "\"", "CktElement \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 393);
 		}
 	}
@@ -368,7 +367,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 
 			if (tripTime > 0.0) {
 				if (!armedForOpen) {
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					// then arm for an open operation
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + tripTime + delayTime, ControlAction.OPEN, 0, this);
 					if (operationCount <= numReclose)
@@ -378,7 +377,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				}
 			} else {
 				if (armedForOpen) {
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					// if current dropped below pickup, disarm trip and set for reset.
 					ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen = false;

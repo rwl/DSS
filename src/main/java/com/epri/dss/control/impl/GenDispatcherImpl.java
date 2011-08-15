@@ -60,20 +60,18 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, ObjName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeGenDispatcherObj = (GenDispatcherObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeGenDispatcherObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeGenDispatcherObj);
 
 		int result = 0;
 
@@ -94,7 +92,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ agd.getName() + "\"", 364);
 				break;
 			case 0:
 				agd.setElementName(param.toLowerCase());
@@ -171,7 +169,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			for (int i = 0; i < agd.getParentClass().getNumProperties(); i++)
 				agd.setPropertyValue(i, otherGenDispatcher.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
+			DSSGlobals.doSimpleMsg("Error in GenDispatcher makeLike: \"" + genDispatcherName + "\" not found.", 370);
 		}
 
 		return result;

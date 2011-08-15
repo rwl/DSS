@@ -202,14 +202,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		super("Circuit");
 
 		isSolved = false;
-		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
+		DSSGlobals.solutionClass.newObject(getName());
 		solution = SolutionImpl.activeSolutionObj;
 
 		setLocalName(aName.toLowerCase());
 
 		setCaseName(aName);  // default case name to "circuitname"; sets circuitName_
 
-		fundamental = DSSGlobals.getInstance().getDefaultBaseFreq();
+		fundamental = DSSGlobals.defaultBaseFreq;
 		setActiveCktElement(null);
 		activeBusIndex = 0;  // always a bus
 
@@ -326,8 +326,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		defaultGrowthRate = 1.025;
 		defaultGrowthFactor = 1.0;
 
-		defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
-		defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.getInstance().getLoadShapeClass().find("default");
+		defaultDailyShapeObj  = (LoadShapeObj) DSSGlobals.loadShapeClass.find("default");
+		defaultYearlyShapeObj = (LoadShapeObj) DSSGlobals.loadShapeClass.find("default");
 
 		currentDirectory = "";
 
@@ -354,7 +354,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			deviceRef = (CktElementDef[]) Utilities.resizeArray(deviceRef, maxDevices);
 		}
 		deviceRef[numDevices].devHandle = handle;  // index into CktElements
-		deviceRef[numDevices].cktElementClass = DSSGlobals.getInstance().getLastClassReferenced();
+		deviceRef[numDevices].cktElementClass = DSSGlobals.lastClassReferenced;
 	}
 
 	private void addABus() {
@@ -374,7 +374,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private int addBus(String busName, int nNodes) {
 
 		if (busName.length() == 0) {  // error in busname
-			DSSGlobals.getInstance().doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
+			DSSGlobals.doErrorMsg("DSSCircuit.addBus", "BusName for object \"" + activeCktElement.getName() + "\" is null.",
 					"Error in definition of object.", 424);
 			for (int i = 0; i < activeCktElement.getNConds(); i++) nodeBuffer[i] = 0;
 			return 0;
@@ -405,7 +405,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setActiveCktElement(CktElement value) {
 		activeCktElement = value;
-		DSSGlobals.getInstance().setActiveDSSObject(value);
+		DSSGlobals.activeDSSObject = value;
 	}
 
 	public CktElement getActiveCktElement() {
@@ -514,8 +514,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			f.println();
 
 			// Write Redirect for all populated DSS Classes  Except Solution Class
-			for (int i = 0; i < DSSGlobals.getInstance().getSavedFileList().size(); i++)
-				f.println("redirect " + DSSGlobals.getInstance().getSavedFileList().get(i - 1));
+			for (int i = 0; i < DSSGlobals.savedFileList.size(); i++)
+				f.println("redirect " + DSSGlobals.savedFileList.get(i - 1));
 
 			if (new File("BusCoords.dss").exists()) {
 				f.println("makeBusList");
@@ -525,7 +525,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			f.close();
 			Result = true;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
+			DSSGlobals.doSimpleMsg("Error saving master file: " + e.getMessage(), 435);
 		}
 
 		return Result;
@@ -533,8 +533,8 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private boolean saveDSSObjects() {
 		// write files for all populated DSS classes except solution class
-		for (DSSClass DSS_Class : DSSGlobals.getInstance().getDSSClassList()) {
-			if ((DSS_Class == DSSGlobals.getInstance().getSolutionClass()) || DSS_Class.isSaved())
+		for (DSSClass DSS_Class : DSSGlobals.DSSClassList) {
+			if ((DSS_Class == DSSGlobals.solutionClass) || DSS_Class.isSaved())
 				continue;  // cycle to next
 			/* use default filename=classname */
 			if (!Utilities.writeClassFile(DSS_Class, "", (DSS_Class instanceof CktElementClass) ))
@@ -546,21 +546,20 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	private boolean saveFeeders() {
 		String currDir, saveDir;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		boolean result = true;
 		/* Write out all energy meter zones to separate subdirectories */
-		saveDir = globals.getCurrentDirectory();
+		saveDir = DSSGlobals.currentDirectory;
 		for (EnergyMeterObj Meter : energyMeters) {
 			currDir = Meter.getName();
 			if (new File(currDir).mkdir()) {
-				globals.setCurrentDirectory(currDir);
+				DSSGlobals.currentDirectory = currDir;
 				Meter.saveZone(currDir);
-				globals.setCurrentDirectory(saveDir);
+				DSSGlobals.currentDirectory = saveDir;
 			} else {
-				DSSGlobals.getInstance().doSimpleMsg("Cannot create directory: " + currDir, 436);
+				DSSGlobals.doSimpleMsg("Cannot create directory: " + currDir, 436);
 				result = false;
-				globals.setCurrentDirectory(saveDir);
+				DSSGlobals.currentDirectory = saveDir;
 				break;
 			}
 		}
@@ -582,7 +581,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 			result = true;
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doSimpleMsg("Error creating BusCoords.dss.", 437);
+			DSSGlobals.doSimpleMsg("Error creating BusCoords.dss.", 437);
 		}
 
 		return result;
@@ -601,7 +600,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 	public void setCaseName(String value) {
 		caseName = value;
-		DSSGlobals.getInstance().setCircuitName_(value + "_");
+		DSSGlobals.circuitName_ = value + "_";
 	}
 
 	public String getCaseName() {
@@ -700,12 +699,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	public boolean computeCapacity() {
 		boolean result = false;
 		if (energyMeters.size() == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
+			DSSGlobals.doSimpleMsg("Cannot compute system capacity with EnergyMeter objects!", 430);
 			return result;
 		}
 
 		if (numUERegs == 0) {
-			DSSGlobals.getInstance().doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
+			DSSGlobals.doSimpleMsg("Cannot compute system capacity with no UE resisters defined. Use \"set UERegs=(...)\" command.", 431);
 			return result;
 		}
 
@@ -714,9 +713,9 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		boolean CapacityFound = false;
 
 		while ((loadMultiplier <= 1.0) && !CapacityFound) {
-			DSSGlobals.getInstance().getEnergyMeterClass().resetAll();
+			DSSGlobals.energyMeterClass.resetAll();
 			solution.solve();
-			DSSGlobals.getInstance().getEnergyMeterClass().sampleAll();
+			DSSGlobals.energyMeterClass.sampleAll();
 			totalizeMeters();
 
 			// check for non-zero in UEregs
@@ -734,13 +733,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	}
 
 	public boolean save(String dir) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		String currDir, saveDir;
 		boolean result = false;
 
 		// make a new subfolder in the present folder based on the circuit
 		// name and a unique sequence number
-		saveDir = globals.getCurrentDirectory();
+		saveDir = DSSGlobals.currentDirectory;
 
 		boolean success = false;
 		if (dir.length() == 0) {
@@ -751,7 +749,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				File F = new File(currDir);
 				if (!F.exists()) {
 					if (F.mkdir()) {
-		            	globals.setCurrentDirectory(currDir);
+		            	DSSGlobals.currentDirectory = currDir;
 						success = true;
 						break;
 					}
@@ -764,30 +762,30 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 				currDir = dir;
 				F = new File(currDir);
 				if (F.mkdir()) {
-		            globals.setCurrentDirectory(currDir);
+		            DSSGlobals.currentDirectory = currDir;
 					success = true;
 				}
 			} else {  // exists - overwrite
 				currDir = dir;
-		        globals.setCurrentDirectory(currDir);
+		        DSSGlobals.currentDirectory = currDir;
 				success = true;
 			}
 		}
 
 		if (!success) {
-			DSSGlobals.getInstance().doSimpleMsg("Could not create a folder \"" + dir + "\" for saving the circuit.", 432);
+			DSSGlobals.doSimpleMsg("Could not create a folder \"" + dir + "\" for saving the circuit.", 432);
 			return result;
 		}
 
 		// this list keeps track of all files saved
-		DSSGlobals.getInstance().setSavedFileList(new ArrayList<String>());
+		DSSGlobals.savedFileList = new ArrayList<String>();
 
 		// initialize so we will know when we have saved the circuit elements
 		for (CktElement elem : cktElements)
 			elem.setHasBeenSaved(false);
 
 		// initialize so we don't save a class twice
-		for (DSSClass cls : DSSGlobals.getInstance().getDSSClassList())
+		for (DSSClass cls : DSSGlobals.DSSClassList)
 			cls.setSaved(false);
 
 		// ignore feeder class -- gets saved with EnergyMeters
@@ -814,12 +812,12 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		if (success) success = saveMasterFile();
 
 		if (success) {
-			DSSGlobals.getInstance().doSimpleMsg("Circuit saved in directory: " + globals.getCurrentDirectory(), 433);
+			DSSGlobals.doSimpleMsg("Circuit saved in directory: " + DSSGlobals.currentDirectory, 433);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error attempting to save circuit in " + globals.getCurrentDirectory(), 434);
+			DSSGlobals.doSimpleMsg("Error attempting to save circuit in " + DSSGlobals.currentDirectory, 434);
 		}
 		// return to original directory
-		globals.setCurrentDirectory(saveDir);
+		DSSGlobals.currentDirectory = saveDir;
 
 		return true;
 	}
@@ -850,13 +848,13 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			// check for error in node specification
 			for (int j = 0; j < nNodes.intValue(); j++) {
 				if (nodeBuffer[j] < 0) {
-					int retval = DSSGlobals.getInstance().getDSSForms().messageDlg("Error in node specification for element: \""
+					int retval = DSSGlobals.DSSForms.messageDlg("Error in node specification for element: \""
 						+ activeCktElement.getParentClass().getName() + "." + activeCktElement.getName() + "\"" + DSSGlobals.CRLF +
 						"Bus Spec: \"" + Parser.getInstance().getToken() + "\"", false);
 					nodesOK = false;
 					if (retval == -1) {
 						abortBusProcess = true;
-						DSSGlobals.getInstance().appendGlobalResult("Aborted bus process.");
+						DSSGlobals.appendGlobalResult("Aborted bus process.");
 						return;
 					}
 					break;
@@ -919,7 +917,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		 * the lists */
 		if (!meterZonesComputed || !zonesLocked) {
 			if (logEvents) Utilities.logThisEvent("Resetting meter zones");
-			DSSGlobals.getInstance().getEnergyMeterClass().resetMeterZonesAll();
+			DSSGlobals.energyMeterClass.resetMeterZonesAll();
 			meterZonesComputed = true;
 			if (logEvents) Utilities.logThisEvent("Done resetting meter zones");
 		}
@@ -933,14 +931,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 		StringBuffer devName = new StringBuffer();
 
 		Utilities.parseObjectClassandName(fullObjectName, devType, devName);
-		int devClassIndex = DSSGlobals.getInstance().getClassNames().find(devType.toString());
+		int devClassIndex = DSSGlobals.classNames.find(devType.toString());
 		if (devClassIndex == 0)
-			devClassIndex = DSSGlobals.getInstance().getLastClassReferenced();
+			devClassIndex = DSSGlobals.lastClassReferenced;
 		int devIndex = deviceList.find(devName.toString());
 		while (devIndex >= 0) {
 			if (deviceRef[devIndex].cktElementClass == devClassIndex) {  // we got a match
-				DSSGlobals.getInstance().setActiveDSSClass(DSSGlobals.getInstance().getDSSClassList().get(devClassIndex));
-				DSSGlobals.getInstance().setLastClassReferenced(devClassIndex);
+				DSSGlobals.activeDSSClass = DSSGlobals.DSSClassList.get(devClassIndex);
+				DSSGlobals.lastClassReferenced = devClassIndex;
 				result = deviceRef[devIndex].devHandle;
 				// ActiveDSSClass.Active = Result;
 				// ActiveCktElement = ActiveDSSClass.getActiveObj;
@@ -950,7 +948,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			devIndex = deviceList.findNext();  // could be duplicates
 		}
 
-		DSSGlobals.getInstance().setCmdResult(result);
+		DSSGlobals.cmdResult = result;
 
 		return result;
 	}

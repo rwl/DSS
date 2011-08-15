@@ -191,10 +191,9 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new LoadObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new LoadObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -279,12 +278,11 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeLoadObj = (LoadObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeLoadObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeLoadObj);
 
 		int result = 0;
 
@@ -305,7 +303,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ al.getName() + "\"", 580);
 				break;
 			case 0:
 				al.setNPhases(parser.makeInteger()); // num phases
@@ -444,13 +442,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 			case 6:
 				/* Set shape objects; returns nil if not valid */
 				/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-				al.setYearlyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getYearlyShape()));
+				al.setYearlyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getYearlyShape()));
 				if (al.getYearlyShapeObj() != null)
 					if (al.getYearlyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getYearlyShapeObj().getMaxP(), al.getYearlyShapeObj().getMaxQ());
 				break;
 			case 7:
-				al.setDailyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getDailyShape()));
+				al.setDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getDailyShape()));
 				if (al.getDailyShapeObj() != null)
 					if (al.getDailyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDailyShapeObj().getMaxP(), al.getDailyShapeObj().getMaxQ());
@@ -459,13 +457,13 @@ public class LoadImpl extends PCClassImpl implements Load {
 					al.setYearlyShapeObj(al.getDailyShapeObj());
 				break;
 			case 8:
-				al.setDutyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getDutyShape()));
+				al.setDutyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getDutyShape()));
 				if (al.getDutyShapeObj() != null)
 					if (al.getDutyShapeObj().isUseActual())
 						al.setKW_KVAr(al.getDutyShapeObj().getMaxP(), al.getDutyShapeObj().getMaxQ());
 				break;
 			case 9:
-				al.setGrowthShapeObj((GrowthShapeObj) globals.getGrowthShapeClass().find(al.getGrowthShape()));
+				al.setGrowthShapeObj((GrowthShapeObj) DSSGlobals.growthShapeClass.find(al.getGrowthShape()));
 				break;
 			case 11:
 				al.setLoadSpecType(1);  // kW, kvar
@@ -476,7 +474,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 		/*** see set_kwh, etc           28..30: LoadSpecType = 4;  // kWh, days, cfactor, PF */
 			case 30:
-				al.setCVRShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(al.getCVRShape()));
+				al.setCVRShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(al.getCVRShape()));
 				break;
 			}
 
@@ -557,7 +555,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
+			DSSGlobals.doSimpleMsg("Error in Load makeLike: \"" + otherLoadName + "\" not found.", 581);
 		}
 
 		return result;
@@ -577,7 +575,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 			pLoad.randomize(0);
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("Need to finish implementation Load.init", -1);
+		DSSGlobals.doSimpleMsg("Need to finish implementation Load.init", -1);
 		return 0;
 	}
 

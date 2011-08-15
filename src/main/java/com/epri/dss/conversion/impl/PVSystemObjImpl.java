@@ -358,7 +358,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		TShapeValue  = 25.0;  // init here; changed by curve routine
 
 		// check to make sure the PVSystem element is on
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (!(sol.isDynamicModel() || sol.isHarmonicModel())) {
@@ -453,7 +453,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		VBase95 = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
@@ -472,27 +471,27 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		/* Now check for errors. If any of these came out nil and the string was not nil, give warning. */
 		if (yearlyShapeObj == null)
 			if (yearlyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
+				DSSGlobals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
 		if (dailyShapeObj == null)
 			if (dailyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 564);
+				DSSGlobals.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 564);
 		if (dutyShapeObj == null)
 			if (dutyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
+				DSSGlobals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
 		if (yearlyTShapeObj == null)
 			if (yearlyTShape.length() > 0)
-				globals.doSimpleMsg("Warning: Yearly temperature shape: \""+ yearlyTShape +"\" not found.", 5631);
+				DSSGlobals.doSimpleMsg("Warning: Yearly temperature shape: \""+ yearlyTShape +"\" not found.", 5631);
 		if (dailyTShapeObj == null)
 			if (dailyTShape.length() > 0)
-				globals.doSimpleMsg("Warning: Daily temperature shape: \""+ dailyTShape +"\" not found.", 5641);
+				DSSGlobals.doSimpleMsg("Warning: Daily temperature shape: \""+ dailyTShape +"\" not found.", 5641);
 		if (dutyTShapeObj == null)
 			if (dutyTShape.length() > 0)
-				globals.doSimpleMsg("Warning: Duty temperature shape: \""+ dutyTShape +"\" not found.", 5651);
+				DSSGlobals.doSimpleMsg("Warning: Duty temperature shape: \""+ dutyTShape +"\" not found.", 5651);
 
 		if (getSpectrum().length() > 0) {
-			setSpectrumObj( (com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()) );
+			setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 			if (getSpectrumObj() == null)
-				globals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
+				DSSGlobals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
 		} else {
 			setSpectrumObj(null);
 		}
@@ -512,7 +511,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		int i, j;
 		double freqMultiplier;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		YPrimFreq = sol.getFrequency();
@@ -689,16 +688,15 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	private void writeTraceRecord(String s) {
 		int i;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(String.format("%-.g, %d, %-.g, ",
-						globals.getActiveCircuit().getSolution().getDynaVars().t,
-						globals.getActiveCircuit().getSolution().getIteration(),
-						globals.getActiveCircuit().getLoadMultiplier()) +
+						DSSGlobals.activeCircuit.getSolution().getDynaVars().t,
+						DSSGlobals.activeCircuit.getSolution().getIteration(),
+						DSSGlobals.activeCircuit.getLoadMultiplier()) +
 						Utilities.getSolutionModeID() + ", " +
 						Utilities.getLoadModel() + ", " +
 						voltageModel + ", " +
@@ -797,7 +795,6 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	 * Compute total terminal current from User-written model
 	 */
 	private void doUserModel() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
@@ -808,7 +805,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
 		} else {
-			globals.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+			DSSGlobals.doSimpleMsg("PVSystem." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
 
@@ -835,7 +832,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 		computeVTerminal();
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		PVSystemHarmonic = sol.getFrequency() / PVSystemFundamental;
 		if (getSpectrumObj() != null) {
@@ -862,7 +859,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	private void calcVTerminalPhase() {
 		int i, j;
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		/* Establish phase voltages and stick in VTerminal */
 		switch (connection) {
@@ -892,7 +889,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	 * routines may also compute ITerminal (ITerminalUpdated flag)
 	 */
 	private void calcPVSystemModelContribution() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		setITerminalUpdated(false);
@@ -939,7 +936,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	 */
 	@Override
 	public void getTerminalCurrents(Complex[] curr) {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (ITerminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
 			if (!PVSystemObjSwitchOpen)
@@ -953,7 +950,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 
 	@Override
 	public int injCurrents() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (sol.loadsNeedUpdating())
 			setNominalPVSystemOuput();  // set the nominal kW, etc for the type of solution being done
@@ -983,7 +980,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg("PVSystem object: \"" + getName() + "\" in getInjCurrents method.",
+			DSSGlobals.doErrorMsg("PVSystem object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);
 		}
 	}
@@ -998,7 +995,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	}
 
 	private void integrate(int reg, double deriv, double interval) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
@@ -1019,7 +1016,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 		double SMag;
 		double hourValue;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		// compute energy in PVSystem element branch
@@ -1100,7 +1097,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	public void initHarmonics() {
 		Complex e, Va = null;  // FIXME Implement connection enum
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		PVSystemFundamental = sol.getFrequency();  // whatever the frequency is when we enter here

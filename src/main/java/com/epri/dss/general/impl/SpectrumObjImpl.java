@@ -162,7 +162,6 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 		int i;
 		double fundAngle;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fundAngle = 0.0;
@@ -177,9 +176,9 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {
-			globals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check Definition. Aborting", 655);
-			if (globals.isInRedirect())
-				globals.setRedirectAbort(true);
+			DSSGlobals.doSimpleMsg("Exception while computing spectrum."+getName()+". Check Definition. Aborting", 655);
+			if (DSSGlobals.inRedirect)
+				DSSGlobals.redirectAbort = true;
 		}
 	}
 

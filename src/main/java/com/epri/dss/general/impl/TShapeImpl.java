@@ -101,9 +101,8 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		globals.setActiveDSSObject(new TShapeObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new TShapeObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	/**
@@ -111,13 +110,12 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		activeTShapeObj = (TShapeObj) elementList.getActive();
-		globals.setActiveDSSObject(activeTShapeObj);
+		DSSGlobals.activeDSSObject = activeTShapeObj;
 
 		TShapeObj ats = activeTShapeObj;
 
@@ -137,7 +135,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ats.getName() + "\"", 610);
 				break;
 			case 0:
 				ats.setNumPoints(parser.makeInteger());
@@ -255,7 +253,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			for (i = 0; i < aps.getParentClass().getNumProperties(); i++)
 				aps.setPropertyValue(i, otherTShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in TShape makeLike: \"" + shapeName + "\" not found.", 611);
+			DSSGlobals.doSimpleMsg("Error in TShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
 		return result;
@@ -263,7 +261,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement TShape.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement TShape.init", -1);
 		return 0;
 	}
 
@@ -283,7 +281,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			pTShapeObj = (TShapeObj) elementList.getNext();
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("TShape: \"" + value + "\" not found.", 612);
+		DSSGlobals.doSimpleMsg("TShape: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -293,7 +291,6 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 		String s;
 		Parser parser;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fis = new FileInputStream(fileName);
@@ -310,7 +307,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
 				/* Aux parser allows commas or white space */
-				parser = globals.getAuxParser();
+				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
 				if (ats.getInterval() == 0.0) {
 					parser.getNextParam();
@@ -329,7 +326,7 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSSGlobals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

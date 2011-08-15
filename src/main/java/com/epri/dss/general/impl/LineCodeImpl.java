@@ -116,9 +116,8 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 */
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		globals.setActiveDSSObject(new LineCodeObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new LineCodeObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	/**
@@ -211,7 +210,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 		// continue parsing with contents of parser
 		activeLineCodeObj = (LineCodeObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeLineCodeObj);
+		DSSGlobals.activeDSSObject = activeLineCodeObj;
 		symComponentsChanged = false;
 		matrixChanged = false;
 		activeLineCodeObj.setReduceByKron(false);  // allow all matrices to be computed it raw form
@@ -230,7 +229,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 				switch (paramPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Object \"" + getName() +"."+ getName() + "\"", 101);
 					break;
 				case 1:
 					activeLineCodeObj.setNPhases(parser.makeInteger());  // use property value to force reallocations
@@ -382,7 +381,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 				activeLineCodeObj.setPropertyValue(i, otherLineCode.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found.", 102);
+			DSSGlobals.doSimpleMsg("Error in line makeLike: \"" + lineName + "\" not found.", 102);
 		}
 
 		return result;
@@ -390,7 +389,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement LineCode.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement LineCode.init()", -1);
 		return 0;
 	}
 
@@ -417,7 +416,7 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("LineCode: \"" + value + "\" not found.", 103);
+		DSSGlobals.doSimpleMsg("LineCode: \"" + value + "\" not found.", 103);
 	}
 
 }

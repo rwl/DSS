@@ -69,10 +69,9 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new SpectrumObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new SpectrumObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
@@ -82,7 +81,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		int result = 0;
 		// continue parsing with contents of Parser
 		activeSpectrumObj = (SpectrumObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeSpectrumObj);
+		DSSGlobals.activeDSSObject = activeSpectrumObj;
 
 		SpectrumObj aso = activeSpectrumObj;
 
@@ -100,7 +99,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 
 				switch (paramPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getName()+"\"", 650);
+					DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Object \""+getName()+"\"", 650);
 					break;
 				case 1:
 					aso.setNumHarm(parser.makeInteger());
@@ -169,7 +168,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Spectrum.makeLike(): \"" + name + "\" not found.", 651);
+			DSSGlobals.doSimpleMsg("Error in Spectrum.makeLike(): \"" + name + "\" not found.", 651);
 		}
 
 		return result;
@@ -197,7 +196,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			}
 		};
 
-		DSSGlobals.getInstance().doSimpleMsg("Spectrum: \"" + value + "\" not found.", 652);
+		DSSGlobals.doSimpleMsg("Spectrum: \"" + value + "\" not found.", 652);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -207,7 +206,6 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 		String s;
 
 		Parser parser;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fis = new FileInputStream(fileName);
@@ -225,7 +223,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			while (((s = br.readLine()) != null) && i < aso.getNumHarm()) {  // TODO: Check zero based indexing
 				i += 1;
 				// use aux parser, which allows for formats
-				parser = globals.getAuxParser();
+				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
 				parser.getNextParam();
 				aso.getHarmArray()[i] = parser.makeDouble();
@@ -245,7 +243,7 @@ public class SpectrumImpl extends DSSClassImpl implements Spectrum {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 654);
+			DSSGlobals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 654);
 			return;
 		}
 	}

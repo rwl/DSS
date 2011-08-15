@@ -59,14 +59,14 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 		// first see if this one already exists; if so, just reinitialize
 		FeederObj obj = (FeederObj) find(objName);
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (obj != null) {
 			ckt.setActiveCktElement((DSSCktElement) obj);
 			result = 0;
 		} else {
 			ckt.setActiveCktElement(new FeederObjImpl(this, objName));
-			result = addObjectToList(DSSGlobals.getInstance().getActiveDSSObject());
+			result = addObjectToList(DSSGlobals.activeDSSObject);
 			ckt.addCktElement(result);
 			// done here because feeder objects are instantiated from energy meters
 		}
@@ -78,7 +78,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	public int edit() {
 		// continue parsing with contents of parser
 		activeFeederObj = (FeederObj) elementList.getActive();
-		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement((DSSCktElement) activeFeederObj);
+		DSSGlobals.activeCircuit.setActiveCktElement((DSSCktElement) activeFeederObj);
 
 		int result = 0;
 
@@ -97,7 +97,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 				switch (paramPointer) {
 				case 0:
-					DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ activeFeederObj.getName() + "\"", 630);
 					break;
 				default:
 					classEdit(activeFeederObj, paramPointer - NumPropsThisClass);
@@ -138,7 +138,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 			}
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
+			DSSGlobals.doSimpleMsg("Error in Feeder makeLike: \"" + otherFeederName + "\" not found.", 631);
 		}
 
 		return result;
@@ -146,7 +146,7 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Feeder.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Feeder.init()", -1);
 		return 0;
 	}
 

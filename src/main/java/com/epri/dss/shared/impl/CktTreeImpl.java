@@ -229,7 +229,7 @@ public class CktTreeImpl implements CktTree {
 	 * Sources are excluded from the PC element list, so this is a brute-force search.
 	 */
 	private static void getSourcesConnectedToBus(int busNum, CktTree branchList, boolean analyze) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (PCElement psrc : ckt.getSources()) {  // Sources are special PC elements
 			if (psrc.isEnabled()) {
@@ -338,7 +338,7 @@ public class CktTreeImpl implements CktTree {
 		CktElement testBranch, testElement;
 		List[] lstPD, lstPC;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		lstPD = ckt.getBusAdjacentPDLists();
 		lstPC = ckt.getBusAdjacentPCLists();
@@ -383,7 +383,7 @@ public class CktTreeImpl implements CktTree {
 		int i, j, nBus;
 //		CktElement pCktElement;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		nBus = ckt.getNumBuses();
 		// Circuit.buses is effectively 1-based; bus 0 is ground   TODO Check zero based indexing

@@ -107,8 +107,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		/* Check for existence of capacitor */
 
@@ -134,7 +133,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("CapControl: \"" + getName() + "\"", "Capacitor Element \""+ capacitorName + "\" Not Found.",
+			DSSGlobals.doErrorMsg("CapControl: \"" + getName() + "\"", "Capacitor Element \""+ capacitorName + "\" Not Found.",
 					"Element must be defined previously.", 361);
 		}
 
@@ -146,7 +145,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 		if (devIndex >= 0) {
 			monitoredElement = ckt.getCktElements().get(devIndex);
 			if (elementTerminal > monitoredElement.getNTerms() - 1) {  // TODO Check zero based indexing
-				globals.doErrorMsg("CapControl: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("CapControl: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.", "Re-specify terminal no.", 362);
 			} else {
 				// sets name of i-th terminal's connected bus in CapControl's buslist
@@ -158,7 +157,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
 		} else {
-			globals.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
+			DSSGlobals.doSimpleMsg("Monitored Element in CapControl."+getName()+ " does not exist:\""+elementName+"\"", 363);
 		}
 	}
 
@@ -263,7 +262,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 					Utilities.appendToEventLog("Capacitor." + getControlledElement().getName(), "**Opened**");
 					presentState = ControlAction.OPEN;
 
-					SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+					SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 					LastOpenTime = sol.getDynaVars().t + 3600.0 * sol.getIntHour();
 				}
@@ -538,7 +537,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				}
 				break;
 			case TIME:  /* time */
-				SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+				SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 				normalizedTime = normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t);
 
 				switch (presentState) {
@@ -629,7 +628,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 
 		}
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (shouldSwitch && !armed) {

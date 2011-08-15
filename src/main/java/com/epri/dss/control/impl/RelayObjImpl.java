@@ -147,14 +147,13 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		int devIndex = Utilities.getCktElementIndex(monitoredElementName);
 		if (devIndex >= 0) {
-			monitoredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			setNPhases( monitoredElement.getNPhases() );  // force number of phases to be same
 			if (monitoredElementTerminal > monitoredElement.getNTerms()) {
-				globals.doErrorMsg("Relay: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("Relay: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 384);
 			} else {
@@ -167,12 +166,12 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				switch (controlType) {
 				case Relay.GENERIC:
 					if ((monitoredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
-						globals.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
+						DSSGlobals.doSimpleMsg("Relay "+getName()+": Monitored element for generic relay is not a PC element.", 385);
 					} else {
 						PCElement pElem = (PCElement) monitoredElement;
 						monitorVarIndex = pElem.lookupVariable(monitorVariable);
 						if (monitorVarIndex < 0)
-							globals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
+							DSSGlobals.doSimpleMsg("Relay "+getName()+": Monitor variable \""+monitorVariable+"\" does not exist.", 386);
 					}
 					break;
 				}
@@ -183,7 +182,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
 			// both CktElement and monitored element must already exist
-			setControlledElement(globals.getActiveCircuit().getCktElements().get(devIndex));
+			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get(devIndex));
 			getControlledElement().setActiveTerminalIdx(elementTerminal);  // make the 1 st terminal active
 			if (getControlledElement().getConductorClosed(0)) {  // check state of phases of active terminal
 				presentState = ControlAction.CLOSE;
@@ -198,7 +197,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("Relay: \"" + getName() + "\"", "CktElement element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 
@@ -526,7 +525,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		/* Check for trip */
 		if ((varValue >  overTrip) || (varValue < underTrip)) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				relayTarget = pElem.variableName(monitorVarIndex);
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
 				operationCount = numReclose + 1;  // force a lockout
@@ -536,7 +535,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			/* Within bounds */
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}
@@ -558,7 +557,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		negSeqCurrentMag = I012[2].abs();
 		if (negSeqCurrentMag >= pickupAmps46) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				relayTarget = "-Seq Curr";
 				/* Simple estimate of trip time assuming current will be constant */
 				if (delayTime > 0.0) {
@@ -573,7 +572,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		} else {
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}
@@ -664,7 +663,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 
 			if (tripTime > 0.0) {
 				if (!armedForOpen) {
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					// then arm for an open operation
 					relayTarget = "";
 					if (phaseTime > 0.0)
@@ -679,7 +678,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 			} else {
 				if (armedForOpen) {
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					// if current dropped below pickup, disarm trip and set for reset
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen  = false;
@@ -698,7 +697,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		if (S.getReal() < 0.0) {
 			if (Math.abs(S.getReal()) > phaseInst * 1000.0) {
 				if (!armedForOpen) {  // push the trip operation and arm to trip
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					relayTarget = "Rev P";
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime +  breakerTime, ControlAction.OPEN, 0, this);
 					operationCount = numReclose + 1;  // force a lockout
@@ -706,7 +705,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 			} else {
 				if (armedForOpen) {  // we became unarmed, so reset and disarm
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 					lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 					armedForOpen = false;
 				}
@@ -760,7 +759,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				}
 
 				if (tripTime > 0.0) {
-					Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+					Circuit ckt = DSSGlobals.activeCircuit;
 
 					if (armedForOpen && ((ckt.getSolution().getDynaVars().t + tripTime + breakerTime) < nextTripTime)) {
 						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
@@ -785,7 +784,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 					}
 				} else {
 					if (armedForOpen) {
-						Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+						Circuit ckt = DSSGlobals.activeCircuit;
 						// if voltage dropped below pickup, disarm trip and set for reset
 						ckt.getControlQueue().delete(lastEventHandle);  // delete last event from queue
 						nextTripTime = -1.0;
@@ -798,7 +797,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				if (operationCount <= numReclose) {
 					if (!armedForClose) {
 						if (VMax > 0.9) {
-							Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+							Circuit ckt = DSSGlobals.activeCircuit;
 							// OK if voltage > 90%
 							lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + recloseIntervals[operationCount], ControlAction.CLOSE, 0, this);
 							armedForClose = true;
@@ -825,7 +824,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		negSeqVoltageMag = V012[2].abs();
 		if (negSeqVoltageMag >= pickupVolts47) {
 			if (!armedForOpen) {  // push the trip operation and arm to trip
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				relayTarget = "-Seq V";
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + delayTime + breakerTime, ControlAction.OPEN, 0, this);
 				operationCount = numReclose + 1;  // force a lockout
@@ -834,7 +833,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		} else {
 			/* Less than pickup value: reset if armed */
 			if (armedForOpen) {  // we became unarmed, so reset and disarm
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				lastEventHandle = ckt.getControlQueue().push(ckt.getSolution().getIntHour(), ckt.getSolution().getDynaVars().t + resetTime, ControlAction.CTRL_RESET, 0, this);
 				armedForOpen = false;
 			}

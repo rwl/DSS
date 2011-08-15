@@ -80,7 +80,6 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		Complex Zs, Zm;
 		int i, j;
@@ -187,9 +186,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			break;
 		}
 
-		setSpectrumObj((com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()));
+		setSpectrumObj((com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
+			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
@@ -200,7 +199,6 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		int i, j;
 		double freqMultiplier;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
@@ -213,7 +211,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			YPrim.clear();
 		}
 
-		YPrimFreq = globals.getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Put in series RL adjusted for frequency */
@@ -229,7 +227,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		if (ZInv.getInvertError() > 0) {
 			/* If error, put in large series conductance */
-			globals.doErrorMsg("VsourceObj.calcYPrim", "Matrix inversion error for VSource \"" + getName() + "\"",
+			DSSGlobals.doErrorMsg("VsourceObj.calcYPrim", "Matrix inversion error for VSource \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 325);
 			ZInv.clear();
 			for (i = 0; i < nPhases; i++)
@@ -261,7 +259,6 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		Complex VHarm;
 		double srcHarmonic;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			/* This formulation will theoretically handle voltage sources of any
@@ -277,7 +274,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				break;
 			}
 
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			if (sol.isHarmonicModel()) {
 
@@ -321,9 +318,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				}
 			}
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error computing voltages for VSource."+getName()+". Check specification. Aborting.", 326);
-			if (globals.isInRedirect())
-				globals.setRedirectAbort(true);
+			DSSGlobals.doSimpleMsg("Error computing voltages for VSource."+getName()+". Check specification. Aborting.", 326);
+			if (DSSGlobals.inRedirect)
+				DSSGlobals.redirectAbort = true;
 		}
 	}
 
@@ -338,10 +335,9 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 	@Override
 	public void getCurrents(Complex[] curr) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			for (int i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
@@ -354,7 +350,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 				curr[i] = curr[i].subtract(complexBuffer[i]);
 
 		} catch (Exception e) {
-			globals.doErrorMsg("getCurrents for element: " + getName() + ".", e.getMessage(),
+			DSSGlobals.doErrorMsg("getCurrents for element: " + getName() + ".", e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 327);
 		}
 	}
@@ -408,7 +404,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		propertyValue[2]  = "115";
 		propertyValue[3]  = "1";
 		propertyValue[4]  = "0";
-		propertyValue[5]  = String.format("%d", Math.round(DSSGlobals.getInstance().getDefaultBaseFreq()));
+		propertyValue[5]  = String.format("%d", Math.round(DSSGlobals.defaultBaseFreq));
 		propertyValue[6]  = "3";
 		propertyValue[7]  = "2000";
 		propertyValue[8]  = "2100";

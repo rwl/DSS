@@ -22,7 +22,7 @@ public class YMatrix {
 	}
 
 	private static void reCalcAllYPrims() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		if (ckt.isLogEvents())
 			Utilities.logThisEvent("Recalc All Yprims");
 		for (CktElement pElem : ckt.getCktElements())
@@ -34,7 +34,7 @@ public class YMatrix {
 	 * since last solution.
 	 */
 	private static void reCalcInvalidYPrims() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		if (ckt.isLogEvents())
 			Utilities.logThisEvent("Recalc Invalid Yprims");
 		for (CktElement pElem : ckt.getCktElements())
@@ -56,7 +56,7 @@ public class YMatrix {
 	}
 
 	public static void initializeNodeVbase() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		for (int i = 0; i < ckt.getNumNodes(); i++) {
@@ -79,8 +79,7 @@ public class YMatrix {
 		// new function to log KLUSolve.DLL function calls
 		//setLogFile("KLU_Log.txt", 1);
 
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		Circuit ckt = Globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (sol.isPreserveNodeVoltages())
@@ -111,8 +110,8 @@ public class YMatrix {
 			reCalcInvalidYPrims();
 		}
 
-		if (Globals.isSolutionAbort()) {
-			Globals.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
+		if (DSSGlobals.solutionAbort) {
+			DSSGlobals.doSimpleMsg("Y matrix build aborted due to error in primitive Y calculations.", 11001);
 			return;  // some problem occurred building Yprims
 		}
 
@@ -204,7 +203,7 @@ public class YMatrix {
 		long nIslands, iCount, iFirst;
 		List<Long> Cliques;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		String Result = "";
 

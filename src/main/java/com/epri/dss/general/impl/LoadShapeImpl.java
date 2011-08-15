@@ -117,20 +117,18 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 	}
 
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new LoadShapeObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new LoadShapeObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		activeLoadShapeObj = (LoadShapeObj) elementList.getActive();
-		globals.setActiveDSSObject(activeLoadShapeObj);
+		DSSGlobals.activeDSSObject = activeLoadShapeObj;
 
 		LoadShapeObj als = activeLoadShapeObj;
 
@@ -148,7 +146,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 				switch (paramPointer) {  // TODO Check zero based indexing
 				case -1:
-					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ als.getName() + "\"", 610);
 					break;
 				case 0:
 					als.setNumPoints(parser.makeInteger());
@@ -304,14 +302,14 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			for (int i = 0; i < als.getParentClass().getNumProperties(); i++)
 				als.setPropertyValue(i, otherLoadShape.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in LoadShape makeLike: \"" + shapeName + "\" not found.", 611);
+			DSSGlobals.doSimpleMsg("Error in LoadShape makeLike: \"" + shapeName + "\" not found.", 611);
 		}
 
 		return result;
 	}
 
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement LoadShape.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement LoadShape.init()", -1);
 		return 0;
 	}
 
@@ -338,7 +336,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("LoadShape: \"" + value + "\" not found.", 612);
+		DSSGlobals.doSimpleMsg("LoadShape: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -348,7 +346,6 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 		String s;
 		Parser parser;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fis = new FileInputStream(fileName);
@@ -365,7 +362,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
 				/* aux parser allows commas or white space */
-				parser = globals.getAuxParser();
+				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
 				if (als.getInterval() == 0.0) {
 					parser.getNextParam();
@@ -384,7 +381,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			globals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSSGlobals.doSimpleMsg("Error processing CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}

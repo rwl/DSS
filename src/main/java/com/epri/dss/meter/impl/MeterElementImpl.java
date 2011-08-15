@@ -74,7 +74,7 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 	 * Sample control quantities and set action times in control queue.
 	 */
 	public void takeSample() {
-		DSSGlobals.getInstance().doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSSGlobals.CRLF+"Device: "+getName(), 723);
+		DSSGlobals.doSimpleMsg("Programming error: Reached base MeterElement class for takeSample."+DSSGlobals.CRLF+"Device: "+getName(), 723);
 	}
 
 	public String getElementName() {

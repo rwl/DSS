@@ -82,10 +82,9 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new CapacitorObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new CapacitorObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void doCmatrix() {
@@ -179,12 +178,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	@Override
 	public int edit() {
 		int result = 0;
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeCapacitorObj = (CapacitorObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeCapacitorObj);  // use property to set this value
+		DSSGlobals.activeCircuit.setActiveCktElement(activeCapacitorObj);  // use property to set this value
 
 		CapacitorObj aco = activeCapacitorObj;
 
@@ -203,7 +201,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 			switch (paramPointer) {
 			case 0:
-				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
+				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for object \"Capacitor."+aco.getName()+"\"", 450);
 				break;
 			case 1:
 				capSetBus1(param);
@@ -371,7 +369,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Capacitor.makeLike(): \"" + capacitorName + "\" not found.", 451);
+			DSSGlobals.doSimpleMsg("Error in Capacitor.makeLike(): \"" + capacitorName + "\" not found.", 451);
 		}
 
 		return result;
@@ -379,7 +377,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Capacitor.init()", 452);
+		DSSGlobals.doSimpleMsg("Need to implement Capacitor.init()", 452);
 		return 0;
 	}
 

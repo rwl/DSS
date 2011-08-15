@@ -113,7 +113,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		unitsConvert      = 1.0;
 		lineCodeUnits     = LineUnits.UNITS_NONE;
 		lineCodeSpecified = false;
-		earthModel        = DSSGlobals.getInstance().getDefaultEarthModel();
+		earthModel        = DSSGlobals.defaultEarthModel;
 
 		spacingSpecified = false;
 		lineSpacingObj = null;
@@ -132,10 +132,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 	public void fetchLineCode(String code) {
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (LineImpl.lineCodeClass == null)
-			LineImpl.lineCodeClass = (LineCode) globals.getDSSClassList().get(globals.getClassNames().find("linecode"));
+			LineImpl.lineCodeClass = (LineCode) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linecode"));
 
 		if (LineImpl.lineCodeClass.setActive(code)) {
 
@@ -205,7 +204,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			YOrder = nConds * nTerms;
 			//setYprimInvalid(true);  // set in edit; this is redundant
 		} else {
-			globals.doSimpleMsg("Line Code:" + code + " not found.", 180);
+			DSSGlobals.doSimpleMsg("Line Code:" + code + " not found.", 180);
 		}
 	}
 
@@ -215,7 +214,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		double Yc1, Yc0, oneThird;
 		Complex gammaL, expP, expM, exp2P, exp2M, sinhGL, tanh2GL;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (Z != null) Z = null;
 		if (ZInv != null) ZInv = null;
@@ -294,8 +293,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		double freqMultiplier = 1.0;
 		double lengthMultiplier = 1.0;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (symComponentsChanged) {
 			/* Try to catch inadvertent user error when they forget to specify C1 and C0 */
@@ -317,13 +315,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (geometrySpecified) {
 
 			makeZFromGeometry(ckt.getSolution().getFrequency());  // includes length in proper units
-			if (globals.isSolutionAbort())
+			if (DSSGlobals.solutionAbort)
 				return;
 
 		} else if (spacingSpecified) {
 
 			makeZFromSpacing(ckt.getSolution().getFrequency());
-			if (globals.isSolutionAbort())
+			if (DSSGlobals.solutionAbort)
 				return;
 
 		} else {  // Z is from line code or specified in line data
@@ -353,7 +351,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			if (ZInv.getInvertError() > 0) {
 				/* If error, put in tiny series conductance */
 				// TEMc - shut this up for the CDPSM connectivity profile test, or whenever else it gets annoying
-				globals.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
 							"Invalid impedance specified. Replaced with tiny conductance.", 183);
 				ZInv.clear();
 				for (int i = 0; i < getNPhases(); i++) {
@@ -648,7 +646,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			for (int i = 0; i < 2; i++) {
 				k = (i - 1) * nPhases + 1;  // TODO Check zero based indexing
 				for (int j = 0; j < 2; j++)
-					Vph[j] = DSSGlobals.getInstance().getActiveCircuit().getSolution().getNodeV()[nodeRef[k + j]];
+					Vph[j] = DSSGlobals.activeCircuit.getSolution().getNodeV()[nodeRef[k + j]];
 				MathUtil.phase2SymComp(Vph, V012);
 				MathUtil.phase2SymComp(ITerminal[k], I012);
 				posSeqLosses = posSeqLosses.add( V012[1].multiply(I012[1].conjugate()) );  // TODO Check zero based indexing
@@ -797,9 +795,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				common2 = 0;
 				i = 1;
 				while ((common1 == 0) && (i <= 2)) {
-					testBusNum = DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[nodeRef[1 + (i - 1) * nConds]].busRef;
+					testBusNum = DSSGlobals.activeCircuit.getMapNodeToBus()[nodeRef[1 + (i - 1) * nConds]].busRef;
 					for (j = 0; j < 2; j++) {
-						if (DSSGlobals.getInstance().getActiveCircuit().getMapNodeToBus()[otherLine.getNodeRef()[1 + (j - 1) * otherLine.getNConds()]].busRef == testBusNum) {
+						if (DSSGlobals.activeCircuit.getMapNodeToBus()[otherLine.getNodeRef()[1 + (j - 1) * otherLine.getNConds()]].busRef == testBusNum) {
 							common1 = i;
 							common2 = j;
 							break;
@@ -955,14 +953,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			otherLine.setEnabled(false);  // disable the other line
 			result = true;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in line merge: Attempt to merge with invalid (nil) line object found.", 184);
+			DSSGlobals.doSimpleMsg("Error in line merge: Attempt to merge with invalid (nil) line object found.", 184);
 		}
 
 		return result;
 	}
 
 	public void updateControlElements(String newName, String oldName) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		for (ControlElem pControlElem : ckt.getDSSControls())
 			if (oldName.equalsIgnoreCase( pControlElem.getElementName() )) {
 				Parser.getInstance().setCmdString(" Element=" + newName);  // change name of the property
@@ -971,10 +969,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	}
 
 	public void fetchLineSpacing(String code) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (globals.getLineSpacingClass().setActive(code)) {
-			setLineSpacingObj( (LineSpacingObj) globals.getLineSpacingClass().getActiveObj() );
+		if (DSSGlobals.lineSpacingClass.setActive(code)) {
+			setLineSpacingObj( (LineSpacingObj) DSSGlobals.lineSpacingClass.getActiveObj() );
 			lineCodeSpecified = false;
 			killGeometrySpecified();
 			spacingCode = code.toLowerCase();
@@ -985,17 +982,16 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			YOrder        = nConds * nTerms;
 			setYPrimInvalid(true);    // force rebuild of Y matrix
 		} else {
-			globals.doSimpleMsg("Line spacing object " + code + " not found.", 181);
+			DSSGlobals.doSimpleMsg("Line spacing object " + code + " not found.", 181);
 		}
 	}
 
 	public void fetchWireList(String code) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		int i, istart;
 
 		if (getLineSpacingObj() == null)
-			globals.doSimpleMsg("Must assign the LineSpacing before wires.", 181);
+			DSSGlobals.doSimpleMsg("Must assign the LineSpacing before wires.", 181);
 
 		if (phaseChoice == ConductorChoice.UNKNOWN) {  // it's an overhead line
 			lineCodeSpecified = false;
@@ -1007,69 +1003,66 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			istart = lineSpacingObj.getNPhases() + 1;
 		}
 
-		globals.getAuxParser().setCmdString(code);
+		DSSGlobals.auxParser.setCmdString(code);
 		for (i = istart; i < lineSpacingObj.getNWires(); i++) {
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			globals.getWireDataClass().setCode(globals.getAuxParser().makeString());
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			DSSGlobals.wireDataClass.setCode(DSSGlobals.auxParser.makeString());
 			if (ConductorDataImpl.activeConductorDataObj != null) {
 				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
-				globals.doSimpleMsg("Wire " + globals.getAuxParser().makeString() + " was not defined first.", 181);
+				DSSGlobals.doSimpleMsg("Wire " + DSSGlobals.auxParser.makeString() + " was not defined first.", 181);
 			}
 		}
 	}
 
 	public void fetchCNCableList(String code) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		int i;
 
 		lineCodeSpecified = false;
 		killGeometrySpecified();
 		if (lineSpacingObj == null)
-			globals.doSimpleMsg("Must assign the LineSpacing before CN cables.", 181);
+			DSSGlobals.doSimpleMsg("Must assign the LineSpacing before CN cables.", 181);
 
 		phaseChoice = ConductorChoice.CONCENTRIC_NEUTRAL;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
-		globals.getAuxParser().setCmdString(code);
+		DSSGlobals.auxParser.setCmdString(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			globals.getCNDataClass().setCode(globals.getAuxParser().makeString());
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			DSSGlobals.CNDataClass.setCode(DSSGlobals.auxParser.makeString());
 			if (ConductorDataImpl.activeConductorDataObj != null) {
 				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
-				globals.doSimpleMsg("CN cable " + globals.getAuxParser().makeString() + " was not defined first.", 181);
+				DSSGlobals.doSimpleMsg("CN cable " + DSSGlobals.auxParser.makeString() + " was not defined first.", 181);
 			}
 		}
 	}
 
 	public void fetchTSCableList(String code) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		int i;
 
 		lineCodeSpecified = false;
 		killGeometrySpecified();
 		if (lineSpacingObj == null)
-			globals.doSimpleMsg("Must assign the LineSpacing before TS cables.", 181);
+			DSSGlobals.doSimpleMsg("Must assign the LineSpacing before TS cables.", 181);
 
 		phaseChoice = ConductorChoice.TAPE_SHIELD;
 		wireData = new ConductorDataObj[lineSpacingObj.getNWires()];
-		globals.getAuxParser().setCmdString(code);
+		DSSGlobals.auxParser.setCmdString(code);
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			globals.getTSDataClass().setCode(globals.getAuxParser().makeString());
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			DSSGlobals.TSDataClass.setCode(DSSGlobals.auxParser.makeString());
 			if (ConductorDataImpl.activeConductorDataObj != null) {
 				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
-				globals.doSimpleMsg("TS cable " + globals.getAuxParser().makeString() + " was not defined first.", 181);
+				DSSGlobals.doSimpleMsg("TS cable " + DSSGlobals.auxParser.makeString() + " was not defined first.", 181);
 			}
 		}
 	}
 
 	public void fetchGeometryCode(String code) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (LineImpl.lineGeometryClass == null)
-			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
+			LineImpl.lineGeometryClass = (LineGeometry) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("LineGeometry"));
 
 		if (LineImpl.lineGeometryClass.setActive(code)) {
 			lineCodeSpecified = false;  // cancel this flag
@@ -1092,7 +1085,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			YOrder = nConds * nTerms;
 			setYPrimInvalid(true);  // force rebuild of Y matrix
 		} else {
-			globals.doSimpleMsg("Line geometry object:" + code + " not found.", 181);
+			DSSGlobals.doSimpleMsg("Line geometry object:" + code + " not found.", 181);
 		}
 	}
 
@@ -1111,7 +1104,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			if (ZInv != null) ZInv = null;
 			if (Yc != null) Yc = null;
 
-			DSSGlobals.getInstance().setActiveEarthModel(getEarthModel());
+			DSSGlobals.activeEarthModel = getEarthModel();
 
 			Z    = getLineGeometryObj().getZMatrix(f, len, lengthUnits);
 			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
@@ -1131,7 +1124,6 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 * Make new Z, Zinv, Yc, etc
 	 */
 	private void makeZFromSpacing(double f) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (f == ZFrequency)
 			return;  // already done for this frequency, no need to do anything
@@ -1142,7 +1134,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		// make a temporary LineGeometry to calculate line constants
 		if (LineImpl.lineGeometryClass == null)
-			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
+			LineImpl.lineGeometryClass = (LineGeometry) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("LineGeometry"));
 		LineGeometryObj pGeo = new LineGeometryObjImpl(LineImpl.lineGeometryClass, "==");
 		pGeo.loadSpacingAndWires(getLineSpacingObj(), getWireData());  // this sets OH, CN, or TS
 
@@ -1152,7 +1144,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		setEmergAmps(pGeo.getEmergAmps());
 		updatePDProperties();
 
-		globals.setActiveEarthModel(earthModel);
+		DSSGlobals.activeEarthModel = earthModel;
 
 		Z  = pGeo.getZMatrix(f, len, lengthUnits);
 		Yc = pGeo.getYcMatrix(f, len, lengthUnits);

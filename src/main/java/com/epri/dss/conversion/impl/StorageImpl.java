@@ -202,10 +202,9 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new StorageObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new StorageObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -312,12 +311,11 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	public int edit() {
 		int i, iCase;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeStorageObj = (StorageObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeStorageObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeStorageObj);
 
 		int result = 0;
 
@@ -337,14 +335,14 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
 				as.setPropertyValue(propertyIdxMap[paramPointer], param);  // update the string value of the property
 			} else {
-				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
+				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for Storage \""+as.getName()+"\"", 560);
 			}
 
 			if (paramPointer > 0) {
 				iCase = propertyIdxMap[paramPointer];
 				switch (iCase) {
 				case -1:
-					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 561);
 					break;
 				case 0:
 					as.setNPhases(parser.makeInteger());  // num phases
@@ -473,13 +471,13 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 					/* Set load shape objects; returns nil if not valid */
 				case YEARLY:
-					as.setYearlyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getYearlyShape()));
+					as.setYearlyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getYearlyShape()));
 					break;
 				case DAILY:
-					as.setDailyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getDailyShape()));
+					as.setDailyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getDailyShape()));
 					break;
 				case DUTY:
-					as.setDutyShapeObj((LoadShapeObj) globals.getLoadShapeClass().find(as.getDutyShape()));
+					as.setDutyShapeObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(as.getDutyShape()));
 					break;
 				case KW_RATED:
 					as.setKVA_Rating(as.getKWRating());
@@ -497,7 +495,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					if (as.isDebugTrace()) {
 						try {
 							// init trace file
-							File TraceFile = new File(globals.getDSSDataDirectory() + "STOR_"+as.getName()+".csv");
+							File TraceFile = new File(DSSGlobals.DSSDataDirectory + "STOR_"+as.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -610,7 +608,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Storage makeLike: \"" + otherStorageObjName + "\" not found.", 562);
+			DSSGlobals.doSimpleMsg("Error in Storage makeLike: \"" + otherStorageObjName + "\" not found.", 562);
 		}
 
 		return result;
@@ -632,7 +630,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 			pElem.randomize(0);
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Storage.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Storage.init", -1);
 		return 0;
 	}
 

@@ -46,9 +46,8 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		globals.setActiveDSSObject(new CNDataObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new CNDataObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	/**
@@ -56,13 +55,12 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		ConductorDataImpl.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
-		globals.setActiveDSSObject(ConductorDataImpl.activeConductorDataObj);
+		DSSGlobals.activeDSSObject = ConductorDataImpl.activeConductorDataObj;
 
 		CNDataObj acd = (CNDataObj) ConductorDataImpl.activeConductorDataObj;
 
@@ -82,7 +80,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 101);
 				break;
 			case 0:
 				acd.setkStrand(parser.makeInteger());
@@ -114,15 +112,15 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			switch (paramPointer) {
 			case 0:
 				if (acd.getkStrand() < 2)
-					globals.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
+					DSSGlobals.doSimpleMsg("Error: Must have at least 2 concentric neutral strands for CNData " + acd.getName(), 999);
 				break;
 			case 1:
 				if (acd.getDiaStrand() <= 0.0)
-					globals.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
+					DSSGlobals.doSimpleMsg("Error: Neutral strand diameter must be positive for CNData " + acd.getName(), 999);
 				break;
 			case 2:
 				if (acd.getGmrStrand() <= 0.0)
-					globals.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
+					DSSGlobals.doSimpleMsg("Error: Neutral strand GMR must be positive for CNData " + acd.getName(), 999);
 				break;
 			}
 			paramName = parser.getNextParam();
@@ -147,14 +145,14 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				acd.setPropertyValue(i, otherData.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in concentric neutral makeLike: \"" + CNName + "\" not found.", 102);
+			DSSGlobals.doSimpleMsg("Error in concentric neutral makeLike: \"" + CNName + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement CNData.init().", -1);
+		DSSGlobals.doSimpleMsg("Need to implement CNData.init().", -1);
 		return 0;
 	}
 
@@ -178,7 +176,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 			}
 			pCNDataObj = (CNDataObj) elementList.getNext();
 		}
-		DSSGlobals.getInstance().doSimpleMsg("CNData: \"" + value + "\" not found.", 103);
+		DSSGlobals.doSimpleMsg("CNData: \"" + value + "\" not found.", 103);
 	}
 
 }

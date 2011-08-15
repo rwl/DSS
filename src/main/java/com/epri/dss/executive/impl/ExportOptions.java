@@ -120,7 +120,6 @@ public class ExportOptions {
 		int phasesToPlot;
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		Parser.getInstance().getNextParam();
 		String parm1 = Parser.getInstance().makeString().toLowerCase();
@@ -185,7 +184,7 @@ public class ExportOptions {
 		parser.getNextParam();
 		fileName = parser.makeString().toLowerCase();  // should be full path name to work universally
 
-		globals.setInShowResults(true);
+		DSSGlobals.inShowResults = true;
 
 		/* Assign default file name if alternate not specified */
 		if (fileName.length() == 0) {
@@ -225,7 +224,7 @@ public class ExportOptions {
 			default:
 				fileName = "EXP_VOLTAGES.csv"; break;
 			}
-			fileName = globals.getDSSDataDirectory() + globals.getCircuitName_() + fileName;  // explicitly define directory
+			fileName = DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + fileName;  // explicitly define directory
 		}
 
 		switch (paramPointer) {
@@ -245,15 +244,15 @@ public class ExportOptions {
 		case 13: ExportResults.exportMeters(fileName); break;
 		case 14:
 			if (parm2.length() > 0) {
-				pMon = (MonitorObj) globals.getMonitorClass().find(parm2);
+				pMon = (MonitorObj) DSSGlobals.monitorClass.find(parm2);
 				if (pMon != null) {
 					pMon.translateToCSV(false);
-					fileName = globals.getGlobalResult();
+					fileName = DSSGlobals.globalResult;
 				} else {
-					globals.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 250);
+					DSSGlobals.doSimpleMsg("Monitor \""+parm2+"\" not found."+ DSSGlobals.CRLF + parser.getCmdString(), 250);
 				}
 			} else {
-				globals.doSimpleMsg("Monitor name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
+				DSSGlobals.doSimpleMsg("Monitor name not specified."+ DSSGlobals.CRLF + parser.getCmdString(), 251);
 			}
 			break;
 		case 15: ExportResults.exportYprim(fileName); break;
@@ -279,9 +278,9 @@ public class ExportOptions {
 		}
 
 		int result = 0;
-		globals.setInShowResults(false);
+		DSSGlobals.inShowResults = false;
 
-		if (globals.isAutoShowExport())
+		if (DSSGlobals.autoShowExport)
 			Utilities.fireOffEditor(fileName);
 
 		return result;

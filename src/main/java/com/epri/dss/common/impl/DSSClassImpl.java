@@ -83,7 +83,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	public int newObject(String ObjName) {
-		DSSGlobals.getInstance().doErrorMsg(
+		DSSGlobals.doErrorMsg(
 				"Reached base class of DSSClass for device \"" +ObjName+ "\"",
 				"N/A",
 				"Should be overridden.", 780);
@@ -92,12 +92,11 @@ public class DSSClassImpl implements DSSClass {
 
 	public void setActiveElement(int Value) {
 		if ((Value > 0) && (Value <= elementList.size())) {
-			DSSGlobals globals = DSSGlobals.getInstance();
 			activeElement = Value;
-			globals.setActiveDSSObject((DSSObjectImpl) elementList.get(activeElement));
+			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(activeElement);
 
-			if (globals.getActiveDSSObject() instanceof DSSCktElement)
-				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
+			if (DSSGlobals.activeDSSObject instanceof DSSCktElement)
+				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
 		}
 	}
 
@@ -109,12 +108,12 @@ public class DSSClassImpl implements DSSClass {
 	 * Uses global parser.
 	 */
 	public int edit() {
-		DSSGlobals.getInstance().doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
+		DSSGlobals.doSimpleMsg("DSSClass.edit() called. Should be overriden.", 781);
 		return 0;
 	}
 
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
+		DSSGlobals.doSimpleMsg("DSSClass.init() called. Should be overriden.", 782);
 		return 0;
 	}
 
@@ -141,7 +140,7 @@ public class DSSClassImpl implements DSSClass {
 		int idx = elementNameList.find(ObjName);
 		if (idx > 0) {
 			setActiveElement(idx);
-			DSSGlobals.getInstance().setActiveDSSObject((DSSObject) elementList.get(idx));
+			DSSGlobals.activeDSSObject = (DSSObject) elementList.get(idx);
 			result = true;
 		}
 		return result;
@@ -240,7 +239,7 @@ public class DSSClassImpl implements DSSClass {
 	}
 
 	protected int makeLike(String objName) {
-		DSSGlobals.getInstance().doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
+		DSSGlobals.doSimpleMsg("DSSClass.makeLike() called. Should be overriden.", 784);
 		return 0;
 	}
 
@@ -249,12 +248,11 @@ public class DSSClassImpl implements DSSClass {
 		if (elementList.size() == 0) {
 			result = 0;
 		} else {
-			DSSGlobals globals = DSSGlobals.getInstance();
 
 			setActiveElement(1);
-			globals.setActiveDSSObject((DSSObjectImpl) elementList.get(0));
-			if (globals.getActiveDSSObject() instanceof DSSCktElement) {
-				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
+			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(0);
+			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
+				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
 				result = activeElement;
 			}
 		}
@@ -266,12 +264,11 @@ public class DSSClassImpl implements DSSClass {
 		if (activeElement > elementList.size()) {
 			result = 0;
 		} else {
-			DSSGlobals globals = DSSGlobals.getInstance();
 
-			globals.setActiveDSSObject((DSSObject) elementList.getNext());
+			DSSGlobals.activeDSSObject = (DSSObject) elementList.getNext();
 
-			if (globals.getActiveDSSObject() instanceof DSSCktElement) {
-				globals.getActiveCircuit().setActiveCktElement( (CktElement) globals.getActiveDSSObject() );
+			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
+				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
 				result = activeElement;
 			}
 		}

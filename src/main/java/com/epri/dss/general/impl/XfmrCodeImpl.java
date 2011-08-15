@@ -146,10 +146,9 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new XfmrCodeObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new XfmrCodeObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void setActiveWinding(int w) {
@@ -158,36 +157,35 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 		if ((w > 0) && (w <= axc.getNumWindings())) {
 			axc.setActiveWinding(w);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
+			DSSGlobals.doSimpleMsg("Wdg parameter invalid for \"" + activeXfmrCodeObj.getName() + "\"", 112);
 		}
 	}
 
 	private void interpretWindings(String s, WdgParmChoice which) {
 		String str;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);
+		DSSGlobals.auxParser.setCmdString(s);
 		XfmrCodeObj axc = activeXfmrCodeObj;
 		for (int i = 0; i < axc.getNumWindings(); i++) {
 			axc.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			str = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			str = DSSGlobals.auxParser.makeString();
 			if (str.length() > 0) {
 				switch (which) {
 				case CONN:
 					axc.getWinding()[axc.getActiveWinding()].setConnection(Utilities.interpretConnection(str));
 					break;
 				case KV:
-					axc.getWinding()[axc.getActiveWinding()].setKVLL(globals.getAuxParser().makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setKVLL(DSSGlobals.auxParser.makeDouble());
 					break;
 				case KVA:
-					axc.getWinding()[axc.getActiveWinding()].setKVA(globals.getAuxParser().makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setKVA(DSSGlobals.auxParser.makeDouble());
 					break;
 				case R:
-					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * globals.getAuxParser().makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setRpu(0.01 * DSSGlobals.auxParser.makeDouble());
 					break;
 				case TAP:
-					axc.getWinding()[axc.getActiveWinding()].setPUTap(globals.getAuxParser().makeDouble());
+					axc.getWinding()[axc.getActiveWinding()].setPUTap(DSSGlobals.auxParser.makeDouble());
 					break;
 				}
 			}
@@ -197,7 +195,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 	@Override
 	public int edit() {
 		activeXfmrCodeObj = (XfmrCodeObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeXfmrCodeObj);
+		DSSGlobals.activeDSSObject = activeXfmrCodeObj;
 		boolean updateXsc = false;
 
 		Parser parser = Parser.getInstance();
@@ -218,7 +216,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 
 			switch (paramPointer) {
 			case 0:  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"XfmrCode." + axc.getName() + "\"", 110);
 				break;
 			case 1:
 				axc.setNPhases(parser.makeInteger());
@@ -439,14 +437,14 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in XfmrCode.makeLike: \"" + name + "\" not found.", 102);
+			DSSGlobals.doSimpleMsg("Error in XfmrCode.makeLike: \"" + name + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement XfmrCode.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement XfmrCode.init", -1);
 		return 0;
 	}
 
@@ -466,7 +464,7 @@ public class XfmrCodeImpl extends DSSClassImpl implements XfmrCode {
 				return;
 			}
 		}
-		DSSGlobals.getInstance().doSimpleMsg("XfmrCode: \"" + value + "\" not found.", 103);
+		DSSGlobals.doSimpleMsg("XfmrCode: \"" + value + "\" not found.", 103);
 	}
 
 }

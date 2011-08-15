@@ -70,20 +70,18 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new EquivalentObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new EquivalentObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeEquivalentObj = (EquivalentObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeEquivalentObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeEquivalentObj);
 
 		int result = 0;
 
@@ -104,7 +102,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Equivalent."+ae.getName()+"\"", 800);
 				break;
 			case 0:
 				ae.setNTerms(ae.doTerminalsDef(parser.makeInteger()));
@@ -211,7 +209,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.setPropertyValue(i, otherEquivalent.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
+			DSSGlobals.doSimpleMsg("Error in Equivalent makeLike: \"" + OtherSource + "\" not found.", 801);
 		}
 
 		return result;
@@ -219,7 +217,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Equivalent.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Equivalent.init", -1);
 		return 0;
 	}
 
@@ -228,15 +226,14 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 	 */
 	public void interpretAllBuses(String s) {
 		String busName;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		EquivalentObj ae = activeEquivalentObj;
 		for (int i = 0; i < ae.getNTerms(); i++) {
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			busName = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			busName = DSSGlobals.auxParser.makeString();
 			if (busName.length() > 0)
 				ae.setBus(i, busName);  // TODO Check zero based indexing
 		}

@@ -64,7 +64,6 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		Complex Zs, Zm;
 		int i, j;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (Z != null) Z = null;
 		if (ZInv != null) ZInv = null;
@@ -87,9 +86,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		VMag = volts;
 
-		setSpectrumObj((com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()));
+		setSpectrumObj((com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()));
 		if ((getSpectrumObj() == null) && (getSpectrum().length() > 0))
-			globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device GICLine."+getName()+" not found.", 324);
+			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device GICLine."+getName()+" not found.", 324);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
@@ -101,7 +100,6 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		double freqMultiplier;
 		double Xc;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// build only YPrim_Series
 		if (isYprimInvalid()) {
@@ -114,7 +112,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 			YPrim.clear();
 		}
 
-		YPrimFreq      = globals.getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq      = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier  = YPrimFreq / baseFrequency;
 
 		/* Put in series RL adjusted for frequency */
@@ -138,7 +136,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		if (ZInv.getInvertError() > 0) {
 			/* If error, put in large series conductance */
-			globals.doErrorMsg("GICLineObj.calcYPrim", "Matrix inversion error for GICLine \"" + getName() + "\"",
+			DSSGlobals.doErrorMsg("GICLineObj.calcYPrim", "Matrix inversion error for GICLine \"" + getName() + "\"",
 	                   "Invalid impedance specified. Replaced with small resistance.", 325);
 	        ZInv.clear();
 	        for (i = 0; i < nPhases; i++)
@@ -170,8 +168,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		Complex VHarm;
 		double srcHarmonic;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		SolutionObj sol = globals.getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		try {
 			/* This formulation will theoretically handle voltage sources of
@@ -226,9 +223,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 				}
 			}
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error computing Voltages for GICLine."+getName()+". Check specification. Aborting.", 326);
-			if (globals.isInRedirect())
-				globals.setRedirectAbort(true);
+			DSSGlobals.doSimpleMsg("Error computing Voltages for GICLine."+getName()+". Check specification. Aborting.", 326);
+			if (DSSGlobals.inRedirect)
+				DSSGlobals.redirectAbort = true;
 		}
 	}
 
@@ -244,8 +241,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	public void getCurrents(Complex[] curr) {
 		int i;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		SolutionObj sol = globals.getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		try {
 			for (i = 0; i < YOrder; i++)
@@ -259,7 +255,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 				curr[i] = curr[i].subtract( complexBuffer[i] );
 
 		} catch (Exception e) {
-			globals.doErrorMsg("getCurrents for Element: " + getName() + ".",
+			DSSGlobals.doErrorMsg("getCurrents for Element: " + getName() + ".",
 			e.getMessage(),
 	        "Inadequate storage allotted for circuit element.", 327);
 		}

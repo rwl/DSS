@@ -42,7 +42,7 @@ public class DSSCompletor implements Completor {
 	}
 
 	private Set<String> locateCandidates(String buffer) {
-		Parser parser = DSSGlobals.getInstance().getAuxParser();
+		Parser parser = DSSGlobals.auxParser;
 
 		Set<String> candidates = new TreeSet<String>();
 

@@ -376,7 +376,6 @@ public class ExecOptions {
 		boolean result = true;
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// Continue parsing command line
 		int paramPointer = 0;
@@ -392,22 +391,22 @@ public class ExecOptions {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
 				break;
 			case 14:
-				globals.setDefaultEditor(param);  // 'Editor='
+				DSSGlobals.defaultEditor = param;  // 'Editor='
 				break;
 			case 56:
-				globals.setDataPath(param);  // set a legal data path
+				DSSGlobals.setDataPath(param);  // set a legal data path
 				break;
 			case 66:
 				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(param));
 				break;
 			case 72:
-				globals.setDefaultBaseFreq(parser.makeDouble());
+				DSSGlobals.defaultBaseFreq = parser.makeDouble();
 				break;
 			default:
-				globals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
+				DSSGlobals.doSimpleMsg("You must create a new circuit object first: \"new circuit.mycktname\" to execute this Set command.", 301);
 				result = false;  // indicate that we could not process all set command
 				break;
 			}
@@ -429,7 +428,6 @@ public class ExecOptions {
 		MutableInt numRegs;
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Circuit ckt;
 		SolutionObj solution;
 
@@ -448,7 +446,7 @@ public class ExecOptions {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Set command ", 130);
 				break;
 			case 0:
 				DSSClassDefs.setObjectClass(param);
@@ -457,39 +455,39 @@ public class ExecOptions {
 				DSSClassDefs.setObjectClass(param);
 				break;
 			case 1:
-				globals.setObject(param);
+				DSSGlobals.setObject(param);
 				break;
 			case 12:
-				globals.setObject(param);
+				DSSGlobals.setObject(param);
 				break;
 			case 2:
-				globals.getActiveCircuit().getSolution().setIntHour(parser.makeInteger());
+				DSSGlobals.activeCircuit.getSolution().setIntHour(parser.makeInteger());
 				break;
 			case 3:
-				globals.getActiveCircuit().getSolution().getDynaVars().t = parser.makeDouble();
+				DSSGlobals.activeCircuit.getSolution().getDynaVars().t = parser.makeDouble();
 				break;
 			case 4:
-				ckt = globals.getActiveCircuit();
+				ckt = DSSGlobals.activeCircuit;
 				ckt.getSolution().setYear(parser.makeInteger());
 				ckt.setDefaultGrowthFactor(Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1));
 				break;
 			case 5:
-				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				DSSGlobals.activeCircuit.getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 6:
-				globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
+				DSSGlobals.activeCircuit.getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
 				break;
 			case 17:
-				globals.getActiveCircuit().getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
+				DSSGlobals.activeCircuit.getSolution().getDynaVars().h = Utilities.interpretTimeStepSize(param);
 				break;
 			case 7:
-				globals.getActiveCircuit().getSolution().setMode( Utilities.interpretSolveMode(param) );  // see DSSGlobals
+				DSSGlobals.activeCircuit.getSolution().setMode( Utilities.interpretSolveMode(param) );  // see DSSGlobals
 				break;
 			case 8:
-				globals.getActiveCircuit().getSolution().setRandomType( Utilities.interpretRandom(param) );
+				DSSGlobals.activeCircuit.getSolution().setRandomType( Utilities.interpretRandom(param) );
 				break;
 			case 9:
-				globals.getActiveCircuit().getSolution().setNumberOfTimes(parser.makeInteger());
+				DSSGlobals.activeCircuit.getSolution().setNumberOfTimes(parser.makeInteger());
 				break;
 			case 10:
 				ExecHelper.setTime();
@@ -498,162 +496,162 @@ public class ExecOptions {
 				ExecHelper.setActiveCircuit(param);
 				break;
 			case 14:
-				globals.setDefaultEditor(param);  // 'Editor='
+				DSSGlobals.defaultEditor = param;  // 'Editor='
 				break;
 			case 15:
-				globals.getActiveCircuit().getSolution().setConvergenceTolerance(parser.makeDouble());
+				DSSGlobals.activeCircuit.getSolution().setConvergenceTolerance(parser.makeDouble());
 				break;
 			case 16:
-				globals.getActiveCircuit().getSolution().setMaxIterations(parser.makeInteger());
+				DSSGlobals.activeCircuit.getSolution().setMaxIterations(parser.makeInteger());
 				break;
 			case 18:
-				solution = globals.getActiveCircuit().getSolution();
+				solution = DSSGlobals.activeCircuit.getSolution();
 				solution.setDefaultLoadModel(Utilities.interpretLoadModel(param)); // for reverting to last on specified
 				solution.setLoadModel(solution.getDefaultLoadModel());
 				break;
 			case 19:
-				globals.getActiveCircuit().setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
+				DSSGlobals.activeCircuit.setLoadMultiplier(parser.makeDouble());  // set using loadMultiplier property
 				break;
 			case 20:
-				globals.getActiveCircuit().setNormalMinVolts(parser.makeDouble());
+				DSSGlobals.activeCircuit.setNormalMinVolts(parser.makeDouble());
 				break;
 			case 21:
-				globals.getActiveCircuit().setNormalMaxVolts(parser.makeDouble());
+				DSSGlobals.activeCircuit.setNormalMaxVolts(parser.makeDouble());
 				break;
 			case 22:
-				globals.getActiveCircuit().setEmergMinVolts(parser.makeDouble());
+				DSSGlobals.activeCircuit.setEmergMinVolts(parser.makeDouble());
 				break;
 			case 23:
-				globals.getActiveCircuit().setEmergMaxVolts(parser.makeDouble());
+				DSSGlobals.activeCircuit.setEmergMaxVolts(parser.makeDouble());
 				break;
 			case 24:
-				globals.getActiveCircuit().getDefaultDailyShapeObj().setMean(parser.makeDouble() / 100.0);
+				DSSGlobals.activeCircuit.getDefaultDailyShapeObj().setMean(parser.makeDouble() / 100.0);
 				break;
 			case 25:
-				globals.getActiveCircuit().getDefaultDailyShapeObj().setStdDev(parser.makeDouble() / 100.0);
+				DSSGlobals.activeCircuit.getDefaultDailyShapeObj().setStdDev(parser.makeDouble() / 100.0);
 				break;
 			case 26:
-				ckt = globals.getActiveCircuit();
+				ckt = DSSGlobals.activeCircuit;
 				ckt.setLoadDurCurve(param);
-				ckt.setLoadDurCurveObj((LoadShapeObj) globals.getLoadShapeClass().find(param));
+				ckt.setLoadDurCurveObj((LoadShapeObj) DSSGlobals.loadShapeClass.find(param));
 				if (ckt.getLoadDurCurveObj() == null)
-					globals.doSimpleMsg("Load-duration curve not found.", 131);
+					DSSGlobals.doSimpleMsg("Load-duration curve not found.", 131);
 				break;
 			case 27:
-				ckt = globals.getActiveCircuit();
+				ckt = DSSGlobals.activeCircuit;
 				ckt.setDefaultGrowthRate(1.0 + parser.makeDouble() / 100.0);
 				ckt.setDefaultGrowthFactor( Math.pow(ckt.getDefaultGrowthRate(), ckt.getSolution().getYear() - 1) );
 				break;
 			case 28:
-				globals.getActiveCircuit().getAutoAddObj().setGenKW(parser.makeDouble());
+				DSSGlobals.activeCircuit.getAutoAddObj().setGenKW(parser.makeDouble());
 				break;
 			case 29:
-				globals.getActiveCircuit().getAutoAddObj().setGenPF(parser.makeDouble());
+				DSSGlobals.activeCircuit.getAutoAddObj().setGenPF(parser.makeDouble());
 				break;
 			case 30:
-				globals.getActiveCircuit().getAutoAddObj().setCapKVAr(parser.makeDouble());
+				DSSGlobals.activeCircuit.getAutoAddObj().setCapKVAr(parser.makeDouble());
 				break;
 			case 31:
-				globals.getActiveCircuit().getAutoAddObj().setAddType(Utilities.interpretAddType(param));
+				DSSGlobals.activeCircuit.getAutoAddObj().setAddType(Utilities.interpretAddType(param));
 				break;
 			case 32:
-				globals.getActiveCircuit().setDuplicatesAllowed(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setDuplicatesAllowed(Utilities.interpretYesNo(param));
 				break;
 			case 33:
-				globals.getActiveCircuit().setZonesLocked(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setZonesLocked(Utilities.interpretYesNo(param));
 				break;
 			case 34:
-				globals.getActiveCircuit().setUEWeight(parser.makeDouble());
+				DSSGlobals.activeCircuit.setUEWeight(parser.makeDouble());
 				break;
 			case 35:
-				globals.getActiveCircuit().setLossWeight(parser.makeDouble());
+				DSSGlobals.activeCircuit.setLossWeight(parser.makeDouble());
 				break;
 			case 36:
 				numRegs = new MutableInt();
-				globals.getActiveCircuit().setUERegs(
-						Utilities.parseIntArray(globals.getActiveCircuit().getUERegs(), numRegs, param)
+				DSSGlobals.activeCircuit.setUERegs(
+						Utilities.parseIntArray(DSSGlobals.activeCircuit.getUERegs(), numRegs, param)
 				);
-				globals.getActiveCircuit().setNumUERegs(numRegs.intValue());
+				DSSGlobals.activeCircuit.setNumUERegs(numRegs.intValue());
 				break;
 			case 37:
 				numRegs = new MutableInt();
-				globals.getActiveCircuit().setLossRegs(
-						Utilities.parseIntArray(globals.getActiveCircuit().getLossRegs(), numRegs, param)
+				DSSGlobals.activeCircuit.setLossRegs(
+						Utilities.parseIntArray(DSSGlobals.activeCircuit.getLossRegs(), numRegs, param)
 				);
-				globals.getActiveCircuit().setNumLossRegs(numRegs.intValue());
+				DSSGlobals.activeCircuit.setNumLossRegs(numRegs.intValue());
 				break;
 			case 38:
 				ExecHelper.doLegalVoltageBases();
 				break;
 			case 39:
-				globals.getActiveCircuit().getSolution().setAlgorithm(Utilities.interpretSolveAlg(param));
+				DSSGlobals.activeCircuit.getSolution().setAlgorithm(Utilities.interpretSolveAlg(param));
 				break;
 			case 40:
-				globals.getActiveCircuit().setTrapezoidalIntegration(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setTrapezoidalIntegration(Utilities.interpretYesNo(param));
 				break;
 			case 41:
 				ExecHelper.doAutoAddBusList(param);
 				break;
 			case 42:
-				solution = globals.getActiveCircuit().getSolution();
+				solution = DSSGlobals.activeCircuit.getSolution();
 				solution.setControlMode(Utilities.interpretControlMode(param));
 				solution.setDefaultControlMode(solution.getControlMode());  // always revert to last one specified in a script
 				break;
 			case 43:
-				globals.getActiveCircuit().getControlQueue().setTrace(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.getControlQueue().setTrace(Utilities.interpretYesNo(param));
 				break;
 			case 44:
-				globals.getActiveCircuit().setGenMultiplier(parser.makeDouble());
+				DSSGlobals.activeCircuit.setGenMultiplier(parser.makeDouble());
 				break;
 			case 45:
-				testLoadShapeObj = (LoadShapeObj) globals.getLoadShapeClass().find(param);
+				testLoadShapeObj = (LoadShapeObj) DSSGlobals.loadShapeClass.find(param);
 				if (testLoadShapeObj != null)
-					globals.getActiveCircuit().setDefaultDailyShapeObj(testLoadShapeObj);
+					DSSGlobals.activeCircuit.setDefaultDailyShapeObj(testLoadShapeObj);
 				break;
 			case 46:
-				testLoadShapeObj = (LoadShapeObj) globals.getLoadShapeClass().find(param);
+				testLoadShapeObj = (LoadShapeObj) DSSGlobals.loadShapeClass.find(param);
 				if (testLoadShapeObj != null)
-					globals.getActiveCircuit().setDefaultYearlyShapeObj(testLoadShapeObj);
+					DSSGlobals.activeCircuit.setDefaultYearlyShapeObj(testLoadShapeObj);
 				break;
 			case 47:
 				ExecHelper.doSetAllocationFactors(parser.makeDouble());
 				break;
 			case 48:
-				globals.getActiveCircuit().setPositiveSequence(Utilities.interpretCktModel(param));
+				DSSGlobals.activeCircuit.setPositiveSequence(Utilities.interpretCktModel(param));
 				break;
 			case 49:
-				globals.getActiveCircuit().setPriceSignal(parser.makeDouble());
+				DSSGlobals.activeCircuit.setPriceSignal(parser.makeDouble());
 				break;
 			case 50:
-				ckt = globals.getActiveCircuit();
+				ckt = DSSGlobals.activeCircuit;
 				ckt.setPriceCurve(param);
-				ckt.setPriceCurveObj((PriceShapeObj) globals.getLoadShapeClass().find(param));
+				ckt.setPriceCurveObj((PriceShapeObj) DSSGlobals.loadShapeClass.find(param));
 				if (ckt.getPriceCurveObj() == null)
-					globals.doSimpleMsg("PriceShape: \"" +param+ "\" not found.", 132);
+					DSSGlobals.doSimpleMsg("PriceShape: \"" +param+ "\" not found.", 132);
 				break;
 			case 51:
-				ckt = globals.getActiveCircuit();
+				ckt = DSSGlobals.activeCircuit;
 				if (ckt.getActiveCktElement() != null) {
 					CktElement cktElem = ckt.getActiveCktElement();
 					cktElem.setActiveTerminalIdx(parser.makeInteger());
-					globals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );  // bus connected to terminal
+					DSSGlobals.setActiveBus( Utilities.stripExtension(cktElem.getBus(cktElem.getActiveTerminalIdx())) );  // bus connected to terminal
 				}
 				break;
 			case 52:
-				globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				DSSGlobals.activeCircuit.setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
+				DSSGlobals.activeCircuit.getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 53:
 				ExecHelper.doHarmonicsList(param);
 				break;
 			case 54:
-				globals.getActiveCircuit().getSolution().setMaxControlIterations(parser.makeInteger());
+				DSSGlobals.activeCircuit.getSolution().setMaxControlIterations(parser.makeInteger());
 				break;
 			case 55:
-				result = globals.setActiveBus(param);  // see DSSGlobals
+				result = DSSGlobals.setActiveBus(param);  // see DSSGlobals
 				break;
 			case 56:
-				globals.setDataPath(param);  // set a legal data path
+				DSSGlobals.setDataPath(param);  // set a legal data path
 				break;
 			case 57:
 				ExecHelper.doKeeperBusList(param);
@@ -662,73 +660,73 @@ public class ExecOptions {
 				ExecHelper.doSetReduceStrategy(param);
 				break;
 			case 59:
-				globals.getEnergyMeterClass().setSaveDemandInterval(Utilities.interpretYesNo(param));
+				DSSGlobals.energyMeterClass.setSaveDemandInterval(Utilities.interpretYesNo(param));
 				break;
 			case 60:
-				globals.getActiveCircuit().setPctNormalFactor(parser.makeDouble());
-				ExecHelper.doSetNormal(globals.getActiveCircuit().getPctNormalFactor());
+				DSSGlobals.activeCircuit.setPctNormalFactor(parser.makeDouble());
+				ExecHelper.doSetNormal(DSSGlobals.activeCircuit.getPctNormalFactor());
 				break;
 			case 61:
-				globals.getEnergyMeterClass().setDIVerbose(Utilities.interpretYesNo(param));
+				DSSGlobals.energyMeterClass.setDIVerbose(Utilities.interpretYesNo(param));
 				break;
 			case 62:
-				globals.getActiveCircuit().setCaseName(parser.makeString());
+				DSSGlobals.activeCircuit.setCaseName(parser.makeString());
 				break;
 			case 63:
-				globals.getActiveCircuit().setNodeMarkerCode(parser.makeInteger());
+				DSSGlobals.activeCircuit.setNodeMarkerCode(parser.makeInteger());
 				break;
 			case 64:
-				globals.getActiveCircuit().setNodeMarkerWidth(parser.makeInteger());
+				DSSGlobals.activeCircuit.setNodeMarkerWidth(parser.makeInteger());
 				break;
 			case 65:
-				globals.getActiveCircuit().setLogEvents(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setLogEvents(Utilities.interpretYesNo(param));
 				break;
 			case 66:
 				DSSExecutive.getInstance().setRecorderOn(Utilities.interpretYesNo(param));
 				break;
 			case 67:
-				globals.getEnergyMeterClass().setDoOverloadReport(Utilities.interpretYesNo(param));
+				DSSGlobals.energyMeterClass.setDoOverloadReport(Utilities.interpretYesNo(param));
 				break;
 			case 68:
-				globals.getEnergyMeterClass().setDoVoltageExceptionReport(Utilities.interpretYesNo(param));
+				DSSGlobals.energyMeterClass.setDoVoltageExceptionReport(Utilities.interpretYesNo(param));
 				break;
 			case 69:
 				ExecHelper.doSetCFactors(parser.makeDouble());
 				break;
 			case 70:
-				globals.setAutoShowExport(Utilities.interpretYesNo(param));
+				DSSGlobals.autoShowExport = Utilities.interpretYesNo(param);
 				break;
 			case 71:
-				globals.setMaxAllocationIterations(parser.makeInteger());
+				DSSGlobals.maxAllocationIterations = parser.makeInteger();
 				break;
 			case 72:
-				globals.setDefaultBaseFreq(parser.makeDouble());
-				globals.getActiveCircuit().setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
-				globals.getActiveCircuit().getSolution().setFrequency(parser.makeDouble());
+				DSSGlobals.defaultBaseFreq = parser.makeDouble();
+				DSSGlobals.activeCircuit.setFundamental(parser.makeDouble());  // set base frequency for system (used henceforth)
+				DSSGlobals.activeCircuit.getSolution().setFrequency(parser.makeDouble());
 				break;
 			case 73:
-				globals.getActiveCircuit().setMarkSwitches(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setMarkSwitches(Utilities.interpretYesNo(param));
 				break;
 			case 74:
-				globals.getActiveCircuit().setSwitchMarkerCode(parser.makeInteger());
+				DSSGlobals.activeCircuit.setSwitchMarkerCode(parser.makeInteger());
 				break;
 			case 75:
-				globals.setDaisySize(parser.makeDouble());
+				DSSGlobals.daisySize = parser.makeDouble();
 				break;
 			case 76:
-				globals.getActiveCircuit().setMarkTransformers(Utilities.interpretYesNo(param));
+				DSSGlobals.activeCircuit.setMarkTransformers(Utilities.interpretYesNo(param));
 				break;
 			case 77:
-				globals.getActiveCircuit().setTransMarkerCode(parser.makeInteger());
+				DSSGlobals.activeCircuit.setTransMarkerCode(parser.makeInteger());
 				break;
 			case 78:
-				globals.getActiveCircuit().setTransMarkerSize(parser.makeInteger());
+				DSSGlobals.activeCircuit.setTransMarkerSize(parser.makeInteger());
 				break;
 			case 79:
-				globals.getActiveCircuit().setActiveLoadShapeClass(Utilities.interpretLoadShapeClass(param));
+				DSSGlobals.activeCircuit.setActiveLoadShapeClass(Utilities.interpretLoadShapeClass(param));
 				break;
 			case 80:
-				globals.setDefaultEarthModel(Utilities.interpretEarthModel(param));
+				DSSGlobals.defaultEarthModel = Utilities.interpretEarthModel(param);
 				break;
 			default:
 				// ignore excess parameters
@@ -737,10 +735,10 @@ public class ExecOptions {
 
 			switch (paramPointer) {
 			case 3:
-				globals.getActiveCircuit().getSolution().updateDblHour();
+				DSSGlobals.activeCircuit.getSolution().updateDblHour();
 				break;
 			case 4:
-				globals.getActiveCircuit().getSolution().updateDblHour();
+				DSSGlobals.activeCircuit.getSolution().updateDblHour();
 				break;
 			}
 
@@ -759,13 +757,12 @@ public class ExecOptions {
 	 * may be retrieved by result property of the DSSText interface.
 	 */
 	public int doGetCmd() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Circuit ckt;
 
 		int result = 0;
 		int paramPointer;
 		try {
-			globals.setGlobalResult("");  // initialize for appending
+			DSSGlobals.globalResult = "";  // initialize for appending
 
 			// continue parsing command line
 			String paramName = Parser.getInstance().getNextParam();
@@ -777,334 +774,334 @@ public class ExecOptions {
 
 				switch (paramPointer) {
 				case -1:
-					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Get command ", 133);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for Get command ", 133);
 					break;
 				case 0:
-					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getActiveCktElement().getDSSClassName());
 					break;
 				case 11:
-					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getDSSClassName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getActiveCktElement().getDSSClassName());
 					break;
 				case 1:
-					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getActiveCktElement().getName());
 					break;
 				case 12:
-					globals.appendGlobalResult(globals.getActiveCircuit().getActiveCktElement().getName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getActiveCktElement().getName());
 					break;
 				case 2:
-					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getIntHour()));
+					DSSGlobals.appendGlobalResult(String.valueOf(DSSGlobals.activeCircuit.getSolution().getIntHour()));
 					break;
 				case 3:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().t));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getSolution().getDynaVars().t));
 					break;
 				case 4:
-					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getYear()));
+					DSSGlobals.appendGlobalResult(String.valueOf(DSSGlobals.activeCircuit.getSolution().getYear()));
 					break;
 				case 5:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getFrequency()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getSolution().getFrequency()));
 					break;
 				case 6:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().h));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getSolution().getDynaVars().h));
 					break;
 				case 17:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getDynaVars().h));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getSolution().getDynaVars().h));
 					break;
 				case 7:
-					globals.appendGlobalResult(Utilities.getSolutionModeID());
+					DSSGlobals.appendGlobalResult(Utilities.getSolutionModeID());
 					break;
 				case 8:
-					globals.appendGlobalResult(Utilities.getRandomModeID());
+					DSSGlobals.appendGlobalResult(Utilities.getRandomModeID());
 					break;
 				case 9:
-					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getNumberOfTimes()));
+					DSSGlobals.appendGlobalResult(String.valueOf(DSSGlobals.activeCircuit.getSolution().getNumberOfTimes()));
 					break;
 				case 10:
-					globals.appendGlobalResult(String.format("[ %d, %-g ]", String.valueOf(globals.getActiveCircuit().getSolution().getIntHour()), globals.getActiveCircuit().getSolution().getDynaVars().t));
+					DSSGlobals.appendGlobalResult(String.format("[ %d, %-g ]", String.valueOf(DSSGlobals.activeCircuit.getSolution().getIntHour()), DSSGlobals.activeCircuit.getSolution().getDynaVars().t));
 					break;
 				case 13:
-					globals.appendGlobalResult(globals.getActiveCircuit().getName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getName());
 					break;
 				case 14:
-					globals.appendGlobalResult(globals.getDefaultEditor());
+					DSSGlobals.appendGlobalResult(DSSGlobals.defaultEditor);
 					break;
 				case 15:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getSolution().getConvergenceTolerance()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getSolution().getConvergenceTolerance()));
 					break;
 				case 16:
-					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getMaxIterations()));
+					DSSGlobals.appendGlobalResult(String.valueOf(DSSGlobals.activeCircuit.getSolution().getMaxIterations()));
 					break;
 				case 18:
-					globals.appendGlobalResult(Utilities.getLoadModel());
+					DSSGlobals.appendGlobalResult(Utilities.getLoadModel());
 					break;
 				case 19:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getLoadMultiplier()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getLoadMultiplier()));
 					break;
 				case 20:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getNormalMinVolts()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getNormalMinVolts()));
 					break;
 				case 21:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getNormalMaxVolts()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getNormalMaxVolts()));
 					break;
 				case 22:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getEmergMinVolts()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getEmergMinVolts()));
 					break;
 				case 23:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getEmergMaxVolts()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getEmergMaxVolts()));
 					break;
 				case 24:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getDefaultDailyShapeObj().getMean() * 100.0));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getDefaultDailyShapeObj().getMean() * 100.0));
 					break;
 				case 25:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getDefaultDailyShapeObj().getStdDev() * 100.0));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getDefaultDailyShapeObj().getStdDev() * 100.0));
 					break;
 				case 26:
-					globals.appendGlobalResult(globals.getActiveCircuit().getLoadDurCurve());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getLoadDurCurve());
 					break;
 				case 27:
-					globals.appendGlobalResult(String.format("%-g", (globals.getActiveCircuit().getDefaultGrowthRate() - 1.0) * 100.0));
+					DSSGlobals.appendGlobalResult(String.format("%-g", (DSSGlobals.activeCircuit.getDefaultGrowthRate() - 1.0) * 100.0));
 					break;
 				case 28:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getGenKW()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getAutoAddObj().getGenKW()));
 					break;
 				case 29:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getGenPF()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getAutoAddObj().getGenPF()));
 					break;
 				case 30:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getAutoAddObj().getCapKVAr()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getAutoAddObj().getCapKVAr()));
 					break;
 				case 31:
-					switch (globals.getActiveCircuit().getAutoAddObj().getAddType()) {
+					switch (DSSGlobals.activeCircuit.getAutoAddObj().getAddType()) {
 					case DSSGlobals.GENADD:
-						globals.appendGlobalResult("generator");
+						DSSGlobals.appendGlobalResult("generator");
 						break;
 					case DSSGlobals.CAPADD:
-						globals.appendGlobalResult("capacitor");
+						DSSGlobals.appendGlobalResult("capacitor");
 						break;
 					}
 					break;
 				case 32:
-					if (globals.getActiveCircuit().isDuplicatesAllowed()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isDuplicatesAllowed()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 33:
-					if (globals.getActiveCircuit().isZonesLocked()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isZonesLocked()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 34:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getUEWeight()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getUEWeight()));
 					break;
 				case 35:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getLossWeight()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getLossWeight()));
 					break;
 				case 36:
-					globals.appendGlobalResult(Utilities.intArrayToString(globals.getActiveCircuit().getUERegs(), globals.getActiveCircuit().getNumUERegs()));
+					DSSGlobals.appendGlobalResult(Utilities.intArrayToString(DSSGlobals.activeCircuit.getUERegs(), DSSGlobals.activeCircuit.getNumUERegs()));
 					break;
 				case 37:
-					globals.appendGlobalResult(Utilities.intArrayToString(globals.getActiveCircuit().getLossRegs(), globals.getActiveCircuit().getNumLossRegs()));
+					DSSGlobals.appendGlobalResult(Utilities.intArrayToString(DSSGlobals.activeCircuit.getLossRegs(), DSSGlobals.activeCircuit.getNumLossRegs()));
 					break;
 				case 38:
-					ckt = globals.getActiveCircuit();
-					globals.setGlobalResult("(");
+					ckt = DSSGlobals.activeCircuit;
+					DSSGlobals.globalResult = "(";
 					for (double vBase : ckt.getLegalVoltageBases())
-						globals.setGlobalResult(globals.getGlobalResult() + String.format("%-g, ", vBase));
-					globals.setGlobalResult(globals.getGlobalResult() + ")");
+						DSSGlobals.globalResult = DSSGlobals.globalResult + String.format("%-g, ", vBase);
+					DSSGlobals.globalResult = DSSGlobals.globalResult + ")";
 					break;
 				case 39:
-					switch (globals.getActiveCircuit().getSolution().getAlgorithm()) {
+					switch (DSSGlobals.activeCircuit.getSolution().getAlgorithm()) {
 					case Solution.NORMALSOLVE:
-						globals.appendGlobalResult("normal");
+						DSSGlobals.appendGlobalResult("normal");
 						break;
 					case Solution.NEWTONSOLVE:
-						globals.appendGlobalResult("newton");
+						DSSGlobals.appendGlobalResult("newton");
 						break;
 					}
 					break;
 				case 40:
-					if (globals.getActiveCircuit().isTrapezoidalIntegration()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isTrapezoidalIntegration()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 41:
-					for (int i = 0; i < globals.getActiveCircuit().getAutoAddBusList().listSize(); i++)
-						globals.appendGlobalResult(globals.getActiveCircuit().getAutoAddBusList().get(i));
+					for (int i = 0; i < DSSGlobals.activeCircuit.getAutoAddBusList().listSize(); i++)
+						DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getAutoAddBusList().get(i));
 					break;
 				case 42:
-					globals.appendGlobalResult(Utilities.getControlModeID());
+					DSSGlobals.appendGlobalResult(Utilities.getControlModeID());
 					break;
 				case 43:
-					if (globals.getActiveCircuit().getControlQueue().getTrace()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.getControlQueue().getTrace()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 44:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getGenMultiplier()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getGenMultiplier()));
 					break;
 				case 45:
-					globals.appendGlobalResult(globals.getActiveCircuit().getDefaultDailyShapeObj().getName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getDefaultDailyShapeObj().getName());
 					break;
 				case 46:
-					globals.appendGlobalResult(globals.getActiveCircuit().getDefaultYearlyShapeObj().getName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getDefaultYearlyShapeObj().getName());
 					break;
 				case 47:
-					globals.appendGlobalResult("Get function not applicable.");
+					DSSGlobals.appendGlobalResult("Get function not applicable.");
 					break;
 				case 48:
-					if (globals.getActiveCircuit().isPositiveSequence()) {
-						globals.appendGlobalResult("positive");
+					if (DSSGlobals.activeCircuit.isPositiveSequence()) {
+						DSSGlobals.appendGlobalResult("positive");
 					} else {
-						globals.appendGlobalResult("multiphase");
+						DSSGlobals.appendGlobalResult("multiphase");
 					}
 					break;
 				case 49:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getPriceSignal()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getPriceSignal()));
 					break;
 				case 50:
-					globals.appendGlobalResult(globals.getActiveCircuit().getPriceCurve());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getPriceCurve());
 					break;
 				case 51:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getActiveCktElement().getActiveTerminalIdx()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getActiveCktElement().getActiveTerminalIdx()));
 					break;
 				case 52:
-					globals.appendGlobalResult(String.format("%-g", globals.getActiveCircuit().getFundamental()));
+					DSSGlobals.appendGlobalResult(String.format("%-g", DSSGlobals.activeCircuit.getFundamental()));
 					break;
 				case 53:
-					SolutionObj sol = globals.getActiveCircuit().getSolution();
+					SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 					if (sol.isDoAllHarmonics()) {
-						globals.appendGlobalResult("ALL");
+						DSSGlobals.appendGlobalResult("ALL");
 					} else {
 						for (int i = 0; i < sol.getHarmonicListSize(); i++)
-							globals.appendGlobalResult(String.format("%-g", sol.getHarmonicList()[i]));
+							DSSGlobals.appendGlobalResult(String.format("%-g", sol.getHarmonicList()[i]));
 					}
 					break;
 				case 54:
-					globals.appendGlobalResult(String.valueOf(globals.getActiveCircuit().getSolution().getMaxControlIterations()));
+					DSSGlobals.appendGlobalResult(String.valueOf(DSSGlobals.activeCircuit.getSolution().getMaxControlIterations()));
 					break;
 				case 55:
-					globals.appendGlobalResult(globals.getActiveCircuit().getBusList().get(globals.getActiveCircuit().getActiveBusIndex()));
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getBusList().get(DSSGlobals.activeCircuit.getActiveBusIndex()));
 					break;
 				case 56:
-					globals.appendGlobalResult(globals.getDSSDataDirectory());
+					DSSGlobals.appendGlobalResult(DSSGlobals.DSSDataDirectory);
 					break;
 				case 57:
-					ckt = globals.getActiveCircuit();
+					ckt = DSSGlobals.activeCircuit;
 					for (int i = 0; i < ckt.getNumBuses(); i++)
 						if (ckt.getBuses()[i].isKeep())
-							globals.appendGlobalResult(ckt.getBusList().get(i));
+							DSSGlobals.appendGlobalResult(ckt.getBusList().get(i));
 					break;
 				case 58:
-					globals.appendGlobalResult(globals.getActiveCircuit().getReductionStrategyString());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getReductionStrategyString());
 					break;
 				case 59:
-					if (globals.getEnergyMeterClass().isSaveDemandInterval()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.energyMeterClass.isSaveDemandInterval()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 60:
-					globals.appendGlobalResult(String.format("%-.g", globals.getActiveCircuit().getPctNormalFactor()));
+					DSSGlobals.appendGlobalResult(String.format("%-.g", DSSGlobals.activeCircuit.getPctNormalFactor()));
 					break;
 				case 61:
-					if (globals.getEnergyMeterClass().isDIVerbose()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.energyMeterClass.isDIVerbose()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 62:
-					globals.appendGlobalResult(globals.getActiveCircuit().getCaseName());
+					DSSGlobals.appendGlobalResult(DSSGlobals.activeCircuit.getCaseName());
 					break;
 				case 63:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getNodeMarkerCode()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getNodeMarkerCode()));
 					break;
 				case 64:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getNodeMarkerWidth()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getNodeMarkerWidth()));
 					break;
 				case 65:
-					if (globals.getActiveCircuit().isLogEvents()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isLogEvents()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 66:
 					if (DSSExecutive.getInstance().isRecorderOn()) {
-						globals.appendGlobalResult("Yes");
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 67:
-					if (globals.getEnergyMeterClass().isDo_OverloadReport()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.energyMeterClass.isDo_OverloadReport()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 68:
-					if (globals.getEnergyMeterClass().isDo_VoltageExceptionReport()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.energyMeterClass.isDo_VoltageExceptionReport()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 69:
-					globals.appendGlobalResult("Get function not applicable.");
+					DSSGlobals.appendGlobalResult("Get function not applicable.");
 					break;
 				case 70:
-					if (globals.isAutoShowExport()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.autoShowExport) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 71:
-					globals.appendGlobalResult(String.format("%d", globals.getMaxAllocationIterations())) ;
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.maxAllocationIterations)) ;
 					break;
 				case 72:
-					globals.appendGlobalResult(String.format("%d", globals.getDefaultBaseFreq()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.defaultBaseFreq));
 					break;
 				case 73:
-					if (globals.getActiveCircuit().isMarkSwitches()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isMarkSwitches()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 74:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getSwitchMarkerCode()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getSwitchMarkerCode()));
 					break;
 				case 75:
-					globals.appendGlobalResult(String.format("%-.6g", globals.getDaisySize()));
+					DSSGlobals.appendGlobalResult(String.format("%-.6g", DSSGlobals.daisySize));
 					break;
 				case 76:
-					if (globals.getActiveCircuit().isMarkTransformers()) {
-						globals.appendGlobalResult("Yes");
+					if (DSSGlobals.activeCircuit.isMarkTransformers()) {
+						DSSGlobals.appendGlobalResult("Yes");
 					} else {
-						globals.appendGlobalResult("No");
+						DSSGlobals.appendGlobalResult("No");
 					}
 					break;
 				case 77:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getTransMarkerCode()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getTransMarkerCode()));
 					break;
 				case 78:
-					globals.appendGlobalResult(String.format("%d", globals.getActiveCircuit().getTransMarkerSize()));
+					DSSGlobals.appendGlobalResult(String.format("%d", DSSGlobals.activeCircuit.getTransMarkerSize()));
 					break;
 				case 79:
-					globals.appendGlobalResult(Utilities.getActiveLoadShapeClass());
+					DSSGlobals.appendGlobalResult(Utilities.getActiveLoadShapeClass());
 					break;
 				case 80:
-					globals.appendGlobalResult(Utilities.getEarthModel(globals.getDefaultEarthModel()));
+					DSSGlobals.appendGlobalResult(Utilities.getEarthModel(DSSGlobals.defaultEarthModel));
 					break;
 				default:
 					// ignore excess parameters
@@ -1116,7 +1113,7 @@ public class ExecOptions {
 			}
 
 		} catch (Exception e) {
-			globals.appendGlobalResult("***Error***");
+			DSSGlobals.appendGlobalResult("***Error***");
 		}
 
 		return result;

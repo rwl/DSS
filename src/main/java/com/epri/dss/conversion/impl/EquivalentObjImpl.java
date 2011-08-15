@@ -79,7 +79,6 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		Complex Zs, Zm;
 //		int i, j, ii, jj;
 		int iOffset, jOffset, indx;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (Z != null) Z = null;
 		if (ZInv != null) ZInv = null;
@@ -121,9 +120,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			break;
 		}
 
-		setSpectrumObj((com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()));
+		setSpectrumObj((com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()));
 		if (getSpectrumObj() == null)
-			globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
+			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 
@@ -136,7 +135,6 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		int i, j;
 		double freqMultiplier;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// build only YPrim series
 		if (isYprimInvalid()) {
@@ -152,7 +150,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		if (needToDoRecalc)
 			recalcElementData();
 
-		YPrimFreq = globals.getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Put in Series RL matrix adjusted for frequency */
@@ -169,7 +167,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		if (ZInv.getInvertError() > 0) {
 			/* If error, put in large series conductance */
-			globals.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
+			DSSGlobals.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 803);
 			ZInv.clear();
 			for (i = 0; i < nPhases; i++)
@@ -193,7 +191,6 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		Complex VHarm;
 		double equivHarm;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			/* This formulation will theoretically handle voltage sources of any number
@@ -209,7 +206,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 				break;
 			}
 
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			if (sol.isHarmonicModel()) {
 				equivHarm = sol.getFrequency() / equivFrequency ;
@@ -226,9 +223,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			}
 
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error computing voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
-			if (globals.isInRedirect())
-				globals.setRedirectAbort(true);
+			DSSGlobals.doSimpleMsg("Error computing voltages for Equivalent."+getName()+". Check specification. Aborting.", 804);
+			if (DSSGlobals.inRedirect)
+				DSSGlobals.redirectAbort = true;
 		}
 	}
 
@@ -241,10 +238,9 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
@@ -255,7 +251,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			for (i = 0; i < YOrder; i++)
 				curr[i] = curr[i].subtract(complexBuffer[i]);
 		} catch (Exception e) {
-			globals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.doErrorMsg(("GetCurrents for element: " + getName() + "."), e.getMessage(),
 			"Inadequate storage allotted for circuit element.", 805);
 		}
 	}

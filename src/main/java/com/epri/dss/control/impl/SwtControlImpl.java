@@ -55,20 +55,18 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new SwtControlObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new SwtControlObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeSwtControlObj = (SwtControlObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeSwtControlObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeSwtControlObj);
 
 		int result = 0;
 
@@ -89,7 +87,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 382);
 				break;
 			case 0:
 				asc.setElementName(param.toLowerCase());
@@ -144,7 +142,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, otherSwtControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
+			DSSGlobals.doSimpleMsg("Error in SwtControl makeLike: \"" + swtControlName + "\" not found.", 383);
 		}
 
 		return result;

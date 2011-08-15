@@ -284,14 +284,13 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	 */
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		/* Check for existence of monitored element */
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			monitoredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			if (elementTerminal > monitoredElement.getNTerms()) {
-				globals.doErrorMsg("StorageController: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("StorageController: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
@@ -301,12 +300,12 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				setBus(1, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
-			globals.doSimpleMsg("Monitored element in StorageController."+getName()+ " does not exist:\""+elementName+"\"", 372);
+			DSSGlobals.doSimpleMsg("Monitored element in StorageController."+getName()+ " does not exist:\""+elementName+"\"", 372);
 		}
 
 		if (fleetListChanged)
 			if (!makeFleetList())
-				globals.doSimpleMsg("No unassigned storage elements found to assign to StorageController."+getName(), 37201);
+				DSSGlobals.doSimpleMsg("No unassigned storage elements found to assign to StorageController."+getName(), 37201);
 
 		getkWTotal(totalKWCapacity);
 		getkWhTotal(totalKWhCapacity);
@@ -411,7 +410,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				return "UNKNOWN";
 			}
 		default:
-			DSSGlobals.getInstance().doSimpleMsg("Unknown charge/discharge designation", 14401);
+			DSSGlobals.doSimpleMsg("Unknown charge/discharge designation", 14401);
 			return "";
 		}
 	}
@@ -450,7 +449,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		double TDiff;
 		double pctDischargeRate = 0.0;  // init for test
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (dischargeTriggerTime > 0.0) {
@@ -516,7 +515,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 	 * from the controller.
 	 */
 	private void doTimeMode(int opt) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		switch (opt) {
@@ -734,7 +733,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			}
 
 			if (storeKWChanged || storeKVArChanged) {  // only push onto control queue if there has been a change
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				SolutionObj sol = ckt.getSolution();
 
 				sol.setLoadsNeedUpdating(true);  // force recalc of power parms
@@ -774,7 +773,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			doScheduleMode();
 			break;
 		default:
-			DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid discharging mode: %d", dischargeMode), 14408);
+			DSSGlobals.doSimpleMsg(String.format("Invalid discharging mode: %d", dischargeMode), 14408);
 			break;
 		}
 
@@ -787,7 +786,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 				doTimeMode(2);
 				break;
 			default:
-				DSSGlobals.getInstance().doSimpleMsg(String.format("Invalid charging mode: %d", chargeMode), 14409);
+				DSSGlobals.doSimpleMsg(String.format("Invalid charging mode: %d", chargeMode), 14409);
 				break;
 			}
 	}
@@ -822,7 +821,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		double newChargeRate;
 		double newKWRate, newKVArRate;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		fleetStateSaved = fleetState;
@@ -986,7 +985,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case 't':
 				return StorageController.TIME;
 			default:
-				DSSGlobals.getInstance().doSimpleMsg("Discharge Mode \"" + s + "\" not recognized.", 14402);
+				DSSGlobals.doSimpleMsg("Discharge Mode \"" + s + "\" not recognized.", 14402);
 			}
 			break;
 		case StorageController.MODE_CHARGE:
@@ -1000,7 +999,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			case 't':
 				return StorageController.TIME;
 			default:
-				DSSGlobals.getInstance().doSimpleMsg("Charge Mode \"" + s + "\" not recognized.", 14402);
+				DSSGlobals.doSimpleMsg("Charge Mode \"" + s + "\" not recognized.", 14402);
 			}
 			break;
 		default:
@@ -1013,7 +1012,6 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 		StorageObj pStorage;
 		int i;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		boolean result = false;
 
@@ -1021,12 +1019,12 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 			fleetPointerList.clear();
 			for (i = 0; i < fleetSize; i++) {
-				pStorage = (StorageObj) globals.getStorageClass().find(storageNameList.get(i - 1));
+				pStorage = (StorageObj) DSSGlobals.storageClass.find(storageNameList.get(i - 1));
 				if (pStorage != null) {
 					if (pStorage.isEnabled())
 						fleetPointerList.add(pStorage);
 				} else {
-					globals.doSimpleMsg("Error: Storage element \"" + storageNameList.get(i - 1) + "\" not found.", 14403);
+					DSSGlobals.doSimpleMsg("Error: Storage element \"" + storageNameList.get(i - 1) + "\" not found.", 14403);
 					return result;
 				}
 			}
@@ -1036,8 +1034,8 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 			/* Search through the entire circuit for enabled storage elements and add them to the list */
 			storageNameList.clear();
 			fleetPointerList.clear();
-			for (i = 0; i < globals.getStorageClass().getElementCount(); i++) {
-				pStorage = (StorageObj) globals.getStorageClass().getElementList().get(i);
+			for (i = 0; i < DSSGlobals.storageClass.getElementCount(); i++) {
+				pStorage = (StorageObj) DSSGlobals.storageClass.getElementList().get(i);
 				// Look for a storage element not already assigned
 				if (pStorage.isEnabled() && (pStorage.getDispatchMode() != Storage.EXTERNAL_MODE)) {
 					storageNameList.add(pStorage.getName());  // add to list of names

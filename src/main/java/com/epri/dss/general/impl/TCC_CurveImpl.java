@@ -55,10 +55,9 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new TCC_CurveObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new TCC_CurveObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void calcLogPoints(double[] X, double[] logX, int n) {
@@ -75,7 +74,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeTCC_CurveObj = (TCC_CurveObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeTCC_CurveObj);
+		DSSGlobals.activeDSSObject = activeTCC_CurveObj;
 
 		Parser parser = Parser.getInstance();
 
@@ -96,7 +95,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 			switch (paramPointer) {
 			case 0:
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ atc.getName() + "\"", 420);
 				break;
 			case 1:
 				atc.setNPts(parser.makeInteger());
@@ -159,7 +158,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			for (i = 0; i < atc.getParentClass().getNumProperties(); i++)
 				atc.setPropertyValue(i, otherTCC_Curve.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + name + "\" not found.", 421);
+			DSSGlobals.doSimpleMsg("Error in TCC_Curve.makeLike(): \"" + name + "\" not found.", 421);
 		}
 
 		return result;
@@ -167,7 +166,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement TCC_Curve.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement TCC_Curve.init()", -1);
 		return 0;
 	}
 
@@ -187,7 +186,7 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("TCC_Curve: \"" + value + "\" not found.", 422);
+		DSSGlobals.doSimpleMsg("TCC_Curve: \"" + value + "\" not found.", 422);
 	}
 
 }

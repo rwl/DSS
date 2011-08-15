@@ -54,12 +54,11 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		setSpectrumObj( (com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()) );
+		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 
 		if (getSpectrumObj() == null)
-			globals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
+			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
 
 		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
@@ -95,10 +94,9 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		double srcHarmonic;
 		Complex result = null;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			/* Get first phase current */
 			if (sol.isHarmonicModel()) {
@@ -113,9 +111,9 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 				}
 			}
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
-			if (globals.isInRedirect())
-				globals.setRedirectAbort(true);
+			DSSGlobals.doSimpleMsg("Error computing current for ISource."+getName()+". Check specification. Aborting.", 334);
+			if (DSSGlobals.inRedirect)
+				DSSGlobals.redirectAbort = true;
 		}
 
 		return result;
@@ -142,7 +140,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = complexBuffer[i].negate();
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg(("GetCurrents for ISource element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.doErrorMsg(("GetCurrents for ISource element: " + getName() + "."), e.getMessage(),
 					"Inadequate storage allotted for circuit element.", 335);
 		}
 	}
@@ -152,7 +150,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	 */
 	@Override
 	public void getInjCurrents(Complex[] curr) {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		Complex baseCurr = getBaseCurr();  // this func applies spectrum if needed
 

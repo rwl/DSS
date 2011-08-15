@@ -37,11 +37,10 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			setControlledElement(globals.getActiveCircuit().getCktElements().get(devIndex));
+			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get(devIndex));
 			setNPhases( getControlledElement().getNPhases() );
 			setNConds(nPhases);
 			getControlledElement().setActiveTerminalIdx(elementTerminal);
@@ -59,7 +58,7 @@ public class SwtControlObjImpl extends ControlElemImpl implements SwtControlObj 
 			setBus (1, getControlledElement().getBus(elementTerminal));
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("SwtControl: \"" + getName() + "\"", "CktElement Element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 387);
 		}
 	}

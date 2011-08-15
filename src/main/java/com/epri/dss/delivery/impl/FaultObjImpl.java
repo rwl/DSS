@@ -79,7 +79,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	 * Called from solveMontefault procedure.
 	 */
 	public void randomize() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		switch (sol.getRandomType()) {
 		case DSSGlobals.GAUSSIAN:
@@ -134,7 +134,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 
 		// make sure randomMult is 1.0 if not solution mode MonteFault
 
-		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getMode() != Dynamics.MONTEFAULT)
+		if (DSSGlobals.activeCircuit.getSolution().getMode() != Dynamics.MONTEFAULT)
 			randomMult = 1.0;
 
 		if (randomMult == 0.0)

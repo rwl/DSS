@@ -64,15 +64,14 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		/* Check for existence of monitored element */
 
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {
-			monitoredElement = globals.getActiveCircuit().getCktElements().get(devIndex);
+			monitoredElement = DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			if (elementTerminal > monitoredElement.getNTerms()) {
-				globals.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("GenDispatcher: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Re-specify terminal no.", 371);
 			} else {
@@ -80,7 +79,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 				setBus(1, monitoredElement.getBus(elementTerminal));
 			}
 		} else {
-			globals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
+			DSSGlobals.doSimpleMsg("Monitored Element in GenDispatcher."+getName()+" does not exist:\""+elementName+"\"", 372);
 		}
 	}
 
@@ -190,7 +189,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 			}
 
 			if (genKWChanged || genKVArChanged) {  // only push onto control queue if there has been a change
-				Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+				Circuit ckt = DSSGlobals.activeCircuit;
 				SolutionObj sol = ckt.getSolution();
 
 				sol.setLoadsNeedUpdating(true);  // force recalc of power parms

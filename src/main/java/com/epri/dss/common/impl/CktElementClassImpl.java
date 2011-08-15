@@ -36,7 +36,7 @@ public class CktElementClassImpl extends DSSClassImpl implements
 	protected void classMakeLike(Object otherObj) {
 		CktElement otherCktObj = (CktElement) otherObj;
 
-		CktElement cktElem = (CktElement) DSSGlobals.getInstance().getActiveDSSObject();
+		CktElement cktElem = (CktElement) DSSGlobals.activeDSSObject;
 		cktElem.setBaseFrequency(otherCktObj.getBaseFrequency());
 		cktElem.setEnabled(true);
 	}

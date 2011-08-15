@@ -37,14 +37,14 @@ public class ConductorImpl implements Conductor {
 	 * Computes whether conductor has burned down.
 	 */
 	public void calcIsqt(double CurrentMag) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Conductor.calcIsqt", 770);
+		DSSGlobals.doSimpleMsg("Need to implement Conductor.calcIsqt", 770);
 	}
 
 	/**
 	 * Restore the conductor and reset the i2t calcs.
 	 */
 	public void resetIsqt() {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
+		DSSGlobals.doSimpleMsg("Need to implement Conductor.resetIsqt", 771);
 	}
 
 	public boolean isClosed() {

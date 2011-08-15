@@ -124,7 +124,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				GMatrix[i] = RMatrix[i];
 			MathUtil.ETKInvert(RMatrix, nPhases, checkError);
 			if (checkError.intValue() > 0) {  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Error inverting R matrix for Reactor."+getName()+" - G is zeroed.", 232);
+				DSSGlobals.doSimpleMsg("Error inverting R matrix for Reactor."+getName()+" - G is zeroed.", 232);
 				for (i = 0; i < nPhases * nPhases; i++)
 					GMatrix[i] = 0.0;
 			}
@@ -134,7 +134,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				BMatrix[i] = -XMatrix[i];
 				MathUtil.ETKInvert(BMatrix, nPhases, checkError);
 				if (checkError.intValue() > 0) {
-					DSSGlobals.getInstance().doSimpleMsg("Error inverting X matrix for Reactor."+getName()+" - B is zeroed.", 233);
+					DSSGlobals.doSimpleMsg("Error inverting X matrix for Reactor."+getName()+" - B is zeroed.", 233);
 					for (i = 0; i < nPhases * nPhases; i++)
 						GMatrix[i] = 0.0;
 				}
@@ -144,7 +144,6 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 	@Override
 	public void calcYPrim() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		Complex value, value2;
 		int i, j, idx;
@@ -175,7 +174,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		}
 
 
-		YPrimFreq = globals.getActiveCircuit().getSolution().getFrequency();
+		YPrimFreq = DSSGlobals.activeCircuit.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
 
 		/* Now, put in Yprim matrix */
@@ -263,7 +262,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 				ZMatrix.invert();  /* Invert in place - is now Y matrix */
 				if (ZMatrix.getInvertError() > 0) {  /* If error, put in tiny series conductance */
-					globals.doErrorMsg("ReactorObj.calcYPrim()", "Matrix inversion error for reactor \"" + getName() + "\"",
+					DSSGlobals.doErrorMsg("ReactorObj.calcYPrim()", "Matrix inversion error for reactor \"" + getName() + "\"",
 									"Invalid impedance specified. Replaced with tiny conductance.", 234);
 					ZMatrix.clear();
 					for (i = 0; i < nPhases; i++)
@@ -285,7 +284,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		// set YPrim_Series based on diagonals of YPrim_Shunt so that calcVoltages doesn't fail
 		if (isShunt()) {
-			if ((nPhases == 1) && (!globals.getActiveCircuit().isPositiveSequence())) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
+			if ((nPhases == 1) && (!DSSGlobals.activeCircuit.isPositiveSequence())) {  // assume a neutral or grounding reactor; leave diagonal in the circuit
 				for (i = 0; i < YOrder; i++)
 					YPrimSeries.setElement(i, i, YPrimShunt.getElement(i, i));
 			} else {
@@ -352,13 +351,13 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 			cTotalLosses = getLosses();  // side effect: computes iTerminal and vTerminal
 			/* Compute losses in Rp branch from voltages across shunt element -- node to ground */
 			cNoLoadLosses = Complex.ZERO;
-			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			for (int i = 0; i < nPhases; i++) {
 				Complex V = sol.getNodeV()[nodeRef[i]];
 				cNoLoadLosses = cNoLoadLosses.add(new Complex((Math.pow(V.getReal(), 2) + Math.pow(V.getImaginary(), 2)) / Rp, 0.0));  // V^2/Rp
 			}
 
-			if (DSSGlobals.getInstance().getActiveCircuit().isPositiveSequence())
+			if (DSSGlobals.activeCircuit.isPositiveSequence())
 				cNoLoadLosses = cNoLoadLosses.multiply(3.0);
 			cLoadLosses = cTotalLosses.subtract(cNoLoadLosses);  // subtract no load losses from total losses
 

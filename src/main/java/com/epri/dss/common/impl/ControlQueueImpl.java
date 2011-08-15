@@ -235,7 +235,7 @@ public class ControlQueueImpl implements ControlQueue {
 
 		if (debugTrace) {
 			try {
-				traceFile = new FileWriter(DSSGlobals.getInstance().getDSSDataDirectory() + "Trace_ControlQueue.csv");
+				traceFile = new FileWriter(DSSGlobals.DSSDataDirectory + "Trace_ControlQueue.csv");
 				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
 				traceBuffer.write("\"Hour\", \"sec\", \"Control Iteration\", \"Element\", \"Action Code\", \"Trace Parameter\", \"Description\"");
 				traceBuffer.newLine();
@@ -280,16 +280,15 @@ public class ControlQueueImpl implements ControlQueue {
 	}
 
 	private void writeTraceRecord(String elementName, int code, double traceParameter, String s) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				BufferedWriter traceBuffer = new BufferedWriter(traceFile);
 
 				traceBuffer.write(String.format("%d, %.6g, %d, %s, %d, %-.g, %s",
-						globals.getActiveCircuit().getSolution().getIntHour(),
-						globals.getActiveCircuit().getSolution().getDynaVars().t,
-						globals.getActiveCircuit().getSolution().getControlIteration(),
+						DSSGlobals.activeCircuit.getSolution().getIntHour(),
+						DSSGlobals.activeCircuit.getSolution().getDynaVars().t,
+						DSSGlobals.activeCircuit.getSolution().getControlIteration(),
 						elementName,
 						code,
 						traceParameter,

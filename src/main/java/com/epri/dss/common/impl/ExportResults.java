@@ -53,7 +53,7 @@ public class ExportResults {
 		Complex Vresidual;
 		double V_NEMA;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		try {
@@ -114,7 +114,7 @@ public class ExportResults {
 
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -138,7 +138,7 @@ public class ExportResults {
 		double Vmag, Vpu;
 		Bus bus;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		/* Find max nodes at a bus */
@@ -184,7 +184,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -223,7 +223,7 @@ public class ExportResults {
 			I1 = 0.0;
 			I2 = 0.0;
 			I_NEMA = 0.0;
-			if (DSSGlobals.getInstance().getActiveCircuit().isPositiveSequence())
+			if (DSSGlobals.activeCircuit.isPositiveSequence())
 				I1 = Iph[0].abs();  // use phase 1 only
 		}
 
@@ -259,7 +259,7 @@ public class ExportResults {
 		int j;
 		Complex[] cBuffer;  // allocate to max total conductors
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -306,7 +306,7 @@ public class ExportResults {
 					calcAndWriteSeqCurrents(writer, j, pElem, cBuffer, false);
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -361,7 +361,7 @@ public class ExportResults {
 			writer.printf(", %10.6g, %8.2f, %8.2f", maxCurrent, maxCurrent / pElem.getNormAmps() * 100.0, maxCurrent / pElem.getEmergAmps() * 100.0);
 		}
 		writer.printf(", %10.6g, %10.6g, %d, %d, %d", localPower.getReal(), localPower.getImaginary(), pElem.getNumCustomers(), pElem.getTotalCustomers(), pElem.getNPhases());
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		writer.printf(", %-.3g ", ckt.getBuses()[ ckt.getMapNodeToBus()[pElem.getNodeRef()[0]].busRef ].getKVBase());
 		writer.println();
 	}
@@ -373,7 +373,7 @@ public class ExportResults {
 		int maxCond, maxTerm;
 		int i, j;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -430,7 +430,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -451,7 +451,7 @@ public class ExportResults {
 		Complex S;
 		String sep = ", ";
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -509,7 +509,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -525,14 +525,13 @@ public class ExportResults {
 		double[] S_Load = new double[2];
 		double[] S_NoLoad = new double[2];
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
 
 			writer.println("Element,  Total(W), Total(var),  I2R(W), I2X(var), No-load(W), No-load(var)");
-			for (PDElement PDElem : globals.getActiveCircuit().getPDElements()) {
+			for (PDElement PDElem : DSSGlobals.activeCircuit.getPDElements()) {
 				if (PDElem.isEnabled()) {
 					PDElem.getLosses(S_total, S_Load, S_NoLoad);
 					writer.printf("%s.%s, %.7g, %.7g, %.7g, %.7g, %.7g, %.7g", PDElem.getParentClass().getName(), PDElem.getName(), S_total[0], S_total[1], S_Load[0], S_Load[1], S_NoLoad[0], S_NoLoad[1]);
@@ -540,7 +539,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -561,7 +560,6 @@ public class ExportResults {
 		int i;
 		Complex S;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			f = new FileWriter(fileName);
@@ -577,7 +575,7 @@ public class ExportResults {
 			}
 
 			// PD elements first
-			for (PDElement PDElem : globals.getActiveCircuit().getPDElements()) {
+			for (PDElement PDElem : DSSGlobals.activeCircuit.getPDElements()) {
 				if (PDElem.isEnabled()) {
 					PDElem.computeITerminal();
 					PDElem.computeVTerminal();
@@ -592,7 +590,7 @@ public class ExportResults {
 			}
 
 			// PC elements next
-			for (PCElement PCElem : globals.getActiveCircuit().getPCElements()) {
+			for (PCElement PCElem : DSSGlobals.activeCircuit.getPCElements()) {
 				if (PCElem.isEnabled()) {
 					PCElem.computeITerminal();
 					PCElem.computeVTerminal();
@@ -606,7 +604,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -633,7 +631,7 @@ public class ExportResults {
 		Complex[] I012 = new Complex[3];
 		String sep = ", ";
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -766,7 +764,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -786,7 +784,7 @@ public class ExportResults {
 		double maxCurr, currMag;
 		Bus bus;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -872,7 +870,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -891,7 +889,7 @@ public class ExportResults {
 		int i;
 		double[] tempX = new double[3];  // temp number buffer
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -986,7 +984,7 @@ public class ExportResults {
 				}
 			}
 
-			DSSGlobals.getInstance().setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1003,8 +1001,7 @@ public class ExportResults {
 		String fileName;
 		final String sep = ", ";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		meterClass = ((EnergyMeter) DSSClassDefs.getDSSClass("EnergyMeter"));
 		if (meterClass == null) return;
@@ -1012,7 +1009,7 @@ public class ExportResults {
 		for (EnergyMeterObj pElem : ckt.getEnergyMeters()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = globals.getDSSDataDirectory() + "EXP_MTR_"+pElem.getName()+".csv";
+					fileName = DSSGlobals.DSSDataDirectory + "EXP_MTR_"+pElem.getName()+".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);
@@ -1039,7 +1036,7 @@ public class ExportResults {
 						writer.print(sep + pElem.getRegisters()[j]);
 					writer.println();
 
-					globals.setGlobalResult(fileName);
+					DSSGlobals.globalResult = fileName;
 
 					writer.close();
 					f.close();
@@ -1058,8 +1055,7 @@ public class ExportResults {
 		final String sep = ", ";
 		boolean rewriteFile;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			if (new File(fileName).exists()) {
@@ -1111,7 +1107,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1143,8 +1139,7 @@ public class ExportResults {
 		String fileName;
 		final String sep = ", ";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		generatorClass = (Generator) DSSClassDefs.getDSSClass("generator");
 		if (generatorClass == null)
@@ -1153,7 +1148,7 @@ public class ExportResults {
 		for (GeneratorObj pElem : ckt.getGenerators()) {
 			if (pElem.isEnabled()) {
 				try {
-					fileName = globals.getDSSDataDirectory() + "EXP_GEN_" + pElem.getName() + ".csv";
+					fileName = DSSGlobals.DSSDataDirectory + "EXP_GEN_" + pElem.getName() + ".csv";
 
 					if (!new File(fileName).exists()) {
 						f = new FileWriter(fileName);
@@ -1178,7 +1173,7 @@ public class ExportResults {
 						writer.print(sep + pElem.getRegisters()[j]);
 					writer.println();
 
-					globals.setGlobalResult(fileName);
+					DSSGlobals.globalResult = fileName;
 
 					writer.close();
 					f.close();
@@ -1198,8 +1193,7 @@ public class ExportResults {
 		final String sep = ", ";
 		boolean rewriteFile;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		generatorClass = (Generator) DSSClassDefs.getDSSClass("generator");
 		if (generatorClass == null)
@@ -1254,7 +1248,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1284,8 +1278,7 @@ public class ExportResults {
 		PrintWriter writer;
 		final String sep = ", ";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1307,7 +1300,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1325,8 +1318,7 @@ public class ExportResults {
 		PrintWriter writer;
 		Complex[] cBuffer;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileNm);
@@ -1344,7 +1336,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileNm);
+			DSSGlobals.globalResult = fileNm;
 
 			writer.close();
 			f.close();
@@ -1364,8 +1356,7 @@ public class ExportResults {
 		double INormal, IEmerg, CMax;
 		final String Separator = ", ";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1444,7 +1435,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1458,8 +1449,7 @@ public class ExportResults {
 		PrintWriter writer;
 		boolean doIt;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1488,7 +1478,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1507,8 +1497,7 @@ public class ExportResults {
 		Complex[] cValues;
 		CktElement cktElem;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt == null) return;
 
@@ -1532,7 +1521,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1554,13 +1543,12 @@ public class ExportResults {
 		Complex[] cVals;
 		double re, im;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt == null) return;
 		Y = ckt.getSolution().getY();
 		if (Y == null) {
-			globals.doSimpleMsg("Y Matrix not built.", 222);
+			DSSGlobals.doSimpleMsg("Y Matrix not built.", 222);
 			return;
 		}
 		// this compresses the entries if necessary - no extra work if already solved
@@ -1605,7 +1593,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1624,8 +1612,7 @@ public class ExportResults {
 		Complex Z1, Z0;
 		double X1R1, X0R0;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1653,7 +1640,7 @@ public class ExportResults {
 				writer.println();
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1671,14 +1658,13 @@ public class ExportResults {
 		XfmrCode clsXfmr;
 		NamedObject pName;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
-			clsCode = (LineCode)     globals.getDSSClassList().get(globals.getClassNames().find("linecode"));
-			clsWire = (WireData)     globals.getDSSClassList().get(globals.getClassNames().find("wiredata"));
-			clsGeom = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("linegeometry"));
-			clsXfmr = (XfmrCode)     globals.getDSSClassList().get(globals.getClassNames().find("xfmrcode"));
+			clsCode = (LineCode)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linecode"));
+			clsWire = (WireData)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("wiredata"));
+			clsGeom = (LineGeometry) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("linegeometry"));
+			clsXfmr = (XfmrCode)     DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("xfmrcode"));
 
 			f = new FileWriter(fileName);
 			writer = new PrintWriter(f);
@@ -1730,7 +1716,6 @@ public class ExportResults {
 		FileWriter f;
 		PrintWriter writer;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			f = new FileWriter(fileName);
@@ -1738,7 +1723,7 @@ public class ExportResults {
 
 			writer.println("Format: DSS Class Name = Instance Count");
 			writer.println();
-			for (DSSClass cls : globals.getDSSClassList()) {
+			for (DSSClass cls : DSSGlobals.DSSClassList) {
 				writer.printf("%s = %d", cls.getName(), cls.getElementCount());
 				writer.println();
 			}
@@ -1755,8 +1740,7 @@ public class ExportResults {
 		PrintWriter writer;
 		Complex cPower, cLosses;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			if (new File(fileName).exists()) {
@@ -1827,7 +1811,7 @@ public class ExportResults {
 
 			writer.println();
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1844,8 +1828,7 @@ public class ExportResults {
 		PrintWriter writer;
 		int i;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1858,7 +1841,7 @@ public class ExportResults {
 				}
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			writer.close();
 			f.close();
@@ -1898,8 +1881,7 @@ public class ExportResults {
 		PrintWriter writer;
 		int Linetype = 0;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
 			f = new FileWriter(fileName);
@@ -1925,10 +1907,10 @@ public class ExportResults {
 
 			writer.println("Title=" + s + ", Distance in km");
 
-			iEnergyMeter = globals.getEnergyMeterClass().getFirst();
+			iEnergyMeter = DSSGlobals.energyMeterClass.getFirst();
 			while (iEnergyMeter >= 0) {
 
-				activeEnergyMeter = (EnergyMeterObj) globals.getEnergyMeterClass().getActiveObj();
+				activeEnergyMeter = (EnergyMeterObj) DSSGlobals.energyMeterClass.getActiveObj();
 				/* Go down each branch list and draw a line */
 				presentCktElement = (CktElement) activeEnergyMeter.getBranchList().getFirst();
 				while (presentCktElement != null) {
@@ -2057,10 +2039,10 @@ public class ExportResults {
 					}
 					presentCktElement = (CktElement) activeEnergyMeter.getBranchList().goForward();
 				}
-				iEnergyMeter = globals.getEnergyMeterClass().getNext();
+				iEnergyMeter = DSSGlobals.energyMeterClass.getNext();
 			}
 
-			globals.setGlobalResult(fileName);
+			DSSGlobals.globalResult = fileName;
 
 			f.close();
 			writer.close();

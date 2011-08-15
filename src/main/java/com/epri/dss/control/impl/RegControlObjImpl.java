@@ -117,7 +117,6 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if ((R != 0.0) || (X != 0.0)) {
 			LDCActive = true;
@@ -133,7 +132,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // TODO Check zero based indexing
 			// RegControled element must already exist
-			setControlledElement(globals.getActiveCircuit().getCktElements().get(devIndex));
+			setControlledElement(DSSGlobals.activeCircuit.getCktElements().get(devIndex));
 
 			if (usingRegulatedBus) {
 				setNPhases(1);  // only need one phase
@@ -149,7 +148,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 
 			if (getControlledElement().getDSSClassName().equalsIgnoreCase("transformer")) {
 				if (elementTerminal > getControlledElement().getNTerms()) {
-					globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
+					DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Winding no. \"" +"\" does not exist.",
 							"Respecify monitored winding no.", 122);
 				} else {
 					// sets name of i-th terminal's connected bus in RegControl's bus list
@@ -165,12 +164,12 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
-				globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled regulator element \""+ elementName + "\" is not a transformer.",
+				DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Controlled regulator element \""+ elementName + "\" is not a transformer.",
 						" Element must be defined previously.", 123);
 			}
 		} else {
 			setControlledElement(null);  // element not found
-			globals.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("RegControl: \"" + getName() + "\"", "Transformer element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 124);
 		}
 	}
@@ -303,7 +302,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	@Override
 	public void doPendingAction(int code, int proxyHdl) {
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		double tapChangeToMake;
@@ -389,8 +388,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 		TransformerObj controlledTransformer;
 		int transformerConnection;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		controlledTransformer = (TransformerObj) getControlledElement();
 
 		/* First, check the direction of power flow to see if we need to
@@ -601,10 +599,9 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	}
 
 	private void regWriteDebugRecord(String s) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		// write a general debug string
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(s);
@@ -620,11 +617,10 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 	private void regWriteTraceRecord(double tapChangeMade) {
 		String sep = ", ";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 

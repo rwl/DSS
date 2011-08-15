@@ -92,9 +92,8 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
-		globals.setActiveDSSObject(new XYCurveObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new XYCurveObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	/**
@@ -102,13 +101,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 	 */
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		activeXYCurveObj = (XYCurveObj) elementList.getActive();
-		globals.setActiveDSSObject(activeXYCurveObj);
+		DSSGlobals.activeDSSObject = activeXYCurveObj;
 
 		XYCurveObj xyc = activeXYCurveObj;
 
@@ -128,7 +126,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ xyc.getName() + "\"", 610);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ xyc.getName() + "\"", 610);
 				break;
 			case 0:
 				xyc.setNumPoints(parser.makeInteger());
@@ -249,7 +247,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			pXYCurveObj = (XYCurveObj) elementList.getNext();
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("XYCurve: \"" + value + "\" not found.", 612);
+		DSSGlobals.doSimpleMsg("XYCurve: \"" + value + "\" not found.", 612);
 	}
 
 	private void doCSVFile(String fileName) {
@@ -259,7 +257,6 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 		String s;
 		Parser parser;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			fis = new FileInputStream(fileName);
@@ -275,7 +272,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			while (((s = br.readLine()) != null) && i < xyc.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;
 				/* Aux parser allows commas or white space */
-				parser = globals.getAuxParser();
+				parser = DSSGlobals.auxParser;
 				parser.setCmdString(s);
 				parser.getNextParam();
 				xyc.getXValues()[i] = parser.makeDouble();
@@ -292,7 +289,7 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			dis.close();
 			br.close();
 		} catch (IOException e) {
-			globals.doSimpleMsg("Error processing XYCurve CSV file: \"" + fileName + ". " + e.getMessage(), 604);
+			DSSGlobals.doSimpleMsg("Error processing XYCurve CSV file: \"" + fileName + ". " + e.getMessage(), 604);
 			return;
 		}
 	}
@@ -325,14 +322,14 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			for (i = 0; i < xyc.getParentClass().getNumProperties(); i++)
 				xyc.setPropertyValue(i, otherXYCurve.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in XYCurve makeLike: \"" + curveName + "\" not found.", 611);
+			DSSGlobals.doSimpleMsg("Error in XYCurve makeLike: \"" + curveName + "\" not found.", 611);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement XYcurve.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement XYcurve.init", -1);
 		return 0;
 	}
 

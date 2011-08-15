@@ -82,7 +82,7 @@ public class ReduceAlgs {
 					if (pb.isDangling()) {
 						toBusRef = pb.getToBusReference();  // only access this property once
 						if (toBusRef > 0) {
-							Bus bus = DSSGlobals.getInstance().getActiveCircuit().getBuses()[toBusRef];
+							Bus bus = DSSGlobals.activeCircuit.getBuses()[toBusRef];
 							if (!bus.isKeep())
 								lineElem1.setEnabled(false);
 						}
@@ -101,7 +101,7 @@ public class ReduceAlgs {
 		LoadObj loadElement;
 		CktTreeNode parentNode;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (branchList != null) {  /* eliminate really short lines */
 			/* First, flag all elements that need to be merged */
@@ -197,7 +197,7 @@ public class ReduceAlgs {
 
 							case 1:
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.getInstance().getActiveCircuit().getBuses()[pb.getToBusReference()].isKeep()) {
+									if (!DSSGlobals.activeCircuit.getBuses()[pb.getToBusReference()].isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(lineElement2))
@@ -229,7 +229,7 @@ public class ReduceAlgs {
 							/* see if eligble for merging */
 							if (pb.getNumChildren() == 1)
 								if (pb.getNumObjects() == 0)
-									if (!DSSGlobals.getInstance().getActiveCircuit().getBuses()[pb.getToBusReference()].isKeep()) {
+									if (!DSSGlobals.activeCircuit.getBuses()[pb.getToBusReference()].isKeep()) {
 										/* Let's consider merging */
 										lineElement2 = (LineObj) pb.getFirstChild().getCktObject();
 										if (Utilities.isLineElement(lineElement2))

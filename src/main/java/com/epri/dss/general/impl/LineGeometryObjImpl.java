@@ -185,7 +185,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				e.printStackTrace();
 			}
 		}
-		if (!DSSGlobals.getInstance().isSolutionAbort())
+		if (!DSSGlobals.solutionAbort)
 			result = lineData.getYcMatrix(f, length, units);
 		return result;
 	}
@@ -200,7 +200,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 				e.printStackTrace();
 			}
 		}
-		if (!DSSGlobals.getInstance().isSolutionAbort())
+		if (!DSSGlobals.solutionAbort)
 			result = lineData.getZMatrix(f, length, units);
 		return result;
 	}
@@ -405,7 +405,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		/* Before we calc, check for bad conductor definitions */
 		StringBuffer lineGeomErrMsg = new StringBuffer();
 		if (lineData.conductorsInSameSpace(lineGeomErrMsg)) {
-			DSSGlobals.getInstance().setSolutionAbort(true);
+			DSSGlobals.solutionAbort = true;
 			throw new LineGeometryProblem("Error in LineGeometry." + getName() + ": " + lineGeomErrMsg.toString());
 		} else {
 			lineData.calc(f);
@@ -452,7 +452,7 @@ public class LineGeometryObjImpl extends DSSObjectImpl implements LineGeometryOb
 		emergAmps   = wires[0].getEmergAmps();
 
 		try {
-			updateLineGeometryData(DSSGlobals.getInstance().getActiveCircuit().getSolution().getFrequency());
+			updateLineGeometryData(DSSGlobals.activeCircuit.getSolution().getFrequency());
 		} catch (LineGeometryProblem e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

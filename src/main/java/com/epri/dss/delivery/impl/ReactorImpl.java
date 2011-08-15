@@ -74,10 +74,9 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new ReactorObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new ReactorObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void doMatrix(double[] matrix) {
@@ -168,13 +167,12 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 		// continue parsing with contents of parser
 		activeReactorObj = (ReactorObj) elementList.getActive();
-		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(activeReactorObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeReactorObj);
 
 		ReactorObj ar = activeReactorObj;
 
@@ -194,7 +192,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 230);
 				break;
 			case 0:
 				reactorSetBus1(param);
@@ -339,7 +337,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			}
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Reactor makeLike: \"" + reactorName + "\" not found.", 231);
+			DSSGlobals.doSimpleMsg("Error in Reactor makeLike: \"" + reactorName + "\" not found.", 231);
 		}
 
 		return result;
@@ -347,7 +345,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Reactor.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Reactor.init()", -1);
 		return 0;
 	}
 

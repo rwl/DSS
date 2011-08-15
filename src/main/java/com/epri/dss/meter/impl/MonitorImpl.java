@@ -74,20 +74,18 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new MonitorObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new MonitorObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeMonitorObj = (MonitorObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeMonitorObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeMonitorObj);
 
 		int result = 0;
 
@@ -108,7 +106,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ am.getName() + "\"", 661);
 				break;
 			case 0:
 				am.setElementName(param.toLowerCase());
@@ -164,7 +162,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void resetAll() {
-		for (MonitorObj pMon : DSSGlobals.getInstance().getActiveCircuit().getMonitors())
+		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.resetIt();
 	}
@@ -174,7 +172,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void sampleAll() {
-		for (MonitorObj pMon : DSSGlobals.getInstance().getActiveCircuit().getMonitors())
+		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.takeSample();
 	}
@@ -184,7 +182,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	 */
 	@Override
 	public void saveAll() {
-		for (MonitorObj pMon : DSSGlobals.getInstance().getActiveCircuit().getMonitors())
+		for (MonitorObj pMon : DSSGlobals.activeCircuit.getMonitors())
 			if (pMon.isEnabled())
 				pMon.save();
 	}
@@ -213,7 +211,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 			am.setBaseFrequency(otherMonitor.getBaseFrequency());
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
+			DSSGlobals.doSimpleMsg("Error in Monitor makeLike: \"" + MonitorName + "\" not found.", 662);
 		}
 
 		return result;

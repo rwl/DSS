@@ -135,14 +135,13 @@ public class PlotOptions {
 	public int doPlotCmd() {
 
 		Parser parser = Parser.getInstance();
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		double[] dblBuffer = new double[50];
 		int numChannels;
 
 		int result = 0;
 
-		if (globals.isNoFormsAllowed()) {
+		if (DSSGlobals.noFormsAllowed) {
 			result =1;
 			return result;
 		}
@@ -170,7 +169,7 @@ public class PlotOptions {
 				switch (param.charAt(0)) {
 				case 'A':
 					plot.setPlotType(PlotType.AUTO_ADD_LOG_PLOT);
-					plot.setObjectName(globals.getCircuitName_() + "AutoAddLog.csv");
+					plot.setObjectName(DSSGlobals.circuitName_ + "AutoAddLog.csv");
 					plot.setValueIndex(2);
 					break;
 				case 'C':
@@ -321,7 +320,7 @@ public class PlotOptions {
 			param = parser.makeString().toUpperCase();
 		}
 
-		if (globals.getActiveCircuit().isSolved())
+		if (DSSGlobals.activeCircuit.isSolved())
 			DSSPlotImpl.getDSSPlotObj().setQuantity(PlotQuantity.NONE);
 
 		DSSPlotImpl.getDSSPlotObj().execute();  // makes a new plot based on these options

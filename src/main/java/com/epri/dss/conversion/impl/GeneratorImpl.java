@@ -156,10 +156,9 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new GeneratorObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new GeneratorObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void setNcondsForConnection() {
@@ -251,12 +250,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeGeneratorObj = (GeneratorObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeGeneratorObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeGeneratorObj);
 
 		int result = 0;
 		GeneratorObj ag = activeGeneratorObj;
@@ -274,13 +272,13 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
 				ag.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
+				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for generator \""+ag.getName()+"\"", 560);
 			}
 
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				case -1:
-					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ag.getName() + "\"", 561);
 					break;
 				case 0:
 					ag.setNPhases(parser.makeInteger());  // num phases
@@ -322,10 +320,10 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					ag.setPresentKVAr(parser.makeDouble());
 					break;
 				case 13:
-					globals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
+					DSSGlobals.doSimpleMsg("Rneut property has been deleted. Use external impedance.", 5611);
 					break;
 				case 14:
-					globals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
+					DSSGlobals.doSimpleMsg("Xneut property has been deleted. Use external impedance.", 5612);
 					break;
 				case 15:
 					if (param.toLowerCase().charAt(0) == 'f') {
@@ -417,21 +415,21 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 6:
 					/* Set shape objects; returns nil if not valid */
 					/* Sets the kW and kvar properties to match the peak kW demand from the LoadShape */
-					ag.setYearlyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getYearlyShape()) );
+					ag.setYearlyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getYearlyShape()) );
 					if (ag.getYearlyShape() != null) {
 						if (ag.getYearlyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getYearlyShapeObj().getMaxP(), ag.getYearlyShapeObj().getMaxQ());
 					}
 					break;
 				case 7:
-					ag.setDailyDispShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getDailyDispShape()) );
+					ag.setDailyDispShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getDailyDispShape()) );
 					if (ag.getDailyDispShapeObj() != null) {
 						if (ag.getDailyDispShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDailyDispShapeObj().getMaxP(), ag.getDailyDispShapeObj().getMaxQ());
 					}
 					break;
 				case 8:
-					ag.setDutyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(ag.getDutyShape()) );
+					ag.setDutyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(ag.getDutyShape()) );
 					if (ag.getDutyShapeObj() != null) {
 						if (ag.getDutyShapeObj().isUseActual())
 							ag.setKwKVAr(ag.getDutyShapeObj().getMaxP(), ag.getDutyShapeObj().getMaxQ());
@@ -440,7 +438,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 				case 21:
 					if (ag.isDebugTrace()) {
 						try {
-							File TraceFile = new File(globals.getDSSDataDirectory() + "GEN_"+ag.getName()+".csv");
+							File TraceFile = new File(DSSGlobals.DSSDataDirectory + "GEN_"+ag.getName()+".csv");
 							FileWriter TraceStream = new FileWriter(TraceFile, false);
 							BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -556,7 +554,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Load makeLike: \"" + otherGeneratorName + "\" not found.", 562);
+			DSSGlobals.doSimpleMsg("Error in Load makeLike: \"" + otherGeneratorName + "\" not found.", 562);
 		}
 
 		return result;
@@ -577,7 +575,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 			p.randomize(0);
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Generator.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Generator.init()", -1);
 		return 0;
 	}
 
@@ -585,7 +583,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 * Force all EnergyMeters in the circuit to reset.
 	 */
 	public void resetRegistersAll() {
-		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators())
+		for (GeneratorObj pGen : DSSGlobals.activeCircuit.getGenerators())
 			pGen.resetRegisters();
 	}
 
@@ -593,7 +591,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 * Force all EnergyMeters in the circuit to take a sample.
 	 */
 	public void sampleAll() {
-		for (GeneratorObj pGen : DSSGlobals.getInstance().getActiveCircuit().getGenerators())
+		for (GeneratorObj pGen : DSSGlobals.activeCircuit.getGenerators())
 			pGen.takeSample();
 	}
 

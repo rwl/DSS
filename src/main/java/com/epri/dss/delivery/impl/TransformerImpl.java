@@ -163,10 +163,9 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new TransformerObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new TransformerObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	/**
@@ -175,12 +174,11 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	@Override
 	public int edit() {
 		// continue parsing cmdline presently in parser
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		/* Make this object the active circuit element */
 		activeTransfObj = (TransformerObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeTransfObj);  // use property to set this value
+		DSSGlobals.activeCircuit.setActiveCktElement(activeTransfObj);  // use property to set this value
 
 		int result = 0;
 
@@ -202,7 +200,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Transformer." + at.getName() + "\"", 110);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"Transformer." + at.getName() + "\"", 110);
 				break;
 			case 0:
 				at.setNPhases(parser.makeInteger());
@@ -409,7 +407,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		if ((w >= 0) && (w < at.getNumWindings())) {
 			at.setActiveWinding(w);
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Wdg parameter invalid for \"" + at.getName() + "\"", 112);
+			DSSGlobals.doSimpleMsg("Wdg parameter invalid for \"" + at.getName() + "\"", 112);
 		}
 	}
 
@@ -456,16 +454,15 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		String s1;
 		String s2;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			s1 = globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			s2 = globals.getAuxParser().makeString();
+			s1 = DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			s2 = DSSGlobals.auxParser.makeString();
 			if (s2.length() > 0)
 				interpretConnection(s2);
 		}
@@ -477,16 +474,15 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllBuses(String s) {
 		String busNam;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			busNam = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			busNam = DSSGlobals.auxParser.makeString();
 			if (busNam.length() > 0)
 				at.setBus(at.getActiveWinding(), busNam);
 		}
@@ -498,18 +494,17 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllkVRatings(String s) {
 		String dataStr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
-			dataStr = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name  not expecting any
+			dataStr = DSSGlobals.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVLL(globals.getAuxParser().makeDouble());
+				at.getWinding()[at.getActiveWinding()].setKVLL(DSSGlobals.auxParser.makeDouble());
 		}
 	}
 
@@ -519,18 +514,17 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllkVARatings(String s) {
 		String dataStr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			dataStr = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			dataStr = DSSGlobals.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setKVA(globals.getAuxParser().makeDouble());
+				at.getWinding()[at.getActiveWinding()].setKVA(DSSGlobals.auxParser.makeDouble());
 		}
 	}
 
@@ -540,18 +534,17 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllRs(String s) {
 		String dataStr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
-			dataStr = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name not expecting any
+			dataStr = DSSGlobals.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setRpu(globals.getAuxParser().makeDouble() * 0.01);
+				at.getWinding()[at.getActiveWinding()].setRpu(DSSGlobals.auxParser.makeDouble() * 0.01);
 		}
 	}
 
@@ -561,18 +554,17 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	private void interpretAllTaps(String s) {
 		String dataStr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getAuxParser().setCmdString(s);  // load up parser
+		DSSGlobals.auxParser.setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
 		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
-			globals.getAuxParser().getNextParam();  // ignore any parameter name, not expecting any
-			dataStr = globals.getAuxParser().makeString();
+			DSSGlobals.auxParser.getNextParam();  // ignore any parameter name, not expecting any
+			dataStr = DSSGlobals.auxParser.makeString();
 			if (dataStr.length() > 0)
-				at.getWinding()[at.getActiveWinding()].setPUTap(globals.getAuxParser().makeDouble());
+				at.getWinding()[at.getActiveWinding()].setPUTap(DSSGlobals.auxParser.makeDouble());
 		}
 	}
 
@@ -644,7 +636,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				at.setPropertyValue(i, otherTransf.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Transf makeLike: \"" + transfName + "\" not found.", 113);
+			DSSGlobals.doSimpleMsg("Error in Transf makeLike: \"" + transfName + "\" not found.", 113);
 		}
 
 		return result;
@@ -652,7 +644,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement Transformer.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement Transformer.init()", -1);
 		return 0;
 	}
 

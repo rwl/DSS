@@ -46,12 +46,11 @@ public class SystemMeterImpl implements SystemMeter {
 	public void appendDemandIntervalFile() {
 		String fileName = "";
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		if (thisMeterDIFileIsOpen) return;
 
 		try {
-			fileName = globals.getEnergyMeterClass().getDI_Dir() + "/DI_SystemMeter.csv";
+			fileName = DSSGlobals.energyMeterClass.getDI_Dir() + "/DI_SystemMeter.csv";
 			/* File must exist */
 			if (new File(fileName).exists()) {
 				systemDIFile = new FileWriter(fileName, true);
@@ -62,7 +61,7 @@ public class SystemMeterImpl implements SystemMeter {
 			thisMeterDIFileIsOpen = true;
 
 		} catch (IOException e) {
-			globals.doSimpleMsg("Error opening demand interval file \""+fileName+" for appending."+DSSGlobals.CRLF+e.getMessage(), 540);
+			DSSGlobals.doSimpleMsg("Error opening demand interval file \""+fileName+" for appending."+DSSGlobals.CRLF+e.getMessage(), 540);
 		}
 	}
 
@@ -88,13 +87,13 @@ public class SystemMeterImpl implements SystemMeter {
 				systemDIFile.close();
 				thisMeterDIFileIsOpen = false;
 			} catch (IOException e) {
-				DSSGlobals.getInstance().doSimpleMsg("Error closing demand interval file."+DSSGlobals.CRLF+e.getMessage(), 540);
+				DSSGlobals.doSimpleMsg("Error closing demand interval file."+DSSGlobals.CRLF+e.getMessage(), 540);
 			}
 		}
 	}
 
 	private void integrate(MutableDouble reg, double value, MutableDouble deriv) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
@@ -110,13 +109,12 @@ public class SystemMeterImpl implements SystemMeter {
 
 	// FIXME Protected method in OpenDSS
 	public void openDemandIntervalFile() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			if (thisMeterDIFileIsOpen)
 				systemDIFile.close();
 
-			systemDIFile = new FileWriter(globals.getEnergyMeterClass().getDI_Dir()+"/DI_SystemMeter.csv");
+			systemDIFile = new FileWriter(DSSGlobals.energyMeterClass.getDI_Dir()+"/DI_SystemMeter.csv");
 			PrintWriter systemDIPrinter = new PrintWriter(systemDIFile);
 
 			thisMeterDIFileIsOpen = true;
@@ -124,7 +122,7 @@ public class SystemMeterImpl implements SystemMeter {
 			writeRegisterNames(systemDIPrinter);
 			systemDIPrinter.println();
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error opening demand interval file \"DI_SystemMeter.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
+			DSSGlobals.doSimpleMsg("Error opening demand interval file \"DI_SystemMeter.csv\"  for writing."+DSSGlobals.CRLF+e.getMessage(), 541);
 		}
 	}
 
@@ -135,34 +133,33 @@ public class SystemMeterImpl implements SystemMeter {
 	public void save() {
 		String csvName = "SystemMeter.csv", Folder;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			/* If we are doing a simulation and saving interval data, create this in the
 			 * same directory as the demand interval data.
 			 */
-			if (globals.getEnergyMeterClass().isSaveDemandInterval()) {
-				Folder = globals.getEnergyMeterClass().getDI_Dir() + "/";
+			if (DSSGlobals.energyMeterClass.isSaveDemandInterval()) {
+				Folder = DSSGlobals.energyMeterClass.getDI_Dir() + "/";
 			} else {
-				Folder = globals.getDSSDataDirectory();
+				Folder = DSSGlobals.DSSDataDirectory;
 			}
 			FileWriter fw = new FileWriter(Folder + csvName, false);
 			PrintWriter pw = new PrintWriter(fw);
 
-			globals.setGlobalResult(csvName);
+			DSSGlobals.globalResult = csvName;
 
 			pw.write("Year, ");
 			writeRegisterNames(pw);
 			pw.println();
 
-			pw.print(globals.getActiveCircuit().getSolution().getYear());
+			pw.print(DSSGlobals.activeCircuit.getSolution().getYear());
 			writeRegisters(pw);
 			pw.println();
 
 			pw.close();
 			fw.close();
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error opening system meter file \"" + DSSGlobals.CRLF + csvName + "\": " + e.getMessage(), 542);
+			DSSGlobals.doSimpleMsg("Error opening system meter file \"" + DSSGlobals.CRLF + csvName + "\": " + e.getMessage(), 542);
 		}
 	}
 
@@ -179,7 +176,7 @@ public class SystemMeterImpl implements SystemMeter {
 		peakKVA = Math.max(cPower.abs(), peakKVA);
 
 		/* Get total circuit losses */
-		cLosses = DSSGlobals.getInstance().getActiveCircuit().getLosses();  // PD elements except shunts
+		cLosses = DSSGlobals.activeCircuit.getLosses();  // PD elements except shunts
 		cLosses = cLosses.multiply(0.001);  // convert to kW
 
 		integrate(Losseskwh, cLosses.getReal(), dLosseskWh);
@@ -192,7 +189,7 @@ public class SystemMeterImpl implements SystemMeter {
 	}
 
 	protected void writeDemandIntervalData() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		PrintWriter pw = new PrintWriter(systemDIFile);
 

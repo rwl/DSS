@@ -168,20 +168,18 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new StorageControllerObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new StorageControllerObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeStorageControllerObj = (StorageControllerObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeStorageControllerObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeStorageControllerObj);
 
 		int result = 0;
 
@@ -202,7 +200,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 14407);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ asc.getName() + "\"", 14407);
 				break;
 			case StorageController.ELEMENT:
 				asc.setElementName(param.toLowerCase());
@@ -337,19 +335,19 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 					asc.getWeights()[i] = 1.0;
 				break;
 			case YEARLY:
-				asc.setYearlyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(asc.getYearlyShape()) );
+				asc.setYearlyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getYearlyShape()) );
 				if (asc.getYearlyShapeObj() == null)
-					globals.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
+					DSSGlobals.doSimpleMsg("Yearly loadshape \"" + asc.getYearlyShape() + "\" not found.", 14404);
 				break;
 			case DAILY:
-				asc.setDailyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(asc.getDailyShape()) );
+				asc.setDailyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getDailyShape()) );
 				if (asc.getDailyShapeObj() == null)
-					globals.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
+					DSSGlobals.doSimpleMsg("Daily loadshape \"" + asc.getDailyShape() + "\" not found.", 14405);
 				break;
 			case DUTY:
-				asc.setDutyShapeObj( (LoadShapeObj) globals.getLoadShapeClass().find(asc.getDutyShape()) );
+				asc.setDutyShapeObj( (LoadShapeObj) DSSGlobals.loadShapeClass.find(asc.getDutyShape()) );
 				if (asc.getDutyShapeObj() == null)
-					globals.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
+					DSSGlobals.doSimpleMsg("Dutycycle loadshape \"" + asc.getDutyShape() + "\" not found.", 14406);
 				break;
 			}
 
@@ -419,7 +417,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			for (int i = 0; i < asc.getParentClass().getNumProperties(); i++)
 				asc.setPropertyValue(i, otherStorageController.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in StorageController makeLike: \"" + storageControllerName + "\" not found.", 370);
+			DSSGlobals.doSimpleMsg("Error in StorageController makeLike: \"" + storageControllerName + "\" not found.", 370);
 		}
 
 		return result;

@@ -450,7 +450,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	public void setNominalStorageOuput() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		shapeFactor = CDOUBLEONE;  // init here; changed by curve routine
@@ -568,7 +568,6 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
@@ -590,18 +589,18 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		/* Now check for errors. If any of these came out nil and the string was not nil, give warning */
 		if (yearlyShapeObj == null)
 			if (yearlyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
+				DSSGlobals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
 		if (dailyShapeObj == null)
 			if (dailyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 564);
+				DSSGlobals.doSimpleMsg("Warning: Daily load shape: \""+ dailyShape +"\" not found.", 564);
 		if (dutyShapeObj == null)
 			if (dutyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
+				DSSGlobals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
 
 		if (getSpectrum().length() > 0) {
-			setSpectrumObj( (com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()) );
+			setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 			if (getSpectrumObj() == null)
-				globals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
+				DSSGlobals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
 		} else {
 			setSpectrumObj(null);
 		}
@@ -621,7 +620,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		int i, j;
 		double freqMultiplier;
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		YPrimFreq = sol.getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
@@ -774,7 +773,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 				// check to see if it is time to turn the charge cycle on If it is not already on
 				if (!(getState() == Storage.CHARGING))
 					if (chargeTime > 0.0) {
-						SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+						SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 						if (Math.abs(normalizeToTOD(sol.getIntHour(), sol.getDynaVars().t) - chargeTime) < sol.getDynaVars().h / 3600.0)
 							setState(Storage.CHARGING);
 					}
@@ -839,11 +838,10 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	private void writeTraceRecord(String s) {
 		int i;
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 
@@ -950,19 +948,18 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 * Compute total terminal current from user-written model.
 	 */
 	private void doUserModel() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		if (userModel.exists()) {  // check automatically selects the user model if true
 			userModel.calc(VTerminal, ITerminal);
 			setITerminalUpdated(true);
-//			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+//			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow storage element model
 			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( ITerminal[i].negate() );
 		} else {
-			globals.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+			DSSGlobals.doSimpleMsg("Storage." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
 
@@ -988,7 +985,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 		computeVTerminal();
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		storageHarmonic = sol.getFrequency() / storageFundamental;
 		if (getSpectrumObj() != null) {
@@ -1014,7 +1011,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	private void calcVTerminalPhase() {
 		int i, j;
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		/* Establish phase voltages and stick in VTerminal */
 		switch (connection) {
@@ -1041,7 +1038,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 //	 */
 //	private void calcVterminal() {
 //		computeVterminal();
-//		StorageSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+//		StorageSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
 //	}
 
 	/**
@@ -1049,7 +1046,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 * routines may also compute ITerminal (ITerminalUpdated flag).
 	 */
 	private void calcStorageModelContribution() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		setITerminalUpdated(false);
@@ -1096,7 +1093,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 */
 	@Override
 	protected void getTerminalCurrents(Complex[] Curr) {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (ITerminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
 			if (!storageObjSwitchOpen)
@@ -1110,7 +1107,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 
 	@Override
 	public int injCurrents() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (sol.loadsNeedUpdating())
 			setNominalStorageOuput();  // set the nominal kW, etc for the type of solution being done
@@ -1140,7 +1137,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg("Storage object: \"" + getName() + "\" in getInjCurrents method.",
+			DSSGlobals.doErrorMsg("Storage object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(), "Current buffer not big enough.", 568);
 		}
 	}
@@ -1155,7 +1152,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	}
 
 	private void integrate(int reg, double deriv, double interval) {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.isTrapezoidalIntegration()) {
 			/* Trapezoidal rule integration */
@@ -1176,7 +1173,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		double SMag;
 		double hourValue;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		// compute energy in storage element branch
 		if (isEnabled()) {
@@ -1218,7 +1215,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	 */
 	// FIXME Private method in OpenDSS
 	public void updateStorage() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		switch (state) {
 		case Storage.DISCHARGING:
@@ -1296,7 +1293,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public void initHarmonics() {
 		Complex e, Va = null;
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		storageFundamental = sol.getFrequency();  // whatever the frequency is when we enter here

@@ -101,10 +101,8 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-
-		Globals.getActiveCircuit().setActiveCktElement(new VSourceObjImpl(this, objName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new VSourceObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void vSourceSetBus1(String s) {
@@ -136,12 +134,11 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	@Override
 	public int edit() {
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeVSourceObj = (VSourceObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeVSourceObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeVSourceObj);
 
 		int result = 0;
 
@@ -162,7 +159,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+avs.getName()+"\"", 320);
 				break;
 			case 0:
 				vSourceSetBus1(param);  // special handling of bus 1
@@ -225,7 +222,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setScanType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
+					DSSGlobals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ avs.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -241,7 +238,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 					avs.setSequenceType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
+					DSSGlobals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -336,7 +333,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
+			DSSGlobals.doSimpleMsg("Error in VSource makeLike: \"" + otherSource + "\" not found.", 322);
 		}
 
 		return result;
@@ -344,7 +341,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement VSource.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;
 	}
 

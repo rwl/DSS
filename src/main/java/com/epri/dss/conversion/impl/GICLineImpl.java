@@ -77,10 +77,9 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 	@Override
 	public int newObject(String ObjName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new GICLineObjImpl(this, ObjName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new GICLineObjImpl(this, ObjName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void GICLineSetBus1(final String s) {
@@ -110,12 +109,11 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		int paramPointer;
 		String paramName, param;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeGICLineObj = (GICLineObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeGICLineObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeGICLineObj);
 
 		int result = 0;
 		GICLineObj agl = activeGICLineObj;
@@ -135,7 +133,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+agl.getName()+"\"", 320);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"VSource."+agl.getName()+"\"", 320);
 				break;
 			case 0:
 				GICLineSetBus1(param);   // special handling of bus 1
@@ -177,7 +175,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setScanType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
+					DSSGlobals.doSimpleMsg("Unknown scan type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -193,7 +191,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 					agl.setSequenceType(-1);
 					break;
 				default:
-					globals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
+					DSSGlobals.doSimpleMsg("Unknown sequence type for \"" + getName() +"."+ agl.getName() + "\": "+param, 321);
 					break;
 				}
 				break;
@@ -258,14 +256,14 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				result = 1;
 			}
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GICLine makeLike: \"" + otherLine + "\" not found.", 322);
+			DSSGlobals.doSimpleMsg("Error in GICLine makeLike: \"" + otherLine + "\" not found.", 322);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement GICLine.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement GICLine.init", -1);
 		return 0;
 	}
 

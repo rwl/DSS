@@ -255,7 +255,7 @@ public class LineConstantsImpl implements LineConstants {
 		Yi = Math.abs(Y[i]);
 		Yj = Math.abs(Y[j]);
 
-		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
+		switch (DSSGlobals.activeEarthModel) {
 		case DSSGlobals.SIMPLECARSON:
 			result = new Complex(w * MU0 / 8.0, (w * MU0 / TWO_PI) * Math.log(658.5 * Math.sqrt(rhoEarth / frequency)));
 			break;
@@ -307,7 +307,7 @@ public class LineConstantsImpl implements LineConstants {
 	public Complex getZint(int i) {
 		Complex alpha, I0I1, result = null;
 
-		switch (DSSGlobals.getInstance().getActiveEarthModel()) {
+		switch (DSSGlobals.activeEarthModel) {
 		case DSSGlobals.SIMPLECARSON:
 			result = new Complex(Rac[i], w * MU0/ (8 * Math.PI));
 			break;

@@ -69,11 +69,10 @@ public class AutoAddImpl implements AutoAdd {
 	}
 
 	public AutoAddImpl() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		busIdxListCreated = false;
-		generatorClass = (Generator) globals.getDSSClassList().get(globals.getClassNames().find("generator"));
-		capacitorClass = (Capacitor) globals.getDSSClassList().get(globals.getClassNames().find("capacitor"));
+		generatorClass = (Generator) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("generator"));
+		capacitorClass = (Capacitor) DSSGlobals.DSSClassList.get(DSSGlobals.classNames.find("capacitor"));
 
 		// autoAdd defaults
 		genKW   = 1000.0;
@@ -105,16 +104,15 @@ public class AutoAddImpl implements AutoAdd {
 		busListCreatedHere = false;
 		busIdxListCreated = false;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		// autoAddBusList exists in active circuit, use it (see set autoBusList)
-		if (globals.getActiveCircuit().getAutoAddBusList().listSize() > 0) {
-			busList = globals.getActiveCircuit().getAutoAddBusList();
+		if (DSSGlobals.activeCircuit.getAutoAddBusList().listSize() > 0) {
+			busList = DSSGlobals.activeCircuit.getAutoAddBusList();
 		} else  {
-			if (globals.getActiveCircuit().getEnergyMeters().size() == 0) {
+			if (DSSGlobals.activeCircuit.getEnergyMeters().size() == 0) {
 				// no energy meters in circuit
 				// include all buses in the circuit
-				busIdxListSize = globals.getActiveCircuit().getBusList().listSize();
+				busIdxListSize = DSSGlobals.activeCircuit.getBusList().listSize();
 				busIdxList = (int[]) Utilities.resizeArray(busIdxList, busIdxListSize);
 
 				for (int i = 0; i < busIdxListSize; i++)
@@ -127,8 +125,8 @@ public class AutoAddImpl implements AutoAdd {
 				// include only buses in energy meter lists
 				// consider all meters
 				busListCreatedHere = true;
-				busList = new HashListImpl(globals.getActiveCircuit().getNumBuses());
-				for (EnergyMeterObj pMeter : globals.getActiveCircuit().getEnergyMeters()) {
+				busList = new HashListImpl(DSSGlobals.activeCircuit.getNumBuses());
+				for (EnergyMeterObj pMeter : DSSGlobals.activeCircuit.getEnergyMeters()) {
 					if (pMeter.getBranchList() != null) {
 						PDElem = (PDElement) pMeter.getBranchList().getFirst();
 						while (PDElem != null) {  // add only unique bus names
@@ -151,7 +149,7 @@ public class AutoAddImpl implements AutoAdd {
 		busIdxList = (int[]) Utilities.resizeArray(busIdxList, busIdxListSize);
 
 		for (int i = 0; i < busIdxListSize; i++) {
-			busIdxList[i] = globals.getActiveCircuit().getBusList().find(busList.get(i));
+			busIdxList[i] = DSSGlobals.activeCircuit.getBusList().find(busList.get(i));
 		}
 
 		if (busListCreatedHere)
@@ -171,14 +169,14 @@ public class AutoAddImpl implements AutoAdd {
 
 		ComputekWLosses_EEN();
 
-		if (DSSGlobals.getInstance().getActiveCircuit().getEnergyMeters().size() == 0) {
+		if (DSSGlobals.activeCircuit.getEnergyMeters().size() == 0) {
 			// no energymeters in circuit
 			// just go by total system losses
 			puLossImprovement = (baseLosses - kWLosses) / genKW;
 			puEENImprovement = 0.0;
 			result = puLossImprovement;
 		} else {
-			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			Circuit ckt = DSSGlobals.activeCircuit;
 
 			puLossImprovement = (baseLosses - kWLosses) / genKW;
 			puEENImprovement = (baseEEN - kWEEN)/genKW;
@@ -261,8 +259,7 @@ public class AutoAddImpl implements AutoAdd {
 		 */
 		int result = 0;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (sol.getLoadModel() == DSSGlobals.ADMITTANCE) {
@@ -273,13 +270,13 @@ public class AutoAddImpl implements AutoAdd {
 		/* Do a preliminary snapshot solution to force definition of meter zones
 		 * and set bus lists
 		 */
-		globals.getEnergyMeterClass().resetAll();
+		DSSGlobals.energyMeterClass.resetAll();
 		if (sol.isSystemYChanged() || ckt.isBusNameRedefined()) {
 			sol.solveSnap();
 			modeChanged = true;
 		}
 
-		globals.getEnergyMeterClass().sampleAll();
+		DSSGlobals.energyMeterClass.sampleAll();
 
 		/* Check to see if bus base voltages have been defined. */
 		if (ckt.getBuses()[ckt.getNumBuses()].getKVBase() == 0.0)
@@ -293,7 +290,7 @@ public class AutoAddImpl implements AutoAdd {
 		sol.setIntervalHrs(1.0);
 
 		/* Start up Log File */
-		File F = new File(globals.getDSSDataDirectory() + globals.getCircuitName_() + "AutoAddLog.csv");
+		File F = new File(DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "AutoAddLog.csv");
 		FileWriter FStream;
 		try {
 			FStream = new FileWriter(F, false);
@@ -338,12 +335,12 @@ public class AutoAddImpl implements AutoAdd {
 			minBusPhases = 3;
 
 			/* Progress meter */
-			globals.getDSSForms().progressCaption("AutoAdding Generators");
+			DSSGlobals.DSSForms.progressCaption("AutoAdding Generators");
 			progressMax = busIdxListSize;
 			progressCount = 0;
 
-			globals.getDSSForms().progressFormCaption(String.format("Testing %d buses. Please Wait... ", busIdxListSize));
-			globals.getDSSForms().showPctProgress(0);
+			DSSGlobals.DSSForms.progressFormCaption(String.format("Testing %d buses. Please Wait... ", busIdxListSize));
+			DSSGlobals.DSSForms.showPctProgress(0);
 
 			for (int i = 0; i < busIdxListSize; i++) {
 
@@ -356,11 +353,11 @@ public class AutoAddImpl implements AutoAdd {
 					testBus = ckt.getBusList().get(busIndex);
 					//DSSForms.progressFormCaption("Testing bus" + TestBus);
 					if ((progressCount % 20 == 0) || (i == busIdxListSize)) {
-						globals.getDSSForms().progressFormCaption(String.format("Testing bus %d/%d. ", i, busIdxListSize));
-						globals.getDSSForms().showPctProgress((100 * progressCount) / progressMax);
+						DSSGlobals.DSSForms.progressFormCaption(String.format("Testing bus %d/%d. ", i, busIdxListSize));
+						DSSGlobals.DSSForms.showPctProgress((100 * progressCount) / progressMax);
 					}
 
-					globals.getEnergyMeterClass().resetAll();
+					DSSGlobals.energyMeterClass.resetAll();
 
 					/* Get the number of phases at this bus and the node ref and add into the aux current array */
 
@@ -383,7 +380,7 @@ public class AutoAddImpl implements AutoAdd {
 						/* Only do this if solution converged else something might break
 						 * in meter sampling.
 						 */
-						globals.getEnergyMeterClass().sampleAll();
+						DSSGlobals.energyMeterClass.sampleAll();
 
 						lossImproveFactor = getWeightedLosses();
 
@@ -409,7 +406,7 @@ public class AutoAddImpl implements AutoAdd {
 
 					}
 				}
-				if (globals.isSolutionAbort())
+				if (DSSGlobals.solutionAbort)
 					break;
 			}
 
@@ -440,10 +437,10 @@ public class AutoAddImpl implements AutoAdd {
 				sol.solveSnap();  // force rebuilding of lists
 			}
 			// return location of added generator
-			globals.setGlobalResult(ckt.getBusList().get(minLossBus) +
-					String.format(", %-g", maxLossImproveFactor));
+			DSSGlobals.globalResult = ckt.getBusList().get(minLossBus) +
+					String.format(", %-g", maxLossImproveFactor);
 
-			globals.getDSSForms().progressHide();
+			DSSGlobals.DSSForms.progressHide();
 
 			break;
 		case DSSGlobals.CAPADD:
@@ -458,7 +455,7 @@ public class AutoAddImpl implements AutoAdd {
 			}
 
 			/* Progress meter */
-			globals.getDSSForms().progressCaption("AutoAdding Capacitors");
+			DSSGlobals.DSSForms.progressCaption("AutoAdding Capacitors");
 			progressMax = busIdxListSize;
 			progressCount = 0;
 
@@ -468,10 +465,10 @@ public class AutoAddImpl implements AutoAdd {
 				busIndex = busIdxList[i];
 				if (busIndex > 0) {
 					testBus = ckt.getBusList().get(busIndex);
-					globals.getDSSForms().progressFormCaption("Testing bus " + testBus);
-					globals.getDSSForms().showPctProgress((100 * progressCount) / progressMax);
+					DSSGlobals.DSSForms.progressFormCaption("Testing bus " + testBus);
+					DSSGlobals.DSSForms.showPctProgress((100 * progressCount) / progressMax);
 
-					globals.getEnergyMeterClass().resetAll();
+					DSSGlobals.energyMeterClass.resetAll();
 
 					/* Get the number of phases at this bus and the node ref and add into the aux current array */
 
@@ -497,7 +494,7 @@ public class AutoAddImpl implements AutoAdd {
 					if (ckt.isSolved()) {
 						/* Only do this if solution converged else something might break in meter sampling */
 
-						globals.getEnergyMeterClass().sampleAll();
+						DSSGlobals.energyMeterClass.sampleAll();
 
 						lossImproveFactor = getWeightedLosses();
 
@@ -521,7 +518,7 @@ public class AutoAddImpl implements AutoAdd {
 						}
 					}
 				}
-				if (globals.isSolutionAbort())
+				if (DSSGlobals.solutionAbort)
 					break;
 			}
 
@@ -551,7 +548,7 @@ public class AutoAddImpl implements AutoAdd {
 				sol.solveSnap();  // for rebuilding of lists, etc.
 			}
 			// return location of added generator
-			globals.setGlobalResult(ckt.getBusList().get(minLossBus));
+			DSSGlobals.globalResult = ckt.getBusList().get(minLossBus);
 
 			break;
 		}
@@ -567,8 +564,7 @@ public class AutoAddImpl implements AutoAdd {
 		Complex busV;
 		int nRef;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		Circuit ckt = globals.getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		switch (addType) {
@@ -618,7 +614,7 @@ public class AutoAddImpl implements AutoAdd {
 	}
 
 	private void ComputekWLosses_EEN() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		if (ckt.getEnergyMeters().size() == 0) {
 

@@ -284,7 +284,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		genOnSaved = genOn;
 		shapeFactor = CDOUBLEONE;
 		// check to make sure the generation is on
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		if (!sol.isDynamicModel() || !sol.isHarmonicModel()) {  // leave generator in whatever state it was prior to entering dynamic mode
@@ -449,7 +449,6 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		VBase95  = VMinPU * VBase;
 		VBase105 = VMaxPU * VBase;
@@ -478,17 +477,17 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		if (yearlyShapeObj == null)
 			if (yearlyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
+				DSSGlobals.doSimpleMsg("Warning: Yearly load shape: \""+ yearlyShape +"\" not found.", 563);
 		if (dailyDispShapeObj == null)
 			if (dailyDispShape.length() > 0)
-				globals.doSimpleMsg("Warning: Daily load shape: \""+ dailyDispShape +"\" not found.", 564);
+				DSSGlobals.doSimpleMsg("Warning: Daily load shape: \""+ dailyDispShape +"\" not found.", 564);
 		if (dutyShapeObj == null)
 			if (dutyShape.length() > 0)
-				globals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
+				DSSGlobals.doSimpleMsg("Warning: Duty load shape: \""+ dutyShape +"\" not found.", 565);
 
-		setSpectrumObj( (com.epri.dss.general.SpectrumObj) globals.getSpectrumClass().find(getSpectrum()) );
+		setSpectrumObj( (com.epri.dss.general.SpectrumObj) DSSGlobals.spectrumClass.find(getSpectrum()) );
 		if (getSpectrumObj() == null)
-			globals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
+			DSSGlobals.doSimpleMsg("Error: Spectrum \""+getSpectrum()+"\" not found.", 566);
 		/*
 		if (Rneut < 0.0) {  // flag for open neutral
 			YNeut = new Complex(0.0, 0.0);
@@ -519,7 +518,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		int i, j;
 		double freqMultiplier;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		YPrimFreq = ckt.getSolution().getFrequency();
 		freqMultiplier = YPrimFreq / baseFrequency;
@@ -616,7 +615,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			YPrim.clear();
 		}
 
-		if (DSSGlobals.getInstance().getActiveCircuit().getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
+		if (DSSGlobals.activeCircuit.getSolution().getLoadModel() == DSSGlobals.POWERFLOW) {
 
 			// 12-7-99 we'll start with Yeq in system matrix
 			setNominalGeneration();
@@ -662,16 +661,15 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	private void writeTraceRecord(String s) {
 		int i;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
-			if (!globals.isInShowResults()) {
+			if (!DSSGlobals.inShowResults) {
 				FileWriter fw = new FileWriter(traceFile, true);
 				BufferedWriter bw = new BufferedWriter(fw);
 				bw.write(String.format("%-.g, %d, %-.g, ",
-						globals.getActiveCircuit().getSolution().getDynaVars().t,
-						globals.getActiveCircuit().getSolution().getIteration(),
-						globals.getActiveCircuit().getLoadMultiplier()) +
+						DSSGlobals.activeCircuit.getSolution().getDynaVars().t,
+						DSSGlobals.activeCircuit.getSolution().getIteration(),
+						DSSGlobals.activeCircuit.getLoadMultiplier()) +
 						Utilities.getSolutionModeID() + ", " +
 						Utilities.getLoadModel() + ", " +
 						genModel + ", " +
@@ -971,19 +969,18 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 * Compute total terminal current from User-written model.
 	 */
 	private void doUserModel() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		calcYPrimContribution(getInjCurrent());  // init injCurrent array
 
 		if (userModel.exists()) {  // check automatically selects the usermodel if true
 			//appendToEventLog("Wnominal=", String.format("%-.5g", Pnominalperphase));
 			userModel.calc(VTerminal, ITerminal);
 			setITerminalUpdated(true);
-//			SolutionObj sol = Globals.getActiveCircuit().getSolution();
+//			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 			// negate currents from user model for power flow generator model
 			for (int i = 0; i < nConds; i++)
 				getInjCurrent()[i] = getInjCurrent()[i].add( getITerminal()[i].negate() );
 		} else {
-			globals.doSimpleMsg("Generator." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
+			DSSGlobals.doSimpleMsg("Generator." + getName() + " model designated to use user-written model, but user-written model is not defined.", 567);
 		}
 	}
 
@@ -1074,8 +1071,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 					getITerminal()[nConds] = I012[0].multiply(3.0).negate();
 				break;
 			default:
-				DSSGlobals.getInstance().doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5671);
-				DSSGlobals.getInstance().setSolutionAbort(true);
+				DSSGlobals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5671);
+				DSSGlobals.solutionAbort = true;
 				break;
 			}
 		}
@@ -1106,7 +1103,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		computeVTerminal();
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 		genHarmonic = sol.getFrequency() / genFundamental;
 		e = getSpectrumObj().getMult(genHarmonic).multiply(VThevHarm);  // get base harmonic magnitude
 		e = Utilities.rotatePhasorRad(e, genHarmonic, thetaHarm);  // time shift by fundamental frequency phase shift
@@ -1126,7 +1123,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	private void calcVTerminalPhase() {
 		int i, j;
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		/* Establish phase voltages and stick in Vterminal */
 		switch (connection) {
@@ -1154,7 +1151,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		computeVTerminal();
 
-		generatorSolutionCount = DSSGlobals.getInstance().getActiveCircuit().getSolution().getSolutionCount();
+		generatorSolutionCount = DSSGlobals.activeCircuit.getSolution().getSolutionCount();
 	}
 
 	/**
@@ -1162,7 +1159,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 * routines may also compute ITerminal (ITerminalUpdated flag).
 	 */
 	private void calcGenModelContribution() {
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 		SolutionObj sol = ckt.getSolution();
 
 		setITerminalUpdated(false);
@@ -1219,7 +1216,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		to look at open phase conditions.
 
 		} else {
-			SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			// some terminals not closed  use admittance model for injection
 			if (OpenGeneratorSolutionCount != sol.getSolutionCount()) {
@@ -1275,7 +1272,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	 */
 	@Override
 	protected void getTerminalCurrents(Complex[] curr) {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (ITerminalSolutionCount != sol.getSolutionCount()) {  // recalc the contribution
 			if (!genSwitchOpen)
@@ -1289,7 +1286,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 	@Override
 	public int injCurrents() {
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (sol.loadsNeedUpdating())
 			setNominalGeneration();  // set the nominal kW, etc for the type of solution being done
@@ -1317,7 +1314,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = getInjCurrent()[i];
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
+			DSSGlobals.doErrorMsg("Generator Object: \"" + getName() + "\" in getInjCurrents method.",
 					e.getMessage(),
 					"Current buffer not big enough.", 568);
 		}
@@ -1332,7 +1329,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	}
 
 	private void integrate(int reg, double deriv, double interval) {
-		if (DSSGlobals.getInstance().getActiveCircuit().isTrapezoidalIntegration()) {
+		if (DSSGlobals.activeCircuit.isTrapezoidalIntegration()) {
 			/* Trapezoidal Rule Integration */
 			if (!firstSampleAfterReset)
 				registers[reg] = registers[reg] + 0.5 * interval * (deriv + derivatives[reg]);
@@ -1365,7 +1362,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				hourValue = 0.0;
 			}
 
-			Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+			Circuit ckt = DSSGlobals.activeCircuit;
 
 			if (genOn || ckt.isTrapezoidalIntegration()) {
 				/* Make sure we always integrate for Trapezoidal case.
@@ -1482,7 +1479,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public void initHarmonics() {
 		Complex e, Va = null;
 
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		setYPrimInvalid(true);  // force rebuild of YPrims
 		genFundamental = sol.getFrequency();  // whatever the frequency is when we enter here.
@@ -1577,8 +1574,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		/* Compute nominal positive sequence voltage behind transient reactance */
 
 		if (genOn) {
-			DSSGlobals globals = DSSGlobals.getInstance();
-			SolutionObj sol = globals.getActiveCircuit().getSolution();
+			SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 			computeITerminal();
 
@@ -1600,8 +1596,8 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 				VThevMag = Edp.abs();
 				break;
 			default:
-				globals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5672);
-				globals.setSolutionAbort(true);
+				DSSGlobals.doSimpleMsg(String.format("Dynamics mode is implemented only for 1- or 3-phase generators. Generator."+getName()+" has %d phases.", nPhases), 5672);
+				DSSGlobals.solutionAbort = true;
 				break;
 			}
 
@@ -1650,7 +1646,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 
 		// check for user-written exciter model
 		//function(Complex[] V, Complex[] I, double Pshaft, double Theta, double Speed, double dt, double time)
-		SolutionObj sol = DSSGlobals.getInstance().getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (sol.getDynaVars().iterationFlag == 0){  // first iteration of new time step
 			genVars.thetaHistory = genVars.theta + 0.5 * sol.getDynaVars().h * genVars.dTheta;

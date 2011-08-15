@@ -48,11 +48,10 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 	@Override
 	public void getCurrents(Complex[] curr) {
 		int i;
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 			if (isEnabled()) {
-				SolutionObj sol = globals.getActiveCircuit().getSolution();
+				SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
@@ -62,7 +61,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 					curr[i] = Complex.ZERO;
 			}
 		} catch (Exception e) {
-			globals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
+			DSSGlobals.doErrorMsg(("Trying to Get Currents for Element: " + getName() + "."), e.getMessage(),
 					"Has circuit been solved?", 660);
 		}
 	}

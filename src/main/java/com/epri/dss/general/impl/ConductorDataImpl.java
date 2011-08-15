@@ -56,7 +56,6 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 	}
 
 	protected int classEdit(DSSObject activeObj, int paramPointer) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
@@ -141,11 +140,11 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 			switch (paramPointer) {
 			case 3:
 				if (cd.getRadius() == 0.0)
-					globals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
+					DSSGlobals.doSimpleMsg("Error: Radius is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			case 5:
 				if (cd.getGMR60() == 0.0)
-					globals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
+					DSSGlobals.doSimpleMsg("Error: GMR is specified as zero for ConductorData." + cd.getName(), 999);
 				break;
 			}
 		}
@@ -154,10 +153,9 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 	}
 
 	protected void classMakeLike(DSSObject otherObj) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		ConductorDataObj otherConductorData = (ConductorDataObj) otherObj;
-		ConductorDataObj cd = (ConductorDataObj) globals.getActiveDSSObject();
+		ConductorDataObj cd = (ConductorDataObj) DSSGlobals.activeDSSObject;
 
 		cd.setRDC(otherConductorData.getRDC());
 		cd.setR60(otherConductorData.getR60());

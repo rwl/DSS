@@ -83,7 +83,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		bufPtr     = 0;
 
 		// default to first circuit element (source)
-		elementName    = ((CktElement) DSSGlobals.getInstance().getActiveCircuit().getCktElements().get(0)).getName();
+		elementName    = ((CktElement) DSSGlobals.activeCircuit.getCktElements().get(0)).getName();
 		meteredElement = null;
 		bufferFile     = "";
 
@@ -112,29 +112,28 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 	@Override
 	public void recalcElementData() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		validMonitor = false;
 		int devIndex = Utilities.getCktElementIndex(elementName);
 		if (devIndex >= 0) {  // monitored element must already exist
-			meteredElement = (CktElement) globals.getActiveCircuit().getCktElements().get(devIndex);
+			meteredElement = (CktElement) DSSGlobals.activeCircuit.getCktElements().get(devIndex);
 			switch (mode & Monitor.MODEMASK) {
 			case 2:  // must be transformer
 				if ((meteredElement.getDSSObjType() & DSSClassDefs.CLASSMASK) != DSSClassDefs.XFMR_ELEMENT) {
-					globals.doSimpleMsg(meteredElement.getName() + " is not a transformer!", 663);
+					DSSGlobals.doSimpleMsg(meteredElement.getName() + " is not a transformer!", 663);
 					return;
 				}
 				break;
 			case 3:  // must be PC element
 				if ((meteredElement.getDSSObjType() & DSSClassDefs.BASECLASSMASK) != DSSClassDefs.PC_ELEMENT) {
-					globals.doSimpleMsg(meteredElement.getName() + " must be a power conversion element (Load or Generator)!", 664);
+					DSSGlobals.doSimpleMsg(meteredElement.getName() + " must be a power conversion element (Load or Generator)!", 664);
 					return;
 				}
 				break;
 			}
 
 			if (meteredTerminal > meteredElement.getNTerms()) {
-				globals.doErrorMsg("Monitor: \"" + getName() + "\"",
+				DSSGlobals.doErrorMsg("Monitor: \"" + getName() + "\"",
 						"Terminal no. \"" +"\" does not exist.",
 						"Respecify terminal no.", 665);
 			} else {
@@ -145,7 +144,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				// this value will be used to set the NodeRef array (see takeSample)
 				setBus(1, meteredElement.getBus(meteredTerminal));
 				// make a name for the buffer file
-				bufferFile = /*ActiveCircuit.CurrentDirectory + */globals.getCircuitName_() + "Mon_" + getName() + ".mon";
+				bufferFile = /*ActiveCircuit.CurrentDirectory + */DSSGlobals.circuitName_ + "Mon_" + getName() + ".mon";
 				// removed 10/19/99 ConvertBlanks(BufferFile); // turn blanks into '_'
 
 				/* Allocate buffers */
@@ -166,7 +165,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			}
 		} else {
 			meteredElement = null;  // element not found
-			globals.doErrorMsg("Monitor: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
+			DSSGlobals.doErrorMsg("Monitor: \"" + getName() + "\"", "Circuit element \""+ elementName + "\" not found.",
 					" Element must be defined previously.", 666);
 		}
 	}
@@ -212,7 +211,6 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 //		int RecordSize;
 //		int strPtr;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		try {
 //			if (!IsFileOpen) openMonitorFile();  // always opens for appending
@@ -224,7 +222,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			isPosSeq = false;
 			strBuffer.delete(0, strBuffer.length());  /* clear buffer */
 //			strPtr = 0;  // init string
-			if (globals.getActiveCircuit().getSolution().isHarmonicModel()) {
+			if (DSSGlobals.activeCircuit.getSolution().isHarmonicModel()) {
 				strBuffer.append("Freq, Harmonic, ");
 			} else {
 				strBuffer.append("hour, t(sec), ");
@@ -417,7 +415,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			//closeMonitorFile();  // ready now for appending
 
 		} catch (Exception e) {
-			globals.doErrorMsg("Cannot open Monitor file.", e.getMessage(), "Monitor: \"" + getName() + "\"", 670);
+			DSSGlobals.doErrorMsg("Cannot open Monitor file.", e.getMessage(), "Monitor: \"" + getName() + "\"", 670);
 		}
 	}
 
@@ -435,7 +433,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				isFileOpen = false;
 			}
 		} catch (Exception e) {
-			DSSGlobals.getInstance().doErrorMsg("Cannot open monitor stream.",
+			DSSGlobals.doErrorMsg("Cannot open monitor stream.",
 					e.getMessage(), "Monitor: \"" + getName() + "\"", 671);
 		}
 	}
@@ -472,8 +470,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		Complex[] V012 = new Complex[3];
 		Complex[] I012 = new Complex[3];
 
-		DSSGlobals globals = DSSGlobals.getInstance();
-		SolutionObj sol = globals.getActiveCircuit().getSolution();
+		SolutionObj sol = DSSGlobals.activeCircuit.getSolution();
 
 		if (!(validMonitor && isEnabled()))
 			return;
@@ -511,7 +508,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					voltageBuffer[i] = sol.getNodeV()[nodeRef[i]];
 				}
 			} catch (Exception e) {
-				globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
+				DSSGlobals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
 			}
 			break;
 
@@ -530,7 +527,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 					voltageBuffer[i] = sol.getNodeV()[nodeRef[i]];
 				}
 			} catch (Exception e) {
-				globals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
+				DSSGlobals.doSimpleMsg(e.getMessage() + DSSGlobals.CRLF + "NodeRef is invalid. Try solving a snapshot or direct before solving in a mode that takes a monitor sample.", 672);
 			}
 			break;
 
@@ -585,7 +582,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 
 		case 1:  // convert voltage buffer to power kW, kVAr or mag/angle
 			MathUtil.calckPowers(voltageBuffer, voltageBuffer, currentBuffer[offset + 1], numVI);
-			if (isSequence || globals.getActiveCircuit().isPositiveSequence()) Utilities.mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
+			if (isSequence || DSSGlobals.activeCircuit.isPositiveSequence()) Utilities.mulArray(voltageBuffer, 3.0, numVI);  // convert to total power
 			if (PPolar) Utilities.convertComplexArrayToPolar(voltageBuffer, numVI);
 			isPower = true;
 			break;
@@ -695,7 +692,6 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 		float s = 0;
 		float[] sngBuffer = new float[100];
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 
 		save();  // save present buffer
 		closeMonitorStream();  // position at beginning
@@ -707,7 +703,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			fw = new FileWriter(f, false);
 			bw = new BufferedWriter(fw);
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error opening CSVFile \""+csvName+"\" for writing" +DSSGlobals.CRLF + e.getMessage(), 672);
+			DSSGlobals.doSimpleMsg("Error opening CSVFile \""+csvName+"\" for writing" +DSSGlobals.CRLF + e.getMessage(), 672);
 			return;
 		}
 
@@ -741,12 +737,12 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 			bw.close();
 			fw.close();
 		} catch (Exception e) {
-			globals.doSimpleMsg("Error writing CSV file \""+csvName+"\" " +DSSGlobals.CRLF + e.getMessage(), 673);
+			DSSGlobals.doSimpleMsg("Error writing CSV file \""+csvName+"\" " +DSSGlobals.CRLF + e.getMessage(), 673);
 		}
 
 		if (show) Utilities.fireOffEditor(csvName);
 
-		globals.setGlobalResult(csvName);
+		DSSGlobals.globalResult = csvName;
 	}
 
 	@Override
@@ -808,8 +804,7 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 	}
 
 	public String getFileName() {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-		return Globals.getDSSDataDirectory() + Globals.getCircuitName_() + "Mon_" + getName() + ".csv";
+		return DSSGlobals.DSSDataDirectory + DSSGlobals.circuitName_ + "Mon_" + getName() + ".csv";
 	}
 
 	public int getMode() {

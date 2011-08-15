@@ -80,20 +80,17 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-
-		Globals.getActiveCircuit().setActiveCktElement(new SensorObjImpl(this, objName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new SensorObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeSensorObj = (SensorObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeSensorObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeSensorObj);
 
 		int result = 0;
 		boolean doRecalcElementData = false;
@@ -115,7 +112,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ as.getName() + "\"", 661);
 				break;
 			case 0:
 				as.setElementName(param.toLowerCase());
@@ -214,7 +211,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void resetAll() {
-		for (SensorObj sensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
+		for (SensorObj sensor : DSSGlobals.activeCircuit.getSensors())
 			sensor.resetIt();
 	}
 
@@ -223,7 +220,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void sampleAll() {
-		for (SensorObj sensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
+		for (SensorObj sensor : DSSGlobals.activeCircuit.getSensors())
 			sensor.takeSample();
 	}
 
@@ -232,7 +229,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 	 */
 	@Override
 	public void saveAll() {
-//		for (SensorObj pSensor : DSSGlobals.getInstance().getActiveCircuit().getSensors())
+//		for (SensorObj pSensor : DSSGlobals.activeCircuit.getSensors())
 //			pSensor.save();
 	}
 
@@ -244,7 +241,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		SensorObj thisSensor;
 		CktElement cktElem;
 
-		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
+		Circuit ckt = DSSGlobals.activeCircuit;
 
 		/* Initialize all to false */
 		for (i = 0; i < ckt.getPDElements().size(); i++) {
@@ -291,7 +288,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 
 			as.setBaseFrequency(otherSensor.getBaseFrequency());
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
+			DSSGlobals.doSimpleMsg("Error in Sensor makeLike: \"" + sensorName + "\" not found.", 662);
 		}
 
 		return result;

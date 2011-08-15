@@ -36,10 +36,9 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.setActiveDSSObject(new WireDataObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeDSSObject = new WireDataObjImpl(this, objName);
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
@@ -47,7 +46,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		int result = 0;
 		// continue parsing with contents of parser
 		activeConductorDataObj = (ConductorDataObj) elementList.getActive();
-		DSSGlobals.getInstance().setActiveDSSObject(activeConductorDataObj);
+		DSSGlobals.activeDSSObject = activeConductorDataObj;
 
 		Parser parser = Parser.getInstance();
 
@@ -68,7 +67,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 			switch (paramPointer) {
 			case -1:  // TODO Check zero based indexing
-				DSSGlobals.getInstance().doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +'.'+ acd.getName() + "\"", 101);
 				break;
 			default:
 				// inherited parameters
@@ -98,14 +97,14 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 				awo.setPropertyValue(i, otherWireData.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
+			DSSGlobals.doSimpleMsg("Error in WireData.makeLike: \"" + name + "\" not found.", 102);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement WireData.init()", -1);
+		DSSGlobals.doSimpleMsg("Need to implement WireData.init()", -1);
 		return 0;
 	}
 
@@ -126,7 +125,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 			}
 		}
 
-		DSSGlobals.getInstance().doSimpleMsg("WireData: \"" + value + "\" not found.", 103);
+		DSSGlobals.doSimpleMsg("WireData: \"" + value + "\" not found.", 103);
 	}
 
 }

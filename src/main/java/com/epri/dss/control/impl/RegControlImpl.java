@@ -120,20 +120,17 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals Globals = DSSGlobals.getInstance();
-
-		Globals.getActiveCircuit().setActiveCktElement(new GenDispatcherObjImpl(this, objName));
-		return addObjectToList(Globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new GenDispatcherObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeRegControlObj = (RegControlObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeRegControlObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeRegControlObj);
 
 		int result = 0;
 
@@ -154,7 +151,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ arc.getName() + "\"", 120);
 				break;
 			case 0:
 				arc.setElementName("Transformer." + param.toLowerCase());
@@ -256,7 +253,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			case 16:
 				if (arc.isDebugTrace()) {
 					try {
-						File TraceFile = new File(globals.getDSSDataDirectory() + "REG_"+arc.getName()+".csv");
+						File TraceFile = new File(DSSGlobals.DSSDataDirectory + "REG_"+arc.getName()+".csv");
 						FileWriter TraceStream = new FileWriter(TraceFile, false);
 						BufferedWriter TraceBuffer = new BufferedWriter(TraceStream);
 
@@ -328,7 +325,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 			for (int i = 0; i < arc.getParentClass().getNumProperties(); i++)
 				arc.setPropertyValue(i, otherRegControl.getPropertyValue(i));
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.",121);
+			DSSGlobals.doSimpleMsg("Error in RegControl makeLike: \"" + regControlName + "\" not found.",121);
 		}
 
 		return result;

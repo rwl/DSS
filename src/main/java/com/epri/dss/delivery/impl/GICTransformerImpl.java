@@ -66,10 +66,9 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new GICTransformerObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new GICTransformerObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	private void GICTransSetBusH(final String s) {
@@ -138,14 +137,13 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		String paramName;
 		String param;
 
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		int result = 0;
 
 		// continue parsing with contents of parser
 		activeGICTransformerObj = (GICTransformerObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeGICTransformerObj);  // use property to set this value
+		DSSGlobals.activeCircuit.setActiveCktElement(activeGICTransformerObj);  // use property to set this value
 
 		GICTransformerObj agt = activeGICTransformerObj;
 
@@ -164,7 +162,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 			switch (paramPointer) {
 			case -1:
-				globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 350);
+				DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ getName() + "\"", 350);
 				break;
 			case 0:
 				GICTransSetBusH(param);
@@ -233,7 +231,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				if (agt.getNPhases() != parser.makeInteger()) {
 					agt.setNPhases(parser.makeInteger());
 					agt.setNConds(agt.getNPhases());  // force reallocation of terminal info if different size
-					globals.getActiveCircuit().setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
+					DSSGlobals.activeCircuit.setBusNameRedefined(true);  // set global flag to signal circuit to rebuild bus defs
 				}
 				break;
 			case 5:
@@ -293,14 +291,14 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				agt.setPropertyValue(i, otherGICTrans.getPropertyValue(i));
 			result = 1;
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in GICTransformer makeLike: \"" + GICTransName + "\" not found.", 351);
+			DSSGlobals.doSimpleMsg("Error in GICTransformer makeLike: \"" + GICTransName + "\" not found.", 351);
 		}
 		return result;
 	}
 
 	@Override
 	public int init(int Handle) {
-		DSSGlobals.getInstance().doSimpleMsg("Need to implement GICTransformer.init", -1);
+		DSSGlobals.doSimpleMsg("Need to implement GICTransformer.init", -1);
 		return 0;
 	}
 

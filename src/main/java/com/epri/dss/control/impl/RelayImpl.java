@@ -116,10 +116,9 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 
 	@Override
 	public int newObject(String objName) {
-		DSSGlobals globals = DSSGlobals.getInstance();
 
-		globals.getActiveCircuit().setActiveCktElement(new RelayObjImpl(this, objName));
-		return addObjectToList(globals.getActiveDSSObject());
+		DSSGlobals.activeCircuit.setActiveCktElement(new RelayObjImpl(this, objName));
+		return addObjectToList(DSSGlobals.activeDSSObject);
 	}
 
 	public TCC_CurveObj getTccCurve(String curveName) {
@@ -127,19 +126,18 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		TCC_CurveObj result = (TCC_CurveObj) TCC_CurveClass.find(curveName);
 
 		if (result == null)
-			DSSGlobals.getInstance().doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 380);
+			DSSGlobals.doSimpleMsg("TCC curve object: \""+curveName+"\" not found.", 380);
 
 		return result;
 	}
 
 	@Override
 	public int edit() {
-		DSSGlobals globals = DSSGlobals.getInstance();
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
 		activeRelayObj = (RelayObj) elementList.getActive();
-		globals.getActiveCircuit().setActiveCktElement(activeRelayObj);
+		DSSGlobals.activeCircuit.setActiveCktElement(activeRelayObj);
 
 		int result = 0;
 
@@ -158,14 +156,14 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			if ((paramPointer >= 0) && (paramPointer <= numProperties)) {
 				ar.setPropertyValue(propertyIdxMap[paramPointer], param);
 			} else {
-				globals.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);
+				DSSGlobals.doSimpleMsg("Unknown parameter \""+paramName+"\" for relay \""+ar.getName()+"\"", 381);
 			}
 
 			if (paramPointer >= 0) {
 				switch (propertyIdxMap[paramPointer]) {
 				/* internal relay property commands */
 				case -1:
-					globals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
+					DSSGlobals.doSimpleMsg("Unknown parameter \"" + paramName + "\" for object \"" + getName() +"."+ ar.getName() + "\"", 382);
 					break;
 				case 0:
 					ar.setMonitoredElementName(param.toLowerCase());
@@ -283,9 +281,9 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 						ar.setPropertyValue(13, "(5.0)");
 						break;
 					}
-					globals.getAuxParser().setCmdString(ar.getPropertyValue(13));
-					paramName = globals.getAuxParser().getNextParam();
-					ar.setNumReclose(globals.getAuxParser().parseAsVector(4, ar.getRecloseIntervals()));
+					DSSGlobals.auxParser.setCmdString(ar.getPropertyValue(13));
+					paramName = DSSGlobals.auxParser.getNextParam();
+					ar.setNumReclose(DSSGlobals.auxParser.parseAsVector(4, ar.getRecloseIntervals()));
 					break;
 				}
 			}
@@ -364,7 +362,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 				ar.setPropertyValue(i, otherRelay.getPropertyValue(i));
 
 		} else {
-			DSSGlobals.getInstance().doSimpleMsg("Error in Relay makeLike: \"" + relayName + "\" not found.", 383);
+			DSSGlobals.doSimpleMsg("Error in Relay makeLike: \"" + relayName + "\" not found.", 383);
 		}
 
 		return result;

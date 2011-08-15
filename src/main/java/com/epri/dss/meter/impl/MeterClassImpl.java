@@ -39,21 +39,21 @@ public class MeterClassImpl extends CktElementClassImpl implements MeterClass {
 	}
 
 	public void resetAll() {
-		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getName(), 760);
+		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.resetAll reached for class: "+getName(), 760);
 	}
 
 	/**
 	 * Force all monitors to take a sample.
 	 */
 	public void sampleAll() {
-		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getName(), 761);
+		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.sampleAll reached for class: "+getName(), 761);
 	}
 
 	/**
 	 * Force all monitors to save their buffers to disk.
 	 */
 	public void saveAll() {
-		DSSGlobals.getInstance().doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getName(), 762);
+		DSSGlobals.doSimpleMsg("Programming Error: Base MeterClass.saveAll reached for Class: "+getName(), 762);
 	}
 
 	public int getNumMeterClassProps() {

@@ -76,7 +76,7 @@ public class PDClassImpl extends CktElementClassImpl implements PDClass {
 
 	protected void classMakeLike(Object otherObj) {
 		PDElement otherPDObj = (PDElement) otherObj;
-		PDElement PDElem = (PDElement) DSSGlobals.getInstance().getActiveDSSObject();
+		PDElement PDElem = (PDElement) DSSGlobals.activeDSSObject;
 
 		PDElem.setNormAmps(otherPDObj.getNormAmps());
 		PDElem.setEmergAmps(otherPDObj.getEmergAmps());
