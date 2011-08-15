@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
-	private static CapacitorObj activeCapacitorObj;
+	public static CapacitorObj activeCapacitorObj;
 
 	public CapacitorImpl() {
 		super();
@@ -92,7 +92,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		int orderFound, j;
 		double[] matBuffer;
 
-		CapacitorObj aco = getActiveCapacitorObj();
+		CapacitorObj aco = activeCapacitorObj;
 
 		matBuffer = new double[aco.getNPhases() * aco.getNPhases()];
 		orderFound = Parser.getInstance().parseAsSymMatrix(aco.getNPhases(), matBuffer);
@@ -113,7 +113,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		CapacitorObj aco = getActiveCapacitorObj();
+		CapacitorObj aco = activeCapacitorObj;
 
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
@@ -156,7 +156,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		// special handling for bus 1
 		// set bus2 = bus1.0.0.0
 
-		CapacitorObj aco = getActiveCapacitorObj();
+		CapacitorObj aco = activeCapacitorObj;
 
 		aco.setBus(0, s);
 
@@ -183,10 +183,10 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapacitorObj((CapacitorObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveCapacitorObj());  // use property to set this value
+		activeCapacitorObj = (CapacitorObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeCapacitorObj);  // use property to set this value
 
-		CapacitorObj aco = getActiveCapacitorObj();
+		CapacitorObj aco = activeCapacitorObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -246,7 +246,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 				break;
 			default:
 				// inherited property edits
-				classEdit(getActiveCapacitorObj(), paramPointer - Capacitor.NumPropsThisClass);
+				classEdit(activeCapacitorObj, paramPointer - Capacitor.NumPropsThisClass);
 				break;
 			}
 
@@ -330,7 +330,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 		/* See if we can find this capacitor name in the present collection */
 		CapacitorObj otherCapacitor = (CapacitorObj) find(capacitorName);
 		if (otherCapacitor != null) {
-			CapacitorObj aco = getActiveCapacitorObj();
+			CapacitorObj aco = activeCapacitorObj;
 
 			if (aco.getNPhases() != otherCapacitor.getNPhases()) {
 				aco.setNPhases(otherCapacitor.getNPhases());
@@ -381,14 +381,6 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Capacitor.init()", 452);
 		return 0;
-	}
-
-	public static CapacitorObj getActiveCapacitorObj() {
-		return activeCapacitorObj;
-	}
-
-	public static void setActiveCapacitorObj(CapacitorObj capacitorObj) {
-		activeCapacitorObj = capacitorObj;
 	}
 
 }

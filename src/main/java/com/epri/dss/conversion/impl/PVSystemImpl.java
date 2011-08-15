@@ -17,7 +17,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
-	private static PVSystemObj activePVSystemObj;
+	public static PVSystemObj activePVSystemObj;
 
 	private String[] registerNames = new String[NumPVSystemRegisters];
 
@@ -187,7 +187,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	}
 
 	private void setNCondsForConnection() {
-		PVSystemObj apv = getActivePVsystemObj();
+		PVSystemObj apv = activePVSystemObj;
 
 		switch (apv.getConnection()) {
 		case 0:
@@ -223,7 +223,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		PVSystemObj apv = getActivePVsystemObj();
+		PVSystemObj apv = activePVSystemObj;
 
 		switch (s.toLowerCase().charAt(0)) {
 		case 'y':
@@ -279,12 +279,12 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActivePVsystemObj((PVSystemObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActivePVsystemObj());
+		activePVSystemObj = (PVSystemObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activePVSystemObj);
 
 		int iCase, result = 0;
 
-		PVSystemObj apv = getActivePVsystemObj();
+		PVSystemObj apv = activePVSystemObj;
 
 		int paramPointer = 0;
 		String paramName    = parser.getNextParam();  // parse next property off the command line
@@ -401,7 +401,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActivePVsystemObj(), paramPointer - NumPropsThisClass);
+					classEdit(activePVSystemObj, paramPointer - NumPropsThisClass);
 					break;
 				}
 
@@ -479,7 +479,7 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 		/* See if we can find this line name in the present collection */
 		PVSystemObj otherPVsystemObj = (PVSystemObj) find(otherPVSystemObjName);
 		if (otherPVsystemObj != null) {
-			PVSystemObj apv = getActivePVsystemObj();
+			PVSystemObj apv = activePVSystemObj;
 
 			if (apv.getNPhases() != otherPVsystemObj.getNPhases()) {
 				apv.setNPhases(otherPVsystemObj.getNPhases());
@@ -590,14 +590,6 @@ public class PVSystemImpl extends PCClassImpl implements PVSystem {
 
 	public String[] getRegisterNames() {
 		return registerNames;
-	}
-
-	public static void setActivePVsystemObj(PVSystemObj PVSystemObj) {
-		activePVSystemObj = PVSystemObj;
-	}
-
-	public static PVSystemObj getActivePVsystemObj() {
-		return activePVSystemObj;
 	}
 
 }

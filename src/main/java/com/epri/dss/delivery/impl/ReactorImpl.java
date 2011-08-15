@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ReactorImpl extends PDClassImpl implements Reactor {
 
-	private static ReactorObj ActiveReactorObj;
+	public static ReactorObj activeReactorObj;
 
 	public ReactorImpl() {
 		super();
@@ -81,7 +81,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	}
 
 	private void doMatrix(double[] matrix) {
-		ReactorObj ar = getActiveReactorObj();
+		ReactorObj ar = activeReactorObj;
 
 		double[] matBuffer = new double[ar.getNPhases() * ar.getNPhases()];
 		int orderFound = Parser.getInstance().parseAsSymMatrix(ar.getNPhases(), matBuffer);
@@ -102,7 +102,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	 * 		Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		ReactorObj ar = getActiveReactorObj();
+		ReactorObj ar = activeReactorObj;
 
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
@@ -145,7 +145,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		// special handling for bus 1
 		// set bus2 = bus1.0.0.0
 
-		ReactorObj ar = getActiveReactorObj();
+		ReactorObj ar = activeReactorObj;
 
 		ar.setBus(1, s);
 
@@ -173,10 +173,10 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveReactorObj((ReactorObj) elementList.getActive());
-		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(getActiveReactorObj());
+		activeReactorObj = (ReactorObj) elementList.getActive();
+		DSSGlobals.getInstance().getActiveCircuit().setActiveCktElement(activeReactorObj);
 
-		ReactorObj ar = getActiveReactorObj();
+		ReactorObj ar = activeReactorObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -234,7 +234,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 				break;
 			default:
 				// inherited property edits
-				classEdit(ActiveReactorObj, paramPointer - Reactor.NumPropsThisClass);
+				classEdit(activeReactorObj, paramPointer - Reactor.NumPropsThisClass);
 				break;
 			}
 
@@ -293,7 +293,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 		/* See if we can find this reactor name in the present collection */
 		ReactorObj otherReactor = (ReactorObj) find(reactorName);
 		if (otherReactor != null) {
-			ReactorObj ar = getActiveReactorObj();
+			ReactorObj ar = activeReactorObj;
 
 			if (ar.getNPhases() != otherReactor.getNPhases()) {
 				ar.setNPhases(otherReactor.getNPhases());
@@ -349,14 +349,6 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Reactor.init()", -1);
 		return 0;
-	}
-
-	public static ReactorObj getActiveReactorObj() {
-		return ActiveReactorObj;
-	}
-
-	public static void setActiveReactorObj(ReactorObj reactorObj) {
-		ActiveReactorObj = reactorObj;
 	}
 
 }

@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FaultImpl extends PDClassImpl implements Fault {
 
-	private static FaultObj activeFaultObj;
+	public static FaultObj activeFaultObj;
 
 	public FaultImpl() {
 		super();
@@ -80,7 +80,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	}
 
 	private void doGmatrix() {
-		FaultObj af = getActiveFaultObj();
+		FaultObj af = activeFaultObj;
 
 		double[] matBuffer = new double[af.getNPhases() * af.getNPhases()];
 		int orderFound = Parser.getInstance().parseAsSymMatrix(af.getNPhases(), matBuffer);
@@ -101,7 +101,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		// special handling for bus 1
 		// set bus2 = bus1.0.0.0
 
-		FaultObj af = getActiveFaultObj();
+		FaultObj af = activeFaultObj;
 
 		af.setBus(1, s);  // TODO Check zero based indexing
 
@@ -128,10 +128,10 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveFaultObj((FaultObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveFaultObj());  // use property to set this value
+		activeFaultObj = (FaultObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeFaultObj);  // use property to set this value
 
-		FaultObj af = getActiveFaultObj();
+		FaultObj af = activeFaultObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -184,7 +184,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 				break;
 			default:
 				// inherited
-				classEdit(getActiveFaultObj(), paramPointer - Fault.NumPropsThisClass);
+				classEdit(activeFaultObj, paramPointer - Fault.NumPropsThisClass);
 				break;
 			}
 
@@ -245,7 +245,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 		/* See if we can find this fault name in the present collection */
 		FaultObj otherFault = (FaultObj) find(faultName);
 		if (otherFault != null) {
-			FaultObj af = getActiveFaultObj();
+			FaultObj af = activeFaultObj;
 
 			if (af.getNPhases() != otherFault.getNPhases()) {
 				af.setNPhases(otherFault.getNPhases());
@@ -289,14 +289,6 @@ public class FaultImpl extends PDClassImpl implements Fault {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Fault.init()", -1);
 		return 0;
-	}
-
-	public static FaultObj getActiveFaultObj() {
-		return activeFaultObj;
-	}
-
-	public static void setActiveFaultObj(FaultObj faultObj) {
-		activeFaultObj = faultObj;
 	}
 
 }

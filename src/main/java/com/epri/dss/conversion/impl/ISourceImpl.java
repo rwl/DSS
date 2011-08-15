@@ -9,7 +9,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class ISourceImpl extends PCClassImpl implements ISource {
 
-	private static ISourceObj activeISourceObj;
+	public static ISourceObj activeISourceObj;
 
 	public ISourceImpl() {
 		super();
@@ -76,12 +76,12 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveISourceObj((ISourceObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveISourceObj());
+		activeISourceObj = (ISourceObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeISourceObj);
 
 		int result = 0;
 
-		ISourceObj ais  = getActiveISourceObj();
+		ISourceObj ais  = activeISourceObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -163,7 +163,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 				}
 				break;
 			default:
-				classEdit(getActiveISourceObj(), paramPointer - ISource.NumPropsThisClass);
+				classEdit(activeISourceObj, paramPointer - ISource.NumPropsThisClass);
 				break;
 			}
 
@@ -185,7 +185,7 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 		ISourceObj otherISource = (ISourceObj) find(otherSource);
 
 		if (otherISource != null) {
-			ISourceObj ais  = getActiveISourceObj();
+			ISourceObj ais  = activeISourceObj;
 
 			if (ais.getNPhases() != otherISource.getNPhases()) {
 				ais.setNPhases(otherISource.getNPhases());
@@ -218,14 +218,6 @@ public class ISourceImpl extends PCClassImpl implements ISource {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement ISource.init", -1);
 		return 0;
-	}
-
-	public static ISourceObj getActiveISourceObj() {
-		return activeISourceObj;
-	}
-
-	public static void setActiveISourceObj(ISourceObj sourceObj) {
-		activeISourceObj = sourceObj;
 	}
 
 }

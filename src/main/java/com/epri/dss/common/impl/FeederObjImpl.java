@@ -151,7 +151,7 @@ public class FeederObjImpl extends PCElementImpl implements FeederObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		super.initPropertyValues(FeederImpl.getNumPropsThisClass());
+		super.initPropertyValues(FeederImpl.NumPropsThisClass);
 	}
 
 	/**

@@ -9,9 +9,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FeederImpl extends PCClassImpl implements Feeder {
 
-	private static int NumPropsThisClass = 0;
+	public static int NumPropsThisClass = 0;
 
-	private static FeederObj activeFeederObj;
+	public static FeederObj activeFeederObj;
 
 	public FeederImpl() {
 		super();
@@ -148,22 +148,6 @@ public class FeederImpl extends PCClassImpl implements Feeder {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Feeder.init()", -1);
 		return 0;
-	}
-
-	public static int getNumPropsThisClass() {
-		return NumPropsThisClass;
-	}
-
-	public static void setNumPropsThisClass(int numPropsThisClass) {
-		NumPropsThisClass = numPropsThisClass;
-	}
-
-	public static FeederObj getActiveFeederObj() {
-		return activeFeederObj;
-	}
-
-	public static void setActiveFeederObj(FeederObj feederObj) {
-		activeFeederObj = feederObj;
 	}
 
 }

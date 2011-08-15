@@ -203,7 +203,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 
 		this.isSolved = false;
 		DSSGlobals.getInstance().getSolutionClass().newObject(getName());
-		this.solution = SolutionImpl.getActiveSolutionObj();
+		this.solution = SolutionImpl.activeSolutionObj;
 
 		setLocalName(aName.toLowerCase());
 

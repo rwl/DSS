@@ -15,7 +15,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GeneratorImpl extends PCClassImpl implements Generator {
 
-	private static GeneratorObj activeGeneratorObj;
+	public static GeneratorObj activeGeneratorObj;
 
 	private String[] registerNames = new String[Generator.NumGenRegisters];
 
@@ -163,7 +163,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	}
 
 	private void setNcondsForConnection() {
-		GeneratorObj ag = getActiveGeneratorObj();
+		GeneratorObj ag = activeGeneratorObj;
 
 		switch (ag.getConnection()) {
 		case 0:
@@ -192,7 +192,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 	 */
 	private void interpretConnection(String s) {
 		String testS;
-		GeneratorObj ag = getActiveGeneratorObj();
+		GeneratorObj ag = activeGeneratorObj;
 
 		testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
@@ -255,11 +255,11 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGeneratorObj((GeneratorObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveGeneratorObj());
+		activeGeneratorObj = (GeneratorObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeGeneratorObj);
 
 		int result = 0;
-		GeneratorObj ag = getActiveGeneratorObj();
+		GeneratorObj ag = activeGeneratorObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -396,7 +396,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveGeneratorObj(), paramPointer - Generator.NumPropsThisClass);
+					classEdit(activeGeneratorObj, paramPointer - Generator.NumPropsThisClass);
 					break;
 				}
 			}
@@ -490,7 +490,7 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 		/* See if we can find this line name in the present collection */
 		GeneratorObj otherGenerator = (GeneratorObj) find(otherGeneratorName);
 		if (otherGenerator != null) {
-			GeneratorObj ag = getActiveGeneratorObj();
+			GeneratorObj ag = activeGeneratorObj;
 
 			if (ag.getNPhases() != otherGenerator.getNPhases()) {
 				ag.setNPhases(otherGenerator.getNPhases());
@@ -603,14 +603,6 @@ public class GeneratorImpl extends PCClassImpl implements Generator {
 
 	public void setRegisterNames(String[] names) {
 		registerNames = names;
-	}
-
-	public static GeneratorObj getActiveGeneratorObj() {
-		return activeGeneratorObj;
-	}
-
-	public static void setActiveGeneratorObj(GeneratorObj generatorObj) {
-		activeGeneratorObj = generatorObj;
 	}
 
 }

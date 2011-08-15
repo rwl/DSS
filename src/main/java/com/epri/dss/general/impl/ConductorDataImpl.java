@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 
-	private static ConductorDataObj activeConductorDataObj;
+	public static ConductorDataObj activeConductorDataObj;
 
 	private static ConductorChoice[] conductorChoiceArray = new ConductorChoice[100];
 
@@ -177,14 +177,6 @@ public class ConductorDataImpl extends DSSClassImpl implements ConductorData {
 
 	public int getNumConductorClassProps() {
 		return numConductorClassProps;
-	}
-
-	public static void setActiveConductorDataObj(ConductorDataObj conductorDataObj) {
-		activeConductorDataObj = conductorDataObj;
-	}
-
-	public static ConductorDataObj getActiveConductorDataObj() {
-		return activeConductorDataObj;
 	}
 
 }

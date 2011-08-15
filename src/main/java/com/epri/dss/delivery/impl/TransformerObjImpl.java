@@ -1237,11 +1237,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (TransformerImpl.getXfmrCodeClass() == null)
-			TransformerImpl.setXfmrCodeClass((com.epri.dss.general.XfmrCode) globals.getDSSClassList().get(globals.getClassNames().find("xfmrcode")));
+		if (TransformerImpl.XfmrCodeClass == null)
+			TransformerImpl.XfmrCodeClass = (com.epri.dss.general.XfmrCode) globals.getDSSClassList().get(globals.getClassNames().find("xfmrcode"));
 
-		if (TransformerImpl.getXfmrCodeClass().setActive(code)) {
-			obj = (XfmrCodeObj) TransformerImpl.getXfmrCodeClass().getActiveObj();
+		if (TransformerImpl.XfmrCodeClass.setActive(code)) {
+			obj = (XfmrCodeObj) TransformerImpl.XfmrCodeClass.getActiveObj();
 			XfmrCode = code.toLowerCase();
 			// set sizes and copy parameters
 			setNPhases(obj.getNPhases());

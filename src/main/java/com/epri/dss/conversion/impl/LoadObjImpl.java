@@ -655,7 +655,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 
 	public void updateVoltageBases() {
 
-		LoadObj al = LoadImpl.getActiveLoadObj();
+		LoadObj al = LoadImpl.activeLoadObj;
 
 		switch (connection) {
 		case 1:

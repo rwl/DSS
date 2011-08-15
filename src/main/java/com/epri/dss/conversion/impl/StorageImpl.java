@@ -209,7 +209,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	}
 
 	private void setNcondsForConnection() {
-		StorageObj as = getActiveStorageObj();
+		StorageObj as = activeStorageObj;
 
 		switch (as.getConnection()) {
 		case 0:
@@ -246,7 +246,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 	 *   Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		StorageObj as = getActiveStorageObj();
+		StorageObj as = activeStorageObj;
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
 		case 'y':
@@ -316,12 +316,12 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveStorageObj((StorageObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveStorageObj());
+		activeStorageObj = (StorageObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeStorageObj);
 
 		int result = 0;
 
-		StorageObj as = getActiveStorageObj();
+		StorageObj as = activeStorageObj;
 
 		int paramPointer = 0;
 		String paramName    = parser.getNextParam();  // parse next property off the command line
@@ -456,7 +456,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 					break;
 				default:
 					// inherited parameters
-					classEdit(getActiveStorageObj(), paramPointer - NumPropsThisClass);
+					classEdit(activeStorageObj, paramPointer - NumPropsThisClass);
 					break;
 				}
 
@@ -544,7 +544,7 @@ public class StorageImpl extends PCClassImpl implements Storage {
 		/* See if we can find this line name in the present collection */
 		StorageObj otherStorageObj = (StorageObj) find(otherStorageObjName);
 		if (otherStorageObj != null) {
-			StorageObj as = getActiveStorageObj();
+			StorageObj as = activeStorageObj;
 
 			if (as.getNPhases() != otherStorageObj.getNPhases()) {
 				as.setNPhases(otherStorageObj.getNPhases());
@@ -667,14 +667,6 @@ public class StorageImpl extends PCClassImpl implements Storage {
 
 	public void setRegisterNames(String[] names) {
 		registerNames = names;
-	}
-
-	public static StorageObj getActiveStorageObj() {
-		return activeStorageObj;
-	}
-
-	public static void setActiveStorageObj(StorageObj storageObj) {
-		activeStorageObj = storageObj;
 	}
 
 }

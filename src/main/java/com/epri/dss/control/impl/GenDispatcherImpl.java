@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher {
 
-	private static GenDispatcherObj activeGenDispatcherObj;
+	public static GenDispatcherObj activeGenDispatcherObj;
 
 	public GenDispatcherImpl() {
 		super();
@@ -72,12 +72,12 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGenDispatcherObj((GenDispatcherObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveGenDispatcherObj());
+		activeGenDispatcherObj = (GenDispatcherObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeGenDispatcherObj);
 
 		int result = 0;
 
-		GenDispatcherObj agd = getActiveGenDispatcherObj();
+		GenDispatcherObj agd = activeGenDispatcherObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -157,7 +157,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		/* See if we can find this GenDispatcher name in the present collection */
 		GenDispatcherObj otherGenDispatcher = (GenDispatcherObj) find(genDispatcherName);
 		if (otherGenDispatcher != null) {
-			GenDispatcherObj agd = getActiveGenDispatcherObj();
+			GenDispatcherObj agd = activeGenDispatcherObj;
 
 			agd.setNPhases(otherGenDispatcher.getNPhases());
 			agd.setNConds(otherGenDispatcher.getNConds());  // force reallocation of terminal stuff
@@ -175,14 +175,6 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 		}
 
 		return result;
-	}
-
-	public static void setActiveGenDispatcherObj(GenDispatcherObj genDispatcherObj) {
-		activeGenDispatcherObj = genDispatcherObj;
-	}
-
-	public static GenDispatcherObj getActiveGenDispatcherObj() {
-		return activeGenDispatcherObj;
 	}
 
 }

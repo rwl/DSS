@@ -332,7 +332,7 @@ public class DSSGlobals {
 	public void makeNewCircuit(String name) {
 		if (numCircuits < maxCircuits) {
 			activeCircuit = new DSSCircuit(name);
-			activeDSSObject = SolutionImpl.getActiveSolutionObj();
+			activeDSSObject = SolutionImpl.activeSolutionObj;
 			/*Handle = */ circuits.add(activeCircuit);
 			numCircuits += 1;
 			// pass remainder of string on to VSource

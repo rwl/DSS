@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GICLineImpl extends PCClassImpl implements GICLine {
 
-	private static GICLineObj activeGICLineObj;
+	public static GICLineObj activeGICLineObj;
 
 	public GICLineImpl() {
 		super();
@@ -90,7 +90,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		// special handling for bus 1
 		// set bus2=bus1.0.0.0
 
-		GICLineObj agl = getActiveGICLineObj();
+		GICLineObj agl = activeGICLineObj;
 
 		agl.setBus(1, s);
 
@@ -114,11 +114,11 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveGICLineObj((GICLineObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveGICLineObj());
+		activeGICLineObj = (GICLineObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeGICLineObj);
 
 		int result = 0;
-		GICLineObj agl = getActiveGICLineObj();
+		GICLineObj agl = activeGICLineObj;
 
 		paramPointer = 0;
 		paramName = parser.getNextParam();
@@ -198,7 +198,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 				}
 				break;
 			default:
-				classEdit(getActiveGICLineObj(), paramPointer - NumPropsThisClass);
+				classEdit(activeGICLineObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
@@ -222,7 +222,7 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 		/* See if we can find this line name in the present collection */
 		otherGICLine = (GICLineObj) find(otherLine);
 		if (otherGICLine != null) {
-			GICLineObj agl = getActiveGICLineObj();
+			GICLineObj agl = activeGICLineObj;
 
 			if (agl.getNPhases() != otherGICLine.getNPhases()) {
 
@@ -267,14 +267,6 @@ public class GICLineImpl extends PCClassImpl implements GICLine {
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement GICLine.init", -1);
 		return 0;
-	}
-
-	public static GICLineObj getActiveGICLineObj() {
-		return activeGICLineObj;
-	}
-
-	public static void setActiveGICLineObj(GICLineObj lineObj) {
-		activeGICLineObj = lineObj;
 	}
 
 }

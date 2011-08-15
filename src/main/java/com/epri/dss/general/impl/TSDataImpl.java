@@ -59,10 +59,10 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
-		globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
+		ConductorDataImpl.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
+		globals.setActiveDSSObject(ConductorDataImpl.activeConductorDataObj);
 
-		TSDataObj tsd = (TSDataObj) ConductorDataImpl.getActiveConductorDataObj();
+		TSDataObj tsd = (TSDataObj) ConductorDataImpl.activeConductorDataObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -92,7 +92,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 				break;
 			default:
 				// Inherited parameters
-				classEdit(ConductorDataImpl.getActiveConductorDataObj(), paramPointer - NumPropsThisClass);
+				classEdit(ConductorDataImpl.activeConductorDataObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
@@ -124,7 +124,7 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 		int result = 0;
 		TSDataObj otherData = (TSDataObj) find(TSName);
 		if (otherData != null) {
-			TSDataObj tsd = (TSDataObj) ConductorDataImpl.getActiveConductorDataObj();
+			TSDataObj tsd = (TSDataObj) ConductorDataImpl.activeConductorDataObj;
 
 			tsd.setDiaShield(otherData.getDiaShield());
 			tsd.setTapeLayer(otherData.getTapeLayer());
@@ -150,11 +150,11 @@ public class TSDataImpl extends CableDataImpl implements TSData {
 	}
 
 	public void setCode(String value) {
-		ConductorDataImpl.setActiveConductorDataObj(null);
+		ConductorDataImpl.activeConductorDataObj = null;
 		TSDataObj pTSDataObj = (TSDataObj) elementList.getFirst();
 		while (pTSDataObj != null) {
 			if (pTSDataObj.getName().equalsIgnoreCase(value)) {
-				ConductorDataImpl.setActiveConductorDataObj(pTSDataObj);
+				ConductorDataImpl.activeConductorDataObj = pTSDataObj;
 				return;
 			}
 			pTSDataObj = (TSDataObj) elementList.getNext();

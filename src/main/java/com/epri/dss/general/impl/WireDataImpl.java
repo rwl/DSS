@@ -46,12 +46,12 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 	public int edit() {
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
-		DSSGlobals.getInstance().setActiveDSSObject(getActiveConductorDataObj());
+		activeConductorDataObj = (ConductorDataObj) elementList.getActive();
+		DSSGlobals.getInstance().setActiveDSSObject(activeConductorDataObj);
 
 		Parser parser = Parser.getInstance();
 
-		ConductorDataObj acd = getActiveConductorDataObj();
+		ConductorDataObj acd = activeConductorDataObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -72,7 +72,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveConductorDataObj(), paramPointer - WireData.NumPropsThisClass);
+				classEdit(activeConductorDataObj, paramPointer - WireData.NumPropsThisClass);
 				break;
 			}
 
@@ -90,7 +90,7 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 		WireDataObj otherWireData = (WireDataObj) find(name);
 		if (otherWireData != null) {
 
-			ConductorDataObj awo = getActiveConductorDataObj();
+			ConductorDataObj awo = activeConductorDataObj;
 
 			classMakeLike(otherWireData);
 
@@ -116,12 +116,12 @@ public class WireDataImpl extends ConductorDataImpl implements WireData {
 
 	public void setCode(String value) {
 
-		setActiveConductorDataObj(null);
+		activeConductorDataObj = null;
 		WireDataObj wireData;
 		for (int i = 0; i < elementList.size(); i++) {
 			wireData = (WireDataObj) elementList.get(i);
 			if (wireData.getName().equalsIgnoreCase(value)) {
-				setActiveConductorDataObj(wireData);
+				activeConductorDataObj = wireData;
 				return;
 			}
 		}

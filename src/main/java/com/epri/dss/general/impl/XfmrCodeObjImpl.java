@@ -85,7 +85,7 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 				XSC[i] = 0.30;   // default to something
 		} else {
 			DSSGlobals.getInstance().doSimpleMsg("Invalid number of windings: " + String.valueOf(n) + " for Transformer " +
-					TransformerImpl.getActiveTransfObj().getName(), 111);
+					TransformerImpl.activeTransfObj.getName(), 111);
 		}
 	}
 

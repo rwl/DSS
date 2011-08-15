@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class CapControlImpl extends ControlClassImpl implements CapControl {
 
-	private static CapControlObj activeCapControlObj;
+	public static CapControlObj activeCapControlObj;
 
 	public CapControlImpl() {
 		super();
@@ -114,12 +114,12 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveCapControlObj((CapControlObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveCapControlObj());
+		activeCapControlObj = (CapControlObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeCapControlObj);
 
 		int result = 0;
 
-		CapControlObj acc = getActiveCapControlObj();
+		CapControlObj acc = activeCapControlObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -226,7 +226,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveCapControlObj(), paramPointer - CapControl.NumPropsThisClass);
+				classEdit(activeCapControlObj, paramPointer - CapControl.NumPropsThisClass);
 				break;
 			}
 
@@ -291,7 +291,7 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		/* See if we can find this CapControl name in the present collection */
 		CapControlObj otherCapControl = (CapControlObj) find(capControlName);
 		if (otherCapControl != null) {
-			CapControlObj acc = getActiveCapControlObj();
+			CapControlObj acc = activeCapControlObj;
 
 			acc.setNPhases(otherCapControl.getNPhases());
 			acc.setNConds(otherCapControl.getNConds());  // force reallocation of terminal stuff
@@ -325,14 +325,6 @@ public class CapControlImpl extends ControlClassImpl implements CapControl {
 		}
 
 		return result;
-	}
-
-	public static CapControlObj getActiveCapControlObj() {
-		return activeCapControlObj;
-	}
-
-	public static void setActiveCapControlObj(CapControlObj capControlObj) {
-		activeCapControlObj = capControlObj;
 	}
 
 }

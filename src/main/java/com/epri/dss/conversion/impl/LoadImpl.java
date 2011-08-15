@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class LoadImpl extends PCClassImpl implements Load {
 
-	private static LoadObj activeLoadObj;
+	public static LoadObj activeLoadObj;
 
 	public LoadImpl() {
 		super();
@@ -198,7 +198,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	}
 
 	private void setNcondsForConnection() {
-		LoadObj al = getActiveLoadObj();
+		LoadObj al = activeLoadObj;
 
 		switch (al.getConnection()) {
 		case 0:
@@ -226,7 +226,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 	 * 		Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		LoadObj al = getActiveLoadObj();
+		LoadObj al = activeLoadObj;
 
 		String testS = s.toLowerCase();
 		switch (testS.charAt(0)) {
@@ -283,12 +283,12 @@ public class LoadImpl extends PCClassImpl implements Load {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveLoadObj((LoadObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveLoadObj());
+		activeLoadObj = (LoadObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeLoadObj);
 
 		int result = 0;
 
-		LoadObj al = getActiveLoadObj();
+		LoadObj al = activeLoadObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -421,7 +421,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 				break;
 			default:
 				// Inherited edits
-				classEdit(getActiveLoadObj(), paramPointer - Load.NumPropsThisClass);
+				classEdit(activeLoadObj, paramPointer - Load.NumPropsThisClass);
 				break;
 			}
 
@@ -497,7 +497,7 @@ public class LoadImpl extends PCClassImpl implements Load {
 		/* See if we can find this line name in the present collection */
 		LoadObj otherLoad = (LoadObj) find(otherLoadName);
 		if (otherLoad != null) {
-			LoadObj al = getActiveLoadObj();
+			LoadObj al = activeLoadObj;
 
 			if (al.getNPhases() != otherLoad.getNPhases()) {
 				al.setNPhases(otherLoad.getNPhases());
@@ -579,14 +579,6 @@ public class LoadImpl extends PCClassImpl implements Load {
 
 		DSSGlobals.getInstance().doSimpleMsg("Need to finish implementation Load.init", -1);
 		return 0;
-	}
-
-	public static LoadObj getActiveLoadObj() {
-		return activeLoadObj;
-	}
-
-	public static void setActiveLoadObj(LoadObj loadObj) {
-		activeLoadObj = loadObj;
 	}
 
 }

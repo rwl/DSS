@@ -9,7 +9,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
-	private static GICTransformerObj activeGICTransformerObj;
+	public static GICTransformerObj activeGICTransformerObj;
 
 	public GICTransformerImpl() {
 		super();
@@ -78,7 +78,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 
 		// set bus2 = busH1.0.0.0
 
-		GICTransformerObj agt = getActiveGICTransformerObj();
+		GICTransformerObj agt = activeGICTransformerObj;
 
 		agt.setBus(1, s);
 
@@ -106,7 +106,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		// make sure we have enough terminals defined
 		// set bus2 = bus1.0.0.0
 
-		GICTransformerObj agt = getActiveGICTransformerObj();
+		GICTransformerObj agt = activeGICTransformerObj;
 
 		if (agt.getNTerms() != 4) {  // have to have 4 terminals to set this property
 
@@ -144,10 +144,10 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		int result = 0;
 
 		// continue parsing with contents of parser
-		setActiveGICTransformerObj((GICTransformerObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveGICTransformerObj());  // use property to set this value
+		activeGICTransformerObj = (GICTransformerObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeGICTransformerObj);  // use property to set this value
 
-		GICTransformerObj agt = getActiveGICTransformerObj();
+		GICTransformerObj agt = activeGICTransformerObj;
 
 		paramPointer = 0;
 		paramName = parser.getNextParam();
@@ -212,7 +212,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 				break;
 			default:
 				// inherited
-				classEdit(getActiveGICTransformerObj(), paramPointer - NumPropsThisClass);
+				classEdit(activeGICTransformerObj, paramPointer - NumPropsThisClass);
 				break;
 			}
 
@@ -271,7 +271,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 		/* See if we can find this Fault name in the present collection */
 		otherGICTrans = (GICTransformerObj) find(GICTransName);
 		if (otherGICTrans != null) {
-			GICTransformerObj agt = getActiveGICTransformerObj();
+			GICTransformerObj agt = activeGICTransformerObj;
 
 			if (agt.getNPhases() != otherGICTrans.getNPhases()) {
 				agt.setNPhases(otherGICTrans.getNPhases());
@@ -302,14 +302,6 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 	public int init(int Handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement GICTransformer.init", -1);
 		return 0;
-	}
-
-	public static GICTransformerObj getActiveGICTransformerObj() {
-		return activeGICTransformerObj;
-	}
-
-	public static void setActiveGICTransformerObj(GICTransformerObj transformerObj) {
-		activeGICTransformerObj = transformerObj;
 	}
 
 }

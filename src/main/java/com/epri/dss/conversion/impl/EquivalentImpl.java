@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class EquivalentImpl extends PCClassImpl implements Equivalent {
 
-	private static EquivalentObj activeEquivalentObj;
+	public static EquivalentObj activeEquivalentObj;
 
 	public EquivalentImpl() {
 		super();
@@ -82,12 +82,12 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveEquivalentObj((EquivalentObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveEquivalentObj());
+		activeEquivalentObj = (EquivalentObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeEquivalentObj);
 
 		int result = 0;
 
-		EquivalentObj ae = getActiveEquivalentObj();
+		EquivalentObj ae = activeEquivalentObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -141,7 +141,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 				ae.parseDblMatrix(ae.getX0());
 				break;
 			default:
-				classEdit(getActiveEquivalentObj(), paramPointer - Equivalent.NumPropsThisClass);
+				classEdit(activeEquivalentObj, paramPointer - Equivalent.NumPropsThisClass);
 				break;
 			}
 
@@ -166,7 +166,7 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		/* See if we can find this line name in the present collection */
 		EquivalentObj otherEquivalent = (EquivalentObj) find(OtherSource);
 		if (otherEquivalent != null) {
-			EquivalentObj ae = getActiveEquivalentObj();
+			EquivalentObj ae = activeEquivalentObj;
 
 			if ((ae.getNPhases() != otherEquivalent.getNPhases()) ||
 					(ae.getNTerms() != otherEquivalent.getNTerms())) {
@@ -233,21 +233,13 @@ public class EquivalentImpl extends PCClassImpl implements Equivalent {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		EquivalentObj ae = getActiveEquivalentObj();
+		EquivalentObj ae = activeEquivalentObj;
 		for (int i = 0; i < ae.getNTerms(); i++) {
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			busName = globals.getAuxParser().makeString();
 			if (busName.length() > 0)
 				ae.setBus(i, busName);  // TODO Check zero based indexing
 		}
-	}
-
-	public static EquivalentObj getActiveEquivalentObj() {
-		return activeEquivalentObj;
-	}
-
-	public static void setActiveEquivalentObj(EquivalentObj equivalentObj) {
-		activeEquivalentObj = equivalentObj;
 	}
 
 }

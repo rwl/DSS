@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 
-	private static SwtControlObj activeSwtControlObj;
+	public static SwtControlObj activeSwtControlObj;
 
 	public SwtControlImpl() {
 		super();
@@ -67,12 +67,12 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveSwtControlObj((SwtControlObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveSwtControlObj());
+		activeSwtControlObj = (SwtControlObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeSwtControlObj);
 
 		int result = 0;
 
-		SwtControlObj asc = getActiveSwtControlObj();
+		SwtControlObj asc = activeSwtControlObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -128,7 +128,7 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		/* See if we can find this SwtControl name in the present collection */
 		SwtControlObj otherSwtControl = (SwtControlObj) find(swtControlName);
 		if (otherSwtControl != null) {
-			SwtControlObj asc = getActiveSwtControlObj();
+			SwtControlObj asc = activeSwtControlObj;
 
 			asc.setNPhases(otherSwtControl.getNPhases());
 			asc.setNConds(otherSwtControl.getNConds());  // force reallocation of terminal stuff
@@ -148,14 +148,6 @@ public class SwtControlImpl extends ControlClassImpl implements SwtControl {
 		}
 
 		return result;
-	}
-
-	public static void setActiveSwtControlObj(SwtControlObj swtControlObj) {
-		activeSwtControlObj = swtControlObj;
-	}
-
-	public static SwtControlObj getActiveSwtControlObj() {
-		return activeSwtControlObj;
 	}
 
 }

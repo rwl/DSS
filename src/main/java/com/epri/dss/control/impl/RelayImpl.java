@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class RelayImpl extends ControlClassImpl implements Relay {
 
-	private static RelayObj activeRelayObj;
+	public static RelayObj activeRelayObj;
 
 	private DSSClass TCC_CurveClass;
 
@@ -138,12 +138,12 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRelayObj((RelayObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveRelayObj());
+		activeRelayObj = (RelayObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeRelayObj);
 
 		int result = 0;
 
-		RelayObj ar = getActiveRelayObj();
+		RelayObj ar = activeRelayObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -306,7 +306,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		RelayObj otherRelay = (RelayObj) find(relayName);
 		if (otherRelay != null) {
 
-			RelayObj ar = getActiveRelayObj();
+			RelayObj ar = activeRelayObj;
 
 			ar.setNPhases(otherRelay.getNPhases());
 			ar.setNConds(otherRelay.getNConds());  // force reallocation of terminal stuff
@@ -368,14 +368,6 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 		}
 
 		return result;
-	}
-
-	public static void setActiveRelayObj(RelayObj relayObj) {
-		activeRelayObj = relayObj;
-	}
-
-	public static RelayObj getActiveRelayObj() {
-		return activeRelayObj;
 	}
 
 }

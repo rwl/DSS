@@ -11,7 +11,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class StorageControllerImpl extends ControlClassImpl implements StorageController {
 
-	private static StorageControllerObj activeStorageControllerObj;
+	public static StorageControllerObj activeStorageControllerObj;
 
 	public StorageControllerImpl() {
 		super();
@@ -180,12 +180,12 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveStorageControllerObj((StorageControllerObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveStorageControllerObj());
+		activeStorageControllerObj = (StorageControllerObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeStorageControllerObj);
 
 		int result = 0;
 
-		StorageControllerObj asc = getActiveStorageControllerObj();
+		StorageControllerObj asc = activeStorageControllerObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -368,7 +368,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		/* See if we can find this StorageController name in the present collection */
 		StorageControllerObj otherStorageController = (StorageControllerObj) find(storageControllerName);
 		if (otherStorageController != null) {
-			StorageControllerObj asc = getActiveStorageControllerObj();
+			StorageControllerObj asc = activeStorageControllerObj;
 
 			asc.setNPhases(otherStorageController.getNPhases());
 			asc.setNConds(otherStorageController.getNConds());  // force reallocation of terminal stuff
@@ -423,14 +423,6 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 		}
 
 		return result;
-	}
-
-	public static void setActiveStorageControllerObj(StorageControllerObj storageControllerObj) {
-		activeStorageControllerObj = storageControllerObj;
-	}
-
-	public static StorageControllerObj getActiveStorageControllerObj() {
-		return activeStorageControllerObj;
 	}
 
 }

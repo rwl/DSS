@@ -14,7 +14,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class RegControlImpl extends ControlClassImpl implements RegControl {
 
-	private static RegControlObj activeRegControlObj;
+	public static RegControlObj activeRegControlObj;
 
 	public RegControlImpl() {
 		super();
@@ -132,12 +132,12 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRegControlObj((RegControlObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveRegControlObj());
+		activeRegControlObj = (RegControlObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeRegControlObj);
 
 		int result = 0;
 
-		RegControlObj arc = getActiveRegControlObj();
+		RegControlObj arc = activeRegControlObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -291,7 +291,7 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		RegControlObj otherRegControl = (RegControlObj) find(regControlName);
 		if (otherRegControl != null) {
 
-			RegControlObj arc = getActiveRegControlObj();
+			RegControlObj arc = activeRegControlObj;
 
 			arc.setNPhases(otherRegControl.getNPhases());
 			arc.setNConds(otherRegControl.getNConds());  // force reallocation of terminal stuff
@@ -332,14 +332,6 @@ public class RegControlImpl extends ControlClassImpl implements RegControl {
 		}
 
 		return result;
-	}
-
-	public static void setActiveRegControlObj(RegControlObj regControlObj) {
-		activeRegControlObj = regControlObj;
-	}
-
-	public static RegControlObj getActiveRegControlObj() {
-		return activeRegControlObj;
 	}
 
 }

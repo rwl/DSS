@@ -15,10 +15,10 @@ import com.epri.dss.shared.impl.LineUnits;
 
 public class LineImpl extends PDClassImpl implements Line {
 
-	private static LineObj activeLineObj;
-	private static LineGeometry lineGeometryClass;
+	public static LineObj activeLineObj;
 
-	private static LineCode lineCodeClass;
+	public static LineGeometry lineGeometryClass;
+	public static LineCode lineCodeClass;
 
 	public LineImpl() {
 		super();
@@ -157,7 +157,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		int nOrder = 0;
 		Complex[] ZValues;
 
-		LineObj al = getActiveLineObj();
+		LineObj al = activeLineObj;
 
 		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
@@ -177,7 +177,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		int nOrder = 0;
 		Complex[] ZValues;
 
-		LineObj al = getActiveLineObj();
+		LineObj al = activeLineObj;
 
 		double[] MatBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int OrderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), MatBuffer);
@@ -198,7 +198,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		Complex[] YValues;
 		double factor;
 
-		LineObj al = getActiveLineObj();
+		LineObj al = activeLineObj;
 
 		double[] matBuffer = new double[al.getNPhases() * al.getNPhases()];
 		int orderFound = Parser.getInstance().parseAsSymMatrix(al.getNPhases(), matBuffer);
@@ -243,10 +243,10 @@ public class LineImpl extends PDClassImpl implements Line {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveLineObj((LineObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveLineObj());  // use property to set this value
+		activeLineObj = (LineObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeLineObj);  // use property to set this value
 
-		LineObj al = getActiveLineObj();
+		LineObj al = activeLineObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -349,7 +349,7 @@ public class LineImpl extends PDClassImpl implements Line {
 				break;
 			default:
 				// inherited property edits
-				classEdit(getActiveLineObj(), paramPointer - Line.NumPropsThisClass);
+				classEdit(activeLineObj, paramPointer - Line.NumPropsThisClass);
 				break;
 			}
 
@@ -518,7 +518,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		/* See if we can find this line name in the present collection */
 		LineObj otherLine = (LineObj) find(lineName);
 		if (otherLine != null) {
-			LineObj al = getActiveLineObj();
+			LineObj al = activeLineObj;
 
 			if (al.getNPhases() != otherLine.getNPhases()) {
 				al.setNPhases(otherLine.getNPhases());
@@ -569,30 +569,6 @@ public class LineImpl extends PDClassImpl implements Line {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Line.init()", -1);
 		return 0;
-	}
-
-	public static LineObj getActiveLineObj() {
-		return activeLineObj;
-	}
-
-	public static void setActiveLineObj(LineObj lineObj) {
-		activeLineObj = lineObj;
-	}
-
-	public static LineGeometry getLineGeometryClass() {
-		return lineGeometryClass;
-	}
-
-	public static void setLineGeometryClass(LineGeometry cls) {
-		lineGeometryClass = cls;
-	}
-
-	public static LineCode getLineCodeClass() {
-		return lineCodeClass;
-	}
-
-	public static void setLineCodeClass(LineCode cls) {
-		lineCodeClass = cls;
 	}
 
 }

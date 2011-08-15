@@ -622,7 +622,7 @@ public class SolutionAlgs {
 		for (int i = 0; i < NumFaults; i++) {
 			faultObj = ckt.getFaults().get(i);
 			if (i == whichOne) {
-				FaultImpl.setActiveFaultObj(faultObj);  // in fault unit
+				FaultImpl.activeFaultObj = faultObj;  // in fault unit
 				faultObj.setEnabled(true);
 			} else {
 				faultObj.setEnabled(false);
@@ -658,7 +658,7 @@ public class SolutionAlgs {
 				if (!globals.isSolutionAbort()) {
 					sol.setIntHour(sol.getIntHour() + 1);
 					pickAFault();  // randomly enable one of the faults
-					FaultImpl.getActiveFaultObj().randomize();  // randomize the fault resistance
+					FaultImpl.activeFaultObj.randomize();  // randomize the fault resistance
 					sol.solveDirect();
 					globals.getMonitorClass().sampleAll();  // make all monitors take a sample
 
@@ -749,8 +749,8 @@ public class SolutionAlgs {
 		Circuit ckt = DSSGlobals.getInstance().getActiveCircuit();
 
 		for (FaultObj fault : ckt.getFaults()) {
-			FaultImpl.setActiveFaultObj(fault);
-			FaultImpl.getActiveFaultObj().setEnabled(false);
+			FaultImpl.activeFaultObj = fault;
+			FaultImpl.activeFaultObj.setEnabled(false);
 		}
 	}
 
@@ -944,14 +944,6 @@ public class SolutionAlgs {
 		// now should have all we need to make a short circuit report
 
 		return 0;
-	}
-
-	public static int getProgressCount() {
-		return progressCount;
-	}
-
-	public static void setProgressCount(int count) {
-		progressCount = count;
 	}
 
 }

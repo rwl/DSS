@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class FuseImpl extends ControlClassImpl implements Fuse {
 
-	private static FuseObj activeFuseObj;
+	public static FuseObj activeFuseObj;
 
 	private static DSSClass TCC_CurveClass;
 
@@ -29,7 +29,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		this.commandList = new CommandListImpl(commands);
 		this.commandList.setAbbrevAllowed(true);
 
-		setTCC_CurveClass( DSSClassDefs.getDSSClass("TCC_Curve") );
+		TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 	}
 
 	/**
@@ -99,12 +99,12 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveFuseObj((FuseObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveFuseObj());
+		activeFuseObj = (FuseObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeFuseObj);
 
 		int result = 0;
 
-		FuseObj af = getActiveFuseObj();
+		FuseObj af = activeFuseObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -150,7 +150,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 
 			default:
 				// inherited parameters
-				classEdit(getActiveFuseObj(), paramPointer - Fuse.NumPropsThisClass);
+				classEdit(activeFuseObj, paramPointer - Fuse.NumPropsThisClass);
 				break;
 			}
 
@@ -180,7 +180,7 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		/* See if we can find this Fuse name in the present collection */
 		FuseObj otherFuse = (FuseObj) find(fuseName);
 		if (otherFuse != null) {
-			FuseObj af = getActiveFuseObj();
+			FuseObj af = activeFuseObj;
 
 			af.setNPhases(otherFuse.getNPhases());
 			af.setNConds(otherFuse.getNConds()); // force reallocation of terminal stuff
@@ -208,22 +208,6 @@ public class FuseImpl extends ControlClassImpl implements Fuse {
 		}
 
 		return result;
-	}
-
-	public static FuseObj getActiveFuseObj() {
-		return activeFuseObj;
-	}
-
-	public static void setActiveFuseObj(FuseObj fuseObj) {
-		activeFuseObj = fuseObj;
-	}
-
-	public static DSSClass getTCC_CurveClass() {
-		return TCC_CurveClass;
-	}
-
-	public static void setTCC_CurveClass(DSSClass curveClass) {
-		TCC_CurveClass = curveClass;
 	}
 
 }

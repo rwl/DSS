@@ -6,7 +6,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SolutionImpl extends DSSClassImpl implements Solution {
 
-	private static SolutionObj activeSolutionObj;
+	public static SolutionObj activeSolutionObj;
 
 //	private static File fDebug;
 
@@ -61,14 +61,6 @@ public class SolutionImpl extends DSSClassImpl implements Solution {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Solution.init()", -1);
 		return 0;
-	}
-
-	public static SolutionObj getActiveSolutionObj() {
-		return activeSolutionObj;
-	}
-
-	public static void setActiveSolutionObj(SolutionObj solutionObj) {
-		activeSolutionObj = solutionObj;
 	}
 
 }

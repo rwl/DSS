@@ -207,13 +207,13 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 						globals.getWireDataClass().setCode(alg.getCondName()[i]);
 
-						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+						if (ConductorDataImpl.activeConductorDataObj != null) {
+							alg.getConductorData()[i] = ConductorDataImpl.activeConductorDataObj;
 							if (i == 0) {
-								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-								if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+									alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+									alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 							}
 						} else {
 							globals.doSimpleMsg("WireData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
@@ -234,13 +234,13 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 						globals.getCNDataClass().setCode(alg.getCondName()[i]);
 
-						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+						if (ConductorDataImpl.activeConductorDataObj != null) {
+							alg.getConductorData()[i] = ConductorDataImpl.activeConductorDataObj;
 							if (i == 0) {
-								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-								if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+									alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+									alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 							}
 						} else {
 							globals.doSimpleMsg("CNData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
@@ -261,13 +261,13 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 
 						globals.getTSDataClass().setCode(alg.getCondName()[i]);
 
-						if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-							alg.getConductorData()[i] = ConductorDataImpl.getActiveConductorDataObj();
+						if (ConductorDataImpl.activeConductorDataObj != null) {
+							alg.getConductorData()[i] = ConductorDataImpl.activeConductorDataObj;
 							if (i == 0) {
-								if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-									alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-								if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-									alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+									alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+								if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+									alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 							}
 						} else {
 							globals.doSimpleMsg("TSData object \"" + alg.getCondName()[i] + "\" not defined. Must be previously defined.", 10103);
@@ -293,14 +293,14 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 3:
 					globals.getWireDataClass().setCode(param);
 
-					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+					if (ConductorDataImpl.activeConductorDataObj != null) {
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.activeConductorDataObj;
 						/* Default the current ratings for this geometry to the rating of the first conductor */
 						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
-							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+								alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+								alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 						}
 					} else {
 						globals.doSimpleMsg("WireData object \"" + param + "\" not defined. Must be previously defined.", 10103);
@@ -309,14 +309,14 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 12:
 					globals.getCNDataClass().setCode(param);
 
-					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+					if (ConductorDataImpl.activeConductorDataObj != null) {
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.activeConductorDataObj;
 						/* Default the current ratings for this geometry to the rating of the first conductor */
 						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
-							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+								alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+								alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 						}
 					} else {
 						globals.doSimpleMsg("CNData object \"" + param + "\" not defined. Must be previously defined.", 10103);
@@ -325,14 +325,14 @@ public class LineGeometryImpl extends DSSClassImpl implements LineGeometry {
 				case 13:
 					globals.getTSDataClass().setCode(param);
 
-					if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.getActiveConductorDataObj();
+					if (ConductorDataImpl.activeConductorDataObj != null) {
+						alg.getConductorData()[alg.getActiveCond()] = ConductorDataImpl.activeConductorDataObj;
 						/* Default the current ratings for this geometry to the rating of the first conductor */
 						if (alg.getActiveCond() == 1) {  // TODO Check zero based indexing
-							if (ConductorDataImpl.getActiveConductorDataObj().getNormAmps() > 0.0)
-								alg.setNormAmps(ConductorDataImpl.getActiveConductorDataObj().getNormAmps());
-							if (ConductorDataImpl.getActiveConductorDataObj().getEmergAmps() > 0.0)
-								alg.setEmergAmps(ConductorDataImpl.getActiveConductorDataObj().getEmergAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getNormAmps() > 0.0)
+								alg.setNormAmps(ConductorDataImpl.activeConductorDataObj.getNormAmps());
+							if (ConductorDataImpl.activeConductorDataObj.getEmergAmps() > 0.0)
+								alg.setEmergAmps(ConductorDataImpl.activeConductorDataObj.getEmergAmps());
 						}
 					} else {
 						globals.doSimpleMsg("TSData object \"" + param + "\" not defined. Must be previously defined.", 10103);

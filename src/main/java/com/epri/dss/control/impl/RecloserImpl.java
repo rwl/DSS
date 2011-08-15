@@ -12,7 +12,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class RecloserImpl extends ControlClassImpl implements Recloser {
 
-	private static RecloserObj activeRecloserObj;
+	public static RecloserObj activeRecloserObj;
 
 	private static DSSClass TCC_CurveClass = DSSClassDefs.getDSSClass("TCC_Curve");
 
@@ -45,7 +45,6 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		numProperties = NumPropsThisClass;
 		countProperties();  // get inherited property count
 		allocatePropertyArrays();
-
 
 		// define property names
 		propertyName[0]  = "MonitoredObj";
@@ -131,12 +130,12 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveRecloserObj((RecloserObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveRecloserObj());
+		activeRecloserObj = (RecloserObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeRecloserObj);
 
 		int result = 0;
 
-		RecloserObj ar = getActiveRecloserObj();
+		RecloserObj ar = activeRecloserObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -253,7 +252,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		/* See if we can find this Recloser name in the present collection */
 		RecloserObj otherRecloser = (RecloserObj) find(recloserName);
 		if (otherRecloser != null) {
-			RecloserObj ar = getActiveRecloserObj();
+			RecloserObj ar = activeRecloserObj;
 
 			ar.setNPhases(otherRecloser.getNPhases());
 			ar.setNConds(otherRecloser.getNConds());  // force reallocation of terminal stuff
@@ -294,14 +293,6 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 		}
 
 		return result;
-	}
-
-	public static RecloserObj getActiveRecloserObj() {
-		return activeRecloserObj;
-	}
-
-	public static void setActiveRecloserObj(RecloserObj recloserObj) {
-		activeRecloserObj = recloserObj;
 	}
 
 }

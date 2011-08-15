@@ -358,7 +358,7 @@ public class ExecHelper {
 	public static int doSolveCmd() {
 		// just invoke solution obj's editor to pick up parsing
 		// and execute rest of command
-		SolutionImpl.setActiveSolutionObj( DSSGlobals.getInstance().getActiveCircuit().getSolution() );
+		SolutionImpl.activeSolutionObj = DSSGlobals.getInstance().getActiveCircuit().getSolution();
 		return DSSGlobals.getInstance().getSolutionClass().edit();
 	}
 
@@ -2591,7 +2591,7 @@ public class ExecHelper {
 
 		int result = 0;
 		for (LoadObj pLoad : ckt.getLoads()) {
-			LoadImpl.setActiveLoadObj(pLoad);  // for updateVoltageBases to work
+			LoadImpl.activeLoadObj = pLoad;  // for updateVoltageBases to work
 			sBus = Utilities.stripExtension(pLoad.getBus(0));  // TODO Check zero indexing
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];

@@ -132,12 +132,12 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (LineImpl.getLineCodeClass() == null)
-			LineImpl.setLineCodeClass((LineCode) globals.getDSSClassList().get(globals.getClassNames().find("linecode")));
+		if (LineImpl.lineCodeClass == null)
+			LineImpl.lineCodeClass = (LineCode) globals.getDSSClassList().get(globals.getClassNames().find("linecode"));
 
-		if (LineImpl.getLineCodeClass().setActive(code)) {
+		if (LineImpl.lineCodeClass.setActive(code)) {
 
-			LineCodeObj lc = (LineCodeObj) LineImpl.getLineCodeClass().getActiveObj();
+			LineCodeObj lc = (LineCodeObj) LineImpl.lineCodeClass.getActiveObj();
 
 			condCode = code.toLowerCase();
 
@@ -1009,8 +1009,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		for (i = istart; i < lineSpacingObj.getNWires(); i++) {
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			globals.getWireDataClass().setCode(globals.getAuxParser().makeString());
-			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-				wireData[i] = ConductorDataImpl.getActiveConductorDataObj();
+			if (ConductorDataImpl.activeConductorDataObj != null) {
+				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
 				globals.doSimpleMsg("Wire " + globals.getAuxParser().makeString() + " was not defined first.", 181);
 			}
@@ -1032,8 +1032,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			globals.getCNDataClass().setCode(globals.getAuxParser().makeString());
-			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-				wireData[i] = ConductorDataImpl.getActiveConductorDataObj();
+			if (ConductorDataImpl.activeConductorDataObj != null) {
+				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
 				globals.doSimpleMsg("CN cable " + globals.getAuxParser().makeString() + " was not defined first.", 181);
 			}
@@ -1055,8 +1055,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		for (i = 0; i < lineSpacingObj.getNPhases(); i++) {  // fill extra neutrals later
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
 			globals.getTSDataClass().setCode(globals.getAuxParser().makeString());
-			if (ConductorDataImpl.getActiveConductorDataObj() != null) {
-				wireData[i] = ConductorDataImpl.getActiveConductorDataObj();
+			if (ConductorDataImpl.activeConductorDataObj != null) {
+				wireData[i] = ConductorDataImpl.activeConductorDataObj;
 			} else {
 				globals.doSimpleMsg("TS cable " + globals.getAuxParser().makeString() + " was not defined first.", 181);
 			}
@@ -1066,14 +1066,14 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	public void fetchGeometryCode(String code) {
 		DSSGlobals globals = DSSGlobals.getInstance();
 
-		if (LineImpl.getLineGeometryClass() == null)
-			LineImpl.setLineGeometryClass((LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry")));
+		if (LineImpl.lineGeometryClass == null)
+			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
 
-		if (LineImpl.getLineGeometryClass().setActive(code)) {
+		if (LineImpl.lineGeometryClass.setActive(code)) {
 			lineCodeSpecified = false;  // cancel this flag
 			spacingSpecified  = false;
 
-			setLineGeometryObj((LineGeometryObj) LineImpl.getLineGeometryClass().getActiveObj());
+			setLineGeometryObj((LineGeometryObj) LineImpl.lineGeometryClass.getActiveObj());
 			ZFrequency = -1.0;  // init to signify not computed
 
 			geometryCode     = code.toLowerCase();
@@ -1139,9 +1139,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		if (Yc != null) Yc = null;
 
 		// make a temporary LineGeometry to calculate line constants
-		if (LineImpl.getLineGeometryClass() == null)
-			LineImpl.setLineGeometryClass( (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry")) );
-		LineGeometryObj pGeo = new LineGeometryObjImpl(LineImpl.getLineGeometryClass(), "==");
+		if (LineImpl.lineGeometryClass == null)
+			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
+		LineGeometryObj pGeo = new LineGeometryObjImpl(LineImpl.lineGeometryClass, "==");
 		pGeo.loadSpacingAndWires(getLineSpacingObj(), getWireData());  // this sets OH, CN, or TS
 
 		if (rhoSpecified)

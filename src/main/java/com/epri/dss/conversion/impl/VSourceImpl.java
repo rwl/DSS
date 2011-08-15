@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class VSourceImpl extends PCClassImpl implements VSource {
 
-	private static VSourceObj activeVSourceObj;
+	public static VSourceObj activeVSourceObj;
 
 	public VSourceImpl() {
 		super();
@@ -114,7 +114,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		// special handling for bus 1
 		// set bus2=bus1.0.0.0
 
-		VSourceObj avs = getActiveVsourceObj();
+		VSourceObj avs = activeVSourceObj;
 
 		avs.setBus(1, s);  // TODO Check zero based indexing
 
@@ -140,12 +140,12 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveVsourceObj((VSourceObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveVsourceObj());
+		activeVSourceObj = (VSourceObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeVSourceObj);
 
 		int result = 0;
 
-		VSourceObj avs = getActiveVsourceObj();
+		VSourceObj avs = activeVSourceObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -299,7 +299,7 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 		/* See if we can find this line name in the present collection */
 		VSourceObj otherVSource = (VSourceObj) find(otherSource);
 		if (otherVSource != null) {
-			VSourceObj avs = getActiveVsourceObj();
+			VSourceObj avs = activeVSourceObj;
 
 			if (avs.getNPhases() != otherVSource.getNPhases()) {
 				avs.setNPhases(otherVSource.getNPhases());
@@ -346,14 +346,6 @@ public class VSourceImpl extends PCClassImpl implements VSource {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement VSource.init", -1);
 		return 0;
-	}
-
-	public static VSourceObj getActiveVsourceObj() {
-		return activeVSourceObj;
-	}
-
-	public static void setActiveVsourceObj(VSourceObj VSourceObj) {
-		activeVSourceObj = VSourceObj;
 	}
 
 }

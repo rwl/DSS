@@ -12,9 +12,9 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class TransformerImpl extends PDClassImpl implements Transformer {
 
-	private static TransformerObj activeTransfObj;
+	public static TransformerObj activeTransfObj;
 
-	private static XfmrCode XfmrCodeClass = null;
+	public static XfmrCode XfmrCodeClass = null;
 
 	public TransformerImpl() {
 		super();
@@ -179,12 +179,12 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		Parser parser = Parser.getInstance();
 
 		/* Make this object the active circuit element */
-		setActiveTransfObj((TransformerObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveTransfObj());  // use property to set this value
+		activeTransfObj = (TransformerObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeTransfObj);  // use property to set this value
 
 		int result = 0;
 
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 
 		at.setXHLChanged(false);
 		int paramPointer = 0;
@@ -323,7 +323,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 				break;
 			default:
 				// inherited properties
-				classEdit(getActiveTransfObj(), paramPointer - Transformer.NumPropsThisClass);
+				classEdit(activeTransfObj, paramPointer - Transformer.NumPropsThisClass);
 				break;
 			}
 
@@ -404,7 +404,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	}
 
 	private void setActiveWinding(int w) {
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 
 		if ((w >= 0) && (w < at.getNumWindings())) {
 			at.setActiveWinding(w);
@@ -419,7 +419,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	 * 		Y, wye, or LN
 	 */
 	private void interpretConnection(String s) {
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		Winding aw = at.getWinding()[at.getActiveWinding()];
 
 		switch (s.toLowerCase().charAt(0)) {
@@ -461,7 +461,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			s1 = globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
@@ -482,7 +482,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; Ignore omitted values */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
@@ -503,7 +503,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name  not expecting any
@@ -524,7 +524,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
@@ -545,7 +545,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name not expecting any
@@ -566,7 +566,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		globals.getAuxParser().setCmdString(s);  // load up parser
 
 		/* Loop for no more than the expected number of windings; ignore omitted values */
-		TransformerObj at = getActiveTransfObj();
+		TransformerObj at = activeTransfObj;
 		for (int i = 0; i < at.getNumWindings(); i++) {
 			at.setActiveWinding(i);
 			globals.getAuxParser().getNextParam();  // ignore any parameter name, not expecting any
@@ -584,7 +584,7 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 		/* See if we can find this Transf name in the present collection */
 		TransformerObj otherTransf = (TransformerObj) find(transfName);
 		if (otherTransf != null) {
-			TransformerObj at = getActiveTransfObj();
+			TransformerObj at = activeTransfObj;
 
 			at.setNPhases(otherTransf.getNPhases());
 			at.setNumWindings(otherTransf.getNumWindings());
@@ -654,22 +654,6 @@ public class TransformerImpl extends PDClassImpl implements Transformer {
 	public int init(int handle) {
 		DSSGlobals.getInstance().doSimpleMsg("Need to implement Transformer.init()", -1);
 		return 0;
-	}
-
-	public static TransformerObj getActiveTransfObj() {
-		return activeTransfObj;
-	}
-
-	public static void setActiveTransfObj(TransformerObj transfObj) {
-		activeTransfObj = transfObj;
-	}
-
-	public static XfmrCode getXfmrCodeClass() {
-		return XfmrCodeClass;
-	}
-
-	public static void setXfmrCodeClass(XfmrCode cls) {
-		XfmrCodeClass = cls;
 	}
 
 }

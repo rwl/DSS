@@ -61,10 +61,10 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		ConductorDataImpl.setActiveConductorDataObj((ConductorDataObj) elementList.getActive());
-		globals.setActiveDSSObject(ConductorDataImpl.getActiveConductorDataObj());
+		ConductorDataImpl.activeConductorDataObj = (ConductorDataObj) elementList.getActive();
+		globals.setActiveDSSObject(ConductorDataImpl.activeConductorDataObj);
 
-		CNDataObj acd = (CNDataObj) ConductorDataImpl.getActiveConductorDataObj();
+		CNDataObj acd = (CNDataObj) ConductorDataImpl.activeConductorDataObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -98,7 +98,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 				break;
 			default:
 				// inherited parameters
-				classEdit(ConductorDataImpl.getActiveConductorDataObj(), paramPointer - CNData.NumPropsThisClass);
+				classEdit(ConductorDataImpl.activeConductorDataObj, paramPointer - CNData.NumPropsThisClass);
 				break;
 			}
 
@@ -133,7 +133,7 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 
 	@Override
 	protected int makeLike(String CNName) {
-		CNDataObj acd = (CNDataObj) ConductorDataImpl.getActiveConductorDataObj();
+		CNDataObj acd = (CNDataObj) ConductorDataImpl.activeConductorDataObj;
 
 		int result = 0;
 		CNDataObj otherData = (CNDataObj) find(CNName);
@@ -169,11 +169,11 @@ public class CNDataImpl extends CableDataImpl implements CNData {
 	 * Sets the active CNData.
 	 */
 	public void setCode(String value) {
-		ConductorDataImpl.setActiveConductorDataObj(null);
+		ConductorDataImpl.activeConductorDataObj = null;
 		CNDataObj pCNDataObj = (CNDataObj) elementList.getFirst();
 		while (pCNDataObj != null) {
 			if (pCNDataObj.getName().equalsIgnoreCase(value)) {
-				ConductorDataImpl.setActiveConductorDataObj(pCNDataObj);
+				ConductorDataImpl.activeConductorDataObj = pCNDataObj;
 				return;
 			}
 			pCNDataObj = (CNDataObj) elementList.getNext();

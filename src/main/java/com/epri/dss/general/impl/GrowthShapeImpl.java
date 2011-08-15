@@ -16,7 +16,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
-	private GrowthShapeObj ActiveGrowthShapeObj;
+	public GrowthShapeObj activeGrowthShapeObj;
 
 	public GrowthShapeImpl() {
 		super();
@@ -83,10 +83,10 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 
 		int result = 0;
 		// continue parsing with contents of parser
-		setActiveGrowthShapeObj((GrowthShapeObj) elementList.getActive());
-		globals.setActiveDSSObject(getActiveGrowthShapeObj());
+		activeGrowthShapeObj = (GrowthShapeObj) elementList.getActive();
+		globals.setActiveDSSObject(activeGrowthShapeObj);
 
-		GrowthShapeObj pShape = getActiveGrowthShapeObj();
+		GrowthShapeObj pShape = activeGrowthShapeObj;
 
 		int paramPointer = 0;
 		String paramName = Parser.getInstance().getNextParam();
@@ -133,7 +133,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				break;
 			default:
 				// inherited parameters
-				classEdit(getActiveGrowthShapeObj(), paramPointer - GrowthShape.NumPropsThisClass);
+				classEdit(activeGrowthShapeObj, paramPointer - GrowthShape.NumPropsThisClass);
 				break;
 			}
 
@@ -150,7 +150,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		/* See if we can find this line code in the present collection */
 		GrowthShapeObj otherGrowthShape = (GrowthShapeObj) find(shapeName);
 		if (otherGrowthShape != null) {
-			GrowthShapeObj pShape = getActiveGrowthShapeObj();
+			GrowthShapeObj pShape = activeGrowthShapeObj;
 			pShape.setNPts(otherGrowthShape.getNPts());
 			pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
 			for (int i = 0; i < pShape.getNPts(); i++)
@@ -183,12 +183,12 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	 */
 	public void setCode(String value) {
 		GrowthShapeObj pShape;
-		setActiveGrowthShapeObj(null);
+		activeGrowthShapeObj = null;
 
 		for (int i = 0; i < elementList.size(); i++) {
 			pShape = (GrowthShapeObj) elementList.get(i);
 			if (pShape.getName().equalsIgnoreCase(value)) {
-				setActiveGrowthShapeObj(pShape);
+				activeGrowthShapeObj = pShape;
 				return;
 			}
 		}
@@ -210,7 +210,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 			dis = new DataInputStream(fis);
 			br = new BufferedReader(new InputStreamReader(dis));
 
-			GrowthShapeObj pShape = getActiveGrowthShapeObj();
+			GrowthShapeObj pShape = activeGrowthShapeObj;
 
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < pShape.getNPts()) {  // TODO: Check zero based indexing
@@ -241,14 +241,6 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 	private void doDblFile(String fileName) {
 		// FIXME Implement this method
 		throw new UnsupportedOperationException();
-	}
-
-	public GrowthShapeObj getActiveGrowthShapeObj() {
-		return ActiveGrowthShapeObj;
-	}
-
-	public void setActiveGrowthShapeObj(GrowthShapeObj growthShapeObj) {
-		ActiveGrowthShapeObj = growthShapeObj;
 	}
 
 }

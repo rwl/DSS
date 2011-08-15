@@ -2548,15 +2548,15 @@ public abstract class ShowResults {
 			pw2.println(String.format("!--- Frequency = %.6g Hz, Earth resistivity = %.6g ohm-m", freq, rho));
 			pw2.println("!--- Earth Model = " + Utilities.getEarthModel(globals.getDefaultEarthModel()));
 
-			LineImpl.setLineGeometryClass( (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry")) );
+			LineImpl.lineGeometryClass = (LineGeometry) globals.getDSSClassList().get(globals.getClassNames().find("LineGeometry"));
 			Z = null;
 			Yc = null;
 
 			globals.setActiveEarthModel(globals.getDefaultEarthModel());
 
-			p = LineImpl.getLineGeometryClass().getFirst();
+			p = LineImpl.lineGeometryClass.getFirst();
 			while (p > 0) {
-				pElem = (LineGeometryObj) LineImpl.getLineGeometryClass().getActiveObj();
+				pElem = (LineGeometryObj) LineImpl.lineGeometryClass.getActiveObj();
 				Z = null;
 				Yc = null;
 
@@ -2722,7 +2722,7 @@ public abstract class ShowResults {
 					pw.println();
 				}
 
-				p = LineImpl.getLineGeometryClass().getNext();
+				p = LineImpl.lineGeometryClass.getNext();
 			}
 			pw.close();
 			fw.close();
