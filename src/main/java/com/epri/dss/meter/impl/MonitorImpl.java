@@ -10,7 +10,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class MonitorImpl extends MeterClassImpl implements Monitor {
 
-	private static MonitorObj activeMonitorObj;
+	public static MonitorObj activeMonitorObj;
 
 	public MonitorImpl() {
 		super();
@@ -86,12 +86,12 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveMonitorObj((MonitorObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveMonitorObj());
+		activeMonitorObj = (MonitorObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeMonitorObj);
 
 		int result = 0;
 
-		MonitorObj am = getActiveMonitorObj();
+		MonitorObj am = activeMonitorObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -146,7 +146,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 				break;
 			default:
 				// Inherited parameters
-				classEdit(getActiveMonitorObj(), paramPointer - Monitor.NumPropsThisClass);
+				classEdit(activeMonitorObj, paramPointer - Monitor.NumPropsThisClass);
 				break;
 			}
 
@@ -195,7 +195,7 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 		/* See if we can find this monitor name in the present collection */
 		MonitorObj otherMonitor = (MonitorObj) find(MonitorName);
 		if (otherMonitor != null) {
-			MonitorObj am = getActiveMonitorObj();
+			MonitorObj am = activeMonitorObj;
 
 			am.setNPhases(otherMonitor.getNPhases());
 			am.setNConds(otherMonitor.getNConds());  // force reallocation of terminal stuff
@@ -241,14 +241,6 @@ public class MonitorImpl extends MeterClassImpl implements Monitor {
 	public void TOPExport(String objName) {
 		// FIXME Implement or remove this
 		throw new UnsupportedOperationException();
-	}
-
-	public static void setActiveMonitorObj(MonitorObj monitorObj) {
-		activeMonitorObj = monitorObj;
-	}
-
-	public static MonitorObj getActiveMonitorObj() {
-		return activeMonitorObj;
 	}
 
 }

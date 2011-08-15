@@ -14,7 +14,7 @@ import com.epri.dss.shared.impl.CommandListImpl;
 
 public class SensorImpl extends MeterClassImpl implements Sensor {
 
-	private static SensorObj activeSensorObj;
+	public static SensorObj activeSensorObj;
 
 	public SensorImpl() {
 		super();
@@ -92,13 +92,13 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveSensorObj((SensorObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveSensorObj());
+		activeSensorObj = (SensorObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeSensorObj);
 
 		int result = 0;
 		boolean doRecalcElementData = false;
 
-		SensorObj as = getActiveSensorObj();
+		SensorObj as = activeSensorObj;
 
 		int paramPointer = 0;
 		String paramName = parser.getNextParam();
@@ -277,7 +277,7 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		/* See if we can find this sensor name in the present collection */
 		otherSensor = (SensorObj) find(sensorName);
 		if (otherSensor != null) {
-			SensorObj as = getActiveSensorObj();
+			SensorObj as = activeSensorObj;
 
 			as.setNPhases(otherSensor.getNPhases());
 			as.setNConds(otherSensor.getNConds());  // force reallocation of terminal stuff
@@ -313,14 +313,6 @@ public class SensorImpl extends MeterClassImpl implements Sensor {
 		}
 
 		return Result;
-	}
-
-	public static void setActiveSensorObj(SensorObj sensorObj) {
-		activeSensorObj = sensorObj;
-	}
-
-	public static SensorObj getActiveSensorObj() {
-		return activeSensorObj;
 	}
 
 }

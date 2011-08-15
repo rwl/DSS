@@ -30,7 +30,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 	public static List<PCElement>[] busAdjPC;  // also includes shunt PD elements
 	public static List<PDElement>[] busAdjPD;
 
-	private static EnergyMeterObj activeEnergyMeterObj;
+	public static EnergyMeterObj activeEnergyMeterObj;
 
 	private Generator generatorClass;
 	private boolean saveDemandInterval;
@@ -172,14 +172,14 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		Parser parser = Parser.getInstance();
 
 		// continue parsing with contents of parser
-		setActiveEnergyMeterObj((EnergyMeterObj) elementList.getActive());
-		globals.getActiveCircuit().setActiveCktElement(getActiveEnergyMeterObj());
+		activeEnergyMeterObj = (EnergyMeterObj) elementList.getActive();
+		globals.getActiveCircuit().setActiveCktElement(activeEnergyMeterObj);
 
 		int result = 0;
 
 		boolean doRecalc = false;
 
-		EnergyMeterObj aem = getActiveEnergyMeterObj();
+		EnergyMeterObj aem = activeEnergyMeterObj;
 
 		aem.setMeteredElementChanged(false);
 
@@ -310,7 +310,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 		EnergyMeterObj otherEnergyMeter = (EnergyMeterObj) find(energyMeterName);
 		if (otherEnergyMeter != null) {
 
-			EnergyMeterObj aem = getActiveEnergyMeterObj();
+			EnergyMeterObj aem = activeEnergyMeterObj;
 
 			aem.setNPhases(otherEnergyMeter.getNPhases());
 			aem.setNConds(otherEnergyMeter.getNConds());  // force reallocation of terminal stuff
@@ -527,7 +527,7 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 		globals.getAuxParser().setCmdString(opts);  // load up aux parser
 
-		EnergyMeterObj aem = getActiveEnergyMeterObj();
+		EnergyMeterObj aem = activeEnergyMeterObj;
 
 		/* Loop until no more options found */
 		while (s2.length() > 0) {
@@ -967,14 +967,6 @@ public class EnergyMeterImpl extends MeterClassImpl implements EnergyMeter {
 
 	public void setVoltageFileIsOpen(boolean fileIsOpen) {
 		voltageFileIsOpen = fileIsOpen;
-	}
-
-	public static void setActiveEnergyMeterObj(EnergyMeterObj energyMeterObj) {
-		activeEnergyMeterObj = energyMeterObj;
-	}
-
-	public static EnergyMeterObj getActiveEnergyMeterObj() {
-		return activeEnergyMeterObj;
 	}
 
 }
