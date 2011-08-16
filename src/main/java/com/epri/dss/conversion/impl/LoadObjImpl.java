@@ -214,7 +214,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	// FIXME Private method in OpenDSS
 	public void setZIPVSize(int n) {
 		nZIPV = n;
-		ZIPV = (double[]) Utilities.resizeArray(ZIPV, nZIPV);
+		ZIPV = Utilities.resizeArray(ZIPV, nZIPV);
 	}
 
 	/**
@@ -546,7 +546,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		varBase = 1000.0 * kVArBase / nPhases;
 		YQFixed = -varBase / Math.pow(VBase, 2);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		setPFChanged(false);
 	}
@@ -1364,8 +1364,8 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 		Complex[] currents;
 
 		/* Make sure there's enough memory */
-		harmMag = (double[]) Utilities.resizeArray(harmMag, nPhases);
-		harmAng = (double[]) Utilities.resizeArray(harmAng, nPhases);
+		harmMag = Utilities.resizeArray(harmMag, nPhases);
+		harmAng = Utilities.resizeArray(harmAng, nPhases);
 		currents = new Complex[YOrder];  // to hold currents
 
 		loadFundamental = DSSGlobals.activeCircuit.getSolution().getFrequency();

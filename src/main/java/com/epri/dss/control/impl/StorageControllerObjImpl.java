@@ -1045,7 +1045,7 @@ public class StorageControllerObjImpl extends ControlElemImpl implements Storage
 
 			/* Allocate uniform weights */
 			fleetSize = fleetPointerList.size();
-			weights = (double[]) Utilities.resizeArray(weights, fleetSize);
+			weights = Utilities.resizeArray(weights, fleetSize);
 			for (i = 0; i < fleetSize; i++)
 				weights[i] = 1.0;
 		}

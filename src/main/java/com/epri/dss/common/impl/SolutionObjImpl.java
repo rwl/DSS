@@ -551,7 +551,7 @@ public class SolutionObjImpl extends DSSObjectImpl implements SolutionObj {
 	private void doNewtonSolution() throws Esolv32Problem {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
-		dV = (Complex[]) Utilities.resizeArray(dV, ckt.getNumNodes() + 1);  // make sure this is always big enough
+		dV = Utilities.resizeArray(dV, ckt.getNumNodes() + 1);  // make sure this is always big enough
 
 		if (controlIteration == 1)
 			getPCInjCurr();  // update the load multipliers for this solution

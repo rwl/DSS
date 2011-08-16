@@ -110,7 +110,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 		numReclose     = 3;
 		recloseIntervals = null;
 
-		recloseIntervals = (double[]) Utilities.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
+		recloseIntervals = Utilities.resizeArray(recloseIntervals, 4);  // fixed allocation of 4
 		recloseIntervals[0] = 0.5;
 		recloseIntervals[1] = 2.0;
 		recloseIntervals[2] = 2.0;
@@ -160,7 +160,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 				// sets name of i-th terminal's connected bus in Relay's bus list
 				setBus(1, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 
 				switch (controlType) {
@@ -227,7 +227,7 @@ public class RelayObjImpl extends ControlElemImpl implements RelayObj {
 			setNConds(nPhases);
 			setBus(1, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 		}
 

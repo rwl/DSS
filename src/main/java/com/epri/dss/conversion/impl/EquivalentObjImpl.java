@@ -124,7 +124,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 		if (getSpectrumObj() == null)
 			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device equivalent."+getName()+" not found.", 802);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		needToDoRecalc = false;
 	}
@@ -357,10 +357,10 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	}
 
 	private void reallocRX() {
-		R1 = (double[]) Utilities.resizeArray(R1, (int) Math.pow(nTerms, 2));
-		X1 = (double[]) Utilities.resizeArray(X1, (int) Math.pow(nTerms, 2));
-		R0 = (double[]) Utilities.resizeArray(R0, (int) Math.pow(nTerms, 2));
-		X0 = (double[]) Utilities.resizeArray(X0, (int) Math.pow(nTerms, 2));
+		R1 = Utilities.resizeArray(R1, (int) Math.pow(nTerms, 2));
+		X1 = Utilities.resizeArray(X1, (int) Math.pow(nTerms, 2));
+		R0 = Utilities.resizeArray(R0, (int) Math.pow(nTerms, 2));
+		X0 = Utilities.resizeArray(X0, (int) Math.pow(nTerms, 2));
 	}
 
 	public CMatrix getZ() {

@@ -332,7 +332,7 @@ public class RelayImpl extends ControlClassImpl implements Relay {
 			ar.setDelayTime(otherRelay.getDelayTime());
 			ar.setBreakerTime(otherRelay.getBreakerTime());
 
-			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
+			ar.setRecloseIntervals( Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (int i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = otherRelay.getRecloseIntervals()[i];
 

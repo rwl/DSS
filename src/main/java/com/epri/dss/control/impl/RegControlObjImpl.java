@@ -159,8 +159,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 						setBus(1, getControlledElement().getBus(elementTerminal));
 					}
 					// buffer to hold regulator voltages
-					VBuffer = (Complex[]) Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
-					CBuffer = (Complex[]) Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
+					VBuffer = Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
+					CBuffer = Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
 				}
 			} else {
 				setControlledElement(null);  // we get here if element not found
@@ -714,8 +714,8 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 				} else {
 					setBus(1, getControlledElement().getBus(elementTerminal));
 					// buffer to hold regulator voltages
-					VBuffer = (Complex[]) Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
-					CBuffer = (Complex[]) Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
+					VBuffer = Utilities.resizeArray(VBuffer, getControlledElement().getNPhases());
+					CBuffer = Utilities.resizeArray(CBuffer, getControlledElement().getYorder());
 				}
 			}
 		}

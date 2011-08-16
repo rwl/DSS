@@ -114,10 +114,10 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 
 			switch (paramPointer) {
 			case 0:  // reallocate arrays to correspond to npts
-				atc.setCValues( (double[]) Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
-				atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
-				atc.setTValues( (double[]) Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
-				atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
+				atc.setCValues( Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
+				atc.setLogC( Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
+				atc.setTValues( Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
+				atc.setLogT( Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
 				break;
 			case 1:
 				calcLogPoints(atc.getCValues(), atc.getLogC(), atc.getNPts());
@@ -142,10 +142,10 @@ public class TCC_CurveImpl extends DSSClassImpl implements TCC_Curve {
 		if (otherTCC_Curve != null) {
 			TCC_CurveObj atc = activeTCC_CurveObj;
 			atc.setNPts(otherTCC_Curve.getNPts());
-			atc.setCValues( (double[]) Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
-			atc.setLogC( (double[]) Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
-			atc.setTValues( (double[]) Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
-			atc.setLogT( (double[]) Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
+			atc.setCValues( Utilities.resizeArray(atc.getCValues(), atc.getNPts()) );
+			atc.setLogC( Utilities.resizeArray(atc.getLogC(), atc.getNPts()) );
+			atc.setTValues( Utilities.resizeArray(atc.getTValues(), atc.getNPts()) );
+			atc.setLogT( Utilities.resizeArray(atc.getLogT(), atc.getNPts()) );
 			for (i = 0; i < atc.getNPts(); i++)
 				atc.getCValues()[i] = otherTCC_Curve.getCValues()[i];
 			for (i = 0; i < atc.getNPts(); i++)

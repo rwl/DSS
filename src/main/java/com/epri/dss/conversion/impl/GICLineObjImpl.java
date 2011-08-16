@@ -90,7 +90,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		if ((getSpectrumObj() == null) && (getSpectrum().length() > 0))
 			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device GICLine."+getName()+" not found.", 324);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override

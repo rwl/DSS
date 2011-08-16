@@ -149,10 +149,10 @@ public class YMatrix {
 		if (AllocateVI) {
 			if (ckt.isLogEvents())
 				Utilities.logThisEvent("ReAllocating Solution Arrays");
-			sol.setNodeV( (Complex[]) Utilities.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
+			sol.setNodeV( Utilities.resizeArray(sol.getNodeV(), ckt.getNumNodes() + 1) );  // allocate system voltage array - allow for zero element
 			sol.getNodeV()[0] = Complex.ZERO;  // TODO Check zero based indexing
-			sol.setCurrents( (Complex[]) Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
-			sol.setAuxCurrents( (Complex[]) Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
+			sol.setCurrents( Utilities.resizeArray(sol.getCurrents(), ckt.getNumNodes() + 1) );  // allocate system current array
+			sol.setAuxCurrents( Utilities.resizeArray(sol.getAuxCurrents(), ckt.getNumNodes()) );  // allocate system current array
 			if (sol.getVMagSaved() != null)
 				sol.setVMagSaved(new double[0]);
 			if (sol.getErrorSaved() != null)

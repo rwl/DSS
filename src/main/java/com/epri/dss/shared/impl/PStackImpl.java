@@ -17,7 +17,7 @@ public class PStackImpl extends StackBaseImpl implements PStack {
 		numItems += 1;
 		if (numItems > maxItems) {
 			maxItems += increment;
-			Utilities.resizeArray(items, maxItems);
+			items = Utilities.resizeArray(items, maxItems);
 		}
 		items[numItems] = p;
 	}

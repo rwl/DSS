@@ -129,15 +129,15 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			setNConds(nPhases + 1);
 			setNTerms(numWindings);
 
-			winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
+			winding = Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
 			for (i = 0; i < maxWindings; i++)
 				winding[i] = new WindingImpl();
 
 			// array of short circuit measurements between pairs of windings
-			XSC = (double[]) Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
+			XSC = Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
 			for (i = oldWdgSize; i < ((numWindings - 1) * numWindings / 2); i++)  // TODO Check zero based indexing
 				XSC[i] = 0.30;
-			termRef = (int[]) Utilities.resizeArray(termRef, 2 * numWindings * nPhases);
+			termRef = Utilities.resizeArray(termRef, 2 * numWindings * nPhases);
 
 			/* Reallocate impedance matrices */
 			ZB = null;

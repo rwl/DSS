@@ -107,7 +107,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				pShape.setNPts(Parser.getInstance().makeInteger());
 				break;
 			case 2:
-				pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
+				pShape.setYear( Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
 				YrBuffer = new double[pShape.getNPts()];
 				Utilities.interpretDblArray(param, pShape.getNPts(), YrBuffer);  // Parser.parseAsVector(pShape.getNpts(), Yrbuffer);
 
@@ -117,7 +117,7 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 				YrBuffer = null;
 				break;
 			case 3:
-				pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
+				pShape.setMultiplier( Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
 				Utilities.interpretDblArray(param, pShape.getNPts(), pShape.getMultiplier());   //Parser.parseAsVector(pShape.getNpts(), pShape.getMultiplier());
 				break;
 			case 4:
@@ -150,10 +150,10 @@ public class GrowthShapeImpl extends DSSClassImpl implements GrowthShape {
 		if (otherGrowthShape != null) {
 			GrowthShapeObj pShape = activeGrowthShapeObj;
 			pShape.setNPts(otherGrowthShape.getNPts());
-			pShape.setMultiplier( (double[]) Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
+			pShape.setMultiplier( Utilities.resizeArray(pShape.getMultiplier(), pShape.getNPts()) );
 			for (int i = 0; i < pShape.getNPts(); i++)
 				pShape.getMultiplier()[i] = otherGrowthShape.getMultiplier()[i];
-			pShape.setYear( (int[]) Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
+			pShape.setYear( Utilities.resizeArray(pShape.getYear(), pShape.getNPts()) );
 			for (int i = 0; i < pShape.getNPts(); i++)
 				pShape.getYear()[i] = otherGrowthShape.getYear()[i];
 			for (int i = 0; i < pShape.getParentClass().getNumProperties(); i++)

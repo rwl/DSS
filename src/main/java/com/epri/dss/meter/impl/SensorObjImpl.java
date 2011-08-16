@@ -249,8 +249,8 @@ public class SensorObjImpl extends MeterElementImpl implements SensorObj {
 	}
 
 	private void allocateSensorObjArrays() {
-		sensorKW   = (double[]) Utilities.resizeArray(sensorKW, nPhases);
-		sensorKVAr = (double[]) Utilities.resizeArray(sensorKVAr, nPhases);
+		sensorKW   = Utilities.resizeArray(sensorKW, nPhases);
+		sensorKVAr = Utilities.resizeArray(sensorKVAr, nPhases);
 		allocateSensorArrays();
 	}
 

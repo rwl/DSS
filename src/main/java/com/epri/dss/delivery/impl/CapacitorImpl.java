@@ -98,7 +98,7 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 
 		if (orderFound > 0) {  // parse was successful
 			/* C */
-			aco.setCMatrix((double[]) Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()));
+			aco.setCMatrix( Utilities.resizeArray(aco.getCMatrix(), aco.getNPhases() * aco.getNPhases()) );
 			for (j = 0; j < aco.getNPhases() * aco.getNPhases(); j++)
 				aco.getCMatrix()[j] = 1.0e-6 * matBuffer[j];
 		}

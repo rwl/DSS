@@ -144,12 +144,12 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 				aps.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+				aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 				// allow possible resetting (to a lower value) of num points when specifying prices not hours
 				aps.setNumPoints( Utilities.interpretDblArray(param, aps.getNumPoints(), aps.getPriceValues()) );   //parser.parseAsVector(Npts, Prices);
 				break;
 			case 3:
-				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 				Utilities.interpretDblArray(param, aps.getNumPoints(), aps.getHours());   //parser.parseAsVector(Npts, Hours);
 				break;
 			case 4:
@@ -239,13 +239,13 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			aps.setNumPoints(otherPriceShape.getNumPoints());
 			aps.setInterval(otherPriceShape.getInterval());
-			aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getPriceValues()[i] = otherPriceShape.getPriceValues()[i];
 			if (aps.getInterval() > 0.0) {
 				aps.setHours(new double[0]);
 			} else {
-				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			}
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getHours()[i] = otherPriceShape.getHours()[i];
@@ -299,10 +299,10 @@ public class PriceShapeImpl extends DSSClassImpl implements PriceShape {
 
 			PriceShapeObj aps = activePriceShapeObj;
 
-			aps.setPriceValues( (double[]) Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
+			aps.setPriceValues( Utilities.resizeArray(aps.getPriceValues(), aps.getNumPoints()) );
 
 			if (aps.getInterval() == 0.0)
-				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < aps.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;

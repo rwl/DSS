@@ -86,7 +86,7 @@ public class FaultImpl extends PDClassImpl implements Fault {
 
 		if (orderFound > 0) {  // parse was successful  TODO Check zero based indexing
 			/* X */
-			af.setGMatrix( (double[]) Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
+			af.setGMatrix( Utilities.resizeArray(af.getGMatrix(), af.getNPhases() * af.getNPhases()) );
 			for (int j = 0; j < af.getNPhases() * af.getNPhases(); j++)
 				af.getGMatrix()[j] = matBuffer[j];
 		}

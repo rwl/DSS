@@ -60,7 +60,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 		if (getSpectrumObj() == null)
 			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device ISource."+getName()+" not found.", 333);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override

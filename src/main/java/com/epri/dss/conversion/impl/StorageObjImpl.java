@@ -608,7 +608,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 		// initialize to zero - defaults to PQ storage element
 		// solution object will reset after circuit modifications
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		/* Update any user-written models */
 		if (userModel.exists())

@@ -216,7 +216,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 			// because they are strings, we have to do it differently
 
 			if (value < nTerms) {
-				busNames = (String[]) Utilities.resizeArray(busNames, value);  // keeps old values; truncates storage
+				busNames = Utilities.resizeArray(busNames, value);  // keeps old values; truncates storage
 			} else {
 				if (busNames == null) {
 					// first allocation
@@ -242,13 +242,13 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 				for (int i = 0; i < nTerms; i++)
 					terminals[i] = null;  // clean up old storage
 
-			terminals = (PowerTerminal[]) Utilities.resizeArray(terminals, value);
+			terminals = Utilities.resizeArray(terminals, value);
 
 			nTerms = value;  // set new number of terminals
 			YOrder = nTerms * nConds;
-			VTerminal = (Complex[]) Utilities.resizeArray(VTerminal, YOrder);
-			ITerminal = (Complex[]) Utilities.resizeArray(ITerminal, YOrder);
-			complexBuffer = (Complex[]) Utilities.resizeArray(complexBuffer, YOrder);  // used by both PD and PC elements
+			VTerminal = Utilities.resizeArray(VTerminal, YOrder);
+			ITerminal = Utilities.resizeArray(ITerminal, YOrder);
+			complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);  // used by both PD and PC elements
 
 			for (int i = 0; i < value; i++)
 				terminals[i] = new PowerTerminal(nConds);
@@ -363,14 +363,14 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 		// allocate nodeRef and move new values into it.
 		size = YOrder;
 		size2 = nConds;  // size for one terminal
-		nodeRef = (int[]) Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
+		nodeRef = Utilities.resizeArray(nodeRef, size);  // doesn't do anything if already properly allocated
 		System.arraycopy(nodeRefArray[0], 0, nodeRef[(iTerm - 1) * nConds + 1], 0, size2);
 		System.arraycopy(nodeRefArray[0], 0, terminals[iTerm].termNodeRef[0], 0, size2);  // copy in terminal as well
 
 		// allocate temp array used to hold voltages and currents for calcs
-		VTerminal = (Complex[]) Utilities.resizeArray(VTerminal, YOrder);
-		ITerminal = (Complex[]) Utilities.resizeArray(ITerminal, YOrder);
-		complexBuffer = (Complex[]) Utilities.resizeArray(complexBuffer, YOrder);
+		VTerminal = Utilities.resizeArray(VTerminal, YOrder);
+		ITerminal = Utilities.resizeArray(ITerminal, YOrder);
+		complexBuffer = Utilities.resizeArray(complexBuffer, YOrder);
 	}
 	public void setNodeRef(int iTerm, int nodeRefArray) {
 		setNodeRef(iTerm, new int[] {nodeRefArray});

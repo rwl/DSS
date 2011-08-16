@@ -506,7 +506,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 		dQdV      = dQdVSaved;         // for Model = 3
 		deltaQMax = (varMax - varMin) * 0.10;  // limit to 10% of range
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 
 		/* Update any user-written models */
 		if (userModel.exists()) userModel.updateModel();

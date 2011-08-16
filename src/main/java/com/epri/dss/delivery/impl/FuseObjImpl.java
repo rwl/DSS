@@ -96,7 +96,7 @@ public class FuseObjImpl extends ControlElemImpl implements FuseObj {
 				// sets name of i-th terminal's connected bus in fuse's bus list
 				setBus(1, monitoredElement.getBus(monitoredElementTerminal));  // TODO Check zero based indexing
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}

@@ -151,11 +151,11 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				switch (mode & Monitor.MODEMASK) {
 				case 3:
 					numStateVars = ((PCElement) meteredElement).numVariables();
-					stateBuffer = (double[]) Utilities.resizeArray(stateBuffer, numStateVars);
+					stateBuffer = Utilities.resizeArray(stateBuffer, numStateVars);
 					break;
 				default:
-					currentBuffer = (Complex[]) Utilities.resizeArray(currentBuffer, meteredElement.getYorder());
-					voltageBuffer = (Complex[]) Utilities.resizeArray(voltageBuffer, meteredElement.getNConds());
+					currentBuffer = Utilities.resizeArray(currentBuffer, meteredElement.getYorder());
+					voltageBuffer = Utilities.resizeArray(voltageBuffer, meteredElement.getNConds());
 					break;
 				}
 
@@ -185,8 +185,8 @@ public class MonitorObjImpl extends MeterElementImpl implements MonitorObj {
 				stateBuffer = (double[]) Utilities.resizeArray(stateBuffer, numStateVars);
 				break;
 			default:
-				currentBuffer = (Complex[]) Utilities.resizeArray(currentBuffer, meteredElement.getYorder());
-				voltageBuffer = (Complex[]) Utilities.resizeArray(voltageBuffer, meteredElement.getNConds());
+				currentBuffer = Utilities.resizeArray(currentBuffer, meteredElement.getYorder());
+				voltageBuffer = Utilities.resizeArray(voltageBuffer, meteredElement.getNConds());
 				break;
 			}
 			clearMonitorStream();

@@ -275,7 +275,7 @@ public class RecloserImpl extends ControlClassImpl implements Recloser {
 			ar.setNumReclose(otherRecloser.getNumReclose());
 			ar.setNumFast(otherRecloser.getNumFast());
 
-			ar.setRecloseIntervals( (double[]) Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
+			ar.setRecloseIntervals( Utilities.resizeArray(ar.getRecloseIntervals(), 4) );  // always make a max of 4
 			for (i = 0; i < ar.getNumReclose(); i++)
 				ar.getRecloseIntervals()[i] = otherRecloser.getRecloseIntervals()[i];
 

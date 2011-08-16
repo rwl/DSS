@@ -129,7 +129,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 				// sets name of i-th terminal's connected bus in Recloser's bus list
 				setBus(1, monitoredElement.getBus(monitoredElementTerminal));
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 				condOffset = (monitoredElementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
 		}
@@ -170,7 +170,7 @@ public class RecloserObjImpl extends ControlElemImpl implements RecloserObj {
 			setNConds(nPhases);
 			setBus(1, monitoredElement.getBus(elementTerminal));
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 		}
 		super.makePosSequence();

@@ -239,7 +239,7 @@ public class GenDispatcherObjImpl extends ControlElemImpl implements GenDispatch
 
 			/* Allocate uniform weights */
 			listSize = genPointerList.size();
-			weights = (double[]) Utilities.resizeArray(weights, listSize);
+			weights = Utilities.resizeArray(weights, listSize);
 			for (i = 0; i < listSize; i++)
 				weights[i] = 1.0;
 		}

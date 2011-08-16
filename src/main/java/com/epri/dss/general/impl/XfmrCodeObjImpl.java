@@ -77,10 +77,10 @@ public class XfmrCodeObjImpl extends DSSObjectImpl implements XfmrCodeObj {
 			int OldWdgSize = (numWindings - 1) * numWindings / 2;
 			numWindings = n;
 			maxWindings = n;
-			winding = (com.epri.dss.delivery.Winding[]) Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
+			winding = Utilities.resizeArray(winding, maxWindings);  // reallocate collector array
 			for (int i = 0; i < maxWindings; i++)
 				winding[i] = new WindingImpl();
-			XSC = (double[]) Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
+			XSC = Utilities.resizeArray(XSC, ((numWindings - 1) * numWindings / 2));
 			for (int i = OldWdgSize + 1; i < (numWindings-1) * numWindings / 2; i++)
 				XSC[i] = 0.30;   // default to something
 		} else {

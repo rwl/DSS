@@ -789,7 +789,7 @@ public class SolutionAlgs {
 		numFreq += 1;
 		if (numFreq > maxFreq) {
 			maxFreq += 20;
-			freqList = (double[]) Utilities.resizeArray(freqList, maxFreq);
+			freqList = Utilities.resizeArray(freqList, maxFreq);
 		}
 
 		/* let's add it in ascending order */
@@ -832,7 +832,7 @@ public class SolutionAlgs {
 		/* Accumulate all unique frequencies */
 		maxFreq = 20;    // Initial List size
 		numFreq = 0;
-		freqList = (double[]) Utilities.resizeArray(freqList, maxFreq);
+		freqList = Utilities.resizeArray(freqList, maxFreq);
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -898,7 +898,7 @@ public class SolutionAlgs {
 			if (sol.isDoAllHarmonics()) {
 				collectAllFrequencies(frequencyList, nFreq);  // allocates frequencyList  TODO Check allocation
 			} else {
-				frequencyList = (double[]) Utilities.resizeArray(frequencyList, sol.getHarmonicListSize());
+				frequencyList = Utilities.resizeArray(frequencyList, sol.getHarmonicListSize());
 				nFreq = sol.getHarmonicListSize();
 				for (int i = 0; i < nFreq; i++) {
 					frequencyList[i] = ckt.getFundamental() * sol.getHarmonicList()[i];

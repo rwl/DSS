@@ -1509,7 +1509,7 @@ public class ExecHelper {
 			/* Parsing zero-fills the array */
 
 			solution.setHarmonicListSize(Num);
-			Utilities.resizeArray(solution.getHarmonicList(), solution.getHarmonicListSize());
+			Utilities.resizeArray(solution.getHarmonicList(), solution.getHarmonicListSize());  // FIXME set list
 			for (int i = 0; i < solution.getHarmonicListSize(); i++)
 				solution.getHarmonicList()[i] = Dummy[i];
 			Dummy = null;

@@ -382,12 +382,12 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 			}
 
 			// reallocate arrays (must be initialized to nil for first call)
-			setC( (double[]) Utilities.resizeArray(getC(), value) );
-			setXL( (double[]) Utilities.resizeArray(getXL(), value) );
-			setKVArRating( (double[]) Utilities.resizeArray(getKVArRating(), value) );
-			setR( (double[]) Utilities.resizeArray(getR(), value) );
-			setHarm( (double[]) Utilities.resizeArray(getHarm(), value) );
-			setStates( (int[]) Utilities.resizeArray(getStates(), value) );
+			setC( Utilities.resizeArray(getC(), value) );
+			setXL( Utilities.resizeArray(getXL(), value) );
+			setKVArRating( Utilities.resizeArray(getKVArRating(), value) );
+			setR( Utilities.resizeArray(getR(), value) );
+			setHarm( Utilities.resizeArray(getHarm(), value) );
+			setStates( Utilities.resizeArray(getStates(), value) );
 
 			// special case for numSteps=1
 

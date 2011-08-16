@@ -172,7 +172,7 @@ public class SpectrumObjImpl extends DSSObjectImpl implements SpectrumObj {
 				}
 			}
 
-			multArray = (Complex[]) Utilities.resizeArray(multArray, numHarm);
+			multArray = Utilities.resizeArray(multArray, numHarm);
 			for (i = 0; i < numHarm; i++)
 				multArray[i] = ComplexUtil.polarDeg2Complex(puMagArray[i], (angleArray[i] - harmArray[i] * fundAngle));
 		} catch (Exception e) {

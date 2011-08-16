@@ -115,7 +115,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			case 6:
 				agd.setListSize(agd.getGeneratorNameList().size());
 				if (agd.getListSize() > 0) {
-					agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
+					agd.setWeights( Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
 
 					Utilities.interpretDblArray(param, agd.getListSize(), agd.getWeights());
 				}
@@ -133,7 +133,7 @@ public class GenDispatcherImpl extends ControlClassImpl implements GenDispatcher
 			case 5:  // levelize the list
 				agd.getGenPointerList().clear();  // clear this for resetting on first sample
 				agd.setListSize(agd.getGeneratorNameList().size());
-				agd.setWeights( (double[]) Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
+				agd.setWeights( Utilities.resizeArray(agd.getWeights(), agd.getListSize()) );
 				for (int i = 0; i < agd.getListSize(); i++)
 					agd.getWeights()[i] = 1.0;
 				break;

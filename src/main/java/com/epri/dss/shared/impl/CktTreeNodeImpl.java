@@ -102,7 +102,7 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 	public void setToBusReference(int value) {
 		numToBuses += 1;
-		toBusList = (int[]) Utilities.resizeArray(toBusList, numToBuses);
+		toBusList = Utilities.resizeArray(toBusList, numToBuses);
 		toBusList[numToBuses] = value;
 	}
 

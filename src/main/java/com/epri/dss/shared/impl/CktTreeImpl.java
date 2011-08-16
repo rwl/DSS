@@ -33,7 +33,7 @@ public class CktTreeImpl implements CktTree {
 		public void add(CktTreeNode node, int endBusRef) {
 			numEnds += 1;
 			endNodeList.add(node);
-			endBuses = (int[]) Utilities.resizeArray(endBuses, numEnds);
+			endBuses = Utilities.resizeArray(endBuses, numEnds);
 			endBuses[numEnds - 1] = endBusRef;  // TODO Check zero based indexing
 		}
 

@@ -155,12 +155,12 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					als.setInterval(parser.makeDouble());
 					break;
 				case 2:
-					als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
+					als.setPMultipliers( Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 					// allow possible resetting (to a lower value) of num points when specifying multipliers not Hours
 					als.setNumPoints( Utilities.interpretDblArray(param, als.getNumPoints(), als.getPMultipliers()) );   // parser.parseAsVector(Npts, Multipliers);
 					break;
 				case 3:
-					als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
+					als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 					Utilities.interpretDblArray(param, als.getNumPoints(), als.getHours());   // parser.parseAsVector(Npts, Hours);
 					break;
 				case 4:
@@ -192,7 +192,7 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 					}
 					break;
 				case 10:
-					als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
+					als.setQMultipliers( Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
 					Utilities.interpretDblArray(param, als.getNumPoints(), als.getQMultipliers());  // parser.parseAsVector(Npts, Multipliers);
 					break;
 				case 11:
@@ -275,18 +275,18 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 			als.setNumPoints(otherLoadShape.getNumPoints());
 			als.setInterval(otherLoadShape.getInterval());
-			als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
+			als.setPMultipliers( Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 			for (int i = 0; i < als.getNumPoints(); i++)
 				als.getPMultipliers()[i] = otherLoadShape.getPMultipliers()[i];
 			if (otherLoadShape.getQMultipliers() != null)
-				als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
-			als.setQMultipliers( (double[]) Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
+				als.setQMultipliers( Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
+			als.setQMultipliers( Utilities.resizeArray(als.getQMultipliers(), als.getNumPoints()) );
 			for (int i = 0; i < als.getNumPoints(); i++)
 				als.getQMultipliers()[i] = otherLoadShape.getQMultipliers()[i];
 			if (als.getInterval() > 0.0) {
 				als.setHours(new double[0]);
 			} else {
-				als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
+				als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 				for (int i = 0; i < als.getNumPoints(); i++)
 					als.getHours()[i] = otherLoadShape.getHours()[i];
 			}
@@ -354,10 +354,10 @@ public class LoadShapeImpl extends DSSClassImpl implements LoadShape {
 
 			LoadShapeObj als = activeLoadShapeObj;
 
-			als.setPMultipliers( (double[]) Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
+			als.setPMultipliers( Utilities.resizeArray(als.getPMultipliers(), als.getNumPoints()) );
 
 			if (als.getInterval() == 0.0)
-				als.setHours( (double[]) Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
+				als.setHours( Utilities.resizeArray(als.getHours(), als.getNumPoints()) );
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < als.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;

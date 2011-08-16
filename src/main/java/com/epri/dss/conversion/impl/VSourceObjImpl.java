@@ -190,7 +190,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		if (getSpectrumObj() == null)
 			DSSGlobals.doSimpleMsg("Spectrum object \"" + getSpectrum() + "\" for device VSource."+getName()+" not found.", 324);
 
-		setInjCurrent( (Complex[]) Utilities.resizeArray(getInjCurrent(), YOrder) );
+		setInjCurrent( Utilities.resizeArray(getInjCurrent(), YOrder) );
 	}
 
 	@Override

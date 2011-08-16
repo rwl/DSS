@@ -226,7 +226,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 			case StorageController.WEIGHTS:
 				asc.setFleetSize(asc.getStorageNameList().size());
 				if (asc.getFleetSize() > 0) {
-					asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+					asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 					Utilities.interpretDblArray(param, asc.getFleetSize(), asc.getWeights());
 				}
 				break;
@@ -330,7 +330,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 				asc.setElementListSpecified(true);
 				asc.setFleetSize(asc.getStorageNameList().size());
 				// realloc weights to be same size as possible number of storage elements
-				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+				asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = 1.0;
 				break;
@@ -389,7 +389,7 @@ public class StorageControllerImpl extends ControlClassImpl implements StorageCo
 
 			asc.setFleetSize(asc.getStorageNameList().size());
 			if (asc.getFleetSize() > 0) {
-				asc.setWeights( (double[]) Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
+				asc.setWeights( Utilities.resizeArray(asc.getWeights(), asc.getFleetSize()) );
 				for (int i = 0; i < asc.getFleetSize(); i++)
 					asc.getWeights()[i] = otherStorageController.getWeights()[i];
 			}

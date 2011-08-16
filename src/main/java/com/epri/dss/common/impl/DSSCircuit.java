@@ -351,7 +351,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private void addDeviceHandle(int handle) {
 		if (numDevices > maxDevices) {
 			maxDevices = maxDevices + incDevices;
-			deviceRef = (CktElementDef[]) Utilities.resizeArray(deviceRef, maxDevices);
+			deviceRef = Utilities.resizeArray(deviceRef, maxDevices);
 		}
 		deviceRef[numDevices].devHandle = handle;  // index into CktElements
 		deviceRef[numDevices].cktElementClass = DSSGlobals.lastClassReferenced;
@@ -360,14 +360,14 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private void addABus() {
 		if (numBuses > maxBuses) {
 			maxBuses += incBuses;
-			buses = (Bus[]) Utilities.resizeArray(buses, maxBuses);
+			buses = Utilities.resizeArray(buses, maxBuses);
 		}
 	}
 
 	private void addANodeBus() {
 		if (numNodes > maxNodes) {
 			maxNodes += incNodes;
-			mapNodeToBus = (NodeBus[]) Utilities.resizeArray(mapNodeToBus, maxNodes);
+			mapNodeToBus = Utilities.resizeArray(mapNodeToBus, maxNodes);
 		}
 	}
 

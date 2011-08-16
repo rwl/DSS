@@ -34,6 +34,8 @@ import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.common.Solution;
 import com.epri.dss.common.SolutionObj;
+import com.epri.dss.common.impl.DSSBus.NodeBus;
+import com.epri.dss.common.impl.DSSCircuit.CktElementDef;
 import com.epri.dss.control.ControlElem;
 import com.epri.dss.conversion.GeneratorObj;
 import com.epri.dss.conversion.LoadObj;
@@ -43,6 +45,7 @@ import com.epri.dss.delivery.FaultObj;
 import com.epri.dss.delivery.LineObj;
 import com.epri.dss.delivery.PDElement;
 import com.epri.dss.delivery.ReactorObj;
+import com.epri.dss.delivery.Winding;
 import com.epri.dss.executive.impl.DSSExecutive;
 import com.epri.dss.executive.impl.ExecCommands;
 import com.epri.dss.executive.impl.ExecOptions;
@@ -87,25 +90,95 @@ public class Utilities {
 		return path;
 	}
 
-	/**
-	 * Reallocates an array with a new size, and copies the contents
-	 * of the old array to the new array.
-	 *
-	 * @param oldArray the old array, to be reallocated.
-	 * @param newSize the new array size.
-	 * @return A new array with the same contents.
-	 *
-	 * @see http://www.source-code.biz/snippets/java/3.htm
-	 * @author Christian d'Heureuse <chdh@source-code.biz>
-	 * @license LGPL
-	 */
-	public static Object resizeArray(Object oldArray, int newSize) {
-		int oldSize = java.lang.reflect.Array.getLength(oldArray);
-		Class<?> elementType = oldArray.getClass().getComponentType();
-		Object newArray = java.lang.reflect.Array.newInstance(elementType, newSize);
-		int preserveLength = Math.min(oldSize, newSize);
-		if (preserveLength > 0)
-			System.arraycopy(oldArray, 0, newArray, 0, preserveLength);
+	/* Copy the contents of an array to an array of a new size. */
+
+	public static int[] resizeArray(int[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		int[] newArray = new int[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static double[] resizeArray(double[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		double[] newArray = new double[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static String[] resizeArray(String[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		String[] newArray = new String[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static Complex[] resizeArray(Complex[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		Complex[] newArray = new Complex[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static DSSObject[] resizeArray(DSSObject[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		DSSObject[] newArray = new DSSObject[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static CktElementDef[] resizeArray(CktElementDef[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		CktElementDef[] newArray = new CktElementDef[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static Bus[] resizeArray(Bus[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		Bus[] newArray = new Bus[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static NodeBus[] resizeArray(NodeBus[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		NodeBus[] newArray = new NodeBus[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static PowerTerminal[] resizeArray(PowerTerminal[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		PowerTerminal[] newArray = new PowerTerminal[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
+		return newArray;
+	}
+
+	public static Winding[] resizeArray(Winding[] oldArray, int newSize) {
+		int oldSize = oldArray.length;
+		Winding[] newArray = new Winding[newSize];
+		int length = Math.min(oldSize, newSize);
+		if (length > 0)
+			System.arraycopy(oldArray, 0, newArray, 0, length);
 		return newArray;
 	}
 
@@ -619,7 +692,7 @@ public class Utilities {
 						size += 1;
 						if (size > maxSize) {
 							maxSize += 100;
-							resultArray = (String[]) resizeArray(resultArray, maxSize);
+							resultArray = resizeArray(resultArray, maxSize);
 						}
 						resultArray[size] = param;
 					}
@@ -638,7 +711,7 @@ public class Utilities {
 				size += 1;
 				if (size > maxSize) {
 					maxSize += 100;
-					resultArray = (String[]) resizeArray(resultArray, maxSize);
+					resultArray = resizeArray(resultArray, maxSize);
 				}
 				resultArray[size] = param;
 				parmName = DSSGlobals.auxParser.getNextParam();
@@ -647,7 +720,7 @@ public class Utilities {
 		}
 
 		maxSize = size;  // get rid of excess allocation
-		resultArray = (String[]) resizeArray(resultArray, maxSize);
+		resultArray = resizeArray(resultArray, maxSize);
 	}
 
 	/**
@@ -836,7 +909,7 @@ public class Utilities {
 		}
 
 		// reallocate iarray to new size
-		iarray = (int[]) resizeArray(iarray, count.intValue());
+		iarray = resizeArray(iarray, count.intValue());
 
 		// Parse again for real
 		DSSGlobals.auxParser.setCmdString(s);
@@ -1484,7 +1557,7 @@ public class Utilities {
 						fieldNum += 1;
 						if (fieldNum > arraySize) {
 							arraySize = fieldNum;
-							fieldLength = (int[]) resizeArray(fieldLength, arraySize);
+							fieldLength = resizeArray(fieldLength, arraySize);
 							fieldLength[fieldNum] = fieldLen;
 						}
 					} else if (fieldLen > fieldLength[fieldNum]) {

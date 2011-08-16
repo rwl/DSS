@@ -87,7 +87,7 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 
 		if (orderFound > 0) {  // Parse was successful Else don't change Matrix
 			/* X */
-			matrix = (double[]) Utilities.resizeArray(matrix, ar.getNPhases() * ar.getNPhases());
+			matrix = Utilities.resizeArray(matrix, ar.getNPhases() * ar.getNPhases());
 			for (int j = 0; j < ar.getNPhases() * ar.getNPhases(); j++)
 				matrix[j] = matBuffer[j];
 

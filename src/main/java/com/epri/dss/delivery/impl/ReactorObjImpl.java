@@ -116,8 +116,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 
 		if (isParallel && (specType == 3)) {
 
-			GMatrix = (double[]) Utilities.resizeArray(GMatrix, nPhases * nPhases);
-			BMatrix = (double[]) Utilities.resizeArray(BMatrix, nPhases * nPhases);
+			GMatrix = Utilities.resizeArray(GMatrix, nPhases * nPhases);
+			BMatrix = Utilities.resizeArray(BMatrix, nPhases * nPhases);
 
 			/* Copy rMatrix to gMatrix and invert */
 			for (i = 0; i < nPhases * nPhases; i++)

@@ -113,7 +113,7 @@ public class AutoAddImpl implements AutoAdd {
 				// no energy meters in circuit
 				// include all buses in the circuit
 				busIdxListSize = DSSGlobals.activeCircuit.getBusList().listSize();
-				busIdxList = (int[]) Utilities.resizeArray(busIdxList, busIdxListSize);
+				busIdxList = Utilities.resizeArray(busIdxList, busIdxListSize);
 
 				for (int i = 0; i < busIdxListSize; i++)
 					busIdxList[i] = i;
@@ -146,7 +146,7 @@ public class AutoAddImpl implements AutoAdd {
 
 		// make busIdxList from busList
 		busIdxListSize = busList.listSize();
-		busIdxList = (int[]) Utilities.resizeArray(busIdxList, busIdxListSize);
+		busIdxList = Utilities.resizeArray(busIdxList, busIdxListSize);
 
 		for (int i = 0; i < busIdxListSize; i++) {
 			busIdxList[i] = DSSGlobals.activeCircuit.getBusList().find(busList.get(i));

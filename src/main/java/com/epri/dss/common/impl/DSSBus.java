@@ -55,8 +55,8 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 		numNodesThisBus += 1;
 		if (numNodesThisBus > allocation) {
 			allocation = allocation + 1;
-			nodes = (int[]) Utilities.resizeArray(nodes, allocation);
-			refNo = (int[]) Utilities.resizeArray(refNo, allocation);
+			nodes = Utilities.resizeArray(nodes, allocation);
+			refNo = Utilities.resizeArray(refNo, allocation);
 		}
 	}
 
@@ -158,13 +158,13 @@ public class DSSBus extends NamedObjectImpl implements Bus {
 	}
 
 	public void allocateBusVoltages() {
-		VBus = (Complex[]) Utilities.resizeArray(VBus, numNodesThisBus);
+		VBus = Utilities.resizeArray(VBus, numNodesThisBus);
 		for (int i = 0; i < numNodesThisBus; i++)
 			VBus[i] = Complex.ZERO;
 	}
 
 	public void allocateBusCurrents() {
-		busCurrent = (Complex[]) Utilities.resizeArray(busCurrent, numNodesThisBus);
+		busCurrent = Utilities.resizeArray(busCurrent, numNodesThisBus);
 		for (int i = 0; i < numNodesThisBus; i++)
 			busCurrent[i] = Complex.ZERO;
 	}

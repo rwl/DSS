@@ -77,8 +77,8 @@ public class HashListImpl implements HashList {
 		// resize by reasonable amount
 		int oldAllocation = subList.nAllocated;
 		subList.nAllocated = oldAllocation + allocationInc;
-		subList.str = (String[]) Utilities.resizeArray(subList.str, subList.nAllocated);
-		subList.idx = (int[]) Utilities.resizeArray(subList.idx, subList.nAllocated);
+		subList.str = Utilities.resizeArray(subList.str, subList.nAllocated);
+		subList.idx = Utilities.resizeArray(subList.idx, subList.nAllocated);
 	}
 
 	private int hash(String s) {
@@ -94,7 +94,7 @@ public class HashListImpl implements HashList {
 	/** Makes the linear string list larger. */
 	private void resizeStrArray() {
 		numElementsAllocated += allocationInc * numLists;
-		stringArray = (String[]) Utilities.resizeArray(stringArray, numElementsAllocated);
+		stringArray = Utilities.resizeArray(stringArray, numElementsAllocated);
 	}
 
 	public int add(String s) {

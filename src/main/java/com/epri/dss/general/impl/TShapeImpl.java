@@ -144,12 +144,12 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 				ats.setInterval(parser.makeDouble());
 				break;
 			case 2:
-				ats.setTValues( (double[]) Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+				ats.setTValues( Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
 				ats.setNumPoints( Utilities.interpretDblArray(param, ats.getNumPoints(), ats.getTValues()) );   //parser.parseAsVector(Npts, Temps);
 				break;
 			case 3:
-				ats.setHours( (double[]) Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
+				ats.setHours( Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
 				Utilities.interpretDblArray(param, ats.getNumPoints(), ats.getHours());   //parser.parseAsVector(Npts, Hours);
 				break;
 			case 4:
@@ -239,13 +239,13 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			aps.setNumPoints(otherTShape.getNumPoints());
 			aps.setInterval(otherTShape.getInterval());
-			aps.setTValues( (double[]) Utilities.resizeArray(aps.getTValues(), aps.getNumPoints()) );
+			aps.setTValues( Utilities.resizeArray(aps.getTValues(), aps.getNumPoints()) );
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getTValues()[i] = otherTShape.getTValues()[i];
 			if (aps.getInterval() > 0.0) {
 				aps.setHours(new double[0]);
 			} else {
-				aps.setHours( (double[]) Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
+				aps.setHours( Utilities.resizeArray(aps.getHours(), aps.getNumPoints()) );
 			}
 			for (i = 0; i < aps.getNumPoints(); i++)
 				aps.getHours()[i] = otherTShape.getHours()[i];
@@ -299,10 +299,10 @@ public class TShapeImpl extends DSSClassImpl implements TShape {
 
 			TShapeObj ats = activeTShapeObj;
 
-			ats.setTValues( (double[]) Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
+			ats.setTValues( Utilities.resizeArray(ats.getTValues(), ats.getNumPoints()) );
 
 			if (ats.getInterval() == 0.0)
-				ats.setHours( (double[]) Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
+				ats.setHours( Utilities.resizeArray(ats.getHours(), ats.getNumPoints()) );
 			int i = 0;
 			while (((s = br.readLine()) != null) && i < ats.getNumPoints()) {  // TODO: Check zero based indexing
 				i += 1;

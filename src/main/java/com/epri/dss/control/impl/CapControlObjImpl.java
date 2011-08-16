@@ -152,7 +152,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 				setBus(1, monitoredElement.getBus(elementTerminal));  // TODO Check zero based indexing
 
 				// allocate a buffer big enough to hold everything from the monitored element
-				cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+				cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 
 				condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 			}
@@ -176,7 +176,7 @@ public class CapControlObjImpl extends ControlElemImpl implements CapControlObj 
 			setBus(1, monitoredElement.getBus(elementTerminal));
 
 			// allocate a buffer big enough to hold everything from the monitored element
-			cBuffer = (Complex[]) Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
+			cBuffer = Utilities.resizeArray(cBuffer, monitoredElement.getYorder());
 
 			condOffset = (elementTerminal - 1) * monitoredElement.getNConds();  // for speedy sampling
 		}

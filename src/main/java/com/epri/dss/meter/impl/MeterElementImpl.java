@@ -40,12 +40,12 @@ public class MeterElementImpl extends DSSCktElement implements MeterElement {
 
 	public void allocateSensorArrays() {
 		if (meteredElement != null)
-			calculatedCurrent = (Complex[]) Utilities.resizeArray(calculatedCurrent, meteredElement.getYorder());
+			calculatedCurrent = Utilities.resizeArray(calculatedCurrent, meteredElement.getYorder());
 		if (meteredElement != null)
 			calculatedVoltage = (Complex[]) Utilities.resizeArray(calculatedVoltage, meteredElement.getYorder());
-		sensorCurrent = (double[]) Utilities.resizeArray(sensorCurrent, nPhases);
-		sensorVoltage = (double[]) Utilities.resizeArray(sensorVoltage, nPhases);
-		phsAllocationFactor = (double[]) Utilities.resizeArray(phsAllocationFactor, nPhases);
+		sensorCurrent = Utilities.resizeArray(sensorCurrent, nPhases);
+		sensorVoltage = Utilities.resizeArray(sensorVoltage, nPhases);
+		phsAllocationFactor = Utilities.resizeArray(phsAllocationFactor, nPhases);
 	}
 
 	public void calcAllocationFactors() {

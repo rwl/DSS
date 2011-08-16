@@ -51,7 +51,7 @@ public class GrowthShapeObjImpl extends DSSObjectImpl implements GrowthShapeObj 
 			if (index > 0) {  // returns 1.0 for base year or any year previous  TODO Check zero based indexing
 				if (index > nYears) {  // make some more space
 					nYears = index + 10;
-					yearMult = (double[]) Utilities.resizeArray(yearMult, nYears);
+					yearMult = Utilities.resizeArray(yearMult, nYears);
 					reCalcYearMult();
 				}
 				result = yearMult[index];

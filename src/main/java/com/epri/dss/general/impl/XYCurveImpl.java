@@ -132,11 +132,11 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				xyc.setNumPoints(parser.makeInteger());
 				break;
 			case 1:
-				tempPointsBuffer = (double[]) Utilities.resizeArray(tempPointsBuffer, xyc.getNumPoints() * 2);
+				tempPointsBuffer = Utilities.resizeArray(tempPointsBuffer, xyc.getNumPoints() * 2);
 				// allow possible resetting (to a lower value) of num points when specifying temperatures not hours
 				xyc.setNumPoints( Utilities.interpretDblArray(param, (xyc.getNumPoints() * 2), tempPointsBuffer) / 2);  // parser.parseAsVector(Npts, Temperatures);
-				xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
-				xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
+				xyc.setYValues( Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
+				xyc.setXValues( Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 				for (int i = 0; i < xyc.getNumPoints(); i++) {
 					xyc.getXValues()[i] = tempPointsBuffer[2 * i - 1];
 					xyc.getYValues()[i] = tempPointsBuffer[2 * i];
@@ -146,12 +146,12 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 				tempPointsBuffer = null;  // throw away temp array
 				break;
 			case 2:
-				xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
+				xyc.setYValues( Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 				xyc.setNumPoints( Utilities.interpretDblArray(param, xyc.getNumPoints(), xyc.getYValues()) );
 				xyc.setY(xyc.getYValues()[0]);
 				break;
 			case 3:
-				xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
+				xyc.setXValues( Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
 				xyc.setNumPoints( Utilities.interpretDblArray(param, xyc.getNumPoints(), xyc.getXValues()) );
 				xyc.setX( xyc.getXValues()[0] );
 				break;
@@ -265,8 +265,8 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 
 			XYCurveObj xyc = activeXYCurveObj;
 
-			xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
-			xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
+			xyc.setXValues( Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
+			xyc.setYValues( Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 
 			int i = -1;  // TODO Check zero based indexing
 			while (((s = br.readLine()) != null) && i < xyc.getNumPoints()) {  // TODO: Check zero based indexing
@@ -312,8 +312,8 @@ public class XYCurveImpl extends DSSClassImpl implements XYCurve {
 			XYCurveObj xyc = activeXYCurveObj;
 
 			xyc.setNumPoints(otherXYCurve.getNumPoints());
-			xyc.setXValues( (double[]) Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
-			xyc.setYValues( (double[]) Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
+			xyc.setXValues( Utilities.resizeArray(xyc.getXValues(), xyc.getNumPoints()) );
+			xyc.setYValues( Utilities.resizeArray(xyc.getYValues(), xyc.getNumPoints()) );
 			for (i = 0; i < xyc.getNumPoints(); i++)
 				xyc.getXValues()[i] = otherXYCurve.getXValues()[i];
 			for (i = 0; i < xyc.getNumPoints(); i++)
