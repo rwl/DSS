@@ -251,11 +251,11 @@ public class CapacitorImpl extends PDClassImpl implements Capacitor {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				aco.setPropertyValue(1, aco.getBus(1));  // this gets modified
+				aco.setPropertyValue(1, aco.getBus(0));  // this gets modified
 				aco.getPrpSequence()[1] = 0;  // reset this for save function
 				break;
 			case 1:
-				if (!Utilities.stripExtension(aco.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(aco.getBus(2)) ))
+				if (!Utilities.stripExtension(aco.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(aco.getBus(1)) ))
 					aco.setShunt(false);
 				break;
 			case 2:

@@ -25,7 +25,7 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 		nConds = 3;
 		setNTerms(2);  // force allocation of terminals and conductors
 
-		setBus(2, getBus(1) + ".0");  // default to grounded
+		setBus(2, getBus(0) + ".0");  // default to grounded
 		isShunt = true;
 
 		G1            = 10000.0;
@@ -175,10 +175,10 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		setPropertyValue(0, getBus(1));
-		setPropertyValue(1, getBus(2));
-		setPropertyValue(2, getBus(3));
-		setPropertyValue(3, getBus(4));
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, getBus(1));
+		setPropertyValue(2, getBus(2));
+		setPropertyValue(3, getBus(3));
 		setPropertyValue(4, "3");
 		setPropertyValue(5, "GSU");
 		setPropertyValue(6, "0.0001");
@@ -199,13 +199,13 @@ public class GICTransformerObjImpl extends PDElementImpl implements GICTransform
 
 		switch (index) {
 		case 0:
-			return getBus(1);
+			return getBus(0);
 		case 1:
-			return getBus(2);
+			return getBus(1);
 		case 2:
-			return getBus(3);
+			return getBus(2);
 		case 3:
-			return getBus(4);
+			return getBus(3);
 		case 4:
 			return String.format("%d", nPhases);
 		case 6:

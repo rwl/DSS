@@ -2555,7 +2555,7 @@ public class ExecHelper {
 		int result = 0;
 		for (LoadObj pLoad : ckt.getLoads()) {
 			LoadImpl.activeLoadObj = pLoad;  // for updateVoltageBases to work
-			sBus = Utilities.stripExtension(pLoad.getBus(0));  // TODO Check zero indexing
+			sBus = Utilities.stripExtension(pLoad.getBus(0));
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
 			kvln = pBus.getKVBase();
@@ -2569,7 +2569,7 @@ public class ExecHelper {
 		}
 
 		for (GeneratorObj pGen : ckt.getGenerators()) {
-			sBus = Utilities.stripExtension(pGen.getBus(0));  // TODO Check zero indexing
+			sBus = Utilities.stripExtension(pGen.getBus(0));
 			iBus = ckt.getBusList().find(sBus);
 			pBus = ckt.getBuses()[iBus];
 			kvln = pBus.getKVBase();

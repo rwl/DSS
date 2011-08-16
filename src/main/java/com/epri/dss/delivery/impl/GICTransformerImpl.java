@@ -217,14 +217,14 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				agt.setPropertyValue(1, agt.getBus(2));  // bus2 gets modified if bus1 is set
+				agt.setPropertyValue(1, agt.getBus(1));  // bus2 gets modified if bus1 is set
 				break;
 			case 2:
-				agt.setPropertyValue(3, agt.getBus(4));  // bus4 gets modified if bus3(X) is set
+				agt.setPropertyValue(3, agt.getBus(3));  // bus4 gets modified if bus3(X) is set
 				if (agt.getSpecType() == SPEC_AUTO) {
 					// automatically make up series-to-common connection
-					agt.setBus(2, agt.getBus(3));
-					agt.setPropertyValue(1, agt.getBus(2));
+					agt.setBus(2, agt.getBus(2));
+					agt.setPropertyValue(1, agt.getBus(1));
 				}
 				break;
 			case 4:
@@ -241,7 +241,7 @@ public class GICTransformerImpl extends PDClassImpl implements GICTransformer {
 						agt.setNTerms(4);
 						agt.setNConds(agt.getNPhases());
 					}
-					agt.setBus(2, agt.getBus(3));
+					agt.setBus(2, agt.getBus(2));
 					break;
 				}
 				break;

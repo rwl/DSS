@@ -189,10 +189,10 @@ public class FaultImpl extends PDClassImpl implements Fault {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				af.setPropertyValue(1, af.getBus(2));  // bus2 gets modified if bus1 is   TODO Check zero based indexing
+				af.setPropertyValue(1, af.getBus(1));  // bus2 gets modified if bus1 is   TODO Check zero based indexing
 				break;
 			case 1:
-				if (!Utilities.stripExtension(af.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(af.getBus(2)) ))
+				if (!Utilities.stripExtension(af.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(af.getBus(1)) ))
 					af.setShunt(false);
 				break;
 			case 2:

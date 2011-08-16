@@ -4,6 +4,8 @@ import java.io.PrintStream;
 
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
+
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.impl.ComplexUtil;
@@ -288,7 +290,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Complex[] YValues;
 
 		double XgMod;
-		int k, norder = 0;
+		int k;
+		MutableInt norder = new MutableInt();
 
 		double freqMultiplier = 1.0;
 		double lengthMultiplier = 1.0;
@@ -342,13 +345,13 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				XgMod = 0.0;
 			}
 
-			for (int i = 0; i < norder * norder; i++) {
+			for (int i = 0; i < norder.intValue() * norder.intValue(); i++) {
 				ZInvValues[i] = new Complex((ZValues[i].getReal() + Rg * (freqMultiplier - 1.0) ) * lengthMultiplier,
 						(ZValues[i].getImaginary() - XgMod) * lengthMultiplier * freqMultiplier);
 			}
 
 			ZInv.invert();  /* Invert in place */
-			if (ZInv.getInvertError() > 0) {
+			if (ZInv.getErrorCode() > 0) {
 				/* If error, put in tiny series conductance */
 				// TEMc - shut this up for the CDPSM connectivity profile test, or whenever else it gets annoying
 				DSSGlobals.doErrorMsg("LineObj.calcYPrim", "Matrix inversion error for line \"" + getName() + "\"",
@@ -498,10 +501,10 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		/* Report impedance values in ohms per unit length of present length units */
 		switch (index) {
 		case 0:
-			result = getBus(1);  // TODO Check zero based indexing
+			result = getBus(0);
 			break;
 		case 1:
-			result = getBus(2);
+			result = getBus(1);
 			break;
 		case 3:
 			result = String.format("%-.7g", len);
@@ -662,8 +665,8 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[0] = getBus(1);  // TODO Check zero based indexing
-		propertyValue[1] = getBus(2);
+		propertyValue[0] = getBus(0);  // TODO Check zero based indexing
+		propertyValue[1] = getBus(1);
 		propertyValue[2] = "";
 		propertyValue[3] = "1.0";  // "5.28"; Changed 2/17/00
 		propertyValue[4] = "3";
@@ -762,7 +765,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 	 */
 	public boolean mergeWith(LineObj otherLine, boolean series) {
 		Complex[] values1, values2;
-		int order1 = 0, order2 = 0, i, j, common1, common2;
+		MutableInt order1 = new MutableInt();
+		MutableInt order2 = new MutableInt();
+		int i, j, common1, common2;
 		double totalLen, wnano;
 		String s = "", newName;
 		int testBusNum;
@@ -814,20 +819,20 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 				case 1:
 					switch (common2) {
 					case 1:
-						s = "Bus1=\"" + otherLine.getBus(2) + "\"";
+						s = "Bus1=\"" + otherLine.getBus(1) + "\"";
 						break;
 					case 2:
-						s = "Bus1=\"" + otherLine.getBus(1) + "\"";
+						s = "Bus1=\"" + otherLine.getBus(0) + "\"";
 						break;
 					}
 					break;
 				case 2:
 					switch (common2) {
 					case 1:
-						s = "Bus2=\"" + otherLine.getBus(2) + "\"";
+						s = "Bus2=\"" + otherLine.getBus(1) + "\"";
 						break;
 					case 2:
-						s = "Bus2=\"" + otherLine.getBus(1) + "\"";
+						s = "Bus2=\"" + otherLine.getBus(0) + "\"";
 						break;
 					}
 					break;
@@ -840,9 +845,9 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 
 			/* Rename the line */
 			if (series) {
-				newName = Utilities.stripExtension(getBus(1)) + "~"  + Utilities.stripExtension(getBus(2));
+				newName = Utilities.stripExtension(getBus(0)) + "~"  + Utilities.stripExtension(getBus(1));
 			} else {
-				newName = Utilities.stripExtension(getBus(1)) + "||" + Utilities.stripExtension(getBus(2));
+				newName = Utilities.stripExtension(getBus(0)) + "||" + Utilities.stripExtension(getBus(1));
 			}
 
 			/* Update control element connections to this line */
@@ -902,7 +907,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 						return result;  // lines not same size for some reason
 
 					// Z <= (Z1 + Z2) / TotalLen to get equiv ohms per unit length
-					for (i = 0; i < order1 * order1; i++)
+					for (i = 0; i < order1.intValue() * order1.intValue(); i++)
 						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add(values2[i].multiply(lenOther)), totalLen);
 
 					// merge Yc matrices
@@ -912,7 +917,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 					if (order1 != order2)
 						return result;  // lines not same size for some reason
 
-					for (i = 0; i < order1 * order1; i++)
+					for (i = 0; i < order1.intValue() * order1.intValue(); i++)
 						values1[i] = ComplexUtil.divide(values1[i].multiply(lenSelf).add( values2[i].multiply(lenOther) ), totalLen);
 
 					/* R matrix */
@@ -1110,7 +1115,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 			Yc   = getLineGeometryObj().getYcMatrix(f, len, lengthUnits);
 			/* init Zinv */
 			if (Z != null) {
-				ZInv = new CMatrixImpl(Z.getNOrder());  // either no. phases or no. conductors
+				ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
 				ZInv.copyFrom(Z);
 			}
 
@@ -1149,7 +1154,7 @@ public class LineObjImpl extends PDElementImpl implements LineObj {
 		Z  = pGeo.getZMatrix(f, len, lengthUnits);
 		Yc = pGeo.getYcMatrix(f, len, lengthUnits);
 		if (Z != null) {
-			ZInv = new CMatrixImpl(Z.getNOrder());  // either no. phases or no. conductors
+			ZInv = new CMatrixImpl(Z.order());  // either no. phases or no. conductors
 			ZInv.copyFrom(Z);
 		}
 		pGeo = null;

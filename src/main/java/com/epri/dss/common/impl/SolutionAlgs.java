@@ -673,7 +673,7 @@ public class SolutionAlgs {
 		Circuit ckt = DSSGlobals.activeCircuit;
 		for (int i = 0; i < ckt.getNumBuses(); i++) {
 			Bus bus = ckt.getBuses()[i];
-			bus.getYsc().MVMult(bus.getBusCurrent(), bus.getVBus());
+			bus.getYsc().vMult(bus.getBusCurrent(), bus.getVBus());
 		}
 	}
 

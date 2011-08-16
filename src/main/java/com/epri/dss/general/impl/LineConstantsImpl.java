@@ -85,7 +85,7 @@ public class LineConstantsImpl implements LineConstants {
 		setFrequency(f);  // this has side effects
 
 		if (ZReduced != null) {
-			reducedSize = ZReduced.getNOrder();
+			reducedSize = ZReduced.order();
 			ZReduced = null;
 		} else {
 			reducedSize = 0;
@@ -232,16 +232,17 @@ public class LineConstantsImpl implements LineConstants {
 			Yc = YcMatrix;
 		}
 
-		newSize = Yc.getNOrder();
-		CMatrix Result = new CMatrixImpl(newSize);
+		newSize = Yc.order();
+		CMatrix result = new CMatrixImpl(newSize);
 
-		Result.copyFrom(Yc);
-		YcValues = Result.asArray(newSize);
+		result.copyFrom(Yc);
+		YcValues = result.asArray();
+		newSize = result.order();
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (int i = 0; i < newSize * newSize; i++)
 			YcValues[i] = YcValues[i].multiply(unitLengthConversion);  // a=a*b
 
-		return Result;
+		return result;
 	}
 
 	/**
@@ -351,11 +352,12 @@ public class LineConstantsImpl implements LineConstants {
 			Z = ZMatrix;
 		}
 
-		newSize = Z.getNOrder();
-		CMatrix Result = new CMatrixImpl(newSize);
+		newSize = Z.order();
+		CMatrix result = new CMatrixImpl(newSize);
 
-		Result.copyFrom(Z);  // gets ohms/meter
-		ZValues = Result.asArray(newSize);  // ptr to the values in the new copy
+		result.copyFrom(Z);  // gets ohms/meter
+		ZValues = result.asArray();  // ptr to the values in the new copy
+		newSize = result.order();
 		/* Convert the values by units and length */
 		unitLengthConversion = LineUnits.fromPerMeter(units) * length;
 		for (i = 0; i < newSize * newSize; i++)
@@ -382,10 +384,10 @@ public class LineConstantsImpl implements LineConstants {
 
 			/* Reduce computed matrix one row/col at a time until it is norder */
 
-			while (ZTemp.getNOrder() > nOrder) {
+			while (ZTemp.order() > nOrder) {
 
-				ZReduced = ZTemp.kron(ZTemp.getNOrder());  // eliminate last row
-				YcReduced = YcTemp.kron(ZTemp.getNOrder());
+				ZReduced = ZTemp.kron(ZTemp.order());  // eliminate last row
+				YcReduced = YcTemp.kron(ZTemp.order());
 
 				if (!firstTime) {
 					ZTemp = null;  // Ztemp points to intermediate matrix

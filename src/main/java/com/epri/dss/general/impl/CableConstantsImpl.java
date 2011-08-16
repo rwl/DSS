@@ -35,8 +35,8 @@ public class CableConstantsImpl extends LineConstantsImpl implements CableConsta
 		if ((frequency >= 0.0) && (norder > 0) && (norder < getNumConds())) {
 			if (ZReduced != null) ZReduced = null;
 			if (YcReduced != null) YcReduced = null;
-			while (ZTemp.getNOrder() > norder) {
-				ZReduced = ZTemp.kron(ZTemp.getNOrder());  // Eliminate last row
+			while (ZTemp.order() > norder) {
+				ZReduced = ZTemp.kron(ZTemp.order());  // Eliminate last row
 				if (!firstTime) ZTemp = null;  // Ztemp points to intermediate matrix
 				ZTemp = ZReduced;
 				firstTime = false;

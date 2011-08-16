@@ -295,7 +295,7 @@ public class LineCodeObjImpl extends DSSObjectImpl implements LineCodeObj {
 
 				NewYc.invert();  // back to Y
 
-				NPhases = NewZ.getNOrder();
+				NPhases = NewZ.order();
 
 				// get rid of Z and Yc and replace
 				Z = null;

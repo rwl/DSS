@@ -172,7 +172,7 @@ public abstract class MathUtil {
 	}
 
 	public static void phase2SymComp(Complex[] Vph, Complex[] V012) {
-		Ap2s.MVMult(V012, Vph);
+		Ap2s.vMult(V012, Vph);
 	}
 
 	public static void phase2SymComp(Complex Vph, Complex[] V012) {
@@ -180,7 +180,7 @@ public abstract class MathUtil {
 	}
 
 	public static void symComp2Phase(Complex[] Vph, Complex[] V012) {
-		As2p.MVMult(Vph, V012);
+		As2p.vMult(Vph, V012);
 	}
 
 	/**

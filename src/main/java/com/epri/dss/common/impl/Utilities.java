@@ -93,8 +93,10 @@ public class Utilities {
 	/* Copy the contents of an array to an array of a new size. */
 
 	public static int[] resizeArray(int[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		int[] newArray = new int[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -102,8 +104,10 @@ public class Utilities {
 	}
 
 	public static double[] resizeArray(double[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		double[] newArray = new double[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -111,8 +115,10 @@ public class Utilities {
 	}
 
 	public static String[] resizeArray(String[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		String[] newArray = new String[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -120,8 +126,10 @@ public class Utilities {
 	}
 
 	public static Complex[] resizeArray(Complex[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		Complex[] newArray = new Complex[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -129,8 +137,10 @@ public class Utilities {
 	}
 
 	public static DSSObject[] resizeArray(DSSObject[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		DSSObject[] newArray = new DSSObject[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -138,8 +148,10 @@ public class Utilities {
 	}
 
 	public static CktElementDef[] resizeArray(CktElementDef[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		CktElementDef[] newArray = new CktElementDef[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -147,8 +159,10 @@ public class Utilities {
 	}
 
 	public static Bus[] resizeArray(Bus[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		Bus[] newArray = new Bus[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -156,8 +170,10 @@ public class Utilities {
 	}
 
 	public static NodeBus[] resizeArray(NodeBus[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		NodeBus[] newArray = new NodeBus[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -165,8 +181,12 @@ public class Utilities {
 	}
 
 	public static PowerTerminal[] resizeArray(PowerTerminal[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		PowerTerminal[] newArray = new PowerTerminal[newSize];
+		if (oldArray == null)
+			oldArray = newArray;
+
+		int oldSize = oldArray.length;
+
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -174,8 +194,10 @@ public class Utilities {
 	}
 
 	public static Winding[] resizeArray(Winding[] oldArray, int newSize) {
-		int oldSize = oldArray.length;
 		Winding[] newArray = new Winding[newSize];
+		if (oldArray == null)
+			return newArray;
+		int oldSize = oldArray.length;
 		int length = Math.min(oldSize, newSize);
 		if (length > 0)
 			System.arraycopy(oldArray, 0, newArray, 0, length);
@@ -1320,14 +1342,14 @@ public class Utilities {
 		try {
 			if (aMatrix != null) {
 				f.println("!(G matrix)");
-				for (int i = 0; i < aMatrix.getNOrder(); i++) {
+				for (int i = 0; i < aMatrix.order(); i++) {
 					f.print("! ");
 					for (int j = 0; j < i; j++)
 						f.printf("%.8f ", aMatrix.getElement(i, j).getReal());
 					f.println();
 				}
 				f.println("!(B Matrix) = ");
-				for (int i = 0; i < aMatrix.getNOrder(); i++) {
+				for (int i = 0; i < aMatrix.order(); i++) {
 					f.print("! ");
 					for (int j = 0; j < i; j++)
 						f.printf("%.8f ", aMatrix.getElement(i, j).getImaginary());

@@ -1118,7 +1118,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 			cBuffer[nConds] = getVTerminal()[nConds];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
-		YPrim.MVMult(getInjCurrent(), cBuffer);
+		YPrim.vMult(getInjCurrent(), cBuffer);
 	}
 
 	private void calcVTerminalPhase() {
@@ -1515,7 +1515,7 @@ public class GeneratorObjImpl extends PCElementImpl implements GeneratorObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0]      = "3";        // phases;
-		propertyValue[1]      = getBus(1);  // bus1  TODO Check zero based indexing
+		propertyValue[1]      = getBus(0);  // bus1
 		propertyValue[2]      = "12.47";
 		propertyValue[3]      = "100";
 		propertyValue[4]      = ".80";

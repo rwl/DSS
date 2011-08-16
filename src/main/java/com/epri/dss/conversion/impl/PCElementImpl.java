@@ -70,7 +70,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 				for (int i = 0; i < YOrder; i++)
 					curr[i] = getITerminal()[i];
 		} else {
-			YPrim.MVMult(curr, getVTerminal());
+			YPrim.vMult(curr, getVTerminal());
 			for (int i = 0; i < YOrder; i++)
 				curr[i] = curr[i].add( getInjCurrent()[i].negate() );
 			setITerminalUpdated(true);
@@ -114,7 +114,7 @@ public abstract class PCElementImpl extends DSSCktElement implements PCElement {
 	public void calcYPrimContribution(Complex[] curr) {
 		computeVTerminal();
 		// apply these voltages to Yprim
-		YPrim.MVMult(curr, VTerminal);
+		YPrim.vMult(curr, VTerminal);
 	}
 
 	/**

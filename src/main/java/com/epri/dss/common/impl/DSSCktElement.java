@@ -291,21 +291,20 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	 * Returns the storage arrays for fast access.
 	 */
 	public Complex[] getYPrimValues(int opt) {
-		int nOrder = 0;
 		Complex[] result = null;
 
 		switch (opt) {
 		case DSSGlobals.ALL_YPRIM:
 			if (YPrim != null)
-				result = YPrim.asArray(nOrder);
+				result = YPrim.asArray();
 			break;
 		case DSSGlobals.SERIES:
 			if (YPrimSeries != null)
-				result = YPrimSeries.asArray(nOrder);
+				result = YPrimSeries.asArray();
 			break;
 		case DSSGlobals.SHUNT:
 			if (YPrimShunt != null)
-				result = YPrimShunt.asArray(nOrder);
+				result = YPrimShunt.asArray();
 			break;
 		}
 
@@ -682,7 +681,7 @@ public class DSSCktElement extends DSSObjectImpl implements CktElement {
 	}
 
 	public void initPropertyValues(int arrayOffset) {  // TODO Check zero based indexing
-		propertyValue[arrayOffset + 1] = String.format("%-g", baseFrequency);  // base freq
+		propertyValue[arrayOffset + 1] = String.format("%g", baseFrequency);  // base freq
 		propertyValue[arrayOffset + 2] = "true";  // enabled
 		enabledProperty = arrayOffset + 2;  // keep track of this
 

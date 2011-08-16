@@ -226,7 +226,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0] = "3";         // "phases";
-		propertyValue[1] = getBus(1);   // "bus1";
+		propertyValue[1] = getBus(0);   // "bus1";
 
 		propertyValue[Storage.KV]      = String.format("%-g", kVStorageBase);
 		propertyValue[Storage.KW]      = String.format("%-g", kWOut);
@@ -1006,7 +1006,7 @@ public class StorageObjImpl extends PCElementImpl implements StorageObj {
 			cBuffer[nConds] = VTerminal[nConds];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
-		YPrim.MVMult(getInjCurrent(), cBuffer);
+		YPrim.vMult(getInjCurrent(), cBuffer);
 	}
 
 	private void calcVTerminalPhase() {

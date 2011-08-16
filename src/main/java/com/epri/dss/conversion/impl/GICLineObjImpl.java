@@ -134,7 +134,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 
 		ZInv.invert();  /* Invert in place */
 
-		if (ZInv.getInvertError() > 0) {
+		if (ZInv.getErrorCode() > 0) {
 			/* If error, put in large series conductance */
 			DSSGlobals.doErrorMsg("GICLineObj.calcYPrim", "Matrix inversion error for GICLine \"" + getName() + "\"",
 	                   "Invalid impedance specified. Replaced with small resistance.", 325);
@@ -247,7 +247,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(curr, VTerminal);  // current from elements in system Y
+			YPrim.vMult(curr, VTerminal);  // current from elements in system Y
 
 			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
@@ -272,7 +272,7 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 		 */
 
 		getVterminalForSource();  // gets voltage vector above
-		YPrim.MVMult(curr, VTerminal);
+		YPrim.vMult(curr, VTerminal);
 
 		setITerminalUpdated(false);
 	}
@@ -306,8 +306,8 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 		/* PropertyValue allocated in DSSObject constructor */
-		setPropertyValue(0, getBus(1));
-		setPropertyValue(1, getBus(2));
+		setPropertyValue(0, getBus(0));
+		setPropertyValue(1, getBus(1));
 		setPropertyValue(2, "0.0");
 		setPropertyValue(3, "0");
 		setPropertyValue(4, "0.1");
@@ -326,9 +326,9 @@ public class GICLineObjImpl extends PCElementImpl implements GICLineObj {
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 1:
-			return getBus(1);
+			return getBus(0);
 		case 2:
-			return getBus(2);
+			return getBus(1);
 		default:
 			return super.getPropertyValue(index);
 		}

@@ -269,8 +269,8 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 
 	@Override
 	public void initPropertyValues(int arrayOffset) {
-		propertyValue[0] = getBus(1);  // TODO: Check zero based indexing
-		propertyValue[1] = getBus(2);  // TODO: Check zero based indexing
+		propertyValue[0] = getBus(0);  // TODO: Check zero based indexing
+		propertyValue[1] = getBus(1);  // TODO: Check zero based indexing
 		propertyValue[2] = "3";
 		propertyValue[3] = "1200";
 		propertyValue[4] = "12.47";
@@ -614,10 +614,10 @@ public class CapacitorObjImpl extends PDElementImpl implements CapacitorObj {
 		String result = "";
 		switch (index) {  // special cases
 		case 0:
-			result = getBus(1);  // TODO: Check zero based indexing
+			result = getBus(0);  // TODO: Check zero based indexing
 			break;
 		case 1:
-			result = getBus(2);  // TODO: Check zero based indexing
+			result = getBus(1);  // TODO: Check zero based indexing
 			break;
 		case 3:
 			result = Utilities.getDSSArray_Real(getNumSteps(), getKVArRating());

@@ -225,7 +225,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 
 		ZInv.invert();  /* Invert in place */
 
-		if (ZInv.getInvertError() > 0) {
+		if (ZInv.getErrorCode() > 0) {
 			/* If error, put in large series conductance */
 			DSSGlobals.doErrorMsg("VsourceObj.calcYPrim", "Matrix inversion error for VSource \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 325);
@@ -342,7 +342,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 			for (int i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(curr, VTerminal);  // current from elements in system Y
+			YPrim.vMult(curr, VTerminal);  // current from elements in system Y
 
 			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
@@ -367,7 +367,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void getInjCurrents(Complex[] curr) {
 
 		getVTerminalForSource();  // gets voltage vector above
-		YPrim.MVMult(curr, VTerminal);
+		YPrim.vMult(curr, VTerminal);
 
 		setITerminalUpdated(false);
 	}
@@ -400,7 +400,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		/* PropertyValue allocated in DSSObject constructor */
-		propertyValue[1]  = getBus(1);
+		propertyValue[1]  = getBus(0);
 		propertyValue[2]  = "115";
 		propertyValue[3]  = "1";
 		propertyValue[4]  = "0";
@@ -418,7 +418,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		propertyValue[16] = "5.7";
 		propertyValue[17] = "Pos";
 		propertyValue[18] = "Pos";
-		propertyValue[19] = getBus(2);
+		propertyValue[19] = getBus(0);
 
 		super.initPropertyValues(VSource.NumPropsThisClass);
 	}
@@ -427,7 +427,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 0:
-			return getBus(1);
+			return getBus(0);
 		case 6:
 			return String.format("%-.5g", MVAsc3);
 		case 7:
@@ -445,7 +445,7 @@ public class VSourceObjImpl extends PCElementImpl implements VSourceObj {
 		case 15:
 			return String.format("%-.5g", X0);
 		case 18:
-			return getBus(2);
+			return getBus(1);
 		default:
 			return super.getPropertyValue(index);
 		}

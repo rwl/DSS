@@ -1060,7 +1060,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 				} else {
 					YPrimOpenCond.clear();
 				}
-				if (YPrimOpenCond.getNOrder() != YOrder) {
+				if (YPrimOpenCond.order() != YOrder) {
 					YPrimOpenCond = null;
 					YPrimOpenCond = new CMatrixImpl(YOrder);
 				}
@@ -1086,7 +1086,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 			}
 
 			computeVTerminal();
-			YPrimOpenCond.MVMult(complexBuffer, VTerminal);
+			YPrimOpenCond.vMult(complexBuffer, VTerminal);
 			for (int i = 0; i < YOrder; i++)
 				complexBuffer[i] = complexBuffer[i].negate();
 		}
@@ -1385,7 +1385,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0]  = "3";        // "phases";
-		propertyValue[1]  = getBus(1);  // "bus1";
+		propertyValue[1]  = getBus(0);  // "bus1";
 		propertyValue[2]  = "12.47";
 		propertyValue[3]  = "10";
 		propertyValue[4]  = ".88";
@@ -1454,7 +1454,7 @@ public class LoadObjImpl extends PCElementImpl implements LoadObj {
 	public String getPropertyValue(int index) {
 		switch (index) {
 		case 1:
-			return getBus(1);
+			return getBus(0);
 		case 2:
 			return String.format("%-g", kVLoadBase);
 		case 3:

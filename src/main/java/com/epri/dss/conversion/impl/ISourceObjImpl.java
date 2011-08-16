@@ -202,7 +202,7 @@ public class ISourceObjImpl extends PCElementImpl implements ISourceObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		setPropertyValue(0, getBus(1));
+		setPropertyValue(0, getBus(0));
 		setPropertyValue(1, "0");
 		setPropertyValue(2, "0");
 		setPropertyValue(3, String.format("%-.6g", srcFrequency));

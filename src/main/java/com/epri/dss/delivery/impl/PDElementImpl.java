@@ -55,7 +55,7 @@ public class PDElementImpl extends DSSCktElement implements PDElement {
 				for (i = 0; i < YOrder; i++)
 					VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-				YPrim.MVMult(curr, VTerminal);
+				YPrim.vMult(curr, VTerminal);
 			} else {
 				for (i = 0; i < YOrder; i++)
 					curr[i] = Complex.ZERO;

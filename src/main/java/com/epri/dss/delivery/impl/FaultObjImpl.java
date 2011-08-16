@@ -42,7 +42,7 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 		nConds = 1;
 		setNTerms(2);   // force allocation of terminals and conductors
 
-		setBus(2, (getBus(1) + ".0"));  // default to grounded   TODO Check zero based indexing
+		setBus(2, (getBus(0) + ".0"));  // default to grounded   TODO Check zero based indexing
 		setShunt(true);
 
 		GMatrix       = null;
@@ -281,8 +281,8 @@ public class FaultObjImpl extends PDElementImpl implements FaultObj {
 	@Override
 	public void initPropertyValues(int ArrayOffset) {
 
-		propertyValue[0] = getBus(1);  // TODO Check zero based indexing
-		propertyValue[1] = getBus(2);
+		propertyValue[0] = getBus(0);
+		propertyValue[1] = getBus(1);
 		propertyValue[2] = "1";
 		propertyValue[3] = "0.0001";
 		propertyValue[4] = "0";

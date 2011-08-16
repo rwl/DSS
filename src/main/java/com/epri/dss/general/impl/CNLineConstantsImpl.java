@@ -44,7 +44,7 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		setFrequency(f);  // this has side effects
 
 		if (ZReduced != null) {
-			reducedSize = ZReduced.getNOrder();
+			reducedSize = ZReduced.order();
 			ZReduced = null;
 		} else {
 			reducedSize = 0;
@@ -123,8 +123,8 @@ public class CNLineConstantsImpl extends CableConstantsImpl implements CNLineCon
 		}
 
 		// reduce out the CN
-		while (ZMat.getNOrder() > getNumConds()) {
-			ZTemp = ZMat.kron(ZMat.getNOrder());
+		while (ZMat.order() > getNumConds()) {
+			ZTemp = ZMat.kron(ZMat.order());
 			ZMat = null;
 			ZMat = ZTemp;
 		}

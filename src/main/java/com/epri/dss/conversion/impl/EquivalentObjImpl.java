@@ -165,7 +165,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 
 		ZInv.invert();  /* Invert in place */
 
-		if (ZInv.getInvertError() > 0) {
+		if (ZInv.getErrorCode() > 0) {
 			/* If error, put in large series conductance */
 			DSSGlobals.doErrorMsg("EquivalentObj.calcYPrim", "Matrix inversion error for equivalent \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with small resistance.", 803);
@@ -244,7 +244,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 			for (i = 0; i < YOrder; i++)
 				VTerminal[i] = sol.getNodeV()[nodeRef[i]];
 
-			YPrim.MVMult(curr, VTerminal);
+			YPrim.vMult(curr, VTerminal);
 
 			getInjCurrents(complexBuffer);  // get present value of inj currents
 			// add together with Yprim currents
@@ -260,7 +260,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	public void getInjCurrents(Complex[] curr) {
 
 		getVterminalForSource();
-		YPrim.MVMult(curr, VTerminal);  /* I = Y V */
+		YPrim.vMult(curr, VTerminal);  /* I = Y V */
 
 		setITerminalUpdated(false);
 	}
@@ -295,7 +295,7 @@ public class EquivalentObjImpl extends PCElementImpl implements EquivalentObj {
 	public void initPropertyValues(int arrayOffset) {
 
 		propertyValue[0]  = "1";
-		propertyValue[1]  = getBus(1);  // TODO Check zero based indexing
+		propertyValue[1]  = getBus(0);
 		propertyValue[2]  = "115";
 		propertyValue[3]  = "1";
 		propertyValue[4]  = "0";

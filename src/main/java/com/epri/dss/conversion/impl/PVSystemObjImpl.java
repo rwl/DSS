@@ -208,7 +208,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 		setPropertyValue(0, "3");         // "phases";
-		setPropertyValue(1, getBus(1));   // "bus1";
+		setPropertyValue(1, getBus(0));   // "bus1";
 
 		setPropertyValue(PVSystem.KV, String.format("%-g", kVPVSystemBase));
 		setPropertyValue(PVSystem.IRRADIANCE, String.format("%-g", irradiance));
@@ -853,7 +853,7 @@ public class PVSystemObjImpl extends PCElementImpl implements PVSystemObj {
 			cBuffer[nConds] = VTerminal[nConds];  // assume no neutral injection voltage
 
 		/* Inj currents = Yprim (E) */
-		YPrim.MVMult(getInjCurrent(), cBuffer);
+		YPrim.vMult(getInjCurrent(), cBuffer);
 	}
 
 	private void calcVTerminalPhase() {

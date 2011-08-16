@@ -68,7 +68,7 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		setFrequency(f);
 
 		if (ZReduced != null) {
-			reducedSize = ZReduced.getNOrder();
+			reducedSize = ZReduced.order();
 			ZReduced = null;
 		} else {
 			reducedSize = 0;
@@ -146,8 +146,8 @@ public class TSLineConstantsImpl extends CableConstantsImpl implements TSLineCon
 		}
 
 		// reduce out the tape shields
-		while (ZMat.getNOrder() > numConds) {
-			ZTemp = ZMat.kron(ZMat.getNOrder());
+		while (ZMat.order() > numConds) {
+			ZTemp = ZMat.kron(ZMat.order());
 			ZMat = null;
 			ZMat = ZTemp;
 		}

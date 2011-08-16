@@ -1429,7 +1429,7 @@ public abstract class ShowResults {
 
 					/* Solve for injection currents */
 					YFault.invert();
-					YFault.MVMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+					YFault.vMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
 					pw.print(Utilities.pad(Utilities.encloseQuotes(ckt.getBusList().get(iBus)), maxBusNameLength + 2) + iphs + (iphs + 1) + VFault[iphs].subtract(VFault[iphs + 1]).multiply(GFault).abs() + "   ");
 					for (i = 0; i < bus.getNumNodesThisBus(); i++) {
@@ -2017,7 +2017,7 @@ public abstract class ShowResults {
 
 					if (doIt) {
 						pw.print(Utilities.pad(pLoad.getName(), 20));
-						pw.print(Utilities.pad(pLoad.getBus(1), 10));
+						pw.print(Utilities.pad(pLoad.getBus(0), 10));
 						pw.print(pLoad.getKWBase());
 						pw.print(pLoad.getEEN_Factor());
 						pw.print(pLoad.getUE_Factor());
@@ -2572,7 +2572,7 @@ public abstract class ShowResults {
 				pw.println("Geometry Code = " + pElem.getName());
 				pw.println();
 				pw.println("R MATRIX, ohms per " + LineUnits.lineUnitsStr(units));
-				for (i = 0; i < Z.getNOrder(); i++) {
+				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw.printf("%.6g, ", Z.getElement(i, j).getReal());
 					pw.println();
@@ -2580,7 +2580,7 @@ public abstract class ShowResults {
 
 				pw.println();
 				pw.println("jX MATRIX, ohms per " + LineUnits.lineUnitsStr(units));
-				for (i = 0; i < Z.getNOrder(); i++) {
+				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw.printf("%.6g, ", Z.getElement(i, j).getImaginary());
 					pw.println();
@@ -2588,7 +2588,7 @@ public abstract class ShowResults {
 
 				pw.println();
 				pw.println("Susceptance (jB) MATRIX, S per " + LineUnits.lineUnitsStr(units));
-				for (i = 0; i < Yc.getNOrder(); i++) {
+				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw.printf("%.6g, ", Yc.getElement(i, j).getImaginary());
 					pw.println();
@@ -2597,7 +2597,7 @@ public abstract class ShowResults {
 				w = freq * DSSGlobals.TWO_PI / 1.e3;
 				pw.println();
 				pw.println("L MATRIX, mH per " + LineUnits.lineUnitsStr(units));
-				for (i = 0; i < Z.getNOrder(); i++) {
+				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw.printf("%.6g, ", Z.getElement(i, j).getImaginary() / w);
 					pw.println();
@@ -2606,7 +2606,7 @@ public abstract class ShowResults {
 				w = freq * DSSGlobals.TWO_PI / 1.e9;
 				pw.println();
 				pw.println("C MATRIX, nF per " + LineUnits.lineUnitsStr(units));
-				for (i = 0; i < Yc.getNOrder(); i++) {
+				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw.printf("%.6g, ", Yc.getElement(i, j).getImaginary() / w);
 					pw.println();
@@ -2619,30 +2619,30 @@ public abstract class ShowResults {
 				//F.println(,"-------------------------------------------------------------------");
 				pw2.println();
 
-				pw2.println(String.format("new lineCode.%s nphases=%d  Units=%s", pElem.getName(), Z.getNOrder(), LineUnits.lineUnitsStr(units)));
+				pw2.println(String.format("new lineCode.%s nphases=%d  Units=%s", pElem.getName(), Z.order(), LineUnits.lineUnitsStr(units)));
 
 				pw2.print("~ Rmatrix=[");
-				for (i = 0; i < Z.getNOrder(); i++) {
+				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw2.printf("%.6g  ", Z.getElement(i, j).getReal());
-					if (i < Z.getNOrder()) pw2.print("|");
+					if (i < Z.order()) pw2.print("|");
 				}
 				pw2.println("]");
 
 				pw2.print("~ Xmatrix=[");
-				for (i = 0; i < Z.getNOrder(); i++) {
+				for (i = 0; i < Z.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw2.printf("%.6g  ", Z.getElement(i, j).getImaginary());
-					if (i < Z.getNOrder()) pw2.print("|");
+					if (i < Z.order()) pw2.print("|");
 				}
 				pw2.println("]");
 
 				w = freq * DSSGlobals.TWO_PI /1.e9;
 				pw2.print("~ Cmatrix=[");
-				for (i = 0; i < Yc.getNOrder(); i++) {
+				for (i = 0; i < Yc.order(); i++) {
 					for (j = 0; j < i; j++)
 						pw2.printf("%.6g  ", Yc.getElement(i, j).getImaginary() / w);
-					if (i < Yc.getNOrder()) pw2.print("|");
+					if (i < Yc.order()) pw2.print("|");
 				}
 				pw2.println("]");
 
@@ -2656,7 +2656,7 @@ public abstract class ShowResults {
 				Cs = 0.0;
 				Cm = 0.0;
 
-				if (Z.getNOrder() == 3) {
+				if (Z.order() == 3) {
 					pw.println();
 					pw.println("-------------------------------------------------------------------");
 					pw.println("-------------------Equiv Symmetrical Component --------------------");
@@ -2972,14 +2972,14 @@ public abstract class ShowResults {
 				if (pBus.getKVBase() != 0.0) {
 					if ((pLoad.getNPhases() == 1) && (pLoad.getConnection() == 0)) {
 						if (Math.abs(pLoad.getKVLoadBase() - pBus.getKVBase()) > 0.10 * pBus.getKVBase()) {
-							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(1), pBus.getKVBase()));
+							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s LN kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(0), pBus.getKVBase()));
 							pw.println(String.format("!setkvbase %s kVLN=%.6g", busName, pLoad.getKVLoadBase()));
 							pw.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), pBus.getKVBase()));
 						}
 					} else {
 						busKV = pBus.getKVBase() * DSSGlobals.SQRT3;
 						if (Math.abs(pLoad.getKVLoadBase() - busKV) > 0.10 * busKV) {
-							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(1), busKV));
+							pw.println(String.format("!!!!! Voltage Base Mismatch, Load.%s.kV=%.6g, Bus %s kvBase = %.6g", pLoad.getName(), pLoad.getKVLoadBase(), pLoad.getBus(0), busKV));
 							pw.println(String.format("!setkvbase %s kVLL=%.6g", busName, pLoad.getKVLoadBase()));
 							pw.println(String.format("!Load.%s.kV=%.6g", pLoad.getName(), busKV));
 						}

@@ -242,7 +242,7 @@ public class RegControlObjImpl extends ControlElemImpl implements RegControlObj 
 			f.println("~ " + getParentClass().getPropertyName()[i] + "=" + getPropertyValue(i));
 
 		if (complete) {
-			f.println("! Bus =" + getBus(1));
+			f.println("! Bus =" + getBus(0));
 			f.println();
 		}
 	}

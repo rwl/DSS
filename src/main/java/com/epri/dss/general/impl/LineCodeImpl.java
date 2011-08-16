@@ -9,6 +9,8 @@ import com.epri.dss.general.LineCodeObj;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
+
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
@@ -161,7 +163,8 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 	 * Set impedances as matrices.
 	 */
 	private void doMatrix(int i) {
-		int orderFound, nOrder = 0, j;
+		int orderFound, j;
+		MutableInt nOrder = new MutableInt();
 		double[] matBuffer;
 		Complex[] ZValues;
 		double factor;
@@ -176,20 +179,20 @@ public class LineCodeImpl extends DSSClassImpl implements LineCode {
 			switch (i) {  // TODO Check zero based indexing
 			case 1:  // r
 				ZValues = activeLineCodeObj.getZ().asArray(nOrder);  // TODO Check nOrder is set
-				if (nOrder == activeLineCodeObj.getNPhases())
+				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(matBuffer[j], ZValues[j].getImaginary());
 				break;
 			case 2:  // x
 				ZValues = activeLineCodeObj.getZ().asArray(nOrder);
-				if (nOrder == activeLineCodeObj.getNPhases())
+				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), matBuffer[j]);
 				break;
 			case 3:  // Yc matrix
 				factor = DSSGlobals.TWO_PI * activeLineCodeObj.getBaseFrequency() * 1.0e-9;
 				ZValues = activeLineCodeObj.getYC().asArray(nOrder);
-				if (nOrder == activeLineCodeObj.getNPhases())
+				if (nOrder.intValue() == activeLineCodeObj.getNPhases())
 					for (j = 0; j < np2; j++)
 						ZValues[j] = new Complex(ZValues[j].getReal(), factor * matBuffer[j]);
 				break;

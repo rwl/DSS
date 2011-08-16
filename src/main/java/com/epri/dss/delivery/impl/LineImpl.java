@@ -10,6 +10,8 @@ import com.epri.dss.general.LineGeometry;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.impl.CMatrixImpl;
 import com.epri.dss.shared.impl.CommandListImpl;
+
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 import com.epri.dss.shared.impl.LineUnits;
 
@@ -153,7 +155,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	private void doRmatrix() {
-		int nOrder = 0;
+		MutableInt nOrder = new MutableInt();
 		Complex[] ZValues;
 
 		LineObj al = activeLineObj;
@@ -164,7 +166,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		if (OrderFound > 0) {  // parse was successful
 			/* R */
 			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder == al.getNPhases())
+			if (nOrder.intValue() == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
 					ZValues[j] = new Complex(MatBuffer[j], ZValues[j].getImaginary());
 		}
@@ -173,7 +175,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	private void doXmatrix() {
-		int nOrder = 0;
+		MutableInt nOrder = new MutableInt();
 		Complex[] ZValues;
 
 		LineObj al = activeLineObj;
@@ -184,7 +186,7 @@ public class LineImpl extends PDClassImpl implements Line {
 		if (OrderFound > 0) {  // parse was successful
 			/* X */
 			ZValues = al.getZ().asArray(nOrder);
-			if (nOrder == al.getNPhases())
+			if (nOrder.intValue() == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
 					ZValues[j] = new Complex(ZValues[j].getReal(), MatBuffer[j]);
 		}
@@ -193,7 +195,7 @@ public class LineImpl extends PDClassImpl implements Line {
 	}
 
 	private void doCmatrix() {
-		int nOrder = 0;
+		MutableInt nOrder = new MutableInt();
 		Complex[] YValues;
 		double factor;
 
@@ -206,7 +208,7 @@ public class LineImpl extends PDClassImpl implements Line {
 			/* X */
 			factor = DSSGlobals.TWO_PI * al.getBaseFrequency() * 1.0e-9;
 			YValues = al.getYc().asArray(nOrder);
-			if (nOrder == al.getNPhases())
+			if (nOrder.intValue() == al.getNPhases())
 				for (int j = 0; j < al.getNPhases() * al.getNPhases(); j++)
 					YValues[j] = new Complex(YValues[j].getReal(), factor * matBuffer[j]);
 		}

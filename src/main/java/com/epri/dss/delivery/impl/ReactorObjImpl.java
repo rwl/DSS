@@ -40,7 +40,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 		nConds = 3;
 		setNTerms(2);   // force allocation of terminals and conductors
 
-		setBus(2, (getBus(1) + ".0.0.0"));  // default to grounded wye   TODO Check zero based indexing
+		setBus(2, (getBus(0) + ".0.0.0"));  // default to grounded wye
 
 		isShunt = true;
 
@@ -253,7 +253,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				}
 			} else {  // for series r and x
 				ZMatrix = new CMatrixImpl(nPhases);
-				ZValues = ZMatrix.asArray(nPhases);  // so we can populate array fast
+				ZValues = ZMatrix.asArray();  // so we can populate array fast
+				nPhases = ZMatrix.order();
 				/* Put in series r & l */
 				for (i = 0; i < nPhases * nPhases; i++) {
 					// correct the impedances for frequency
@@ -261,7 +262,7 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 				}
 
 				ZMatrix.invert();  /* Invert in place - is now Y matrix */
-				if (ZMatrix.getInvertError() > 0) {  /* If error, put in tiny series conductance */
+				if (ZMatrix.getErrorCode() > 0) {  /* If error, put in tiny series conductance */
 					DSSGlobals.doErrorMsg("ReactorObj.calcYPrim()", "Matrix inversion error for reactor \"" + getName() + "\"",
 									"Invalid impedance specified. Replaced with tiny conductance.", 234);
 					ZMatrix.clear();
@@ -377,8 +378,8 @@ public class ReactorObjImpl extends PDElementImpl implements ReactorObj {
 	@Override
 	public void initPropertyValues(int arrayOffset) {
 
-		propertyValue[1] = getBus(1);  // TODO Check zero based indexing
-		propertyValue[2] = getBus(2);
+		propertyValue[1] = getBus(0);
+		propertyValue[2] = getBus(1);
 		propertyValue[3] = "3";
 		propertyValue[4] = "1200";
 		propertyValue[5] = "12.47";

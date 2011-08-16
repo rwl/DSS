@@ -1,14 +1,11 @@
 package com.epri.dss.shared;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 public interface CMatrix {
 
-	int getInvertError();
-
-	void setInvertError(int invertError);
-
-	int getNOrder();
+	int order();
 
 	void invert();
 
@@ -34,12 +31,14 @@ public interface CMatrix {
 	Complex sumBlock(int row1, int row2, int col1, int col2);
 
 	/** b = Ax */
-	void MVMult(Complex[] b, Complex[] x);
+	void vMult(Complex[] b, Complex[] x);
 
 	/** b = Ax */
-	void MVMultAccum(Complex[] b, Complex[] x);
+	void vMultAccum(Complex[] b, Complex[] x);
 
-	Complex[] asArray(int Order);
+	Complex[] asArray(MutableInt Order);
+
+	Complex[] asArray();
 
 	void zeroRow(int iRow);
 

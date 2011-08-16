@@ -239,11 +239,11 @@ public class ReactorImpl extends PDClassImpl implements Reactor {
 			// some specials ...
 			switch (paramPointer) {
 			case 0:
-				ar.setPropertyValue(1, ar.getBus(2));  // this gets modified   TODO Check zero based indexing
+				ar.setPropertyValue(1, ar.getBus(1));  // this gets modified   TODO Check zero based indexing
 				ar.getPrpSequence()[1] = 0;            // reset this for save function
 				break;
 			case 1:
-				if (!Utilities.stripExtension(ar.getBus(1)).equalsIgnoreCase( Utilities.stripExtension(ar.getBus(2)) ))
+				if (!Utilities.stripExtension(ar.getBus(0)).equalsIgnoreCase( Utilities.stripExtension(ar.getBus(1)) ))
 					ar.setShunt(false);
 				break;
 			case 2:

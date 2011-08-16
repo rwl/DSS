@@ -1,5 +1,6 @@
 package com.epri.dss.shared.impl;
 
+import org.apache.commons.lang.mutable.MutableInt;
 import org.apache.commons.math.complex.Complex;
 
 import com.epri.dss.shared.CMatrix;
@@ -19,6 +20,38 @@ public class CMatrixImpl implements CMatrix {
 			values[i] = Complex.ZERO;
 	}
 
+	public int order() {
+		return nOrder;
+	}
+
+	public void setElement(int i, int j, Complex value) {
+		values[(j * nOrder + i)] = value;
+	}
+
+	public void setElemSym(int i, int j, Complex value) {
+		values[j * nOrder + i] = value;
+		if (i != j)
+			values[i * nOrder + j] = value;  // ensure symmetry
+	}
+
+	public void addElement(int i, int j, Complex value) {
+		values[j * nOrder + i] = values[j * nOrder + i].add(value);
+	}
+
+	public void addElemSym(int i, int j, Complex value) {
+		values[j * nOrder + i] = values[j * nOrder + i].add(value);
+		if (i != j)
+			values[i * nOrder + j] = values[i * nOrder + j].add(value);  // ensure symmetry
+	}
+
+	public Complex getElement(int i, int j) {
+		return values[j * nOrder + i];
+	}
+
+	public int getErrorCode() {
+		return invertError;
+	}
+
 	/**
 	 * Zero out matrix
 	 */
@@ -30,7 +63,7 @@ public class CMatrixImpl implements CMatrix {
 	/**
 	 * b = Ax
 	 */
-	public void MVMult(Complex[] b, Complex[] x) {
+	public void vMult(Complex[] b, Complex[] x) {
 		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
@@ -45,7 +78,7 @@ public class CMatrixImpl implements CMatrix {
 	 *
 	 * Same as MVMult except accumulates b.
 	 */
-	public void MVMultAccum(Complex[] b, Complex[] x) {
+	public void vMultAccum(Complex[] b, Complex[] x) {
 		Complex sum;
 		for (int i = 0; i < nOrder; i++) {
 			sum = Complex.ZERO;
@@ -53,6 +86,107 @@ public class CMatrixImpl implements CMatrix {
 				sum = sum.add( values[((j - 1) * nOrder + 1)].multiply(x[j]) );
 			b[i] = b[i].add(sum);
 		}
+	}
+
+	public void addFrom(CMatrix otherMatrix) {
+		if (nOrder == otherMatrix.order()) {
+			for (int i = 0; i < nOrder; i++) {
+				for (int j = 0; j < nOrder; j++) {
+					addElement(i, j, otherMatrix.getElement(i, j));
+				}
+			}
+		}
+	}
+
+	public void copyFrom(CMatrix otherMatrix) {
+		if (nOrder == otherMatrix.order()) {
+			for (int i = 0; i < nOrder; i++) {
+				for (int j = 0; j < nOrder; j++) {
+					setElement(i, j, otherMatrix.getElement(i, j));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Sum all elements in a given block of the matrix.
+	 */
+	public Complex sumBlock(int row1, int row2, int col1, int col2) {
+		int rowstart;
+		Complex sum = Complex.ZERO;
+
+		for (int j = col1; j < col2; j++) {
+			rowstart = j * nOrder;
+			for (int i = rowstart + row1; i < rowstart + row2; i++) {
+				sum = sum.add(values[i]);
+			}
+		}
+
+		return sum;
+	}
+
+	public Complex[] asArray(MutableInt order) {
+		order.setValue(nOrder);
+		return values;
+	}
+
+	public Complex[] asArray() {
+		return values;
+	}
+
+	public void zeroRow(int iRow) {
+		int j = iRow;
+		for (int i = 0; i < nOrder; i++) {
+			values[j] = Complex.ZERO;
+			j += nOrder;
+		}
+	}
+
+	public void zeroCol(int iCol) {
+		for (int i = (iCol - 1) * nOrder; i < iCol * nOrder; i++) {
+			values[i] = Complex.ZERO;
+		}
+	}
+
+	/**
+	 * Average of diagonal elements
+	 */
+	public Complex avgDiagonal() {
+		Complex result = Complex.ZERO;
+		for (int i = 0; i < nOrder; i++)
+			result = result.add(values[((i - 1) * nOrder + i)]);
+
+		if (nOrder > 0)
+			result = ComplexUtil.divide(result, nOrder);
+
+		return result;
+	}
+
+	/**
+	 * Average the upper triangle off diagonals.
+	 */
+	public Complex avgOffDiagonal() {
+		Complex result = Complex.ZERO;
+		int nTimes = 0;
+		for (int i = 0; i < nOrder; i++) {
+			for (int j = i+1; j < nOrder; j++) {
+				nTimes += 1;
+				result = result.add(values[((j - 1) * nOrder + i)]);
+			}
+		}
+
+		if (nTimes > 0)
+			result = ComplexUtil.divide(result, nTimes);
+
+		return result;
+	}
+
+	/**
+	 * Multiply all elements by a constant
+	 */
+	public void multByConst(double x) {
+		for (int i = 0; i < nOrder * nOrder; i++)
+			values[i] = values[i].multiply(x);
 	}
 
 	private static int index(int i, int j, int L) {
@@ -134,149 +268,12 @@ public class CMatrixImpl implements CMatrix {
 
 	}
 
-	public int getInvertError() {
-		return invertError;
-	}
-
-	public void setInvertError(int invertError) {
-		this.invertError = invertError;
-	}
-
-	public int getNOrder() {
-		return nOrder;
-	}
-
-	public void addFrom(CMatrix otherMatrix) {
-		if (nOrder == otherMatrix.getNOrder()) {
-			for (int i = 0; i < nOrder; i++) {
-				for (int j = 0; j < nOrder; j++) {
-					addElement(i, j, otherMatrix.getElement(i, j));
-				}
-			}
-		}
-	}
-
-	public void copyFrom(CMatrix otherMatrix) {
-		if (nOrder == otherMatrix.getNOrder()) {
-			for (int i = 0; i < nOrder; i++) {
-				for (int j = 0; j < nOrder; j++) {
-					setElement(i, j, otherMatrix.getElement(i, j));
-				}
-			}
-		}
-	}
-
-	public void setElement(int i, int j, Complex value) {
-		values[((j - 1) * nOrder + i)] = value;
-	}
-
-	public void setElemSym(int i, int j, Complex value) {
-		values[((j - 1) * nOrder + i)] = value;
-		if (i != j)
-			values[((i - 1) * nOrder + j)] = value;  // ensure symmetry
-	}
-
-	public void addElement(int i, int j, Complex value) {
-		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(value);
-	}
-
-	public void addElemSym(int i, int j, Complex value) {
-		values[((j - 1) * nOrder + i)] = values[((j - 1) * nOrder + i)].add(value);
-		if (i != j)
-			values[((i - 1) * nOrder + j)] = values[((i - 1) * nOrder + j)].add(value);  // ensure symmetry
-	}
-
-	public Complex getElement(int i, int j) {
-		return values[((j - 1) * nOrder + i)];
-	}
-
-	public int getErrorCode() {
-		return invertError;
-	}
-
-	/**
-	 * Sum all elements in a given block of the matrix.
-	 */
-	public Complex sumBlock(int row1, int row2, int col1, int col2) {
-		int rowstart;
-		Complex sum = Complex.ZERO;
-
-		for (int j = col1; j < col2; j++) {
-			rowstart = (j - 1) * nOrder;
-			for (int i = rowstart + row1; i < rowstart + row2; i++) {
-				sum = sum.add(values[i]);
-			}
-		}
-
-		return sum;
-	}
-
-	public Complex[] asArray(int order) {
-		order = nOrder;
-		return values;
-	}
-
-	public void zeroRow(int iRow) {
-		int j = iRow;
-		for (int i = 0; i < nOrder; i++) {
-			values[j] = Complex.ZERO;
-			j += nOrder;
-		}
-	}
-
-	public void zeroCol(int iCol) {
-		for (int i = (iCol - 1) * nOrder; i < iCol * nOrder; i++) {
-			values[i] = Complex.ZERO;
-		}
-	}
-
-	/**
-	 * Average of diagonal elements
-	 */
-	public Complex avgDiagonal() {
-		Complex result = Complex.ZERO;
-		for (int i = 0; i < nOrder; i++)
-			result = result.add(values[((i - 1) * nOrder + i)]);
-
-		if (nOrder > 0)
-			result = ComplexUtil.divide(result, nOrder);
-
-		return result;
-	}
-
-	/**
-	 * Average the upper triangle off diagonals.
-	 */
-	public Complex avgOffDiagonal() {
-		Complex result = Complex.ZERO;
-		int nTimes = 0;
-		for (int i = 0; i < nOrder; i++) {
-			for (int j = i+1; j < nOrder; j++) {
-				nTimes += 1;
-				result = result.add(values[((j - 1) * nOrder + i)]);
-			}
-		}
-
-		if (nTimes > 0)
-			result = ComplexUtil.divide(result, nTimes);
-
-		return result;
-	}
-
-	/**
-	 * Multiply all elements by a constant
-	 */
-	public void multByConst(double x) {
-		for (int i = 0; i < nOrder * nOrder; i++)
-			values[i] = values[i].multiply(x);
-	}
-
 	/**
 	 * Perform Kron reduction on last row/col and return new matrix
 	 */
 	public CMatrix kron(int eliminationRow) {
 		int ii, jj;
-		CMatrix result = null;   // Null result means it failed
+		CMatrix result = null;   // null result means it failed
 		if ((nOrder > 1) && (eliminationRow <= nOrder) && (eliminationRow > 0)) {
 			result = new CMatrixImpl(nOrder - 1);
 			int N = eliminationRow;

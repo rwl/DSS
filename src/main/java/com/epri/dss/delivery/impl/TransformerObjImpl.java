@@ -689,7 +689,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		/* Compute no load losses in YPrim_Shunt */
 		Complex[] cTempIterminal = new Complex[YOrder];
 		computeVTerminal();
-		YPrimShunt.MVMult(cTempIterminal, VTerminal);
+		YPrimShunt.vMult(cTempIterminal, VTerminal);
 		/* No load losses are sum of all powers coming into YPrim_Shunt from each terminal */
 		cNoLoadLosses = Complex.ZERO;
 		for (int i = 0; i < YOrder; i++)
@@ -859,7 +859,7 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 		propertyValue[1] = "2";  // "windings";
 		// winding definition
 		propertyValue[2] = "1";  // "wdg";
-		propertyValue[3] = getBus(1);  // "bus";  // TODO Check zero based indexing
+		propertyValue[3] = getBus(0);  // "bus";
 		propertyValue[4] = "wye";  // "conn";
 		propertyValue[5] = "12.47";  // if 2 or 3-phase:  phase-phase else actual winding
 		propertyValue[6] = "1000";
@@ -1081,11 +1081,11 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 
 		ZB.invert();  // mhos on one volt base
 
-		if (ZB.getInvertError() > 0) {
+		if (ZB.getErrorCode() > 0) {
 			DSSGlobals.doErrorMsg("TransformerObj.calcYPrim", "Matrix inversion error for transformer \"" + getName() + "\"",
 					"Invalid impedance specified. Replaced with tiny conductance to ground.", 117);
 			ZB.clear();
-			for (i = 0; i < ZB.getNOrder(); i++)
+			for (i = 0; i < ZB.order(); i++)
 				ZB.setElement(i, i, new Complex(DSSGlobals.EPSILON, 0.0));
 		}
 
@@ -1133,8 +1133,8 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 						a[k] = Complex.ZERO;
 					}
 			}
-			ZB.MVMult(cTempArray1, a);  /* Zb.invert * A */
-			At.MVMult(cTempArray2, cTempArray1);  /* AT * Result */
+			ZB.vMult(cTempArray1, a);  /* Zb.invert * A */
+			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < numWindings; j++)
 				Y_1Volt.setElement(j, i, cTempArray2[j]);
 		}
@@ -1184,13 +1184,13 @@ public class TransformerObjImpl extends PDElementImpl implements TransformerObj 
 			}
 
 			/* Main transformer part */
-			Y_1Volt.MVMult(cTempArray1, a);
-			At.MVMult(cTempArray2, cTempArray1);  /* AT * Result */
+			Y_1Volt.vMult(cTempArray1, a);
+			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < 2 * numWindings; j++)
 				Y_Term.setElement(j, i, cTempArray2[j]);
 			/* No load part */
-			Y_1Volt_NL.MVMult(cTempArray1, a);
-			At.MVMult(cTempArray2, cTempArray1);  /* AT * Result */
+			Y_1Volt_NL.vMult(cTempArray1, a);
+			At.vMult(cTempArray2, cTempArray1);  /* AT * Result */
 			for (j = 0; j < 2 * numWindings; j++)
 				Y_Term_NL.setElement(j, i, cTempArray2[j]);
 		}

@@ -824,7 +824,7 @@ public class ExportResults {
 
 					/* Solve for injection currents */
 					YFault.invert();
-					YFault.MVMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+					YFault.vMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
 					currMag = VFault[iphs].multiply(GFault).abs();
 					if (currMag > maxCurr) maxCurr = currMag;
@@ -855,7 +855,7 @@ public class ExportResults {
 
 					/* Solve for injection currents */
 					YFault.invert();
-					YFault.MVMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
+					YFault.vMult(VFault, bus.getBusCurrent());  /* Gets voltage appearing at fault */
 
 					currMag = VFault[iphs].subtract( VFault[iphs + 1] ).multiply(GFault).abs();
 					if (currMag > maxCurr) maxCurr = currMag;
@@ -1469,7 +1469,7 @@ public class ExportResults {
 
 					if (doIt) {
 						writer.print(pLoad.getName() + ", ");
-						writer.print(pLoad.getBus(1) + ", ");  // TODO Check zero based indexing
+						writer.print(pLoad.getBus(0) + ", ");
 						writer.print(pLoad.getKWBase() + ", ");
 						writer.print(pLoad.getEEN_Factor() + ", ");
 						writer.print(pLoad.getUE_Factor());
