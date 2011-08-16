@@ -65,6 +65,9 @@ public class CMatrixTest extends TestCase {
 		assertEquals(imag, cm.getElement(i, j).getImaginary());
 	}
 
+	/**
+	 * Test setting symmetrical matrix elements.
+	 */
 	public void testSetElemSym() {
 		int i, j;
 		double real, imag;
@@ -79,6 +82,9 @@ public class CMatrixTest extends TestCase {
 		assertEquals(imag, cm.getElement(j, i).getImaginary());
 	}
 
+	/**
+	 * Test adding to a matrix element.
+	 */
 	public void testAddElement() {
 		int i, j;
 		double real, imag;
@@ -95,6 +101,9 @@ public class CMatrixTest extends TestCase {
 		assertEquals(imag + imag, cm.getElement(i, j).getImaginary());
 	}
 
+	/**
+	 * Test adding to symmetrical matrix elements.
+	 */
 	public void testAddElemSym() {
 		int i, j;
 		double real, imag;
@@ -115,6 +124,9 @@ public class CMatrixTest extends TestCase {
 		assertEquals(imag + imag, cm.getElement(j, i).getImaginary());
 	}
 
+	/**
+	 * Test zeroing all matrix elements.
+	 */
 	public void testClear() {
 		int i, j, i1, j1, i2, j2;
 		double real, imag;
@@ -133,60 +145,186 @@ public class CMatrixTest extends TestCase {
 			}
 	}
 
-	public void testVMult() {
-		fail("Not yet implemented");
-	}
-
-	public void testVMultAccum() {
-		fail("Not yet implemented");
-	}
-
-	public void testInvert() {
-		fail("Not yet implemented");
-	}
-
-	public void testAddFrom() {
-		fail("Not yet implemented");
-	}
-
+	/**
+	 * Test copying element values from another matrix.
+	 */
 	public void testCopyFrom() {
-		fail("Not yet implemented");
+		int i, j;
+		CMatrix cm1, cm2;
+
+		cm1 = createTestMatrix();
+		cm2 = new CMatrixImpl(n);
+		cm2.copyFrom(cm1);
+
+		for (i = 0; i < n; i++)
+			for (j = 0; j < n; j++) {
+				assertEquals(i, cm2.getElement(i, j).getReal());
+				assertEquals(j, cm2.getElement(i, j).getImaginary());
+			}
 	}
 
-	public void testGetErrorCode() {
-		fail("Not yet implemented");
+	/**
+	 * Test adding element values from another matrix.
+	 */
+	public void testAddFrom() {
+		int i, j;
+		CMatrix cm;
+
+		cm = createTestMatrix();
+		cm.addFrom(cm);
+
+		for (i = 0; i < n; i++)
+			for (j = 0; j < n; j++) {
+				assertEquals(i + i, cm.getElement(i, j).getReal());
+				assertEquals(j + j, cm.getElement(i, j).getImaginary());
+			}
 	}
 
-	public void testSumBlock() {
-		fail("Not yet implemented");
-	}
-
+	/**
+	 * Test the array representation of a matrix.
+	 */
 	public void testAsArray() {
-		fail("Not yet implemented");
+		int i, j, k;
+		Complex[] array;
+		CMatrix cm;
+
+		cm = createTestMatrix();
+		array = cm.asArray();
+
+		k = 0;
+		for (i = 0; i < n; i++)
+			for (j = 0; j < n; j++) {
+				assertEquals(i, array[k].getReal());
+				assertEquals(j, array[k].getImaginary());
+				k += 1;
+			}
 	}
 
+	/**
+	 * Test zeroing out a single matrix row.
+	 */
 	public void testZeroRow() {
-		fail("Not yet implemented");
+		int iRow, j;
+		CMatrix cm;
+
+		iRow = 2;
+		cm = createTestMatrix();
+		cm.zeroRow(iRow);
+		for (j = 0; j < cm.order(); j++) {
+			assertEquals(0, cm.getElement(iRow, j).getReal());
+			assertEquals(0, cm.getElement(iRow, j).getImaginary());
+		}
 	}
 
+	/**
+	 * Test zeroing out a single matrix column.
+	 */
 	public void testZeroCol() {
-		fail("Not yet implemented");
+		int i, jCol;
+		CMatrix cm;
+
+		jCol = 3;
+		cm = createTestMatrix();
+		cm.zeroCol(jCol);
+		for (i = 0; i < cm.order(); i++) {
+			assertEquals(0, cm.getElement(i, jCol).getReal());
+			assertEquals(0, cm.getElement(i, jCol).getImaginary());
+		}
 	}
 
+	/**
+	 * Test averaging the diagonal elements of a matrix.
+	 */
 	public void testAvgDiagonal() {
-		fail("Not yet implemented");
+		double expect;
+		Complex avg;
+		CMatrix cm;
+
+		expect = 0;
+		for (int i = 0; i < n; i++)
+			expect += n;
+		expect = expect / n;
+
+		cm = createTestMatrix();
+		avg = cm.avgDiagonal();
+
+		assertEquals(expect, avg.getReal());
+		assertEquals(expect, avg.getImaginary());
 	}
 
+	/**
+	 * Test averaging the upper triangle off diagonal elements of a matrix.
+	 */
 	public void testAvgOffDiagonal() {
-		fail("Not yet implemented");
+		Complex avg;
+		CMatrix cm;
+
+		cm = createTestMatrix();
+		avg = cm.avgOffDiagonal();
 	}
 
+	/**
+	 * Test multiplication of all elements by a constant.
+	 */
 	public void testMultByConst() {
 		fail("Not yet implemented");
 	}
 
+	/**
+	 * Test summation of all elements in a matrix block.
+	 */
+	public void testSumBlock() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test matrix-vector multiplication.
+	 */
+	public void testVMult() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test matrix-vector multiplication with result accumulation.
+	 */
+	public void testVMultAccum() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test matrix inversion.
+	 */
+	public void testInvert() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test inversion error code.
+	 */
+	public void testGetErrorCode() {
+		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test Kron reduction.
+	 */
 	public void testKron() {
 		fail("Not yet implemented");
+	}
+
+	/**
+	 * @return an n x n test matrix
+	 */
+	private CMatrix createTestMatrix() {
+		int i, j;
+		CMatrix cm = new CMatrixImpl(n);
+
+		for (i = 0; i < n; i++)
+			for (j = 0; j < n; j++) {
+				cm.setElement(i, i, new Complex(i, j));
+			}
+
+		return cm;
 	}
 
 }
