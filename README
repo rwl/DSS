@@ -1,0 +1,7 @@
+PyDSS
+-----
+
+Python distribution system simulator.
+
+This is a translation of OpenDSS to Python. It is currently an alpha
+release, i.e. it doesn't work!

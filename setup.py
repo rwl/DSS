@@ -1,14 +1,27 @@
-from setuptools import setup, find_packages
+from os.path import abspath, dirname, join
+from setuptools import setup
 
-setup(name="Electrickery",
-      description="Port of OpenDSS to Python.",
+cwd = abspath(dirname(__file__))
+f = open(join(cwd, "README"))
+kwds = {"long_description": f.read()}
+f.close()
+
+setup(name="pydss",
+      description="Python Distribution System Simuator",
       author="Richard Lincoln",
       author_email="r.w.lincoln@gmail.com",
-      url="http://rwl.github.com/electrickery",
-      version="0.1.0",
-      license="GNU GPLv2",
-      entry_points={"gui_scripts": ["electrickery = electrickery.main:main"]},
-      include_package_data=True,
-      packages=find_packages(),
-      test_suite="electrickery.test",
-      zip_safe=False)
+      version="0.1a",
+      license="Apache License 2.0",
+      packages=['pydss',
+                'pydss.common',
+                'pydss.control',
+                'pydss.conversion',
+                'pydss.delivery',
+                'pydss.executive',
+                'pydss.general',
+                'pydss.meter',
+                'pydss.parser',
+                'pydss.plot',
+                'pydss.shared'],
+      zip_safe=True,
+      **kwds)

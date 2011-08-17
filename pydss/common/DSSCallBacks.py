@@ -1,0 +1,4 @@
+
+
+class DSSCallBacks(object):
+    pass
