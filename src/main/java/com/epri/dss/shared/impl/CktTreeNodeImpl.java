@@ -1,30 +1,29 @@
 package com.epri.dss.shared.impl;
 
-import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.general.DSSObject;
+import com.epri.dss.common.CktElement;
 import com.epri.dss.shared.CktTreeNode;
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.shared.ObjectList;
 
-public class CktTreeNodeImpl implements CktTreeNode {
+public class CktTreeNodeImpl<T extends CktElement> implements CktTreeNode<T> {
 
-	private PointerList childBranches;  // TODO Replace with List and Iterator
+	private ObjectList<CktTreeNode<T>> childBranches;
 	private int numToBuses, toBusPtr;
 	private int[] toBusList;
 
 	protected boolean childAdded;
 	protected int lexicalLevel;
-	protected CktTreeNode parentBranch;
-	protected PointerList shuntObjects;  // generic objects attached to the tree at this node
+	protected CktTreeNode<T> parentBranch;
+	protected ObjectList<T> shuntObjects;  // generic objects attached to the tree at this node
 
-	protected Object cktObject;  // pointer to the circuit object referenced
+	protected T cktObject;  // pointer to the circuit object referenced
 	protected int fromBusReference;
 	protected int voltBaseIndex;
 	protected int fromTerminal;
 	protected boolean isLoopedHere, isParallel, isDangling;
-	protected Object loopLineObj;
+	protected T loopLineObj;
 
 
-	public CktTreeNodeImpl(CktTreeNode parent, Object selfObj) {
+	public CktTreeNodeImpl(CktTreeNode<T> parent, T selfObj) {
 		super();
 		cktObject = selfObj;
 		parentBranch = parent;
@@ -33,8 +32,8 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		} else {
 			lexicalLevel = 0;
 		}
-		childBranches   = new PointerListImpl(2);
-		shuntObjects    = new PointerListImpl(1);
+		childBranches   = new ObjectListImpl<CktTreeNode<T>>(2);
+		shuntObjects    = new ObjectListImpl<T>(1);
 		fromBusReference = 0;
 		voltBaseIndex    = 0;  // index to voltage base list used by EnergyMeter and maybe others
 		numToBuses = 0;
@@ -48,24 +47,24 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		loopLineObj = null;
 	}
 
-	public void addChild(CktTreeNode value) {
+	public void addChild(CktTreeNode<T> value) {
 		childBranches.add(value);
 		childAdded = true;
 	}
 
-	public void addObject(DSSObject value) {
+	public void addObject(T value) {
 		shuntObjects.add(value);
 	}
 
-	public CktTreeNode getFirstChild() {
-		return (CktTreeNode) childBranches.getFirst();
+	public CktTreeNode<T> getFirstChild() {
+		return childBranches.getFirst();
 	}
 
-	public CktTreeNode getNextChild() {
-		return (CktTreeNode) childBranches.getNext();
+	public CktTreeNode<T> getNextChild() {
+		return childBranches.getNext();
 	}
 
-	public CktTreeNode getParent() {
+	public CktTreeNode<T> getParent() {
 		return parentBranch;
 	}
 
@@ -102,7 +101,15 @@ public class CktTreeNodeImpl implements CktTreeNode {
 
 	public void setToBusReference(int value) {
 		numToBuses += 1;
-		toBusList = Utilities.resizeArray(toBusList, numToBuses);
+
+		// resize array
+		int[] newList = new int[numToBuses];
+		int size = toBusList.length;
+		int l = Math.min(size, numToBuses);
+		if (l > 0)
+			System.arraycopy(toBusList, 0, newList, 0, l);
+		toBusList = newList;
+
 		toBusList[numToBuses] = value;
 	}
 
@@ -110,19 +117,19 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		toBusPtr = 0;  // TODO Check zero based indexing
 	}
 
-	public DSSObject getFirstObject() {
-		return (DSSObject) shuntObjects.getFirst();  // TODO Make generic
+	public T getFirstObject() {
+		return shuntObjects.getFirst();
 	}
 
-	public DSSObject getNextObject() {
-		return (DSSObject) shuntObjects.getNext();
+	public T getNextObject() {
+		return shuntObjects.getNext();
 	}
 
-	public DSSObject getCktObject() {
-		return (DSSObject) cktObject;
+	public T getCktObject() {
+		return cktObject;
 	}
 
-	public void setCktObject(DSSObject ckt) {
+	public void setCktObject(T ckt) {
 		cktObject = ckt;
 	}
 
@@ -174,11 +181,11 @@ public class CktTreeNodeImpl implements CktTreeNode {
 		isDangling = value;
 	}
 
-	public Object getLoopLineObj() {
+	public T getLoopLineObj() {
 		return loopLineObj;
 	}
 
-	public void setLoopLineObj(Object lineObj) {
+	public void setLoopLineObj(T lineObj) {
 		loopLineObj = lineObj;
 	}
 

@@ -1,36 +1,43 @@
 package com.epri.dss.shared.impl;
 
-import com.epri.dss.common.impl.Utilities;
-import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.PStack;
 
-public class PStackImpl extends StackBaseImpl implements PStack {
+public class PStackImpl<T> extends StackBaseImpl implements PStack<T> {
 
-	private DSSObject[] items;
+	private T[] items;
 
 	public PStackImpl(int initSize) {
 		super(initSize);
-		items = new DSSObject[initSize];
+		items = (T[]) new Object[initSize];
 	}
 
-	public void push(DSSObject p) {
+	public void push(T p) {
+		T[] newItems;
+		int size, l;
+
 		numItems += 1;
 		if (numItems > maxItems) {
+			// resize array
 			maxItems += increment;
-			items = Utilities.resizeArray(items, maxItems);
+			newItems = (T[]) new Object[maxItems];
+			size = items.length;
+			l = Math.min(size, maxItems);
+			if (l > 0)
+				System.arraycopy(items, 0, newItems, 0, l);
+			items = newItems;
 		}
 		items[numItems] = p;
 	}
 
-	public DSSObject pop() {
-		DSSObject Result;
+	public T pop() {
+		T result;
 		if (numItems > 0) {
-			Result = items[numItems - 1];
+			result = items[numItems - 1];
 			numItems -= 1;
 		} else {
-			Result = null;
+			result = null;
 		}
-		return Result;
+		return result;
 	}
 
 }

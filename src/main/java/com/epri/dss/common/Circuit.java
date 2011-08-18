@@ -445,7 +445,7 @@ public interface Circuit extends NamedObject {
 	void debugDump(PrintStream f);
 
 	/** Access to topology from the first source */
-	CktTree getTopology();
+	CktTree<PDElement> getTopology();
 
 	void freeTopology();
 

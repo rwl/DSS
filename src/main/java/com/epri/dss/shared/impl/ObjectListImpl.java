@@ -1,8 +1,15 @@
 package com.epri.dss.shared.impl;
 
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.shared.ObjectList;
 
-public class PointerListImpl implements PointerList {
+/**
+ * Iterable list of objects.
+ *
+ * TODO: Replace with java.util.List and Iterator
+ *
+ * @param <T>
+ */
+public class ObjectListImpl<T> implements ObjectList<T> {
 
 	private int numInList;
 
@@ -10,23 +17,23 @@ public class PointerListImpl implements PointerList {
 
 	private int activeItem;
 
-	private Object[] list;
+	private T[] list;
 
 	private int incrementSize;
 
-	public PointerListImpl(int size) {
+	public ObjectListImpl(int size) {
 		super();
 		maxAllocated = size;
 		// default size & increment
 		if (maxAllocated <= 0) maxAllocated = 10;
-		list = new Object[maxAllocated];
+		list = (T[]) new Object[maxAllocated];
 		numInList = 0;
 		activeItem = 0;
 		// increment is equal to original allocation
 		incrementSize = maxAllocated;
 	}
 
-	public Object getFirst() {
+	public T getFirst() {
 		if (numInList > 0) {
 		activeItem = 0;
 		return list[activeItem];
@@ -36,7 +43,7 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
-	public Object getNext() {
+	public T getNext() {
 		if (numInList > 0) {
 		activeItem += 1;
 		if (activeItem > numInList) {
@@ -51,7 +58,7 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
-	public Object getActive() {
+	public T getActive() {
 		if ((activeItem > 0) && (activeItem <= numInList)) {
 			return get(activeItem);
 		} else {
@@ -59,7 +66,7 @@ public class PointerListImpl implements PointerList {
 		}
 	}
 
-	public void setNew(Object value) {
+	public void setNew(T value) {
 		add(value);
 	}
 
@@ -69,19 +76,27 @@ public class PointerListImpl implements PointerList {
 	}
 
 	/** Returns index of item */
-	public int add(Object p) {
+	public int add(T p) {
+		T[] newList;
+		int size, l;
+
 		numInList += 1;
 		if (numInList > maxAllocated) {
+			// resize array
 			maxAllocated = maxAllocated + incrementSize;
-			// FIXME: Resize array
-			list = new Object[maxAllocated];
+			newList = (T[]) new Object[maxAllocated];
+			size = list.length;
+			l = Math.min(size, maxAllocated);
+			if (l > 0)
+				System.arraycopy(list, 0, newList, 0, l);
+			list = newList;
 		}
 		list[numInList] = p;
 		activeItem = numInList;
 		return numInList;
 	}
 
-	public Object get(int i) {
+	public T get(int i) {
 		if ((i < 1) || (i > numInList)) {
 			return null;
 		} else {

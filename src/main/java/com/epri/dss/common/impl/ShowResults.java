@@ -2162,7 +2162,7 @@ public abstract class ShowResults {
 	 * Show isolated buses/branches in present circuit.
 	 */
 	public static void showIsolated(String fileName) {
-		CktTree branchList, subArea;  // all circuit elements
+		CktTree<CktElement> branchList, subArea;  // all circuit elements
 
 		FileWriter fw;
 		PrintWriter pw;
@@ -2271,15 +2271,15 @@ public abstract class ShowResults {
 			pw.println("(Lexical Level) Element name");
 			pw.println();
 
-			testBranch = (CktElement) branchList.getFirst();  // FIXME Make generic
+			testBranch = branchList.getFirst();
 			while (testBranch != null) {
 				pw.println("(" + branchList.getLevel() + ") " + testBranch.getParentClass().getName() + "." + testBranch.getName());
-				testElem = (CktElement) branchList.getFirstObject();
+				testElem = branchList.getFirstObject();
 				while (testElem != null) {
 					pw.println("[SHUNT], " + testElem.getParentClass().getName() + "." + testElem.getName());
 					testElem = (CktElement) branchList.getNextObject();
 				}
-				testBranch = (CktElement) branchList.goForward();
+				testBranch = branchList.goForward();
 			}
 
 			branchList = null;
@@ -2389,7 +2389,7 @@ public abstract class ShowResults {
 		String fileName, treeName;
 		PDElement PDElem;
 		LoadObj loadElem;
-		CktTree topo;
+		CktTree<PDElement> topo;
 		int nLoops, nParallel, nLevels, nIsolated, nSwitches;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
@@ -2416,12 +2416,12 @@ public abstract class ShowResults {
 			nSwitches = 0;
 
 			if (topo != null) {
-				PDElem = (PDElement) topo.getFirst();
+				PDElem = topo.getFirst();
 				if (topo.getLevel() > nLevels)
 					nLevels = topo.getLevel();
 				topoLevelTabs(pwTree, topo.getLevel());
 				pwTree.print(PDElem.getParentClass().getName() + "." + PDElem.getName());
-				CktTreeNode pb = topo.getPresentBranch();
+				CktTreeNode<PDElement> pb = topo.getPresentBranch();
 				if (pb.isParallel()) {
 					nParallel += 1;
 					pwTree.print("(PARALLEL:" + ((CktElement) pb.getLoopLineObj()).getName() + ")");

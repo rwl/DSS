@@ -8,16 +8,16 @@ import com.epri.dss.general.impl.DSSObjectImpl;
 import com.epri.dss.parser.impl.Parser;
 import com.epri.dss.shared.CommandList;
 import com.epri.dss.shared.HashList;
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.shared.ObjectList;
 import com.epri.dss.shared.impl.HashListImpl;
-import com.epri.dss.shared.impl.PointerListImpl;
+import com.epri.dss.shared.impl.ObjectListImpl;
 
 /**
  * Base class for all DSS collection classes.
  * Keeps track of objects of each class, dispatches edits, etc
  *
  */
-public class DSSClassImpl implements DSSClass {
+public class DSSClassImpl<T extends DSSObject> implements DSSClass<T> {
 
 	private static com.epri.dss.common.DSSClasses DSSClasses;
 
@@ -43,7 +43,7 @@ public class DSSClassImpl implements DSSClass {
 
 	protected int classType;
 
-	protected PointerList elementList;
+	protected ObjectList<T> elementList;
 
 	/** When device gets renamed */
 	protected boolean elementNamesOutOfSynch;
@@ -53,7 +53,7 @@ public class DSSClassImpl implements DSSClass {
 	public DSSClassImpl() {
 		super();
 		// init size and increment
-		elementList = new PointerListImpl(20);
+		elementList = new ObjectListImpl<T>(20);
 		propertyName = null;
 		propertyHelp = null;
 		propertyIdxMap = null;
@@ -82,18 +82,18 @@ public class DSSClassImpl implements DSSClass {
 		super.finalize();
 	}
 
-	public int newObject(String ObjName) {
+	public int newObject(String objName) {
 		DSSGlobals.doErrorMsg(
-				"Reached base class of DSSClass for device \"" +ObjName+ "\"",
+				"Reached base class of DSSClass for device \"" +objName+ "\"",
 				"N/A",
 				"Should be overridden.", 780);
 		return 0;
 	}
 
-	public void setActiveElement(int Value) {
-		if ((Value > 0) && (Value <= elementList.size())) {
-			activeElement = Value;
-			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(activeElement);
+	public void setActiveElement(int value) {
+		if ((value > 0) && (value <= elementList.size())) {
+			activeElement = value;
+			DSSGlobals.activeDSSObject = elementList.get(activeElement);
 
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement)
 				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
@@ -120,7 +120,7 @@ public class DSSClassImpl implements DSSClass {
 	/**
 	 * Used by newObject().
 	 */
-	protected int addObjectToList(DSSObject Obj) {
+	protected int addObjectToList(T Obj) {
 		// put it in this collection's element list.
 		elementList.add(Obj);
 		elementNameList.add( Obj.getName() );
@@ -140,7 +140,7 @@ public class DSSClassImpl implements DSSClass {
 		int idx = elementNameList.find(ObjName);
 		if (idx > 0) {
 			setActiveElement(idx);
-			DSSGlobals.activeDSSObject = (DSSObject) elementList.get(idx);
+			DSSGlobals.activeDSSObject = elementList.get(idx);
 			result = true;
 		}
 		return result;
@@ -250,7 +250,7 @@ public class DSSClassImpl implements DSSClass {
 		} else {
 
 			setActiveElement(1);
-			DSSGlobals.activeDSSObject = (DSSObjectImpl) elementList.get(0);
+			DSSGlobals.activeDSSObject = elementList.get(0);
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
 				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
 				result = activeElement;
@@ -265,7 +265,7 @@ public class DSSClassImpl implements DSSClass {
 			result = 0;
 		} else {
 
-			DSSGlobals.activeDSSObject = (DSSObject) elementList.getNext();
+			DSSGlobals.activeDSSObject = elementList.getNext();
 
 			if (DSSGlobals.activeDSSObject instanceof DSSCktElement) {
 				DSSGlobals.activeCircuit.setActiveCktElement( (CktElement) DSSGlobals.activeDSSObject );
@@ -317,7 +317,7 @@ public class DSSClassImpl implements DSSClass {
 		// messed up if an element gets renamed
 
 		for (int i = 0; i < this.elementList.size(); i++)
-			elementNameList.add( ((DSSObject) elementList.get(i)).getName() );
+			elementNameList.add( elementList.get(i).getName() );
 	}
 
 	private void resynchElementNameList() {
@@ -377,11 +377,11 @@ public class DSSClassImpl implements DSSClass {
 		classType = type;
 	}
 
-	public PointerList getElementList() {
+	public ObjectList<T> getElementList() {
 		return elementList;
 	}
 
-	public void setElementList(PointerList list) {
+	public void setElementList(ObjectList<T> list) {
 		elementList = list;
 	}
 

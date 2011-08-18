@@ -1,8 +1,9 @@
 package com.epri.dss.common;
 
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.general.DSSObject;
+import com.epri.dss.shared.ObjectList;
 
-public interface DSSClass {
+public interface DSSClass<T extends DSSObject> {
 
 	int getNumProperties();
 
@@ -28,9 +29,9 @@ public interface DSSClass {
 
 	void setDSSClassType(int DSSClassType);
 
-	PointerList getElementList();
+	ObjectList<T> getElementList();
 
-	void setElementList(PointerList elementList);
+	void setElementList(ObjectList<T> elementList);
 
 	boolean isElementNamesOutOfSynch();
 

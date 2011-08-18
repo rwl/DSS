@@ -1,11 +1,9 @@
 package com.epri.dss.shared;
 
-import com.epri.dss.general.DSSObject;
+public interface PStack<T> extends StackBase {
 
-public interface PStack extends StackBase {
+	void push(T p);
 
-	void push(DSSObject p);
-
-	DSSObject pop();
+	T pop();
 
 }

@@ -82,7 +82,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	private boolean abortBusProcess;
 
 	/* Topology from the first source, lazy evaluation */
-	private CktTree branchList;
+	private CktTree<PDElement> branchList;
 	/* Bus adjacency lists of PD and PC elements */
 	private List<PCElement>[] busAdjPC;
 	private List<PDElement>[] busAdjPD;
@@ -785,7 +785,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 			elem.setHasBeenSaved(false);
 
 		// initialize so we don't save a class twice
-		for (DSSClass cls : DSSGlobals.DSSClassList)
+		for (DSSClass<?> cls : DSSGlobals.DSSClassList)
 			cls.setSaved(false);
 
 		// ignore feeder class -- gets saved with EnergyMeters
@@ -993,7 +993,7 @@ public class DSSCircuit extends NamedObjectImpl implements Circuit {
 	/**
 	 * Access to topology from the first source
 	 */
-	public CktTree getTopology() {
+	public CktTree<PDElement> getTopology() {
 		if (branchList == null) {
 			/* Initialize all circuit elements and buses to not checked, then build a new tree */
 			for (CktElement elem : cktElements) {

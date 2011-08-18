@@ -13,32 +13,32 @@ import com.epri.dss.general.DSSObject;
 import com.epri.dss.shared.CktTree;
 import com.epri.dss.shared.CktTreeNode;
 import com.epri.dss.shared.PStack;
-import com.epri.dss.shared.PointerList;
+import com.epri.dss.shared.ObjectList;
 
-public class CktTreeImpl implements CktTree {
+public class CktTreeImpl<T extends CktElement> implements CktTree<T> {
 
-	public class ZoneEndsList {
+	public class ZoneEndsList<U extends CktElement> {
 
-		private PointerList endNodeList;
+		private ObjectList<CktTreeNode<U>> endNodeList;
 		private int[] endBuses;
 
 		protected int numEnds;
 
 		public ZoneEndsList() {
-			endNodeList = new PointerListImpl(10);
+			endNodeList = new ObjectListImpl<CktTreeNode<U>>(10);
 			numEnds = 0;
 			endBuses = null;
 		}
 
-		public void add(CktTreeNode node, int endBusRef) {
+		public void add(CktTreeNode<U> node, int endBusRef) {
 			numEnds += 1;
 			endNodeList.add(node);
 			endBuses = Utilities.resizeArray(endBuses, numEnds);
 			endBuses[numEnds - 1] = endBusRef;  // TODO Check zero based indexing
 		}
 
-		public int get(int i, CktTreeNode node) {
-			node = (CktTreeNode) endNodeList.get(i);  // FIXME Make generic
+		public int get(int i, CktTreeNode<U> node) {
+			node = endNodeList.get(i);
 			return endBuses[i];
 		}
 
@@ -52,57 +52,60 @@ public class CktTreeImpl implements CktTree {
 
 	}
 
-	private CktTreeNode firstNode;
-	private PStack forwardStack;
+	private CktTreeNode<T> firstNode;
+	private PStack<CktTreeNode<T>> forwardStack;
 
-	protected CktTreeNode presentBranch;
-	protected ZoneEndsList zoneEndsList;
+	protected CktTreeNode<T> presentBranch;
+	protected ZoneEndsList<T> zoneEndsList;
 
 	public CktTreeImpl() {
 		super();
 		firstNode = null;
 		presentBranch = null;
-		zoneEndsList = new ZoneEndsList();
-		forwardStack = new PStackImpl(20);
+		zoneEndsList = new ZoneEndsList<T>();
+		forwardStack = new PStackImpl<CktTreeNode<T>>(20);
 	}
 
 	/**
 	 * Adds child and makes it present.
 	 */
-	public void setNew(DSSObject value) {
-		presentBranch = new CktTreeNodeImpl(presentBranch, value);
+	public void setNew(T value) {
+		presentBranch = new CktTreeNodeImpl<T>(presentBranch, value);
 		if (firstNode == null)
 			firstNode = presentBranch;
 	}
 
-	public void addNewChild(DSSObject value, int busRef, int terminalNo) {
+	public void addNewChild(T value, int busRef, int terminalNo) {
+		CktTreeNode<T> tempNode;
+
 		if (presentBranch == null) {
 			setNew(value);
 		} else {
-			CktTreeNode TempNode = new CktTreeNodeImpl(presentBranch, value);
+			tempNode = new CktTreeNodeImpl<T>(presentBranch, value);
 
-			TempNode.setFromBusReference(busRef);
-			TempNode.setFromTerminal(terminalNo);
+			tempNode.setFromBusReference(busRef);
+			tempNode.setFromTerminal(terminalNo);
 
-			presentBranch.addChild(TempNode);
+			presentBranch.addChild(tempNode);
 		}
 	}
 
 	/**
 	 * Adds a pointer to an object to be associated with the current node.
 	 */
-	public void setNewObject(DSSObject value) {
-		if (presentBranch != null) {
+	public void setNewObject(T value) {
+		if (presentBranch != null)
 			presentBranch.addObject(value);
-		}
 	}
 
 	private void pushAllChildren() {
+		CktTreeNode<T> pChild;
+
 		if (presentBranch != null) {
 			// push all children of present node onto stack
-			CktTreeNode pChild = presentBranch.getFirstChild();
+			pChild = presentBranch.getFirstChild();
 			while (pChild != null) {
-				forwardStack.push((DSSObject) pChild);  // FIXME Implement generics
+				forwardStack.push(pChild);
 				pChild = presentBranch.getNextChild();
 			}
 			presentBranch.setChildAdded(false);
@@ -112,7 +115,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Move forward from present node.
 	 */
-	public DSSObject goForward() {
+	public T goForward() {
 		// if we have added children to the present node since we opened it push them on
 		if (presentBranch != null)
 			if (presentBranch.isChildAdded())
@@ -122,7 +125,7 @@ public class CktTreeImpl implements CktTree {
 		if (forwardStack.size() == 0)
 			pushAllChildren();
 
-		presentBranch = (CktTreeNode) forwardStack.pop();  // FIXME Implement generics
+		presentBranch = forwardStack.pop();
 		pushAllChildren();  // push all children of latest
 		if (presentBranch != null) {
 			return presentBranch.getCktObject();
@@ -134,7 +137,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Move backward from present node and reset forward stack.
 	 */
-	public DSSObject goBackward() {
+	public T goBackward() {
 		presentBranch = presentBranch.getParent();
 		forwardStack.clear();
 		if (presentBranch != null) {
@@ -144,7 +147,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	public Object getParent() {
+	public T getParent() {
 		if (presentBranch.getParent() != null) {
 			return presentBranch.getParent().getCktObject();
 		} else {
@@ -157,34 +160,10 @@ public class CktTreeImpl implements CktTree {
 	 *
 	 * Go to beginning and reset forward stack.
 	 */
-	public DSSObject getFirst() {
+	public T getFirst() {
 		presentBranch = firstNode;
 		forwardStack.clear();
 		pushAllChildren();
-		if (presentBranch != null) {
-			return (DSSObject) presentBranch.getCktObject();
-		} else {
-			return null;
-		}
-	}
-
-	public Object getFirstObject() {
-		if (presentBranch != null) {
-			return presentBranch.getFirstObject();
-		} else {
-			return null;
-		}
-	}
-
-	public Object getNextObject() {
-		if (presentBranch != null) {
-			return presentBranch.getNextObject();
-		} else {
-			return null;
-		}
-	}
-
-	public Object getActive() {
 		if (presentBranch != null) {
 			return presentBranch.getCktObject();
 		} else {
@@ -192,7 +171,31 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	public void setActive(DSSObject p) {
+	public T getFirstObject() {
+		if (presentBranch != null) {
+			return presentBranch.getFirstObject();
+		} else {
+			return null;
+		}
+	}
+
+	public T getNextObject() {
+		if (presentBranch != null) {
+			return presentBranch.getNextObject();
+		} else {
+			return null;
+		}
+	}
+
+	public T getActive() {
+		if (presentBranch != null) {
+			return presentBranch.getCktObject();
+		} else {
+			return null;
+		}
+	}
+
+	public void setActive(T p) {
 		DSSObject temp = getFirst();
 		while (temp != null) {
 			if (presentBranch.getCktObject() == p) break;
@@ -207,7 +210,7 @@ public class CktTreeImpl implements CktTree {
 	public void startHere() {
 		forwardStack.clear();
 		if (presentBranch != null)
-			forwardStack.push((DSSObject) presentBranch);  // FIXME Implement generics
+			forwardStack.push(presentBranch);
 	}
 
 	/**
@@ -228,7 +231,7 @@ public class CktTreeImpl implements CktTree {
 	/**
 	 * Sources are excluded from the PC element list, so this is a brute-force search.
 	 */
-	private static void getSourcesConnectedToBus(int busNum, CktTree branchList, boolean analyze) {
+	private static void getSourcesConnectedToBus(int busNum, CktTree<PCElement> branchList, boolean analyze) {
 		Circuit ckt = DSSGlobals.activeCircuit;
 
 		for (PCElement psrc : ckt.getSources()) {  // Sources are special PC elements
@@ -250,7 +253,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	private static void getPCElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
+	private static void getPCElementsConnectedToBus(List<CktElement> adjLst, CktTree<CktElement> branchList, boolean analyze) {
 		CktElement p;
 
 		for (int i = 0; i < adjLst.size() - 1; i++) {
@@ -269,7 +272,7 @@ public class CktTreeImpl implements CktTree {
 	}
 
 
-	private static void findAllChildBranches(List<CktElement> adjLst, int busNum, CktTree branchList,
+	private static void findAllChildBranches(List<CktElement> adjLst, int busNum, CktTree<CktElement> branchList,
 			boolean analyze, CktElement activeBranch) {
 		int i, j;
 		CktElement p;
@@ -306,7 +309,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	private static void getShuntPDElementsConnectedToBus(List<CktElement> adjLst, CktTree branchList, boolean analyze) {
+	private static void getShuntPDElementsConnectedToBus(List<CktElement> adjLst, CktTree<CktElement> branchList, boolean analyze) {
 		CktElement p;
 		for (int i = 0; i < adjLst.size() - 1; i++) {
 			p = adjLst.get(i);
@@ -323,7 +326,7 @@ public class CktTreeImpl implements CktTree {
 		}
 	}
 
-	public static CktTree getIsolatedSubArea(CktElement startElement) {
+	public static CktTree<CktElement> getIsolatedSubArea(CktElement startElement) {
 		return getIsolatedSubArea(startElement, false);
 	}
 
@@ -336,7 +339,8 @@ public class CktTreeImpl implements CktTree {
 		CktTree branchList;
 		int iTerm;
 		CktElement testBranch, testElement;
-		List[] lstPD, lstPC;
+		List[] lstPD;
+		List[] lstPC;
 
 		Circuit ckt = DSSGlobals.activeCircuit;
 
@@ -433,12 +437,12 @@ public class CktTreeImpl implements CktTree {
 		presentBranch = branch;
 	}
 
-	public ZoneEndsList getZoneEndsList() {
+	public ZoneEndsList<T> getZoneEndsList() {
 		return zoneEndsList;
 	}
 
-	public void setZoneEndsList(ZoneEndsList list) {
-		zoneEndsList = list;
-	}
+//	public void setZoneEndsList(ZoneEndsList list) {
+//		zoneEndsList = list;
+//	}
 
 }

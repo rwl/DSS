@@ -44,9 +44,9 @@ public interface IDSSGlobals {
 
 	void setActiveCircuit(Circuit activeCircuit);
 
-	DSSClass getActiveDSSClass();
+	DSSClass<DSSObject> getActiveDSSClass();
 
-	void setActiveDSSClass(DSSClass activeDSSClass);
+	void setActiveDSSClass(DSSClass<DSSObject> activeDSSClass);
 
 	int getLastClassReferenced();
 
@@ -180,9 +180,9 @@ public interface IDSSGlobals {
 
 	void setSpectrumClass(Spectrum spectrumClass);
 
-	DSSClass getSolutionClass();
+	DSSClass<SolutionObj> getSolutionClass();
 
-	void setSolutionClass(DSSClass solutionClass);
+	void setSolutionClass(DSSClass<SolutionObj> solutionClass);
 
 	EnergyMeter getEnergyMeterClass();
 

@@ -21,6 +21,7 @@ import com.epri.dss.common.impl.Utilities;
 import com.epri.dss.common.Bus;
 import com.epri.dss.common.Circuit;
 import com.epri.dss.common.CktElement;
+import com.epri.dss.common.DSSClass;
 import com.epri.dss.common.FeederObj;
 import com.epri.dss.common.SolutionObj;
 import com.epri.dss.conversion.GeneratorObj;
@@ -87,13 +88,13 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	protected String[] registerNames = new String[NumEMRegisters];
 
-	protected CktTree branchList;  // all circuit elements in meter"s zone
+	protected CktTree<CktElement> branchList;  // all circuit elements in meter"s zone
 
 	protected double[] registers   = new double[NumEMRegisters];
 	protected double[] derivatives = new double[NumEMRegisters];
 	protected double[] totalsMask  = new double[NumEMRegisters];
 
-	public EnergyMeterObjImpl(DSSClassImpl parClass, String energyMeterName) {
+	public EnergyMeterObjImpl(DSSClass<EnergyMeterObj> parClass, String energyMeterName) {
 		super(parClass);
 
 		int i;
@@ -731,7 +732,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 
 	private void totalUpDownstreamCustomers() {
 		int i, accumulator;
-		CktTreeNode presentNode = null;
+		CktTreeNode<PDElement> presentNode = null;
 		PDElement cktElem;
 
 		if (branchList == null) {
@@ -752,7 +753,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 		for (i = 0; i < branchList.getZoneEndsList().getNumEnds(); i++) {
 			/*Busref = */branchList.getZoneEndsList().get(i, presentNode);
 			if (presentNode != null) {
-				cktElem = (PDElement) presentNode.getCktObject();
+				cktElem = presentNode.getCktObject();
 				if (!cktElem.isChecked()) {  // don't do a zone end element more than once
 					cktElem.setChecked(true);
 					accumulator = cktElem.getNumCustomers();
@@ -760,7 +761,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 						cktElem.setTotalCustomers( cktElem.getTotalCustomers() + accumulator );
 						presentNode = presentNode.getParent();
 						if (presentNode == null) break;
-						cktElem = (PDElement) presentNode.getCktObject();
+						cktElem = presentNode.getCktObject();
 						if (!cktElem.isChecked()) {  // avoid double counting
 							accumulator = accumulator + cktElem.getNumCustomers();
 							cktElem.setChecked(true);
@@ -952,7 +953,7 @@ public class EnergyMeterObjImpl extends MeterElementImpl implements EnergyMeterO
 					}
 				}
 			}  /* for iTerm */
-			activeBranch = (DSSCktElement) branchList.goForward();  // sets present node
+			activeBranch = (CktElement) branchList.goForward();  // sets present node
 		}
 
 		totalUpDownstreamCustomers();

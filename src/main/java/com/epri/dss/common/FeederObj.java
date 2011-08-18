@@ -22,7 +22,7 @@ public interface FeederObj extends PCElement {
 
 	void setSynched(boolean isSynched);
 
-	void initializeFeeder(CktTree branchList);
+	void initializeFeeder(CktTree<CktElement> branchList);
 
 	void setCktElementFeederFlags(boolean value);
 

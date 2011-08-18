@@ -4,7 +4,7 @@ import com.epri.dss.common.CktElement;
 import com.epri.dss.common.CktElementClass;
 import com.epri.dss.parser.impl.Parser;
 
-public class CktElementClassImpl extends DSSClassImpl implements
+public class CktElementClassImpl extends DSSClassImpl<CktElement> implements
 		CktElementClass {
 
 	private int numCktElemClassProps;
@@ -14,16 +14,18 @@ public class CktElementClassImpl extends DSSClassImpl implements
 		numCktElemClassProps = 2;
 	}
 
-	protected int classEdit(Object activeCktElemObj, int paramPointer) {
+	protected int classEdit(CktElement activeCktElemObj, int paramPointer) {
 		// continue parsing with contents of parser
-		if (paramPointer >= 0) {  // TODO Check zero based indexing
-			CktElement cktElem = (CktElement) activeCktElemObj;
+		Parser parser = Parser.getInstance();
+
+		if (paramPointer >= 0) {
+			CktElement cktElem = activeCktElemObj;
 			switch (paramPointer) {
 			case 0:
-				cktElem.setBaseFrequency(Parser.getInstance().makeDouble());
+				cktElem.setBaseFrequency(parser.makeDouble());
 				break;
 			case 2:
-				cktElem.setEnabled(Utilities.interpretYesNo(Parser.getInstance().makeString()));
+				cktElem.setEnabled( Utilities.interpretYesNo(parser.makeString()) );
 				break;
 			default:
 				super.classEdit(activeCktElemObj, paramPointer - numCktElemClassProps);
@@ -33,8 +35,8 @@ public class CktElementClassImpl extends DSSClassImpl implements
 		return 0;
 	}
 
-	protected void classMakeLike(Object otherObj) {
-		CktElement otherCktObj = (CktElement) otherObj;
+	protected void classMakeLike(CktElement otherObj) {
+		CktElement otherCktObj = otherObj;
 
 		CktElement cktElem = (CktElement) DSSGlobals.activeDSSObject;
 		cktElem.setBaseFrequency(otherCktObj.getBaseFrequency());
